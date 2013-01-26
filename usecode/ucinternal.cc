@@ -1,5 +1,5 @@
 /*
- *	ucinternal.cc - Interpreter for usecode.
+ *  ucinternal.cc - Interpreter for usecode.
  *
  *  Copyright (C) 1999  Jeffrey S. Freedman
  *  Copyright (C) 2000-2011  The Exult Team
@@ -24,7 +24,7 @@
 #endif
 
 #ifndef ALPHA_LINUX_CXX
-#  include <cstdio>			/* Debugging.			*/
+#  include <cstdio>         /* Debugging.           */
 #  include <fstream>
 #  include <cstring>
 #  include <cstdlib>
@@ -116,8 +116,7 @@ extern int usecode_trace;
 extern bool usecode_debugging;
 std::vector<int> intrinsic_breakpoints;
 
-void	initialise_usecode_debugger(void)
-{
+void    initialise_usecode_debugger(void) {
 	// Summon up the configuration file
 
 	// List all the keys.
@@ -133,12 +132,11 @@ void	initialise_usecode_debugger(void)
 #endif
 
 
-void Usecode_internal::stack_trace(ostream& out)
-{
+void Usecode_internal::stack_trace(ostream &out) {
 	if (call_stack.empty())
 		return;
 
-	std::deque<Stack_frame*>::iterator iter = call_stack.begin();
+	std::deque<Stack_frame *>::iterator iter = call_stack.begin();
 
 	do {
 		out << *(*iter) << endl;
@@ -148,21 +146,18 @@ void Usecode_internal::stack_trace(ostream& out)
 	} while (true);
 }
 
-Usecode_function *Usecode_internal::find_function(int funcid)
-{
+Usecode_function *Usecode_internal::find_function(int funcid) {
 	Usecode_function *fun;
 	// locate function
-	unsigned int slotnum = funcid/0x100;
+	unsigned int slotnum = funcid / 0x100;
 	if (slotnum >= funs.size())
 		fun = 0;
-	else
-		{
-		Funs256& slot = funs[slotnum];
-		size_t index = funcid%0x100;
+	else {
+		Funs256 &slot = funs[slotnum];
+		size_t index = funcid % 0x100;
 		fun = index < slot.size() ? slot[index] : 0;
-		}
-	if (!fun)
-	{
+	}
+	if (!fun) {
 #ifdef DEBUG
 		cout << "Usecode " << funcid << " not found." << endl;
 #endif
@@ -170,54 +165,47 @@ Usecode_function *Usecode_internal::find_function(int funcid)
 	return fun;
 }
 
-inline Usecode_class_symbol *Usecode_internal::get_class(int n)
-	{
+inline Usecode_class_symbol *Usecode_internal::get_class(int n) {
 	return symtbl->get_class(n);
-	}
+}
 
-inline Usecode_class_symbol *Usecode_internal::get_class(const char *nm)
-	{
+inline Usecode_class_symbol *Usecode_internal::get_class(const char *nm) {
 	return symtbl->get_class(nm);
-	}
+}
 
-inline int Usecode_internal::get_shape_fun(int n)
-	{
+inline int Usecode_internal::get_shape_fun(int n) {
 	return n < 0x400 ? n :
-			(symtbl ? symtbl->get_high_shape_fun(n)
-				// Default to 'old-style' high shape functions.
-				: 0x1000 + (n - 0x400));
-	}
+	       (symtbl ? symtbl->get_high_shape_fun(n)
+	        // Default to 'old-style' high shape functions.
+	        : 0x1000 + (n - 0x400));
+}
 
-inline bool Usecode_internal::is_object_fun(int n)
-{
+inline bool Usecode_internal::is_object_fun(int n) {
 	if (!symtbl)
 		return (n < 0x800);
 	return symtbl->is_object_fun(n);
 }
 
 bool Usecode_internal::call_function(int funcid,
-					 int eventid,
-					 Game_object *caller,
-					 bool entrypoint, bool orig,
-					 int givenargs)
-{
+                                     int eventid,
+                                     Game_object *caller,
+                                     bool entrypoint, bool orig,
+                                     int givenargs) {
 	Usecode_function *fun = find_function(funcid);
 	if (!fun)
 		return false;
 	if (orig)
-		if (!(fun = fun->orig))
-		{
+		if (!(fun = fun->orig)) {
 #ifdef DEBUG
 			cout << "Original usecode " << funcid << " not found."
-								<< endl;
+			     << endl;
 #endif
 			return false;
 		}
 
 	int depth, oldstack, chain;
 
-	if (entrypoint)
-	{
+	if (entrypoint) {
 		depth = 0;
 		oldstack = 0;
 		chain = Stack_frame::getCallChainID();
@@ -232,7 +220,7 @@ bool Usecode_internal::call_function(int funcid,
 		oldstack = sp - parent->save_sp;
 
 		chain = parent->call_chain;
-		
+
 		if (caller == 0)
 			caller = parent->caller_item; // use parent's
 	}
@@ -244,32 +232,28 @@ bool Usecode_internal::call_function(int funcid,
 	// In the originals, this was probably so that the games
 	// could know how much memory the function would need.
 	// In any case, do this only if this was not an indirect call.
-	if (givenargs == 0 && is_object_fun(funcid))
-		{
-		if (--num_args < 0)
-			{
+	if (givenargs == 0 && is_object_fun(funcid)) {
+		if (--num_args < 0) {
 			// Backwards compatibility with older mods.
-			cerr << "Called usecode function " << hex << setfill('0') 
-				 << funcid << dec << setfill(' ');
+			cerr << "Called usecode function " << hex << setfill('0')
+			     << funcid << dec << setfill(' ');
 			cerr << " with negative number of arguments." << endl
-				 << "The mod/game was likely compiled with an outdated version of UCC"
-				 << endl;
+			     << "The mod/game was likely compiled with an outdated version of UCC"
+			     << endl;
 			num_args = 0;
-			}
 		}
+	}
 #ifdef DEBUG
 	int added_args = num_args - oldstack;
 #endif
-	while (num_args > oldstack) // Not enough args pushed?
-	{
+	while (num_args > oldstack) { // Not enough args pushed?
 		pushi(0); // add zeroes
 		oldstack++;
 	}
 
 	// Store args in first num_args locals
 	int i;
-	for (i = 0; i < num_args; i++)
-	{
+	for (i = 0; i < num_args; i++) {
 		Usecode_value val = pop();
 		frame->locals[num_args - i - 1] = val;
 	}
@@ -286,29 +270,27 @@ bool Usecode_internal::call_function(int funcid,
 	cout << "Running usecode ";
 	if (fsym)
 		cout << fsym->get_name() << " [";
-	cout << setw(4) << hex << setfill('0') 
-		<< funcid << dec << setfill(' ');
+	cout << setw(4) << hex << setfill('0')
+	     << funcid << dec << setfill(' ');
 	if (fsym)
 		cout << "]";
 	cout << " (";
-	for (i = 0; i < num_args; i++)
-	{
+	for (i = 0; i < num_args; i++) {
 		if (i)
 			cout << ", ";
 		frame->locals[i].print(cout);
 	}
-	cout << ") with event " << eventid 
-		 << ", depth " << frame->call_depth << endl;
+	cout << ") with event " << eventid
+	     << ", depth " << frame->call_depth << endl;
 	if (added_args)
 		cout << added_args << (added_args > 1 ? " args" : " arg")
-			 << " had to be added to the stack for this call" << endl;
+		     << " had to be added to the stack for this call" << endl;
 #endif
 
 	return true;
 }
 
-void Usecode_internal::previous_stack_frame()
-{
+void Usecode_internal::previous_stack_frame() {
 	// remove current frame from stack
 	Stack_frame *frame = call_stack.front();
 	call_stack.pop_front();
@@ -327,8 +309,7 @@ void Usecode_internal::previous_stack_frame()
 	delete frame;
 }
 
-void Usecode_internal::return_from_function(Usecode_value& retval)
-{
+void Usecode_internal::return_from_function(Usecode_value &retval) {
 #ifdef DEBUG
 	// store old function ID for debugging output
 	int oldfunction = call_stack.front()->function->id;
@@ -351,8 +332,8 @@ void Usecode_internal::return_from_function(Usecode_value& retval)
 	if (fsym)
 		cout << fsym->get_name();
 	else
-		cout << hex << setw(4) << 
-		    setfill('0') << oldfunction << dec << setfill(' ');
+		cout << hex << setw(4) <<
+		     setfill('0') << oldfunction << dec << setfill(' ');
 	cout << endl;
 
 
@@ -364,16 +345,15 @@ void Usecode_internal::return_from_function(Usecode_value& retval)
 		if (fsym)
 			cout << fsym->get_name();
 		else
-			cout << hex << setw(4) << 
-				setfill('0') << newfunction << dec << 
-				setfill(' ');
+			cout << hex << setw(4) <<
+			     setfill('0') << newfunction << dec <<
+			     setfill(' ');
 		cout << endl;
 	}
 #endif
 }
 
-void Usecode_internal::return_from_procedure()
-{
+void Usecode_internal::return_from_procedure() {
 #ifdef DEBUG
 	// store old function ID for debugging output
 	int oldfunction = call_stack.front()->function->id;
@@ -391,8 +371,8 @@ void Usecode_internal::return_from_procedure()
 	if (fsym)
 		cout << fsym->get_name();
 	else
-		cout << hex << setw(4) << setfill('0') << 
-				oldfunction << dec << setfill(' ');
+		cout << hex << setw(4) << setfill('0') <<
+		     oldfunction << dec << setfill(' ');
 	cout << endl;
 
 	if (parent_frame) {
@@ -403,21 +383,20 @@ void Usecode_internal::return_from_procedure()
 		if (fsym)
 			cout << fsym->get_name();
 		else
-			cout << hex << setw(4) << setfill('0') << 
-				newfunction << dec << setfill(' ');
+			cout << hex << setw(4) << setfill('0') <<
+			     newfunction << dec << setfill(' ');
 		cout << endl;
 	}
 #endif
 }
 
-void Usecode_internal::abort_function()
-{
+void Usecode_internal::abort_function() {
 #ifdef DEBUG
 	int functionid = call_stack.front()->function->id;
 
 	cout << "Aborting from usecode " << hex << setw(4)
-		 << setfill('0') << functionid << dec << setfill(' ')
-		 << endl;
+	     << setfill('0') << functionid << dec << setfill(' ')
+	     << endl;
 #endif
 
 	// clear the entire call stack up to the entry point
@@ -426,90 +405,77 @@ void Usecode_internal::abort_function()
 }
 
 /*
- *	Append a string.
+ *  Append a string.
  */
 
-void Usecode_internal::append_string
-	(
-	const char *str
-	)
-	{
+void Usecode_internal::append_string(
+    const char *str
+) {
 	if (!str)
 		return;
-					// Figure new length.
+	// Figure new length.
 	int len = String ? strlen(String) : 0;
 	len += strlen(str);
 	char *newstr = new char[len + 1];
-	if (String)
-		{
+	if (String) {
 		strcpy(newstr, String);
 		delete [] String;
 		String = strcat(newstr, str);
-		}
-	else
+	} else
 		String = strcpy(newstr, str);
-	}
+}
 
 // Push/pop stack.
-inline void Usecode_internal::push(Usecode_value const& val)
-{
+inline void Usecode_internal::push(Usecode_value const &val) {
 	*sp++ = val;
 }
 
-inline Usecode_value Usecode_internal::pop()
-{ 
-	if (sp <= stack)
-		{		// Happens in SI #0x939
-			cerr << "Stack underflow" << endl;
-			return Usecode_value(0);
-		}
-	return *--sp; 
+inline Usecode_value Usecode_internal::pop() {
+	if (sp <= stack) {
+		// Happens in SI #0x939
+		cerr << "Stack underflow" << endl;
+		return Usecode_value(0);
+	}
+	return *--sp;
 }
 
-inline Usecode_value Usecode_internal::peek()
-{
+inline Usecode_value Usecode_internal::peek() {
 	return sp[-1];
 }
 
-inline void Usecode_internal::pushref(Game_object *obj)
-{
+inline void Usecode_internal::pushref(Game_object *obj) {
 	Usecode_value v(obj);
 	push(v);
-} 
+}
 
-inline void Usecode_internal::pushi(long val)		// Push/pop integers.
-{
+inline void Usecode_internal::pushi(long val) {     // Push/pop integers.
 	Usecode_value v(val);
 	push(v);
 }
 
-inline int Usecode_internal::popi()
-{
+inline int Usecode_internal::popi() {
 	Usecode_value val = pop();
 	return val.need_int_value();
 }
 
 // Push/pop strings.
-inline void Usecode_internal::pushs(const char *s)
-{
+inline void Usecode_internal::pushs(const char *s) {
 	Usecode_value val(s);
 	push(val);
 }
 
 /*
- *	Get a game object from an "itemref", which might be the actual
- *	pointer, or might be -(npc number).
+ *  Get a game object from an "itemref", which might be the actual
+ *  pointer, or might be -(npc number).
  *
- *	Output:	->game object.
+ *  Output: ->game object.
  */
 
-Game_object *Usecode_internal::get_item
-	(
-	Usecode_value& itemref
-	)
-	{
-					// If array, take 1st element.
-	Usecode_value& elemval = itemref.get_elem0();
+Game_object *Usecode_internal::get_item(
+    Usecode_value &itemref
+) {
+	// If array, take 1st element.
+	Usecode_value &elemval = itemref.get_elem0();
 
 	if (elemval.is_ptr())
 		return elemval.get_ptr_value();
@@ -518,240 +484,212 @@ Game_object *Usecode_internal::get_item
 	if (!val)
 		return NULL;
 	Game_object *obj = NULL;
-	if (val == -356)		// Avatar.
+	if (val == -356)        // Avatar.
 		return gwin->get_main_actor();
-	else if (val < -356 && val > -360)	// Special cases.
+	else if (val < -356 && val > -360)  // Special cases.
 		return NULL;
 	if (val < 0 && val > -gwin->get_num_npcs())
 		obj = gwin->get_npc(-val);
-	else if (val >= 0)
-		{			// Special case:  palace guards, Time Lord.
+	else if (val >= 0) {
+		// Special case:  palace guards, Time Lord.
 		if (val < 0x400 && !itemref.is_array() &&
-			caller_item && val == caller_item->get_shapenum())
+		        caller_item && val == caller_item->get_shapenum())
 			obj = caller_item;
 #if 0
 		// NO! BAD! Causes weird bug with Celia & slain wolf (and maybe others).
-		else if (val < gwin->get_num_npcs() &&	// Try as NPC.
-				(val < 356 || val > 359))	// Avoid these special cases.
-			{
+		else if (val < gwin->get_num_npcs() &&  // Try as NPC.
+		         (val < 356 || val > 359)) { // Avoid these special cases.
 			obj = gwin->get_npc(val);
 			CERR("Warning: interpreting positive integer as NPCnum");
-			}
-#endif			
+		}
+#endif
 		else
 			return NULL;
-		}
-	return obj;
 	}
+	return obj;
+}
 
 /*
- *	Check for an actor.
+ *  Check for an actor.
  */
 
-Actor *Usecode_internal::as_actor
-	(
-	Game_object *obj
-	)
-	{
+Actor *Usecode_internal::as_actor(
+    Game_object *obj
+) {
 	if (!obj)
 		return 0;
 	return (obj->as_actor());
-	}
+}
 
 /*
- *	Get a position.
+ *  Get a position.
  */
 
-Tile_coord Usecode_internal::get_position
-	(
-	Usecode_value& itemval
-	)
-	{
-	Game_object *obj;		// An object?
-	if ((itemval.get_array_size() == 1 || !itemval.get_array_size()) && 
-						(obj = get_item(itemval)))
-			return obj->get_outermost()->get_tile();
+Tile_coord Usecode_internal::get_position(
+    Usecode_value &itemval
+) {
+	Game_object *obj;       // An object?
+	if ((itemval.get_array_size() == 1 || !itemval.get_array_size()) &&
+	        (obj = get_item(itemval)))
+		return obj->get_outermost()->get_tile();
 	else if (itemval.get_array_size() == 3)
-					// An array of coords.?
+		// An array of coords.?
 		return Tile_coord(itemval.get_elem(0).get_int_value(),
-				itemval.get_elem(1).get_int_value(),
-				itemval.get_elem(2).get_int_value());
+		                  itemval.get_elem(1).get_int_value(),
+		                  itemval.get_elem(2).get_int_value());
 	else if (itemval.get_array_size() == 4)
-					// Result of click_on_item() with
-					//  array = (null, tx, ty, tz)?
+		// Result of click_on_item() with
+		//  array = (null, tx, ty, tz)?
 		return Tile_coord(itemval.get_elem(1).get_int_value(),
-				itemval.get_elem(2).get_int_value(),
-				itemval.get_elem(3).get_int_value());
-	else				// Else assume caller_item.
+		                  itemval.get_elem(2).get_int_value(),
+		                  itemval.get_elem(3).get_int_value());
+	else                // Else assume caller_item.
 		return caller_item->get_tile();
-	}
+}
 
 /*
- *	Make sure pending text has been seen.
+ *  Make sure pending text has been seen.
  */
 
-void Usecode_internal::show_pending_text
-	(
-	)
-	{
-	if (book)			// Book mode?
-		{
+void Usecode_internal::show_pending_text(
+) {
+	if (book) {         // Book mode?
 		int x, y;
-		while (book->show_next_page() && 
-				Get_click(x, y, Mouse::hand, 0, false, book, true))
+		while (book->show_next_page() &&
+		        Get_click(x, y, Mouse::hand, 0, false, book, true))
 			;
 		gwin->paint();
-		}
-					// Normal conversation:
+	}
+	// Normal conversation:
 	else if (conv->is_npc_text_pending())
 		click_to_continue();
-	}
+}
 
 /*
- *	Show book or scroll text.
+ *  Show book or scroll text.
  */
 
-void Usecode_internal::show_book
-	(
-	)
-	{
+void Usecode_internal::show_book(
+) {
 	char *str = String;
 	book->add_text(str);
 	delete [] String;
 	String = 0;
-	}
+}
 
 /*
- *	Say the current string and empty it.
+ *  Say the current string and empty it.
  */
 
-void Usecode_internal::say_string
-	(
-	)
-	{
-		//	user_choice = 0;		// Clear user's response.
+void Usecode_internal::say_string(
+) {
+	//  user_choice = 0;        // Clear user's response.
 	if (!String)
 		return;
-	if (book)			// Displaying a book?
-		{
+	if (book) {         // Displaying a book?
 		show_book();
 		return;
-		}
-	show_pending_text();		// Make sure prev. text was seen.
+	}
+	show_pending_text();        // Make sure prev. text was seen.
 	char *str = String;
-	while (*str)			// Look for stopping points ("~~").
-		{
-		if (*str == '*')	// Just gets an extra click.
-			{
+	while (*str) {          // Look for stopping points ("~~").
+		if (*str == '*') {  // Just gets an extra click.
 			click_to_continue();
 			str++;
 			continue;
-			}
+		}
 		char *eol = strchr(str, '~');
-		if (!eol)		// Not found?
-			{
+		if (!eol) {     // Not found?
 			conv->show_npc_message(str);
 			click_to_continue();
 			break;
-			}
+		}
 		*eol = 0;
 		conv->show_npc_message(str);
 		click_to_continue();
 		str = eol + 1;
 		if (*str == '~')
-			str++;		// 2 in a row.
-		}
+			str++;      // 2 in a row.
+	}
 	delete [] String;
 	String = 0;
-	}
+}
 
 /*
- *	Stack error.
+ *  Stack error.
  */
 
-void Usecode_internal::stack_error
-	(
-	int under			// 1 if underflow.
-	)
-	{
+void Usecode_internal::stack_error(
+    int under           // 1 if underflow.
+) {
 	if (under)
 		cerr << "Stack underflow." << endl;
 	else
 		cerr << "Stack overflow." << endl;
 	exit(1);
-	}
+}
 
 /*
- *	Gets the face for an NPC.
+ *  Gets the face for an NPC.
  */
-int Usecode_internal::get_face_shape
-	(
-	Usecode_value& arg1,
-	Actor *&npc,
-	int& frame
-	)
-	{
+int Usecode_internal::get_face_shape(
+    Usecode_value &arg1,
+    Actor *&npc,
+    int &frame
+) {
 	npc = as_actor(get_item(arg1));
 	int shape = -1;
-	if (arg1.is_int())
-		{
+	if (arg1.is_int()) {
 		shape = abs(arg1.get_int_value());
-		if (shape == 356)	// Avatar.
+		if (shape == 356)   // Avatar.
 			shape = 0;
-		}
-	else if (npc)
+	} else if (npc)
 		shape = npc->get_face_shapenum();
 
-	if (shape < 0)	// No need to do anything else.
+	if (shape < 0)  // No need to do anything else.
 		return shape;
-	
+
 	// Checks for Petra flag.
 	shape = Shapeinfo_lookup::GetFaceReplacement(shape);
 
-	if (Game::get_game_type() == SERPENT_ISLE)
-		{			// Special case: Nightmare Smith.
-					//   (But don't mess up Guardian.)
+	if (Game::get_game_type() == SERPENT_ISLE) {
+		// Special case: Nightmare Smith.
+		//   (But don't mess up Guardian.)
 		Actor *iact;
 		if (shape == 296 && this->frame->caller_item &&
-		    (iact = this->frame->caller_item->as_actor()) != 0 &&
-		    iact->get_npc_num() == 277)
+		        (iact = this->frame->caller_item->as_actor()) != 0 &&
+		        iact->get_npc_num() == 277)
 			shape = 277;
-		}
+	}
 
 	// Another special case: map face shape 0 to
 	// the avatar's correct face shape and frame:
-	if (shape == 0)
-		{
+	if (shape == 0) {
 		Actor *ava = gwin->get_main_actor();
 		bool sishapes = Shape_manager::get_instance()->have_si_shapes();
 		Skin_data *skin = Shapeinfo_lookup::GetSkinInfoSafe(
-				ava->get_skin_color(), npc ? (npc->get_type_flag(Actor::tf_sex)!=0)
-					: (ava->get_type_flag(Actor::tf_sex)!=0), sishapes);
-		if (gwin->get_main_actor()->get_flag(Obj_flags::tattooed))
-			{
+		                      ava->get_skin_color(), npc ? (npc->get_type_flag(Actor::tf_sex) != 0)
+		                      : (ava->get_type_flag(Actor::tf_sex) != 0), sishapes);
+		if (gwin->get_main_actor()->get_flag(Obj_flags::tattooed)) {
 			shape = skin->alter_face_shape;
 			frame = skin->alter_face_frame;
-			}
-		else
-			{
+		} else {
 			shape = skin->face_shape;
 			frame = skin->face_frame;
-			}
 		}
-	return shape;
 	}
+	return shape;
+}
 
 /*
- *	Show an NPC's face.
+ *  Show an NPC's face.
  */
 
-void Usecode_internal::show_npc_face
-	(
-	Usecode_value& arg1,		// Shape (NPC #).
-	Usecode_value& arg2,		// Frame.
-	int slot			// 0, 1, or -1 to find free spot.
-	)
-	{
+void Usecode_internal::show_npc_face(
+    Usecode_value &arg1,        // Shape (NPC #).
+    Usecode_value &arg2,        // Frame.
+    int slot            // 0, 1, or -1 to find free spot.
+) {
 	show_pending_text();
 	Actor *npc;
 	int frame = arg2.get_int_value();
@@ -759,82 +697,75 @@ void Usecode_internal::show_npc_face
 
 	if (shape < 0)
 		return;
-	
-	if (Game::get_game_type() == BLACK_GATE && npc)
-		{	// Only do this if the NPC is the caller item.
-		if (npc->get_npc_num() != -1) 
-			npc->set_flag (Obj_flags::met);
-		}
+
+	if (Game::get_game_type() == BLACK_GATE && npc) {
+		// Only do this if the NPC is the caller item.
+		if (npc->get_npc_num() != -1)
+			npc->set_flag(Obj_flags::met);
+	}
 
 	if (!conv->get_num_faces_on_screen())
 		gwin->get_effects()->remove_text_effects();
 	// Only non persistent
-	if (gumpman->showing_gumps(true))
-		{
+	if (gumpman->showing_gumps(true)) {
 		gumpman->close_all_gumps();
 		gwin->set_all_dirty();
-		init_conversation();	// jsf-Added 4/20/01 for SI-Lydia.
-		}
+		init_conversation();    // jsf-Added 4/20/01 for SI-Lydia.
+	}
 	gwin->paint_dirty();
 	conv->show_face(shape, frame, slot);
-//	user_choice = 0;		// Seems like a good idea.
+//	user_choice = 0;     // Seems like a good idea.
 // Also seems to create a conversation bug in Test of Love :-(
 
-	}
+}
 
 /*
- *	Remove an NPC's face.
+ *  Remove an NPC's face.
  */
 
-void Usecode_internal::remove_npc_face
-	(
-	Usecode_value& arg1		// Shape (NPC #).
-	)
-	{
+void Usecode_internal::remove_npc_face(
+    Usecode_value &arg1     // Shape (NPC #).
+) {
 	show_pending_text();
 	Actor *npc;
 	int shape = get_face_shape(arg1, npc);
 	if (shape < 0)
 		return;
 	conv->remove_face(shape);
-	}
+}
 
 /*
- *	Set an item's shape.
+ *  Set an item's shape.
  */
 
-void Usecode_internal::set_item_shape
-	(
-	Usecode_value& item_arg,
-	Usecode_value& shape_arg
-	)
-	{
+void Usecode_internal::set_item_shape(
+    Usecode_value &item_arg,
+    Usecode_value &shape_arg
+) {
 	int shape = shape_arg.get_int_value();
 	Game_object *item = get_item(item_arg);
 	if (!item)
 		return;
-					// See if light turned on/off.
+	// See if light turned on/off.
 	int light_changed = item->get_info().is_light_source() !=
-			    ShapeID::get_info(shape).is_light_source();
-	if (item->get_owner())		// Inside something?
-		{
+	                    ShapeID::get_info(shape).is_light_source();
+	if (item->get_owner()) {    // Inside something?
 		item->get_owner()->change_member_shape(item, shape);
-		if (light_changed)	// Maybe we should repaint all.
-			gwin->paint();	// Repaint finds all lights.
-		else
-			{
+		if (light_changed)  // Maybe we should repaint all.
+			gwin->paint();  // Repaint finds all lights.
+		else {
 			Gump *gump = gumpman->find_gump(item);
 			if (gump)
 				gump->paint();
-			}
-		return;
 		}
-					// Figure area to repaint.
+		return;
+	}
+	// Figure area to repaint.
 //	Rectangle rect = gwin->get_shape_rect(item);
 	gwin->add_dirty(item);
-					// Get chunk it's in.
+	// Get chunk it's in.
 	Map_chunk *chunk = item->get_chunk();
-	chunk->remove(item);		// Remove and add to update cache.
+	chunk->remove(item);        // Remove and add to update cache.
 	item->set_shape(shape);
 	chunk->add(item);
 	gwin->add_dirty(item);
@@ -842,202 +773,180 @@ void Usecode_internal::set_item_shape
 //	rect.enlarge(8);
 //	rect = gwin->clip_to_win(rect);
 	if (light_changed)
-		gwin->paint();		// Complete repaint refigures lights.
+		gwin->paint();      // Complete repaint refigures lights.
 //	else
-//		gwin->paint(rect);	// Not sure...
-//	gwin->show();			// Not sure if this is needed.
-	}
+//		gwin->paint(rect);  // Not sure...
+//	gwin->show();            // Not sure if this is needed.
+}
 
 /*
- *	Set an item's frame.
+ *  Set an item's frame.
  */
 
-void Usecode_internal::set_item_frame
-	(
-	Game_object *item,
-	int frame,
-	int check_empty,		// If 1, don't set empty frame.
-	int set_rotated			// Set 'rotated' bit to one in 'frame'.
-	)
-	{
+void Usecode_internal::set_item_frame(
+    Game_object *item,
+    int frame,
+    int check_empty,        // If 1, don't set empty frame.
+    int set_rotated         // Set 'rotated' bit to one in 'frame'.
+) {
 	if (!item)
 		return;
-					// Added 9/16/2001:
-	if (!set_rotated)		// Leave bit alone?
-		frame = (item->get_framenum()&32)|(frame&31);
+	// Added 9/16/2001:
+	if (!set_rotated)       // Leave bit alone?
+		frame = (item->get_framenum() & 32) | (frame & 31);
 	if (frame == item->get_framenum())
-		return;			// Already set to that.
+		return;         // Already set to that.
 	Actor *act = as_actor(item);
 	// Actors have frame replacements for empty frames:
 	if (act)
 		act->change_frame(frame);
-	else
-		{			// Check for empty frame.
+	else {
+		// Check for empty frame.
 		ShapeID sid(item->get_shapenum(), frame, item->get_shapefile());
 		Shape_frame *shape = sid.get_shape();
 		if (!shape || (check_empty && shape->is_empty()))
 			return;
-		// cout << "Set_item_frame: " << item->get_shapenum() 
-		//				<< ", " << frame << endl;
-						// (Don't mess up rotated frames.)
-		if ((frame&0xf) < item->get_num_frames())
+		// cout << "Set_item_frame: " << item->get_shapenum()
+		//              << ", " << frame << endl;
+		// (Don't mess up rotated frames.)
+		if ((frame & 0xf) < item->get_num_frames())
 			item->change_frame(frame);
-		}
-	gwin->set_painted();		// Make sure paint gets done.
 	}
+	gwin->set_painted();        // Make sure paint gets done.
+}
 
 /*
- *	Set to repaint an object.
+ *  Set to repaint an object.
  */
 
-void Usecode_internal::add_dirty
-	(
-	Game_object *obj
-	)
-	{
-#if 0	/* ++++ 1/31/04 (jsf) This shouldn't be needed anymore. */
-	if (obj->get_owner())		// Inside a container?
-		{			// Paint gump if open.
+void Usecode_internal::add_dirty(
+    Game_object *obj
+) {
+#if 0   /* ++++ 1/31/04 (jsf) This shouldn't be needed anymore. */
+	if (obj->get_owner()) {     // Inside a container?
+		// Paint gump if open.
 		Gump *gump = gumpman->find_gump(obj);
 		if (gump)
 			gwin->add_dirty(gump->get_shape_rect(obj));
-		}
-	else
+	} else
 #endif
 		gwin->add_dirty(obj);
-	}
+}
 
 /*
- *	Remove an item from the world.
+ *  Remove an item from the world.
  */
 
-void Usecode_internal::remove_item
-	(
-	Game_object *obj
-	)
-	{
+void Usecode_internal::remove_item(
+    Game_object *obj
+) {
 	if (!obj)
 		return;
 	if (!last_created.empty() && obj == last_created.back())
 		last_created.pop_back();
 	add_dirty(obj);
 	obj->remove_this(obj->as_actor() != 0);
-	}
+}
 
 /*
- *	Return an array containing the party, with the Avatar first.
+ *  Return an array containing the party, with the Avatar first.
  */
 
-Usecode_value Usecode_internal::get_party
-	(
-	)
-	{
+Usecode_value Usecode_internal::get_party(
+) {
 	int cnt = partyman->get_count();
 	Usecode_value arr(1 + cnt, 0);
-					// Add avatar.
+	// Add avatar.
 	Usecode_value aval(gwin->get_main_actor());
-	arr.put_elem(0, aval);	
+	arr.put_elem(0, aval);
 	int num_added = 1;
-	for (int i = 0; i < cnt; i++)
-		{
+	for (int i = 0; i < cnt; i++) {
 		Game_object *obj = gwin->get_npc(partyman->get_member(i));
 		if (!obj)
 			continue;
 		Usecode_value val(obj);
 		arr.put_elem(num_added++, val);
-		}
+	}
 	// cout << "Party:  "; arr.print(cout); cout << endl;
 	return arr;
-	}
+}
 
 /*
- *	Put text near an item.
+ *  Put text near an item.
  */
 
-void Usecode_internal::item_say
-	(
-	Usecode_value& objval,
-	Usecode_value& strval
-	)
-	{
+void Usecode_internal::item_say(
+    Usecode_value &objval,
+    Usecode_value &strval
+) {
 	Game_object *obj = get_item(objval);
 	const char *str = strval.get_str_value();
-	if (obj && str && *str)
-		{
+	if (obj && str && *str) {
 		Effects_manager *eman = gwin->get_effects();
-					// Added Nov01,01 to fix 'locate':
+		// Added Nov01,01 to fix 'locate':
 		eman->remove_text_effect(obj);
 		if (gwin->failed_copy_protection())
 			str = "Oink!";
 		eman->add_text(str, obj);
-		}
 	}
+}
 
 /*
- *	Activate all cached-in usecode eggs near a given spot.
+ *  Activate all cached-in usecode eggs near a given spot.
  */
 
-void Usecode_internal::activate_cached
-	(
-	Tile_coord const& pos
-	)
-	{
+void Usecode_internal::activate_cached(
+    Tile_coord const &pos
+) {
 	if (Game::get_game_type() != BLACK_GATE)
-		return;			// ++++Since we're not sure about it.
+		return;         // ++++Since we're not sure about it.
 	const int dist = 16;
-	Egg_vector vec;			// Find all usecode eggs.
+	Egg_vector vec;         // Find all usecode eggs.
 	Game_object::find_nearby_eggs(vec, pos, 275, dist, c_any_qual, 7);
-	for (Egg_vector::const_iterator it = vec.begin(); it != vec.end(); 
-									++it)
-		{
+	for (Egg_vector::const_iterator it = vec.begin(); it != vec.end();
+	        ++it) {
 		Egg_object *egg = *it;
 		if (egg->get_criteria() == Egg_object::cached_in)
 			egg->activate();
-		}
 	}
+}
 
 /*
- *	For sorting up-to-down, right-to-left, and near-to-far:
+ *  For sorting up-to-down, right-to-left, and near-to-far:
  */
-class Object_reverse_sorter
-	{
+class Object_reverse_sorter {
 public:
-	bool operator()(const Game_object *o1, const Game_object *o2)
-		{
+	bool operator()(const Game_object *o1, const Game_object *o2) {
 		Tile_coord t1 = o1->get_tile(),
-			   t2 = o2->get_tile();
+		           t2 = o2->get_tile();
 		if (t1.ty > t2.ty)
 			return true;
-		else if (t1.ty == t2.ty)
-			{
+		else if (t1.ty == t2.ty) {
 			if (t1.tx > t2.tx)
 				return true;
-			else 
+			else
 				return t1.tx == t2.tx && t1.tz > t2.tz;
-			}
-		else
+		} else
 			return false;
-		}
-	};
+	}
+};
 
 /*
- *	Return an array of nearby objects.
+ *  Return an array of nearby objects.
  */
 
-Usecode_value Usecode_internal::find_nearby
-	(
-	Usecode_value& objval,		// Find them near this.
-	Usecode_value& shapeval,	// Shape to find, or -1 for any,
-					//  c_any_shapenum for any npc.
-	Usecode_value& distval,		// Distance in tiles?
-	Usecode_value& mval		// Some kind of mask?  Guessing:
-					//   4 == party members only.
-					//   8 == non-party NPC's only.
-					//  16 == something with eggs???
-					//  32 == monsters? invisible?
-	)
-	{
-	Game_object_vector vec;			// Gets list.
+Usecode_value Usecode_internal::find_nearby(
+    Usecode_value &objval,      // Find them near this.
+    Usecode_value &shapeval,    // Shape to find, or -1 for any,
+    //  c_any_shapenum for any npc.
+    Usecode_value &distval,     // Distance in tiles?
+    Usecode_value &mval     // Some kind of mask?  Guessing:
+    //   4 == party members only.
+    //   8 == non-party NPC's only.
+    //  16 == something with eggs???
+    //  32 == monsters? invisible?
+) {
+	Game_object_vector vec;         // Gets list.
 
 	int shapenum;
 
@@ -1046,473 +955,430 @@ Usecode_value Usecode_internal::find_nearby
 		shapenum = shapeval.get_elem(0).get_int_value();
 		if (shapeval.get_array_size() > 1)
 			cerr << "Calling find_nearby with an array > 1 !!!!"
-				 << endl;
+			     << endl;
 	} else
 		shapenum = shapeval.get_int_value();
 
-		
-					// It might be (tx, ty, tz).
+
+	// It might be (tx, ty, tz).
 	int arraysize = objval.get_array_size();
-	if (arraysize == 4)		// Passed result of click_on_item.
-		{
-		Game_object::find_nearby(vec, 
-			Tile_coord(objval.get_elem(1).get_int_value(),
-				   objval.get_elem(2).get_int_value(),
-				   objval.get_elem(3).get_int_value()),
-				   shapenum, distval.get_int_value(), mval.get_int_value());
-		}
-	else if (arraysize == 3 || arraysize == 5)
-		{			// Coords(x,y,z) [qual, frame]
-					// Qual is 4th if there.
-		int qual = arraysize == 5 ? objval.get_elem(3).get_int_value()
-							: c_any_qual;
-					// Frame is 5th if there.
-		int frnum = arraysize == 5 ? objval.get_elem(4).get_int_value()
-							: c_any_framenum;
+	if (arraysize == 4) {   // Passed result of click_on_item.
 		Game_object::find_nearby(vec,
-			Tile_coord(objval.get_elem(0).get_int_value(),
-				   objval.get_elem(1).get_int_value(),
-				   objval.get_elem(2).get_int_value()),
-			shapenum,
-			distval.get_int_value(), mval.get_int_value(), 
-			qual, frnum);
-		}
-	else
-		{
+		                         Tile_coord(objval.get_elem(1).get_int_value(),
+		                                    objval.get_elem(2).get_int_value(),
+		                                    objval.get_elem(3).get_int_value()),
+		                         shapenum, distval.get_int_value(), mval.get_int_value());
+	} else if (arraysize == 3 || arraysize == 5) {
+		// Coords(x,y,z) [qual, frame]
+		// Qual is 4th if there.
+		int qual = arraysize == 5 ? objval.get_elem(3).get_int_value()
+		           : c_any_qual;
+		// Frame is 5th if there.
+		int frnum = arraysize == 5 ? objval.get_elem(4).get_int_value()
+		            : c_any_framenum;
+		Game_object::find_nearby(vec,
+		                         Tile_coord(objval.get_elem(0).get_int_value(),
+		                                    objval.get_elem(1).get_int_value(),
+		                                    objval.get_elem(2).get_int_value()),
+		                         shapenum,
+		                         distval.get_int_value(), mval.get_int_value(),
+		                         qual, frnum);
+	} else {
 		Game_object *obj = get_item(objval);
 		if (!obj)
 			return Usecode_value(0, 0);
-		obj = obj->get_outermost();	// Might be inside something.
+		obj = obj->get_outermost(); // Might be inside something.
 		obj->find_nearby(vec, shapenum,
-			distval.get_int_value(), mval.get_int_value());
-		}
-	if (vec.size() > 1)		// Sort right-left, near-far to fix
-					//   SI/SS cask bug.
+		                 distval.get_int_value(), mval.get_int_value());
+	}
+	if (vec.size() > 1)     // Sort right-left, near-far to fix
+		//   SI/SS cask bug.
 		std::sort(vec.begin(), vec.end(), Object_reverse_sorter());
-	Usecode_value nearby(vec.size(), 0);	// Create return array.
+	Usecode_value nearby(vec.size(), 0);    // Create return array.
 	int i = 0;
-	for (Game_object_vector::const_iterator it = vec.begin(); 
-						it != vec.end(); ++it)
-		{
+	for (Game_object_vector::const_iterator it = vec.begin();
+	        it != vec.end(); ++it) {
 		Game_object *each = *it;
 		Usecode_value val(each);
 		nearby.put_elem(i++, val);
-		}
-	return (nearby);
 	}
+	return (nearby);
+}
 
 /*
- *	Look for a barge that an object is a part of, or on, using the same
- *	sort (right-left, front-back) as ::find_nearby().  If there are more
- *	than one beneath 'obj', the highest is returned.
+ *  Look for a barge that an object is a part of, or on, using the same
+ *  sort (right-left, front-back) as ::find_nearby().  If there are more
+ *  than one beneath 'obj', the highest is returned.
  *
- *	Output:	->barge if found, else 0.
+ *  Output: ->barge if found, else 0.
  */
 
-Barge_object *Get_barge
-	(
-	Game_object *obj
-	)
-	{
-					// Check object itself.
+Barge_object *Get_barge(
+    Game_object *obj
+) {
+	// Check object itself.
 	Barge_object *barge = obj->as_barge();
 	if (barge)
 		return barge;
-	Game_object_vector vec;		// Find it within 20 tiles (egglike).
+	Game_object_vector vec;     // Find it within 20 tiles (egglike).
 	obj->find_nearby(vec, 961, 20, 0x10);
-	if (vec.size() > 1)		// Sort right-left, near-far.
+	if (vec.size() > 1)     // Sort right-left, near-far.
 		std::sort(vec.begin(), vec.end(), Object_reverse_sorter());
-					// Object must be inside it.
+	// Object must be inside it.
 	Tile_coord pos = obj->get_tile();
 	Barge_object *best = 0;
 	for (Game_object_vector::const_iterator it = vec.begin();
-							it != vec.end(); it++)
-		{
+	        it != vec.end(); it++) {
 		barge = (*it)->as_barge();
-		if (barge && barge->get_tile_footprint().has_world_point(pos.tx, pos.ty))
-			{
+		if (barge && barge->get_tile_footprint().has_world_point(pos.tx, pos.ty)) {
 			int lift = barge->get_lift();
-			if (!best ||	// First qualifying?
-					// First beneath obj.?
-			    (best->get_lift() > pos.tz && lift <= pos.tz) ||
-					// Highest beneath?
-			    (lift <= pos.tz && lift > best->get_lift()))
+			if (!best ||    // First qualifying?
+			        // First beneath obj.?
+			        (best->get_lift() > pos.tz && lift <= pos.tz) ||
+			        // Highest beneath?
+			        (lift <= pos.tz && lift > best->get_lift()))
 				best = barge;
-			}
 		}
-	return best;
 	}
+	return best;
+}
 
 /*
- *	Return object of given shape nearest given obj.
+ *  Return object of given shape nearest given obj.
  */
 
-Usecode_value Usecode_internal::find_nearest
-	(
-	Usecode_value& objval,		// Find near this.
-	Usecode_value& shapeval,	// Shape to find
-	Usecode_value& distval		// Guessing it's distance.
-	)
-	{
+Usecode_value Usecode_internal::find_nearest(
+    Usecode_value &objval,      // Find near this.
+    Usecode_value &shapeval,    // Shape to find
+    Usecode_value &distval      // Guessing it's distance.
+) {
 	Game_object *obj = get_item(objval);
 	if (!obj)
 		return Usecode_value(static_cast<Game_object *>(NULL));
-	Game_object_vector vec;			// Gets list.
-	obj = obj->get_outermost();	// Might be inside something.
+	Game_object_vector vec;         // Gets list.
+	obj = obj->get_outermost(); // Might be inside something.
 	int dist = distval.get_int_value();
 	int shnum = shapeval.get_int_value();
-					// Kludge for Test of Courage:
+	// Kludge for Test of Courage:
 	if (frame->function->id == 0x70a && shnum == 0x9a && dist == 0)
-		dist = 16;		// Mage may have wandered.
+		dist = 16;      // Mage may have wandered.
 	obj->find_nearby(vec, shnum, dist, 0);
 	Game_object *closest = 0;
 	uint32 bestdist = 100000;// Distance-squared in tiles.
 	Tile_coord t1 = obj->get_tile();
-	for (Game_object_vector::const_iterator it = vec.begin(); 
-							it != vec.end(); ++it)
-		{
+	for (Game_object_vector::const_iterator it = vec.begin();
+	        it != vec.end(); ++it) {
 		Game_object *each = *it;
 		Tile_coord t2 = each->get_tile();
 		int dx = t1.tx - t2.tx, dy = t1.ty - t2.ty, dz = t1.tz - t2.tz;
-		uint32 dist = dx*dx + dy*dy + dz*dz;
-		if (dist < bestdist)
-			{
+		uint32 dist = dx * dx + dy * dy + dz * dz;
+		if (dist < bestdist) {
 			bestdist = dist;
 			closest = each;
-			}
 		}
-	return Usecode_value(closest);
 	}
+	return Usecode_value(closest);
+}
 
 /*
- *	Find the angle (0-7) from one object to another.
+ *  Find the angle (0-7) from one object to another.
  */
 
-Usecode_value Usecode_internal::find_direction
-	(
-	Usecode_value& from,
-	Usecode_value& to
-	)
-	{
-	unsigned angle;			// Gets angle 0-7 (north - northwest)
+Usecode_value Usecode_internal::find_direction(
+    Usecode_value &from,
+    Usecode_value &to
+) {
+	unsigned angle;         // Gets angle 0-7 (north - northwest)
 	Tile_coord t1 = get_position(from);
 	Tile_coord t2 = get_position(to);
-					// Treat as cartesian coords.
+	// Treat as cartesian coords.
 	angle = static_cast<int>(Get_direction(t1.ty - t2.ty, t2.tx - t1.tx));
 	return Usecode_value(angle);
-	}
+}
 
 /*
- *	Count objects of a given shape in a container, or in the whole party.
+ *  Count objects of a given shape in a container, or in the whole party.
  */
 
-Usecode_value Usecode_internal::count_objects
-	(
-	Usecode_value& objval,		// The container, or -357 for party.
-	Usecode_value& shapeval,	// Object shape to count (c_any_shapenum=any).
-	Usecode_value& qualval,		// Quality (c_any_qual=any).
-	Usecode_value& frameval		// Frame (c_any_framenum=any).
-	)
-	{
+Usecode_value Usecode_internal::count_objects(
+    Usecode_value &objval,      // The container, or -357 for party.
+    Usecode_value &shapeval,    // Object shape to count (c_any_shapenum=any).
+    Usecode_value &qualval,     // Quality (c_any_qual=any).
+    Usecode_value &frameval     // Frame (c_any_framenum=any).
+) {
 	long oval = objval.get_int_value();
 	int shapenum = shapeval.get_int_value();
 	int qualnum = qualval.get_int_value();
 	int framenum = frameval.get_int_value();
-	if (oval != -357)
-		{
+	if (oval != -357) {
 		Game_object *obj = get_item(objval);
 		return (!obj ? 0 : obj->count_objects(
-					shapenum, qualnum, framenum));
-		}
-					// Look through whole party.
+		            shapenum, qualnum, framenum));
+	}
+	// Look through whole party.
 	Usecode_value party = get_party();
 	int cnt = party.get_array_size();
 	int total = 0;
-	for (int i = 0; i < cnt; i++)
-		{
+	for (int i = 0; i < cnt; i++) {
 		Game_object *obj = get_item(party.get_elem(i));
 		if (obj)
-			total += obj->count_objects(shapenum, qualnum, 
-								framenum);
-		}
-	return (total);
+			total += obj->count_objects(shapenum, qualnum,
+			                            framenum);
 	}
+	return (total);
+}
 
 /*
- *	Get objects of a given shape in a container.
+ *  Get objects of a given shape in a container.
  */
 
-Usecode_value Usecode_internal::get_objects
-	(
-	Usecode_value& objval,		// The container.
-	Usecode_value& shapeval,	// Object shape to get or c_any_shapenum for any.
-	Usecode_value& qualval,		// Quality (c_any_qual=any).
-	Usecode_value& frameval		// Frame (c_any_framenum=any).
-	)
-	{
+Usecode_value Usecode_internal::get_objects(
+    Usecode_value &objval,      // The container.
+    Usecode_value &shapeval,    // Object shape to get or c_any_shapenum for any.
+    Usecode_value &qualval,     // Quality (c_any_qual=any).
+    Usecode_value &frameval     // Frame (c_any_framenum=any).
+) {
 	Game_object *obj = get_item(objval);
 	if (!obj)
 		return Usecode_value(static_cast<Game_object *>(NULL));
 	int shapenum = shapeval.get_int_value();
 	int framenum = frameval.get_int_value();
 	int qual = qualval.get_int_value();
-	Game_object_vector vec;			// Gets list.
+	Game_object_vector vec;         // Gets list.
 	obj->get_objects(vec, shapenum, qual, framenum);
 
 //	cout << "Container objects found:  " << cnt << << endl;
-	Usecode_value within(vec.size(), 0);	// Create return array.
+	Usecode_value within(vec.size(), 0);    // Create return array.
 	int i = 0;
-	for (Game_object_vector::const_iterator it = vec.begin(); it != vec.end(); ++it)
-		{
+	for (Game_object_vector::const_iterator it = vec.begin(); it != vec.end(); ++it) {
 		Game_object *each = *it;
 		Usecode_value val(each);
 		within.put_elem(i++, val);
-		}
-	return (within);
 	}
+	return (within);
+}
 
 /*
- *	Remove a quantity of an item from the party.
+ *  Remove a quantity of an item from the party.
  *
- *	Output:	1 (or the object) if successful, else 0.
+ *  Output: 1 (or the object) if successful, else 0.
  */
 
-Usecode_value Usecode_internal::remove_party_items
-	(
-	Usecode_value& quantval,	// Quantity to remove.
-	Usecode_value& shapeval,	// Shape.
-	Usecode_value& qualval,		// Quality??
-	Usecode_value& frameval,	// Frame.
-	Usecode_value& flagval		// Flag??
-	)
-	{
+Usecode_value Usecode_internal::remove_party_items(
+    Usecode_value &quantval,    // Quantity to remove.
+    Usecode_value &shapeval,    // Shape.
+    Usecode_value &qualval,     // Quality??
+    Usecode_value &frameval,    // Frame.
+    Usecode_value &flagval      // Flag??
+) {
 	int quantity = quantval.need_int_value();
 	int shapenum = shapeval.get_int_value();
 	int framenum = frameval.get_int_value();
 	int quality = qualval.get_int_value();
 	Usecode_value party = get_party();
 	int cnt = party.get_array_size();
-	Usecode_value all(-357);	// See if they exist.
+	Usecode_value all(-357);    // See if they exist.
 	Usecode_value avail = count_objects(all, shapeval, qualval, frameval);
-			// Verified. Originally SI-only, allowing for BG too.
+	// Verified. Originally SI-only, allowing for BG too.
 	if (quantity == c_any_quantity)
 		quantity = avail.get_int_value();
 	else if (avail.get_int_value() < quantity)
 		return Usecode_value(0);
 	int orig_cnt = quantity;
-					// Look through whole party.
-	for (int i = 0; i < cnt && quantity > 0; i++)
-		{
+	// Look through whole party.
+	for (int i = 0; i < cnt && quantity > 0; i++) {
 		Game_object *obj = get_item(party.get_elem(i));
 		if (obj)
 			quantity = obj->remove_quantity(quantity, shapenum,
-							quality, framenum);
-		}
-	return Usecode_value(quantity != orig_cnt);
+			                                quality, framenum);
 	}
+	return Usecode_value(quantity != orig_cnt);
+}
 
 /*
- *	Add a quantity of an item to the party.
+ *  Add a quantity of an item to the party.
  *
- *	Output:	List of members who got objects.
+ *  Output: List of members who got objects.
  */
 
-Usecode_value Usecode_internal::add_party_items
-	(
-	Usecode_value& quantval,	// Quantity to add.
-	Usecode_value& shapeval,	// Shape.
-	Usecode_value& qualval,		// Quality.
-	Usecode_value& frameval,	// Frame.
-	Usecode_value& temporary	// If the objects are to be temporary or not
-	)
-	{
+Usecode_value Usecode_internal::add_party_items(
+    Usecode_value &quantval,    // Quantity to add.
+    Usecode_value &shapeval,    // Shape.
+    Usecode_value &qualval,     // Quality.
+    Usecode_value &frameval,    // Frame.
+    Usecode_value &temporary    // If the objects are to be temporary or not
+) {
 	int quantity = quantval.get_int_value();
-					// ++++++First see if there's room.
+	// ++++++First see if there's room.
 	int shapenum = shapeval.get_int_value();
 	int framenum = frameval.get_int_value();
 	int quality = qualval.get_int_value();
-		// Note: the temporary flag only applies to items placed on the
-		// ground in SI.
+	// Note: the temporary flag only applies to items placed on the
+	// ground in SI.
 	bool temp = temporary.get_int_value() != 0;
-					// Look through whole party.
+	// Look through whole party.
 	Usecode_value party = get_party();
 	int cnt = party.get_array_size();
-	Usecode_value result(0, 0);	// Start with empty array.
-	for (int i = 0; i < cnt && quantity > 0; i++)
-		{
+	Usecode_value result(0, 0); // Start with empty array.
+	for (int i = 0; i < cnt && quantity > 0; i++) {
 		Game_object *obj = get_item(party.get_elem(i));
 		if (!obj)
 			continue;
 		int prev = quantity;
 		quantity = obj->add_quantity(quantity, shapenum,
-							quality, framenum, false, GAME_BG && temp);
-		if (quantity < prev)	// Added to this NPC.
+		                             quality, framenum, false, GAME_BG && temp);
+		if (quantity < prev)    // Added to this NPC.
 			result.concat(party.get_elem(i));
-		}
-	if (GAME_BG)			// Black gate?  Just return result.
+	}
+	if (GAME_BG)            // Black gate?  Just return result.
 		return result;
-	int todo = quantity;		// SI:  Put remaining on the ground.
+	int todo = quantity;        // SI:  Put remaining on the ground.
 	if (framenum == c_any_framenum)
 		framenum = 0;
-	while (todo > 0)
-		{
+	while (todo > 0) {
 		Tile_coord pos = Map_chunk::find_spot(
-			gwin->get_main_actor()->get_tile(), 3,
-				shapenum, framenum, 2);
-		if (pos.tx == -1)	// Hope this rarely happens.
+		                     gwin->get_main_actor()->get_tile(), 3,
+		                     shapenum, framenum, 2);
+		if (pos.tx == -1)   // Hope this rarely happens.
 			break;
-		Shape_info& info = ShapeID::get_info(shapenum);
-					// Create and place.
+		Shape_info &info = ShapeID::get_info(shapenum);
+		// Create and place.
 		Game_object *newobj = gmap->create_ireg_object(
-					info, shapenum, framenum, 0, 0, 0);
+		                          info, shapenum, framenum, 0, 0, 0);
 		if (quality != c_any_qual)
 			newobj->set_quality(quality); // set quality
 		newobj->set_flag(Obj_flags::okay_to_take);
-		if (temp)	   // Mark as temporary.
+		if (temp)      // Mark as temporary.
 			newobj->set_flag(Obj_flags::is_temporary);
 		newobj->move(pos);
 		todo--;
-		if (todo > 0)		// Create quantity if possible.
+		if (todo > 0)       // Create quantity if possible.
 			todo = newobj->modify_quantity(todo);
-		}
-					// SI?  Append # left on ground.
+	}
+	// SI?  Append # left on ground.
 	Usecode_value ground(quantity - todo);
 	result.concat(ground);
 	return result;
-	}
+}
 
 /*
- *	Add a quantity of an item to a container
+ *  Add a quantity of an item to a container
  *
- *	Output:	Num created
+ *  Output: Num created
  */
 
-Usecode_value Usecode_internal::add_cont_items
-	(
-	Usecode_value& container,	// What do we add to
-	Usecode_value& quantval,	// Quantity to add.
-	Usecode_value& shapeval,	// Shape.
-	Usecode_value& qualval,		// Quality.
-	Usecode_value& frameval,	// Frame.
-	Usecode_value& temporary	// If the objects are to be temporary or not
-	)
-	{
+Usecode_value Usecode_internal::add_cont_items(
+    Usecode_value &container,   // What do we add to
+    Usecode_value &quantval,    // Quantity to add.
+    Usecode_value &shapeval,    // Shape.
+    Usecode_value &qualval,     // Quality.
+    Usecode_value &frameval,    // Frame.
+    Usecode_value &temporary    // If the objects are to be temporary or not
+) {
 	int quantity = quantval.get_int_value();
 	int shapenum = shapeval.get_int_value();
 	int framenum = frameval.get_int_value();
 	int quality = qualval.get_int_value();
 	bool temp = temporary.get_int_value() != 0;
-		// e.g., Knight's Test wolf meat.
+	// e.g., Knight's Test wolf meat.
 	if (quality == -359)
 		quality = 0;
 
 	Game_object *obj = get_item(container);
-	if (obj) return Usecode_value (obj->add_quantity(quantity, shapenum, quality, framenum, false, temp));
+	if (obj) return Usecode_value(obj->add_quantity(quantity, shapenum, quality, framenum, false, temp));
 	return Usecode_value(0);
-	}
+}
 
 /*
- *	Remove a quantity of an item to a container
+ *  Remove a quantity of an item to a container
  *
- *	Output:	Num removed
+ *  Output: Num removed
  */
 
-Usecode_value Usecode_internal::remove_cont_items
-	(
-	Usecode_value& container,	// What do we add to
-	Usecode_value& quantval,	// Quantity to add.
-	Usecode_value& shapeval,	// Shape.
-	Usecode_value& qualval,		// Quality.
-	Usecode_value& frameval,	// Frame.
-	Usecode_value& flagval		// Flag??
-	)
-	{
+Usecode_value Usecode_internal::remove_cont_items(
+    Usecode_value &container,   // What do we add to
+    Usecode_value &quantval,    // Quantity to add.
+    Usecode_value &shapeval,    // Shape.
+    Usecode_value &qualval,     // Quality.
+    Usecode_value &frameval,    // Frame.
+    Usecode_value &flagval      // Flag??
+) {
 	Game_object *obj = get_item(container);
-	if (!obj)
-		{
+	if (!obj) {
 		if (container.get_int_value() == -357)
 			return remove_party_items(quantval, shapeval, qualval, frameval, flagval);
 		return Usecode_value(0);
-		}
+	}
 
 	int quantity = quantval.get_int_value();
 	int shapenum = shapeval.get_int_value();
 	int framenum = frameval.get_int_value();
 	unsigned int quality = static_cast<unsigned int>(qualval.get_int_value());
-		
-	if (quantity == c_any_quantity)
-		{
+
+	if (quantity == c_any_quantity) {
 		quantval = count_objects(container, shapeval, qualval, frameval);
 		quantity = quantval.get_int_value();
-		}
-
-	return Usecode_value (quantity - obj->remove_quantity(quantity, shapenum, quality, framenum));
 	}
 
+	return Usecode_value(quantity - obj->remove_quantity(quantity, shapenum, quality, framenum));
+}
+
 /*
- *	Create a new object and push it onto the last_created stack.
+ *  Create a new object and push it onto the last_created stack.
  */
 
-Game_object *Usecode_internal::create_object
-	(
-	int shapenum,
-	bool equip			// Equip monsters.
-	)
-	{
-	Game_object *obj;		// Create to be written to Ireg.
-	Shape_info& info = ShapeID::get_info(shapenum);
+Game_object *Usecode_internal::create_object(
+    int shapenum,
+    bool equip          // Equip monsters.
+) {
+	Game_object *obj;       // Create to be written to Ireg.
+	Shape_info &info = ShapeID::get_info(shapenum);
 	modified_map = true;
-					// +++Not sure if 1st test is needed.
-	if (info.get_monster_info() || info.is_npc())
-	{
-					// (Wait sched. added for FOV.)
+	// +++Not sure if 1st test is needed.
+	if (info.get_monster_info() || info.is_npc()) {
+		// (Wait sched. added for FOV.)
 		// don't add equipment (Erethian's transform sequence)
 		Monster_actor *monster = Monster_actor::create(shapenum,
-			Tile_coord(-1, -1, -1), Schedule::wait, 
-					static_cast<int>(Actor::neutral), true, equip);
-					// FORCE it to be neutral (dec04,01).
+		                         Tile_coord(-1, -1, -1), Schedule::wait,
+		                         static_cast<int>(Actor::neutral), true, equip);
+		// FORCE it to be neutral (dec04,01).
 		monster->set_alignment(static_cast<int>(Actor::neutral));
 		gwin->add_dirty(monster);
 		gwin->add_nearby_npc(monster);
 		gwin->show();
 		last_created.push_back(monster);
 		return monster;
-	}
-	else
-	{
+	} else {
 		if (info.is_body_shape())
 			obj = new Dead_body(shapenum, 0, 0, 0, 0, -1);
-		else
-		{
+		else {
 			obj = gmap->create_ireg_object(shapenum, 0);
-					// Be liberal about taking stuff.
+			// Be liberal about taking stuff.
 			obj->set_flag(Obj_flags::okay_to_take);
 		}
 	}
-	obj->set_invalid();		// Not in world yet.
+	obj->set_invalid();     // Not in world yet.
 	obj->set_flag(Obj_flags::okay_to_take);
 	last_created.push_back(obj);
 	return obj;
-	}
+}
 
 /*
- *	Have an NPC walk somewhere and then execute usecode.
+ *  Have an NPC walk somewhere and then execute usecode.
  *
- *	Output:	1 if successful, else 0.
+ *  Output: 1 if successful, else 0.
  */
 
-int Usecode_internal::path_run_usecode
-	(
-	Usecode_value& npcval,		// # or ref.
-	Usecode_value& locval,		// Where to walk to.
-	Usecode_value& useval,		// Usecode #.
-	Usecode_value& itemval,		// Use as itemref in Usecode fun.
-	Usecode_value& eventval,	// Eventid.
-	bool find_free,			// Not sure.  For SI.  
-	bool always,			// Always run function, even if failed.
-	bool companions			// For SI:  companions should follow.
-	)
-	{
+int Usecode_internal::path_run_usecode(
+    Usecode_value &npcval,      // # or ref.
+    Usecode_value &locval,      // Where to walk to.
+    Usecode_value &useval,      // Usecode #.
+    Usecode_value &itemval,     // Use as itemref in Usecode fun.
+    Usecode_value &eventval,    // Eventid.
+    bool find_free,         // Not sure.  For SI.
+    bool always,            // Always run function, even if failed.
+    bool companions         // For SI:  companions should follow.
+) {
 	Actor *npc = as_actor(get_item(npcval));
 	if (!npc)
 		return 0;
@@ -1520,191 +1386,171 @@ int Usecode_internal::path_run_usecode
 	int usefun = useval.get_elem0().get_int_value();
 	Game_object *obj = get_item(itemval);
 	int sz = locval.get_array_size();
-	if (!npc || sz < 2)
-		{
+	if (!npc || sz < 2) {
 		CERR("Path_run_usecode: bad inputs");
 		return 0;
-		}
+	}
 	Tile_coord src = npc->get_tile();
 	Tile_coord dest(locval.get_elem(0).get_int_value(),
-			locval.get_elem(1).get_int_value(),
-			sz == 3 ? locval.get_elem(2).get_int_value() : 0);
-	if (dest.tz < 0)		// ++++Don't understand this.
+	                locval.get_elem(1).get_int_value(),
+	                sz == 3 ? locval.get_elem(2).get_int_value() : 0);
+	if (dest.tz < 0)        // ++++Don't understand this.
 		dest.tz = 0;
-	if (find_free)
-		{
+	if (find_free) {
 		/* Now works with SI lightning platform */
-					// Allow rise of 3 (for SI lightning).
+		// Allow rise of 3 (for SI lightning).
 		Tile_coord d = Map_chunk::find_spot(dest, 3, npc, 3);
-		if (d.tx == -1)		// No?  Try at source level.
+		if (d.tx == -1)     // No?  Try at source level.
 			d = Map_chunk::find_spot(
-				Tile_coord(dest.tx, dest.ty, src.tz), 3, npc,
-									0);
-		if (d.tx != -1)		// Found it?
+			        Tile_coord(dest.tx, dest.ty, src.tz), 3, npc,
+			        0);
+		if (d.tx != -1)     // Found it?
 			dest = d;
-		if (usefun == 0x60a &&	// ++++Added 7/21/01 to fix Iron
-		    src.distance(dest) <= 1)
-			return 1;	// Maiden loop in SI.  Kludge+++++++
-		}
-	if (!obj)			// Just skip the usecode part.
-		{
-		int res = npc->walk_path_to_tile(dest, 
-						gwin->get_std_delay(), 0);
+		if (usefun == 0x60a &&  // ++++Added 7/21/01 to fix Iron
+		        src.distance(dest) <= 1)
+			return 1;   // Maiden loop in SI.  Kludge+++++++
+	}
+	if (!obj) {         // Just skip the usecode part.
+		int res = npc->walk_path_to_tile(dest,
+		                                 gwin->get_std_delay(), 0);
 		if (res && companions && npc->get_action())
 			npc->get_action()->set_get_party();
 		return res;
-		}
-					// Walk there and execute.
-	If_else_path_actor_action *action = 
-		new If_else_path_actor_action(npc, dest,
-				new Usecode_actor_action(usefun, obj, 
-						eventval.get_int_value()));
+	}
+	// Walk there and execute.
+	If_else_path_actor_action *action =
+	    new If_else_path_actor_action(npc, dest,
+	                                  new Usecode_actor_action(usefun, obj,
+	                                          eventval.get_int_value()));
 	if (companions)
 		action->set_get_party();
-	if (always)			// Set failure to same thing.
+	if (always)         // Set failure to same thing.
 		action->set_failure(
-				new Usecode_actor_action(usefun, obj, 
-						eventval.get_int_value()));
-	npc->set_action(action);	// Get into time queue.
+		    new Usecode_actor_action(usefun, obj,
+		                             eventval.get_int_value()));
+	npc->set_action(action);    // Get into time queue.
 	npc->start(gwin->get_std_delay(), 0);
 	return !action->done_and_failed();
 }
 
 /*
- *	See if an actor can go to a given location.
+ *  See if an actor can go to a given location.
  */
 
-bool Usecode_internal::is_dest_reachable
-	(
-	Actor *npc,
-	Tile_coord const& dest
-	)
-	{
+bool Usecode_internal::is_dest_reachable(
+    Actor *npc,
+    Tile_coord const &dest
+) {
 	if (dest.tz < 0)
 		return false;
-	if (npc->distance(dest) <= 1)	// Already OK.
+	if (npc->distance(dest) <= 1)   // Already OK.
 		return true;
-	Path_walking_actor_action *action = 
-		new Path_walking_actor_action(0, 6);
-	
+	Path_walking_actor_action *action =
+	    new Path_walking_actor_action(0, 6);
+
 	bool ret = action->walk_to_tile(npc, npc->get_tile(), dest, 1) != 0;
 	delete action;
 	return ret;
-	}
+}
 
 /*
- *	Schedule a script.
+ *  Schedule a script.
  */
 
-void Usecode_internal::create_script
-	(
-	Usecode_value& objval,
-	Usecode_value& codeval,
-	long delay			// Delay from current time.
-	)
-	{
+void Usecode_internal::create_script(
+    Usecode_value &objval,
+    Usecode_value &codeval,
+    long delay          // Delay from current time.
+) {
 	Game_object *obj = get_item(objval);
-					// Pure kludge for SI wells:
-	if (objval.get_array_size() == 2 && 
-	    Game::get_game_type() == SERPENT_ISLE &&
-	    obj && obj->get_shapenum() == 470 && obj->get_lift() == 0)
-		{			// We want the TOP of the well.
+	// Pure kludge for SI wells:
+	if (objval.get_array_size() == 2 &&
+	        Game::get_game_type() == SERPENT_ISLE &&
+	        obj && obj->get_shapenum() == 470 && obj->get_lift() == 0) {
+		// We want the TOP of the well.
 		Usecode_value v2 = objval.get_elem(1);
 		Game_object *o2 = get_item(v2);
-		if (o2->get_shapenum() == obj->get_shapenum() && 
-		    o2->get_lift() == 2)
-			{
+		if (o2->get_shapenum() == obj->get_shapenum() &&
+		        o2->get_lift() == 2) {
 			objval = v2;
 			obj = o2;
-			}
 		}
-	if (!obj)
-		{
+	}
+	if (!obj) {
 		cerr << "Can't create script for NULL object" << endl;
 		return;
-		}
+	}
 	Usecode_value *code = new Usecode_value();
-	code->steal_array(codeval);	// codeval is undefined after this.
+	code->steal_array(codeval); // codeval is undefined after this.
 	Usecode_script *script = new Usecode_script(obj, code);
 	script->start(delay);
-	}
+}
 
 #ifdef DEBUG
 /*
- *	Report unhandled intrinsic.
+ *  Report unhandled intrinsic.
  */
 
-static void Usecode_Trace
-	(
-	const char *name,
-	int intrinsic,
-	int num_parms,
-	Usecode_value parms[12]
-	)
-	{
+static void Usecode_Trace(
+    const char *name,
+    int intrinsic,
+    int num_parms,
+    Usecode_value parms[12]
+) {
 	cout << hex << "    [0x" << setfill('0') << setw(2)
-		<< intrinsic << "]: " << name << "(";
-	for (int i = 0; i < num_parms; i++)
-		{
+	     << intrinsic << "]: " << name << "(";
+	for (int i = 0; i < num_parms; i++) {
 		parms[i].print(cout);
-		if(i!=num_parms-1)
+		if (i != num_parms - 1)
 			cout << ", ";
-		}
-	cout <<") = ";
-	cout << dec;
 	}
+	cout << ") = ";
+	cout << dec;
+}
 
-static	void	Usecode_TraceReturn(Usecode_value &v)
-{
+static  void    Usecode_TraceReturn(Usecode_value &v) {
 	v.print(cout);
 	cout << dec << endl;
 }
 
-#if 0	/* Not used at the moment. */
-static void Unhandled
-	(
-	int intrinsic,
-	int num_parms,
-	Usecode_value parms[12]
-	)
-	{
-	Usecode_Trace("UNKNOWN",intrinsic,num_parms,parms);
-	}
+#if 0   /* Not used at the moment. */
+static void Unhandled(
+    int intrinsic,
+    int num_parms,
+    Usecode_value parms[12]
+) {
+	Usecode_Trace("UNKNOWN", intrinsic, num_parms, parms);
+}
 #endif
 #endif
 
 Usecode_value no_ret;
 
-Usecode_value Usecode_internal::Execute_Intrinsic(UsecodeIntrinsicFn func,const char *name,int event,int intrinsic,int num_parms,Usecode_value parms[12])
-{
+Usecode_value Usecode_internal::Execute_Intrinsic(UsecodeIntrinsicFn func, const char *name, int event, int intrinsic, int num_parms, Usecode_value parms[12]) {
 #ifdef XWIN
 #if 0 && USECODE_DEBUGGER
-	if(usecode_debugging)
-		{
+	if (usecode_debugging) {
 		// Examine the list of intrinsics for function breakpoints.
-		if(std::find(intrinsic_breakpoints.begin(),intrinsic_breakpoints.end(),intrinsic)!=intrinsic_breakpoints.end())
-			{
-			raise(SIGIO);	// Breakpoint
-			}
+		if (std::find(intrinsic_breakpoints.begin(), intrinsic_breakpoints.end(), intrinsic) != intrinsic_breakpoints.end()) {
+			raise(SIGIO);   // Breakpoint
 		}
+	}
 #endif
 #endif
 #ifdef DEBUG
-	if(intrinsic_trace)
-		{
-		Usecode_Trace(name,intrinsic,num_parms,parms);
+	if (intrinsic_trace) {
+		Usecode_Trace(name, intrinsic, num_parms, parms);
 		cout.flush();
-		Usecode_value u=((*this).*func)(event,intrinsic,num_parms,parms);
+		Usecode_value u = ((*this).*func)(event, intrinsic, num_parms, parms);
 		Usecode_TraceReturn(u);
 		return (u);
-		}
-	else
+	} else
 #endif
-		return ((*this).*func)(event,intrinsic,num_parms,parms);
+		return ((*this).*func)(event, intrinsic, num_parms, parms);
 }
 
 
-typedef	Usecode_value (Usecode_internal::*UsecodeIntrinsicFn)(int event,int intrinsic,int num_parms,Usecode_value parms[12]);
+typedef Usecode_value(Usecode_internal::*UsecodeIntrinsicFn)(int event, int intrinsic, int num_parms, Usecode_value parms[12]);
 
 // missing from mingw32 header files, so included manually
 #ifndef __STRING
@@ -1715,299 +1561,267 @@ typedef	Usecode_value (Usecode_internal::*UsecodeIntrinsicFn)(int event,int intr
 #endif
 #endif
 
-#define	USECODE_INTRINSIC_PTR(NAME)	{ &Usecode_internal::UI_ ## NAME, __STRING(NAME) }
+#define USECODE_INTRINSIC_PTR(NAME) { &Usecode_internal::UI_ ## NAME, __STRING(NAME) }
 
 struct Usecode_internal::IntrinsicTableEntry
-	  Usecode_internal::intrinsic_table[]=
-	{
+		Usecode_internal::intrinsic_table[] = {
 #include "bgintrinsics.h"
-	};
+};
 
 // Serpent Isle Intrinsic Function Tablee
 // It's different to the Black Gate one.
 struct Usecode_internal::IntrinsicTableEntry
-	  Usecode_internal::serpent_table[]=
-	{
+		Usecode_internal::serpent_table[] = {
 #include "siintrinsics.h"
-	};
+};
 
 
-int	max_bundled_intrinsics=0x3ff;	// Index of the last intrinsic in this table
+int max_bundled_intrinsics = 0x3ff; // Index of the last intrinsic in this table
 /*
- *	Call an intrinsic function.
+ *  Call an intrinsic function.
  */
 
-Usecode_value Usecode_internal::call_intrinsic
-	(
-	int event,			// Event type.
-	int intrinsic,			// The ID.
-	int num_parms			// # parms on stack.
-	)
-	{
-	Usecode_value parms[13];	// Get parms.
-	for (int i = 0; i < num_parms; i++)
-		{
+Usecode_value Usecode_internal::call_intrinsic(
+    int event,          // Event type.
+    int intrinsic,          // The ID.
+    int num_parms           // # parms on stack.
+) {
+	Usecode_value parms[13];    // Get parms.
+	for (int i = 0; i < num_parms; i++) {
 		Usecode_value val = pop();
 		parms[i] = val;
-		}
-	if (intrinsic<=max_bundled_intrinsics)
-		{
-		struct Usecode_internal::IntrinsicTableEntry *table_entry;
-		
-		if (Game::get_game_type() == SERPENT_ISLE)
-			table_entry = serpent_table+intrinsic;
-		else
-			table_entry = intrinsic_table+intrinsic;
-		UsecodeIntrinsicFn func=(*table_entry).func;
-		const char *name=(*table_entry).name;
-		return Execute_Intrinsic(func,name,event,intrinsic,
-							num_parms,parms);
-		}
-	return(no_ret);
 	}
+	if (intrinsic <= max_bundled_intrinsics) {
+		struct Usecode_internal::IntrinsicTableEntry *table_entry;
+
+		if (Game::get_game_type() == SERPENT_ISLE)
+			table_entry = serpent_table + intrinsic;
+		else
+			table_entry = intrinsic_table + intrinsic;
+		UsecodeIntrinsicFn func = (*table_entry).func;
+		const char *name = (*table_entry).name;
+		return Execute_Intrinsic(func, name, event, intrinsic,
+		                         num_parms, parms);
+	}
+	return(no_ret);
+}
 
 /*
- *	Wait for user to click inside a conversation.
+ *  Wait for user to click inside a conversation.
  */
 
-void Usecode_internal::click_to_continue
-	(
-	)
-	{
-	if (!gwin->get_pal()->is_faded_out())// If black screen, skip!
-		{
+void Usecode_internal::click_to_continue(
+) {
+	if (!gwin->get_pal()->is_faded_out()) { // If black screen, skip!
 		int xx, yy;
 		char c;
-		gwin->paint();		// Repaint scenery.
+		gwin->paint();      // Repaint scenery.
 		Get_click(xx, yy, Mouse::hand, &c, false, conv, true);
-		}
-	conv->clear_text_pending();
-	//	user_choice = 0;		// Clear it.
 	}
+	conv->clear_text_pending();
+	//  user_choice = 0;        // Clear it.
+}
 
 /*
- *	Set book/scroll to display.
+ *  Set book/scroll to display.
  */
 
-void Usecode_internal::set_book
-	(
-	Text_gump *b			// Book/scroll.
-	)
-	{
+void Usecode_internal::set_book(
+    Text_gump *b            // Book/scroll.
+) {
 	delete book;
 	book = b;
-	}
+}
 
 /*
- *	Get user's choice from among the possible responses.
+ *  Get user's choice from among the possible responses.
  *
- *	Output:	->user choice string.
- *		0 if no possible choices or user quit.
+ *  Output: ->user choice string.
+ *      0 if no possible choices or user quit.
  */
 
-const char *Usecode_internal::get_user_choice
-	(
-	)
-	{
+const char *Usecode_internal::get_user_choice(
+) {
 	if (!conv->get_num_answers())
-		return (0);		// This does happen (Emps-honey).
+		return (0);     // This does happen (Emps-honey).
 
-	//	if (!user_choice)		// May have already been done.
+	//  if (!user_choice)       // May have already been done.
 	// (breaks conversation with Cyclops on Dagger Isle ('foul magic' option))
 
 	get_user_choice_num();
 	return (user_choice);
-	}
+}
 
 /*
- *	Get user's choice from among the possible responses.
+ *  Get user's choice from among the possible responses.
  *
- *	Output:	User choice is set, with choice # returned.
- *		-1 if no possible choices.
+ *  Output: User choice is set, with choice # returned.
+ *      -1 if no possible choices.
  */
 
-int Usecode_internal::get_user_choice_num
-	(
-	)
-	{
+int Usecode_internal::get_user_choice_num(
+) {
 	delete [] user_choice;
 	user_choice = 0;
 	conv->show_avatar_choices();
-	int x, y;			// Get click.
+	int x, y;           // Get click.
 	int choice_num;
-	do
-		{
-		char chr;		// Allow '1', '2', etc.
-		gwin->paint();		// Paint scenery.
-		int result=Get_click(x, y, Mouse::hand, &chr, false, conv, true);
-		if (result<=0) {	// ESC pressed, select 'bye' if poss.
+	do {
+		char chr;       // Allow '1', '2', etc.
+		gwin->paint();      // Paint scenery.
+		int result = Get_click(x, y, Mouse::hand, &chr, false, conv, true);
+		if (result <= 0) {  // ESC pressed, select 'bye' if poss.
 			choice_num = conv->locate_answer("bye");
-		} else if (chr) {		// key pressed
-			if (chr>='1' && chr <='0'+conv->get_num_answers()) {
+		} else if (chr) {       // key pressed
+			if (chr >= '1' && chr <= '0' + conv->get_num_answers()) {
 				choice_num = chr - '1';
 			} else
-				choice_num = -1;	//invalid key
+				choice_num = -1;    //invalid key
 		} else
 			choice_num = conv->conversation_choice(x, y);
-		}
-					// Wait for valid choice.
+	}
+	// Wait for valid choice.
 	while (choice_num  < 0 || choice_num >= conv->get_num_answers());
 
 	conv->clear_avatar_choices();
-					// Store ->answer string.
+	// Store ->answer string.
 	user_choice = newstrdup(conv->get_answer(choice_num));
-	return (choice_num);		// Return choice #.
-	}
+	return (choice_num);        // Return choice #.
+}
 
 /*
- *	Create for the outside world.
+ *  Create for the outside world.
  */
 
-Usecode_machine *Usecode_machine::create
-	(
-	)
-	{
+Usecode_machine *Usecode_machine::create(
+) {
 	return new Usecode_internal();
-	}
+}
 
 /*
- *	Create machine from a 'usecode' file.
+ *  Create machine from a 'usecode' file.
  */
 
-Usecode_internal::Usecode_internal
-	(
-	) : Usecode_machine(), symtbl(0), frame(0), modified_map(false),
-	    book(0), caller_item(0),
-	    path_npc(0), user_choice(0), 
-	    saved_pos(-1, -1, -1),
-	    saved_map(-1),
-	    String(0), telekenesis_fun(-1), stack(new Usecode_value[1024]),
-		intercept_item(0), intercept_tile(0), temp_to_be_deleted(0)
+Usecode_internal::Usecode_internal(
+) : Usecode_machine(), symtbl(0), frame(0), modified_map(false),
+	book(0), caller_item(0),
+	path_npc(0), user_choice(0),
+	saved_pos(-1, -1, -1),
+	saved_map(-1),
+	String(0), telekenesis_fun(-1), stack(new Usecode_value[1024]),
+	intercept_item(0), intercept_tile(0), temp_to_be_deleted(0)
 #ifdef USECODE_DEBUGGER
-		, on_breakpoint(false)
+	, on_breakpoint(false)
 #endif
-	{
+{
 	sp = stack;
 	ifstream file;                // Read in usecode.
 	std::cout << "Reading usecode file." << std::endl;
-	try
-		{
+	try {
 		U7open(file, USECODE);
 		read_usecode(file);
 		file.close();
-		}
-	catch(const file_exception & f)
-		{
-		if (!Game::is_editing())	// Ok if map-editing.
+	} catch (const file_exception &f) {
+		if (!Game::is_editing())    // Ok if map-editing.
 			throw;
-		std::cerr << "Warning (map-editing): Couldn't open '" << 
-							USECODE << "'" << endl;
-		}
+		std::cerr << "Warning (map-editing): Couldn't open '" <<
+		          USECODE << "'" << endl;
+	}
 
-					// Get custom usecode functions.
-	if (is_system_path_defined("<PATCH>") && U7exists(PATCH_USECODE))
-		{
+	// Get custom usecode functions.
+	if (is_system_path_defined("<PATCH>") && U7exists(PATCH_USECODE)) {
 		U7open(file, PATCH_USECODE);
 		read_usecode(file, true);
 		file.close();
-		}
-
-	//	set_breakpoint();
 	}
 
+	//  set_breakpoint();
+}
+
 /*
- *	Read in usecode functions.  These may override previously read
- *	functions.
+ *  Read in usecode functions.  These may override previously read
+ *  functions.
  */
 
-void Usecode_internal::read_usecode
-	(
-	istream &file,
-	bool patch			// True if reading from 'patch'.
-	)
-	{
+void Usecode_internal::read_usecode(
+    istream &file,
+    bool patch          // True if reading from 'patch'.
+) {
 	file.seekg(0, ios::end);
-	int size = file.tellg();	// Get file size.
+	int size = file.tellg();    // Get file size.
 	file.seekg(0);
-	long magic = Read4(file);	// Test for symbol table.
-	if (magic == UCSYMTBL_MAGIC0 && (magic = Read4(file)) 
-							== UCSYMTBL_MAGIC1)
-		{
+	long magic = Read4(file);   // Test for symbol table.
+	if (magic == UCSYMTBL_MAGIC0 && (magic = Read4(file))
+	        == UCSYMTBL_MAGIC1) {
 		delete symtbl;
 		symtbl = new Usecode_symbol_table();
 		symtbl->read(file);
-		}
-	else
+	} else
 		file.seekg(0);
-					// Read in all the functions.
-	while (file.tellg() < size)
-		{
+	// Read in all the functions.
+	while (file.tellg() < size) {
 		Usecode_function *fun = new Usecode_function(file);
-		unsigned int slotnum = fun->id/0x100;
+		unsigned int slotnum = fun->id / 0x100;
 		if (slotnum >= funs.size())
 			funs.resize(slotnum < 10 ? 10 : slotnum + 1);
-		Funs256& vec = funs[slotnum];
-		unsigned int i = fun->id%0x100;
+		Funs256 &vec = funs[slotnum];
+		unsigned int i = fun->id % 0x100;
 		if (i >= vec.size())
 			vec.resize(i + 1);
-		else if (vec[i])
-			{		// Already have one there.
-			if (patch)	// Patching?
-				{
-				if (vec[i]->orig)
-					{	// Patching a patch.
+		else if (vec[i]) {
+			// Already have one there.
+			if (patch) { // Patching?
+				if (vec[i]->orig) {
+					// Patching a patch.
 					fun->orig = vec[i]->orig;
 					delete vec[i];
-					}
-				else		// Patching fun. from static.
+				} else      // Patching fun. from static.
 					fun->orig = vec[i];
-				}
-			else
-				{
+			} else {
 				delete vec[i]->orig;
 				delete vec[i];
-				}
 			}
-		vec[i] = fun;
 		}
+		vec[i] = fun;
 	}
+}
 
 /*
- *	Delete.
+ *  Delete.
  */
 
-Usecode_internal::~Usecode_internal
-	(
-	)
-	{
+Usecode_internal::~Usecode_internal(
+) {
 	delete [] stack;
 	delete [] String;
 	delete symtbl;
 	int num_slots = funs.size();
-	for (int i = 0; i < num_slots; i++)
-		{
-		Funs256& slot = funs[i];
+	for (int i = 0; i < num_slots; i++) {
+		Funs256 &slot = funs[i];
 		int cnt = slot.size();
 		for (int j = 0; j < cnt; j++)
 			delete slot[j];
-		}
-	delete book;
 	}
+	delete book;
+}
 
 #ifdef DEBUG
-int debug = 2;				// 2 for more stuff.
-static int ucbp_fun = -1, ucbp_ip = -1;	// Breakpoint.
-void Setbreak(int fun, int ip)
-	{ ucbp_fun = fun; ucbp_ip = ip; }
-void Clearbreak()
-	{ ucbp_fun = ucbp_ip = -1; }
+int debug = 2;              // 2 for more stuff.
+static int ucbp_fun = -1, ucbp_ip = -1; // Breakpoint.
+void Setbreak(int fun, int ip) {
+	ucbp_fun = fun;
+	ucbp_ip = ip;
+}
+void Clearbreak() {
+	ucbp_fun = ucbp_ip = -1;
+}
 #endif
 
 
 #define CERR_CURRENT_IP()\
 	cerr << " (at function = " << hex << setw(4) << setfill('0')\
-		 << frame->function->id << ", ip = " \
-		 << current_IP << dec << setfill(' ') << ")" << endl
+	     << frame->function->id << ", ip = " \
+	     << current_IP << dec << setfill(' ') << ")" << endl
 
 #define LOCAL_VAR_ERROR(x)\
 	cerr << "Local variable #" << (x) << " out of range!";\
@@ -2031,17 +1845,15 @@ void Clearbreak()
 
 /*
  *  The main usecode interpreter
- * 
+ *
  *  Output:
  */
 
-int Usecode_internal::run()
-{
+int Usecode_internal::run() {
 	bool aborted = false;
 	bool initializing_loop = false;
 
-	while ((frame = call_stack.front()))
-	{
+	while ((frame = call_stack.front())) {
 		int num_locals = frame->num_vars + frame->num_args;
 		int offset;
 		int sval;
@@ -2052,19 +1864,17 @@ int Usecode_internal::run()
 		caller_item = frame->caller_item;
 
 		/*
-		 *	Main loop.
+		 *  Main loop.
 		 */
-		while (!frame_changed)
-		{
+		while (!frame_changed) {
 
 
 			if ((frame->ip >= frame->endp) ||
-				(frame->ip < frame->code))
-			{
+			        (frame->ip < frame->code)) {
 				cerr << "Usecode: jumped outside of code segment of "
-					 << "function " << hex << setw(4) << setfill('0')
-					 << frame->function->id << dec << setfill(' ')
-					 << " ! Aborting." << endl;
+				     << "function " << hex << setw(4) << setfill('0')
+				     << frame->function->id << dec << setfill(' ')
+				     << " ! Aborting." << endl;
 
 				abort_function();
 				frame_changed = true;
@@ -2085,15 +1895,14 @@ int Usecode_internal::run()
 #ifdef DEBUG
 			if (usecode_trace == 2) {
 				uc_trace_disasm(frame);
-			} 
+			}
 #endif
 
 #ifdef USECODE_DEBUGGER
 			// check breakpoints
 
 			int bp = breakpoints.check(frame);
-			if (bp != -1)
-			{
+			if (bp != -1) {
 				// we hit a breakpoint
 
 				// allow handling extra debugging messages
@@ -2102,11 +1911,11 @@ int Usecode_internal::run()
 				cout << "On breakpoint" << endl;
 
 				// signal remote client that we hit a breakpoint
-				unsigned char c=(unsigned char)Exult_server::dbg_on_breakpoint;
+				unsigned char c = (unsigned char)Exult_server::dbg_on_breakpoint;
 				if (client_socket >= 0)
 					Exult_server::Send_data(client_socket,
-											Exult_server::usecode_debugging,
-											&c, 1);
+					                        Exult_server::usecode_debugging,
+					                        &c, 1);
 
 #ifdef XWIN
 				raise(SIGUSR1); // to allow trapping it in gdb too
@@ -2119,7 +1928,7 @@ int Usecode_internal::run()
 				while (!done) {
 					char userinput;
 					cout << "s=step into, o=step over, f=finish, c=continue, "
-						 << "b=stacktrace: ";
+					     << "b=stacktrace: ";
 					cin >> userinput;
 
 					if (userinput == 's') {
@@ -2152,8 +1961,8 @@ int Usecode_internal::run()
 				c = (unsigned char)Exult_server::dbg_continuing;
 				if (client_socket >= 0)
 					Exult_server::Send_data(client_socket,
-											Exult_server::usecode_debugging,
-											&c, 1);
+					                        Exult_server::usecode_debugging,
+					                        &c, 1);
 				// disable extra debugging messages again
 				on_breakpoint = false;
 			}
@@ -2163,24 +1972,21 @@ int Usecode_internal::run()
 
 			frame->ip++;
 
-			switch (opcode)
-			{
+			switch (opcode) {
 			case 0x04:  // start conversation
-			case 0x84: // (32 bit version)
-			{
+			case 0x84: { // (32 bit version)
 				if (opcode < 0x80)
 					offset = Read2s(frame->ip);
 				else
 					offset = Read4s(frame->ip);
-				
+
 				found_answer = false;
 				if (!get_user_choice())  // Exit conv. if no choices.
 					frame->ip += offset; // (Emps and honey.)
 				break;
 			}
-			case 0x05:		// JNE.
-			case 0x85:		// JNE32
-			{
+			case 0x05:      // JNE.
+			case 0x85: {    // JNE32
 				if (opcode < 0x80)
 					offset = Read2s(frame->ip);
 				else
@@ -2190,25 +1996,24 @@ int Usecode_internal::run()
 					frame->ip += offset;
 				break;
 			}
-			case 0x06:		// JMP.
-			case 0x86:		// JMP32
+			case 0x06:      // JMP.
+			case 0x86:      // JMP32
 				if (opcode < 0x80)
 					offset = Read2s(frame->ip);
 				else
 					offset = Read4s(frame->ip);
 				frame->ip += offset;
 				break;
-			case 0x07:		// CMPS.
-			case 0x87: // (32 bit version)
-			{
-				int cnt = Read2(frame->ip);	// # strings.
+			case 0x07:      // CMPS.
+			case 0x87: { // (32 bit version)
+				int cnt = Read2(frame->ip); // # strings.
 				if (opcode < 0x80)
 					offset = Read2s(frame->ip);
 				else
 					offset = Read4s(frame->ip);
-				
+
 				bool matched = false;
-				
+
 				// only try to match if we haven't found an answer yet
 				while (!matched && !found_answer && cnt-- > 0) {
 					Usecode_value s = pop();
@@ -2218,73 +2023,65 @@ int Usecode_internal::run()
 						found_answer = true;
 					}
 				}
-				while (cnt-- > 0)	// Pop rest of stack.
+				while (cnt-- > 0)   // Pop rest of stack.
 					pop();
-				if (!matched)		// Jump if no match.
+				if (!matched)       // Jump if no match.
 					frame->ip += offset;
 			}
 			break;
-			case 0x09:		// ADD.
-			{
+			case 0x09: {    // ADD.
 				Usecode_value v2 = pop();
 				Usecode_value v1 = pop();
 				Usecode_value retval = v1 + v2;
 				push(retval);
 				break;
 			}
-			case 0x0a:		// SUB.
-			{
+			case 0x0a: {    // SUB.
 				Usecode_value v2 = pop();
 				Usecode_value v1 = pop();
 				Usecode_value retval = v1 - v2;
 				push(retval);
 				break;
 			}
-			case 0x0b:		// DIV.
-			{
+			case 0x0b: {    // DIV.
 				Usecode_value v2 = pop();
 				Usecode_value v1 = pop();
 				Usecode_value retval = v1 / v2;
 				push(retval);
 				break;
 			}
-			case 0x0c:		// MUL.
-			{
+			case 0x0c: {    // MUL.
 				Usecode_value v2 = pop();
 				Usecode_value v1 = pop();
 				Usecode_value retval = v1 * v2;
 				push(retval);
 				break;
 			}
-			case 0x0d:		// MOD.
-			{
+			case 0x0d: {    // MOD.
 				Usecode_value v2 = pop();
 				Usecode_value v1 = pop();
 				Usecode_value retval = v1 % v2;
 				push(retval);
 				break;
 			}
-			case 0x0e:		// AND.
-			{
+			case 0x0e: {    // AND.
 				Usecode_value v1 = pop();
 				Usecode_value v2 = pop();
 				int result = v1.is_true() && v2.is_true();
 				pushi(result);
 				break;
 			}
-			case 0x0f:		// OR.
-			{
+			case 0x0f: {    // OR.
 				Usecode_value v1 = pop();
 				Usecode_value v2 = pop();
 				int result = v1.is_true() || v2.is_true();
 				pushi(result);
 				break;
 			}
-			case 0x10:		// NOT.
+			case 0x10:      // NOT.
 				pushi(!pop().is_true());
 				break;
-			case 0x12:		// POP into a variable.
-			{
+			case 0x12: {    // POP into a variable.
 				offset = Read2(frame->ip);
 				// Get value.
 				Usecode_value val = pop();
@@ -2295,67 +2092,65 @@ int Usecode_internal::run()
 				}
 				break;
 			}
-			case 0x13:		// PUSH true.
+			case 0x13:      // PUSH true.
 				pushi(1);
 				break;
-			case 0x14:		// PUSH false.
+			case 0x14:      // PUSH false.
 				pushi(0);
 				break;
-			case 0x16:		// CMPGT.
+			case 0x16:      // CMPGT.
 				sval = popi();
-				pushi(popi() > sval);	// Order?
+				pushi(popi() > sval);   // Order?
 				break;
-			case 0x17:		// CMPL.
+			case 0x17:      // CMPL.
 				sval = popi();
 				pushi(popi() < sval);
 				break;
-			case 0x18:		// CMPGE.
+			case 0x18:      // CMPGE.
 				sval = popi();
 				pushi(popi() >= sval);
 				break;
-			case 0x19:		// CMPLE.
+			case 0x19:      // CMPLE.
 				sval = popi();
 				pushi(popi() <= sval);
 				break;
-			case 0x1a:		// CMPNE.
-			{
+			case 0x1a: {    // CMPNE.
 				Usecode_value val1 = pop();
 				Usecode_value val2 = pop();
 				pushi(!(val1 == val2));
 				break;
 			}
-			case 0x1c:		// ADDSI.
-			case 0x9c:		// ADDSI32
+			case 0x1c:      // ADDSI.
+			case 0x9c:      // ADDSI32
 				if (opcode < 0x80)
 					offset = Read2(frame->ip);
 				else
 					offset = Read4s(frame->ip);
-				if (offset < 0 || frame->data + offset >= frame->externs-6) {
+				if (offset < 0 || frame->data + offset >= frame->externs - 6) {
 					DATA_SEGMENT_ERROR();
 					break;
 				}
 				append_string(frame->data + offset);
 				break;
-			case 0x1d:		// PUSHS.
-			case 0x9d:		// PUSHS32
+			case 0x1d:      // PUSHS.
+			case 0x9d:      // PUSHS32
 				if (opcode < 0x80)
 					offset = Read2(frame->ip);
 				else
 					offset = Read4s(frame->ip);
-				if (offset < 0 || frame->data + offset >= frame->externs-6) {
+				if (offset < 0 || frame->data + offset >= frame->externs - 6) {
 					DATA_SEGMENT_ERROR();
 					break;
 				}
 				pushs(frame->data + offset);
 				break;
-			case 0x1e:		// ARRC.
-			{		// Get # values to pop into array.
+			case 0x1e: {    // ARRC.
+				// Get # values to pop into array.
 				int num = Read2(frame->ip);
 				int cnt = num;
 				Usecode_value arr(num, 0);
-				int to = 0;	// Store at this index.
-				while (cnt--)
-				{
+				int to = 0; // Store at this index.
+				while (cnt--) {
 					Usecode_value val = pop();
 					to += arr.add_values(to, val);
 				}
@@ -2364,9 +2159,9 @@ int Usecode_internal::run()
 				push(arr);
 				break;
 			}
-			case 0x1f:		// PUSHI.
-			case 0x9f:		// PUSHI32
-			{		// Might be negative.
+			case 0x1f:      // PUSHI.
+			case 0x9f: {    // PUSHI32
+				// Might be negative.
 				int ival;
 				if (opcode < 0x80)
 					ival = Read2s(frame->ip);
@@ -2375,58 +2170,53 @@ int Usecode_internal::run()
 				pushi(ival);
 				break;
 			}
-			case 0x21:		// PUSH.
+			case 0x21:      // PUSH.
 				offset = Read2(frame->ip);
 				if (offset < 0 || offset >= num_locals) {
 					LOCAL_VAR_ERROR(offset);
 					pushi(0);
-				}
-				else {
+				} else {
 					push(frame->locals[offset]);
 				}
 				break;
-			case 0x22:		// CMPEQ.
-			{
+			case 0x22: {    // CMPEQ.
 				Usecode_value val1 = pop();
 				Usecode_value val2 = pop();
 				pushi(val1 == val2);
 				break;
 			}
-			case 0x24:		// CALL.
-			{
+			case 0x24: {    // CALL.
 				offset = Read2(frame->ip);
 				if (offset < 0 || offset >= frame->num_externs) {
 					EXTERN_ERROR();
 					break;
 				}
-					
-				uint8 *tempptr = frame->externs + 2*offset;
+
+				uint8 *tempptr = frame->externs + 2 * offset;
 				int funcid = Read2(tempptr);
 
 				call_function(funcid, frame->eventid);
 				frame_changed = true;
 				break;
 			}
-			case 0xa4:		// 32-bit CALL.
-			{
+			case 0xa4: {    // 32-bit CALL.
 				offset = Read4s(frame->ip);
 				call_function(offset, frame->eventid);
 				frame_changed = true;
 				break;
 			}
-			case 0x25:		// RET. (End of procedure reached)
-			case 0x2C:		// RET. (Return from procedure)
+			case 0x25:      // RET. (End of procedure reached)
+			case 0x2C:      // RET. (Return from procedure)
 				show_pending_text();
 
 				return_from_procedure();
 				frame_changed = true;
 				break;
-			case 0x26:		// AIDX.
-			case 0x5A:		// AIDXS.
-			case 0x5D:		// AIDXTHV.
-			{
-				sval = popi();	// Get index into array.
-				sval--;		// It's 1 based.
+			case 0x26:      // AIDX.
+			case 0x5A:      // AIDXS.
+			case 0x5D: {    // AIDXTHV.
+				sval = popi();  // Get index into array.
+				sval--;     // It's 1 based.
 				// Get # of local to index.
 				Usecode_value *val;
 				if (opcode == 0x26) {
@@ -2439,9 +2229,10 @@ int Usecode_internal::run()
 					val = &(frame->locals[offset]);
 				} else if (opcode == 0x5d) {
 					offset = Read2(frame->ip);
-					Usecode_value& ths = frame->get_this();
+					Usecode_value &ths = frame->get_this();
 					if (offset < 0 || offset >= ths.get_class_var_count()) {
-						cerr << "Class variable #" << (offset) << " out of range!";\
+						cerr << "Class variable #" << (offset) << " out of range!";
+						\
 						CERR_CURRENT_IP();
 						break;
 					}
@@ -2452,7 +2243,8 @@ int Usecode_internal::run()
 						if (static_cast<unsigned>(-offset) < statics.size())
 							val = &(statics[-offset]);
 						else {
-							cerr << "Global static variable #" << (offset) << " out of range!";\
+							cerr << "Global static variable #" << (offset) << " out of range!";
+							\
 							pushi(0);
 							break;
 						}
@@ -2460,7 +2252,8 @@ int Usecode_internal::run()
 						if (static_cast<unsigned>(offset) < frame->function->statics.size())
 							val = &(frame->function->statics[offset]);
 						else {
-							cerr << "Local static variable #" << (offset) << " out of range!";\
+							cerr << "Local static variable #" << (offset) << " out of range!";
+							\
 							pushi(0);
 							break;
 						}
@@ -2472,15 +2265,14 @@ int Usecode_internal::run()
 					break;
 				}
 				if (val->is_array() && sval >= val->get_array_size())
-					pushi(0);	// Matches originals.
+					pushi(0);   // Matches originals.
 				else if (sval == 0) // needed for SS keyring (among others)
 					push(val->get_elem0());
 				else
 					push(val->get_elem(sval));
 				break;
 			}
-			case 0x2d:		// RET. (Return from function)
-			{
+			case 0x2d: {    // RET. (Return from function)
 				// ++++ Testing.
 				show_pending_text();
 				Usecode_value r = pop();
@@ -2489,9 +2281,8 @@ int Usecode_internal::run()
 				frame_changed = true;
 				break;
 			}
-			case 0x2e:		// INITLOOP (1st byte of loop)
-			case 0xae:		// (32 bit version)   
-			{
+			case 0x2e:      // INITLOOP (1st byte of loop)
+			case 0xae: {    // (32 bit version)
 				int nextopcode = *(frame->ip);
 				// No real reason to have 32-bit version of this instruction;
 				// keeping it for backward compatibility only.
@@ -2503,7 +2294,7 @@ int Usecode_internal::run()
 #endif
 				nextopcode &= 0x7f;
 				if (nextopcode != 0x02 && nextopcode != 0x5c &&
-						nextopcode != 0x5f) {
+				        nextopcode != 0x5f) {
 					cerr << "Invalid 2nd byte in loop!" << endl;
 					break;
 				} else {
@@ -2511,13 +2302,12 @@ int Usecode_internal::run()
 				}
 				break;
 			}
-			case 0x02:	// LOOP (2nd byte of loop)
+			case 0x02:  // LOOP (2nd byte of loop)
 			case 0x82:  // (32 bit version)
-			case 0x5c:	// LOOP (2nd byte of loop) using static array
-			case 0xdc:	// (32 bit version)
-			case 0x5f:	// LOOP (2nd byte of loop) using class member array
-			case 0xdf:	// (32 bit version)
-			{
+			case 0x5c:  // LOOP (2nd byte of loop) using static array
+			case 0xdc:  // (32 bit version)
+			case 0x5f:  // LOOP (2nd byte of loop) using class member array
+			case 0xdf: { // (32 bit version)
 				// Counter (1-based).
 				int local1 = Read2(frame->ip);
 				// Total count.
@@ -2555,21 +2345,24 @@ int Usecode_internal::run()
 				if (opcode == 0x5c) {
 					if (local4 < 0) {// Global static.
 						if (static_cast<unsigned>(-local4) >= statics.size()) {
-							cerr << "Global static variable #" << (-local4) << " out of range!";\
+							cerr << "Global static variable #" << (-local4) << " out of range!";
+							\
 							CERR_CURRENT_IP();
 							break;
 						}
 					} else {
 						if (static_cast<unsigned>(local4) >= frame->function->statics.size()) {
-							cerr << "Local static variable #" << (local4) << " out of range!";\
+							cerr << "Local static variable #" << (local4) << " out of range!";
+							\
 							CERR_CURRENT_IP();
 							break;
 						}
 					}
 				} else if (opcode == 0x5f) {
-					Usecode_value& ths = frame->get_this();
+					Usecode_value &ths = frame->get_this();
 					if (local4 < 0 || local4 >= ths.get_class_var_count()) {
-						cerr << "Class variable #" << (local4) << " out of range!";\
+						cerr << "Class variable #" << (local4) << " out of range!";
+						\
 						CERR_CURRENT_IP();
 						break;
 					}
@@ -2579,16 +2372,16 @@ int Usecode_internal::run()
 						break;
 					}
 				}
-				
+
 				// Get array to loop over.
-				Usecode_value& arr = opcode == 0x5C ? 
-						(local4 < 0 ? statics[-local4]
-							: frame->function->statics[local4])
-						: (opcode == 0x5f ?
-							frame->get_this().nth_class_var(local4) :
-							frame->locals[local4]);
-				if (initializing_loop && arr.is_undefined())
-				{	// If the local 'array' is not initialized, do not loop
+				Usecode_value &arr = opcode == 0x5C ?
+				                     (local4 < 0 ? statics[-local4]
+				                      : frame->function->statics[local4])
+					                     : (opcode == 0x5f ?
+					                        frame->get_this().nth_class_var(local4) :
+					                        frame->locals[local4]);
+				if (initializing_loop && arr.is_undefined()) {
+					// If the local 'array' is not initialized, do not loop
 					// (verified in FoV and SS):
 					initializing_loop = false;
 					frame->ip += offset;
@@ -2597,11 +2390,11 @@ int Usecode_internal::run()
 
 				int next = frame->locals[local1].get_int_value();
 
-				if (initializing_loop)
-				{	// Initialize loop.
+				if (initializing_loop) {
+					// Initialize loop.
 					initializing_loop = false;
 					int cnt = arr.is_array() ?
-						arr.get_array_size() : 1;
+					          arr.get_array_size() : 1;
 					frame->locals[local2] = Usecode_value(cnt);
 					frame->locals[local1] = Usecode_value(0);
 
@@ -2610,7 +2403,7 @@ int Usecode_internal::run()
 
 				// in SI, the loop-array can be modified in-loop, it seems
 				// (conv. with Spektran, 044D:00BE)
-			   
+
 				// so, check for changes of the array size, and adjust
 				// total count and next value accordingly.
 
@@ -2619,18 +2412,17 @@ int Usecode_internal::run()
 				int cnt = arr.is_array() ? arr.get_array_size() : 1;
 
 				if (cnt != frame->locals[local2].get_int_value()) {
-				
+
 					// update new total count
 					frame->locals[local2] = Usecode_value(cnt);
-					
-					if (std::abs(cnt-frame->locals[local2].get_int_value())==1)
-					{
+
+					if (std::abs(cnt - frame->locals[local2].get_int_value()) == 1) {
 						// small change... we can fix this
-						Usecode_value& curval = arr.is_array() ?
-							arr.get_elem(next - 1) : arr;
-						
+						Usecode_value &curval = arr.is_array() ?
+						                        arr.get_elem(next - 1) : arr;
+
 						if (curval != frame->locals[local3]) {
-							if (cnt>frame->locals[local2].get_int_value()){
+							if (cnt > frame->locals[local2].get_int_value()) {
 								//array got bigger, it seems
 								//addition occured before the current value
 								next++;
@@ -2643,12 +2435,10 @@ int Usecode_internal::run()
 							//addition/deletion was after the current value
 							//so don't need to update 'next'
 						}
-					}
-					else
-					{
-							// big change... 
-							// just update total count to make sure
-							// we don't crash
+					} else {
+						// big change...
+						// just update total count to make sure
+						// we don't crash
 					}
 				}
 
@@ -2657,9 +2447,9 @@ int Usecode_internal::run()
 					// update new total count
 					frame->locals[local2] = Usecode_value(cnt);
 
-					Usecode_value& curval = arr.is_array() ?
-						arr.get_elem(next - 1) : arr;
-					
+					Usecode_value &curval = arr.is_array() ?
+					                        arr.get_elem(next - 1) : arr;
+
 					if (curval != frame->locals[local3]) {
 						if (cnt > frame->locals[local2].get_int_value()) {
 							// array got bigger, it seems
@@ -2679,16 +2469,14 @@ int Usecode_internal::run()
 				// End of loop?
 				if (next >= frame->locals[local2].get_int_value()) {
 					frame->ip += offset;
-				} else		// Get next element.
-				{
+				} else {    // Get next element.
 					frame->locals[local3] = arr.is_array() ?
-						arr.get_elem(next) : arr;
+					                        arr.get_elem(next) : arr;
 					frame->locals[local1] = Usecode_value(next + 1);
 				}
 				break;
 			}
-			case 0x2f:		// ADDSV.
-			{
+			case 0x2f: {    // ADDSV.
 				offset = Read2(frame->ip);
 				if (offset < 0 || offset >= num_locals) {
 					LOCAL_VAR_ERROR(offset);
@@ -2698,46 +2486,43 @@ int Usecode_internal::run()
 				const char *str = frame->locals[offset].get_str_value();
 				if (str)
 					append_string(str);
-				else		// Convert integer.
-				{
-				// 25-09-2001 - Changed to >= 0 to fix money-counting in SI.
-				//				if (locals[offset].get_int_value() != 0) {
+				else {      // Convert integer.
+					// 25-09-2001 - Changed to >= 0 to fix money-counting in SI.
+					//              if (locals[offset].get_int_value() != 0) {
 					if (frame->locals[offset].get_int_value() >= 0) {
 						char buf[20];
 						snprintf(buf, 20, "%ld",
-						frame->locals[offset].get_int_value());
+						         frame->locals[offset].get_int_value());
 						append_string(buf);
 					}
 				}
 				break;
 			}
-			case 0x30:		// IN.  Is a val. in an array?
-			{
+			case 0x30: {    // IN.  Is a val. in an array?
 				Usecode_value arr = pop();
 				// If an array, use 1st elem.
 				Usecode_value val = pop().get_elem0();
 				pushi(arr.find_elem(val) >= 0);
 				break;
 			}
-			case 0x31:		// Unknown.
-			case 0xB1:		// (32 bit version)
-			// this opcode only occurs in the 'audition' usecode function (BG)
-			// not sure what it's supposed to do, but this function results
-			// in the same behaviour as the original
+			case 0x31:      // Unknown.
+			case 0xB1:      // (32 bit version)
+				// this opcode only occurs in the 'audition' usecode function (BG)
+				// not sure what it's supposed to do, but this function results
+				// in the same behaviour as the original
 				frame->ip += 2;
 				if (opcode < 0x80)
 					offset = Read2s(frame->ip);
 				else
 					offset = Read4s(frame->ip);
-				
+
 				if (!found_answer)
 					found_answer = true;
 				else
 					frame->ip += offset;
 				break;
 
-			case 0x32:		// RET. (End of function reached)
-			{
+			case 0x32: {    // RET. (End of function reached)
 				show_pending_text();
 
 				Usecode_value zero(0);
@@ -2745,40 +2530,39 @@ int Usecode_internal::run()
 				frame_changed = true;
 				break;
 			}
-			case 0x33:		// SAY.
+			case 0x33:      // SAY.
 				say_string();
 				break;
-			case 0x38:		// CALLIS.
-			{
+			case 0x38: {    // CALLIS.
 				offset = Read2(frame->ip);
 				sval = *(frame->ip)++;  // # of parameters.
 				Usecode_value ival = call_intrinsic(frame->eventid,
-													offset, sval);
+				                                    offset, sval);
 				push(ival);
 				frame_changed = true;
 				break;
 			}
-			case 0x39:		// CALLI.
+			case 0x39:      // CALLI.
 				offset = Read2(frame->ip);
 				sval = *(frame->ip)++; // # of parameters.
 				call_intrinsic(frame->eventid, offset, sval);
 				frame_changed = true;
 				break;
-			case 0x3e:		// PUSH ITEMREF.
+			case 0x3e:      // PUSH ITEMREF.
 				pushref(frame->caller_item);
 				break;
-			case 0x3f:		// ABRT.
+			case 0x3f:      // ABRT.
 				show_pending_text();
 
 				abort_function();
 				frame_changed = true;
 				aborted = true;
 				break;
-			case 0x40:		// end conversation
+			case 0x40:      // end conversation
 				found_answer = true;
 				break;
-			case 0x42:		// PUSHF.
-			case 0xC2:		// PUSHF2.
+			case 0x42:      // PUSHF.
+			case 0xC2:      // PUSHF2.
 				if (opcode > 0x80)
 					offset = popi();
 				else
@@ -2790,8 +2574,8 @@ int Usecode_internal::run()
 					pushi(gflags[offset]);
 				}
 				break;
-			case 0x43:		// POPF.
-			case 0xC3:		// POPF2.
+			case 0x43:      // POPF.
+			case 0xC3:      // POPF2.
 				if (opcode > 0x80)
 					offset = popi();
 				else
@@ -2804,22 +2588,21 @@ int Usecode_internal::run()
 						Notebook_gump::add_gflag_text(offset);
 #ifdef DEBUG
 						cout << "Setting global flag: "
-								<< offset << endl;
+						     << offset << endl;
 #endif
 					}
 					// ++++KLUDGE for Monk Isle:
 					if (offset == 0x272 && Game::get_game_type() ==
-						SERPENT_ISLE)
+					        SERPENT_ISLE)
 						gflags[offset] = 0;
 				}
 				break;
-			case 0x44:		// PUSHB.
+			case 0x44:      // PUSHB.
 				pushi(*(frame->ip)++);
 				break;
-			case 0x46:		// Set array element.
-			case 0x5B:		// Set static array element.
-			case 0x5E:		// Set class member array element.
-			{
+			case 0x46:      // Set array element.
+			case 0x5B:      // Set static array element.
+			case 0x5E: {    // Set class member array element.
 				Usecode_value *arr;
 				if (opcode == 0x46) {
 					offset = Read2(frame->ip);
@@ -2831,9 +2614,10 @@ int Usecode_internal::run()
 					arr = &(frame->locals[offset]);
 				} else if (opcode == 0x5e) {
 					offset = Read2(frame->ip);
-					Usecode_value& ths = frame->get_this();
+					Usecode_value &ths = frame->get_this();
 					if (offset < 0 || offset >= ths.get_class_var_count()) {
-						cerr << "Class variable #" << (offset) << " out of range!";\
+						cerr << "Class variable #" << (offset) << " out of range!";
+						\
 						CERR_CURRENT_IP();
 						break;
 					}
@@ -2844,7 +2628,8 @@ int Usecode_internal::run()
 						if (static_cast<unsigned>(-offset) < statics.size())
 							arr = &(statics[-offset]);
 						else {
-							cerr << "Global static variable #" << (offset) << " out of range!";\
+							cerr << "Global static variable #" << (offset) << " out of range!";
+							\
 							CERR_CURRENT_IP();
 							break;
 						}
@@ -2852,24 +2637,24 @@ int Usecode_internal::run()
 						if (static_cast<unsigned>(offset) < frame->function->statics.size())
 							arr = &(frame->function->statics[offset]);
 						else {
-							cerr << "Local static variable #" << (offset) << " out of range!";\
+							cerr << "Local static variable #" << (offset) << " out of range!";
+							\
 							CERR_CURRENT_IP();
 							break;
 						}
 					}
 				}
 				short index = popi();
-				index--;	// It's 1-based.
+				index--;    // It's 1-based.
 				Usecode_value val = pop();
 				int size = arr->get_array_size();
-				if (index >= 0 && 
-					(index < size || arr->resize(index + 1)))
+				if (index >= 0 &&
+				        (index < size || arr->resize(index + 1)))
 					arr->put_elem(index, val);
 				break;
 			}
-			case 0x47:		// CALLE.  Stack has caller_item.
-			case 0xc7:		// 32-bit version.
-			{
+			case 0x47:      // CALLE.  Stack has caller_item.
+			case 0xc7: {    // 32-bit version.
 				Usecode_value ival = pop();
 				Game_object *caller = get_item(ival);
 				push(ival); // put caller_item back on stack
@@ -2881,80 +2666,69 @@ int Usecode_internal::run()
 				frame_changed = true;
 				break;
 			}
-			case 0x48:		// PUSH EVENTID.
+			case 0x48:      // PUSH EVENTID.
 				pushi(frame->eventid);
 				break;
-			case 0x4a:		// ARRA.
-			{
+			case 0x4a: {    // ARRA.
 				Usecode_value val = pop();
 				Usecode_value arr = pop();
 				push(arr.concat(val));
 				break;
 			}
-			case 0x4b:		// POP EVENTID.
+			case 0x4b:      // POP EVENTID.
 				frame->eventid = popi();
 				break;
-			case 0x4c: // debugging opcode from spanish SI (line number)
-			{
+			case 0x4c: { // debugging opcode from spanish SI (line number)
 				frame->line_number = Read2(frame->ip);
 				break;
 			}
 			case 0x4d: // debugging opcode from spanish SI (function init)
-			case 0xcd: // 32 bit debugging function init
-			{
+			case 0xcd: { // 32 bit debugging function init
 				int funcname;
 				int paramnames;
-				if (opcode < 0x80)
-				{
+				if (opcode < 0x80) {
 					funcname = Read2(frame->ip);
 					paramnames = Read2(frame->ip);
-				}
-				else
-				{
+				} else {
 					funcname = Read4s(frame->ip);
 					paramnames = Read4s(frame->ip);
 				}
-				if (funcname < 0 || frame->data + funcname >= frame->externs-6)
-				{
+				if (funcname < 0 || frame->data + funcname >= frame->externs - 6) {
 					DATA_SEGMENT_ERROR();
 					break;
 				}
-				if (paramnames < 0 || frame->data + paramnames >= frame->externs-6)
-				{
+				if (paramnames < 0 || frame->data + paramnames >= frame->externs - 6) {
 					DATA_SEGMENT_ERROR();
 					break;
 				}
 				cout << "Debug opcode found at function = " << hex << setw(4)
-					 << setfill('0') << frame->function->id << ", ip = "
-					 << current_IP << dec << setfill(' ') << "." << endl;
+				     << setfill('0') << frame->function->id << ", ip = "
+				     << current_IP << dec << setfill(' ') << "." << endl;
 				cout << "Information is: funcname = '"
-					// This is a complete guess:
+				     // This is a complete guess:
 				     << (frame->data + funcname) << "'." << endl;
-				char const *ptr = reinterpret_cast<char const*>(frame->data + paramnames);
-					// This is an even bigger complete guess:
-				if (*ptr)
-				{
+				char const *ptr = reinterpret_cast<char const *>(frame->data + paramnames);
+				// This is an even bigger complete guess:
+				if (*ptr) {
 					int nargs = frame->num_args;
 					if (is_object_fun(frame->function->id))
-						nargs--;	// Function has an 'item'.
-					if (nargs < 0)	// Just in case.
+						nargs--;    // Function has an 'item'.
+					if (nargs < 0)  // Just in case.
 						nargs = 0;
 					std::vector<std::string> names;
 					names.resize(nargs);
 					int i;
-						// Reversed to match the order in which they are
-						// passed in UCC.
-					for (i = nargs-1; i >= 0 && *ptr; i--)
-					{
+					// Reversed to match the order in which they are
+					// passed in UCC.
+					for (i = nargs - 1; i >= 0 && *ptr; i--) {
 						std::string name(ptr);
 						names[i] = name;
 						ptr += name.length() + 1;
 					}
 					cout << "Parameter names follow: ";
-					for (i = 0; i < nargs; i++)
-					{
+					for (i = 0; i < nargs; i++) {
 						cout << "#" << hex << setw(4) << setfill('0')
-							 << i << " = ";
+						     << i << " = ";
 						if (names[i].length())
 							cout << "'" << names[i] << "'";
 						else
@@ -2963,12 +2737,11 @@ int Usecode_internal::run()
 							cout << ", ";
 					}
 					cout << endl << "Variable names follow: ";
-					for (i = 0; i < frame->num_vars && *ptr; i++)
-					{
+					for (i = 0; i < frame->num_vars && *ptr; i++) {
 						std::string name(ptr);
 						ptr += name.length() + 1;
 						cout << "#" << hex << setw(4) << setfill('0')
-							 << (i + nargs) << " = ";
+						     << (i + nargs) << " = ";
 						if (name.length())
 							cout << "'" << name << "'";
 						else
@@ -2976,19 +2749,17 @@ int Usecode_internal::run()
 						if (i < frame->num_vars)
 							cout << ", ";
 					}
-					for (; i < frame->num_vars; i++)
-					{
+					for (; i < frame->num_vars; i++) {
 						cout << "#" << hex << setw(4) << setfill('0')
-							 << (i + nargs) << " = (missing)";
+						     << (i + nargs) << " = (missing)";
 						if (i < frame->num_vars)
 							cout << ", ";
 					}
-				}
-				else
+				} else
 					cout << endl;
 				break;
 			}
-			case 0x50:		// PUSH static.
+			case 0x50:      // PUSH static.
 				offset = Read2s(frame->ip);
 				if (offset < 0) {// Global static.
 					if (static_cast<unsigned>(-offset) < statics.size())
@@ -3002,8 +2773,7 @@ int Usecode_internal::run()
 						pushi(0);
 				}
 				break;
-			case 0x51:		// POP static.
-			{
+			case 0x51: {    // POP static.
 				offset = Read2s(frame->ip);
 				// Get value.
 				Usecode_value val = pop();
@@ -3014,12 +2784,12 @@ int Usecode_internal::run()
 				} else {
 					if (static_cast<unsigned>(offset) >= frame->function->statics.size())
 						frame->function->statics.resize(offset + 1);
-					frame->function->statics[offset]=val;
+					frame->function->statics[offset] = val;
 				}
 			}
-				break;
-			case 0x52:		// CALLO (call original).
-			{			// Otherwise, like CALLE.
+			break;
+			case 0x52: {    // CALLO (call original).
+				// Otherwise, like CALLE.
 				Usecode_value ival = pop();
 				Game_object *caller = get_item(ival);
 				push(ival); // put caller_item back on stack
@@ -3029,9 +2799,9 @@ int Usecode_internal::run()
 				frame_changed = true;
 				break;
 			}
-			case 0x53:		// CALLIND:  call indirect.
-			case 0xD3:		// CALLINDEX2: call indirect with arguments.
-			{			//  Function # is on stack.
+			case 0x53:      // CALLIND:  call indirect.
+			case 0xD3: {    // CALLINDEX2: call indirect with arguments.
+				//  Function # is on stack.
 				Usecode_value funval = pop();
 				int offset = funval.get_int_value();
 				Usecode_value ival = pop();
@@ -3041,37 +2811,31 @@ int Usecode_internal::run()
 				frame_changed = true;
 				break;
 			}
-			case 0x54:		// PUSH class this->var.
-			{
+			case 0x54: {    // PUSH class this->var.
 				offset = Read2(frame->ip);
-				Usecode_value& ths = frame->get_this();
+				Usecode_value &ths = frame->get_this();
 				push(ths.nth_class_var(offset));
 				break;
 			}
-			case 0x55:		// POP class this->var.
-			{
+			case 0x55: {    // POP class this->var.
 				// Get value.
 				Usecode_value val = pop();
 				offset = Read2(frame->ip);
-				Usecode_value& ths = frame->get_this();
+				Usecode_value &ths = frame->get_this();
 				ths.nth_class_var(offset) = val;
 				break;
 			}
-			case 0x56:		// CALLM - call method, use var vtable.
-			case 0x57:		// CALLMS - call method, use pushed vtable.
-			{
+			case 0x56:      // CALLM - call method, use var vtable.
+			case 0x57: {    // CALLMS - call method, use pushed vtable.
 				offset = Read2(frame->ip);
 				Usecode_class_symbol *c;
-				if (opcode == 0x56)
-					{
+				if (opcode == 0x56) {
 					Usecode_value thisptr = peek();
 					c = thisptr.get_class_ptr();
-					}
-				else
-					{
+				} else {
 					Usecode_value thisptr = Read2(frame->ip);
 					c = get_class(thisptr.get_int_value());
-					}
+				}
 				if (!c) {
 					THIS_ERROR();
 					(void) pop();
@@ -3082,8 +2846,7 @@ int Usecode_internal::run()
 				frame_changed = true;
 				break;
 			}
-			case 0x58:		// CLSCREATE
-			{
+			case 0x58: {    // CLSCREATE
 				int cnum = Read2(frame->ip);
 				Usecode_class_symbol *cls = symtbl->get_class(cnum);
 				if (!cls) {
@@ -3095,23 +2858,21 @@ int Usecode_internal::run()
 				Usecode_value new_class = Usecode_value(0);
 				new_class.class_new(cls, cnt);
 
-				int to = 0;	// Store at this index.
+				int to = 0; // Store at this index.
 				// We are trusting UCC output here.
-				while (cnt--)
-				{
+				while (cnt--) {
 					Usecode_value val = pop();
 					new_class.nth_class_var(to++) = val;
 				}
 				push(new_class);
 				break;
 			}
-			case 0x59:		//CLASSDEL
-			{
+			case 0x59: {    //CLASSDEL
 				Usecode_value cls = pop();
 				cls.class_delete();
 				break;
 			}
-			case 0x60:		// PUSHCHOICE
+			case 0x60:      // PUSHCHOICE
 				pushs(user_choice);
 				break;
 			default:
@@ -3119,7 +2880,7 @@ int Usecode_internal::run()
 				CERR_CURRENT_IP();
 				break;
 			}
-		}		
+		}
 	}
 
 	if (call_stack.front() == 0) {
@@ -3134,24 +2895,22 @@ int Usecode_internal::run()
 }
 
 /*
- *	This is the main entry for outside callers.
+ *  This is the main entry for outside callers.
  *
- *	Output:	-1 if not found.
- *		0 if can't execute now or if aborted.
- *		1 otherwise.
+ *  Output: -1 if not found.
+ *      0 if can't execute now or if aborted.
+ *      1 otherwise.
  */
 
-int Usecode_internal::call_usecode
-	(
-	int id,                 // Function #.
-	Game_object *item,      // Item ref.
-	Usecode_events event
-	)
-	{
-					// Avoid these when already execing.
-	if (!call_stack.empty() && 
-		event == npc_proximity && Game::get_game_type() ==
-								BLACK_GATE)
+int Usecode_internal::call_usecode(
+    int id,                 // Function #.
+    Game_object *item,      // Item ref.
+    Usecode_events event
+) {
+	// Avoid these when already execing.
+	if (!call_stack.empty() &&
+	        event == npc_proximity && Game::get_game_type() ==
+	        BLACK_GATE)
 		return (0);
 
 	conv->clear_answers();
@@ -3164,58 +2923,53 @@ int Usecode_internal::call_usecode
 
 	set_book(0);
 
-					// Left hanging (BG)?
-	if (conv->get_num_faces_on_screen() > 0)
-		{
-		conv->init_faces();	// Remove them.
-		gwin->set_all_dirty();	// Force repaint.
-		}
-	if (modified_map)
-		{			// On a barge, and we changed the map.
+	// Left hanging (BG)?
+	if (conv->get_num_faces_on_screen() > 0) {
+		conv->init_faces(); // Remove them.
+		gwin->set_all_dirty();  // Force repaint.
+	}
+	if (modified_map) {
+		// On a barge, and we changed the map.
 		Barge_object *barge = gwin->get_moving_barge();
 		if (barge)
-			barge->set_to_gather();	// Refigure what's on barge.
+			barge->set_to_gather(); // Refigure what's on barge.
 		modified_map = false;
-		}
-	return ret;
 	}
+	return ret;
+}
 
 /*
- *	Call a 'method'.
- *	Output:	Same as input, unless it's 'new', in which we return the new
- *		instance.
+ *  Call a 'method'.
+ *  Output: Same as input, unless it's 'new', in which we return the new
+ *      instance.
  */
 
-bool Usecode_internal::call_method
-	(
-	Usecode_value *inst,        // Instance, or NULL.
-	int id,                     // Function # or -1 for free inst.
-	Game_object *item           // Item ref.
-	)
-	{
-	if (id == -1)
-		{	// Only delete the class for now
+bool Usecode_internal::call_method(
+    Usecode_value *inst,        // Instance, or NULL.
+    int id,                     // Function # or -1 for free inst.
+    Game_object *item           // Item ref.
+) {
+	if (id == -1) {
+		// Only delete the class for now
 		inst->class_delete();
 		return false;
-		}
+	}
 	Usecode_function *fun = find_function(id);
 	if (!fun)
 		return false;
 
 	Stack_frame *frame = new Stack_frame(fun, 0, item,
-			Stack_frame::getCallChainID(), 0);
-	
+	                                     Stack_frame::getCallChainID(), 0);
+
 	int oldstack = 0;
-	while (frame->num_args > oldstack) // Not enough args pushed?
-	{
+	while (frame->num_args > oldstack) { // Not enough args pushed?
 		pushi(0); // add zeroes
 		oldstack++;
 	}
 
 	// Store args in first num_args locals
 	int i;
-	for (i = 0; i < frame->num_args; i++)
-	{
+	for (i = 0; i < frame->num_args; i++) {
 		Usecode_value val = pop();
 		frame->locals[frame->num_args - i - 1] = val;
 	}
@@ -3233,17 +2987,16 @@ bool Usecode_internal::call_method
 	cout << "Running usecode " << setw(4);
 	if (cls)
 		cout << cls->get_name();
-	else	// Shouldn't happen.
+	else    // Shouldn't happen.
 		cout << "Unknown class";
 	cout << "::";
 	if (fsym)
 		cout << fsym->get_name();
 	else
-		cout << hex << setfill('0') 
-			<< id << dec << setfill(' ');
+		cout << hex << setfill('0')
+		     << id << dec << setfill(' ');
 	cout << " (";
-	for (i = 0; i < frame->num_args; i++)
-	{
+	for (i = 0; i < frame->num_args; i++) {
 		if (i)
 			cout << ", ";
 		frame->locals[i].print(cout);
@@ -3252,270 +3005,238 @@ bool Usecode_internal::call_method
 #endif
 
 	return true;
-	}
+}
 
 /*
- *	Lookup function name in symbol table.  Prints error if not found.
+ *  Lookup function name in symbol table.  Prints error if not found.
  */
 
-int Usecode_internal::find_function
-	(
-	const char *nm,
-	bool noerr
-	)
-	{
+int Usecode_internal::find_function(
+    const char *nm,
+    bool noerr
+) {
 	Usecode_symbol *ucsym = symtbl ? (*symtbl)[nm] : 0;
-	if (!ucsym)
-		{
+	if (!ucsym) {
 		if (!noerr)
 			cerr << "Failed to find Usecode symbol '" << nm
-					<< "'." << endl;
+			     << "'." << endl;
 		return -1;
-		}
-	return ucsym->get_val();
 	}
+	return ucsym->get_val();
+}
 
 /*
- *	Lookup function id in symbol table.
+ *  Lookup function id in symbol table.
  */
 
-const char *Usecode_internal::find_function_name
-	(
-	int funcid
-	)
-	{
+const char *Usecode_internal::find_function_name(
+    int funcid
+) {
 	Usecode_symbol *ucsym = symtbl ? (*symtbl)[funcid] : 0;
 	if (!ucsym)
 		return 0;
 	return ucsym->get_name();
-	}
+}
 
 /*
- *	Start speech, or show text if speech isn't enabled.
+ *  Start speech, or show text if speech isn't enabled.
  */
 
-void Usecode_internal::do_speech
-	(
-	int num
-	)
-	{
-	speech_track = num;		// Used in Usecode function.
+void Usecode_internal::do_speech(
+    int num
+) {
+	speech_track = num;     // Used in Usecode function.
 	if (!Audio::get_ptr()->start_speech(num))
-					// No speech?  Call text function.
+		// No speech?  Call text function.
 		call_usecode(SpeechUsecode, 0, double_click);
-	}
+}
 
 /*
- *	Are we in a usecode function for a given item and event?
+ *  Are we in a usecode function for a given item and event?
  */
 
-bool Usecode_internal::in_usecode_for
-	(
-	Game_object *item,
-	Usecode_events event
-	)
-	{
-	for (std::deque<Stack_frame*>::iterator iter = call_stack.begin();
-				iter != call_stack.end(); ++iter)
-		{
+bool Usecode_internal::in_usecode_for(
+    Game_object *item,
+    Usecode_events event
+) {
+	for (std::deque<Stack_frame *>::iterator iter = call_stack.begin();
+	        iter != call_stack.end(); ++iter) {
 		Stack_frame *frame = *iter;
 		if (frame->eventid == event && frame->caller_item == item)
 			return true;
-		}
-	return false;
 	}
+	return false;
+}
 
 /*
- *	Write out global data to 'gamedat/usecode.dat'.
- *	(and 'gamedat/keyring.dat')
+ *  Write out global data to 'gamedat/usecode.dat'.
+ *  (and 'gamedat/keyring.dat')
  *
- *	Output:	0 if error.
+ *  Output: 0 if error.
  */
 
-void Usecode_internal::write
-	(
-	)
-	{
-					// Assume new games will have keyring.
+void Usecode_internal::write(
+) {
+	// Assume new games will have keyring.
 	if (Game::get_game_type() != BLACK_GATE)
-		keyring->write();	// write keyring data
+		keyring->write();   // write keyring data
 
 	ofstream out;
-	U7open(out, FLAGINIT);	// Write global flags.
-	out.write(reinterpret_cast<char*>(gflags), sizeof(gflags));
+	U7open(out, FLAGINIT);  // Write global flags.
+	out.write(reinterpret_cast<char *>(gflags), sizeof(gflags));
 	out.close();
 	U7open(out, USEDAT);
-	Write2(out, partyman->get_count());	// Write party.
-	int i;	// Blame MSVC
+	Write2(out, partyman->get_count()); // Write party.
+	int i;  // Blame MSVC
 	for (i = 0; i < EXULT_PARTY_MAX; i++)
 		Write2(out, partyman->get_member(i));
-					// Timers.
+	// Timers.
 	Write4(out, 0xffffffffU);
 	for (std::map<int, uint32>::iterator it = timers.begin();
-			it != timers.end(); ++it)
-		{
-		if (!it->second)	// Don't write unused timers.
+	        it != timers.end(); ++it) {
+		if (!it->second)    // Don't write unused timers.
 			continue;
 		Write2(out, it->first);
 		Write4(out, it->second);
-		}
+	}
 	Write2(out, 0xffff);
-	Write2(out, saved_pos.tx);	// Write saved pos.
+	Write2(out, saved_pos.tx);  // Write saved pos.
 	Write2(out, saved_pos.ty);
 	Write2(out, saved_pos.tz);
-	Write2(out, saved_map);		// Write saved map.
+	Write2(out, saved_map);     // Write saved map.
 	out.flush();
-	if( !out.good() )
+	if (!out.good())
 		throw file_write_exception(USEDAT);
 	out.close();
-	U7open(out, USEVARS);		// Static variables. 1st, globals.
+	U7open(out, USEVARS);       // Static variables. 1st, globals.
 	StreamDataSource *nfile = new StreamDataSource(&out);
-	nfile->write4(statics.size());	// # globals.
+	nfile->write4(statics.size());  // # globals.
 	vector<Usecode_value>::iterator it;
 	for (it = statics.begin(); it != statics.end(); ++it)
 		if (!(*it).save(nfile))
 			throw file_exception("Could not write static usecode value");
-					// Now do the local statics.
+	// Now do the local statics.
 	int num_slots = funs.size();
-	for (i = 0; i < num_slots; i++)
-		{
-		Funs256& slot = funs[i];
-		for (std::vector<Usecode_function*>::iterator fit = 
-					slot.begin(); fit != slot.end(); ++fit)
-			{
+	for (i = 0; i < num_slots; i++) {
+		Funs256 &slot = funs[i];
+		for (std::vector<Usecode_function *>::iterator fit =
+		            slot.begin(); fit != slot.end(); ++fit) {
 			Usecode_function *fun = *fit;
 			if (!fun || fun->statics.empty())
 				continue;
 			Usecode_symbol *fsym = symtbl ? (*symtbl)[fun->id] : 0;
-			if (fsym)
-				{
+			if (fsym) {
 				const char *nm = fsym->get_name();
 				nfile->write4(0xfffffffeU);
 				nfile->write2(strlen(nm));
 				nfile->write(const_cast<char *>(nm), strlen(nm));
-				}
-			else
+			} else
 				nfile->write4(fun->id);
 			nfile->write4(fun->statics.size());
 			for (it = fun->statics.begin();
-					it != fun->statics.end(); ++it)
-				{
+			        it != fun->statics.end(); ++it) {
 				if (!(*it).save(nfile))
 					throw file_exception("Could not write static usecode value");
-				}
 			}
 		}
-	nfile->write4(0xffffffffU);	// End with -1.
+	}
+	nfile->write4(0xffffffffU); // End with -1.
 	out.flush();
-	if( !out.good() )
+	if (!out.good())
 		throw file_write_exception(USEVARS);
 	out.close();
-	}
+}
 
 /*
- *	Read in global data from 'gamedat/usecode.dat'.
- *	(and 'gamedat/keyring.dat')
+ *  Read in global data from 'gamedat/usecode.dat'.
+ *  (and 'gamedat/keyring.dat')
  *
- *	Output:	0 if error.
+ *  Output: 0 if error.
  */
 
-void Usecode_internal::read
-	(
-	)
-	{
+void Usecode_internal::read(
+) {
 	if (Game::get_game_type() == SERPENT_ISLE)
-		keyring->read();	// read keyring data
-	
+		keyring->read();    // read keyring data
+
 
 	ifstream in;
-	try
-	{
-		U7open(in, FLAGINIT);	// Read global flags.
-		in.seekg(0, ios::end);	// Get filesize.
+	try {
+		U7open(in, FLAGINIT);   // Read global flags.
+		in.seekg(0, ios::end);  // Get filesize.
 		size_t filesize = in.tellg();
 		in.seekg(0, ios::beg);
 		if (filesize > sizeof(gflags))
 			filesize = sizeof(gflags);
 		memset(&gflags[0], 0, sizeof(gflags));
-		in.read(reinterpret_cast<char*>(gflags), filesize);
+		in.read(reinterpret_cast<char *>(gflags), filesize);
 		in.close();
-	} catch(exult_exception const& e) {
+	} catch (exult_exception const &e) {
 		if (!Game::is_editing())
 			throw;
 		memset(&gflags[0], 0, sizeof(gflags));
 	}
 
 	clear_usevars(); // first clear all statics
-	try
-	{
+	try {
 		U7open(in, USEVARS);
 		read_usevars(in);
 		in.close();
+	} catch (exult_exception &/*e*/) {
+		;           // Okay if this doesn't exist.
 	}
-	catch(exult_exception &/*e*/) {
-		;			// Okay if this doesn't exist.
-	}
-	try
-	{
+	try {
 		U7open(in, USEDAT);
-	}
-	catch(exult_exception &/*e*/) {
+	} catch (exult_exception &/*e*/) {
 		partyman->set_count(0);
-		partyman->link_party();	// Still need to do this.
-		return;			// Not an error if no saved game yet.
+		partyman->link_party(); // Still need to do this.
+		return;         // Not an error if no saved game yet.
 	}
-	partyman->set_count(Read2(in));	// Read party.
-	size_t i;	// Blame MSVC
+	partyman->set_count(Read2(in)); // Read party.
+	size_t i;   // Blame MSVC
 	for (i = 0; i < EXULT_PARTY_MAX; i++)
 		partyman->set_member(i, Read2(in));
 	partyman->link_party();
-					// Timers.
+	// Timers.
 	int cnt = Read4(in);
-	if (cnt == -1)
-		{
+	if (cnt == -1) {
 		int tmr = 0;
 		while ((tmr = Read2(in)) != 0xffff)
 			timers[tmr] = Read4(in);
-		}
-	else
-		{
+	} else {
 		timers[0] = cnt;
 		for (size_t t = 1; t < 20; t++)
 			timers[t] = Read4(in);
-		}
+	}
 	if (!in.good())
 		throw file_read_exception(USEDAT);
-	saved_pos.tx = Read2(in);	// Read in saved position.
+	saved_pos.tx = Read2(in);   // Read in saved position.
 	saved_pos.ty = Read2(in);
 	saved_pos.tz = Read2(in);
-	if (!in.good() ||		// Failed.+++++Can remove this later.
-	    saved_pos.tz < 0 || saved_pos.tz > 13)
-	    saved_pos = Tile_coord(-1, -1, -1);
+	if (!in.good() ||       // Failed.+++++Can remove this later.
+	        saved_pos.tz < 0 || saved_pos.tz > 13)
+		saved_pos = Tile_coord(-1, -1, -1);
 	saved_map = Read2(in);
-	if (!in.good())			// For compat. with older saves.
+	if (!in.good())         // For compat. with older saves.
 		saved_map = -1;
-	}
+}
 
 /*
- *	Read in static variables from USEVARS.
+ *  Read in static variables from USEVARS.
  */
 
-void Usecode_internal::read_usevars
-	(
-	std::istream& in
-	)
-	{
-	int cnt = Read4(in);		// Global statics.
+void Usecode_internal::read_usevars(
+    std::istream &in
+) {
+	int cnt = Read4(in);        // Global statics.
 	StreamDataSource nfile(&in);
 	statics.resize(cnt);
 	int i;
 	for (i = 0; i < cnt; i++)
 		statics[i].restore(&nfile);
 	unsigned long funid;
-	while (!nfile.eof() && (funid = nfile.read4()) != 0xffffffffU)
-		{
-		if (funid == 0xfffffffeU)
-			{
+	while (!nfile.eof() && (funid = nfile.read4()) != 0xffffffffU) {
+		if (funid == 0xfffffffeU) {
 			// ++++ FIXME: Write code for the cases when symtbl == 0 or
 			// fsym == 0 (neither of which *should* happen...)
 			int len = nfile.read2();
@@ -3526,7 +3247,7 @@ void Usecode_internal::read_usevars
 			if (fsym)
 				funid = fsym->get_val();
 			delete [] nm;
-			}
+		}
 		int cnt = nfile.read4();
 		Usecode_function *fun = find_function(funid);
 		if (!fun)
@@ -3534,17 +3255,16 @@ void Usecode_internal::read_usevars
 		fun->statics.resize(cnt);
 		for (i = 0; i < cnt; i++)
 			fun->statics[i].restore(&nfile);
-		}
 	}
+}
 
-void Usecode_internal::clear_usevars()
-{
+void Usecode_internal::clear_usevars() {
 	statics.clear();
 	int nslots = funs.size();
 	for (int i = 0; i < nslots; ++i) {
-		vector<Usecode_function*>& slot = funs[i];
+		vector<Usecode_function *> &slot = funs[i];
 		for (unsigned int j = 0; j < slot.size(); ++j) {
-			Usecode_function* fun = slot[j];
+			Usecode_function *fun = slot[j];
 			if (fun) fun->statics.clear();
 		}
 	}
@@ -3552,13 +3272,11 @@ void Usecode_internal::clear_usevars()
 
 #ifdef USECODE_DEBUGGER
 
-int Usecode_internal::get_callstack_size() const
-{
+int Usecode_internal::get_callstack_size() const {
 	return call_stack.size();
 }
 
-Stack_frame* Usecode_internal::get_stackframe(int i)
-{
+Stack_frame *Usecode_internal::get_stackframe(int i) {
 	if (i >= 0 && i < call_stack.size())
 		return call_stack[i];
 	else
@@ -3567,14 +3285,12 @@ Stack_frame* Usecode_internal::get_stackframe(int i)
 
 
 // return current size of the stack
-int Usecode_internal::get_stack_size() const
-{
+int Usecode_internal::get_stack_size() const {
 	return (int)(sp - stack);
 }
 
 // get an(y) element from the stack. (depth == 0 is top element)
-Usecode_value* Usecode_internal::peek_stack(int depth) const
-{
+Usecode_value *Usecode_internal::peek_stack(int depth) const {
 	if (depth < 0 || depth >= get_stack_size())
 		return 0;
 
@@ -3582,8 +3298,7 @@ Usecode_value* Usecode_internal::peek_stack(int depth) const
 }
 
 // modify an(y) element on the stack. (depth == 0 is top element)
-void Usecode_internal::poke_stack(int depth, Usecode_value& val)
-{
+void Usecode_internal::poke_stack(int depth, Usecode_value &val) {
 	if (depth < 0 || (sp - depth) < stack)
 		return;
 
@@ -3591,25 +3306,21 @@ void Usecode_internal::poke_stack(int depth, Usecode_value& val)
 }
 
 
-void Usecode_internal::set_breakpoint()
-{
+void Usecode_internal::set_breakpoint() {
 	breakpoints.add(new AnywhereBreakpoint());
 }
 
-void Usecode_internal::dbg_stepover()
-{
+void Usecode_internal::dbg_stepover() {
 	if (on_breakpoint)
 		breakpoints.add(new StepoverBreakpoint(call_stack.front()));
 }
 
-void Usecode_internal::dbg_finish()
-{
+void Usecode_internal::dbg_finish() {
 	if (on_breakpoint)
 		breakpoints.add(new FinishBreakpoint(call_stack.front()));
 }
 
-int Usecode_internal::set_location_breakpoint(int funcid, int ip)
-{
+int Usecode_internal::set_location_breakpoint(int funcid, int ip) {
 	Breakpoint *bp = new LocationBreakpoint(funcid, ip);
 	breakpoints.add(bp);
 

@@ -1,7 +1,7 @@
-/** 
- **	playfli.cc - Play Autodesk Animator FLIs
+/**
+ ** playfli.cc - Play Autodesk Animator FLIs
  **
- **	Written: 5/5/2000 - TST
+ ** Written: 5/5/2000 - TST
  **/
 
 /*
@@ -46,22 +46,19 @@ using std::cout;
 using std::endl;
 #endif
 
-playfli::playfli(const char *fli_name)
-{
-	ifstream fli_stream; 
+playfli::playfli(const char *fli_name) {
+	ifstream fli_stream;
 	U7open(fli_stream, fli_name);
 	fli_data = new StreamDataSource(&fli_stream);
 
 	initfli();
 }
 
-playfli::playfli(char *buffer, size_t len): fli_data(new BufferDataSource(buffer, len))
-{
+playfli::playfli(char *buffer, size_t len): fli_data(new BufferDataSource(buffer, len)) {
 	initfli();
 }
 
-void playfli::initfli()
-{
+void playfli::initfli() {
 	fli_size = fli_data->read4();
 	fli_magic = fli_data->read2();
 	fli_frames = fli_data->read2();
@@ -70,7 +67,7 @@ void playfli::initfli()
 	fli_depth = fli_data->read2();
 	fli_flags = fli_data->read2();
 	fli_speed = fli_data->read2();
-	fli_buf =  NULL; 
+	fli_buf =  NULL;
 	fli_data->skip(110);
 	streampos = streamstart = fli_data->getPos();
 	frame = 0;
@@ -81,17 +78,15 @@ void playfli::initfli()
 }
 
 
-void playfli::info(fliinfo *fi)
-{
+void playfli::info(fliinfo *fi) {
 #ifdef DEBUG
 	cout << "Frame count : " << fli_frames << endl;
 	cout << "Width :       " << fli_width << endl;
 	cout << "Height :      " << fli_height << endl;
 	cout << "Depth :       " << fli_depth << endl;
 	cout << "Speed :       " << fli_speed << endl;
-#endif    
-	if (fi)
-	{
+#endif
+	if (fi) {
 		fi->frames = fli_frames;
 		fi->width = fli_width;
 		fi->height = fli_height;
@@ -100,19 +95,18 @@ void playfli::info(fliinfo *fi)
 	}
 }
 
-int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned long ticks, int brightness)
-{
+int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned long ticks, int brightness) {
 	int frame_size;
 	//int frame_magic;
 	int frame_chunks;
 	//int chunk_size;
 	int chunk_type;
 	uint8 *pixbuf;
-	int xoffset=(win->get_game_width()-fli_width)/2;
-	int yoffset=(win->get_game_height()-fli_height)/2;
+	int xoffset = (win->get_game_width() - fli_width) / 2;
+	int yoffset = (win->get_game_height() - fli_height) / 2;
 	bool dont_show = false;
 
-	if (!fli_buf && win) fli_buf = win->create_buffer (fli_width, fli_height);
+	if (!fli_buf && win) fli_buf = win->create_buffer(fli_width, fli_height);
 
 	// Set up last frame
 	if (first_frame == last_frame) dont_show = true;
@@ -123,38 +117,33 @@ int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned l
 
 	if (!ticks) ticks = SDL_GetTicks();
 
-	if (first_frame < frame)
-	{
+	if (first_frame < frame) {
 		nextpal = 0;
 		frame = 0;
 		streampos = streamstart;
 	}
 	pixbuf = new uint8[fli_width];
 
-	if (brightness != palette->get_brightness())
-	{
+	if (brightness != palette->get_brightness()) {
 		palette->set_brightness(brightness);
 		changepal = true;
 	}
 
 	// Play frames...
-	for ( ; frame < last_frame; frame++)
-	{
+	for (; frame < last_frame; frame++) {
 		fli_data->seek(streampos);
 		frame_size = fli_data->read4();
 		//frame_magic = fli_data->read2();
 		fli_data->skip(2);
 		frame_chunks = fli_data->read2();
 		fli_data->skip(8);
-		for (int chunk = 0; chunk < frame_chunks; chunk++)
-		{
+		for (int chunk = 0; chunk < frame_chunks; chunk++) {
 			//chunk_size = fli_data->read4();
 			fli_data->skip(4);
 			chunk_type = fli_data->read2();
 
-			switch (chunk_type)
-			{
-				case 11: {
+			switch (chunk_type) {
+			case 11: {
 				int packets = fli_data->read2();
 				unsigned char colors[3 * 256];
 
@@ -162,99 +151,92 @@ int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned l
 				int current = 0;
 
 				for (int p_count = 0; p_count < packets;
-						p_count++)
-				{
+				        p_count++) {
 					int skip = fli_data->read1();
 
 					current += skip;
 					int change = fli_data->read1();
 
 					if (change == 0)
-					    change = 256;
-					fli_data->read(reinterpret_cast<char*>(&colors[current*3]), change*3);
+						change = 256;
+					fli_data->read(reinterpret_cast<char *>(&colors[current * 3]), change * 3);
 				}
 				// Set palette
-				palette->set_palette (colors);
+				palette->set_palette(colors);
 				Set_glpalette();
-				if (thispal != nextpal)
-				{
+				if (thispal != nextpal) {
 					thispal = nextpal;
 					changepal = true;
 				}
 				nextpal++;
 
-				} break;
+			}
+			break;
 
-				case 12: {
+			case 12: {
 
 				int skip_lines = fli_data->read2();
 				int change_lines = fli_data->read2();
-				for (int line = 0; line < change_lines; line++)
-				{
+				for (int line = 0; line < change_lines; line++) {
 					int packets = fli_data->read1();
 					int pixpos = 0;
 					for (int p_count = 0; p_count < packets;
-							p_count++)
-					{
+					        p_count++) {
 						int skip_count = fli_data->read1();
 						pixpos += skip_count;
 						sint8 size_count = fli_data->read1();
-						if (size_count < 0)
-						{
+						if (size_count < 0) {
 							size_count = -size_count;
 							uint8 data = fli_data->read1();
 							memset(pixbuf, data, size_count);
 							if (fli_buf)
 								fli_buf->copy8(pixbuf, size_count, 1,
-											   pixpos, skip_lines + line);
+								               pixpos, skip_lines + line);
 							pixpos += size_count;
-				    
-						}
-						else
-						{
+
+						} else {
 							fli_data->read(pixbuf, size_count);
 							if (fli_buf)
 								fli_buf->copy8(pixbuf, size_count, 1,
-											   pixpos, skip_lines + line);
+								               pixpos, skip_lines + line);
 							pixpos += size_count;
 						}
 					}
 				}
 
-				} break;
+			}
+			break;
 
-				case 13:
+			case 13:
 				break;
-		  
-				case 15: {
-				for (int line = 0; line < fli_height; line++)
-				{
+
+			case 15: {
+				for (int line = 0; line < fli_height; line++) {
 					int packets = fli_data->read1();
 					int pixpos = 0;
 					for (int p_count = 0; p_count < packets;
-							p_count++)
-					{
+					        p_count++) {
 						sint8 size_count = fli_data->read1();
-						if (size_count > 0)
-						{
+						if (size_count > 0) {
 							uint8 data = fli_data->read1();
 							memset(&pixbuf[pixpos], data, size_count);
 							pixpos += size_count;
 						} else {
 							fli_data->read(&pixbuf[pixpos],
-									-size_count);
+							               -size_count);
 							pixpos -= size_count;
 						}
 					}
-					if (fli_buf) fli_buf->copy8(pixbuf,fli_width,1,0,line);
-					}
-				} break;
-		  
-				case 16:
+					if (fli_buf) fli_buf->copy8(pixbuf, fli_width, 1, 0, line);
+				}
+			}
+			break;
+
+			case 16:
 				fli_data->skip(fli_width * fli_height);
 				break;
 
-				default:
+			default:
 				cout << "UNKNOWN FLIC FRAME" << endl;
 				break;
 			}
@@ -271,19 +253,17 @@ int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned l
 		// Speed related frame skipping detection
 		int skip_frame = Game_window::get_instance()->get_frame_skipping() && SDL_GetTicks() >= ticks;
 
-		if(win && fli_buf) win->put (fli_buf, xoffset, yoffset);
+		if (win && fli_buf) win->put(fli_buf, xoffset, yoffset);
 
 		if (ticks > SDL_GetTicks()) SDL_Delay(ticks - SDL_GetTicks());
-		
-		ticks += fli_speed*10;
 
-		if(win && !dont_show && !skip_frame)
-		{
+		ticks += fli_speed * 10;
+
+		if (win && !dont_show && !skip_frame) {
 #ifdef HAVE_OPENGL
-			if (GL_manager::get_instance())
-			{
+			if (GL_manager::get_instance()) {
 				Shape_frame frame(win->get_ibuf()->get_bits(), win->get_game_width(),
-						win->get_game_height(), 0, 0, true);
+				                  win->get_game_height(), 0, 0, true);
 				GL_manager::get_instance()->paint(&frame, 0, 0);
 			}
 #endif
@@ -296,16 +276,14 @@ int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned l
 	return ticks;
 }
 
-void playfli::put_buffer(Image_window *win)
-{
-	int xoffset=(win->get_game_width()-fli_width)/2;
-	int yoffset=(win->get_game_height()-fli_height)/2;
+void playfli::put_buffer(Image_window *win) {
+	int xoffset = (win->get_game_width() - fli_width) / 2;
+	int yoffset = (win->get_game_height() - fli_height) / 2;
 
-	if(win && fli_buf) win->put (fli_buf, xoffset, yoffset);
+	if (win && fli_buf) win->put(fli_buf, xoffset, yoffset);
 }
 
-playfli::~playfli()
-{
+playfli::~playfli() {
 	delete fli_buf;
 	delete fli_data;
 	delete palette;

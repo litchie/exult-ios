@@ -1,5 +1,5 @@
 /*
- *	ucmachine.cc - Interpreter for usecode.
+ *  ucmachine.cc - Interpreter for usecode.
  *
  *  Copyright (C) 1999  Jeffrey S. Freedman
  *  Copyright (C) 2000-2013  The Exult Team
@@ -41,64 +41,67 @@ class Tile_coord;
 #include "exult_constants.h"
 
 /*
- *	Here's our virtual machine for running usecode.  The actual internals
- *	are in Usecode_internal.
+ *  Here's our virtual machine for running usecode.  The actual internals
+ *  are in Usecode_internal.
  */
-class Usecode_machine : public Game_singletons
-	{
+class Usecode_machine : public Game_singletons {
 	UNREPLICATABLE_CLASS(Usecode_machine);
 protected:
-	unsigned char gflags[c_last_gflag+1];	// Global flags.
-	Keyring* keyring;
-	Conversation *conv;		// Handles conversations
+	unsigned char gflags[c_last_gflag + 1]; // Global flags.
+	Keyring *keyring;
+	Conversation *conv;     // Handles conversations
 public:
 	friend class Usecode_script;
-					// Create Usecode_internal.
+	// Create Usecode_internal.
 	static Usecode_machine *create();
 	Usecode_machine();
 	virtual ~Usecode_machine();
-					// Read in usecode functions.
-	virtual void read_usecode(std::istream& file, bool patch = false) = 0;
-					// Possible events:
+	// Read in usecode functions.
+	virtual void read_usecode(std::istream &file, bool patch = false) = 0;
+	// Possible events:
 	enum Usecode_events {
-		npc_proximity = 0,
-		double_click = 1,
-		internal_exec = 2,	// Internal call via intr. 1 or 2.
-		egg_proximity = 3,
-		weapon = 4,		// From weapons.dat.
-		readied = 5,		// Wear an item.
-		unreadied = 6,		// Removed an item.
-		died = 7,		// In SI only, I think.
-		chat = 9	// When a NPC wants to talk to you in SI
-		};
+	    npc_proximity = 0,
+	    double_click = 1,
+	    internal_exec = 2,  // Internal call via intr. 1 or 2.
+	    egg_proximity = 3,
+	    weapon = 4,     // From weapons.dat.
+	    readied = 5,        // Wear an item.
+	    unreadied = 6,      // Removed an item.
+	    died = 7,       // In SI only, I think.
+	    chat = 9    // When a NPC wants to talk to you in SI
+	};
 	enum Global_flag_names {
-		did_first_scene = 0x3b,	// Went through 1st scene with Iolo.
-		have_trinsic_password = 0x3d,
-		found_stable_key = 0x3c,
-		left_trinsic = 0x57,
-		avatar_is_thief = 0x2eb
-		};
-	int get_global_flag(int i)	// Get/set ith flag.
-		{ return gflags[i]; }
-	void set_global_flag(int i, int val = 1)
-		{ gflags[i] = (val == 1); }
-					// Start speech, or show text.
+	    did_first_scene = 0x3b, // Went through 1st scene with Iolo.
+	    have_trinsic_password = 0x3d,
+	    found_stable_key = 0x3c,
+	    left_trinsic = 0x57,
+	    avatar_is_thief = 0x2eb
+	};
+	int get_global_flag(int i) { // Get/set ith flag.
+		return gflags[i];
+	}
+	void set_global_flag(int i, int val = 1) {
+		gflags[i] = (val == 1);
+	}
+	// Start speech, or show text.
 	virtual void do_speech(int num) = 0;
-	virtual bool in_usecode() = 0;	// Currently in a usecode function?
-	virtual bool in_usecode_for(Game_object *item, Usecode_events event)=0;
-	Keyring* getKeyring() const { return keyring; }
-					// Call desired function.
-	virtual int call_usecode(int id, Game_object *item, 
-						Usecode_events event) = 0;
+	virtual bool in_usecode() = 0;  // Currently in a usecode function?
+	virtual bool in_usecode_for(Game_object *item, Usecode_events event) = 0;
+	Keyring *getKeyring() const {
+		return keyring;
+	}
+	// Call desired function.
+	virtual int call_usecode(int id, Game_object *item,
+	                         Usecode_events event) = 0;
 	virtual bool call_method(Usecode_value *inst, int id,
-					Game_object *item) = 0;
+	                         Game_object *item) = 0;
 	virtual int find_function(const char *nm, bool noerr = false) = 0;
 	virtual const char *find_function_name(int funcid) = 0;
 	virtual Usecode_class_symbol *get_class(int n) = 0;
 	virtual Usecode_class_symbol *get_class(const char *nm) = 0;
 	virtual int get_shape_fun(int n) = 0;
-	virtual void write() = 0;	// Write out 'gamedat/usecode.dat'.
-	virtual void read() = 0;	// Read in 'gamedat/usecode.dat'.
+	virtual void write() = 0;   // Write out 'gamedat/usecode.dat'.
+	virtual void read() = 0;    // Read in 'gamedat/usecode.dat'.
 
 	void init_conversation();
 	int get_num_faces_on_screen() const;
@@ -111,6 +114,6 @@ public:
 	virtual void save_intercept(Game_object *&obj, Tile_coord *&t) = 0;
 	virtual void restore_intercept(Game_object *obj, Tile_coord *t) = 0;
 
-	};
+};
 
-#endif	/* INCL_USECODE */
+#endif  /* INCL_USECODE */

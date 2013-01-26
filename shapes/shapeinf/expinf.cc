@@ -1,7 +1,7 @@
 /**
- **	expinf.cc - Explosion information from 'shape_info.txt'.
+ ** expinf.cc - Explosion information from 'shape_info.txt'.
  **
- **	Written: 06/01/2008 - Marzo
+ ** Written: 06/01/2008 - Marzo
  **/
 
 /*
@@ -27,21 +27,18 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "expinf.h"
 using std::istream;
 
-bool Explosion_info::read
-	(
-	std::istream& in,	// Input stream.
-	int version,		// Data file version.
-	Exult_Game game		// Loading BG file.
-	)
-	{
+bool Explosion_info::read(
+    std::istream &in,   // Input stream.
+    int version,        // Data file version.
+    Exult_Game game     // Loading BG file.
+) {
 	sprite = ReadInt(in);
-	if (sprite == -0xff)	// means delete entry.
-		{
+	if (sprite == -0xff) {  // means delete entry.
 		set_invalid(true);
 		return true;
-		}
+	}
 	sfxnum = ReadInt(in, -1);
 	if (sfxnum == 255)
 		sfxnum = -1;
 	return true;
-	}
+}

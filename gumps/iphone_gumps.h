@@ -30,14 +30,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 using std::string;
 
-extern "C" int SDLCALL SDL_iPhoneKeyboardShow(SDL_Window * window);
-extern "C" int SDLCALL SDL_iPhoneKeyboardHide(SDL_Window * window);
-extern "C" SDL_bool SDLCALL SDL_iPhoneKeyboardIsShown(SDL_Window * window);
-extern "C" int SDLCALL SDL_iPhoneKeyboardToggle(SDL_Window * window);
+extern "C" int SDLCALL SDL_iPhoneKeyboardShow(SDL_Window *window);
+extern "C" int SDLCALL SDL_iPhoneKeyboardHide(SDL_Window *window);
+extern "C" SDL_bool SDLCALL SDL_iPhoneKeyboardIsShown(SDL_Window *window);
+extern "C" int SDLCALL SDL_iPhoneKeyboardToggle(SDL_Window *window);
 
-class KeyboardButton_gump
-{
- public:
+class KeyboardButton_gump {
+public:
 	KeyboardButton_gump(int placex = 0, int placey = 0);
 	~KeyboardButton_gump();
 	int handle_event(SDL_Event *event);
@@ -48,8 +47,8 @@ private:
 	Vga_file iphone_vga;
 	void mouse_down(int mx, int my);
 	void mouse_up(int mx, int my);
-	
- 	int locx;
+
+	int locx;
 	int locy;
 	int width;
 	int height;
@@ -57,30 +56,30 @@ private:
 
 class Gump_button;
 typedef std::vector<Gump_button *> Gump_button_vector;
-typedef std::map<Game_object*, int*> Game_object_map_xy;
+typedef std::map<Game_object *, int *> Game_object_map_xy;
 
 enum ITEMMENU_ACTIONS { ITEMMENU_ACTION_NONE, ITEMMENU_ACTION_MENU, ITEMMENU_ACTION_USE, ITEMMENU_ACTION_PICKUP, ITEMMENU_ACTION_MOVE, ITEMMENU_ACTION_COUNT };
-class Itemmenu_gump : public Modal_gump
-{
-        UNREPLICATABLE_CLASS_I(Itemmenu_gump,Modal_gump(0,0,0,0));
- public:
-        Gump_button_vector buttons;
+class Itemmenu_gump : public Modal_gump {
+	UNREPLICATABLE_CLASS_I(Itemmenu_gump, Modal_gump(0, 0, 0, 0));
+public:
+	Gump_button_vector buttons;
 	Game_object_map_xy objects;
 	Game_object *objectSelected;
 	int objectSelectedClickXY[2];
 	int objectAction;
 
-        Itemmenu_gump(Game_object_map_xy *mobjxy, int cx, int cy);
-        Itemmenu_gump(Game_object *obj, int ox, int oy, int cx, int cy);
-        virtual ~Itemmenu_gump();
+	Itemmenu_gump(Game_object_map_xy *mobjxy, int cx, int cy);
+	Itemmenu_gump(Game_object *obj, int ox, int oy, int cx, int cy);
+	virtual ~Itemmenu_gump();
 
-                                        // Paint it and its contents.
-        virtual void paint();
-        virtual void close()
-                { done = 1; }
-                                        // Handle events:
-        virtual bool mouse_down(int mx, int my, int button);
-        virtual bool mouse_up(int mx, int my, int button);
+	// Paint it and its contents.
+	virtual void paint();
+	virtual void close() {
+		done = 1;
+	}
+	// Handle events:
+	virtual bool mouse_down(int mx, int my, int button);
+	virtual bool mouse_up(int mx, int my, int button);
 
 	void postCloseActions();
 

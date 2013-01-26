@@ -21,8 +21,8 @@
 
 #include "sdl-compat.h"
 #ifdef SDL_VER_1_3
-  #include "SDL_stdinc.h"
-  #include "SDL_scancode.h"
+#include "SDL_stdinc.h"
+#include "SDL_scancode.h"
 #endif
 
 #include "SDL_events.h"
@@ -36,14 +36,12 @@ const int c_maxparams = 4;
 
 struct Action;
 struct ActionType {
-	const Action* action;
+	const Action *action;
 	int params[c_maxparams];
 };
 
-struct ltSDLkeysym
-{
-	bool operator()(SDL_keysym k1, SDL_keysym k2) const
-	{
+struct ltSDLkeysym {
+	bool operator()(SDL_keysym k1, SDL_keysym k2) const {
 		if (k1.sym == k2.sym)
 			return k1.mod < k2.mod;
 		else
@@ -54,35 +52,38 @@ struct ltSDLkeysym
 typedef std::map<SDL_keysym, ActionType, ltSDLkeysym>   KeyMap;
 
 class KeyBinder {
- private:
+private:
 	KeyMap bindings;
-	
+
 	std::vector<std::string> keyhelp;
 	std::vector<std::string> cheathelp;
 	std::vector<std::string> mapedithelp;
 	std::vector<std::string> last_created_key;
- 	void LoadFromFileInternal(const char* filename);
-	KeyMap::const_iterator TranslateEvent(SDL_Event const& ev) const;
+	void LoadFromFileInternal(const char *filename);
+	KeyMap::const_iterator TranslateEvent(SDL_Event const &ev) const;
 public:
 	KeyBinder();
 	~KeyBinder();
 	/* Add keybinding */
-	void AddKeyBinding(SDLKey sym, int mod, const Action* action,
-					   int nparams, int* params);
-	
+	void AddKeyBinding(SDLKey sym, int mod, const Action *action,
+	                   int nparams, int *params);
+
 	/* Delete keybinding */
 	void DelKeyBinding(SDLKey sym, int mod);
-	
+
 	/* Other methods */
 	void Flush() {
-		bindings.clear(); keyhelp.clear(); cheathelp.clear(); mapedithelp.clear();
+		bindings.clear();
+		keyhelp.clear();
+		cheathelp.clear();
+		mapedithelp.clear();
 		last_created_key.clear();
 	}
-	bool DoAction(ActionType const& action, bool press) const;
-	bool HandleEvent(SDL_Event const& ev) const;
-		bool IsMotionEvent(SDL_Event const& ev) const;
+	bool DoAction(ActionType const &action, bool press) const;
+	bool HandleEvent(SDL_Event const &ev) const;
+	bool IsMotionEvent(SDL_Event const &ev) const;
 
-	void LoadFromFile(const char* filename);
+	void LoadFromFile(const char *filename);
 	void LoadFromPatch();
 	void LoadDefaults();
 #ifdef UNDER_CE
@@ -92,7 +93,7 @@ public:
 	void ShowCheatHelp() const;
 	void ShowMapeditHelp() const;
 	void ShowBrowserKeys() const;
- private:
+private:
 	void ParseText(char *text, int len);
 	void ParseLine(char *line);
 	void FillParseMaps();

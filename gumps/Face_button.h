@@ -25,22 +25,27 @@ class Actor;
 class Game_window;
 
 /*
- *	A character's face, that will open inventory when clicked.
+ *  A character's face, that will open inventory when clicked.
  */
-class Face_button : public Gump_button
-{
+class Face_button : public Gump_button {
 protected:
-	Actor *actor;			// Who this represents.
+	Actor *actor;           // Who this represents.
 	bool translucent;
 public:
 	Face_button(Gump *par, int px, int py, Actor *a);
 	virtual ~Face_button() {  }
-	virtual Actor *get_actor() { return actor; }
+	virtual Actor *get_actor() {
+		return actor;
+	}
 	virtual void double_clicked(int x, int y);
-	virtual bool activate(int button) { return button == 1; }
+	virtual bool activate(int button) {
+		return button == 1;
+	}
 
 	virtual void paint();
-	virtual bool push(int button) { return button == 1; }
+	virtual bool push(int button) {
+		return button == 1;
+	}
 	virtual void unpush(int) {}
 	virtual void update_widget();
 };

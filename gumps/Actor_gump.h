@@ -28,35 +28,38 @@ class Halo_button;
 class Combat_mode_button;
 
 /*
- *	A rectangular area showing a character and his/her possessions:
+ *  A rectangular area showing a character and his/her possessions:
  */
-class Actor_gump : public Gump
-{
+class Actor_gump : public Gump {
 	UNREPLICATABLE_CLASS_I(Actor_gump, Gump());
 
 protected:
-	static short coords[24];	// Coords. of where to draw things,
-					//   indexed by spot # (0-11).
-	static int spotx(int i) { return coords[2*i]; }
-	static int spoty(int i) { return coords[2*i + 1]; }
-					// Find index of closest spot.
+	static short coords[24];    // Coords. of where to draw things,
+	//   indexed by spot # (0-11).
+	static int spotx(int i) {
+		return coords[2 * i];
+	}
+	static int spoty(int i) {
+		return coords[2 * i + 1];
+	}
+	// Find index of closest spot.
 	int find_closest(int mx, int my, int only_empty = 0);
 	void set_to_spot(Game_object *obj, int index);
-	static short diskx, disky;	// Where to show 'diskette' button.
-	static short heartx, hearty;	// Where to show 'stats' button.
-	static short combatx, combaty;	// Combat button.
-	static short halox, haloy;	// "Protected" halo.
-	static short cmodex, cmodey;	// Combat mode.
+	static short diskx, disky;  // Where to show 'diskette' button.
+	static short heartx, hearty;    // Where to show 'stats' button.
+	static short combatx, combaty;  // Combat button.
+	static short halox, haloy;  // "Protected" halo.
+	static short cmodex, cmodey;    // Combat mode.
 
 public:
-	Actor_gump(Container_game_object *cont, int initx, int inity, 
-								int shnum);
+	Actor_gump(Container_game_object *cont, int initx, int inity,
+	           int shnum);
 	~Actor_gump();
-					// Add object.
+	// Add object.
 	virtual int add(Game_object *obj, int mx = -1, int my = -1,
-			int sx = -1, int sy = -1, bool dont_check = false,
-						bool combine = false);
-					// Paint it and its contents.
+	                int sx = -1, int sy = -1, bool dont_check = false,
+	                bool combine = false);
+	// Paint it and its contents.
 	virtual void paint();
 
 	virtual Container_game_object *find_actor(int mx, int my);

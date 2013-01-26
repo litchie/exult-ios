@@ -1,7 +1,7 @@
 /**
- **	Ucbrowse.h - Browse usecode functions.
+ ** Ucbrowse.h - Browse usecode functions.
  **
- **	Written: Nov. 19, 2006 - JSF
+ ** Written: Nov. 19, 2006 - JSF
  **/
 
 /*
@@ -28,30 +28,30 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string>
 
 /*
- *	The 'Usecode browser' window:
+ *  The 'Usecode browser' window:
  */
-class Usecode_browser
-	{
-	GtkWidget *win;			// Main window.
-	GtkWidget *tree;		// The tree-view.
-	std::string choice;		// Set when window is closed.
+class Usecode_browser {
+	GtkWidget *win;         // Main window.
+	GtkWidget *tree;        // The tree-view.
+	std::string choice;     // Set when window is closed.
 	GtkTreeStore *model;
 public:
 	Usecode_browser();
 	~Usecode_browser();
-	GtkWidget *get_win()
-		{ return win; }
-	void show(bool tf);		// Show/hide.
-					// Configure when created/resized.
-	const char *get_choice() const
-		{ return choice.c_str(); }
+	GtkWidget *get_win() {
+		return win;
+	}
+	void show(bool tf);     // Show/hide.
+	// Configure when created/resized.
+	const char *get_choice() const {
+		return choice.c_str();
+	}
 	void okay();
-	void cancel()
-		{
+	void cancel() {
 		choice = "";
 		show(false);
-		}
+	}
 	void setup_list();
-	};
+};
 
 #endif

@@ -1,7 +1,7 @@
 /**
- **	objdollinf.cc - Object Paperdoll information from 'paperdol_info.txt'.
+ ** objdollinf.cc - Object Paperdoll information from 'paperdol_info.txt'.
  **
- **	Written: 06/01/2008 - Marzo
+ ** Written: 06/01/2008 - Marzo
  **/
 
 /*
@@ -27,35 +27,35 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "objdollinf.h"
 using std::istream;
 
-bool Paperdoll_item::read
-	(
-	std::istream& in,	// Input stream.
-	int version,		// Data file version.
-	Exult_Game game		// Loading BG file.
-	)
-	{
+bool Paperdoll_item::read(
+    std::istream &in,   // Input stream.
+    int version,        // Data file version.
+    Exult_Game game     // Loading BG file.
+) {
 	world_frame = ReadInt(in);
 	translucent = ReadInt(in) ? true : false;
 	spot = ReadInt(in);
 	int ty = ReadInt(in);
-	if (ty == -255)
-		{	// 'Invalid' marker.
+	if (ty == -255) {
+		// 'Invalid' marker.
 		set_invalid(true);
-		return true;	// Ignore remainder of the line.
-		}
-	if (spot != 0 && spot != 3)	// Field only valid for these spots.
-		type = 0;	// Ignore it.
+		return true;    // Ignore remainder of the line.
+	}
+	if (spot != 0 && spot != 3) // Field only valid for these spots.
+		type = 0;   // Ignore it.
 	else if (version == 1)
-		switch (ty)	// Convert old data.
-			{
-			case 2:
-			case 7:
-				type = 1; break;
-			case 3:
-				type = 2; break;
-			default:
-				type = 0; break;
-			}
+		switch (ty) { // Convert old data.
+		case 2:
+		case 7:
+			type = 1;
+			break;
+		case 3:
+			type = 2;
+			break;
+		default:
+			type = 0;
+			break;
+		}
 	else
 		type = ty;
 	gender = ReadInt(in) ? true : false;
@@ -66,4 +66,4 @@ bool Paperdoll_item::read
 	frame[2] = ReadInt(in, -1);
 	frame[3] = ReadInt(in, -1);
 	return true;
-	}
+}

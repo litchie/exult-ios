@@ -31,13 +31,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 using std::size_t;
 
-#define TWO_HANDED_BROWN_SHAPE	48
-#define TWO_HANDED_BROWN_FRAME	0
-#define TWO_FINGER_BROWN_SHAPE	48
-#define TWO_FINGER_BROWN_FRAME	1
+#define TWO_HANDED_BROWN_SHAPE  48
+#define TWO_HANDED_BROWN_FRAME  0
+#define TWO_FINGER_BROWN_SHAPE  48
+#define TWO_FINGER_BROWN_FRAME  1
 
 /*
- *	Statics:
+ *  Statics:
  */
 
 short Actor_gump::diskx = 124, Actor_gump::disky = 115;
@@ -46,37 +46,34 @@ short Actor_gump::combatx = 52, Actor_gump::combaty = 100;
 short Actor_gump::halox = 47, Actor_gump::haloy = 110;
 short Actor_gump::cmodex = 48, Actor_gump::cmodey = 132;
 short Actor_gump::coords[24] = {
-	114, 10,	/* head */	115, 24,	/* back */
-	115, 37,	/* belt */	115, 55,	/* lhand */
-	115, 71,	/* lfinger */	114, 85,	/* legs */
-	76, 98,		/* feet */	35, 70,		/* rfinger */
-	37, 56,		/* rhand */	37, 37,		/* torso */
-	37, 24,		/* neck */	37, 11		/* ammo */
+	114, 10,    /* head */  115, 24,    /* back */
+	115, 37,    /* belt */  115, 55,    /* lhand */
+	115, 71,    /* lfinger */   114, 85,    /* legs */
+	76, 98,     /* feet */  35, 70,     /* rfinger */
+	37, 56,     /* rhand */ 37, 37,     /* torso */
+	37, 24,     /* neck */  37, 11      /* ammo */
 };
 
 /*
- *	Find the index of the closest 'spot' to a mouse point.
+ *  Find the index of the closest 'spot' to a mouse point.
  *
- *	Output:	Index, or -1 if unsuccessful.
+ *  Output: Index, or -1 if unsuccessful.
  */
 
-int Actor_gump::find_closest
-	(
-	int mx, int my,			// Mouse point in window.
-	int only_empty			// Only allow empty spots.
-	)
-{
-	mx -= x; my -= y;		// Get point rel. to us.
-	long closest_squared = 1000000;	// Best distance squared.
-	int closest = -1;		// Best index.
-	for (size_t i = 0; i < sizeof(coords)/(2*sizeof(coords[0])); i++)
-	{
+int Actor_gump::find_closest(
+    int mx, int my,         // Mouse point in window.
+    int only_empty          // Only allow empty spots.
+) {
+	mx -= x;
+	my -= y;       // Get point rel. to us.
+	long closest_squared = 1000000; // Best distance squared.
+	int closest = -1;       // Best index.
+	for (size_t i = 0; i < sizeof(coords) / (2 * sizeof(coords[0])); i++) {
 		int dx = mx - spotx(i), dy = my - spoty(i);
-		long dsquared = dx*dx + dy*dy;
-					// Better than prev.?
+		long dsquared = dx * dx + dy * dy;
+		// Better than prev.?
 		if (dsquared < closest_squared && (!only_empty ||
-						!container->get_readied(i)))
-		{
+		                                   !container->get_readied(i))) {
 			closest_squared = dsquared;
 			closest = i;
 		}
@@ -85,30 +82,27 @@ int Actor_gump::find_closest
 }
 
 /*
- *	Create the gump display for an actor.
+ *  Create the gump display for an actor.
  */
 
-Actor_gump::Actor_gump
-	(
-	Container_game_object *cont,	// Container it represents.  MUST
-					//   be an Actor.
-	int initx, int inity, 		// Coords. on screen.
-	int shnum			// Shape #.
-	) : Gump(cont, initx, inity, shnum)
-{
+Actor_gump::Actor_gump(
+    Container_game_object *cont,    // Container it represents.  MUST
+    //   be an Actor.
+    int initx, int inity,       // Coords. on screen.
+    int shnum           // Shape #.
+) : Gump(cont, initx, inity, shnum) {
 	set_object_area(Rectangle(26, 0, 104, 132), 6, 136);
 	Actor *npc = cont->as_actor();
 	add_elem(new Heart_button(this, heartx, hearty));
-	if (npc->get_npc_num() == 0)
-		{
+	if (npc->get_npc_num() == 0) {
 		add_elem(new Disk_button(this, diskx, disky));
 		add_elem(new Combat_button(this, combatx, combaty));
-		}
+	}
 	add_elem(new Halo_button(this, halox, haloy, npc));
 	add_elem(new Combat_mode_button(this, cmodex, cmodey, npc));
-							
-	for (size_t i = 0; i < sizeof(coords)/2*sizeof(coords[0]); i++)
-	{			// Set object coords.
+
+	for (size_t i = 0; i < sizeof(coords) / 2 * sizeof(coords[0]); i++) {
+		// Set object coords.
 		Game_object *obj = container->get_readied(i);
 		if (obj)
 			set_to_spot(obj, i);
@@ -116,39 +110,36 @@ Actor_gump::Actor_gump
 }
 
 /*
- *	Delete actor display.
+ *  Delete actor display.
  */
 
-Actor_gump::~Actor_gump
-	(
-	)
-{
+Actor_gump::~Actor_gump(
+) {
 }
 
 /*
- *	Add an object.
+ *  Add an object.
  *
- *	Output:	0 if cannot add it.
+ *  Output: 0 if cannot add it.
  */
 
-int Actor_gump::add
-	(
-	Game_object *obj,
-	int mx, int my,			// Screen location of mouse.
-	int sx, int sy,			// Screen location of obj's hotspot.
-	bool dont_check,		// Skip volume check.
-	bool combine			// True to try to combine obj.  MAY
-					//   cause obj to be deleted.
-	)
+int Actor_gump::add(
+    Game_object *obj,
+    int mx, int my,         // Screen location of mouse.
+    int sx, int sy,         // Screen location of obj's hotspot.
+    bool dont_check,        // Skip volume check.
+    bool combine            // True to try to combine obj.  MAY
+    //   cause obj to be deleted.
+)
 #if 1
 {
 	Game_object *cont = find_object(mx, my);
-	
+
 	if (cont && cont->add(obj, false, combine))
 		return (1);
-	
+
 	int index = find_closest(mx, my, 1);
-	
+
 	if (index != -1 && container->add_readied(obj, index))
 		return (1);
 
@@ -159,18 +150,18 @@ int Actor_gump::add
 }
 #else
 {
-					// Find index of closest spot.
+	// Find index of closest spot.
 	int index = find_closest(mx, my);
-	if (!container->add_readied(obj, index))
-	{			// Can't add it there?
-					// Try again for an empty spot.
+	if (!container->add_readied(obj, index)) {
+		// Can't add it there?
+		// Try again for an empty spot.
 		index = find_closest(mx, my, 1);
 		if (index < 0 || !container->add_readied(obj, index))
-					// Just try to add it.
+			// Just try to add it.
 			if (!container->add(obj))
 				return (0);
 	}
-					// In case it went in another obj:
+	// In case it went in another obj:
 	index = container->find_readied(obj);
 	if (index >= 0)
 		set_to_spot(obj, index);// Set obj. coords.
@@ -179,26 +170,24 @@ int Actor_gump::add
 #endif
 
 /*
- *	Set object's coords. to given spot.
+ *  Set object's coords. to given spot.
  */
 
-void Actor_gump::set_to_spot
-	(
-	Game_object *obj,
-	int index			// Spot index.
-	)
-{
-					// Get shape info.
+void Actor_gump::set_to_spot(
+    Game_object *obj,
+    int index           // Spot index.
+) {
+	// Get shape info.
 	Shape_frame *shape = obj->get_shape();
 	if (!shape)
-		return;			// Not much we can do.
+		return;         // Not much we can do.
 	int w = shape->get_width(), h = shape->get_height();
-					// Set object's position.
+	// Set object's position.
 	obj->set_shape_pos(
-		spotx(index) + shape->get_xleft() - w/2 - object_area.x,
-		spoty(index) + shape->get_yabove() - h/2 - object_area.y);
-					// Shift if necessary.
-	int x0 = obj->get_tx() - shape->get_xleft(), 
+	    spotx(index) + shape->get_xleft() - w / 2 - object_area.x,
+	    spoty(index) + shape->get_yabove() - h / 2 - object_area.y);
+	// Shift if necessary.
+	int x0 = obj->get_tx() - shape->get_xleft(),
 	    y0 = obj->get_ty() - shape->get_yabove();
 	int newcx = obj->get_tx(), newcy = obj->get_ty();
 	if (x0 < 0)
@@ -214,50 +203,47 @@ void Actor_gump::set_to_spot
 }
 
 /*
- *	Paint on screen.
+ *  Paint on screen.
  */
 
-void Actor_gump::paint
-	(
-	)
-{
-					// Watch for any newly added objs.
-	for (size_t i = 0; i < sizeof(coords)/2*sizeof(coords[0]); i++)
-	{			// Set object coords.
+void Actor_gump::paint(
+) {
+	// Watch for any newly added objs.
+	for (size_t i = 0; i < sizeof(coords) / 2 * sizeof(coords[0]); i++) {
+		// Set object coords.
 		Game_object *obj = container->get_readied(i);
 		if (obj)//&& !obj->get_tx() && !obj->get_ty())
 			set_to_spot(obj, i);
 	}
 
-	Gump::paint();			// Paint gump & objects.
+	Gump::paint();          // Paint gump & objects.
 
 	// Paint over blue lines for 2 handed
 	Actor *actor = container->as_actor();
 	if (actor) {
 		if (actor->is_two_fingered()) {
-			int sx = x + 36,	// Note this is the right finger slot shifted slightly
-				sy = y + 70;
+			int sx = x + 36,    // Note this is the right finger slot shifted slightly
+			    sy = y + 70;
 			ShapeID sid(TWO_FINGER_BROWN_SHAPE, TWO_FINGER_BROWN_FRAME, SF_GUMPS_VGA);
-			sid.paint_shape (sx,sy);
+			sid.paint_shape(sx, sy);
 		}
 		if (actor->is_two_handed()) {
-			int sx = x + 36,	// Note this is the right hand slot shifted slightly
-				sy = y + 55;
+			int sx = x + 36,    // Note this is the right hand slot shifted slightly
+			    sy = y + 55;
 			ShapeID sid(TWO_HANDED_BROWN_SHAPE, TWO_HANDED_BROWN_FRAME, SF_GUMPS_VGA);
-			sid.paint_shape (sx,sy);
+			sid.paint_shape(sx, sy);
 		}
 	}
-					// Show weight.
+	// Show weight.
 	int max_weight = container->get_max_weight();
-	int weight = container->get_weight()/10;
+	int weight = container->get_weight() / 10;
 	char text[20];
 	snprintf(text, 20, "%d/%d", weight, max_weight);
 	int twidth = sman->get_text_width(2, text);
 	const int boxw = 102;
-	sman->paint_text(2, text, x + 28 + (boxw - twidth)/2, y + 120);
+	sman->paint_text(2, text, x + 28 + (boxw - twidth) / 2, y + 120);
 }
 
-Container_game_object * Actor_gump::find_actor(int mx, int my)
-{
+Container_game_object *Actor_gump::find_actor(int mx, int my) {
 	return container;
 }

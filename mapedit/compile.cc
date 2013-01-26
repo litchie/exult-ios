@@ -1,7 +1,7 @@
 /**
- **	Compile.cc - Run usecode compiler and show results.
+ ** Compile.cc - Run usecode compiler and show results.
  **
- **	Written: 10/08/02 - JSF
+ ** Written: 10/08/02 - JSF
  **/
 
 /*
@@ -37,123 +37,106 @@ using std::endl;
 using std::string;
 
 /*
- *	"Compile" button
+ *  "Compile" button
  */
-C_EXPORT void on_compile_btn_clicked
-	(
-	GtkButton *btn,
-	gpointer user_data
-	)
-	{
+C_EXPORT void on_compile_btn_clicked(
+    GtkButton *btn,
+    gpointer user_data
+) {
 	ExultStudio::get_instance()->compile();
-	}
+}
 
 /*
- *	"Halt" button.
+ *  "Halt" button.
  */
-C_EXPORT void on_halt_compile_btn_clicked
-	(
-	GtkButton *btn,
-	gpointer user_data
-	)
-	{
+C_EXPORT void on_halt_compile_btn_clicked(
+    GtkButton *btn,
+    gpointer user_data
+) {
 	ExultStudio::get_instance()->halt_compile();
-	}
+}
 
 /*
- *	Called when UCC is done.
+ *  Called when UCC is done.
  */
 
-void Ucc_done
-	(
-	int exit_code,
-	Exec_box *box,			// Box that called this.
-	gpointer user_data		// Not used.
-	)
-	{
-	if (exit_code == 0)		// Success?
-		{
+void Ucc_done(
+    int exit_code,
+    Exec_box *box,          // Box that called this.
+    gpointer user_data      // Not used.
+) {
+	if (exit_code == 0) {   // Success?
 		ExultStudio::get_instance()->reload_usecode();
 		box->add_message("Reloaded usecode\n");
-		}
 	}
+}
 
 /*
- *	Open the compile window.
+ *  Open the compile window.
  */
 
-void ExultStudio::open_compile_window
-	(
-	)
-	{
-	if (!compilewin)		// First time?
-		{
-		compilewin = glade_xml_get_widget( app_xml, "compile_win" );
+void ExultStudio::open_compile_window(
+) {
+	if (!compilewin) {      // First time?
+		compilewin = glade_xml_get_widget(app_xml, "compile_win");
 		compile_box = new Exec_box(
-			GTK_TEXT_VIEW(
-			    glade_xml_get_widget(app_xml, "compile_msgs")),
-			GTK_STATUSBAR(
-			    glade_xml_get_widget(app_xml, "compile_status")),
-			Ucc_done, 0);
-		}
-	gtk_widget_show(compilewin);
+		    GTK_TEXT_VIEW(
+		        glade_xml_get_widget(app_xml, "compile_msgs")),
+		    GTK_STATUSBAR(
+		        glade_xml_get_widget(app_xml, "compile_status")),
+		    Ucc_done, 0);
 	}
+	gtk_widget_show(compilewin);
+}
 
 /*
- *	Close the compile window.
+ *  Close the compile window.
  */
 
-void ExultStudio::close_compile_window
-	(
-	)
-	{
+void ExultStudio::close_compile_window(
+) {
 	halt_compile();
 	if (compilewin)
 		gtk_widget_hide(compilewin);
-	}
+}
 
 /*
- *	Compile.
+ *  Compile.
  */
 
-void ExultStudio::compile
-	(
-	bool if_needed			// Means check timestamps.
-	)
-	{
-					// Get source (fixed, for now).
+void ExultStudio::compile(
+    bool if_needed          // Means check timestamps.
+) {
+	// Get source (fixed, for now).
 	string source("<PATCH>/usecode.uc");
 	source = get_system_path(source);
 	string obj("<PATCH>/usecode");
 	obj = get_system_path(obj);
-	if (!U7exists(source))
-		{
+	if (!U7exists(source)) {
 		if (!if_needed)
 			EStudio::Alert("Source '%s' doesn't exist",
-							source.c_str());
-		return;			// No source.
-		}
-					// ++++++Check timestamps.
-	open_compile_window();		// Make sure it's open.
-	const char *argv[8];		// Set up args.
-	argv[0] = "ucc";		// Program to run.
-	argv[1] = "-o";			// Specify output.
+			               source.c_str());
+		return;         // No source.
+	}
+	// ++++++Check timestamps.
+	open_compile_window();      // Make sure it's open.
+	const char *argv[8];        // Set up args.
+	argv[0] = "ucc";        // Program to run.
+	argv[1] = "-o";         // Specify output.
 	argv[2] = obj.c_str();
-	argv[3] = source.c_str();	// What to compile.
-					// ++++++Which game type (SI/BG)?
-	argv[4] = 0;			// NULL.
+	argv[3] = source.c_str();   // What to compile.
+	// ++++++Which game type (SI/BG)?
+	argv[4] = 0;            // NULL.
 	if (!compile_box->exec("ucc", (char **) argv))
 		EStudio::Alert("Error executing usecode compiler ('ucc')");
-	}
+}
 
 /*
- *	Halt compilation.
+ *  Halt compilation.
  */
 
-void ExultStudio::halt_compile
-	(
-	)
-	{
+void ExultStudio::halt_compile(
+) {
 	if (compile_box)
 		compile_box->kill_child();
-	}
+}

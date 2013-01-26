@@ -1,7 +1,7 @@
 /**
- **	warminf.cc - Warmth information from 'shape_info.txt'.
+ ** warminf.cc - Warmth information from 'shape_info.txt'.
  **
- **	Written: 06/01/2008 - Marzo
+ ** Written: 06/01/2008 - Marzo
  **/
 
 /*
@@ -27,13 +27,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "warminf.h"
 using std::istream;
 
-bool Warmth_info::read
-	(
-	std::istream& in,	// Input stream.
-	int version,		// Data file version.
-	Exult_Game game		// Loading BG file.
-	)
-	{
+bool Warmth_info::read(
+    std::istream &in,   // Input stream.
+    int version,        // Data file version.
+    Exult_Game game     // Loading BG file.
+) {
 	frame = ReadInt(in);
 	if (frame < 0)
 		frame = -1;
@@ -41,4 +39,4 @@ bool Warmth_info::read
 		frame &= 0xff;
 	warmth = ReadInt(in) & 0xff;
 	return true;
-	}
+}

@@ -1,7 +1,7 @@
 /**
- **	armorinf.cc - Information from 'armor.dat'.
+ ** armorinf.cc - Information from 'armor.dat'.
  **
- **	Written: 06/01/2008 - Marzo
+ ** Written: 06/01/2008 - Marzo
  **/
 
 /*
@@ -27,39 +27,35 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "armorinf.h"
 using std::istream;
 
-int Armor_info::get_base_strength()
-	{
-		// ++++The strength values are utter guesses.
+int Armor_info::get_base_strength() {
+	// ++++The strength values are utter guesses.
 	int strength = prot;
-	if (immune)	// Double strength for any immunities? Give bonus for each?
+	if (immune) // Double strength for any immunities? Give bonus for each?
 		strength *= 2;
 	return strength;
-	}
+}
 
 /*
- *	Read in an armor-info entry from 'armor.dat'.
+ *  Read in an armor-info entry from 'armor.dat'.
  *
- *	Output:	Shape # this entry describes.
+ *  Output: Shape # this entry describes.
  */
 
-bool Armor_info::read
-	(
-	std::istream& in,	// Input stream.
-	int version,		// Data file version.
-	Exult_Game game		// Loading BG file.
-	)
-	{
-	uint8 buf[Armor_info::entry_size-2];			// Entry length.
+bool Armor_info::read(
+    std::istream &in,   // Input stream.
+    int version,        // Data file version.
+    Exult_Game game     // Loading BG file.
+) {
+	uint8 buf[Armor_info::entry_size - 2];          // Entry length.
 	in.read(reinterpret_cast<char *>(buf), sizeof(buf));
 	uint8 *ptr = buf;
-	if (buf[Armor_info::entry_size-3] == 0xff)	// means delete entry.
-		{
+	if (buf[Armor_info::entry_size - 3] == 0xff) { // means delete entry.
 		set_invalid(true);
 		return true;
-		}
-	prot = *ptr++;			// Protection value.
-	ptr++;				// Unknown.
-	immune = *ptr++;		// Immunity flags.
-					// Last 5 are unknown/unused.
-	return true;
 	}
+	prot = *ptr++;          // Protection value.
+	ptr++;              // Unknown.
+	immune = *ptr++;        // Immunity flags.
+	// Last 5 are unknown/unused.
+	return true;
+}

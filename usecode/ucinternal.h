@@ -1,8 +1,8 @@
 /*
- *	ucinternal.h - Interpreter for usecode.
+ *  ucinternal.h - Interpreter for usecode.
  *
- *	Usecode_internal is the implementation, so this header should only
- *	be included within .cc's in the 'usecode' directory.
+ *  Usecode_internal is the implementation, so this header should only
+ *  be included within .cc's in the 'usecode' directory.
  *
  *
  *  Copyright (C) 2001-2013  The Exult Team
@@ -46,7 +46,7 @@ class Usecode_class_symbol;
 #include "ucmachine.h"
 #include "ucdebugging.h"
 #include "tiles.h"
-#include <string>	// STL string
+#include <string>   // STL string
 #include <deque>
 #include <vector>
 #include <map>
@@ -54,138 +54,136 @@ class Usecode_class_symbol;
 using std::vector;
 
 /*
- *	Recursively look for a barge that an object is a part of, or on.
+ *  Recursively look for a barge that an object is a part of, or on.
  *
- *	Output:	->barge if found, else 0.
+ *  Output: ->barge if found, else 0.
  */
 
-Barge_object *Get_barge
-	(
-	Game_object *obj
-	);
+Barge_object *Get_barge(
+    Game_object *obj
+);
 
-#define	USECODE_INTRINSIC_DECL(NAME)	Usecode_value UI_## NAME (int event,int intrinsic,int num_parms,Usecode_value parms[12])
+#define USECODE_INTRINSIC_DECL(NAME)    Usecode_value UI_## NAME (int event,int intrinsic,int num_parms,Usecode_value parms[12])
 
 /*
- *	Here's our virtual machine for running usecode.
+ *  Here's our virtual machine for running usecode.
  */
-class Usecode_internal : public Usecode_machine
-	{
-					// I'th entry contains funs for ID's
-					//    256*i + n.
-	typedef vector<Usecode_function*> Funs256;
+class Usecode_internal : public Usecode_machine {
+	// I'th entry contains funs for ID's
+	//    256*i + n.
+	typedef vector<Usecode_function *> Funs256;
 	vector<Funs256> funs;
-	vector<Usecode_value> statics;	// Global persistent vars.
-	Usecode_symbol_table *symtbl;	// (optional) symbol table.
-	std::deque<Stack_frame*> call_stack; // the call stack
-	Stack_frame *frame;		// One intrinsic uses this for now...
-	bool modified_map;		// We add/deleted/moved an object.
-	std::map<int, uint32> timers;	// Each has time in hours when set.
-	int speech_track;		// Set/read by some intrinsics.
-	Text_gump *book;		// Book/scroll being displayed.
-	Game_object *caller_item;	// Item this is being called on.
-	vector<Game_object*> last_created;// Stack of last items created with 
-					//   intrins. x24.
-	Actor *path_npc;		// Last NPC in path_run_usecode().
-	const char *user_choice;	// String user clicked on.
-	bool found_answer;		// Did we already handle the 
-					//   conversation option?
-	Tile_coord saved_pos;		// For a couple SI intrinsics.
-	int saved_map;				// Improvements for these intrinsics.
-	char *String;			// The single string register.
-	int telekenesis_fun;		// For next Usecode call from spell.
-	void append_string(const uint8 *txt)
-		{   append_string(reinterpret_cast<char const *>(txt)); }
-	void append_string(const char *txt);	// Append to string.
-	void show_pending_text();	// Make sure user's seen all text.
-	void show_book();		// "Say" book/scroll text.
-	void say_string();		// "Say" the string.
-	Usecode_value *stack;		// Stack.
-	Usecode_value *sp;		// Stack ptr.  Grows upwards.
+	vector<Usecode_value> statics;  // Global persistent vars.
+	Usecode_symbol_table *symtbl;   // (optional) symbol table.
+	std::deque<Stack_frame *> call_stack; // the call stack
+	Stack_frame *frame;     // One intrinsic uses this for now...
+	bool modified_map;      // We add/deleted/moved an object.
+	std::map<int, uint32> timers;   // Each has time in hours when set.
+	int speech_track;       // Set/read by some intrinsics.
+	Text_gump *book;        // Book/scroll being displayed.
+	Game_object *caller_item;   // Item this is being called on.
+	vector<Game_object *> last_created; // Stack of last items created with
+	//   intrins. x24.
+	Actor *path_npc;        // Last NPC in path_run_usecode().
+	const char *user_choice;    // String user clicked on.
+	bool found_answer;      // Did we already handle the
+	//   conversation option?
+	Tile_coord saved_pos;       // For a couple SI intrinsics.
+	int saved_map;              // Improvements for these intrinsics.
+	char *String;           // The single string register.
+	int telekenesis_fun;        // For next Usecode call from spell.
+	void append_string(const uint8 *txt) {
+		append_string(reinterpret_cast<char const *>(txt));
+	}
+	void append_string(const char *txt);    // Append to string.
+	void show_pending_text();   // Make sure user's seen all text.
+	void show_book();       // "Say" book/scroll text.
+	void say_string();      // "Say" the string.
+	Usecode_value *stack;       // Stack.
+	Usecode_value *sp;      // Stack ptr.  Grows upwards.
 	void stack_error(int under);
-	void push(Usecode_value const& val);	// Push/pop stack.
+	void push(Usecode_value const &val);    // Push/pop stack.
 	Usecode_value pop();
 	Usecode_value peek();
-	void pushref(Game_object* obj); // Push itemref
-	void pushi(long val);		// Push/pop integers.
+	void pushref(Game_object *obj); // Push itemref
+	void pushi(long val);       // Push/pop integers.
 	int popi();
-					// Push/pop strings.
+	// Push/pop strings.
 	void pushs(const char *s);
-	void pushs(const uint8 *s)
-		{   pushs(reinterpret_cast<char const *>(s)); }
-					// Get ->obj. from 'itemref'.
-	Game_object *get_item(Usecode_value& itemref);
-					// "Safe" cast to Actor and Npc_actor.
+	void pushs(const uint8 *s) {
+		pushs(reinterpret_cast<char const *>(s));
+	}
+	// Get ->obj. from 'itemref'.
+	Game_object *get_item(Usecode_value &itemref);
+	// "Safe" cast to Actor and Npc_actor.
 	Actor *as_actor(Game_object *obj);
-					// Get position.
-	Tile_coord get_position(Usecode_value& itemref);
+	// Get position.
+	Tile_coord get_position(Usecode_value &itemref);
 	/*
-	 *	Built-in usecode functions:
+	 *  Built-in usecode functions:
 	 */
-	typedef Usecode_value (Usecode_internal::*UsecodeIntrinsicFn)(
-		int event,int intrinsic,int num_parms,Usecode_value parms[12]);
+	typedef Usecode_value(Usecode_internal::*UsecodeIntrinsicFn)(
+	    int event, int intrinsic, int num_parms, Usecode_value parms[12]);
 
-	int get_face_shape(Usecode_value& arg1, Actor *&npc, int& frame);
-	int get_face_shape(Usecode_value& arg1, Actor *&npc)
-		{
+	int get_face_shape(Usecode_value &arg1, Actor *&npc, int &frame);
+	int get_face_shape(Usecode_value &arg1, Actor *&npc) {
 		int frame;
 		return get_face_shape(arg1, npc, frame);
-		}
-	void show_npc_face(Usecode_value& arg1, Usecode_value& arg2,
-							int slot = -1);
-	void remove_npc_face(Usecode_value& arg1);
-	void set_item_shape(Usecode_value& item_arg, Usecode_value& shape_arg);
+	}
+	void show_npc_face(Usecode_value &arg1, Usecode_value &arg2,
+	                   int slot = -1);
+	void remove_npc_face(Usecode_value &arg1);
+	void set_item_shape(Usecode_value &item_arg, Usecode_value &shape_arg);
 	void set_item_frame(Game_object *item, int frame, int check_empty = 0,
-							int set_rotated = 0);
+	                    int set_rotated = 0);
 	void add_dirty(Game_object *obj);
 	void remove_item(Game_object *obj);
 	Usecode_value get_party();
-	void item_say(Usecode_value& objval, Usecode_value& strval);
-	void activate_cached(Tile_coord const& pos);
-	Usecode_value find_nearby(Usecode_value& objval,
-		Usecode_value& shapeval, Usecode_value& qval,
-							Usecode_value& mval);
-	Usecode_value find_nearest(Usecode_value& objval,
-			Usecode_value& shapeval, Usecode_value& unknown);
-	Usecode_value find_direction(Usecode_value& from, Usecode_value& to);
-	Usecode_value count_objects(Usecode_value& objval,
-		Usecode_value& shapeval, Usecode_value& qualval,
-						Usecode_value& frameval);
-	Usecode_value get_objects(Usecode_value& objval,
-		Usecode_value& shapeval, Usecode_value& qualval,
-						Usecode_value& frameval);
-	Usecode_value remove_party_items(Usecode_value& quantval,
-		Usecode_value& shapeval, Usecode_value& qualval,
-			Usecode_value& frameval, Usecode_value& flagval);
-	Usecode_value add_party_items(Usecode_value& quantval,
-		Usecode_value& shapeval, Usecode_value& qualval,
-			Usecode_value& frameval, Usecode_value& temporary);
-	Usecode_value add_cont_items(Usecode_value& container, Usecode_value& quantval,
-		Usecode_value& shapeval, Usecode_value& qualval,
-			Usecode_value& frameval, Usecode_value& flagval);
-	Usecode_value remove_cont_items(Usecode_value& container, Usecode_value& quantval,
-		Usecode_value& shapeval, Usecode_value& qualval,
-			Usecode_value& frameval, Usecode_value& flagval);
+	void item_say(Usecode_value &objval, Usecode_value &strval);
+	void activate_cached(Tile_coord const &pos);
+	Usecode_value find_nearby(Usecode_value &objval,
+	                          Usecode_value &shapeval, Usecode_value &qval,
+	                          Usecode_value &mval);
+	Usecode_value find_nearest(Usecode_value &objval,
+	                           Usecode_value &shapeval, Usecode_value &unknown);
+	Usecode_value find_direction(Usecode_value &from, Usecode_value &to);
+	Usecode_value count_objects(Usecode_value &objval,
+	                            Usecode_value &shapeval, Usecode_value &qualval,
+	                            Usecode_value &frameval);
+	Usecode_value get_objects(Usecode_value &objval,
+	                          Usecode_value &shapeval, Usecode_value &qualval,
+	                          Usecode_value &frameval);
+	Usecode_value remove_party_items(Usecode_value &quantval,
+	                                 Usecode_value &shapeval, Usecode_value &qualval,
+	                                 Usecode_value &frameval, Usecode_value &flagval);
+	Usecode_value add_party_items(Usecode_value &quantval,
+	                              Usecode_value &shapeval, Usecode_value &qualval,
+	                              Usecode_value &frameval, Usecode_value &temporary);
+	Usecode_value add_cont_items(Usecode_value &container, Usecode_value &quantval,
+	                             Usecode_value &shapeval, Usecode_value &qualval,
+	                             Usecode_value &frameval, Usecode_value &flagval);
+	Usecode_value remove_cont_items(Usecode_value &container, Usecode_value &quantval,
+	                                Usecode_value &shapeval, Usecode_value &qualval,
+	                                Usecode_value &frameval, Usecode_value &flagval);
 	Game_object *create_object(int shapenum, bool equip);
 
-	int path_run_usecode(Usecode_value& npcval, Usecode_value& locval,
-		Usecode_value& useval, Usecode_value& itemval,
-		Usecode_value& eventval, bool find_free = false, 
-		bool always = false, bool companions = false);
-	void create_script(Usecode_value& objval, Usecode_value& codeval,
-								long delay);
-	bool is_dest_reachable(Actor *npc, Tile_coord const& dest);
+	int path_run_usecode(Usecode_value &npcval, Usecode_value &locval,
+	                     Usecode_value &useval, Usecode_value &itemval,
+	                     Usecode_value &eventval, bool find_free = false,
+	                     bool always = false, bool companions = false);
+	void create_script(Usecode_value &objval, Usecode_value &codeval,
+	                   long delay);
+	bool is_dest_reachable(Actor *npc, Tile_coord const &dest);
 
 	/*
-	 *	Embedded intrinsics
+	 *  Embedded intrinsics
 	 */
 
-	static struct IntrinsicTableEntry
-		{
-		UsecodeIntrinsicFn	func;
+	static struct IntrinsicTableEntry {
+		UsecodeIntrinsicFn  func;
 		const char *name;
-		} intrinsic_table[], serpent_table[];
-	Usecode_value	Execute_Intrinsic(UsecodeIntrinsicFn func,const char *name,int event,int intrinsic,int num_parms,Usecode_value parms[12]);
+	} intrinsic_table[], serpent_table[];
+	Usecode_value   Execute_Intrinsic(UsecodeIntrinsicFn func, const char *name, int event, int intrinsic, int num_parms, Usecode_value parms[12]);
 	USECODE_INTRINSIC_DECL(NOP);
 	USECODE_INTRINSIC_DECL(UNKNOWN);
 	USECODE_INTRINSIC_DECL(get_random);
@@ -348,7 +346,7 @@ class Usecode_internal : public Usecode_machine
 	USECODE_INTRINSIC_DECL(add_cont_items);
 	USECODE_INTRINSIC_DECL(remove_cont_items);
 	USECODE_INTRINSIC_DECL(error_message);
-					// Serpent Isle:
+	// Serpent Isle:
 	USECODE_INTRINSIC_DECL(si_path_run_usecode);
 	USECODE_INTRINSIC_DECL(can_avatar_reach_pos);
 	USECODE_INTRINSIC_DECL(remove_from_area);
@@ -385,7 +383,7 @@ class Usecode_internal : public Usecode_machine
 	USECODE_INTRINSIC_DECL(get_item_weight);
 	USECODE_INTRINSIC_DECL(get_skin_colour);
 	USECODE_INTRINSIC_DECL(printf);
-					// Exult only:
+	// Exult only:
 	USECODE_INTRINSIC_DECL(begin_casting_mode);
 	USECODE_INTRINSIC_DECL(get_usecode_fun);
 	USECODE_INTRINSIC_DECL(get_map_num);
@@ -398,18 +396,18 @@ class Usecode_internal : public Usecode_machine
 	USECODE_INTRINSIC_DECL(remove_spell);
 	USECODE_INTRINSIC_DECL(create_barge_object);
 	USECODE_INTRINSIC_DECL(in_usecode_path);
-	
+
 	/*
-	 *	Other private methods:
+	 *  Other private methods:
 	 */
-					// Call instrinsic function.
+	// Call instrinsic function.
 	Usecode_value call_intrinsic(int event, int intrinsic, int num_parms);
-	void click_to_continue();	// Wait for user to click.
-	void set_book(Text_gump *b);	// Set book/scroll to display.
-	const char *get_user_choice();	// Get user's choice.
+	void click_to_continue();   // Wait for user to click.
+	void set_book(Text_gump *b);    // Set book/scroll to display.
+	const char *get_user_choice();  // Get user's choice.
 	int get_user_choice_num();
 	void clear_usevars();
-	void read_usevars(std::istream& in);	// Read static variables.
+	void read_usevars(std::istream &in);    // Read static variables.
 	Usecode_function *find_function(int funcid);
 
 	Game_object *intercept_item;
@@ -418,21 +416,21 @@ class Usecode_internal : public Usecode_machine
 
 	// execution functions
 	bool call_function(int funcid, int event, Game_object *caller = 0,
-			   bool entrypoint = false, bool orig = false, int givenargs = 0);
+	                   bool entrypoint = false, bool orig = false, int givenargs = 0);
 	void previous_stack_frame();
-	void return_from_function(Usecode_value& retval);
+	void return_from_function(Usecode_value &retval);
 	void return_from_procedure();
 	void abort_function();
 	int run();
 
 	// debugging functions
-	void uc_trace_disasm(Stack_frame* frame);
-	void uc_trace_disasm(Usecode_value* locals, int num_locals,
-						 std::vector<Usecode_value>& locstatics,
-						 uint8* data, uint8* externals, uint8* code,
-						 uint8* ip);
+	void uc_trace_disasm(Stack_frame *frame);
+	void uc_trace_disasm(Usecode_value *locals, int num_locals,
+	                     std::vector<Usecode_value> &locstatics,
+	                     uint8 *data, uint8 *externals, uint8 *code,
+	                     uint8 *ip);
 	static int get_opcode_length(int opcode);
-	void stack_trace(std::ostream& out);
+	void stack_trace(std::ostream &out);
 	bool is_object_fun(int n);
 
 #ifdef USECODE_DEBUGGER
@@ -443,77 +441,84 @@ class Usecode_internal : public Usecode_machine
 	int breakpoint_action; // stay on breakpoint/continue/abort?
 
 public:
-	bool is_on_breakpoint() const { return on_breakpoint; }
-	void set_breakpoint_action(int a) { breakpoint_action = a; }
+	bool is_on_breakpoint() const {
+		return on_breakpoint;
+	}
+	void set_breakpoint_action(int a) {
+		breakpoint_action = a;
+	}
 
 	void set_breakpoint();
 	int set_location_breakpoint(int funcid, int ip);
-	bool clear_breakpoint(int id) { return breakpoints.remove(id); }
+	bool clear_breakpoint(int id) {
+		return breakpoints.remove(id);
+	}
 
-	void transmit_breakpoints(int fd) { breakpoints.transmit(fd); }
+	void transmit_breakpoints(int fd) {
+		breakpoints.transmit(fd);
+	}
 
 	void dbg_stepover();
 	void dbg_finish();
 
 	int get_callstack_size() const;
-	Stack_frame* get_stackframe(int i);
+	Stack_frame *get_stackframe(int i);
 
 	int get_stack_size() const;
-	Usecode_value* peek_stack(int depth) const;
-	void poke_stack(int depth, Usecode_value& val);
+	Usecode_value *peek_stack(int depth) const;
+	void poke_stack(int depth, Usecode_value &val);
 #endif
 public:
 	friend class Usecode_script;
 	Usecode_internal();
 	~Usecode_internal();
-					// Read in usecode functions.
-	virtual void read_usecode(std::istream& file, bool patch = false);
-					// Call desired function.
-	virtual int call_usecode(int id, Game_object *item, 
-							Usecode_events event);
+	// Read in usecode functions.
+	virtual void read_usecode(std::istream &file, bool patch = false);
+	// Call desired function.
+	virtual int call_usecode(int id, Game_object *item,
+	                         Usecode_events event);
 	virtual bool call_method(Usecode_value *inst, int id,
-					Game_object *item);
+	                         Game_object *item);
 	virtual int find_function(const char *nm, bool noerr = false);
 	virtual const char *find_function_name(int funcid);
 	virtual void do_speech(int num);// Start speech, or show text.
-	virtual bool in_usecode()	// Currently in a usecode function?
-		{ return !call_stack.empty(); }
+	virtual bool in_usecode() { // Currently in a usecode function?
+		return !call_stack.empty();
+	}
 	virtual bool in_usecode_for(Game_object *item, Usecode_events event);
 	virtual Usecode_class_symbol *get_class(int n);
 	virtual Usecode_class_symbol *get_class(const char *nm);
 	virtual int get_shape_fun(int n);
-	virtual void write();		// Write out 'gamedat/usecode.dat'.
-	virtual void read();		// Read in 'gamedat/usecode.dat'.
+	virtual void write();       // Write out 'gamedat/usecode.dat'.
+	virtual void read();        // Read in 'gamedat/usecode.dat'.
 
-	virtual void intercept_click_on_item(Game_object *obj) 
-		{
+	virtual void intercept_click_on_item(Game_object *obj) {
 		intercept_item = obj;
 		delete intercept_tile;
 		intercept_tile = 0;
-		}
-	virtual Game_object *get_intercept_click_on_item() const
-		{ return intercept_item; }
-	virtual void intercept_click_on_tile(Tile_coord *t)
-		{
+	}
+	virtual Game_object *get_intercept_click_on_item() const {
+		return intercept_item;
+	}
+	virtual void intercept_click_on_tile(Tile_coord *t) {
 		intercept_item = 0;
 		delete intercept_tile;
 		intercept_tile = t;
-		}
-	virtual Tile_coord *get_intercept_click_on_tile() const
-		{ return intercept_tile; }
-	virtual void save_intercept(Game_object *&obj, Tile_coord *&t)
-		{
+	}
+	virtual Tile_coord *get_intercept_click_on_tile() const {
+		return intercept_tile;
+	}
+	virtual void save_intercept(Game_object *&obj, Tile_coord *&t) {
 		obj = intercept_item;
 		t = intercept_tile;
 		intercept_item = 0;
 		intercept_tile = 0;
-		}
-	virtual void restore_intercept(Game_object *obj, Tile_coord *t)
-		{
+	}
+	virtual void restore_intercept(Game_object *obj, Tile_coord *t) {
 		intercept_item = obj;
 		delete intercept_tile;
 		intercept_tile = t;
-		}
+	}
 };
 
 

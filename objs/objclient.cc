@@ -1,5 +1,5 @@
 /*
- *	objclient.cc - Game objects that have been removed, but need deleting.
+ *  objclient.cc - Game objects that have been removed, but need deleting.
  *
  *  Copyright (C) 2000-2013  The Exult Team
  *
@@ -27,21 +27,20 @@
 #include "objclient.h"
 
 /*
- *		Add a list of clients.
+ *      Add a list of clients.
  */
-void Object_client::add_client(Game_object_vector& objs)
-{
+void Object_client::add_client(Game_object_vector &objs) {
 	for (Game_object_vector::iterator it = objs.begin();
-									  it != objs.end(); ++it)
-	    add_client(*it);
+	        it != objs.end(); ++it)
+		add_client(*it);
 }
 
 /*
- *		Remove all clients.
+ *      Remove all clients.
  */
 void Object_client::remove_clients() {
 	for (Game_object_vector::iterator it = objs.begin();
-	     it != objs.end(); ++it)
+	        it != objs.end(); ++it)
 		(*it)->remove_client(this);
 	objs.clear();
 }
@@ -55,13 +54,13 @@ void Object_client::kill_client_list() {
 }
 
 /*
- *		An object should call this when it's about to be removed.
+ *      An object should call this when it's about to be removed.
  */
 void Object_client::object_gone(Game_object *obj) {
 	for (Game_object_vector::iterator it = objs.begin();
-	     it != objs.end(); ++it) {
+	        it != objs.end(); ++it) {
 		if ((*it) == obj) {
-		    objs.erase(it);
+			objs.erase(it);
 			notify_object_gone(obj);
 			return;
 		}

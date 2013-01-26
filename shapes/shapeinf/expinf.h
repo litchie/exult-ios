@@ -1,11 +1,11 @@
 /**
- **	expinf.h - Explosion information from 'shape_info.txt'.
+ ** expinf.h - Explosion information from 'shape_info.txt'.
  **
- **	Written: 06/01/2008 - Marzo
+ ** Written: 06/01/2008 - Marzo
  **/
 
 #ifndef INCL_EXPINF_H
-#define INCL_EXPINF_H	1
+#define INCL_EXPINF_H   1
 
 /*
 Copyright (C) 2008 The Exult Team
@@ -32,37 +32,37 @@ using std::istream;
 class Shape_info;
 
 /*
- *	Information about explosions.
+ *  Information about explosions.
  */
-class Explosion_info : public Base_info
-	{
-	int		sprite;			// Explosion sprite.
-	int		sfxnum;			// SFX to play or 255 for none.
+class Explosion_info : public Base_info {
+	int     sprite;         // Explosion sprite.
+	int     sfxnum;         // SFX to play or 255 for none.
 public:
 	friend class Shape_info;
 	Explosion_info()
 		: Base_info()
-		{  }
-		// Read in from file.
-	bool read(std::istream& in, int version, Exult_Game game);
-					// Write out.
-	void write(std::ostream& out, int shapenum, Exult_Game game);
-	void set(int shape, int sfx)
-		{
-		if (sfxnum != sfx || sprite != shape)
-			{
+	{  }
+	// Read in from file.
+	bool read(std::istream &in, int version, Exult_Game game);
+	// Write out.
+	void write(std::ostream &out, int shapenum, Exult_Game game);
+	void set(int shape, int sfx) {
+		if (sfxnum != sfx || sprite != shape) {
 			set_modified(true);
 			sfxnum = sfx;
 			sprite = shape;
-			}
 		}
-	int get_sprite() const
-		{ return sprite; }
-	int get_sfx() const
-		{ return sfxnum; }
-	static int get_info_flag()
-		{ return 0x10; }
+	}
+	int get_sprite() const {
+		return sprite;
+	}
+	int get_sfx() const {
+		return sfxnum;
+	}
+	static int get_info_flag() {
+		return 0x10;
+	}
 	enum { is_binary = 0, entry_size = 0 };
-	};
+};
 
 #endif

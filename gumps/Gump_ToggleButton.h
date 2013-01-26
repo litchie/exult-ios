@@ -26,25 +26,25 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  * A button that toggles shape when pushed
  */
 
-class Gump_ToggleButton : public Gump_button
-{
- public:
+class Gump_ToggleButton : public Gump_button {
+public:
 	Gump_ToggleButton(Gump *par, int px, int py, int shapenum,
-						   int selectionnum, int numsel)
-		: Gump_button(par, shapenum, px, py, SF_EXULT_FLX), 
-		numselections(numsel)
-	 {
-		 set_frame(2 * selectionnum);
-	 }
+	                  int selectionnum, int numsel)
+		: Gump_button(par, shapenum, px, py, SF_EXULT_FLX),
+		  numselections(numsel) {
+		set_frame(2 * selectionnum);
+	}
 
-	virtual bool push (int button);
-	virtual void unpush (int button);
-	virtual bool activate(int button=1);
+	virtual bool push(int button);
+	virtual void unpush(int button);
+	virtual bool activate(int button = 1);
 
-	int getselection() const { return get_framenum()/2; }
+	int getselection() const {
+		return get_framenum() / 2;
+	}
 	virtual void toggle(int state) = 0;
 
- private:
+private:
 	int numselections;
 };
 
@@ -52,34 +52,33 @@ class Gump_ToggleButton : public Gump_button
  * A text button that toggles shape when pushed
  */
 
-class Gump_ToggleTextButton : public Text_button
-{
- public:
+class Gump_ToggleTextButton : public Text_button {
+public:
 	Gump_ToggleTextButton(Gump *par, std::string *s,  int selectionnum, int numsel,
-		int px, int py, int width, int height = 0)
+	                      int px, int py, int width, int height = 0)
 		: Text_button(par, "", px, py, width, height),
-		numselections(numsel), selections(s)
-	{
+		  numselections(numsel), selections(s) {
 		set_frame(selectionnum);
 		text = selections[selectionnum];
 		init();
 	}
 
-	virtual ~Gump_ToggleTextButton()
-	{
-		delete [] selections; 
+	virtual ~Gump_ToggleTextButton() {
+		delete [] selections;
 	}
 
-	virtual bool push (int button);
-	virtual void unpush (int button);
-	virtual bool activate(int button=1);
+	virtual bool push(int button);
+	virtual void unpush(int button);
+	virtual bool activate(int button = 1);
 
-	int getselection() const { return get_framenum(); }
+	int getselection() const {
+		return get_framenum();
+	}
 	virtual void toggle(int state) = 0;
 
- private:
+private:
 	int numselections;
-	std::string	*selections;
+	std::string *selections;
 };
 
 

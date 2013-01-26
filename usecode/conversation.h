@@ -30,51 +30,60 @@ class Npc_face_info;
 class Usecode_value;
 class Game_window;
 
-class Conversation : public Game_singletons, public Paintable
-{
+class Conversation : public Game_singletons, public Paintable {
 public:
 	Conversation();
 	virtual ~Conversation();
 
 private:
 
-	Npc_face_info *face_info[2];	// NPC's on-screen faces in convers.
+	Npc_face_info *face_info[2];    // NPC's on-screen faces in convers.
 	int num_faces;
-	int last_face_shown;		// Index of last npc face shown.
-	Rectangle avatar_face;		// Area take by Avatar in conversation.
-	Rectangle *conv_choices;	// Choices during a conversation.
+	int last_face_shown;        // Index of last npc face shown.
+	Rectangle avatar_face;      // Area take by Avatar in conversation.
+	Rectangle *conv_choices;    // Choices during a conversation.
 
 	std::vector<std::string> answers;
 	std::deque< std::vector<std::string> > answer_stack;
 
 public:
-	inline int get_num_answers() const { return answers.size(); }
-	inline int get_num_faces_on_screen() const { return num_faces; }
+	inline int get_num_answers() const {
+		return answers.size();
+	}
+	inline int get_num_faces_on_screen() const {
+		return num_faces;
+	}
 	void init_faces();
 	void show_face(int shape, int frame, int slot = -1);
 	void change_face_frame(int frame, int slot);
 	void remove_face(int shape);
 	void remove_slot_face(int slot); // SI.
-	void remove_last_face();	// SI.
+	void remove_last_face();    // SI.
 	void show_npc_message(const char *msg);
 	bool is_npc_text_pending();
 	void clear_text_pending();
 	void show_avatar_choices();
 	void clear_avatar_choices();
 	int conversation_choice(int x, int y);
-	void set_slot(int i) { last_face_shown = i; }	// SI.
-	virtual void paint();			// Paint entire conversation.
+	void set_slot(int i) {
+		last_face_shown = i;    // SI.
+	}
+	virtual void paint();           // Paint entire conversation.
 	void paint_faces(bool text = false);
 
-	void add_answer(Usecode_value& val);
-	void remove_answer(Usecode_value& val);
+	void add_answer(Usecode_value &val);
+	void remove_answer(Usecode_value &val);
 	void clear_answers(void);
-	int locate_answer(const char* str);
-	const char* get_answer(int num) { return answers[num].c_str(); }
+	int locate_answer(const char *str);
+	const char *get_answer(int num) {
+		return answers[num].c_str();
+	}
 
 	void push_answers();
 	void pop_answers();
-	bool stack_empty() const { return answer_stack.empty(); }
+	bool stack_empty() const {
+		return answer_stack.empty();
+	}
 
 private:
 	void set_face_rect(Npc_face_info *info, Npc_face_info *prev, int screenw, int screenh);

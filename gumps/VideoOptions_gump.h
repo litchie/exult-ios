@@ -25,11 +25,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class Gump_button;
 
-class VideoOptions_gump : public Modal_gump
-{
-	UNREPLICATABLE_CLASS_I(VideoOptions_gump,Modal_gump(0,0,0,0));
+class VideoOptions_gump : public Modal_gump {
+	UNREPLICATABLE_CLASS_I(VideoOptions_gump, Modal_gump(0, 0, 0, 0));
 	static VideoOptions_gump *video_options_gump;
- private:
+private:
 
 	uint32 resolution;
 	int scaling;
@@ -61,36 +60,37 @@ class VideoOptions_gump : public Modal_gump
 	static Image_window::FillMode startup_fill_mode;
 
 	enum button_ids {
-		id_first = 0,
-		id_apply = id_first,
-		id_fullscreen,
-		id_share_settings,
-		id_resolution,	// id_resolution and all past it
-		id_scaler,		// are deleted by rebuild_buttons
-		id_scaling,
-		id_game_resolution,
-		id_fill_scaler,
-		id_fill_mode,
-		id_has_ac,
-		id_count
+	    id_first = 0,
+	    id_apply = id_first,
+	    id_fullscreen,
+	    id_share_settings,
+	    id_resolution,  // id_resolution and all past it
+	    id_scaler,      // are deleted by rebuild_buttons
+	    id_scaling,
+	    id_game_resolution,
+	    id_fill_scaler,
+	    id_fill_mode,
+	    id_has_ac,
+	    id_count
 	};
-	Gump_button* buttons[id_count];
+	Gump_button *buttons[id_count];
 
- public:
+public:
 	VideoOptions_gump();
 	virtual ~VideoOptions_gump();
-	static VideoOptions_gump *get_instance()
-		{ return video_options_gump; }
+	static VideoOptions_gump *get_instance() {
+		return video_options_gump;
+	}
 
-					// Paint it and its contents.
+	// Paint it and its contents.
 	virtual void paint();
 	virtual void close();
 
- 					// Handle events:
+	// Handle events:
 	virtual bool mouse_down(int mx, int my, int button);
 	virtual bool mouse_up(int mx, int my, int button);
 
-	void toggle(Gump_button* btn, int state);
+	void toggle(Gump_button *btn, int state);
 	void rebuild_buttons();
 	void rebuild_dynamic_buttons();
 
@@ -98,18 +98,24 @@ class VideoOptions_gump : public Modal_gump
 	void save_settings();
 	void cancel();
 
-	void set_scaling(int scaleVal)
-	{ scaling = scaleVal; }
-	void set_scaler(int scalerNum)
-	{ scaler = scalerNum; }
-	void set_resolution(uint32 Res)
-	{ resolution = Res; }
-	void set_game_resolution(uint32 gRes)
-	{ game_resolution = gRes; }
-	void set_fill_scaler(int f_scaler)
-	{ fill_scaler = f_scaler; }
-	void set_fill_mode(Image_window::FillMode f_mode)
-	{ fill_mode = f_mode; }
+	void set_scaling(int scaleVal) {
+		scaling = scaleVal;
+	}
+	void set_scaler(int scalerNum) {
+		scaler = scalerNum;
+	}
+	void set_resolution(uint32 Res) {
+		resolution = Res;
+	}
+	void set_game_resolution(uint32 gRes) {
+		game_resolution = gRes;
+	}
+	void set_fill_scaler(int f_scaler) {
+		fill_scaler = f_scaler;
+	}
+	void set_fill_mode(Image_window::FillMode f_mode) {
+		fill_mode = f_mode;
+	}
 };
 
 #endif

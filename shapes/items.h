@@ -1,7 +1,7 @@
 /**
- **	Items.h - Names of items.
+ ** Items.h - Names of items.
  **
- **	Written: 12/3/98 - JSF
+ ** Written: 12/3/98 - JSF
  **/
 
 /*
@@ -27,14 +27,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define INCL_ITEMS 1
 
 #ifndef ALPHA_LINUX_CXX
-#  include	<iosfwd>
+#  include  <iosfwd>
 #endif
 
-extern char **item_names;		// The game items' names.
+extern char **item_names;       // The game items' names.
 extern int num_item_names;
-extern char **text_msgs;		// Msgs. (0x400 - ).
+extern char **text_msgs;        // Msgs. (0x400 - ).
 extern int num_text_msgs;
-extern char **misc_names;		// Frames, etc (0x500 - 0x5ff/0x685 (BG/SI)).
+extern char **misc_names;       // Frames, etc (0x500 - 0x5ff/0x685 (BG/SI)).
 extern int num_misc_names;
 
 void Setup_text(bool si, bool expansion);
@@ -43,10 +43,10 @@ void Write_text_file();
 void Set_item_name(int num, const char *name);
 
 /*
- *	Message #'s.  These are (offset-0x400) in text.flx and exultmsg.txt:
+ *  Message #'s.  These are (offset-0x400) in text.flx and exultmsg.txt:
  */
 // Schedule barks.
-const int first_move_aside = 0x00, last_move_aside = 0x02;	// For guards when blocked.
+const int first_move_aside = 0x00, last_move_aside = 0x02;  // For guards when blocked.
 const int first_preach = 0x03, last_preach = 0x07;
 const int first_preach2 = 0x08, last_preach2 = 0x0b;
 const int first_amen = 0x0c, last_amen = 0x0f;
@@ -75,7 +75,7 @@ const int first_flee = 0x48, last_flee = 0x52;
 const int first_taunt = 0x53, last_taunt = 0x59;
 const int goblin_ouch = 0xcc;
 const int first_goblin_taunt = 0xcd, last_goblin_taunt = 0xce;
-	// Goblin barks 0xcf, 0xd0 and 0xd1 probably come here, but how???
+// Goblin barks 0xcf, 0xd0 and 0xd1 probably come here, but how???
 const int goblin_need_help = 0xd2;
 const int goblin_will_help = 0xd3;
 const int goblin_flee_screaming = 0xd4;
@@ -102,21 +102,21 @@ const int goblin_awakened = 0xca;
 // Magebane (SI only).
 const int first_magebane_struck = 0x9b, last_magebane_struck = 0x9d;
 // Hunger.
-const int first_hunger = 0x77, last_hunger = 0x79;		// A little hungry.
-const int first_needfood = 0x7a, last_needfood = 0x7c;	// Must have food.
-const int first_starving = 0x7d, last_starving = 0x7f;	// Starving.
+const int first_hunger = 0x77, last_hunger = 0x79;      // A little hungry.
+const int first_needfood = 0x7a, last_needfood = 0x7c;  // Must have food.
+const int first_starving = 0x7d, last_starving = 0x7f;  // Starving.
 // Cold.
-const int first_chilly = 0x9e, last_chilly = 0xa0;	// 0 - 9 temp
-const int first_cold = 0xa1, last_cold = 0xa3;	// 10 - 19 temp
-const int first_colder = 0xa4, last_colder = 0xa6;	// 20 - 29 temp
-const int first_frostbite = 0xa7, last_frostbite = 0xa9;	// 30 - 39 temp
+const int first_chilly = 0x9e, last_chilly = 0xa0;  // 0 - 9 temp
+const int first_cold = 0xa1, last_cold = 0xa3;  // 10 - 19 temp
+const int first_colder = 0xa4, last_colder = 0xa6;  // 20 - 29 temp
+const int first_frostbite = 0xa7, last_frostbite = 0xa9;    // 30 - 39 temp
 const int first_warming_in_cold_2 = 0xaa, last_warming_in_cold_2 = 0xb0; // < 30 temp
 const int first_warming_in_cold = 0xb1, last_warming_in_cold = 0xb5; // 30+ temp
-const int first_frostbite_2 = 0xb6, last_frostbite_2 = 0xb8;	// 40 - 49 temp
-const int first_frostbite_3 = 0xb9, last_frostbite_3 = 0xbb;	// 50 - 59 temp
-const int first_frozen = 0xbc, last_frozen = 0xbd;	// 60+ temp
+const int first_frostbite_2 = 0xb6, last_frostbite_2 = 0xb8;    // 40 - 49 temp
+const int first_frostbite_3 = 0xb9, last_frostbite_3 = 0xbb;    // 50 - 59 temp
+const int first_frozen = 0xbc, last_frozen = 0xbd;  // 60+ temp
 const int first_warming_up_2 = 0xbe, last_warming_up_2 = 0xc1; // < 30 temp (warm area)
-const int first_warming_up = 0xc2, last_warming_up = 0xc5;	// 30+ temp (warm area)
+const int first_warming_up = 0xc2, last_warming_up = 0xc5;  // 30+ temp (warm area)
 
 //	Messages in exultmsg.txt ( - 0x400):
 const int first_chair_thief = 0x100, last_chair_thief = 0x104;

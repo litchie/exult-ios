@@ -28,47 +28,44 @@ using std::vector;
 class One_note;
 
 /*
- *	Info. for top of a page.
+ *  Info. for top of a page.
  */
-class Notebook_top
-{
+class Notebook_top {
 	int notenum;
 	int offset;
 public:
 	friend class Notebook_gump;
 	Notebook_top(int n = 0, int o = 0) : notenum(n), offset(o)
-		{  }
+	{  }
 };
 
 /*
- *	A notebook gump represents the in-game journal.
+ *  A notebook gump represents the in-game journal.
  */
-class Notebook_gump : public Gump
-{
+class Notebook_gump : public Gump {
 	UNREPLICATABLE_CLASS_I(Notebook_gump, Gump());
 	static vector<One_note *> notes;// The text.
-					// Indexed by page#.
+	// Indexed by page#.
 	static vector<Notebook_top> page_info;
 	static Notebook_gump *instance;
 	static bool initialized;
 	static bool initialized_auto_text;
 	static vector<char *> auto_text;// Auto-text for global flags.
-	int curnote;			// Current note # being edited.
-	int curpage;			// Current page # (from 0).
-	Cursor_info cursor;		// Cursor loc. within current note.
-	int updnx;			// X-coord. for up/down arrows.
-					// Page turners:
+	int curnote;            // Current note # being edited.
+	int curpage;            // Current page # (from 0).
+	Cursor_info cursor;     // Cursor loc. within current note.
+	int updnx;          // X-coord. for up/down arrows.
+	// Page turners:
 	Gump_button *leftpage, *rightpage;
-					// Add new note.
+	// Add new note.
 	static void add_new(char *text = 0, int gflag = -1);
-	bool paint_page(Rectangle const& box, One_note *note, int& offset, 
-								int pagenum);
-	bool need_next_page() const
-		{
- 		return (curpage%2 == 1 && curpage < static_cast<int>(page_info.size()) - 1 &&
-			page_info[curpage + 1].offset > 0 &&
-			cursor.offset >= page_info[curpage + 1].offset);
-		}
+	bool paint_page(Rectangle const &box, One_note *note, int &offset,
+	                int pagenum);
+	bool need_next_page() const {
+		return (curpage % 2 == 1 && curpage < static_cast<int>(page_info.size()) - 1 &&
+		        page_info[curpage + 1].offset > 0 &&
+		        cursor.offset >= page_info[curpage + 1].offset);
+	}
 	void prev_page();
 	void next_page();
 	bool on_last_page_line();
@@ -80,26 +77,29 @@ public:
 	virtual ~Notebook_gump();
 	static void clear();
 	static Notebook_gump *create();
-	static Notebook_gump *get_instance() { return instance; }
-	void change_page(int delta);	// Page forward/backward.
-					// Is a given point on a button?
+	static Notebook_gump *get_instance() {
+		return instance;
+	}
+	void change_page(int delta);    // Page forward/backward.
+	// Is a given point on a button?
 	virtual Gump_button *on_button(int mx, int my);
-	virtual void paint();		// Paint it and its contents.
+	virtual void paint();       // Paint it and its contents.
 	virtual bool handle_kbd_event(void *ev);
 	static void add_gflag_text(int gflag, char *text);
-	static void add_gflag_text(int gflag)
-		{
+	static void add_gflag_text(int gflag) {
 		if (!initialized_auto_text)
 			read_auto_text();
 		if (gflag < static_cast<int>(auto_text.size()) && auto_text[gflag])
 			add_gflag_text(gflag, auto_text[gflag]);
-		}
-	virtual bool is_draggable() const { return false; }
+	}
+	virtual bool is_draggable() const {
+		return false;
+	}
 	static void initialize();
-	static void write();		// Write it out to gamedat.
-	static void read();		// Read it in.
+	static void write();        // Write it out to gamedat.
+	static void read();     // Read it in.
 	static void read_auto_text();
-	static void read_auto_text_file(const char* filename);
+	static void read_auto_text_file(const char *filename);
 };
 
 #endif

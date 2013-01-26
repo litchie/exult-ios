@@ -106,19 +106,18 @@ static uint32 crc32_tab[] = {
 /*
 unsigned int ssh_crc32(const unsigned char *s, unsigned int len)
 {
-	unsigned int i;
-	unsigned int crc32val;
+    unsigned int i;
+    unsigned int crc32val;
 
-	crc32val = 0;
-	for (i = 0;  i < len;  i ++) {
-		crc32val = crc32_tab[(crc32val ^ s[i]) & 0xff] ^ (crc32val >> 8);
-	}
-	return crc32val;
+    crc32val = 0;
+    for (i = 0;  i < len;  i ++) {
+        crc32val = crc32_tab[(crc32val ^ s[i]) & 0xff] ^ (crc32val >> 8);
+    }
+    return crc32val;
 }
 */
 
-uint32 crc32(const char *filename)
-{
+uint32 crc32(const char *filename) {
 	std::ifstream crcfile(filename, std::ios::binary | std::ios::in);
 
 	uint32 crc32val = 0;
@@ -133,7 +132,6 @@ uint32 crc32(const char *filename)
 	return crc32val;
 }
 
-uint32 crc32_syspath(const char *filename)
-{
+uint32 crc32_syspath(const char *filename) {
 	return crc32(get_system_path(filename).c_str());
 }

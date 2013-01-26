@@ -28,16 +28,15 @@ class Gump;
 class Game_window;
 
 /*
- *	A gump widget, such as a button or text field:
+ *  A gump widget, such as a button or text field:
  */
-class Gump_widget : public ShapeID
-{
+class Gump_widget : public ShapeID {
 	UNREPLICATABLE_CLASS_I(Gump_widget, ShapeID());
 
 protected:
 	Gump_widget() : parent(0) {  }
-	Gump *parent;		// Who this is in.
-	short x, y;			// Coords. relative to parent.
+	Gump *parent;       // Who this is in.
+	short x, y;         // Coords. relative to parent.
 
 public:
 	friend class Gump;
@@ -45,21 +44,25 @@ public:
 	friend class Spellscroll_gump;
 	Gump_widget(Gump *par, int shnum, int px, int py, ShapeFile shfile = SF_GUMPS_VGA)
 		: ShapeID(shnum, 0, shfile), parent(par), x(px), y(py)
-		{  }
-	virtual Gump_widget *clone(Gump *par)
-		{ return 0; }
+	{  }
+	virtual Gump_widget *clone(Gump *par) {
+		return 0;
+	}
 	virtual ~Gump_widget() {  }
-					// Is a given point on the widget?
+	// Is a given point on the widget?
 	virtual int on_widget(int mx, int my);
-	virtual int on_button(int mx, int my)
-		{ return 0; }
+	virtual int on_button(int mx, int my) {
+		return 0;
+	}
 	virtual void paint();
 
 	virtual Rectangle get_rect();
-					// update the widget, if required
+	// update the widget, if required
 	virtual void update_widget() { }
 
-	virtual bool is_draggable() { return true; }
+	virtual bool is_draggable() {
+		return true;
+	}
 
 };
 

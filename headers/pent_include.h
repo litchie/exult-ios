@@ -18,8 +18,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef	PENT_INCLUDE_H
-#define	PENT_INCLUDE_H
+#ifndef PENT_INCLUDE_H
+#define PENT_INCLUDE_H
 
 #define PENTAGRAM_IN_EXULT
 
@@ -69,14 +69,14 @@
 // Debugging
 //
 #ifdef DEBUG
-#  define POUT(x)		do { pout << x << std::endl; pout.flush(); } while (0)
-#  define PERR(x)		do { perr << x << std::endl; perr.flush(); } while (0)
+#  define POUT(x)       do { pout << x << std::endl; pout.flush(); } while (0)
+#  define PERR(x)       do { perr << x << std::endl; perr.flush(); } while (0)
 #else
-#  define POUT(x)		do { } while(0)
-#  define PERR(x)		do { } while(0)
+#  define POUT(x)       do { } while(0)
+#  define PERR(x)       do { } while(0)
 #endif
 
-// Two very useful macros that one should use instead of pure delete; they 
+// Two very useful macros that one should use instead of pure delete; they
 // will additionally set the old object pointer to 0, thus helping prevent
 // double deletes (note that "delete 0" is a no-op).
 #define FORGET_OBJECT(x) do { delete x; x = 0; } while(0)
@@ -96,8 +96,8 @@
 //
 #define CANT_HAPPEN_RETURN() do { assert(false); return 0; } while(0)
 
-// 
-// Can't happen with a message 
+//
+// Can't happen with a message
 //
 // Allows a message to be supplied.
 // May not work on all compilers or runtimes as expected
@@ -113,7 +113,7 @@
 
 //
 // DataSources
-// 
+//
 
 #define IDataSource DataSource
 #define ODataSource DataSource
@@ -123,28 +123,22 @@
 
 #include "databuf.h"
 
-class IFileDataSource : public StreamDataSource
-{
+class IFileDataSource : public StreamDataSource {
 public:
-	public:
-	IFileDataSource(std::ifstream *data_stream) : StreamDataSource(data_stream)
-	{
+public:
+	IFileDataSource(std::ifstream *data_stream) : StreamDataSource(data_stream) {
 	}
-	~IFileDataSource() 
-	{
+	~IFileDataSource() {
 		FORGET_OBJECT(in);
 	}
 };
 
-class OFileDataSource : public StreamDataSource
-{
+class OFileDataSource : public StreamDataSource {
 public:
-	public:
-	OFileDataSource(std::ofstream *data_stream) : StreamDataSource(data_stream)
-	{
+public:
+	OFileDataSource(std::ofstream *data_stream) : StreamDataSource(data_stream) {
 	}
-	~OFileDataSource() 
-	{
+	~OFileDataSource() {
 		FORGET_OBJECT(out);
 	}
 };
@@ -156,18 +150,16 @@ public:
 #include "utils.h"
 #include "singles.h"
 
-class FileSystem : protected Game_singletons
-{
+class FileSystem : protected Game_singletons {
 public:
-	static FileSystem* get_instance() { 
+	static FileSystem *get_instance() {
 		if (!pent_filesys) pent_filesys = new FileSystem;
-		return pent_filesys; 
+		return pent_filesys;
 	}
 
-	static IDataSource* ReadFile(const std::string &vfn, bool is_text)
-	{
+	static IDataSource *ReadFile(const std::string &vfn, bool is_text) {
 		std::ifstream *f = new std::ifstream();
-		if(!U7open(*f, vfn.c_str(), is_text)) {
+		if (!U7open(*f, vfn.c_str(), is_text)) {
 			delete f;
 			return 0;
 		}
@@ -175,10 +167,9 @@ public:
 	}
 
 	// Open a streaming file as readable. Streamed (0 on failure)
-	static ODataSource* WriteFile(const std::string &vfn, bool is_text)
-	{
+	static ODataSource *WriteFile(const std::string &vfn, bool is_text) {
 		std::ofstream *f = new std::ofstream();
-		if(!U7open(*f, vfn.c_str(), is_text)) {
+		if (!U7open(*f, vfn.c_str(), is_text)) {
 			delete f;
 			return 0;
 		}

@@ -1,7 +1,7 @@
 /**
- **	Spellbook.h - Spellbook object.
+ ** Spellbook.h - Spellbook object.
  **
- **	Written: 10/1/98 - JSF
+ ** Written: 10/1/98 - JSF
  **/
 
 /*
@@ -23,59 +23,59 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 #ifndef INCL_SPELLBOOK
-#define INCL_SPELLBOOK	1
+#define INCL_SPELLBOOK  1
 
 #include "iregobjs.h"
 
-const int NREAGENTS = 11;		// Total # reagents.
+const int NREAGENTS = 11;       // Total # reagents.
 
 /*
- *	A spellbook:
+ *  A spellbook:
  */
-class Spellbook_object : public Ireg_game_object
-	{
-					// Reagents needed for each spell:
-	static unsigned short bg_reagents[9*8], si_reagents[9*8];
-	unsigned short *reagents;	// ->appropriate table.
-	unsigned char circles[9];	// Spell-present flags for each circle.
-	int bookmark;			// Spell # that bookmark is on, or -1.
+class Spellbook_object : public Ireg_game_object {
+	// Reagents needed for each spell:
+	static unsigned short bg_reagents[9 * 8], si_reagents[9 * 8];
+	unsigned short *reagents;   // ->appropriate table.
+	unsigned char circles[9];   // Spell-present flags for each circle.
+	int bookmark;           // Spell # that bookmark is on, or -1.
 public:
 	friend class Bookmark_button;
 	friend class Spellbook_gump;
-					// Create from ireg. data.
+	// Create from ireg. data.
 	Spellbook_object(int shapenum, int framenum, unsigned int shapex,
-		unsigned int shapey, unsigned int lft, unsigned char *c,
-		unsigned char bmark);
-	int has_spell(int spell)	// Has a spell.
-		{
-		int circle = spell/8;
-		int num = spell%8;		// # within circle.
-		return (circles[circle] & (1<<num))!=0;
-		}
-	int add_spell(int spell);	// Add a spell.
-	int remove_spell(int spell);	// Remove a spell.
-	void clear_spells();	// Empties spellbook.
-	bool has_ring(Actor *act);	// Has ring-o-reagents?
-					// Can we do this spell?
+	                 unsigned int shapey, unsigned int lft, unsigned char *c,
+	                 unsigned char bmark);
+	int has_spell(int spell) {  // Has a spell.
+		int circle = spell / 8;
+		int num = spell % 8;    // # within circle.
+		return (circles[circle] & (1 << num)) != 0;
+	}
+	int add_spell(int spell);   // Add a spell.
+	int remove_spell(int spell);    // Remove a spell.
+	void clear_spells();    // Empties spellbook.
+	bool has_ring(Actor *act);  // Has ring-o-reagents?
+	// Can we do this spell?
 	bool can_do_spell(Actor *act, int spell);
-	bool can_do_spell(Actor *act)	// Can we do bookmarked spell?
-		{ return bookmark >= 0 ? can_do_spell(act, bookmark) : false; }
-					// Do the spell.
+	bool can_do_spell(Actor *act) { // Can we do bookmarked spell?
+		return bookmark >= 0 ? can_do_spell(act, bookmark) : false;
+	}
+	// Do the spell.
 	bool do_spell(Actor *act, int spell, bool can_do = false,
-						bool in_combat = false);
-					// Do bookmarked spell.
-	bool do_spell(Actor *act, bool in_combat = false)
-		{ return bookmark >= 0 ?
-		 	do_spell(act, bookmark, false, in_combat) : false; }
-	static void execute_spell(Actor *act, int spell, 
-						bool in_combat = false);
-					// Run usecode function.
+	              bool in_combat = false);
+	// Do bookmarked spell.
+	bool do_spell(Actor *act, bool in_combat = false) {
+		return bookmark >= 0 ?
+		       do_spell(act, bookmark, false, in_combat) : false;
+	}
+	static void execute_spell(Actor *act, int spell,
+	                          bool in_combat = false);
+	// Run usecode function.
 	virtual void activate(int event = 1);
-					// Write out to IREG file.
-	virtual void write_ireg(DataSource* out);
-				// Get size of IREG. 
-				// Returns -1 if can't write to buffer
+	// Write out to IREG file.
+	virtual void write_ireg(DataSource *out);
+	// Get size of IREG.
+	// Returns -1 if can't write to buffer
 	virtual int get_ireg_size();
-	};
+};
 
 #endif

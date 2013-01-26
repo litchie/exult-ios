@@ -22,47 +22,53 @@
 #include <string>
 #include <vector>
 
-std::string	encode_entity(const std::string &s);
+std::string encode_entity(const std::string &s);
 
-class	XMLnode
-{
+class   XMLnode {
 protected:
-	std::string				id;
-	std::string				content;
-	std::vector<XMLnode*>	nodelist;
-	bool					no_close;
-	
+	std::string             id;
+	std::string             content;
+	std::vector<XMLnode *>   nodelist;
+	bool                    no_close;
+
 public:
 	XMLnode() : no_close(false)
-		{  }
+	{  }
 	XMLnode(const std::string &i) : id(i), no_close(false)
-		{  }
-	XMLnode(const XMLnode &n) : id(n.id),content(n.content),nodelist(n.nodelist), no_close(false)
-		{  }
+	{  }
+	XMLnode(const XMLnode &n) : id(n.id), content(n.content), nodelist(n.nodelist), no_close(false)
+	{  }
 	~XMLnode();
-	
-	XMLnode &operator=(const XMLnode &n) { id=n.id; content=n.content; nodelist=n.nodelist; no_close = n.no_close; return *this; }
-	const std::string &reference(const std::string &,bool &);
+
+	XMLnode &operator=(const XMLnode &n) {
+		id = n.id;
+		content = n.content;
+		nodelist = n.nodelist;
+		no_close = n.no_close;
+		return *this;
+	}
+	const std::string &reference(const std::string &, bool &);
 	const XMLnode *subtree(const std::string &) const;
-	
-	const std::string &value(void) const
-		{ return content; }
-	
+
+	const std::string &value(void) const {
+		return content;
+	}
+
 	typedef std::pair<std::string, std::string> KeyType;
 	typedef std::vector<KeyType> KeyTypeList;
-	
+
 	bool searchpairs(KeyTypeList &ktl, const std::string &basekey, const std::string &currkey, const unsigned int pos);
 	void selectpairs(KeyTypeList &ktl, const std::string &currkey);
-	
+
 	std::string dump(int depth = 0);
-	void dump(std::ostream &o, const std::string &indentstr, const unsigned int depth=0) const;
-	
-	void	xmlassign(const std::string &key, const std::string &value);
-	void	xmlparse(const std::string &s,std::size_t &pos);
+	void dump(std::ostream &o, const std::string &indentstr, const unsigned int depth = 0) const;
 
-	void	listkeys(const std::string &,std::vector<std::string> &, bool longformat=true) const;
+	void    xmlassign(const std::string &key, const std::string &value);
+	void    xmlparse(const std::string &s, std::size_t &pos);
 
-	void	remove(const std::string &key, bool valueonly);
+	void    listkeys(const std::string &, std::vector<std::string> &, bool longformat = true) const;
+
+	void    remove(const std::string &key, bool valueonly);
 
 };
 

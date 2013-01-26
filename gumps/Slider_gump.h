@@ -24,42 +24,43 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class Slider_button;
 
 /*
- *	A slider for choosing a number.
+ *  A slider for choosing a number.
  */
-class Slider_gump : public Modal_gump
-{
-	UNREPLICATABLE_CLASS_I(Slider_gump,Modal_gump(0,0,0,0));
+class Slider_gump : public Modal_gump {
+	UNREPLICATABLE_CLASS_I(Slider_gump, Modal_gump(0, 0, 0, 0));
 
 protected:
-	int diamondx;			// Rel. pos. where diamond is shown.
+	int diamondx;           // Rel. pos. where diamond is shown.
 	static short diamondy;
-	int min_val, max_val;		// Max., min. values to choose from.
-	int step_val;			// Amount to step by.
-	int val;			// Current value.
-	unsigned char dragging;		// 1 if dragging the diamond.
-	int prev_dragx;			// Prev. x-coord. of mouse.
-	void set_val(int newval);	// Set to new value.
-					// Coords:
+	int min_val, max_val;       // Max., min. values to choose from.
+	int step_val;           // Amount to step by.
+	int val;            // Current value.
+	unsigned char dragging;     // 1 if dragging the diamond.
+	int prev_dragx;         // Prev. x-coord. of mouse.
+	void set_val(int newval);   // Set to new value.
+	// Coords:
 	static short leftbtnx, rightbtnx, btny;
 	static short xmin, xmax;
 
-	ShapeID	diamond;		// Diamond
+	ShapeID diamond;        // Diamond
 
 public:
 	Slider_gump(int mival, int mxval, int step, int defval);
 	virtual ~Slider_gump();
-	int get_val()			// Get last value set.
-		{ return val; }
-					// An arrow was clicked on.
+	int get_val() {         // Get last value set.
+		return val;
+	}
+	// An arrow was clicked on.
 	void clicked_left_arrow();
 	void clicked_right_arrow();
 	void move_diamond(int dir);
 
-					// Paint it and its contents.
+	// Paint it and its contents.
 	virtual void paint();
-	virtual void close()
-		{ done = 1; }
-					// Handle events:
+	virtual void close() {
+		done = 1;
+	}
+	// Handle events:
 	virtual bool mouse_down(int mx, int my, int button);
 	virtual bool mouse_up(int mx, int my, int button);
 	virtual void mouse_drag(int mx, int my);

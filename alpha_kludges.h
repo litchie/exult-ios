@@ -77,22 +77,22 @@ using std::FILE;
 #include <iostream>
 #include <vector>
 
-namespace std{
-	using ::ostream;
-	using ::istream;
-	using ::ofstream;
-	using ::ifstream;
-	using ::cout;
-	using ::cin;
-	using ::cerr;
-	using ::clog;
-	using ::endl;
-	using ::ios;
-	using ::vector;
-	using ::dec;
-	using ::hex;
-	using ::setfill;
-	using ::setw;
+namespace std {
+using ::ostream;
+using ::istream;
+using ::ofstream;
+using ::ifstream;
+using ::cout;
+using ::cin;
+using ::cerr;
+using ::clog;
+using ::endl;
+using ::ios;
+using ::vector;
+using ::dec;
+using ::hex;
+using ::setfill;
+using ::setw;
 };
 
 

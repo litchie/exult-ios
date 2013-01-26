@@ -27,48 +27,40 @@ namespace Pentagram {
 
 template<class uintX, class Manip, class uintS> class BilinearScalerInternal {
 public:
-static bool ScaleBilinear( SDL_Surface *tex, sint32 sx, sint32 sy, sint32 sw, sint32 sh, 
-				uint8* pixel, sint32 dw, sint32 dh, sint32 pitch, bool clamp_src)
-{
+	static bool ScaleBilinear(SDL_Surface *tex, sint32 sx, sint32 sy, sint32 sw, sint32 sh,
+	                          uint8 *pixel, sint32 dw, sint32 dh, sint32 pitch, bool clamp_src) {
 
-	// 2x Scaling
-	if ((sw*2 == dw) && (sh*2 == dh) && !(sh%4) && !(sw%4))
-	{
-		return BilinearScalerInternal_2x<uintX,Manip,uintS>(tex,sx,sy,sw,sh,pixel,dw,dh,pitch,clamp_src);
-	}
-	// 2 X 2.4 Y
-	else if ((sw*2 == dw) && (dh*5 == sh*12) && !(sh%5) && !(sw%4))
-	{
-		return BilinearScalerInternal_X2Y24<uintX,Manip,uintS>(tex,sx,sy,sw,sh,pixel,dw,dh,pitch,clamp_src);
-	}
-	// 1 X 1.2 Y 
-	else if ((sw == dw) && (dh*5 == sh*6) && !(sh%5) && !(sw%4))
-	{
-		return BilinearScalerInternal_X1Y12<uintX,Manip,uintS>(tex,sx,sy,sw,sh,pixel,dw,dh,pitch,clamp_src);
-	}
-	// Arbitrary 
-	else if (!(sh%4) && !(sw%4))
-	{
-		return BilinearScalerInternal_Arb<uintX,Manip,uintS>(tex,sx,sy,sw,sh,pixel,dw,dh,pitch,clamp_src);
-	}
-	else
-	{
-		int ow = sw&3;
-		dw -= ow*dw/sw;
-		sw -= ow;
+		// 2x Scaling
+		if ((sw * 2 == dw) && (sh * 2 == dh) && !(sh % 4) && !(sw % 4)) {
+			return BilinearScalerInternal_2x<uintX, Manip, uintS>(tex, sx, sy, sw, sh, pixel, dw, dh, pitch, clamp_src);
+		}
+		// 2 X 2.4 Y
+		else if ((sw * 2 == dw) && (dh * 5 == sh * 12) && !(sh % 5) && !(sw % 4)) {
+			return BilinearScalerInternal_X2Y24<uintX, Manip, uintS>(tex, sx, sy, sw, sh, pixel, dw, dh, pitch, clamp_src);
+		}
+		// 1 X 1.2 Y
+		else if ((sw == dw) && (dh * 5 == sh * 6) && !(sh % 5) && !(sw % 4)) {
+			return BilinearScalerInternal_X1Y12<uintX, Manip, uintS>(tex, sx, sy, sw, sh, pixel, dw, dh, pitch, clamp_src);
+		}
+		// Arbitrary
+		else if (!(sh % 4) && !(sw % 4)) {
+			return BilinearScalerInternal_Arb<uintX, Manip, uintS>(tex, sx, sy, sw, sh, pixel, dw, dh, pitch, clamp_src);
+		} else {
+			int ow = sw & 3;
+			dw -= ow * dw / sw;
+			sw -= ow;
 
-		int oh = sh&3;
-		dh -= oh*dh/sh;
-		sh -= oh;
+			int oh = sh & 3;
+			dh -= oh * dh / sh;
+			sh -= oh;
 
-		return ScaleBilinear(tex,sx,sy,sw,sh,pixel,dw,dh,pitch,clamp_src);
+			return ScaleBilinear(tex, sx, sy, sw, sh, pixel, dw, dh, pitch, clamp_src);
+		}
 	}
-}
 };
 
 
-BilinearScaler::BilinearScaler() : ArbScaler()
-{
+BilinearScaler::BilinearScaler() : ArbScaler() {
 	Scale8To8 = 0;
 	Scale8To32 = BilinearScalerInternal<uint32, Manip8to32, uint8>::ScaleBilinear;
 	Scale32To32 = BilinearScalerInternal<uint32, Manip32to32, uint32>::ScaleBilinear;
@@ -84,11 +76,21 @@ BilinearScaler::BilinearScaler() : ArbScaler()
 #endif
 }
 
-uint32 BilinearScaler::ScaleBits() const { return 0xFFFFFFFF; }
-bool BilinearScaler::ScaleArbitrary() const { return true; }
+uint32 BilinearScaler::ScaleBits() const {
+	return 0xFFFFFFFF;
+}
+bool BilinearScaler::ScaleArbitrary() const {
+	return true;
+}
 
-const char *BilinearScaler::ScalerName() const { return "bilinear"; }
-const char *BilinearScaler::ScalerDesc() const { return "Bilinear Filtering Scaler"; }
-const char *BilinearScaler::ScalerCopyright() const { return "Copyright (C) 2005 The Pentagram Team, 2010 The Exult Team"; }
+const char *BilinearScaler::ScalerName() const {
+	return "bilinear";
+}
+const char *BilinearScaler::ScalerDesc() const {
+	return "Bilinear Filtering Scaler";
+}
+const char *BilinearScaler::ScalerCopyright() const {
+	return "Copyright (C) 2005 The Pentagram Team, 2010 The Exult Team";
+}
 
 }

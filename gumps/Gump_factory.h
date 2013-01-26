@@ -27,39 +27,38 @@ class Gump;
 class Game_object;
 
 /*
- *	Create gumps.
+ *  Create gumps.
  */
-class  Gump_factory
-{
+class  Gump_factory {
 public:
 	typedef enum {
-		// Top-level gumps.
-		audio_options = 0,
-		book,
-		combat_options,
-		gameplay_options,
-		container,
-		jawbone,
-		notebook,
-		scroll,
-		sign,
-		slider,
-		spellbook,
-		stats,
-		video_options,
-		yesno,
-		// Widgets.
-		checkmark = 100,
-		heart,
-		disk,
-		combat,
-		halo,
-		combat_mode,
-		combat_stats
+	    // Top-level gumps.
+	    audio_options = 0,
+	    book,
+	    combat_options,
+	    gameplay_options,
+	    container,
+	    jawbone,
+	    notebook,
+	    scroll,
+	    sign,
+	    slider,
+	    spellbook,
+	    stats,
+	    video_options,
+	    yesno,
+	    // Widgets.
+	    checkmark = 100,
+	    heart,
+	    disk,
+	    combat,
+	    halo,
+	    combat_mode,
+	    combat_stats
 	} Gump_factory_tag;
 private:
-	typedef std::map<int,Gump*> Lookup_map;
-	Lookup_map table;		// Lookup by shape.
+	typedef std::map<int, Gump *> Lookup_map;
+	Lookup_map table;       // Lookup by shape.
 public:
 	Gump_factory();
 	~Gump_factory();

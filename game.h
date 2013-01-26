@@ -36,8 +36,7 @@ class Configuration;
 class BaseGameInfo;
 class Shape_frame;
 
-struct str_int_pair
-{
+struct str_int_pair {
 	const char *str;
 	int  num;
 };
@@ -53,16 +52,16 @@ private:
 	static Exult_Game game_type;
 	static bool expansion;
 #ifndef DONT_HAVE_HASH_MAP
-	typedef unordered_map<const char*, int, hashstr, eqstr> shapes_map;
-	typedef unordered_map<const char*, str_int_pair, hashstr, eqstr> rsc_map;
+	typedef unordered_map<const char *, int, hashstr, eqstr> shapes_map;
+	typedef unordered_map<const char *, str_int_pair, hashstr, eqstr> rsc_map;
 #else /* !HAVE_HASH_MAP */
-	typedef std::map<const char*, int, ltstr> shapes_map;
-	typedef std::map<const char*, str_int_pair, ltstr> rsc_map;
+	typedef std::map<const char *, int, ltstr> shapes_map;
+	typedef std::map<const char *, str_int_pair, ltstr> rsc_map;
 #endif
 	shapes_map shapes;
 	rsc_map resources;
-	Configuration *xml;		/* Shapes/resources from XML file. */
-	std::vector<const char*> xmlstrings;
+	Configuration *xml;     /* Shapes/resources from XML file. */
+	std::vector<const char *> xmlstrings;
 	Mouse *menu_mouse;
 	static std::string gametitle;
 	static std::string modtitle;
@@ -71,45 +70,59 @@ protected:
 	static bool editing_flag;
 	int topx, topy, centerx, centery;
 	Vga_file menushapes;
-	bool	jive;
+	bool    jive;
 
 public:
 	Game_window *gwin;
 	Image_window8 *win;
 	Image_buffer8 *ibuf;
-	//	Palette pal;
+	//  Palette pal;
 
 	Game();
 	virtual ~Game();
 
-	static void set_new_game() { new_game_flag = true; }
-	static bool is_new_game() { return new_game_flag; }
-	static bool is_editing() { return editing_flag; }
+	static void set_new_game() {
+		new_game_flag = true;
+	}
+	static bool is_new_game() {
+		return new_game_flag;
+	}
+	static bool is_editing() {
+		return editing_flag;
+	}
 	static Game *create_game(BaseGameInfo *mygame);
-	static Exult_Game get_game_type() { return game_type; }
-	static bool has_expansion() { return expansion; }
+	static Exult_Game get_game_type() {
+		return game_type;
+	}
+	static bool has_expansion() {
+		return expansion;
+	}
 
-	static const char *get_avname ();
-	static int get_avsex ();
-	static int get_avskin ();
-	static void set_avname (const char *name);
-	static void set_avsex (int sex);
-	static void set_avskin (int skin);
-	static void clear_avname ();
-	static void clear_avsex ();
-	static void clear_avskin ();
+	static const char *get_avname();
+	static int get_avsex();
+	static int get_avskin();
+	static void set_avname(const char *name);
+	static void set_avsex(int sex);
+	static void set_avskin(int skin);
+	static void clear_avname();
+	static void clear_avsex();
+	static void clear_avskin();
 
-	static std::string get_gametitle() { return gametitle; }
-	static std::string get_modtitle() { return modtitle; }
-	
-	virtual void play_intro() =0;
-	virtual void end_game(bool success) =0;
-	virtual void top_menu() =0;
-	virtual void show_quotes() =0;
-	virtual void show_credits() =0;
-	virtual bool new_game(Vga_file &shapes) =0;
-	virtual int  get_start_tile_x() =0;
-	virtual int  get_start_tile_y() =0;
+	static std::string get_gametitle() {
+		return gametitle;
+	}
+	static std::string get_modtitle() {
+		return modtitle;
+	}
+
+	virtual void play_intro() = 0;
+	virtual void end_game(bool success) = 0;
+	virtual void top_menu() = 0;
+	virtual void show_quotes() = 0;
+	virtual void show_credits() = 0;
+	virtual bool new_game(Vga_file &shapes) = 0;
+	virtual int  get_start_tile_x() = 0;
+	virtual int  get_start_tile_y() = 0;
 	virtual void show_journey_failed() = 0;
 	virtual Shape_frame *get_menu_shape() = 0;
 
@@ -117,17 +130,25 @@ public:
 	void add_shape(const char *name, int shapenum);
 	int get_shape(const char *name);
 	void add_resource(const char *name, const char *str, int num);
-	const str_int_pair& get_resource(const char *name);
+	const str_int_pair &get_resource(const char *name);
 	void write_game_xml();
 	bool read_game_xml(const char *name1 = 0);
 
 	bool show_menu(bool skip = false);
 	void journey_failed_text();
-	void set_jive () {jive = true;}
-	void clear_jive () {jive = false;}
+	void set_jive() {
+		jive = true;
+	}
+	void clear_jive() {
+		jive = false;
+	}
 
-	inline static unsigned int get_ticks() { return ticks; }
-	inline static void set_ticks(unsigned int t) { ticks = t; }
+	inline static unsigned int get_ticks() {
+		return ticks;
+	}
+	inline static void set_ticks(unsigned int t) {
+		ticks = t;
+	}
 	void disable_direct_gl_render();
 	void enable_direct_gl_render();
 	void non_gl_blit();

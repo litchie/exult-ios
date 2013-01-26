@@ -1,7 +1,7 @@
 /**
- **	Ucclass.h - Usecode compiler classes.
+ ** Ucclass.h - Usecode compiler classes.
  **
- **	Written: 8/26/06 - JSF
+ ** Written: 8/26/06 - JSF
  **/
 
 /*
@@ -41,225 +41,194 @@ using std::vector;
 int Uc_class::last_num = -1;
 
 /*
- *	Create.
+ *  Create.
  */
 
-Uc_class::Uc_class
-	(
-	char *nm
-	) : name(nm), scope(0), num_vars(0), base_class(0)
-	{
+Uc_class::Uc_class(
+    char *nm
+) : name(nm), scope(0), num_vars(0), base_class(0) {
 	num = ++last_num;
-	}
+}
 
-Uc_class::Uc_class
-	(
-	char *nm,
-	Uc_class *base
-	) : name(nm), scope(&base->scope), num_vars(base->num_vars),
-		methods(base->methods), base_class(base)
-	{
+Uc_class::Uc_class(
+    char *nm,
+    Uc_class *base
+) : name(nm), scope(&base->scope), num_vars(base->num_vars),
+	methods(base->methods), base_class(base) {
 	num = ++last_num;
 	for (vector<Uc_function *>::iterator it = methods.begin();
-			it != methods.end(); ++it)
+	        it != methods.end(); ++it)
 		(*it)->set_inherited();
-	}
+}
 
 /*
- *	Cleanup.
+ *  Cleanup.
  */
-Uc_class::~Uc_class
-	(
-	)
-	{
-	}
+Uc_class::~Uc_class(
+) {
+}
 
 /*
- *	Add a new class variable.
+ *  Add a new class variable.
  *
- *	Output:	New sym, or 0 if already declared.
+ *  Output: New sym, or 0 if already declared.
  */
 
-Uc_var_symbol *Uc_class::add_symbol
-	(
-	char *nm
-	)
-	{
+Uc_var_symbol *Uc_class::add_symbol(
+    char *nm
+) {
 	if (scope.is_dup(nm))
 		return 0;
-					// Create & assign slot.
+	// Create & assign slot.
 	Uc_var_symbol *var = new Uc_class_var_symbol(nm, num_vars++);
 	scope.add(var);
 	return var;
-	}
+}
 
 /*
- *	Add a new variable to the current scope.
+ *  Add a new variable to the current scope.
  *
- *	Output:	New sym, or 0 if already declared.
+ *  Output: New sym, or 0 if already declared.
  */
 
-Uc_var_symbol *Uc_class::add_symbol
-	(
-	char *nm,
-	Uc_struct_symbol *s
-	)
-	{
+Uc_var_symbol *Uc_class::add_symbol(
+    char *nm,
+    Uc_struct_symbol *s
+) {
 	if (scope.is_dup(nm))
 		return 0;
-					// Create & assign slot.
+	// Create & assign slot.
 	Uc_var_symbol *var = new Uc_class_struct_var_symbol(nm, s, num_vars++);
 	scope.add(var);
 	return var;
-	}
+}
 
 /*
- *	Add alias to class variable.
+ *  Add alias to class variable.
  *
- *	Output:	New sym, or 0 if already declared.
+ *  Output: New sym, or 0 if already declared.
  */
 
-Uc_var_symbol *Uc_class::add_alias
-	(
-	char *nm,
-	Uc_var_symbol *var
-	)
-	{
+Uc_var_symbol *Uc_class::add_alias(
+    char *nm,
+    Uc_var_symbol *var
+) {
 	if (scope.is_dup(nm))
 		return 0;
-					// Create & assign slot.
+	// Create & assign slot.
 	Uc_alias_symbol *alias = new Uc_alias_symbol(nm, var);
 	scope.add(alias);
 	return alias;
-	}
+}
 
 /*
- *	Add alias to class variable.
+ *  Add alias to class variable.
  *
- *	Output:	New sym, or 0 if already declared.
+ *  Output: New sym, or 0 if already declared.
  */
 
-Uc_var_symbol *Uc_class::add_alias
-	(
-	char *nm,
-	Uc_var_symbol *v,
-	Uc_struct_symbol *struc
-	)
-	{
+Uc_var_symbol *Uc_class::add_alias(
+    char *nm,
+    Uc_var_symbol *v,
+    Uc_struct_symbol *struc
+) {
 	if (scope.is_dup(nm))
 		return 0;
-					// Create & assign slot.
+	// Create & assign slot.
 	Uc_var_symbol *var = dynamic_cast<Uc_var_symbol *>(v->get_sym());
 	Uc_alias_symbol *alias = new Uc_struct_alias_symbol(nm, var, struc);
 	scope.add(alias);
 	return alias;
-	}
+}
 
-#if 0	// ++++ Not yet.
+#if 0   // ++++ Not yet.
 /*
- *	Add alias to class variable.
+ *  Add alias to class variable.
  *
- *	Output:	New sym, or 0 if already declared.
+ *  Output: New sym, or 0 if already declared.
  */
 
-Uc_var_symbol *Uc_class::add_alias
-	(
-	char *nm,
-	Uc_var_symbol *v,
-	Uc_class *c
-	)
-	{
+Uc_var_symbol *Uc_class::add_alias(
+    char *nm,
+    Uc_var_symbol *v,
+    Uc_class *c
+) {
 	if (scope.is_dup(nm))
 		return 0;
-					// Create & assign slot.
+	// Create & assign slot.
 	Uc_var_symbol *var = dynamic_cast<Uc_var_symbol *>(v->get_sym());
 	Uc_alias_symbol *alias = new Uc_class_alias_symbol(nm, var, c);
 	scope.add(alias);
 	return alias;
-	}
+}
 #endif
 
 /*
- *	Add method.
+ *  Add method.
  */
 
-void Uc_class::add_method
-	(
-	Uc_function *m
-	)
-	{
+void Uc_class::add_method(
+    Uc_function *m
+) {
 	// If this is a duplicate inherited function,
 	// or an externed class method, override it.
 	for (vector<Uc_function *>::iterator it = methods.begin();
-			it != methods.end(); ++it)
-		{
+	        it != methods.end(); ++it) {
 		Uc_function *method = *it;
-		if (!strcmp(m->get_name(), method->get_name()))
-			{
-			if (method->is_inherited() || method->is_externed())
-				{
+		if (!strcmp(m->get_name(), method->get_name())) {
+			if (method->is_inherited() || method->is_externed()) {
 				m->set_method_num(method->get_method_num());
 				*it = m;
 				return;
-				}
-			else
-				{
+			} else {
 				char buf[150];
 				sprintf(buf, "Duplicate decl. of virtual member function '%s'.", m->get_name());
 				Uc_location::yyerror(buf);
 				return;
-				}
 			}
 		}
-	m->set_method_num(methods.size());
-	methods.push_back(m); 
 	}
+	m->set_method_num(methods.size());
+	methods.push_back(m);
+}
 
 /*
- *	Generate Usecode.
+ *  Generate Usecode.
  */
 
-void Uc_class::gen
-	(
-	std::ostream& out
-	)
-	{
+void Uc_class::gen(
+    std::ostream &out
+) {
 	vector<Uc_function *>::iterator it;
-	for (it = methods.begin(); it != methods.end(); ++it)
-		{
+	for (it = methods.begin(); it != methods.end(); ++it) {
 		Uc_function *m = *it;
 		if (m->get_parent() == &scope)
-			m->gen(out);	// Generate function if its ours.
-		}
+			m->gen(out);    // Generate function if its ours.
 	}
+}
 
 /*
- *	Create symbol for this function.
+ *  Create symbol for this function.
  */
 
-Usecode_symbol *Uc_class::create_sym
-	(
-	)
-	{
-	Usecode_class_symbol *cs = new Usecode_class_symbol(name.c_str(), 
-				Usecode_symbol::class_scope, num, num_vars);
+Usecode_symbol *Uc_class::create_sym(
+) {
+	Usecode_class_symbol *cs = new Usecode_class_symbol(name.c_str(),
+	        Usecode_symbol::class_scope, num, num_vars);
 	vector<Uc_function *>::iterator it;
-	for (it = methods.begin(); it != methods.end(); ++it)
-		{
+	for (it = methods.begin(); it != methods.end(); ++it) {
 		Uc_function *m = *it;
 		cs->add_sym(m->create_sym());
 		cs->add_method_num(m->get_usecode_num());
-		}
-	return cs;
 	}
+	return cs;
+}
 
-bool Uc_class::is_class_compatible
-	(
-	const char *nm
-	)
-	{
+bool Uc_class::is_class_compatible(
+    const char *nm
+) {
 	if (name == nm)
 		return true;
 	else
 		return base_class ? base_class->is_class_compatible(nm) : false;
-	}
+}

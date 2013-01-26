@@ -1,7 +1,7 @@
 /**
- **	npcdollinf.cc - NPC Paperdoll information from 'paperdol_info.txt'.
+ ** npcdollinf.cc - NPC Paperdoll information from 'paperdol_info.txt'.
  **
- **	Written: 06/01/2008 - Marzo
+ ** Written: 06/01/2008 - Marzo
  **/
 
 /*
@@ -27,19 +27,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "npcdollinf.h"
 using std::istream;
 
-bool Paperdoll_npc::read
-	(
-	std::istream& in,	// Input stream.
-	int version,		// Data file version.
-	Exult_Game game		// Loading BG file.
-	)
-	{
+bool Paperdoll_npc::read(
+    std::istream &in,   // Input stream.
+    int version,        // Data file version.
+    Exult_Game game     // Loading BG file.
+) {
 	int sexflag = ReadInt(in);
-	if (sexflag == -0xff)	// means delete entry.
-		{
+	if (sexflag == -0xff) { // means delete entry.
 		set_invalid(true);
 		return true;
-		}
+	}
 	is_female = sexflag != 0;
 	translucent = ReadInt(in) != 0;
 	body_shape = ReadInt(in);
@@ -52,4 +49,4 @@ bool Paperdoll_npc::read
 	arms_frame[1] = ReadInt(in);
 	arms_frame[2] = ReadInt(in);
 	return true;
-	}
+}

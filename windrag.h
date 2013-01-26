@@ -10,8 +10,8 @@
 // A useful structure for Winstudioobj
 class windragdata {
 	sint32 id;
-	uint32 size;			// Size of data
-	unsigned char * data;
+	uint32 size;            // Size of data
+	unsigned char *data;
 public:
 
 	inline unsigned char *get_data() {
@@ -32,10 +32,10 @@ public:
 		std::memcpy(data, o.data, size);
 	}
 	// Read from buffer
-	inline windragdata(unsigned char *buf) :data(0) {
+	inline windragdata(unsigned char *buf) : data(0) {
 		operator = (buf);
 	}
-	inline windragdata(sint32 i, uint32 s, unsigned char * d) :
+	inline windragdata(sint32 i, uint32 s, unsigned char *d) :
 		id(i), size(s), data(new unsigned char [s]) {
 		std::memcpy(data, d, size);
 	}
@@ -50,7 +50,7 @@ public:
 		Write4(buf, size);
 		std::memcpy(buf, data, size);
 	}
-	inline windragdata & operator = (unsigned char *buf) {
+	inline windragdata &operator = (unsigned char *buf) {
 		delete [] data;
 
 		id = Read4(buf);
@@ -60,7 +60,7 @@ public:
 		return *this;
 	}
 	// Copy constructor
-	inline windragdata & operator = (windragdata &o) {
+	inline windragdata &operator = (windragdata &o) {
 		if (this != &o) {
 			delete [] data;
 			id = o.id;
@@ -70,7 +70,7 @@ public:
 		}
 		return *this;
 	}
-	inline void assign(sint32 i, uint32 s, unsigned char * d) {
+	inline void assign(sint32 i, uint32 s, unsigned char *d) {
 		delete [] data;
 		id = i;
 		size = s;
@@ -83,8 +83,7 @@ public:
 /*
  * The 'IDropTarget' implementation
  */
-class FAR Windnd : public IDropTarget
-	{
+class FAR Windnd : public IDropTarget {
 private:
 	HWND gamewin;
 
@@ -105,7 +104,7 @@ private:
 	int prevx, prevy;
 	union {
 		struct {
-			int file,shape,frame;
+			int file, shape, frame;
 		} shape;
 		struct  {
 			int chunknum;
@@ -122,48 +121,47 @@ private:
 
 public:
 	Windnd(HWND hgwnd, Move_shape_handler_fun, Move_combo_handler_fun,
-			Drop_shape_handler_fun, Drop_chunk_handler_fun,
-			Drop_npc_handler_fun npcfun, Drop_combo_handler_fun);
+	       Drop_shape_handler_fun, Drop_chunk_handler_fun,
+	       Drop_npc_handler_fun npcfun, Drop_combo_handler_fun);
 	Windnd(HWND hgwnd, Drop_shape_handler_fun shapefun,
-	Drop_chunk_handler_fun cfun, Drop_shape_handler_fun facefun, void *d);
+	       Drop_chunk_handler_fun cfun, Drop_shape_handler_fun facefun, void *d);
 	~Windnd();
 
-	STDMETHOD(QueryInterface)(REFIID iid, void ** ppvObject);
-	STDMETHOD_(ULONG,AddRef)(void);
-	STDMETHOD_(ULONG,Release)(void);
+	STDMETHOD(QueryInterface)(REFIID iid, void **ppvObject);
+	STDMETHOD_(ULONG, AddRef)(void);
+	STDMETHOD_(ULONG, Release)(void);
 
-	STDMETHOD(DragEnter)(IDataObject * pDataObject,
-	  DWORD grfKeyState,
-	  POINTL pt,
-	  DWORD * pdwEffect);
+	STDMETHOD(DragEnter)(IDataObject *pDataObject,
+	                     DWORD grfKeyState,
+	                     POINTL pt,
+	                     DWORD *pdwEffect);
 	STDMETHOD(DragOver)(DWORD grfKeyState,
-	  POINTL pt,
-	  DWORD * pdwEffect);
+	                    POINTL pt,
+	                    DWORD *pdwEffect);
 	STDMETHOD(DragLeave)(void);
-	STDMETHOD(Drop)(IDataObject * pDataObject,
-	  DWORD grfKeyState,
-	  POINTL pt,
-	  DWORD * pdwEffect);
+	STDMETHOD(Drop)(IDataObject *pDataObject,
+	                DWORD grfKeyState,
+	                POINTL pt,
+	                DWORD *pdwEffect);
 
-	bool is_valid(IDataObject * pDataObject);
+	bool is_valid(IDataObject *pDataObject);
 
-	static void CreateStudioDropDest(Windnd *& windnd, HWND &hWnd,
-					Drop_shape_handler_fun shapefun,
-					Drop_chunk_handler_fun cfun,
-					Drop_shape_handler_fun facefun,
-					void *udata);
+	static void CreateStudioDropDest(Windnd  *&windnd, HWND &hWnd,
+	                                 Drop_shape_handler_fun shapefun,
+	                                 Drop_chunk_handler_fun cfun,
+	                                 Drop_shape_handler_fun facefun,
+	                                 void *udata);
 
-	static void DestroyStudioDropDest(Windnd *& windnd, HWND &hWnd);
+	static void DestroyStudioDropDest(Windnd  *&windnd, HWND &hWnd);
 };
 
 /*
  * The IDropSource implementation
  */
 
-class FAR Windropsource :  public IDropSource
-{
+class FAR Windropsource :  public IDropSource {
 private:
-    DWORD m_cRef;
+	DWORD m_cRef;
 
 	HWND drag_shape;
 	HBITMAP drag_bitmap;
@@ -173,11 +171,11 @@ public:
 	Windropsource(HBITMAP pdrag_bitmap, int x0, int y0);
 	~Windropsource();
 
-	STDMETHOD(QueryInterface)(REFIID iid, void ** ppvObject);
-	STDMETHOD_(ULONG,AddRef)(void);
-	STDMETHOD_(ULONG,Release)(void);
+	STDMETHOD(QueryInterface)(REFIID iid, void **ppvObject);
+	STDMETHOD_(ULONG, AddRef)(void);
+	STDMETHOD_(ULONG, Release)(void);
 
-	STDMETHOD(QueryContinueDrag)(BOOL fEscapePressed,DWORD grfKeyState);
+	STDMETHOD(QueryContinueDrag)(BOOL fEscapePressed, DWORD grfKeyState);
 	STDMETHOD(GiveFeedback)(DWORD dwEffect);
 
 };
@@ -185,10 +183,9 @@ public:
 /*
  * The IDataObject implementation
  */
-class FAR Winstudioobj :  public IDataObject
-{
+class FAR Winstudioobj :  public IDataObject {
 private:
-    DWORD m_cRef;
+	DWORD m_cRef;
 
 	HBITMAP drag_image;
 
@@ -198,40 +195,40 @@ public:
 	Winstudioobj(windragdata pdata);
 	~Winstudioobj();
 
-	STDMETHOD(QueryInterface)(REFIID iid, void ** ppvObject);
-	STDMETHOD_(ULONG,AddRef)(void);
-	STDMETHOD_(ULONG,Release)(void);
+	STDMETHOD(QueryInterface)(REFIID iid, void **ppvObject);
+	STDMETHOD_(ULONG, AddRef)(void);
+	STDMETHOD_(ULONG, Release)(void);
 
-	STDMETHOD(GetData)(FORMATETC * pFormatetc, STGMEDIUM * pmedium);
-	STDMETHOD(GetDataHere)(FORMATETC * pFormatetc, STGMEDIUM * pmedium);
+	STDMETHOD(GetData)(FORMATETC *pFormatetc, STGMEDIUM *pmedium);
+	STDMETHOD(GetDataHere)(FORMATETC *pFormatetc, STGMEDIUM *pmedium);
 	STDMETHOD(QueryGetData)(
-	  FORMATETC * pFormatetc
+	    FORMATETC *pFormatetc
 	);
 	STDMETHOD(GetCanonicalFormatEtc)(
-	  FORMATETC * pFormatetcIn,
-	  FORMATETC * pFormatetcOut
-	  );
+	    FORMATETC *pFormatetcIn,
+	    FORMATETC *pFormatetcOut
+	);
 	STDMETHOD(SetData)(
-	  FORMATETC * pFormatetc,
-	  STGMEDIUM * pmedium,
-	  BOOL fRelease
-	  );
+	    FORMATETC *pFormatetc,
+	    STGMEDIUM *pmedium,
+	    BOOL fRelease
+	);
 	STDMETHOD(EnumFormatEtc)(
-	  DWORD dwDirection,
-	  IEnumFORMATETC ** ppenumFormatetc
-	  );
+	    DWORD dwDirection,
+	    IEnumFORMATETC **ppenumFormatetc
+	);
 	STDMETHOD(DAdvise)(
-	  FORMATETC * pFormatetc,
-	  DWORD advf,
-	  IAdviseSink * pAdvSink,
-	  DWORD * pdwConnection
-	  );
+	    FORMATETC *pFormatetc,
+	    DWORD advf,
+	    IAdviseSink *pAdvSink,
+	    DWORD *pdwConnection
+	);
 	STDMETHOD(DUnadvise)(
-	  DWORD dwConnection
-	  );
+	    DWORD dwConnection
+	);
 	STDMETHOD(EnumDAdvise)(
-	  IEnumSTATDATA ** ppenumAdvise
-	  );
+	    IEnumSTATDATA **ppenumAdvise
+	);
 };
 
 #endif

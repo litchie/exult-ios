@@ -1,5 +1,5 @@
 /*
- *	stackframe.h - a usecode interpreter stack frame
+ *  stackframe.h - a usecode interpreter stack frame
  *
  *  Copyright (C) 2002  The Exult Team
  *
@@ -28,11 +28,10 @@ class Usecode_function;
 class Game_object;
 class Usecode_value;
 
-class Stack_frame
-{
- public:
+class Stack_frame {
+public:
 	Stack_frame(Usecode_function *fun, int event,
-				Game_object *caller, int chain, int depth);
+	            Game_object *caller, int chain, int depth);
 	~Stack_frame();
 
 	Usecode_function *function;
@@ -58,12 +57,15 @@ class Stack_frame
 
 	Usecode_value *save_sp;
 
-	Usecode_value& get_this()
-		{ return locals[num_args - 1]; }
+	Usecode_value &get_this() {
+		return locals[num_args - 1];
+	}
 	static int LastCallChainID;
-	static int getCallChainID() { return ++LastCallChainID; }
+	static int getCallChainID() {
+		return ++LastCallChainID;
+	}
 };
 
-std::ostream& operator<<(std::ostream& out, Stack_frame& val);
+std::ostream &operator<<(std::ostream &out, Stack_frame &val);
 
 #endif

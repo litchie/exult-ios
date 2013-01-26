@@ -7,7 +7,7 @@
  * author: Aurelien Marchand
  * licence: GPL
  * date: 20/06/03
- * 
+ *
  * syntax: smooth [-i image_in] [-o image_out.bmp] [-c config_file]
  * image_in must be in indexed image with less than 256 colours (whatever type: BMP, GIF, PNG)
  * and of resolution 192x192
@@ -33,33 +33,33 @@
 #include "config.h"
 #include "image.h"
 
-void clean_up(int ret){
-  // clean up everything that might be loaded
-  int i;
+void clean_up(int ret) {
+	// clean up everything that might be loaded
+	int i;
 
-  // clean up list holding handles
-  if(hdl_list != NULL){
-    delete_list(hdl_list);
-  }
+	// clean up list holding handles
+	if (hdl_list != NULL) {
+		delete_list(hdl_list);
+	}
 
-  // clean up action_table
-  for(i=0;i<MAX_COLOURS;i++){
-    if(action_table[i] != NULL){
-      delete_list(action_table[i]);
-    }
-  }
-  
-  // clean up image_in
-  if(g_statics.image_in != NULL){
-    SDL_FreeSurface(g_statics.image_in);
-  }
-  // clean up image_out
-  if(g_variables.image_out != NULL){
-    SDL_FreeSurface(g_variables.image_out);
-  }
+	// clean up action_table
+	for (i = 0; i < MAX_COLOURS; i++) {
+		if (action_table[i] != NULL) {
+			delete_list(action_table[i]);
+		}
+	}
 
-  // quit
-  exit(ret);
+	// clean up image_in
+	if (g_statics.image_in != NULL) {
+		SDL_FreeSurface(g_statics.image_in);
+	}
+	// clean up image_out
+	if (g_variables.image_out != NULL) {
+		SDL_FreeSurface(g_variables.image_out);
+	}
+
+	// quit
+	exit(ret);
 }
 
 #ifdef WIN32
@@ -71,67 +71,67 @@ int __stdcall WinMain(HINSTANCE hInst, HINSTANCE hPrevInst,  LPSTR lpCmdLine, in
 }
 #endif
 
-int main(int argc, char **argv){
-  
-  FILE *config;
-  int r;
+int main(int argc, char **argv) {
 
-  // initialise some variables
-  hdl_list = NULL;
-  for(r=0;r<MAX_COLOURS;r++){
-    action_table[r]= NULL;
-  }
+	FILE *config;
+	int r;
 
-  // make sure we can understand the command line
-  if(read_param(argc,argv) < 0){
-    fprintf(stderr,"ERROR: command line invalid\n");
-    exit(-1);
-  }
+	// initialise some variables
+	hdl_list = NULL;
+	for (r = 0; r < MAX_COLOURS; r++) {
+		action_table[r] = NULL;
+	}
 
-  // initialise SDL
-  if((SDL_Init(SDL_INIT_VIDEO) == -1)){
-    printf("Couldn't initialise SDL: %s\n",SDL_GetError());
-    exit(-1);
-  }
-  
-  atexit(SDL_Quit);
+	// make sure we can understand the command line
+	if (read_param(argc, argv) < 0) {
+		fprintf(stderr, "ERROR: command line invalid\n");
+		exit(-1);
+	}
 
-  // make sure the source image is readable
-  if(img_read(g_statics.filein) < 0){
-    //    fprintf(stderr,"ERROR: problem with image %s\n",filein);
-    clean_up(-1);
-  }
+	// initialise SDL
+	if ((SDL_Init(SDL_INIT_VIDEO) == -1)) {
+		printf("Couldn't initialise SDL: %s\n", SDL_GetError());
+		exit(-1);
+	}
 
-  // make sure the config file is readable
-  if ((config=open_config(g_statics.config_file)) == NULL){
-    clean_up(-1);
-  }
+	atexit(SDL_Quit);
 
-  // make sure it has been read properly
-  if (read_config(config) < 0){
-    clean_up(-1);
-  }
-  // make sure we can close it properly
-  if (close_config(config) == EOF){ // shouldn't happen, but you never know
-    perror(""); 
-    clean_up(-1);
-  }
+	// make sure the source image is readable
+	if (img_read(g_statics.filein) < 0) {
+		//    fprintf(stderr,"ERROR: problem with image %s\n",filein);
+		clean_up(-1);
+	}
 
-  // time to apply the transformation
-  if (process_image() < 0){
-    // problem
-    clean_up(-1);
-  }
-  
-  // make sure we are able to write the destination image
-  if(img_write(g_statics.fileout) < 0){
-    //    fprintf(stderr,"ERROR: problem with image %s\n",filein);
-    clean_up(-1);
-  }
+	// make sure the config file is readable
+	if ((config = open_config(g_statics.config_file)) == NULL) {
+		clean_up(-1);
+	}
 
-  // all is good, we can quit.
-  SDL_Quit();
-  printf("Done!\n");
-  clean_up(0);
-  return(0); // to avoid warnings
+	// make sure it has been read properly
+	if (read_config(config) < 0) {
+		clean_up(-1);
+	}
+	// make sure we can close it properly
+	if (close_config(config) == EOF) { // shouldn't happen, but you never know
+		perror("");
+		clean_up(-1);
+	}
+
+	// time to apply the transformation
+	if (process_image() < 0) {
+		// problem
+		clean_up(-1);
+	}
+
+	// make sure we are able to write the destination image
+	if (img_write(g_statics.fileout) < 0) {
+		//    fprintf(stderr,"ERROR: problem with image %s\n",filein);
+		clean_up(-1);
+	}
+
+	// all is good, we can quit.
+	SDL_Quit();
+	printf("Done!\n");
+	clean_up(0);
+	return(0); // to avoid warnings
 }

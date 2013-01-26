@@ -27,20 +27,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "npcdollinf.h"
 
 Face_button::Face_button(Gump *par, int px, int py, Actor *a)
-	: Gump_button(par, 0, px, py), actor(a)
-{
+	: Gump_button(par, 0, px, py), actor(a) {
 	Paperdoll_npc *npcinfo = a->get_info().get_npc_paperdoll();
 
-	if (!npcinfo)
-		{
-		Shape_info& inf = ShapeID::get_info(a->get_sexed_coloured_shape());
+	if (!npcinfo) {
+		Shape_info &inf = ShapeID::get_info(a->get_sexed_coloured_shape());
 		npcinfo = inf.get_npc_paperdoll();
-		}
-	if (!npcinfo)
-		{
-		Shape_info& inf = ShapeID::get_info(a->get_shape_real());
-		npcinfo = inf.get_npc_paperdoll_safe(a->get_type_flag(Actor::tf_sex)!= 0);
-		}
+	}
+	if (!npcinfo) {
+		Shape_info &inf = ShapeID::get_info(a->get_shape_real());
+		npcinfo = inf.get_npc_paperdoll_safe(a->get_type_flag(Actor::tf_sex) != 0);
+	}
 
 	set_shape(npcinfo->get_head_shape());
 	set_frame(npcinfo->get_head_frame());
@@ -49,44 +46,36 @@ Face_button::Face_button(Gump *par, int px, int py, Actor *a)
 }
 
 
-void Face_button::double_clicked(int x, int y)
-{
+void Face_button::double_clicked(int x, int y) {
 	actor->show_inventory();
 }
 
-void Face_button::paint
-	(
-	)
-{
+void Face_button::paint(
+) {
 	int px = 0;
 	int py = 0;
 
-	if (parent)
-	{
+	if (parent) {
 		px = parent->get_x();
 		py = parent->get_y();
 	}
-	paint_shape(x+px, y+py, translucent);
+	paint_shape(x + px, y + py, translucent);
 }
 
-void Face_button::update_widget()
-{
+void Face_button::update_widget() {
 	Paperdoll_npc *npcinfo = actor->get_info().get_npc_paperdoll();
 
-	if (!npcinfo)
-		{
-		Shape_info& inf = ShapeID::get_info(actor->get_sexed_coloured_shape());
+	if (!npcinfo) {
+		Shape_info &inf = ShapeID::get_info(actor->get_sexed_coloured_shape());
 		npcinfo = inf.get_npc_paperdoll();
-		}
-	if (!npcinfo)
-		{
-		Shape_info& inf = ShapeID::get_info(actor->get_shape_real());
+	}
+	if (!npcinfo) {
+		Shape_info &inf = ShapeID::get_info(actor->get_shape_real());
 		npcinfo = inf.get_npc_paperdoll_safe(actor->get_type_flag(Actor::tf_sex) != 0);
-		}
+	}
 
 	if (get_shapenum() != npcinfo->get_head_shape() ||
-		get_framenum() != npcinfo->get_head_frame())
-	{
+	        get_framenum() != npcinfo->get_head_frame()) {
 		gwin->add_dirty(get_rect());
 		set_shape(npcinfo->get_head_shape());
 		set_frame(npcinfo->get_head_frame());

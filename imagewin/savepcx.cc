@@ -49,13 +49,13 @@ using std::endl;
 #define qtohs(x) (x)
 #else
 #define qtohl(x) \
-		((Uint32)((((Uint32)(x) & 0x000000ffU) << 24) | \
-				  (((Uint32)(x) & 0x0000ff00U) <<  8) | \
-				  (((Uint32)(x) & 0x00ff0000U) >>  8) | \
-				  (((Uint32)(x) & 0xff000000U) >> 24)))
+	((Uint32)((((Uint32)(x) & 0x000000ffU) << 24) | \
+	          (((Uint32)(x) & 0x0000ff00U) <<  8) | \
+	          (((Uint32)(x) & 0x00ff0000U) >>  8) | \
+	          (((Uint32)(x) & 0xff000000U) >> 24)))
 #define qtohs(x) \
-		((Uint16)((((Uint16)(x) & 0x00ff) << 8) | \
-				  (((Uint16)(x) & 0xff00) >> 8)))
+	((Uint16)((((Uint16)(x) & 0x00ff) << 8) | \
+	          (((Uint16)(x) & 0xff00) >> 8)))
 #endif
 #define htoql(x) qtohl(x)
 #define htoqs(x) qtohs(x)
@@ -77,7 +77,7 @@ typedef struct PCX_Header {
 	Uint8 filler[58];
 } PCX_Header;
 
-static void writeline (SDL_RWops *dst, Uint8* buffer, int bytes) {
+static void writeline(SDL_RWops *dst, Uint8 *buffer, int bytes) {
 	Uint8 value, count, tmp;
 	Uint8 *finish = buffer + bytes;
 
@@ -87,7 +87,8 @@ static void writeline (SDL_RWops *dst, Uint8* buffer, int bytes) {
 		count = 1;
 
 		while (buffer < finish && count < 63 && *buffer == value) {
-			count++; buffer++;
+			count++;
+			buffer++;
 		}
 
 		if (value < 0xc0 && count == 1) {
@@ -101,22 +102,19 @@ static void writeline (SDL_RWops *dst, Uint8* buffer, int bytes) {
 }
 
 
-static void save_8 (SDL_RWops *dst, int width, int height,
-                    int pitch, Uint8* buffer)
-{
+static void save_8(SDL_RWops *dst, int width, int height,
+                   int pitch, Uint8 *buffer) {
 	int row;
 
-	for (row = 0; row < height; ++row) 
-	{
-		writeline (dst, buffer, width);
+	for (row = 0; row < height; ++row) {
+		writeline(dst, buffer, width);
 		buffer += pitch;
 	}
 }
 
 
-static void save_24 (SDL_RWops *dst, int width, int height,
-                     int pitch, Uint8* buffer)
-{
+static void save_24(SDL_RWops *dst, int width, int height,
+                    int pitch, Uint8 *buffer) {
 	int x, y, c;
 	Uint8 *line;
 
@@ -125,17 +123,16 @@ static void save_24 (SDL_RWops *dst, int width, int height,
 	for (y = 0; y < height; ++y) {
 		for (c = 2; c >= 0; --c) {
 			for (x = 0; x < width; ++x) {
-				line[x] = buffer[(3*x) + c];
+				line[x] = buffer[(3 * x) + c];
 			}
-			writeline (dst, line, width);
+			writeline(dst, line, width);
 		}
 		buffer += pitch;
 	}
 	delete [] line;
 }
 
-static bool save_image(SDL_Surface *surface, SDL_RWops *dst)
-{
+static bool save_image(SDL_Surface *surface, SDL_RWops *dst) {
 	Uint8 *cmap = 0;
 	Uint8 *pixels;
 	Uint8 tmp;
@@ -145,7 +142,7 @@ static bool save_image(SDL_Surface *surface, SDL_RWops *dst)
 
 	width = surface->w;
 	height = surface->h;
-	pixels = reinterpret_cast<Uint8*>(surface->pixels);
+	pixels = reinterpret_cast<Uint8 *>(surface->pixels);
 	pitch = surface->pitch;
 
 	header.manufacturer = 0x0a;
@@ -154,19 +151,19 @@ static bool save_image(SDL_Surface *surface, SDL_RWops *dst)
 
 	if (surface->format->palette && surface->format->BitsPerPixel == 8) {
 		colors = surface->format->palette->ncolors;
-		cmap = new Uint8[3*colors];
+		cmap = new Uint8[3 * colors];
 		for (i = 0; i < colors; i++) {
-			cmap[3*i] = surface->format->palette->colors[i].r;
-			cmap[3*i+1] = surface->format->palette->colors[i].g;
-			cmap[3*i+2] = surface->format->palette->colors[i].b;
+			cmap[3 * i] = surface->format->palette->colors[i].r;
+			cmap[3 * i + 1] = surface->format->palette->colors[i].g;
+			cmap[3 * i + 2] = surface->format->palette->colors[i].b;
 		}
 		header.bpp = 8;
-		header.bytesperline = htoqs (width);
+		header.bytesperline = htoqs(width);
 		header.planes = 1;
-		header.color = htoqs (1);
+		header.color = htoqs(1);
 	} else if (surface->format->BitsPerPixel == 24) {
 		header.bpp = 8;
-		header.bytesperline = htoqs (width);
+		header.bytesperline = htoqs(width);
 		header.planes = 3;
 		header.color = htoqs(1);
 	} else {
@@ -175,11 +172,11 @@ static bool save_image(SDL_Surface *surface, SDL_RWops *dst)
 
 	header.x1 = 0;
 	header.y1 = 0;
-	header.x2 = htoqs (width - 1);
-	header.y2 = htoqs (height - 1);
+	header.x2 = htoqs(width - 1);
+	header.y2 = htoqs(height - 1);
 
-	header.hdpi = htoqs (300);
-	header.vdpi = htoqs (300);
+	header.hdpi = htoqs(300);
+	header.vdpi = htoqs(300);
 	header.reserved = 0;
 
 	/* write header */
@@ -187,7 +184,7 @@ static bool save_image(SDL_Surface *surface, SDL_RWops *dst)
 	SDL_RWwrite(dst, &header, sizeof(PCX_Header), 1);
 
 	if (cmap) {
-		save_8 (dst, width, height, pitch, pixels);
+		save_8(dst, width, height, pitch, pixels);
 
 		/* write palette */
 		tmp = 0x0c;
@@ -204,41 +201,39 @@ static bool save_image(SDL_Surface *surface, SDL_RWops *dst)
 
 		delete [] cmap;
 	} else {
-		save_24 (dst, width, height, pitch, pixels);
+		save_24(dst, width, height, pitch, pixels);
 	}
 
 	return true;
 }
 
-bool SavePCX_RW (SDL_Surface *saveme, SDL_RWops *dst, bool freedst)
-{
+bool SavePCX_RW(SDL_Surface *saveme, SDL_RWops *dst, bool freedst) {
 	SDL_Surface *surface;
 	bool found_error = false;
 
 	cout << "Taking screenshot...";
 
 	surface = NULL;
-	if ( dst ) {
-		if ( saveme->format->palette ) {
-			if ( saveme->format->BitsPerPixel == 8 ) {
+	if (dst) {
+		if (saveme->format->palette) {
+			if (saveme->format->BitsPerPixel == 8) {
 				surface = saveme;
 			} else {
 				found_error = true;
-				cout << saveme->format->BitsPerPixel 
-					<< "bpp PCX files not supported" << endl;
+				cout << saveme->format->BitsPerPixel
+				     << "bpp PCX files not supported" << endl;
 			}
-		}
-		else if ( (saveme->format->BitsPerPixel == 24) &&
+		} else if ((saveme->format->BitsPerPixel == 24) &&
 #if SDL_BYTEORDER == SDL_LIL_ENDIAN
-		         (saveme->format->Rmask == 0x00FF0000) &&
-		         (saveme->format->Gmask == 0x0000FF00) &&
-		         (saveme->format->Bmask == 0x000000FF)
+		           (saveme->format->Rmask == 0x00FF0000) &&
+		           (saveme->format->Gmask == 0x0000FF00) &&
+		           (saveme->format->Bmask == 0x000000FF)
 #else
-		         (saveme->format->Rmask == 0x000000FF) &&
-		         (saveme->format->Gmask == 0x0000FF00) &&
-		         (saveme->format->Bmask == 0x00FF0000)
+		           (saveme->format->Rmask == 0x000000FF) &&
+		           (saveme->format->Gmask == 0x0000FF00) &&
+		           (saveme->format->Bmask == 0x00FF0000)
 #endif
-		         ) {
+		          ) {
 			surface = saveme;
 		} else {
 			SDL_Rect bounds;
@@ -253,13 +248,13 @@ bool SavePCX_RW (SDL_Surface *saveme, SDL_RWops *dst, bool freedst)
 #endif
 			                               0);
 
-			if ( surface != NULL ) {
+			if (surface != NULL) {
 				bounds.x = 0;
 				bounds.y = 0;
 				bounds.w = saveme->w;
 				bounds.h = saveme->h;
-				if ( SDL_LowerBlit(saveme, &bounds, surface,
-				                   &bounds) < 0 ) {
+				if (SDL_LowerBlit(saveme, &bounds, surface,
+				                  &bounds) < 0) {
 					SDL_FreeSurface(surface);
 					cout << "Couldn't convert image to 24 bpp for screenshot";
 					found_error = true;
@@ -271,19 +266,19 @@ bool SavePCX_RW (SDL_Surface *saveme, SDL_RWops *dst, bool freedst)
 		/* no valid target */
 	}
 
-	if ( surface && (SDL_LockSurface(surface) == 0) ) {
+	if (surface && (SDL_LockSurface(surface) == 0)) {
 
 		found_error |= !save_image(surface, dst);
 
 		/* Close it up.. */
 		SDL_UnlockSurface(surface);
-		if ( surface != saveme ) {
+		if (surface != saveme) {
 			SDL_FreeSurface(surface);
 		}
 	}
 
 
-	if ( freedst && dst ) {
+	if (freedst && dst) {
 		SDL_RWclose(dst);
 	}
 

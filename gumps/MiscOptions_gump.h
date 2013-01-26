@@ -24,12 +24,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class Gump_button;
 
-class MiscOptions_gump : public Modal_gump
-{
-	UNREPLICATABLE_CLASS_I(MiscOptions_gump,Modal_gump(0,0,0,0));
+class MiscOptions_gump : public Modal_gump {
+	UNREPLICATABLE_CLASS_I(MiscOptions_gump, Modal_gump(0, 0, 0, 0));
 
- private:
-	int difficulty;			// Setting for the buttons.
+private:
+	int difficulty;         // Setting for the buttons.
 	int show_hits;
 	int mode;
 	bool charmDiff;
@@ -41,35 +40,35 @@ class MiscOptions_gump : public Modal_gump
 	void build_buttons();
 
 	enum button_ids {
-		id_first = 0,
-		id_ok = id_first,
-		id_cancel,
-		id_scroll_mouse,
-		id_menu_intro,
-		id_usecode_intro,
-		id_alternate_drop,
-		id_allow_autonotes,
-		id_difficulty,
-		id_show_hits,
-		id_mode,
-		id_charmDiff,
-		id_count
+	    id_first = 0,
+	    id_ok = id_first,
+	    id_cancel,
+	    id_scroll_mouse,
+	    id_menu_intro,
+	    id_usecode_intro,
+	    id_alternate_drop,
+	    id_allow_autonotes,
+	    id_difficulty,
+	    id_show_hits,
+	    id_mode,
+	    id_charmDiff,
+	    id_count
 	};
-	Gump_button* buttons[id_count];
+	Gump_button *buttons[id_count];
 
- public:
+public:
 	MiscOptions_gump();
 	virtual ~MiscOptions_gump();
 
-					// Paint it and its contents.
+	// Paint it and its contents.
 	virtual void paint();
 	virtual void close();
 
- 					// Handle events:
+	// Handle events:
 	virtual bool mouse_down(int mx, int my, int button);
 	virtual bool mouse_up(int mx, int my, int button);
 
-	void toggle(Gump_button* btn, int state);
+	void toggle(Gump_button *btn, int state);
 
 	void load_settings();
 	void save_settings();

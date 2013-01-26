@@ -39,7 +39,7 @@ private:
 	Game_window *gwin;
 	Image_buffer8 *ibuf;
 	Vga_file exult_flx;
-	//	Palette pal;
+	//  Palette pal;
 	int centerx, centery;
 	int pagesize;
 	void calc_win();

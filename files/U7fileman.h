@@ -1,7 +1,7 @@
 /*
  *  Copyright (C) 2008  The Exult Team
  *
- *	Based on code by Dancer A.L Vesperman
+ *  Based on code by Dancer A.L Vesperman
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -29,11 +29,10 @@
 class U7file;
 
 /**
- *	This class manages "files". These "files" are managed by an
- *	unique identifier which is the actual file name for real files.
+ *  This class manages "files". These "files" are managed by an
+ *  unique identifier which is the actual file name for real files.
  */
-class U7FileManager
-	{
+class U7FileManager {
 	UNREPLICATABLE_CLASS(U7FileManager);
 protected:
 	/// The actual "file" list.
@@ -42,15 +41,17 @@ protected:
 	static U7FileManager *self;
 public:
 	U7FileManager()
-		{  }
-	~U7FileManager()
-		{ reset(); }
+	{  }
+	~U7FileManager() {
+		reset();
+	}
 
 	void reset();
 
 	U7file *get_file_object(const File_spec &s, bool allow_errors = false);
-	static U7FileManager *get_ptr()
-		{ return self; }
-	};
+	static U7FileManager *get_ptr() {
+		return self;
+	}
+};
 
 #endif

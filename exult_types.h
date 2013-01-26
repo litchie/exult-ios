@@ -16,8 +16,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef	EXULT_TYPES_H
-#define	EXULT_TYPES_H
+#ifndef EXULT_TYPES_H
+#define EXULT_TYPES_H
 
 #ifdef BEOS
 // BeOS headers already define these types
@@ -56,13 +56,13 @@ typedef int32 sint32;
 #endif /* !EX_TYPE_INT32 */
 
 
-typedef	unsigned EX_TYPE_INT8	uint8;
-typedef	unsigned EX_TYPE_INT16	uint16;
-typedef	unsigned EX_TYPE_INT32	uint32;
+typedef unsigned EX_TYPE_INT8   uint8;
+typedef unsigned EX_TYPE_INT16  uint16;
+typedef unsigned EX_TYPE_INT32  uint32;
 
-typedef	signed EX_TYPE_INT8		sint8;
-typedef	signed EX_TYPE_INT16	sint16;
-typedef	signed EX_TYPE_INT32	sint32;
+typedef signed EX_TYPE_INT8     sint8;
+typedef signed EX_TYPE_INT16    sint16;
+typedef signed EX_TYPE_INT32    sint32;
 
 
 #endif //BeOS

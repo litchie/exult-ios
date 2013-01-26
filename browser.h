@@ -22,25 +22,24 @@
 #include "imagewin.h"
 #include "vgafile.h"
 
-class ShapeBrowser
-	{
-		Vga_file *shapes;
-		int current_shape;
-		int current_frame;
-		int current_file;
-		int current_palette;
-		int current_xform;
-		int num_shapes;
-		int num_frames;
-		int num_files;
-		int num_palettes;
-		int num_xforms;
+class ShapeBrowser {
+	Vga_file *shapes;
+	int current_shape;
+	int current_frame;
+	int current_file;
+	int current_palette;
+	int current_xform;
+	int num_shapes;
+	int num_frames;
+	int num_files;
+	int num_palettes;
+	int num_xforms;
 public:
-		ShapeBrowser();
-		~ShapeBrowser();
-		void browse_shapes();
-		bool get_shape(int& shape, int& frame);
-	};
-	
+	ShapeBrowser();
+	~ShapeBrowser();
+	void browse_shapes();
+	bool get_shape(int &shape, int &frame);
+};
+
 
 #endif

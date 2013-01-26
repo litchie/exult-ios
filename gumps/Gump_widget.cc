@@ -26,59 +26,52 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Gump_widget.h"
 
 /*
- *	Is a given screen point on this widget?
+ *  Is a given screen point on this widget?
  */
 
-int Gump_widget::on_widget
-	(
-	int mx, int my			// Point in window.
-	)
-{
-	mx -= parent->get_x() + x;	// Get point rel. to gump.
+int Gump_widget::on_widget(
+    int mx, int my          // Point in window.
+) {
+	mx -= parent->get_x() + x;  // Get point rel. to gump.
 	my -= parent->get_y() + y;
 	Shape_frame *cshape = get_shape();
-	return (cshape!=0)?cshape->has_point(mx, my):false;
+	return (cshape != 0) ? cshape->has_point(mx, my) : false;
 }
 
 /*
- *	Repaint checkmark, etc.
+ *  Repaint checkmark, etc.
  */
 
-void Gump_widget::paint
-	(
-	)
-{
+void Gump_widget::paint(
+) {
 	int px = 0;
 	int py = 0;
 
-	if (parent)
-	{
+	if (parent) {
 		px = parent->get_x();
 		py = parent->get_y();
 	}
 
-	paint_shape(x+px, y+py);
+	paint_shape(x + px, y + py);
 }
 
 /*
- *	Get screen area used by a gump.
+ *  Get screen area used by a gump.
  */
 
-Rectangle Gump_widget::get_rect()
-{
+Rectangle Gump_widget::get_rect() {
 	int px = x;
 	int py = y;
 
-	if (parent)
-	{
+	if (parent) {
 		px += parent->get_x();
 		py += parent->get_y();
 	}
 
 	Shape_frame *s = get_shape();
 
-	if (!s) return Rectangle(0,0,0,0);
+	if (!s) return Rectangle(0, 0, 0, 0);
 
-	return Rectangle(px - s->get_xleft(), 	py - s->get_yabove(),
-			s->get_width(), s->get_height());
+	return Rectangle(px - s->get_xleft(),   py - s->get_yabove(),
+	                 s->get_width(), s->get_height());
 }

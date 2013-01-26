@@ -1,7 +1,7 @@
 /*
  * xBR algorithm by Hyllian
  * Based on HqMAME version by Zenju
- * Initial Exult version by Marzo Sette Torres Junior 
+ * Initial Exult version by Marzo Sette Torres Junior
  *
  * Copyright (C) 2011, 2012 - Hyllian/Jararaca
  * Copyright (C) 2012 - Zenju
@@ -22,21 +22,20 @@
  */
 
 #ifndef INCL_SCALE_XBR_H
-#define INCL_SCALE_XBR_H	1
+#define INCL_SCALE_XBR_H    1
 
 #ifdef USE_XBR_SCALER
 
-#define XBR_VARIANT 4	// Tweaked xBR-z (Zenju's version)
+#define XBR_VARIANT 4   // Tweaked xBR-z (Zenju's version)
 //#define XBR_VARIANT 3  // xBR-C: Hyllian's "squared flavor" version
 //#define XBR_VARIANT 2  // xBR-B: Hyllian's "semi-rounded flavor" version
 //#define XBR_VARIANT 1  // xBR-A: Hyllian's "rounded flavor" version
 
-enum RotationDegree //clock-wise
-{
-	ROT_0,
-	ROT_90,
-	ROT_180,
-	ROT_270
+enum RotationDegree { //clock-wise
+    ROT_0,
+    ROT_90,
+    ROT_180,
+    ROT_270
 };
 
 template <class Dest_pixel, size_t N, RotationDegree rotDeg>
@@ -44,8 +43,7 @@ class OutputMatrix;
 
 //fill block of size n * n with the given color
 template <class Buffer_Type>
-static inline void fill_block(Buffer_Type *trg, Buffer_Type const& col, int n)
-{
+static inline void fill_block(Buffer_Type *trg, Buffer_Type const &col, int n) {
 	for (int y = 0; y < n; ++y)
 		for (int x = 0; x < n; ++x)
 			*trg++ = col;
@@ -53,12 +51,9 @@ static inline void fill_block(Buffer_Type *trg, Buffer_Type const& col, int n)
 
 //copy block of size n * n
 template <class Dest_pixel, class Buffer_Type, class Manip_pixels>
-static inline void copy_block(Dest_pixel *trg, int dline_pixels, Buffer_Type const *src, int n, const Manip_pixels& manip)
-{
-	for (int y = 0; y < n; ++y, trg += dline_pixels - n)
-	{
-		for (int x = 0; x < n; ++x)
-		{
+static inline void copy_block(Dest_pixel *trg, int dline_pixels, Buffer_Type const *src, int n, const Manip_pixels &manip) {
+	for (int y = 0; y < n; ++y, trg += dline_pixels - n) {
+		for (int x = 0; x < n; ++x) {
 			*trg++ = src->copy(manip);
 			src++;
 		}
@@ -66,59 +61,61 @@ static inline void copy_block(Dest_pixel *trg, int dline_pixels, Buffer_Type con
 }
 
 template <class Manip_pixels, int tol>
-struct RGBColor
-{
+struct RGBColor {
 	unsigned int  r,  g,  b;
 	unsigned int dr, dg, db;
 	RGBColor()
-	{		}
-	RGBColor(unsigned char c, const Manip_pixels& manip)
-	{	set(c, manip);	}
-	void fix()
-	{	dr = 3 * r;	dg = 4 * g;	db = 2 * b;	}
-	void set(unsigned char c, const Manip_pixels& manip)
-	{
+	{       }
+	RGBColor(unsigned char c, const Manip_pixels &manip) {
+		set(c, manip);
+	}
+	void fix() {
+		dr = 3 * r;
+		dg = 4 * g;
+		db = 2 * b;
+	}
+	void set(unsigned char c, const Manip_pixels &manip) {
 		manip.split_source(c, r, g, b);
 		fix();
 	}
-	RGBColor<Manip_pixels, tol>& operator=(RGBColor<Manip_pixels, tol> const& other)
-	{
-		if (this != &other)
-		{
-			r = other.r;	 g = other.g;	 b = other.b;
-			dr = other.dr;	dg = other.dg;	db = other.db;
+	RGBColor<Manip_pixels, tol> &operator=(RGBColor<Manip_pixels, tol> const &other) {
+		if (this != &other) {
+			r = other.r;
+			g = other.g;
+			b = other.b;
+			dr = other.dr;
+			dg = other.dg;
+			db = other.db;
 		}
 		return *this;
 	}
-	bool operator==(RGBColor<Manip_pixels, tol> const& other) const
-	{	return r == other.r && g == other.g && b == other.b;	}
-	bool operator!=(RGBColor<Manip_pixels, tol> const& other) const
-	{	return !(*this == other);	}
-	// See http://www.compuphase.com/cmetric.htm
-	int dist(RGBColor<Manip_pixels, tol> const& other) const
-	{
-		return abs(dr - other.dr) +
-			   abs(dg - other.dg) +
-			   abs(db - other.db);
+	bool operator==(RGBColor<Manip_pixels, tol> const &other) const {
+		return r == other.r && g == other.g && b == other.b;
 	}
-	bool equals(RGBColor<Manip_pixels, tol> const& other) const
-	{
+	bool operator!=(RGBColor<Manip_pixels, tol> const &other) const {
+		return !(*this == other);
+	}
+	// See http://www.compuphase.com/cmetric.htm
+	int dist(RGBColor<Manip_pixels, tol> const &other) const {
+		return abs(dr - other.dr) +
+		       abs(dg - other.dg) +
+		       abs(db - other.db);
+	}
+	bool equals(RGBColor<Manip_pixels, tol> const &other) const {
 		return abs(dr - other.dr) <= (tol *  9)
-		    && abs(dg - other.dg) <= (tol * 16)
-		    && abs(db - other.db) <= (tol *  4);
+		       && abs(dg - other.dg) <= (tol * 16)
+		       && abs(db - other.db) <= (tol *  4);
 	}
 	template <unsigned int N, unsigned int M>
-	inline void blend(RGBColor<Manip_pixels, tol> const& other)
-	{
+	inline void blend(RGBColor<Manip_pixels, tol> const &other) {
 		r = (other.r * N + r * (M - N)) / M;
 		g = (other.g * N + g * (M - N)) / M;
 		b = (other.b * N + b * (M - N)) / M;
 		// Not needed.
 		//fix();
 	}
-	typename Manip_pixels::uintD copy(const Manip_pixels& manip) const
-	{
-		return manip.rgb(r,g,b);
+	typename Manip_pixels::uintD copy(const Manip_pixels &manip) const {
+		return manip.rgb(r, g, b);
 	}
 };
 
@@ -142,31 +139,29 @@ Input area naming convention:
 | G0 | G  | H  | I  | I4 |
 -----|----|----|----|-----
      | G5 | G5 | I5 |
-	 ----------------
+     ----------------
 */
 
 template <class Scaler, class OutputMatrix, class Buffer_Type, class Manip_pixels>
 static FORCE_INLINE //perf: quite worth it!
-void scalePixel
-	(
-		                   Buffer_Type const& a1, Buffer_Type const& b1, Buffer_Type const& c1,
-	Buffer_Type const& a0, Buffer_Type const& a,  Buffer_Type const& b,  Buffer_Type const& c, Buffer_Type const& c4,
-	Buffer_Type const& d0, Buffer_Type const& d,  Buffer_Type const& e,  Buffer_Type const& f, Buffer_Type const& f4,
-	Buffer_Type const& g0, Buffer_Type const& g,  Buffer_Type const& h,  Buffer_Type const& i, Buffer_Type const& i4,
-		                   Buffer_Type const& g5, Buffer_Type const& h5, Buffer_Type const& i5,
-	OutputMatrix& out, const Manip_pixels& manip
-	)
-{
+void scalePixel(
+    Buffer_Type const &a1, Buffer_Type const &b1, Buffer_Type const &c1,
+    Buffer_Type const &a0, Buffer_Type const &a,  Buffer_Type const &b,  Buffer_Type const &c, Buffer_Type const &c4,
+    Buffer_Type const &d0, Buffer_Type const &d,  Buffer_Type const &e,  Buffer_Type const &f, Buffer_Type const &f4,
+    Buffer_Type const &g0, Buffer_Type const &g,  Buffer_Type const &h,  Buffer_Type const &i, Buffer_Type const &i4,
+    Buffer_Type const &g5, Buffer_Type const &h5, Buffer_Type const &i5,
+    OutputMatrix &out, const Manip_pixels &manip
+) {
 	int const weight = 4;
 	double const detectSteepWeight = 2.2;
-	
+
 	if (e == h || e == f)
 		return;
 
 	const int hf = e.dist(c) + e.dist(g)  + i.dist(h5) + i.dist(f4) + weight * h.dist(f);
 	const int ei = h.dist(d) + h.dist(i5) + f.dist(i4) + f.dist(b)  + weight * e.dist(i);
 
-	Buffer_Type const& px = e.dist(f) <= e.dist(h) ? f : h;
+	Buffer_Type const &px = e.dist(f) <= e.dist(h) ? f : h;
 
 #if XBR_VARIANT == 4
 	double const detectDirectionWeight = 3.6;
@@ -176,56 +171,50 @@ void scalePixel
 	const int ec = d.dist(b) + b.dist(c1) + h.dist(f)  + f.dist(c4) + weight * e.dist(c);
 	const int bf = a.dist(e) + e.dist(i)  + b1.dist(c) + c.dist(f4) + weight * b.dist(f);
 
-	
+
 	const bool doBlendLine =
-		                     // make sure there is no second blending in an adjacent rotation for this pixel
-		                     ((eg < dh || e.equals(d) || e.equals(h)) &&
-		                      (ec < bf || e.equals(b) || e.equals(f)) &&
-		                      // for L-shapes: blend corner only (handles insular pixels and "mario mushroom eyes")
-		                      !(g.equals(h) && h.equals(i) && i.equals(f) && f.equals(c) && !e.equals(i))) ||
-	                         // U-shape
-	                         (d.equals(h) && h.equals(f) && a.equals(e) && e.equals(c) && !h.equals(e)) ||
-                             (h.equals(f) && f.equals(b) && g.equals(e) && e.equals(a) && !f.equals(e)) ||
-                             detectDirectionWeight * hf < ei;
+	    // make sure there is no second blending in an adjacent rotation for this pixel
+	    ((eg < dh || e.equals(d) || e.equals(h)) &&
+	     (ec < bf || e.equals(b) || e.equals(f)) &&
+	     // for L-shapes: blend corner only (handles insular pixels and "mario mushroom eyes")
+	     !(g.equals(h) && h.equals(i) && i.equals(f) && f.equals(c) && !e.equals(i))) ||
+	    // U-shape
+	    (d.equals(h) && h.equals(f) && a.equals(e) && e.equals(c) && !h.equals(e)) ||
+	    (h.equals(f) && f.equals(b) && g.equals(e) && e.equals(a) && !f.equals(e)) ||
+	    detectDirectionWeight * hf < ei;
 #elif XBR_VARIANT == 3
 	const bool doBlendLine = (!f.equals(b) && !f.equals(c)) ||
-		                     (!h.equals(d) && !h.equals(g)) ||
-		                     (e.equals(i) && ((!f.equals(f4) && !f.equals(i4)) || (!h.equals(h5) && !h.equals(i5)))) ||
-		                     e.equals(g) ||
+	                         (!h.equals(d) && !h.equals(g)) ||
+	                         (e.equals(i) && ((!f.equals(f4) && !f.equals(i4)) || (!h.equals(h5) && !h.equals(i5)))) ||
+	                         e.equals(g) ||
 	                         e.equals(c);
 #elif XBR_VARIANT == 2
 	const bool doBlendLine = (!f.equals(b) && !h.equals(d)) ||
-		                     (e.equals(i) && !f.equals(i4) && !h.equals(i5)) ||
-		                     e.equals(g) ||
-		                     e.equals(c);
+	                         (e.equals(i) && !f.equals(i4) && !h.equals(i5)) ||
+	                         e.equals(g) ||
+	                         e.equals(c);
 #elif XBR_VARIANT == 1
 	const bool doBlendLine = true;
 #endif
-	if (hf < ei)
-	{
-		if (doBlendLine)
-		{
+	if (hf < ei) {
+		if (doBlendLine) {
 			const int fg = f.dist(g);
 			const int hc = h.dist(c);
 			bool ex2 = e != c && b != c;
 			bool ex3 = e != g && d != g;
 
-			if (detectSteepWeight * fg <= hc && ex3)
-			{
+			if (detectSteepWeight * fg <= hc && ex3) {
 				if (fg >= detectSteepWeight * hc && ex2)
 					Scaler::blendLineSteepAndShallow(out, px);
 				else
 					Scaler::blendLineShallow(out, px);
-			}
-			else
-			{
+			} else {
 				if (fg >= detectSteepWeight * hc && ex2)
 					Scaler::blendLineSteep(out, px);
 				else
 					Scaler::blendLineDiagonal(out, px);
 			}
-		}
-		else
+		} else
 			Scaler::blendCorner(out, px);
 	}
 }
@@ -234,32 +223,27 @@ void scalePixel
 // pixel values in `from'; if we run out of source pixels, just keep copying
 // the last one we got
 template <class Source_pixel, class Manip_pixels, class Buffer_Type>
-static inline void fill_rgbcolor_row
-	(
-	Source_pixel *from,
-	Buffer_Type *row,
-	int width,		// number of pixels to write into 'row'
-	const Manip_pixels& manip
-	)
-{
+static inline void fill_rgbcolor_row(
+    Source_pixel *from,
+    Buffer_Type *row,
+    int width,      // number of pixels to write into 'row'
+    const Manip_pixels &manip
+) {
 	Buffer_Type *stop = row + width;
-	while (row < stop)
-	{
+	while (row < stop) {
 		row->set(*from++, manip);
 		row++;
 	}
 }
 
 template <class Buffer_Type>
-static inline void cycle_buffers
-	(
-	Buffer_Type *&b1,
-	Buffer_Type *&b2,
-	Buffer_Type *&b3,
-	Buffer_Type *&b4,
-	Buffer_Type *&b5
-	)
-{
+static inline void cycle_buffers(
+    Buffer_Type *&b1,
+    Buffer_Type *&b2,
+    Buffer_Type *&b3,
+    Buffer_Type *&b4,
+    Buffer_Type *&b5
+) {
 	Buffer_Type *b0 = b1;
 	b1 = b2;
 	b2 = b3;
@@ -269,18 +253,16 @@ static inline void cycle_buffers
 }
 
 template <class Dest_pixel, class Manip_pixels, class Scaler>
-void Scale_xBR
-	(
-	unsigned char *source,		// ->source pixels.
-	int srcx, int srcy,		// Start of rectangle within src.
-	int srcw, int srch,		// Dims. of rectangle.
-	int sline_pixels,		// Pixels (words)/line for source.
-	int sheight,			// Source height.
-	Dest_pixel *dest,		// ->dest pixels.
-	int dline_pixels,		// Pixels (words)/line for dest.
-	const Manip_pixels& manip	// Manipulator methods.
-	)
-{
+void Scale_xBR(
+    unsigned char *source,      // ->source pixels.
+    int srcx, int srcy,     // Start of rectangle within src.
+    int srcw, int srch,     // Dims. of rectangle.
+    int sline_pixels,       // Pixels (words)/line for source.
+    int sheight,            // Source height.
+    Dest_pixel *dest,       // ->dest pixels.
+    int dline_pixels,       // Pixels (words)/line for dest.
+    const Manip_pixels &manip   // Manipulator methods.
+) {
 	// the following are static because we don't want to be freeing and
 	// reallocating space on each call, as new[]s are usually very
 	// expensive; we do allow it to grow though
@@ -290,8 +272,7 @@ void Scale_xBR
 	static RGBColor<Manip_pixels, 2> *rgb_row_current  = 0;
 	static RGBColor<Manip_pixels, 2> *rgb_row_plus_1   = 0;
 	static RGBColor<Manip_pixels, 2> *rgb_row_plus_2   = 0;
-	if (buff_size < sline_pixels)
-	{
+	if (buff_size < sline_pixels) {
 		delete [] rgb_row_minus_2;
 		delete [] rgb_row_minus_1;
 		delete [] rgb_row_current;
@@ -318,8 +299,7 @@ void Scale_xBR
 	unsigned char *ptr4 = ptr3 + sline_pixels;
 	// Initial buffer fill.
 	fill_rgbcolor_row(ptr2, rgb_row_current + from_x, from_width, manip);
-	if (srcy >= 1)
-	{
+	if (srcy >= 1) {
 		fill_rgbcolor_row(ptr1, rgb_row_minus_1 + from_x, from_width, manip);
 		if (srcy > 1)
 			fill_rgbcolor_row(ptr0, rgb_row_minus_2 + from_x, from_width, manip);
@@ -327,49 +307,39 @@ void Scale_xBR
 	if (srcy + 1 < sheight)
 		fill_rgbcolor_row(ptr3, rgb_row_plus_1 + from_x, from_width, manip);
 
-	for (int y = srcy; y < srcy + srch; ++y, ptr4 += sline_pixels)
-	{
+	for (int y = srcy; y < srcy + srch; ++y, ptr4 += sline_pixels) {
 		Dest_pixel *out = dest + Scaler::scale * (y * dline_pixels + srcx);
 
 		RGBColor<Manip_pixels, 2> const *sa2 = rgb_row_current + srcx; //center
 		RGBColor<Manip_pixels, 2> const *sa0, *sa1, *sa3, *sa4;
 
-		if (y <= 1)
-		{
+		if (y <= 1) {
 			if (y == 1)
 				sa0 = sa1 = rgb_row_minus_1 + srcx;
 			else
 				sa0 = sa1 = sa2;
-		}
-		else
-		{
+		} else {
 			sa0 = rgb_row_minus_2 + srcx;
 			sa1 = rgb_row_minus_1 + srcx;
 		}
-		if (y >= sheight - 2)
-		{
+		if (y >= sheight - 2) {
 			if (y == sheight - 2)
 				sa4 = sa3 = rgb_row_plus_1 + srcx;
 			else
 				sa4 = sa3 = sa2;
-		}
-		else
-		{
+		} else {
 			sa3 = rgb_row_plus_1 + srcx;
 			sa4 = rgb_row_plus_2 + srcx;
 			fill_rgbcolor_row(ptr4, rgb_row_plus_2 + from_x, from_width, manip);
 		}
 
 		for (int x = srcx; x < srcx + srcw; ++x, ++sa0, ++sa1, ++sa2, ++sa3, ++sa4,
-		     out += Scaler::scale)
-		{
+		        out += Scaler::scale) {
 			RGBColor<Manip_pixels, 2> const *a0, *d0, *g0, *a1, *a, *d, *g, *g5;
 
 			//all those bounds checks have only insignificant impact on performance!
-			if (x <= 1)
-			{
-				if (x == 0)
-				{
+			if (x <= 1) {
+				if (x == 0) {
 					a0 = &sa1[0];
 					d0 = &sa2[0];
 					g0 = &sa3[0];
@@ -379,9 +349,7 @@ void Scale_xBR
 					d  = &sa2[0];
 					g  = &sa3[0];
 					g5 = &sa4[0];
-				}
-				else
-				{
+				} else {
 					a0 = &sa1[-1];
 					d0 = &sa2[-1];
 					g0 = &sa3[-1];
@@ -392,9 +360,7 @@ void Scale_xBR
 					g  = &sa3[-1];
 					g5 = &sa4[-1];
 				}
-			}
-			else
-			{
+			} else {
 				a0 = &sa1[-2];
 				d0 = &sa2[-2];
 				g0 = &sa3[-2];
@@ -407,13 +373,11 @@ void Scale_xBR
 			}
 
 			RGBColor<Manip_pixels, 2> const *b1 = &sa0[0], *b = &sa1[0],
-			                  *e = &sa2[0], *h = &sa3[0], *h5 = &sa4[0],
-			                  *c1, *c, *f, *i, *i5, *c4, *f4, *i4;
+			                                 *e = &sa2[0], *h = &sa3[0], *h5 = &sa4[0],
+			                                  *c1, *c, *f, *i, *i5, *c4, *f4, *i4;
 
-			if (x >= sline_pixels - 2)
-			{
-				if (x == sline_pixels - 1)
-				{
+			if (x >= sline_pixels - 2) {
+				if (x == sline_pixels - 1) {
 					c1 = &sa0[0];
 					c  = &sa1[0];
 					f  = &sa2[0];
@@ -423,9 +387,7 @@ void Scale_xBR
 					c4 = &sa1[0];
 					f4 = &sa2[0];
 					i4 = &sa3[0];
-				}
-				else
-				{
+				} else {
 					c1 = &sa0[1];
 					c  = &sa1[1];
 					f  = &sa2[1];
@@ -436,9 +398,7 @@ void Scale_xBR
 					f4 = &sa2[1];
 					i4 = &sa3[1];
 				}
-			}
-			else
-			{
+			} else {
 				c1 = &sa0[1];
 				c  = &sa1[1];
 				f  = &sa2[1];
@@ -457,39 +417,39 @@ void Scale_xBR
 
 			OutputMatrix<RGBColor<Manip_pixels, 2>, Scaler::scale, ROT_0> om0(buffer, Scaler::scale);
 			scalePixel<Scaler>(
-				    *a1, *b1, *c1,
-				*a0, *a,  *b,  *c,  *c4,
-				*d0, *d,  *e,  *f,  *f4,
-				*g0, *g,  *h,  *i,  *i4,
-				    *g5, *h5, *i5,
-				om0, manip);
+			    *a1, *b1, *c1,
+			    *a0, *a,  *b,  *c,  *c4,
+			    *d0, *d,  *e,  *f,  *f4,
+			    *g0, *g,  *h,  *i,  *i4,
+			    *g5, *h5, *i5,
+			    om0, manip);
 
 			OutputMatrix<RGBColor<Manip_pixels, 2>, Scaler::scale, ROT_90> om90(buffer, Scaler::scale);
 			scalePixel<Scaler>(
-				    *g0, *d0, *a0,
-				*g5, *g,  *d,  *a,  *a1,
-				*h5, *h,  *e,  *b,  *b1,
-				*i5, *i,  *f,  *c,  *c1,
-				    *i4, *f4, *c4,
-				om90, manip);
+			    *g0, *d0, *a0,
+			    *g5, *g,  *d,  *a,  *a1,
+			    *h5, *h,  *e,  *b,  *b1,
+			    *i5, *i,  *f,  *c,  *c1,
+			    *i4, *f4, *c4,
+			    om90, manip);
 
 			OutputMatrix<RGBColor<Manip_pixels, 2>, Scaler::scale, ROT_180> om180(buffer, Scaler::scale);
 			scalePixel<Scaler>(
-				    *i5, *h5, *g5,
-				*i4, *i,  *h,  *g,  *g0,
-				*f4, *f,  *e,  *d,  *d0,
-				*c4, *c,  *b,  *a,  *a0,
-				    *c1, *b1, *a1,
-				om180, manip);
+			    *i5, *h5, *g5,
+			    *i4, *i,  *h,  *g,  *g0,
+			    *f4, *f,  *e,  *d,  *d0,
+			    *c4, *c,  *b,  *a,  *a0,
+			    *c1, *b1, *a1,
+			    om180, manip);
 
 			OutputMatrix<RGBColor<Manip_pixels, 2>, Scaler::scale, ROT_270> om270(buffer, Scaler::scale);
 			scalePixel<Scaler>(
-				    *c4, *f4, *i4,
-				*c1, *c,  *f,  *i,  *i5,
-				*b1, *b,  *e,  *h,  *h5,
-				*a1, *a,  *d,  *g,  *g5,
-				    *a0, *d0, *g0,
-				om270, manip);
+			    *c4, *f4, *i4,
+			    *c1, *c,  *f,  *i,  *i5,
+			    *b1, *b,  *e,  *h,  *h5,
+			    *a1, *a,  *d,  *g,  *g5,
+			    *a0, *d0, *g0,
+			    om270, manip);
 
 			copy_block(out, dline_pixels, buffer, Scaler::scale, manip);
 		}

@@ -22,16 +22,15 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Text_gump.h"
 
 /*
- *	A book shows text side-by-side.
+ *  A book shows text side-by-side.
  */
-class Book_gump : public Text_gump
-{
-	UNREPLICATABLE_CLASS_I(Book_gump,Text_gump(0));
+class Book_gump : public Text_gump {
+	UNREPLICATABLE_CLASS_I(Book_gump, Text_gump(0));
 
 public:
 	Book_gump(int fnt = 4, int gump = -1);
 	virtual ~Book_gump() {  }
-					// Paint it and its contents.
+	// Paint it and its contents.
 	virtual void paint();
 };
 

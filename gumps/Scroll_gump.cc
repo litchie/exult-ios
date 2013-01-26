@@ -26,25 +26,21 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 
 /*
- *	Create scroll display.
+ *  Create scroll display.
  */
 
-Scroll_gump::Scroll_gump
-	(
-	int fnt, int gump
-	) : Text_gump(gump < 0 ? game->get_shape("gumps/scroll") : gump, fnt)
-{  
+Scroll_gump::Scroll_gump(
+    int fnt, int gump
+) : Text_gump(gump < 0 ? game->get_shape("gumps/scroll") : gump, fnt) {
 }
 
 /*
- *	Paint scroll.  Updates curend.
+ *  Paint scroll.  Updates curend.
  */
 
-void Scroll_gump::paint
-	(
-	)
-{
-					// Paint the gump itself.
+void Scroll_gump::paint(
+) {
+	// Paint the gump itself.
 	paint_shape(x, y);
 	curend = paint_page(Rectangle(52, 30, 142, 118), curtop);
 }

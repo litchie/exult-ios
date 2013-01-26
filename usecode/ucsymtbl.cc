@@ -1,5 +1,5 @@
 /*
- *	ucsymtbl.cc - Usecode symbol table
+ *  ucsymtbl.cc - Usecode symbol table
  *
  *  Copyright (C) 2006  The Exult Team
  *
@@ -30,31 +30,29 @@ using std::ostream;
 const int curvers = 0;
 
 /*
- *	Cleanup.
+ *  Cleanup.
  */
-Usecode_scope_symbol::~Usecode_scope_symbol()
-{
+Usecode_scope_symbol::~Usecode_scope_symbol() {
 	for (Syms_vector::iterator it = symbols.begin(); it != symbols.end();
-									++it) {
+	        ++it) {
 		Usecode_symbol *sym = *it;
 		delete sym;
 	}
 }
 
 /*
- *	Read from a file.
+ *  Read from a file.
  */
-void Usecode_scope_symbol::read(istream& in)
-{
+void Usecode_scope_symbol::read(istream &in) {
 	int cnt = Read4(in);
-	(void)Read4(in);	// Version.
+	(void)Read4(in);    // Version.
 	int oldsize = symbols.size();
 	symbols.reserve(oldsize + cnt);
 	for (int i = 0; i < cnt; ++i) {
 		char nm[256];
 		in.getline(nm, sizeof(nm), 0);
 		Usecode_symbol::Symbol_kind kind =
-		                static_cast<Usecode_symbol::Symbol_kind>(Read2(in));
+		    static_cast<Usecode_symbol::Symbol_kind>(Read2(in));
 		int val = Read4(in);
 		Usecode_symbol *sym;
 		if (kind == Usecode_symbol::class_scope) {
@@ -83,31 +81,29 @@ void Usecode_scope_symbol::read(istream& in)
 }
 
 /*
- *	Write to a file.
+ *  Write to a file.
  */
-void Usecode_scope_symbol::write(ostream& out)
-{
+void Usecode_scope_symbol::write(ostream &out) {
 	Write4(out, symbols.size());
 	Write4(out, curvers);
 	for (Syms_vector::iterator it = symbols.begin(); it != symbols.end();
-									++it) {
+	        ++it) {
 		Usecode_symbol *sym = *it;
 		const char *nm = sym->get_name();
 		out.write(nm, strlen(nm) + 1);
 		Write2(out, static_cast<int>(sym->get_kind()));
 		Write4(out, sym->get_val());
 		if (sym->get_kind() == class_scope)
-			static_cast<Usecode_class_symbol*>(sym)->write(out);
+			static_cast<Usecode_class_symbol *>(sym)->write(out);
 		else if (sym->get_kind() == shape_fun)
 			Write4(out, sym->get_extra());
 	}
 }
 
 /*
- *	Add a symbol.
+ *  Add a symbol.
  */
-void Usecode_scope_symbol::add_sym(Usecode_symbol *sym)
-{
+void Usecode_scope_symbol::add_sym(Usecode_symbol *sym) {
 	int oldsize = symbols.size();
 	symbols.push_back(sym);
 	if (!by_name.empty())
@@ -117,39 +113,35 @@ void Usecode_scope_symbol::add_sym(Usecode_symbol *sym)
 }
 
 /*
- *	Setup tables.
+ *  Setup tables.
  */
-void Usecode_scope_symbol::setup_by_name(int start)
-{
-	for (Syms_vector::iterator it = symbols.begin() + start; 
-					it != symbols.end(); ++it) {
+void Usecode_scope_symbol::setup_by_name(int start) {
+	for (Syms_vector::iterator it = symbols.begin() + start;
+	        it != symbols.end(); ++it) {
 		Usecode_symbol *sym = *it;
 		by_name[sym->name] = sym;
 	}
 }
-void Usecode_scope_symbol::setup_by_val(int start)
-{
-	for (Syms_vector::iterator it = symbols.begin() + start; 
-						it != symbols.end(); ++it) {
+void Usecode_scope_symbol::setup_by_val(int start) {
+	for (Syms_vector::iterator it = symbols.begin() + start;
+	        it != symbols.end(); ++it) {
 		Usecode_symbol *sym = *it;
 		by_val[sym->value] = sym;
 	}
 }
-void Usecode_scope_symbol::setup_class_names(int start)
-{
-	for (std::vector<Usecode_class_symbol*>::iterator 
-			it = classes.begin() + start; 
-			it != classes.end(); ++it) {
+void Usecode_scope_symbol::setup_class_names(int start) {
+	for (std::vector<Usecode_class_symbol *>::iterator
+	        it = classes.begin() + start;
+	        it != classes.end(); ++it) {
 		Usecode_class_symbol *sym = *it;
 		class_names[sym->name] = sym;
 	}
 }
 
 /*
- *	Lookup by name or by value.
+ *  Lookup by name or by value.
  */
-Usecode_symbol *Usecode_scope_symbol::operator[](const char *nm)
-{
+Usecode_symbol *Usecode_scope_symbol::operator[](const char *nm) {
 	if (by_name.empty())
 		setup_by_name();
 	Name_table::iterator it = by_name.find(nm);
@@ -159,8 +151,7 @@ Usecode_symbol *Usecode_scope_symbol::operator[](const char *nm)
 		return (*it).second;
 }
 
-Usecode_symbol *Usecode_scope_symbol::operator[](int val)
-{
+Usecode_symbol *Usecode_scope_symbol::operator[](int val) {
 	if (by_val.empty())
 		setup_by_val();
 	Val_table::iterator it = by_val.find(val);
@@ -170,8 +161,7 @@ Usecode_symbol *Usecode_scope_symbol::operator[](int val)
 		return (*it).second;
 }
 
-Usecode_class_symbol *Usecode_scope_symbol::get_class(const char *nm)
-{
+Usecode_class_symbol *Usecode_scope_symbol::get_class(const char *nm) {
 	if (class_names.empty())
 		setup_class_names();
 	Class_name_table::iterator it = class_names.find(nm);
@@ -182,10 +172,9 @@ Usecode_class_symbol *Usecode_scope_symbol::get_class(const char *nm)
 }
 
 /*
- *	Lookup shape function.
+ *  Lookup shape function.
  */
-int Usecode_scope_symbol::get_high_shape_fun(int val)
-{
+int Usecode_scope_symbol::get_high_shape_fun(int val) {
 	if (shape_funs.empty())
 		// Default to 'old style' high shape functions.
 		return 0x1000 + (val - 0x400);
@@ -197,10 +186,9 @@ int Usecode_scope_symbol::get_high_shape_fun(int val)
 }
 
 /*
- *	See if the function requires an itemref.
+ *  See if the function requires an itemref.
  */
-bool Usecode_scope_symbol::is_object_fun(int val)
-{
+bool Usecode_scope_symbol::is_object_fun(int val) {
 	if (by_val.empty())
 		setup_by_val();
 	Val_table::iterator it = by_val.find(val);
@@ -209,16 +197,15 @@ bool Usecode_scope_symbol::is_object_fun(int val)
 		return (val < 0x800);
 	Usecode_symbol *sym = (*it).second;
 	if (sym &&
-		(sym->get_kind() == shape_fun || sym->get_kind() == object_fun))
+	        (sym->get_kind() == shape_fun || sym->get_kind() == object_fun))
 		return true;
 	return false;
 }
 
 /*
- *	Read from a file.
+ *  Read from a file.
  */
-void Usecode_class_symbol::read(istream& in)
-{
+void Usecode_class_symbol::read(istream &in) {
 	Usecode_scope_symbol::read(in);
 	int num_methods = Read2(in);
 	methods.resize(num_methods);
@@ -228,15 +215,14 @@ void Usecode_class_symbol::read(istream& in)
 }
 
 /*
- *	Write to a file.
+ *  Write to a file.
  */
-void Usecode_class_symbol::write(ostream& out)
-{
+void Usecode_class_symbol::write(ostream &out) {
 	Usecode_scope_symbol::write(out);
 	int num_methods = methods.size();
 	Write2(out, num_methods);
 	for (Ints_vector::iterator it = methods.begin(); it != methods.end();
-							++it)
+	        ++it)
 		Write2(out, *it);
 	Write2(out, num_vars);
 }
