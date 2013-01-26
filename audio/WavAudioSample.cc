@@ -129,7 +129,7 @@ bool WavAudioSample::isThis(IDataSource *ds)
 	uint32 size_fmt = 0;
 
 	uint32 pos_data = 0;
-	uint32 size_data = 0;
+	//uint32 size_data = 0;
 
 	while (ds->getPos() < riff_size+8)
 	{
@@ -148,7 +148,7 @@ bool WavAudioSample::isThis(IDataSource *ds)
 			if (pos_data) return false;
 
 			pos_data = ds->getPos();
-			size_data = chunk_size;
+			//size_data = chunk_size;
 
 			if (pos_fmt) break;
 		}

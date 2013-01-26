@@ -152,13 +152,6 @@ public:
 		: Jukebox_egg(shnum, frnum, tx, ty, tz, itype, prob, d1)
 		{  }
 	virtual void hatch_now(Game_object *obj, bool must) {
-		int dir = 0;
-		if (obj)		// Get direction from obj. to egg.
-			{
-			Tile_coord epos = get_tile(), opos = obj->get_tile();
-			dir = Get_direction16(opos.ty - epos.ty, 
-							epos.tx - opos.tx);
-			}
 		Audio::get_ptr()->play_sound_effect(score, this, AUDIO_MAX_VOLUME, 
 							continuous);
 	}
