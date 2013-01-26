@@ -90,7 +90,7 @@ void Scale2x_noblur
 	)
 	{
 	// the following are static because we don't want to be freeing and
-	// reallocating space on each call, as malloc()s are usually very
+	// reallocating space on each call, as new[]s are usually very
 	// expensive; we do allow it to grow though
 	static int buff_size = 0;
 	static Dest_pixel *rgb_row_prev  = 0;
