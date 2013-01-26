@@ -35,123 +35,106 @@ using std::strtol;
 using std::strtoul;
 #endif
 
-void	Args::declare(const char *s,bool *b,bool defval)
-{
-	string	ss;
+void    Args::declare(const char *s, bool *b, bool defval) {
+	string  ss;
 
-	ss=s;
+	ss = s;
 
 	Opts o;
-	o.option=ss;
-	o.bval=b;
-	o.dbval=defval;
-	o.valuetype=Opts::type_bool;
+	o.option = ss;
+	o.bval = b;
+	o.dbval = defval;
+	o.valuetype = Opts::type_bool;
 	options.push_back(o);
 }
 
-void	Args::declare(const char *s,string *b,const char *defval)
-{
-	string	ss;
+void    Args::declare(const char *s, string *b, const char *defval) {
+	string  ss;
 
-	ss=s;
+	ss = s;
 
 	Opts o;
-	o.option=ss;
-	o.sval=b;
-	o.dsval=defval?defval:"";
-	*o.sval=defval?defval:"";
-	o.valuetype=Opts::type_string;
+	o.option = ss;
+	o.sval = b;
+	o.dsval = defval ? defval : "";
+	*o.sval = defval ? defval : "";
+	o.valuetype = Opts::type_string;
 	options.push_back(o);
 }
 
-void	Args::declare(const char *s,int *b,int defval)
-{
-	string	ss;
+void    Args::declare(const char *s, int *b, int defval) {
+	string  ss;
 
-	ss=s;
+	ss = s;
 
 	Opts o;
-	o.option=ss;
-	o.ival=b;
-	o.dival=defval;
-	*o.ival=defval;
-	o.valuetype=Opts::type_int;
+	o.option = ss;
+	o.ival = b;
+	o.dival = defval;
+	*o.ival = defval;
+	o.valuetype = Opts::type_int;
 	options.push_back(o);
 }
 
-void	Args::declare(const char *s,uint32 *b,uint32 defval)
-{
-	string	ss;
+void    Args::declare(const char *s, uint32 *b, uint32 defval) {
+	string  ss;
 
-	ss=s;
+	ss = s;
 
 	Opts o;
-	o.option=ss;
-	o.uval=b;
-	o.duval=defval;
-	*o.uval=defval;
-	o.valuetype=Opts::type_unsigned;
+	o.option = ss;
+	o.uval = b;
+	o.duval = defval;
+	*o.uval = defval;
+	o.valuetype = Opts::type_unsigned;
 	options.push_back(o);
 }
 
-void	Args::process(int argc,char **argv)
-{
-	for(int i=1;i<argc;i++)
-	{
-		for(unsigned int j=0;j<options.size() && i<argc;j++)
-		{
-			switch(options[j].valuetype)
-			{
-				case Opts::no_type:
-					continue;
-				case Opts::type_bool:
-					if(options[j].option==argv[i])
-						*(options[j].bval)=options[j].dbval;
-					break;
-				case Opts::type_string:
-				{
-					if(options[j].option==argv[i])
-					{
-						// We want the _next_ argument
-						if(++i>=argc)
-						{
-							cerr << "Data not specified for argument '" << options[j].option <<"'. Using default." << endl;
-							break;
-						}
-						*(options[j].sval)=argv[i];
+void    Args::process(int argc, char **argv) {
+	for (int i = 1; i < argc; i++) {
+		for (unsigned int j = 0; j < options.size() && i < argc; j++) {
+			switch (options[j].valuetype) {
+			case Opts::no_type:
+				continue;
+			case Opts::type_bool:
+				if (options[j].option == argv[i])
+					*(options[j].bval) = options[j].dbval;
+				break;
+			case Opts::type_string: {
+				if (options[j].option == argv[i]) {
+					// We want the _next_ argument
+					if (++i >= argc) {
+						cerr << "Data not specified for argument '" << options[j].option << "'. Using default." << endl;
+						break;
 					}
-					break;
+					*(options[j].sval) = argv[i];
 				}
-				case Opts::type_int:
-				{
+				break;
+			}
+			case Opts::type_int: {
 //					char buf[64];
-					if(options[j].option==argv[i])
-					{
-						// We want the _next_ argument
-						if(++i>=argc)
-						{
-							cerr << "Data not specified for argument '" << options[j].option <<"'. Using default." << endl;
-							break;
-						}
-						*(options[j].ival)=strtol(argv[i],0,10);
+				if (options[j].option == argv[i]) {
+					// We want the _next_ argument
+					if (++i >= argc) {
+						cerr << "Data not specified for argument '" << options[j].option << "'. Using default." << endl;
+						break;
 					}
-					break;
+					*(options[j].ival) = strtol(argv[i], 0, 10);
 				}
-				case Opts::type_unsigned:
-				{
+				break;
+			}
+			case Opts::type_unsigned: {
 //					char buf[64];
-					if(options[j].option==argv[i])
-					{
-						// We want the _next_ argument
-						if(++i>=argc)
-						{
-							cerr << "Data not specified for argument '" << options[j].option <<"'. Using default." << endl;
-							break;
-						}
-						*(options[j].uval)=strtoul(argv[i],0,10);
+				if (options[j].option == argv[i]) {
+					// We want the _next_ argument
+					if (++i >= argc) {
+						cerr << "Data not specified for argument '" << options[j].option << "'. Using default." << endl;
+						break;
 					}
-					break;
+					*(options[j].uval) = strtoul(argv[i], 0, 10);
 				}
+				break;
+			}
 			}
 		}
 	}

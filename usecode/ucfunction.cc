@@ -1,5 +1,5 @@
 /*
- *	ucfunction.cc - Usecode function
+ *  ucfunction.cc - Usecode function
  *
  *  Copyright (C) 2002  The Exult Team
  *
@@ -29,14 +29,12 @@ using std::istream;
 #include "utils.h"
 
 /*
- *	Read in a function.
+ *  Read in a function.
  */
 
-Usecode_function::Usecode_function
-	(
-	istream& file
-	) : orig(0)
-{
+Usecode_function::Usecode_function(
+    istream &file
+) : orig(0) {
 	id = Read2(file);
 
 	// support for our extended usecode format. (32 bit lengths and ids)
@@ -44,7 +42,7 @@ Usecode_function::Usecode_function
 		id = Read4s(file);
 		len = Read4(file);
 		extended = true;
-	// older extended usecode format. (32 bit lengths)
+		// older extended usecode format. (32 bit lengths)
 	} else if (id == 0xffff) {
 		id = Read2(file);
 		len = Read4(file);
@@ -54,7 +52,7 @@ Usecode_function::Usecode_function
 		extended = false;
 	}
 
-	code = new unsigned char[len];	// Allocate buffer & read it in.
+	code = new unsigned char[len];  // Allocate buffer & read it in.
 	file.read(reinterpret_cast<char *>(code), len);
 }
 

@@ -50,8 +50,7 @@ using std::endl;
 
 Gump_manager::Gump_manager()
 	: open_gumps(0), kbd_focus(0), non_persistent_count(0),
-	  modal_gump_count(0), right_click_close(true), dont_pause_game(false)
-{
+	  modal_gump_count(0), right_click_close(true), dont_pause_game(false) {
 	std::string str;
 	config->value("config/gameplay/right_click_closes_gumps", str, "yes");
 	if (str == "no")
@@ -60,16 +59,15 @@ Gump_manager::Gump_manager()
 
 	config->value("config/gameplay/gumps_dont_pause_game", str, "no");
 	dont_pause_game = str == "yes";
-	config->set("config/gameplay/gumps_dont_pause_game", dont_pause_game?"yes":"no", true);
+	config->set("config/gameplay/gumps_dont_pause_game", dont_pause_game ? "yes" : "no", true);
 }
 
 
 /*
- *	Showing gumps.
+ *  Showing gumps.
  */
 
-bool Gump_manager::showing_gumps(bool no_pers) const
-{
+bool Gump_manager::showing_gumps(bool no_pers) const {
 	// If no gumps, or we do want to check for persistent, just check to see if any exist
 	if (!no_pers || !open_gumps) return open_gumps != 0;
 
@@ -82,42 +80,37 @@ bool Gump_manager::showing_gumps(bool no_pers) const
 
 
 /*
- *	Find the highest gump that the mouse cursor is on.
+ *  Find the highest gump that the mouse cursor is on.
  *
- *	Output:	->gump, or null if none.
+ *  Output: ->gump, or null if none.
  */
 
-Gump *Gump_manager::find_gump
-	(
-	int x, int y,			// Pos. on screen.
-	bool pers				// Persistent?
-	)
-{
+Gump *Gump_manager::find_gump(
+    int x, int y,           // Pos. on screen.
+    bool pers               // Persistent?
+) {
 	Gump_list *gmp;
-	Gump *found = 0;		// We want last found in chain.
-	for (gmp = open_gumps; gmp; gmp = gmp->next)
-	{
+	Gump *found = 0;        // We want last found in chain.
+	for (gmp = open_gumps; gmp; gmp = gmp->next) {
 		Gump *gump = gmp->gump;
-		if (gump->has_point(x,y) && (pers || !gump->is_persistent()))
+		if (gump->has_point(x, y) && (pers || !gump->is_persistent()))
 			found = gump;
 	}
 	return (found);
 }
 
 /*
- *	Find gump containing a given object.
+ *  Find gump containing a given object.
  */
 
-Gump *Gump_manager::find_gump
-	(
-	Game_object *obj
-	)
-{
-					// Get container object is in.
+Gump *Gump_manager::find_gump(
+    Game_object *obj
+) {
+	// Get container object is in.
 	Game_object *owner = obj->get_owner();
 	if (!owner)
 		return (0);
-					// Look for container's gump.
+	// Look for container's gump.
 	for (Gump_list *gmp = open_gumps; gmp; gmp = gmp->next)
 		if (gmp->gump->get_container() == owner)
 			return (gmp->gump);
@@ -130,61 +123,56 @@ Gump *Gump_manager::find_gump
 }
 
 /*
- *	Find gump with a given owner & shapenum.
+ *  Find gump with a given owner & shapenum.
  */
 
-Gump *Gump_manager::find_gump
-	(
-	Game_object *owner,
-	int shapenum			// May be c_any_shapenum
-	)
-{
-	Gump_list *gmp;			// See if already open.
+Gump *Gump_manager::find_gump(
+    Game_object *owner,
+    int shapenum            // May be c_any_shapenum
+) {
+	Gump_list *gmp;         // See if already open.
 	for (gmp = open_gumps; gmp; gmp = gmp->next)
 		if (gmp->gump->get_owner() == owner &&
-		    (shapenum == c_any_shapenum ||
-		     gmp->gump->get_shapenum() == shapenum))
+		        (shapenum == c_any_shapenum ||
+		         gmp->gump->get_shapenum() == shapenum))
 			return gmp->gump;
 
 	Gump *dragged = gwin->get_dragging_gump();
 	if (dragged && dragged->get_owner() == owner &&
-		    (shapenum == c_any_shapenum || 
-			 dragged->get_shapenum() == shapenum))
+	        (shapenum == c_any_shapenum ||
+	         dragged->get_shapenum() == shapenum))
 		return dragged;
 
 	return (0);
 }
 
 /*
- *	Add a gump to the end of a chain.
+ *  Add a gump to the end of a chain.
  */
 
-void Gump_manager::add_gump(Gump *gump)
-{
+void Gump_manager::add_gump(Gump *gump) {
 	Gump_list *g = new Gump_list(gump);
 
 	set_kbd_focus(gump);
 	if (!open_gumps)
-		open_gumps = g;		// First one.
-	else
-	{
+		open_gumps = g;     // First one.
+	else {
 		Gump_list *last = open_gumps;
 		while (last->next) last = last->next;
 		last->next = g;
 	}
-	if (!gump->is_persistent())	// Count 'gump mode' gumps.
-		{			// And pause the game, if we want it
+	if (!gump->is_persistent()) { // Count 'gump mode' gumps.
+		// And pause the game, if we want it
 		non_persistent_count++;
 		if (!dont_pause_game) gwin->get_tqueue()->pause(Game::get_ticks());
-		}
+	}
 }
 
 /*
- *	Close a gump and delete it
+ *  Close a gump and delete it
  */
 
-bool Gump_manager::close_gump(Gump *gump)
-{
+bool Gump_manager::close_gump(Gump *gump) {
 	bool ret = remove_gump(gump);
 	Gump *dragged = gwin->get_dragging_gump();
 	if (dragged == gump)
@@ -194,82 +182,72 @@ bool Gump_manager::close_gump(Gump *gump)
 }
 
 /*
- *	Remove a gump from the chain
+ *  Remove a gump from the chain
  */
 
-bool Gump_manager::remove_gump(Gump *gump)
-{
+bool Gump_manager::remove_gump(Gump *gump) {
 	if (gump == kbd_focus)
 		set_kbd_focus(0);
-	if (open_gumps)
-	{
-		if (open_gumps->gump == gump)
-		{
+	if (open_gumps) {
+		if (open_gumps->gump == gump) {
 			Gump_list *p = open_gumps->next;
 			delete open_gumps;
 			open_gumps = p;
-		}
-		else
-		{
-			Gump_list *p = open_gumps;		// Find prev. to this.
+		} else {
+			Gump_list *p = open_gumps;      // Find prev. to this.
 			while (p->next != 0 && p->next->gump != gump) p = p->next;
 
-			if (p->next)
-			{
+			if (p->next) {
 				Gump_list *g = p->next->next;
 				delete p->next;
 				p->next = g;
-			}
-			else
+			} else
 				return true;
 		}
-		if (!gump->is_persistent())	// Count 'gump mode' gumps.
-			{			// And resume queue if last.
-					// Gets messed up upon 'load'.
+		if (!gump->is_persistent()) { // Count 'gump mode' gumps.
+			// And resume queue if last.
+			// Gets messed up upon 'load'.
 			if (non_persistent_count > 0)
 				non_persistent_count--;
 			if (!dont_pause_game) gwin->get_tqueue()->resume(Game::get_ticks());
-			}
+		}
 	}
 
 	return false;
 }
 
 /*
- *	Show a gump.
+ *  Show a gump.
  */
 
-void Gump_manager::add_gump
-	(
-	Game_object *obj,		// Object gump represents.
-	int shapenum,			// Shape # in 'gumps.vga'.
-	bool actorgump			// If showing an actor's gump
-	)
-{
+void Gump_manager::add_gump(
+    Game_object *obj,       // Object gump represents.
+    int shapenum,           // Shape # in 'gumps.vga'.
+    bool actorgump          // If showing an actor's gump
+) {
 	bool paperdoll = false;
-	
+
 	// overide for paperdolls
 	if (actorgump && (sman->can_use_paperdolls() && sman->are_paperdolls_enabled()))
 		paperdoll = true;
-	
+
 	Gump *dragged = gwin->get_dragging_gump();
-	
+
 	// If we are dragging the same, just return
 	if (dragged && dragged->get_owner() == obj && dragged->get_shapenum() == shapenum)
 		return;
 
-	static int cnt = 0;		// For staggering them.
-	Gump_list *gmp;			// See if already open.
+	static int cnt = 0;     // For staggering them.
+	Gump_list *gmp;         // See if already open.
 	for (gmp = open_gumps; gmp; gmp = gmp->next)
 		if (gmp->gump->get_owner() == obj &&
-		    gmp->gump->get_shapenum() == shapenum)
+		        gmp->gump->get_shapenum() == shapenum)
 			break;
 
-	if (gmp)			// Found it?
-	{				// Move it to end.
+	if (gmp) {          // Found it?
+		// Move it to end.
 		Gump *gump = gmp->gump;
-		if (gmp->next)
-		{
+		if (gmp->next) {
 			remove_gump(gump);
 			add_gump(gump);
 		} else
@@ -278,18 +256,17 @@ void Gump_manager::add_gump
 		return;
 	}
 
-	int x = (1 + cnt)*gwin->get_width()/10, 
-	    y = (1 + cnt)*gwin->get_height()/10;
+	int x = (1 + cnt) * gwin->get_width() / 10,
+	    y = (1 + cnt) * gwin->get_height() / 10;
 
 	ShapeID s_id(shapenum, 0, paperdoll ? SF_PAPERDOL_VGA : SF_GUMPS_VGA);
 	Shape_frame *shape = s_id.get_shape();
-		
+
 	if (x + shape->get_xright() > gwin->get_width() ||
-	    y + shape->get_ybelow() > gwin->get_height())
-	{
+	        y + shape->get_ybelow() > gwin->get_height()) {
 		cnt = 0;
-		x = gwin->get_width()/10;
-		y = gwin->get_width()/10;
+		x = gwin->get_width() / 10;
+		y = gwin->get_width() / 10;
 	}
 
 	Gump *new_gump = 0;
@@ -298,15 +275,15 @@ void Gump_manager::add_gump
 		npc = obj->as_actor();
 	if (npc && paperdoll)
 		new_gump = new Paperdoll_gump(npc, x, y, npc->get_npc_num());
-	else if (npc && actorgump) 
+	else if (npc && actorgump)
 		new_gump = new Actor_gump(npc, x, y, shapenum);
 	else if (shapenum == game->get_shape("gumps/statsdisplay"))
 		new_gump = Stats_gump::create(obj, x, y);
 	else if (shapenum == game->get_shape("gumps/spellbook"))
 		new_gump = new Spellbook_gump(reinterpret_cast<Spellbook_object *>(obj));
 	else if (Game::get_game_type() == SERPENT_ISLE &&
-			shapenum >= game->get_shape("gumps/cstats/1") &&
-			shapenum <= game->get_shape("gumps/cstats/6"))
+	         shapenum >= game->get_shape("gumps/cstats/1") &&
+	         shapenum <= game->get_shape("gumps/cstats/6"))
 		new_gump = new CombatStats_gump(x, y);
 	else if (shapenum == game->get_shape("gumps/jawbone"))
 		new_gump = new Jawbone_gump(reinterpret_cast<Jawbone_object *>(obj), x, y);
@@ -316,38 +293,34 @@ void Gump_manager::add_gump
 	if (!new_gump)
 		new_gump = new Container_gump(reinterpret_cast<Container_game_object *>(obj), x, y, shapenum);
 
-					// Paint new one last.
+	// Paint new one last.
 	add_gump(new_gump);
 	if (++cnt == 8)
 		cnt = 0;
 	int sfx = Audio::game_sfx(14);
-	Audio::get_ptr()->play_sound_effect(sfx);	// The weird noise.
-	gwin->paint();			// Show everything.
+	Audio::get_ptr()->play_sound_effect(sfx);   // The weird noise.
+	gwin->paint();          // Show everything.
 }
 
 /*
- *	End gump mode.
+ *  End gump mode.
  */
 
-void Gump_manager::close_all_gumps
-	(
-	bool pers
-	)
-{
+void Gump_manager::close_all_gumps(
+    bool pers
+) {
 	bool removed = false;
 
 	Gump_list *prev = 0;
 	Gump_list *next = open_gumps;
 
-	while (next)		// Remove all gumps.
-		{
+	while (next) {      // Remove all gumps.
 		Gump_list *gump = next;
 		next = gump->next;
 
 		// Don't delete if persistant or modal.
 		if ((!gump->gump->is_persistent() || pers) &&
-		    !gump->gump->is_modal())
-		{
+		        !gump->gump->is_modal()) {
 			if (!gump->gump->is_persistent())
 				gwin->get_tqueue()->resume(Game::get_ticks());
 			if (prev) prev->next = gump->next;
@@ -355,102 +328,88 @@ void Gump_manager::close_all_gumps
 			delete gump->gump;
 			delete gump;
 			removed = true;
-		}
-		else
+		} else
 			prev = gump;
 	}
 	non_persistent_count = 0;
 	set_kbd_focus(0);
-	gwin->get_npc_prox()->wait(4);		// Delay "barking" for 4 secs.
+	gwin->get_npc_prox()->wait(4);      // Delay "barking" for 4 secs.
 	if (removed) gwin->paint();
 }
 
 /*
- *	Set the keyboard focus to a given gump.
+ *  Set the keyboard focus to a given gump.
  */
 
-void Gump_manager::set_kbd_focus
-	(
-	Gump *gump			// May be NULL.
-	)
-	{
-	if (gump && gump->can_handle_kbd())
-		{
+void Gump_manager::set_kbd_focus(
+    Gump *gump          // May be NULL.
+) {
+	if (gump && gump->can_handle_kbd()) {
 		kbd_focus = gump;
 		SDL_EnableUNICODE(1);   // Enable unicode translation.
-		}
-	else
-		{
+	} else {
 		kbd_focus = 0;
 		if (!modal_gump_count)
 			SDL_EnableUNICODE(0);
-		}
 	}
+}
 
 /*
- *	Handle a double-click.
+ *  Handle a double-click.
  */
 
-bool Gump_manager::double_clicked
-	(
-	int x, int y,		   // Coords in window.
-	Game_object *&obj
-	)
-	{
+bool Gump_manager::double_clicked(
+    int x, int y,          // Coords in window.
+    Game_object *&obj
+) {
 	Gump *gump = find_gump(x, y);
 
-	if (gump)
-		{
+	if (gump) {
 		// If avatar cannot act, a double-click will only close gumps, and
 		// nothing else.
-		if (!gwin->main_actor_can_act())
-			{
-			if(gwin->get_double_click_closes_gumps())
-				{
+		if (!gwin->main_actor_can_act()) {
+			if (gwin->get_double_click_closes_gumps()) {
 				gump->close();
 				gwin->paint();
-				}
-			return true;
 			}
+			return true;
+		}
 		// Find object in gump.
 		obj = gump->find_object(x, y);
-		if (!obj)		// Maybe it's a spell.
-			{
+		if (!obj) {     // Maybe it's a spell.
 			Gump_button *btn = gump->on_button(x, y);
 			if (btn) btn->double_clicked(x, y);
-			else if (gwin->get_double_click_closes_gumps())
-				{
+			else if (gwin->get_double_click_closes_gumps()) {
 				gump->close();
 				gwin->paint();
-				}
 			}
-		return true;
 		}
-
-	return false;
+		return true;
 	}
 
-/*
- *	Send kbd. event to gump that has focus.
- *	Output:	true if handled here.
- */
-bool Gump_manager::handle_kbd_event(void *ev)
-	{ return kbd_focus ? kbd_focus->handle_kbd_event(ev) : false; }
+	return false;
+}
 
 /*
- *	Update the gumps
+ *  Send kbd. event to gump that has focus.
+ *  Output: true if handled here.
  */
-void Gump_manager::update_gumps()
-{
+bool Gump_manager::handle_kbd_event(void *ev) {
+	return kbd_focus ? kbd_focus->handle_kbd_event(ev) : false;
+}
+
+/*
+ *  Update the gumps
+ */
+void Gump_manager::update_gumps() {
 	for (Gump_list *gmp = open_gumps; gmp; gmp = gmp->next)
 		gmp->gump->update_gump();
 }
 
 /*
- *	Paint the gumps
+ *  Paint the gumps
  */
-void Gump_manager::paint(bool modal)
-{
+void Gump_manager::paint(bool modal) {
 	for (Gump_list *gmp = open_gumps; gmp; gmp = gmp->next)
 		if (gmp->gump->is_modal() == modal) gmp->gump->paint();
 #ifdef UNDER_CE
@@ -463,49 +422,44 @@ void Gump_manager::paint(bool modal)
 
 
 /*
- *	Verify user wants to quit.
+ *  Verify user wants to quit.
  *
- *	Output:	1 to quit.
+ *  Output: 1 to quit.
  */
-int Gump_manager::okay_to_quit()
-{
+int Gump_manager::okay_to_quit() {
 	if (Yesno_gump::ask("Do you really want to quit?"))
 		quitting_time = QUIT_TIME_YES;
 	return quitting_time;
 }
 
 
-int Gump_manager::handle_modal_gump_event
-	(
-	Modal_gump *gump,
-	SDL_Event& event
-	)
-{
-	//	Game_window *gwin = Game_window::get_instance();
-	//int scale_factor = gwin->get_fastmouse() ? 1 
-	//			: gwin->get_win()->get_scale();
+int Gump_manager::handle_modal_gump_event(
+    Modal_gump *gump,
+    SDL_Event &event
+) {
+	//  Game_window *gwin = Game_window::get_instance();
+	//int scale_factor = gwin->get_fastmouse() ? 1
+	//          : gwin->get_win()->get_scale();
 	static bool rightclick;
 
 	int gx, gy;
 
-	switch (event.type)
-	{
+	switch (event.type) {
 #ifdef UNDER_CE
 	case SDL_ACTIVEEVENT:
-	if ((event.active.state & SDL_APPACTIVE) && event.active.gain && minimized)
-	{
-		minimized = false;
-		gwin->set_all_dirty();
-		gwin->show();
-		gwin->paint();
-	}
+		if ((event.active.state & SDL_APPACTIVE) && event.active.gain && minimized) {
+			minimized = false;
+			gwin->set_all_dirty();
+			gwin->show();
+			gwin->paint();
+		}
 #endif
 	case SDL_MOUSEBUTTONDOWN:
-		gwin->get_win()->screen_to_game(event.button.x,event.button.y,gwin->get_fastmouse(),gx,gy);
+		gwin->get_win()->screen_to_game(event.button.x, event.button.y, gwin->get_fastmouse(), gx, gy);
 
 #ifdef DEBUG
-cout << "(x,y) rel. to gump is (" << (gx - gump->get_x())
-	 << ", " <<	(gy - gump->get_y()) << ")"<<endl;
+		cout << "(x,y) rel. to gump is (" << (gx - gump->get_x())
+		     << ", " << (gy - gump->get_y()) << ")" << endl;
 #endif
 #ifdef UNDER_CE
 		if (gkeyboard->handle_event(&event))
@@ -534,31 +488,31 @@ cout << "(x,y) rel. to gump is (" << (gx - gump->get_x())
 		}
 		break;
 	case SDL_MOUSEBUTTONUP:
-		gwin->get_win()->screen_to_game(event.button.x,event.button.y,gwin->get_fastmouse(),gx,gy);
+		gwin->get_win()->screen_to_game(event.button.x, event.button.y, gwin->get_fastmouse(), gx, gy);
 #ifdef UNDER_CE
-			if (gkeyboard->handle_event(&event))
-				break;
+		if (gkeyboard->handle_event(&event))
+			break;
 #endif
 #ifdef __IPHONEOS__
-			if (gkeybb->handle_event(&event))
-				break;
+		if (gkeybb->handle_event(&event))
+			break;
 #endif
 		if (event.button.button != 3)
-			gump->mouse_up(gx,gy, event.button.button);
+			gump->mouse_up(gx, gy, event.button.button);
 		else if (rightclick) {
 			rightclick = false;
-			if (!gump->mouse_up(gx,gy, event.button.button) &&
-				gumpman->can_right_click_close()) return 0;
+			if (!gump->mouse_up(gx, gy, event.button.button) &&
+			        gumpman->can_right_click_close()) return 0;
 		}
 		break;
 	case SDL_MOUSEMOTION:
-		gwin->get_win()->screen_to_game(event.motion.x,event.motion.y,gwin->get_fastmouse(),gx,gy);
+		gwin->get_win()->screen_to_game(event.motion.x, event.motion.y, gwin->get_fastmouse(), gx, gy);
 
-		Mouse::mouse->move(gx,gy);
+		Mouse::mouse->move(gx, gy);
 		Mouse::mouse_update = true;
-					// Dragging with left button?
+		// Dragging with left button?
 		if (event.motion.state & SDL_BUTTON(1))
-			gump->mouse_drag(gx,gy);
+			gump->mouse_drag(gx, gy);
 		break;
 	case SDL_QUIT:
 		if (okay_to_quit())
@@ -568,61 +522,57 @@ cout << "(x,y) rel. to gump is (" << (gx - gump->get_x())
 		event.key.keysym.sym = NULL;
 		event.key.keysym.unicode = event.text.text[0];
 #endif
-	case SDL_KEYDOWN:
-		{
-			if (event.key.keysym.sym == SDLK_ESCAPE)
-				return (0);
-			if ((event.key.keysym.sym == SDLK_s) &&
-				(event.key.keysym.mod & KMOD_ALT) &&
-				(event.key.keysym.mod & KMOD_CTRL)) {
-					make_screenshot(true);
-					return 1;
-			}
+	case SDL_KEYDOWN: {
+		if (event.key.keysym.sym == SDLK_ESCAPE)
+			return (0);
+		if ((event.key.keysym.sym == SDLK_s) &&
+		        (event.key.keysym.mod & KMOD_ALT) &&
+		        (event.key.keysym.mod & KMOD_CTRL)) {
+			make_screenshot(true);
+			return 1;
+		}
 
 #if 0
-			int chr = event.key.keysym.sym;
-			gump->key_down((event.key.keysym.mod & KMOD_SHIFT)
-						? toupper(chr) : chr, event);
+		int chr = event.key.keysym.sym;
+		gump->key_down((event.key.keysym.mod & KMOD_SHIFT)
+		               ? toupper(chr) : chr, event);
 #else
 #  ifdef SDL_VER_1_3
-			if (event.key.keysym.sym != NULL && event.key.keysym.sym > (int)'~')
-			{
-			   event.key.keysym.unicode = event.key.keysym.sym;
-			}
+		if (event.key.keysym.sym != NULL && event.key.keysym.sym > (int)'~') {
+			event.key.keysym.unicode = event.key.keysym.sym;
+		}
 #  endif
-			gump->key_down(event.key.keysym.sym);
-			gump->text_input(event.key.keysym.sym, event.key.keysym.unicode);
+		gump->key_down(event.key.keysym.sym);
+		gump->text_input(event.key.keysym.sym, event.key.keysym.unicode);
 #endif
 
-			break;
-		}
+		break;
+	}
 	}
 	return (1);
 }
 
 /*
- *	Handle a modal gump, like the range slider or the save box, until
- *	the gump self-destructs.
+ *  Handle a modal gump, like the range slider or the save box, until
+ *  the gump self-destructs.
  *
- *	Output:	0 if user hit ESC.
+ *  Output: 0 if user hit ESC.
  */
 
-int Gump_manager::do_modal_gump
-	(
-	Modal_gump *gump,		// What the user interacts with.
-	Mouse::Mouse_shapes shape,	// Mouse shape to use.
-	Paintable *paint		// Paint this over everything else.
-	)
-{
+int Gump_manager::do_modal_gump(
+    Modal_gump *gump,       // What the user interacts with.
+    Mouse::Mouse_shapes shape,  // Mouse shape to use.
+    Paintable *paint        // Paint this over everything else.
+) {
 	if (!modal_gump_count)
 		SDL_EnableUNICODE(1); // enable unicode translation for text input
 	modal_gump_count++;
 
 
-	//	Game_window *gwin = Game_window::get_instance();
+	//  Game_window *gwin = Game_window::get_instance();
 
 	// maybe make this selective? it's nice for menus, but annoying for sliders
-	//	gwin->end_gump_mode();
+	//  gwin->end_gump_mode();
 
 	// Pause the game
 	gwin->get_tqueue()->pause(SDL_GetTicks());
@@ -633,7 +583,7 @@ int Gump_manager::do_modal_gump
 	int escaped = 0;
 	add_gump(gump);
 	gump->run();
-	gwin->paint();			// Show everything now.
+	gwin->paint();          // Show everything now.
 	if (paint)
 		paint->paint();
 	Mouse::mouse->show();
@@ -644,24 +594,22 @@ int Gump_manager::do_modal_gump
 #ifdef __IPHONEOS__
 	gkeybb->paint();
 #endif
-	do
-	{
-		Delay();		// Wait a fraction of a second.
-		Mouse::mouse->hide();		// Turn off mouse.
+	do {
+		Delay();        // Wait a fraction of a second.
+		Mouse::mouse->hide();       // Turn off mouse.
 		Mouse::mouse_update = false;
 		SDL_Event event;
 		while (!escaped && !gump->is_done() && SDL_PollEvent(&event))
 			escaped = !handle_modal_gump_event(gump, event);
-		
-		if (gump->run() || gwin->is_dirty() || GL_manager::get_instance())
-			{
-			gwin->paint();	// OpenGL?  Paint each cycle.
+
+		if (gump->run() || gwin->is_dirty() || GL_manager::get_instance()) {
+			gwin->paint();  // OpenGL?  Paint each cycle.
 			if (paint)
 				paint->paint();
-			}
-		Mouse::mouse->show();		// Re-display mouse.
-		if (!gwin->show() &&	// Blit to screen if necessary.
-		    Mouse::mouse_update)	// If not, did mouse change?
+		}
+		Mouse::mouse->show();       // Re-display mouse.
+		if (!gwin->show() &&    // Blit to screen if necessary.
+		        Mouse::mouse_update)    // If not, did mouse change?
 			Mouse::mouse->blit_dirty();
 #ifdef UNDER_CE
 		gkeyboard->paint();
@@ -669,12 +617,11 @@ int Gump_manager::do_modal_gump
 #ifdef __IPHONEOS__
 		gkeybb->paint();
 #endif
-	}
-	while (!gump->is_done() && !escaped);
+	} while (!gump->is_done() && !escaped);
 	Mouse::mouse->hide();
 	remove_gump(gump);
 	Mouse::mouse->set_shape(saveshape);
-					// Leave mouse off.
+	// Leave mouse off.
 	gwin->paint();
 	gwin->show(true);
 	// Resume the game
@@ -690,21 +637,19 @@ int Gump_manager::do_modal_gump
 
 
 /*
- *	Prompt for a numeric value using a slider.
+ *  Prompt for a numeric value using a slider.
  *
- *	Output:	Value, or 0 if user hit ESC.
+ *  Output: Value, or 0 if user hit ESC.
  */
 
-int Gump_manager::prompt_for_number
-	(
-	int minval, int maxval,		// Range.
-	int step,
-	int defval,			// Default to start with.
-	Paintable *paint		// Should be the conversation.
-	)
-{
+int Gump_manager::prompt_for_number(
+    int minval, int maxval,     // Range.
+    int step,
+    int defval,         // Default to start with.
+    Paintable *paint        // Should be the conversation.
+) {
 	Slider_gump *slider = new Slider_gump(minval, maxval,
-							step, defval);
+	                                      step, defval);
 	int ok = do_modal_gump(slider, Mouse::hand, paint);
 	int ret = !ok ? 0 : slider->get_val();
 	delete slider;
@@ -713,17 +658,15 @@ int Gump_manager::prompt_for_number
 
 
 /*
- *	Show a number.
+ *  Show a number.
  */
 
-void Gump_manager::paint_num
-	(
-	int num,
-	int x,				// Coord. of right edge of #.
-	int y				// Coord. of top of #.
-	)
-{
-	//	Shape_manager *sman = Shape_manager::get_instance();
+void Gump_manager::paint_num(
+    int num,
+    int x,              // Coord. of right edge of #.
+    int y               // Coord. of top of #.
+) {
+	//  Shape_manager *sman = Shape_manager::get_instance();
 	const int font = 2;
 	char buf[20];
 	snprintf(buf, 20, "%d", num);
@@ -731,10 +674,9 @@ void Gump_manager::paint_num
 }
 
 /*
- *	
+ *
  */
-void Gump_manager::set_gumps_dont_pause_game(bool p)
-{
+void Gump_manager::set_gumps_dont_pause_game(bool p) {
 	// Don't do anything if they are the same
 	if (dont_pause_game == p) return;
 
@@ -743,13 +685,13 @@ void Gump_manager::set_gumps_dont_pause_game(bool p)
 	// If pausing enabled, we need to go through and pause each gump
 	if (!dont_pause_game) {
 		for (Gump_list *gump = open_gumps; gump; gump = gump->next)
-			if (!gump->gump->is_persistent()) 
+			if (!gump->gump->is_persistent())
 				gwin->get_tqueue()->pause(Game::get_ticks());
 	}
 	// Otherwise we need to go through and resume each gump :-)
 	else {
 		for (Gump_list *gump = open_gumps; gump; gump = gump->next)
-			if (!gump->gump->is_persistent()) 
+			if (!gump->gump->is_persistent())
 				gwin->get_tqueue()->resume(Game::get_ticks());
 	}
 }

@@ -1,5 +1,5 @@
 /*
- *	delobjs.h - Game objects that have been removed, but need deleting.
+ *  delobjs.h - Game objects that have been removed, but need deleting.
  *
  *  Copyright (C) 2000-2013  The Exult Team
  *
@@ -19,40 +19,38 @@
  */
 
 #ifndef DELOBJS_H
-#define DELOBJS_H	1
+#define DELOBJS_H   1
 
 #include <map>
 
 /*
- *	"Less than" relation for objects
+ *  "Less than" relation for objects
  */
-class Less_objs
-	{
+class Less_objs {
 public:
-     bool operator() (const Game_object *a, const Game_object *b) const
-     	{
-			return a < b;
-		}
-	};
+	bool operator()(const Game_object *a, const Game_object *b) const {
+		return a < b;
+	}
+};
 
-#define DELOBJ_DELAY 	(1000*60*3)	/* 3 minutes. */
+#define DELOBJ_DELAY    (1000*60*3) /* 3 minutes. */
 
 /*
- *	A pool of removed game objects, waiting to be deleted, each with a
- *	timestamp.
+ *  A pool of removed game objects, waiting to be deleted, each with a
+ *  timestamp.
  */
-class Deleted_objects : public std::map<Game_object *, unsigned int, Less_objs>
-	{
+class Deleted_objects : public std::map<Game_object *, unsigned int, Less_objs> {
 public:
 	Deleted_objects() : std::map<Game_object *, unsigned int, Less_objs> ()
-		{  }
-	void insert(Game_object *obj)
-		{ (*this)[obj] = SDL_GetTicks() + DELOBJ_DELAY; }
+	{  }
+	void insert(Game_object *obj) {
+		(*this)[obj] = SDL_GetTicks() + DELOBJ_DELAY;
+	}
 
-	void flush();			// Delete them now.
+	void flush();           // Delete them now.
 	~Deleted_objects()
-// Problems		{ flush(); }
-		{  }
-	};
+// Problems     { flush(); }
+	{  }
+};
 
-#endif	/* DELOBJS_H */
+#endif  /* DELOBJS_H */

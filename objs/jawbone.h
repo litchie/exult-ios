@@ -24,30 +24,31 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class Jawbone_object : public Container_game_object {
 	friend class Jawbone_gump;
 
- public:
-	Jawbone_object(int shapenum, int framenum, unsigned int tilex, 
-				unsigned int tiley, unsigned int lft,
-				char res = 0)
+public:
+	Jawbone_object(int shapenum, int framenum, unsigned int tilex,
+	               unsigned int tiley, unsigned int lft,
+	               char res = 0)
 		: Container_game_object(shapenum, framenum, tilex, tiley, lft, res)
-		{ }
+	{ }
 	Jawbone_object() : Container_game_object() {  }
 
-		//virtual ~Jawbone_object() { };
+	//virtual ~Jawbone_object() { };
 
-				// Add an object.
+	// Add an object.
 	virtual bool add(Game_object *obj, bool dont_check = false,
-							bool combine = false, bool noset = false);
-				// Remove an object.
+	                 bool combine = false, bool noset = false);
+	// Remove an object.
 	virtual void remove(Game_object *obj);
 
-					// Under attack. -> do nothing
+	// Under attack. -> do nothing
 	virtual Game_object *attacked(Game_object *attacker, int weapon_shape = -1,
-					int ammo_shape = -1, bool explosion = false)
-		{ return this; }
+	                              int ammo_shape = -1, bool explosion = false) {
+		return this;
+	}
 
- private:
+private:
 
-	Game_object* teeth[19];
+	Game_object *teeth[19];
 	int toothcount;
 	void find_teeth();
 

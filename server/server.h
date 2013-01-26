@@ -1,7 +1,7 @@
 /**
- **	Server.h - Server functions.
+ ** Server.h - Server functions.
  **
- **	Written: 5/3/2001 - JSF
+ ** Written: 5/3/2001 - JSF
  **/
 
 #ifndef INCL_SERVER
@@ -25,17 +25,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 /*
- *	For the time being, we'll only inflict this on X users.
+ *  For the time being, we'll only inflict this on X users.
  */
 #ifdef USE_EXULTSTUDIO
 
-typedef void(*Message_handler)(int&);
+typedef void(*Message_handler)(int &);
 
 extern int client_socket;
 extern void Server_init();
 extern void Server_delay(Message_handler handle_message);
 extern void Server_delay();
 
-#endif	/* USE_EXULTSTUDIO */
+#endif  /* USE_EXULTSTUDIO */
 
-#endif	/* INCL_SERVER */
+#endif  /* INCL_SERVER */

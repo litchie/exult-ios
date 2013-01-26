@@ -1,4 +1,4 @@
-++++++++++GOING AWAY (jsf)
+++++++++++GOING AWAY(jsf)
 
 /*
  *  Gump_model.cc - A gump factory.
@@ -31,72 +31,64 @@ using std::cout;
 using std::endl;
 
 /*
- *	Cleanup.
+ *  Cleanup.
  */
-Gump_model::~Gump_model()
-	{
-	for (Gump_model_elems::iterator it = elems.begin(); 
-						it != elems.end(); ++it)
+Gump_model::~Gump_model() {
+	for (Gump_model_elems::iterator it = elems.begin();
+	        it != elems.end(); ++it)
 		delete *it;
-	}
+}
 
 /*
- *	Create a gump for a given object.
+ *  Create a gump for a given object.
  */
 
-Gump *Gump_model::create
-	(
-	Game_object *obj,
-	int initx, int inity		// Initial screen pos.
-	)
-	{
+Gump *Gump_model::create(
+    Game_object *obj,
+    int initx, int inity        // Initial screen pos.
+) {
 	Gump *gump = 0;
 	int shnum = get_shapenum();
 	ShapeFile shfile = get_shapefile();
-	switch (tag)
-		{
+	switch (tag) {
 	case container:
 		gump = new Container_gump((Container_game_object *)obj,
-			initx, inity, shnum, shfile, object_area);
+		                          initx, inity, shnum, shfile, object_area);
 		break;
 	default:
 		cout << "Gump_model type not implemented: " << tag << endl;
 		assert(0);
 		break;
-		}
-	for (Gump_model_elems::iterator it = elems.begin(); 
-						it != elems.end(); ++it)
-		{
+	}
+	for (Gump_model_elems::iterator it = elems.begin();
+	        it != elems.end(); ++it) {
 		Gump_model *wmodel = *it;
 		wmodel->create_widget(gump);
-		}
-	return gump;
 	}
+	return gump;
+}
 
 /*
- *	Create a widget.
+ *  Create a widget.
  */
 
-Gump_widget *Gump_model::create_widget
-	(
-	Gump *gump			// Parent.
-	)
-	{
+Gump_widget *Gump_model::create_widget(
+    Gump *gump          // Parent.
+) {
 	Gump_widget *w = 0;
-	switch (tag)
-		{
+	switch (tag) {
 	case checkmark:
 		w = new Checkmark_button(gump, x, y);
 		break;
 	default:
-		cout << "Gump_model widget type not implemented: " << tag << 
-									endl;
+		cout << "Gump_model widget type not implemented: " << tag <<
+		     endl;
 		assert(0);
 		break;
-		}
+	}
 	gump->add_elem(w);
 	return w;
-	}
+}
 
 
 

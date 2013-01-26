@@ -1,7 +1,7 @@
 /*
  *  Copyright (C) 2000-2013  The Exult Team
  *
- *	Original file by Dancer A.L Vesperman
+ *  Original file by Dancer A.L Vesperman
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef	_FLAT_H_
-#define	_FLAT_H_
+#ifndef _FLAT_H_
+#define _FLAT_H_
 
 #include <string>
 #include "U7file.h"
@@ -29,32 +29,33 @@
 class DataSource;
 
 /**
- *	This is a "flat" file, which contains but a single object.
- *	Strictly speaking, the Flat class, as its base, has an
- *	undefined data origin, and may well be a buffer in memory.
+ *  This is a "flat" file, which contains but a single object.
+ *  Strictly speaking, the Flat class, as its base, has an
+ *  undefined data origin, and may well be a buffer in memory.
  */
-class Flat : public	U7file
-	{
+class Flat : public U7file {
 private:
-	///	No default constructor.
+	/// No default constructor.
 	Flat();
 	UNREPLICATABLE_CLASS_I(Flat, U7file(""));
 public:
-	///	Basic constructor.
-	///	@param spec	File name and object index pair.
+	/// Basic constructor.
+	/// @param spec File name and object index pair.
 	Flat(const File_spec &spec)
 		: U7file(spec)
-		{  }
+	{  }
 
-	virtual size_t number_of_objects(void)
-		{ return 1; };
+	virtual size_t number_of_objects(void) {
+		return 1;
+	};
 	virtual char *retrieve(uint32 objnum, std::size_t &len);
-	virtual const char *get_archive_type()
-		{ return "FLAT"; };
+	virtual const char *get_archive_type() {
+		return "FLAT";
+	};
 
 	static bool is_flat(DataSource *in);
 	static bool is_flat(const char *fname);
-	};
+};
 
 typedef U7DataFile<Flat> FlatFile;
 typedef U7DataBuffer<Flat> FlatBuffer;

@@ -1,5 +1,5 @@
 /*
- *	ucdebugging.h - Debugging-related functions for usecode
+ *  ucdebugging.h - Debugging-related functions for usecode
  *
  *  Copyright (C) 2002  The Exult Team
  *
@@ -37,106 +37,112 @@ enum Breakpoint_type { BP_anywhere, BP_location, BP_stepover, BP_finish };
 //    break on a special 'break to debugger' opcode,
 //    break on a specific or any intrinsic call
 
-class Breakpoint
-{
- public:
+class Breakpoint {
+public:
 	int id; // used to identify breakpoint to remote debugger
 	bool once; // delete when triggered
 
-	virtual Breakpoint_type get_type() const =0;
+	virtual Breakpoint_type get_type() const = 0;
 	virtual ~Breakpoint() {  }
 
-	virtual bool check(Stack_frame *frame) const =0;
+	virtual bool check(Stack_frame *frame) const = 0;
 
-	virtual void serialize(int fd) const =0;
+	virtual void serialize(int fd) const = 0;
 
- protected:
+protected:
 	Breakpoint(bool once);
 };
 
-class AnywhereBreakpoint : public Breakpoint
-{
- public:
+class AnywhereBreakpoint : public Breakpoint {
+public:
 	AnywhereBreakpoint();
 	virtual ~AnywhereBreakpoint() {  }
 
-	virtual Breakpoint_type get_type() const { return BP_anywhere; }
-	virtual bool check(Stack_frame *frame) const { return true; }
+	virtual Breakpoint_type get_type() const {
+		return BP_anywhere;
+	}
+	virtual bool check(Stack_frame *frame) const {
+		return true;
+	}
 
 	virtual void serialize(int fd) const { } // +++++ implement this?
 };
 
-class LocationBreakpoint : public Breakpoint
-{
- public:
+class LocationBreakpoint : public Breakpoint {
+public:
 	LocationBreakpoint(int functionid, int ip, bool once = false);
 	virtual ~LocationBreakpoint() {  }
 
-	virtual Breakpoint_type get_type() const { return BP_location; }
+	virtual Breakpoint_type get_type() const {
+		return BP_location;
+	}
 	virtual bool check(Stack_frame *frame) const;
 
 	virtual void serialize(int fd) const;
 
- private:
+private:
 
 	int functionid;
 	int ip;
 };
 
-class StepoverBreakpoint : public Breakpoint
-{
- public:
+class StepoverBreakpoint : public Breakpoint {
+public:
 	StepoverBreakpoint(Stack_frame *frame);
 	virtual ~StepoverBreakpoint() {  }
 
-	virtual Breakpoint_type get_type() const { return BP_stepover; }
+	virtual Breakpoint_type get_type() const {
+		return BP_stepover;
+	}
 	virtual bool check(Stack_frame *frame) const;
 
 	virtual void serialize(int fd) const { } // +++++ implement this?
 
- private:
+private:
 
 	int call_chain;
 	int call_depth;
 };
 
-class FinishBreakpoint : public Breakpoint
-{
- public:
+class FinishBreakpoint : public Breakpoint {
+public:
 	FinishBreakpoint(Stack_frame *frame);
 	virtual ~FinishBreakpoint() {  }
 
-	virtual Breakpoint_type get_type() const { return BP_finish; }
+	virtual Breakpoint_type get_type() const {
+		return BP_finish;
+	}
 	virtual bool check(Stack_frame *frame) const;
 
 	virtual void serialize(int fd) const { } // +++++ implement this?
 
- private:
+private:
 	int call_chain;
 	int call_depth;
 };
 
 
-class Breakpoints
-{
- public:
+class Breakpoints {
+public:
 	Breakpoints();
 	~Breakpoints();
 
-	void add(Breakpoint* breakpoint);
-	void remove(Breakpoint* breakpoint);
+	void add(Breakpoint *breakpoint);
+	void remove(Breakpoint *breakpoint);
 	bool remove(int id);
 
 	int check(Stack_frame *frame);
 
 	void transmit(int fd);
 
-	static int getNewID() { return lastID++; }
+	static int getNewID() {
+		return lastID++;
+	}
 
- private:
+private:
 	static int lastID;
 
-	std::list<Breakpoint*> breaks;
+	std::list<Breakpoint *> breaks;
 };
 
 #endif

@@ -39,13 +39,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define qtohs(x) (x)
 #else
 #define qtohl(x) \
-		((uint32)((((uint32)(x) & 0x000000ffU) << 24) | \
-		          (((uint32)(x) & 0x0000ff00U) <<  8) | \
-		          (((uint32)(x) & 0x00ff0000U) >>  8) | \
-		          (((uint32)(x) & 0xff000000U) >> 24)))
+	((uint32)((((uint32)(x) & 0x000000ffU) << 24) | \
+	          (((uint32)(x) & 0x0000ff00U) <<  8) | \
+	          (((uint32)(x) & 0x00ff0000U) >>  8) | \
+	          (((uint32)(x) & 0xff000000U) >> 24)))
 #define qtohs(x) \
-		((uint16)((((uint16)(x) & 0x00ff) << 8) | \
-		          (((uint16)(x) & 0xff00) >> 8)))
+	((uint16)((((uint16)(x) & 0x00ff) << 8) | \
+	          (((uint16)(x) & 0xff00) >> 8)))
 #endif
 #define htoql(x) qtohl(x)
 #define htoqs(x) qtohs(x)
@@ -93,46 +93,43 @@ struct u7shape {
 	int width, height;
 };
 
-unsigned int read1(FILE *f)
-{
+unsigned int read1(FILE *f) {
 	unsigned char b0;
 	b0 = fgetc(f);
 	return b0;
 }
 
-unsigned int read2(FILE *f)
-{
+unsigned int read2(FILE *f) {
 	unsigned char b0, b1;
 	b0 = fgetc(f);
 	b1 = fgetc(f);
-	return (b0 + (b1<<8));
+	return (b0 + (b1 << 8));
 }
 
 /* Flauschepelz */
-signed int read2signed(FILE *f)
-{
+signed int read2signed(FILE *f) {
 	unsigned char b0, b1;
 	signed int i0;
 	b0 = fgetc(f);
 	b1 = fgetc(f);
-	i0 = b0 + (b1<<8);
-	if (i0 >= 32768) { i0 = i0 - 65536; }
+	i0 = b0 + (b1 << 8);
+	if (i0 >= 32768) {
+		i0 = i0 - 65536;
+	}
 	return (i0);
 }
 
-unsigned int read4(FILE *f)
-{
+unsigned int read4(FILE *f) {
 	unsigned char b0, b1, b2, b3;
 	b0 = fgetc(f);
 	b1 = fgetc(f);
 	b2 = fgetc(f);
 	b3 = fgetc(f);
-	return (b0 + (b1<<8) + (b2<<16) + (b3<<24));
+	return (b0 + (b1 << 8) + (b2 << 16) + (b3 << 24));
 }
 
 
-u7shape* load_shape(char* filename)
-{
+u7shape *load_shape(char *filename) {
 	FILE *fp;
 	int file_size, shape_size, hdr_size;
 	uint8 *pixptr/*, *eod*/;
@@ -150,7 +147,7 @@ u7shape* load_shape(char* filename)
 
 	int temp_int;
 
-	fp = fopen (filename, "rb");
+	fp = fopen(filename, "rb");
 	if (!fp) {
 		cerr << "Can't open " << filename << endl;
 		return 0;
@@ -164,14 +161,17 @@ u7shape* load_shape(char* filename)
 
 	shape_size = read4(fp);
 
-	if(file_size!=shape_size) {	/* 8x8 tile */
-		shape->num_frames = file_size/64;
-		fseek(fp, 0, SEEK_SET);		/* Return to start of file */
+	if (file_size != shape_size) { /* 8x8 tile */
+		shape->num_frames = file_size / 64;
+		fseek(fp, 0, SEEK_SET);     /* Return to start of file */
 		cout << "num_frames = " << shape->num_frames << endl;
 		shape->frames = new u7frame[shape->num_frames];
-		max_leftX = 0; max_leftY = 0; max_rightX = 7; max_rightY = 7;
+		max_leftX = 0;
+		max_leftY = 0;
+		max_rightX = 7;
+		max_rightY = 7;
 
-		for(i=0; i<shape->num_frames; i++) {
+		for (i = 0; i < shape->num_frames; i++) {
 			frame = &shape->frames[i];
 			frame->width = 8;
 			frame->height = 8;
@@ -179,20 +179,20 @@ u7shape* load_shape(char* filename)
 			frame->leftY = 0;
 			frame->pixels = new uint8[64];
 			err = fread(frame->pixels, 1, 64, fp);
-			assert (err == 64);
+			assert(err == 64);
 		}
 	} else {
 		hdr_size = read4(fp);
-		shape->num_frames = (hdr_size-4)/4;
+		shape->num_frames = (hdr_size - 4) / 4;
 
-		cout << "num_frames = "<< shape->num_frames << endl;
+		cout << "num_frames = " << shape->num_frames << endl;
 		shape->frames = new u7frame[shape->num_frames];
 
-		for(i=0; i<shape->num_frames; i++) {
+		for (i = 0; i < shape->num_frames; i++) {
 			frame = &shape->frames[i];
 
 			// Go to where frame offset is stored
-			fseek(fp, (i+1)*4, SEEK_SET);
+			fseek(fp, (i + 1) * 4, SEEK_SET);
 			frame_offset = read4(fp);
 			fseek(fp, frame_offset, SEEK_SET);
 			frame->rightX = read2(fp);
@@ -209,50 +209,50 @@ u7shape* load_shape(char* filename)
 			if (frame->rightY > max_rightY)
 				max_rightY = frame->rightY;
 
-			frame->width = frame->leftX+frame->rightX+1;
-			frame->height = frame->leftY+frame->rightY+1;
+			frame->width = frame->leftX + frame->rightX + 1;
+			frame->height = frame->leftY + frame->rightY + 1;
 
-			pixptr = new uint8[frame->width*frame->height];
+			pixptr = new uint8[frame->width * frame->height];
 			frame->pixels = pixptr;
-			memset(pixptr, 0, frame->width*frame->height);
+			memset(pixptr, 0, frame->width * frame->height);
 
 			//eod = frame->pixels+frame->width*frame->height;
-			while((slice=read2(fp))!=0) {
+			while ((slice = read2(fp)) != 0) {
 				slice_type = slice & 0x1;
 				slice_length = slice >> 1;
 
 				offsetX = read2signed(fp);
 				offsetY = read2signed(fp);
 
-				temp_int = (frame->leftY + offsetY)*frame->width +
-					(frame->leftX + offsetX);
+				temp_int = (frame->leftY + offsetY) * frame->width +
+				           (frame->leftX + offsetX);
 
 				pixptr = frame->pixels;
 				pixptr = pixptr + temp_int;
 
-				if(pixptr<frame->pixels)
+				if (pixptr < frame->pixels)
 					pixptr = frame->pixels;
-				if(slice_type) {	// Compressed
-					while(slice_length>0) {
+				if (slice_type) {   // Compressed
+					while (slice_length > 0) {
 						block = read1(fp);
 						block_type = block & 0x1;
 						block_length = block >> 1;
-						if(block_type) {
+						if (block_type) {
 							pix = read1(fp);
-							for(j=0;j<block_length;j++) {
+							for (j = 0; j < block_length; j++) {
 								*pixptr++ = pix;
 							}
 						} else {
-							for(j=0;j<block_length;j++) {
+							for (j = 0; j < block_length; j++) {
 								pix = read1(fp);
 								*pixptr++ = pix;
 							}
 						}
 						slice_length -= block_length;
 					}
-				} else {		// Uncompressed
+				} else {        // Uncompressed
 					// Just read the pixels
-					for(j=0;j<slice_length;j++) {
+					for (j = 0; j < slice_length; j++) {
 						pix = read1(fp);
 						*pixptr++ = pix;
 					}
@@ -266,23 +266,24 @@ u7shape* load_shape(char* filename)
 	int width = max_leftX + max_rightX + 1;
 	int height = max_leftY + max_rightY + 1;
 
-	shape->width = width; shape->height = height;
+	shape->width = width;
+	shape->height = height;
 
 	int srcx, srcy, dstx, dsty;
 
-	for (i=0; i<shape->num_frames; i++) {
+	for (i = 0; i < shape->num_frames; i++) {
 		frame = &shape->frames[i];
 		pixptr = frame->pixels;
 
-		frame->pixels = new uint8[width*height];
-		memset(frame->pixels, 0, width*height);
+		frame->pixels = new uint8[width * height];
+		memset(frame->pixels, 0, width * height);
 
 		dsty = max_leftY - frame->leftY;
 
 		for (srcy = 0; srcy < frame->height; srcy++, dsty++) {
 			dstx = max_leftX - frame->leftX;
 			srcx = 0;
-			memcpy(frame->pixels + dsty*width + dstx, pixptr + srcy*frame->width + srcx, frame->width);
+			memcpy(frame->pixels + dsty * width + dstx, pixptr + srcy * frame->width + srcx, frame->width);
 		}
 
 		delete [] pixptr;
@@ -291,36 +292,35 @@ u7shape* load_shape(char* filename)
 	return shape;
 }
 
-uint8* load_palette (char *filename)
-{
+uint8 *load_palette(char *filename) {
 	FILE *fp;
 	long len;
 	int i;
 
-	fp = fopen (filename, "rb");
+	fp = fopen(filename, "rb");
 	if (!fp) {
 		cerr << "Can't open " << filename << endl;
 		return 0;
 	}
 
-	uint8* palette = new uint8[768];
+	uint8 *palette = new uint8[768];
 
 	fseek(fp, 0, SEEK_END);
 	len = ftell(fp);
 	fseek(fp, 0, SEEK_SET);
-	if(len==768) {
-		for(i=0;i<256;i++) {
-			palette[i*3]=read1(fp) << 2;
-			palette[i*3+1]=read1(fp) << 2;
-			palette[i*3+2]=read1(fp) << 2;
+	if (len == 768) {
+		for (i = 0; i < 256; i++) {
+			palette[i * 3] = read1(fp) << 2;
+			palette[i * 3 + 1] = read1(fp) << 2;
+			palette[i * 3 + 2] = read1(fp) << 2;
 		}
-	} else if(len==1536) {
-		for(i=0;i<256;i++) {
-			palette[i*3]=read1(fp) << 2;
+	} else if (len == 1536) {
+		for (i = 0; i < 256; i++) {
+			palette[i * 3] = read1(fp) << 2;
 			read1(fp);
-			palette[i*3+1]=read1(fp) << 2;
+			palette[i * 3 + 1] = read1(fp) << 2;
 			read1(fp);
-			palette[i*3+2]=read1(fp) << 2;
+			palette[i * 3 + 2] = read1(fp) << 2;
 			read1(fp);
 		}
 	} else {
@@ -333,7 +333,7 @@ uint8* load_palette (char *filename)
 	return palette;
 }
 
-static void writeline (FILE *dst, uint8* buffer, int bytes) {
+static void writeline(FILE *dst, uint8 *buffer, int bytes) {
 	uint8 value, count, tmp;
 	uint8 *finish = buffer + bytes;
 
@@ -343,7 +343,8 @@ static void writeline (FILE *dst, uint8* buffer, int bytes) {
 		count = 1;
 
 		while (buffer < finish && count < 63 && *buffer == value) {
-			count++; buffer++;
+			count++;
+			buffer++;
 		}
 
 		if (value < 0xc0 && count == 1) {
@@ -356,25 +357,22 @@ static void writeline (FILE *dst, uint8* buffer, int bytes) {
 	}
 }
 
-void save_8 (FILE *dst, int width, int height, 
-		    int pitch, uint8* buffer)
-{
+void save_8(FILE *dst, int width, int height,
+            int pitch, uint8 *buffer) {
 	int row;
 
-	for (row = 0; row < height; ++row) 
-	{
-		writeline (dst, buffer, width);
+	for (row = 0; row < height; ++row) {
+		writeline(dst, buffer, width);
 		buffer += pitch;
 	}
 }
 
 
-void save_image(uint8* pixels, uint8* palette, int width, int height, char *filename)
-{
+void save_image(uint8 *pixels, uint8 *palette, int width, int height, char *filename) {
 	int pitch;
 	PCX_Header header;
 
-	FILE *fp = fopen (filename, "wb");
+	FILE *fp = fopen(filename, "wb");
 	if (!fp) {
 		cerr << "Can't open " << filename << endl;
 		return;
@@ -387,35 +385,34 @@ void save_image(uint8* pixels, uint8* palette, int width, int height, char *file
 	header.compression = 1;
 
 	header.bpp = 8;
-	header.bytesperline = htoqs (width);
+	header.bytesperline = htoqs(width);
 	header.planes = 1;
-	header.color = htoqs (1);
+	header.color = htoqs(1);
 
 	header.x1 = 0;
 	header.y1 = 0;
-	header.x2 = htoqs (width - 1);
-	header.y2 = htoqs (height - 1);
+	header.x2 = htoqs(width - 1);
+	header.y2 = htoqs(height - 1);
 
-	header.hdpi = htoqs (300);
-	header.vdpi = htoqs (300);
+	header.hdpi = htoqs(300);
+	header.vdpi = htoqs(300);
 	header.reserved = 0;
 
 	/* write header */
 	fwrite(&header, sizeof(PCX_Header), 1, fp);
 
-	save_8 (fp, width, height, pitch, pixels);
+	save_8(fp, width, height, pitch, pixels);
 
 	fputc(0x0c, fp);
 	fwrite(palette, 3, 256, fp);
 }
 
-int main(int argc, char *argv[])
-{
-	char* palfilename ;
-	char* infilename;
-	char* outprefix, outfilename[255];
-	u7shape* sh;
-	uint8* palette;
+int main(int argc, char *argv[]) {
+	char *palfilename ;
+	char *infilename;
+	char *outprefix, outfilename[255];
+	u7shape *sh;
+	uint8 *palette;
 
 	if (argc < 4) {
 		cout << "Usage: shp2pcx [input file] [output file prefix] [palette file]" << endl;

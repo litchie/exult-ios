@@ -1,7 +1,7 @@
 /**
- **	Ucloc.cc - Source location.
+ ** Ucloc.cc - Source location.
  **
- **	Written: 1/0/01 - JSF
+ ** Written: 1/0/01 - JSF
  **/
 
 /*
@@ -43,77 +43,65 @@ int Uc_location::cur_line = 0;
 int Uc_location::num_errors = 0;
 
 /*
- *	Set current source and line #.
+ *  Set current source and line #.
  */
 
-void Uc_location::set_cur
-	(
-	const char *s, 
-	int l
-	)
-	{
+void Uc_location::set_cur(
+    const char *s,
+    int l
+) {
 	cur_line = l;
-	cur_source = 0;			// See if already here.
+	cur_source = 0;         // See if already here.
 	for (std::vector<char *>::const_iterator it = source_names.begin();
-			it != source_names.end(); ++it)
-		if (strcmp(s, *it) == 0)
-			{
+	        it != source_names.end(); ++it)
+		if (strcmp(s, *it) == 0) {
 			cur_source = *it;
 			break;
-			}
-	if (!cur_source)		// 1st time.
-		{
+		}
+	if (!cur_source) {      // 1st time.
 		int len = strlen(s);
 		cur_source = new char[len + 1];
 		strcpy(cur_source, s);
 		source_names.push_back(cur_source);
-		}
 	}
+}
 
 /*
- *	Print error for stored position.
+ *  Print error for stored position.
  */
 
-void Uc_location::error
-	(
-	const char *s
-	)
-	{
+void Uc_location::error(
+    const char *s
+) {
 	cout << source << ':' << line + 1 << ": " << s << endl;
 	num_errors++;
-	}
+}
 
 /*
- *	Print warning for stored position.
+ *  Print warning for stored position.
  */
 
-void Uc_location::warning
-	(
-	const char *s
-	)
-	{
-	cout << source << ':' << line + 1 << ": " << 
-								"Warning: " << s << endl;
-	}
+void Uc_location::warning(
+    const char *s
+) {
+	cout << source << ':' << line + 1 << ": " <<
+	     "Warning: " << s << endl;
+}
 
 /*
- *	Print error for current parse location.
+ *  Print error for current parse location.
  */
 
-void Uc_location::yyerror
-	(
-	const char *s
-	)
-	{
+void Uc_location::yyerror(
+    const char *s
+) {
 	cout << cur_source << ':' << cur_line + 1 << ": " << s << endl;
 	num_errors++;
-	}
+}
 
-void Uc_location::yywarning
-	(
-	const char *s
-	)
-	{
-	cout << cur_source << ':' << cur_line + 1 << ": " << 
-								"Warning: " << s << endl;
-	}
+void Uc_location::yywarning(
+    const char *s
+) {
+	cout << cur_source << ':' << cur_line + 1 << ": " <<
+	     "Warning: " << s << endl;
+}

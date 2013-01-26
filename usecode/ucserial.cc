@@ -1,5 +1,5 @@
 /*
- *	ucserial.cc - Serialization of usecode objects
+ *  ucserial.cc - Serialization of usecode objects
  *
  *  Copyright (C) 2002  The Exult Team
  *
@@ -30,50 +30,46 @@
 #include "databuf.h"
 
 /*
- *	Read/write out data common to all objects.
+ *  Read/write out data common to all objects.
  *
- *	Output:	1 if successful, else 0.
+ *  Output: 1 if successful, else 0.
  */
 
-template <class Serial> 
-void Stack_frame_io
-	(
-	Serial& io,
-	int& functionid,
-	int& ip,
-	int& call_chain,
-	int& call_depth,
-	int& eventid,
-	int& caller_item,
-	int& num_args,
-	int& num_vars
-	)
-{
+template <class Serial>
+void Stack_frame_io(
+    Serial &io,
+    int &functionid,
+    int &ip,
+    int &call_chain,
+    int &call_depth,
+    int &eventid,
+    int &caller_item,
+    int &num_args,
+    int &num_vars
+) {
 	unsigned char c = static_cast<unsigned char>(Exult_server::dbg_stackframe);
 	io << c << functionid << ip << call_chain << call_depth
 	   << eventid << caller_item << num_args << num_vars;
 	// locals!
 }
 
-int Stack_frame_out
-	(
-	int fd,				// Socket.
-	int functionid,
-	int ip,
-	int call_chain,
-	int call_depth,
-	int eventid,
-	int caller_item,
-	int num_args,
-	int num_vars,	
-	Usecode_value* locals
-	)
-{
+int Stack_frame_out(
+    int fd,             // Socket.
+    int functionid,
+    int ip,
+    int call_chain,
+    int call_depth,
+    int eventid,
+    int caller_item,
+    int num_args,
+    int num_vars,
+    Usecode_value *locals
+) {
 	static unsigned char buf[Exult_server::maxlength];
 	unsigned char *ptr = &buf[0];
 	Serial_out io(ptr);
 	Stack_frame_io<Serial_out>(io, functionid, ip, call_chain, call_depth,
-							   eventid, caller_item, num_args, num_vars);
+	                           eventid, caller_item, num_args, num_vars);
 	BufferDataSource ds(buf, Exult_server::maxlength);
 	ds.seek(ptr - buf);
 	for (int i = 0; i < num_args + num_vars; i++) {
@@ -81,30 +77,28 @@ int Stack_frame_out
 	}
 
 	return Exult_server::Send_data(fd, Exult_server::usecode_debugging,
-								   buf, ds.getPos());
+	                               buf, ds.getPos());
 	// locals!
 }
 
 
-bool Stack_frame_in
-	(
-	unsigned char *data,		// Data that was read.
-	int datalen,			// Length of data.
-	int& functionid,
-	int& ip,
-	int& call_chain,
-	int& call_depth,
-	int& eventid,
-	int& caller_item,
-	int& num_args,
-	int& num_vars,
-	Usecode_value*& locals
-	)
-{
+bool Stack_frame_in(
+    unsigned char *data,        // Data that was read.
+    int datalen,            // Length of data.
+    int &functionid,
+    int &ip,
+    int &call_chain,
+    int &call_depth,
+    int &eventid,
+    int &caller_item,
+    int &num_args,
+    int &num_vars,
+    Usecode_value *&locals
+) {
 	unsigned char *ptr = data;
 	Serial_in io(ptr);
 	Stack_frame_io<Serial_in>(io, functionid, ip, call_chain, call_depth,
-							  eventid, caller_item, num_args, num_vars);
+	                          eventid, caller_item, num_args, num_vars);
 
 	BufferDataSource ds(data, datalen);
 	ds.seek(ptr - data);

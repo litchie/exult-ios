@@ -1,5 +1,5 @@
 /*
- *	Npctime.h - Timed-even handlers for NPC's.
+ *  Npctime.h - Timed-even handlers for NPC's.
  *
  *  Copyright (C) 2000-2013  The Exult Team
  *
@@ -19,7 +19,7 @@
  */
 
 #ifndef NPCTIME_H
-#define	NPCTIME_H	1
+#define NPCTIME_H   1
 
 #include "tqueue.h"
 
@@ -33,10 +33,9 @@ class Npc_protection_timer;
 class Npc_flag_timer;
 
 /*
- *	List of references to timers for an NPC.
+ *  List of references to timers for an NPC.
  */
-class Npc_timer_list
-	{
+class Npc_timer_list {
 	Actor *npc;
 	Npc_hunger_timer *hunger;
 	Npc_poison_timer *poison;
@@ -52,9 +51,9 @@ public:
 	friend class Npc_protection_timer;
 	friend class Npc_flag_timer;
 	Npc_timer_list(Actor *n) : npc(n), hunger(0), poison(0), sleep(0),
-			invisibility(0), protection(0), might(0), curse(0),
-			charm(0), paralyze(0)
-		{  }
+		invisibility(0), protection(0), might(0), curse(0),
+		charm(0), paralyze(0)
+	{  }
 	~Npc_timer_list();
 	void start_hunger();
 	void start_poison();
@@ -65,6 +64,6 @@ public:
 	void start_curse();
 	void start_charm();
 	void start_paralyze();
-	};
+};
 
-#endif	/* INCL_NPCTIME */
+#endif  /* INCL_NPCTIME */

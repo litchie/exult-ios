@@ -21,6 +21,6 @@
 
 #include <iostream>
 
-void getVersionInfo(std::ostream& out);
+void getVersionInfo(std::ostream &out);
 
 #endif

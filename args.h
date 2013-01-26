@@ -16,8 +16,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef	_ARGS_H_
-#define	_ARGS_H_
+#ifndef _ARGS_H_
+#define _ARGS_H_
 
 // Handy argument processor. I'm certain the implementation could be better
 // but it suffices quite well at the moment.
@@ -33,33 +33,31 @@
 #endif
 #include <vector>
 
-class	Args
-{
-	struct Opts
-	{
-		std::string	option;
-		bool	*bval;
+class   Args {
+	struct Opts {
+		std::string option;
+		bool    *bval;
 		std::string  *sval;
-		int	*ival;
+		int *ival;
 		uint32 *uval;
 
-		bool	dbval;
-		std::string	dsval;
-		int	dival;
+		bool    dbval;
+		std::string dsval;
+		int dival;
 		uint32 duval;
-		enum { no_type=0,type_bool,type_string,type_int,type_unsigned } valuetype;
-		Opts() :option(""),valuetype(no_type) {};
+		enum { no_type = 0, type_bool, type_string, type_int, type_unsigned } valuetype;
+		Opts() : option(""), valuetype(no_type) {};
 		~Opts() {};
 	};
 	std::vector<Opts> options;
-	public:
+public:
 	Args() {};
 	~Args() {};
-	void	declare(const char *s,bool *b,bool defval=true);
-	void	declare(const char *s,std::string *b,const char *defval=0);
-	void	declare(const char *s,int *b,int defval=0);
-	void	declare(const char *s,uint32 *b,uint32 defval=0);
-	void	process(int argc,char **argv);
+	void    declare(const char *s, bool *b, bool defval = true);
+	void    declare(const char *s, std::string *b, const char *defval = 0);
+	void    declare(const char *s, int *b, int defval = 0);
+	void    declare(const char *s, uint32 *b, uint32 defval = 0);
+	void    process(int argc, char **argv);
 };
 
 #endif

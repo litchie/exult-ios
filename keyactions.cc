@@ -15,7 +15,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
- 
+
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
@@ -53,15 +53,13 @@
 #endif
 
 /*
- *	Get the i'th party member, with the 0'th being the Avatar.
+ *  Get the i'th party member, with the 0'th being the Avatar.
  */
 
-static Actor *Get_party_member
-(
-	int num				// 0=avatar.
-)
-{
-	int npc_num = 0;	 	// Default to Avatar
+static Actor *Get_party_member(
+    int num             // 0=avatar.
+) {
+	int npc_num = 0;        // Default to Avatar
 	if (num > 0)
 		npc_num = Game_window::get_instance()->get_party_man()->get_member(num - 1);
 	return Game_window::get_instance()->get_npc(npc_num);
@@ -69,24 +67,21 @@ static Actor *Get_party_member
 
 
 //  { ActionQuit, 0, "Quit", normal_keys, NONE },
-void ActionQuit(int const *params)
-{
+void ActionQuit(int const *params) {
 	Game_window::get_instance()->get_gump_man()->okay_to_quit();
 }
 
 // { ActionOldFileGump, 0, "Save/restore", normal_keys, NONE },
-void ActionOldFileGump(int const *params)
-{
+void ActionOldFileGump(int const *params) {
 	File_gump *fileio = new File_gump();
-	Game_window::get_instance()->get_gump_man()->do_modal_gump(fileio, 
-															   Mouse::hand);
+	Game_window::get_instance()->get_gump_man()->do_modal_gump(fileio,
+	        Mouse::hand);
 	delete fileio;
 }
 
 #ifdef UNDER_CE
 // { ActionMinimizeGame, 0, "Minimize game", normal_keys, NONE },
-void ActionMinimizeGame(int const *params)
-{
+void ActionMinimizeGame(int const *params) {
 	//gwin->clear_screen(true);
 	minimized = true;
 	SDL_WM_IconifyWindow();
@@ -95,9 +90,8 @@ void ActionMinimizeGame(int const *params)
 }
 
 // { ActionTouchscreenMode, 0, "Touchscreen mode", normal_keys, NONE },
-void ActionTouchscreenMode(int const *params)
-{
-	int Right,Double;
+void ActionTouchscreenMode(int const *params) {
+	int Right, Double;
 	Touchscreen->getModes(&Right, &Double);
 	if (params[0] == Right)
 		params[0] = 0;
@@ -107,8 +101,7 @@ void ActionTouchscreenMode(int const *params)
 }
 
 // { "KEYBOARD_POSITION", ActionKeyboardPosition, 0, "Keyboard position", normal_keys, NONE, true },
-void ActionKeyboardPosition(int const *params)
-{
+void ActionKeyboardPosition(int const *params) {
 	// 0 = upper left, 1 = upper right, 2 = lower left, 3 = lower right
 	int corner = params[0];
 	if (corner == -1)
@@ -120,61 +113,56 @@ void ActionKeyboardPosition(int const *params)
 }
 
 // { "KEYBOARD_MODE", ActionKeyboardMode, 0, "Keyboard mode", normal_keys, NONE, true },
-void ActionKeyboardMode(int const *params)
-{
+void ActionKeyboardMode(int const *params) {
 	int newstate = params[0];
 	int curstate = gkeyboard->getState();
-	if (newstate == curstate)
-	{
+	if (newstate == curstate) {
 		if (newstate == KEYG_HIDDEN)
 			newstate = -1;
 		else
 			newstate = KEYG_MINIMIZED;
-	}
-	else if (newstate == -1)
-	{
+	} else if (newstate == -1) {
 		newstate = curstate + 1;
 		(newstate > KEYG_MINIMIZED) && (newstate = KEYG_KEYBOARD);
-	}
-	else if (newstate < -1 || newstate > KEYG_HIDDEN)
-	{
+	} else if (newstate < -1 || newstate > KEYG_HIDDEN) {
 		newstate = KEYG_KEYBOARD;
 	}
-	switch(newstate)
-	{
-		case KEYG_MINIMIZED:	gkeyboard->minimize();			break;
-		case KEYG_HIDDEN:		gkeyboard->hide();				break;
-		default:				gkeyboard->show(-1, newstate);	break;
+	switch (newstate) {
+	case KEYG_MINIMIZED:
+		gkeyboard->minimize();
+		break;
+	case KEYG_HIDDEN:
+		gkeyboard->hide();
+		break;
+	default:
+		gkeyboard->show(-1, newstate);
+		break;
 	}
 }
 
 #endif
 
 // { ActionMenuGump, 0, "GameMenu", normal_keys, NONE },
-void ActionMenuGump(int const *params)
-{
+void ActionMenuGump(int const *params) {
 	Gamemenu_gump *gmenu = new Gamemenu_gump();
 	Game_window::get_instance()->get_gump_man()->do_modal_gump(gmenu,
-															   Mouse::hand);
+	        Mouse::hand);
 	delete gmenu;
 }
 
 // { ActionFileGump, 0, "Save/restore", normal_keys, NONE },
-void ActionFileGump(int const *params)
-{
+void ActionFileGump(int const *params) {
 	Newfile_gump *fileio = new Newfile_gump();
 	Game_window::get_instance()->get_gump_man()->do_modal_gump(fileio,
-															   Mouse::hand);
+	        Mouse::hand);
 	delete fileio;
 }
 //  { ActionQuicksave, 0, "Quick-save", normal_keys, NONE },
-void ActionQuicksave(int const *params)
-{
+void ActionQuicksave(int const *params) {
 	Game_window *gwin = Game_window::get_instance();
 	try {
 		gwin->write();
-	}
-	catch(exult_exception &/*e*/) {
+	} catch (exult_exception &/*e*/) {
 		gwin->get_effects()->center_text("Saving game failed!");
 		return;
 	}
@@ -183,13 +171,11 @@ void ActionQuicksave(int const *params)
 }
 
 //  { ActionQuickrestore, 0, "Quick-restore", normal_keys, NONE },
-void ActionQuickrestore(int const *params)
-{
+void ActionQuickrestore(int const *params) {
 	Game_window *gwin = Game_window::get_instance();
 	try {
 		gwin->read();
-	}
-	catch(exult_exception &/*e*/) {
+	} catch (exult_exception &/*e*/) {
 		gwin->get_effects()->center_text("Restoring game failed!");
 		return;
 	}
@@ -198,42 +184,38 @@ void ActionQuickrestore(int const *params)
 }
 
 //  { ActionAbout, 0, "About Exult", normal_keys, NONE },
-void ActionAbout(int const *params)
-{
+void ActionAbout(int const *params) {
 	Game_window *gwin = Game_window::get_instance();
 	Scroll_gump *scroll;
 	scroll = new Scroll_gump();
-	
+
 	scroll->add_text("Exult V"VERSION"\n");
 	scroll->add_text("(C) 1998-2013 Exult Team\n\n");
 	scroll->add_text("Available under the terms of the ");
 	scroll->add_text("GNU General Public License\n\n");
 	scroll->add_text("http://exult.sourceforge.net\n");
-	
+
 	scroll->paint();
 	do {
 		int x, y;
-		Get_click(x,y, Mouse::hand);
+		Get_click(x, y, Mouse::hand);
 	} while (scroll->show_next_page());
 	gwin->paint();
 	delete scroll;
 }
 
 //  { ActionHelp, 0, "List keys", normal_keys, NONE },
-void ActionHelp(int const *params)
-{
+void ActionHelp(int const *params) {
 	keybinder->ShowHelp();
 }
 
 //  { ActionCloseGumps, 0, "Close gumps", dont_show, NONE },
-void ActionCloseGumps(int const *params)
-{
+void ActionCloseGumps(int const *params) {
 	Game_window::get_instance()->get_gump_man()->close_all_gumps();
 }
 
 //  { ActionCloseOrMenu, "Game menu", normal_keys, NONE },
-void ActionCloseOrMenu(int const *params)
-{
+void ActionCloseOrMenu(int const *params) {
 	Game_window *gwin = Game_window::get_instance();
 	if (gwin->get_gump_man()->showing_gumps(true))
 		gwin->get_gump_man()->close_all_gumps();
@@ -242,47 +224,40 @@ void ActionCloseOrMenu(int const *params)
 }
 
 //  { ActionScreenshot, 0, "Take screenshot", normal_keys, NONE },
-void ActionScreenshot(int const *params)
-{
+void ActionScreenshot(int const *params) {
 	make_screenshot();
 }
 
 //  { ActionRepaint, 0, "Repaint screen", dont_show, NONE },
-void ActionRepaint(int const *params)
-{
+void ActionRepaint(int const *params) {
 	Game_window::get_instance()->paint();
 }
 
 //  { ActionResIncrease, 0, "Increase resolution", cheat_keys, NONE },
-void ActionResIncrease(int const *params)
-{
+void ActionResIncrease(int const *params) {
 	increase_resolution();
 }
 
 //  { ActionResDecrease, 0, "Decrease resolution", cheat_keys, NONE },
-void ActionResDecrease(int const *params)
-{
+void ActionResDecrease(int const *params) {
 	decrease_resolution();
 }
 
 //  { ActionBrighter, 0, "Increase brightness", normal_keys, NONE },
-void ActionBrighter(int const *params)
-{
+void ActionBrighter(int const *params) {
 	change_gamma(true);
 }
 
 //  { ActionDarker, 0, "Decrease brightness", normal_keys, NONE },
-void ActionDarker(int const *params)
-{
+void ActionDarker(int const *params) {
 	change_gamma(false);
 }
 
 //  { ActionFullscreen, 0, "Toggle fullscreen", normal_keys, NONE },
-void ActionFullscreen(int const *params)
-{
+void ActionFullscreen(int const *params) {
 	Game_window *gwin = Game_window::get_instance();
 	setup_video(!gwin->get_win()->is_fullscreen(), TOGGLE_FULLSCREEN);
-	if (Countdown_gump::ask("Fullscreen applied.\nKeep? %i...",20))
+	if (Countdown_gump::ask("Fullscreen applied.\nKeep? %i...", 20))
 		config->set("config/video/fullscreen",
 		            gwin->get_win()->is_fullscreen() ? "yes" : "no",
 		            true);
@@ -294,40 +269,36 @@ void ActionFullscreen(int const *params)
 // params[0] = shape nr.
 // params[1] = frame nr.
 // params[2] = quality
-void ActionUseItem(int const *params)
-{
-	int framenum = params[1] == -1 ? c_any_framenum : params[1]; 
-	int qual     = params[2] == -1 ? c_any_qual     : params[2]; 
+void ActionUseItem(int const *params) {
+	int framenum = params[1] == -1 ? c_any_framenum : params[1];
+	int qual     = params[2] == -1 ? c_any_qual     : params[2];
 	Game_window::get_instance()->activate_item(params[0], framenum, qual);
 
 	Mouse::mouse->set_speed_cursor();
 }
 
 //  { ActionUseItem, 3, "Use food", dont_show, NONE },
-void ActionUseFood(int const *params)
-{
+void ActionUseFood(int const *params) {
 	Game_window *gwin = Game_window::get_instance();
-	if (gwin->activate_item(377) &&	// Food
-			(GAME_SI && !gwin->activate_item(404))  &&  // Special SI food
-			!gwin->activate_item(616))  // Drinks
+	if (gwin->activate_item(377) && // Food
+	        (GAME_SI && !gwin->activate_item(404))  &&  // Special SI food
+	        !gwin->activate_item(616))  // Drinks
 		Mouse::mouse->set_speed_cursor();
 }
 
 //  { ActionCallUsecode, 2, "Call usecode", dont_show, NONE },
 // params[0] = usecode function.
 // params[1] = event id.
-void ActionCallUsecode(int const *params)
-{
+void ActionCallUsecode(int const *params) {
 	Usecode_machine *usecode = Game_window::get_instance()->get_usecode();
 	usecode->call_usecode(params[0], static_cast<Game_object *>(0),
-		static_cast<Usecode_machine::Usecode_events>(params[1]));
+	                      static_cast<Usecode_machine::Usecode_events>(params[1]));
 
 	Mouse::mouse->set_speed_cursor();
 }
 
 //  { ActionCombat, 0, "Toggle combat", normal_keys, NONE },
-void ActionCombat(int const *params)
-{
+void ActionCombat(int const *params) {
 	Game_window *gwin = Game_window::get_instance();
 	gwin->toggle_combat();
 	gwin->paint();
@@ -335,15 +306,13 @@ void ActionCombat(int const *params)
 }
 
 //  { ActionCombatPause, 0, "Pause combat", normal_keys, NONE },
-void ActionCombatPause(int const *params)
-{
+void ActionCombatPause(int const *params) {
 	Combat::toggle_pause();
 	Mouse::mouse->set_speed_cursor();
 }
 
 //  { ActionTarget, 0, "Target mode", normal_keys, NONE },
-void ActionTarget(int const *params)
-{
+void ActionTarget(int const *params) {
 	int x, y;
 	if (!Get_click(x, y, Mouse::greenselect))
 		return;
@@ -353,40 +322,37 @@ void ActionTarget(int const *params)
 
 //  { ActionInventory, 1, "Show inventory", normal_keys, NONE },
 // params[0] = party member (0-7), or -1 for 'next'
-void ActionInventory(int const *params)
-{
+void ActionInventory(int const *params) {
 	Game_window *gwin = Game_window::get_instance();
 	static int inventory_page = -1;
 	Actor *actor;
-	
+
 	if (params[0] == -1) {
 		Gump_manager *gump_man = gwin->get_gump_man();
 		int party_count = gwin->get_party_man()->get_count();
 		int shapenum;
-		
-		for(int i=0;i<=party_count;++i)
-		{
+
+		for (int i = 0; i <= party_count; ++i) {
 			actor = Get_party_member(i);
 			if (!actor)
 				continue;
 
 			shapenum = actor->inventory_shapenum();
 			// Check if this actor's inventory page is open or not
-			if (!gump_man->find_gump(actor, shapenum) && actor->can_act_charmed())
-			{
+			if (!gump_man->find_gump(actor, shapenum) && actor->can_act_charmed()) {
 				gump_man->add_gump(actor, shapenum, true); //force showing inv.
 				inventory_page = i;
 				return;
 			}
 		}
-		inventory_page = (inventory_page+1)%(party_count+1);
+		inventory_page = (inventory_page + 1) % (party_count + 1);
 	} else {
 		inventory_page = params[0];
 		if (inventory_page < 0 ||
-				inventory_page > gwin->get_party_man()->get_count())
+		        inventory_page > gwin->get_party_man()->get_count())
 			return;
 	}
-	
+
 	actor = Get_party_member(inventory_page);
 	if (actor && actor->can_act_charmed()) {
 		actor->show_inventory(); //force showing inv.
@@ -396,10 +362,9 @@ void ActionInventory(int const *params)
 }
 
 //  { ActionTryKeys, 0, "Try keys", normal_keys, NONE },
-void ActionTryKeys(int const *params)
-{
+void ActionTryKeys(int const *params) {
 	Game_window *gwin = Game_window::get_instance();
-	int x, y;			// Allow dragging.
+	int x, y;           // Allow dragging.
 	if (!Get_click(x, y, Mouse::greenselect, 0, true))
 		return;
 	// Look for obj. in open gump.
@@ -407,21 +372,19 @@ void ActionTryKeys(int const *params)
 	Game_object *obj;
 	if (gump)
 		obj = gump->find_object(x, y);
-	else				// Search rest of world.
+	else                // Search rest of world.
 		obj = gwin->find_object(x, y);
 	if (!obj)
 		return;
-	int qual = obj->get_quality();	// Key quality should match.
-	Actor *party[10];		// Get ->party members.
+	int qual = obj->get_quality();  // Key quality should match.
+	Actor *party[10];       // Get ->party members.
 	int party_cnt = gwin->get_party(&party[0], 1);
 	for (int i = 0; i < party_cnt; i++) {
 		Actor *act = party[i];
-		Game_object_vector keys;		// Get keys.
-		if (act->get_objects(keys, 641, qual, c_any_framenum))
-			{
+		Game_object_vector keys;        // Get keys.
+		if (act->get_objects(keys, 641, qual, c_any_framenum)) {
 			for (size_t i = 0; i < keys.size(); i++)
-				if (!keys[i]->inside_locked())
-					{
+				if (!keys[i]->inside_locked()) {
 					// intercept the click_on_item call made by the key-usecode
 					Usecode_machine *ucmachine = gwin->get_usecode();
 					Game_object *oldtarg;
@@ -431,47 +394,44 @@ void ActionTryKeys(int const *params)
 					keys[0]->activate();
 					ucmachine->restore_intercept(oldtarg, oldtile);
 					return;
-					}
-			}
+				}
+		}
 	}
-	Mouse::mouse->flash_shape(Mouse::redx);	// Nothing matched.
+	Mouse::mouse->flash_shape(Mouse::redx); // Nothing matched.
 }
 
 //  { ActionStats, 1, "Show stats", normal_keys, NONE },
 // params[0] = party member (0-7), or -1 for 'next'
-void ActionStats(int const *params)
-{
+void ActionStats(int const *params) {
 	Game_window *gwin = Game_window::get_instance();
 	static int stats_page = -1;
 	Actor *actor;
-	
+
 	if (params[0] == -1) {
 		Gump_manager *gump_man = gwin->get_gump_man();
 		int party_count = gwin->get_party_man()->get_count();
 		int shapenum = game->get_shape("gumps/statsdisplay");
 
-		for(int i=0;i<=party_count;++i)
-		{
+		for (int i = 0; i <= party_count; ++i) {
 			actor = Get_party_member(i);
 			if (!actor)
 				continue;
 
 			// Check if this actor's stats page is open or not
-			if (!gump_man->find_gump(actor, shapenum))
-			{
+			if (!gump_man->find_gump(actor, shapenum)) {
 				gump_man->add_gump(actor, shapenum); //force showing stats.
 				stats_page = i;
 				return;
 			}
 		}
-		stats_page = (stats_page+1)%(party_count+1);
+		stats_page = (stats_page + 1) % (party_count + 1);
 	} else {
 		stats_page = params[0];
 		if (stats_page < 0 ||
-			stats_page >= gwin->get_party_man()->get_count())
+		        stats_page >= gwin->get_party_man()->get_count())
 			stats_page = 0;
 	}
-	
+
 	actor = Get_party_member(stats_page);
 	if (actor) gwin->get_gump_man()->add_gump(actor, game->get_shape("gumps/statsdisplay"));
 
@@ -479,24 +439,21 @@ void ActionStats(int const *params)
 }
 
 //  { ActionCombatStats, 0, "Show Combat stats", normal_keys, SERPENT_ISLE }
-void ActionCombatStats(int const *params)
-{
+void ActionCombatStats(int const *params) {
 	Game_window *gwin = Game_window::get_instance();
 	int cnt = gwin->get_party_man()->get_count();
 	gwin->get_gump_man()->add_gump(0, game->get_shape("gumps/cstats/1") + cnt);
 }
 
 //  { ActionFaceStats, 0, "Change Face Stats State", normal_keys, NONE }
-void ActionFaceStats(int const *params)
-{
+void ActionFaceStats(int const *params) {
 	Face_stats::AdvanceState();
 	Face_stats::save_config(config);
 }
 
 
 //  { ActionSIIntro, 0,  "Show SI intro", cheat_keys, SERPENT_ISLE },
-void ActionSIIntro(int const *params)
-{
+void ActionSIIntro(int const *params) {
 	Game_window *gwin = Game_window::get_instance();
 	game->set_jive();
 	game->play_intro();
@@ -509,8 +466,7 @@ void ActionSIIntro(int const *params)
 
 //  { ActionEndgame, 1, "Show endgame", cheat_keys, BLACK_GATE },
 // params[0] = -1,0 = won, 1 = lost
-void ActionEndgame(int const *params)
-{
+void ActionEndgame(int const *params) {
 	Game_window *gwin = Game_window::get_instance();
 	game->end_game(params[0] != 1);
 	gwin->clear_screen(true);
@@ -520,39 +476,34 @@ void ActionEndgame(int const *params)
 }
 
 //  { ActionScrollLeft, 0, "Scroll left", cheat_keys, NONE },
-void ActionScrollLeft(int const *params)
-{
+void ActionScrollLeft(int const *params) {
 	Game_window *gwin = Game_window::get_instance();
 	for (int i = 16; i; i--)
 		gwin->view_left();
 }
 
 //  { ActionScrollRight, 0, "Scroll right", cheat_keys, NONE },
-void ActionScrollRight(int const *params)
-{
+void ActionScrollRight(int const *params) {
 	Game_window *gwin = Game_window::get_instance();
 	for (int i = 16; i; i--)
 		gwin->view_right();
 }
 
 //  { ActionScrollUp, 0, "Scroll up", cheat_keys, NONE },
-void ActionScrollUp(int const *params)
-{
+void ActionScrollUp(int const *params) {
 	Game_window *gwin = Game_window::get_instance();
 	for (int i = 16; i; i--)
 		gwin->view_up();
 }
 
 //  { ActionScrollDown, 0, "Scroll down", cheat_keys, NONE },
-void ActionScrollDown(int const *params)
-{
+void ActionScrollDown(int const *params) {
 	Game_window *gwin = Game_window::get_instance();
 	for (int i = 16; i; i--)
 		gwin->view_down();
 }
 
-int get_walking_speed(int const *params)
-{
+int get_walking_speed(int const *params) {
 	Game_window *gwin = Game_window::get_instance();
 	int parm = params ? params[0] : 0;
 	int speed;
@@ -561,97 +512,85 @@ int get_walking_speed(int const *params)
 	else if (gwin->in_combat() || gwin->is_hostile_nearby())
 		speed = Mouse::medium_combat_speed_factor;
 	else
-		speed = parm==1 ? Mouse::medium_speed_factor : Mouse::fast_speed_factor;
-	return (200*gwin->get_std_delay()/speed);
+		speed = parm == 1 ? Mouse::medium_speed_factor : Mouse::fast_speed_factor;
+	return (200 * gwin->get_std_delay() / speed);
 }
 
 //  { ActionWalkWest, 0, "Walk west", normal_keys, NONE },
-void ActionWalkWest(int const *params)
-{
+void ActionWalkWest(int const *params) {
 	Game_window *gwin = Game_window::get_instance();
 	int speed = get_walking_speed(params);
-	gwin->start_actor(gwin->get_width()/2-50, gwin->get_height()/2,speed);
+	gwin->start_actor(gwin->get_width() / 2 - 50, gwin->get_height() / 2, speed);
 }
 
 //  { ActionWalkEast, 0, "Walk east", normal_keys, NONE },
-void ActionWalkEast(int const *params)
-{
+void ActionWalkEast(int const *params) {
 	Game_window *gwin = Game_window::get_instance();
 	int speed = get_walking_speed(params);
-	gwin->start_actor(gwin->get_width()/2+50, gwin->get_height()/2, speed);
+	gwin->start_actor(gwin->get_width() / 2 + 50, gwin->get_height() / 2, speed);
 }
 
 //  { ActionWalkNorth, 0, "Walk north", normal_keys, NONE },
-void ActionWalkNorth(int const *params)
-{
+void ActionWalkNorth(int const *params) {
 	Game_window *gwin = Game_window::get_instance();
 	int speed = get_walking_speed(params);
-	gwin->start_actor(gwin->get_width()/2, gwin->get_height()/2-50, speed);
+	gwin->start_actor(gwin->get_width() / 2, gwin->get_height() / 2 - 50, speed);
 }
 
 //  { ActionWalkSouth, 0, "Walk south", normal_keys, NONE },
-void ActionWalkSouth(int const *params)
-{
+void ActionWalkSouth(int const *params) {
 	Game_window *gwin = Game_window::get_instance();
 	int speed = get_walking_speed(params);
-	gwin->start_actor(gwin->get_width()/2, gwin->get_height()/2+50, speed);
+	gwin->start_actor(gwin->get_width() / 2, gwin->get_height() / 2 + 50, speed);
 }
 
 //  { ActionWalkNorthEast, 0, "Walk north-east", normal_keys, NONE },
-void ActionWalkNorthEast(int const *params)
-{
+void ActionWalkNorthEast(int const *params) {
 	Game_window *gwin = Game_window::get_instance();
 	int speed = get_walking_speed(params);
-	gwin->start_actor(gwin->get_width()/2+50, gwin->get_height()/2-50, speed);
+	gwin->start_actor(gwin->get_width() / 2 + 50, gwin->get_height() / 2 - 50, speed);
 }
 
 //  { ActionWalkSouthEast, 0, "Walk south-east", normal_keys, NONE },
-void ActionWalkSouthEast(int const *params)
-{
+void ActionWalkSouthEast(int const *params) {
 	Game_window *gwin = Game_window::get_instance();
 	int speed = get_walking_speed(params);
-	gwin->start_actor(gwin->get_width()/2+50, gwin->get_height()/2+50, speed);
+	gwin->start_actor(gwin->get_width() / 2 + 50, gwin->get_height() / 2 + 50, speed);
 }
 
 //  { ActionWalkNorthWest, 0, "Walk north-west", normal_keys, NONE },
-void ActionWalkNorthWest(int const *params)
-{
+void ActionWalkNorthWest(int const *params) {
 	Game_window *gwin = Game_window::get_instance();
 	int speed = get_walking_speed(params);
-	gwin->start_actor(gwin->get_width()/2-50, gwin->get_height()/2-50, speed);
+	gwin->start_actor(gwin->get_width() / 2 - 50, gwin->get_height() / 2 - 50, speed);
 }
 
 //  { ActionWalkSouthWest, 0, "Walk south-west", normal_keys, NONE },
-void ActionWalkSouthWest(int const *params)
-{
+void ActionWalkSouthWest(int const *params) {
 	Game_window *gwin = Game_window::get_instance();
 	int speed = get_walking_speed(params);
-	gwin->start_actor(gwin->get_width()/2-50, gwin->get_height()/2+50, speed);
+	gwin->start_actor(gwin->get_width() / 2 - 50, gwin->get_height() / 2 + 50, speed);
 }
 
 //  { ActionStopWalking, 0, "Stop Walking", cheat_keys, NONE },
-void ActionStopWalking(int const *params)
-{
+void ActionStopWalking(int const *params) {
 	Game_window *gwin = Game_window::get_instance();
 	gwin->stop_actor();
 }
 
 //  { ActionCenter, 0, "Center screen", cheat_keys, NONE },
-void ActionCenter(int const *params)
-{
+void ActionCenter(int const *params) {
 	Game_window *gwin = Game_window::get_instance();
 	gwin->center_view(gwin->get_camera_actor()->get_tile());
 	gwin->paint();
 }
 
 //  { ActionShapeBrowser, 0, "Shape browser", cheat_keys, NONE },
-void ActionShapeBrowser(int const *params)
-{
+void ActionShapeBrowser(int const *params) {
 	cheat.shape_browser();
 }
 
-void ActionShapeBrowserHelp(int const *params)
-{
+void ActionShapeBrowserHelp(int const *params) {
 	keybinder->ShowBrowserKeys();
 }
 
@@ -660,8 +599,7 @@ void ActionShapeBrowserHelp(int const *params)
 // params[1] = frame nr.
 // params[2] = quantity
 // params[3] = quality
-void ActionCreateShape(int const *params)
-{
+void ActionCreateShape(int const *params) {
 	if (params[0] == -1) {
 		cheat.create_last_shape();
 	} else {
@@ -676,14 +614,12 @@ void ActionCreateShape(int const *params)
 }
 
 //  { ActionDeleteObject, 0, "Delete object", cheat_keys, NONE },
-void ActionDeleteObject(int const *params)
-{
+void ActionDeleteObject(int const *params) {
 	cheat.delete_object();
 }
 
 //  { ActionDeleteSelected, "Delete selected", true, ture, NONE, false },
-void ActionDeleteSelected(int const *params)
-{
+void ActionDeleteSelected(int const *params) {
 	cheat.delete_selected();
 }
 
@@ -691,21 +627,18 @@ void ActionDeleteSelected(int const *params)
 // params[0] = deltax (tiles)
 // params[1] = deltay
 // params[2] = deltaz
-void ActionMoveSelected(int const *params)
-{
+void ActionMoveSelected(int const *params) {
 	cheat.move_selected(params[0], params[1], params[2]);
 }
 
 //  { ActionToggleEggs, 0, "Toggle egg display", cheat_keys, NONE },
-void ActionToggleEggs(int const *params)
-{
+void ActionToggleEggs(int const *params) {
 	cheat.toggle_eggs();
 }
 
 //  { ActionGodMode, 1, "Toggle god mode", cheat_keys, NONE },
 // params[0] = -1 for toggle, 0 for off, 1 for on
-void ActionGodMode(int const *params)
-{
+void ActionGodMode(int const *params) {
 	if (params[0] == -1)
 		cheat.toggle_god();
 	else
@@ -713,27 +646,23 @@ void ActionGodMode(int const *params)
 }
 
 //  { ActionGender, 0, "Change gender", cheat_keys, NONE },
-void ActionGender(int const *params)
-{
+void ActionGender(int const *params) {
 	cheat.change_gender();
 }
 
 //  { ActionCheatHelp, 0, "List cheat keys", cheat_keys, NONE },
-void ActionCheatHelp(int const *params)
-{
+void ActionCheatHelp(int const *params) {
 	keybinder->ShowCheatHelp();
 }
 
 //  { ActionMapeditHelp, 0, "List mapedit keys", mapedit_keys, NONE },
-void ActionMapeditHelp(int const *params)
-{
+void ActionMapeditHelp(int const *params) {
 	keybinder->ShowMapeditHelp();
 }
 
 //  { ActionInfravision, 1, "Toggle infravision", cheat_keys, NONE },
 // params[0] = -1 for toggle, 0 for off, 1 for on
-void ActionInfravision(int const *params)
-{
+void ActionInfravision(int const *params) {
 	if (params[0] == -1)
 		cheat.toggle_infravision();
 	else
@@ -742,8 +671,7 @@ void ActionInfravision(int const *params)
 
 //  { ActionSkipLift, 1, "Change skiplift", cheat_keys, NONE },
 // params[0] = level, or -1 to decrease one
-void ActionSkipLift(int const *params)
-{
+void ActionSkipLift(int const *params) {
 	if (params[0] == -1)
 		cheat.dec_skip_lift();
 	else
@@ -752,17 +680,15 @@ void ActionSkipLift(int const *params)
 
 //  { ActionLevelup, 1, "Level-up party", cheat_keys, NONE },
 // params[0] = nr. of levels (or -1 for one)
-void ActionLevelup(int const *params)
-{
+void ActionLevelup(int const *params) {
 	int cnt = params[0] == -1 ? 1 : params[0];
-	for (int i=0; i < cnt; i++)
+	for (int i = 0; i < cnt; i++)
 		cheat.levelup_party();
 }
 
 //  { ActionMapEditor, 1, "Toggle map-editor mode", cheat_keys, NONE },
 // params[0] = -1 for toggle, 0 for off, 1 for on
-void ActionMapEditor(int const *params)
-{
+void ActionMapEditor(int const *params) {
 	if (params[0] == -1)
 		cheat.toggle_map_editor();
 	else
@@ -771,8 +697,7 @@ void ActionMapEditor(int const *params)
 
 // { ActionHackMover, "Toggle hack-mover mode", cheat_keys, NONE },
 // params[0] = -1 for toggle, 0 for off, 1 for on
-void ActionHackMover(int const *params)
-{
+void ActionHackMover(int const *params) {
 	if (params[0] == -1)
 		cheat.toggle_hack_mover();
 	else
@@ -780,39 +705,33 @@ void ActionHackMover(int const *params)
 }
 
 //  { ActionMapTeleport, 0, "Map teleport", cheat_keys, NONE },
-void ActionMapTeleport(int const *params)
-{
+void ActionMapTeleport(int const *params) {
 	cheat.map_teleport();
 }
 
 //  { ActionWriteMiniMap, 0, "Write minimap", cheat_keys, NONE },
-void ActionWriteMiniMap(int const *params)
-{
+void ActionWriteMiniMap(int const *params) {
 	Game_map::write_minimap();
 }
 
 //  { ActionTeleport, 0, "Teleport to cursor", cheat_keys, NONE },
-void ActionTeleport(int const *params)
-{
+void ActionTeleport(int const *params) {
 	cheat.cursor_teleport();
 }
 
 //  { ActionNextMapTeleport, 0, "Teleport to next map", cheat_keys, NONE },
-void ActionNextMapTeleport(int const *params)
-{
+void ActionNextMapTeleport(int const *params) {
 	cheat.next_map_teleport();
 }
 
 //  { ActionTime, 0, "Next time period", cheat_keys, NONE },
-void ActionTime(int const *params)
-{
+void ActionTime(int const *params) {
 	cheat.fake_time_period();
 }
 
 //  { ActionWizard, 1, "Toggle archwizard mode", cheat_keys, NONE },
 // params[0] = -1 for toggle, 0 for off, 1 for on
-void ActionWizard(int const *params)
-{
+void ActionWizard(int const *params) {
 	if (params[0] == -1)
 		cheat.toggle_wizard();
 	else
@@ -820,21 +739,18 @@ void ActionWizard(int const *params)
 }
 
 //  { ActionHeal, 0, "Heal party", cheat_keys, NONE },
-void ActionHeal(int const *params)
-{
+void ActionHeal(int const *params) {
 	cheat.heal_party();
 }
 
 //  { ActionCheatScreen, 0, "Cheat Screen", cheat_keys, NONE },
-void ActionCheatScreen(int const *params)
-{
+void ActionCheatScreen(int const *params) {
 	cheat.cheat_screen();
 }
 
 //  { ActionPickPocket, 1, "Toggle Pickpocket", cheat_keys, NONE },
 // params[0] = -1 for toggle, 0 for off, 1 for on
-void ActionPickPocket(int const *params)
-{
+void ActionPickPocket(int const *params) {
 	if (params[0] == -1)
 		cheat.toggle_pickpocket();
 	else
@@ -843,8 +759,7 @@ void ActionPickPocket(int const *params)
 
 //  { ActionPickPocket, 1, "Toggle Pickpocket", cheat_keys, NONE },
 // params[0] = -1 for toggle, 0 for off, 1 for on
-void ActionNPCNumbers(int const *params)
-{
+void ActionNPCNumbers(int const *params) {
 	if (params[0] == -1)
 		cheat.toggle_number_npcs();
 	else
@@ -853,8 +768,7 @@ void ActionNPCNumbers(int const *params)
 
 //  { ActionGrabActor, 1, "Grab Actor for Cheatscreen", cheat_keys, NONE },
 // params[0] = -1 for toggle, 0 for off, 1 for on
-void ActionGrabActor(int const *params)
-{
+void ActionGrabActor(int const *params) {
 	if (params[0] == -1)
 		cheat.toggle_grab_actor();
 	else
@@ -862,27 +776,23 @@ void ActionGrabActor(int const *params)
 }
 
 //  { ActionCut, "Cut Selected Objects", normal_keys, NONE, true},
-void ActionCut(int const *params)
-{
+void ActionCut(int const *params) {
 	cheat.cut(false);
 }
 
 //  { ActionCopy, "Copy Selected Objects", normal_keys, NONE, true},
-void ActionCopy(int const *params)
-{
+void ActionCopy(int const *params) {
 	cheat.cut(true);
 }
 
 //  { ActionPaste, "Paste Selected Objects", normal_keys, NONE, true},
-void ActionPaste(int const *params)
-{
+void ActionPaste(int const *params) {
 	cheat.paste();
 }
 
 //  { ActionPlayMusic, 1, "Play song", cheat_keys, NONE },
 // params[0] = song nr., or -1 for next, -2 for previous
-void ActionPlayMusic(int const *params)
-{
+void ActionPlayMusic(int const *params) {
 	static int mnum = 0;
 
 	if (params[0] == -1) {
@@ -897,31 +807,27 @@ void ActionPlayMusic(int const *params)
 }
 
 //  { ActionNaked, 0, "Toggle naked mode", cheat_keys, SERPENT_ISLE },
-void ActionNaked(int const *params)
-{
+void ActionNaked(int const *params) {
 	cheat.toggle_naked();
 }
 
 //  { ActionPetra, 0, "Toggle Petra mode", cheat_keys, SERPENT_ISLE },
-void ActionPetra(int const *params)
-{
+void ActionPetra(int const *params) {
 	cheat.toggle_Petra();
 }
 
 //  { ActionSkinColour, 0 "Change skin colour", cheat_keys, NONE },
-void ActionSkinColour(int const *params)
-{
+void ActionSkinColour(int const *params) {
 	cheat.change_skin();
 }
 
 //   { ActionNotebook, 0, "Show notebook", normal_keys, NONE, false },
-void ActionNotebook(int const *params)
-{
+void ActionNotebook(int const *params) {
 	Game_window *gwin = Game_window::get_instance();
 	Gump_manager *gman = gwin->get_gump_man();
 	Notebook_gump *notes = Notebook_gump::get_instance();
 	if (notes)
-		gman->remove_gump(notes);	// Want to raise to top.
+		gman->remove_gump(notes);   // Want to raise to top.
 	else
 		notes = Notebook_gump::create();
 	gman->add_gump(notes);
@@ -929,12 +835,10 @@ void ActionNotebook(int const *params)
 }
 
 //  { ActionSoundTester, 0, "Sound tester", cheat_keys, NONE }
-void ActionSoundTester(int const *params)
-{
+void ActionSoundTester(int const *params) {
 	cheat.sound_tester();
 }
 
-void ActionTest(int const *params)
-{
+void ActionTest(int const *params) {
 }
 

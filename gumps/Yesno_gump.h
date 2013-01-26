@@ -28,42 +28,40 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class Yesno_button;
 
 /*
- *	A yes/no box.  
+ *  A yes/no box.
  */
-class Yesno_gump : public Modal_gump
-{
-	UNREPLICATABLE_CLASS_I(Yesno_gump,Modal_gump(0,0,0,0));
+class Yesno_gump : public Modal_gump {
+	UNREPLICATABLE_CLASS_I(Yesno_gump, Modal_gump(0, 0, 0, 0));
 
 protected:
-	static short yesx, yesnoy, nox;	// Coords. of the buttons.
-	std::string text;			// Text of question.  It is drawn in
-					//   object_area.
+	static short yesx, yesnoy, nox; // Coords. of the buttons.
+	std::string text;           // Text of question.  It is drawn in
+	//   object_area.
 	const char *fontname;
-	int answer;			// 1 for yes, 0 for no.
-	void set_answer(int y)		// Done from 'yes'/'no' button.
-		{
+	int answer;         // 1 for yes, 0 for no.
+	void set_answer(int y) {    // Done from 'yes'/'no' button.
 		answer = (y != 0);
 		done = 1;
-		}
+	}
 
 public:
 	friend class Yesno_button;
-	Yesno_gump(const std::string &txt,const char * font="SMALL_BLACK_FONT");
+	Yesno_gump(const std::string &txt, const char *font = "SMALL_BLACK_FONT");
 	virtual ~Yesno_gump();
-	int get_answer()
-		{ return answer; }
-					// Paint it and its contents.
+	int get_answer() {
+		return answer;
+	}
+	// Paint it and its contents.
 	virtual void paint();
-					// Handle events:
+	// Handle events:
 	virtual bool mouse_down(int mx, int my, int button);
 	virtual bool mouse_up(int mx, int my, int button);
 	virtual void key_down(int chr); // Character typed.
-	static int ask(const char *txt, const char *font="SMALL_BLACK_FONT");	// Ask question, get answer.
+	static int ask(const char *txt, const char *font = "SMALL_BLACK_FONT"); // Ask question, get answer.
 };
 
-class Countdown_gump : public Yesno_gump
-{
-	std::string text_fmt;			// Text of question.  It is drawn in
+class Countdown_gump : public Yesno_gump {
+	std::string text_fmt;           // Text of question.  It is drawn in
 	int timer;
 	int start_time;
 public:
@@ -71,6 +69,6 @@ public:
 
 	virtual bool run();
 
-	static int ask(const char *txt, int timeout, const char *font="SMALL_BLACK_FONT");	// Ask question, get answer, timeout to no after timeout seconds
+	static int ask(const char *txt, int timeout, const char *font = "SMALL_BLACK_FONT"); // Ask question, get answer, timeout to no after timeout seconds
 };
 #endif

@@ -23,23 +23,22 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Gump.h"
 
 /*
- *	A sign showing runes.
+ *  A sign showing runes.
  */
-class Sign_gump : public Gump
-{
+class Sign_gump : public Gump {
 	UNREPLICATABLE_CLASS_I(Sign_gump, Gump());
 
 protected:
-	std::string *lines;			// Lines of text.
+	std::string *lines;         // Lines of text.
 	int num_lines;
 	bool serpentine;
 
 public:
 	Sign_gump(int shapenum, int nlines);
 	virtual ~Sign_gump();
-					// Set a line of text.
+	// Set a line of text.
 	void add_text(int line, const std::string &txt);
-					// Paint it and its contents.
+	// Paint it and its contents.
 	virtual void paint();
 };
 

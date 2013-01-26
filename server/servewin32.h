@@ -27,29 +27,28 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <windows.h>
 
-namespace Exult_server
-{
-	// Hack functions
-	int write(int file, const void *v, unsigned int len);
-	int read(int file, void *v, unsigned int len);
-	int close(int file);
+namespace Exult_server {
+// Hack functions
+int write(int file, const void *v, unsigned int len);
+int read(int file, void *v, unsigned int len);
+int close(int file);
 
-	// Server Functions
-	bool create_pipe (const char *path);	
-	void setup_connect();
-	bool try_connect_to_client(const char *path);
-	void disconnect_from_client();
-	void close_pipe();
+// Server Functions
+bool create_pipe(const char *path);
+void setup_connect();
+bool try_connect_to_client(const char *path);
+void disconnect_from_client();
+void close_pipe();
 
-	// Client Functions
-	int try_connect_to_server (const char *path);
-	void disconnect_from_server();
+// Client Functions
+int try_connect_to_server(const char *path);
+void disconnect_from_server();
 
-	// General Functions
-	int peek_pipe();
-	bool is_broken();
-	bool notify_connection_lost();
-	bool is_win9x();
+// General Functions
+int peek_pipe();
+bool is_broken();
+bool notify_connection_lost();
+bool is_win9x();
 };
 
 #endif

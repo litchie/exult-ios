@@ -18,222 +18,234 @@
  */
 
 #ifndef INCL_EGG
-#define INCL_EGG	1
+#define INCL_EGG    1
 
-class	Egg_object;
-class	Animator;
+class   Egg_object;
+class   Animator;
 class   Monster_actor;
-class 	Missile_launcher;
+class   Missile_launcher;
 
 #include "iregobjs.h"
 
 /*
- *	Here's a class for eggs and paths; i.e., objects that generally aren't
- *	visible.
+ *  Here's a class for eggs and paths; i.e., objects that generally aren't
+ *  visible.
  */
-class Egglike_game_object : public Ireg_game_object
-	{
+class Egglike_game_object : public Ireg_game_object {
 public:
 	Egglike_game_object(int shapenum, int framenum,
-				unsigned int tilex,
-				unsigned int tiley, unsigned int lft = 0)
+	                    unsigned int tilex,
+	                    unsigned int tiley, unsigned int lft = 0)
 		: Ireg_game_object(shapenum, framenum, tilex, tiley, lft)
-		{  }
+	{  }
 	virtual ~Egglike_game_object() {  }
-					// Render.
+	// Render.
 	virtual void paint();
-					// Can this be clicked on?
+	// Can this be clicked on?
 	virtual int is_findable();
-	};
+};
 
 /*
- *	An "egg" is a special object that activates under certain
- *	circumstances.
+ *  An "egg" is a special object that activates under certain
+ *  circumstances.
  */
-class Egg_object : public Egglike_game_object
-	{
-	static Egg_object *editing;	// Egg being edited by ExultStudio.
+class Egg_object : public Egglike_game_object {
+	static Egg_object *editing; // Egg being edited by ExultStudio.
 protected:
-	unsigned char type;		// One of the below types.
-	unsigned char probability;	// 1-100, chance of egg activating.
-	unsigned char criteria:3;	// How it's activated.  See below.
-	unsigned distance:6;		// Distance for activation (0-31).
-	unsigned flags:4;		// Formed from below flags.
-	unsigned short data1, data2, data3;	// More data, dep. on type.
-	Rectangle area;			// Active area.
-	unsigned char solid_area;	// 1 if area is solid, 0 if outline.
-	Animator *animator;		// Controls animation.
+	unsigned char type;     // One of the below types.
+	unsigned char probability;  // 1-100, chance of egg activating.
+	unsigned char criteria: 3;  // How it's activated.  See below.
+	unsigned distance: 6;       // Distance for activation (0-31).
+	unsigned flags: 4;      // Formed from below flags.
+	unsigned short data1, data2, data3; // More data, dep. on type.
+	Rectangle area;         // Active area.
+	unsigned char solid_area;   // 1 if area is solid, 0 if outline.
+	Animator *animator;     // Controls animation.
 	void init_field(unsigned char ty);
 	static Egg_object *create_egg(bool animated,
-		int shnum, int frnum, unsigned int tx,
-		unsigned int ty, unsigned int tz, 
-		unsigned short itype,
-		unsigned char prob, short data1, short data2, short data3,
-		const char *str1 = 0);
+	                              int shnum, int frnum, unsigned int tx,
+	                              unsigned int ty, unsigned int tz,
+	                              unsigned short itype,
+	                              unsigned char prob, short data1, short data2, short data3,
+	                              const char *str1 = 0);
 public:
 	friend class Button_egg;
-	enum Egg_types {		// Types of eggs:
-		monster = 1,
-		jukebox = 2,
-		soundsfx = 3,
-		voice = 4,
-		usecode = 5,
-		missile = 6,
-		teleport = 7,
-		weather = 8,
-		path = 9,
-		button = 10,
-		intermap = 11,
-					// Our own:
-		fire_field = 128,
-		sleep_field = 129,
-		poison_field = 130,
-		caltrops_field = 131,
-		mirror_object = 132
-		};
+	enum Egg_types {        // Types of eggs:
+	    monster = 1,
+	    jukebox = 2,
+	    soundsfx = 3,
+	    voice = 4,
+	    usecode = 5,
+	    missile = 6,
+	    teleport = 7,
+	    weather = 8,
+	    path = 9,
+	    button = 10,
+	    intermap = 11,
+	    // Our own:
+	    fire_field = 128,
+	    sleep_field = 129,
+	    poison_field = 130,
+	    caltrops_field = 131,
+	    mirror_object = 132
+	};
 	enum Egg_flag_shifts {
-		nocturnal = 0,
-		once = 1,
-		hatched = 2,
-		auto_reset = 3
-		};
+	    nocturnal = 0,
+	    once = 1,
+	    hatched = 2,
+	    auto_reset = 3
+	};
 	enum Egg_criteria {
-		cached_in = 0,		// Activated when chunk read in?
-		party_near = 1,
-		avatar_near = 2,	// Avatar steps into area.
-		avatar_far = 3,		// Avatar steps outside area.
-		avatar_footpad = 4,	// Avatar must step on it.
-		party_footpad = 5,
-		something_on = 6,	// Something placed on/near it.
-		external_criteria = 7	// Appears on Isle of Avatar.  Guessing
-					//   these set off all nearby.
-		};
+	    cached_in = 0,      // Activated when chunk read in?
+	    party_near = 1,
+	    avatar_near = 2,    // Avatar steps into area.
+	    avatar_far = 3,     // Avatar steps outside area.
+	    avatar_footpad = 4, // Avatar must step on it.
+	    party_footpad = 5,
+	    something_on = 6,   // Something placed on/near it.
+	    external_criteria = 7   // Appears on Isle of Avatar.  Guessing
+	                        //   these set off all nearby.
+	};
 	static Egg_object *create_egg(unsigned char *entry, int entlen,
-		bool animated, int shnum, int frnum, unsigned int tx,
-	    unsigned int ty, unsigned int tz);
-					// Create normal eggs.
+	                              bool animated, int shnum, int frnum, unsigned int tx,
+	                              unsigned int ty, unsigned int tz);
+	// Create normal eggs.
 	Egg_object(int shapenum, int framenum, unsigned int tilex,
-		unsigned int tiley, unsigned int lft, 
-		unsigned short itype,
-		unsigned char prob, short d1, short d2, short d3 = 0);
-					// Ctor. for fields:
-	Egg_object(int shapenum, int framenum, unsigned int tilex, 
-				unsigned int tiley, unsigned int lft,
-				unsigned char ty);
+	           unsigned int tiley, unsigned int lft,
+	           unsigned short itype,
+	           unsigned char prob, short d1, short d2, short d3 = 0);
+	// Ctor. for fields:
+	Egg_object(int shapenum, int framenum, unsigned int tilex,
+	           unsigned int tiley, unsigned int lft,
+	           unsigned char ty);
 	virtual ~Egg_object();
-	virtual void set_area();		// Set up active area.
-	int get_distance() const
-		{ return distance; }
-	int get_criteria() const
-		{ return criteria; }
-	int get_type() const
-		{ return type; }
-	virtual const char *get_str1()
-		{ return ""; }
+	virtual void set_area();        // Set up active area.
+	int get_distance() const {
+		return distance;
+	}
+	int get_criteria() const {
+		return criteria;
+	}
+	int get_type() const {
+		return type;
+	}
+	virtual const char *get_str1() {
+		return "";
+	}
 	virtual void set_str1(const char *s)
-		{  }
-					// Can this be clicked on?
+	{  }
+	// Can this be clicked on?
 	virtual int is_findable();
 	virtual void set(int crit, int dist);
-					// Can it be activated?
+	// Can it be activated?
 	virtual int is_active(Game_object *obj,
-			int tx, int ty, int tz, int from_tx, int from_ty);
+	                      int tx, int ty, int tz, int from_tx, int from_ty);
 
-	Rectangle get_area() const	// Get active area.
-		{ return area; }
-	int is_solid_area() const
-		{ return solid_area; }
+	Rectangle get_area() const { // Get active area.
+		return area;
+	}
+	int is_solid_area() const {
+		return solid_area;
+	}
 	void set_animator(Animator *a);
 	void stop_animation();
 	virtual void paint();
-					// Run usecode function.
+	// Run usecode function.
 	virtual void activate(int event = 1);
-	virtual bool edit();		// Edit in ExultStudio.
-					// Saved from ExultStudio.
+	virtual bool edit();        // Edit in ExultStudio.
+	// Saved from ExultStudio.
 	static void update_from_studio(unsigned char *data, int datalen);
 	virtual void hatch_now(Game_object *obj, bool must)
-		{  }
+	{  }
 	virtual void hatch(Game_object *obj, bool must = false);
 	void print_debug();
 	static void set_weather(int weather, int len = 15,
-						Game_object *egg = 0);
-					// Move to new abs. location.
+	                        Game_object *egg = 0);
+	// Move to new abs. location.
 	virtual void move(int newtx, int newty, int newlift, int newmap = -1);
-					// Remove/delete this object.
+	// Remove/delete this object.
 	virtual void remove_this(int nodel = 0);
-	virtual int is_egg() const	// An egg?
-		{ return 1; }
-					// Write out to IREG file.
-	virtual void write_ireg(DataSource* out);
-				// Get size of IREG. Returns -1 if can't write to buffer
+	virtual int is_egg() const { // An egg?
+		return 1;
+	}
+	// Write out to IREG file.
+	virtual void write_ireg(DataSource *out);
+	// Get size of IREG. Returns -1 if can't write to buffer
 	virtual int get_ireg_size();
 
-	virtual void reset() 
-		{ flags &= ~(1 << hatched); }
+	virtual void reset() {
+		flags &= ~(1 << hatched);
+	}
 
-	virtual Egg_object *as_egg() { return this; }
+	virtual Egg_object *as_egg() {
+		return this;
+	}
 
-	};
+};
 
 
 /*
- *	Fields are activated like eggs.
+ *  Fields are activated like eggs.
  */
 
-class Field_object : public Egg_object
-	{
+class Field_object : public Egg_object {
 	bool field_effect(Actor *actor);// Apply field.
 public:
-	Field_object(int shapenum, int framenum, unsigned int tilex, 
-		unsigned int tiley, unsigned int lft, unsigned char ty);
+	Field_object(int shapenum, int framenum, unsigned int tilex,
+	             unsigned int tiley, unsigned int lft, unsigned char ty);
 	virtual void paint();
-					// Run usecode function.
+	// Run usecode function.
 	virtual void activate(int event = 1);
 	virtual void hatch(Game_object *obj, bool must = false);
-					// Write out to IREG file.
-	virtual void write_ireg(DataSource* out);
-				// Get size of IREG. Returns -1 if can't write to buffer
+	// Write out to IREG file.
+	virtual void write_ireg(DataSource *out);
+	// Get size of IREG. Returns -1 if can't write to buffer
 	virtual int get_ireg_size();
-	virtual int is_findable()
-		{ return Ireg_game_object::is_findable(); }
-	virtual bool edit()
-		{ return Ireg_game_object::edit(); }
-	static void update_from_studio(unsigned char *data, int datalen)
-		{ Ireg_game_object::update_from_studio(data, datalen); }
-	};
+	virtual int is_findable() {
+		return Ireg_game_object::is_findable();
+	}
+	virtual bool edit() {
+		return Ireg_game_object::edit();
+	}
+	static void update_from_studio(unsigned char *data, int datalen) {
+		Ireg_game_object::update_from_studio(data, datalen);
+	}
+};
 
 /*
- *	Mirrors are handled like eggs.
+ *  Mirrors are handled like eggs.
  */
 
-class Mirror_object : public Egg_object
-{
+class Mirror_object : public Egg_object {
 public:
-	Mirror_object(int shapenum, int framenum, unsigned int tilex, 
-		unsigned int tiley, unsigned int lft);
+	Mirror_object(int shapenum, int framenum, unsigned int tilex,
+	              unsigned int tiley, unsigned int lft);
 
-					// Run usecode function.
+	// Run usecode function.
 	virtual void activate(int event = 1);
 	virtual void hatch(Game_object *obj, bool must = false);
 
-					// Can it be activated?
+	// Can it be activated?
 	virtual int is_active(Game_object *obj,
-			int tx, int ty, int tz, int from_tx, int from_ty);
+	                      int tx, int ty, int tz, int from_tx, int from_ty);
 
-	virtual void set_area();		// Set up active area.
+	virtual void set_area();        // Set up active area.
 
-					// Render.
+	// Render.
 	virtual void paint();
-					// Can this be clicked on?
-	virtual int is_findable()
-		{ return Ireg_game_object::is_findable(); }
+	// Can this be clicked on?
+	virtual int is_findable() {
+		return Ireg_game_object::is_findable();
+	}
 
-	virtual void write_ireg(DataSource* out);
-				// Get size of IREG. Returns -1 if can't write to buffer
+	virtual void write_ireg(DataSource *out);
+	// Get size of IREG. Returns -1 if can't write to buffer
 	virtual int get_ireg_size();
-	virtual bool edit()
-		{ return Ireg_game_object::edit(); }
-	static void update_from_studio(unsigned char *data, int datalen)
-		{ Ireg_game_object::update_from_studio(data, datalen); }
+	virtual bool edit() {
+		return Ireg_game_object::edit();
+	}
+	static void update_from_studio(unsigned char *data, int datalen) {
+		Ireg_game_object::update_from_studio(data, datalen);
+	}
 };
 #endif

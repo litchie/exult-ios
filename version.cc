@@ -23,7 +23,7 @@
 #include <iostream>
 
 #ifdef WIN32
-#ifndef WIN32_LEAN_AND_MEAN	
+#ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
 #endif
 #include <windows.h>
@@ -34,18 +34,17 @@
 #include <string>
 #endif
 
-void getVersionInfo(std::ostream& out)
-{
+void getVersionInfo(std::ostream &out) {
 	/*
 	 * 1. Exult version
 	 */
-	 
+
 	out << "Exult version " << VERSION << std::endl;
 
 	/*
 	 * 2. Build time
 	 */
-	 
+
 
 #if (defined(__TIME__) || defined(__DATE__))
 	out << "Built at: ";
@@ -57,82 +56,82 @@ void getVersionInfo(std::ostream& out)
 #endif
 	out << std::endl;
 #endif
-	
+
 	/*
 	 * 3. Various important build options in effect
 	 */
-	 
+
 	out << "Compile-time options: ";
 	bool firstoption = true;
 
 #ifdef DEBUG
-	if (!firstoption) out << ", "; 
+	if (!firstoption) out << ", ";
 	firstoption = false;
 	out << "DEBUG";
 #endif
 
 #ifdef USE_TIMIDITY_MIDI
-	if (!firstoption) out << ", "; 
+	if (!firstoption) out << ", ";
 	firstoption = false;
 	out << "USE_TIMIDITY_MIDI";
 #endif
 
 #ifdef USE_FMOPL_MIDI
-	if (!firstoption) out << ", "; 
+	if (!firstoption) out << ", ";
 	firstoption = false;
 	out << "USE_FMOPL_MIDI";
 #endif
 
 #ifdef USE_MT32EMU_MIDI
-	if (!firstoption) out << ", "; 
+	if (!firstoption) out << ", ";
 	firstoption = false;
 	out << "USE_MT32EMU_MIDI";
 #endif
 
 #ifdef USE_ALSA_MIDI
-	if (!firstoption) out << ", "; 
+	if (!firstoption) out << ", ";
 	firstoption = false;
 	out << "USE_ALSA_MIDI";
 #endif
 
 #ifdef USE_EXULTSTUDIO
-	if (!firstoption) out << ", "; 
+	if (!firstoption) out << ", ";
 	firstoption = false;
 	out << "USE_EXULTSTUDIO";
 #endif
 
 #ifdef USECODE_DEBUGGER
-	if (!firstoption) out << ", "; 
+	if (!firstoption) out << ", ";
 	firstoption = false;
 	out << "USECODE_DEBUGGER";
 #endif
 
 #ifdef WANT_ALTERNATE_ALLOCATOR
-	if (!firstoption) out << ", "; 
+	if (!firstoption) out << ", ";
 	firstoption = false;
 	out << "WANT_ALTERNATE_ALLOCATOR";
 #endif
 
 #ifdef INITIALISE_ALLOCATED_BLOCKS
-	if (!firstoption) out << ", "; 
+	if (!firstoption) out << ", ";
 	firstoption = false;
 	out << "INITIALISE_ALLOCATED_BLOCKS";
 #endif
 
 #ifdef POISON_ALLOCATED_BLOCKS
-	if (!firstoption) out << ", "; 
+	if (!firstoption) out << ", ";
 	firstoption = false;
 	out << "POISON_ALLOCATED_BLOCKS";
 #endif
 
 #ifdef NO_SDL_PARACHUTE
-	if (!firstoption) out << ", "; 
+	if (!firstoption) out << ", ";
 	firstoption = false;
 	out << "NO_SDL_PARACHUTE";
 #endif
 
 #ifdef HAVE_ZIP_SUPPORT
-	if (!firstoption) out << ", "; 
+	if (!firstoption) out << ", ";
 	firstoption = false;
 	out << "HAVE_ZIP_SUPPORT";
 #endif
@@ -155,7 +154,7 @@ void getVersionInfo(std::ostream& out)
 	/*
 	 * 4. Compiler used to create this binary
 	 */
-	 
+
 	out << "Compiler: ";
 	// GCC
 #if (defined(__GNUC__))
@@ -171,18 +170,18 @@ void getVersionInfo(std::ostream& out)
 
 	// Microsoft C/C++ Compiler (used by MSVC)
 #elif (defined(_MSC_FULL_VER))
-	out << "Microsoft C/C++ Compiler, version: " << (_MSC_FULL_VER/1000000) << "."
-				<< ((_MSC_FULL_VER/10000)%100) << "."
-				<< (_MSC_FULL_VER%10000);
+	out << "Microsoft C/C++ Compiler, version: " << (_MSC_FULL_VER / 1000000) << "."
+	    << ((_MSC_FULL_VER / 10000) % 100) << "."
+	    << (_MSC_FULL_VER % 10000);
 #elif (defined(_MSC_VER))
-	out << "Microsoft C/C++ Compiler, version: " << (_MSC_VER/100) << "." << (_MSC_VER%100);
+	out << "Microsoft C/C++ Compiler, version: " << (_MSC_VER / 100) << "." << (_MSC_VER % 100);
 
 	// Metrowerks CodeWarrior
 #elif (defined(__MWERKS__))
 	out << "Metrowerks CodeWarrior, version: ";
-	out << ((__MWERKS__&0xf000)>>12) << ".";
-	out << ((__MWERKS__&0x0f00)>>8) << ".";
-	out << (__MWERKS__&0xff);
+	out << ((__MWERKS__ & 0xf000) >> 12) << ".";
+	out << ((__MWERKS__ & 0x0f00) >> 8) << ".";
+	out << (__MWERKS__ & 0xff);
 #else
 	out << "Unknown";
 #endif
@@ -193,7 +192,7 @@ void getVersionInfo(std::ostream& out)
 	/*
 	 * 5. Platform
 	 */
-	 
+
 	out << std::endl << "Platform: ";
 
 #if (defined(__linux__) || defined(__linux) || defined(linux))
@@ -208,7 +207,7 @@ void getVersionInfo(std::ostream& out)
 			procversion.close();
 			ver = ver.substr(0, ver.find('('));
 		}
-	} catch(...) {
+	} catch (...) {
 		ver = "Linux";
 	}
 	out << ver;
@@ -221,12 +220,11 @@ void getVersionInfo(std::ostream& out)
 	{
 		// Get the version
 		OSVERSIONINFO info;
-		info.dwOSVersionInfoSize = sizeof (info);
-		GetVersionEx (&info);
+		info.dwOSVersionInfoSize = sizeof(info);
+		GetVersionEx(&info);
 
 		// Platform is NT
-		if (info.dwPlatformId == VER_PLATFORM_WIN32_NT)
-		{
+		if (info.dwPlatformId == VER_PLATFORM_WIN32_NT) {
 			if (info.dwMajorVersion < 4) out << "NT";
 			else if (info.dwMajorVersion == 4) out << "NT4";
 			else if (info.dwMajorVersion == 5 && info.dwMinorVersion == 0) out << 2000;
@@ -239,26 +237,21 @@ void getVersionInfo(std::ostream& out)
 			if (info.szCSDVersion[0]) out << " " << info.szCSDVersion;
 		}
 #ifdef VER_PLATFORM_WIN32_CE
-		else if (info.dwPlatformId == VER_PLATFORM_WIN32_CE)
-		{
+		else if (info.dwPlatformId == VER_PLATFORM_WIN32_CE) {
 			out << "CE";
 		}
 #endif
-		else if (info.dwMajorVersion == 4 && info.dwMinorVersion == 0)
-		{
+		else if (info.dwMajorVersion == 4 && info.dwMinorVersion == 0) {
 			out << 95;
 			if (info.szCSDVersion[1] != ' ') out << info.szCSDVersion;
-		}
-		else if (info.dwMajorVersion == 4 && info.dwMinorVersion == 10)
-		{
+		} else if (info.dwMajorVersion == 4 && info.dwMinorVersion == 10) {
 			out << 98;
-			if ( info.szCSDVersion[1] == 'A' ) out << " SE";
+			if (info.szCSDVersion[1] == 'A') out << " SE";
 			else if (info.szCSDVersion[1] != ' ') out << info.szCSDVersion;
-		}
-		else if (info.dwMajorVersion == 4 && info.dwMinorVersion == 90)
+		} else if (info.dwMajorVersion == 4 && info.dwMinorVersion == 90)
 			out << "Me";
 
-		out << " Version " << info.dwMajorVersion << "." << info.dwMinorVersion << " Build " << LOWORD(info.dwBuildNumber&0xFFFF);
+		out << " Version " << info.dwMajorVersion << "." << info.dwMinorVersion << " Build " << LOWORD(info.dwBuildNumber & 0xFFFF);
 	}
 #elif (defined(MACOSX))
 	out << "Mac OS X";

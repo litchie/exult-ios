@@ -1,7 +1,7 @@
 /**
- **	A GTK widget showing a palette's colors.
+ ** A GTK widget showing a palette's colors.
  **
- **	Written: 12/24/2000 - JSF
+ ** Written: 12/24/2000 - JSF
  **/
 
 /*
@@ -40,55 +40,51 @@ GtkWidget *topwin = 0;
 Palette_edit *paled = 0;
 
 /*
- *	Quit.
+ *  Quit.
  */
 
-int Quit
-	(
-	)
-	{
+int Quit(
+) {
 	delete paled;
 	gtk_exit(0);
-	return (FALSE);			// Shouldn't get here.
-	}
+	return (FALSE);         // Shouldn't get here.
+}
 
 /*
- *	Main program.
+ *  Main program.
  */
 
-int main
-	(
-	int argc,
-	char **argv
-	)
-	{
+int main(
+    int argc,
+    char **argv
+) {
 	gtk_init(&argc, &argv);
 	gdk_rgb_init();
-					// Create top-level window.
+	// Create top-level window.
 	topwin = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(topwin), "Palette Editor Test");
-					// Set delete handler.
+	// Set delete handler.
 	gtk_signal_connect(GTK_OBJECT(topwin), "delete_event",
-				GTK_SIGNAL_FUNC(Quit), NULL);
-					// Set border width of top window.
+	                   GTK_SIGNAL_FUNC(Quit), NULL);
+	// Set border width of top window.
 	gtk_container_border_width(GTK_CONTAINER(topwin), 10);
 	/*
-	 *	Create palette editor.
+	 *  Create palette editor.
 	 */
 	GtkWidget *vbox = gtk_vbox_new(FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(topwin), vbox);
 	gtk_widget_show(vbox);
 	U7object pal("static/palettes.flx", 0);
 	size_t len;
-	unsigned char *buf;		// this may throw an exception
+	unsigned char *buf;     // this may throw an exception
 	buf = (unsigned char *) pal.retrieve(len);
 	guint32 colors[256];
 	for (int i = 0; i < 256; i++)
-		colors[i] = (buf[3*i]<<16)*4 + (buf[3*i+1]<<8)*4 + 
-							buf[3*i+2]*4;
+		colors[i] = (buf[3 * i] << 16) * 4 + (buf[3 * i + 1] << 8) * 4 +
+		            buf[3 * i + 2] * 4;
 	paled = new Palette_edit(colors, 128, 128);
 	gtk_box_pack_start(GTK_BOX(vbox), paled->get_widget(), TRUE, TRUE, 0);
-	gtk_widget_show(topwin);	// Show top window.
+	gtk_widget_show(topwin);    // Show top window.
 	gtk_main();
 	return (0);
-	}
+}

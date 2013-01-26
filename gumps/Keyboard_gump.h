@@ -25,9 +25,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 enum KEYG_STATES {KEYG_KEYBOARD, KEYG_KEYPAD, KEYG_HOTPAD, KEYG_MINIMIZED, KEYG_HIDDEN, KEYG_UNKNOWN};
 enum KEYG_LOCATIONS {KEYG_LOCBOTTOM, KEYG_LOCTOP, KEYG_LOCUNKNOWN};
-class Keyboard_gump
-{
- public:
+class Keyboard_gump {
+public:
 	Keyboard_gump(int placex = 0, int placey = 0, bool upperCase = true);
 	~Keyboard_gump();
 	int handle_event(SDL_Event *event);

@@ -16,8 +16,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef	COMMON_TYPES_H
-#define	COMMON_TYPES_H
+#ifndef COMMON_TYPES_H
+#define COMMON_TYPES_H
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
@@ -76,13 +76,13 @@ typedef int32 sint32;
 #  endif
 #endif
 
-typedef	unsigned EX_TYPE_INT8	uint8;
-typedef	unsigned EX_TYPE_INT16	uint16;
-typedef	unsigned EX_TYPE_INT32	uint32;
+typedef unsigned EX_TYPE_INT8   uint8;
+typedef unsigned EX_TYPE_INT16  uint16;
+typedef unsigned EX_TYPE_INT32  uint32;
 
-typedef	signed EX_TYPE_INT8		sint8;
-typedef	signed EX_TYPE_INT16	sint16;
-typedef	signed EX_TYPE_INT32	sint32;
+typedef signed EX_TYPE_INT8     sint8;
+typedef signed EX_TYPE_INT16    sint16;
+typedef signed EX_TYPE_INT32    sint32;
 
 typedef unsigned EX_TYPE_INTPTR uintptr;
 typedef signed EX_TYPE_INTPTR sintptr;
@@ -97,11 +97,11 @@ extern const std::string c_empty_string;
 
 // Debug
 #ifdef DEBUG
-#  define COUT(x)		do { std::cout << x << std::endl; std::cout.flush(); } while (0)
-#  define CERR(x)		do { std::cerr << x << std::endl; std::cerr.flush(); } while (0)
+#  define COUT(x)       do { std::cout << x << std::endl; std::cout.flush(); } while (0)
+#  define CERR(x)       do { std::cerr << x << std::endl; std::cerr.flush(); } while (0)
 #else
-#  define COUT(x)		do { } while(0)
-#  define CERR(x)		do { } while(0)
+#  define COUT(x)       do { } while(0)
+#  define CERR(x)       do { } while(0)
 #endif
 
 // Two very useful macros that one should use instead of pure delete; they will additionally

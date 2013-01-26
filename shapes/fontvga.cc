@@ -1,7 +1,7 @@
 /**
- **	Fontvga.cc - Handle the 'fonts.vga' file and text rendering.
+ ** Fontvga.cc - Handle the 'fonts.vga' file and text rendering.
  **
- **	Written: 4/29/99 - JSF
+ ** Written: 4/29/99 - JSF
  **/
 
 #ifdef HAVE_CONFIG_H
@@ -26,39 +26,37 @@ using std::endl;
 // using std::string;
 
 /*
- *	Fonts in 'fonts.vga':
+ *  Fonts in 'fonts.vga':
  *
- *	0 = Normal yellow.
- *	1 = Large runes.
- *	2 = small black (as in zstats).
- *	3 = runes.
- *	4 = tiny black, used in books.
- *	5 = little white, glowing, for spellbooks.
- *	6 = runes.
- *	7 = normal red.
- *	8 = Serpentine (books)
- *	9 = Serpentine (signs)
- *	10 = Serpentine (gold signs)
+ *  0 = Normal yellow.
+ *  1 = Large runes.
+ *  2 = small black (as in zstats).
+ *  3 = runes.
+ *  4 = tiny black, used in books.
+ *  5 = little white, glowing, for spellbooks.
+ *  6 = runes.
+ *  7 = normal red.
+ *  8 = Serpentine (books)
+ *  9 = Serpentine (signs)
+ *  10 = Serpentine (gold signs)
  */
 
 /*
- *	Horizontal leads, by fontnum:
+ *  Horizontal leads, by fontnum:
  *
- *	This must include the Endgame fonts (currently 32-35)!!
+ *  This must include the Endgame fonts (currently 32-35)!!
  *      And the MAINSHP font (36)
- *	However, their values are set elsewhere
+ *  However, their values are set elsewhere
  */
 // +++++TAG: This shouldn't be hard-coded.
-static int hlead[] = {-2, -1, 0, -1, 0, 0, -1, -2, -1, -1};
+static int hlead[] = { -2, -1, 0, -1, 0, 0, -1, -2, -1, -1};
 /*
- *	Initialize.
+ *  Initialize.
  */
 
-void Fonts_vga_file::init
-	(
-	)
-	{
-	int cnt = sizeof(hlead)/sizeof(hlead[0]);
+void Fonts_vga_file::init(
+) {
+	int cnt = sizeof(hlead) / sizeof(hlead[0]);
 
 	FlexFile sfonts(FONTS_VGA);
 	FlexFile pfonts(PATCH_FONTS);
@@ -69,5 +67,5 @@ void Fonts_vga_file::init
 
 	for (int i = 0; i < numfonts; i++)
 		fonts[i].load(FONTS_VGA, PATCH_FONTS, i, i < cnt ? hlead[i] : 0, 0);
-	}
+}
 

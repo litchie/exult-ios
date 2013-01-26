@@ -24,76 +24,84 @@
 
 class UCc;
 
-class UCc
-{
-	public:
-		UCc(const unsigned int offset=0, const unsigned int id=0, const std::vector<unsigned char> &params=std::vector<unsigned char>())
-		   : _id(id), _offset(offset), _params(params), _tagged(false) {};
-		UCc(const unsigned int id, const std::string &miscstr)
-		   : _id(id), _miscstr(miscstr) {};
-        //UCc() : _id(0), _offset(0), _tagged(false) {};
+class UCc {
+public:
+	UCc(const unsigned int offset = 0, const unsigned int id = 0, const std::vector<unsigned char> &params = std::vector<unsigned char>())
+		: _id(id), _offset(offset), _params(params), _tagged(false) {};
+	UCc(const unsigned int id, const std::string &miscstr)
+		: _id(id), _miscstr(miscstr) {};
+	//UCc() : _id(0), _offset(0), _tagged(false) {};
 
-		unsigned int               _id;
-		std::string                _miscstr;
-		unsigned int               _offset;
-		std::vector<unsigned char> _params;
-		std::vector<unsigned int>  _params_parsed;
-		bool                       _tagged;
-		std::vector<unsigned int>  _jump_offsets;
-		
-		/* A temporary array to hold the items this opcode theoretically popped
-		   from the stack. This should probably go in it's own wrapper class with
-		   the current UCc. */
-		std::vector<UCc *>    _popped;
+	unsigned int               _id;
+	std::string                _miscstr;
+	unsigned int               _offset;
+	std::vector<unsigned char> _params;
+	std::vector<unsigned int>  _params_parsed;
+	bool                       _tagged;
+	std::vector<unsigned int>  _jump_offsets;
+
+	/* A temporary array to hold the items this opcode theoretically popped
+	   from the stack. This should probably go in it's own wrapper class with
+	   the current UCc. */
+	std::vector<UCc *>    _popped;
 };
 
-class UCOptions
-{
-	public:
-		UCOptions() : output_extern_header(false), noconf(false),
-		              rawops(false), autocomment(false),
-		              uselesscomment(false), verbose(false),
-		              very_verbose(false),
-		              ucdebug(false), basic(false),
-		              output_list(false), output_asm(false),
-		              output_ucs(false), output_flag(false),
-		              output_trans_table(false),
-		              mode_all(false), mode_dis(false),
-		              force_ext32(false),
-		              _game(GAME_BG)
-		{};
-		
-		bool game_bg()      const { return _game==GAME_BG; };
-		bool game_si()      const { return _game==GAME_SI; };
-		bool game_fov()     const { return _game==GAME_FOV; };
-		bool game_ss()      const { return _game==GAME_SS; };
-		bool game_u8()      const { return _game==GAME_U8; };
-		
-		bool output_extern_header;
-		
-		bool noconf;
-		bool rawops;
-		bool autocomment;
-		bool uselesscomment;
-		bool verbose;
-		bool very_verbose;
-		bool ucdebug;
-		bool basic;
-		
-		bool output_list;
-		bool output_asm;
-		bool output_ucs;
-		bool output_flag;
-		bool output_trans_table;
-		
-		bool mode_all;
-		bool mode_dis;
-		
-		bool force_ext32; // force ext32 function format output for all functions
-		
+class UCOptions {
+public:
+	UCOptions() : output_extern_header(false), noconf(false),
+		rawops(false), autocomment(false),
+		uselesscomment(false), verbose(false),
+		very_verbose(false),
+		ucdebug(false), basic(false),
+		output_list(false), output_asm(false),
+		output_ucs(false), output_flag(false),
+		output_trans_table(false),
+		mode_all(false), mode_dis(false),
+		force_ext32(false),
+		_game(GAME_BG)
+	{};
+
+	bool game_bg()      const {
+		return _game == GAME_BG;
+	};
+	bool game_si()      const {
+		return _game == GAME_SI;
+	};
+	bool game_fov()     const {
+		return _game == GAME_FOV;
+	};
+	bool game_ss()      const {
+		return _game == GAME_SS;
+	};
+	bool game_u8()      const {
+		return _game == GAME_U8;
+	};
+
+	bool output_extern_header;
+
+	bool noconf;
+	bool rawops;
+	bool autocomment;
+	bool uselesscomment;
+	bool verbose;
+	bool very_verbose;
+	bool ucdebug;
+	bool basic;
+
+	bool output_list;
+	bool output_asm;
+	bool output_ucs;
+	bool output_flag;
+	bool output_trans_table;
+
+	bool mode_all;
+	bool mode_dis;
+
+	bool force_ext32; // force ext32 function format output for all functions
+
 	//private:
-		unsigned int _game;
-		enum { GAME_BG=1, GAME_FOV=2, GAME_SI=3, GAME_SS=4, GAME_U8=5 };
+	unsigned int _game;
+	enum { GAME_BG = 1, GAME_FOV = 2, GAME_SI = 3, GAME_SS = 4, GAME_U8 = 5 };
 };
 
 #endif

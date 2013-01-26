@@ -1,7 +1,7 @@
 /**
- **	frnameinf.cc - Frame name information from 'shape_info.txt'.
+ ** frnameinf.cc - Frame name information from 'shape_info.txt'.
  **
- **	Written: 06/01/2008 - Marzo
+ ** Written: 06/01/2008 - Marzo
  **/
 
 /*
@@ -27,13 +27,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "frnameinf.h"
 using std::istream;
 
-bool Frame_name_info::read
-	(
-	std::istream& in,	// Input stream.
-	int version,		// Data file version.
-	Exult_Game game		// Loading BG file.
-	)
-	{
+bool Frame_name_info::read(
+    std::istream &in,   // Input stream.
+    int version,        // Data file version.
+    Exult_Game game     // Loading BG file.
+) {
 	frame = ReadInt(in);
 	if (frame < 0)
 		frame = -1;
@@ -45,10 +43,9 @@ bool Frame_name_info::read
 	else
 		quality &= 255;
 	type = ReadInt(in);
-	if (type >= 0)
-		{
+	if (type >= 0) {
 		msgid = ReadInt(in);
 		othermsg = ReadInt(in, -255);
-		}
-	return true;
 	}
+	return true;
+}

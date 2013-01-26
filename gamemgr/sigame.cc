@@ -56,37 +56,35 @@ using std::toupper;
 #include "iphone_gumps.h"
 #endif
 
-SI_Game::SI_Game()
-	{
-	if (!read_game_xml())
-		{
-		add_shape("gumps/check",2);
-		add_shape("gumps/fileio",3);
-		add_shape("gumps/fntext",4);
-		add_shape("gumps/loadbtn",5);
-		add_shape("gumps/savebtn",6);
-		add_shape("gumps/halo",7);
-		add_shape("gumps/disk",19);
-		add_shape("gumps/heart",20);
-		add_shape("gumps/statatts",23);
-		add_shape("gumps/musicbtn",24);
-		add_shape("gumps/speechbtn",25);
-		add_shape("gumps/soundbtn",26);
-		add_shape("gumps/spellbook",38);
-		add_shape("gumps/combat",41);
-		add_shape("gumps/statsdisplay",42);
-		add_shape("gumps/quitbtn",50);
-		add_shape("gumps/yesnobox",51);
-		add_shape("gumps/yesbtn",52);
-		add_shape("gumps/nobtn",53);
-		add_shape("gumps/book",27);
-		add_shape("gumps/scroll",49);
-		add_shape("gumps/combat_stats",91);
-		add_shape("gumps/combatmode",12);
-		add_shape("gumps/slider",14);
-		add_shape("gumps/slider_diamond",15);
-		add_shape("gumps/slider_right",16);
-		add_shape("gumps/slider_left",17);
+SI_Game::SI_Game() {
+	if (!read_game_xml()) {
+		add_shape("gumps/check", 2);
+		add_shape("gumps/fileio", 3);
+		add_shape("gumps/fntext", 4);
+		add_shape("gumps/loadbtn", 5);
+		add_shape("gumps/savebtn", 6);
+		add_shape("gumps/halo", 7);
+		add_shape("gumps/disk", 19);
+		add_shape("gumps/heart", 20);
+		add_shape("gumps/statatts", 23);
+		add_shape("gumps/musicbtn", 24);
+		add_shape("gumps/speechbtn", 25);
+		add_shape("gumps/soundbtn", 26);
+		add_shape("gumps/spellbook", 38);
+		add_shape("gumps/combat", 41);
+		add_shape("gumps/statsdisplay", 42);
+		add_shape("gumps/quitbtn", 50);
+		add_shape("gumps/yesnobox", 51);
+		add_shape("gumps/yesbtn", 52);
+		add_shape("gumps/nobtn", 53);
+		add_shape("gumps/book", 27);
+		add_shape("gumps/scroll", 49);
+		add_shape("gumps/combat_stats", 91);
+		add_shape("gumps/combatmode", 12);
+		add_shape("gumps/slider", 14);
+		add_shape("gumps/slider_diamond", 15);
+		add_shape("gumps/slider_right", 16);
+		add_shape("gumps/slider_left", 17);
 
 		add_shape("gumps/box", 0);
 		add_shape("gumps/crate", 1);
@@ -103,18 +101,18 @@ SI_Game::SI_Game()
 		add_shape("gumps/body", 48);
 		add_shape("gumps/tree", 64);
 
-		add_shape("gumps/cstats/1",58);
-		add_shape("gumps/cstats/2",59);
-		add_shape("gumps/cstats/3",60);
-		add_shape("gumps/cstats/4",61);
-		add_shape("gumps/cstats/5",62);
-		add_shape("gumps/cstats/6",63);
+		add_shape("gumps/cstats/1", 58);
+		add_shape("gumps/cstats/2", 59);
+		add_shape("gumps/cstats/3", 60);
+		add_shape("gumps/cstats/4", 61);
+		add_shape("gumps/cstats/5", 62);
+		add_shape("gumps/cstats/6", 63);
 
 		add_shape("sprites/map", 22);
 		add_shape("sprites/cheatmap", EXULT_SI_FLX_SIMAP_SHP);
 
 		add_shape("gumps/scroll_spells", 66);
-		add_shape("gumps/spell_scroll",65);
+		add_shape("gumps/spell_scroll", 65);
 		add_shape("gumps/jawbone", 56);
 		add_shape("gumps/tooth", 57);
 
@@ -195,49 +193,46 @@ SI_Game::SI_Game()
 		add_resource("xforms/17", XFORMTBL, 17);
 		add_resource("xforms/18", XFORMTBL, 18);
 		add_resource("xforms/19", XFORMTBL, 19);
-		}		
+	}
 	fontManager.add_font("MENU_FONT", MAINSHP_FLX, PATCH_MAINSHP, 9, 1);
 	fontManager.add_font("SIINTRO_FONT", INTRO_DAT, PATCH_INTRO, 14, 0);
 	fontManager.add_font("SMALL_BLACK_FONT", FONTS_VGA, PATCH_FONTS, 2, 0);
 	fontManager.add_font("TINY_BLACK_FONT", FONTS_VGA, PATCH_FONTS, 4, 0);
-	if (GAME_SI)
-		{
+	if (GAME_SI) {
 		Map_patch_collection *mp = gwin->get_map_patches();
-					// Egg by "PC pirate" in forest:
+		// Egg by "PC pirate" in forest:
 		mp->add(new Map_patch_remove(Object_spec(
-				Tile_coord(647, 1899, 0), 275, 7, 1)));
-					// Carpets above roof in Monitor:
+		                                 Tile_coord(647, 1899, 0), 275, 7, 1)));
+		// Carpets above roof in Monitor:
 		mp->add(new Map_patch_remove(Object_spec(
-				Tile_coord(1035, 2572, 8), 483, 1, 0), true));
+		                                 Tile_coord(1035, 2572, 8), 483, 1, 0), true));
 		mp->add(new Map_patch_remove(Object_spec(
-				Tile_coord(1034, 2571, 6), 483, 1, 0)));
+		                                 Tile_coord(1034, 2571, 6), 483, 1, 0)));
 		mp->add(new Map_patch_remove(Object_spec(
-				Tile_coord(1034, 2571, 5), 483, 1, 0), true));
-					// Neyobi under a fur:
+		                                 Tile_coord(1034, 2571, 5), 483, 1, 0), true));
+		// Neyobi under a fur:
 		mp->add(new Map_patch_modify(Object_spec(
-				Tile_coord(1012, 873, 0), 867, 13, 0), 
-					Object_spec(
-				Tile_coord(1013, 873, 1), 867, 13, 0)));
+		                                 Tile_coord(1012, 873, 0), 867, 13, 0),
+		                             Object_spec(
+		                                 Tile_coord(1013, 873, 1), 867, 13, 0)));
 		// Bread on the prep table in Moonshade
 		mp->add(new Map_patch_remove(Object_spec(
-					Tile_coord(2381, 1896, 2), 377, 1, 0)));
+		                                 Tile_coord(2381, 1896, 2), 377, 1, 0)));
 		// Flour on Moonshade display table
 		mp->add(new Map_patch_remove(Object_spec(
-					Tile_coord(2378, 1890, 2), 863, 16, 0)));
+		                                 Tile_coord(2378, 1890, 2), 863, 16, 0)));
 		// Dough on Moonshade display table
 		mp->add(new Map_patch_remove(Object_spec(
-					Tile_coord(2369, 1896, 2), 863, 17, 0)));
-		}
-
+		                                 Tile_coord(2369, 1896, 2), 863, 17, 0)));
 	}
 
-SI_Game::~SI_Game()
-	{
-	}
+}
+
+SI_Game::~SI_Game() {
+}
 
 // Little weighted random function for lightning on the castle
-static int get_frame (void)
-{
+static int get_frame(void) {
 	int num = rand() % 9;
 
 	if (num >= 8) return 2;
@@ -245,8 +240,7 @@ static int get_frame (void)
 	return 0;
 }
 
-void SI_Game::play_intro()
-{
+void SI_Game::play_intro() {
 	Audio *audio = Audio::get_ptr();
 	if (audio) {
 		audio->stop_music();
@@ -254,33 +248,31 @@ void SI_Game::play_intro()
 		if (midi) midi->set_timbre_lib(MyMidiPlayer::TIMBRE_LIB_INTRO);
 	}
 
-	int	next = 0;
-	size_t	flisize;
-	char	*fli_b = 0;
-	uint8	*buffer = 0;
-	size_t	size;
-	size_t	shapesize;
-	char *	shape_buf = 0;
-	int		i,j;
+	int next = 0;
+	size_t  flisize;
+	char    *fli_b = 0;
+	uint8   *buffer = 0;
+	size_t  size;
+	size_t  shapesize;
+	char   *shape_buf = 0;
+	int     i, j;
 	Font *sifont = fontManager.get_font("SIINTRO_FONT");
 
 	bool speech = Audio::get_ptr()->is_audio_enabled() &&
-					Audio::get_ptr()->is_speech_enabled();
+	              Audio::get_ptr()->is_speech_enabled();
 
 	gwin->clear_screen(true);
-	
+
 	// Lord British presents...
-	try
-	{
+	try {
 		U7multiobject lbflic(INTRO_DAT, PATCH_INTRO, 0);
 		fli_b = lbflic.retrieve(flisize);
-		playfli fli0(fli_b+8, flisize-8);
+		playfli fli0(fli_b + 8, flisize - 8);
 		fli0.info();
 
 		disable_direct_gl_render();
-		for (j = 0; j < 20; j++)
-		{
-			next = fli0.play(win, 0, 0, next, j*5);
+		for (j = 0; j < 20; j++) {
+			next = fli0.play(win, 0, 0, next, j * 5);
 			non_gl_blit();
 			wait_delay(0, 0, 1);
 		}
@@ -289,12 +281,11 @@ void SI_Game::play_intro()
 		next = fli0.play(win, 0, 0, next, 100);
 		non_gl_blit();
 
-		if (wait_delay (3000, 0, 1))
+		if (wait_delay(3000, 0, 1))
 			throw UserBreakException();
 
-		for (j = 20; j; j--)
-		{
-			next = fli0.play(win, 0, 0, next, j*5);
+		for (j = 20; j; j--) {
+			next = fli0.play(win, 0, 0, next, j * 5);
 			non_gl_blit();
 			wait_delay(0, 0, 1);
 		}
@@ -302,125 +293,119 @@ void SI_Game::play_intro()
 
 		FORGET_ARRAY(fli_b);
 
-		if (wait_delay (0, 0, 1))
+		if (wait_delay(0, 0, 1))
 			throw UserBreakException();
 
 		gwin->clear_screen(true);
 
-		
+
 		// Castle Outside
 
 		// Start Music
 		Audio *audio = Audio::get_ptr();
 		if (audio) {
-			audio->start_music (R_SINTRO, 0, false);
+			audio->start_music(R_SINTRO, 0, false);
 		}
 
 		// Thunder, note we use the buffer again later so it's not freed here
-		if (speech)
-		{
+		if (speech) {
 			U7multiobject voc_thunder(INTRO_DAT, PATCH_INTRO, 15);
 			buffer = reinterpret_cast<uint8 *>(voc_thunder.retrieve(size));
-			Audio::get_ptr()->copy_and_play (buffer+8, size-8, false);
+			Audio::get_ptr()->copy_and_play(buffer + 8, size - 8, false);
 		}
 
 		U7multiobject flic(INTRO_DAT, PATCH_INTRO, 1);
 		fli_b = flic.retrieve(flisize);
-		playfli fli1(fli_b+8, flisize-8);
+		playfli fli1(fli_b + 8, flisize - 8);
 		fli1.info();
 
 		fli1.play(win, 0, 1, 0, 0);
 
 		next = SDL_GetTicks();
-		int	prev = -1;
-		int 	num;
-		
-		for (j = 0; j < 20; j++)
-		{
+		int prev = -1;
+		int     num;
+
+		for (j = 0; j < 20; j++) {
 			num = get_frame();
 			if (prev != num)
-				for (i = 0; i < num+1; i++)
+				for (i = 0; i < num + 1; i++)
 					fli1.play(win, i, i, next);
 
 			prev = num;
 			next += 75;
 			non_gl_blit();
-			if (wait_delay (1, 0, 1))
+			if (wait_delay(1, 0, 1))
 				throw UserBreakException();
 
 		}
 
-		for (j = 0; j < 50; j++)
-		{
+		for (j = 0; j < 50; j++) {
 			num = get_frame();
 			if (prev != num)
-				for (i = 0; i < num+1; i++)
+				for (i = 0; i < num + 1; i++)
 					fli1.play(win, i, i, next);
 
 			if (jive)
-				sifont->center_text(ibuf, centerx, centery+50, text_msgs[dick_castle]);
-			else 
-				sifont->center_text(ibuf, centerx, centery+50, text_msgs[lord_castle]);
+				sifont->center_text(ibuf, centerx, centery + 50, text_msgs[dick_castle]);
+			else
+				sifont->center_text(ibuf, centerx, centery + 50, text_msgs[lord_castle]);
 
 			prev = num;
 			next += 75;
 			non_gl_blit();
-			if (wait_delay (1, 0, 1))
+			if (wait_delay(1, 0, 1))
 				throw UserBreakException();
 
 		}
 
-		for (j = 0; j < 10; j++)
-		{
+		for (j = 0; j < 10; j++) {
 			num = get_frame();
 			if (prev != num)
-				for (i = 0; i < num+1; i++)
+				for (i = 0; i < num + 1; i++)
 					fli1.play(win, i, i, next);
 
-			// Thunder again, we free the buffer here 
-			if (speech && j == 5) { 
-				Audio::get_ptr()->copy_and_play (buffer+8, size-8, false);
+			// Thunder again, we free the buffer here
+			if (speech && j == 5) {
+				Audio::get_ptr()->copy_and_play(buffer + 8, size - 8, false);
 				FORGET_ARRAY(buffer);
 			}
 
 			prev = num;
 			next += 75;
 			non_gl_blit();
-			if (wait_delay (1, 0, 1))
+			if (wait_delay(1, 0, 1))
 				throw UserBreakException();
 
 		}
 
-		for (j = 0; j < 75; j++)
-		{
+		for (j = 0; j < 75; j++) {
 			num = get_frame();
 			if (prev != num)
-				for (i = 0; i < num+1; i++)
+				for (i = 0; i < num + 1; i++)
 					fli1.play(win, i, i, next);
 
-			for(i=0; i<3; i++) {
-				sifont->center_text(ibuf, centerx, centery+50+15*i, text_msgs[bg_fellow + i]);
+			for (i = 0; i < 3; i++) {
+				sifont->center_text(ibuf, centerx, centery + 50 + 15 * i, text_msgs[bg_fellow + i]);
 			}
 
 			prev = num;
 			next += 75;
 			non_gl_blit();
-			if (wait_delay (1, 0, 1))
+			if (wait_delay(1, 0, 1))
 				throw UserBreakException();
 
 		}
 
-		for (j = 20; j; j--)
-		{
-			next = fli1.play(win, 0, 0, next, j*5);
+		for (j = 20; j; j--) {
+			next = fli1.play(win, 0, 0, next, j * 5);
 			non_gl_blit();
-			if (wait_delay (0, 0, 1))
+			if (wait_delay(0, 0, 1))
 				throw UserBreakException();
 
 		}
 		FORGET_ARRAY(fli_b);
 
-		if (wait_delay (0))
+		if (wait_delay(0))
 			throw UserBreakException();
 
 		// Do this! Prevents palette corruption
@@ -429,97 +414,89 @@ void SI_Game::play_intro()
 		// Guard walks in
 		U7multiobject flic2(INTRO_DAT, PATCH_INTRO, 2);
 		fli_b = flic2.retrieve(flisize);
-		playfli fli2(fli_b+8, flisize-8);
+		playfli fli2(fli_b + 8, flisize - 8);
 		fli2.info();
 
-		for (j = 0; j < 20; j++)
-		{
-			next = fli2.play(win, 0, 0, next, j*5);
+		for (j = 0; j < 20; j++) {
+			next = fli2.play(win, 0, 0, next, j * 5);
 			non_gl_blit();
-			if (wait_delay (0, 0, 1))
+			if (wait_delay(0, 0, 1))
 				throw UserBreakException();
 		}
 
 		// Guard walks in
-		for (j = 0; j < 37; j++)
-		{
+		for (j = 0; j < 37; j++) {
 			next = fli2.play(win, j, j, next);
 			non_gl_blit();
-			if (wait_delay (0, 0, 1))
+			if (wait_delay(0, 0, 1))
 				throw UserBreakException();
 		}
 
 		// Guard walks in
-		if (speech && !jive)
-		{
+		if (speech && !jive) {
 			U7multiobject voc_my_leige(INTRO_DAT, PATCH_INTRO, 16);
-			buffer = reinterpret_cast<uint8 *>(voc_my_leige.retrieve (size));
-			Audio::get_ptr()->copy_and_play (buffer+8, size-8, false);
+			buffer = reinterpret_cast<uint8 *>(voc_my_leige.retrieve(size));
+			Audio::get_ptr()->copy_and_play(buffer + 8, size - 8, false);
 			FORGET_ARRAY(buffer);
 		}
 
 
-		for (; j < 55; j++)
-		{
+		for (; j < 55; j++) {
 			next = fli2.play(win, j, j, next);
 
 			if (jive)
-				sifont->draw_text(ibuf, centerx+30, centery+87, text_msgs[yo_homes]);
+				sifont->draw_text(ibuf, centerx + 30, centery + 87, text_msgs[yo_homes]);
 			else if (!speech)
-				sifont->draw_text(ibuf, centerx+30, centery+87, text_msgs[my_leige]);
+				sifont->draw_text(ibuf, centerx + 30, centery + 87, text_msgs[my_leige]);
 
 			non_gl_blit();
-			if (wait_delay (0, 0, 1))
+			if (wait_delay(0, 0, 1))
 				throw UserBreakException();
 		}
 
 		next = fli2.play(win, j, j, next);
 		non_gl_blit();
-		wait_delay (0, 0, 1);
+		wait_delay(0, 0, 1);
 
-		const char *all_we[2] = { text_msgs[all_we0], text_msgs[all_we0+1] };
+		const char *all_we[2] = { text_msgs[all_we0], text_msgs[all_we0 + 1] };
 
-		if (speech && !jive)
-		{
+		if (speech && !jive) {
 			U7multiobject voc_all_we(INTRO_DAT, PATCH_INTRO, 17);
-			buffer = reinterpret_cast<uint8 *>(voc_all_we.retrieve (size));
-			Audio::get_ptr()->copy_and_play (buffer+8, size-8, false);
+			buffer = reinterpret_cast<uint8 *>(voc_all_we.retrieve(size));
+			Audio::get_ptr()->copy_and_play(buffer + 8, size - 8, false);
 			FORGET_ARRAY(buffer);
 		}
 
-		for (; j < 73; j++)
-		{
+		for (; j < 73; j++) {
 			next = fli2.play(win, j, j, next);
 
-			if (!speech || jive)
-			{
-				sifont->draw_text(ibuf, centerx+150-sifont->get_text_width(all_we[0]), centery+74, all_we[0]);
-				sifont->draw_text(ibuf, centerx+160-sifont->get_text_width(all_we[1]), centery+87, all_we[1]);
+			if (!speech || jive) {
+				sifont->draw_text(ibuf, centerx + 150 - sifont->get_text_width(all_we[0]), centery + 74, all_we[0]);
+				sifont->draw_text(ibuf, centerx + 160 - sifont->get_text_width(all_we[1]), centery + 87, all_we[1]);
 			}
 
 			non_gl_blit();
-			if (wait_delay (0, 0, 1))
+			if (wait_delay(0, 0, 1))
 				throw UserBreakException();
 		}
 		for (i = 0; i < 220; i++)
-			if (wait_delay (10))
+			if (wait_delay(10))
 				throw UserBreakException();
 
-		const char *and_a[2] = { text_msgs[and_a0], text_msgs[and_a0+1] };
+		const char *and_a[2] = { text_msgs[and_a0], text_msgs[and_a0 + 1] };
 
 		next = fli2.play(win, j, j, next);
 
-		if (!speech || jive)
-		{
-			sifont->draw_text(ibuf, centerx+150-sifont->get_text_width(and_a[0]), centery+74, and_a[0]);
-			sifont->draw_text(ibuf, centerx+150-sifont->get_text_width(and_a[1]), centery+87, and_a[1]);
+		if (!speech || jive) {
+			sifont->draw_text(ibuf, centerx + 150 - sifont->get_text_width(and_a[0]), centery + 74, and_a[0]);
+			sifont->draw_text(ibuf, centerx + 150 - sifont->get_text_width(and_a[1]), centery + 87, and_a[1]);
 		}
 
 		non_gl_blit();
 		j++;
-		
+
 		for (i = 0; i < 290; i++)
-			if (wait_delay (10, 0, 1))
+			if (wait_delay(10, 0, 1))
 				throw UserBreakException();
 
 
@@ -527,39 +504,36 @@ void SI_Game::play_intro()
 		j++;
 
 		for (i = 0; i < 50; i++)
-			if (wait_delay (10, 0, 1))
+			if (wait_delay(10, 0, 1))
 				throw UserBreakException();
 
-		if (speech && !jive)
-		{
+		if (speech && !jive) {
 			U7multiobject voc_indeed(INTRO_DAT, PATCH_INTRO, 18);
 			buffer = reinterpret_cast<uint8 *>(voc_indeed.retrieve(size));
-			Audio::get_ptr()->copy_and_play (buffer+8, size-8, false);
+			Audio::get_ptr()->copy_and_play(buffer + 8, size - 8, false);
 			FORGET_ARRAY(buffer);
 		}
 
 		next = fli2.play(win, j, j);
 		j++;
-		
-		for (; j < 81; j++)
-		{
+
+		for (; j < 81; j++) {
 			next = fli2.play(win, j, j, next);
 
 			if (jive)
-				sifont->draw_text(ibuf, topx+40, centery+74, text_msgs[iree]);
-			else if (!speech)
-			{
-				sifont->draw_text(ibuf, topx+40, centery+74, text_msgs[indeed]);
-				sifont->draw_text(ibuf, topx+40, centery+87, text_msgs[indeed+1]);
+				sifont->draw_text(ibuf, topx + 40, centery + 74, text_msgs[iree]);
+			else if (!speech) {
+				sifont->draw_text(ibuf, topx + 40, centery + 74, text_msgs[indeed]);
+				sifont->draw_text(ibuf, topx + 40, centery + 87, text_msgs[indeed + 1]);
 			}
 
 			non_gl_blit();
-			if (wait_delay (0, 0, 1))
+			if (wait_delay(0, 0, 1))
 				throw UserBreakException();
 		}
 
 		for (i = 0; i < 200; i++)
-			if (wait_delay (10))
+			if (wait_delay(10))
 				throw UserBreakException();
 
 		FORGET_ARRAY(fli_b);
@@ -570,41 +544,38 @@ void SI_Game::play_intro()
 		// Scroll opens
 		U7multiobject flic3(INTRO_DAT, PATCH_INTRO, 3);
 		fli_b = flic3.retrieve(flisize);
-		playfli fli3(fli_b+8, flisize-8);
+		playfli fli3(fli_b + 8, flisize - 8);
 		fli3.info();
 
 		next = 0;
 
 		// Scroll opens
-		for (j = 0; j < 20; j++)
-		{
-			next = fli3.play(win, j, j, next)+20;
+		for (j = 0; j < 20; j++) {
+			next = fli3.play(win, j, j, next) + 20;
 			non_gl_blit();
-			if (wait_delay (0, 0, 1))
+			if (wait_delay(0, 0, 1))
 				throw UserBreakException();
 		}
 
 
 		// 'Stand Back'
-		if (speech && !jive)
-		{
+		if (speech && !jive) {
 			U7multiobject voc_stand_back(INTRO_DAT, PATCH_INTRO, 19);
 			buffer = reinterpret_cast<uint8 *>(voc_stand_back.retrieve(size));
-			Audio::get_ptr()->copy_and_play (buffer+8, size-8, false);
+			Audio::get_ptr()->copy_and_play(buffer + 8, size - 8, false);
 			FORGET_ARRAY(buffer);
 		}
 
-		for (; j < 61; j++)
-		{
-			next = fli3.play(win, j, j, next)+20;
+		for (; j < 61; j++) {
+			next = fli3.play(win, j, j, next) + 20;
 
 			if (jive)
-				sifont->draw_text(ibuf, topx+70, centery+60, text_msgs[jump_back]);
-			else if (!speech)	
-				sifont->draw_text(ibuf, topx+70, centery+60, text_msgs[stand_back]);
+				sifont->draw_text(ibuf, topx + 70, centery + 60, text_msgs[jump_back]);
+			else if (!speech)
+				sifont->draw_text(ibuf, topx + 70, centery + 60, text_msgs[stand_back]);
 
 			non_gl_blit();
-			if (wait_delay (0, 0, 1))
+			if (wait_delay(0, 0, 1))
 				throw UserBreakException();
 		}
 
@@ -616,23 +587,22 @@ void SI_Game::play_intro()
 		// Big G speaks
 		U7multiobject flic4(INTRO_DAT, PATCH_INTRO, 4);
 		fli_b = flic4.retrieve(flisize);
-		playfli fli4(fli_b+8, flisize-8);
+		playfli fli4(fli_b + 8, flisize - 8);
 		fli4.info();
 
 		U7multiobject shapes(INTRO_DAT, PATCH_INTRO, 30);
 		shape_buf = shapes.retrieve(shapesize);
-		BufferDataSource gshape_ds(shape_buf+8, shapesize-8);
+		BufferDataSource gshape_ds(shape_buf + 8, shapesize - 8);
 		Shape_frame *sf;
-	
+
 		Shape_file gshape(&gshape_ds);
-		
+
 		cout << "Shape in intro.dat has " << gshape.get_num_frames() << endl;
 
-		if (speech && !jive)
-		{
+		if (speech && !jive) {
 			U7multiobject voc_big_g(INTRO_DAT, PATCH_INTRO, 20);
-			buffer = reinterpret_cast<uint8 *>(voc_big_g.retrieve ( size));
-			Audio::get_ptr()->copy_and_play (buffer+8, size-8, false);
+			buffer = reinterpret_cast<uint8 *>(voc_big_g.retrieve(size));
+			Audio::get_ptr()->copy_and_play(buffer + 8, size - 8, false);
 			FORGET_ARRAY(buffer);
 		}
 
@@ -640,110 +610,91 @@ void SI_Game::play_intro()
 
 		// Batlin...
 
-		for (j = 0; j < 320; j++)
-		{
-			next = fli4.play(win, j%40, j%40, next);
+		for (j = 0; j < 320; j++) {
+			next = fli4.play(win, j % 40, j % 40, next);
 
 			if (j < 300)
-				sf = gshape.get_frame((j/2)%7);
+				sf = gshape.get_frame((j / 2) % 7);
 			else
 				sf = gshape.get_frame(0);
 
 			if (sf)
-				sman->paint_shape (centerx-36, centery, sf);
+				sman->paint_shape(centerx - 36, centery, sf);
 
-			if (j < 100 && jive)
-			{
-				sifont->center_text(ibuf, centerx, centery+74, text_msgs[batlin2]);
-				sifont->center_text(ibuf, centerx, centery+87, text_msgs[batlin2+1]);
-			}
-			else if (j < 200 && jive)
-			{
-				sifont->center_text(ibuf, centerx, centery+74, text_msgs[you_must]);
-				sifont->center_text(ibuf, centerx, centery+87, text_msgs[you_must+1]);
-			}
-			else if (j < 300 && jive)
-			{
-				sifont->center_text(ibuf, centerx, centery+74, text_msgs[soon_i]);
-				sifont->center_text(ibuf, centerx, centery+87, text_msgs[soon_i+1]);
-			}
-			else if (j < 100 && !speech)
-			{
-				sifont->center_text(ibuf, centerx, centery+74, text_msgs[batlin]);
-				sifont->center_text(ibuf, centerx, centery+87, text_msgs[batlin+1]);
-			}
-			else if (j < 200 && !speech)
-			{
-				sifont->center_text(ibuf, centerx, centery+74, text_msgs[you_shall]);
-				sifont->center_text(ibuf, centerx, centery+87, text_msgs[you_shall+1]);
-			}
-			else if (j < 300 && !speech)
-			{
-				sifont->center_text(ibuf, centerx, centery+74, text_msgs[there_i]);
-				sifont->center_text(ibuf, centerx, centery+87, text_msgs[there_i+1]);
+			if (j < 100 && jive) {
+				sifont->center_text(ibuf, centerx, centery + 74, text_msgs[batlin2]);
+				sifont->center_text(ibuf, centerx, centery + 87, text_msgs[batlin2 + 1]);
+			} else if (j < 200 && jive) {
+				sifont->center_text(ibuf, centerx, centery + 74, text_msgs[you_must]);
+				sifont->center_text(ibuf, centerx, centery + 87, text_msgs[you_must + 1]);
+			} else if (j < 300 && jive) {
+				sifont->center_text(ibuf, centerx, centery + 74, text_msgs[soon_i]);
+				sifont->center_text(ibuf, centerx, centery + 87, text_msgs[soon_i + 1]);
+			} else if (j < 100 && !speech) {
+				sifont->center_text(ibuf, centerx, centery + 74, text_msgs[batlin]);
+				sifont->center_text(ibuf, centerx, centery + 87, text_msgs[batlin + 1]);
+			} else if (j < 200 && !speech) {
+				sifont->center_text(ibuf, centerx, centery + 74, text_msgs[you_shall]);
+				sifont->center_text(ibuf, centerx, centery + 87, text_msgs[you_shall + 1]);
+			} else if (j < 300 && !speech) {
+				sifont->center_text(ibuf, centerx, centery + 74, text_msgs[there_i]);
+				sifont->center_text(ibuf, centerx, centery + 87, text_msgs[there_i + 1]);
 			}
 
 			non_gl_blit();
-			if (wait_delay (0, 0, 1))
+			if (wait_delay(0, 0, 1))
 				throw UserBreakException();
 		}
 		sf = gshape.get_frame(0);
 
-		for (j = 20; j; j--)
-		{
-			next = fli4.play(win, 0, 0, next, j*5);
+		for (j = 20; j; j--) {
+			next = fli4.play(win, 0, 0, next, j * 5);
 			if (sf)
-				sman->paint_shape (centerx-36, centery, sf);
+				sman->paint_shape(centerx - 36, centery, sf);
 
 			non_gl_blit();
-			if (wait_delay (0, 0, 1))
+			if (wait_delay(0, 0, 1))
 				throw UserBreakException();
 		}
 
 		FORGET_ARRAY(shape_buf);
 		FORGET_ARRAY(fli_b);
-		
+
 		// Do this! Prevents palette corruption
 		gwin->clear_screen(true);
 
 		// Tis LBs's Worst fear
 		U7multiobject flic5(INTRO_DAT, PATCH_INTRO, 5);
 		fli_b = flic5.retrieve(flisize);
-		playfli fli5(fli_b+8, flisize-8);
+		playfli fli5(fli_b + 8, flisize - 8);
 		fli5.info();
 
-		for (j=0; j < 20; j++)
-		{
-			next = fli5.play(win, 0, 0, next, j*5);
+		for (j = 0; j < 20; j++) {
+			next = fli5.play(win, 0, 0, next, j * 5);
 			non_gl_blit();
-			if (wait_delay (0, 0, 1))
+			if (wait_delay(0, 0, 1))
 				throw UserBreakException();
 		}
 
-		if (speech && !jive)
-		{
+		if (speech && !jive) {
 			U7multiobject voc_tis_my(INTRO_DAT, PATCH_INTRO, 21);
 			buffer = reinterpret_cast<uint8 *>(voc_tis_my.retrieve(size));
-			Audio::get_ptr()->copy_and_play (buffer+8, size-8, false);
+			Audio::get_ptr()->copy_and_play(buffer + 8, size - 8, false);
 			FORGET_ARRAY(buffer);
 		}
 
-		for (j=0; j < 61; j++)
-		{
-			next = fli5.play(win, j, j, next)+30;
+		for (j = 0; j < 61; j++) {
+			next = fli5.play(win, j, j, next) + 30;
 
-			if (j < 20 && (!speech || jive))
-			{
-				sifont->center_text(ibuf, centerx, centery+74, text_msgs[tis_my]);
-			}
-			else if (j > 22 && (!speech || jive))
-			{
-				sifont->center_text(ibuf, centerx, centery+74, text_msgs[tis_my+1]);
-				sifont->center_text(ibuf, centerx, centery+87, text_msgs[tis_my+2]);
+			if (j < 20 && (!speech || jive)) {
+				sifont->center_text(ibuf, centerx, centery + 74, text_msgs[tis_my]);
+			} else if (j > 22 && (!speech || jive)) {
+				sifont->center_text(ibuf, centerx, centery + 74, text_msgs[tis_my + 1]);
+				sifont->center_text(ibuf, centerx, centery + 87, text_msgs[tis_my + 2]);
 			}
 
 			non_gl_blit();
-			if (wait_delay (0, 0, 1))
+			if (wait_delay(0, 0, 1))
 				throw UserBreakException();
 		}
 
@@ -755,14 +706,13 @@ void SI_Game::play_intro()
 		// Boat 1
 		U7multiobject flic6(INTRO_DAT, PATCH_INTRO, 6);
 		fli_b = flic6.retrieve(flisize);
-		playfli fli6(fli_b+8, flisize-8);
+		playfli fli6(fli_b + 8, flisize - 8);
 		fli6.info();
 
-		for (j=0; j < 61; j++)
-		{
-			next = fli6.play(win, j, j, next)+30;
+		for (j = 0; j < 61; j++) {
+			next = fli6.play(win, j, j, next) + 30;
 			non_gl_blit();
-			if (wait_delay (0, 0, 1))
+			if (wait_delay(0, 0, 1))
 				throw UserBreakException();
 		}
 
@@ -774,20 +724,19 @@ void SI_Game::play_intro()
 		// Boat 2
 		U7multiobject flic7(INTRO_DAT, PATCH_INTRO, 7);
 		fli_b = flic7.retrieve(flisize);
-		playfli fli7(fli_b+8, flisize-8);
+		playfli fli7(fli_b + 8, flisize - 8);
 		fli7.info();
 
 		const char *zot = "Zot!";
 
-		for (j=0; j < 61; j++)
-		{
-			next = fli7.play(win, j, j, next)+30;
+		for (j = 0; j < 61; j++) {
+			next = fli7.play(win, j, j, next) + 30;
 
 			if (j > 55 && jive)
-				sifont->center_text(ibuf, centerx, centery+74, zot);
+				sifont->center_text(ibuf, centerx, centery + 74, zot);
 
 			non_gl_blit();
-			if (wait_delay (0, 0, 1))
+			if (wait_delay(0, 0, 1))
 				throw UserBreakException();
 		}
 
@@ -799,91 +748,86 @@ void SI_Game::play_intro()
 		// Ultima VII Part 2
 		U7multiobject flic8(INTRO_DAT, PATCH_INTRO, 8);
 		fli_b = flic8.retrieve(flisize);
-		playfli fli8(fli_b+8, flisize-8);
+		playfli fli8(fli_b + 8, flisize - 8);
 		fli8.info();
 
-		for (j = 0; j < 20; j++)
-		{
-			next = fli8.play(win, 0, 0, next, j*5);
+		for (j = 0; j < 20; j++) {
+			next = fli8.play(win, 0, 0, next, j * 5);
 			non_gl_blit();
-			wait_delay (0, 0, 1);
+			wait_delay(0, 0, 1);
 		}
 
 
 		next = fli8.play(win, 0, 0, next, 100);
 		non_gl_blit();
-		wait_delay (0, 0, 1);
+		wait_delay(0, 0, 1);
 
 		for (i = 0; i < 300; i++)
-			if (wait_delay (10))
+			if (wait_delay(10))
 				throw UserBreakException();
 
 
-		for (j = 20; j; j--)
-		{
-			next = fli8.play(win, 0, 0, next, j*5);
+		for (j = 20; j; j--) {
+			next = fli8.play(win, 0, 0, next, j * 5);
 			non_gl_blit();
-			wait_delay (0, 0, 1);
+			wait_delay(0, 0, 1);
 		}
-		
+
 		FORGET_ARRAY(fli_b);
 		enable_direct_gl_render();
-	}
-	catch(const UserBreakException &/*x*/)
-	{
+	} catch (const UserBreakException &/*x*/) {
 		FORGET_ARRAY(shape_buf);
 		FORGET_ARRAY(fli_b);
 		FORGET_ARRAY(buffer);
 		enable_direct_gl_render();
 	}
-	
+
 	// Fade out the palette...
 //	pal.fade_out(c_fade_out_time);
 // this doesn't work right ATM since the FLIC player has its own palette handling
 
-	
+
 	// ... and clean the screen.
 	gwin->clear_screen(true);
-	
+
 	// Stop all audio output
 	Audio::get_ptr()->cancel_streams();
 }
 
-Shape_frame *SI_Game::get_menu_shape()
-{
-	return menushapes.get_shape(0x2,0);
+Shape_frame *SI_Game::get_menu_shape() {
+	return menushapes.get_shape(0x2, 0);
 }
 
-void SI_Game::top_menu()
-{
-	Audio::get_ptr()->start_music(28,true,MAINSHP_FLX);
-	sman->paint_shape(topx,topy,get_menu_shape());
+void SI_Game::top_menu() {
+	Audio::get_ptr()->start_music(28, true, MAINSHP_FLX);
+	sman->paint_shape(topx, topy, get_menu_shape());
 	pal->load(MAINSHP_FLX, PATCH_MAINSHP, 26);
 	pal->fade_in(60);
 }
 
-void SI_Game::show_journey_failed()
-{
+void SI_Game::show_journey_failed() {
 	pal->fade_out(50);
 	gwin->clear_screen(true);
-	sman->paint_shape(topx,topy,get_menu_shape());
+	sman->paint_shape(topx, topy, get_menu_shape());
 	journey_failed_text();
 }
 
 /*
- *	ExCineLite
+ *  ExCineLite
  */
 
 // ExCineEvent
 struct ExCineEvent {
-	uint32			time;	// Time to start, In MS
-	const char		*file;
-	const char		*patch;
-	int			index;
+	uint32          time;   // Time to start, In MS
+	const char      *file;
+	const char      *patch;
+	int         index;
 
-	virtual bool	play_it(Image_window *win, uint32 time) = 0;		// Return true if screen updated
+	virtual bool    play_it(Image_window *win, uint32 time) = 0;        // Return true if screen updated
 
-	bool can_play() { return file != 0; }
+	bool can_play() {
+		return file != 0;
+	}
 
 	ExCineEvent(uint32 t, const char *f, const char *p, int i) :
 		time(t), file(f), patch(p), index(i)  { }
@@ -897,42 +841,41 @@ struct ExCineEvent {
 
 struct ExCineFlic : public ExCineEvent {
 private:
-	int	start;		// First frame to play
-	int	count;		// Number of frames
-	bool	repeat;		// Repeat?
-	int	cur;		// Frame currently being displayed (note, it's not the actual frame)
-	int	speed;		// Speed of playback (ms per frame)
+	int start;      // First frame to play
+	int count;      // Number of frames
+	bool    repeat;     // Repeat?
+	int cur;        // Frame currently being displayed (note, it's not the actual frame)
+	int speed;      // Speed of playback (ms per frame)
 
 	// Data info
-	U7object	*flic_obj;
-	size_t		size;
-	char		*buffer;
-	playfli		*player;
+	U7object    *flic_obj;
+	size_t      size;
+	char        *buffer;
+	playfli     *player;
 
 public:
-	virtual bool	play_it(Image_window *win, uint32 t);
+	virtual bool    play_it(Image_window *win, uint32 t);
 
-	void		load_flic(void);
-	void		free_flic(void);
+	void        load_flic(void);
+	void        free_flic(void);
 
-	void		fade_out(int cycles);
+	void        fade_out(int cycles);
 
 	ExCineFlic(uint32 time, const char *file, const char *patch,
-			int i, int s, int c, bool r, int spd) :
+	           int i, int s, int c, bool r, int spd) :
 		ExCineEvent(time, file, patch, i), start(s), count(c), repeat(r),
 		cur(-1), speed(spd), flic_obj(0), size(0), buffer(0), player(0) { }
 
 	ExCineFlic(uint32 time) : ExCineEvent(time, 0, 0, 0), start(0), count(0),
-				repeat(false), cur(0), speed(0),
-				flic_obj(0), size(0), buffer(0), player(0) { }
+		repeat(false), cur(0), speed(0),
+		flic_obj(0), size(0), buffer(0), player(0) { }
 
 	virtual ~ExCineFlic() {
 		free_flic();
 	}
 };
 
-void ExCineFlic::load_flic()
-{
+void ExCineFlic::load_flic() {
 	free_flic();
 
 	if (file) COUT("Loading " << file << ":" << index);
@@ -944,12 +887,11 @@ void ExCineFlic::load_flic()
 
 	buffer = flic_obj->retrieve(size);
 
-	player = new playfli(buffer+8, size-8);
+	player = new playfli(buffer + 8, size - 8);
 	player->info();
 }
 
-void ExCineFlic::free_flic()
-{
+void ExCineFlic::free_flic() {
 	if (file) COUT("Freeing " << file << ":" << index);
 
 	FORGET_OBJECT(player);
@@ -958,19 +900,18 @@ void ExCineFlic::free_flic()
 	FORGET_OBJECT(flic_obj);
 }
 
-bool	ExCineFlic::play_it(Image_window *win, uint32 t)
-{
+bool    ExCineFlic::play_it(Image_window *win, uint32 t) {
 	if (t < time) return false;
 
-	if (cur+1 < count || repeat) {
+	if (cur + 1 < count || repeat) {
 
 		// Only advance frame if we can
-		uint32 time_next = time + (cur+1) * speed;
+		uint32 time_next = time + (cur + 1) * speed;
 		if (time_next <= t) {
 			cur++;
 
 			// The actual frame number
-			int actual = start + (cur%count);
+			int actual = start + (cur % count);
 
 			player->play(win, actual, actual, 0);
 
@@ -983,8 +924,7 @@ bool	ExCineFlic::play_it(Image_window *win, uint32 t)
 	return false;
 }
 
-void ExCineFlic::fade_out(int cycles)
-{
+void ExCineFlic::fade_out(int cycles) {
 	if (player) player->get_palette()->fade_out(cycles);
 }
 
@@ -994,10 +934,10 @@ void ExCineFlic::fade_out(int cycles)
 
 struct ExCineVoc : public ExCineEvent {
 private:
-	bool		played;
+	bool        played;
 
 public:
-	virtual bool	play_it(Image_window *win, uint32 t);
+	virtual bool    play_it(Image_window *win, uint32 t);
 
 	ExCineVoc(uint32 time, const char *file, const char *patch, int index) :
 		ExCineEvent(time, file, patch, index), played(false) { }
@@ -1005,19 +945,17 @@ public:
 	virtual ~ExCineVoc() { }
 };
 
-bool ExCineVoc::play_it(Image_window *win, uint32 t)
-{
-	size_t	size;
+bool ExCineVoc::play_it(Image_window *win, uint32 t) {
+	size_t  size;
 	U7multiobject voc(file, patch, index);
-	uint8 *buffer = reinterpret_cast<uint8 *>(voc.retrieve (size));
+	uint8 *buffer = reinterpret_cast<uint8 *>(voc.retrieve(size));
 	uint8 *buf = buffer;
-	if (!memcmp(buf, "win", sizeof("win")-1))
-		{
+	if (!memcmp(buf, "win", sizeof("win") - 1)) {
 		// IFF junk.
 		buf += 8;
 		size -= 8;
-		}
-	Audio::get_ptr()->copy_and_play (buf, size, false);
+	}
+	Audio::get_ptr()->copy_and_play(buf, size, false);
 	FORGET_ARRAY(buffer);
 	played = true;
 
@@ -1027,8 +965,7 @@ bool ExCineVoc::play_it(Image_window *win, uint32 t)
 //
 // Serpent Isle Endgame
 //
-void SI_Game::end_game(bool success) 
-{
+void SI_Game::end_game(bool success) {
 	Audio *audio = Audio::get_ptr();
 	if (audio) {
 		audio->stop_music();
@@ -1037,101 +974,101 @@ void SI_Game::end_game(bool success)
 	}
 
 	gwin->clear_screen(true);
-	
 
-/* Endgame General Timings (in ms)
 
-      0 - Avatar floating right
-   6350 - Begin Serpent Swirling
-  10850 - Serpent Comes on screen
-  14643 - Balanced, and "there we are done"
-  17281 - "balance is restored"
-  21300 - "serpent isle"
-  22900 - "briatnnia"
-  24300 - "your earth"
-  26000 - "the entire universe"
-  28600 - "all are phased"
-  31600 - Avatar floating right, "worry not about your friend dupre"
-  35100 - "he is one with us"
-  37000 - "and content"
-  39800 - "good bye avatar"
-  42040 - "we thank you"
-  48550 - "well well well avatar"
-  48900 - Avatar floating left
-  51750 - "You have managed to thawt me one again"
-  55500 - "by restoring balance..."
-  62500 - floating far, "but now here you are"
-  64500 - "poised at the edge of eternity"
-  67000 - "where would you go?"
-  70250 - floating left, "back to britannia?"
-  72159 - "to earth?"
-  74750 - "perhaps you would join me.."
-  75500 - big g's hand
-  78000 - "we do have a score to settle"
+	/* Endgame General Timings (in ms)
 
-Flic Index
-9 = Avfloat
-10 = snake1
-11 = snake2
-12 = avfar
-13 = xavgrab
+	      0 - Avatar floating right
+	   6350 - Begin Serpent Swirling
+	  10850 - Serpent Comes on screen
+	  14643 - Balanced, and "there we are done"
+	  17281 - "balance is restored"
+	  21300 - "serpent isle"
+	  22900 - "briatnnia"
+	  24300 - "your earth"
+	  26000 - "the entire universe"
+	  28600 - "all are phased"
+	  31600 - Avatar floating right, "worry not about your friend dupre"
+	  35100 - "he is one with us"
+	  37000 - "and content"
+	  39800 - "good bye avatar"
+	  42040 - "we thank you"
+	  48550 - "well well well avatar"
+	  48900 - Avatar floating left
+	  51750 - "You have managed to thawt me one again"
+	  55500 - "by restoring balance..."
+	  62500 - floating far, "but now here you are"
+	  64500 - "poised at the edge of eternity"
+	  67000 - "where would you go?"
+	  70250 - floating left, "back to britannia?"
+	  72159 - "to earth?"
+	  74750 - "perhaps you would join me.."
+	  75500 - big g's hand
+	  78000 - "we do have a score to settle"
 
-Frame count : 61
-Width :       320
-Height :      200
-Depth :       8
-Speed :       5
+	Flic Index
+	9 = Avfloat
+	10 = snake1
+	11 = snake2
+	12 = avfar
+	13 = xavgrab
 
-Frame count : 156
-Width :       320
-Height :      200
-Depth :       8
-Speed :       8
+	Frame count : 61
+	Width :       320
+	Height :      200
+	Depth :       8
+	Speed :       5
 
-Frame count : 4
-Width :       320
-Height :      200
-Depth :       8
-Speed :       10
+	Frame count : 156
+	Width :       320
+	Height :      200
+	Depth :       8
+	Speed :       8
 
-Frame count : 61
-Width :       320
-Height :      200
-Depth :       8
-Speed :       5
+	Frame count : 4
+	Width :       320
+	Height :      200
+	Depth :       8
+	Speed :       10
 
-Frame count : 121
-Width :       320
-Height :      200
-Depth :       8
-Speed :       5
+	Frame count : 61
+	Width :       320
+	Height :      200
+	Depth :       8
+	Speed :       5
 
-Sound Index
-22 = "there we are done, balance is restored"
-23 = "serpent isle...."
-24 = "goodbye avatar..."
-25 = "well well well avatar..."
-26 = "by restoring balance..."
-27 = "but now here you are..."
-28 = "back to britannia..."
-29 = "perhaps you..."
+	Frame count : 121
+	Width :       320
+	Height :      200
+	Depth :       8
+	Speed :       5
 
-      0 - Repeat 9
-   6350 - Play 10
-  14643 - Repeat 10, Play 22
-  21300 - Play 23
-  31600 - Repeat 9
-  39800 - Repeat 11, Play 24
-  48550 - Play 25
-  48900 - Repeat 13
-  55500 - Play 26
-  62500 - Repeat 12, play 27
-  70250 - Play 13, play 28
-  72159 - "to earth?"
-  74750 - play 29
-  75500 - big g's hand
-  78000 - "we do have a score to settle"
-*/
+	Sound Index
+	22 = "there we are done, balance is restored"
+	23 = "serpent isle...."
+	24 = "goodbye avatar..."
+	25 = "well well well avatar..."
+	26 = "by restoring balance..."
+	27 = "but now here you are..."
+	28 = "back to britannia..."
+	29 = "perhaps you..."
+
+	      0 - Repeat 9
+	   6350 - Play 10
+	  14643 - Repeat 10, Play 22
+	  21300 - Play 23
+	  31600 - Repeat 9
+	  39800 - Repeat 11, Play 24
+	  48550 - Play 25
+	  48900 - Repeat 13
+	  55500 - Play 26
+	  62500 - Repeat 12, play 27
+	  70250 - Play 13, play 28
+	  72159 - "to earth?"
+	  74750 - play 29
+	  75500 - big g's hand
+	  78000 - "we do have a score to settle"
+	*/
 
 	// Flic List
 	ExCineFlic flics[] = {
@@ -1165,7 +1102,7 @@ Sound Index
 
 	// Start the music
 	if (audio) {
-		audio->start_music (R_SEND, 0, false);
+		audio->start_music(R_SEND, 0, false);
 	}
 
 	int start_time = SDL_GetTicks();
@@ -1175,12 +1112,12 @@ Sound Index
 		uint32 time = SDL_GetTicks() - start_time;
 
 		// Need to go to the next flic?
-		if (cur_flic < last_flic && flics[cur_flic+1].time <= time) {
+		if (cur_flic < last_flic && flics[cur_flic + 1].time <= time) {
 
-			bool next_play = flics[cur_flic+1].can_play();
+			bool next_play = flics[cur_flic + 1].can_play();
 
 			// Can play the new one, don't need the old one anymore
-			if(next_play) {
+			if (next_play) {
 				// Free it
 				if (flic) flic->free_flic();
 
@@ -1198,9 +1135,9 @@ Sound Index
 			else if (flic) {
 				flic->free_flic();
 			}
-			
+
 			cur_flic++;
-			flic = flics+cur_flic;
+			flic = flics + cur_flic;
 
 			if (next_play) {
 				// Clear the screen to prevent palette corruption
@@ -1208,21 +1145,20 @@ Sound Index
 
 				// Load the flic, and set pal_flic
 				(pal_flic = flic)->load_flic();
-			}
-			else COUT("Teminator ");
+			} else COUT("Teminator ");
 			COUT("Flic at time: " << flic->time);
 		}
 
 		// Need to go to the next voc?
-		if (cur_voc < last_voc && vocs[cur_voc+1].time <= time) {
+		if (cur_voc < last_voc && vocs[cur_voc + 1].time <= time) {
 			cur_voc++;
-			ExCineVoc *voc = vocs+cur_voc;
+			ExCineVoc *voc = vocs + cur_voc;
 
 			// Just play it!
 			voc->play_it(NULL, time);
 			//else COUT("Teminator ");
 			COUT("voc at time: " << voc->time);
-			
+
 		}
 
 		// We've finished
@@ -1242,12 +1178,12 @@ Sound Index
 
 		if (updated
 #ifdef HAVE_OPENGL
-				&& !GL_manager::get_instance()
+		        && !GL_manager::get_instance()
 #endif
-			)
+		   )
 			win->show();
 
-		if (wait_delay (0, 0, 1)) {
+		if (wait_delay(0, 0, 1)) {
 
 			// Do a quick fade out
 			if (pal_flic && pal_flic->can_play()) pal_flic->fade_out(20);
@@ -1264,44 +1200,41 @@ Sound Index
 	}
 }
 
-void SI_Game::show_quotes()
-{
-	Audio::get_ptr()->start_music(32,false,MAINSHP_FLX);
-	TextScroller quotes(MAINSHP_FLX, 0x10, 
-		     fontManager.get_font("MENU_FONT"),
-		     menushapes.extract_shape(0x14)
-		    );
+void SI_Game::show_quotes() {
+	Audio::get_ptr()->start_music(32, false, MAINSHP_FLX);
+	TextScroller quotes(MAINSHP_FLX, 0x10,
+	                    fontManager.get_font("MENU_FONT"),
+	                    menushapes.extract_shape(0x14)
+	                   );
 	quotes.run(gwin);
 }
 
-void SI_Game::show_credits()
-{
+void SI_Game::show_credits() {
 	pal->load(MAINSHP_FLX, PATCH_MAINSHP, 26);
-	Audio::get_ptr()->start_music(30,false,MAINSHP_FLX);
-	TextScroller credits(MAINSHP_FLX, 0x0E, 
-		     fontManager.get_font("MENU_FONT"),
-		     menushapes.extract_shape(0x14)
-		    );
-	if(credits.run(gwin)) {	// Watched through the entire sequence?
+	Audio::get_ptr()->start_music(30, false, MAINSHP_FLX);
+	TextScroller credits(MAINSHP_FLX, 0x0E,
+	                     fontManager.get_font("MENU_FONT"),
+	                     menushapes.extract_shape(0x14)
+	                    );
+	if (credits.run(gwin)) { // Watched through the entire sequence?
 		std::ofstream quotesflg;
 		U7open(quotesflg, "<SAVEGAME>/quotes.flg");
 		quotesflg.close();
 	}
 }
 
-bool SI_Game::new_game(Vga_file &shapes)
-{
+bool SI_Game::new_game(Vga_file &shapes) {
 	SDL_EnableUNICODE(1);
 
-	int menuy = topy+110;
+	int menuy = topy + 110;
 	Font *font = fontManager.get_font("MENU_FONT");
 
 	Vga_file faces_vga;
-	faces_vga.load(FACES_VGA, PATCH_FACES);	
+	faces_vga.load(FACES_VGA, PATCH_FACES);
 
 	const int max_len = 16;
-	char npc_name[max_len+1];
-	char disp_name[max_len+2];
+	char npc_name[max_len + 1];
+	char disp_name[max_len + 2];
 	npc_name[0] = 0;
 
 	int selected = 0;
@@ -1314,8 +1247,8 @@ bool SI_Game::new_game(Vga_file &shapes)
 	// Skin info
 	Avatar_default_skin *defskin = Shapeinfo_lookup::GetDefaultAvSkin();
 	Skin_data *skindata =
-		Shapeinfo_lookup::GetSkinInfoSafe(
-				defskin->default_skin, defskin->default_female, true);
+	    Shapeinfo_lookup::GetSkinInfoSafe(
+	        defskin->default_skin, defskin->default_female, true);
 #ifdef UNDER_CE
 	gkeyboard->autopaint = false;
 	gkeyboard->minimize();
@@ -1323,8 +1256,7 @@ bool SI_Game::new_game(Vga_file &shapes)
 #ifdef __IPHONEOS__
 	gkeybb->autopaint = false;
 #endif
-	do
-	{
+	do {
 		Delay();
 #ifdef HAVE_OPENGL
 		if (redraw || GL_manager::get_instance())
@@ -1334,19 +1266,19 @@ bool SI_Game::new_game(Vga_file &shapes)
 		{
 			gwin->clear_screen();
 			sman->paint_shape(topx, topy, shapes.get_shape(0x2, 0));
-			sman->paint_shape(topx+10, menuy+10, shapes.get_shape(0xC, selected == 0));
-			sman->paint_shape(topx+10, menuy+25, shapes.get_shape(0x19, selected == 1));
+			sman->paint_shape(topx + 10, menuy + 10, shapes.get_shape(0xC, selected == 0));
+			sman->paint_shape(topx + 10, menuy + 25, shapes.get_shape(0x19, selected == 1));
 
 			Shape_frame *portrait = faces_vga.get_shape(skindata->face_shape, skindata->face_frame);
-			sman->paint_shape(topx+300, menuy+50, portrait);
+			sman->paint_shape(topx + 300, menuy + 50, portrait);
 
-			sman->paint_shape(topx+10, topy+180, shapes.get_shape(0x8, selected == 2));
-			sman->paint_shape(centerx+10, topy+180, shapes.get_shape(0x7, selected == 3));
+			sman->paint_shape(topx + 10, topy + 180, shapes.get_shape(0x8, selected == 2));
+			sman->paint_shape(centerx + 10, topy + 180, shapes.get_shape(0x7, selected == 3));
 			if (selected == 0)
-				snprintf(disp_name, max_len+2, "%s_", npc_name);
+				snprintf(disp_name, max_len + 2, "%s_", npc_name);
 			else
-				snprintf(disp_name, max_len+2, "%s", npc_name);
-			font->draw_text(ibuf, topx+60, menuy+10, disp_name);
+				snprintf(disp_name, max_len + 2, "%s", npc_name);
+			font->draw_text(ibuf, topx + 60, menuy + 10, disp_name);
 #ifdef UNDER_CE
 			gkeyboard->paint();
 #endif
@@ -1356,8 +1288,7 @@ bool SI_Game::new_game(Vga_file &shapes)
 			gwin->get_win()->show();
 			redraw = false;
 		}
-		while (SDL_PollEvent(&event))
-		{
+		while (SDL_PollEvent(&event)) {
 #ifdef UNDER_CE
 			if (gkeyboard->handle_event(&event))
 				redraw = true;
@@ -1368,45 +1299,37 @@ bool SI_Game::new_game(Vga_file &shapes)
 #endif
 #ifdef SDL_VER_1_3
 			bool isTextInput = false;
-			if (event.type==SDL_TEXTINPUT)
-			{
+			if (event.type == SDL_TEXTINPUT) {
 				isTextInput = true;
 				event.type = SDL_KEYDOWN;
 				event.key.keysym.sym = NULL;
 				event.key.keysym.unicode = event.text.text[0];
 			}
 #endif
-			if(event.type==SDL_KEYDOWN)
-			{
+			if (event.type == SDL_KEYDOWN) {
 				redraw = true;
-				switch(event.key.keysym.sym)
-				{
+				switch (event.key.keysym.sym) {
 				case SDLK_SPACE:
-					if(selected==0)
-					{
+					if (selected == 0) {
 						int len = strlen(npc_name);
-						if(len<max_len)
-						{
+						if (len < max_len) {
 							npc_name[len] = ' ';
-							npc_name[len+1] = 0;
+							npc_name[len + 1] = 0;
 						}
-					}
-					else if(selected==1)
+					} else if (selected == 1)
 						skindata = Shapeinfo_lookup::GetNextSelSkin(skindata, true, true);
-					else if(selected==2)
-					{
+					else if (selected == 2) {
 						editing = false;
 						ok = true;
-					}
-					else if(selected==3)
+					} else if (selected == 3)
 						editing = ok = false;
 					break;
 				case SDLK_LEFT:
-					if(selected==1)
+					if (selected == 1)
 						skindata = Shapeinfo_lookup::GetPrevSelSkin(skindata, true, true);
 					break;
 				case SDLK_RIGHT:
-					if(selected==1)
+					if (selected == 1)
 						skindata = Shapeinfo_lookup::GetNextSelSkin(skindata, true, true);
 					break;
 				case SDLK_ESCAPE:
@@ -1416,63 +1339,55 @@ bool SI_Game::new_game(Vga_file &shapes)
 				case SDLK_TAB:
 				case SDLK_DOWN:
 					++selected;
-					if(selected==num_choices)
+					if (selected == num_choices)
 						selected = 0;
 					break;
 				case SDLK_UP:
 					--selected;
-					if(selected<0)
-						selected = num_choices-1;
+					if (selected < 0)
+						selected = num_choices - 1;
 					break;
 				case SDLK_RETURN:
 				case SDLK_KP_ENTER:
-					if(selected<2) 
+					if (selected < 2)
 						++selected;
-					else if(selected==2)
-					{
+					else if (selected == 2) {
 						editing = false;
 						ok = true;
-					}
-					else
+					} else
 						editing = ok = false;
 					break;
 #ifdef __IPHONEOS__
 				case SDLK_DELETE:
 #endif
 				case SDLK_BACKSPACE:
-					if(selected == 0 && strlen(npc_name) > 0)
-						npc_name[strlen(npc_name)-1] = 0;
+					if (selected == 0 && strlen(npc_name) > 0)
+						npc_name[strlen(npc_name) - 1] = 0;
 					break;
-				default:
-					{
-						if (selected == 0) // on the text input field?
-						{
-							int len = strlen(npc_name);
-							char chr = 0;
+				default: {
+					if (selected == 0) { // on the text input field?
+						int len = strlen(npc_name);
+						char chr = 0;
 
-							if ((event.key.keysym.unicode & 0xFF80) == 0)
-								chr = event.key.keysym.unicode & 0x7F;
+						if ((event.key.keysym.unicode & 0xFF80) == 0)
+							chr = event.key.keysym.unicode & 0x7F;
 
-							if (chr >= ' ' && len < max_len)
-							{
-								npc_name[len] = chr;
-								npc_name[len+1] = 0;
-							}
+						if (chr >= ' ' && len < max_len) {
+							npc_name[len] = chr;
+							npc_name[len + 1] = 0;
 						}
-						else
-							redraw = false;
-					}
-					break;
+					} else
+						redraw = false;
+				}
+				break;
 				}
 			}
 		}
-	}
-	while(editing);
+	} while (editing);
 
 	gwin->clear_screen();
 
-	if(ok)
-	{
+	if (ok) {
 #ifdef DEBUG
 		std::cout << "Skin is: " << skindata->skin_id << " Sex is: " << skindata->is_female << std::endl;
 #endif
@@ -1484,14 +1399,13 @@ bool SI_Game::new_game(Vga_file &shapes)
 		gkeybb->autopaint = true;
 #endif
 		set_avskin(skindata->skin_id);
-		set_avname (npc_name);
-		set_avsex (skindata->is_female);
+		set_avname(npc_name);
+		set_avsex(skindata->is_female);
 		pal->fade_out(c_fade_out_time);
-		gwin->clear_screen(true);	
+		gwin->clear_screen(true);
 		ok = gwin->init_gamedat(true);
-	}
-	else
-		sman->paint_shape(topx,topy,shapes.get_shape(0x2,0));
+	} else
+		sman->paint_shape(topx, topy, shapes.get_shape(0x2, 0));
 
 	SDL_EnableUNICODE(0);
 

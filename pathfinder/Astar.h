@@ -16,37 +16,37 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef	ASTAR_H
-#define	ASTAR_H
+#ifndef ASTAR_H
+#define ASTAR_H
 
 #include "PathFinder.h"
 #include <vector>
 
 
-class	Astar: public virtual PathFinder
-	{
-	std::vector<Tile_coord> path;		// Coords. to goal.
-	int pathlen;			// Length of path.
-	int dir;			// 1 or -1.
-	int stop;			// Index to stop at.
-	int next_index;			// Index of next tile to return.
+class   Astar: public virtual PathFinder {
+	std::vector<Tile_coord> path;       // Coords. to goal.
+	int pathlen;            // Length of path.
+	int dir;            // 1 or -1.
+	int stop;           // Index to stop at.
+	int next_index;         // Index of next tile to return.
 public:
-	Astar() : PathFinder(),path(), pathlen(0), dir(0),stop(0),next_index(0)
-		{  }
+	Astar() : PathFinder(), path(), pathlen(0), dir(0), stop(0), next_index(0)
+	{  }
 	// Find a path from sx,sy,sz to dx,dy,dz
 	// Return 0 if no path can be traced.
 	// Return !0 if path found
-	virtual	int	NewPath(Tile_coord const& s, Tile_coord const& d,
-						Pathfinder_client *client);
+	virtual int NewPath(Tile_coord const &s, Tile_coord const &d,
+	                    Pathfinder_client *client);
 
 	// Retrieve the coordinates of the next step on the path
-	virtual	int	GetNextStep(Tile_coord& n, bool& done);
+	virtual int GetNextStep(Tile_coord &n, bool &done);
 	// Set to retrieve in opposite order.
 	virtual int set_backwards();
-	virtual int following_smart_path()	// Astar?
-		{ return 1; }
-	virtual int get_num_steps();	// # of steps left to take.
+	virtual int following_smart_path() { // Astar?
+		return 1;
+	}
+	virtual int get_num_steps();    // # of steps left to take.
 	virtual ~Astar();
-	};
+};
 
 #endif

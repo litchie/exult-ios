@@ -1,7 +1,7 @@
 /**
- **	Ucmain.cc - Usecode Compiler
+ ** Ucmain.cc - Usecode Compiler
  **
- **	Written: 12/30/2000 - JSF
+ ** Written: 12/30/2000 - JSF
  **/
 
 /*
@@ -47,21 +47,19 @@ using std::strrchr;
 using std::strlen;
 using std::ios;
 
-					// THIS is what the parser produces.
-extern std::vector<Uc_design_unit *> units;	
+// THIS is what the parser produces.
+extern std::vector<Uc_design_unit *> units;
 
-std::vector<char *> include_dirs;	// -I directories.
+std::vector<char *> include_dirs;   // -I directories.
 
 /*
- *	MAIN.
+ *  MAIN.
  */
 
-int main
-	(
-	int argc,
-	char **argv
-	)
-	{
+int main(
+    int argc,
+    char **argv
+) {
 	extern int yyparse();
 	extern FILE *yyin;
 	const char *src;
@@ -71,45 +69,41 @@ int main
 	extern int optind, opterr/*, optopt*/;
 	extern char *optarg;
 	Uc_function::Intrinsic_type ty = Uc_function::unset;
-	opterr = 0;			// Don't let getopt() print errs.
+	opterr = 0;         // Don't let getopt() print errs.
 	int optchr;
 	while ((optchr = getopt(argc, argv, optstring)) != -1)
-		switch (optchr)
-			{
-		case 'o':		// Output to write.
+		switch (optchr) {
+		case 'o':       // Output to write.
 			outname = optarg;
 			break;
-		case 'I':		// Include dir.
+		case 'I':       // Include dir.
 			include_dirs.push_back(optarg);
 			break;
 		case 's':
 			ty = Uc_function::si;
 			break;
-			}
+		}
 	char *env = getenv("UCC_INCLUDE");
 	if (env)
 		include_dirs.push_back(env);
-	if (optind < argc)		// Filename?
-		{
+	if (optind < argc) {    // Filename?
 		src = argv[optind];
 		yyin = fopen(argv[optind], "r");
-		if (!outname)		// No -o option?
-			{		// Set up output name.
+		if (!outname) {     // No -o option?
+			// Set up output name.
 			outname = strncpy(outbuf, src, sizeof(outbuf) - 5);
 			outbuf[sizeof(outbuf) - 5] = 0;
 			char *dot = strrchr(outname, '.');
 			if (!dot)
 				dot = outname + strlen(outname);
 			strcpy(dot, ".uco");
-			}
 		}
-	else
-		{
+	} else {
 		src = "<stdin>";
 		yyin = stdin;
 		if (!outname)
 			outname = strcpy(outbuf, "a.ucout");
-		}
+	}
 	Uc_location::set_cur(src, 0);
 	Uc_function::set_intrinsic_type(ty);
 #if 0
@@ -122,45 +116,39 @@ int main
 	yyparse();
 	if (yyin != stdin) fclose(yyin);
 	int errs = Uc_location::get_num_errors();
-	if (errs > 0)			// Check for errors.
+	if (errs > 0)           // Check for errors.
 		return errs;
-					// Open output.
-	std::ofstream out(outname, ios::binary|ios::out);
-	Write4(out, UCSYMTBL_MAGIC0);	// Start with symbol table.
+	// Open output.
+	std::ofstream out(outname, ios::binary | ios::out);
+	Write4(out, UCSYMTBL_MAGIC0);   // Start with symbol table.
 	Write4(out, UCSYMTBL_MAGIC1);
 	std::vector<Uc_design_unit *>::iterator it;
 	Usecode_symbol_table *symtbl = new Usecode_symbol_table;
-	for (it = units.begin(); it != units.end(); ++it)
-		{
+	for (it = units.begin(); it != units.end(); ++it) {
 		symtbl->add_sym((*it)->create_sym());
-		}
+	}
 	symtbl->write(out);
 	delete symtbl;
-	for (it = units.begin(); it != units.end(); ++it)
-		{
-		(*it)->gen(out);	// Generate function.
-		}
+	for (it = units.begin(); it != units.end(); ++it) {
+		(*it)->gen(out);    // Generate function.
+	}
 	return Uc_location::get_num_errors();
-	}
+}
 
 /*
- *	Report error.
+ *  Report error.
  */
-void yyerror
-	(
-	const char *s
-	)
-	{
+void yyerror(
+    const char *s
+) {
 	Uc_location::yyerror(s);
-	}
+}
 
 /*
- *	Report warning.
+ *  Report warning.
  */
-void yywarning
-	(
-	const char *s
-	)
-	{
+void yywarning(
+    const char *s
+) {
 	Uc_location::yywarning(s);
-	}
+}

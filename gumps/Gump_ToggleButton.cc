@@ -24,27 +24,24 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gamewin.h"
 #include "Gump.h"
 
-bool Gump_ToggleButton::activate(int button)
-{
+bool Gump_ToggleButton::activate(int button) {
 	int delta;
 	if (button == 1)
 		delta = 2;
 	else if (button == 3)
-		delta = 2*numselections-2;
+		delta = 2 * numselections - 2;
 	else
 		return false;
 
-	set_frame((get_framenum() + delta)%(2*numselections));
-	toggle(get_framenum()/2);
+	set_frame((get_framenum() + delta) % (2 * numselections));
+	toggle(get_framenum() / 2);
 	paint();
 	gwin->set_painted();
 	return true;
 }
 
-bool Gump_ToggleButton::push(int button)
-{
-	if (button == 1 || button == 3)
-	{
+bool Gump_ToggleButton::push(int button) {
+	if (button == 1 || button == 3) {
 		set_pushed(button);
 		paint();
 		gwin->set_painted();
@@ -54,30 +51,26 @@ bool Gump_ToggleButton::push(int button)
 }
 
 
-void Gump_ToggleButton::unpush
-	(
-	int button
-	)
-{
-	if (button == 1 || button == 3)
-	{
+void Gump_ToggleButton::unpush(
+    int button
+) {
+	if (button == 1 || button == 3) {
 		set_pushed(false);
 		paint();
 		gwin->set_painted();
 	}
 }
 
-bool Gump_ToggleTextButton::activate(int button)
-{
+bool Gump_ToggleTextButton::activate(int button) {
 	int delta;
 	if (button == 1)
 		delta = 1;
 	else if (button == 3)
-		delta = numselections-1;
+		delta = numselections - 1;
 	else
 		return false;
 
-	set_frame((get_framenum() + delta)%numselections);
+	set_frame((get_framenum() + delta) % numselections);
 	text = selections[get_framenum()];
 	init();
 	toggle(get_framenum());
@@ -86,10 +79,8 @@ bool Gump_ToggleTextButton::activate(int button)
 	return true;
 }
 
-bool Gump_ToggleTextButton::push(int button)
-{
-	if (button == 1 || button == 3)
-	{
+bool Gump_ToggleTextButton::push(int button) {
+	if (button == 1 || button == 3) {
 		set_pushed(button);
 		paint();
 		gwin->set_painted();
@@ -99,13 +90,10 @@ bool Gump_ToggleTextButton::push(int button)
 }
 
 
-void Gump_ToggleTextButton::unpush
-	(
-	int button
-	)
-{
-	if (button == 1 || button == 3)
-	{
+void Gump_ToggleTextButton::unpush(
+    int button
+) {
+	if (button == 1 || button == 3) {
 		set_pushed(false);
 		paint();
 		gwin->set_painted();

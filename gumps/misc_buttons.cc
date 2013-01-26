@@ -32,22 +32,19 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Gump_manager.h"
 
 /*
- *	A checkmark for closing its parent:
+ *  A checkmark for closing its parent:
  */
 Checkmark_button::Checkmark_button(Gump *par, int px, int py)
-	: Gump_button(par, game->get_shape("gumps/check"), px, py)
-{
+	: Gump_button(par, game->get_shape("gumps/check"), px, py) {
 }
 
 /*
- *	Handle click on a 'checkmark'.
+ *  Handle click on a 'checkmark'.
  */
 
-bool Checkmark_button::activate
-	(
-	int button
-	)
-{
+bool Checkmark_button::activate(
+    int button
+) {
 	if (button != 1) return false;
 	Audio::get_ptr()->play_sound_effect(Audio::game_sfx(74));
 	parent->close();
@@ -55,46 +52,40 @@ bool Checkmark_button::activate
 }
 
 /*
- *	A 'heart' button for bringing up stats.
+ *  A 'heart' button for bringing up stats.
  */
 
 Heart_button::Heart_button(Gump *par, int px, int py)
-	: Gump_button(par, game->get_shape("gumps/heart"), px, py)
-{
+	: Gump_button(par, game->get_shape("gumps/heart"), px, py) {
 }
 
 /*
- *	Handle click on a heart.
+ *  Handle click on a heart.
  */
 
-bool Heart_button::activate
-	(
-	int button
-	)
-{
+bool Heart_button::activate(
+    int button
+) {
 	if (button != 1) return false;
 	gumpman->add_gump(parent->get_container(), game->get_shape("gumps/statsdisplay"));
 	return true;
 }
 
 /*
- *	A diskette for bringing up the 'save' box.
+ *  A diskette for bringing up the 'save' box.
  */
 
 Disk_button::Disk_button(Gump *par, int px, int py)
-	: Gump_button(par, game->get_shape("gumps/disk"), px, py)
-{
+	: Gump_button(par, game->get_shape("gumps/disk"), px, py) {
 }
 
 /*
- *	Handle click on a diskette.
+ *  Handle click on a diskette.
  */
 
-bool Disk_button::activate
-	(
-	int button
-	)
-{
+bool Disk_button::activate(
+    int button
+) {
 	if (button != 1) return false;
 	Gamemenu_gump *menu = new Gamemenu_gump();
 	gumpman->do_modal_gump(menu, Mouse::hand);
@@ -103,108 +94,96 @@ bool Disk_button::activate
 }
 
 /*
- *	The combat toggle button.
+ *  The combat toggle button.
  */
 
 Combat_button::Combat_button(Gump *par, int px, int py)
 	: Gump_button(par, game->get_shape("gumps/combat"),
-		px, py)
-{
-	set_pushed(gwin->in_combat()!=0);
+	              px, py) {
+	set_pushed(gwin->in_combat() != 0);
 }
 
 /*
- *	Handle click on a combat toggle button.
+ *  Handle click on a combat toggle button.
  */
 
-bool Combat_button::activate
-	(
-	int button
-	)
-{
+bool Combat_button::activate(
+    int button
+) {
 	if (button != 1) return false;
 	gwin->toggle_combat();
-	set_pushed(gwin->in_combat()!=0);
+	set_pushed(gwin->in_combat() != 0);
 	parent->paint();
 	return true;
 }
 
 /*
- *	Check combat mode before painting.
+ *  Check combat mode before painting.
  */
 
-void Combat_button::paint
-	(
-	)
-	{
-	set_pushed(gwin->in_combat()!=0);
+void Combat_button::paint(
+) {
+	set_pushed(gwin->in_combat() != 0);
 	Gump_button::paint();
-	}
+}
 
 /*
- *	The halo button.
+ *  The halo button.
  */
 
 Halo_button::Halo_button(Gump *par, int px, int py, Actor *a)
-	: Gump_button(par, game->get_shape("gumps/halo"), px, py), actor(a)
-{
+	: Gump_button(par, game->get_shape("gumps/halo"), px, py), actor(a) {
 	set_pushed(actor->is_combat_protected());
 }
 
 /*
- *	Handle click on a halo toggle button.
+ *  Handle click on a halo toggle button.
  */
 
-bool Halo_button::activate
-	(
-	int button
-	)
-{
+bool Halo_button::activate(
+    int button
+) {
 	if (button != 1) return false;
-					// Want to toggle it.
+	// Want to toggle it.
 	bool prot = !actor->is_combat_protected();
 	set_pushed(prot);
 	parent->paint();
 	actor->set_combat_protected(prot);
-	if (!prot)			// Toggled off?
+	if (!prot)          // Toggled off?
 		return true;
-					// On?  Got to turn off others.
-	Actor *party[9];		// Get entire party, including Avatar.
+	// On?  Got to turn off others.
+	Actor *party[9];        // Get entire party, including Avatar.
 	int cnt = gwin->get_party(party, 1);
-	for (int i = 0; i < cnt; i++)
-		{
+	for (int i = 0; i < cnt; i++) {
 		if (party[i] != actor && party[i]->is_combat_protected())
 			party[i]->set_combat_protected(false);
-					// +++++Should also update gumps.
-		}
+		// +++++Should also update gumps.
+	}
 	return true;
 }
 
 /*
- *	Combat mode.  Has 10 frames corresponding to Actor::Attack_mode.
+ *  Combat mode.  Has 10 frames corresponding to Actor::Attack_mode.
  */
 
 Combat_mode_button::Combat_mode_button(Gump *par, int px, int py, Actor *a)
-	: Gump_button(par, game->get_shape("gumps/combatmode"), px, py), 
-	  actor(a)
-{
+	: Gump_button(par, game->get_shape("gumps/combatmode"), px, py),
+	  actor(a) {
 	set_frame(static_cast<int>(actor->get_attack_mode()));
 }
 
 /*
- *	Handle click on a combat toggle button.
+ *  Handle click on a combat toggle button.
  */
 
-bool Combat_mode_button::activate
-	(
-	int button
-	)
-{
+bool Combat_mode_button::activate(
+    int button
+) {
 	if (button != 1) return false;
-					// Only Avatar gets last frame (manual)
+	// Only Avatar gets last frame (manual)
 	int nframes = actor == gwin->get_main_actor() ? 10 : 9;
-	set_frame((get_framenum() + 1)%nframes);
-					// Flag that player set the mode.
+	set_frame((get_framenum() + 1) % nframes);
+	// Flag that player set the mode.
 	actor->set_attack_mode(static_cast<Actor::Attack_mode>(get_framenum()), true);
 	paint();
 	gwin->set_painted();
@@ -213,7 +192,7 @@ bool Combat_mode_button::activate
 
 
 /*
- *	The Serpent Isle Combat Stats Button.
+ *  The Serpent Isle Combat Stats Button.
  */
 
 Cstats_button::Cstats_button(Gump *par, int px, int py)
@@ -223,14 +202,12 @@ Cstats_button::Cstats_button(Gump *par, int px, int py)
 }
 
 /*
- *	Handle click on a combat stats button
+ *  Handle click on a combat stats button
  */
 
-bool Cstats_button::activate
-	(
-	int button
-	)
-{
+bool Cstats_button::activate(
+    int button
+) {
 	if (button != 1) return false;
 	int cnt = partyman->get_count();
 	gumpman->add_gump(0, game->get_shape("gumps/cstats/1") + cnt);

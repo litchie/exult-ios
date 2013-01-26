@@ -1,5 +1,5 @@
 /*
- *	Paths.h - Various pathfinding clients.
+ *  Paths.h - Various pathfinding clients.
  *
  *  Copyright (C) 2000-2013  The Exult Team
  *
@@ -19,7 +19,7 @@
  */
 
 #ifndef PATHS_H
-#define PATHS_H	1
+#define PATHS_H 1
 
 #include "PathFinder.h"
 #include "tiles.h"
@@ -31,135 +31,133 @@ class Game_object;
 class Game_window;
 
 /*
- *	This class provides A* cost methods.
+ *  This class provides A* cost methods.
  */
-class Actor_pathfinder_client : public Pathfinder_client
-	{
-	int dist;			// Distance for success.
-	Actor *npc;			// Who this represents.
+class Actor_pathfinder_client : public Pathfinder_client {
+	int dist;           // Distance for success.
+	Actor *npc;         // Who this represents.
 	bool ignore_npcs;   // If NPCs are nonblocking.
-	int check_blocking(Tile_coord const& from, Tile_coord const& tile);
+	int check_blocking(Tile_coord const &from, Tile_coord const &tile);
 public:
 //	Actor_pathfinder_client(Actor *npc, int d = 0) : dist(d)
 //		{ set_move_flags(mf); }
 	Actor_pathfinder_client(Actor *npc, int d = 0, bool ign = false);
-					// Figure when to give up.
+	// Figure when to give up.
 	virtual int get_max_cost(int cost_to_goal);
-					// Figure cost for a single step.
-	virtual int get_step_cost(Tile_coord const& from, Tile_coord& to);
-					// Estimate cost between two points.
-	virtual int estimate_cost(Tile_coord const& from, Tile_coord const& to);
-					// Is tile at the goal?
-	virtual int at_goal(Tile_coord const& tile, Tile_coord const& goal);
-	bool ignores_npcs() const
-		{	return ignore_npcs;	}
-	};
+	// Figure cost for a single step.
+	virtual int get_step_cost(Tile_coord const &from, Tile_coord &to);
+	// Estimate cost between two points.
+	virtual int estimate_cost(Tile_coord const &from, Tile_coord const &to);
+	// Is tile at the goal?
+	virtual int at_goal(Tile_coord const &tile, Tile_coord const &goal);
+	bool ignores_npcs() const {
+		return ignore_npcs;
+	}
+};
 
 /*
- *	This client succeeds when the path makes it to just one X/Y coord.
- *	It assumes that a -1 was placed in the coord. that we should ignore.
+ *  This client succeeds when the path makes it to just one X/Y coord.
+ *  It assumes that a -1 was placed in the coord. that we should ignore.
  */
-class Onecoord_pathfinder_client : public Actor_pathfinder_client
-	{
+class Onecoord_pathfinder_client : public Actor_pathfinder_client {
 public:
 	Onecoord_pathfinder_client(Actor *n, bool ign = false) : Actor_pathfinder_client(n, 0, ign)
-		{  }
-					// Estimate cost between two points.
-	virtual int estimate_cost(Tile_coord const& from, Tile_coord const& to);
-					// Is tile at the goal?
-	virtual int at_goal(Tile_coord const& tile, Tile_coord const& goal);
-	};
+	{  }
+	// Estimate cost between two points.
+	virtual int estimate_cost(Tile_coord const &from, Tile_coord const &to);
+	// Is tile at the goal?
+	virtual int at_goal(Tile_coord const &tile, Tile_coord const &goal);
+};
 
 /*
- *	This client succeeds when the path makes it offscreen.
- *	Only the tz coord. of the dest. is used.
+ *  This client succeeds when the path makes it offscreen.
+ *  Only the tz coord. of the dest. is used.
  */
-class Offscreen_pathfinder_client : public Actor_pathfinder_client
-	{
-	Rectangle screen;		// Screen rect. in tiles.
-	Tile_coord best;		// Best offscreen pt. to aim for.
+class Offscreen_pathfinder_client : public Actor_pathfinder_client {
+	Rectangle screen;       // Screen rect. in tiles.
+	Tile_coord best;        // Best offscreen pt. to aim for.
 public:
 	Offscreen_pathfinder_client(Actor *n, bool ign = false);
-	Offscreen_pathfinder_client(Actor *n, Tile_coord const& b, bool ign = false);
-					// Figure cost for a single step.
-	virtual int get_step_cost(Tile_coord const& from, Tile_coord& to);
-					// Estimate cost between two points.
-	virtual int estimate_cost(Tile_coord const& from, Tile_coord const& to);
-					// Is tile at the goal?
-	virtual int at_goal(Tile_coord const& tile, Tile_coord const& goal);
-	};
+	Offscreen_pathfinder_client(Actor *n, Tile_coord const &b, bool ign = false);
+	// Figure cost for a single step.
+	virtual int get_step_cost(Tile_coord const &from, Tile_coord &to);
+	// Estimate cost between two points.
+	virtual int estimate_cost(Tile_coord const &from, Tile_coord const &to);
+	// Is tile at the goal?
+	virtual int at_goal(Tile_coord const &tile, Tile_coord const &goal);
+};
 
 /*
- *	This class provides A* cost methods for going to an object.
+ *  This class provides A* cost methods for going to an object.
  */
-class Approach_object_pathfinder_client : public Actor_pathfinder_client
-	{
-	Rectangle destbox;		// Got to intersect this box.
+class Approach_object_pathfinder_client : public Actor_pathfinder_client {
+	Rectangle destbox;      // Got to intersect this box.
 public:
-	Approach_object_pathfinder_client(Actor *from, Tile_coord const& dest,
+	Approach_object_pathfinder_client(Actor *from, Tile_coord const &dest,
 	                                  int dist);
 	Approach_object_pathfinder_client(Actor *from, Game_object *to, int dist);
-					// Is tile at the goal?
-	virtual int at_goal(Tile_coord const& tile, Tile_coord const& goal);
-	};
+	// Is tile at the goal?
+	virtual int at_goal(Tile_coord const &tile, Tile_coord const &goal);
+};
 
 /*
- *	This client is supposed to fail quickly, so that it can be used to
- *	test for when an object can be grabbed.
+ *  This client is supposed to fail quickly, so that it can be used to
+ *  test for when an object can be grabbed.
  */
-class Fast_pathfinder_client : public Pathfinder_client
-	{
-	Rectangle destbox;		// Got to intersect this box.
-	int axtiles, aytiles, aztiles;	// NPC's dims. in tiles.
+class Fast_pathfinder_client : public Pathfinder_client {
+	Rectangle destbox;      // Got to intersect this box.
+	int axtiles, aytiles, aztiles;  // NPC's dims. in tiles.
 	void init(Game_object *from, Game_object *to, int dist);
-	static int is_grabable_internal(Game_object *from, Tile_coord const& ct,
-	                                Tile_coord const& dt, Block const& tovol,
-	                                Fast_pathfinder_client& client);
+	static int is_grabable_internal(Game_object *from, Tile_coord const &ct,
+	                                Tile_coord const &dt, Block const &tovol,
+	                                Fast_pathfinder_client &client);
 public:
-	Fast_pathfinder_client(Game_object *from, Tile_coord const& dest, int dist, int mf = 1 << 5);
+	Fast_pathfinder_client(Game_object *from, Tile_coord const &dest, int dist, int mf = 1 << 5);
 	Fast_pathfinder_client(Game_object *from, Game_object *to, int dist, int mf = 1 << 5);
-	Fast_pathfinder_client(Actor *from, Tile_coord const& dest, int dist);
+	Fast_pathfinder_client(Actor *from, Tile_coord const &dest, int dist);
 	Fast_pathfinder_client(Actor *from, Game_object *to, int dist);
-					// Figure when to give up.
+	// Figure when to give up.
 	virtual int get_max_cost(int cost_to_goal);
-					// Figure cost for a single step.
-	virtual int get_step_cost(Tile_coord const& from, Tile_coord& to);
-					// Estimate cost between two points.
-	virtual int estimate_cost(Tile_coord const& from, Tile_coord const& to);
-					// Is tile at the goal?
-	virtual int at_goal(Tile_coord const& tile, Tile_coord const& goal);
-	int get_axtiles() const
-		{	return axtiles;	}
-	int get_aytiles() const
-		{	return aytiles;	}
-	int get_aztiles() const
-		{	return aztiles;	}
+	// Figure cost for a single step.
+	virtual int get_step_cost(Tile_coord const &from, Tile_coord &to);
+	// Estimate cost between two points.
+	virtual int estimate_cost(Tile_coord const &from, Tile_coord const &to);
+	// Is tile at the goal?
+	virtual int at_goal(Tile_coord const &tile, Tile_coord const &goal);
+	int get_axtiles() const {
+		return axtiles;
+	}
+	int get_aytiles() const {
+		return aytiles;
+	}
+	int get_aztiles() const {
+		return aztiles;
+	}
 	static int is_grabable(Game_object *from, Game_object *to, int mf = 1 << 5);
-	static int is_grabable(Game_object *from, Tile_coord const& to, int mf = 1 << 5);
+	static int is_grabable(Game_object *from, Tile_coord const &to, int mf = 1 << 5);
 	static int is_grabable(Actor *from, Game_object *to);
-	static int is_grabable(Actor *from, Tile_coord const& to);
-					// Check for unblocked straight path.
-	static int is_straight_path(Tile_coord const& from, Tile_coord const& to);
+	static int is_grabable(Actor *from, Tile_coord const &to);
+	// Check for unblocked straight path.
+	static int is_straight_path(Tile_coord const &from, Tile_coord const &to);
 	static int is_straight_path(Game_object *from, Game_object *to);
-	};
+};
 
 /*
- *	Pathfinding for monsters, who may be bigger than 1x1:
+ *  Pathfinding for monsters, who may be bigger than 1x1:
  */
-class Monster_pathfinder_client : public Fast_pathfinder_client
-	{
-	int intelligence;		// NPC's intelligence.
+class Monster_pathfinder_client : public Fast_pathfinder_client {
+	int intelligence;       // NPC's intelligence.
 public:
-	Monster_pathfinder_client(Actor *npc, Tile_coord const& dest, int dist);
-					// For combat:
+	Monster_pathfinder_client(Actor *npc, Tile_coord const &dest, int dist);
+	// For combat:
 	Monster_pathfinder_client(Actor *attacker, int reach,
-						Game_object *opponent);
-					// Figure when to give up.
+	                          Game_object *opponent);
+	// Figure when to give up.
 	virtual int get_max_cost(int cost_to_goal);
-					// Figure cost for a single step.
-	virtual int get_step_cost(Tile_coord const& from, Tile_coord& to);
-	};
+	// Figure cost for a single step.
+	virtual int get_step_cost(Tile_coord const &from, Tile_coord &to);
+};
 
 
-#endif	/* INCL_PATHS */
+#endif  /* INCL_PATHS */
 

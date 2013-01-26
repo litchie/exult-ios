@@ -26,8 +26,8 @@
 //#define FUDGE_SAMPLE_RATES
 #define USE_FMOPL_MIDI
 #ifndef UNDER_CE
- #define USE_MT32EMU_MIDI
- #define USE_TIMIDITY_MIDI
+#define USE_MT32EMU_MIDI
+#define USE_TIMIDITY_MIDI
 #endif
 
 #ifndef WIN32
@@ -60,8 +60,8 @@
 #define WIN32_LEAN_AND_MEAN
 
 // Disable some warnings
-#pragma warning (disable: 4786)	// Debug Len > 255
-#pragma warning (disable: 4355)	// 'this' : used in base member initializer list
+#pragma warning (disable: 4786) // Debug Len > 255
+#pragma warning (disable: 4355) // 'this' : used in base member initializer list
 
 #ifndef ENABLE_EXTRA_WARNINGS
 //#pragma warning (disable: 4101) // unreferenced local variable
@@ -90,35 +90,35 @@ namespace std {
 
 extern "C" {
 
-	#include <wchar.h>
-	#include <sys/types.h>
+#include <wchar.h>
+#include <sys/types.h>
 	//#include <sys/stat.h>
-	#include <errno.h>
-	#include <ctype.h>
-	#include <signal.h>
-	#include <cstdlib>
-	#include <cstring>
-	#include <ctime>
-	#include <cmath>
-	#include <cstdarg>
-	#include <malloc.h>
+#include <errno.h>
+#include <ctype.h>
+#include <signal.h>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
+#include <cmath>
+#include <cstdarg>
+#include <malloc.h>
 
 };
-	// Kludge to make Exult think that size_t has been put into the
-	// std namespace
-	typedef ::size_t size_t2;
-	#define size_t size_t2
+// Kludge to make Exult think that size_t has been put into the
+// std namespace
+typedef ::size_t size_t2;
+#define size_t size_t2
 
-	// These are declared/defined in <cstdio> and the need to be in 
-	// the std namespace
-	using ::FILE;
-	using ::fread;
-	using ::va_list;
-	using ::fopen;
-	using ::fclose;
-	using ::fwrite;
-	using ::remove;
-	using ::printf;
+// These are declared/defined in <cstdio> and the need to be in
+// the std namespace
+using ::FILE;
+using ::fread;
+using ::va_list;
+using ::fopen;
+using ::fclose;
+using ::fwrite;
+using ::remove;
+using ::printf;
 }
 
 // These get put in std when they otherwise should be, or are required by other headers
@@ -297,7 +297,7 @@ using std::getline;
 #include "../gumps/File_gump.h"
 #include "../gumps/Gamemenu_gump.h"
 #ifdef UNDER_CE
-  #include "../gumps/Keyboard_gump.h"
+#include "../gumps/Keyboard_gump.h"
 #endif
 #include "../gumps/Gump.h"
 #include "../gumps/Gump_button.h"

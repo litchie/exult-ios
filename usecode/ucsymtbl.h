@@ -1,5 +1,5 @@
 /*
- *	ucsymtbl.h - Usecode symbol table
+ *  ucsymtbl.h - Usecode symbol table
  *
  *  Copyright (C) 2006  The Exult Team
  *
@@ -26,53 +26,56 @@
 #include <vector>
 #include <map>
 
-#define UCSYMTBL_MAGIC0	0xffffffff
-#define UCSYMTBL_MAGIC1	((static_cast<long>('U')<<24)+(static_cast<long>('C')<<16)+(static_cast<long>('S')<<8)+'Y')
+#define UCSYMTBL_MAGIC0 0xffffffff
+#define UCSYMTBL_MAGIC1 ((static_cast<long>('U')<<24)+(static_cast<long>('C')<<16)+(static_cast<long>('S')<<8)+'Y')
 
 class Usecode_class_symbol;
 class Usecode_symbol_table;
 
 class Usecode_symbol {
 public:
-	enum Symbol_kind { 
-		fun_defined = 1, 
-		fun_externed,
-		fun_extern_defined,	// External, but fun. # was given.
-		class_scope,
-		table_scope,
-		shape_fun,
-		object_fun
+	enum Symbol_kind {
+	    fun_defined = 1,
+	    fun_externed,
+	    fun_extern_defined, // External, but fun. # was given.
+	    class_scope,
+	    table_scope,
+	    shape_fun,
+	    object_fun
 	};
 private:
 	friend class Usecode_symbol_table;
 	friend class Usecode_scope_symbol;
 	std::string name;
 	Symbol_kind kind;
-	int value;			// Function #.
-	int extra;			// Extra symbol info.
+	int value;          // Function #.
+	int extra;          // Extra symbol info.
 public:
 	Usecode_symbol(const char *nm, Symbol_kind k, int v, int e = -1)
 		: name(nm), kind(k), value(v), extra(e)
-		{  }
+	{  }
 	virtual ~Usecode_symbol()
-		{  }
-	const char *get_name() const
-		{ return name.c_str(); }
-	Symbol_kind get_kind() const
-		{ return kind; }
-	int get_val() const
-		{ return value; }
-	int get_extra() const
-		{ return extra; }
+	{  }
+	const char *get_name() const {
+		return name.c_str();
+	}
+	Symbol_kind get_kind() const {
+		return kind;
+	}
+	int get_val() const {
+		return value;
+	}
+	int get_extra() const {
+		return extra;
+	}
 };
 
-class Usecode_scope_symbol : public Usecode_symbol
-	{
+class Usecode_scope_symbol : public Usecode_symbol {
 public:
 	typedef std::vector<Usecode_symbol *> Syms_vector;
 private:
-	Syms_vector symbols;		// All symbols.
-	std::vector<Usecode_class_symbol*> classes;	// Just the classes.
+	Syms_vector symbols;        // All symbols.
+	std::vector<Usecode_class_symbol *> classes; // Just the classes.
 	typedef std::map<std::string, Usecode_symbol *> Name_table;
 	typedef std::map<int, Usecode_symbol *> Val_table;
 	typedef std::map<std::string, Usecode_class_symbol *> Class_name_table;
@@ -85,50 +88,54 @@ private:
 	void setup_by_val(int start = 0);
 	void setup_class_names(int start = 0);
 public:
-	Usecode_scope_symbol(const char *nm = "_usecode_", 
-			Symbol_kind k = table_scope, int v = -1)
+	Usecode_scope_symbol(const char *nm = "_usecode_",
+	                     Symbol_kind k = table_scope, int v = -1)
 		: Usecode_symbol(nm, k, v)
-		{  }
+	{  }
 	virtual ~Usecode_scope_symbol();
-	void read(std::istream& in);
-	void write(std::ostream& out);
+	void read(std::istream &in);
+	void write(std::ostream &out);
 	void add_sym(Usecode_symbol *sym);
 	Usecode_symbol *operator[](const char *nm);
 	Usecode_symbol *operator[](int val);
-	Usecode_class_symbol *get_class(int n)
-		{ return static_cast<unsigned>(n) < classes.size() ? classes[n] : 0; }
+	Usecode_class_symbol *get_class(int n) {
+		return static_cast<unsigned>(n) < classes.size() ? classes[n] : 0;
+	}
 	Usecode_class_symbol *get_class(const char *nm);
 	int get_high_shape_fun(int val);
 	bool is_object_fun(int val);
-	const Syms_vector& get_symbols()
-		{ return symbols; }
-	};
+	const Syms_vector &get_symbols() {
+		return symbols;
+	}
+};
 
-class Usecode_class_symbol : public Usecode_scope_symbol
-	{
+class Usecode_class_symbol : public Usecode_scope_symbol {
 	typedef std::vector<int> Ints_vector;
-	Ints_vector methods;		// List of method usecode #'s.
-	int num_vars;			// # of class variables.
+	Ints_vector methods;        // List of method usecode #'s.
+	int num_vars;           // # of class variables.
 public:
 	Usecode_class_symbol(const char *nm, Symbol_kind k,
-						int v, int nvars = 0)
+	                     int v, int nvars = 0)
 		: Usecode_scope_symbol(nm, k, v), num_vars(nvars)
-		{  }
+	{  }
 	virtual ~Usecode_class_symbol() {  }
-	void add_method_num(int val)
-		{ methods.push_back(val); }
-	int get_method_id(int i)
-		{ return (i >= 0 && static_cast<unsigned>(i) < methods.size()) ? methods[i] : -1; }
-	int get_num_vars()
-		{ return num_vars; }
-	void read(std::istream& in);
-	void write(std::ostream& out);
-	};
+	void add_method_num(int val) {
+		methods.push_back(val);
+	}
+	int get_method_id(int i) {
+		return (i >= 0 && static_cast<unsigned>(i) < methods.size()) ? methods[i] : -1;
+	}
+	int get_num_vars() {
+		return num_vars;
+	}
+	void read(std::istream &in);
+	void write(std::ostream &out);
+};
 
 /*
- *	This class represents a symbol table read in from a Usecode file.  This
- *	is an Exult construct; ie, U7's 'usecode' file doesn't have a symbol-
- *	table.
+ *  This class represents a symbol table read in from a Usecode file.  This
+ *  is an Exult construct; ie, U7's 'usecode' file doesn't have a symbol-
+ *  table.
  */
 class Usecode_symbol_table : public Usecode_scope_symbol {
 public:

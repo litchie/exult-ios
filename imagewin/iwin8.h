@@ -1,7 +1,7 @@
 /**
- **	Iwin8.h - 8-bit image window.
+ ** Iwin8.h - 8-bit image window.
  **
- **	Written: 8/13/98 - JSF
+ ** Written: 8/13/98 - JSF
  **/
 
 /*
@@ -24,7 +24,7 @@ Boston, MA  02111-1307, USA.
 */
 
 #ifndef INCL_IWIN8
-#define INCL_IWIN8	1
+#define INCL_IWIN8  1
 
 #include "imagewin.h"
 #include "ibuf8.h"
@@ -33,85 +33,96 @@ template <class T> class GammaTable;
 
 
 /*
- *	Here's an 8-bit color-depth window (faster than the generic).
+ *  Here's an 8-bit color-depth window (faster than the generic).
  */
-class Image_window8 : public Image_window
-	{
-	unsigned char colors[768];	// Palette.
-	Image_buffer8 *ib8;		// Cast to 8-bit buffer.
+class Image_window8 : public Image_window {
+	unsigned char colors[768];  // Palette.
+	Image_buffer8 *ib8;     // Cast to 8-bit buffer.
 
-	static GammaTable<unsigned char>	GammaRed;
-	static GammaTable<unsigned char>	GammaGreen;
-	static GammaTable<unsigned char>	GammaBlue;
+	static GammaTable<unsigned char>    GammaRed;
+	static GammaTable<unsigned char>    GammaGreen;
+	static GammaTable<unsigned char>    GammaBlue;
 public:
-	Image_window8(unsigned int w, unsigned int h, unsigned int gw, unsigned int gh, int scl = 1, 
-		bool fs = false, int sclr = point, Image_window::FillMode fillmode=CentreAspectCorrect, unsigned int fillsclr=point);
+	Image_window8(unsigned int w, unsigned int h, unsigned int gw, unsigned int gh, int scl = 1,
+	              bool fs = false, int sclr = point, Image_window::FillMode fillmode = CentreAspectCorrect, unsigned int fillsclr = point);
 	~Image_window8();
 
-	Image_buffer8 *get_ib8() const
-		{ return ib8; }
-					// Set palette.
-	virtual void set_palette(unsigned char *rgbs, int maxval, 
-						int brightness = 100);
-					// Get palette.
-	virtual const unsigned char *get_palette() const
-		{ return colors; }
-					// Rotate palette colors.
+	Image_buffer8 *get_ib8() const {
+		return ib8;
+	}
+	// Set palette.
+	virtual void set_palette(unsigned char *rgbs, int maxval,
+	                         int brightness = 100);
+	// Get palette.
+	virtual const unsigned char *get_palette() const {
+		return colors;
+	}
+	// Rotate palette colors.
 	virtual void rotate_colors(int first, int num, int upd);
 	/*
-	 *	8-bit color methods:
+	 *  8-bit color methods:
 	 */
-					// Fill with given (8-bit) value.
-	void fill8(unsigned char val)
-		{ IF_OPENGL(opengl_fill8(val),
-		  ib8->Image_buffer8::fill8(val)); }
-					// Fill rect. wth pixel.
+	// Fill with given (8-bit) value.
+	void fill8(unsigned char val) {
+		IF_OPENGL(opengl_fill8(val),
+		          ib8->Image_buffer8::fill8(val));
+	}
+	// Fill rect. wth pixel.
 	void fill8(unsigned char val, int srcw, int srch,
-						int destx, int desty)
-		{ IF_OPENGL(opengl_fill8(val, srcw, srch, destx, desty),
-		  ib8->Image_buffer8::fill8(val, srcw, srch, destx, desty)); }
-					// Fill line with pixel.
+	           int destx, int desty) {
+		IF_OPENGL(opengl_fill8(val, srcw, srch, destx, desty),
+		          ib8->Image_buffer8::fill8(val, srcw, srch, destx, desty));
+	}
+	// Fill line with pixel.
 	void fill_line8(unsigned char val, int srcw,
-						int destx, int desty)
-		{ ib8->Image_buffer8::fill_line8(val, srcw, destx, desty); }
-					// Copy rectangle into here.
+	                int destx, int desty) {
+		ib8->Image_buffer8::fill_line8(val, srcw, destx, desty);
+	}
+	// Copy rectangle into here.
 	void copy8(unsigned char *src_pixels,
-				int srcw, int srch, int destx, int desty)
-		{ ib8->Image_buffer8::copy8(src_pixels, srcw, srch, 
-							destx, desty); }
-					// Copy line to here.
+	           int srcw, int srch, int destx, int desty) {
+		ib8->Image_buffer8::copy8(src_pixels, srcw, srch,
+		                          destx, desty);
+	}
+	// Copy line to here.
 	void copy_line8(unsigned char *src_pixels, int srcw,
-						int destx, int desty)
-		{ ib8->Image_buffer8::copy_line8(src_pixels, srcw, 
-							destx, desty); }
-					// Copy with translucency table.
+	                int destx, int desty) {
+		ib8->Image_buffer8::copy_line8(src_pixels, srcw,
+		                               destx, desty);
+	}
+	// Copy with translucency table.
 	void copy_line_translucent8(
-		unsigned char *src_pixels, int srcw,
-		int destx, int desty, int first_translucent,
-		int last_translucent, Xform_palette *xforms)
-		{ ib8->Image_buffer8::copy_line_translucent8(src_pixels, srcw,
-			destx, desty,
-				first_translucent, last_translucent, xforms); }
-					// Apply translucency to a line.
+	    unsigned char *src_pixels, int srcw,
+	    int destx, int desty, int first_translucent,
+	    int last_translucent, Xform_palette *xforms) {
+		ib8->Image_buffer8::copy_line_translucent8(src_pixels, srcw,
+		        destx, desty,
+		        first_translucent, last_translucent, xforms);
+	}
+	// Apply translucency to a line.
 	void fill_line_translucent8(unsigned char val,
-			int srcw, int destx, int desty, Xform_palette& xform)
-		{ ib8->Image_buffer8::fill_line_translucent8(val, 
-					srcw, destx, desty, xform); }
-					// Copy rect. with transp. color.
+	                            int srcw, int destx, int desty, Xform_palette &xform) {
+		ib8->Image_buffer8::fill_line_translucent8(val,
+		        srcw, destx, desty, xform);
+	}
+	// Copy rect. with transp. color.
 	void copy_transparent8(unsigned char *src_pixels, int srcw,
-					int srch, int destx, int desty)
-		{ ib8->Image_buffer8::copy_transparent8(src_pixels, srcw, srch,
-							destx, desty); }
-					// Get/put a single pixel.
-	unsigned char get_pixel8(int x, int y)
-		{ return ib8->Image_buffer8::get_pixel8(x, y); }
-	void put_pixel8(unsigned char pix, int x, int y)
-		{ ib8->Image_buffer8::put_pixel8(pix, x, y); }
+	                       int srch, int destx, int desty) {
+		ib8->Image_buffer8::copy_transparent8(src_pixels, srcw, srch,
+		                                      destx, desty);
+	}
+	// Get/put a single pixel.
+	unsigned char get_pixel8(int x, int y) {
+		return ib8->Image_buffer8::get_pixel8(x, y);
+	}
+	void put_pixel8(unsigned char pix, int x, int y) {
+		ib8->Image_buffer8::put_pixel8(pix, x, y);
+	}
 
-	static void get_gamma (float &r, float &g, float &b);
-	static void set_gamma (float r, float g, float b);
+	static void get_gamma(float &r, float &g, float &b);
+	static void set_gamma(float r, float g, float b);
 
-	unsigned char* mini_screenshot();
-	};
+	unsigned char *mini_screenshot();
+};
 
 #endif

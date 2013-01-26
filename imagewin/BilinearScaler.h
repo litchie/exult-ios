@@ -24,17 +24,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 namespace Pentagram {
 
-class BilinearScaler : public ArbScaler
-{
+class BilinearScaler : public ArbScaler {
 public:
 	BilinearScaler();
 
-	virtual       uint32	ScaleBits() const;			//< bits for supported integer scaling
-	virtual       bool		ScaleArbitrary() const;		//< supports arbitrary scaling of any degree 
+	virtual       uint32    ScaleBits() const;          //< bits for supported integer scaling
+	virtual       bool      ScaleArbitrary() const;     //< supports arbitrary scaling of any degree
 
-	virtual const char *	ScalerName() const;			//< Name Of the Scaler (1 word)
-	virtual const char *	ScalerDesc() const;			//< Desciption of the Scaler
-	virtual const char *	ScalerCopyright() const;	//< Scaler Copyright info
+	virtual const char     *ScalerName() const;         //< Name Of the Scaler (1 word)
+	virtual const char     *ScalerDesc() const;         //< Desciption of the Scaler
+	virtual const char     *ScalerCopyright() const;    //< Scaler Copyright info
 };
 
 }

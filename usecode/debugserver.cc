@@ -1,5 +1,5 @@
 /*
- * 	debugserver.cc: handle usecode debugging messages from client
+ *  debugserver.cc: handle usecode debugging messages from client
  *
  *  Copyright (C) 2002  The Exult Team
  *
@@ -40,9 +40,8 @@
 #include "useval.h"
 #include "ucfunction.h"
 
-// message handler that only handles debugging messages. 
-void Handle_client_debug_message(int& fd)
-{
+// message handler that only handles debugging messages.
+void Handle_client_debug_message(int &fd) {
 	unsigned char data[Exult_server::maxlength];
 	Exult_server::Msg_type id;
 	int datalen = Exult_server::Receive_data(fd, id, data, sizeof(data));
@@ -59,11 +58,10 @@ void Handle_client_debug_message(int& fd)
 
 }
 
-void Handle_debug_message(unsigned char* data, int datalen)
-{
+void Handle_debug_message(unsigned char *data, int datalen) {
 	Usecode_machine *ucm = Game_window::get_instance()->get_usecode();
-	Usecode_internal *uci = dynamic_cast<Usecode_internal*>(ucm);
-	
+	Usecode_internal *uci = dynamic_cast<Usecode_internal *>(ucm);
+
 	if (uci == 0)
 		return; // huh?
 
@@ -74,7 +72,7 @@ void Handle_debug_message(unsigned char* data, int datalen)
 	if (uci->is_on_breakpoint()) {
 		// accept extra messages now
 
-		switch(id) {
+		switch (id) {
 		case Exult_server::dbg_continue:
 			uci->set_breakpoint_action(0);
 			break;
@@ -90,42 +88,40 @@ void Handle_debug_message(unsigned char* data, int datalen)
 			uci->set_breakpoint_action(0);
 			uci->dbg_finish();
 			break;
-		case Exult_server::dbg_get_callstack:
-		{
+		case Exult_server::dbg_get_callstack: {
 			unsigned char d[3];
 			d[0] = (unsigned char)Exult_server::dbg_callstack;
-			unsigned char* ptr = &d[1];
+			unsigned char *ptr = &d[1];
 			int callstacksize = uci->get_callstack_size();
 			Write2(ptr, callstacksize);
 			Exult_server::Send_data(client_socket,
-									Exult_server::usecode_debugging,
-									d, 3);
-			for (int i=0; i < callstacksize; i++) {
+			                        Exult_server::usecode_debugging,
+			                        d, 3);
+			for (int i = 0; i < callstacksize; i++) {
 				Stack_frame *frame = uci->get_stackframe(i);
 				Stack_frame_out(client_socket,
-								frame->function->id,
-								(int)(frame->ip - frame->code),
-								frame->call_chain,
-								frame->call_depth,
-								frame->eventid,
-								(long)frame->caller_item,
-								frame->num_args,
-								frame->num_vars,
-								frame->locals);
+				                frame->function->id,
+				                (int)(frame->ip - frame->code),
+				                frame->call_chain,
+				                frame->call_depth,
+				                frame->eventid,
+				                (long)frame->caller_item,
+				                frame->num_args,
+				                frame->num_vars,
+				                frame->locals);
 			}
 			break;
 		}
-		case Exult_server::dbg_get_stack:
-		{
+		case Exult_server::dbg_get_stack: {
 			Usecode_value zeroval((int)0);
 			unsigned char data[Exult_server::maxlength];
-			unsigned char* ptr = &data[0];
+			unsigned char *ptr = &data[0];
 			*ptr++ = (unsigned char)Exult_server::dbg_stack;
 			int stacksize = uci->get_stack_size();
 			Write2(ptr, stacksize);
 			int remaining = Exult_server::maxlength - 3;
-			for (int i=0; i < stacksize; i++) {
-				Usecode_value* val = uci->peek_stack(i);
+			for (int i = 0; i < stacksize; i++) {
+				Usecode_value *val = uci->peek_stack(i);
 				int vallen = -1;
 				if (val) {
 					vallen = val->save(ptr, remaining);
@@ -134,7 +130,7 @@ void Handle_debug_message(unsigned char* data, int datalen)
 					if (remaining >= 5)
 						vallen = zeroval.save(ptr, remaining);
 					std::cerr << "Error: stack larger than max. message!"
-							  << std::endl;
+					          << std::endl;
 				}
 				if (vallen != -1) {
 					remaining -= vallen;
@@ -142,8 +138,8 @@ void Handle_debug_message(unsigned char* data, int datalen)
 				}
 			}
 			Exult_server::Send_data(client_socket,
-									Exult_server::usecode_debugging,
-									data, Exult_server::maxlength - remaining);
+			                        Exult_server::usecode_debugging,
+			                        data, Exult_server::maxlength - remaining);
 			break;
 		}
 		default:
@@ -152,12 +148,11 @@ void Handle_debug_message(unsigned char* data, int datalen)
 	}
 
 	// these messages can always be handled
-	switch(id) {
+	switch (id) {
 	case Exult_server::dbg_break:
 		uci->set_breakpoint();
 		break;
-	case Exult_server::dbg_get_status:
-	{
+	case Exult_server::dbg_get_status: {
 		unsigned char c;
 		if (uci->is_on_breakpoint()) {
 			c = (unsigned char)Exult_server::dbg_on_breakpoint;
@@ -165,19 +160,18 @@ void Handle_debug_message(unsigned char* data, int datalen)
 			c = (unsigned char)Exult_server::dbg_continuing;
 		}
 		Exult_server::Send_data(client_socket,
-								Exult_server::usecode_debugging,
-								&c, 1);
+		                        Exult_server::usecode_debugging,
+		                        &c, 1);
 		break;
 	}
-	case Exult_server::dbg_set_location_bp:
-	{
+	case Exult_server::dbg_set_location_bp: {
 		ptr++;
 		int funcid = Read4(ptr);
 		int ip = Read4(ptr);
 
 		std::cout << "Setting breakpoint at " << std::hex << std::setfill('0')
-				  << std::setw(4) << funcid << ", " << std::setw(4) << ip 
-				  << std::setfill(' ') << std::dec << std::endl;
+		          << std::setw(4) << funcid << ", " << std::setw(4) << ip
+		          << std::setfill(' ') << std::dec << std::endl;
 
 		// +++++ check for duplicates?
 
@@ -189,25 +183,23 @@ void Handle_debug_message(unsigned char* data, int datalen)
 		Write4(dptr, ip);
 		Write4(dptr, breakpoint_id);
 		Exult_server::Send_data(client_socket,
-								Exult_server::usecode_debugging,
-								d, 13);
+		                        Exult_server::usecode_debugging,
+		                        d, 13);
 		break;
 	}
-	case Exult_server::dbg_clear_breakpoint:
-	{
+	case Exult_server::dbg_clear_breakpoint: {
 		ptr++;
 		int breakpoint_id = Read4(ptr);
 		bool ok = uci->clear_breakpoint(breakpoint_id);
 		if (ok) {
 			// reply
 			Exult_server::Send_data(client_socket,
-									Exult_server::usecode_debugging,
-									data, 5);
+			                        Exult_server::usecode_debugging,
+			                        data, 5);
 		}
 		break;
 	}
-	case Exult_server::dbg_get_breakpoints:
-	{
+	case Exult_server::dbg_get_breakpoints: {
 		uci->transmit_breakpoints(client_socket);
 		break;
 	}

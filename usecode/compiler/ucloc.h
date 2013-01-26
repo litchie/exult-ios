@@ -1,7 +1,7 @@
 /**
- **	Ucloc.h - Source location.
+ ** Ucloc.h - Source location.
  **
- **	Written: 1/0/01 - JSF
+ ** Written: 1/0/01 - JSF
  **/
 
 /*
@@ -23,38 +23,41 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 #ifndef INCL_UCLOC
-#define INCL_UCLOC	1
+#define INCL_UCLOC  1
 
 #include <vector>
 
 /*
- *	Location in source code.
+ *  Location in source code.
  */
-class Uc_location
-	{
+class Uc_location {
 	static std::vector<char *> source_names;// All filenames.
-	static char *cur_source;	// Source filename.
-	static int cur_line;		// Line #.
-	static int num_errors;		// Total #.
+	static char *cur_source;    // Source filename.
+	static int cur_line;        // Line #.
+	static int num_errors;      // Total #.
 	char *source;
 	int line;
 public:
-	Uc_location()			// Use current location.
+	Uc_location()           // Use current location.
 		: source(cur_source), line(cur_line)
-		{  }
+	{  }
 	static void set_cur(const char *s, int l);
-	static void increment_cur_line()
-		{ cur_line++; }
-	int get_line() const
-		{ return line; }
-	const char *get_source()
-		{ return source; }
-	void error(const char *s);		// Print error.
-	void warning(const char *s);		// Print warning.
-	static void yyerror(const char *s);	// Print error at cur. location.
+	static void increment_cur_line() {
+		cur_line++;
+	}
+	int get_line() const {
+		return line;
+	}
+	const char *get_source() {
+		return source;
+	}
+	void error(const char *s);      // Print error.
+	void warning(const char *s);        // Print warning.
+	static void yyerror(const char *s); // Print error at cur. location.
 	static void yywarning(const char *s);
-	static int get_num_errors()
-		{ return num_errors; }
-	};
+	static int get_num_errors() {
+		return num_errors;
+	}
+};
 
 #endif

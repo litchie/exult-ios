@@ -1,5 +1,5 @@
 /*
- *	ucmachine.cc - Interpreter for usecode.
+ *  ucmachine.cc - Interpreter for usecode.
  *
  *  Copyright (C) 1999  Jeffrey S. Freedman
  *  Copyright (C) 2000-2013  The Exult Team
@@ -29,35 +29,29 @@
 #include "conversation.h"
 
 
-Usecode_machine::Usecode_machine
-	(
-	) : keyring(0), conv(0)
-	{
-					// Clear global flags.
+Usecode_machine::Usecode_machine(
+) : keyring(0), conv(0) {
+	// Clear global flags.
 	std::memset(gflags, 0, sizeof(gflags));
 	conv = new Conversation;
 	keyring = new Keyring;
-	}
+}
 
 /*
- *	Delete.
+ *  Delete.
  */
 
-Usecode_machine::~Usecode_machine
-	(
-	)
-	{
+Usecode_machine::~Usecode_machine(
+) {
 	delete conv;
 	delete keyring;
-	}
+}
 
-void Usecode_machine::init_conversation()
-{
+void Usecode_machine::init_conversation() {
 	conv->init_faces();
 }
 
-int Usecode_machine::get_num_faces_on_screen() const
-{
-	 return conv->get_num_faces_on_screen();
+int Usecode_machine::get_num_faces_on_screen() const {
+	return conv->get_num_faces_on_screen();
 }
 

@@ -33,15 +33,19 @@ extern int errno;
  *  Base class of all our exceptions, providing a storage for the error message
  */
 
-class	exult_exception : public std::exception {
+class   exult_exception : public std::exception {
 	std::string  what_;
 	int errno_;
 public:
-	exult_exception (const char *what_arg): what_ (what_arg), errno_(errno) {  }	
-	exult_exception (const std::string& what_arg): what_ (what_arg), errno_(errno) {  }
-	const char *what() const throw () { return what_.c_str(); }
-	int get_errno(void) const { return errno_; }
-	virtual ~exult_exception () throw() {}
+	exult_exception(const char *what_arg): what_(what_arg), errno_(errno) {  }
+	exult_exception(const std::string &what_arg): what_(what_arg), errno_(errno) {  }
+	const char *what() const throw() {
+		return what_.c_str();
+	}
+	int get_errno(void) const {
+		return errno_;
+	}
+	virtual ~exult_exception() throw() {}
 };
 
 
@@ -49,31 +53,31 @@ public:
  *  A quit exception can be thrown to quit the program
  */
 
-class quit_exception : public exult_exception
-{
+class quit_exception : public exult_exception {
 	int result_;
 public:
-	quit_exception (int result = 0): exult_exception ("Quit"), result_(result) {  }
-	int get_result(void) const { return result_; }
+	quit_exception(int result = 0): exult_exception("Quit"), result_(result) {  }
+	int get_result(void) const {
+		return result_;
+	}
 };
 
 /*
  *  Classes which should not be replicatable throw an replication_exception
  */
 
-class replication_exception : public exult_exception
-{
+class replication_exception : public exult_exception {
 public:
-	replication_exception (const char *what_arg): exult_exception (what_arg) {  }	
-	replication_exception (const std::string& what_arg): exult_exception (what_arg) {  }
+	replication_exception(const char *what_arg): exult_exception(what_arg) {  }
+	replication_exception(const std::string &what_arg): exult_exception(what_arg) {  }
 };
 
 // Some handy macros which you can use to make a class non-replicable
-#define	UNREPLICATABLE_CLASS(NAME)	NAME(const NAME &) { throw replication_exception( #NAME " cannot be replicated"); }; \
-					NAME &operator=(const NAME &) { throw replication_exception( #NAME " cannot be replicated"); return *this; }
+#define UNREPLICATABLE_CLASS(NAME)  NAME(const NAME &) { throw replication_exception( #NAME " cannot be replicated"); }; \
+	NAME &operator=(const NAME &) { throw replication_exception( #NAME " cannot be replicated"); return *this; }
 
-#define	UNREPLICATABLE_CLASS_I(NAME,INIT)	NAME(const NAME &) : INIT { throw replication_exception( #NAME " cannot be replicated"); }; \
-					NAME &operator=(const NAME &) { throw replication_exception( #NAME " cannot be replicated"); return *this; }
+#define UNREPLICATABLE_CLASS_I(NAME,INIT)   NAME(const NAME &) : INIT { throw replication_exception( #NAME " cannot be replicated"); }; \
+	NAME &operator=(const NAME &) { throw replication_exception( #NAME " cannot be replicated"); return *this; }
 
 
 
@@ -81,42 +85,40 @@ public:
  *  File errors
  */
 
-class file_exception : public exult_exception
-{
+class file_exception : public exult_exception {
 public:
-	file_exception (const char *what_arg): exult_exception (what_arg) {  }	
-	file_exception (const std::string& what_arg): exult_exception (what_arg) {  }
+	file_exception(const char *what_arg): exult_exception(what_arg) {  }
+	file_exception(const std::string &what_arg): exult_exception(what_arg) {  }
 };
 
-class	file_open_exception : public file_exception {
+class   file_open_exception : public file_exception {
 	static const std::string  prefix_;
 public:
-	file_open_exception (const std::string& file): file_exception("Error opening file "+file) {  }
+	file_open_exception(const std::string &file): file_exception("Error opening file " + file) {  }
 };
 
-class	file_write_exception : public file_exception {
+class   file_write_exception : public file_exception {
 	static const std::string  prefix_;
 public:
-	file_write_exception(const std::string& file): file_exception("Error writing to file "+file) {  }
+	file_write_exception(const std::string &file): file_exception("Error writing to file " + file) {  }
 };
 
-class	file_read_exception : public file_exception {
+class   file_read_exception : public file_exception {
 	static const std::string  prefix_;
 public:
-	file_read_exception(const std::string& file): file_exception("Error reading from file "+file) {  }
+	file_read_exception(const std::string &file): file_exception("Error reading from file " + file) {  }
 };
 
-class	wrong_file_type_exception : public file_exception {
+class   wrong_file_type_exception : public file_exception {
 public:
-	wrong_file_type_exception (const std::string& file, const std::string& type): file_exception("File "+file+" is not of type "+type) {  }
+	wrong_file_type_exception(const std::string &file, const std::string &type): file_exception("File " + file + " is not of type " + type) {  }
 };
 
 
 /*
  *  Exception that gets fired when the user aborts something
  */
-class UserBreakException
-{
+class UserBreakException {
 };
 
 #endif

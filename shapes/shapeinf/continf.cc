@@ -1,7 +1,7 @@
 /**
- **	continf.cc - Container rule information from 'shape_info.txt'.
+ ** continf.cc - Container rule information from 'shape_info.txt'.
  **
- **	Written: 06/01/2008 - Marzo
+ ** Written: 06/01/2008 - Marzo
  **/
 
 /*
@@ -27,16 +27,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "continf.h"
 using std::istream;
 
-bool Content_rules::read
-	(
-	std::istream& in,	// Input stream.
-	int version,		// Data file version.
-	Exult_Game game		// Loading BG file.
-	)
-	{
+bool Content_rules::read(
+    std::istream &in,   // Input stream.
+    int version,        // Data file version.
+    Exult_Game game     // Loading BG file.
+) {
 	shape = ReadInt(in);
 	if (shape < 0)
 		shape = -1;
-	accept = ReadInt(in)!= 0;
+	accept = ReadInt(in) != 0;
 	return true;
-	}
+}

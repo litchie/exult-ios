@@ -17,8 +17,7 @@ typedef unsigned long u32b;
 /* Info about one usecode function */
 typedef struct usecode_func usecode_func;
 
-struct usecode_func
-{
+struct usecode_func {
 	/* Location in usecode */
 	u32b where;
 
@@ -41,8 +40,7 @@ usecode_func functions[4096];
 /*
  * Read an unsigned 16-bit value from a file.
  */
-void read_u16b(FILE *fff, u16b *n)
-{
+void read_u16b(FILE *fff, u16b *n) {
 	u16b x;
 	byte c;
 
@@ -60,8 +58,7 @@ void read_u16b(FILE *fff, u16b *n)
 /*
  * Read an unsigned 32-bit value from a file.
  */
-void read_u32b(FILE *fff, u32b *n)
-{
+void read_u32b(FILE *fff, u32b *n) {
 	u32b x;
 	byte c;
 
@@ -87,8 +84,7 @@ void read_u32b(FILE *fff, u32b *n)
 /*
  * Write an unsigned 16-bit value to a file.
  */
-void write_u16b(FILE *fff, u16b n)
-{
+void write_u16b(FILE *fff, u16b n) {
 	byte c;
 
 	c = n & 0xFF;
@@ -105,8 +101,7 @@ void write_u16b(FILE *fff, u16b n)
 /*
  * Write an unsigned 32-bit value to a file.
  */
-void write_u32b(FILE *fff, u32b n)
-{
+void write_u32b(FILE *fff, u32b n) {
 	byte c;
 
 	c = n & 0xFF;
@@ -135,15 +130,13 @@ void write_u32b(FILE *fff, u32b n)
 /*
  * Return the sum of the sizes of all functions in this tree.
  */
-u16b get_total_size(u16b *call_tree, u16b tree_size)
-{
+u16b get_total_size(u16b *call_tree, u16b tree_size) {
 	usecode_func *u_ptr;
 	u16b size = 0;
 	int i;
 
 	/* Add size of each function */
-	for (i = 0; i < tree_size; i++)
-	{
+	for (i = 0; i < tree_size; i++) {
 		/* Get pointer to function info */
 		u_ptr = &functions[call_tree[i]];
 
@@ -160,8 +153,7 @@ u16b get_total_size(u16b *call_tree, u16b tree_size)
  *
  * This function is recursive.
  */
-u16b *get_tree(u16b func_num, u16b *num)
-{
+u16b *get_tree(u16b func_num, u16b *num) {
 	usecode_func *u_ptr;
 	u16b *sub_tree, sub_size;
 	u16b *our_tree, our_size;
@@ -171,8 +163,7 @@ u16b *get_tree(u16b func_num, u16b *num)
 	u_ptr = &functions[func_num];
 
 	/* No need to return a tree */
-	if (u_ptr->visited)
-	{
+	if (u_ptr->visited) {
 		/* No tree */
 		*num = 0;
 
@@ -192,8 +183,7 @@ u16b *get_tree(u16b func_num, u16b *num)
 	u_ptr->visited = 1;
 
 	/* Add elements from each called function */
-	for (i = 0; i < u_ptr->num_call; i++)
-	{
+	for (i = 0; i < u_ptr->num_call; i++) {
 		/* Get the sub-tree */
 		sub_tree = get_tree(u_ptr->called[i], &sub_size);
 
@@ -207,8 +197,7 @@ u16b *get_tree(u16b func_num, u16b *num)
 		our_tree = (u16b *)realloc(our_tree, sizeof(u16b) * our_size);
 
 		/* Copy elements from sub-tree */
-		for (j = 0; j < sub_size; j++)
-		{
+		for (j = 0; j < sub_size; j++) {
 			/* Copy one element */
 			our_tree[our_size - j - 1] = sub_tree[j];
 		}
@@ -226,13 +215,11 @@ u16b *get_tree(u16b func_num, u16b *num)
 /*
  * Clear the "visited" flag from each function.
  */
-void clear_visited(void)
-{
+void clear_visited(void) {
 	int i;
 
 	/* Clear all "visited" flags */
-	for (i = 0; i < 4096; i++)
-	{
+	for (i = 0; i < 4096; i++) {
 		/* Clear this flag */
 		functions[i].visited = 0;
 	}
@@ -241,8 +228,7 @@ void clear_visited(void)
 /*
  * Compare two function numbers.
  */
-int comp_func(const void *one, const void *two)
-{
+int comp_func(const void *one, const void *two) {
 	const u16b first = *((const u16b *)one);
 	const u16b second = *((const u16b *)two);
 
@@ -259,8 +245,7 @@ int comp_func(const void *one, const void *two)
 /*
  * Sort a function call tree and remove duplicates.
  */
-void fix_tree(u16b *tree, u16b *tree_size)
-{
+void fix_tree(u16b *tree, u16b *tree_size) {
 	/* Just call qsort (I'm feeling lazy) */
 	qsort(tree, *tree_size, sizeof(u16b), comp_func);
 }
@@ -268,8 +253,7 @@ void fix_tree(u16b *tree, u16b *tree_size)
 /*
  * Process the "usecode" file and create the two index files.
  */
-int main(void)
-{
+int main(void) {
 	FILE *usecode, *linkdep1, *linkdep2;
 	u16b func_num, data_size, max_func = 0;
 	u16b total_size, lnk2_written = 0;
@@ -281,8 +265,7 @@ int main(void)
 	usecode = fopen("usecode", "rb");
 
 	/* Check for failure */
-	if (!usecode)
-	{
+	if (!usecode) {
 		/* Error message */
 		fprintf(stderr, "Could not open usecode!\n");
 
@@ -298,8 +281,7 @@ int main(void)
 	read_u16b(usecode, &func_num);
 
 	/* Process the usecode file */
-	while (!feof(usecode))
-	{
+	while (!feof(usecode)) {
 		/* Get pointer to function */
 		u_ptr = &functions[func_num];
 
@@ -325,8 +307,7 @@ int main(void)
 		u_ptr->called = (u16b *)malloc(sizeof(u16b) * u_ptr->num_call);
 
 		/* Read table */
-		for (i = 0; i < u_ptr->num_call; i++)
-		{
+		for (i = 0; i < u_ptr->num_call; i++) {
 			/* Read this entry */
 			read_u16b(usecode, &u_ptr->called[i]);
 		}
@@ -342,14 +323,12 @@ int main(void)
 	}
 
 	/* Write data about each function */
-	for (i = 0; i <= max_func; i++)
-	{
+	for (i = 0; i <= max_func; i++) {
 		/* Get pointer to function */
 		u_ptr = &functions[i];
 
 		/* Write null data for null function */
-		if (!u_ptr->size)
-		{
+		if (!u_ptr->size) {
 			/* Write nothing */
 			write_u16b(linkdep1, lnk2_written);
 			write_u16b(linkdep1, 0xffff);
@@ -375,8 +354,7 @@ int main(void)
 		write_u16b(linkdep1, total_size);
 
 		/* Write each pointer */
-		for (j = 0; j < tree_size; j++)
-		{
+		for (j = 0; j < tree_size; j++) {
 			/* Write this pointer to linkdep2 */
 			write_u32b(linkdep2, functions[func_tree[j]].where);
 

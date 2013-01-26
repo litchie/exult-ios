@@ -1,9 +1,9 @@
 /**
- **	An OpenGL exercise.  The goal is to display a scene of blocks with
- **	orthographic projection similar to some old RPG's.  This was started
- **	with code from one of NeHe's lessons.
+ ** An OpenGL exercise.  The goal is to display a scene of blocks with
+ ** orthographic projection similar to some old RPG's.  This was started
+ ** with code from one of NeHe's lessons.
  **
- **	Written: 4/11/02 - JSF
+ ** Written: 4/11/02 - JSF
  **/
 
 #include <stdlib.h>
@@ -13,215 +13,195 @@
 #include "SDL.h"
 #include "model.h"
 
-SDL_Surface *surface = 0;		// Where we display.
+SDL_Surface *surface = 0;       // Where we display.
 const int screenw = 640, screenh = 480;
 
 using namespace Exult3d;
 
 /*
- *	Time to exit.
+ *  Time to exit.
  */
-void Quit
-	(
-	int code			// Exit code.
-	)
-	{
+void Quit(
+    int code            // Exit code.
+) {
 	SDL_Quit();
 	exit(code);
-	}
+}
 
 /*
- *	Window was resized.
+ *  Window was resized.
  */
-void Resized
-	(
-	int new_width, int new_height
-	)
-	{
-					// Set viewing area to whole window.
+void Resized(
+    int new_width, int new_height
+) {
+	// Set viewing area to whole window.
 	glViewport(0, 0, new_width, new_height);
-	glMatrixMode(GL_PROJECTION);	// Set up orthogonal volume.
+	glMatrixMode(GL_PROJECTION);    // Set up orthogonal volume.
 	glLoadIdentity();
 
 	glOrtho(-16, 16, -16, 16, -16, 16);
-	glMatrixMode(GL_MODELVIEW);	// Use model-view matrix from now on.
+	glMatrixMode(GL_MODELVIEW); // Use model-view matrix from now on.
 	glLoadIdentity();
-	}
+}
 
 /*
- *	Handle keyboard.
+ *  Handle keyboard.
  */
-void Handle_key_press
-	(
-	SDL_keysym *keysym
-	)
-	{
-	switch (keysym->sym)
-		{
-	case SDLK_ESCAPE:		// ESC quits.
+void Handle_key_press(
+    SDL_keysym *keysym
+) {
+	switch (keysym->sym) {
+	case SDLK_ESCAPE:       // ESC quits.
 		Quit(0);
 		break;
-	case SDLK_F1:			// Toggle fullscreen.
+	case SDLK_F1:           // Toggle fullscreen.
 		SDL_WM_ToggleFullScreen(surface);
 		break;
 	default:
 		break;
-		}
 	}
+}
 
 /*
- *	Initialize OpenGL.
+ *  Initialize OpenGL.
  */
-void InitGL
-	(
-	)
-	{
-	glShadeModel(GL_SMOOTH);	// Smooth shading.
-	glClearColor(1, 1, 1, .5);	// Background is white.
+void InitGL(
+) {
+	glShadeModel(GL_SMOOTH);    // Smooth shading.
+	glClearColor(1, 1, 1, .5);  // Background is white.
 	glClearDepth(1);
-	glEnable(GL_DEPTH_TEST);	// Enable depth-testing.
+	glEnable(GL_DEPTH_TEST);    // Enable depth-testing.
 	glDepthFunc(GL_LEQUAL);
 //    glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);	// ??
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);  // ??
 
 #if 1
-					// Ambient light.
+	// Ambient light.
 	static GLfloat ambient[] = {.7, .7, .7, 1.0};
 	glLightfv(GL_LIGHT1, GL_AMBIENT, ambient);
-					// A diffuse light source.
+	// A diffuse light source.
 	static GLfloat diffuse[] = {1, 1, 1, 1.0};
 	glLightfv(GL_LIGHT1, GL_DIFFUSE, diffuse);
 	glEnable(GL_LIGHT1);
 #endif
-	}
+}
 
 /*
- *	Draw the scene.
+ *  Draw the scene.
  */
-void Render
-	(
-	Model3d& model			// Render this one model.
-	)
-	{
-					// Clear screen & depth buffer.
+void Render(
+    Model3d &model          // Render this one model.
+) {
+	// Clear screen & depth buffer.
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glEnable(GL_LIGHTING);		// Enable lighting.
-	Vector3 low, high;		// Get range of dimensions.
+	glEnable(GL_LIGHTING);      // Enable lighting.
+	Vector3 low, high;      // Get range of dimensions.
 	model.find_extents(low, high);
-					// Compute bounding sphere.
-	Vector3 c = (low + high)/2.0;	// Center.
-	float width = high.x - low.x, depth = high.y - low.y, 
-		ht = high.z - low.z;
+	// Compute bounding sphere.
+	Vector3 c = (low + high) / 2.0; // Center.
+	float width = high.x - low.x, depth = high.y - low.y,
+	      ht = high.z - low.z;
 	float diam = width > depth ? width : depth;
 	if (ht > diam)
 		diam = ht;
-	float r = diam/2;		// Radius.
-	r += r/10.0;			// Make it a bit bigger.
-	glMatrixMode(GL_PROJECTION);	// Set up orthogonal volume.
+	float r = diam / 2;     // Radius.
+	r += r / 10.0;          // Make it a bit bigger.
+	glMatrixMode(GL_PROJECTION);    // Set up orthogonal volume.
 	glLoadIdentity();
 	glOrtho(c.x - r, c.x + r, c.y - r, c.y + r, 1.0, 1.0 - diam);
-//	glOrtho(3*low.x/2, 3*high.x/2, 3*low.y/2, 3*high.y/2, 
+//	glOrtho(3*low.x/2, 3*high.x/2, 3*low.y/2, 3*high.y/2,
 //						3*low.z/2, 3*high.z/2);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	GLfloat pos[4];
-	pos[0] = (high.x + low.x)/2;
-	pos[1] = (high.y + low.y)/2;
-	pos[2] = 3*(high.z + 2);
+	pos[0] = (high.x + low.x) / 2;
+	pos[1] = (high.y + low.y) / 2;
+	pos[2] = 3 * (high.z + 2);
 	pos[3] = 1.0;
 	glLightfv(GL_LIGHT1, GL_POSITION, pos);
 //	glRotatef(22.5, 1, 0, 0);
-	model.render();			// Show model.
-	SDL_GL_SwapBuffers();		// Blit.
-	}
+	model.render();         // Show model.
+	SDL_GL_SwapBuffers();       // Blit.
+}
 
 /*
- *	Main routine.
+ *  Main routine.
  */
-int main
-	(
-	int argc, 
-	char **argv
-	)
-	{
-	bool done = false;		// Set when time to quit.
-	bool active = true;		// Is window active.
-	if (argc < 2)
-		{
+int main(
+    int argc,
+    char **argv
+) {
+	bool done = false;      // Set when time to quit.
+	bool active = true;     // Is window active.
+	if (argc < 2) {
 		cerr << "Provide a .3ds model file" << endl;
 		Quit(1);
-		}
+	}
 	const char *model_name = argv[1];
-					// Init. SDL.
-	if (SDL_Init(SDL_INIT_VIDEO) < 0)
-		{
+	// Init. SDL.
+	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 		cerr << "SDL_Init() failed: " << SDL_GetError() << endl;
 		Quit(1);
-		}
-					// Get info. about video.
+	}
+	// Get info. about video.
 	const SDL_VideoInfo *vinfo = SDL_GetVideoInfo();
-	if (!vinfo)
-		{
+	if (!vinfo) {
 		cerr << "SDL_GetVideoInfo() failed: " << SDL_GetError()
-							<< endl;
+		     << endl;
 		Quit(1);
-		}
-					// Set up SDL video flags.
+	}
+	// Set up SDL video flags.
 	int video_flags = SDL_OPENGL | SDL_GL_DOUBLEBUFFER |
-			SDL_HWPALETTE | SDL_RESIZABLE;
-					// Can surface be in video RAM?
+	                  SDL_HWPALETTE | SDL_RESIZABLE;
+	// Can surface be in video RAM?
 	if (vinfo->hw_available)
 		video_flags |= SDL_HWSURFACE;
 	else
 		video_flags |= SDL_SWSURFACE;
-	if (vinfo->blit_hw)		// Hardware blits?
+	if (vinfo->blit_hw)     // Hardware blits?
 		video_flags |= SDL_HWACCEL;
-					// Want double-buffering.
+	// Want double-buffering.
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-					// Allocate surface: 640x480x16bpp.
+	// Allocate surface: 640x480x16bpp.
 	surface = SDL_SetVideoMode(screenw, screenh, 16, video_flags);
-	if (!surface)
-		{
+	if (!surface) {
 		cerr << "Couldn't allocate surface: " << SDL_GetError() <<
-								endl;
+		     endl;
 		Quit(1);
-		}
-	InitGL();			// Initialize OpenGL.
-					// ++++++TESTING
+	}
+	InitGL();           // Initialize OpenGL.
+	// ++++++TESTING
 	Model3d model;
 	model.import3ds(model_name);
-	Resized(screenw, screenh);	// Set size.
-					// Main event loop.
-	while (!done)
-		{
+	Resized(screenw, screenh);  // Set size.
+	// Main event loop.
+	while (!done) {
 		SDL_Event event;
 		while (SDL_PollEvent(&event))
-		switch (event.type)
-			{
-		case SDL_ACTIVEEVENT:	// Lost/gained focus.
-			active = (event.active.gain != 0);
-			break;
-		case SDL_VIDEORESIZE:	// Window resized.
-			surface = SDL_SetVideoMode(event.resize.w,
-					event.resize.h, 16, video_flags);
-			if (!surface)
-				{
-				cerr << "Resize failed: " << SDL_GetError() <<
-								endl;
-				Quit(1);
+			switch (event.type) {
+			case SDL_ACTIVEEVENT:   // Lost/gained focus.
+				active = (event.active.gain != 0);
+				break;
+			case SDL_VIDEORESIZE:   // Window resized.
+				surface = SDL_SetVideoMode(event.resize.w,
+				                           event.resize.h, 16, video_flags);
+				if (!surface) {
+					cerr << "Resize failed: " << SDL_GetError() <<
+					     endl;
+					Quit(1);
 				}
-			Resized(event.resize.w, event.resize.h);
-			break;
-		case SDL_KEYDOWN:
-			Handle_key_press(&event.key.keysym);
-			break;
-		case SDL_QUIT:
-			done = true;
+				Resized(event.resize.w, event.resize.h);
+				break;
+			case SDL_KEYDOWN:
+				Handle_key_press(&event.key.keysym);
+				break;
+			case SDL_QUIT:
+				done = true;
 			}
 		if (active)
-			Render(model);	// Paint it all.
-		}
+			Render(model);  // Paint it all.
+	}
 	Quit(0);
 	return 0;
-	}
+}

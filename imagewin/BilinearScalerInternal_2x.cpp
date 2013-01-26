@@ -24,43 +24,40 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 namespace Pentagram {
 
-template<class uintX, class Manip, class uintS> 
-bool BilinearScalerInternal_2x(SDL_Surface *tex, sint32 sx, sint32 sy, sint32 sw, sint32 sh, 
-					uint8* pixel, sint32 dw, sint32 dh, sint32 pitch, bool clamp_src)
-{
+template<class uintX, class Manip, class uintS>
+bool BilinearScalerInternal_2x(SDL_Surface *tex, sint32 sx, sint32 sy, sint32 sw, sint32 sh,
+                               uint8 *pixel, sint32 dw, sint32 dh, sint32 pitch, bool clamp_src) {
 	// Source buffer pointers
 	int tpitch = tex->pitch / sizeof(uintS);
-	uintS *texel = reinterpret_cast<uintS*>(tex->pixels) + (sy * tpitch + sx);
-	uintS *tline_end = texel + (sw-1);
-	uintS *tex_end = texel + (sh-4)*tpitch;
-	int tex_diff = (tpitch*4) - sw;
+	uintS *texel = reinterpret_cast<uintS *>(tex->pixels) + (sy * tpitch + sx);
+	uintS *tline_end = texel + (sw - 1);
+	uintS *tex_end = texel + (sh - 4) * tpitch;
+	int tex_diff = (tpitch * 4) - sw;
 
 	uint8 a[4], b[4], c[4], d[4], e[4], f[4], g[4], h[4], i[4], j[4];
-	int p_diff    = (pitch*8)-(dw*sizeof(uintX));
+	int p_diff    = (pitch * 8) - (dw * sizeof(uintX));
 
 	bool clip_x = true;
-	if (sw+sx < tpitch && clamp_src == false)
-	{
+	if (sw + sx < tpitch && clamp_src == false) {
 		clip_x = false;
-		tline_end = texel + (sw+1);
+		tline_end = texel + (sw + 1);
 		tex_diff--;
 	}
 
 	bool clip_y = true;
-	if (sh+sy < tex->h && clamp_src == false)
-	{
+	if (sh + sy < tex->h && clamp_src == false) {
 		clip_y = false;
-		tex_end = texel + (sh)*tpitch;
+		tex_end = texel + (sh) * tpitch;
 	}
 
 	// Src Loop Y
 	do {
-		Read5(a,b,c,d,e);
+		Read5(a, b, c, d, e);
 		texel++;
 
 		// Src Loop X
 		do {
-			Read5(f,g,h,i,j);
+			Read5(f, g, h, i, j);
 			texel++;
 
 			ScalePixel2x(a, b, f, g);
@@ -68,10 +65,10 @@ bool BilinearScalerInternal_2x(SDL_Surface *tex, sint32 sx, sint32 sy, sint32 sw
 			ScalePixel2x(c, d, h, i);
 			ScalePixel2x(d, e, i, j);
 
-			pixel-=pitch*8;
-			pixel+=sizeof(uintX)*2;
+			pixel -= pitch * 8;
+			pixel += sizeof(uintX) * 2;
 
-			Read5(a,b,c,d,e);
+			Read5(a, b, c, d, e);
 			texel++;
 
 			ScalePixel2x(f, g, a, b);
@@ -79,14 +76,14 @@ bool BilinearScalerInternal_2x(SDL_Surface *tex, sint32 sx, sint32 sy, sint32 sw
 			ScalePixel2x(h, i, c, d);
 			ScalePixel2x(i, j, d, e);
 
-			pixel-=pitch*8;
-			pixel+=sizeof(uintX)*2;
+			pixel -= pitch * 8;
+			pixel += sizeof(uintX) * 2;
 
 		} while (texel != tline_end);
 
 		// Final X (clipping)
 		if (clip_x) {
-			Read5(f,g,h,i,j);
+			Read5(f, g, h, i, j);
 			texel++;
 
 			ScalePixel2x(a, b, f, g);
@@ -94,22 +91,22 @@ bool BilinearScalerInternal_2x(SDL_Surface *tex, sint32 sx, sint32 sy, sint32 sw
 			ScalePixel2x(c, d, h, i);
 			ScalePixel2x(d, e, i, j);
 
-			pixel-=pitch*8;
-			pixel+=sizeof(uintX)*2;
+			pixel -= pitch * 8;
+			pixel += sizeof(uintX) * 2;
 
 			ScalePixel2x(f, g, f, g);
 			ScalePixel2x(g, h, g, h);
 			ScalePixel2x(h, i, h, i);
 			ScalePixel2x(i, j, i, j);
 
-			pixel-=pitch*8;
-			pixel+=sizeof(uintX)*2;
+			pixel -= pitch * 8;
+			pixel += sizeof(uintX) * 2;
 		};
 
 		pixel  += p_diff;
 
 		texel += tex_diff;
-		tline_end += tpitch*4;
+		tline_end += tpitch * 4;
 	} while (texel != tex_end);
 
 	//
@@ -118,33 +115,33 @@ bool BilinearScalerInternal_2x(SDL_Surface *tex, sint32 sx, sint32 sy, sint32 sw
 
 	// Src Loop Y
 	if (clip_y) {
-		Read5_Clipped(a,b,c,d,e);
+		Read5_Clipped(a, b, c, d, e);
 		texel++;
 
 		// Src Loop X
 		do {
-			Read5_Clipped(f,g,h,i,j);
+			Read5_Clipped(f, g, h, i, j);
 			texel++;
 			ScalePixel2x(a, b, f, g);
 			ScalePixel2x(b, c, g, h);
 			ScalePixel2x(c, d, h, i);
 			ScalePixel2x(d, e, i, j);
-			pixel-=pitch*8;
-			pixel+=sizeof(uintX)*2;
+			pixel -= pitch * 8;
+			pixel += sizeof(uintX) * 2;
 
-			Read5_Clipped(a,b,c,d,e);
+			Read5_Clipped(a, b, c, d, e);
 			texel++;
 			ScalePixel2x(f, g, a, b);
 			ScalePixel2x(g, h, b, c);
 			ScalePixel2x(h, i, c, d);
 			ScalePixel2x(i, j, d, e);
-			pixel-=pitch*8;
-			pixel+=sizeof(uintX)*2;
+			pixel -= pitch * 8;
+			pixel += sizeof(uintX) * 2;
 		} while (texel != tline_end);
 
 		// Final X (clipping)
 		if (clip_x) {
-			Read5_Clipped(f,g,h,i,j);
+			Read5_Clipped(f, g, h, i, j);
 			texel++;
 
 			ScalePixel2x(a, b, f, g);
@@ -152,22 +149,22 @@ bool BilinearScalerInternal_2x(SDL_Surface *tex, sint32 sx, sint32 sy, sint32 sw
 			ScalePixel2x(c, d, h, i);
 			ScalePixel2x(d, e, i, j);
 
-			pixel-=pitch*8;
-			pixel+=sizeof(uintX)*2;
+			pixel -= pitch * 8;
+			pixel += sizeof(uintX) * 2;
 
 			ScalePixel2x(f, g, f, g);
 			ScalePixel2x(g, h, g, h);
 			ScalePixel2x(h, i, h, i);
 			ScalePixel2x(i, j, i, j);
 
-			pixel-=pitch*8;
-			pixel+=sizeof(uintX)*2;
+			pixel -= pitch * 8;
+			pixel += sizeof(uintX) * 2;
 		};
 
 		pixel  += p_diff;
 
 		texel += tex_diff;
-		tline_end += tpitch*4;
+		tline_end += tpitch * 4;
 	}
 
 	return true;

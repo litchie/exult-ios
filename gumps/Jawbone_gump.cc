@@ -29,31 +29,29 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "jawbone.h"
 
 const int toothx[19] = { 34, 32, 31, 31, 28, 31, 27, 31, 40, 50,
-						 57, 63, 72, 70, 75, 82, 83, 87, 0 };
+                         57, 63, 72, 70, 75, 82, 83, 87, 0
+                       };
 
 const int toothy[19] = { 19, 30, 37, 44, 52, 57, 66, 77, 82, 84,
-						 80, 71, 69, 61, 50, 42, 36, 32, 0 };
+                         80, 71, 69, 61, 50, 42, 36, 32, 0
+                       };
 
-Jawbone_gump::Jawbone_gump
-	(
-	Jawbone_object *cont,	// Jawbone it represents.
-	int initx, int inity 		// Coords. on screen.
-	) : Gump(cont, initx, inity, game->get_shape("gumps/jawbone")),
-		jawbone(cont)
-{
+Jawbone_gump::Jawbone_gump(
+    Jawbone_object *cont,   // Jawbone it represents.
+    int initx, int inity        // Coords. on screen.
+) : Gump(cont, initx, inity, game->get_shape("gumps/jawbone")),
+	jawbone(cont) {
 	set_object_area(Rectangle(0, 0, 138, 116), 10, 109);
 }
 
 
-int Jawbone_gump::add(Game_object *obj, int mx, int my,	int sx, int sy,
-					  bool dont_check, bool combine)
-{
+int Jawbone_gump::add(Game_object *obj, int mx, int my, int sx, int sy,
+                      bool dont_check, bool combine) {
 	// Jawbone_object handles all the checks required
 	return jawbone->add(obj, dont_check, combine);
 }
 
-void Jawbone_gump::paint()
-{
+void Jawbone_gump::paint() {
 	// Paint gump itself
 	paint_shape(x, y);
 
@@ -62,17 +60,16 @@ void Jawbone_gump::paint()
 
 	jawbone->find_teeth();
 
-	int i;	// Blame MSVC
-	for (i=0; i<9; i++)
+	int i;  // Blame MSVC
+	for (i = 0; i < 9; i++)
 		if (jawbone->teeth[i])
 			paint_tooth(i);
-	for (i=17; i>8; i--)
+	for (i = 17; i > 8; i--)
 		if (jawbone->teeth[i])
 			paint_tooth(i);
 }
 
-void Jawbone_gump::paint_tooth(int index)
-{
+void Jawbone_gump::paint_tooth(int index) {
 	ShapeID shape(game->get_shape("gumps/tooth"), index, SF_GUMPS_VGA);
 
 	int objx = toothx[index];
@@ -81,24 +78,23 @@ void Jawbone_gump::paint_tooth(int index)
 	shape.paint_shape(x + objx, y + objy);
 }
 
-Game_object *Jawbone_gump::find_object(int mx, int my)
-{
+Game_object *Jawbone_gump::find_object(int mx, int my) {
 	jawbone->find_teeth();
 
 	// get position relative to gump
 	mx -= x;
 	my -= y;
 
-	int i;	// Blame MSVC
+	int i;  // Blame MSVC
 
 	// reverse of drawing order
-	for (i=9; i<18; i++)
+	for (i = 9; i < 18; i++)
 		if (jawbone->teeth[i] && on_tooth(mx, my, i)) {
 			// set correct position (otherwise tooth won't be on mouse cursor)
 			set_to_spot(jawbone->teeth[i], mx, my);
 			return jawbone->teeth[i];
 		}
-	for (i=8; i>=0; i--)
+	for (i = 8; i >= 0; i--)
 		if (jawbone->teeth[i] && on_tooth(mx, my, i)) {
 			// set correct position (otherwise tooth won't be on mouse cursor)
 			set_to_spot(jawbone->teeth[i], mx, my);
@@ -108,33 +104,31 @@ Game_object *Jawbone_gump::find_object(int mx, int my)
 	return 0;
 }
 
-bool Jawbone_gump::on_tooth(int sx, int sy, int index)
-{
+bool Jawbone_gump::on_tooth(int sx, int sy, int index) {
 	ShapeID sid(game->get_shape("gumps/tooth"), index, SF_GUMPS_VGA);
 	Shape_frame *shape = sid.get_shape();
 
 	int objx = toothx[index];
 	int objy = toothy[index];
-	
-	Rectangle r = gwin->get_shape_rect (shape, 0, 0);
-	
-	if (r.has_point (sx - objx, sy - objy) && 
-			shape->has_point (sx - objx, sy - objy))
+
+	Rectangle r = gwin->get_shape_rect(shape, 0, 0);
+
+	if (r.has_point(sx - objx, sy - objy) &&
+	        shape->has_point(sx - objx, sy - objy))
 		return true;
 
 	return false;
 }
 
-void Jawbone_gump::set_to_spot(Game_object *obj, int sx, int sy)
-{
+void Jawbone_gump::set_to_spot(Game_object *obj, int sx, int sy) {
 	// Get shape.
 	Shape_frame *shape = obj->get_shape();
-	
+
 	// Height and width
 	int w = shape->get_width(), h = shape->get_height();
-	
+
 	// Set object's position.
-	obj->set_shape_pos(sx + shape->get_xleft() - w/2,
-		sy + shape->get_yabove() - h/2);
+	obj->set_shape_pos(sx + shape->get_xleft() - w / 2,
+	                   sy + shape->get_yabove() - h / 2);
 }
 

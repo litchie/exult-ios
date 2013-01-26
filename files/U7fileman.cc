@@ -1,7 +1,7 @@
 /*
  *  Copyright (C) 2008  The Exult Team
  *
- *	Based on code by Dancer A.L Vesperman
+ *  Based on code by Dancer A.L Vesperman
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -42,23 +42,21 @@ static U7FileManager filemanager;
 U7FileManager *U7FileManager::self = &filemanager;
 
 /**
- *	Searches for the desired "file". If it is not already open,
- *	it is opened by the creation of an appropriate reader class.
- *	@param s	Unique identifier.
- *	@param allow_errors	If false, this function will throw an
- *	exception if the file cannot be found. If true, it will return
- *	a null file pointer instead.
- *	@return	Pointer to data reading class.
+ *  Searches for the desired "file". If it is not already open,
+ *  it is opened by the creation of an appropriate reader class.
+ *  @param s    Unique identifier.
+ *  @param allow_errors If false, this function will throw an
+ *  exception if the file cannot be found. If true, it will return
+ *  a null file pointer instead.
+ *  @return Pointer to data reading class.
  */
-U7file *U7FileManager::get_file_object(const File_spec &s, bool allow_errors)
-	{
+U7file *U7FileManager::get_file_object(const File_spec &s, bool allow_errors) {
 	if (file_list.count(s))
 		return file_list[s];
 
 	// Not in our cache. Attempt to figure it out.
 	U7file *uf = 0;
-	if (s.index >= 0)
-		{
+	if (s.index >= 0) {
 		U7object from(s.name, s.index);
 		std::size_t size;
 		char *buffer = from.retrieve(size);
@@ -71,15 +69,12 @@ U7file *U7FileManager::get_file_object(const File_spec &s, bool allow_errors)
 			uf = new TableBuffer(s, data);
 		else if (Flat::is_flat(data))
 			uf = new FlatBuffer(s, data);
-		else
-			{
+		else {
 			// All other cases manage this, so we don't have to.
 			delete data;
 			delete [] buffer;
-			}
 		}
-	else
-		{
+	} else {
 		if (IFF::is_iff(s.name))
 			uf = new IFFFile(s.name);
 		else if (Flex::is_flex(s.name))
@@ -88,28 +83,26 @@ U7file *U7FileManager::get_file_object(const File_spec &s, bool allow_errors)
 			uf = new TableFile(s.name);
 		else if (Flat::is_flat(s.name))
 			uf = new FlatFile(s.name);
-		}
+	}
 
 	// Failed
-	if (!uf)
-		{
+	if (!uf) {
 		if (!allow_errors)
-			throw (file_open_exception(s.name));
+			throw(file_open_exception(s.name));
 		return 0;
-		}
+	}
 
 	file_list[s] = uf;
 	return uf;
-	}
+}
 
 /**
- *	Cleans the whole file list.
+ *  Cleans the whole file list.
  */
-void U7FileManager::reset()
-	{
+void U7FileManager::reset() {
 	for (map<File_spec, U7file *>::iterator it = file_list.begin();
-			it != file_list.end(); ++it)
+	        it != file_list.end(); ++it)
 		delete it->second;
 
 	file_list.clear();
-	}
+}

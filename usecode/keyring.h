@@ -22,7 +22,7 @@
 #include <set>
 
 class Keyring {
- public:
+public:
 	Keyring() { }
 
 	void read();  // read from KEYRING.DAT
@@ -32,7 +32,7 @@ class Keyring {
 	void addkey(int qual);   // add key to keyring
 	bool checkkey(int qual); // is key on keyring?
 	bool removekey(int qual);// remove key.
- private:
+private:
 	std::set<int> keys;
 };
 

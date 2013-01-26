@@ -25,35 +25,37 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class Actor;
 
 /*
- *	A rectangular area showing a character's statistics:
+ *  A rectangular area showing a character's statistics:
  */
-class Stats_gump : public Gump
-{
+class Stats_gump : public Gump {
 	UNREPLICATABLE_CLASS_I(Stats_gump, Gump());
 
 protected:
-	Actor *get_actor()
-		{ return reinterpret_cast<Actor *>(container); }
-	static short textx;		// X-coord. of where to write.
-	static short texty[10];		// Y-coords.
+	Actor *get_actor() {
+		return reinterpret_cast<Actor *>(container);
+	}
+	static short textx;     // X-coord. of where to write.
+	static short texty[10];     // Y-coords.
 
 public:
 	Stats_gump(Container_game_object *cont, int initx, int inity);
 	Stats_gump(Container_game_object *cont, int initx, int inity,
-						int shnum, ShapeFile shfile);
+	           int shnum, ShapeFile shfile);
 	virtual ~Stats_gump()
-		{  }
+	{  }
 	static Stats_gump *create(Game_object *npc_obj, int x, int y);
-					// Add object.
+	// Add object.
 	virtual int add(Game_object *obj, int mx = -1, int my = -1,
-			int sx = -1, int sy = -1, bool dont_check = false,
-						bool combine = false)
-		{ return 0; }		// Can't drop onto it.
-					// Paint it and its contents.
+	                int sx = -1, int sy = -1, bool dont_check = false,
+	                bool combine = false) {
+		return 0;    // Can't drop onto it.
+	}
+	// Paint it and its contents.
 	virtual void paint();
 
-	virtual Game_object *find_object(int mx, int my)
-		{ return 0; }
+	virtual Game_object *find_object(int mx, int my) {
+		return 0;
+	}
 };
 
 #endif

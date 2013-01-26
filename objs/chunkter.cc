@@ -1,7 +1,7 @@
 /**
- **	Chunkter.cc - Chunk terrain (16x16 flat tiles) on the map.
+ ** Chunkter.cc - Chunk terrain (16x16 flat tiles) on the map.
  **
- **	Written: 7/6/01 - JSF
+ ** Written: 7/6/01 - JSF
  **/
 
 /*
@@ -37,237 +37,205 @@ Chunk_terrain *Chunk_terrain::render_queue = 0;
 int Chunk_terrain::queue_size = 0;
 
 /*
- *	Insert at start of render queue.  It may already be there, but it's
- *	assumed that it's already tested as not being at the start.
+ *  Insert at start of render queue.  It may already be there, but it's
+ *  assumed that it's already tested as not being at the start.
  */
 
-void Chunk_terrain::insert_in_queue
-	(
-	)
-	{
-	if (render_queue_next)		// In queue already?
-		{			// !!Assuming it's not at head!!
+void Chunk_terrain::insert_in_queue(
+) {
+	if (render_queue_next) {    // In queue already?
+		// !!Assuming it's not at head!!
 		render_queue_next->render_queue_prev = render_queue_prev;
 		render_queue_prev->render_queue_next = render_queue_next;
-		}
-	else
-		queue_size++;		// Adding, so increment count.
-	if (!render_queue)		// First?
+	} else
+		queue_size++;       // Adding, so increment count.
+	if (!render_queue)      // First?
 		render_queue_next = render_queue_prev = this;
-	else
-		{
+	else {
 		render_queue_next = render_queue;
 		render_queue_prev = render_queue->render_queue_prev;
 		render_queue_prev->render_queue_next = this;
 		render_queue->render_queue_prev = this;
-		}
-	render_queue = this;
 	}
+	render_queue = this;
+}
 
 /*
- *	Remove from render queue.
+ *  Remove from render queue.
  */
 
-void Chunk_terrain::remove_from_queue
-	(
-	)
-	{
+void Chunk_terrain::remove_from_queue(
+) {
 	if (!render_queue_next)
-		return;			// Not in queue.
+		return;         // Not in queue.
 	queue_size--;
-	if (render_queue_next == this)	// Only element?
+	if (render_queue_next == this)  // Only element?
 		render_queue = 0;
-	else
-		{
+	else {
 		if (render_queue == this)
 			render_queue = render_queue_next;
 		render_queue_next->render_queue_prev = render_queue_prev;
 		render_queue_prev->render_queue_next = render_queue_next;
-		}
+	}
 	render_queue_next = render_queue_prev = 0;
-	}
+}
 
 /*
- *	Paint a flat tile into our cached buffer.
+ *  Paint a flat tile into our cached buffer.
  */
 
-inline void Chunk_terrain::paint_tile
-	(
-	int tilex, int tiley		// Tile within chunk.
-	)
-	{
+inline void Chunk_terrain::paint_tile(
+    int tilex, int tiley        // Tile within chunk.
+) {
 	Shape_frame *shape = get_shape(tilex, tiley);
-	if (shape && !shape->is_rle())		// Only do flat tiles.
-		rendered_flats->copy8(shape->get_data(), 
-			c_tilesize, c_tilesize, tilex*c_tilesize,
-						tiley*c_tilesize);
-	}
+	if (shape && !shape->is_rle())      // Only do flat tiles.
+		rendered_flats->copy8(shape->get_data(),
+		                      c_tilesize, c_tilesize, tilex * c_tilesize,
+		                      tiley * c_tilesize);
+}
 
 /*
- *	Create list for a given chunk.
+ *  Create list for a given chunk.
  */
 
-Chunk_terrain::Chunk_terrain
-	(
-	unsigned char *data,		// Chunk data.
-	bool v2_chunks			// 3 bytes/shape.
-	) : undo_shapes(0),
-	    num_clients(0), modified(false), rendered_flats(0), glflats(0), 
-	    render_queue_next(0), render_queue_prev(0)
-	{
+Chunk_terrain::Chunk_terrain(
+    unsigned char *data,        // Chunk data.
+    bool v2_chunks          // 3 bytes/shape.
+) : undo_shapes(0),
+	num_clients(0), modified(false), rendered_flats(0), glflats(0),
+	render_queue_next(0), render_queue_prev(0) {
 	for (int tiley = 0; tiley < c_tiles_per_chunk; tiley++)
-		for (int tilex = 0; tilex < c_tiles_per_chunk; tilex++)
-			{
+		for (int tilex = 0; tilex < c_tiles_per_chunk; tilex++) {
 			int shnum, frnum;
-			if (v2_chunks)
-				{ 
-				shnum = data[0] + 256*data[1];
+			if (v2_chunks) {
+				shnum = data[0] + 256 * data[1];
 				frnum = data[2];
 				data += 3;
-				}
-			else
-				{
-				shnum = data[0]+256*(data[1]&3),
-				frnum = (data[1]>>2)&0x1f;
+			} else {
+				shnum = data[0] + 256 * (data[1] & 3),
+				frnum = (data[1] >> 2) & 0x1f;
 				data += 2;
-				}
-			ShapeID id(shnum, frnum);
-			shapes[16*tiley + tilex] = id;
 			}
-	}
+			ShapeID id(shnum, frnum);
+			shapes[16 * tiley + tilex] = id;
+		}
+}
 
 /*
- *	Copy another.  The 'modified' flag is set to true.
+ *  Copy another.  The 'modified' flag is set to true.
  */
 
-Chunk_terrain::Chunk_terrain
-	(
-	const Chunk_terrain& c2
-	) : undo_shapes(0),
-	    num_clients(0), modified(true), rendered_flats(0), glflats(0),
-	    render_queue_next(0), render_queue_prev(0)
-	{
+Chunk_terrain::Chunk_terrain(
+    const Chunk_terrain &c2
+) : undo_shapes(0),
+	num_clients(0), modified(true), rendered_flats(0), glflats(0),
+	render_queue_next(0), render_queue_prev(0) {
 	for (int tiley = 0; tiley < c_tiles_per_chunk; tiley++)
 		for (int tilex = 0; tilex < c_tiles_per_chunk; tilex++)
-			shapes[16*tiley + tilex] = c2.shapes[16*tiley + tilex];
-	}
+			shapes[16 * tiley + tilex] = c2.shapes[16 * tiley + tilex];
+}
 
 /*
- *	Clean up.
+ *  Clean up.
  */
 
-Chunk_terrain::~Chunk_terrain
-	(
-	)
-	{
+Chunk_terrain::~Chunk_terrain(
+) {
 	delete [] undo_shapes;
 	delete rendered_flats;
 #ifdef HAVE_OPENGL
 	delete glflats;
 #endif
 	remove_from_queue();
-	}
+}
 
 
 /*
- *	Set tile's shape.
- *	NOTE:  Set's 'modified' flag.
+ *  Set tile's shape.
+ *  NOTE:  Set's 'modified' flag.
  */
 
-void Chunk_terrain::set_flat
-	(
-	int tilex, int tiley,
-	ShapeID id
-	)
-	{
-	if (!undo_shapes)		// Create backup.
-		{
+void Chunk_terrain::set_flat(
+    int tilex, int tiley,
+    ShapeID id
+) {
+	if (!undo_shapes) {     // Create backup.
 		undo_shapes = new ShapeID[256];
 		std::memcpy(reinterpret_cast<char *>(undo_shapes),
 		            reinterpret_cast<char *>(&shapes[0]),
 		            sizeof(shapes));
-		}
-	shapes[16*tiley + tilex] = id;
-	modified = true;
 	}
+	shapes[16 * tiley + tilex] = id;
+	modified = true;
+}
 
 /*
- *	Commit changes.
+ *  Commit changes.
  *
- *	Output:	True if this was edited, else false.
+ *  Output: True if this was edited, else false.
  */
 
-bool Chunk_terrain::commit_edits
-	(
-	)
-	{
+bool Chunk_terrain::commit_edits(
+) {
 	if (!undo_shapes)
 		return false;
 	delete [] undo_shapes;
 	undo_shapes = 0;
-	render_flats();			// Update with new data.
+	render_flats();         // Update with new data.
 	return true;
-	}
+}
 
 /*
- *	Undo changes.   Note:  We don't clear 'modified', since this could
- *	still have been moved to a different position.
+ *  Undo changes.   Note:  We don't clear 'modified', since this could
+ *  still have been moved to a different position.
  */
 
-void Chunk_terrain::abort_edits
-	(
-	)
-	{
-	if (undo_shapes)
-		{
+void Chunk_terrain::abort_edits(
+) {
+	if (undo_shapes) {
 		std::memcpy(reinterpret_cast<char *>(&shapes[0]),
 		            reinterpret_cast<char *>(undo_shapes),
 		            sizeof(shapes));
 		delete [] undo_shapes;
 		undo_shapes = 0;
-		}
 	}
+}
 
 /*
- *	Figure max. queue size for given game window.
+ *  Figure max. queue size for given game window.
  */
-static int Figure_queue_size
-	(
-	)
-	{
+static int Figure_queue_size(
+) {
 	//Game_window *gwin = Game_window::get_instance();
 	//int w = gwin->get_width(), h = gwin->get_height();
-					// Figure # chunks, rounding up.
+	// Figure # chunks, rounding up.
 	//int cw = (w + c_chunksize - 1)/c_chunksize,
 	//    ch = (h + c_chunksize - 1)/c_chunksize;
-					// Add extra in each dir.
+	// Add extra in each dir.
 	return 100;//(cw + 3)*(ch + 3);
-	}
+}
 
 /*
- *	Create rendered_flats buffer.
+ *  Create rendered_flats buffer.
  */
 
-Image_buffer8 *Chunk_terrain::render_flats
-	(
-	)
-	{
-	if (!rendered_flats)
-		{
-		if (queue_size > Figure_queue_size())
-			{		// Grown too big.  Remove last.
+Image_buffer8 *Chunk_terrain::render_flats(
+) {
+	if (!rendered_flats) {
+		if (queue_size > Figure_queue_size()) {
+			// Grown too big.  Remove last.
 			Chunk_terrain *last = render_queue->render_queue_prev;
 			last->free_rendered_flats(false);
-			render_queue->render_queue_prev = 
-						last->render_queue_prev;
-			last->render_queue_prev->render_queue_next = 
-						render_queue;
+			render_queue->render_queue_prev =
+			    last->render_queue_prev;
+			last->render_queue_prev->render_queue_next =
+			    render_queue;
 			last->render_queue_next = last->render_queue_prev = 0;
 			queue_size--;
-			}
-		rendered_flats = new Image_buffer8(c_chunksize, c_chunksize);
 		}
-					// Go through array of tiles.
+		rendered_flats = new Image_buffer8(c_chunksize, c_chunksize);
+	}
+	// Go through array of tiles.
 	for (int tiley = 0; tiley < c_tiles_per_chunk; tiley++)
 		for (int tilex = 0; tilex < c_tiles_per_chunk; tilex++)
 			paint_tile(tilex, tiley);
@@ -275,99 +243,87 @@ Image_buffer8 *Chunk_terrain::render_flats
 	delete glflats;
 	glflats = 0;
 	GL_manager *glman = GL_manager::get_instance();
-	if (glman)			// Using OpenGL?
+	if (glman)          // Using OpenGL?
 		glflats = glman->create(rendered_flats);
 #endif
 	return rendered_flats;
-	}
+}
 
 /*
- *	Free pre-rendered landscape.
+ *  Free pre-rendered landscape.
  */
 
-void Chunk_terrain::free_rendered_flats
-	(
-	bool rotation
-	)
-	{
+void Chunk_terrain::free_rendered_flats(
+    bool rotation
+) {
 #ifdef HAVE_OPENGL
 	if (rotation && glflats && !glflats->has_palette_rotation())
 		return;
 #endif
-	delete rendered_flats; 
-	rendered_flats = 0; 
+	delete rendered_flats;
+	rendered_flats = 0;
 #ifdef HAVE_OPENGL
 	delete glflats;
 	glflats = 0;
 #endif
-	}
+}
 
 /*
- *	This method is only used in 'terrain-editor' mode, NOT in normal
- *	gameplay.
+ *  This method is only used in 'terrain-editor' mode, NOT in normal
+ *  gameplay.
  */
 
-void Chunk_terrain::render_all
-	(
-	int cx, int cy			// Chunk rendering too.
-	)
-	{
+void Chunk_terrain::render_all(
+    int cx, int cy          // Chunk rendering too.
+) {
 	Image_window8 *iwin = gwin->get_win();
-	int ctx = cx*c_tiles_per_chunk, cty = cy*c_tiles_per_chunk;
+	int ctx = cx * c_tiles_per_chunk, cty = cy * c_tiles_per_chunk;
 	int scrolltx = gwin->get_scrolltx(), scrollty = gwin->get_scrollty();
-					// Go through array of tiles.
+	// Go through array of tiles.
 	for (int tiley = 0; tiley < c_tiles_per_chunk; tiley++)
-		for (int tilex = 0; tilex < c_tiles_per_chunk; tilex++)
-			{
+		for (int tilex = 0; tilex < c_tiles_per_chunk; tilex++) {
 			Shape_frame *shape = get_shape(tilex, tiley);
 			if (!shape)
 				continue;
 			if (!shape->is_rle())
-				iwin->copy8(shape->get_data(), c_tilesize, 
-					c_tilesize, 
-					(ctx + tilex - scrolltx)*c_tilesize,
-					(cty + tiley - scrollty)*c_tilesize);
-			else		// RLE.
-				{
+				iwin->copy8(shape->get_data(), c_tilesize,
+				            c_tilesize,
+				            (ctx + tilex - scrolltx)*c_tilesize,
+				            (cty + tiley - scrollty)*c_tilesize);
+			else {      // RLE.
 				int x, y;
 				Tile_coord tile(ctx + tilex, cty + tiley, 0);
 				gwin->get_shape_location(tile, x, y);
 				sman->paint_shape(x, y, shape);
-				}
 			}
-	}
+		}
+}
 
 /*
- *	Write out to a chunk.
+ *  Write out to a chunk.
  *
- *	Output:	Length of data stored.
+ *  Output: Length of data stored.
  */
-	
-int Chunk_terrain::write_flats
-	(
-	unsigned char *chunk_data,
-	bool v2_chunks				// 3 bytes/entry.
-	)
-	{
+
+int Chunk_terrain::write_flats(
+    unsigned char *chunk_data,
+    bool v2_chunks              // 3 bytes/entry.
+) {
 	unsigned char *start = chunk_data;
 	for (int ty = 0; ty < c_tiles_per_chunk; ty++)
-		for (int tx = 0; tx < c_tiles_per_chunk; tx++)
-			{
+		for (int tx = 0; tx < c_tiles_per_chunk; tx++) {
 			ShapeID id = get_flat(tx, ty);
-			int shapenum = id.get_shapenum(), 
+			int shapenum = id.get_shapenum(),
 			    framenum = id.get_framenum();
-			if (v2_chunks)
-				{
-				*chunk_data++ = shapenum&0xff;
-				*chunk_data++ = (shapenum>>8)&0xff;
+			if (v2_chunks) {
+				*chunk_data++ = shapenum & 0xff;
+				*chunk_data++ = (shapenum >> 8) & 0xff;
 				*chunk_data++ = framenum;
-				}
-			else
-				{
-				*chunk_data++ = shapenum&0xff;
-				*chunk_data++ =((shapenum>>8)&3)|(framenum<<2);
-				}
+			} else {
+				*chunk_data++ = shapenum & 0xff;
+				*chunk_data++ = ((shapenum >> 8) & 3) | (framenum << 2);
 			}
+		}
 	return chunk_data - start;
-	}
+}
 

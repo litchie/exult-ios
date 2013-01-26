@@ -1,7 +1,7 @@
 /**
- **	U7drag.h - Common defines for drag-and-drop of U7 shapes.
+ ** U7drag.h - Common defines for drag-and-drop of U7 shapes.
  **
- **	Written: 12/13/00 - JSF
+ ** Written: 12/13/00 - JSF
  **/
 
 /*
@@ -30,17 +30,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define U7_TARGET_SHAPEID 137
 
 //	Shape files:
-#define U7_SHAPE_UNK	-1		/* Unknown.			*/
-#define U7_SHAPE_SHAPES	0		/* shapes.vga			*/
-#define U7_SHAPE_GUMPS	1		/* gumps.vga			*/
-#define U7_SHAPE_FONTS	2		/* fonts.vga			*/
-#define U7_SHAPE_FACES	3		/* faces.vga			*/
-#define U7_SHAPE_SPRITES 4		/* sprites.vga			*/
-#define U7_SHAPE_PAPERDOL 5		/* paperdol.vga			*/
+#define U7_SHAPE_UNK    -1      /* Unknown.         */
+#define U7_SHAPE_SHAPES 0       /* shapes.vga           */
+#define U7_SHAPE_GUMPS  1       /* gumps.vga            */
+#define U7_SHAPE_FONTS  2       /* fonts.vga            */
+#define U7_SHAPE_FACES  3       /* faces.vga            */
+#define U7_SHAPE_SPRITES 4      /* sprites.vga          */
+#define U7_SHAPE_PAPERDOL 5     /* paperdol.vga         */
 
 //	Store/get shapeid.
 int Store_u7_shapeid(unsigned char *data, int file, int shape, int frame);
-void Get_u7_shapeid(unsigned char *data, int& file, int& shape, int& frame);
+void Get_u7_shapeid(unsigned char *data, int &file, int &shape, int &frame);
 
 //	Target information for dragging a chunk:
 #define U7_TARGET_CHUNKID_NAME "U7CHUNKID"
@@ -48,7 +48,7 @@ void Get_u7_shapeid(unsigned char *data, int& file, int& shape, int& frame);
 
 //	Store/get chunk #.
 int Store_u7_chunkid(unsigned char *data, int cnum);
-void Get_u7_chunkid(unsigned char *data, int& cnum);
+void Get_u7_chunkid(unsigned char *data, int &cnum);
 
 //	Target information for dragging an npc:
 #define U7_TARGET_NPCID_NAME "U7NPCID"
@@ -56,32 +56,33 @@ void Get_u7_chunkid(unsigned char *data, int& cnum);
 
 //	Store/get npc #.
 int Store_u7_npcid(unsigned char *data, int npcnum);
-void Get_u7_npcid(unsigned char *data, int& npcnum);
+void Get_u7_npcid(unsigned char *data, int &npcnum);
 
 //	Target information for dragging a 'combo' (group of shapes):
 #define U7_TARGET_COMBOID_NAME "U7COMBOID"
 #define U7_TARGET_COMBOID 139
 
 //	Store/get combo and its elements:
-typedef struct U7_combo_data 
-	{ int tx, ty, tz, shape, frame; } U7_combo_data;
+typedef struct U7_combo_data {
+	int tx, ty, tz, shape, frame;
+} U7_combo_data;
 int Store_u7_comboid(unsigned char *data, int xtiles, int ytiles,
-	int tiles_right, int tiles_below, int cnt, U7_combo_data *ents);
-void Get_u7_comboid(unsigned char *data, int& xtiles, int& ytiles,
-	int& tiles_right, int& tiles_below, int& cnt, U7_combo_data *& ents);
+                     int tiles_right, int tiles_below, int cnt, U7_combo_data *ents);
+void Get_u7_comboid(unsigned char *data, int &xtiles, int &ytiles,
+                    int &tiles_right, int &tiles_below, int &cnt, U7_combo_data  *&ents);
 
 // Put these here since they are shared between XWin and Win32
 
 typedef void (*Move_shape_handler_fun)(int shape, int frame, int x, int y,
-					int prevx, int prevy, bool show);
+                                       int prevx, int prevy, bool show);
 typedef void (*Move_combo_handler_fun)(int xtiles, int ytiles, int tiles_right,
-	int tiles_below, int x, int y, int prevx, int prevy, bool show);
+                                       int tiles_below, int x, int y, int prevx, int prevy, bool show);
 typedef void (*Drop_shape_handler_fun)(int shape, int frame, int x, int y,
-							void *data);
+                                       void *data);
 typedef void (*Drop_chunk_handler_fun)(int chunk, int x, int y, void *data);
 typedef void (*Drop_npc_handler_fun)(int npc, int x, int y, void *data);
-typedef void (*Drop_combo_handler_fun)(int cnt, struct U7_combo_data *combo, 
-					int x, int y, void *data);
+typedef void (*Drop_combo_handler_fun)(int cnt, struct U7_combo_data *combo,
+                                       int x, int y, void *data);
 
 
 
