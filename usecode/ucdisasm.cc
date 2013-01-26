@@ -105,7 +105,7 @@ void Usecode_internal::uc_trace_disasm(Usecode_value* locals, int num_locals,
 				break;
 			case op_immed32:
 				immed32 = Read4s(ip);
-				std::printf("\t%04hXH\t\t; %d", immed32, immed32);
+				std::printf("\t%08hXH\t\t; %d", immed32, immed32);
 				break;
 			case op_data_string:
 			case op_data_string32:
