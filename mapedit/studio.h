@@ -86,17 +86,17 @@ private:
 	unsigned char 		*palbuf;	// 3*256 rgb's, each 0-63.
 					// Barge editor:
 	GtkWidget		*bargewin;// Barge window.
-	int			barge_ctx;
+	int				barge_ctx;
 	guint			barge_status_id;
 					// Egg editor:
 	GtkWidget		*eggwin;// Egg window.
 	Shape_draw		*egg_monster_draw;
-	int			egg_ctx;
+	int				egg_ctx;
 	guint			egg_status_id;
 					// Npc editor:
 	GtkWidget		*npcwin;
 	Shape_draw		*npc_draw, *npc_face_draw;
-	int			npc_ctx;
+	int				npc_ctx;
 	guint			npc_status_id;
 					// Object editor:
 	GtkWidget		*objwin;
@@ -112,14 +112,16 @@ private:
 					// Map locator:
 	Locator			*locwin;
 					// Combo editor:
-	Combo_editor		*combowin;
+	Combo_editor	*combowin;
 					// Compile window:
 	GtkWidget		*compilewin;
 	Exec_box		*compile_box;
 					// Usecode browser:
-	Usecode_browser		*ucbrowsewin;
+	Usecode_browser	*ucbrowsewin;
 					// Game info. editor:
 	GtkWidget		*gameinfowin;
+					// Game info. editor:
+	GtkNotebook		*mainnotebook;
 					// Which game type:
 	Exult_Game game_type;
 	bool expansion;
@@ -281,10 +283,12 @@ public:
 	void open_locator_window();
 	void open_combo_window();	// Combo-object editor.
 	void save_combos();
+	void close_combo_window();
 					// Compile.
 	void open_compile_window();
 	void compile(bool if_needed = false);
 	void halt_compile();
+	void close_compile_window();
 	void run();
 					// Maps.
 	void new_map_dialog();
@@ -391,7 +395,7 @@ class strCodepageConvert
 		~strCodepageConvert()
 			{ if (_convstr) g_free(_convstr); }
 		const char *get_str() const
-			{ return _convstr ? (const char *)_convstr : ""; }
+			{ return _convstr ? reinterpret_cast<const char *>(_convstr) : ""; }
 		operator const char *() const
 			{ return get_str(); }
 	};

@@ -100,6 +100,19 @@ void ExultStudio::open_compile_window
 	}
 
 /*
+ *	Close the compile window.
+ */
+
+void ExultStudio::close_compile_window
+	(
+	)
+	{
+	halt_compile();
+	if (compilewin)
+		gtk_widget_hide(compilewin);
+	}
+
+/*
  *	Compile.
  */
 

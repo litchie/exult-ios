@@ -80,6 +80,18 @@ void ExultStudio::open_combo_window
 	}
 
 /*
+ *	Close the combo window.
+ */
+
+void ExultStudio::close_combo_window
+	(
+	)
+	{
+	if (combowin)
+		combowin->show(false);
+	}
+
+/*
  *	Save combos.
  */
 
