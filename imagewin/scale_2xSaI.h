@@ -151,7 +151,7 @@ void Scale_2xSaI
 			Source_pixel colorC, colorD,
 				   colorE, colorF, colorG, colorH,
 				   colorI, colorJ, colorK, colorL,
-				   colorM, colorN, colorO, colorP;
+				   colorM, colorN, colorO/*, colorP*/;
 			Dest_pixel product, product1, product2, orig;
 
 				// Last/next-to-last row?
@@ -186,7 +186,7 @@ void Scale_2xSaI
 			colorM = *(bP + next2_yoff - prev1_xoff);
 			colorN = *(bP + next2_yoff);
 			colorO = *(bP + next2_yoff + next1_xoff);
-			colorP = *(bP + next2_yoff + next2_xoff);
+			//colorP = *(bP + next2_yoff + next2_xoff);
 
 			if ((colorA == colorD) && (colorB != colorC))
 			{
@@ -618,8 +618,8 @@ void Scale_SuperEagle
 		{
            Source_pixel color4, color5, color6;
            Source_pixel color1, color2, color3;
-           Source_pixel colorA0, colorA1, colorA2, colorA3,
-						colorB0, colorB1, colorB2, colorB3,
+           Source_pixel /*colorA0,*/ colorA1, colorA2, /*colorA3,*/
+						/*colorB0,*/ colorB1, colorB2, /*colorB3,*/
 						colorS1, colorS2;
            Dest_pixel product1a, product1b,
 					 product2a, product2b;
@@ -661,10 +661,10 @@ void Scale_SuperEagle
 			else nextl1 = sline_pixels;
 
 
-            colorB0 = *(bP- prevl1 - sub1);
+            //colorB0 = *(bP- prevl1 - sub1);
             colorB1 = *(bP- prevl1);
             colorB2 = *(bP- prevl1 + add1);
-            colorB3 = *(bP- prevl1 + add1 + add2);
+            //colorB3 = *(bP- prevl1 + add1 + add2);
 
             color4 = *(bP - sub1);
             color5 = *(bP);
@@ -676,10 +676,10 @@ void Scale_SuperEagle
             color3 = *(bP + nextl1 + add1);
             colorS1 = *(bP + nextl1 + add1 + add2);
 
-            colorA0 = *(bP + nextl1 + nextl2 - sub1);
+            //colorA0 = *(bP + nextl1 + nextl2 - sub1);
             colorA1 = *(bP + nextl1 + nextl2);
             colorA2 = *(bP + nextl1 + nextl2 + add1);
-            colorA3 = *(bP + nextl1 + nextl2 + add1 + add2);
+            //colorA3 = *(bP + nextl1 + nextl2 + add1 + add2);
 
 
 			if (color2 == color6 && color5 != color3)

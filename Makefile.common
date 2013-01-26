@@ -448,7 +448,7 @@ shapes/shapevga.o : shapes/shapevga.cc $(EXULT_BG_FLX) $(EXULT_SI_FLX)
 usecode/conversation.o : shapes/shapevga.cc $(EXULT_BG_FLX)
 
 $(EXEC) : $(BG_PAPERDOLL) $(FLEXES) $(OBJS)
-	$(CXX) $(LDFLAGS) -o $@ $(OBJS) $(LIBS)
+	$(CXX) $(LDFLAGS) -o $(@) $(OBJS) $(LIBS)
 
 expack$(EXEEXT) : tools/expack.o $(FILE_OBJS)
 	$(CXX) $(LDFLAGS) -o $(@) tools/expack.o $(FILE_OBJS)
@@ -500,13 +500,13 @@ rip$(EXEEXT) : tools/rip.o
 	$(CXX) $(LDFLAGS) -o $(@) tools/rip.o
 
 libsmooth_randomize$(LIBEXT): mapedit/tools/smooth/plugins/plugin_randomize.o
-	$(CXX) -shared -o $@ mapedit/tools/smooth/plugins/plugin_randomize.o $(SDL_LIBS) -static -lstdc++
+	$(CXX) -shared -o $(@) mapedit/tools/smooth/plugins/plugin_randomize.o $(SDL_LIBS) -static -lstdc++
 
 libsmooth_smooth$(LIBEXT): mapedit/tools/smooth/plugins/plugin_smooth.o
-	$(CXX) -shared -o $@ mapedit/tools/smooth/plugins/plugin_smooth.o $(SDL_LIBS) -static -lstdc++
+	$(CXX) -shared -o $(@) mapedit/tools/smooth/plugins/plugin_smooth.o $(SDL_LIBS) -static -lstdc++
 
 libsmooth_stream$(LIBEXT): mapedit/tools/smooth/plugins/plugin_stream.o
-	$(CXX) -shared -o $@ mapedit/tools/smooth/plugins/plugin_stream.o -o $@ $(SDL_LIBS) -static -lstdc++
+	$(CXX) -shared -o $(@) mapedit/tools/smooth/plugins/plugin_stream.o $(SDL_LIBS) -static -lstdc++
 
 SMOOTH_OBJS=\
 	mapedit/tools/smooth/config.o \

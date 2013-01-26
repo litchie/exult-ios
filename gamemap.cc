@@ -1235,6 +1235,20 @@ void Game_map::read_ireg_objects
 				shnum, frnum, tilex, tiley, lift,
 				&circles[0], bmark);
 			}
+		else
+			{   // Just to shut up spurious warnings by compilers and static
+				// analyzers.
+			std::cerr << "Error: Invalid IREG entry on chunk (" << scx << ", "
+			          << scy << "): extended = " << extended << ", entlen = "
+			          << entlen << ", shnum = " << shnum << ", frnum = "
+			          << frnum << std::endl;
+			std::cerr << "Entry data:" << std::hex;
+			for (int i = 0; i < entlen; i++)
+				std::cerr << " " << std::setfill('0') << std::setw(2)
+				          << static_cast<int>(entry[i]);
+			std::cerr << std::endl;
+			continue;
+			}
 		obj->set_quality(quality);
 		obj->set_flags(oflags);
 		last_obj = obj;		// Save as last read.

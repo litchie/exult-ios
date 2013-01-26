@@ -15,6 +15,13 @@
 	* usecode/ucinternal.cc: Usecode_Trace and Usecode_TraceReturn are used only
 	  in debug.
 	* usecode/ucxt/*/*: Portability: typeof is GNU extension.
+	Rev 7341
+	* Makefile.common: Duplicate "-o $(@)" in libsmooth_stream.
+	* gamewin.cc: Added some sanity checking to shut up spuriours warnings from
+	  compiler in ireg object loading.
+	* objs/egg.cc: Eliminating useless code.
+	* shapes/pngio.cc: Eliminating clobbering warning.
+	* all others: Removing unused-but-set variables.
 
 2013-01-25	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* audio/midi_drivers/FluidSynthMidiDriver.*: Eliminated warnings. Added the
