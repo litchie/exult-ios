@@ -1,5 +1,5 @@
 /*
- *	ucfunction.h - Usecode function
+ *  ucfunction.h - Usecode function
  *
  *  Copyright (C) 2002  The Exult Team
  *
@@ -25,24 +25,24 @@
 #include <vector>
 #include "useval.h"
 
-class Usecode_function
-{
- public:
-	int id;				// The function #.  (Appears to be the
-					//   game item # the function gets
-					//   called for.)
-	Usecode_function *orig;		// If this was from 'patch', orig will
-					//   be the function this replaced (if
-					//   it existed).
-	int len;			// Length.
+class Usecode_function {
+public:
+	int id;             // The function #.  (Appears to be the
+	//   game item # the function gets
+	//   called for.)
+	Usecode_function *orig;     // If this was from 'patch', orig will
+	//   be the function this replaced (if
+	//   it existed).
+	int len;            // Length.
 
 	bool extended; // is this an 'extented' function? (aka 32 bit function)
-	unsigned char *code;		// The code.
-	std::vector<Usecode_value> statics;	// Local statics.
-					// Create from file.
-	Usecode_function(std::istream& file);
-	inline ~Usecode_function()
-		{ delete [] code; }
+	unsigned char *code;        // The code.
+	std::vector<Usecode_value> statics; // Local statics.
+	// Create from file.
+	Usecode_function(std::istream &file);
+	inline ~Usecode_function() {
+		delete [] code;
+	}
 };
 
 #endif

@@ -1,5 +1,5 @@
 /*
- *	gamerend.h - Rendering methods.
+ *  gamerend.h - Rendering methods.
  *
  *  Copyright (C) 1998-1999  Jeffrey S. Freedman
  *  Copyright (C) 2000-2013  The Exult Team
@@ -23,33 +23,32 @@
 #define GAMEREND_H 1
 
 /*
- *	A helper-class for rendering.
+ *  A helper-class for rendering.
  */
-class Game_render
-	{
-	unsigned long render_seq;	// For marking rendered objects.
-	int skip;			// Set for each render.  We skip
-					//   painting at or above this.
+class Game_render {
+	unsigned long render_seq;   // For marking rendered objects.
+	int skip;           // Set for each render.  We skip
+	//   painting at or above this.
 public:
 	Game_render() : render_seq(0), skip(31)
-		{  }
+	{  }
 	void paint_terrain_only(int start_chunkx, int start_chunky,
-				int stop_chunkx, int stop_chunky);
-					// Render the map & objects.
+	                        int stop_chunkx, int stop_chunky);
+	// Render the map & objects.
 	int paint_map(int x, int y, int w, int h);
-					// Paint "flat" scenery in a chunk.
+	// Paint "flat" scenery in a chunk.
 	void paint_chunk_flats(int cx, int cy, int xoff, int yoff);
 	void paint_chunk_flat_rles(int cx, int cy, int xoff, int yoff);
-	//				// Paint blackness in a dungeon
+	//              // Paint blackness in a dungeon
 	//void paint_dungeon_black(int cx, int cy, int xoff, int yoff, int index=0);
-					// Paint objects in given chunk at
-					//   given lift.
+	// Paint objects in given chunk at
+	//   given lift.
 	int paint_chunk_objects(int cx, int cy);
-					// Paint an obj. after dependencies.
+	// Paint an obj. after dependencies.
 	void paint_object(Game_object *obj);
-					// Render dungeon blackness
+	// Render dungeon blackness
 	void paint_blackness(int cx, int cy, int stop_chunkx, int stop_chunky,
-							 int index=0);
-	};
+	                     int index = 0);
+};
 
 #endif

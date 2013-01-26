@@ -1,11 +1,11 @@
 /**
- **	armorinf.h - Information from 'armor.dat'.
+ ** armorinf.h - Information from 'armor.dat'.
  **
- **	Written: 06/01/2008 - Marzo
+ ** Written: 06/01/2008 - Marzo
  **/
 
 #ifndef INCL_ARMORINF_H
-#define INCL_ARMORINF_H	1
+#define INCL_ARMORINF_H 1
 
 /*
 Copyright (C) 2008 The Exult Team
@@ -32,45 +32,44 @@ using std::istream;
 class Shape_info;
 
 /*
- *	Armor:
+ *  Armor:
  */
-class Armor_info : public Base_info
-	{
-	unsigned char prot;		// Protection value.
-	unsigned char immune;		// Weapon_data::damage_type bits.
+class Armor_info : public Base_info {
+	unsigned char prot;     // Protection value.
+	unsigned char immune;       // Weapon_data::damage_type bits.
 public:
 	friend class Shape_info;
 	Armor_info() : Base_info() {  }
-		// Read in from file.
-	bool read(std::istream& in, int version, Exult_Game game);
-					// Write out.
-	void write(std::ostream& out, int shapenum, Exult_Game game);
+	// Read in from file.
+	bool read(std::istream &in, int version, Exult_Game game);
+	// Write out.
+	void write(std::ostream &out, int shapenum, Exult_Game game);
 	enum { is_binary = 1, entry_size = 10 };
-	unsigned char get_prot() const
-		{ return prot; }
-	void set_prot(unsigned char p)
-		{
-		if (prot != p)
-			{
+	unsigned char get_prot() const {
+		return prot;
+	}
+	void set_prot(unsigned char p) {
+		if (prot != p) {
 			set_modified(true);
 			prot = p;
-			}
 		}
-	unsigned char get_immune() const
-		{ return immune; }
-	void set_immune(unsigned char i)
-		{
-		if (immune != i)
-			{
+	}
+	unsigned char get_immune() const {
+		return immune;
+	}
+	void set_immune(unsigned char i) {
+		if (immune != i) {
 			set_modified(true);
 			immune = i;
-			}
 		}
-	static int get_info_flag()
-		{ return 4; }
+	}
+	static int get_info_flag() {
+		return 4;
+	}
 	int get_base_strength();
-	int get_base_xp_value()
-		{ return prot; }
-	};
+	int get_base_xp_value() {
+		return prot;
+	}
+};
 
 #endif

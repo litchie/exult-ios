@@ -24,32 +24,30 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class Gump_button;
 
-class AudioOptions_gump : public Modal_gump
-{
-	UNREPLICATABLE_CLASS_I(AudioOptions_gump,Modal_gump(0,0,0,0));
+class AudioOptions_gump : public Modal_gump {
+	UNREPLICATABLE_CLASS_I(AudioOptions_gump, Modal_gump(0, 0, 0, 0));
 
- private:
-	enum button_ids
-		{
-		id_first = 0,
-		id_ok = id_first,
-		id_cancel,
-		id_audio_enabled,
-		id_sample_rate,
-		id_speaker_type,
-		id_music_enabled,
-		id_music_looping,
-		id_music_digital,
-		id_midi_driver,
-		id_midi_conv,
-		id_midi_effects,
-		id_sfx_enabled,
-		id_sfx_pack,
-		id_sfx_conv = id_sfx_pack,
-		id_speech_enabled,
-		id_count
-		};
-	Gump_button* buttons[id_count];
+private:
+	enum button_ids {
+	    id_first = 0,
+	    id_ok = id_first,
+	    id_cancel,
+	    id_audio_enabled,
+	    id_sample_rate,
+	    id_speaker_type,
+	    id_music_enabled,
+	    id_music_looping,
+	    id_music_digital,
+	    id_midi_driver,
+	    id_midi_conv,
+	    id_midi_effects,
+	    id_sfx_enabled,
+	    id_sfx_pack,
+	    id_sfx_conv = id_sfx_pack,
+	    id_speech_enabled,
+	    id_count
+	};
+	Gump_button *buttons[id_count];
 
 	bool speaker_type; // only mono and stereo atm
 	bool o_speaker_type;
@@ -78,22 +76,23 @@ class AudioOptions_gump : public Modal_gump
 	std::string sfx_custompack;
 	std::string configpack, rolandpack, blasterpack, midipack;
 
-	bool have_digital_sfx() const
-		{ return have_roland_pack || have_blaster_pack || have_custom_pack; }
+	bool have_digital_sfx() const {
+		return have_roland_pack || have_blaster_pack || have_custom_pack;
+	}
 
- public:
+public:
 	AudioOptions_gump();
 	virtual ~AudioOptions_gump();
 
-					// Paint it and its contents.
+	// Paint it and its contents.
 	virtual void paint();
 	virtual void close();
 
- 					// Handle events:
+	// Handle events:
 	virtual bool mouse_down(int mx, int my, int button);
 	virtual bool mouse_up(int mx, int my, int button);
 
-	void toggle(Gump_button* btn, int state);
+	void toggle(Gump_button *btn, int state);
 	void rebuild_buttons();
 	void rebuild_midi_buttons();
 	void rebuild_mididriveroption_buttons();

@@ -23,22 +23,22 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class Gump_button;
 
-class Gamemenu_gump : public Modal_gump
-{
-	UNREPLICATABLE_CLASS_I(Gamemenu_gump,Modal_gump(0,0,0,0));
+class Gamemenu_gump : public Modal_gump {
+	UNREPLICATABLE_CLASS_I(Gamemenu_gump, Modal_gump(0, 0, 0, 0));
 
- private:
-	Gump_button* buttons[6];
+private:
+	Gump_button *buttons[6];
 
- public:
+public:
 	Gamemenu_gump();
 	virtual ~Gamemenu_gump();
 
-					// Paint it and its contents.
+	// Paint it and its contents.
 	virtual void paint();
-	virtual void close()
-		{ done = 1; }
-					// Handle events:
+	virtual void close() {
+		done = 1;
+	}
+	// Handle events:
 	virtual bool mouse_down(int mx, int my, int button);
 	virtual bool mouse_up(int mx, int my, int button);
 

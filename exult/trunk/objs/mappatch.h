@@ -1,7 +1,7 @@
 /**
- **	Mappatch.h - Patches to the game map.
+ ** Mappatch.h - Patches to the game map.
  **
- **	Written: 10-18-2001
+ ** Written: 10-18-2001
  **/
 
 /*
@@ -23,7 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 #ifndef INCL_MAPPATCH
-#define INCL_MAPPATCH	1
+#define INCL_MAPPATCH   1
 
 #include <map>
 #include <list>
@@ -32,76 +32,71 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class Game_object;
 
 /*
- *	Specify an object by location, shape, etc.
+ *  Specify an object by location, shape, etc.
  */
-class Object_spec
-	{
+class Object_spec {
 public:
-	Tile_coord loc;			// Where it is.
-	int shapenum;			// Shape #, or -359 for 'dont care'.
-	int framenum;			// Frame #, or -359.
-	int quality;			// Quality, or -359.
-	Object_spec(Tile_coord const& t, int shnum = c_any_shapenum,
-			int frnum = c_any_framenum, int qual = c_any_qual) 
+	Tile_coord loc;         // Where it is.
+	int shapenum;           // Shape #, or -359 for 'dont care'.
+	int framenum;           // Frame #, or -359.
+	int quality;            // Quality, or -359.
+	Object_spec(Tile_coord const &t, int shnum = c_any_shapenum,
+	            int frnum = c_any_framenum, int qual = c_any_qual)
 		: loc(t), shapenum(shnum), framenum(frnum), quality(qual)
-		{  }
-	};
+	{  }
+};
 
 /*
- *	Base class for map patches:
+ *  Base class for map patches:
  */
-class Map_patch
-	{
-	Object_spec spec;		// Specifies object to modify.
+class Map_patch {
+	Object_spec spec;       // Specifies object to modify.
 public:
 	friend class Map_patch_collection;
 	Map_patch(Object_spec s) : spec(s)
-		{  }
+	{  }
 	virtual ~Map_patch() {  }
-	Game_object *find();		// Find matching object.
-	virtual bool apply() = 0;	// Perform action.
-	};
+	Game_object *find();        // Find matching object.
+	virtual bool apply() = 0;   // Perform action.
+};
 
 // Sigh, this is needed to prevent compiler error with MSVC
-typedef std::list<Map_patch*> Map_patch_list;
+typedef std::list<Map_patch *> Map_patch_list;
 typedef std::map<int, Map_patch_list> Map_patch_map;
 
 /*
- *	Remove an object.
+ *  Remove an object.
  */
-class Map_patch_remove : public Map_patch
-	{
-	bool all;			// Delete all matching.
+class Map_patch_remove : public Map_patch {
+	bool all;           // Delete all matching.
 public:
 	Map_patch_remove(Object_spec s, bool a = false) : Map_patch(s), all(a)
-		{  }
-	virtual bool apply();		// Perform action.
-	};
+	{  }
+	virtual bool apply();       // Perform action.
+};
 
 /*
- *	Move/modify an object.
+ *  Move/modify an object.
  */
-class Map_patch_modify : public Map_patch
-	{
-	Object_spec mod;		// Modification.
+class Map_patch_modify : public Map_patch {
+	Object_spec mod;        // Modification.
 public:
 	Map_patch_modify(Object_spec s, Object_spec m) : Map_patch(s), mod(m)
-		{  }
-	virtual bool apply();		// Perform action.
-	};
+	{  }
+	virtual bool apply();       // Perform action.
+};
 
 /*
- *	Here's a collection of patches, organized by superchunk.
+ *  Here's a collection of patches, organized by superchunk.
  */
-class Map_patch_collection
-	{
+class Map_patch_collection {
 	Map_patch_map patches;
 public:
 	Map_patch_collection()
-		{  }
+	{  }
 	~Map_patch_collection();
-	void add(Map_patch *p);		// Add a patch.
-	void apply(int schunk);		// Apply for given superchunk.
-	};
+	void add(Map_patch *p);     // Add a patch.
+	void apply(int schunk);     // Apply for given superchunk.
+};
 
 #endif

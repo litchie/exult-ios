@@ -16,44 +16,44 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef	ZOMBIE_H
-#define	ZOMBIE_H
+#ifndef ZOMBIE_H
+#define ZOMBIE_H
 
 
 #include "PathFinder.h"
 
 
-class	Zombie: public virtual PathFinder
-	{
-	int major_distance;		// Distance in tiles to go.
-	int major_frame_incr;		// # steps to take in faster dir.
-	Tile_coord cur;			// Current pos. within world.
-					// ->'s to cur.tx, cur.ty.
+class   Zombie: public virtual PathFinder {
+	int major_distance;     // Distance in tiles to go.
+	int major_frame_incr;       // # steps to take in faster dir.
+	Tile_coord cur;         // Current pos. within world.
+	// ->'s to cur.tx, cur.ty.
 	short *major_coord, *minor_coord1, *minor_coord2;
-					// 1 or -1 for dir. along each axis.
+	// 1 or -1 for dir. along each axis.
 	int major_dir, minor_dir1, minor_dir2;
-	int major_delta, minor_delta1, minor_delta2;	
-					// For each tile we move along major
-					//   axis, we add 'minor_delta'.  When
-					//   the sum >= 'major_delta', we move
-					//   1 tile along minor axis, and
-					//   subtract 'major_delta' from sum.
-	int sum1, sum2;			// Sum of 'minor_delta''s.
+	int major_delta, minor_delta1, minor_delta2;
+	// For each tile we move along major
+	//   axis, we add 'minor_delta'.  When
+	//   the sum >= 'major_delta', we move
+	//   1 tile along minor axis, and
+	//   subtract 'major_delta' from sum.
+	int sum1, sum2;         // Sum of 'minor_delta''s.
 public:
-	Zombie(int major_incr = 1) : major_distance(0), 
-					major_frame_incr(major_incr)
-		{  }
+	Zombie(int major_incr = 1) : major_distance(0),
+		major_frame_incr(major_incr)
+	{  }
 	// Find a path from sx,sy,sz to dx,dy,dz
 	// Return 0 if no path can be traced.
 	// Return !0 if path found
-	virtual	int	NewPath(Tile_coord const& s, Tile_coord const& d,
-					Pathfinder_client *client);
+	virtual int NewPath(Tile_coord const &s, Tile_coord const &d,
+	                    Pathfinder_client *client);
 
 	// Retrieve the coordinates of the next step on the path
-	virtual	int	GetNextStep(Tile_coord& n, bool& done);
-	virtual int get_num_steps()	// # of steps left to take.
-		{ return major_distance/major_frame_incr; }
+	virtual int GetNextStep(Tile_coord &n, bool &done);
+	virtual int get_num_steps() { // # of steps left to take.
+		return major_distance / major_frame_incr;
+	}
 	virtual ~Zombie();
-	};
+};
 
 #endif

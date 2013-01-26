@@ -1,7 +1,7 @@
 /**
- **	frflags.cc - Frame-based powers from 'shape_info.txt'.
+ ** frflags.cc - Frame-based powers from 'shape_info.txt'.
  **
- **	Written: 06/01/2008 - Marzo
+ ** Written: 06/01/2008 - Marzo
  **/
 
 /*
@@ -27,13 +27,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "frflags.h"
 using std::istream;
 
-bool Frame_flags_info::read
-	(
-	std::istream& in,	// Input stream.
-	int version,		// Data file version.
-	Exult_Game game		// Loading BG file.
-	)
-	{
+bool Frame_flags_info::read(
+    std::istream &in,   // Input stream.
+    int version,        // Data file version.
+    Exult_Game game     // Loading BG file.
+) {
 	frame = ReadInt(in);
 	if (frame < 0)
 		frame = -1;
@@ -49,18 +47,17 @@ bool Frame_flags_info::read
 	else
 		quality &= 0xff;
 
-	int size = 8*sizeof(m_flags);	// Bit count.
+	int size = 8 * sizeof(m_flags); // Bit count.
 	int bit = 0;
 	unsigned int flags = 0;
-	while (in.good() && bit < size)
-		{
+	while (in.good() && bit < size) {
 		if (ReadInt(in) != 0)
 			flags |= (1U << bit);
 		else
 			flags &= ~(1U << bit);
 		bit++;
-		}
+	}
 	m_flags = flags;
 
 	return true;
-	}
+}

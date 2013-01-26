@@ -1,7 +1,7 @@
 /**
- **	effhpinf.cc - Effective HP information from 'shape_info.txt'.
+ ** effhpinf.cc - Effective HP information from 'shape_info.txt'.
  **
- **	Written: 06/01/2008 - Marzo
+ ** Written: 06/01/2008 - Marzo
  **/
 
 /*
@@ -27,13 +27,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "effhpinf.h"
 using std::istream;
 
-bool Effective_hp_info::read
-	(
-	std::istream& in,	// Input stream.
-	int version,		// Data file version.
-	Exult_Game game		// Loading BG file.
-	)
-	{
+bool Effective_hp_info::read(
+    std::istream &in,   // Input stream.
+    int version,        // Data file version.
+    Exult_Game game     // Loading BG file.
+) {
 	frame = ReadInt(in);
 	if (frame < 0)
 		frame = -1;
@@ -46,4 +44,4 @@ bool Effective_hp_info::read
 		quality &= 255;
 	hps = ReadInt(in) & 0xff;
 	return true;
-	}
+}

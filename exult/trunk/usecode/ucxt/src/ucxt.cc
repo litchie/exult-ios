@@ -17,16 +17,16 @@
  */
 
 /*
-	ucxt: Ultima 7 usecode dump/disassembly/convert-to-something-more-readable utility
-		Based heavily on ucdump created and maintained by:
-			Maxim S. Shatskih aka Moscow Dragon (maxim__s@mtu-net.ru)
-	
-	Maintainter:
-		Patrick Burke (takhisisii@yahoo.com.au)
-	
-	Original ucdump history, credits and stuff moved to Docs/ucxtread.txt
-	
-	$LBClueless = TRUE;
+    ucxt: Ultima 7 usecode dump/disassembly/convert-to-something-more-readable utility
+        Based heavily on ucdump created and maintained by:
+            Maxim S. Shatskih aka Moscow Dragon (maxim__s@mtu-net.ru)
+
+    Maintainter:
+        Patrick Burke (takhisisii@yahoo.com.au)
+
+    Original ucdump history, credits and stuff moved to Docs/ucxtread.txt
+
+    $LBClueless = TRUE;
 */
 
 /* TODO:
@@ -71,86 +71,79 @@ using std::ios;
 using std::string;
 using std::endl;
 
-int main(int argc, char** argv)
-{
+int main(int argc, char **argv) {
 	// Tends to make life easier
 	cout << std::setfill('0') << std::setbase(16);
 	cout.setf(ios::uppercase);
 
 	// get the parameters
 	uc.parse_params(argc, argv);
-	if(uc.options.verbose) cout << "Parameters parsed..." << endl;
+	if (uc.options.verbose) cout << "Parameters parsed..." << endl;
 
 	// attempt to find an exult.cfg file... _somewhere_
-	if(uc.options.noconf == false)
-	{
-		if(uc.options.verbose) cout << "Loading exult configuration file..." << endl;
+	if (uc.options.noconf == false) {
+		if (uc.options.verbose) cout << "Loading exult configuration file..." << endl;
 		setup_program_paths();
-		if(config->read_config_file("exult.cfg") == false)
-		{
+		if (config->read_config_file("exult.cfg") == false) {
 			cout << "Failed to locate exult.cfg. Run exult before running ucxt or use the -nc switch. Exiting." << endl;
 			exit(1);
 		}
 		string data_path;
-		config->value("config/disk/data_path",data_path,EXULT_DATADIR);
+		config->value("config/disk/data_path", data_path, EXULT_DATADIR);
 		setup_data_dir(data_path, argv[0]);
 	}
-	
+
 	// init the run time tables
-	if(uc.options.verbose) cout << "Initing runtime tables..." << endl;
-	
+	if (uc.options.verbose) cout << "Initing runtime tables..." << endl;
+
 	ucxtInit init;
 	init.init(*config, uc.options);
-	
-	#if 0
+
+#if 0
 	{
 		cout << "<opcodes>" << endl;
-		
-		for(typeof(opcode_table_data.begin()) i=opcode_table_data.begin(); i!=opcode_table_data.end(); ++i)
-		{
-			if(i->opcode!=0 && i->name!="NULL")
-			{
+
+		for (typeof(opcode_table_data.begin()) i = opcode_table_data.begin(); i != opcode_table_data.end(); ++i) {
+			if (i->opcode != 0 && i->name != "NULL") {
 				cout << "\t<0x" << setw(2) << i->opcode << '>' << endl;
-			
+
 				cout << "\t\t<name> " << i->name << " </>" << endl;
 				cout << "\t\t<asm_nmo> `" << i->asm_nmo << "` </>" << endl;
 				cout << "\t\t<asm_comment> `" << i->asm_comment << "` </>" << endl;
 				cout << "\t\t<ucs_nmo> `" << i->ucs_nmo << "` </>" << endl;
 				cout << "\t\t<num_bytes> " << i->num_bytes << " </>" << endl;
-				
+
 				cout << "\t\t<param_types> {";
-				for(typeof(i->param_types.begin()) j=i->param_types.begin(); j!=i->param_types.end(); ++j)
+				for (typeof(i->param_types.begin()) j = i->param_types.begin(); j != i->param_types.end(); ++j)
 					cout << *j << ',';
 				cout << "} </>" << endl;
-				
+
 				cout << "\t\t<num_pop> " << i->num_pop << " </>" << endl;
 				cout << "\t\t<num_push> " << i->num_push << " </>" << endl;
 				cout << "\t\t<call_effect> " << i->call_effect << " </>" << endl;
-				if(i->flag_return) cout << "\t\t<return/>" << endl;
-				if(i->flag_paren) cout << "\t\t<paren/>" << endl;
-				if(i->flag_indent_inc) cout << "\t\t<indent_inc/>" << endl;
-				if(i->flag_indent_dec) cout << "\t\t<indent_dec/>" << endl;
-				if(i->flag_indent_tmpinc) cout << "\t\t<indent_tmpinc/>" << endl;
-				if(i->flag_indent_tmpdec) cout << "\t\t<indent_tmpdec/>" << endl;
-				
+				if (i->flag_return) cout << "\t\t<return/>" << endl;
+				if (i->flag_paren) cout << "\t\t<paren/>" << endl;
+				if (i->flag_indent_inc) cout << "\t\t<indent_inc/>" << endl;
+				if (i->flag_indent_dec) cout << "\t\t<indent_dec/>" << endl;
+				if (i->flag_indent_tmpinc) cout << "\t\t<indent_tmpinc/>" << endl;
+				if (i->flag_indent_tmpdec) cout << "\t\t<indent_tmpdec/>" << endl;
+
 				cout << "\t</>" << endl;
 			}
 		}
 		cout << "</>" << endl;
 	}
-	#endif
-	
+#endif
+
 	// ICK! Don't try this at home kids...
 	// done because for some reason it started crashing upon piping or redirection to file... wierd.
 	// yes, it's a hack to fix an eldritch bug I could't find... it seems appropriate
 	// FIXME: Problem nolonger exists. Probably should put some 'nice' code in it's place.
 	std::ofstream outputstream;
-	std::streambuf *coutbuf=0;
-	if(uc.output_redirect().size())
-	{
+	std::streambuf *coutbuf = 0;
+	if (uc.output_redirect().size()) {
 		U7open(outputstream, uc.output_redirect().c_str(), false);
-		if(outputstream.fail())
-		{
+		if (outputstream.fail()) {
 			cout << "error. failed to open " << uc.output_redirect() << " for writing. exiting." << endl;
 			exit(1);
 		}
@@ -161,180 +154,147 @@ int main(int argc, char** argv)
 
 	open_usecode_file(uc, *config);
 
-	if(uc.opt().output_extern_header)
-	{
+	if (uc.opt().output_extern_header) {
 		uc.output_extern_header(cout);
-	}
-	else if     ( uc.options.mode_dis || uc.options.mode_all )
-	{
+	} else if (uc.options.mode_dis || uc.options.mode_all) {
 		uc.disassamble();
-	}
-	else if( uc.options.output_flag )
-	{
+	} else if (uc.options.output_flag) {
 		uc.dump_flags(cout);
-	}
-	else
+	} else
 		usage();
 
 	// now we clean up the <ick>y ness from before
-	if(uc.output_redirect().size())
-	{
+	if (uc.output_redirect().size()) {
 		cout.rdbuf(coutbuf);
 	}
-	
+
 	return 0;
 }
 
-void open_usecode_file(UCData &uc, const Configuration &config)
-{
+void open_usecode_file(UCData &uc, const Configuration &config) {
 	GameManager *gamemanager = 0;
-	if(uc.options.noconf == false) gamemanager = new GameManager(true);
+	if (uc.options.noconf == false) gamemanager = new GameManager(true);
 	string bgpath;
-	if(uc.options.noconf == false) config.value("config/disk/game/blackgate/path", bgpath);
+	if (uc.options.noconf == false) config.value("config/disk/game/blackgate/path", bgpath);
 	string fovpath;
-	if(uc.options.noconf == false) config.value("config/disk/game/forgeofvirtue/path", fovpath);
+	if (uc.options.noconf == false) config.value("config/disk/game/forgeofvirtue/path", fovpath);
 	string sipath;
-	if(uc.options.noconf == false) config.value("config/disk/game/serpentisle/path", sipath);
+	if (uc.options.noconf == false) config.value("config/disk/game/serpentisle/path", sipath);
 	string sspath;
-	if(uc.options.noconf == false) config.value("config/disk/game/silverseed/path", sspath);
+	if (uc.options.noconf == false) config.value("config/disk/game/silverseed/path", sspath);
 	string u8path;
-	if(uc.options.noconf == false) config.value("config/disk/game/pagan/path", u8path);
-	
+	if (uc.options.noconf == false) config.value("config/disk/game/pagan/path", u8path);
+
 	/* ok, to find the usecode file we search: (where $PATH=bgpath or sipath)
-		$PATH/static/usecode
-		$PATH/STATIC/usecode
-		$PATH/static/USECODE
-		$PATH/STATIC/USECODE
-		./ultima7/static/usecode || ./serpent/static/usecode
-		./ultima7/STATIC/usecode || ./serpent/STATIC/usecode
-		./ultima7/static/USECODE || ./serpent/static/USECODE
-		./ultima7/STATIC/USECODE || ./serpent/STATIC/USECODE
-		./ULTIMA7/static/usecode || ./SERPENT/static/usecode
-		./ULTIMA7/STATIC/usecode || ./SERPENT/STATIC/usecode
-		./ULTIMA7/static/USECODE || ./SERPENT/static/USECODE
-		./ULTIMA7/STATIC/USECODE || ./SERPENT/STATIC/USECODE
-		./static/usecode
-		./STATIC/usecode
-		./static/USECODE
-		./STATIC/USECODE
-		./usecode.bg || ./usecode.si
-		./USECODE
-		./usecode
-		
-		Anything I'm missing? <queryfluff>
+	    $PATH/static/usecode
+	    $PATH/STATIC/usecode
+	    $PATH/static/USECODE
+	    $PATH/STATIC/USECODE
+	    ./ultima7/static/usecode || ./serpent/static/usecode
+	    ./ultima7/STATIC/usecode || ./serpent/STATIC/usecode
+	    ./ultima7/static/USECODE || ./serpent/static/USECODE
+	    ./ultima7/STATIC/USECODE || ./serpent/STATIC/USECODE
+	    ./ULTIMA7/static/usecode || ./SERPENT/static/usecode
+	    ./ULTIMA7/STATIC/usecode || ./SERPENT/STATIC/usecode
+	    ./ULTIMA7/static/USECODE || ./SERPENT/static/USECODE
+	    ./ULTIMA7/STATIC/USECODE || ./SERPENT/STATIC/USECODE
+	    ./static/usecode
+	    ./STATIC/usecode
+	    ./static/USECODE
+	    ./STATIC/USECODE
+	    ./usecode.bg || ./usecode.si
+	    ./USECODE
+	    ./usecode
+
+	    Anything I'm missing? <queryfluff>
 	*/
-	
+
 	/* The capitilisation configurations: (yes, going overkill, typos are BAD!) */
-	
+
 	// These 4 are only specific to BG && SI
 	string mucc_sl("static");
 	string mucc_sc("STATIC");
 	string mucc_ul("usecode");
 	string mucc_uc("USECODE");
-	
+
 	const string mucc_bgl("ultima7");
 	const string mucc_bgc("ULTIMA7");
 	const string mucc_sil("serpent");
 	const string mucc_sic("SERPENT");
 	const string mucc_u8l("pagan");
 	const string mucc_u8c("PAGAN");
-	
+
 	string path, ucspecial, mucc_l, mucc_c;
-	if(uc.options.game_bg())
-	{
-		if(uc.options.verbose) cout << "Configuring for bg." << endl;
-		if (gamemanager)
-		{
+	if (uc.options.game_bg()) {
+		if (uc.options.verbose) cout << "Configuring for bg." << endl;
+		if (gamemanager) {
 			if (gamemanager->is_bg_installed())
 				path = "<BLACKGATE_STATIC>";
-			else
-			{
+			else {
 				cout << "Failed to locate usecode file. Exiting." << endl;
 				exit(1);
 			}
 			mucc_sl = "";
 			mucc_sc = "";
-		}
-		else
-		{
+		} else {
 			path      = bgpath;
 			mucc_l  = mucc_bgl;
 			mucc_c  = mucc_bgc;
 		}
 		ucspecial = "usecode.bg";
-	}
-	else if(uc.options.game_fov())
-	{
-		if(uc.options.verbose) cout << "Configuring for fov." << endl;
-		if (gamemanager)
-		{
+	} else if (uc.options.game_fov()) {
+		if (uc.options.verbose) cout << "Configuring for fov." << endl;
+		if (gamemanager) {
 			if (gamemanager->is_fov_installed())
 				path = "<FORGEOFVIRTUE_STATIC>";
-			else
-			{
+			else {
 				cout << "Failed to locate usecode file. Exiting." << endl;
 				exit(1);
 			}
 			mucc_sl = "";
 			mucc_sc = "";
-		}
-		else
-		{
+		} else {
 			path      = fovpath;
 			mucc_l  = mucc_bgl;
 			mucc_c  = mucc_bgc;
 		}
 		ucspecial = "usecode.bg";
-	}
-	else if(uc.options.game_si())
-	{
-		if(uc.options.verbose) cout << "Configuring for si." << endl;
-		if (gamemanager)
-		{
+	} else if (uc.options.game_si()) {
+		if (uc.options.verbose) cout << "Configuring for si." << endl;
+		if (gamemanager) {
 			if (gamemanager->is_si_installed())
 				path = "<SERPENTISLE_STATIC>";
-			else
-			{
+			else {
 				cout << "Failed to locate usecode file. Exiting." << endl;
 				exit(1);
 			}
 			mucc_sl = "";
 			mucc_sc = "";
-		}
-		else
-		{
+		} else {
 			path      = sipath;
 			mucc_l  = mucc_sil;
 			mucc_c  = mucc_sic;
 		}
 		ucspecial = "usecode.si";
-	}
-	else if(uc.options.game_ss())
-	{
-		if(uc.options.verbose) cout << "Configuring for ss." << endl;
-		if (gamemanager)
-		{
+	} else if (uc.options.game_ss()) {
+		if (uc.options.verbose) cout << "Configuring for ss." << endl;
+		if (gamemanager) {
 			if (gamemanager->is_ss_installed())
 				path = "<SILVERSEED_STATIC>";
-			else
-			{
+			else {
 				cout << "Failed to locate usecode file. Exiting." << endl;
 				exit(1);
 			}
 			mucc_sl = "";
 			mucc_sc = "";
-		}
-		else
-		{
+		} else {
 			path      = sspath;
 			mucc_l  = mucc_sil;
 			mucc_c  = mucc_sic;
 		}
 		ucspecial = "usecode.si";
-	}
-	else if(uc.options.game_u8())
-	{
-		if(uc.options.verbose) cout << "Configuring for u8." << endl;
+	} else if (uc.options.game_u8()) {
+		if (uc.options.verbose) cout << "Configuring for u8." << endl;
 		path      = u8path;
 		ucspecial = "usecode.u8";
 		mucc_l  = mucc_u8l;
@@ -343,84 +303,79 @@ void open_usecode_file(UCData &uc, const Configuration &config)
 		mucc_sc = "USECODE";
 		mucc_ul = "eusecode.flx";
 		mucc_uc = "EUSECODE.FLX";
-	}
-	else
-	{
+	} else {
 		cerr << "Error: uc.game() was not set to GAME_U7 or GAME_SI or GAME_U8 this can't happen" << endl;
-		assert(false); exit(1); // just incase someone decides to compile without asserts;
+		assert(false);
+		exit(1); // just incase someone decides to compile without asserts;
 	}
-	
+
 	/* The four mystical usecode configurations: */
-	
+
 	const string mucc_ll(string("/") + mucc_sl + "/" + mucc_ul);
 	const string mucc_cl(string("/") + mucc_sc + "/" + mucc_ul);
 	const string mucc_lc(string("/") + mucc_sl + "/" + mucc_uc);
 	const string mucc_cc(string("/") + mucc_sc + "/" + mucc_uc);
-	
+
 	// an icky exception chain for those who don't use .exult.cfg
-	if(uc.input_usecode_file().size())
+	if (uc.input_usecode_file().size())
 		uc.open_usecode(uc.input_usecode_file());
-	else if(uc.options.noconf==false)
-	{
+	else if (uc.options.noconf == false) {
 		uc.open_usecode(path + mucc_ll);
-		if(uc.fail())
+		if (uc.fail())
 			uc.open_usecode(path + mucc_cl);
-		if(uc.fail())
+		if (uc.fail())
 			uc.open_usecode(path + mucc_lc);
-		if(uc.fail())
+		if (uc.fail())
 			uc.open_usecode(path + mucc_cc);
-		if(uc.fail())
+		if (uc.fail())
 			uc.open_usecode(mucc_l + mucc_ll);
-	}
-	else
+	} else
 		uc.open_usecode(mucc_l + mucc_ll);
-		
-	if(uc.fail())
+
+	if (uc.fail())
 		uc.open_usecode(mucc_l + mucc_cl);
-	if(uc.fail())
+	if (uc.fail())
 		uc.open_usecode(mucc_l + mucc_lc);
-	if(uc.fail())
+	if (uc.fail())
 		uc.open_usecode(mucc_l + mucc_cc);
-	if(uc.fail())
+	if (uc.fail())
 		uc.open_usecode(mucc_c + mucc_ll);
-	if(uc.fail())
+	if (uc.fail())
 		uc.open_usecode(mucc_c + mucc_cl);
-	if(uc.fail())
+	if (uc.fail())
 		uc.open_usecode(mucc_c + mucc_lc);
-	if(uc.fail())
+	if (uc.fail())
 		uc.open_usecode(mucc_c + mucc_cc);
-	if(uc.fail())
+	if (uc.fail())
 		uc.open_usecode(mucc_ll);
-	if(uc.fail())
+	if (uc.fail())
 		uc.open_usecode(mucc_cl);
-	if(uc.fail())
+	if (uc.fail())
 		uc.open_usecode(mucc_lc);
-	if(uc.fail())
+	if (uc.fail())
 		uc.open_usecode(mucc_cc);
-	if(uc.fail())
+	if (uc.fail())
 		uc.open_usecode(ucspecial);
-	if(uc.fail())
+	if (uc.fail())
 		uc.open_usecode(mucc_uc);
-	if(uc.fail())
+	if (uc.fail())
 		uc.open_usecode(mucc_ul);
 
 	delete gamemanager;
 	// if we get through all this, usecode can't be installed anywhere sane
-	if(uc.fail())
-	{
+	if (uc.fail()) {
 		cout << "Failed to locate usecode file. Exiting." << endl;
 		exit(1);
 	}
 }
 
-void usage()
-{
+void usage() {
 	cout << "Ultima 7/8 usecode disassembler v0.6.3" << endl
-	#ifdef HAVE_CONFIG_H
+#ifdef HAVE_CONFIG_H
 	     << "    compiled with " << PACKAGE << " " << VERSION << endl
-	#endif
+#endif
 	     << endl;
-	
+
 	cout << "Usage:" << endl
 	     << "\tucxt [options] -a" << endl
 	     << "\t\t- prints all of the functions" << endl

@@ -17,14 +17,13 @@
  */
 
 #ifndef SINGLES_H
-#define SINGLES_H	1
+#define SINGLES_H   1
 
 /*
- *	'Singletons' used throughout the code.
- *	NOTE:  For now, the implementation is in shapeid.cc.
+ *  'Singletons' used throughout the code.
+ *  NOTE:  For now, the implementation is in shapeid.cc.
  */
-class Game_singletons
-	{
+class Game_singletons {
 protected:
 	static class Game_window *gwin;
 	static class Game_map *gmap;
@@ -39,6 +38,6 @@ protected:
 	friend class Game_window;
 public:
 	static void init(Game_window *g);
-	};
+};
 
 #endif

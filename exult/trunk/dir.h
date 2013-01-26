@@ -1,5 +1,5 @@
 /*
- *	dir.h - Directions.
+ *  dir.h - Directions.
  *
  *  Copyright (C) 1998-1999  Jeffrey S. Freedman
  *  Copyright (C) 2000-2013  The Exult Team
@@ -20,43 +20,38 @@
  */
 
 #ifndef DIR_H
-#define DIR_H	1
+#define DIR_H   1
 
 /*
- *	Directions:
+ *  Directions:
  */
-enum Direction
-	{
-	north = 0,
-	northeast = 1,
-	east = 2,
-	southeast = 3,
-	south = 4,
-	southwest = 5,
-	west = 6,
-	northwest = 7
-	};
+enum Direction {
+    north = 0,
+    northeast = 1,
+    east = 2,
+    southeast = 3,
+    south = 4,
+    southwest = 5,
+    west = 6,
+    northwest = 7
+};
 
-Direction Get_direction_NoWrap
-	(
-	int deltay,
-	int deltax
-	);
-Direction Get_direction
-	(
-	int deltay,
-	int deltax
-	);
-Direction Get_direction4
-	(
-	int deltay,
-	int deltax
-	);
+Direction Get_direction_NoWrap(
+    int deltay,
+    int deltax
+);
+Direction Get_direction(
+    int deltay,
+    int deltax
+);
+Direction Get_direction4(
+    int deltay,
+    int deltax
+);
 
-int Get_direction16
-	(
-	int deltay,
-	int deltax
-	);
+int Get_direction16(
+    int deltay,
+    int deltax
+);
 
 #endif

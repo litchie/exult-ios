@@ -1,5 +1,5 @@
 /*
- *	objclient.h - Game objects that have been removed, but need deleting.
+ *  objclient.h - Game objects that have been removed, but need deleting.
  *
  *  Copyright (C) 2000-2013  The Exult Team
  *
@@ -19,27 +19,27 @@
  */
 
 #ifndef OBJCLIENT_H
-#define OBJCLIENT_H	1
+#define OBJCLIENT_H 1
 
 class Game_object;
 /*
- *	A class (ie, Schedule) that needs to be notified when an object
- *	is about to be deleted.
+ *  A class (ie, Schedule) that needs to be notified when an object
+ *  is about to be deleted.
  */
 class Object_client {
 	Game_object_vector objs;
 protected:
-					// Notify that schedule's obj. has been moved or deleted.
+	// Notify that schedule's obj. has been moved or deleted.
 	virtual void notify_object_gone(Game_object *obj) = 0;
 	void add_client(Game_object *obj) {
 		if (obj && obj->add_client(this))
-		    objs.push_back(obj);
+			objs.push_back(obj);
 	}
-	void add_client(Game_object_vector& objs);
+	void add_client(Game_object_vector &objs);
 	void remove_clients();
 public:
 	void object_gone(Game_object *obj);
 	virtual ~Object_client() {  }
 	void kill_client_list();
 };
-#endif	/* OBJCLIENT_H */
+#endif  /* OBJCLIENT_H */

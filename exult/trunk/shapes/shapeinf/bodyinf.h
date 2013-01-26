@@ -1,11 +1,11 @@
 /**
- **	bodyinf.h - Body information from 'bodies.txt'.
+ ** bodyinf.h - Body information from 'bodies.txt'.
  **
- **	Written: 06/01/2008 - Marzo
+ ** Written: 06/01/2008 - Marzo
  **/
 
 #ifndef INCL_BODYINF_H
-#define INCL_BODYINF_H	1
+#define INCL_BODYINF_H  1
 
 /*
 Copyright (C) 2008 The Exult Team
@@ -32,37 +32,37 @@ using std::istream;
 class Shape_info;
 
 /*
- *	Information about body shape and frame.
+ *  Information about body shape and frame.
  */
-class Body_info : public Base_info
-	{
-	int		bshape;			// Body shape.
-	int		bframe;			// Body frame.
+class Body_info : public Base_info {
+	int     bshape;         // Body shape.
+	int     bframe;         // Body frame.
 public:
 	friend class Shape_info;
 	Body_info()
 		: Base_info()
-		{  }
-		// Read in from file.
-	bool read(std::istream& in, int version, Exult_Game game);
-					// Write out.
-	void write(std::ostream& out, int shapenum, Exult_Game game);
-	void set(int s, int f)
-		{
-		if (bshape != s || bframe != f)
-			{
+	{  }
+	// Read in from file.
+	bool read(std::istream &in, int version, Exult_Game game);
+	// Write out.
+	void write(std::ostream &out, int shapenum, Exult_Game game);
+	void set(int s, int f) {
+		if (bshape != s || bframe != f) {
 			set_modified(true);
 			bshape = s;
 			bframe = f;
-			}
 		}
-	int get_body_shape() const
-		{ return bshape; }
-	int get_body_frame() const
-		{ return bframe; }
-	static int get_info_flag()
-		{ return 0x100; }
+	}
+	int get_body_shape() const {
+		return bshape;
+	}
+	int get_body_frame() const {
+		return bframe;
+	}
+	static int get_info_flag() {
+		return 0x100;
+	}
 	enum { is_binary = 0, entry_size = 0 };
-	};
+};
 
 #endif

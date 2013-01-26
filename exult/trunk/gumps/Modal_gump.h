@@ -23,45 +23,49 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "SDL_events.h"
 
 /*
- *	A modal gump object represents a 'dialog' that grabs the mouse until
- *	the user clicks okay.
+ *  A modal gump object represents a 'dialog' that grabs the mouse until
+ *  the user clicks okay.
  */
-class Modal_gump : public Gump
-{
+class Modal_gump : public Gump {
 	UNREPLICATABLE_CLASS_I(Modal_gump, Gump());
 
 protected:
-	bool done;			// true when user clicks checkmark.
-	Gump_button *pushed;		// Button currently being pushed.
+	bool done;          // true when user clicks checkmark.
+	Gump_button *pushed;        // Button currently being pushed.
 
 public:
-	Modal_gump(Container_game_object *cont, int initx, int inity, 
-			   int shnum, ShapeFile shfile = SF_GUMPS_VGA)
+	Modal_gump(Container_game_object *cont, int initx, int inity,
+	           int shnum, ShapeFile shfile = SF_GUMPS_VGA)
 		: Gump(cont, initx, inity, shnum, shfile), done(false),
 		  pushed(0)
-		{  }
+	{  }
 	virtual ~Modal_gump() {  }
-					// Create centered.
-	Modal_gump(Container_game_object *cont, int shnum, 
-			   ShapeFile shfile = SF_GUMPS_VGA)
+	// Create centered.
+	Modal_gump(Container_game_object *cont, int shnum,
+	           ShapeFile shfile = SF_GUMPS_VGA)
 		: Gump(cont, shnum, shfile), done(false), pushed(0)
-		{  }
-	bool is_done()
-		{ return done; }
-					// Handle events:
+	{  }
+	bool is_done() {
+		return done;
+	}
+	// Handle events:
 	virtual bool mouse_down(int mx, int my, int button) = 0;
 	virtual bool mouse_up(int mx, int my, int button) = 0;
 	virtual void mousewheel_down() { }
 	virtual void mousewheel_up() { }
 	virtual void mouse_drag(int mx, int my)
-		{  }
+	{  }
 	virtual void key_down(int chr) // Key pressed
-		{  }
+	{  }
 	virtual void text_input(int chr, int unicode) // Character typed (unicode)
-		{ }
-	virtual bool is_modal() const { return true; }
+	{ }
+	virtual bool is_modal() const {
+		return true;
+	}
 
-	virtual bool run() { return false; }
+	virtual bool run() {
+		return false;
+	}
 
 };
 

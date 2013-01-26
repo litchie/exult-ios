@@ -27,7 +27,7 @@ class Game_window;
 class Jawbone_object;
 
 class Jawbone_gump : public Gump {
- public:
+public:
 	Jawbone_gump(Jawbone_object *cont, int initx, int inity);
 
 	virtual ~Jawbone_gump() {}
@@ -36,14 +36,14 @@ class Jawbone_gump : public Gump {
 	virtual Game_object *find_object(int mx, int my);
 
 	// Add object.
-	virtual int add(Game_object *obj, int mx = -1, int my = -1, 
-			int sx = -1, int sy = -1, bool dont_check = false,
-						bool combine = false);
+	virtual int add(Game_object *obj, int mx = -1, int my = -1,
+	                int sx = -1, int sy = -1, bool dont_check = false,
+	                bool combine = false);
 
 	// Paint it and its contents.
 	virtual void paint();
 
- private:
+private:
 	void set_to_spot(Game_object *obj, int sx, int sy);
 	void paint_tooth(int index);
 

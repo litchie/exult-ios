@@ -1,7 +1,7 @@
 /**
- **	sfxinf.cc - Sound Effect information from 'shape_info.txt'.
+ ** sfxinf.cc - Sound Effect information from 'shape_info.txt'.
  **
- **	Written: 06/01/2008 - Marzo
+ ** Written: 06/01/2008 - Marzo
  **/
 
 /*
@@ -27,29 +27,25 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "sfxinf.h"
 using std::istream;
 
-bool SFX_info::read
-	(
-	std::istream& in,	// Input stream.
-	int version,		// Data file version.
-	Exult_Game game		// Loading BG file.
-	)
-	{
+bool SFX_info::read(
+    std::istream &in,   // Input stream.
+    int version,        // Data file version.
+    Exult_Game game     // Loading BG file.
+) {
 	sfxnum = ReadInt(in);
-	if (sfxnum == -0xff)	// means delete entry.
-		{
+	if (sfxnum == -0xff) {  // means delete entry.
 		set_invalid(true);
 		return true;
-		}
-	if (version >= 2)
-		{
+	}
+	if (version >= 2) {
 		chance = ReadInt(in, 100);
 		if (chance < 1 || chance > 100)
 			chance = 100;
 		range = ReadInt(in, 1);
 		if (range < 1)
-			range = 1;		// Sensible default.
+			range = 1;      // Sensible default.
 		random = ReadInt(in, 0) != 0;
 		extra = ReadInt(in, -1);
-		}
-	return true;
 	}
+	return true;
+}

@@ -26,16 +26,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 
 /*
- *	Redisplay as 'pushed'.
+ *  Redisplay as 'pushed'.
  */
 
-bool Gump_button::push
-	(
-	int button
-	)
-{
-	if (button == 1)
-	{
+bool Gump_button::push(
+    int button
+) {
+	if (button == 1) {
 		set_pushed(button);
 		paint();
 		gwin->set_painted();
@@ -45,16 +42,13 @@ bool Gump_button::push
 }
 
 /*
- *	Redisplay as 'unpushed'.
+ *  Redisplay as 'unpushed'.
  */
 
-void Gump_button::unpush
-	(
-	int button
-	)
-{
-	if (button == 1)
-	{
+void Gump_button::unpush(
+    int button
+) {
+	if (button == 1) {
 		set_pushed(false);
 		paint();
 		gwin->set_painted();
@@ -62,36 +56,31 @@ void Gump_button::unpush
 }
 
 /*
- *	Default method for double-click.
+ *  Default method for double-click.
  */
 
-void Gump_button::double_clicked
-	(
-	int x, int y
-	)
-{
+void Gump_button::double_clicked(
+    int x, int y
+) {
 }
 
 /*
- *	Repaint checkmark, etc.
+ *  Repaint checkmark, etc.
  */
 
-void Gump_button::paint
-	(
-	)
-{
+void Gump_button::paint(
+) {
 	int px = 0;
 	int py = 0;
 
-	if (parent)
-	{
+	if (parent) {
 		px = parent->get_x();
 		py = parent->get_y();
 	}
 
 	int prev_frame = get_framenum();
-	set_frame(prev_frame + (is_pushed()?1:0));
-	paint_shape(x+px, y+py);
+	set_frame(prev_frame + (is_pushed() ? 1 : 0));
+	paint_shape(x + px, y + py);
 	set_frame(prev_frame);
 
 }

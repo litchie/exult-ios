@@ -1,5 +1,5 @@
 /*
- *	playfli.cc - Play Autodesk Animator FLIs
+ *  playfli.cc - Play Autodesk Animator FLIs
  *
  *  Copyright (C) 2000-2013  The Exult Team
  *
@@ -27,42 +27,44 @@
 class Palette;
 
 class playfli {
- public:
- struct fliinfo {
-    int frames;
-    int width;
-    int height;
-    int depth;
-    int speed;
- };
- private:
-    DataSource *fli_data;
-    int fli_size;
-    int fli_magic;
-    int fli_frames;
-    int fli_width;
-    int fli_height;
-    int fli_depth;
-    int fli_flags;
-    int fli_speed;
-    Image_buffer *fli_buf;
-    int streamstart;
-    int streampos;
-    int frame;
-    Palette	*palette;
- public:
-    playfli(const char *fli_name);
-    playfli(char *buffer, std::size_t len);
-    ~playfli();
-    void info(fliinfo *fi = NULL);
-    int play(Image_window *win, int first_frame = 0, int last_frame = -1, unsigned long ticks = 0, int brightness = 100);
-    void put_buffer(Image_window *win);
-    inline Palette *get_palette () { return palette; }
- private:
-    void initfli();
-    int	nextpal;
-    int thispal;
-    int changepal;
+public:
+	struct fliinfo {
+		int frames;
+		int width;
+		int height;
+		int depth;
+		int speed;
+	};
+private:
+	DataSource *fli_data;
+	int fli_size;
+	int fli_magic;
+	int fli_frames;
+	int fli_width;
+	int fli_height;
+	int fli_depth;
+	int fli_flags;
+	int fli_speed;
+	Image_buffer *fli_buf;
+	int streamstart;
+	int streampos;
+	int frame;
+	Palette *palette;
+public:
+	playfli(const char *fli_name);
+	playfli(char *buffer, std::size_t len);
+	~playfli();
+	void info(fliinfo *fi = NULL);
+	int play(Image_window *win, int first_frame = 0, int last_frame = -1, unsigned long ticks = 0, int brightness = 100);
+	void put_buffer(Image_window *win);
+	inline Palette *get_palette() {
+		return palette;
+	}
+private:
+	void initfli();
+	int nextpal;
+	int thispal;
+	int changepal;
 };
 
 

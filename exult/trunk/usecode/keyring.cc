@@ -30,18 +30,15 @@
 using std::ifstream;
 using std::ofstream;
 
-void Keyring::read()
-{
+void Keyring::read() {
 	ifstream in;
 
 	// clear keyring first
 	keys.clear();
 
-	try
-	{
+	try {
 		U7open(in, KEYRINGDAT);
-	}
-	catch(exult_exception &/*e*/) {
+	} catch (exult_exception &/*e*/) {
 		// maybe an old savegame, just leave the keyring empty
 		return;
 	}
@@ -55,8 +52,7 @@ void Keyring::read()
 	in.close();
 }
 
-void Keyring::write()
-{
+void Keyring::write() {
 	ofstream out;
 
 	U7open(out, KEYRINGDAT);
@@ -69,23 +65,19 @@ void Keyring::write()
 	out.close();
 }
 
-void Keyring::clear()
-{
+void Keyring::clear() {
 	keys.clear();
 }
 
-void Keyring::addkey(int qual)
-{
+void Keyring::addkey(int qual) {
 	keys.insert(qual);
 }
 
-bool Keyring::checkkey(int qual)
-{
+bool Keyring::checkkey(int qual) {
 	return (keys.find(qual) != keys.end());
 }
 
-bool Keyring::removekey(int qual)
-{
+bool Keyring::removekey(int qual) {
 	std::set<int>::iterator ent = keys.find(qual);
 	if (ent == keys.end())
 		return false;

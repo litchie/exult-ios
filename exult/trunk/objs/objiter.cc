@@ -1,7 +1,7 @@
 /**
- **	Objiter.h - Game objects iterator.
+ ** Objiter.h - Game objects iterator.
  **
- **	Written: 5/27/2002 - JSF
+ ** Written: 5/27/2002 - JSF
  **/
 
 /*
@@ -31,54 +31,49 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "chunks.h"
 
 /*
- *	Create to start after/before a given object within a chunk.
+ *  Create to start after/before a given object within a chunk.
  */
 
-template<class D> 
-D_Recursive_object_iterator<D>::D_Recursive_object_iterator
-	(
-	Game_object *start		// Start here.
-	) : child(0), elems(start->get_outermost()->get_chunk()->get_objects())
-	{
-					// Get what obj. is in (or itself).
+template<class D>
+D_Recursive_object_iterator<D>::D_Recursive_object_iterator(
+    Game_object *start      // Start here.
+) : child(0), elems(start->get_outermost()->get_chunk()->get_objects()) {
+	// Get what obj. is in (or itself).
 	Game_object *owner = start->get_outermost();
-	Game_object *obj;		// Find owner within its chunk.
+	Game_object *obj;       // Find owner within its chunk.
 	while ((obj = get_next()) != 0 && obj != owner)
 		;
 	if (!obj)
-		return;			// Bad.  It wasn't found.
-	if (obj != start)		// Given object contained?
-					// Look within for it.
+		return;         // Bad.  It wasn't found.
+	if (obj != start)       // Given object contained?
+		// Look within for it.
 		while ((obj = get_next()) != 0 && obj != start)
 			;
-	}
+}
 
 /*
- *	Get next game object, going down recursively into containers.
+ *  Get next game object, going down recursively into containers.
  *
- *	Output:	Next in world, or 0 if done.
+ *  Output: Next in world, or 0 if done.
  */
 
-template<class D> Game_object *D_Recursive_object_iterator<D>::get_next
-	(
-	)
-	{
+template<class D> Game_object *D_Recursive_object_iterator<D>::get_next(
+) {
 	Game_object *obj;
-	if (child)			// Going through container?
-		{
+	if (child) {        // Going through container?
 		obj = child->get_next();
 		if (obj)
 			return obj;
 		delete child;
-		child = 0;		// Child done.
-		}
-	obj = elems.get_next();		// Get next from our list.
-	if (!obj)
-		return 0;		// All done.
-					// Is it a container?
-	Container_game_object *c = obj->as_container();
-	if (c)				// Container?  Set to go through it.
-		child = new D_Recursive_object_iterator<D>(
-							c->get_objects());
-	return obj;
+		child = 0;      // Child done.
 	}
+	obj = elems.get_next();     // Get next from our list.
+	if (!obj)
+		return 0;       // All done.
+	// Is it a container?
+	Container_game_object *c = obj->as_container();
+	if (c)              // Container?  Set to go through it.
+		child = new D_Recursive_object_iterator<D>(
+		    c->get_objects());
+	return obj;
+}

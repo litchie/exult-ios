@@ -1,7 +1,7 @@
 /**
- **	Shapedraw.cc - Manage a drawing area that shows one or more shapes.
+ ** Shapedraw.cc - Manage a drawing area that shows one or more shapes.
  **
- **	Written: 6/2/2001 - JSF
+ ** Written: 6/2/2001 - JSF
  **/
 
 /*
@@ -35,227 +35,197 @@ using std::cout;
 using std::endl;
 
 /*
- *	Blit onto screen.
+ *  Blit onto screen.
  */
 
-void Shape_draw::show
-	(
-	GdkDrawable *drawable,
-	int x, int y, int w, int h	// Area to blit.
-	)
-	{
+void Shape_draw::show(
+    GdkDrawable *drawable,
+    int x, int y, int w, int h  // Area to blit.
+) {
 	int stride = iwin->get_line_width();
 	gdk_draw_indexed_image(drawable, drawgc, x, y, w, h,
-			GDK_RGB_DITHER_NORMAL,
-			iwin->get_bits() + y*stride + x, 
-			stride, palette);
-	}
+	                       GDK_RGB_DITHER_NORMAL,
+	                       iwin->get_bits() + y * stride + x,
+	                       stride, palette);
+}
 
 /*
- *	Draw one shape at a particular place.
+ *  Draw one shape at a particular place.
  */
 
-void Shape_draw::draw_shape
-	(
-	Shape_frame *shape,
-	int x, int y
-	)
-	{
+void Shape_draw::draw_shape(
+    Shape_frame *shape,
+    int x, int y
+) {
 	shape->paint(iwin, x + shape->get_xleft(), y + shape->get_yabove());
-	}
+}
 
 /*
- *	Draw one shape at a particular place.
+ *  Draw one shape at a particular place.
  */
 
-void Shape_draw::draw_shape
-	(
-	int shapenum, int framenum,
-	int x, int y
-	)
-	{
+void Shape_draw::draw_shape(
+    int shapenum, int framenum,
+    int x, int y
+) {
 	if (shapenum < 0 || shapenum >= ifile->get_num_shapes())
 		return;
 	Shape_frame *shape = ifile->get_shape(shapenum, framenum);
 	if (shape)
 		draw_shape(shape, x, y);
-	}
+}
 
 /*
- *	Draw one shape's outline at a particular place.
+ *  Draw one shape's outline at a particular place.
  */
 
-void Shape_draw::draw_shape_outline
-	(
-	int shapenum, int framenum,
-	int x, int y,
-	unsigned char color		// Color index for outline.
-	)
-	{
+void Shape_draw::draw_shape_outline(
+    int shapenum, int framenum,
+    int x, int y,
+    unsigned char color     // Color index for outline.
+) {
 	if (shapenum < 0 || shapenum >= ifile->get_num_shapes())
 		return;
 	Shape_frame *shape = ifile->get_shape(shapenum, framenum);
-	if (shape)
-		{
+	if (shape) {
 		if (shape->is_rle())
-			shape->paint_rle_outline(iwin, x + shape->get_xleft(), 
-					y + shape->get_yabove(), color);
-		else
-			{
+			shape->paint_rle_outline(iwin, x + shape->get_xleft(),
+			                         y + shape->get_yabove(), color);
+		else {
 			int w = shape->get_width(), h = shape->get_height();
 			iwin->fill_line8(color, w, x, y);
 			iwin->fill_line8(color, w, x, y + h - 1);
 			iwin->fill8(color, 1, h, x, y);
 			iwin->fill8(color, 1, h, x + w - 1, y);
-			}
 		}
 	}
+}
 
 /*
- *	Draw a shape centered in the drawing area.
+ *  Draw a shape centered in the drawing area.
  */
 
-void Shape_draw::draw_shape_centered
-	(
-	int shapenum,			// -1 to not draw shape.
-	int framenum
-	)
-	{
-	iwin->fill8(255);		// Background (transparent) color.
+void Shape_draw::draw_shape_centered(
+    int shapenum,           // -1 to not draw shape.
+    int framenum
+) {
+	iwin->fill8(255);       // Background (transparent) color.
 	if (shapenum < 0 || shapenum >= ifile->get_num_shapes()
-		|| framenum >= ifile->get_num_frames(shapenum))
+	        || framenum >= ifile->get_num_frames(shapenum))
 		return;
 	Shape_frame *shape = ifile->get_shape(shapenum, framenum);
 	if (!shape || shape->is_empty())
 		return;
-					// Get drawing area dimensions.
+	// Get drawing area dimensions.
 	gint winw = draw->allocation.width, winh = draw->allocation.height;
-	draw_shape(shape, (winw - shape->get_width())/2,
-			  (winh - shape->get_height())/2);
-	}
+	draw_shape(shape, (winw - shape->get_width()) / 2,
+	           (winh - shape->get_height()) / 2);
+}
 
 /*
- *	Create.
+ *  Create.
  */
 
-Shape_draw::Shape_draw
-	(
-	Vga_file *i,			// Where they're kept.
-	unsigned char *palbuf,		// Palette, 3*256 bytes (rgb triples).
-	GtkWidget *drw			// Drawing area to use.
-	) : ifile(i), draw(drw), drawgc(0),
-	    iwin(0), palette(0),
-	    drop_callback(0), drop_user_data(0), dragging(false)
-	{
+Shape_draw::Shape_draw(
+    Vga_file *i,            // Where they're kept.
+    unsigned char *palbuf,      // Palette, 3*256 bytes (rgb triples).
+    GtkWidget *drw          // Drawing area to use.
+) : ifile(i), draw(drw), drawgc(0),
+	iwin(0), palette(0),
+	drop_callback(0), drop_user_data(0), dragging(false) {
 	guint32 colors[256];
 	for (int i = 0; i < 256; i++)
-		colors[i] = (palbuf[3*i]<<16)*4 + (palbuf[3*i+1]<<8)*4 + 
-							palbuf[3*i+2]*4;
+		colors[i] = (palbuf[3 * i] << 16) * 4 + (palbuf[3 * i + 1] << 8) * 4 +
+		            palbuf[3 * i + 2] * 4;
 	palette = gdk_rgb_cmap_new(colors, 256);
-	}
+}
 
 /*
- *	Delete.
+ *  Delete.
  */
 
-Shape_draw::~Shape_draw
-	(
-	)
-	{
+Shape_draw::~Shape_draw(
+) {
 	gdk_rgb_cmap_free(palette);
 	delete iwin;
-	}
+}
 
 /*
- *	Default render.
+ *  Default render.
  */
 
-void Shape_draw::render
-	(
-	)
-	{
-	}
+void Shape_draw::render(
+) {
+}
 
 /*
- *	Set background color and repaint.
+ *  Set background color and repaint.
  */
 
-void Shape_draw::set_background_color
-	(
-	guint32 c
-	)
-	{
+void Shape_draw::set_background_color(
+    guint32 c
+) {
 	palette->colors[255] = c;
 	render();
 	show();
-	}
+}
 
 /*
- *	Configure the viewing window.
+ *  Configure the viewing window.
  */
 
-void Shape_draw::configure
-	(
-	)
-	{
+void Shape_draw::configure(
+) {
 	if (!draw->window)
-		return;			// Not ready yet.
-	if (!iwin)			// First time?
-		{
+		return;         // Not ready yet.
+	if (!iwin) {        // First time?
 		drawgc = gdk_gc_new(draw->window);
-					// Foreground = yellow.
-		gdk_rgb_gc_set_foreground(drawgc, (255<<16) + (255<<8));
+		// Foreground = yellow.
+		gdk_rgb_gc_set_foreground(drawgc, (255 << 16) + (255 << 8));
 		iwin = new Image_buffer8(
-			draw->allocation.width, draw->allocation.height);
-		}
-	else if ((int)iwin->get_width() != draw->allocation.width ||
-		 (int)iwin->get_height() != draw->allocation.height)
-		{
+		    draw->allocation.width, draw->allocation.height);
+	} else if ((int)iwin->get_width() != draw->allocation.width ||
+	           (int)iwin->get_height() != draw->allocation.height) {
 		delete iwin;
 		iwin = new Image_buffer8(
-			draw->allocation.width, draw->allocation.height);
-		}
+		    draw->allocation.width, draw->allocation.height);
 	}
+}
 
 /*
- *	Shape was dropped.
+ *  Shape was dropped.
  */
 
-void Shape_draw::drag_data_received
-	(
-	GtkWidget *widget,
-	GdkDragContext *context,
-	gint x,
-	gint y,
-	GtkSelectionData *seldata,
-	guint info,
-	guint time,
-	gpointer udata			// Should point to Shape_draw.
-	)
-	{
+void Shape_draw::drag_data_received(
+    GtkWidget *widget,
+    GdkDragContext *context,
+    gint x,
+    gint y,
+    GtkSelectionData *seldata,
+    guint info,
+    guint time,
+    gpointer udata          // Should point to Shape_draw.
+) {
 	Shape_draw *draw = (Shape_draw *) udata;
 	cout << "drag_data_received" << endl;
 	if (draw->drop_callback &&
-	    seldata->type == gdk_atom_intern(U7_TARGET_SHAPEID_NAME, 0) &&
-	    seldata->format == 8 && seldata->length > 0)
-		{
+	        seldata->type == gdk_atom_intern(U7_TARGET_SHAPEID_NAME, 0) &&
+	        seldata->format == 8 && seldata->length > 0) {
 		int file, shape, frame;
 		Get_u7_shapeid(seldata->data, file, shape, frame);
 		(*draw->drop_callback)(file, shape, frame,
-							draw->drop_user_data);
-		}
+		                       draw->drop_user_data);
 	}
+}
 
 /*
- *	Set to accept drops from drag-n-drop of a shape.
+ *  Set to accept drops from drag-n-drop of a shape.
  */
 
-void Shape_draw::enable_drop
-	(
-	Drop_callback callback,		// Call this when shape dropped.
-	void *udata			// Passed to callback.
-	)
-	{
+void Shape_draw::enable_drop(
+    Drop_callback callback,     // Call this when shape dropped.
+    void *udata         // Passed to callback.
+) {
 	gtk_widget_realize(draw);//???????
 #ifndef WIN32
 	drop_callback = callback;
@@ -265,71 +235,66 @@ void Shape_draw::enable_drop
 	tents[0].flags = 0;
 	tents[0].info = U7_TARGET_SHAPEID;
 	gtk_drag_dest_set(draw, GTK_DEST_DEFAULT_ALL, tents, 1,
-			(GdkDragAction) (GDK_ACTION_COPY | GDK_ACTION_MOVE));
+	                  (GdkDragAction)(GDK_ACTION_COPY | GDK_ACTION_MOVE));
 
 	gtk_signal_connect(GTK_OBJECT(draw), "drag_data_received",
-				GTK_SIGNAL_FUNC(drag_data_received), this);
+	                   GTK_SIGNAL_FUNC(drag_data_received), this);
 #endif
-	}
+}
 
 /*
- *	Set an icon for dragging FROM this area.
+ *  Set an icon for dragging FROM this area.
  */
 
-void Shape_draw::set_drag_icon
-	(
-	GdkDragContext *context,
-	Shape_frame *shape		// Shape to use for the icon.
-	)
-	{
+void Shape_draw::set_drag_icon(
+    GdkDragContext *context,
+    Shape_frame *shape      // Shape to use for the icon.
+) {
 	int w = shape->get_width(), h = shape->get_height(),
-		xright = shape->get_xright(), ybelow = shape->get_ybelow();
-	Image_buffer8 tbuf(w, h);	// Create buffer to render to.
-	tbuf.fill8(0xff);		// Fill with 'transparent' pixel.
+	    xright = shape->get_xright(), ybelow = shape->get_ybelow();
+	Image_buffer8 tbuf(w, h);   // Create buffer to render to.
+	tbuf.fill8(0xff);       // Fill with 'transparent' pixel.
 	unsigned char *tbits = tbuf.get_bits();
 	shape->paint(&tbuf, w - 1 - xright, h - 1 - ybelow);
-					// Put shape on a pixmap.
+	// Put shape on a pixmap.
 	GdkPixmap *pixmap = gdk_pixmap_new(draw->window, w, h, -1);
 	gdk_draw_indexed_image(pixmap, drawgc, 0, 0, w, h,
-			GDK_RGB_DITHER_NORMAL, tbits,
-			tbuf.get_line_width(), palette);
-	int mask_stride = (w + 7)/8;	// Round up to nearest byte.
-	char *mdata = new char[mask_stride*h];
-	for (int y = 0; y < h; y++)	// Do each row.
-					// Do each byte.
-		for (int b = 0; b < mask_stride; b++)
-			{
+	                       GDK_RGB_DITHER_NORMAL, tbits,
+	                       tbuf.get_line_width(), palette);
+	int mask_stride = (w + 7) / 8;  // Round up to nearest byte.
+	char *mdata = new char[mask_stride * h];
+	for (int y = 0; y < h; y++) // Do each row.
+		// Do each byte.
+		for (int b = 0; b < mask_stride; b++) {
 			char bits = 0;
-			unsigned char *vals = tbits + y*w + b*8;
+			unsigned char *vals = tbits + y * w + b * 8;
 			for (int i = 0; i < 8; i++)
 				if (vals[i] != 0xff)
-					bits |= (1<<i);
-			mdata[y*mask_stride + b] = bits;
-			}
+					bits |= (1 << i);
+			mdata[y * mask_stride + b] = bits;
+		}
 	GdkBitmap *mask = gdk_bitmap_create_from_data(draw->window,
-							mdata, w, h);
+	                  mdata, w, h);
 	delete [] mdata;
-					// This will be the shape dragged.
+	// This will be the shape dragged.
 	gtk_drag_set_icon_pixmap(context,
-			gdk_window_get_colormap(draw->window), pixmap, mask,
-					w - 2 - xright, h - 2 - ybelow);
+	                         gdk_window_get_colormap(draw->window), pixmap, mask,
+	                         w - 2 - xright, h - 2 - ybelow);
 	gdk_pixmap_unref(pixmap);
 	gdk_bitmap_unref(mask);
-	}
+}
 
 /*
- *	Start dragging from here.
+ *  Start dragging from here.
  *
- *	Note:	Sets 'dragging', which is only cleared by 'mouse_up()'.
+ *  Note:   Sets 'dragging', which is only cleared by 'mouse_up()'.
  */
 
-void Shape_draw::start_drag
-	(
-	const char *target,			// Target (ie, U7_TARGET_SHAPEID_NAME).
-	int id,				// ID (ie, U7_TARGET_SHAPEID).
-	GdkEvent *event			// Event that started this.
-	)
-	{
+void Shape_draw::start_drag(
+    const char *target,         // Target (ie, U7_TARGET_SHAPEID_NAME).
+    int id,             // ID (ie, U7_TARGET_SHAPEID).
+    GdkEvent *event         // Event that started this.
+) {
 	if (dragging)
 		return;
 	dragging = true;
@@ -338,9 +303,9 @@ void Shape_draw::start_drag
 	tents[0].flags = 0;
 	tents[0].info = id;
 	GtkTargetList *tlist = gtk_target_list_new(&tents[0], 1);
-					// ??+++ Do we need to free tlist?
+	// ??+++ Do we need to free tlist?
 	gtk_drag_begin(draw, tlist,
-			(GdkDragAction) (GDK_ACTION_COPY | GDK_ACTION_MOVE),
-			1, event);
-	}
+	               (GdkDragAction)(GDK_ACTION_COPY | GDK_ACTION_MOVE),
+	               1, event);
+}
 

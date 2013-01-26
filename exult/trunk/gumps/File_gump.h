@@ -24,41 +24,42 @@
 class Gump_text;
 
 /*
- *	The file save/load box:
+ *  The file save/load box:
  */
-class File_gump : public Modal_gump
-{
-	UNREPLICATABLE_CLASS_I(File_gump,Modal_gump(0,0,0,0));
+class File_gump : public Modal_gump {
+	UNREPLICATABLE_CLASS_I(File_gump, Modal_gump(0, 0, 0, 0));
 
 protected:
-	static short textx, texty;	// Where to draw first text field.
-	static short texth;		// Distance down to next text field.
-	static short btn_rows[2];	// y-coord of each button row.
-	static short btn_cols[3];	// x-coord of each button column.
-	Gump_text *names[10];		// 10 filename slots.
-	Gump_button *buttons[6];	// 2 rows, 3 cols of buttons.
-	Gump_text *pushed_text;		// Text mouse is down on.
-	Gump_text *focus;		// Text line that has focus.
-	unsigned char restored;		// Set to 1 if we restored a game.
+	static short textx, texty;  // Where to draw first text field.
+	static short texth;     // Distance down to next text field.
+	static short btn_rows[2];   // y-coord of each button row.
+	static short btn_cols[3];   // x-coord of each button column.
+	Gump_text *names[10];       // 10 filename slots.
+	Gump_button *buttons[6];    // 2 rows, 3 cols of buttons.
+	Gump_text *pushed_text;     // Text mouse is down on.
+	Gump_text *focus;       // Text line that has focus.
+	unsigned char restored;     // Set to 1 if we restored a game.
 
 public:
 	File_gump();
 	virtual ~File_gump();
-					// Find savegame index of text field.
+	// Find savegame index of text field.
 	int get_save_index(Gump_text *txt);
-	void remove_focus();		// Unfocus text.
-	void load();			// 'Load' was clicked.
-	void save();			// 'Save' was clicked.
-	void quit();			// 'Quit' was clicked.
-					// Handle one of the toggles.
+	void remove_focus();        // Unfocus text.
+	void load();            // 'Load' was clicked.
+	void save();            // 'Save' was clicked.
+	void quit();            // 'Quit' was clicked.
+	// Handle one of the toggles.
 	int toggle_option(Gump_button *btn);
-	int restored_game()		// 1 if user restored.
-		{ return restored; }
-					// Paint it and its contents.
+	int restored_game() {   // 1 if user restored.
+		return restored;
+	}
+	// Paint it and its contents.
 	virtual void paint();
-	virtual void close()
-		{ done = 1; }
-					// Handle events:
+	virtual void close() {
+		done = 1;
+	}
+	// Handle events:
 	virtual bool mouse_down(int mx, int my, int button);
 	virtual bool mouse_up(int mx, int my, int button);
 	virtual void text_input(int chr, int unicode); // Character typed.

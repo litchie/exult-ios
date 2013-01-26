@@ -1,5 +1,5 @@
 /*
- *	ibuf16.cc - 16-bit image buffer.
+ *  ibuf16.cc - 16-bit image buffer.
  *
  *  Copyright (C) 1998-1999  Jeffrey S. Freedman
  *  Copyright (C) 2000-2013  The Exult Team
@@ -34,347 +34,315 @@ using std::memmove;
 #endif
 
 /*
- *	Create a default palette for 8-bit graphics on a 16-bit display.
+ *  Create a default palette for 8-bit graphics on a 16-bit display.
  */
 
-void Image_buffer16::create_default_palette
-	(
-	)
-	{
-	delete palette;			// Delete old.
+void Image_buffer16::create_default_palette(
+) {
+	delete palette;         // Delete old.
 	palette = new unsigned short[256];
 	for (int i = 0; i < 256; i++)
-		palette[i] = rgb(4*((i >> 5) & 0x7), 
-			4*((i >> 2) & 0x7), 9*(i & 0x3));
-	}
+		palette[i] = rgb(4 * ((i >> 5) & 0x7),
+		                 4 * ((i >> 2) & 0x7), 9 * (i & 0x3));
+}
 
 /*
- *	Fill with a given 16-bit value.
+ *  Fill with a given 16-bit value.
  */
 
-void Image_buffer16::fill16
-	(
-	unsigned short pix
-	)
-	{
+void Image_buffer16::fill16(
+    unsigned short pix
+) {
 	unsigned short *pixels = get_pixels();
-	int cnt = line_width*height;
+	int cnt = line_width * height;
 	for (int i = 0; i < cnt; i++)
 		*pixels++ = pix;
-	}
+}
 
 /*
- *	Fill a rectangle with a 16-bit value.
+ *  Fill a rectangle with a 16-bit value.
  */
 
-void Image_buffer16::fill16
-	(
-	unsigned short pix,
-	int srcw, int srch,
-	int destx, int desty
-	)
-	{
+void Image_buffer16::fill16(
+    unsigned short pix,
+    int srcw, int srch,
+    int destx, int desty
+) {
 	int srcx = 0, srcy = 0;
-					// Constrain to window's space.
+	// Constrain to window's space.
 	if (!clip(srcx, srcy, srcw, srch, destx, desty))
 		return;
-	unsigned short *pixels = get_pixels() + desty*line_width + destx;
+	unsigned short *pixels = get_pixels() + desty * line_width + destx;
 	int to_next = line_width - srcw;// # pixels to next line.
-	while (srch--)			// Do each line.
-		{
+	while (srch--) {        // Do each line.
 		for (int cnt = srcw; cnt; cnt--)
 			*pixels++ = pix;
-		pixels += to_next;	// Get to start of next line.
-		}
+		pixels += to_next;  // Get to start of next line.
 	}
+}
 
 /*
- *	Fill a line with a given 16-bit value.
+ *  Fill a line with a given 16-bit value.
  */
 
-void Image_buffer16::fill_line16
-	(
-	unsigned short pix,
-	int srcw,
-	int destx, int desty
-	)
-	{
+void Image_buffer16::fill_line16(
+    unsigned short pix,
+    int srcw,
+    int destx, int desty
+) {
 	int srcx = 0, srcy = 0, srch = 1;
-					// Constrain to window's space.
+	// Constrain to window's space.
 	if (!clip(srcx, srcy, srcw, srch, destx, desty))
 		return;
-	unsigned short *pixels = get_pixels() + desty*line_width + destx;
+	unsigned short *pixels = get_pixels() + desty * line_width + destx;
 	for (int cnt = srcw; cnt; cnt--)
 		*pixels++ = pix;
-	}
+}
 
 /*
- *	Copy another rectangle into this one.
+ *  Copy another rectangle into this one.
  */
 
-void Image_buffer16::copy16
-	(
-	unsigned short *src_pixels,	// Source rectangle pixels.
-	int srcw, int srch,		// Dimensions of source.
-	int destx, int desty
-	)
-	{
+void Image_buffer16::copy16(
+    unsigned short *src_pixels, // Source rectangle pixels.
+    int srcw, int srch,     // Dimensions of source.
+    int destx, int desty
+) {
 	int srcx = 0, srcy = 0;
-	int src_width = srcw;		// Save full source width.
-					// Constrain to window's space.
+	int src_width = srcw;       // Save full source width.
+	// Constrain to window's space.
 	if (!clip(srcx, srcy, srcw, srch, destx, desty))
 		return;
-	unsigned short *to = get_pixels() + desty*line_width + destx;
-	unsigned short *from = src_pixels + srcy*src_width + srcx;
+	unsigned short *to = get_pixels() + desty * line_width + destx;
+	unsigned short *from = src_pixels + srcy * src_width + srcx;
 	int to_next = line_width - srcw;// # pixels to next line.
 	int from_next = src_width - srcw;
-	while (srch--)			// Do each line.
-		{
+	while (srch--) {        // Do each line.
 		for (int cnt = srcw; cnt; cnt--)
 			*to++ = *from++;
 		to += to_next;
 		from += from_next;
-		}
 	}
+}
 
 /*
- *	Copy an area of the image within itself.
+ *  Copy an area of the image within itself.
  */
 
-void Image_buffer16::copy
-	(
-	int srcx, int srcy,		// Where to start.
-	int srcw, int srch,		// Dimensions to copy.
-	int destx, int desty		// Where to copy to.
-	)
-	{
-	int ynext, yfrom, yto;		// Figure y stuff.
-	if (srcy >= desty)		// Moving up?
-		{
+void Image_buffer16::copy(
+    int srcx, int srcy,     // Where to start.
+    int srcw, int srch,     // Dimensions to copy.
+    int destx, int desty        // Where to copy to.
+) {
+	int ynext, yfrom, yto;      // Figure y stuff.
+	if (srcy >= desty) {    // Moving up?
 		ynext = line_width;
 		yfrom = srcy;
 		yto = desty;
-		}
-	else				// Moving down.
-		{
+	} else {            // Moving down.
 		ynext = -line_width;
 		yfrom = srcy + srch - 1;
 		yto = desty + srch - 1;
-		}
-	unsigned short *to = get_pixels() + yto*line_width + destx;
-	unsigned short *from = get_pixels() + yfrom*line_width + srcx;
-					// Go through lines.
-	while (srch--)
-		{
+	}
+	unsigned short *to = get_pixels() + yto * line_width + destx;
+	unsigned short *from = get_pixels() + yfrom * line_width + srcx;
+	// Go through lines.
+	while (srch--) {
 		memmove(reinterpret_cast<char *>(to),
 		        reinterpret_cast<char *>(from), srcw * 2);
 		to += ynext;
 		from += ynext;
-		}
 	}
+}
 
 /*
- *	Get a rectangle from here into another Image_buffer.
+ *  Get a rectangle from here into another Image_buffer.
  */
 
-void Image_buffer16::get
-	(
-	Image_buffer *dest,		// Copy to here.
-	int srcx, int srcy		// Upper-left corner of source rect.
-	)
-	{
+void Image_buffer16::get(
+    Image_buffer *dest,     // Copy to here.
+    int srcx, int srcy      // Upper-left corner of source rect.
+) {
 	int srcw = dest->get_width(), srch = dest->get_height();
 	int destx = 0, desty = 0;
-					// Constrain to window's space. (Note
-					//   convoluted use of clip().)
+	// Constrain to window's space. (Note
+	//   convoluted use of clip().)
 	if (!clip(destx, desty, srcw, srch, srcx, srcy))
 		return;
-	unsigned short *to = reinterpret_cast<unsigned short *>(dest->bits) + 
-				desty*dest->line_width + destx;
-	unsigned short *from = get_pixels() + srcy*line_width + srcx;
-					// Figure # pixels to next line.
+	unsigned short *to = reinterpret_cast<unsigned short *>(dest->bits) +
+	                     desty * dest->line_width + destx;
+	unsigned short *from = get_pixels() + srcy * line_width + srcx;
+	// Figure # pixels to next line.
 	int to_next = dest->line_width - srcw;
 	int from_next = line_width - srcw;
-	while (srch--)			// Do each line.
-		{
+	while (srch--) {        // Do each line.
 		for (int cnt = srcw; cnt; cnt--)
 			*to++ = *from++;
 		to += to_next;
 		from += from_next;
-		}
 	}
+}
 
 /*
- *	Retrieve data from another buffer.
+ *  Retrieve data from another buffer.
  */
 
-void Image_buffer16::put
-	(
-	Image_buffer *src,		// Copy from here.
-	int destx, int desty		// Copy to here.
-	)
-	{
+void Image_buffer16::put(
+    Image_buffer *src,      // Copy from here.
+    int destx, int desty        // Copy to here.
+) {
 	Image_buffer16::copy16(reinterpret_cast<unsigned short *>(src->bits),
-		src->get_width(), src->get_height(), destx, desty);
-	}
+	                       src->get_width(), src->get_height(), destx, desty);
+}
 
 /*
  * Fill buffer with random static
  */
-void Image_buffer16::fill_static(int black, int gray, int white)
-{
+void Image_buffer16::fill_static(int black, int gray, int white) {
 	unsigned short black16 = palette[black];
 	unsigned short gray16 = palette[gray];
 	unsigned short white16 = palette[white];
 	for (int y = 0; y < height; ++y) {
-		unsigned short *p = get_pixels() + y*line_width;
+		unsigned short *p = get_pixels() + y * line_width;
 		for (int x = 0; x < width; ++x) {
-			switch (std::rand()%5) {
-				case 0: case 1: *p++ = black16; break;
-				case 2: case 3: *p++ = gray16; break;
-				case 4: *p++ = white16; break;
+			switch (std::rand() % 5) {
+			case 0:
+			case 1:
+				*p++ = black16;
+				break;
+			case 2:
+			case 3:
+				*p++ = gray16;
+				break;
+			case 4:
+				*p++ = white16;
+				break;
 			}
 		}
 	}
 }
 
 /*
- *	Convert rgb value.
+ *  Convert rgb value.
  */
 
-inline unsigned char Get_color16
-	(
-	unsigned char val,
-	int maxval,
-	int brightness			// 100=normal.
-	)
-	{
-	unsigned int c = (static_cast<unsigned int>(val)*brightness*32)/
-							(100*(maxval + 1));
+inline unsigned char Get_color16(
+    unsigned char val,
+    int maxval,
+    int brightness          // 100=normal.
+) {
+	unsigned int c = (static_cast<unsigned int>(val) * brightness * 32) /
+	                 (100 * (maxval + 1));
 	return (c < 32 ? c : 31);
-	}
+}
 
 /*
- *	Set palette.
+ *  Set palette.
  */
 
-void Image_buffer16::set_palette
-	(
-	unsigned char *rgbs,		// 256 3-byte entries.
-	int maxval,			// Highest val. for each color.
-	int brightness			// Brightness control (100 = normal).
-	)
-	{
-					// Get the colors.
-	for (int i = 0; i < 3*256; i += 3)
-		{
+void Image_buffer16::set_palette(
+    unsigned char *rgbs,        // 256 3-byte entries.
+    int maxval,         // Highest val. for each color.
+    int brightness          // Brightness control (100 = normal).
+) {
+	// Get the colors.
+	for (int i = 0; i < 3 * 256; i += 3) {
 		unsigned char r = Get_color16(rgbs[i], maxval, brightness);
 		unsigned char g = Get_color16(rgbs[i + 1], maxval, brightness);
 		unsigned char b = Get_color16(rgbs[i + 2], maxval, brightness);
-		set_palette_color(i/3, r, g, b);
-		}
+		set_palette_color(i / 3, r, g, b);
 	}
+}
 
 /*
- *	Rotate a range of colors.
+ *  Rotate a range of colors.
  */
 
-void Image_buffer16::rotate_colors
-	(
-	int first,			// Palette index of 1st.
-	int num,			// # in range.
-	int upd				// 1 to update hardware now.
-	)
-	{
-	int cnt = num - 1;		// Shift downward.
+void Image_buffer16::rotate_colors(
+    int first,          // Palette index of 1st.
+    int num,            // # in range.
+    int upd             // 1 to update hardware now.
+) {
+	int cnt = num - 1;      // Shift downward.
 	unsigned short c0 = palette[first];
 	for (int i = first; cnt; i++, cnt--)
 		palette[i] = palette[i + 1];
-	palette[first + num - 1] = c0;	// Shift 1st to end.
-					// +++++upd?
-	}
+	palette[first + num - 1] = c0;  // Shift 1st to end.
+	// +++++upd?
+}
 
 /*
- *	Copy another rectangle into this one.
+ *  Copy another rectangle into this one.
  */
 
-void Image_buffer16::copy8
-	(
-	unsigned char *src_pixels,	// Source rectangle pixels.
-	int srcw, int srch,		// Dimensions of source.
-	int destx, int desty
-	)
-	{
+void Image_buffer16::copy8(
+    unsigned char *src_pixels,  // Source rectangle pixels.
+    int srcw, int srch,     // Dimensions of source.
+    int destx, int desty
+) {
 	int srcx = 0, srcy = 0;
-	int src_width = srcw;		// Save full source width.
-					// Constrain to window's space.
+	int src_width = srcw;       // Save full source width.
+	// Constrain to window's space.
 	if (!clip(srcx, srcy, srcw, srch, destx, desty))
 		return;
-	unsigned short *to = get_pixels() + desty*line_width + destx;
-	unsigned char *from = src_pixels + srcy*src_width + srcx;
+	unsigned short *to = get_pixels() + desty * line_width + destx;
+	unsigned char *from = src_pixels + srcy * src_width + srcx;
 	int to_next = line_width - srcw;// # pixels to next line.
 	int from_next = src_width - srcw;
-	while (srch--)			// Do each line.
-		{
+	while (srch--) {        // Do each line.
 		for (int cnt = srcw; cnt; cnt--)
 			*to++ = palette[*from++];
 		to += to_next;
 		from += from_next;
-		}
 	}
+}
 
 /*
- *	Copy a line into this buffer.
+ *  Copy a line into this buffer.
  */
 
-void Image_buffer16::copy_line8
-	(
-	unsigned char *src_pixels,	// Source rectangle pixels.
-	int srcw,			// Width to copy.
-	int destx, int desty
-	)
-	{
+void Image_buffer16::copy_line8(
+    unsigned char *src_pixels,  // Source rectangle pixels.
+    int srcw,           // Width to copy.
+    int destx, int desty
+) {
 	int srcx = 0, srcy = 0, srch = 1;
-					// Constrain to window's space.
+	// Constrain to window's space.
 	if (!clip(srcx, srcy, srcw, srch, destx, desty))
 		return;
-	unsigned short *to = get_pixels() + desty*line_width + destx;
+	unsigned short *to = get_pixels() + desty * line_width + destx;
 	unsigned char *from = src_pixels + srcx;
 	for (int cnt = srcw; cnt; cnt--)
 		*to++ = palette[*from++];
-	}
+}
 
 /*
- *	Copy another rectangle into this one, with 0 being the transparent
- *	color.
+ *  Copy another rectangle into this one, with 0 being the transparent
+ *  color.
  */
 
-void Image_buffer16::copy_transparent8
-	(
-	unsigned char *src_pixels,	// Source rectangle pixels.
-	int srcw, int srch,		// Dimensions of source.
-	int destx, int desty
-	)
-	{
+void Image_buffer16::copy_transparent8(
+    unsigned char *src_pixels,  // Source rectangle pixels.
+    int srcw, int srch,     // Dimensions of source.
+    int destx, int desty
+) {
 	int srcx = 0, srcy = 0;
-	int src_width = srcw;		// Save full source width.
-					// Constrain to window's space.
+	int src_width = srcw;       // Save full source width.
+	// Constrain to window's space.
 	if (!clip(srcx, srcy, srcw, srch, destx, desty))
 		return;
-	unsigned short *to = get_pixels() + desty*line_width + destx;
-	unsigned char *from = src_pixels + srcy*src_width + srcx;
+	unsigned short *to = get_pixels() + desty * line_width + destx;
+	unsigned char *from = src_pixels + srcy * src_width + srcx;
 	int to_next = line_width - srcw;// # pixels to next line.
 	int from_next = src_width - srcw;
-	while (srch--)			// Do each line.
-		{
-		for (int cnt = srcw; cnt; cnt--, to++)
-			{
+	while (srch--) {        // Do each line.
+		for (int cnt = srcw; cnt; cnt--, to++) {
 			register int chr = *from++;
 			if (chr)
 				*to = palette[chr];
-			}
+		}
 		to += to_next;
 		from += from_next;
-		}
 	}
+}
 

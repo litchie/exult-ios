@@ -22,14 +22,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Gump_button.h"
 #include <string>
 
-class Text_button : public Gump_button
-{
+class Text_button : public Gump_button {
 protected:
-	std::string	text;
-	int		text_x;
-	int		text_y;
-	int		width;
-	int		height;
+	std::string text;
+	int     text_x;
+	int     text_y;
+	int     width;
+	int     height;
 
 	void init();
 
@@ -40,9 +39,10 @@ public:
 
 	virtual int on_widget(int mx, int my);
 
-	virtual int on_button(int mx, int my)
-	{ return on_widget (mx, my); }
-	
+	virtual int on_button(int mx, int my) {
+		return on_widget(mx, my);
+	}
+
 };
 
 #endif

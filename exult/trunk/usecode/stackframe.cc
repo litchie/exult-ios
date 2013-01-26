@@ -1,5 +1,5 @@
 /*
- *	stackframe.cc - a usecode interpreter stack frame
+ *  stackframe.cc - a usecode interpreter stack frame
  *
  *  Copyright (C) 2002  The Exult Team
  *
@@ -35,27 +35,26 @@
 int Stack_frame::LastCallChainID = 0;
 
 Stack_frame::Stack_frame(Usecode_function *fun,
-						 int event,
-						 Game_object *caller,
-						 int chain, int depth)
+                         int event,
+                         Game_object *caller,
+                         int chain, int depth)
 	: function(fun), ip(0), data(0), externs(0), code(0), endp(0),
-	  line_number(-1), call_chain(chain), call_depth(depth), 
+	  line_number(-1), call_chain(chain), call_depth(depth),
 	  num_externs(0), num_args(0), num_vars(0), locals(0), eventid(event),
-	  caller_item(caller), save_sp(0)
-{
+	  caller_item(caller), save_sp(0) {
 	ip = function->code;
 	endp = ip + function->len;
-	
+
 	int data_len;
 	if (!fun->extended)
-		data_len = Read2(ip);	// Get length of (text) data.
+		data_len = Read2(ip);   // Get length of (text) data.
 	else
 		data_len = Read4s(ip); // 32 bit lengths
 
 	data = ip;
 
-	ip += data_len;			// Point past text.
-	num_args = Read2(ip);	// # of args. this function takes.
+	ip += data_len;         // Point past text.
+	num_args = Read2(ip);   // # of args. this function takes.
 
 	// Local variables follow args.
 	num_vars = Read2(ip);
@@ -72,27 +71,25 @@ Stack_frame::Stack_frame(Usecode_function *fun,
 	code = ip;
 }
 
-Stack_frame::~Stack_frame()
-{
+Stack_frame::~Stack_frame() {
 	delete[] locals;
 }
 
-std::ostream& operator<<(std::ostream& out, Stack_frame& frame)
-{
+std::ostream &operator<<(std::ostream &out, Stack_frame &frame) {
 	// #depth: 0xIP in 0xfunid ( obj=..., event=..., arguments )
 
 	// TODO: include any debugging info
 	// #depth: 0xIP in functionname (obj=...,event=..., arg1name=..., ...)
 
-	out << "#" << frame.call_depth << ": 0x" 
-		<< std::hex << std::setw(4) << std::setfill('0')
-		<< static_cast<int>(frame.ip - frame.code) << " in 0x"
-		<< std::setw(4) << frame.function->id
-		<< "(obj=" << std::setw(8) << reinterpret_cast<long>(frame.caller_item)
-		<< ",ev=" << frame.eventid
-		<< std::setfill(' ') << std::dec;
-	
-	for (int i=0; i < frame.num_args; i++)
+	out << "#" << frame.call_depth << ": 0x"
+	    << std::hex << std::setw(4) << std::setfill('0')
+	    << static_cast<int>(frame.ip - frame.code) << " in 0x"
+	    << std::setw(4) << frame.function->id
+	    << "(obj=" << std::setw(8) << reinterpret_cast<long>(frame.caller_item)
+	    << ",ev=" << frame.eventid
+	    << std::setfill(' ') << std::dec;
+
+	for (int i = 0; i < frame.num_args; i++)
 		out << ", " << frame.locals[i];
 
 	out << ")";

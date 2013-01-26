@@ -29,96 +29,92 @@ template<class T, class L>
 class T_Object_iterator_backwards;
 
 /*
- *	A list of objects chained together with the 'next' and 'prev'
- *	fields:
+ *  A list of objects chained together with the 'next' and 'prev'
+ *  fields:
  */
 template<class T>
-class T_Object_list
-	{
+class T_Object_list {
 	friend class T_Object_iterator<T>;
 	friend class T_Flat_object_iterator<T, class L>;
 	friend class T_Object_iterator_backwards<T, class L>;
 
-	T first;		// ->first in (circular) chain.
-	unsigned short iter_count;	// # of iterators.
+	T first;        // ->first in (circular) chain.
+	unsigned short iter_count;  // # of iterators.
 public:
 	T_Object_list(T f = 0) : first(f), iter_count(0)
-		{  }
-					// Delete the chain.
-	~T_Object_list()
-		{
+	{  }
+	// Delete the chain.
+	~T_Object_list() {
 		if (!first)
 			return;
 		T objects = first;
 		T obj;
-		do
-			{
+		do {
 			obj = objects;
 			objects = obj->next;
 			delete obj;
-			}
-		while (objects != first);
-		}
-					// Report iterator problem.
-	void report_problem() const
-		{
+		} while (objects != first);
+	}
+	// Report iterator problem.
+	void report_problem() const {
 		std::cerr << "Danger! Danger! Object list modified while being iterated." << std::endl;
 		std::cerr.flush();
-		}
-	int is_empty() const
-		{ return first == 0; }
-	void add_iterator()
-		{ iter_count++; }
-	void remove_iterator()
-		{ iter_count--; }
-	T get_first() const
-		{ return first; }
-					// Insert at head of chain.
-	void insert(T nobj)
-		{
+	}
+	int is_empty() const {
+		return first == 0;
+	}
+	void add_iterator() {
+		iter_count++;
+	}
+	void remove_iterator() {
+		iter_count--;
+	}
+	T get_first() const {
+		return first;
+	}
+	// Insert at head of chain.
+	void insert(T nobj) {
 		if (iter_count)
 			report_problem();
-		if (!first)		// First one.
+		if (!first)     // First one.
 			nobj->next = nobj->prev = nobj;
-		else
-			{
+		else {
 			nobj->next = first;
 			nobj->prev = first->prev;
 			first->prev->next = nobj;
 			first->prev = nobj;
-			}
-		first = nobj;
 		}
-					// Insert before given obj.
-	void insert_before(T nobj, T before)
-		{
+		first = nobj;
+	}
+	// Insert before given obj.
+	void insert_before(T nobj, T before) {
 		if (iter_count)
 			report_problem();
-		if (nobj == before)
-			{
+		if (nobj == before) {
 			std::cerr << "Danger! Danger! Object being placed before itself." << std::endl;
 			std::cerr.flush();
 			return;
-			}
+		}
 		nobj->next = before;
 		nobj->prev = before->prev;
 		before->prev->next = nobj;
 		before->prev = nobj;
 		first = before == first ? nobj : first;
-		}
-					// Append.
-	void append(T nobj)
-		{ insert(nobj); first = nobj->next; }
-	void remove(T dobj)
-		{
+	}
+	// Append.
+	void append(T nobj) {
+		insert(nobj);
+		first = nobj->next;
+	}
+	void remove(T dobj) {
 		if (iter_count)
 			report_problem();
 		if (dobj == first)
 			first = dobj->next != first ? dobj->next : 0;
 		dobj->next->prev = dobj->prev;
 		dobj->prev->next = dobj->next;
-		}
-	};
+	}
+};
 
 
 class Game_object;

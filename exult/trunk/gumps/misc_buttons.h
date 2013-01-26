@@ -24,99 +24,101 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class Actor;
 
 /*
- *	A checkmark for closing its parent:
+ *  A checkmark for closing its parent:
  */
-class Checkmark_button : public Gump_button
-{
+class Checkmark_button : public Gump_button {
 public:
 	Checkmark_button(Gump *par, int px, int py);
-	virtual Gump_widget *clone(Gump *par)
-		{ return new Checkmark_button(par, x, y); }
-					// What to do when 'clicked':
-	virtual bool activate(int button=1);
-	virtual bool is_checkmark() const { return true; }
+	virtual Gump_widget *clone(Gump *par) {
+		return new Checkmark_button(par, x, y);
+	}
+	// What to do when 'clicked':
+	virtual bool activate(int button = 1);
+	virtual bool is_checkmark() const {
+		return true;
+	}
 };
 
 /*
- *	A 'heart' button for bringing up stats.
+ *  A 'heart' button for bringing up stats.
  */
-class Heart_button : public Gump_button
-{
+class Heart_button : public Gump_button {
 public:
 	Heart_button(Gump *par, int px, int py);
-	virtual Gump_widget *clone(Gump *par)
-		{ return new Heart_button(par, x, y); }
-					// What to do when 'clicked':
-	virtual bool activate(int button=1);
+	virtual Gump_widget *clone(Gump *par) {
+		return new Heart_button(par, x, y);
+	}
+	// What to do when 'clicked':
+	virtual bool activate(int button = 1);
 };
 
 /*
- *	A diskette for bringing up the 'save' box.
+ *  A diskette for bringing up the 'save' box.
  */
-class Disk_button : public Gump_button
-{
+class Disk_button : public Gump_button {
 public:
 	Disk_button(Gump *par, int px, int py);
-	virtual Gump_widget *clone(Gump *par)
-		{ return new Disk_button(par, x, y); }
-					// What to do when 'clicked':
-	virtual bool activate(int button=1);
+	virtual Gump_widget *clone(Gump *par) {
+		return new Disk_button(par, x, y);
+	}
+	// What to do when 'clicked':
+	virtual bool activate(int button = 1);
 };
 
 /*
- *	The combat toggle button.
+ *  The combat toggle button.
  */
-class Combat_button : public Gump_button
-{
+class Combat_button : public Gump_button {
 public:
 	Combat_button(Gump *par, int px, int py);
-	virtual Gump_widget *clone(Gump *par)
-		{ return new Combat_button(par, x, y); }
-					// What to do when 'clicked':
-	virtual bool activate(int button=1);
+	virtual Gump_widget *clone(Gump *par) {
+		return new Combat_button(par, x, y);
+	}
+	// What to do when 'clicked':
+	virtual bool activate(int button = 1);
 	virtual void paint();
 };
 
 /*
- *	The halo button.
+ *  The halo button.
  */
-class Halo_button : public Gump_button
-{
-	Actor *actor;			// Who this represents.
+class Halo_button : public Gump_button {
+	Actor *actor;           // Who this represents.
 public:
 	Halo_button(Gump *par, int px, int py, Actor *a);
-	virtual Gump_widget *clone(Gump *par)
-		{ return new Halo_button(par, x, y, actor); }
-					// What to do when 'clicked':
-	virtual bool activate(int button=1);
+	virtual Gump_widget *clone(Gump *par) {
+		return new Halo_button(par, x, y, actor);
+	}
+	// What to do when 'clicked':
+	virtual bool activate(int button = 1);
 };
 
 /*
- *	Combat mode.  Has 10 frames corresponding to Actor::Attack_mode.
+ *  Combat mode.  Has 10 frames corresponding to Actor::Attack_mode.
  */
-class Combat_mode_button : public Gump_button
-{
-	Actor *actor;			// Who this represents.
+class Combat_mode_button : public Gump_button {
+	Actor *actor;           // Who this represents.
 public:
 	Combat_mode_button(Gump *par, int px, int py, Actor *a);
-	virtual Gump_widget *clone(Gump *par)
-		{ return new Combat_mode_button(par, x, y, actor); }
-					// What to do when 'clicked':
-	virtual bool activate(int button=1);
+	virtual Gump_widget *clone(Gump *par) {
+		return new Combat_mode_button(par, x, y, actor);
+	}
+	// What to do when 'clicked':
+	virtual bool activate(int button = 1);
 };
 
 /*
- *	The Serpent Isle Combat Stats Button
+ *  The Serpent Isle Combat Stats Button
  */
-class Cstats_button : public Gump_button
-{
+class Cstats_button : public Gump_button {
 public:
 	Cstats_button(Gump *par, int px, int py);
-	virtual Gump_widget *clone(Gump *par)
-		{ return new Cstats_button(par, x, y); }
+	virtual Gump_widget *clone(Gump *par) {
+		return new Cstats_button(par, x, y);
+	}
 
- 	// What to do when 'clicked':
-	virtual bool activate(int button=1);
+	// What to do when 'clicked':
+	virtual bool activate(int button = 1);
 };
 
 #endif

@@ -28,21 +28,21 @@
 #else
 #  if (defined(__GNUC__) && (__GNUC__ >= 4) && ( __GNUC_MINOR__ >= 3) && HAVE_TR1_UNORDERED_MAP)
 #    include <tr1/unordered_map>
-     using std::tr1::unordered_map;
+using std::tr1::unordered_map;
 #  elif HAVE_EXT_HASH_MAP
 #    include <ext/hash_map>
 #    define unordered_map hash_map
 #    if (defined(__GNUC__) && (__GNUC__ >= 3) && ( __GNUC_MINOR__ >= 0))
-       using __gnu_cxx::hash_map;
+using __gnu_cxx::hash_map;
 #    else
-       using std::hash_map;
+using std::hash_map;
 #    endif
 #  else
 #    include <hash_map>
 #    define unordered_map hash_map
 #  endif
 #  ifdef MACOS
-     using Metrowerks::hash_map;
+using Metrowerks::hash_map;
 #    define unordered_map hash_map
 #  endif
 #endif
@@ -52,22 +52,22 @@
 #else
 #  if (defined(__GNUC__) && (__GNUC__ >= 4) && ( __GNUC_MINOR__ >= 3) && HAVE_TR1_UNORDERED_SET)
 #    include <tr1/unordered_set>
-     using std::tr1::unordered_set;
+using std::tr1::unordered_set;
 #  elif HAVE_EXT_HASH_SET
 #    include <ext/hash_set>
 #    define unordered_set hash_set
 #    if (defined(__GNUC__) && (__GNUC__ >= 3) && ( __GNUC_MINOR__ >= 0))
-       using __gnu_cxx::hash_set;
+using __gnu_cxx::hash_set;
 #    else
-       using std::hash_set;
+using std::hash_set;
 #    endif
 #  else
 #    include <hash_set>
 #    define unordered_map hash_map
 #  endif
 #  ifdef MACOS
-	 using Metrowerks::hash_set;
-	 #define unordered_set hash_set
+using Metrowerks::hash_set;
+#define unordered_set hash_set
 #  endif
 #endif
 
@@ -75,10 +75,10 @@
 #if defined(DONT_HAVE_HASH_MAP) && defined(DONT_HAVE_HASH_SET)
 
 /*
- *	For testing if a string is "less" than another:
+ *  For testing if a string is "less" than another:
  */
 struct ltstr {
-	bool operator()(const char* s1, const char* s2) const {
+	bool operator()(const char *s1, const char *s2) const {
 		return (std::strcmp(s1, s2) < 0);
 	}
 };
@@ -86,12 +86,10 @@ struct ltstr {
 #else
 
 /*
- *	Hash function for strings:
+ *  Hash function for strings:
  */
-struct hashstr
-{
-	long operator() (const char *str) const
-	{
+struct hashstr {
+	long operator()(const char *str) const {
 		const uint32 m = 4294967291u;
 		uint32 result = 0;
 		for (; *str != '\0'; ++str)
@@ -101,15 +99,14 @@ struct hashstr
 };
 
 /*
- *	For testing if two strings match:
+ *  For testing if two strings match:
  */
-struct eqstr
-{
-	bool operator()(const char* s1, const char* s2) const {
+struct eqstr {
+	bool operator()(const char *s1, const char *s2) const {
 		return std::strcmp(s1, s2) == 0;
 	}
 };
 
 #endif
 
-#endif	/* _HASH_UTILS_H_ */
+#endif  /* _HASH_UTILS_H_ */

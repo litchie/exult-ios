@@ -22,13 +22,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Text_button.h"
 #include <string>
 
-class Enabled_button : public Text_button
-{
- public:
+class Enabled_button : public Text_button {
+public:
 	Enabled_button(Gump *par, int selectionnum,
-		int px, int py, int width, int height = 0)
-		: Text_button(par, "", px, py, width, height)
-	{
+	               int px, int py, int width, int height = 0)
+		: Text_button(par, "", px, py, width, height) {
 		set_frame(selectionnum);
 		text = selections[selectionnum];
 		init();
@@ -36,14 +34,16 @@ class Enabled_button : public Text_button
 
 	virtual ~Enabled_button()
 	{ }
-	virtual bool push (int button);
-	virtual void unpush (int button);
-	virtual bool activate(int button=1);
+	virtual bool push(int button);
+	virtual void unpush(int button);
+	virtual bool activate(int button = 1);
 
-	int getselection() const { return get_framenum(); }
+	int getselection() const {
+		return get_framenum();
+	}
 	virtual void toggle(int state) = 0;
 
- protected:
+protected:
 	static const char *selections[];
 };
 

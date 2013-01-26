@@ -26,23 +26,24 @@ struct File_spec;
 class U7multiobject;
 
 /*
- *	Cursor info. filled in by paint_text_box.
+ *  Cursor info. filled in by paint_text_box.
  */
-struct Cursor_info
-{
-	int offset;			// Loc. within text.
-	int x, y;			// Loc. of top-left of cursor in win.
-	int line;			// Line # of cursor.
-	int nlines;			// Total # lines printed.
-	void set_found(int cx, int cy, int l)
-		{ x = cx; y = cy; line = l; }
+struct Cursor_info {
+	int offset;         // Loc. within text.
+	int x, y;           // Loc. of top-left of cursor in win.
+	int line;           // Line # of cursor.
+	int nlines;         // Total # lines printed.
+	void set_found(int cx, int cy, int l) {
+		x = cx;
+		y = cy;
+		line = l;
+	}
 };
 
 /*
- *	A single font:
+ *  A single font:
  */
-class Font
-{
+class Font {
 private:
 	int hor_lead;
 	int ver_lead;
@@ -54,70 +55,71 @@ private:
 
 	void calc_highlow();
 	void clean_up();
-	int load_internal(const U7multiobject& font_obj, int hlead, int vlead);
+	int load_internal(const U7multiobject &font_obj, int hlead, int vlead);
 public:
 	Font();
-	Font(const File_spec& fname0, int index, int hlead=0, int vlead=1);
-	Font(const File_spec& fname0, const File_spec& fname1, int index,
-			int hlead=0, int vlead=1);
+	Font(const File_spec &fname0, int index, int hlead = 0, int vlead = 1);
+	Font(const File_spec &fname0, const File_spec &fname1, int index,
+	     int hlead = 0, int vlead = 1);
 	~Font();
-	int load(const File_spec& fname0, int index, int hlead=0, int vlead=1);
-	int load(const File_spec& fname0, const File_spec& fname1, int index,
-			int hlead=0, int vlead=1);
-					// Text rendering:
-	int paint_text_box(Image_buffer8 *win,  
-		const char *text, int x, int y, int w, 
-		int h, int vert_lead = 0, bool pbreak = false,
-		bool center = false, Cursor_info *cursor = 0);
-	int paint_text(Image_buffer8 *win,  
-		const char *text, int xoff, int yoff,
-		unsigned char *trans = 0);
-	int paint_text(Image_buffer8 *win,  
-		const char *text, int textlen, int xoff, int yoff);
-	int paint_text_box_fixedwidth(Image_buffer8 *win,  
-		const char *text, int x, int y, int w, 
-		int h, int char_width, int vert_lead = 0, int pbreak = 0);
-	int paint_text_fixedwidth(Image_buffer8 *win,  
-		const char *text, int xoff, int yoff, int width);
-	int paint_text_fixedwidth(Image_buffer8 *win,  
-		const char *text, int textlen, int xoff, int yoff, int width);
-					// Get text width.
+	int load(const File_spec &fname0, int index, int hlead = 0, int vlead = 1);
+	int load(const File_spec &fname0, const File_spec &fname1, int index,
+	         int hlead = 0, int vlead = 1);
+	// Text rendering:
+	int paint_text_box(Image_buffer8 *win,
+	                   const char *text, int x, int y, int w,
+	                   int h, int vert_lead = 0, bool pbreak = false,
+	                   bool center = false, Cursor_info *cursor = 0);
+	int paint_text(Image_buffer8 *win,
+	               const char *text, int xoff, int yoff,
+	               unsigned char *trans = 0);
+	int paint_text(Image_buffer8 *win,
+	               const char *text, int textlen, int xoff, int yoff);
+	int paint_text_box_fixedwidth(Image_buffer8 *win,
+	                              const char *text, int x, int y, int w,
+	                              int h, int char_width, int vert_lead = 0, int pbreak = 0);
+	int paint_text_fixedwidth(Image_buffer8 *win,
+	                          const char *text, int xoff, int yoff, int width);
+	int paint_text_fixedwidth(Image_buffer8 *win,
+	                          const char *text, int textlen, int xoff, int yoff, int width);
+	// Get text width.
 	int get_text_width(const char *text);
 	int get_text_width(const char *text, int textlen);
-					// Get text height, baseline.
+	// Get text height, baseline.
 	int get_text_height();
 	int get_text_baseline();
 	int find_cursor(const char *text, int x, int y, int w, int h,
-					int cx, int cy, int vert_lead);
+	                int cx, int cy, int vert_lead);
 	int find_xcursor(const char *text, int textlen, int cx);
 
 	int draw_text(Image_buffer8 *win, int x, int y, const char *s,
-		unsigned char *trans = 0)
-		{ return paint_text(win, s, x, y, trans); }
-	int draw_text_box(Image_buffer8 *win, 
-				int x, int y, int w, int h, const char *s)
-		{ return paint_text_box(win, s, x, y, w, h, 0, 0); }
+	              unsigned char *trans = 0) {
+		return paint_text(win, s, x, y, trans);
+	}
+	int draw_text_box(Image_buffer8 *win,
+	                  int x, int y, int w, int h, const char *s) {
+		return paint_text_box(win, s, x, y, w, h, 0, 0);
+	}
 	int center_text(Image_buffer8 *iwin, int x, int y, const char *s);
 };
 
 /*
- *	Manage a list of fonts by name.
+ *  Manage a list of fonts by name.
  */
-class FontManager
-{
+class FontManager {
 private:
 #ifndef DONT_HAVE_HASH_MAP
-	unordered_map<const char*, Font*, hashstr, eqstr> fonts;
+	unordered_map<const char *, Font *, hashstr, eqstr> fonts;
 #else
-	std::map<const char*, Font*, ltstr> fonts;
+	std::map<const char *, Font *, ltstr> fonts;
 #endif
 public:
 	FontManager();
 	~FontManager();
-	void add_font(const char *name, const File_spec& fname0,
-			int index, int hlead=0, int vlead=1);
-	void add_font(const char *name, const File_spec& fname0,
-			const File_spec& fname1, int index, int hlead=0, int vlead=1);
+	void add_font(const char *name, const File_spec &fname0,
+	              int index, int hlead = 0, int vlead = 1);
+	void add_font(const char *name, const File_spec &fname0,
+	              const File_spec &fname1, int index, int hlead = 0, int vlead = 1);
 	void remove_font(const char *name);
 	Font *get_font(const char *name);
 

@@ -24,15 +24,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class Gump_button;
 
-class GameplayOptions_gump : public Modal_gump
-{
-	UNREPLICATABLE_CLASS_I(GameplayOptions_gump,Modal_gump(0,0,0,0));
+class GameplayOptions_gump : public Modal_gump {
+	UNREPLICATABLE_CLASS_I(GameplayOptions_gump, Modal_gump(0, 0, 0, 0));
 
- private:
+private:
 	int facestats;
 	int fastmouse;
 #ifdef UNDER_CE
-	int dpadopt; 
+	int dpadopt;
 #endif
 	int mouse3rd;
 	int doubleclick;
@@ -42,49 +41,49 @@ class GameplayOptions_gump : public Modal_gump
 	int text_bg;
 	int frames;
 	int right_pathfind;
-	int	gumps_pause;
+	int gumps_pause;
 
-	std::string* frametext;
+	std::string *frametext;
 	int num_framerates;
 	int smooth_scrolling;
 
 	enum button_ids {
-		id_first = 0,
-		id_ok = id_first,
-		id_cancel,
-		id_facestats,
-		id_text_bg,
-		id_fastmouse,
+	    id_first = 0,
+	    id_ok = id_first,
+	    id_cancel,
+	    id_facestats,
+	    id_text_bg,
+	    id_fastmouse,
 #ifdef UNDER_CE
-		id_dpadopt,
+	    id_dpadopt,
 #else
-		id_mouse3rd,
+	    id_mouse3rd,
 #endif
-		id_doubleclick,
-		id_rightclick_close,
-		id_right_pathfind,
-		id_gumps_pause,
-		id_cheats,
-		id_frames,
-		id_smooth_scrolling,
-		id_paperdolls,
-		id_count
+	    id_doubleclick,
+	    id_rightclick_close,
+	    id_right_pathfind,
+	    id_gumps_pause,
+	    id_cheats,
+	    id_frames,
+	    id_smooth_scrolling,
+	    id_paperdolls,
+	    id_count
 	};
-	Gump_button* buttons[id_count];
+	Gump_button *buttons[id_count];
 
- public:
+public:
 	GameplayOptions_gump();
 	virtual ~GameplayOptions_gump();
 
-					// Paint it and its contents.
+	// Paint it and its contents.
 	virtual void paint();
 	virtual void close();
 
- 					// Handle events:
+	// Handle events:
 	virtual bool mouse_down(int mx, int my, int button);
 	virtual bool mouse_up(int mx, int my, int button);
 
-	void toggle(Gump_button* btn, int state);
+	void toggle(Gump_button *btn, int state);
 	void build_buttons();
 
 	void load_settings();

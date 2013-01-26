@@ -1,5 +1,5 @@
 /*
- *	npcnear.h - At random times, run proximity usecode functions on nearby NPC's.
+ *  npcnear.h - At random times, run proximity usecode functions on nearby NPC's.
  *
  *  Copyright (C) 2000-2013  The Exult Team
  *
@@ -19,7 +19,7 @@
  */
 
 #ifndef NPCNEAR_H
-#define	NPCNEAR_H	1
+#define NPCNEAR_H   1
 
 #include "tqueue.h"
 
@@ -28,27 +28,25 @@ class Npc_actor;
 class Actor;
 
 /*
- *	This class keeps track of NPC's nearby, and randomly runs the Usecode
- *	proximity functions for them.
+ *  This class keeps track of NPC's nearby, and randomly runs the Usecode
+ *  proximity functions for them.
  */
-class Npc_proximity_handler : public Time_sensitive
-	{
+class Npc_proximity_handler : public Time_sensitive {
 	Game_window *gwin;
-	unsigned long wait_until;	// Skip running usecodes until past.
+	unsigned long wait_until;   // Skip running usecodes until past.
 public:
-	Npc_proximity_handler(Game_window *gw) : gwin(gw)
-		{
+	Npc_proximity_handler(Game_window *gw) : gwin(gw) {
 		wait_until = 0;
-		}
-					// Add npc to queue.
+	}
+	// Add npc to queue.
 	void add(unsigned long curtime, Npc_actor *npc,
-					int additional_secs = 0);
-	void remove(Npc_actor *npc);	// Remove.
-					// Run usecode function.
+	         int additional_secs = 0);
+	void remove(Npc_actor *npc);    // Remove.
+	// Run usecode function.
 	void handle_event(unsigned long curtime, long udata);
-					// Wait before running more funs.
+	// Wait before running more funs.
 	void wait(int secs);
-	void get_all(std::vector<Actor*>& list);// Fill list with nearby NPC's.
-	};
+	void get_all(std::vector<Actor *> &list); // Fill list with nearby NPC's.
+};
 
-#endif	/* INCL_NPCNEAR */
+#endif  /* INCL_NPCNEAR */

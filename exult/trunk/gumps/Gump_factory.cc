@@ -29,39 +29,34 @@ using std::cout;
 using std::endl;
 
 /*
- *	Create.
+ *  Create.
  */
-Gump_factory::Gump_factory
-	(
-	)
-	{
-	}
+Gump_factory::Gump_factory(
+) {
+}
 
 /*
- *	Cleanup.
+ *  Cleanup.
  */
-Gump_factory::~Gump_factory()
-	{
-	for (Lookup_map::iterator it = table.begin(); 
-						it != table.end(); ++it)
-		delete (*it).second;
-	}
+Gump_factory::~Gump_factory() {
+	for (Lookup_map::iterator it = table.begin();
+	        it != table.end(); ++it)
+		delete(*it).second;
+}
 
 /*
- *	Create a gump for a given container.
+ *  Create a gump for a given container.
  */
 
-Gump *Gump_factory::open_container
-	(
-	Game_object *obj,
-	int initx, int inity		// Initial screen pos.
-	)
-	{
+Gump *Gump_factory::open_container(
+    Game_object *obj,
+    int initx, int inity        // Initial screen pos.
+) {
 	Gump *model = table[obj->get_shapenum()];
 	if (!model)
 		return 0;
 	return model->clone((Container_game_object *) obj, initx, inity);
-	}
+}
 
 
 

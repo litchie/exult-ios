@@ -33,126 +33,138 @@ class Gump_manager;
 class Gump_widget;
 
 /*
- *	A gump contains an image of an open container from "gumps.vga".
+ *  A gump contains an image of an open container from "gumps.vga".
  */
-class Gump : public ShapeID, public Paintable
-{
+class Gump : public ShapeID, public Paintable {
 	UNREPLICATABLE_CLASS_I(Gump, ShapeID());
 
 protected:
 	Gump() : ShapeID() {   };
 	Container_game_object *container;// What this gump shows.
-	int x, y;			// Location on screen.
-	Rectangle object_area;		// Area to paint objects in, rel. to
+	int x, y;           // Location on screen.
+	Rectangle object_area;      // Area to paint objects in, rel. to
 	typedef std::vector<Gump_widget *> Gump_elems;
-	Gump_elems elems;		// Includes 'checkmark'.
-	bool handles_kbd;		// Kbd can be handled by gump.
-	void set_object_area(Rectangle const& area, int checkx, int checky);
-	void set_object_area(Rectangle const& area)
-		{ object_area = area; }
-	void add_elem(Gump_widget *w)
-		{ elems.push_back(w); }
+	Gump_elems elems;       // Includes 'checkmark'.
+	bool handles_kbd;       // Kbd can be handled by gump.
+	void set_object_area(Rectangle const &area, int checkx, int checky);
+	void set_object_area(Rectangle const &area) {
+		object_area = area;
+	}
+	void add_elem(Gump_widget *w) {
+		elems.push_back(w);
+	}
 public:
 	friend class Gump_model;
 	Gump(Container_game_object *cont, int initx, int inity, int shnum,
-					ShapeFile shfile = SF_GUMPS_VGA);
-					// Create centered.
-	Gump(Container_game_object *cont, int shnum, 
-					ShapeFile shfile = SF_GUMPS_VGA);
-					// Clone.
+	     ShapeFile shfile = SF_GUMPS_VGA);
+	// Create centered.
+	Gump(Container_game_object *cont, int shnum,
+	     ShapeFile shfile = SF_GUMPS_VGA);
+	// Clone.
 	Gump(Container_game_object *cont, int initx, int inity, Gump *from);
 	virtual ~Gump();
-	virtual Gump *clone(Container_game_object *obj, int initx, int inity)
-		{ return 0; }
-	int get_x()			// Get coords.
-		{ return x; }
-	int get_y()
-		{ return y; }
-	void set_pos(int newx, int newy)// Set new spot on screen.
-		{
+	virtual Gump *clone(Container_game_object *obj, int initx, int inity) {
+		return 0;
+	}
+	int get_x() {       // Get coords.
+		return x;
+	}
+	int get_y() {
+		return y;
+	}
+	void set_pos(int newx, int newy) { // Set new spot on screen.
 		x = newx;
 		y = newy;
-		}
-	void set_pos();			// Set centered.
-	Container_game_object *get_container()
-		{ return container; }
-	virtual Container_game_object *find_actor(int mx, int my)
-		{ return 0; }
-	bool can_handle_kbd() const
-		{ return handles_kbd; }
-	inline Container_game_object *get_cont_or_actor(int mx, int my)
-	{
+	}
+	void set_pos();         // Set centered.
+	Container_game_object *get_container() {
+		return container;
+	}
+	virtual Container_game_object *find_actor(int mx, int my) {
+		return 0;
+	}
+	bool can_handle_kbd() const {
+		return handles_kbd;
+	}
+	inline Container_game_object *get_cont_or_actor(int mx, int my) {
 		Container_game_object *ret = find_actor(mx, my);
 		if (ret) return ret;
 		return get_container();
 	}
-					// Get screen rect. of obj. in here.
+	// Get screen rect. of obj. in here.
 	Rectangle get_shape_rect(Game_object *obj);
-					// Get screen loc. of object.
-	void get_shape_location(Game_object *obj, int& ox, int& oy);
-					// Find obj. containing mouse point.
+	// Get screen loc. of object.
+	void get_shape_location(Game_object *obj, int &ox, int &oy);
+	// Find obj. containing mouse point.
 	virtual Game_object *find_object(int mx, int my);
-	virtual Rectangle get_dirty();		// Get dirty rect. for gump+contents.
+	virtual Rectangle get_dirty();      // Get dirty rect. for gump+contents.
 	virtual Game_object *get_owner();// Get object this belongs to.
-					// Is a given point on a button?
+	// Is a given point on a button?
 	virtual Gump_button *on_button(int mx, int my);
-					// Paint button.
+	// Paint button.
 	virtual int add(Game_object *obj, int mx = -1, int my = -1,
-			int sx = -1, int sy = -1, bool dont_check = false,
-						bool combine = false);
+	                int sx = -1, int sy = -1, bool dont_check = false,
+	                bool combine = false);
 	virtual void remove(Game_object *obj);
-					// Paint it and its contents.
+	// Paint it and its contents.
 	void paint_elems();
 	virtual void paint();
-					// Close (and delete).
+	// Close (and delete).
 	virtual void close();
-					// update the gump, if required
-	virtual void update_gump () { }
-					// Can be dragged with mouse
-	virtual bool is_draggable() const { return true; }
-					// Close on end_gump_mode
-	virtual bool is_persistent() const { return false; }
-	virtual bool is_modal() const { return false; }
-					// Show the hand cursor
-	virtual bool no_handcursor() const { return false; }
+	// update the gump, if required
+	virtual void update_gump() { }
+	// Can be dragged with mouse
+	virtual bool is_draggable() const {
+		return true;
+	}
+	// Close on end_gump_mode
+	virtual bool is_persistent() const {
+		return false;
+	}
+	virtual bool is_modal() const {
+		return false;
+	}
+	// Show the hand cursor
+	virtual bool no_handcursor() const {
+		return false;
+	}
 
 	virtual bool has_point(int x, int y);
 	virtual Rectangle get_rect();
-	virtual bool handle_kbd_event(void *ev)
-		{ return false; }
+	virtual bool handle_kbd_event(void *ev) {
+		return false;
+	}
 };
 
 /*
- *	A generic gump used by generic containers:
+ *  A generic gump used by generic containers:
  */
-class Container_gump : public Gump
-{
+class Container_gump : public Gump {
 	UNREPLICATABLE_CLASS_I(Container_gump, Gump());
 
-	void initialize(int shnum);		// Initialize object_area.
+	void initialize(int shnum);     // Initialize object_area.
 
 public:
-	Container_gump(Container_game_object *cont, int initx, int inity, 
-			int shnum, ShapeFile shfile = SF_GUMPS_VGA)
-		: Gump(cont, initx, inity, shnum, shfile)
-	{
-		initialize(shnum);
-	}
-					// Create centered.
-	Container_gump(Container_game_object *cont, int shnum, 
-					ShapeFile shfile = SF_GUMPS_VGA)
-		: Gump(cont, shnum, shfile)
-	{
-		initialize(shnum);
-	}
-					// This one is for cloning.
 	Container_gump(Container_game_object *cont, int initx, int inity,
-								Gump *from)
+	               int shnum, ShapeFile shfile = SF_GUMPS_VGA)
+		: Gump(cont, initx, inity, shnum, shfile) {
+		initialize(shnum);
+	}
+	// Create centered.
+	Container_gump(Container_game_object *cont, int shnum,
+	               ShapeFile shfile = SF_GUMPS_VGA)
+		: Gump(cont, shnum, shfile) {
+		initialize(shnum);
+	}
+	// This one is for cloning.
+	Container_gump(Container_game_object *cont, int initx, int inity,
+	               Gump *from)
 		: Gump(cont, initx, inity, this)
-		{  }
+	{  }
 	virtual ~Container_gump() {  }
-	virtual Gump *clone(Container_game_object *cont, int initx, int inity)
-		{ return new Container_gump(cont, initx, inity, this); }
+	virtual Gump *clone(Container_game_object *cont, int initx, int inity) {
+		return new Container_gump(cont, initx, inity, this);
+	}
 };
 
 #endif

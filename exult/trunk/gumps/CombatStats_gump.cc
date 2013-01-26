@@ -30,7 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 
 /*
- *	Statics:
+ *  Statics:
  */
 
 static const int colx = 110;
@@ -38,12 +38,11 @@ static const int coldx = 29;
 static const int rowy[7] = {15, 29, 42, 73, 87, 93, 106};
 
 /*
- *	Create stats display.
+ *  Create stats display.
  */
-CombatStats_gump::CombatStats_gump(int initx, int inity) : 
-	Gump(0, initx, inity, game->get_shape("gumps/cstats/1"))
-{
-	set_object_area(Rectangle(0,0,0,0), 7, 95);
+CombatStats_gump::CombatStats_gump(int initx, int inity) :
+	Gump(0, initx, inity, game->get_shape("gumps/cstats/1")) {
+	set_object_area(Rectangle(0, 0, 0, 0), 7, 95);
 
 
 	party_size = gwin->get_party(party, 1);
@@ -51,52 +50,50 @@ CombatStats_gump::CombatStats_gump(int initx, int inity) :
 	int shnum = game->get_shape("gumps/cstats/1") + party_size - 1;
 	ShapeID::set_shape(shnum, 0);
 
-	int i;	// Blame MSVC
+	int i;  // Blame MSVC
 	for (i = 0; i < party_size; i++) {
 		add_elem(new Halo_button(
-				this, colx + i*coldx, rowy[4], party[i]));
+		             this, colx + i * coldx, rowy[4], party[i]));
 		add_elem(new Combat_mode_button(
-				this, colx + i*coldx + 1, rowy[3], party[i]));
+		             this, colx + i * coldx + 1, rowy[3], party[i]));
 		add_elem(new Face_button(
-				this, colx + i*coldx - 13, rowy[0], party[i]));
+		             this, colx + i * coldx - 13, rowy[0], party[i]));
 	}
 }
 
-CombatStats_gump::~CombatStats_gump()
-{
+CombatStats_gump::~CombatStats_gump() {
 }
 
 /*
- *	Paint on screen.
+ *  Paint on screen.
  */
 
-void CombatStats_gump::paint()
-{
-	Gump_manager* gman = gumpman;
+void CombatStats_gump::paint() {
+	Gump_manager *gman = gumpman;
 
 	Gump::paint();
 
-	if (gwin->failed_copy_protection()){
+	if (gwin->failed_copy_protection()) {
 		int oinkx = 91;
 		for (int i = 0; i < party_size; i++) {
-			sman->paint_text(2, "Oink", x + oinkx +i*coldx, y + rowy[1]);
-			sman->paint_text(2, "Oink", x + oinkx +i*coldx, y + rowy[2]);
+			sman->paint_text(2, "Oink", x + oinkx + i * coldx, y + rowy[1]);
+			sman->paint_text(2, "Oink", x + oinkx + i * coldx, y + rowy[2]);
 		}
 		sman->paint_text(2, "Oink", x + oinkx, y + rowy[5]);
 		sman->paint_text(2, "Oink", x + oinkx, y + rowy[6]);
-	}else{
+	} else {
 		// stats for all party members
 		for (int i = 0; i < party_size; i++) {
 			gman->paint_num(party[i]->get_effective_prop(Actor::combat),
-				  x + colx + i*coldx, y + rowy[1]);
+			                x + colx + i * coldx, y + rowy[1]);
 			gman->paint_num(party[i]->get_property(Actor::health),
-					  x + colx + i*coldx, y + rowy[2]);
+			                x + colx + i * coldx, y + rowy[2]);
 		}
 		// magic stats only for Avatar
 		gman->paint_num(party[0]->get_property(Actor::magic),
-							x + colx, y + rowy[5]);
+		                x + colx, y + rowy[5]);
 		gman->paint_num(party[0]->get_property(Actor::mana),
-							x + colx, y + rowy[6]);
+		                x + colx, y + rowy[6]);
 	}
 }
 

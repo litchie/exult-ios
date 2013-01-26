@@ -1,7 +1,7 @@
 /**
- **	Ucbrowse.cc - Browse usecode functions.
+ ** Ucbrowse.cc - Browse usecode functions.
  **
- **	Written: Nov. 19, 2006 - JSF
+ ** Written: Nov. 19, 2006 - JSF
  **/
 
 /*
@@ -33,315 +33,281 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 using std::ifstream;
 
-/*	Columns in our table. */
+/*  Columns in our table. */
 enum { NAME_COL, NUM_COL, TYPE_COL, N_COLS };
-/*	Sort ID's. */
+/*  Sort ID's. */
 enum { SORTID_NAME, SORTID_NUM, SORTID_TYPE };
 
 /*
- *	Open browser window.
+ *  Open browser window.
  */
 
-const char *ExultStudio::browse_usecode
-	(
-	bool want_objfun
-	)
-	{
-	if (!ucbrowsewin)			// First time?
-		{
+const char *ExultStudio::browse_usecode(
+    bool want_objfun
+) {
+	if (!ucbrowsewin) {         // First time?
 		ucbrowsewin = new Usecode_browser();
 		set_toggle("view_uc_functions", !want_objfun, !want_objfun);
 		set_toggle("view_uc_classes", !want_objfun, !want_objfun);
 		set_toggle("view_uc_shapes", true);
 		set_toggle("view_uc_objects", true);
 		ucbrowsewin->setup_list();
-		}
+	}
 	ucbrowsewin->show(true);
-	while (GTK_WIDGET_VISIBLE(ucbrowsewin->get_win()))	// Spin.
-		gtk_main_iteration();	// (Blocks).
+	while (GTK_WIDGET_VISIBLE(ucbrowsewin->get_win()))  // Spin.
+		gtk_main_iteration();   // (Blocks).
 	const char *choice = ucbrowsewin->get_choice();
 	return choice;
-	}
+}
 
 /*
- *	Usecode_browser window's okay button.
+ *  Usecode_browser window's okay button.
  */
-C_EXPORT void on_usecodes_ok_clicked
-	(
-	GtkButton *btn,
-	gpointer user_data
-	)
-	{
+C_EXPORT void on_usecodes_ok_clicked(
+    GtkButton *btn,
+    gpointer user_data
+) {
 	Usecode_browser *ucb = (Usecode_browser *) gtk_object_get_user_data(
-			GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(btn))));
+	                           GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(btn))));
 	ucb->okay();
-	}
+}
 
 /*
- *	Row was double-clicked.
+ *  Row was double-clicked.
  */
-C_EXPORT void on_usecodes_treeview_row_activated
-	(
-	GtkTreeView *treeview,
-	GtkTreePath *path,
-	GtkTreeViewColumn *column,
-	gpointer user_data
-	)
-	{
+C_EXPORT void on_usecodes_treeview_row_activated(
+    GtkTreeView *treeview,
+    GtkTreePath *path,
+    GtkTreeViewColumn *column,
+    gpointer user_data
+) {
 	Usecode_browser *ucb = (Usecode_browser *) gtk_object_get_user_data(
-		GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(treeview))));
+	                           GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(treeview))));
 	ucb->okay();
-	}
+}
 
 /*
- *	Usecode_browser window's cancel button.
+ *  Usecode_browser window's cancel button.
  */
-C_EXPORT void on_usecodes_cancel_clicked
-	(
-	GtkButton *btn,
-	gpointer user_data
-	)
-	{
+C_EXPORT void on_usecodes_cancel_clicked(
+    GtkButton *btn,
+    gpointer user_data
+) {
 	Usecode_browser *ucb = (Usecode_browser *) gtk_object_get_user_data(
-			GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(btn))));
+	                           GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(btn))));
 	ucb->cancel();
-	}
+}
 
 /*
- *	Usecode_browser window's X button.
+ *  Usecode_browser window's X button.
  */
-C_EXPORT gboolean on_usecodes_dialog_delete_event
-	(
-	GtkWidget *widget,
-	GdkEvent *event,
-	gpointer user_data
-	)
-	{
-	Usecode_browser *ucb = (Usecode_browser *) 
-				gtk_object_get_user_data(GTK_OBJECT(widget));
-	
+C_EXPORT gboolean on_usecodes_dialog_delete_event(
+    GtkWidget *widget,
+    GdkEvent *event,
+    gpointer user_data
+) {
+	Usecode_browser *ucb = (Usecode_browser *)
+	                       gtk_object_get_user_data(GTK_OBJECT(widget));
+
 	ucb->cancel();
 	return TRUE;
-	}
+}
 
 /*
- *	View classes/functions toggled.
+ *  View classes/functions toggled.
  */
-C_EXPORT void on_view_uc_classes_toggled
-	(
-	GtkToggleButton *btn,
-	gpointer user_data
-	)
-	{
+C_EXPORT void on_view_uc_classes_toggled(
+    GtkToggleButton *btn,
+    gpointer user_data
+) {
 	Usecode_browser *ucb = (Usecode_browser *) gtk_object_get_user_data(
-		GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(btn))));
+	                           GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(btn))));
 	ucb->setup_list();
-	}
-C_EXPORT void on_view_uc_functions_toggled
-	(
-	GtkToggleButton *btn,
-	gpointer user_data
-	)
-	{
+}
+C_EXPORT void on_view_uc_functions_toggled(
+    GtkToggleButton *btn,
+    gpointer user_data
+) {
 	Usecode_browser *ucb = (Usecode_browser *) gtk_object_get_user_data(
-		GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(btn))));
+	                           GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(btn))));
 	ucb->setup_list();
-	}
-C_EXPORT void on_view_uc_shapes_toggled
-	(
-	GtkToggleButton *btn,
-	gpointer user_data
-	)
-	{
+}
+C_EXPORT void on_view_uc_shapes_toggled(
+    GtkToggleButton *btn,
+    gpointer user_data
+) {
 	Usecode_browser *ucb = (Usecode_browser *) gtk_object_get_user_data(
-		GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(btn))));
+	                           GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(btn))));
 	ucb->setup_list();
-	}
+}
 
-C_EXPORT void on_view_uc_objects_toggled
-	(
-	GtkToggleButton *btn,
-	gpointer user_data
-	)
-	{
+C_EXPORT void on_view_uc_objects_toggled(
+    GtkToggleButton *btn,
+    gpointer user_data
+) {
 	Usecode_browser *ucb = (Usecode_browser *) gtk_object_get_user_data(
-		GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(btn))));
+	                           GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(btn))));
 	ucb->setup_list();
-	}
+}
 
 /*
- *	Comparison for sorting each (text) column.
+ *  Comparison for sorting each (text) column.
  */
-static gint ucbrowser_compare_func 
-	(
-	GtkTreeModel *model,
-	GtkTreeIter  *a,
-	GtkTreeIter  *b,
-	gpointer      userdata
-	)
-	{
+static gint ucbrowser_compare_func(
+    GtkTreeModel *model,
+    GtkTreeIter  *a,
+    GtkTreeIter  *b,
+    gpointer      userdata
+) {
 	gint colnum = GPOINTER_TO_INT(userdata);
 	gint ret = 0;
 	gchar *name1 = 0, *name2 = 0;
 	gtk_tree_model_get(model, a, colnum, &name1, -1);
 	gtk_tree_model_get(model, b, colnum, &name2, -1);
 
-	if (name1 == NULL || name2 == NULL)
-		{
+	if (name1 == NULL || name2 == NULL) {
 		if (name1 == NULL && name2 == NULL)
 			ret = 0;
 		else
 			ret = (name1 == NULL) ? -1 : 1;
-		}
-	else
+	} else
 		ret = g_utf8_collate(name1, name2);
-#if 0	/* This was in the example, but it causes crashes. */
+#if 0   /* This was in the example, but it causes crashes. */
 	g_free(name1);
 	g_free(name2);
 #endif
 	return ret;
-	}
+}
 
 /*
- *	Create usecode browser window.
+ *  Create usecode browser window.
  */
 
-Usecode_browser::Usecode_browser
-	(
-	)
-	{
+Usecode_browser::Usecode_browser(
+) {
 	ExultStudio *studio = ExultStudio::get_instance();
 	GladeXML *app_xml = studio->get_xml();
 	win = glade_xml_get_widget(app_xml, "usecodes_dialog");
 	gtk_object_set_user_data(GTK_OBJECT(win), this);
 	string ucname = get_system_path("<PATCH>/usecode");
-	if (!U7exists(ucname.c_str()))
-		{
+	if (!U7exists(ucname.c_str())) {
 		ucname = get_system_path("<STATIC>/usecode");
 		if (!U7exists(ucname.c_str()))
 			ucname = "";
-		}
+	}
 	studio->set_entry("usecodes_file", ucname.c_str());
 	/*
-	 *	Set up table.
+	 *  Set up table.
 	 */
-	model = gtk_tree_store_new (
-		N_COLS,
-		G_TYPE_STRING,		// Name.
-		G_TYPE_STRING,		// Number.
-		G_TYPE_STRING);		// Type:  function, class.
-					// Create view, and set our model.
+	model = gtk_tree_store_new(
+	            N_COLS,
+	            G_TYPE_STRING,      // Name.
+	            G_TYPE_STRING,      // Number.
+	            G_TYPE_STRING);     // Type:  function, class.
+	// Create view, and set our model.
 	tree = glade_xml_get_widget(app_xml, "usecodes_treeview");
 	gtk_tree_view_set_model(GTK_TREE_VIEW(tree), GTK_TREE_MODEL(model));;
 	// Set up sorting.
 	GtkTreeSortable *sortable = GTK_TREE_SORTABLE(model);
-	gtk_tree_sortable_set_sort_func(sortable, SORTID_NAME, 
-		ucbrowser_compare_func, GINT_TO_POINTER(NAME_COL), NULL);
-	gtk_tree_sortable_set_sort_func(sortable, SORTID_NUM, 
-		ucbrowser_compare_func, GINT_TO_POINTER(NUM_COL), NULL);
-	gtk_tree_sortable_set_sort_func(sortable, SORTID_TYPE, 
-		ucbrowser_compare_func, GINT_TO_POINTER(TYPE_COL), NULL);
+	gtk_tree_sortable_set_sort_func(sortable, SORTID_NAME,
+	                                ucbrowser_compare_func, GINT_TO_POINTER(NAME_COL), NULL);
+	gtk_tree_sortable_set_sort_func(sortable, SORTID_NUM,
+	                                ucbrowser_compare_func, GINT_TO_POINTER(NUM_COL), NULL);
+	gtk_tree_sortable_set_sort_func(sortable, SORTID_TYPE,
+	                                ucbrowser_compare_func, GINT_TO_POINTER(TYPE_COL), NULL);
 	// Create each column.
 	GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
 	GtkTreeViewColumn *col = gtk_tree_view_column_new_with_attributes(
-			"Name", renderer, "text", NAME_COL, NULL);
+	                             "Name", renderer, "text", NAME_COL, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), col);
 	gtk_tree_view_column_set_sort_column_id(col, SORTID_NAME);
 	renderer = gtk_cell_renderer_text_new();
 	col = gtk_tree_view_column_new_with_attributes(
-			"Number", renderer, "text", NUM_COL, NULL);
+	          "Number", renderer, "text", NUM_COL, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), col);
 	gtk_tree_view_column_set_sort_column_id(col, SORTID_NUM);
 	renderer = gtk_cell_renderer_text_new();
 	col = gtk_tree_view_column_new_with_attributes(
-			"Type", renderer, "text", TYPE_COL, NULL);
+	          "Type", renderer, "text", TYPE_COL, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), col);
 	gtk_tree_view_column_set_sort_column_id(col, SORTID_TYPE);
 	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(tree), TRUE);
-					// Set initial sort.
-	gtk_tree_sortable_set_sort_column_id(sortable, SORTID_NAME, 
-							GTK_SORT_ASCENDING);
+	// Set initial sort.
+	gtk_tree_sortable_set_sort_column_id(sortable, SORTID_NAME,
+	                                     GTK_SORT_ASCENDING);
 	gtk_widget_show(tree);
-	}
+}
 
 /*
- *	Delete.
+ *  Delete.
  */
 
-Usecode_browser::~Usecode_browser
-	(
-	)
-	{
+Usecode_browser::~Usecode_browser(
+) {
 	g_object_unref(model);
 	gtk_widget_destroy(win);
-	}
+}
 
 /*
- *	Show/hide.
+ *  Show/hide.
  */
 
-void Usecode_browser::show
-	(
-	bool tf
-	)
-	{
+void Usecode_browser::show(
+    bool tf
+) {
 	if (tf)
 		gtk_widget_show(win);
 	else
 		gtk_widget_hide(win);
-	}
+}
 
 /*
- *	"Okay" button.
+ *  "Okay" button.
  */
 
-void Usecode_browser::okay
-	(
-	)
-{
+void Usecode_browser::okay(
+) {
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 
 	choice = "";
 	/* This will only work in single or browse selection mode! */
-	GtkTreeSelection *selection = 
-		gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
+	GtkTreeSelection *selection =
+	    gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
 	if (gtk_tree_selection_get_selected(selection, &model, &iter)) {
 		gchar *name;
 		gtk_tree_model_get(model, &iter, NAME_COL, &name, -1);
 		if (name[0])
 			choice = name;
 		g_free(name);
-		if (choice == "") {	// No name? Get number.
+		if (choice == "") { // No name? Get number.
 			gtk_tree_model_get(model, &iter, NUM_COL, &name, -1);
 			choice = name;
 			g_free(name);
 		}
-		g_print ("selected row is: %s\n", choice.c_str());
+		g_print("selected row is: %s\n", choice.c_str());
 	}
 	show(FALSE);
 }
 
 /*
- *	Set up list of usecode entries.
+ *  Set up list of usecode entries.
  */
 
-void Usecode_browser::setup_list
-	(
-	)
-{
+void Usecode_browser::setup_list(
+) {
 	ExultStudio *studio = ExultStudio::get_instance();
 	const char *ucfile = studio->get_text_entry("usecodes_file");
 	ifstream in;
 	U7open(in, ucfile);
 	Usecode_symbol_table symtbl;
-	long magic = Read4(in);		// Test for symbol table.
+	long magic = Read4(in);     // Test for symbol table.
 	if (!in.good()) {
 		EStudio::Alert("Error reading '%s'.", ucfile);
 		return;
 	}
-	if (magic != UCSYMTBL_MAGIC0 || (magic = Read4(in)) 
-							!= UCSYMTBL_MAGIC1)
+	if (magic != UCSYMTBL_MAGIC0 || (magic = Read4(in))
+	        != UCSYMTBL_MAGIC1)
 		return;
 	symtbl.read(in);
 	gtk_tree_store_clear(model);
@@ -349,7 +315,7 @@ void Usecode_browser::setup_list
 	bool show_classes = studio->get_toggle("view_uc_classes");
 	bool show_shapes = studio->get_toggle("view_uc_shapes");
 	bool show_objects = studio->get_toggle("view_uc_objects");
-	const Usecode_symbol_table::Syms_vector& syms = symtbl.get_symbols();
+	const Usecode_symbol_table::Syms_vector &syms = symtbl.get_symbols();
 	Usecode_symbol_table::Syms_vector::const_iterator siter;
 	for (siter = syms.begin(); siter != syms.end(); ++siter) {
 		Usecode_symbol *sym = *siter;
@@ -387,7 +353,7 @@ void Usecode_browser::setup_list
 		GtkTreeIter iter;
 		gtk_tree_store_append(model, &iter, NULL);
 		gtk_tree_store_set(model, &iter, NAME_COL, nm,
-			NUM_COL, num, TYPE_COL, kindstr, -1);
+		                   NUM_COL, num, TYPE_COL, kindstr, -1);
 	}
 }
 

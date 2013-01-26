@@ -26,59 +26,72 @@
 
 #include "ucfunc.h"
 
-class UCData
-{
-	public:
-		UCData();
-		~UCData();
-		
-		void dump_unknown_opcodes();
-		void dump_unknown_intrinsics();
-		
-		void parse_params(const unsigned int argc, char **argv);
-		void open_usecode(const std::string &filename);
-		void load_funcs();
-		
-		void disassamble();
-		void dump_flags(std::ostream &o);
-		void output_extern_header(std::ostream &o);
-		
-		std::string output_redirect() const { return _output_redirect; };
-		std::string input_usecode_file() const { return _input_usecode_file; };
-		
-		bool fail() const { return _file.fail(); };
-	
-		const std::map<unsigned int, UCFuncSet> &funcmap() { return _funcmap; };	
-		
-		const UCOptions &opt() { return options; };
-		
-		UCOptions options;
-		
-	private:
-		
-		void file_open(const std::string &filename);
-		void file_seek_start() { _file.seekg(0, std::ios::beg); };
-		void file_seek_end() { _file.seekg(0, std::ios::end); };
+class UCData {
+public:
+	UCData();
+	~UCData();
 
-		std::ifstream _file;
-		
-		std::string _output_redirect;
-		std::string _input_usecode_file;
-		
-		unsigned int _funcid;
-		
-		std::vector<UCc> _codes;
-		
-		std::vector<UCFunc *> _funcs;
-		
-		/* Just a quick mapping between funcs and basic data on them.
-		   Just something we can quickly pass to the parsing functions
-		   so we don't have to give them an entire function to play with. */
-		FuncMap _funcmap;
-		
-		long _search_opcode;
-		long _search_intrinsic;
-		std::vector<unsigned int> search_funcs;
+	void dump_unknown_opcodes();
+	void dump_unknown_intrinsics();
+
+	void parse_params(const unsigned int argc, char **argv);
+	void open_usecode(const std::string &filename);
+	void load_funcs();
+
+	void disassamble();
+	void dump_flags(std::ostream &o);
+	void output_extern_header(std::ostream &o);
+
+	std::string output_redirect() const {
+		return _output_redirect;
+	};
+	std::string input_usecode_file() const {
+		return _input_usecode_file;
+	};
+
+	bool fail() const {
+		return _file.fail();
+	};
+
+	const std::map<unsigned int, UCFuncSet> &funcmap() {
+		return _funcmap;
+	};
+
+	const UCOptions &opt() {
+		return options;
+	};
+
+	UCOptions options;
+
+private:
+
+	void file_open(const std::string &filename);
+	void file_seek_start() {
+		_file.seekg(0, std::ios::beg);
+	};
+	void file_seek_end() {
+		_file.seekg(0, std::ios::end);
+	};
+
+	std::ifstream _file;
+
+	std::string _output_redirect;
+	std::string _input_usecode_file;
+
+	unsigned int _funcid;
+
+	std::vector<UCc> _codes;
+
+	std::vector<UCFunc *> _funcs;
+
+	/* Just a quick mapping between funcs and basic data on them.
+	   Just something we can quickly pass to the parsing functions
+	   so we don't have to give them an entire function to play with. */
+	FuncMap _funcmap;
+
+	long _search_opcode;
+	long _search_intrinsic;
+	std::vector<unsigned int> search_funcs;
 };
 
 #endif

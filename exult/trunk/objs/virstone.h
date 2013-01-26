@@ -1,7 +1,7 @@
 /**
- **	Virstone.h - Virtue stones.
+ ** Virstone.h - Virtue stones.
  **
- **	Written: 10/27/2000 - JSF
+ ** Written: 10/27/2000 - JSF
  **/
 
 /*
@@ -23,37 +23,40 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 #ifndef INCL_VIRSTONE
-#define INCL_VIRSTONE	1
+#define INCL_VIRSTONE   1
 
 #include "iregobjs.h"
 
 /*
- *	A virtue stone can be set to a position on the map.
+ *  A virtue stone can be set to a position on the map.
  */
-class Virtue_stone_object : public Ireg_game_object
-	{
-	Tile_coord pos;			// Position it teleports to.
-	int map;				// Map to teleport to.
+class Virtue_stone_object : public Ireg_game_object {
+	Tile_coord pos;         // Position it teleports to.
+	int map;                // Map to teleport to.
 public:
-	Virtue_stone_object(int shapenum, int framenum, unsigned int tilex, 
-				unsigned int tiley, unsigned int lft)
+	Virtue_stone_object(int shapenum, int framenum, unsigned int tilex,
+	                    unsigned int tiley, unsigned int lft)
 		: Ireg_game_object(shapenum, framenum, tilex, tiley, lft),
-			pos(0, 0, 0), map(0)
-		{  }
-	void set_target_pos(Tile_coord const& t)	// Set/get position.
-		{ pos = t; }
+		  pos(0, 0, 0), map(0)
+	{  }
+	void set_target_pos(Tile_coord const &t) {  // Set/get position.
+		pos = t;
+	}
 	void set_target_pos(unsigned char tilex, unsigned char tiley,
-			unsigned char schunk, unsigned char lft);
-	Tile_coord get_target_pos()
-		{ return pos; }
-	int get_target_map()	// Get/set map.
-		{ return map; }
-	void set_target_map(int m)
-		{ map = m; }
-					// Write out to IREG file.
-	virtual void write_ireg(DataSource* out);
-				// Get size of IREG. Returns -1 if can't write to buffer
+	                    unsigned char schunk, unsigned char lft);
+	Tile_coord get_target_pos() {
+		return pos;
+	}
+	int get_target_map() {  // Get/set map.
+		return map;
+	}
+	void set_target_map(int m) {
+		map = m;
+	}
+	// Write out to IREG file.
+	virtual void write_ireg(DataSource *out);
+	// Get size of IREG. Returns -1 if can't write to buffer
 	virtual int get_ireg_size();
-	};
+};
 
 #endif

@@ -23,19 +23,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Enabled_button.h"
 #include "gamewin.h"
 
-const char* Enabled_button::selections[] = { "Disabled", "Enabled" };
+const char *Enabled_button::selections[] = { "Disabled", "Enabled" };
 
 /*
- *	Redisplay as 'pushed'.
+ *  Redisplay as 'pushed'.
  */
 
-bool Enabled_button::push
-	(
-	int button
-	)
-{
-	if (button == 1 || button == 3)
-	{
+bool Enabled_button::push(
+    int button
+) {
+	if (button == 1 || button == 3) {
 		set_pushed(button);
 		paint();
 		gwin->set_painted();
@@ -45,24 +42,20 @@ bool Enabled_button::push
 }
 
 /*
- *	Redisplay as 'unpushed'.
+ *  Redisplay as 'unpushed'.
  */
 
-void Enabled_button::unpush
-	(
-	int button
-	)
-{
-	if (button == 1 || button == 3)
-	{
+void Enabled_button::unpush(
+    int button
+) {
+	if (button == 1 || button == 3) {
 		set_pushed(false);
 		paint();
 		gwin->set_painted();
 	}
 }
 
-bool Enabled_button::activate(int button)
-{
+bool Enabled_button::activate(int button) {
 	if (button != 1 && button != 3) return false;
 
 	set_frame(get_framenum() + 1);

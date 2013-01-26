@@ -1,7 +1,7 @@
 /**
- **	Objedit.cc - object-editing methods.
+ ** Objedit.cc - object-editing methods.
  **
- **	Written: 7/29/01 - JSF
+ ** Written: 7/29/01 - JSF
  **/
 
 /*
@@ -40,145 +40,125 @@ using std::cout;
 using std::endl;
 
 /*
- *	Object window's Okay button.
+ *  Object window's Okay button.
  */
-C_EXPORT void on_obj_okay_clicked
-	(
-	GtkButton *btn,
-	gpointer user_data
-	)
-	{
+C_EXPORT void on_obj_okay_clicked(
+    GtkButton *btn,
+    gpointer user_data
+) {
 	ExultStudio::get_instance()->save_obj_window();
 	ExultStudio::get_instance()->close_obj_window();
-	}
+}
 
 /*
- *	Object window's Apply button.
+ *  Object window's Apply button.
  */
-C_EXPORT void on_obj_apply_clicked
-	(
-	GtkButton *btn,
-	gpointer user_data
-	)
-	{
+C_EXPORT void on_obj_apply_clicked(
+    GtkButton *btn,
+    gpointer user_data
+) {
 	ExultStudio::get_instance()->save_obj_window();
-	}
+}
 
 /*
- *	Object window's Cancel button.
+ *  Object window's Cancel button.
  */
-C_EXPORT void on_obj_cancel_clicked
-	(
-	GtkButton *btn,
-	gpointer user_data
-	)
-	{
+C_EXPORT void on_obj_cancel_clicked(
+    GtkButton *btn,
+    gpointer user_data
+) {
 	ExultStudio::get_instance()->close_obj_window();
-	}
+}
 
 /*
- *	Rotate frame (clockwise).
+ *  Rotate frame (clockwise).
  */
-C_EXPORT void on_obj_rotate_clicked
-	(
-	GtkButton *btn,
-	gpointer user_data
-	)
-	{
+C_EXPORT void on_obj_rotate_clicked(
+    GtkButton *btn,
+    gpointer user_data
+) {
 	ExultStudio::get_instance()->rotate_obj();
-	}
+}
 
 /*
- *	Object window's close button.
+ *  Object window's close button.
  */
-C_EXPORT gboolean on_obj_window_delete_event
-	(
-	GtkWidget *widget,
-	GdkEvent *event,
-	gpointer user_data
-	)
-	{
+C_EXPORT gboolean on_obj_window_delete_event(
+    GtkWidget *widget,
+    GdkEvent *event,
+    gpointer user_data
+) {
 	ExultStudio::get_instance()->close_obj_window();
 	return TRUE;
-	}
+}
 
 /*
- *	Draw shape in object shape area.
+ *  Draw shape in object shape area.
  */
-C_EXPORT gboolean on_obj_draw_expose_event
-	(
-	GtkWidget *widget,		// The view window.
-	GdkEventExpose *event,
-	gpointer data			// ->Shape_chooser.
-	)
-	{
+C_EXPORT gboolean on_obj_draw_expose_event(
+    GtkWidget *widget,      // The view window.
+    GdkEventExpose *event,
+    gpointer data           // ->Shape_chooser.
+) {
 	ExultStudio::get_instance()->show_obj_shape(
-		event->area.x, event->area.y, event->area.width,
-							event->area.height);
+	    event->area.x, event->area.y, event->area.width,
+	    event->area.height);
 	return (TRUE);
-	}
+}
 
 /*
- *	Object shape/frame # changed, so update shape displayed.
+ *  Object shape/frame # changed, so update shape displayed.
  */
-C_EXPORT gboolean on_obj_shape_changed
-	(
-	GtkWidget *widget,
-	GdkEventFocus *event,
-	gpointer user_data
-	)
-	{
+C_EXPORT gboolean on_obj_shape_changed(
+    GtkWidget *widget,
+    GdkEventFocus *event,
+    gpointer user_data
+) {
 	ExultStudio *studio = ExultStudio::get_instance();
 	int shnum = studio->get_num_entry("obj_shape");
 	int frnum = studio->get_num_entry("obj_frame");
-	int nframes = 
-		studio->get_vgafile()->get_ifile()->get_num_frames(shnum);
-	int xfrnum = frnum&31;		// Look at unrotated value.
+	int nframes =
+	    studio->get_vgafile()->get_ifile()->get_num_frames(shnum);
+	int xfrnum = frnum & 31;    // Look at unrotated value.
 	int newfrnum = xfrnum >= nframes ? 0 : frnum;
-	if (newfrnum != frnum)
-		{
+	if (newfrnum != frnum) {
 		studio->set_spin("obj_frame", newfrnum);
 		return TRUE;
-		}
+	}
 	studio->show_obj_shape();
 	return TRUE;
-	}
+}
 
 /*
- *	Object shape/frame # changed, so update shape displayed.
+ *  Object shape/frame # changed, so update shape displayed.
  */
-C_EXPORT gboolean on_obj_pos_changed
-	(
-	GtkWidget *widget,
-	GdkEventFocus *event,
-	gpointer user_data
-	)
-	{
+C_EXPORT gboolean on_obj_pos_changed(
+    GtkWidget *widget,
+    GdkEventFocus *event,
+    gpointer user_data
+) {
 	//++++Maybe later, change pos. immediately?
 	return TRUE;
-	}
+}
 
 /*
- *	Callback for when a shape is dropped on the draw area.
+ *  Callback for when a shape is dropped on the draw area.
  */
 
-static void Obj_shape_dropped
-	(
-	int file,			// U7_SHAPE_SHAPES.
-	int shape,
-	int frame,
-	void *udata
-	)
-	{
-	if (file == U7_SHAPE_SHAPES && 
-				shape >= c_first_obj_shape && shape < c_max_shapes)
+static void Obj_shape_dropped(
+    int file,           // U7_SHAPE_SHAPES.
+    int shape,
+    int frame,
+    void *udata
+) {
+	if (file == U7_SHAPE_SHAPES &&
+	        shape >= c_first_obj_shape && shape < c_max_shapes)
 		((ExultStudio *) udata)->set_obj_shape(shape, frame);
-	}
+}
 
 #ifdef WIN32
 
-static void Drop_dragged_shape(int shape, int frame, int x, int y, void *data)
-{
+static void Drop_dragged_shape(int shape, int frame, int x, int y, void *data) {
 	cout << "Dropped a shape: " << shape << "," << frame << " " << data << endl;
 
 	Obj_shape_dropped(U7_SHAPE_SHAPES, shape, frame, data);
@@ -188,85 +168,76 @@ static void Drop_dragged_shape(int shape, int frame, int x, int y, void *data)
 
 
 /*
- *	Open the object-editing window.
+ *  Open the object-editing window.
  */
 
-void ExultStudio::open_obj_window
-	(
-	unsigned char *data,		// Serialized object.
-	int datalen
-	)
-	{
+void ExultStudio::open_obj_window(
+    unsigned char *data,        // Serialized object.
+    int datalen
+) {
 #ifdef WIN32
 	bool first_time = false;
 #endif
-	if (!objwin)			// First time?
-		{
+	if (!objwin) {          // First time?
 #ifdef WIN32
 		first_time = true;
 #endif
-		objwin = glade_xml_get_widget( app_xml, "obj_window" );
-		if (vgafile && palbuf)
-			{
+		objwin = glade_xml_get_widget(app_xml, "obj_window");
+		if (vgafile && palbuf) {
 			obj_draw = new Shape_draw(vgafile->get_ifile(), palbuf,
-			    glade_xml_get_widget(app_xml, "obj_draw"));
+			                          glade_xml_get_widget(app_xml, "obj_draw"));
 			obj_draw->enable_drop(Obj_shape_dropped, this);
-			}
 		}
-					// Init. obj address to null.
+	}
+	// Init. obj address to null.
 	gtk_object_set_user_data(GTK_OBJECT(objwin), 0);
 	if (!init_obj_window(data, datalen))
 		return;
 	gtk_widget_show(objwin);
 #ifdef WIN32
 	if (first_time || !objdnd)
-		Windnd::CreateStudioDropDest(objdnd, objhwnd, Drop_dragged_shape, NULL, NULL, (void*) this);
+		Windnd::CreateStudioDropDest(objdnd, objhwnd, Drop_dragged_shape, NULL, NULL, (void *) this);
 #endif
-	}
+}
 
 /*
- *	Close the object-editing window.
+ *  Close the object-editing window.
  */
 
-void ExultStudio::close_obj_window
-	(
-	)
-	{
+void ExultStudio::close_obj_window(
+) {
 	if (objwin) {
 		gtk_widget_hide(objwin);
 #ifdef WIN32
 		Windnd::DestroyStudioDropDest(objdnd, objhwnd);
 #endif
 	}
-	}
+}
 
 /*
- *	Init. the object editor with data from Exult.
+ *  Init. the object editor with data from Exult.
  *
- *	Output:	0 if error (reported).
+ *  Output: 0 if error (reported).
  */
 
-int ExultStudio::init_obj_window
-	(
-	unsigned char *data,
-	int datalen
-	)
-	{
+int ExultStudio::init_obj_window(
+    unsigned char *data,
+    int datalen
+) {
 	unsigned long addr;
 	int tx, ty, tz;
 	int shape, frame, quality;
 	std::string name;
 	if (!Object_in(data, datalen, addr, tx, ty, tz, shape, frame,
-		quality, name))
-		{
+	               quality, name)) {
 		cout << "Error decoding object" << endl;
 		return 0;
-		}
-					// Store address with window.
+	}
+	// Store address with window.
 	gtk_object_set_user_data(GTK_OBJECT(objwin), (gpointer) addr);
-					// Store name. (Not allowed to change.)
+	// Store name. (Not allowed to change.)
 	set_entry("obj_name", name.c_str(), false);
-					// Shape/frame, quality.
+	// Shape/frame, quality.
 //	set_entry("obj_shape", shape);
 //	set_entry("obj_frame", frame);
 //	set_entry("obj_quality", quality);
@@ -274,37 +245,34 @@ int ExultStudio::init_obj_window
 	set_spin("obj_shape", shape, c_first_obj_shape, 8096);
 	set_spin("obj_frame", frame);
 	set_spin("obj_quality", quality);
-	set_spin("obj_x", tx);		// Position.
+	set_spin("obj_x", tx);      // Position.
 	set_spin("obj_y", ty);
 	set_spin("obj_z", tz);
-					// Set limit on frame #.
+	// Set limit on frame #.
 	GtkWidget *btn = glade_xml_get_widget(app_xml, "obj_frame");
-	if (btn)
-		{
+	if (btn) {
 		GtkAdjustment *adj = gtk_spin_button_get_adjustment(
-						GTK_SPIN_BUTTON(btn));
+		                         GTK_SPIN_BUTTON(btn));
 		int nframes = vgafile->get_ifile()->get_num_frames(shape);
-		adj->upper = (nframes - 1)|32;	// So we can rotate.
+		adj->upper = (nframes - 1) | 32; // So we can rotate.
 		gtk_signal_emit_by_name(GTK_OBJECT(adj), "changed");
-		}		
-	return 1;
 	}
+	return 1;
+}
 
 /*
- *	Send updated object info. back to Exult.
+ *  Send updated object info. back to Exult.
  *
- *	Output:	0 if error (reported).
+ *  Output: 0 if error (reported).
  */
 
-int ExultStudio::save_obj_window
-	(
-	)
-	{
+int ExultStudio::save_obj_window(
+) {
 	cout << "In save_obj_window()" << endl;
-					// Get object address.
+	// Get object address.
 	unsigned long addr = (unsigned long) gtk_object_get_user_data(
-							GTK_OBJECT(objwin));
-	int tx = get_spin("obj_x"), ty = get_spin("obj_y"), 
+	                         GTK_OBJECT(objwin));
+	int tx = get_spin("obj_x"), ty = get_spin("obj_y"),
 	    tz = get_spin("obj_z");
 	std::string name(get_text_entry("obj_name"));
 //	int shape = get_num_entry("obj_shape");
@@ -313,77 +281,70 @@ int ExultStudio::save_obj_window
 	int shape = get_spin("obj_shape");
 	int frame = get_spin("obj_frame");
 	int quality = get_spin("obj_quality");
-	
-	if (Object_out(server_socket, Exult_server::obj, addr, tx, ty, tz, 
-					shape, frame, quality, name) == -1)
-		{
-		cout << "Error sending object data to server" <<endl;
+
+	if (Object_out(server_socket, Exult_server::obj, addr, tx, ty, tz,
+	               shape, frame, quality, name) == -1) {
+		cout << "Error sending object data to server" << endl;
 		return 0;
-		}
+	}
 	cout << "Sent object data to server" << endl;
 	return 1;
-	}
+}
 
 /*
- *	Rotate obj. frame 90 degrees clockwise.
+ *  Rotate obj. frame 90 degrees clockwise.
  */
 
-void ExultStudio::rotate_obj
-	(
-	)
-	{
+void ExultStudio::rotate_obj(
+) {
 	int shnum = get_num_entry("obj_shape");
 	int frnum = get_num_entry("obj_frame");
 	if (shnum <= 0)
 		return;
 	Shapes_vga_file *shfile = (Shapes_vga_file *) vgafile->get_ifile();
-					// Make sure data's been read in.
+	// Make sure data's been read in.
 	shfile->read_info(game_type, true);
-	Shape_info& info = shfile->get_info(shnum);
+	Shape_info &info = shfile->get_info(shnum);
 	frnum = info.get_rotated_frame(frnum, 1);
 	set_spin("obj_frame", frnum);
 	show_obj_shape();
-	}
+}
 
 /*
- *	Paint the shape in the draw area.
+ *  Paint the shape in the draw area.
  */
 
-void ExultStudio::show_obj_shape
-	(
-	int x, int y, int w, int h	// Rectangle. w=-1 to show all.
-	)
-	{
+void ExultStudio::show_obj_shape(
+    int x, int y, int w, int h  // Rectangle. w=-1 to show all.
+) {
 	if (!obj_draw)
 		return;
 	obj_draw->configure();
-					// Yes, this is kind of redundant...
+	// Yes, this is kind of redundant...
 	int shnum = get_num_entry("obj_shape");
 	int frnum = get_num_entry("obj_frame");
-	if (!shnum)			// Don't draw shape 0.
+	if (!shnum)         // Don't draw shape 0.
 		shnum = -1;
 	obj_draw->draw_shape_centered(shnum, frnum);
 	if (w != -1)
 		obj_draw->show(x, y, w, h);
 	else
 		obj_draw->show();
-	}
+}
 
 /*
- *	Set object shape.
+ *  Set object shape.
  */
 
-void ExultStudio::set_obj_shape
-	(
-	int shape,
-	int frame
-	)
-	{
+void ExultStudio::set_obj_shape(
+    int shape,
+    int frame
+) {
 	set_spin("obj_shape", shape);
 	set_spin("obj_frame", frame);
 	const char *nm = get_shape_name(shape);
 	set_entry("obj_name", nm ? nm : "", false);
 	show_obj_shape();
-	}
+}
 
 

@@ -1,5 +1,5 @@
 /*
- *	Combat_opts.h - Combat options.
+ *  Combat_opts.h - Combat options.
  *
  *  Copyright (C) 2000-2013  The Exult Team
  *
@@ -19,29 +19,28 @@
  */
 
 #ifndef COMBAT_OPTS_H
-#define COMBAT_OPTS_H	1
+#define COMBAT_OPTS_H   1
 
 /*
- *	Combat options:
+ *  Combat options:
  */
-class Combat : public Game_singletons
-	{
-	static bool paused;		// For suspending.
+class Combat : public Game_singletons {
+	static bool paused;     // For suspending.
 public:
-	static int difficulty;		// 0=normal, >0 harder, <0 easier.
-	enum Mode
-		{
-		original = 0,		// All automatic,
-		keypause = 1		// Kbd (space) suspends/resumes.
-		};
-	static Mode mode;
-	static bool show_hits;		// Display #'s.
-					// In game:
-	static void toggle_pause();	// Pause/resume.
-	static void resume();		// Always resume.
-	static bool is_paused()
-		{ return paused; }
-	static bool charmed_more_difficult;
+	static int difficulty;      // 0=normal, >0 harder, <0 easier.
+	enum Mode {
+	    original = 0,       // All automatic,
+	    keypause = 1        // Kbd (space) suspends/resumes.
 	};
+	static Mode mode;
+	static bool show_hits;      // Display #'s.
+	// In game:
+	static void toggle_pause(); // Pause/resume.
+	static void resume();       // Always resume.
+	static bool is_paused() {
+		return paused;
+	}
+	static bool charmed_more_difficult;
+};
 
 #endif

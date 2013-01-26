@@ -58,7 +58,7 @@ using std::max;
 Shape_manager *Shape_manager::instance = 0;
 
 /*
- *	Singletons:
+ *  Singletons:
  */
 Game_window *Game_singletons::gwin = 0;
 Game_map *Game_singletons::gmap = 0;
@@ -71,11 +71,9 @@ Gump_manager *Game_singletons::gumpman = 0;
 Party_manager *Game_singletons::partyman = 0;
 class FileSystem *Game_singletons::pent_filesys = 0;
 
-void Game_singletons::init
-	(
-	Game_window *g
-	)
-	{
+void Game_singletons::init(
+    Game_window *g
+) {
 	gwin = g;
 	gmap = g->get_map();
 	eman = g->get_effects();
@@ -85,99 +83,87 @@ void Game_singletons::init
 	pal = g->get_pal();
 	gumpman = g->get_gump_man();
 	partyman = g->get_party_man();
-	}
+}
 
 /*
- *	Create shape manager.
+ *  Create shape manager.
  */
-Shape_manager::Shape_manager
-	(
-	) : fonts(0), can_have_paperdolls(false),
-	    paperdolls_enabled(false), got_si_shapes(false)
-	{
+Shape_manager::Shape_manager(
+) : fonts(0), can_have_paperdolls(false),
+	paperdolls_enabled(false), got_si_shapes(false) {
 	assert(instance == 0);
 	instance = this;
-	}
+}
 
 /*
- *	Read in shape-file info.
+ *  Read in shape-file info.
  */
 
-void Shape_manager::read_shape_info
-	(
-	)
-	{
+void Shape_manager::read_shape_info(
+) {
 	// Want space for extra shapes if BG multiracial enabled.
 	shapes.init();
 	// Read in shape information.
 	shapes.read_info(Game::get_game_type(), Game::is_editing());
 	// Fixup Avatar shapes (1024-1035 in default SI).
-	Shape_info& male = shapes.get_info(Shapeinfo_lookup::GetMaleAvShape());
-	Shape_info& female = shapes.get_info(Shapeinfo_lookup::GetFemaleAvShape());
-	
+	Shape_info &male = shapes.get_info(Shapeinfo_lookup::GetMaleAvShape());
+	Shape_info &female = shapes.get_info(Shapeinfo_lookup::GetFemaleAvShape());
+
 	vector<Skin_data> *skins = Shapeinfo_lookup::GetSkinList();
 	for (vector<Skin_data>::iterator it = skins->begin();
-			it != skins->end(); ++it)
-		{
-		if ((*it).copy_info)
-			{
+	        it != skins->end(); ++it) {
+		if ((*it).copy_info) {
 			shapes.copy_info((*it).shape_num, (*it).is_female ? female : male);
 			shapes.copy_info((*it).naked_shape, (*it).is_female ? female : male);
-			}
 		}
 	}
+}
 
 /*
- *	Load files.
+ *  Load files.
  */
 
-void Shape_manager::load
-	(
-	)
-	{
+void Shape_manager::load(
+) {
 	shapes.reset_imports();
-	
+
 	// Determine some colors based on the default palette
 	Palette pal;
-			// could throw!
+	// could throw!
 	pal.load(PALETTES_FLX, PATCH_PALETTES, 0);
-					// Get a bright green.
+	// Get a bright green.
 	special_pixels[POISON_PIXEL] = pal.find_color(4, 63, 4);
-					// Get a light gray.
+	// Get a light gray.
 	special_pixels[PROTECT_PIXEL] = pal.find_color(62, 62, 55);
-					// Yellow for cursed.
+	// Yellow for cursed.
 	special_pixels[CURSED_PIXEL] = pal.find_color(62, 62, 5);
-					// Light blue for charmed.
+	// Light blue for charmed.
 	special_pixels[CHARMED_PIXEL] = pal.find_color(30, 40, 63);
-					// Red for hit in battle.
+	// Red for hit in battle.
 	special_pixels[HIT_PIXEL] = pal.find_color(63, 4, 4);
-					// Purple for paralyze.
+	// Purple for paralyze.
 	special_pixels[PARALYZE_PIXEL] = pal.find_color(49, 27, 49);
 
 	files[SF_GUMPS_VGA].load(GUMPS_VGA, PATCH_GUMPS, true);
-	
-	if (!files[SF_PAPERDOL_VGA].load(*Shapeinfo_lookup::GetPaperdollSources()))
-		{
+
+	if (!files[SF_PAPERDOL_VGA].load(*Shapeinfo_lookup::GetPaperdollSources())) {
 		if (GAME_SI)
 			gwin->abort("Can't open 'paperdol.vga' file.");
 		else if (GAME_BG) // NOT for devel. games.
 			std::cerr << "Couldn't open SI 'paperdol.vga'." << std::endl
-					  << "Support for SI Paperdolls in BG is disabled." << std::endl;
+			          << "Support for SI Paperdolls in BG is disabled." << std::endl;
 		can_have_paperdolls = false;
-		}
-	else
+	} else
 		can_have_paperdolls = true;
 
 	if (GAME_SI)
 		got_si_shapes = true;
-	else if (GAME_BG)
-		{
+	else if (GAME_BG) {
 		// Source for importing SI data.
 		pair<string, int> source;
-		
+
 		vector<pair<int, int> > *imports;
-		if (can_have_paperdolls)	// Do this only if SI paperdol.vga was found.
-			{
+		if (can_have_paperdolls) {  // Do this only if SI paperdol.vga was found.
 			source = pair<string, int>(string("<SERPENT_STATIC>/gumps.vga"), -1);
 			// Gump shapes to import from SI.
 			imports = Shapeinfo_lookup::GetImportedGumpShapes();
@@ -186,13 +172,13 @@ void Shape_manager::load
 				can_have_paperdolls = files[SF_GUMPS_VGA].import_shapes(source, *imports);
 			else
 				can_have_paperdolls = false;
-			
+
 			if (can_have_paperdolls)
 				std::cout << "Support for SI Paperdolls is enabled." << std::endl;
 			else
 				std::cerr << "Couldn't open SI 'gumps.vga'." << std::endl
-						  << "Support for SI Paperdolls in BG is disabled." << std::endl;
-			}
+				          << "Support for SI Paperdolls in BG is disabled." << std::endl;
+		}
 
 		source = pair<string, int>(string("<SERPENT_STATIC>/shapes.vga"), -1);
 		// Skin shapes to import from SI.
@@ -206,24 +192,24 @@ void Shape_manager::load
 			std::cout << "Support for SI Multiracial Avatars is enabled." << std::endl;
 		else
 			std::cerr << "Couldn't open SI 'shapes.vga'." << std::endl
-					  << "Support for SI Multiracial Avatars is disabled." << std::endl;
-		}
+			          << "Support for SI Multiracial Avatars is disabled." << std::endl;
+	}
 
 	files[SF_SPRITES_VGA].load(SPRITES_VGA, PATCH_SPRITES);
 
 	vector<pair<string, int> > source;
 	source.push_back(pair<string, int>(FACES_VGA, -1));
-	if (GAME_BG)
-		{	// Multiracial faces.
-		const str_int_pair& resource = game->get_resource("files/mrfacesvga");
+	if (GAME_BG) {
+		// Multiracial faces.
+		const str_int_pair &resource = game->get_resource("files/mrfacesvga");
 		source.push_back(pair<string, int>(string(resource.str), resource.num));
-		}
+	}
 	source.push_back(pair<string, int>(PATCH_FACES, -1));
 	files[SF_FACES_VGA].load(source);
 
 	files[SF_EXULT_FLX].load(BUNDLE_CHECK(BUNDLE_EXULT_FLX, EXULT_FLX));
 
-	const char* gamedata = game->get_resource("files/gameflx").str;
+	const char *gamedata = game->get_resource("files/gameflx").str;
 	std::cout << "Loading " << gamedata << "..." << std::endl;
 	files[SF_GAME_FLX].load(gamedata);
 
@@ -241,125 +227,112 @@ void Shape_manager::load
 #endif
 
 
-					// Get translucency tables.
+	// Get translucency tables.
 	unsigned char *blends = 0;
-	unsigned char *ptr;	// We will delete THIS at the end, not blends!
+	unsigned char *ptr; // We will delete THIS at the end, not blends!
 	int nblends;
-		// ++++TODO: Make this file editable in ES.
-	if (U7exists(PATCH_BLENDS))
-		{
+	// ++++TODO: Make this file editable in ES.
+	if (U7exists(PATCH_BLENDS)) {
 		std::ifstream fin;
 		U7open(fin, PATCH_BLENDS);
 		nblends = Read1(fin);
 		ptr = blends = new unsigned char[nblends * 4];
 		fin.read(reinterpret_cast<char *>(blends), nblends * 4);
 		fin.close();
-		}
-	else if (GAME_BG || GAME_SI)
-		{
+	} else if (GAME_BG || GAME_SI) {
 		const char *flexfile =
-				GAME_BG ? BUNDLE_CHECK(BUNDLE_EXULT_BG_FLX, EXULT_BG_FLX)
-				        : BUNDLE_CHECK(BUNDLE_EXULT_SI_FLX, EXULT_SI_FLX);
+		    GAME_BG ? BUNDLE_CHECK(BUNDLE_EXULT_BG_FLX, EXULT_BG_FLX)
+		    : BUNDLE_CHECK(BUNDLE_EXULT_SI_FLX, EXULT_SI_FLX);
 		U7object txtobj(flexfile,
-				GAME_BG ? EXULT_BG_FLX_BLENDS_DAT : EXULT_SI_FLX_BLENDS_DAT);
+		                GAME_BG ? EXULT_BG_FLX_BLENDS_DAT : EXULT_SI_FLX_BLENDS_DAT);
 		std::size_t len;
 		ptr = blends = reinterpret_cast<unsigned char *>(txtobj.retrieve(len));
 		nblends = *blends++;
-		}
-	else if (U7exists(BLENDS))
-		{
+	} else if (U7exists(BLENDS)) {
 		std::ifstream fin;
 		U7open(fin, BLENDS);
 		nblends = Read1(fin);
 		ptr = blends = new unsigned char[nblends * 4];
 		fin.read(reinterpret_cast<char *>(blends), nblends * 4);
 		fin.close();
-		}
-	if (!blends)
-		{	// All else failed.
-			// Note: the files bundled in exult_XX.flx contain these values.
-			// They are "good" enough, but there is probably room for
-			// improvement.
-		static unsigned char hard_blends[4*17] = {
-		        208,216,224,192,    136, 44,148,198,    248,252, 80,211,
-		        144,148,252,247,     64,216, 64,201,    204, 60, 84,140,		        
-		        144, 40,192,128,     96, 40, 16,128,    100,108,116,192, 
-		         68,132, 28,128,    255,208, 48, 64,     28, 52,255,128,
-		          8, 68,  0,128,    255,  8,  8,118,    255,244,248,128, 
-		         56, 40, 32,128,    228,224,214, 82
-			};
+	}
+	if (!blends) {
+		// All else failed.
+		// Note: the files bundled in exult_XX.flx contain these values.
+		// They are "good" enough, but there is probably room for
+		// improvement.
+		static unsigned char hard_blends[4 * 17] = {
+			208, 216, 224, 192,    136, 44, 148, 198,    248, 252, 80, 211,
+			144, 148, 252, 247,     64, 216, 64, 201,    204, 60, 84, 140,
+			144, 40, 192, 128,     96, 40, 16, 128,    100, 108, 116, 192,
+			68, 132, 28, 128,    255, 208, 48, 64,     28, 52, 255, 128,
+			8, 68,  0, 128,    255,  8,  8, 118,    255, 244, 248, 128,
+			56, 40, 32, 128,    228, 224, 214, 82
+		};
 		nblends = 17;
 		blends = hard_blends;
 		ptr = 0;
-		}
+	}
 	xforms.resize(nblends);
 	std::size_t nxforms = xforms.size();
-					// RGBA blend colors:
+	// RGBA blend colors:
 	for (size_t i = 0; i < nxforms; i++)
-		xforms[i].set_color(blends[4*i], blends[4*i+1],
-					blends[4*i+2], blends[4*i+3]);
-		// ++++TODO: Make this file editable in ES.
-	if (U7exists(XFORMTBL) || U7exists(PATCH_XFORMS))
-		{			// Read in translucency tables.
+		xforms[i].set_color(blends[4 * i], blends[4 * i + 1],
+		                    blends[4 * i + 2], blends[4 * i + 3]);
+	// ++++TODO: Make this file editable in ES.
+	if (U7exists(XFORMTBL) || U7exists(PATCH_XFORMS)) {
+		// Read in translucency tables.
 		FlexFile *sxf = U7exists(XFORMTBL) ? new FlexFile(XFORMTBL) : 0;
 		FlexFile *pxf = U7exists(PATCH_XFORMS) ? new FlexFile(XFORMTBL) : 0;
 		int sn = sxf ? sxf->number_of_objects() : 0;
 		int pn = pxf ? pxf->number_of_objects() : 0;
-		int nobjs = min(max(sn, pn), nblends);	// Limit by blends.
-		for (int i = 0; i < nobjs; i++)
-			{
+		int nobjs = min(max(sn, pn), nblends);  // Limit by blends.
+		for (int i = 0; i < nobjs; i++) {
 			uint8 *data = 0;
 			std::size_t len = 0;
 			if (pxf)
 				data = reinterpret_cast<uint8 *>(pxf->retrieve(i, len));
-			if (!data || len == 0)
-				{
-					// Not in patch;
+			if (!data || len == 0) {
+				// Not in patch;
 				delete [] data;
 				data = 0;
 				if (sxf)
 					data = reinterpret_cast<uint8 *>(sxf->retrieve(i, len));
-				}
-			if (!data || len == 0)
-				{
+			}
+			if (!data || len == 0) {
 				delete [] data;
-					// No XForm data at all. Make this XForm into an
-					// identity transformation.
+				// No XForm data at all. Make this XForm into an
+				// identity transformation.
 				for (size_t j = 0; j < sizeof(xforms[0].colors); j++)
 					xforms[nxforms - 1 - i].colors[j] = j;
 				continue;
-				}
-			std::memcpy(xforms[nxforms - 1 - i].colors, data,
-						sizeof(xforms[0].colors));
-			delete[] data;
 			}
+			std::memcpy(xforms[nxforms - 1 - i].colors, data,
+			            sizeof(xforms[0].colors));
+			delete[] data;
+		}
 		delete sxf;
 		delete pxf;
-		}
-	else				// Create algorithmically.
-		{
+	} else {            // Create algorithmically.
 		gwin->get_pal()->load(PALETTES_FLX, PATCH_PALETTES, 0);
-		for (size_t i = 0; i < nxforms; i++)
-			{
-			gwin->get_pal()->create_trans_table(xforms[i].r/4,
-				xforms[i].g/4, xforms[i].b/4,
-				xforms[i].a, xforms[i].colors);
-			}
+		for (size_t i = 0; i < nxforms; i++) {
+			gwin->get_pal()->create_trans_table(xforms[i].r / 4,
+			                                    xforms[i].g / 4, xforms[i].b / 4,
+			                                    xforms[i].a, xforms[i].colors);
 		}
+	}
 
 	delete [] ptr;
 	invis_xform = &xforms[nxforms - 1 - 0];   // ->entry 0.
-	}
+}
 
 
 // Read in files needed to display gumps.
-bool Shape_manager::load_gumps_minimal()			
-{
+bool Shape_manager::load_gumps_minimal() {
 	bool ok = false;
 	try {
 		ok = files[SF_GUMPS_VGA].load(GUMPS_VGA, PATCH_GUMPS, true);
-	}
-	catch(exult_exception &) {
+	} catch (exult_exception &) {
 	}
 
 	if (!ok) {
@@ -370,12 +343,10 @@ bool Shape_manager::load_gumps_minimal()
 	ok = false;
 	try {
 		ok = files[SF_EXULT_FLX].load(BUNDLE_CHECK(BUNDLE_EXULT_FLX, EXULT_FLX));
-	}
-	catch(exult_exception &) {
+	} catch (exult_exception &) {
 	}
 
-	if (!ok)
-	{
+	if (!ok) {
 		std::cerr << "Couldn't open 'exult.flx'." << std::endl;
 		return false;
 	}
@@ -388,20 +359,17 @@ bool Shape_manager::load_gumps_minimal()
 }
 
 /*
- *	Reload one of the shape files (msg. from ExultStudio).
+ *  Reload one of the shape files (msg. from ExultStudio).
  */
 
-void Shape_manager::reload_shapes
-	(
-	int dragtype			// Type from u7drag.h.
-	)
-	{
-	U7FileManager::get_ptr()->reset();	// Cache no longer valid.
-	switch (dragtype)
-		{
+void Shape_manager::reload_shapes(
+    int dragtype            // Type from u7drag.h.
+) {
+	U7FileManager::get_ptr()->reset();  // Cache no longer valid.
+	switch (dragtype) {
 	case U7_SHAPE_SHAPES:
 		read_shape_info();
-					// ++++Reread text?
+		// ++++Reread text?
 		break;
 	case U7_SHAPE_GUMPS:
 		files[SF_GUMPS_VGA].load(GUMPS_VGA, PATCH_GUMPS);
@@ -421,115 +389,108 @@ void Shape_manager::reload_shapes
 	default:
 		cerr << "Type not supported:  " << dragtype << endl;
 		break;
-		}
 	}
+}
 
 /*
- *	Just reload info. files.
+ *  Just reload info. files.
  */
 
-void Shape_manager::reload_shape_info
-	(
-	)
-	{
+void Shape_manager::reload_shape_info(
+) {
 	shapes.reload_info(Game::get_game_type());
-	}
+}
 
 /*
- *	Clean up.
+ *  Clean up.
  */
-Shape_manager::~Shape_manager()
-	{
+Shape_manager::~Shape_manager() {
 	delete fonts;
 	assert(this == instance);
 	instance = 0;
-	}
+}
 
 /*
- *	Text-drawing methods:
+ *  Text-drawing methods:
  */
-int Shape_manager::paint_text_box(int fontnum, const char *text, 
-		int x, int y, int w, int h, int vert_lead, bool pbreak, 
-		bool center, int shading, Cursor_info *cursor)
-	{
-	if(shading>=0)
+int Shape_manager::paint_text_box(int fontnum, const char *text,
+                                  int x, int y, int w, int h, int vert_lead, bool pbreak,
+                                  bool center, int shading, Cursor_info *cursor) {
+	if (shading >= 0)
 		gwin->get_win()->fill_translucent8(
-				0, w, h, x, y, xforms[shading]);
+		    0, w, h, x, y, xforms[shading]);
 	return fonts->paint_text_box(gwin->get_win()->get_ib8(),
-		fontnum, text, x, y, w, h, vert_lead, pbreak, center, cursor); 
-	}
-int Shape_manager::paint_text(int fontnum, const char *text, 
-							int xoff, int yoff)
-	{
+	                             fontnum, text, x, y, w, h, vert_lead, pbreak, center, cursor);
+}
+int Shape_manager::paint_text(int fontnum, const char *text,
+                              int xoff, int yoff) {
 	return fonts->paint_text(gwin->get_win()->get_ib8(), fontnum, text,
-							xoff, yoff); 
-	}
-int Shape_manager::paint_text(int fontnum, const char *text, int textlen, 
-							int xoff, int yoff)
-	{
-	return fonts->paint_text(gwin->get_win()->get_ib8(), fontnum, 
-						text, textlen, xoff, yoff);
-	}
+	                         xoff, yoff);
+}
+int Shape_manager::paint_text(int fontnum, const char *text, int textlen,
+                              int xoff, int yoff) {
+	return fonts->paint_text(gwin->get_win()->get_ib8(), fontnum,
+	                         text, textlen, xoff, yoff);
+}
 
-int Shape_manager::get_text_width(int fontnum, const char *text)
-	{ return fonts->get_text_width(fontnum, text); }
-int Shape_manager::get_text_width(int fontnum, const char *text, int textlen)
-	{ return fonts->get_text_width(fontnum, text, textlen); }
-int Shape_manager::get_text_height(int fontnum)
-	{ return fonts->get_text_height(fontnum); }
-int Shape_manager::get_text_baseline(int fontnum)
-	{ return fonts->get_text_baseline(fontnum); }
+int Shape_manager::get_text_width(int fontnum, const char *text) {
+	return fonts->get_text_width(fontnum, text);
+}
+int Shape_manager::get_text_width(int fontnum, const char *text, int textlen) {
+	return fonts->get_text_width(fontnum, text, textlen);
+}
+int Shape_manager::get_text_height(int fontnum) {
+	return fonts->get_text_height(fontnum);
+}
+int Shape_manager::get_text_baseline(int fontnum) {
+	return fonts->get_text_baseline(fontnum);
+}
 
-int Shape_manager::find_cursor(int fontnum, const char *text, int x, int y, 
-				int w, int h, int cx, int cy, int vert_lead)
-	{ return fonts->find_cursor(fontnum, text, x, y, w, h, cx, cy,
-							vert_lead); }
+int Shape_manager::find_cursor(int fontnum, const char *text, int x, int y,
+                               int w, int h, int cx, int cy, int vert_lead) {
+	return fonts->find_cursor(fontnum, text, x, y, w, h, cx, cy,
+	                          vert_lead);
+}
 
-Font *Shape_manager::get_font(int fontnum)
-	{ return fonts->get_font(fontnum); }
+Font *Shape_manager::get_font(int fontnum) {
+	return fonts->get_font(fontnum);
+}
 
 
 /*
- *	Read in shape.
+ *  Read in shape.
  */
-Shape_frame *ShapeID::cache_shape()
-{
+Shape_frame *ShapeID::cache_shape() {
 	if (framenum == -1) return 0;
 
 	if (has_trans != 2) has_trans = 0;
-	if (!shapefile)
-		{			// Special case.
+	if (!shapefile) {
+		// Special case.
 		shape = sman->shapes.get_shape(shapenum, framenum);
-		if (has_trans != 2) 
-			has_trans = 
+		if (has_trans != 2)
+			has_trans =
 			    sman->shapes.get_info(shapenum).has_translucency();
-		}
-	else if (shapefile < SF_OTHER)
-		{
+	} else if (shapefile < SF_OTHER) {
 		shape = sman->files[static_cast<int>(shapefile)].get_shape(
-							shapenum, framenum);
+		            shapenum, framenum);
 		if (shapefile == SF_SPRITES_VGA)
 			has_trans = 1;
-		}
-	else
-		{
+	} else {
 		std::cerr << "Error! Wrong ShapeFile!" << std::endl;
 		return 0;
-		} 
+	}
 	return shape;
 
 }
 
-int ShapeID::get_num_frames() const
-{
+int ShapeID::get_num_frames() const {
 	if (!shapefile)
 		return sman->shapes.get_num_frames(shapenum);
-	else if (shapefile < SF_OTHER)
-		{
+	else if (shapefile < SF_OTHER) {
 		if (!sman->files[static_cast<int>(shapefile)].is_good())
 			return 0;
 		return sman->files[static_cast<int>(shapefile)].get_num_frames(shapenum);
-		}
+	}
 	std::cerr << "Error! Wrong ShapeFile!" << std::endl;
 	return 0;
 }

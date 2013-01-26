@@ -6,9 +6,9 @@
 #ifdef WIN32
 #include <windows.h>
 typedef HMODULE libhandle_t;
-#define PLUGIN_EXPORT __declspec(dllexport) 
+#define PLUGIN_EXPORT __declspec(dllexport)
 #else
-typedef void* libhandle_t;
+typedef void *libhandle_t;
 #define PLUGIN_EXPORT
 #endif
 
@@ -29,20 +29,20 @@ typedef void* libhandle_t;
 // note: there are some almost static stuff and some very variable stuff
 // global's variables
 typedef struct  g_var_struct {
-  SDL_Surface *image_out; //var
-  int global_x; //var
-  int global_y; //var
+	SDL_Surface *image_out; //var
+	int global_x; //var
+	int global_y; //var
 } glob_variables;
 
 EXTERN glob_variables g_variables;
 
 // global's almost statics
 typedef struct g_stat_struct {
-  int debug; //stat
-  SDL_Surface *image_in; //stat
-  char *filein; //stat
-  char *fileout; //stat
-  char *config_file; //stat
+	int debug; //stat
+	SDL_Surface *image_in; //stat
+	char *filein; //stat
+	char *fileout; //stat
+	char *config_file; //stat
 } glob_statics;
 
 EXTERN glob_statics g_statics;
@@ -52,9 +52,9 @@ typedef char colour_hex[8];
 typedef void (*pfnPluginApply)(colour_hex ret_col, glob_variables *g_variables);
 
 typedef struct pacman {
-  struct pacman *next;
-  pfnPluginApply plugin_apply; // for storing plugins' apply
-  libhandle_t handle; // for storing dlopens' handle
+	struct pacman *next;
+	pfnPluginApply plugin_apply; // for storing plugins' apply
+	libhandle_t handle; // for storing dlopens' handle
 } node;
 
 // this is what holds the address of the plugin_apply functions to apply to colours.

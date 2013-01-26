@@ -1,7 +1,7 @@
 /**
- **	frusefun.h - Frame- and quality-dependent usecode.
+ ** frusefun.h - Frame- and quality-dependent usecode.
  **
- **	Written: 20/03/2009 - Marzo
+ ** Written: 20/03/2009 - Marzo
  **/
 
 /*
@@ -27,13 +27,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "frusefun.h"
 using std::istream;
 
-bool Frame_usecode_info::read
-	(
-	std::istream& in,	// Input stream.
-	int version,		// Data file version.
-	Exult_Game game		// Loading BG file.
-	)
-	{
+bool Frame_usecode_info::read(
+    std::istream &in,   // Input stream.
+    int version,        // Data file version.
+    Exult_Game game     // Loading BG file.
+) {
 	frame = ReadInt(in);
 	if (frame < 0)
 		frame = -1;
@@ -45,15 +43,12 @@ bool Frame_usecode_info::read
 	else
 		quality &= 255;
 	bool type = ReadInt(in) != 0;
-	if (type)
-		{
+	if (type) {
 		usecode_name = ReadStr(in);
 		usecode = -1;
-		}
-	else
-		{
+	} else {
 		usecode_name.clear();
 		usecode = ReadInt(in, -1);
-		}
-	return true;
 	}
+	return true;
+}

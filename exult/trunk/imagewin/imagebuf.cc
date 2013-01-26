@@ -1,7 +1,7 @@
 /**
- **	Imagebuf.cc - A window to blit images into.
+ ** Imagebuf.cc - A window to blit images into.
  **
- **	Written: 8/13/98 - JSF
+ ** Written: 8/13/98 - JSF
  **/
 
 /*
@@ -30,30 +30,30 @@ Boston, MA  02111-1307, USA.
 #include "imagebuf.h"
 
 /*
- *	Create buffer.
+ *  Create buffer.
  */
 
-Image_buffer::Image_buffer
-	(
-	unsigned int w,			// Desired width, height.
-	unsigned int h,
-	int dpth			// Depth (bits/pixel).
-	) : width(w), height(h), 
-		offset_x(0), offset_y(0),
-		depth(dpth), bits(0), line_width(w),
-	    clipx(0), clipy(0),
-	    clipw(w), cliph(h)		
-	{
-	switch (depth)			// What depth?
-		{
-	case 8: 
-		pixel_size = 1; break;
+Image_buffer::Image_buffer(
+    unsigned int w,         // Desired width, height.
+    unsigned int h,
+    int dpth            // Depth (bits/pixel).
+) : width(w), height(h),
+	offset_x(0), offset_y(0),
+	depth(dpth), bits(0), line_width(w),
+	clipx(0), clipy(0),
+	clipw(w), cliph(h) {
+	switch (depth) {        // What depth?
+	case 8:
+		pixel_size = 1;
+		break;
 	case 15:
 	case 16:
-		pixel_size = 2; break;
+		pixel_size = 2;
+		break;
 	case 32:
-		pixel_size = 4; break;
-		}
+		pixel_size = 4;
+		break;
 	}
+}
 
 

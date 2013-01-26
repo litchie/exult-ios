@@ -24,15 +24,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "objiter.h"
 
 // Add an object.
-bool Jawbone_object::add
-	(
-	Game_object *obj,
-	bool dont_check,		// 1 to skip volume/recursion check.
-	bool combine,			// True to try to combine obj.  MAY
-					//   cause obj to be deleted.
-	bool noset		// True to prevent actors from setting sched. weapon.
-	)
-{
+bool Jawbone_object::add(
+    Game_object *obj,
+    bool dont_check,        // 1 to skip volume/recursion check.
+    bool combine,           // True to try to combine obj.  MAY
+    //   cause obj to be deleted.
+    bool noset      // True to prevent actors from setting sched. weapon.
+) {
 	if (!Container_game_object::add(obj, dont_check, combine))
 		return false; // Can't be added to.
 
@@ -42,23 +40,21 @@ bool Jawbone_object::add
 }
 
 // Remove an object.
-void Jawbone_object::remove(Game_object *obj)
-{
+void Jawbone_object::remove(Game_object *obj) {
 	Container_game_object::remove(obj);
 
 	find_teeth();
 	update_frame();
 }
 
-void Jawbone_object::find_teeth()
-	{
-	for (int i=0; i<19; i++)
+void Jawbone_object::find_teeth() {
+	for (int i = 0; i < 19; i++)
 		teeth[i] = 0;
 	toothcount = 0;
 
-	Object_list& objects = get_objects();
+	Object_list &objects = get_objects();
 	if (objects.is_empty())
-		return;			// Empty.
+		return;         // Empty.
 
 	Game_object *obj;
 	Object_iterator next(objects);
@@ -66,12 +62,11 @@ void Jawbone_object::find_teeth()
 	while ((obj = next.get_next()) != 0)
 		teeth[obj->get_framenum()] = obj;
 
-	for (int i=0; i<19; i++)
+	for (int i = 0; i < 19; i++)
 		if (teeth[i])
 			toothcount++;
-	}
+}
 
-void Jawbone_object::update_frame()
-{
+void Jawbone_object::update_frame() {
 	set_frame(toothcount);
 }

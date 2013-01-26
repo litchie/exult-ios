@@ -26,17 +26,19 @@ class BG_Game: public Game {
 public:
 	BG_Game();
 	~BG_Game();
-	
+
 	virtual void play_intro();
 	virtual void end_game(bool success);
 	virtual void top_menu();
 	virtual void show_quotes();
 	virtual void show_credits();
 	virtual bool new_game(Vga_file &shapes);
-	virtual int  get_start_tile_x()
-		{ return (64*c_tiles_per_chunk); }
-	virtual int  get_start_tile_y()
-		{ return (136*c_tiles_per_chunk); }
+	virtual int  get_start_tile_x() {
+		return (64 * c_tiles_per_chunk);
+	}
+	virtual int  get_start_tile_y() {
+		return (136 * c_tiles_per_chunk);
+	}
 	virtual void show_journey_failed();
 	virtual Shape_frame *get_menu_shape();
 
@@ -50,5 +52,5 @@ private:
 	void scene_moongate();
 };
 
-	
+
 #endif

@@ -1,11 +1,11 @@
 /**
- **	A GTK widget showing the list of NPC's.
+ ** A GTK widget showing the list of NPC's.
  **
- **	Written: 7/6/2005 - JSF
+ ** Written: 7/6/2005 - JSF
  **/
 
 #ifndef INCL_NPCLST
-#define INCL_NPCLST	1
+#define INCL_NPCLST 1
 
 /*
 Copyright (C) 2005-2013  The Exult Team
@@ -39,125 +39,125 @@ class Editing_file;
 class Estudio_npc;
 
 /*
- *	Store information about an NPC shown in the list.
+ *  Store information about an NPC shown in the list.
  */
-class Npc_entry
-	{
+class Npc_entry {
 	friend class Npc_chooser;
 	short npcnum;
-	Rectangle box;			// Box where drawn.
+	Rectangle box;          // Box where drawn.
 public:
 	Npc_entry() {  }
-	void set(int num, int rx, int ry, int rw, int rh)
-		{
+	void set(int num, int rx, int ry, int rw, int rh) {
 		npcnum = num;
 		box = Rectangle(rx, ry, rw, rh);
-		}
-	};
+	}
+};
 
 /*
- *	One row.
+ *  One row.
  */
-class Npc_row
-	{
+class Npc_row {
 	friend class Npc_chooser;
-	short height;			// In pixels.
-	long y;				// Absolute y-coord. in pixels.
-	int index0;			// Index of 1st Npc_entry in row.
+	short height;           // In pixels.
+	long y;             // Absolute y-coord. in pixels.
+	int index0;         // Index of 1st Npc_entry in row.
 public:
 	Npc_row() : height(0)
-		{  }
-	};
+	{  }
+};
 
 /*
- *	This class manages a list of NPC's.
+ *  This class manages a list of NPC's.
  */
-class Npc_chooser: public Object_browser, public Shape_draw
-	{
-	GtkWidget *sbar;		// Status bar.
-	guint sbar_sel;			// Status bar context for selection.
-	std::vector<Npc_entry> info;	// Pos. of each shape/frame.
+class Npc_chooser: public Object_browser, public Shape_draw {
+	GtkWidget *sbar;        // Status bar.
+	guint sbar_sel;         // Status bar context for selection.
+	std::vector<Npc_entry> info;    // Pos. of each shape/frame.
 	std::vector<Npc_row> rows;
-	int row0;			// Row # at top of window.
-	int row0_voffset;		// Vert. pos. (in pixels) of top row.
-	long total_height;		// In pixels, for all rows.
-	int last_npc;			// Last shape visible in window.
-	int voffset;			// Vertical offset in pixels.
-	int status_id;			// Statusbar msg. ID.
-	int red;			// Index of color red in palbuf.
-	bool drop_enabled;		// So we only do it once.
-	void (*sel_changed)();		// Called when selection changes.
-					// Blit onto screen.
+	int row0;           // Row # at top of window.
+	int row0_voffset;       // Vert. pos. (in pixels) of top row.
+	long total_height;      // In pixels, for all rows.
+	int last_npc;           // Last shape visible in window.
+	int voffset;            // Vertical offset in pixels.
+	int status_id;          // Statusbar msg. ID.
+	int red;            // Index of color red in palbuf.
+	bool drop_enabled;      // So we only do it once.
+	void (*sel_changed)();      // Called when selection changes.
+	// Blit onto screen.
 	virtual void show(int x, int y, int w, int h);
-	virtual void show()
-		{ Npc_chooser::show(0, 0, 
-			draw->allocation.width, draw->allocation.height);}
-	void select(int new_sel);	// Show new selection.
-	virtual void render();		// Draw list.
-	virtual void set_background_color(guint32 c)
-		{ Shape_draw::set_background_color(c); }
+	virtual void show() {
+		Npc_chooser::show(0, 0,
+		                  draw->allocation.width, draw->allocation.height);
+	}
+	void select(int new_sel);   // Show new selection.
+	virtual void render();      // Draw list.
+	virtual void set_background_color(guint32 c) {
+		Shape_draw::set_background_color(c);
+	}
 	virtual void setup_info(bool savepos = true);
 	void setup_shapes_info();
-	int find_npc(int npcnum);	// Find index for given NPC.
-	void goto_index(int index);	// Get desired index in view.
-	virtual int get_selected_id()
-		{ return selected; }
+	int find_npc(int npcnum);   // Find index for given NPC.
+	void goto_index(int index); // Get desired index in view.
+	virtual int get_selected_id() {
+		return selected;
+	}
 	void scroll_row_vertical(int newrow);
-	void scroll_vertical(int newindex);	// Scroll.
-	void setup_vscrollbar();	// Set new scroll amounts.
-	virtual GtkWidget *create_popup();	// Popup menu.
+	void scroll_vertical(int newindex); // Scroll.
+	void setup_vscrollbar();    // Set new scroll amounts.
+	virtual GtkWidget *create_popup();  // Popup menu.
 public:
 	Npc_chooser(Vga_file *i, unsigned char *palbuf, int w, int h,
-				Shape_group *g = 0, Shape_file_info *fi = 0);
+	            Shape_group *g = 0, Shape_file_info *fi = 0);
 	virtual ~Npc_chooser();
-	int get_count();		// Get # shapes we can display.
-	std::vector<Estudio_npc>& get_npcs();
+	int get_count();        // Get # shapes we can display.
+	std::vector<Estudio_npc> &get_npcs();
 	virtual void search(const char *srch, int dir);
-	virtual void locate(bool upwards);	// Locate NPC on game map.
-					// Turn off selection.
+	virtual void locate(bool upwards);  // Locate NPC on game map.
+	// Turn off selection.
 	void unselect(bool need_render = true);
 	void update_npc(int num);
 	void update_statusbar();
-	int is_selected()		// Is a shape selected?
-		{ return selected >= 0; }
-	void set_selected_callback(void (*fun)())
-		{ sel_changed = fun; }
-	int get_num_cols(int rownum)
-		{ 
-		return  ((rownum < rows.size() - 1) ? rows[rownum + 1].index0
-				: info.size()) - rows[rownum].index0;
-		}
-					// Configure when created/resized.
+	int is_selected() {     // Is a shape selected?
+		return selected >= 0;
+	}
+	void set_selected_callback(void (*fun)()) {
+		sel_changed = fun;
+	}
+	int get_num_cols(int rownum) {
+		return ((rownum < rows.size() - 1) ? rows[rownum + 1].index0
+		        : info.size()) - rows[rownum].index0;
+	}
+	// Configure when created/resized.
 	gint configure(GdkEventConfigure *event);
-					// Blit to screen.
+	// Blit to screen.
 	static gint expose(GtkWidget *widget, GdkEventExpose *event,
-							gpointer data);
-					// Handle mouse press.
+	                   gpointer data);
+	// Handle mouse press.
 	gint mouse_press(GtkWidget *widget, GdkEventButton *event);
-					// Give dragged shape.
+	// Give dragged shape.
 	static void drag_data_get(GtkWidget *widget, GdkDragContext *context,
-		GtkSelectionData *selection_data, guint info, guint time, gpointer data);
+	                          GtkSelectionData *selection_data, guint info, guint time, gpointer data);
 	void edit_npc();
-					// Someone else selected.
+	// Someone else selected.
 	static gint selection_clear(GtkWidget *widget,
-				GdkEventSelection *event, gpointer data);
+	                            GdkEventSelection *event, gpointer data);
 	static gint drag_begin(GtkWidget *widget, GdkDragContext *context,
-							gpointer data);
-					// Handler for drop.
-	static void drag_data_received(GtkWidget *widget, 
-		GdkDragContext *context, gint x, gint y, 
-		GtkSelectionData *selection_data, guint info, guint time,
-		gpointer udata);
+	                       gpointer data);
+	// Handler for drop.
+	static void drag_data_received(GtkWidget *widget,
+	                               GdkDragContext *context, gint x, gint y,
+	                               GtkSelectionData *selection_data, guint info, guint time,
+	                               gpointer udata);
 	void enable_drop();
-					// Handle scrollbar.
+	// Handle scrollbar.
 	static void vscrolled(GtkAdjustment *adj, gpointer data);
 #ifdef WIN32
 	static gint win32_drag_motion(GtkWidget *widget, GdkEventMotion *event,
-		gpointer data);
+	                              gpointer data);
 #else
 	static gint drag_motion(GtkWidget *widget, GdkEventMotion *event,
-		gpointer data);
+	                        gpointer data);
 #endif
-	};
+};
 
 #endif

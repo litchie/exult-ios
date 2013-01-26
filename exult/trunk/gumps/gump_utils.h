@@ -34,28 +34,26 @@
 #endif
 
 /*
- *	Delay between animations.
+ *  Delay between animations.
  */
 
-inline void Delay
-	(
-	)
-{
+inline void Delay(
+) {
 #ifdef XWIN
 	/*
-	 *	Here's a somewhat better way to delay in X:
+	 *  Here's a somewhat better way to delay in X:
 	 */
 	extern int xfd;
 	fd_set rfds;
 	struct timeval timer;
 	timer.tv_sec = 0;
-	timer.tv_usec = 50000;		// Try 1/50 second.
+	timer.tv_usec = 50000;      // Try 1/50 second.
 	FD_ZERO(&rfds);
 	FD_SET(xfd, &rfds);
-					// Wait for timeout or event.
+	// Wait for timeout or event.
 	select(xfd + 1, &rfds, 0, 0, &timer);
-#else					/* May use this for Linux too. */
-	SDL_Delay(10);			// Try 1/100 second.
+#else                   /* May use this for Linux too. */
+	SDL_Delay(10);          // Try 1/100 second.
 #endif
 }
 
