@@ -1,3 +1,8 @@
+2013-01-27	Malignant Manor <malignantmanor@users.sourceforge.net>
+	* actors.*: charmed_more_difficult was updated for new charmed alignment.
+	  charmed_more_difficult will now only put charmed party members into combat
+	  when not in combat mode.
+
 2013-01-26	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* actors.cc: Clearing frame_time when avatar and NPCs aren't performing an
 	  action (since actions force a delay at the end to prevent skipping steps).
