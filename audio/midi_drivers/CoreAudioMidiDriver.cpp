@@ -38,114 +38,92 @@ const MidiDriver::MidiDriverDesc CoreAudioMidiDriver::desc =
 		MidiDriver::MidiDriverDesc ("CoreAudio", createInstance);
 
 CoreAudioMidiDriver::CoreAudioMidiDriver() : 
-	au_MusicDevice(0), au_output(0),
-	mClient(0), mOutPort(0), mDest(0)
+	au_MusicDevice(0), au_output(0)
 {
-	OSStatus err;
-	err = MIDIClientCreate(CFSTR("Pentagram MIDI Driver for OS X"), NULL, NULL, &mClient);
-
 }
 
-CoreAudioMidiDriver::~CoreAudioMidiDriver()
+/*CoreAudioMidiDriver::~CoreAudioMidiDriver()
 {
-	if (mClient)
-		MIDIClientDispose(mClient);
-	mClient = 0;
-}
+}*/
 
 int CoreAudioMidiDriver::open()
 {
-	if (au_output || mDest)
+	if (au_output)
 		return 1;
+	
+	AudioUnitConnection auconnect;
+	ComponentDescription compdesc;
+	Component compid;
+	OSErr err;
+	
+	// Open the Music Device
+	compdesc.componentType = kAudioUnitType_MusicDevice;
+	compdesc.componentSubType = kAudioUnitSubType_DLSSynth;
+	compdesc.componentManufacturer = kAudioUnitManufacturer_Apple;
+	compdesc.componentFlags = 0;
+	compdesc.componentFlagsMask = 0;
+	compid = FindNextComponent(NULL, &compdesc);
+	au_MusicDevice = static_cast<AudioUnit>(OpenComponent(compid));
+		
+	if (au_MusicDevice == 0)
+		std::cout << "Failed opening CoreAudio music device!" << std::endl;
 
-	OSStatus err = noErr;
-
-	mOutPort = 0;
-#ifdef ENABLE_HACKISH_NATIVE_MIDI_SUPPORT
-	int dests = MIDIGetNumberOfDestinations();
-	if (dests > 0 && mClient) {
-		mDest = MIDIGetDestination(0);
-		err = MIDIOutputPortCreate( mClient, 
-									CFSTR("exult_output_port"), 
-									&mOutPort);
+	std::string soundfont = getConfigSetting("coreaudio_soundfont", "");
+	std::cout << "Loading SoundFont '" << soundfont << "'... ";
+	if (soundfont != "") {
+		FSRef soundfontRef;
+		err = FSPathMakeRef((const UInt8*)soundfont.c_str(), &soundfontRef, NULL);
+		if (!err) {
+			err = AudioUnitSetProperty(
+				au_MusicDevice,
+					kMusicDeviceProperty_SoundBankFSRef, 
+						kAudioUnitScope_Global,
+							0,
+								&soundfontRef,
+									sizeof(soundfontRef)
+											);
+			if (!err) {
+				std::cout << "Loaded!" << std::endl;
+			} else {
+				std::cout << "Error loading" << std::endl;
+			}
+		} else {
+			std::cout << "Path Error" << std::endl;
+		}
 	}
-#endif
+	// open the output unit
+	au_output = static_cast<AudioUnit>(OpenDefaultComponent(kAudioUnitType_Output, kAudioUnitSubType_DefaultOutput));
+	if (au_output == 0)
+		std::cout << "Failed opening output audio unit" << std::endl;
 
-	if (err != noErr || !mOutPort) {
-		AudioUnitConnection auconnect;
-		ComponentDescription compdesc;
-		Component compid;
-	
-		// Open the Music Device
-		compdesc.componentType = kAudioUnitType_MusicDevice;
-		compdesc.componentSubType = kAudioUnitSubType_DLSSynth;
-		compdesc.componentManufacturer = kAudioUnitManufacturer_Apple;
-		compdesc.componentFlags = 0;
-		compdesc.componentFlagsMask = 0;
-		compid = FindNextComponent(NULL, &compdesc);
-		au_MusicDevice = static_cast<AudioUnit>(OpenComponent(compid));
-	
-		au_output = static_cast<AudioUnit>(OpenDefaultComponent(kAudioUnitType_Output, kAudioUnitSubType_DefaultOutput));
-	
-		// connect the units
-		auconnect.sourceAudioUnit = au_MusicDevice;
-		auconnect.sourceOutputNumber = 0;
-		auconnect.destInputNumber = 0;
-		err =
-			AudioUnitSetProperty(au_output, kAudioUnitProperty_MakeConnection, kAudioUnitScope_Input, 0,
-													 static_cast<void*>(&auconnect), sizeof(AudioUnitConnection));
-	
-		// initialize the units
-		AudioUnitInitialize(au_MusicDevice);
-		AudioUnitInitialize(au_output);
+	// connect the units
+	auconnect.sourceAudioUnit = au_MusicDevice;
+	auconnect.sourceOutputNumber = 0;
+	auconnect.destInputNumber = 0;
+	err =
+		AudioUnitSetProperty(au_output, kAudioUnitProperty_MakeConnection, kAudioUnitScope_Input, 0,
+								 static_cast<void*>(&auconnect), sizeof(AudioUnitConnection));
 
-                std::string soundfont = getConfigSetting("coreaudio_soundfont", "");
-                std::cout << "Loading SoundFont '" << soundfont << "'... ";
-                if (soundfont != "") {
-                  FSRef soundfontRef;
-                  err = FSPathMakeRef((const UInt8*)soundfont.c_str(), 
-                                      &soundfontRef, NULL);
-                  if (!err) {
-                    err = AudioUnitSetProperty(
-                                               au_MusicDevice,
-                                               kMusicDeviceProperty_SoundBankFSRef, 
-                                               kAudioUnitScope_Global,
-                                               0,
-                                               &soundfontRef,
-                                               sizeof(soundfontRef)
-                                               );
-                    if (!err) {
-                      std::cout << "Loaded!" << std::endl;
-                    } else {
-                      std::cout << "Error loading" << std::endl;
-                    }
-                  } else {
-                    std::cout << "Path Error" << std::endl;
-                  }
-                }
-		// start the output
-		AudioOutputUnitStart(au_output);
-	}
+	// initialize the units
+	AudioUnitInitialize(au_MusicDevice);
+	AudioUnitInitialize(au_output);
+	
+	// start the output
+	AudioOutputUnitStart(au_output);
 
 	return 0;
 }
 
 void CoreAudioMidiDriver::close()
 {
-	if (mOutPort && mDest) {
-		MIDIPortDispose(mOutPort);
-		mOutPort = 0;
-		mDest = 0;
-	} else {
-		// Stop the output
-		AudioOutputUnitStop(au_output);
-	
-		// Cleanup
-		CloseComponent(au_output);
-		au_output = 0;
-		CloseComponent(au_MusicDevice);
-		au_MusicDevice = 0;
-	}
+	// Stop the output
+	AudioOutputUnitStop(au_output);
+
+	// Cleanup
+	CloseComponent(au_output);
+	au_output = 0;
+	CloseComponent(au_MusicDevice);
+	au_MusicDevice = 0;
 }
 
 void CoreAudioMidiDriver::send(uint32 message)
@@ -153,60 +131,26 @@ void CoreAudioMidiDriver::send(uint32 message)
 	uint8 status_byte = (message & 0x000000FF);
 	uint8 first_byte = (message & 0x0000FF00) >> 8;
 	uint8 second_byte = (message & 0x00FF0000) >> 16;
-
-	if (mOutPort && mDest) {
-		MIDIPacketList packetList;
-		MIDIPacket *packet = &packetList.packet[0];
-		
-		packetList.numPackets = 1;
 	
-		packet->timeStamp = 0;
-		packet->length = 3;
-		packet->data[0] = status_byte;
-		packet->data[1] = first_byte;
-		packet->data[2] = second_byte;
-	
-		MIDISend(mOutPort, mDest, &packetList);
-	} else {
-		assert(au_output != NULL);
-		assert(au_MusicDevice != NULL);
-		MusicDeviceMIDIEvent(au_MusicDevice, status_byte, first_byte, second_byte, 0);
-	}
+	assert(au_output != NULL);
+	assert(au_MusicDevice != NULL);
+	MusicDeviceMIDIEvent(au_MusicDevice, status_byte, first_byte, second_byte, 0);
 }
 
 void CoreAudioMidiDriver::send_sysex (uint8 status, const uint8 *msg, uint16 length)
 {
 	uint8 buf[384];
 
-	if (mOutPort && mDest) {
-		MIDIPacketList *packetList = (MIDIPacketList *)buf;
-		MIDIPacket *packet = packetList->packet;
+	assert(sizeof(buf) >= (size_t)length + 2);
+	assert(au_output != NULL);
+	assert(au_MusicDevice != NULL);
 
-		assert(sizeof(buf) >= sizeof(UInt32) + sizeof(MIDITimeStamp) + sizeof(UInt16) + length + 2);
-		
-		packetList->numPackets = 1;
+	// Add SysEx frame
+	buf[0] = status;
+	memcpy(buf+1, msg, length);
+	buf[length+1] = 0xF7;
 
-		packet->timeStamp = 0;
-		
-		// Add SysEx frame
-		packet->length = length + 2;
-		packet->data[0] = status;
-		memcpy(packet->data + 1, msg, length);
-		packet->data[length + 1] = 0xF7;
-	
-		MIDISend(mOutPort, mDest, packetList);
-	} else {
-		assert(sizeof(buf) >= (size_t)length + 2);
-		assert(au_output != NULL);
-		assert(au_MusicDevice != NULL);
-
-		// Add SysEx frame
-		buf[0] = status;
-		memcpy(buf+1, msg, length);
-		buf[length+1] = 0xF7;
-
-		MusicDeviceSysEx(au_MusicDevice, buf, length + 2);
-	}
+	MusicDeviceSysEx(au_MusicDevice, buf, length + 2);
 }
 
 void CoreAudioMidiDriver::increaseThreadPriority()
