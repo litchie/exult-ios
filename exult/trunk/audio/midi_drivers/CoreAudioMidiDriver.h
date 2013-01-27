@@ -26,7 +26,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <AudioUnit/AudioUnit.h>
 #include <AudioUnit/AUComponent.h>
-#include <CoreMIDI/CoreMIDI.h>
 #include <CoreServices/CoreServices.h>
 
 class CoreAudioMidiDriver : public LowLevelMidiDriver
@@ -34,9 +33,6 @@ class CoreAudioMidiDriver : public LowLevelMidiDriver
 	AudioUnit au_MusicDevice;
 	AudioUnit au_output;
 
-	MIDIClientRef	mClient;
-	MIDIPortRef		mOutPort;
-	MIDIEndpointRef	mDest;
 
 	static const MidiDriverDesc	desc;
 	static MidiDriver *createInstance() {
@@ -47,7 +43,6 @@ public:
 	static const MidiDriverDesc* getDesc() { return &desc; }
 
 	CoreAudioMidiDriver();
-	~CoreAudioMidiDriver();
 
 protected:
 	virtual int			open();
