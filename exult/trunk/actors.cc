@@ -1949,9 +1949,11 @@ int Actor::get_effective_alignment(
 void Actor::set_effective_alignment(
     int newalign
 ) {
+	charmalign = newalign;
 	if (!(flags & (1 << Obj_flags::charmed)))
 		alignment = newalign;
-	charmalign = newalign;
+	else
+		set_charmed_combat();
 }
 
 /*
@@ -2496,7 +2498,21 @@ bool Actor::can_act() {
 }
 
 bool Actor::can_act_charmed() {
-	return !(Combat::charmed_more_difficult && get_flag(Obj_flags::charmed));
+	return !(Combat::charmed_more_difficult && get_effective_alignment() != good);
+}
+
+/*
+ *  Have charmed party members attack if charmed_more_difficult and party member is hostile
+ */
+
+void Actor::set_charmed_combat() {
+	if (Combat::charmed_more_difficult && 
+	    (is_in_party() || this == gwin->get_main_actor()) &&
+	    get_effective_alignment() != good) {
+		set_schedule_type(Schedule::combat);
+		if (get_attack_mode() == flee)
+			set_attack_mode(nearest);
+	}
 }
 
 void Actor::fight_back(
@@ -3098,9 +3114,6 @@ void Actor::set_flag(
 		        (gear_powers & (Frame_flags::power_safe | Frame_flags::charm_safe)))
 			return;     // Don't do anything.
 		need_timers()->start_charm();
-		if (!gwin->in_combat() && Combat::charmed_more_difficult &&
-		        (is_in_party() || this == avatar))
-			gwin->toggle_combat();
 		// Actual alignment shift must be done elsewhere.
 		Combat_schedule::stop_attacking_npc(this);
 		set_target(0);      // Need new opponent if in combat.
@@ -3859,6 +3872,7 @@ int Actor::figure_hit_points(
 					charmalign = npc->get_effective_alignment();
 				else
 					charmalign = chaotic;   // Verified.
+				set_charmed_combat();
 			}
 			if ((powers & Weapon_data::sleep) && roll_to_win(attint, defint))
 				set_flag(Obj_flags::asleep);
