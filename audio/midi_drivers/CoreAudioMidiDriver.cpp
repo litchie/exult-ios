@@ -18,112 +18,180 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "pent_include.h"
 #include "CoreAudioMidiDriver.h"
-
+#include "Configuration.h"
+	
 #ifdef USE_CORE_AUDIO_MIDI
 
 #include <pthread.h>
 #include <sched.h>
 #include <iostream>
 
+// With the release of Mac OS X 10.5 in October 2007, Apple deprecated the
+// AUGraphNewNode & AUGraphGetNodeInfo APIs in favor of the new AUGraphAddNode &
+// AUGraphNodeInfo APIs. While it is easy to switch to those, it breaks
+// compatibility with all pre-10.5 systems.
+//
+// Since 10.5 was the last system to support PowerPC, we use the old, deprecated
+// APIs on PowerPC based systems by default. On all other systems (such as Mac
+// OS X running on Intel hardware, or iOS running on ARM), we use the new API by
+// default.
+//
+// This leaves Mac OS X 10.4 running on x86 processors as the only system
+// combination that this code will not support by default. It seems quite
+// reasonable to assume that anybody with an Intel system has since then moved
+// on to a newer Mac OS X release. But if for some reason you absolutely need to
+// build an x86 version of this code using the old, deprecated API, you can
+// simply do so by manually enable the USE_DEPRECATED_COREAUDIO_API switch (e.g.
+// by adding setting it suitably in CPPFLAGS).
+#if !defined(USE_DEPRECATED_COREAUDIO_API)
+	#if (MAC_OS_X_VERSION_MAX_ALLOWED < 1050)
+		#define USE_DEPRECATED_COREAUDIO_API 1
+	#else
+		#define USE_DEPRECATED_COREAUDIO_API 0
+	#endif
+#endif
 
-// Enable the following switch to make Exult try to use native MIDI hardware
-// on your computer for MIDI output. This is currently quite hackish, in 
-// particular you have no way to specify which device is used (it just always
-// uses the first output device it can find), nor is there a switch to
-// force it to use the soft synth instead of the MIDI HW.
-//#define ENABLE_HACKISH_NATIVE_MIDI_SUPPORT 1
-
+// A macro to simplify error handling a bit.
+#define RequireNoErr(error) \
+do { \
+err = error; \
+if (err != noErr) \
+goto bail; \
+} while (false)
 
 const MidiDriver::MidiDriverDesc CoreAudioMidiDriver::desc = 
 		MidiDriver::MidiDriverDesc ("CoreAudio", createInstance);
 
 CoreAudioMidiDriver::CoreAudioMidiDriver() : 
-	au_MusicDevice(0), au_output(0)
+	_auGraph(0)
 {
 }
 
-/*CoreAudioMidiDriver::~CoreAudioMidiDriver()
-{
-}*/
-
 int CoreAudioMidiDriver::open()
 {
-	if (au_output)
+	OSStatus err = noErr;
+	
+	if (_auGraph)
 		return 1;
 	
-	AudioUnitConnection auconnect;
-	ComponentDescription compdesc;
-	Component compid;
-	OSErr err;
-	
-	// Open the Music Device
-	compdesc.componentType = kAudioUnitType_MusicDevice;
-	compdesc.componentSubType = kAudioUnitSubType_DLSSynth;
-	compdesc.componentManufacturer = kAudioUnitManufacturer_Apple;
-	compdesc.componentFlags = 0;
-	compdesc.componentFlagsMask = 0;
-	compid = FindNextComponent(NULL, &compdesc);
-	au_MusicDevice = static_cast<AudioUnit>(OpenComponent(compid));
-		
-	if (au_MusicDevice == 0)
-		std::cout << "Failed opening CoreAudio music device!" << std::endl;
+	// Open the Music Device.
+	RequireNoErr(NewAUGraph(&_auGraph));
+	AUNode outputNode, synthNode;
+//OS X 10.5 doesn't know AudioComponentDescription desc;
+#if USE_DEPRECATED_COREAUDIO_API || (MAC_OS_X_VERSION_MAX_ALLOWED < 1060)
+	ComponentDescription desc;
+#else
+	AudioComponentDescription desc;
+#endif
 
-	std::string soundfont = getConfigSetting("coreaudio_soundfont", "");
-	std::cout << "Loading SoundFont '" << soundfont << "'... ";
-	if (soundfont != "") {
-		FSRef soundfontRef;
-		err = FSPathMakeRef((const UInt8*)soundfont.c_str(), &soundfontRef, NULL);
-		if (!err) {
-			err = AudioUnitSetProperty(
-				au_MusicDevice,
-					kMusicDeviceProperty_SoundBankFSRef, 
-						kAudioUnitScope_Global,
-							0,
-								&soundfontRef,
-									sizeof(soundfontRef)
-											);
+	// The default output device
+	desc.componentType = kAudioUnitType_Output;
+	desc.componentSubType = kAudioUnitSubType_DefaultOutput;
+	desc.componentManufacturer = kAudioUnitManufacturer_Apple;
+	desc.componentFlags = 0;
+	desc.componentFlagsMask = 0;
+#if USE_DEPRECATED_COREAUDIO_API
+	RequireNoErr(AUGraphNewNode(_auGraph, &desc, 0, NULL, &outputNode));
+#else
+	RequireNoErr(AUGraphAddNode(_auGraph, &desc, &outputNode));
+#endif
+		
+	// The built-in default (softsynth) music device
+	desc.componentType = kAudioUnitType_MusicDevice;
+	desc.componentSubType = kAudioUnitSubType_DLSSynth;
+	desc.componentManufacturer = kAudioUnitManufacturer_Apple;
+#if USE_DEPRECATED_COREAUDIO_API
+	RequireNoErr(AUGraphNewNode(_auGraph, &desc, 0, NULL, &synthNode));
+#else
+	RequireNoErr(AUGraphAddNode(_auGraph, &desc, &synthNode));
+#endif
+
+	// Connect the softsynth to the default output
+	RequireNoErr(AUGraphConnectNodeInput(_auGraph, synthNode, 0, outputNode, 0));
+
+	// Open and initialize the whole graph
+	RequireNoErr(AUGraphOpen(_auGraph));
+	RequireNoErr(AUGraphInitialize(_auGraph));
+
+	// Get the music device from the graph.
+#if USE_DEPRECATED_COREAUDIO_API
+	RequireNoErr(AUGraphGetNodeInfo(_auGraph, synthNode, NULL, NULL, NULL, &_synth));
+#else
+	RequireNoErr(AUGraphNodeInfo(_auGraph, synthNode, NULL, &_synth));
+#endif
+	
+	// Load custom soundfont, if specified
+	if (config->key_exists("config/audio/midi/coreaudio_soundfont")) {
+		std::string soundfont = getConfigSetting("coreaudio_soundfont", "");
+		std::cout << "Loading SoundFont '" << soundfont << "'"<< std::endl;
+		if (soundfont != "") {
+			OSErr err;
+#if USE_DEPRECATED_COREAUDIO_API
+			FSRef	fsref;
+			FSSpec	fsSpec;
+			err = FSPathMakeRef((const UInt8*)soundfont.c_str(), &fsref, NULL);
+			if (!err)
+				err = FSGetCatalogInfo (&fsref, kFSCatInfoNone, NULL, NULL, &fsSpec, NULL);
+			if (!err) {
+				err = AudioUnitSetProperty(
+					_synth,
+						kMusicDeviceProperty_SoundBankFSRef, kAudioUnitScope_Global,
+						0,
+						&fsref, sizeof(fsref)
+				);
+			}
+#else
+			// kMusicDeviceProperty_SoundBankFSSpec is present on 10.6+, but broken
+			// kMusicDeviceProperty_SoundBankURL was added in 10.5 as a replacement
+			CFURLRef url = CFURLCreateFromFileSystemRepresentation(kCFAllocatorDefault, (const UInt8 *)soundfont.c_str(), soundfont.size(), false);
+
+			if (url) {
+				err = AudioUnitSetProperty (
+					_synth,
+						kMusicDeviceProperty_SoundBankURL, kAudioUnitScope_Global,
+						0,
+						&url, sizeof(url)
+				);
+
+				CFRelease(url);
+			} else {
+				std::cout << "Failed to allocate CFURLRef from '" << soundfont << "'"<< std::endl;
+			}
+		
+#endif
 			if (!err) {
 				std::cout << "Loaded!" << std::endl;
 			} else {
-				std::cout << "Error loading" << std::endl;
+				std::cout << "Error loading SoundFont '" << soundfont << "'"<< std::endl;
+				return 1;
 			}
 		} else {
 			std::cout << "Path Error" << std::endl;
 		}
 	}
-	// open the output unit
-	au_output = static_cast<AudioUnit>(OpenDefaultComponent(kAudioUnitType_Output, kAudioUnitSubType_DefaultOutput));
-	if (au_output == 0)
-		std::cout << "Failed opening output audio unit" << std::endl;
 
-	// connect the units
-	auconnect.sourceAudioUnit = au_MusicDevice;
-	auconnect.sourceOutputNumber = 0;
-	auconnect.destInputNumber = 0;
-	err =
-		AudioUnitSetProperty(au_output, kAudioUnitProperty_MakeConnection, kAudioUnitScope_Input, 0,
-								 static_cast<void*>(&auconnect), sizeof(AudioUnitConnection));
-
-	// initialize the units
-	AudioUnitInitialize(au_MusicDevice);
-	AudioUnitInitialize(au_output);
-	
-	// start the output
-	AudioOutputUnitStart(au_output);
+	// Finally: Start the graph!
+	RequireNoErr(AUGraphStart(_auGraph));
 
 	return 0;
+
+bail:
+	if (_auGraph) {
+	AUGraphStop(_auGraph);
+	DisposeAUGraph(_auGraph);
+	_auGraph = 0;
+	}
+	return 0;	
 }
 
 void CoreAudioMidiDriver::close()
 {
 	// Stop the output
-	AudioOutputUnitStop(au_output);
-
-	// Cleanup
-	CloseComponent(au_output);
-	au_output = 0;
-	CloseComponent(au_MusicDevice);
-	au_MusicDevice = 0;
+	if (_auGraph) {
+		AUGraphStop(_auGraph);
+		DisposeAUGraph(_auGraph);
+		_auGraph = 0;
+	}
 }
 
 void CoreAudioMidiDriver::send(uint32 message)
@@ -132,9 +200,8 @@ void CoreAudioMidiDriver::send(uint32 message)
 	uint8 first_byte = (message & 0x0000FF00) >> 8;
 	uint8 second_byte = (message & 0x00FF0000) >> 16;
 	
-	assert(au_output != NULL);
-	assert(au_MusicDevice != NULL);
-	MusicDeviceMIDIEvent(au_MusicDevice, status_byte, first_byte, second_byte, 0);
+	assert(_auGraph != NULL);
+	MusicDeviceMIDIEvent(_synth, status_byte, first_byte, second_byte, 0);
 }
 
 void CoreAudioMidiDriver::send_sysex (uint8 status, const uint8 *msg, uint16 length)
@@ -142,15 +209,14 @@ void CoreAudioMidiDriver::send_sysex (uint8 status, const uint8 *msg, uint16 len
 	uint8 buf[384];
 
 	assert(sizeof(buf) >= (size_t)length + 2);
-	assert(au_output != NULL);
-	assert(au_MusicDevice != NULL);
+	assert(_auGraph != NULL);
 
 	// Add SysEx frame
 	buf[0] = status;
 	memcpy(buf+1, msg, length);
 	buf[length+1] = 0xF7;
 
-	MusicDeviceSysEx(au_MusicDevice, buf, length + 2);
+	MusicDeviceSysEx(_synth, buf, length + 2);
 }
 
 void CoreAudioMidiDriver::increaseThreadPriority()
@@ -170,4 +236,4 @@ void CoreAudioMidiDriver::yield()
 	sched_yield();
 }
 
-#endif //MACOSX
+#endif //USE_CORE_AUDIO_MIDI
