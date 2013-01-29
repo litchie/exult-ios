@@ -1,3 +1,8 @@
+2013-01-29 Dominik Reichardt <dominus@users.sourceforge.net>	
+	* configure.ac, audio/midi_drivers/CoreAudioMidiDriver.*: switched to AUGraph, 
+	synchronized with ScummVM's CoreAudio MIDI driver. Added two frameworks 
+	needed for that.
+	  
 2013-01-28 Dominik Reichardt <dominus@users.sourceforge.net>	
 	* audio/midi_drivers/CoreAudioMidiDriver.*: ripped out code that went into 
 	  the CoreMidiDriver a long time ago.
