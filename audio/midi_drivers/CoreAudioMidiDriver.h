@@ -24,14 +24,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "LowLevelMidiDriver.h"
 
-#include <AudioUnit/AudioUnit.h>
-#include <AudioUnit/AUComponent.h>
+#include <AudioToolbox/AUGraph.h>
 #include <CoreServices/CoreServices.h>
 
 class CoreAudioMidiDriver : public LowLevelMidiDriver
 {
-	AudioUnit au_MusicDevice;
-	AudioUnit au_output;
+	AUGraph _auGraph;
+	AudioUnit _synth;
 
 
 	static const MidiDriverDesc	desc;

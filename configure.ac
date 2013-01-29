@@ -151,7 +151,7 @@ case "$host_os" in
 		if test x$iphone_sdk != x; then
 			SYSLIBS="-framework CoreFoundation -framework CoreAudio -framework CoreMIDI"
 		else	
-			SYSLIBS="-framework CoreFoundation -framework AudioUnit -framework CoreMIDI"
+			SYSLIBS="-framework CoreFoundation -framework AudioUnit -framework AudioToolbox -framework Carbon -framework CoreMIDI"
 		fi
 		CXXFLAGS="$CXXFLAGS"
 		EXULT_DATADIR="/Library/Application\ Support/Exult/data"
