@@ -1,8 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_PREREQ(2.53)
-AC_INIT(exult, 1.5.0svn)
-AC_CONFIG_SRCDIR(exult.cc)
-
+AC_PREREQ([2.63])
+AC_INIT([Exult], [1.5.0svn], ,[exult], [http://exult.sourceforge.net/])
+AC_CONFIG_SRCDIR([exult.cc])
 
 
 # ---------------------------------------------------------------------
@@ -139,7 +138,7 @@ case "$host_os" in
 		SYSLIBS="-lsocket -lX11"
 		;;
 	darwin*)
-		dnl We have a problem here: both MacOS X and Darwin report 
+		dnl We have a problem here: both Mac OS X and Darwin report 
 		dnl the same signature "powerpc-apple-darwin*" - so we have
 		dnl to do more to distinguish them. Plain Darwin will propably
 		dnl use X-Windows; and it is of course lacking Cocoa. For
@@ -151,7 +150,7 @@ case "$host_os" in
 		if test x$iphone_sdk != x; then
 			SYSLIBS="-framework CoreFoundation -framework CoreAudio -framework CoreMIDI"
 		else	
-			SYSLIBS="-framework CoreFoundation -framework AudioUnit -framework AudioToolbox -framework Carbon -framework CoreMIDI"
+			SYSLIBS="-framework CoreFoundation -framework AudioUnit -framework AudioToolbox -framework CoreMIDI"
 		fi
 		CXXFLAGS="$CXXFLAGS"
 		EXULT_DATADIR="/Library/Application\ Support/Exult/data"
@@ -428,7 +427,7 @@ if test x$enable_static_libs != xno; then
 		# static library and link to *that*.
 		# Damn you, Apple!
 
-		# SDL MacOS X readme lists this as needed.
+		# SDL Mac OS X readme lists this as needed.
 		# We should have sdl-config by this point, or we would have
 		# died in AM_PATH_SDL.
 		SDL_LIBS=`$SDL_CONFIG $sdl_config_args --static-libs`
