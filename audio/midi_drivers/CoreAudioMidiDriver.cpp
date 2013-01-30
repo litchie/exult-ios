@@ -1,7 +1,7 @@
 /*
-Code originally written by Max Horn for ScummVM, 
-later improvements by Matthew Hoops, 
-minor tweaks by various other people of the ScummVM, Pentagram 
+Code originally written by Max Horn for ScummVM,
+later improvements by Matthew Hoops,
+minor tweaks by various other people of the ScummVM, Pentagram
 and Exult teams.
 
 This program is free software; you can redistribute it and/or
@@ -48,11 +48,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // simply do so by manually enable the USE_DEPRECATED_COREAUDIO_API switch (e.g.
 // by adding setting it suitably in CPPFLAGS).
 #if !defined(USE_DEPRECATED_COREAUDIO_API)
-#if TARGET_CPU_PPC || TARGET_CPU_PPC64
-#define USE_DEPRECATED_COREAUDIO_API 1
-#else
-#define USE_DEPRECATED_COREAUDIO_API 0
-#endif
+#   if TARGET_CPU_PPC || TARGET_CPU_PPC64
+#      define USE_DEPRECATED_COREAUDIO_API 1
+#   else
+#      define USE_DEPRECATED_COREAUDIO_API 0
+#   endif
 #endif
 
 class   CoreAudioException : public exult_exception {
@@ -152,7 +152,7 @@ int CoreAudioMidiDriver::open() {
 					err = FSGetCatalogInfo(&fsref, kFSCatInfoNone, NULL, NULL, &fsSpec, NULL);
 				if (!err) {
 					err = AudioUnitSetProperty(
-					          _synth, kMusicDeviceProperty_SoundBankFSRef, 
+					          _synth, kMusicDeviceProperty_SoundBankFSRef,
 					          kAudioUnitScope_Global, 0, &fsref, sizeof(fsref));
 				}
 #else

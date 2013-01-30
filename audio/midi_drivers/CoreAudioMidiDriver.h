@@ -1,6 +1,6 @@
 /*
-Code originally written by Max Horn for ScummVM, 
-minor tweaks by various other people of the ScummVM, Pentagram 
+Code originally written by Max Horn for ScummVM,
+minor tweaks by various other people of the ScummVM, Pentagram
 and Exult teams.
 
 This program is free software; you can redistribute it and/or
