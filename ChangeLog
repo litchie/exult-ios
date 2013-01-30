@@ -1,7 +1,13 @@
+2013-01-30 Dominik Reichardt <dominus@users.sourceforge.net>	
+	* audio/midi_drivers/CoreAudioMidiDriver.*: better error handling by Marzo,
+	  fixed USE_DEPRECATED_COREAUDIO_API define to make Exult run on PPC OS X
+	  again, fixed copyright headers.
+	* audio/midi_drivers/CoreMidiDriver.*: fixed copyright headers.
+	  
 2013-01-29 Dominik Reichardt <dominus@users.sourceforge.net>	
 	* configure.ac, audio/midi_drivers/CoreAudioMidiDriver.*: switched to AUGraph, 
-	synchronized with ScummVM's CoreAudio MIDI driver. Added two frameworks 
-	needed for that.
+	  synchronized with ScummVM's CoreAudio MIDI driver. Added two frameworks 
+	  needed for that.
 	  
 2013-01-28 Dominik Reichardt <dominus@users.sourceforge.net>	
 	* audio/midi_drivers/CoreAudioMidiDriver.*: ripped out code that went into 

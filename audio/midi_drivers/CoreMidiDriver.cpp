@@ -1,7 +1,7 @@
 /*
-Copyright (C) 2009 The ScummVM project
-Copyright (C) 2009-2013  The Exult Team
- 
+Code originally written by Max Horn for ScummVM,
+minor tweaks by various other people of the ScummVM, and Exult teams.
+
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
 as published by the Free Software Foundation; either version 2
