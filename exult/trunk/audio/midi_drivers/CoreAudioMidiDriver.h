@@ -1,5 +1,7 @@
 /*
-Copyright (C) 2003-2005  The Pentagram Team
+Code originally written by Max Horn for ScummVM, 
+minor tweaks by various other people of the ScummVM, Pentagram 
+and Exult teams.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -27,29 +29,30 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <AudioToolbox/AUGraph.h>
 #include <CoreServices/CoreServices.h>
 
-class CoreAudioMidiDriver : public LowLevelMidiDriver
-{
+class CoreAudioMidiDriver : public LowLevelMidiDriver {
 	AUGraph _auGraph;
 	AudioUnit _synth;
 
 
-	static const MidiDriverDesc	desc;
+	static const MidiDriverDesc desc;
 	static MidiDriver *createInstance() {
 		return new CoreAudioMidiDriver();
 	}
 
 public:
-	static const MidiDriverDesc* getDesc() { return &desc; }
+	static const MidiDriverDesc *getDesc() {
+		return &desc;
+	}
 
 	CoreAudioMidiDriver();
 
 protected:
-	virtual int			open();
-	virtual void		close();
-	virtual void		send(uint32 message);
-	virtual void		send_sysex(uint8 status, const uint8 *msg, uint16 length);
-	virtual void		increaseThreadPriority();
-	virtual void		yield();
+	virtual int         open();
+	virtual void        close();
+	virtual void        send(uint32 message);
+	virtual void        send_sysex(uint8 status, const uint8 *msg, uint16 length);
+	virtual void        increaseThreadPriority();
+	virtual void        yield();
 };
 
 #endif //MACOSX
