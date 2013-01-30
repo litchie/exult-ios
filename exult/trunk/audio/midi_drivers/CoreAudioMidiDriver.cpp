@@ -96,7 +96,7 @@ int CoreAudioMidiDriver::open() {
 		RequireNoErr(NewAUGraph(&_auGraph));
 		AUNode outputNode, synthNode;
 		// OS X 10.5 SDK doesn't know AudioComponentDescription desc;
-#if USE_DEPRECATED_COREAUDIO_API || defined(MAC_OS_X_VERSION_10_5)
+#if USE_DEPRECATED_COREAUDIO_API || (MAC_OS_X_VERSION_MAX_ALLOWED < 1060)
 		ComponentDescription desc;
 #else
 		AudioComponentDescription desc;
@@ -186,11 +186,11 @@ int CoreAudioMidiDriver::open() {
 		// Finally: Start the graph!
 		RequireNoErr(AUGraphStart(_auGraph));
 	} catch (CoreAudioException const &error) {
-//#ifdef DEBUG
+#ifdef DEBUG
 		std::cerr << error.what() << " at " << __FILE__ << ":" << error.get_line()
 		          << " with error code " << static_cast<int>(error.get_err())
 		          << std::endl;
-//#endif
+#endif
 		if (_auGraph) {
 			AUGraphStop(_auGraph);
 			DisposeAUGraph(_auGraph);
