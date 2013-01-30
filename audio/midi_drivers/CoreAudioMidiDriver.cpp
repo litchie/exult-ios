@@ -146,10 +146,7 @@ int CoreAudioMidiDriver::open() {
 				OSErr err;
 #if USE_DEPRECATED_COREAUDIO_API
 				FSRef   fsref;
-				FSSpec  fsSpec;
 				err = FSPathMakeRef(reinterpret_cast<const UInt8 *>(soundfont.c_str()), &fsref, NULL);
-				if (!err)
-					err = FSGetCatalogInfo(&fsref, kFSCatInfoNone, NULL, NULL, &fsSpec, NULL);
 				if (!err) {
 					err = AudioUnitSetProperty(
 					          _synth, kMusicDeviceProperty_SoundBankFSRef,
