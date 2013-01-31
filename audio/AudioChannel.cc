@@ -462,10 +462,10 @@ void AudioChannel::resampleFrameM16toS(sint16 *&stream, uint32 &bytes)
 		if (fp_pos >= 0x10000)
 		{
 			if (src+4 < src_end) {
-				int c = *(sint16*)(src+4);
+				int c = *reinterpret_cast<sint16 *>(src+4);
 				interp_l.feedData(c);
 			} else if (src2 < src2_end) {
-				int c = *(sint16*)(src2);
+				int c = *reinterpret_cast<sint16 *>(src2);
 				interp_l.feedData(c);
 				src2+=2;
 			} else {
@@ -525,10 +525,10 @@ void AudioChannel::resampleFrameM16toM(sint16 *&stream, uint32 &bytes)
 		if (fp_pos >= 0x10000)
 		{
 			if (src+4 < src_end) {
-				int c = *(sint16*)(src+4);
+				int c = *reinterpret_cast<sint16 *>(src+4);
 				interp_l.feedData(c);
 			} else if (src2 < src2_end) {
-				int c = *(sint16*)(src2);
+				int c = *reinterpret_cast<sint16 *>(src2);
 				interp_l.feedData(c);
 				src2+=2;
 			} else {
@@ -581,13 +581,13 @@ void AudioChannel::resampleFrameS16toM(sint16 *&stream, uint32 &bytes)
 		if (fp_pos >= 0x10000)
 		{
 			if (src+8 < src_end) {
-				int c = *(sint16*)(src+8);
-				int c2 = *(sint16*)(src+10);
+				int c  = *reinterpret_cast<sint16 *>(src+8);
+				int c2 = *reinterpret_cast<sint16 *>(src+10);
 				interp_l.feedData(c);
 				interp_r.feedData(c2);
 			} else if (src2 < src2_end) {
-				int c = *(sint16*)(src2);
-				int c2 = *(sint16*)(src2+2);
+				int c  = *reinterpret_cast<sint16 *>(src2);
+				int c2 = *reinterpret_cast<sint16 *>(src2+2);
 				interp_l.feedData(c);
 				interp_r.feedData(c2);
 				src2+=4;
@@ -642,13 +642,13 @@ void AudioChannel::resampleFrameS16toS(sint16 *&stream, uint32 &bytes)
 		if (fp_pos >= 0x10000)
 		{
 			if (src+8 < src_end) {
-				int c = *(sint16*)(src+8);
-				int c2 = *(sint16*)(src+10);
+				int c  = *reinterpret_cast<sint16 *>(src+8);
+				int c2 = *reinterpret_cast<sint16 *>(src+10);
 				interp_l.feedData(c);
 				interp_r.feedData(c2);
 			} else if (src2 < src2_end) {
-				int c = *(sint16*)(src2);
-				int c2 = *(sint16*)(src2+2);
+				int c  = *reinterpret_cast<sint16 *>(src2);
+				int c2 = *reinterpret_cast<sint16 *>(src2+2);
 				interp_l.feedData(c);
 				interp_r.feedData(c2);
 				src2+=4;
