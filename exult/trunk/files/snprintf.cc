@@ -361,17 +361,17 @@
 #endif
 
 #define fast_memcpy(d,s,n) \
-	{ register size_t nn = (size_t)(n); \
+	{ register size_t nn = static_cast<size_t>(n); \
 		if (nn >= breakeven_point) memcpy((d), (s), nn); \
 		else if (nn > 0) { /* proc call overhead is worth only for large strings*/\
 			register char *dd; register const char *ss; \
 			for (ss=(s), dd=(d); nn>0; nn--) *dd++ = *ss++; } }
 
 #define fast_memset(d,c,n) \
-	{ register size_t nn = (size_t)(n); \
-		if (nn >= breakeven_point) memset((d), (int)(c), nn); \
+	{ register size_t nn = static_cast<size_t>(n); \
+		if (nn >= breakeven_point) memset((d), static_cast<int>(c), nn); \
 		else if (nn > 0) { /* proc call overhead is worth only for large strings*/\
-			register char *dd; register const int cc=(int)(c); \
+			register char *dd; register const int cc=static_cast<int>(c); \
 			for (dd=(d); nn>0; nn--) *dd++ = cc; } }
 
 /* prototypes */
@@ -422,10 +422,10 @@ int asprintf(char **ptr, const char *fmt, /*args*/ ...) {
 
 	*ptr = NULL;
 	va_start(ap, fmt);                            /* measure the required size */
-	str_l = portable_vsnprintf(NULL, (size_t)0, fmt, ap);
+	str_l = portable_vsnprintf(NULL, static_cast<size_t>(0), fmt, ap);
 	va_end(ap);
 	assert(str_l >= 0);        /* possible integer overflow if str_m > INT_MAX */
-	*ptr = (char *) malloc(str_m = (size_t)str_l + 1);
+	*ptr = reinterpret_cast<char *>(malloc(str_m = static_cast<size_t>(str_l) + 1));
 	if (*ptr == NULL) {
 		errno = ENOMEM;
 		str_l = -1;
@@ -449,11 +449,11 @@ int vasprintf(char **ptr, const char *fmt, va_list ap) {
 	{
 		va_list ap2;
 		va_copy(ap2, ap);  /* don't consume the original ap, we'll need it again */
-		str_l = portable_vsnprintf(NULL, (size_t)0, fmt, ap2);/*get required size*/
+		str_l = portable_vsnprintf(NULL, static_cast<size_t>(0), fmt, ap2);/*get required size*/
 		va_end(ap2);
 	}
 	assert(str_l >= 0);        /* possible integer overflow if str_m > INT_MAX */
-	*ptr = (char *) malloc(str_m = (size_t)str_l + 1);
+	*ptr = reinterpret_cast<char *>(malloc(str_m = static_cast<size_t>(str_l) + 1));
 	if (*ptr == NULL) {
 		errno = ENOMEM;
 		str_l = -1;
@@ -472,14 +472,14 @@ int asnprintf(char **ptr, size_t str_m, const char *fmt, /*args*/ ...) {
 
 	*ptr = NULL;
 	va_start(ap, fmt);                            /* measure the required size */
-	str_l = portable_vsnprintf(NULL, (size_t)0, fmt, ap);
+	str_l = portable_vsnprintf(NULL, static_cast<size_t>(0), fmt, ap);
 	va_end(ap);
 	assert(str_l >= 0);        /* possible integer overflow if str_m > INT_MAX */
-	if ((size_t)str_l + 1 < str_m) str_m = (size_t)str_l + 1;      /* truncate */
+	if (static_cast<size_t>(str_l) + 1 < str_m) str_m = static_cast<size_t>(str_l) + 1;      /* truncate */
 	/* if str_m is 0, no buffer is allocated, just set *ptr to NULL */
 	if (str_m == 0) {  /* not interested in resulting string, just return size */
 	} else {
-		*ptr = (char *) malloc(str_m);
+		*ptr = reinterpret_cast<char *>(malloc(str_m));
 		if (*ptr == NULL) {
 			errno = ENOMEM;
 			str_l = -1;
@@ -503,15 +503,15 @@ int vasnprintf(char **ptr, size_t str_m, const char *fmt, va_list ap) {
 	{
 		va_list ap2;
 		va_copy(ap2, ap);  /* don't consume the original ap, we'll need it again */
-		str_l = portable_vsnprintf(NULL, (size_t)0, fmt, ap2);/*get required size*/
+		str_l = portable_vsnprintf(NULL, static_cast<size_t>(0), fmt, ap2);/*get required size*/
 		va_end(ap2);
 	}
 	assert(str_l >= 0);        /* possible integer overflow if str_m > INT_MAX */
-	if ((size_t)str_l + 1 < str_m) str_m = (size_t)str_l + 1;      /* truncate */
+	if (static_cast<size_t>(str_l) + 1 < str_m) str_m = static_cast<size_t>(str_l) + 1;      /* truncate */
 	/* if str_m is 0, no buffer is allocated, just set *ptr to NULL */
 	if (str_m == 0) {  /* not interested in resulting string, just return size */
 	} else {
-		*ptr = (char *) malloc(str_m);
+		*ptr = reinterpret_cast<char *>(malloc(str_m));
 		if (*ptr == NULL) {
 			errno = ENOMEM;
 			str_l = -1;
@@ -649,11 +649,11 @@ int portable_vsnprintf(char *str, size_t str_m, const char *fmt, va_list ap) {
 					min_field_width = -j;
 					justify_left = 1;
 				}
-			} else if (isdigit((int)(*p))) {
+			} else if (isdigit(static_cast<int>(*p))) {
 				/* size_t could be wider than unsigned int;
 				 make sure we treat argument like common implementations do */
 				unsigned int uj = *p++ - '0';
-				while (isdigit((int)(*p))) uj = 10 * uj + (unsigned int)(*p++ - '0');
+				while (isdigit(static_cast<int>(*p))) uj = 10 * uj + static_cast<unsigned int>(*p++ - '0');
 				min_field_width = uj;
 			}
 			/* parse precision */
@@ -674,11 +674,11 @@ int portable_vsnprintf(char *str, size_t str_m, const char *fmt, va_list ap) {
 						 *   which is what we do here.
 						 */
 					}
-				} else if (isdigit((int)(*p))) {
+				} else if (isdigit(static_cast<int>(*p))) {
 					/* size_t could be wider than unsigned int;
 					 make sure we treat argument like common implementations do */
 					unsigned int uj = *p++ - '0';
-					while (isdigit((int)(*p))) uj = 10 * uj + (unsigned int)(*p++ - '0');
+					while (isdigit(static_cast<int>(*p))) uj = 10 * uj + static_cast<unsigned int>(*p++ - '0');
 					precision = uj;
 				}
 			}
@@ -735,8 +735,8 @@ int portable_vsnprintf(char *str, size_t str_m, const char *fmt, va_list ap) {
 					break;
 				case 'c': {
 					int j = va_arg(ap, int);
-					uchar_arg = (unsigned char) j;   /* standard demands unsigned char */
-					str_arg = (const char *) &uchar_arg;
+					uchar_arg = static_cast<unsigned char>(j);   /* standard demands unsigned char */
+					str_arg = reinterpret_cast<const char *>(&uchar_arg);
 					break;
 				}
 				case 's':
@@ -748,8 +748,8 @@ int portable_vsnprintf(char *str, size_t str_m, const char *fmt, va_list ap) {
 					else if (precision == 0) str_arg_l = 0;
 					else {
 						/* memchr on HP does not like n > 2^31  !!! */
-						const char *q = (const char *) memchr(str_arg, '\0',
-						                                      precision <= 0x7fffffff ? precision : 0x7fffffff);
+						const char *q = reinterpret_cast<const char *>(memchr(str_arg, '\0',
+						                                      precision <= 0x7fffffff ? precision : 0x7fffffff));
 						str_arg_l = !q ? precision : (q - str_arg);
 					}
 					break;
@@ -1100,6 +1100,6 @@ int portable_vsnprintf(char *str, size_t str_m, const char *fmt, va_list ap) {
 	 * Both XSH5 and ISO C99 (at least the draft) are silent on this issue.
 	     * Should errno be set to EOVERFLOW and EOF returned in this case???
 	 */
-	return (int) str_l;
+	return static_cast<int>(str_l);
 }
 #endif

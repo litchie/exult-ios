@@ -53,7 +53,7 @@ Windnd::Windnd(
 	combo_handler(combfun), drag_id(-1) {
 	std::memset(&data, 0, sizeof(data));
 	m_cRef = 1;
-};
+}
 
 Windnd::Windnd(HWND hgwnd, Drop_shape_handler_fun shapefun,
                Drop_chunk_handler_fun cfun, Drop_shape_handler_fun ffun, void *d
@@ -63,10 +63,10 @@ Windnd::Windnd(HWND hgwnd, Drop_shape_handler_fun shapefun,
 	  face_handler(ffun), combo_handler(0), drag_id(-1) {
 	std::memset(&data, 0, sizeof(data));
 	m_cRef = 1;
-};
+}
 
 Windnd::~Windnd() {
-};
+}
 
 STDMETHODIMP
 Windnd::QueryInterface(REFIID iid, void **ppvObject) {
@@ -75,14 +75,14 @@ Windnd::QueryInterface(REFIID iid, void **ppvObject) {
 		*ppvObject = this;
 	if (NULL == *ppvObject)
 		return E_NOINTERFACE;
-	((LPUNKNOWN)*ppvObject)->AddRef();
+	reinterpret_cast<LPUNKNOWN>(*ppvObject)->AddRef();
 	return NOERROR;
-};
+}
 
 STDMETHODIMP_(ULONG)
 Windnd::AddRef(void) {
 	return ++m_cRef;
-};
+}
 
 STDMETHODIMP_(ULONG)
 Windnd::Release(void) {
@@ -90,7 +90,7 @@ Windnd::Release(void) {
 		return m_cRef;
 	delete this;
 	return 0;
-};
+}
 
 STDMETHODIMP
 Windnd::DragEnter(IDataObject *pDataObject,
@@ -101,7 +101,7 @@ Windnd::DragEnter(IDataObject *pDataObject,
 		*pdwEffect = DROPEFFECT_NONE;
 	} else {
 		*pdwEffect = DROPEFFECT_COPY;
-	};
+	}
 
 	std::memset(&data, 0, sizeof(data));
 
@@ -114,7 +114,7 @@ Windnd::DragEnter(IDataObject *pDataObject,
 
 	STGMEDIUM med;
 	pDataObject->GetData(&fetc, &med);
-	windragdata wdd((unsigned char *)GlobalLock(med.hGlobal));
+	windragdata wdd(reinterpret_cast<unsigned char *>(GlobalLock(med.hGlobal)));
 	GlobalUnlock(med.hGlobal);
 	ReleaseStgMedium(&med);
 
@@ -145,7 +145,7 @@ Windnd::DragEnter(IDataObject *pDataObject,
 	prevy = -1;
 
 	return S_OK;
-};
+}
 
 STDMETHODIMP
 Windnd::DragOver(DWORD grfKeyState,
@@ -181,7 +181,7 @@ Windnd::DragOver(DWORD grfKeyState,
 	prevy = pnt.y;
 
 	return S_OK;
-};
+}
 
 STDMETHODIMP
 Windnd::DragLeave(void) {
@@ -202,7 +202,7 @@ Windnd::DragLeave(void) {
 	drag_id = -1;
 
 	return S_OK;
-};
+}
 
 STDMETHODIMP
 Windnd::Drop(IDataObject *pDataObject,
@@ -210,7 +210,6 @@ Windnd::Drop(IDataObject *pDataObject,
              POINTL pt,
              DWORD *pdwEffect) {
 	*pdwEffect = DROPEFFECT_COPY;
-	;
 
 	// retrieve the dragged data
 	FORMATETC fetc;
@@ -222,7 +221,7 @@ Windnd::Drop(IDataObject *pDataObject,
 	STGMEDIUM med;
 
 	pDataObject->GetData(&fetc, &med);
-	windragdata wdd((unsigned char *)GlobalLock(med.hGlobal));
+	windragdata wdd(reinterpret_cast<unsigned char *>(GlobalLock(med.hGlobal)));
 	GlobalUnlock(med.hGlobal);
 	ReleaseStgMedium(&med);
 
@@ -235,29 +234,29 @@ Windnd::Drop(IDataObject *pDataObject,
 		int file, shape, frame;
 		Get_u7_shapeid(wdd.get_data(), file, shape, frame);
 		if (file == U7_SHAPE_SHAPES) {
-			if (shape_handler)(*shape_handler)(shape, frame, pnt.x, pnt.y, udata);
+			if (shape_handler) (*shape_handler)(shape, frame, pnt.x, pnt.y, udata);
 		} else if (file == U7_SHAPE_FACES) {
-			if (face_handler)(*face_handler)(shape, frame, pnt.x, pnt.y, udata);
+			if (face_handler) (*face_handler)(shape, frame, pnt.x, pnt.y, udata);
 		}
 	} else if (id == U7_TARGET_NPCID) {
 		int npcnum;
 		Get_u7_npcid(wdd.get_data(), npcnum);
-		if (npc_handler)(*npc_handler)(npcnum, pnt.x, pnt.y, 0);
+		if (npc_handler) (*npc_handler)(npcnum, pnt.x, pnt.y, 0);
 	} else if (id == U7_TARGET_CHUNKID) {
 		int chunknum;
 		Get_u7_chunkid(wdd.get_data(), chunknum);
-		if (chunk_handler)(*chunk_handler)(chunknum, pnt.x, pnt.y, udata);
+		if (chunk_handler) (*chunk_handler)(chunknum, pnt.x, pnt.y, udata);
 	} else if (id == U7_TARGET_COMBOID) {
 		int xtiles, ytiles;
 		int right, below, cnt;
 		U7_combo_data *combo;
 		Get_u7_comboid(wdd.get_data(), xtiles, ytiles, right, below, cnt, combo);
-		if (combo_handler) combo_handler(cnt, combo, pnt.x, pnt.y, udata);
+		if (combo_handler) (*combo_handler)(cnt, combo, pnt.x, pnt.y, udata);
 		delete combo;
 	}
 
 	return S_OK;
-};
+}
 
 bool Windnd::is_valid(IDataObject *pDataObject) {
 	FORMATETC fetc;
@@ -267,12 +266,12 @@ bool Windnd::is_valid(IDataObject *pDataObject) {
 	fetc.lindex = -1;
 	fetc.tymed = TYMED_HGLOBAL;
 
-	if (FAILED(pDataObject->QueryGetData(& fetc))) {
+	if (FAILED(pDataObject->QueryGetData(&fetc))) {
 		return false;
 	} else {
 		return true;
 	}
-};
+}
 
 // IDropSource implementation
 
@@ -301,13 +300,13 @@ Windropsource::Windropsource(HBITMAP pdrag_bitmap, int x0, int y0)
 
 	if (FAILED(drag_shape)) {
 		g_warning("Create Window FAILED !");
-	};
+	}
 #endif
-};
+}
 
 Windropsource::~Windropsource() {
 	DestroyWindow(drag_shape);
-};
+}
 
 STDMETHODIMP
 Windropsource::QueryInterface(REFIID iid, void **ppvObject) {
@@ -316,16 +315,16 @@ Windropsource::QueryInterface(REFIID iid, void **ppvObject) {
 		*ppvObject = this;
 	if (NULL == *ppvObject)
 		return E_NOINTERFACE;
-	((LPUNKNOWN)*ppvObject)->AddRef();
+	reinterpret_cast<LPUNKNOWN>(*ppvObject)->AddRef();
 	return NOERROR;
-};
+}
 
 STDMETHODIMP_(ULONG)
 Windropsource::AddRef(void) {
 	m_cRef = m_cRef + 1;
 
 	return m_cRef;
-};
+}
 
 STDMETHODIMP_(ULONG)
 Windropsource::Release(void) {
@@ -333,7 +332,7 @@ Windropsource::Release(void) {
 		return m_cRef;
 	delete this;
 	return 0;
-};
+}
 
 STDMETHODIMP
 Windropsource::QueryContinueDrag(
@@ -357,14 +356,14 @@ Windropsource::QueryContinueDrag(
 		return DRAGDROP_S_DROP;
 	else
 		return NOERROR;
-};
+}
 
 STDMETHODIMP
 Windropsource::GiveFeedback(
     DWORD dwEffect
 ) {
 	return DRAGDROP_S_USEDEFAULTCURSORS;
-};
+}
 
 // IDataObject implementation
 
@@ -372,10 +371,10 @@ Winstudioobj::Winstudioobj(windragdata pdata)
 	: data(pdata) {
 	m_cRef = 1;
 	drag_image = 0;
-};
+}
 
 Winstudioobj::~Winstudioobj() {
-};
+}
 
 
 STDMETHODIMP
@@ -385,14 +384,14 @@ Winstudioobj::QueryInterface(REFIID iid, void **ppvObject) {
 		*ppvObject = this;
 	if (NULL == *ppvObject)
 		return E_NOINTERFACE;
-	((LPUNKNOWN)*ppvObject)->AddRef();
+	reinterpret_cast<LPUNKNOWN>(*ppvObject)->AddRef();
 	return NOERROR;
-};
+}
 
 STDMETHODIMP_(ULONG)
 Winstudioobj::AddRef(void) {
 	return ++m_cRef;
-};
+}
 
 STDMETHODIMP_(ULONG)
 Winstudioobj::Release(void) {
@@ -400,7 +399,7 @@ Winstudioobj::Release(void) {
 		return m_cRef;
 	delete this;
 	return 0;
-};
+}
 
 STDMETHODIMP
 Winstudioobj::GetData(
@@ -426,7 +425,7 @@ Winstudioobj::GetData(
 			return E_OUTOFMEMORY;
 
 		// This provides us with a pointer to the allocated memory
-		ldata = (unsigned char *)GlobalLock(hText);
+		ldata = reinterpret_cast<unsigned char *>(GlobalLock(hText));
 		data.serialize(ldata);
 		GlobalUnlock(hText);
 
@@ -437,7 +436,7 @@ Winstudioobj::GetData(
 	}
 
 	return DATA_E_FORMATETC;
-};
+}
 
 STDMETHODIMP
 Winstudioobj::GetDataHere(
@@ -445,7 +444,7 @@ Winstudioobj::GetDataHere(
     STGMEDIUM *pmedium
 ) {
 	return DATA_E_FORMATETC;
-};
+}
 
 STDMETHODIMP
 Winstudioobj::QueryGetData(
@@ -458,7 +457,7 @@ Winstudioobj::QueryGetData(
 	        && pFormatetc->tymed & TYMED_HGLOBAL)
 		return S_OK;
 	else return S_FALSE;
-};
+}
 
 STDMETHODIMP
 Winstudioobj::GetCanonicalFormatEtc(
@@ -467,7 +466,7 @@ Winstudioobj::GetCanonicalFormatEtc(
 ) {
 	pFormatetcOut->ptd = NULL;
 	return E_NOTIMPL;
-};
+}
 
 STDMETHODIMP
 Winstudioobj::SetData(
@@ -476,7 +475,7 @@ Winstudioobj::SetData(
     BOOL fRelease
 ) {
 	return E_NOTIMPL;
-};
+}
 
 STDMETHODIMP
 Winstudioobj::EnumFormatEtc(
@@ -516,7 +515,7 @@ Winstudioobj::EnumFormatEtc(
 
 error:
 	return sc;
-};
+}
 
 STDMETHODIMP
 Winstudioobj::DAdvise(
@@ -526,20 +525,20 @@ Winstudioobj::DAdvise(
     DWORD *pdwConnection
 ) {
 	return OLE_E_ADVISENOTSUPPORTED;
-};
+}
 
 STDMETHODIMP
 Winstudioobj::DUnadvise(
     DWORD dwConnection
 ) {
 	return OLE_E_ADVISENOTSUPPORTED;
-};
+}
 
 STDMETHODIMP
 Winstudioobj::EnumDAdvise(
     IEnumSTATDATA **ppenumAdvise
 ) {
 	return OLE_E_ADVISENOTSUPPORTED;
-};
+}
 
 #endif

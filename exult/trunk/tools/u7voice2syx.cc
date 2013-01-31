@@ -120,7 +120,11 @@ const PatchMemData patch_template = {
 //
 const uint32 system_base = 0x100000;    // Note, these are 7 bit!
 const uint32 system_mem_size = 0x17;    // Display is 20 ASCII characters (32-127)
-#define system_mem_offset(setting) ((uint32)(&((systemArea*)0)->setting))
+#include <cstddef>
+#ifndef offsetof	// Broken <cstddef>? Just in case...
+#   define offsetof(type, field) reinterpret_cast<uintptr>(&(static_cast<type *>(0)->field))
+#endif
+#define system_mem_offset(setting) offsetof(systemArea, setting)
 
 struct systemArea {
 	char masterTune;                    // MASTER TUNE 0-127 432.1-457.6Hz
@@ -188,7 +192,7 @@ RhythmSetupData U7PercussionData[] = {
 // address_base is 7-bit, while address_offset is 8 bit!
 std::size_t fill_sysex_buffer(uint32 address_base, uint16 address_offset, uint32 len, const void *data = 0) {
 	// SysEx status
-	sysex_buffer[0] = 0xF0;
+	sysex_buffer[0] = static_cast<char>(0xF0);
 
 	// MT32 Sysex Header
 	sysex_buffer[1] = 0x41;     // Roland SysEx ID
@@ -217,7 +221,7 @@ std::size_t fill_sysex_buffer(uint32 address_base, uint16 address_offset, uint32
 	sysex_buffer[sysex_data_start + len] = checksum;
 
 	// Terminator
-	sysex_buffer[sysex_data_start + len + 1] = 0xF7;
+	sysex_buffer[sysex_data_start + len + 1] = static_cast<char>(0xF7);
 
 	return sysex_data_start + len + 2;
 }

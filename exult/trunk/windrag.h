@@ -17,10 +17,10 @@ public:
 	inline unsigned char *get_data() {
 		return data;
 	}
-	inline const int get_id() {
+	inline int get_id() const {
 		return id;
 	}
-	inline const int get_size() {
+	inline int get_size() const {
 		return size;
 	}
 
@@ -125,7 +125,7 @@ public:
 	       Drop_npc_handler_fun npcfun, Drop_combo_handler_fun);
 	Windnd(HWND hgwnd, Drop_shape_handler_fun shapefun,
 	       Drop_chunk_handler_fun cfun, Drop_shape_handler_fun facefun, void *d);
-	~Windnd();
+	virtual ~Windnd();
 
 	STDMETHOD(QueryInterface)(REFIID iid, void **ppvObject);
 	STDMETHOD_(ULONG, AddRef)(void);
@@ -169,7 +169,7 @@ private:
 
 public:
 	Windropsource(HBITMAP pdrag_bitmap, int x0, int y0);
-	~Windropsource();
+	virtual ~Windropsource();
 
 	STDMETHOD(QueryInterface)(REFIID iid, void **ppvObject);
 	STDMETHOD_(ULONG, AddRef)(void);
@@ -193,7 +193,7 @@ private:
 
 public:
 	Winstudioobj(windragdata pdata);
-	~Winstudioobj();
+	virtual ~Winstudioobj();
 
 	STDMETHOD(QueryInterface)(REFIID iid, void **ppvObject);
 	STDMETHOD_(ULONG, AddRef)(void);

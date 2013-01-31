@@ -34,8 +34,6 @@ using std::vector;
 using std::cout;
 using std::cerr;
 using std::endl;
-using std::free;
-using std::malloc;
 using std::string;
 using std::strcat;
 using std::strcpy;
@@ -94,7 +92,6 @@ static bool MatchString(const char *str, const std::string &inPat) {
 
 // Need this for _findfirst, _findnext, _findclose
 #include <windows.h>
-#include <malloc.h>
 #include <tchar.h>
 
 int U7ListFiles(const std::string &mask, FileList &files) {
@@ -108,7 +105,7 @@ int U7ListFiles(const std::string &mask, FileList &files) {
 #ifdef UNICODE
 	const char *name = path.c_str();
 	nLen = strlen(name) + 1;
-	LPTSTR lpszT2 = (LPTSTR) _alloca(nLen * 2);
+	LPTSTR lpszT2 = reinterpret_cast<LPTSTR>(_alloca(nLen * 2));
 	lpszT = lpszT2;
 	MultiByteToWideChar(CP_ACP, 0, name, -1, lpszT2, nLen);
 #else
@@ -163,13 +160,13 @@ int U7ListFiles(const std::string &mask, FileList &files) {
 		    NULL,
 		    GetLastError(),
 		    MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-		    (LPTSTR) &lpMsgBuf,
+		    reinterpret_cast<LPTSTR>(&lpMsgBuf),
 		    0,
 		    NULL
 		);
 #ifdef UNICODE
 		nLen2 = _tcslen(lpMsgBuf) + 1;
-		str = (char *) _alloca(nLen);
+		str = reinterpret_cast<char *>(_alloca(nLen));
 		WideCharToMultiByte(CP_ACP, 0, lpMsgBuf, -1, str, nLen2, NULL, NULL);
 #else
 		str = lpMsgBuf;

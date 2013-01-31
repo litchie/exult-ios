@@ -26,8 +26,8 @@
 #include <vector>
 #include <map>
 
-#define UCSYMTBL_MAGIC0 0xffffffff
-#define UCSYMTBL_MAGIC1 ((static_cast<long>('U')<<24)+(static_cast<long>('C')<<16)+(static_cast<long>('S')<<8)+'Y')
+#define UCSYMTBL_MAGIC0 0xffffffffu
+#define UCSYMTBL_MAGIC1 ((static_cast<uint32>('U')<<24)+(static_cast<uint32>('C')<<16)+(static_cast<uint32>('S')<<8)+'Y')
 
 class Usecode_class_symbol;
 class Usecode_symbol_table;

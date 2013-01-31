@@ -1750,7 +1750,7 @@ void Usecode_internal::read_usecode(
 	file.seekg(0, ios::end);
 	int size = file.tellg();    // Get file size.
 	file.seekg(0);
-	long magic = Read4(file);   // Test for symbol table.
+	uint32 magic = Read4(file);   // Test for symbol table.
 	if (magic == UCSYMTBL_MAGIC0 && (magic = Read4(file))
 	        == UCSYMTBL_MAGIC1) {
 		delete symtbl;

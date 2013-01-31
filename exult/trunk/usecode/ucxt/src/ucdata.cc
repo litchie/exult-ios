@@ -154,11 +154,10 @@ void UCData::disassamble() {
 	}
 
 	if (!_foundfunc)
-		printf("Function not found.\n");
+		cout << "Function not found." << endl;
 
-	if (search_funcs.size() == 0) {
-		printf("Functions: %ld\n", _funcs.size());
-	}
+	if (search_funcs.size() == 0)
+		cout << "Functions: " << _funcs.size() << endl;
 
 	if (options.output_list)
 		cout << endl << "Functions: " << setbase(10) << _funcs.size() << setbase(16) << endl;

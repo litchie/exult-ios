@@ -8,6 +8,8 @@
 	  in MinGW.
 	Rev 7353
 	* audio/AudioChannel.cc: Eliminating warnings.
+	Rev 7354
+	* all: Eliminating warnings (mainly from Win32 builds).
 
 2013-01-30 Dominik Reichardt <dominus@users.sourceforge.net>	
 	* audio/midi_drivers/CoreAudioMidiDriver.*: better error handling by Marzo,
