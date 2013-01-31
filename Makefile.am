@@ -245,17 +245,17 @@ bundle: ${EXE_TARGET}
 	echo "APPL????" > $(bundle_name)/Contents/PkgInfo
 	$(INSTALL_DATA) Info.plist $(bundle_name)/Contents/
 	$(INSTALL_PROGRAM) $< $(bundle_name)/Contents/MacOS/
-	$(INSTALL_DATA) macosx/exult.icns $(bundle_name)/Contents/Resources/
-	$(INSTALL_DATA) data/exult.flx $(bundle_name)/Contents/Resources/data
-	$(INSTALL_DATA) data/exult_bg.flx $(bundle_name)/Contents/Resources/data
-	$(INSTALL_DATA) data/exult_si.flx $(bundle_name)/Contents/Resources/data
-	$(INSTALL_DATA) data/exultmsg.txt $(bundle_name)/Contents/Resources/data
-	$(INSTALL_DATA) AUTHORS $(bundle_name)
-	$(INSTALL_DATA) COPYING $(bundle_name)
-	$(INSTALL_DATA) FAQ $(bundle_name)
-	$(INSTALL_DATA) NEWS $(bundle_name)
-	$(INSTALL_DATA) README $(bundle_name)
-	$(INSTALL_DATA) README.MacOSX $(bundle_name)
+	$(INSTALL_DATA) $(srcdir)/macosx/exult.icns $(bundle_name)/Contents/Resources/
+	$(INSTALL_DATA) $(srcdir)/data/exult.flx $(bundle_name)/Contents/Resources/data
+	$(INSTALL_DATA) $(srcdir)/data/exult_bg.flx $(bundle_name)/Contents/Resources/data
+	$(INSTALL_DATA) $(srcdir)/data/exult_si.flx $(bundle_name)/Contents/Resources/data
+	$(INSTALL_DATA) $(srcdir)/data/exultmsg.txt $(bundle_name)/Contents/Resources/data
+	$(INSTALL_DATA) $(srcdir)/AUTHORS $(bundle_name)
+	$(INSTALL_DATA) $(srcdir)/COPYING $(bundle_name)
+	$(INSTALL_DATA) $(srcdir)/FAQ $(bundle_name)
+	$(INSTALL_DATA) $(srcdir)/NEWS $(bundle_name)
+	$(INSTALL_DATA) $(srcdir)/README $(bundle_name)
+	$(INSTALL_DATA) $(srcdir)/README.MacOSX $(bundle_name)
 if WITH_OSX_CODE_SIGNATURE
 	codesign -f -s "$(OSX_CODE_SIGNATURE)" $(bundle_name)
 endif
