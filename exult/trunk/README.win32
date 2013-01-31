@@ -45,7 +45,7 @@ To build in Windows using MinGW
 (Thanks to Travis Howell)
 
 Download various MinGW packages from:
-http://sourceforge.net/projects/mingw/files/MinGW/Base/binutils/binutils-2.21/binutils-2.21-3-mingw32-bin.tar.lzma/
+http://sourceforge.net/projects/mingw/files/MinGW/Base/binutils/binutils-2.21/binutils-2.21-3-mingw32-bin.tar.lzma/download
 http://sourceforge.net/projects/mingw/files/MinGW/Base/gcc/Version4/gcc-4.6.2-1/gcc-core-4.6.2-1-mingw32-bin.tar.lzma/download
 http://sourceforge.net/projects/mingw/files/MinGW/Base/gcc/Version4/gcc-4.6.2-1/libgcc-4.6.2-1-mingw32-dll-1.tar.lzma/download
 http://sourceforge.net/projects/mingw/files/MinGW/Base/gcc/Version4/gcc-4.6.2-1/gcc-c%2B%2B-4.6.2-1-mingw32-bin.tar.lzma/download
@@ -78,6 +78,9 @@ Download the SDL binaries & headers from:
 	http://exult.sourceforge.net/snapshots/exult_sdl_win32.zip
 Unzip this file into the main directory of Exult source code. (it should add a
 SDL subdirectory)
+
+NOTE: Our developer packages were compiled with GCC 4.6.2, and might not work with
+later GCC versions, due to backwards compatibility been broken between GCC versions.
 
 Download the other required developer tools from:
 	http://exult.sourceforge.net/snapshots/exult_dev_win32.zip
