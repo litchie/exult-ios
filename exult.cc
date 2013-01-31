@@ -442,9 +442,9 @@ PCHAR *CommandLineToArgvA(
 	len = strlen(CmdLine);
 	i = ((len + 2) / 2) * sizeof(PVOID) + sizeof(PVOID);
 
-	argv = (PCHAR *)GlobalAlloc(GMEM_FIXED, i + (len + 2) * sizeof(CHAR));
+	argv = reinterpret_cast<PCHAR *>(GlobalAlloc(GMEM_FIXED, i + (len + 2) * sizeof(CHAR)));
 
-	_argv = (PCHAR)(((PUCHAR)argv) + i);
+	_argv = reinterpret_cast<PCHAR>(reinterpret_cast<PUCHAR>(argv) + i);
 
 	argc = 0;
 	argv[argc] = _argv;
@@ -454,7 +454,7 @@ PCHAR *CommandLineToArgvA(
 	i = 0;
 	j = 0;
 
-	while (a = CmdLine[i]) {
+	while ((a = CmdLine[i]) != 0) {
 		if (in_QM) {
 			if (a == '\"')
 				in_QM = FALSE;
@@ -523,7 +523,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	cleanup_output("std");
 
-	GlobalFree((HGLOBAL)argv);
+	GlobalFree(reinterpret_cast<HGLOBAL>(argv));
 
 	return  res;
 }

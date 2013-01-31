@@ -553,8 +553,7 @@ int U7mkdir(
 class shell32_wrapper {
 protected:
 	HMODULE hLib;
-	typedef HRESULT(WINAPI *SHGetFolderPathFunc)
-	(
+	typedef HRESULT(WINAPI *SHGetFolderPathFunc) (
 	    HWND hwndOwner,
 	    int nFolder,
 	    HANDLE hToken,
@@ -564,24 +563,23 @@ protected:
 	SHGetFolderPathFunc      SHGetFolderPath;
 	/*
 	// Will leave this for someone with Vista/W7 to implement.
-	typedef HRESULT (*SHGetKnownFolderPathFunc)
-	    (
+	typedef HRESULT (*SHGetKnownFolderPathFunc) (
 	    REFKNOWNFOLDERID rfid,
 	    DWORD dwFlags,
 	    HANDLE hToken,
 	    PWSTR *ppszPath
-	    );
+    );
 	SHGetKnownFolderPathFunc SHGetKnownFolderPath;
 	*/
 public:
 	shell32_wrapper() {
 		hLib = LoadLibrary("shell32.dll");
 		if (hLib != NULL) {
-			SHGetFolderPath      = (SHGetFolderPathFunc)GetProcAddress(
-			                           hLib, "SHGetFolderPathA");
+			SHGetFolderPath      = reinterpret_cast<SHGetFolderPathFunc>(
+			                          GetProcAddress(hLib, "SHGetFolderPathA"));
 			/*
-			SHGetKnownFolderPath = (SHGetKnownFolderPathFunc)GetProcAddress(
-			                hLib, "SHGetKnownFolderPath");
+			SHGetKnownFolderPath = reinterpret_cast<SHGetKnownFolderPathFunc>(
+			                GetProcAddress(hLib, "SHGetKnownFolderPath"));
 			*/
 		} else {
 			SHGetFolderPath      = NULL;
@@ -611,7 +609,7 @@ public:
 			if (code == E_INVALIDARG)
 				return string("");
 			else if (code == S_OK)
-				return string((const char *)szPath);
+				return string(reinterpret_cast<const char *>(szPath));
 			// We don't have a folder yet at this point. This means we have
 			// a truly ancient version of Windows.
 			// Just to be sure, we fall back to the old behaviour.
@@ -982,7 +980,7 @@ int Find_next_map(
 int errno;
 char *myce_strdup(const char *s) {
 	int l = strlen(s);
-	char *newstr = (char *)malloc(sizeof(char) * (l + 1));
+	char *newstr = reinterpret_cast<char *>(malloc(sizeof(char) * (l + 1)));
 	strcpy(newstr, s);
 	return newstr;
 }
