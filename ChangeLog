@@ -1,3 +1,9 @@
+2013-02-01 Dominik Reichardt <dominus@users.sourceforge.net>	
+	* configure.ac, hash_utils.h: Fixed detection of hashmaps
+ 	  and hashsets for OS X PPC builds.
+	* audio/midi_drivers/timidity.*: rename LITTLE_ENDIAN -> 
+	  TIMIDITY_LITTLE_ENDIAN to avoid portability issues.
+	  
 2013-01-31	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* configure.ac, hash_utils.h, Makefile.mingw: Improved detection of hashmaps
 	  and hashsets: in order of preference, configure will now look for the TR1
