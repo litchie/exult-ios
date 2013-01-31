@@ -1,3 +1,12 @@
+2013-01-31	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* configure.ac, hash_utils.h, Makefile.mingw: Improved detection of hashmaps
+	  and hashsets: in order of preference, configure will now look for the TR1
+	  hash maps/sets (preferred on GCC 4.3+), then for "ext/hash_(map|set)", and
+	  finally "hash_(map|set); if none are found, DONT_HAVE_HASH_(MAP|SET) will
+	  be defined so compilation does not fail. MinGW builds will now make use of
+	  tr1 unordered maps/sets. xBR scalers are no longer markes as experimental
+	  in MinGW.
+
 2013-01-30 Dominik Reichardt <dominus@users.sourceforge.net>	
 	* audio/midi_drivers/CoreAudioMidiDriver.*: better error handling by Marzo,
 	  fixed USE_DEPRECATED_COREAUDIO_API define to make Exult run on PPC OS X

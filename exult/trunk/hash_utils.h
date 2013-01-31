@@ -26,10 +26,10 @@
 #ifdef DONT_HAVE_HASH_MAP
 #  include <map>
 #else
-#  if (defined(__GNUC__) && (__GNUC__ >= 4) && ( __GNUC_MINOR__ >= 3) && HAVE_TR1_UNORDERED_MAP)
+#  ifdef HAVE_TR1_UNORDERED_MAP
 #    include <tr1/unordered_map>
 using std::tr1::unordered_map;
-#  elif HAVE_EXT_HASH_MAP
+#  elif defined(HAVE_EXT_HASH_MAP)
 #    include <ext/hash_map>
 #    define unordered_map hash_map
 #    if (defined(__GNUC__) && (__GNUC__ >= 3) && ( __GNUC_MINOR__ >= 0))
@@ -37,7 +37,7 @@ using __gnu_cxx::hash_map;
 #    else
 using std::hash_map;
 #    endif
-#  else
+#  else//elif defined(HAVE_HASH_MAP)
 #    include <hash_map>
 #    define unordered_map hash_map
 #  endif
@@ -50,10 +50,10 @@ using Metrowerks::hash_map;
 #ifdef DONT_HAVE_HASH_SET
 #  include <set>
 #else
-#  if (defined(__GNUC__) && (__GNUC__ >= 4) && ( __GNUC_MINOR__ >= 3) && HAVE_TR1_UNORDERED_SET)
+#  ifdef HAVE_TR1_UNORDERED_SET
 #    include <tr1/unordered_set>
 using std::tr1::unordered_set;
-#  elif HAVE_EXT_HASH_SET
+#  elif defined(HAVE_EXT_HASH_SET)
 #    include <ext/hash_set>
 #    define unordered_set hash_set
 #    if (defined(__GNUC__) && (__GNUC__ >= 3) && ( __GNUC_MINOR__ >= 0))
@@ -61,9 +61,9 @@ using __gnu_cxx::hash_set;
 #    else
 using std::hash_set;
 #    endif
-#  else
+#  else//elif defined(HAVE_HASH_SET)
 #    include <hash_set>
-#    define unordered_map hash_map
+#    define unordered_set hash_set
 #  endif
 #  ifdef MACOS
 using Metrowerks::hash_set;

@@ -230,10 +230,11 @@ AC_HEADER_STDC
 AC_CHECK_HEADERS(limits.h sys/time.h unistd.h)
 AC_CHECK_HEADERS(sys/types.h sys/socket.h netdb.h)
 AC_CHECK_HEADERS(sys/wait.h signal.h)
-AM_CONDITIONAL(HAVE_PNG, false)
-AC_CHECK_HEADERS(png.h, AM_CONDITIONAL(HAVE_PNG,true))
+AC_CHECK_HEADERS(png.h, AM_CONDITIONAL(HAVE_PNG,true), AM_CONDITIONAL(HAVE_PNG, false))
 AC_CHECK_ALPHA_LINUX_CXX
-AC_CHECK_HEADERS(hash_map hash_set ext/hash_map ext/hash_set tr1/unordered_map tr1/unordered_set sstream)
+AC_CHECK_HEADERS(sstream)
+AC_CHECK_HEADERS(tr1/unordered_map ext/hash_map hash_map, [break], AC_DEFINE(DONT_HAVE_HASH_MAP, 1, [Doesn't have hash map]))
+AC_CHECK_HEADERS(tr1/unordered_set ext/hash_set hash_set, [break], AC_DEFINE(DONT_HAVE_HASH_SET, 1, [Doesn't have hash set]))
 
 # ---------------------------------------------------------------------
 # Checks for typedefs, structures, and compiler characteristics.

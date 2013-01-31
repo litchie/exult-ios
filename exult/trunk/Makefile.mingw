@@ -37,9 +37,6 @@ OPENGL_LIBS:=-lopengl32
 OPENGL_OBJS:=shapes/glshape.o
 OPENGL_CFLAGS:=-DHAVE_OPENGL
 
-### NxBR scaler support (experimental)
-NXBR_CFLAGS:=-DUSE_XBR_SCALER
-
 ### GTK+ libs and includes, for Exult Studio.
 # If this doesn't work, insert output of `pkg-config --cflags gtk+-win32-2.0` manually
 GTK_INCLUDES:=$(shell pkg-config --cflags gtk+-win32-2.0)
@@ -96,13 +93,14 @@ endif
 EXTRA_OPTIONS=$(DEBUG_LEVEL) $(DEF_DEBUG) $(SHOW_USECODE_CONTAINER)
 
 CPPFLAGS=$(strip -DVERSION=\"$(VERSION)\" -DEXULT_DATADIR=\"data\" -DSIZEOF_SHORT=2 -DSIZEOF_INT=4 \
+	-DHAVE_TR1_UNORDERED_MAP -DHAVE_TR1_UNORDERED_SET -DUSE_EXULTSTUDIO -DHAVE_PNG_H \
+	-DHAVE_FREETYPE2 -DUSE_HQ2X_SCALER -DUSE_HQ3X_SCALER -DUSE_HQ4X_SCALER -DUSE_XBR_SCALER \
 	-I$(SRC) -I$(SRC)/audio -I$(SRC)/audio/midi_drivers -I$(SRC)/conf -I$(SRC)/data \
 	-I$(SRC)/files -I$(SRC)/files/zip -I$(SRC)/gamemgr -I$(SRC)/gumps -I$(SRC)/headers \
 	-I$(SRC)/imagewin -I$(SRC)/objs -I$(SRC)/pathfinder -I$(SRC)/server -I$(SRC)/shapes \
 	-I$(SRC)/tools -I$(SRC)/usecode -I$(SRC)/usecode/compiler -I$(SRC)/usecode/ucxt/include \
-	-I$(SRC)/mapedit -I$(SRC)/shapes/shapeinf $(SDL_CFLAGS) -DUSE_EXULTSTUDIO \
-	-DHAVE_PNG_H -DHAVE_FREETYPE2 -DUSE_HQ2X_SCALER -DUSE_HQ3X_SCALER -DUSE_HQ4X_SCALER \
-	$(ZIP_CFLAGS) $(OPENGL_CFLAGS) $(NXBR_CFLAGS) $(ES_INCLUDES) \
+	-I$(SRC)/mapedit -I$(SRC)/shapes/shapeinf $(SDL_CFLAGS) \
+	$(ZIP_CFLAGS) $(OPENGL_CFLAGS) $(ES_INCLUDES) \
 	$(EXTRA_OPTIONS))
 
 ifndef OPT_LEVEL
