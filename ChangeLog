@@ -6,6 +6,8 @@
 	  be defined so compilation does not fail. MinGW builds will now make use of
 	  tr1 unordered maps/sets. xBR scalers are no longer markes as experimental
 	  in MinGW.
+	Rev 7353
+	* audio/AudioChannel.cc: Eliminating warnings.
 
 2013-01-30 Dominik Reichardt <dominus@users.sourceforge.net>	
 	* audio/midi_drivers/CoreAudioMidiDriver.*: better error handling by Marzo,
