@@ -743,20 +743,19 @@ void Uc_call_expression::check_params() {
 	}
 	const vector<Uc_var_symbol *> &protoparms = fun->get_parms();
 	const vector<Uc_expression *> &callparms = parms->get_exprs();
-	bool ignore_this = fun->get_method_num() >= 0;
-	size_t parmscnt = callparms.size() + ignore_this;
+	unsigned long ignore_this = fun->get_method_num() >= 0 ? 1 : 0;
+	unsigned long parmscnt = callparms.size() + ignore_this;
 	if (parmscnt != protoparms.size()) {
 		char buf[150];
 		sprintf(buf,
 		        "# parms. passed (%lu) doesn't match '%s' count (%lu)",
 		        parmscnt - ignore_this, sym->get_name(),
-		        protoparms.size() - ignore_this);
+		        static_cast<unsigned long>(protoparms.size() - ignore_this));
 		Uc_location::yyerror(buf);
 		return;
 	}
-	for (size_t i = ignore_this; i < parmscnt; i++) {
+	for (unsigned long i = ignore_this; i < parmscnt; i++) {
 		Uc_expression *expr = callparms[i - ignore_this];
-		expr->is_class();
 		Uc_var_symbol *var = protoparms[i];
 		Uc_class_inst_symbol *cls =
 		    dynamic_cast<Uc_class_inst_symbol *>(var);

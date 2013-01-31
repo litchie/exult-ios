@@ -89,7 +89,7 @@ const char UC_LOOPTOPS32 = static_cast<char>(0xdc);     // Loop with static arra
 const char UC_LOOPTOPTHV32 = static_cast<char>(0xdf);       // Loop with this->var array.
 /*  No real reason for this.
  *  const char UC_LOOP32 = 0xae;
-*/
+ */
 const char UC_ADDSI32 = static_cast<char>(0x9c);
 const char UC_PUSHS32 = static_cast<char>(0x9d);
 const char UC_PUSHI32 = static_cast<char>(0x9f);

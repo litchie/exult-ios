@@ -96,12 +96,12 @@ bool OpenPortFile(const char *path, bool writing) {
 
 // Hack functions
 int write(int file, const void *v, unsigned int len) {
-	return send(gDataSocket, (const char *)v, len, 0);
+	return send(gDataSocket, reinterpret_cast<const char *>(v), len, 0);
 }
 
 int read(int file, void *v, unsigned int len) {
 	if (len == 0) return 0;
-	return recv(gDataSocket, (char *)v, len, 0);;
+	return recv(gDataSocket, reinterpret_cast<char *>(v), len, 0);;
 	/*
 	WSABUF buffer;
 	buffer.buf = (char*)v;
@@ -137,7 +137,7 @@ bool create_pipe(const char *path) {
 	service.sin_addr.s_addr = inet_addr("127.0.0.1");
 	service.sin_port = 0;   // Random port so we can have multiple instances of exult studio and exult running... in theory
 
-	if (bind(gServerSocket, (SOCKADDR *) &service, sizeof(service)) == SOCKET_ERROR) {
+	if (bind(gServerSocket, reinterpret_cast<SOCKADDR *>(&service), sizeof(service)) == SOCKET_ERROR) {
 		cerr << "bind() failed." << std::endl;
 		close_pipe();
 		return false;
@@ -151,7 +151,7 @@ bool create_pipe(const char *path) {
 	}
 
 	int socksize = sizeof(service);
-	getsockname(gServerSocket, (SOCKADDR *) &service, &socksize);
+	getsockname(gServerSocket, reinterpret_cast<SOCKADDR *>(&service), &socksize);
 
 	if (!OpenPortFile(path, true)) {
 		cerr << "Error creating temporary file in gamedat dir for port number." << endl;
@@ -240,7 +240,7 @@ int try_connect_to_server(const char *path) {
 		return false;
 	}
 
-	if (connect(gDataSocket, (SOCKADDR *) &service, sizeof(service)) == SOCKET_ERROR) {
+	if (connect(gDataSocket, reinterpret_cast<SOCKADDR *>(&service), sizeof(service)) == SOCKET_ERROR) {
 		cerr << "Failed to connect." << std::endl;
 		close_pipe();
 		return false;

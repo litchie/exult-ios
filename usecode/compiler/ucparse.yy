@@ -400,11 +400,7 @@ opt_funid:
 		{
 		$$ = new Fun_id_info(Uc_function_symbol::shape_fun, $3 < 0 ? -1 : $3);
 		if ($3 < 0)
-			{
-			char buf[180];
-			sprintf(buf, "Shape number cannot be negative");
-			yyerror(buf);
-			}
+			yyerror("Shape number cannot be negative");
 		}
 	| OBJECTNUM '(' opt_const_int_val ')'
 		{ $$ = new Fun_id_info(Uc_function_symbol::object_fun, $3); }
@@ -2024,9 +2020,7 @@ function_call:
 		int num;
 		if (!$5->eval_const(num))
 			{
-			char buf[150];
-			sprintf(buf, "Failed to obtain value from integer constant");
-			yyerror(buf);
+			yyerror("Failed to obtain value from integer constant");
 			$$ = 0;
 			}
 		else

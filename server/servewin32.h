@@ -49,6 +49,6 @@ int peek_pipe();
 bool is_broken();
 bool notify_connection_lost();
 bool is_win9x();
-};
+}
 
 #endif

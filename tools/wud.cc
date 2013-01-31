@@ -370,7 +370,7 @@ int main(int argc, char **argv) {
 	in.seekg(0, ios::end);
 	sz = in.tellg();
 	in.seekg(0);
-	long magic = Read4(in);     // Test for symbol table.
+	uint32 magic = Read4(in);     // Test for symbol table.
 	if (magic == UCSYMTBL_MAGIC0 && (magic = Read4(in))
 	        == UCSYMTBL_MAGIC1) {
 		if (!symtbl)
