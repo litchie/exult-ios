@@ -26,7 +26,7 @@
 #ifdef DONT_HAVE_HASH_MAP
 #  include <map>
 #else
-#  ifdef HAVE_TR1_UNORDERED_MAP
+#  if defined(HAVE_TR1_UNORDERED_MAP) && defined(__GNUC__) && (__GNUC__ >= 4) && ( __GNUC_MINOR__ >= 3)
 #    include <tr1/unordered_map>
 using std::tr1::unordered_map;
 #  elif defined(HAVE_EXT_HASH_MAP)
@@ -50,7 +50,8 @@ using Metrowerks::hash_map;
 #ifdef DONT_HAVE_HASH_SET
 #  include <set>
 #else
-#  ifdef HAVE_TR1_UNORDERED_SET
+	
+#  if defined(HAVE_TR1_UNORDERED_SET) && defined(__GNUC__) && (__GNUC__ >= 4) && ( __GNUC_MINOR__ >= 3)
 #    include <tr1/unordered_set>
 using std::tr1::unordered_set;
 #  elif defined(HAVE_EXT_HASH_SET)
