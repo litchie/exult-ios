@@ -546,9 +546,10 @@ void ucc_parse_parambytes(UCc &ucop, const UCOpcodeData &otd) {
 bool UCFunc::output_asm(ostream &o, const FuncMap &funcmap, const map<unsigned int, string> &intrinsics, const UCOptions &options) {
 	if (options.verbose) cout << "Printing function..." << endl;
 
-	o << "Function at file offset " << std::setw(8) << _offset << "H" << endl;
+	o << "\t; Function at file offset " << std::setw(8) << _offset << "H" << endl;
 	o << "\t.funcnumber  " << std::setw(4) << _funcid << "H" << endl;
 	if (ext32) o << "\t.ext32" << endl;
+	o << "\t.data" << endl;
 	o << "\t.msize       " << ((ext32) ? setw(8) : setw(4)) << _funcsize << "H" << endl;
 	o << "\t.dsize       " << ((ext32) ? setw(8) : setw(4)) << _datasize << "H" << endl;
 
@@ -558,7 +559,8 @@ bool UCFunc::output_asm(ostream &o, const FuncMap &funcmap, const map<unsigned i
 	if (_data.size())
 		output_asm_data(o);
 
-	o << "Code segment at file offset " << std::setw(8) << _codeoffset << "H" << endl;
+	o << "\t; Code segment at file offset " << std::setw(8) << _codeoffset << "H" << endl;
+	o << "\t.code" << endl;
 	o << "\t.argc        " << std::setw(4) << _num_args << "H" << endl;
 	o << "\t.localc      " << std::setw(4) << _num_locals << "H" << endl;
 	o << "\t.externsize  " << std::setw(4) << _externs.size() << "H" << endl;
@@ -580,7 +582,7 @@ void UCFunc::output_asm_data(ostream &o) {
 	for (map<unsigned int, string, less<unsigned int> >::iterator i = _data.begin(); i != _data.end(); ++i) {
 		for (unsigned int j = 0; j < i->second.size(); j++) {
 			if (j == 0)
-				o << setw(4) << i->first;
+				o << "L" << setw(4) << i->first << ":";
 			if ((j != 0) && !(j % nochars))
 				o << "'" << endl;
 			if (!(j % nochars))
