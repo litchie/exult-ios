@@ -1,3 +1,9 @@
+2013-01-31	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* gumps/Newfile_gump.cc, usecode/ucdisasm.cc: Fixing clang warnings.
+	* files/utils.h: Performance: using const string reference instead.
+	* tools/wuc.c, ucxt/src/ucfunc.cc, ucxt/data/u7opcodes.data: Making UCXT -fa
+	  output compatible with WUC.
+
 2013-02-01 Dominik Reichardt <dominus@users.sourceforge.net>	
 	* configure.ac, hash_utils.h: Fixed detection of hashmaps
  	  and hashsets for OS X PPC builds.

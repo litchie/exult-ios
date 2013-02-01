@@ -98,6 +98,15 @@ void check_data_label_16(int label) {
 		printf("Warning: offset too big for 16 bit at label %s!\n", curlabel);
 }
 
+int find_intrinsic(const char **func_table, int funsize, const char *name) {
+	int i;
+	for (i = 0; i < funsize; i++) {
+		if (!strcasecmp(name, func_table[i]))
+			return(i);
+	}
+	printf("Warning: intrinsic '%s' does not exist.\n", name);
+	return(0);
+}
 
 void read_token(FILE *fi) {
 	int i = 0, c = 32;
@@ -200,10 +209,12 @@ int main(int argc, char *argv[]) {
 				read_token(fi);
 				sscanf(token, "%x", &funcnum);
 				printf("Function %04X\n", funcnum);
-				//                          codesize=2;
+				// codesize=2;
 				extended = 0;
 			} else if (!strcmp(token, ".ext32")) {
 				extended = 1;
+			} else if (!strcmp(token, ".msize") || !strcmp(token, ".dsize")) {
+				// Ignore either of these.
 			} else if (token[0] == '.') {
 				indata = 0;
 				for (i = 0; i < compsize; i++)
@@ -246,9 +257,13 @@ int main(int argc, char *argv[]) {
 								emit_byte(i);
 								read_token(fi);
 								if ((token2 = strchr(token, '@')) != NULL) {
-									token2++;
-									read_token(fi);
-									sscanf(token, "(%x)", &word);
+									*token2++ = 0;
+									if (token[0] != '_')
+										word = find_intrinsic(func_table, funsize, token);
+									else {
+										read_token(fi);
+										sscanf(token, "(%x)", &word);
+									}
 									emit_word(word);
 									sscanf(token2, "%d", &word);
 								} else {
@@ -275,7 +290,10 @@ int main(int argc, char *argv[]) {
 							case op_varref:
 								emit_byte(i);
 								read_token(fi);
-								sscanf(token, "[%x]", &word);
+								if (!memcmp(token, "extern:", sizeof("extern:")-1))
+									sscanf(token, "extern:[%x]", &word);
+								else
+									sscanf(token, "[%x]", &word);
 								emit_word(word);
 								break;
 							case op_flgref:
@@ -333,7 +351,7 @@ int main(int argc, char *argv[]) {
 								emit_byte(i);
 								read_token(fi);
 								if (pass == 1) {
-									//                                                      printf("%x, %x, %x\n", get_label(), offset, get_label() - offset-2);
+									// printf("%x, %x, %x\n", get_label(), offset, get_label() - offset-2);
 									label = get_label() - offset - 2;
 									check_jump_label_16(label);
 									emit_word(label);
@@ -345,7 +363,7 @@ int main(int argc, char *argv[]) {
 								emit_byte(i);
 								read_token(fi);
 								if (pass == 1) {
-									//                                                      printf("%x, %x, %x\n", get_label(), offset, get_label() - offset-2);
+									// printf("%x, %x, %x\n", get_label(), offset, get_label() - offset-2);
 									emit_dword(get_label() - offset - 4);
 								} else
 									emit_dword(-1);
