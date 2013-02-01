@@ -67,7 +67,7 @@ using std::isspace;
 #define CTRACE(X)
 #endif
 
-void    Configuration::value(const string &key, string &ret, const char *defaultvalue) const {
+void    Configuration::value(const string &key, string &ret, const std::string &defaultvalue) const {
 	const XMLnode *sub = xmltree->subtree(key);
 	if (sub)
 		ret = sub->value();

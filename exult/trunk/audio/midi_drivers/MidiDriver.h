@@ -147,7 +147,7 @@ public:
 
 protected:
 	//! Get a configuration setting for the midi driver
-	std::string getConfigSetting(std::string name, std::string defaultval);
+	std::string getConfigSetting(std::string const &name, std::string const &defaultval);
 };
 
 #endif //MIDIDRIVER_H_INCLUDED

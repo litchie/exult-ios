@@ -41,10 +41,13 @@ public:
 
 	bool    read_config_string(const std::string &);
 
-	void    value(const std::string &key, std::string &ret, const char *defaultvalue = "") const;
+	void    value(const std::string &key, std::string &ret, const std::string &defaultvalue) const;
 	void    value(const std::string &key, bool &ret, bool defaultvalue = false) const;
 	void    value(const std::string &key, int &ret, int defaultvalue = 0) const;
 
+	void    value(const std::string &key, std::string &ret, const char *defaultvalue = "") const {
+		value(key, ret, std::string(defaultvalue));
+	};
 	void    value(const char *key, std::string &ret, const char *defaultvalue = "") const {
 		value(std::string(key), ret, defaultvalue);
 	};
