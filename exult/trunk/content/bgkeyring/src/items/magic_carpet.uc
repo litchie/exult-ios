@@ -202,6 +202,9 @@ void FlyingCarpetRoller shape#(SHAPE_CARPET_ROLLER) ()
 			barge->Magic_Carpet();
 			return;
 		}
+		var pos = barge->get_object_position();
+		if (pos[Z] > 0)
+			return;
 		
 		// Find nearby pieces of the carpet and delete them all.
 		var pieces = find_nearby(SHAPE_MAGIC_CARPET, 20, 0);

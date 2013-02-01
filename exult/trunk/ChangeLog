@@ -3,6 +3,9 @@
 	* files/utils.h: Performance: using const string reference instead.
 	* tools/wuc.c, ucxt/src/ucfunc.cc, ucxt/data/u7opcodes.data: Making UCXT -fa
 	  output compatible with WUC.
+	Rev 7360
+	* content/bgkeyring/src/items/magic_carpet.uc: Magic carpet could be rolled
+	  while landing.
 
 2013-02-01 Dominik Reichardt <dominus@users.sourceforge.net>	
 	* configure.ac, hash_utils.h: Fixed detection of hashmaps
