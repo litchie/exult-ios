@@ -350,7 +350,7 @@ MENTAL NOTE: assert(varoffset&gt;=0 &amp;&amp; varoffset&lt;num_local_variables)
 	</>
 	<0x1C>
 		<name> ADDSI </>
-		<asm_nmo> `addsi\t%1H` </>
+		<asm_nmo> `addsi\tL%1` </>
 		<asm_comment> `\t\t\t; %tc1` </>
 		<ucs_nmo> `message(\"%t1\")` </>
 		<num_bytes> 2 </>
@@ -896,7 +896,7 @@ Debug opcode -- currently only found in the .es version of SI
 	</>
 	<0x9C>
 		<name> ADDSI32 </>
-		<asm_nmo> `addsi32\t%n1H` </>
+		<asm_nmo> `addsi32\tL%n1` </>
 		<asm_comment> `\t\t\t; %tc1` </>
 		<ucs_nmo> `message(\"%t1\")` </>
 		<num_bytes> 4 </>

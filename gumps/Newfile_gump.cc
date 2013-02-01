@@ -584,7 +584,7 @@ void Newfile_gump::paint(
 		         details->real_hour, details->real_minute);
 
 		if (filename) {
-			std::strncat(info, "\nFile: ", sizeof(info) - strlen(info));
+			std::strncat(info, "\nFile: ", sizeof(info) - strlen(info) - 1);
 
 			int offset = strlen(filename);
 
@@ -594,7 +594,7 @@ void Newfile_gump::paint(
 					break;
 				}
 			}
-			std::strncat(info, filename + offset, sizeof(info) - strlen(info));
+			std::strncat(info, filename + offset, sizeof(info) - strlen(info) - 1);
 
 		}
 
@@ -602,9 +602,7 @@ void Newfile_gump::paint(
 
 	} else {
 		if (filename) {
-			char    info[64] = {0};
-
-			std::strncat(info, "File: ", sizeof(info));
+			char    info[64] = "File: ";
 
 			int offset = strlen(filename);
 
@@ -614,7 +612,7 @@ void Newfile_gump::paint(
 					break;
 				}
 			}
-			std::strncat(info, filename + offset, sizeof(info) - strlen(info));
+			std::strncat(info, filename + offset, sizeof(info) - strlen(info) - 1);
 			sman->paint_text_box(4, info, x + infox, y + infoy, infow, infoh);
 
 		}

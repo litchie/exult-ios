@@ -390,7 +390,7 @@ inline std::string ReadStr(std::istream &in) {
 
 inline void WriteStr(
     std::ostream &out,
-    std::string str,
+    const std::string &str,
     bool final = false
 ) {
 	out << str;
