@@ -201,13 +201,13 @@ MidiDriver *MidiDriver::createInstance(std::string desired_driver,uint32 sample_
 
 #ifdef PENTAGRAM_IN_EXULT
 
-std::string MidiDriver::getConfigSetting(std::string name,
-										 std::string defaultval)
+std::string MidiDriver::getConfigSetting(std::string const &name,
+										 std::string const &defaultval)
 {
 	std::string key = "config/audio/midi/";
 	key += name;
 	std::string val;
-	config->value(key, val, defaultval.c_str());
+	config->value(key, val, defaultval);
 
 	return val;
 }
