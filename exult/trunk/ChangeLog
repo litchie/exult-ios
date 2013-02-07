@@ -1,3 +1,7 @@
+2013-02-07	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* mapedit/shapelst.cc: Looking for shapes within two pixels of the clicked
+	  position in ES to allow selection of empty shapes.
+
 2013-02-01	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* audio/midi_drivers/MidiDriver/*, conf/Configuration.*: Eliminating extra
 	  string copies.

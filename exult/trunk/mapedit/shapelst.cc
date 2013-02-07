@@ -585,7 +585,7 @@ gint Shape_chooser::mouse_press(
 	int infosz = info.size();
 	int absx = (int) event->x + hoffset, absy = (int) event->y + voffset;
 	for (i = rows[row0].index0; i < infosz; i++) {
-		if (info[i].box.has_point(absx, absy)) {
+		if (info[i].box.distance(absx, absy) <= 2) {
 			// Found the box?
 			// Indicate we can drag.
 #ifdef WIN32
