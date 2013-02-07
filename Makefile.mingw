@@ -308,7 +308,6 @@ toolsinstall: tools
 	mkdir -p $(U7PATH)/data
 	cp usecode/ucxt/data/events.data $(U7PATH)/data
 	cp usecode/ucxt/data/flags.data $(U7PATH)/data
-	cp usecode/ucxt/data/opcodes.txt $(U7PATH)/data
 	cp usecode/ucxt/data/u7opcodes.data $(U7PATH)/data
 	cp usecode/ucxt/data/u7misc.data $(U7PATH)/data
 	cp data/bginclude.uc $(U7PATH)/data
@@ -339,7 +338,6 @@ toolsdist: tools
 	mkdir -p $(U7PATH)/Tools/data
 	cp usecode/ucxt/data/events.data $(U7PATH)/Tools/data
 	cp usecode/ucxt/data/flags.data $(U7PATH)/Tools/data
-	cp usecode/ucxt/data/opcodes.txt $(U7PATH)/Tools/data
 	cp usecode/ucxt/data/u7opcodes.data $(U7PATH)/Tools/data
 	cp usecode/ucxt/data/u7misc.data $(U7PATH)/Tools/data
 	cp data/bginclude.uc $(U7PATH)/Tools/data

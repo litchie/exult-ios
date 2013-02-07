@@ -23,7 +23,6 @@ Source: Tools\ucxt.exe; DestDir: {app}; Flags: ignoreversion
 Source: Tools\data\bginclude.uc; DestDir: {app}\data\; Flags: ignoreversion
 Source: Tools\data\events.data; DestDir: {app}\data\; Flags: ignoreversion
 Source: Tools\data\flags.data; DestDir: {app}\data\; Flags: ignoreversion
-Source: Tools\data\opcodes.txt; DestDir: {app}\data\; Flags: ignoreversion
 Source: Tools\data\u7bgintrinsics.data; DestDir: {app}\data\; Flags: ignoreversion
 Source: Tools\data\u7misc.data; DestDir: {app}\data\; Flags: ignoreversion
 Source: Tools\data\u7opcodes.data; DestDir: {app}\data\; Flags: ignoreversion
