@@ -304,7 +304,6 @@ toolsinstall: tools
 	strip u7voice2syx.exe -o $(U7PATH)/tools/u7voice2syx.exe
 	strip ucc.exe -o $(U7PATH)/tools/ucc.exe
 	strip wuc.exe -o $(U7PATH)/tools/wuc.exe
-	strip wud.exe -o $(U7PATH)/tools/wud.exe
 	strip ucxt.exe -o $(U7PATH)/ucxt.exe
 	mkdir -p $(U7PATH)/data
 	cp usecode/ucxt/data/events.data $(U7PATH)/data
@@ -336,7 +335,6 @@ toolsdist: tools
 	strip u7voice2syx.exe -o $(U7PATH)/Tools/tools/u7voice2syx.exe
 	strip ucc.exe -o $(U7PATH)/Tools/tools/ucc.exe
 	strip wuc.exe -o $(U7PATH)/Tools/tools/wuc.exe
-	strip wud.exe -o $(U7PATH)/Tools/tools/wud.exe
 	strip ucxt.exe -o $(U7PATH)/Tools/ucxt.exe
 	mkdir -p $(U7PATH)/Tools/data
 	cp usecode/ucxt/data/events.data $(U7PATH)/Tools/data

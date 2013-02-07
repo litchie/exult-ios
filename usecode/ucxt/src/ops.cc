@@ -144,7 +144,6 @@ void ucxtInit::opcodes() {
 
 	vector<string> keys = opdata.listkeys(opcodes_root);
 
-#if 1
 	for (vector<string>::iterator key = keys.begin(); key != keys.end(); ++key) {
 		if ((*key)[0] != '!') {
 			Configuration::KeyTypeList ktl;
@@ -157,31 +156,6 @@ void ucxtInit::opcodes() {
 			}
 		}
 	}
-
-#else
-
-	string ucxtroot(datadir + "opcodes.txt");
-
-	std::ifstream file;
-
-	try {
-		U7open(file, ucxtroot.c_str(), true);
-	} catch (const file_open_exception &e) {
-		cerr << e.what() << ". exiting." << endl;
-		exit(1);
-	}
-
-	std::string s;
-	while (!file.eof()) {
-		getline(file, s);
-		if (s.size() && s[0] == '>') {
-			UCOpcodeData uco(str2vec(s));
-			assert(uco.opcode < MAX_NO_OPCODES);
-			opcode_table_data[uco.opcode] = uco;
-		}
-	}
-	file.close();
-#endif
 
 	/* Create an {opcode, parameter_index} array of all opcodes that
 	    execute a 'jump' statement */

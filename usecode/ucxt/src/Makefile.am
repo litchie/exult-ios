@@ -1,5 +1,5 @@
 AM_CPPFLAGS = -I$(srcdir)/../../../headers -I$(srcdir)/../include -I$(srcdir)/../../../conf -I$(srcdir)/../.. \
-	-I$(srcdir)/../../.. $(INCDIRS) $(DEBUG_FLAGS) $(CPPFLAGS) \
+	-I$(srcdir)/../../../usecode -I$(srcdir)/../../.. $(INCDIRS) $(DEBUG_FLAGS) $(CPPFLAGS) \
 	-DEXULT_DATADIR=\"$(EXULT_DATADIR)\" $(WARNINGS)
 
 ucxt_SOURCES = \
@@ -13,6 +13,7 @@ ucxt_LDADD = \
 	../../../gamemgr/libgamemgr.la \
 	../../../files/libu7file.la \
 	../../../files/zip/libminizip.la \
+	../../../usecode/libusecode.la \
 	$(ZLIB_LIBS) \
 	$(SYSLIBS)
 	

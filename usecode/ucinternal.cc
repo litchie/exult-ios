@@ -1750,14 +1750,11 @@ void Usecode_internal::read_usecode(
 	file.seekg(0, ios::end);
 	int size = file.tellg();    // Get file size.
 	file.seekg(0);
-	uint32 magic = Read4(file);   // Test for symbol table.
-	if (magic == UCSYMTBL_MAGIC0 && (magic = Read4(file))
-	        == UCSYMTBL_MAGIC1) {
+	if (Usecode_symbol_table::has_symbol_table(file)) {
 		delete symtbl;
 		symtbl = new Usecode_symbol_table();
 		symtbl->read(file);
-	} else
-		file.seekg(0);
+	}
 	// Read in all the functions.
 	while (file.tellg() < size) {
 		Usecode_function *fun = new Usecode_function(file);
@@ -2232,7 +2229,6 @@ int Usecode_internal::run() {
 					Usecode_value &ths = frame->get_this();
 					if (offset < 0 || offset >= ths.get_class_var_count()) {
 						cerr << "Class variable #" << (offset) << " out of range!";
-						\
 						CERR_CURRENT_IP();
 						break;
 					}
@@ -2244,7 +2240,6 @@ int Usecode_internal::run() {
 							val = &(statics[-offset]);
 						else {
 							cerr << "Global static variable #" << (offset) << " out of range!";
-							\
 							pushi(0);
 							break;
 						}
@@ -2253,7 +2248,6 @@ int Usecode_internal::run() {
 							val = &(frame->function->statics[offset]);
 						else {
 							cerr << "Local static variable #" << (offset) << " out of range!";
-							\
 							pushi(0);
 							break;
 						}
@@ -2346,14 +2340,12 @@ int Usecode_internal::run() {
 					if (local4 < 0) {// Global static.
 						if (static_cast<unsigned>(-local4) >= statics.size()) {
 							cerr << "Global static variable #" << (-local4) << " out of range!";
-							\
 							CERR_CURRENT_IP();
 							break;
 						}
 					} else {
 						if (static_cast<unsigned>(local4) >= frame->function->statics.size()) {
 							cerr << "Local static variable #" << (local4) << " out of range!";
-							\
 							CERR_CURRENT_IP();
 							break;
 						}
@@ -2362,7 +2354,6 @@ int Usecode_internal::run() {
 					Usecode_value &ths = frame->get_this();
 					if (local4 < 0 || local4 >= ths.get_class_var_count()) {
 						cerr << "Class variable #" << (local4) << " out of range!";
-						\
 						CERR_CURRENT_IP();
 						break;
 					}
@@ -2617,7 +2608,6 @@ int Usecode_internal::run() {
 					Usecode_value &ths = frame->get_this();
 					if (offset < 0 || offset >= ths.get_class_var_count()) {
 						cerr << "Class variable #" << (offset) << " out of range!";
-						\
 						CERR_CURRENT_IP();
 						break;
 					}
@@ -2629,7 +2619,6 @@ int Usecode_internal::run() {
 							arr = &(statics[-offset]);
 						else {
 							cerr << "Global static variable #" << (offset) << " out of range!";
-							\
 							CERR_CURRENT_IP();
 							break;
 						}
@@ -2638,7 +2627,6 @@ int Usecode_internal::run() {
 							arr = &(frame->function->statics[offset]);
 						else {
 							cerr << "Local static variable #" << (offset) << " out of range!";
-							\
 							CERR_CURRENT_IP();
 							break;
 						}
@@ -2800,13 +2788,20 @@ int Usecode_internal::run() {
 				break;
 			}
 			case 0x53:      // CALLIND:  call indirect.
-			case 0xD3: {    // CALLINDEX2: call indirect with arguments.
+			case 0xD3:      // CALLINDEX_OLD:  call indirect with arguments.
+			case 0xD4: {    // CALLINDEX: call indirect with arguments.
 				//  Function # is on stack.
 				Usecode_value funval = pop();
 				int offset = funval.get_int_value();
 				Usecode_value ival = pop();
 				Game_object *caller = get_item(ival);
-				int numargs = (opcode < 0x80) ? 0 : popi();
+				int numargs;
+				if (opcode < 0x80)
+					numargs = 0;
+				else if (opcode == 0xD3)
+					numargs = popi();
+				else
+					numargs = *(frame->ip)++;
 				call_function(offset, frame->eventid, caller, false, false, numargs);
 				frame_changed = true;
 				break;
@@ -2825,12 +2820,12 @@ int Usecode_internal::run() {
 				ths.nth_class_var(offset) = val;
 				break;
 			}
-			case 0x56:      // CALLM - call method, use var vtable.
-			case 0x57: {    // CALLMS - call method, use pushed vtable.
+			case 0x56:      // CALLM - call method, use pushed var vtable.
+			case 0x57: {    // CALLMS - call method, use parameter vtable.
 				offset = Read2(frame->ip);
 				Usecode_class_symbol *c;
 				if (opcode == 0x56) {
-					Usecode_value thisptr = peek();
+					Usecode_value thisptr = pop();
 					c = thisptr.get_class_ptr();
 				} else {
 					Usecode_value thisptr = Read2(frame->ip);
@@ -2838,7 +2833,6 @@ int Usecode_internal::run() {
 				}
 				if (!c) {
 					THIS_ERROR();
-					(void) pop();
 					break;
 				}
 				int index = c->get_method_id(offset);

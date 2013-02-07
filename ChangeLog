@@ -1,6 +1,37 @@
 2013-02-07	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* mapedit/shapelst.cc: Looking for shapes within two pixels of the clicked
 	  position in ES to allow selection of empty shapes.
+	Rev 7363
+	* Makefile.*, docs/*, msvc9/*, msvcstuff/*, tools/{Makefile.am, ucdump.c, 
+	  wud.cc}, usecode/(bg|si)intrinsics.h, win32/exult_tools_installer.iss:
+	  Removing wud and ucdump tools in their entirety as it is overkill to have
+	  3 independent usecode disassemblers.
+	* tools/wuc.c, tools/uctools.h: Added WUC support for all opcodes (until we
+	  either have a better usecode assembler or a decompiler that generates UCC-
+	  compilable output). Renamed output of a few opcodes (see changes to UCXT,
+	  below). WUC can't generate a symbol table or class vtables, so classes are
+	  unlikely to work anyway.
+	* usecode/ucinternal.cc, usecode/ucsymtbl.*, usecode/compiler/*: Check for
+	  symbol table presence was moved to static member of Usecode_symbol_table
+	  class. Removed several essentially blank lines. Fixed error case of opcode
+	  CALLMS. Added better 'call indirect with parameters' opcode (as 0xd4) and
+	  deprecated old opcode 0xd3. Made opcodes into an enum, which includes all
+	  opcodes.
+	* usecode/ucxt/*: Made UCXT disassembly output fully compatible with WUC; in
+	  general, this was done by chamnging the output to match WUC, but in some
+	  cases, the reverse happpend and in some cases both UCXT and WUC names were
+	  changed to be similar to UCC opcode names. Added support for symbol tables
+	  and virtually all opcodes from Exult/UCC; this is still experimental since
+	  external functions declared but not defined in the loaded usecode file (as
+	  happens in UCC-compiled usecode files) cause assertion failures for now.
+	  Opcode 0x56 (UC_CALLM) works partially as it needs information which can't
+	  be easily obtained, while opcode 0xd4 (the deprecated 'call indirect with
+	  parameters' opcode) is not handled at all. Deprecated opcodes.txt in its
+	  entirety as it was out of synch and harder to extend than u7opcodes.data.
+	  'var rr;' no longer printed, as it is not used anymore. Fixed several of
+	  the 'FIXME's. Fixed bug introduced in Rev 7328 when fixing bug #1205910
+	  "UCXT: Parameter order reversed in function definitions".
+	* usecode/ucxt/makefile.unix, ucxt/data/opcodes.txt: Removing unused files.
 
 2013-02-01	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* audio/midi_drivers/MidiDriver/*, conf/Configuration.*: Eliminating extra

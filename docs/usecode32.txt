@@ -43,8 +43,8 @@ Extra opcodes: (0x80 + old opcode. See original opcodes for details)
 
 
 
-Changes to wud/wuc:
+Changes to ucxt/wuc:
 
 wuc will output an extended function header if there is a '.ext32' keyword
 directly between the .funcnumber and .data lines.
-wud will output this keyword automatically.
+ucxt will output this keyword automatically if asked to.

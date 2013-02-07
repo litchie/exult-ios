@@ -79,7 +79,7 @@ static Uc_class *class_type = 0;	// For declaration of class variables.
 static Uc_struct_symbol *struct_type = 0;	// For declaration of struct variables.
 static bool has_ret = false;
 static int repeat_nesting = 0;
-static std::vector<int> const_opcode;
+static std::vector<UsecodeOps> const_opcode;
 static int converse = 0;	// If we are in a converse block.
 
 struct Fun_id_info
@@ -597,7 +597,7 @@ const_int_type:
 
 opt_enum_type:
 	':' const_int_type
-		{ const_opcode.push_back($2); }
+		{ const_opcode.push_back(static_cast<UsecodeOps>($2)); }
 	|			/* Empty. */
 		{ const_opcode.push_back(UC_PUSHI); }
 	;
@@ -621,7 +621,7 @@ enum_item:
 	;
 
 const_int_decl:
-	UCC_CONST const_int_type { const_opcode.push_back($2); }
+	UCC_CONST const_int_type { const_opcode.push_back(static_cast<UsecodeOps>($2)); }
 		const_int_decl_list ';'
 		{ const_opcode.pop_back(); }
 	;
@@ -921,7 +921,7 @@ assignment_statement:
 		{
 		$1->set_is_obj_fun(-1);
 		$$ = new Uc_assignment_statement($1, 
-				new Uc_binary_expression($2, $1, $3));
+				new Uc_binary_expression(static_cast<UsecodeOps>($2), $1, $3));
 		}
 	| nonclass_expr UCC_INSERT appended_element_list ';'
 		{
@@ -1847,7 +1847,7 @@ addressof:
 		else		/* Output the function's assigned number */
 			{
 			int funid = fun->get_usecode_num();
-			int op = is_int_32bit(funid) ? UC_PUSHI32 : UC_PUSHI;
+			UsecodeOps op = is_int_32bit(funid) ? UC_PUSHI32 : UC_PUSHI;
 			$$ = new Uc_int_expression(funid, op);
 			}
 		}
@@ -1877,7 +1877,7 @@ int_cast:
 primary:
 	INT_LITERAL
 		{
-		int op = const_opcode.size() ? const_opcode.back() : UC_PUSHI;
+		UsecodeOps op = const_opcode.size() ? const_opcode.back() : UC_PUSHI;
 		if (is_sint_32bit($1) && op != UC_PUSHI32)
 			{
 			char buf[150];
@@ -1895,7 +1895,7 @@ primary:
 		$$ = new Uc_int_expression($1, op);
 		}
 	| int_cast INT_LITERAL %prec UCC_CAST
-		{ $$ = new Uc_int_expression($2, $1); }
+		{ $$ = new Uc_int_expression($2, static_cast<UsecodeOps>($1)); }
 	| member_selector
 		{
 		Uc_var_expression *expr = dynamic_cast<Uc_var_expression *>($1->expr);
@@ -2087,7 +2087,7 @@ param:
 int_literal:				/* A const. integer value.	*/
 	INT_LITERAL
 		{
-		int op = const_opcode.size() ? const_opcode.back() : UC_PUSHI;
+		UsecodeOps op = const_opcode.size() ? const_opcode.back() : UC_PUSHI;
 		if (is_sint_32bit($1) && op != UC_PUSHI32)
 			{
 			char buf[150];
@@ -2105,7 +2105,7 @@ int_literal:				/* A const. integer value.	*/
 		$$ = new Uc_int_expression($1, op);
 		}
 	| int_cast INT_LITERAL %prec UCC_CAST
-		{ $$ = new Uc_int_expression($2, $1); }
+		{ $$ = new Uc_int_expression($2, static_cast<UsecodeOps>($1)); }
 	| declared_sym
 		{
 		Uc_const_int_symbol *sym = 

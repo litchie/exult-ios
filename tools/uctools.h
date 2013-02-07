@@ -44,7 +44,8 @@ enum Opcode_flags {
     op_static_sloop = 27,
     op_clsid = 28,
     op_unconditional_jump = 29,
-    op_uncond_jump32 = 30
+    op_uncond_jump32 = 30,
+	op_funid32 = 31
 };
 
 // Opcode descriptor
@@ -86,7 +87,7 @@ static opcode_desc opcode_table[] = {
 	{ "push\tfalse", 0, 0, 0, 1 },              // 14
 	{ NULL, 0, 0, 0, 0 },                       // 15
 	{ "cmpgt", 0, 0, 2, 1 },                    // 16
-	{ "cmpl", 0, 0, 2, 1 },                 // 17
+	{ "cmplt", 0, 0, 2, 1 },                 // 17
 	{ "cmpge", 0, 0, 2, 1 },                    // 18
 	{ "cmple", 0, 0, 2, 1 },                    // 19
 	{ "cmpne", 0, 0, 2, 1 },                    // 1a
@@ -108,12 +109,12 @@ static opcode_desc opcode_table[] = {
 	{ NULL, 0, 0, 0, 0 },                       // 2a
 	{ NULL, 0, 0, 0, 0 },                       // 2b
 	{ "ret2", 0, 0, 0, 0 },                 // 2c
-	{ "setr", 0, 0, 1, 0 },                 // 2d
+	{ "retv", 0, 0, 1, 0 },                 // 2d
 	{ "initloop", 0, 0, 0, 0 },             // 2e
 	{ "addsv", 2, op_varref, 0, 0 },                // 2f
 	{ "in", 0, 0, 2, 1 },                       // 30
 	{ "conv_something", 4, op_immed_and_relative_jump, 0, 0 },          // 31
-	{ "rts", 0, 0, 0, 0 },                  // 32
+	{ "retz", 0, 0, 0, 0 },                  // 32
 	{ "say", 0, 0, 0, 0 },                  // 33
 	{ NULL, 0, 0, 0, 0 },                       // 34
 	{ NULL, 0, 0, 0, 0 },                       // 35
@@ -131,7 +132,7 @@ static opcode_desc opcode_table[] = {
 	{ NULL, 0, 0, 0, 0 },                       // 41
 	{ "pushf", 2, op_flgref, 0, 1 },                    // 42
 	{ "popf", 2, op_flgref, 1, 0 },                 // 43
-	{ "pushw", 1, op_byte, 0, 1 },                  // 44
+	{ "pushb", 1, op_byte, 0, 1 },                  // 44
 	{ NULL, 0, 0, 0, 0 },                       // 45
 	{ "setarrayelem", 2, op_immed, 2, 0 },          // 46
 	{ "calle", 2, op_funid, 1, 1 },                 // 47
@@ -139,8 +140,8 @@ static opcode_desc opcode_table[] = {
 	{ NULL, 0, 0, 0, 0 },                       // 49
 	{ "arra", 0, 0, 2, 1 },                 // 4a
 	{ "pop\teventid", 0, 0, 1, 0 },                 // 4b
-	{ "line", 2, op_immed, 0, 0 },                  // 4c
-	{ "func", 4, op_data_string, 0, 0 },            // 4d
+	{ "dbgline", 2, op_immed, 0, 0 },                  // 4c
+	{ "dbgfunc", 4, op_data_string, 0, 0 },            // 4d
 	{ NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },           // 4e - 4f
 	{ "push\tstatic", 2, op_staticref, 0, 1 },          // 50
 	{ "pop\tstatic", 2, op_staticref, 1, 0 },           // 51
@@ -152,21 +153,24 @@ static opcode_desc opcode_table[] = {
 	{ "callms", 4, op_clsfun_vtbl, 0, 0 },  // 57
 	{ "clscreate", 2, op_clsid, 0, 0 }, // 58
 	{ "classdel", 0, 0, 1, 0 }, // 59
-	{ "aidxs", 2, op_staticref, 1, 1 }, // 5A
-	{ "setstaticarrayelem", 2, op_immed, 2, 0 },    // 5B
-	{ "staticloop", 10, op_static_sloop, 0, 0 },    // 5C
-	{ NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },   // 5D-5F
-	{ NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },   // 60-63
+	{ "aidxs", 2, op_staticref, 1, 1 }, // 5a
+	{ "setstaticarrayelem", 2, op_immed, 2, 0 },    // 5b
+	{ "staticloop", 10, op_static_sloop, 0, 0 },    // 5c
+	{ "aidxclsvar", 2, op_classvarref, 1, 1 }, // 5d
+	{ "setclsvararrayelem", 2, op_immed, 2, 0 },    // 5e
+	{ "clsvarloop", 10, op_sloop, 0, 0 },    // 5f
+	{ "push\tchoice", 0, 0, 0, 1 },                   // 60
+	{ NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },   // 61-63
 	{ NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },   // 64-67
-	{ NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },   // 68-6B
-	{ NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },   // 6C-6F
+	{ NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },   // 68-6b
+	{ NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },   // 6c-6f
 	{ NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },   // 70-73
 	{ NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },   // 74-77
-	{ NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },   // 78-7B
-	{ NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },   // 7C-7F
+	{ NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },   // 78-7b
+	{ NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },   // 7c-7f
 	{ NULL, 0, 0, 0, 0 },                       // 80
 	{ NULL, 0, 0, 0, 0 },                       // 81
-	{ "sloop_iter32", 12, op_sloop32, 0, 0 },       // 82
+	{ "loop32", 12, op_sloop32, 0, 0 },       // 82
 	{ NULL, 0, 0, 0, 0 },                       // 83
 	{ "startconv32", 4, op_relative_jump32, 0, 0 }, // 84
 	{ "jne32", 4, op_relative_jump32, 1, 0 },       // 85
@@ -200,7 +204,7 @@ static opcode_desc opcode_table[] = {
 	{ NULL, 0, 0, 0, 0 },               // a1
 	{ NULL, 0, 0, 0, 0 },                   // a2
 	{ NULL, 0, 0, 0, 0 },                       // a3
-	{ NULL, 0, 0, 0, 0 },               // a4
+	{ "call32", 4, op_funid32, 0, 0 },     // a4
 	{ NULL, 0, 0, 0, 0 },                   // a5
 	{ NULL, 0, 0, 0, 0 },               // a6
 	{ NULL, 0, 0, 0, 0 },                       // a7
@@ -210,7 +214,7 @@ static opcode_desc opcode_table[] = {
 	{ NULL, 0, 0, 0, 0 },                       // ab
 	{ NULL, 0, 0, 0, 0 },                   // ac
 	{ NULL, 0, 0, 0, 0 },                   // ad
-	{ "sloop32", 0, 0, 0, 0 },              // ae
+	{ "initloop32", 0, 0, 0, 0 },              // ae
 	{ NULL, 0, 0, 0, 0 },               // af
 	{ NULL, 0, 0, 0, 0 },                       // b0
 	{ "conv_something32", 6, op_immedreljump32, 0, 0 },         // b1
@@ -230,18 +234,36 @@ static opcode_desc opcode_table[] = {
 	{ NULL, 0, 0, 0, 0 },                   // bf
 	{ NULL, 0, 0, 0, 0 },                   // c0
 	{ NULL, 0, 0, 0, 0 },                       // c1
-	{ "pushfvar", 0, 0, 0, 1 },                 // c2
-	{ "popfvar", 0, 0, 1, 0 },                  // c3
+	{ "pushfvar", 0, 0, 1, 1 },                 // c2
+	{ "popfvar", 0, 0, 2, 0 },                  // c3
 	{ NULL, 0, 0, 0, 0 },                   // c4
 	{ NULL, 0, 0, 0, 0 },                       // c5
 	{ NULL, 0, 0, 0, 0 },           // c6
-	{ NULL, 0, 0, 0, 0 },                   // c7
+	{ "calle32", 4, op_funid32, 1, 1 },         // c7
 	{ NULL, 0, 0, 0, 0 },               // c8
 	{ NULL, 0, 0, 0, 0 },                       // c9
 	{ NULL, 0, 0, 0, 0 },                   // ca
 	{ NULL, 0, 0, 0, 0 },                   // cb
 	{ NULL, 0, 0, 0, 0 },                   // cc
-	{ "func32", 8, op_data_string32, 0, 0 }         // cd
+	{ "dbgfunc32", 8, op_data_string32, 0, 0 },    // cd
+	{ NULL, 0, 0, 0, 0 },               // ce
+	{ NULL, 0, 0, 0, 0 },                       // cf
+	{ NULL, 0, 0, 0, 0 },                   // d0
+	{ NULL, 0, 0, 0, 0 },                   // d1
+	{ NULL, 0, 0, 0, 0 },                   // d2
+	{ NULL, 0, 0, 0, 0 },                   // d3
+	{ "callindex", 1, op_byte, 0, 0 },      // d4
+	{ NULL, 0, 0, 0, 0 },                   // d5
+	{ NULL, 0, 0, 0, 0 },                   // d6
+	{ NULL, 0, 0, 0, 0 },                   // d7
+	{ NULL, 0, 0, 0, 0 },               // d8
+	{ NULL, 0, 0, 0, 0 },                       // d9
+	{ NULL, 0, 0, 0, 0 },                   // da
+	{ NULL, 0, 0, 0, 0 },                   // db
+	{ "staticloop32", 12, op_sloop32, 0, 0 },       // dc
+	{ NULL, 0, 0, 0, 0 },                       // dd
+	{ NULL, 0, 0, 0, 0 },                   // de
+	{ "clsvarloop32", 12, op_sloop32, 0, 0 }       // df
 
 };
 
