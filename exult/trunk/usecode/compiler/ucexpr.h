@@ -204,12 +204,12 @@ public:
  *  Binary expressions.
  */
 class Uc_binary_expression : public Uc_expression {
-	int opcode;         // Should be the UC_<opcode>
+	UsecodeOps opcode;         // Should be the UC_<opcode>
 	Uc_expression *left, *right;    // Operands to add, sub, etc.
-	int intop;      // If we want to use pushb or pushi32 instead of pushi.
+	UsecodeOps intop;      // If we want to use pushb or pushi32 instead of pushi.
 public:
-	Uc_binary_expression(int o, Uc_expression *l, Uc_expression *r,
-	                     int iop = UC_PUSHI)
+	Uc_binary_expression(UsecodeOps o, Uc_expression *l, Uc_expression *r,
+	                     UsecodeOps iop = UC_PUSHI)
 		: opcode(o), left(l), right(r), intop(iop)
 	{  }
 	// Gen. code to put result on stack.
@@ -222,10 +222,10 @@ public:
  *  Unary expressions.
  */
 class Uc_unary_expression : public Uc_expression {
-	int opcode;         // Should be the UC_<opcode>
+	UsecodeOps opcode;         // Should be the UC_<opcode>
 	Uc_expression *operand;
 public:
-	Uc_unary_expression(int o, Uc_expression *r)
+	Uc_unary_expression(UsecodeOps o, Uc_expression *r)
 		: opcode(o), operand(r)
 	{  }
 	// Gen. code to put result on stack.
@@ -252,9 +252,9 @@ public:
  */
 class Uc_int_expression : public Uc_expression {
 	int value;
-	int opcode;
+	UsecodeOps opcode;
 public:
-	Uc_int_expression(int v, int op = UC_PUSHI) : opcode(op) {
+	Uc_int_expression(int v, UsecodeOps op = UC_PUSHI) : opcode(op) {
 		if (opcode == UC_PUSHB)
 			value = static_cast<char>(v & 0xff);
 		else if (opcode == UC_PUSHI)

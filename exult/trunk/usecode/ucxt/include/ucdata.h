@@ -26,6 +26,8 @@
 
 #include "ucfunc.h"
 
+class Usecode_symbol_table;
+
 class UCData {
 public:
 	UCData();
@@ -36,9 +38,10 @@ public:
 
 	void parse_params(const unsigned int argc, char **argv);
 	void open_usecode(const std::string &filename);
-	void load_funcs();
+	void load_funcs(std::ostream &o);
+	void analyse_classes();
 
-	void disassamble();
+	void disassamble(std::ostream &o);
 	void dump_flags(std::ostream &o);
 	void output_extern_header(std::ostream &o);
 
@@ -83,11 +86,16 @@ private:
 	std::vector<UCc> _codes;
 
 	std::vector<UCFunc *> _funcs;
+	Usecode_symbol_table *_symtbl;
 
 	/* Just a quick mapping between funcs and basic data on them.
 	   Just something we can quickly pass to the parsing functions
 	   so we don't have to give them an entire function to play with. */
 	FuncMap _funcmap;
+
+	/* Usecode class inheritance map. */
+	typedef std::map<Usecode_class_symbol *, Usecode_class_symbol *> InheritMap;
+	InheritMap _clsmap;
 
 	long _search_opcode;
 	long _search_intrinsic;

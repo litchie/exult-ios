@@ -74,25 +74,33 @@ private:
 class UCOpcodeData {
 public:
 	UCOpcodeData() : opcode(0x00), num_bytes(0), num_pop(0),
-		num_push(0), call_effect(0), flag_return(false),
+		num_push(0), flag_call_effect(false), flag_return(false),
 		flag_paren(false), flag_indent_inc(false),
 		flag_indent_dec(false), flag_indent_tmpinc(false),
-		flag_indent_tmpdec(false)
+		flag_indent_tmpdec(false), flag_debug(false), flag_nosemicolon(false),
+		flag_abort(false), flag_staticref(false), flag_loop(false),
+		flag_new_effect(false), flag_method_effect(false)
 	{};
 	UCOpcodeData(unsigned int op, const Configuration::KeyTypeList &ktl)
 		: opcode(op), num_bytes(0), num_pop(0),
-		  num_push(0), call_effect(0), flag_return(false),
+		  num_push(0), flag_call_effect(false), flag_return(false),
 		  flag_paren(false), flag_indent_inc(false),
 		  flag_indent_dec(false), flag_indent_tmpinc(false),
-		  flag_indent_tmpdec(false) {
+		  flag_indent_tmpdec(false), flag_debug(false) ,flag_nosemicolon(false),
+		  flag_abort(false), flag_staticref(false), flag_loop(false),
+		  flag_new_effect(false), flag_method_effect(false) {
 		for (Configuration::KeyTypeList::const_iterator k = ktl.begin(); k != ktl.end(); ++k) {
 			switch (k->first[0]) {
 			case 'a':
 				if (k->first == "asm_nmo")             asm_nmo = strip_backticks(k->second);
 				else if (k->first == "asm_comment")    asm_comment = strip_backticks(k->second);
+				else if (k->first == "abort/")         flag_abort = true;
 				break;
 			case 'c':
-				if (k->first == "call_effect")         call_effect = static_cast<unsigned int>(strtol(k->second.c_str(), 0, 0));
+				if (k->first == "call_effect/")        flag_call_effect = true;
+				break;
+			case 'd':
+				if (k->first == "debug/")              flag_debug = true;
 				break;
 			case 'i':
 				if (k->first == "indent_inc/")         flag_indent_inc = true;
@@ -100,11 +108,17 @@ public:
 				else if (k->first == "indent_tmpinc/") flag_indent_tmpinc = true;
 				else if (k->first == "indent_tmpdec/") flag_indent_tmpdec = true;
 				break;
+			case 'l':
+				if (k->first == "loop/")               flag_loop = true;
+			case 'm':
+				if (k->first == "method_effect/")      flag_method_effect = true;
 			case 'n':
 				if (k->first == "name")                name = strip_backticks(k->second);
 				else if (k->first == "num_bytes")      num_bytes = static_cast<unsigned int>(strtol(k->second.c_str(), 0, 0));
 				else if (k->first == "num_pop")        num_pop = static_cast<unsigned int>(strtol(k->second.c_str(), 0, 0));
 				else if (k->first == "num_push")       num_push = static_cast<unsigned int>(strtol(k->second.c_str(), 0, 0));
+				else if (k->first == "nosemicolon/")   flag_nosemicolon = true;
+				else if (k->first == "new_effect/")    flag_new_effect = true;
 				break;
 			case 'p':
 				if (k->first == "param_types")         param_types = qnd_ocsplit(k->second);
@@ -113,8 +127,11 @@ public:
 			case 'r':
 				if (k->first == "return/")             flag_return = true;
 				break;
+			case 's':
+				if (k->first == "staticref/")          flag_staticref = true;
+				break;
 			case 'u':
-				if (k->first == "ucs_nmo")              ucs_nmo = strip_backticks(k->second);
+				if (k->first == "ucs_nmo")             ucs_nmo = strip_backticks(k->second);
 				break;
 			case '!': // ignore, it's a comment or something.
 				break;
@@ -122,35 +139,6 @@ public:
 				std::cerr << "invalid key `" << k->first << "` value `" << k->second << "`" << std::endl;
 			}
 		}
-		map_type_size(param_types, param_sizes);
-	};
-
-	UCOpcodeData(const std::vector<std::string> &v) {
-		if ((v.size() == 12) == false) {
-			std::cerr << "Error in opcodes file:" << std::endl;
-			for (unsigned int i = 0; i < v.size(); i++)
-				std::cerr << v[i] << '\t';
-			std::cerr << std::endl;
-		}
-
-		assert(v.size() == 12);
-		opcode = static_cast<unsigned int>(strtol(v[1].c_str(), 0, 0));
-		name = v[2];
-		asm_nmo = v[3];
-		asm_comment = v[4];
-		ucs_nmo = v[5];
-		num_bytes = static_cast<unsigned int>(strtol(v[6].c_str(), 0, 0));
-		param_types = qnd_ocsplit(v[7]);
-		num_pop = static_cast<unsigned int>(strtol(v[8].c_str(), 0, 0));
-		num_push = static_cast<unsigned int>(strtol(v[9].c_str(), 0, 0));
-		call_effect = static_cast<unsigned int>(strtol(v[10].c_str(), 0, 0));
-		assert(v[11].size() >= 6);
-		flag_return        = (v[11][0] == '0') ? false : true;
-		flag_paren         = (v[11][1] == '0') ? false : true;
-		flag_indent_inc    = (v[11][2] == '0') ? false : true;
-		flag_indent_dec    = (v[11][3] == '0') ? false : true;
-		flag_indent_tmpinc = (v[11][4] == '0') ? false : true;
-		flag_indent_tmpdec = (v[11][5] == '0') ? false : true;
 		map_type_size(param_types, param_sizes);
 	};
 
@@ -167,13 +155,20 @@ public:
 		o << std::endl;
 		o << "num_pop: " << num_pop << std::endl;
 		o << "num_push: " << num_push << std::endl;
-		o << "call_effect: " << call_effect << std::endl;
+		o << "flag_call_effect: " << flag_call_effect << std::endl;
 		o << "flag_return: " << flag_return << std::endl;
 		o << "flag_paren: " << flag_paren << std::endl;
 		o << "flag_indent_inc: " << flag_indent_inc << std::endl;
 		o << "flag_indent_dec: " << flag_indent_dec << std::endl;
 		o << "flag_indent_tmpinc: " << flag_indent_tmpinc << std::endl;
 		o << "flag_indent_tmpdec: " << flag_indent_tmpdec << std::endl;
+		o << "flag_debug: " << flag_debug << std::endl;
+		o << "flag_nosemicolon: " << flag_nosemicolon << std::endl;
+		o << "flag_abort: " << flag_abort << std::endl;
+		o << "flag_staticref: " << flag_staticref << std::endl;
+		o << "flag_loop: " << flag_loop << std::endl;
+		o << "flag_new_effect: " << flag_new_effect << std::endl;
+		o << "flag_method_effect: " << flag_method_effect << std::endl;
 	};
 
 	unsigned int   opcode;
@@ -185,13 +180,20 @@ public:
 
 	unsigned int   num_pop;
 	unsigned int   num_push;
-	unsigned int   call_effect;
+	bool           flag_call_effect;
 	bool           flag_return;
 	bool           flag_paren;
 	bool           flag_indent_inc;
 	bool           flag_indent_dec;
 	bool           flag_indent_tmpinc;
 	bool           flag_indent_tmpdec;
+	bool           flag_debug;
+	bool           flag_nosemicolon;
+	bool           flag_abort;
+	bool           flag_staticref;
+	bool           flag_loop;
+	bool           flag_new_effect;
+	bool           flag_method_effect;
 
 	std::vector<std::string> param_types;
 	// values caluclated from param_types

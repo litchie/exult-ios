@@ -91,23 +91,23 @@ USECODE_INTRINSIC_PTR(get_random),  // 0
                       USECODE_INTRINSIC_PTR(get_weather), // 0x44
                       USECODE_INTRINSIC_PTR(set_weather), // 0x45
                       USECODE_INTRINSIC_PTR(sit_down),// 0x46
-                      USECODE_INTRINSIC_PTR(summon),  // 0x47     SummonCreature (ucdump.c)
+                      USECODE_INTRINSIC_PTR(summon),  // 0x47
                       USECODE_INTRINSIC_PTR(display_map), // 0x48
                       USECODE_INTRINSIC_PTR(kill_npc),// 0x49
                       USECODE_INTRINSIC_PTR(roll_to_win), // 0x4a
                       USECODE_INTRINSIC_PTR(set_attack_mode), // 0x4b
                       USECODE_INTRINSIC_PTR(set_oppressor),   // 0x4c
-                      USECODE_INTRINSIC_PTR(clone),   // 0x4d     CloneNPC (ucdump.c)
+                      USECODE_INTRINSIC_PTR(clone),   // 0x4d
                       USECODE_INTRINSIC_PTR(UNKNOWN), // 0x4e UNUSED
-                      USECODE_INTRINSIC_PTR(display_area), // 0x4f// ShowCrystalBall(ucdump)
+                      USECODE_INTRINSIC_PTR(display_area), // 0x4f
                       USECODE_INTRINSIC_PTR(wizard_eye),  // 0x50
-                      USECODE_INTRINSIC_PTR(resurrect),// 0x51     ResurrectNPC (ucdump.c)
-                      USECODE_INTRINSIC_PTR(add_spell),// 0x52     AddSpellToBook (ucdump.c)
-                      USECODE_INTRINSIC_PTR(sprite_effect),// 0x53 ExecuteSprite (ucdump.c)
+                      USECODE_INTRINSIC_PTR(resurrect),// 0x51
+                      USECODE_INTRINSIC_PTR(add_spell),// 0x52
+                      USECODE_INTRINSIC_PTR(sprite_effect),// 0x53
                       USECODE_INTRINSIC_PTR(attack_object),   // 0x54
                       USECODE_INTRINSIC_PTR(book_mode),// 0x55
                       USECODE_INTRINSIC_PTR(stop_time),   // 0x56
-                      USECODE_INTRINSIC_PTR(cause_light), // 0x57 CauseLight (ucdump.c)
+                      USECODE_INTRINSIC_PTR(cause_light), // 0x57
                       USECODE_INTRINSIC_PTR(get_barge),// 0x58
                       USECODE_INTRINSIC_PTR(earthquake),  // 0x59
                       USECODE_INTRINSIC_PTR(is_pc_female),    // 0x5a
@@ -137,8 +137,8 @@ USECODE_INTRINSIC_PTR(get_random),  // 0
                       USECODE_INTRINSIC_PTR(is_readied),  // 0x72
                       USECODE_INTRINSIC_PTR(restart_game),    // 0x73
                       USECODE_INTRINSIC_PTR(start_speech),    // 0x74
-                      USECODE_INTRINSIC_PTR(run_endgame), // 0x75 StartEndGame (ucdump.c)
-                      USECODE_INTRINSIC_PTR(fire_projectile), // 0x76     FireCannon (ucdump.c)
+                      USECODE_INTRINSIC_PTR(run_endgame), // 0x75
+                      USECODE_INTRINSIC_PTR(fire_projectile), // 0x76
                       USECODE_INTRINSIC_PTR(nap_time),    // 0x77
                       USECODE_INTRINSIC_PTR(advance_time),    // 0x78
                       USECODE_INTRINSIC_PTR(in_usecode),  // 0x79

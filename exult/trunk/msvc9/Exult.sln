@@ -38,11 +38,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "shp2pcx", "shp2pcx.vcproj",
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "splitshp", "splitshp.vcproj", "{44FA98BB-5816-43F8-BFCD-3B6270D64BE2}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ucdump", "ucdump.vcproj", "{328A75CE-F668-42C8-A68C-037ED7682990}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wuc", "wuc.vcproj", "{85D7D98F-E12B-4AF9-9DFA-31D5F5D51ADE}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wud", "wud.vcproj", "{499B31BD-2481-4E51-BBDC-418479F34642}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pocketpc_flx.h", "pocketpc_flx.vcproj", "{39A7A7D1-834B-4A01-B321-3D14A359BC89}"
 	ProjectSection(ProjectDependencies) = postProject

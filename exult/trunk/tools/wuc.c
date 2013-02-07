@@ -341,6 +341,7 @@ int main(int argc, char *argv[]) {
 								emit_word(word);
 								break;
 							case op_immed32:
+							case op_funid32:
 								emit_byte(i);
 								read_token(fi);
 								sscanf(token, "%x", &word);

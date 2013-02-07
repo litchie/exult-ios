@@ -133,7 +133,7 @@ void Uc_if_statement::gen(
 	else if (ival)
 		// ELSE block unreachable except by GOTO statements.
 		// Fall-through to IF block.
-		curr->set_targets(-1, if_block);
+		curr->set_targets(UC_INVALID, if_block);
 	else {
 		// Gen test code & JNE.
 		expr->gen_value(curr);
@@ -157,7 +157,7 @@ void Uc_if_statement::gen(
 	} else {
 		if (!const_expr)    // Need to go to past-if block too.
 			curr->set_ntaken(past_if);
-		if_block->set_targets(-1, past_if);
+		if_block->set_targets(UC_INVALID, past_if);
 	}
 	blocks.push_back(curr = past_if);
 }
@@ -299,7 +299,7 @@ void Uc_dowhile_statement::gen(
 	do_test->set_targets(UC_JNE, do_jmp, past_do);
 	// Generate while body.
 	stmt->gen(fun, blocks, do_block, end, labels, do_test, past_do);
-	do_block->set_targets(-1, do_test);
+	do_block->set_targets(UC_INVALID, do_test);
 
 	blocks.push_back(do_test);
 	blocks.push_back(do_jmp);
@@ -403,7 +403,7 @@ void Uc_arrayloop_statement::gen(
 	blocks.push_back(for_body);
 	// Block immediatelly after FOR.
 	Basic_block *past_for = new Basic_block();
-	int opcode;
+	UsecodeOps opcode;
 	if (array->is_static())
 		opcode = UC_LOOPTOPS;
 	else if (array->get_sym_type() == Uc_symbol::Member_var)
@@ -456,7 +456,7 @@ void Uc_return_statement::gen(
 		}
 	} else
 		WriteOp(curr, UC_RET);
-	curr->set_targets(-1, end);
+	curr->set_targets(UC_INVALID, end);
 	curr = new Basic_block();
 	blocks.push_back(curr);
 }
@@ -593,7 +593,7 @@ void Uc_converse_case_statement::gen(
 	// Past CASE body.
 	Basic_block *past_case = new Basic_block();
 	if (is_default())
-		curr->set_targets(-1, case_body);
+		curr->set_targets(UC_INVALID, case_body);
 	else {
 		curr->set_targets(UC_CMPS, case_body, past_case);
 		WriteJumpParam2(curr, string_offset.size());    // # strings on stack.
@@ -848,11 +848,11 @@ void Uc_switch_statement::gen(
 		Basic_block *block = case_blocks[i];
 		// Link cases (for fall-through).
 		if (i > 0)
-			curr->set_targets(-1, block);
+			curr->set_targets(UC_INVALID, block);
 		blocks.push_back(curr = block);
 		stmt->gen(fun, blocks, curr, end, labels, start, past_switch);
 	}
-	curr->set_targets(-1, past_switch);
+	curr->set_targets(UC_INVALID, past_switch);
 	blocks.push_back(curr = past_switch);
 }
 
@@ -963,7 +963,7 @@ void Uc_abort_statement::gen(
     Basic_block *exit           // Block used for 'break' statements.
 ) {
 	WriteOp(curr, UC_ABRT);
-	curr->set_targets(-1, end);
+	curr->set_targets(UC_INVALID, end);
 	curr = new Basic_block();
 	blocks.push_back(curr);
 }

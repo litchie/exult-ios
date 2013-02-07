@@ -183,10 +183,8 @@ EXTRA_DIST = 	\
 	msvcstuff/rip.vcproj \
 	msvcstuff/shp2pcx.vcproj \
 	msvcstuff/splitshp.vcproj \
-	msvcstuff/ucdump.vcproj \
 	msvcstuff/unistd.h \
 	msvcstuff/wuc.vcproj \
-	msvcstuff/wud.vcproj \
 	msvcstuff/Zip.vcproj \
 	msvcstuff/exconfig/exconfig.cpp \
 	msvcstuff/exconfig/exconfig.def \
@@ -208,10 +206,8 @@ EXTRA_DIST = 	\
 	msvc9/rip.vcproj \
 	msvc9/shp2pcx.vcproj \
 	msvc9/splitshp.vcproj \
-	msvc9/ucdump.vcproj \
 	msvc9/unistd.h \
 	msvc9/wuc.vcproj \
-	msvc9/wud.vcproj \
 	msvc9/Zip.vcproj \
 	msvc9/exconfig/exconfig.cpp \
 	msvc9/exconfig/exconfig.def \

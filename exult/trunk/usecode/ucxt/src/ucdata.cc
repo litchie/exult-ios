@@ -30,6 +30,7 @@
 #include "ucdata.h"
 #include "ops.h"
 #include "files/utils.h"
+#include "usecode/ucsymtbl.h"
 
 using std::cout;
 using std::setw;
@@ -40,13 +41,16 @@ using std::setfill;
 using std::string;
 using std::ostream;
 
-UCData::UCData() : _search_opcode(-1), _search_intrinsic(-1) {
+const string CLASSNAME = "class";
+
+UCData::UCData() : _symtbl(0), _search_opcode(-1), _search_intrinsic(-1) {
 }
 
 UCData::~UCData() {
 	_file.close();
 	for (unsigned int i = 0; i < _funcs.size(); i++)
 		delete _funcs[i];
+	delete _symtbl;
 }
 
 void UCData::parse_params(const unsigned int argc, char **argv) {
@@ -111,22 +115,30 @@ void UCData::open_usecode(const string &filename) {
 		return;
 }
 
-// FIXME: Pass ostream to this, rather then cout-ing everything
-void UCData::disassamble() {
-	load_funcs();
+void UCData::disassamble(ostream &o) {
+	load_funcs(o);
+	analyse_classes();
 
 	if (options.verbose) {
 		for (vector<unsigned int>::iterator i = search_funcs.begin(); i != search_funcs.end(); ++i)
-			cout << "Looking for function number " << setw(8) << (*i) << endl;
-		cout << endl;
+			o << "Looking for function number " << setw(8) << (*i) << endl;
+		o << endl;
 	}
 
 	if (options.output_list)
-		cout << "Function       offset    size  data  code" << (options.ucdebug ? " funcname" : "") << endl;
+		o << "Function       offset    size  data  code" << (options.ucdebug ? " funcname" : "") << endl;
 
 	if (options.output_trans_table)
-		cout << "<trans>" << endl;
+		o << "<trans>" << endl;
 
+	if (options.output_ucs && UCFunc::num_global_statics > 0) {
+		o << "// Global static variables" << endl;
+		for (int i = 1; i <= UCFunc::num_global_statics; i++)
+			o << UCFunc::STATICNAME << ' ' << UCFunc::GLOBALSTATICPREFIX << std::setw(4) << i << ';' << endl;
+		o << endl;
+	}
+	
+	Usecode_class_symbol *cls = 0;
 	bool _foundfunc = false; //did we find and print the function?
 	for (unsigned int i = 0; i < _funcs.size(); i++) {
 		if (options.mode_all || (options.mode_dis && count(search_funcs.begin(), search_funcs.end(), _funcs[i]->_funcid))) {
@@ -134,49 +146,74 @@ void UCData::disassamble() {
 			bool _func_printed = false; // to test if we've actually printed a function ouput
 
 			if (options.output_list)
-				_func_printed = _funcs[i]->output_list(cout, i, options);
+				_func_printed = _funcs[i]->output_list(o, i, options);
 
 			if (options.output_ucs) {
-				_funcs[i]->parse_ucs(_funcmap, uc_intrinsics, options);
-				_func_printed = _funcs[i]->output_ucs(cout, _funcmap, uc_intrinsics, options);
+				int indent = 0;
+				if (cls != _funcs[i]->_cls) {
+					if (cls) {
+						o << "}" << endl << endl;
+					}
+					cls = _funcs[i]->_cls;
+					if (cls) {
+						o << CLASSNAME << " " << cls->get_name();
+						// Does the class inherit from another?
+						InheritMap::const_iterator it = _clsmap.find(cls);
+						int initvar = 0;
+						if (it != _clsmap.end()) {
+							// Yes; print base class.
+							o << " : " << it->second->get_name();
+							initvar = it->second->get_num_vars();
+						}
+						o << endl << "{" << endl;
+						indent = 1;
+						for (int i = initvar; i < cls->get_num_vars(); i++)
+							tab_indent(indent, o) << UCFunc::VARNAME << ' ' << UCFunc::CLASSVARPREFIX << std::setw(4) << i << ';' << endl;
+					}
+				} else if (cls) {
+					indent = 1;
+				}
+				_funcs[i]->parse_ucs(_funcmap, uc_intrinsics, options, _symtbl);
+				_func_printed = _funcs[i]->output_ucs(o, _funcmap, uc_intrinsics, options, indent, _symtbl);
+				if (!cls)
+					o << endl;
 				//_func_printed=true;
 			}
 
 			if (options.output_trans_table) {
-				_func_printed = _funcs[i]->output_tt(cout);
+				_func_printed = _funcs[i]->output_tt(o);
 				//_func_printed=true;
 			}
 
 			// if we haven't printed one by now, we'll print an asm output.
 			if (options.output_asm || (_func_printed == false))
-				_funcs[i]->output_asm(cout, _funcmap, uc_intrinsics, options);
+				_funcs[i]->output_asm(o, _funcmap, uc_intrinsics, options, _symtbl);
 		}
 	}
 
 	if (!_foundfunc)
-		cout << "Function not found." << endl;
+		o << "Function not found." << endl;
 
 	if (search_funcs.size() == 0)
-		cout << "Functions: " << _funcs.size() << endl;
+		o << "Functions: " << _funcs.size() << endl;
 
 	if (options.output_list)
-		cout << endl << "Functions: " << setbase(10) << _funcs.size() << setbase(16) << endl;
+		o << endl << "Functions: " << setbase(10) << _funcs.size() << setbase(16) << endl;
 
 	if (options.output_trans_table)
-		cout << "</>" << endl;
+		o << "</>" << endl;
 
-	cout << endl;
+	o << endl;
 }
 
 /* FIXME: Need to remove the hard coded opcode numbers (0x42 and 0x43) and replace them
     with 'variables' in the opcodes.txt file, that signify if it's a pop/push and a flag */
 void UCData::dump_flags(ostream &o) {
-	if (!(options.game_bg() || options.game_si() ||
-	        options.game_ss() || options.game_fov())) {
-		o << "This option only works for U7:BG and U7:SI" << endl;
+	if (!options.game_u7()) {
+		o << "This option only works for U7:BG, U7:FoV, U7:SI and U7:SS" << endl;
 		return;
 	}
-	load_funcs();
+	load_funcs(o);
 
 	if (options.verbose) cout << "Finding flags..." << endl;
 	vector<FlagData> flags;
@@ -255,12 +292,19 @@ void UCData::file_open(const string &filename) {
 #include "tools/dbgutils.h"
 #endif
 
-void UCData::load_funcs() {
-	if (options.verbose) cout << "Loading functions..." << endl;
+void UCData::load_funcs(ostream &o) {
+	if (options.game_u7() && Usecode_symbol_table::has_symbol_table(_file)) {
+		delete _symtbl;
+		if (options.verbose) o << "Loading symbol table..." << endl;
+		_symtbl = new Usecode_symbol_table();
+		_symtbl->read(_file);
+	}
+	
+	if (options.verbose) o << "Loading functions..." << endl;
 
 #ifdef LOAD_SPEED_TEST
 	dbg::DateDiff dd;
-	dbg::timeDateDiff(cout);
+	dbg::timeDateDiff(o);
 	dd.start();
 #endif
 
@@ -268,9 +312,8 @@ void UCData::load_funcs() {
 	while (!eof) {
 		UCFunc *ucfunc = new UCFunc();
 
-		if (options.game_bg() || options.game_si() ||
-		        options.game_ss() || options.game_fov())
-			readbin_U7UCFunc(_file, *ucfunc, options);
+		if (options.game_u7())
+			readbin_U7UCFunc(_file, *ucfunc, options, _symtbl);
 		else if (options.game_u8())
 			readbin_U8UCFunc(_file, *ucfunc);
 		else
@@ -290,33 +333,77 @@ void UCData::load_funcs() {
 
 #ifdef LOAD_SPEED_TEST
 	dd.end();
-	cout << setbase(10) << setfill(' ');
-	dd.print_start(cout) << endl;
-	dd.print_end(cout) << endl;
-	dd.print_diff(cout) << endl;
-	cout << setbase(16) << setfill('0');
+	o << setbase(10) << setfill(' ');
+	dd.print_start(o) << endl;
+	dd.print_end(o) << endl;
+	dd.print_diff(o) << endl;
+	o << setbase(16) << setfill('0');
 #endif
 
-	if (options.verbose) cout << "Creating function map..." << endl;
+	if (options.verbose) o << "Creating function map..." << endl;
 
 	for (vector<UCFunc *>::iterator i = _funcs.begin(); i != _funcs.end(); ++i) {
-		_funcmap.insert(FuncMapPair((*i)->_funcid, UCFuncSet((*i)->_funcid, (*i)->_num_args, (*i)->return_var, (*i)->funcname)));
+		int funcid = (*i)->_funcid;
+		Usecode_symbol::Symbol_kind kind; 
+		if ((*i)->_sym)
+			kind = (*i)->_sym->get_kind();
+		else if (funcid < 0x400)
+			kind = Usecode_symbol::shape_fun;
+		else if (funcid < 0x800)
+			kind = Usecode_symbol::object_fun;
+		else
+			kind = Usecode_symbol::fun_defined;
+		_funcmap.insert(FuncMapPair((*i)->_funcid, UCFuncSet(funcid, (*i)->_num_args,
+		                                                     (*i)->return_var, (*i)->aborts,
+		                                                     (*i)->_cls != 0, (*i)->funcname,
+		                                                     kind)));
 	}
 	/*  for(map<unsigned int, UCFuncSet>::iterator i=_funcmap.begin(); i!=_funcmap.end(); ++i)
-	        cout << i->first << "\t" << i->second.num_args << endl;*/
+	        o << i->first << "\t" << i->second.num_args << endl;*/
+}
+
+void UCData::analyse_classes() {
+	if (!_symtbl)
+		return;
+	int nclasses = _symtbl->get_num_classes();
+	// Class 0 can't inherit from any others.
+	for (int i = 1; i < nclasses; i++) {
+		Usecode_class_symbol *cls = _symtbl->get_class(i);
+		// Can only inherit from previously-defined classes.
+		for (int j = i - 1; j >= 0; j--) {
+			Usecode_class_symbol *base = _symtbl->get_class(j);
+			// If "base" has more variables or more methods than "cls", it can't be a base class of "cls".
+			if (base->get_num_vars() > cls->get_num_vars() || base->get_num_methods() > cls->get_num_methods())
+				continue;
+			// Assume this is a base class.
+			bool is_base = true;
+			// Find nonmatching method. This will be the first method in UCC output.
+			for (int k = 0; k < base->get_num_methods(); k++) {
+				if (base->get_method_id(k) != cls->get_method_id(k)) {
+					is_base = false;
+					break;
+				}
+			}
+			// All methods match?
+			if (is_base) {
+				// Yes. Insert in map then break (no multiple inheritance in UCC).
+				_clsmap.insert(std::make_pair(cls, base));
+				break;
+			}
+		}
+	}
 }
 
 void UCData::output_extern_header(ostream &o) {
-	if (!(options.game_bg() || options.game_si() ||
-	        options.game_ss() || options.game_fov())) {
-		o << "This option only works for U7:BG and U7:SI" << endl;
+	if (!options.game_u7()) {
+		o << "This option only works for U7:BG, U7:FoV, U7:SI and U7:SS" << endl;
 		return;
 	}
-	load_funcs();
+	load_funcs(o);
 
 	for (vector<UCFunc *>::iterator func = _funcs.begin(); func != _funcs.end(); ++func) {
 		//(*func)->output_ucs_funcname(o << "extern ", _funcmap, (*func)->_funcid, (*func)->_num_args, (*func)->return_var) << ';' << endl;
-		(*func)->output_ucs_funcname(o << "extern ", _funcmap) << ';' << endl;
+		(*func)->output_ucs_funcname(o << "extern ", _funcmap, _symtbl) << ';' << endl;
 	}
 }
 

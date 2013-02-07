@@ -1,32 +1,46 @@
 <opcodes>
 	<!--
-# Column 1: hex opcode
-# Column 2: assembler opcode nmonic
-# Column 3: assembler output format
-# Column 4: assembler comment output format
-# Column 5: script function output format
-# Column 6: number of data bytes
-# Column 7: data types of bytes
-# Column 8: number of elements it pops from the stack
-# Column 9: number of elements it pushes to the stack
-# Column 10: the 'call effect' true false (1/0) if this is a 'call type' opcode
-# Column 11: Flags. Each 0/1 reperesents a false/true condition for each of the
-#               flags listed below:
-#       Flag 1: Return flag. If true, it signifises that the function this
-#               opcode is found in, returns a variable on the stack.
-#       Flag 2: Paren output flag. If true, we output a pair of parenthesis
-#               around the usecode script output.
-#       The following flags are specific only to the usecode script output.
-#       Flag 3: Increment indent. If true, output the opcode, then increment
-#               the indent level by 1.
-#       Flag 4: Decrement indent. If true, decrement the indent level by 1,
-#               then output the opcode.
-#       Flag 5: Temporarly increment indent. If true, increment the indent
-#               level by 1, output the opcode, then decrement the indent level
-#               by 1.
-#       Flag 6: Temporarly decrement indent. If trye, decrement the indent
-#               level by 1, output the opcode, then increment the indent level
-#               by 1.
+# Tags:
+# (hex number): hex opcode
+# name: assembler opcode mnemonic from opcodes.h
+# asm_nmo: assembler output format
+# asm_comment: assembler comment output format
+# ucs_nmo: script function output format
+# num_bytes: number of data bytes
+# param_types: data types of bytes
+# num_pop: number of elements it pops from the stack
+# num_push: number of elements it pushes to the stack
+# The following are self-closing tags, whose presence is enough to set a flag
+# to true (and whose absence sets this flag to zero).
+#       call_effect: If present, this is a 'call type' opcode.
+#       return: If present, it signifises that the function this opcode is found
+#               in returns a variable on the stack.
+#       paren:  If present, we output a pair of parenthesis around the usecode
+#               script output.
+#       debug: If present, marks the opcode as being a debug function opcode.
+#               This means that the first string in the data segment is the
+#               function name, and each subsequent string is the name of either
+#               a parameter or a variable.
+#       nosemicolon: If present, prevents the end-of-line semi-colon from being
+#               output.
+#       abort: If present, indicates that the opcode causes the usecode machine
+#               to quit, like a C++ throw() statement.
+#       staticref: If present, signals that the opcode as references a static
+#               variable
+#       loop: If present, marks the opcode as representing a for loop.
+#       new_effect: If present, marks this as being a class allocating opcode.
+#       method_effect: If present, causes the number of elements indicated by
+#               the corresponding method to be popped. 
+# The following self-closing tags are only for the usecode script output, and
+# while recognized by UCXT, have no effect on output.
+#       indent_inc: If present, output the opcode then increment the indentation
+#               level by 1.
+#       indent_dec: If present, output the opcode then decrement the indentation
+#               level by 1.
+#       indent_tmpinc: If present, increment the indent level by 1, output the
+#               opcode, then decrement the indent level by 1.
+#       indent_tmpdec: If present, decrement the indent level by 1, output the
+#               opcode, then increment the indent level by 1.
 
 # DataType Notes:
 # long == dataoffset32 == offset32 == 4 bytes
@@ -52,15 +66,15 @@
 
 	-->
 	<0x02>
-		<name> NEXT </>
-		<asm_nmo> `next\t[%1], [%2], [%3], [%4], %5` </>
+		<name> UC_LOOPTOP </>
+		<asm_nmo> `loop\t[%1], [%2], [%3], [%4], %5` </>
 		<asm_comment> `\t\t\t;` </>
-		<ucs_nmo> `for (var%3 in var%4 with var%1 to var%2) atend label%f*_%5` </>
+		<ucs_nmo> `for (%v3 in %v4 with %v1 to %v2) atend label%f*_%5` </>
 		<num_bytes> 10 </>
 		<param_types> {short,short,short,varoffset,offset} </>
 		<num_pop> 0 </>
 		<num_push> 0 </>
-		<call_effect> 0 </>
+		<loop/>
 		<!--
 TODO: To be done...
 * {varoffset} is the array to loop over.
@@ -70,22 +84,21 @@ TODO: To be done...
 		-->
 	</>
 	<0x04>
-		<name> ASK </>
-		<asm_nmo> `ask\t%1` </>
+		<name> UC_CONVERSE </>
+		<asm_nmo> `startconv\t%1` </>
 		<asm_comment> `` </>
 		<ucs_nmo> `converse (0) atend label%f*_%1` </>
 		<num_bytes> 2 </>
 		<param_types> {offset} </>
 		<num_pop> 0 </>
 		<num_push> 0 </>
-		<call_effect> 0 </>
 		<!--
 Display the Avatar's conversation options and ask for the user's input.
 It jumps to {offset} if there is no conversation answers available.
 		-->
 	</>
 	<0x05>
-		<name> JNE </>
+		<name> UC_JNE </>
 		<asm_nmo> `jne\t%1` </>
 		<asm_comment> `` </>
 		<ucs_nmo> `if (!%p1) goto label%f*_%1` </>
@@ -93,14 +106,13 @@ It jumps to {offset} if there is no conversation answers available.
 		<param_types> {offset} </>
 		<num_pop> 1 </>
 		<num_push> 0 </>
-		<call_effect> 0 </>
 		<!--
 Pops a value from the stack, tests if it's false, if it's false jumps to
 the relative {offset}.
 		-->
 	</>
 	<0x06>
-		<name> JMP </>
+		<name> UC_JMP </>
 		<asm_nmo> `jmp\t%1` </>
 		<asm_comment> `` </>
 		<ucs_nmo> `goto label%f*_%1` </>
@@ -108,11 +120,10 @@ the relative {offset}.
 		<param_types> {offset} </>
 		<num_pop> 0 </>
 		<num_push> 0 </>
-		<call_effect> 0 </>
 		<!-- Jumps to the relative {offset} provided. -->
 	</>
 	<0x07>
-		<name> CMPS </>
+		<name> UC_CMPS </>
 		<asm_nmo> `cmps\t%1H, %2` </>
 		<asm_comment> `\t\t;` </>
 		<ucs_nmo> `case %p, atend label%f*_%2:` </>
@@ -120,7 +131,7 @@ the relative {offset}.
 		<param_types> {short,offset} </>
 		<num_pop> 0xFF </>
 		<num_push> 0 </>
-		<call_effect> 0 </>
+		<nosemicolon/>
 		<!--
 Pop {short} number of values from the stack, compare each one to the
 last response from the user, and jumps to the {offset} if it's not found,
@@ -130,7 +141,7 @@ any of the previous CMPSs since the last ASK.
 		-->
 	</>
 	<0x09>
-		<name> ADD </>
+		<name> UC_ADD </>
 		<asm_nmo> `add` </>
 		<asm_comment> `` </>
 		<ucs_nmo> `%p2 + %p1` </>
@@ -138,12 +149,11 @@ any of the previous CMPSs since the last ASK.
 		<param_types> {} </>
 		<num_pop> 2 </>
 		<num_push> 1 </>
-		<call_effect> 0 </>
 		<paren/>
 		<!-- Adds %p1 to %p2. -->
 	</>
 	<0x0A>
-		<name> SUB </>
+		<name> UC_SUB </>
 		<asm_nmo> `sub` </>
 		<asm_comment> `` </>
 		<ucs_nmo> `%p2 - %p1` </>
@@ -151,12 +161,11 @@ any of the previous CMPSs since the last ASK.
 		<param_types> {} </>
 		<num_pop> 2 </>
 		<num_push> 1 </>
-		<call_effect> 0 </>
 		<paren/>
 		<!-- Subtracts %p1 from %p2. -->
 	</>
 	<0x0B>
-		<name> DIV </>
+		<name> UC_DIV </>
 		<asm_nmo> `div` </>
 		<asm_comment> `` </>
 		<ucs_nmo> `%p2 / %p1` </>
@@ -164,12 +173,11 @@ any of the previous CMPSs since the last ASK.
 		<param_types> {} </>
 		<num_pop> 2 </>
 		<num_push> 1 </>
-		<call_effect> 0 </>
 		<paren/>
 		<!-- Divides %p2 by %p1. -->
 	</>
 	<0x0C>
-		<name> MUL </>
+		<name> UC_MUL </>
 		<asm_nmo> `mul` </>
 		<asm_comment> `` </>
 		<ucs_nmo> `%p2 * %p1` </>
@@ -177,12 +185,11 @@ any of the previous CMPSs since the last ASK.
 		<param_types> {} </>
 		<num_pop> 2 </>
 		<num_push> 1 </>
-		<call_effect> 0 </>
 		<paren/>
 		<!-- Multiplies %p1 by %p2. -->
 	</>
 	<0x0D>
-		<name> MOD </>
+		<name> UC_MOD </>
 		<asm_nmo> `mod` </>
 		<asm_comment> `` </>
 		<ucs_nmo> `%p2 %% %p1` </>
@@ -190,12 +197,11 @@ any of the previous CMPSs since the last ASK.
 		<param_types> {} </>
 		<num_pop> 2 </>
 		<num_push> 1 </>
-		<call_effect> 0 </>
 		<paren/>
 		<!-- Mods %p2 by %p1. -->
 	</>
 	<0x0E>
-		<name> AND </>
+		<name> UC_AND </>
 		<asm_nmo> `and` </>
 		<asm_comment> `` </>
 		<ucs_nmo> `%p2 &amp;&amp; %p1` </>
@@ -203,7 +209,6 @@ any of the previous CMPSs since the last ASK.
 		<param_types> {} </>
 		<num_pop> 2 </>
 		<num_push> 1 </>
-		<call_effect> 0 </>
 		<paren/>
 		<!--
 Pops two elements from the stack, converts them to true/false, logically
@@ -212,7 +217,7 @@ as a 1/0(true/false).
 		-->
 	</>
 	<0x0F>
-		<name> OR </>
+		<name> UC_OR </>
 		<asm_nmo> `or` </>
 		<asm_comment> `` </>
 		<ucs_nmo> `%p2 || %p1` </>
@@ -220,7 +225,6 @@ as a 1/0(true/false).
 		<param_types> {} </>
 		<num_pop> 2 </>
 		<num_push> 1 </>
-		<call_effect> 0 </>
 		<paren/>
 		<!--
 The "logical or" counterpart the the "logical and" (opcode 0x0E). Refer to
@@ -228,7 +232,7 @@ that opcode for more information.
 		-->
 	</>
 	<0x10>
-		<name> NOT </>
+		<name> UC_NOT </>
 		<asm_nmo> `not` </>
 		<asm_comment> `` </>
 		<ucs_nmo> `!%p1` </>
@@ -236,7 +240,6 @@ that opcode for more information.
 		<param_types> {} </>
 		<num_pop> 1 </>
 		<num_push> 1 </>
-		<call_effect> 0 </>
 		<paren/>
 		<!--
 Pops one element from the stack converts it to a truth value, logically "not"s
@@ -244,23 +247,22 @@ it, and then pushes the resulting truth value on the stack.
 		-->
 	</>
 	<0x12>
-		<name> POP </>
+		<name> UC_POP </>
 		<asm_nmo> `pop\t[%1]` </>
 		<asm_comment> `\t\t\t;` </>
-		<ucs_nmo> `var%1 = %p1` </>
+		<ucs_nmo> `%v1 = %p1` </>
 		<num_bytes> 2 </>
 		<param_types> {varoffset} </>
 		<num_pop> 1 </>
 		<num_push> 0 </>
-		<call_effect> 0 </>
 		<!--
-Pops one element from the stack and assigns it to the local varitable pointed
+Pops one element from the stack and assigns it to the local variable pointed
 to by {varoffset}.
 MENTAL NOTE: assert(varoffset&gt;=0 &amp;&amp; varoffset&lt;num_local_variables);
 		-->
 	</>
 	<0x13>
-		<name> PUSHT </>
+		<name> UC_PUSHTRUE </>
 		<asm_nmo> `push\ttrue` </>
 		<asm_comment> `` </>
 		<ucs_nmo> `true` </>
@@ -268,11 +270,10 @@ MENTAL NOTE: assert(varoffset&gt;=0 &amp;&amp; varoffset&lt;num_local_variables)
 		<param_types> {} </>
 		<num_pop> 0 </>
 		<num_push> 1 </>
-		<call_effect> 0 </>
 		<!-- Pushes true onto the stack. -->
 	</>
 	<0x14>
-		<name> PUSHF </>
+		<name> UC_PUSHFALSE </>
 		<asm_nmo> `push\tfalse` </>
 		<asm_comment> `` </>
 		<ucs_nmo> `false` </>
@@ -280,11 +281,10 @@ MENTAL NOTE: assert(varoffset&gt;=0 &amp;&amp; varoffset&lt;num_local_variables)
 		<param_types> {} </>
 		<num_pop> 0 </>
 		<num_push> 1 </>
-		<call_effect> 0 </>
 		<!-- Pushes false onto the stack. -->
 	</>
 	<0x16>
-		<name> CMPGT </>
+		<name> UC_CMPG </>
 		<asm_nmo> `cmpgt` </>
 		<asm_comment> `` </>
 		<ucs_nmo> `%p2 &gt; %p1` </>
@@ -292,12 +292,11 @@ MENTAL NOTE: assert(varoffset&gt;=0 &amp;&amp; varoffset&lt;num_local_variables)
 		<param_types> {} </>
 		<num_pop> 2 </>
 		<num_push> 1 </>
-		<call_effect> 0 </>
 		<paren/>
 		<!-- Tests if %p2 is greater then %p1. -->
 	</>
 	<0x17>
-		<name> CMPLT </>
+		<name> UC_CMPL </>
 		<asm_nmo> `cmplt` </>
 		<asm_comment> `` </>
 		<ucs_nmo> `%p2 &lt; %p1` </>
@@ -305,12 +304,11 @@ MENTAL NOTE: assert(varoffset&gt;=0 &amp;&amp; varoffset&lt;num_local_variables)
 		<param_types> {} </>
 		<num_pop> 2 </>
 		<num_push> 1 </>
-		<call_effect> 0 </>
 		<paren/>
 		<!-- Tests if %p2 is less then %p1. -->
 	</>
 	<0x18>
-		<name> CMPGE </>
+		<name> UC_CMPGE </>
 		<asm_nmo> `cmpge` </>
 		<asm_comment> `` </>
 		<ucs_nmo> `%p2 &gt;= %p1` </>
@@ -318,12 +316,11 @@ MENTAL NOTE: assert(varoffset&gt;=0 &amp;&amp; varoffset&lt;num_local_variables)
 		<param_types> {} </>
 		<num_pop> 2 </>
 		<num_push> 1 </>
-		<call_effect> 0 </>
 		<paren/>
 		<!-- Tests if %p2 is greater then or equal to %p1. -->
 	</>
 	<0x19>
-		<name> CMPLE </>
+		<name> UC_CMPLE </>
 		<asm_nmo> `cmple` </>
 		<asm_comment> `` </>
 		<ucs_nmo> `%p2 &lt;= %p1` </>
@@ -331,12 +328,11 @@ MENTAL NOTE: assert(varoffset&gt;=0 &amp;&amp; varoffset&lt;num_local_variables)
 		<param_types> {} </>
 		<num_pop> 2 </>
 		<num_push> 1 </>
-		<call_effect> 0 </>
 		<paren/>
 		<!-- Tests if %p2 is less then or equal to %p1. -->
 	</>
 	<0x1A>
-		<name> CMPNE </>
+		<name> UC_CMPNE </>
 		<asm_nmo> `cmpne` </>
 		<asm_comment> `` </>
 		<ucs_nmo> `%p2 != %p1` </>
@@ -344,12 +340,11 @@ MENTAL NOTE: assert(varoffset&gt;=0 &amp;&amp; varoffset&lt;num_local_variables)
 		<param_types> {} </>
 		<num_pop> 2 </>
 		<num_push> 1 </>
-		<call_effect> 0 </>
 		<paren/>
 		<!-- Tests if %p2 is not equal to %p1. -->
 	</>
 	<0x1C>
-		<name> ADDSI </>
+		<name> UC_ADDSI </>
 		<asm_nmo> `addsi\tL%1` </>
 		<asm_comment> `\t\t\t; %tc1` </>
 		<ucs_nmo> `message(\"%t1\")` </>
@@ -357,13 +352,12 @@ MENTAL NOTE: assert(varoffset&gt;=0 &amp;&amp; varoffset&lt;num_local_variables)
 		<param_types> {dataoffset} </>
 		<num_pop> 0 </>
 		<num_push> 0 </>
-		<call_effect> 0 </>
 		<!--
 Appends a string from the data segment {dataoffset} to the string register.
 		-->
 	</>
 	<0x1D>
-		<name> PUSHS </>
+		<name> UC_PUSHS </>
 		<asm_nmo> `pushs\t%1H` </>
 		<asm_comment> `\t\t\t; %tc1` </>
 		<ucs_nmo> `\"%t1\"` </>
@@ -371,11 +365,10 @@ Appends a string from the data segment {dataoffset} to the string register.
 		<param_types> {dataoffset} </>
 		<num_pop> 0 </>
 		<num_push> 1 </>
-		<call_effect> 0 </>
 		<!-- Pushes the string at {dataoffset} onto the stack. -->
 	</>
 	<0x1E>
-		<name> ARRC </>
+		<name> UC_ARRC </>
 		<asm_nmo> `arrc\t%1H` </>
 		<asm_comment> `\t\t\t;` </>
 		<ucs_nmo> `[%p,]` </>
@@ -383,7 +376,6 @@ Appends a string from the data segment {dataoffset} to the string register.
 		<param_types> {short} </>
 		<num_pop> 0xFF </>
 		<num_push> 1 </>
-		<call_effect> 0 </>
 		<!--
 Pops {short} number of elements from the stack, and creates an array of
 them, first off the stack is the first appended to the end of the array
@@ -393,7 +385,7 @@ appended to the stack.
 		-->
 	</>
 	<0x1F>
-		<name> PUSHI </>
+		<name> UC_PUSHI </>
 		<asm_nmo> `pushi\t%1H` </>
 		<asm_comment> `\t\t\t; %d1` </>
 		<ucs_nmo> `0x%1` </>
@@ -401,27 +393,25 @@ appended to the stack.
 		<param_types> {short} </>
 		<num_pop> 0 </>
 		<num_push> 1 </>
-		<call_effect> 0 </>
 		<!--
 Pushes the element {short} to the stack as a signed 16bit integer.
 		-->
 	</>
 	<0x21>
-		<name> PUSH </>
+		<name> UC_PUSH </>
 		<asm_nmo> `push\t[%1]` </>
 		<asm_comment> `\t\t\t;` </>
-		<ucs_nmo> `var%1` </>
+		<ucs_nmo> `%v1` </>
 		<num_bytes> 2 </>
 		<param_types> {varoffset} </>
 		<num_pop> 0 </>
 		<num_push> 1 </>
-		<call_effect> 0 </>
 		<!--
 Pushes the variable stored at {varoffset} onto the stack.
 		-->
 	</>
 	<0x22>
-		<name> CMPEQ </>
+		<name> UC_CMPEQ </>
 		<asm_nmo> `cmpeq` </>
 		<asm_comment> `` </>
 		<ucs_nmo> `%p2 == %p1` </>
@@ -429,12 +419,11 @@ Pushes the variable stored at {varoffset} onto the stack.
 		<param_types> {} </>
 		<num_pop> 2 </>
 		<num_push> 1 </>
-		<call_effect> 0 </>
 		<paren/>
 		<!-- Tests if %p2 is equal to %p1. -->
 	</>
 	<0x24>
-		<name> CALL </>
+		<name> UC_CALL </>
 		<asm_nmo> `call\textern:[%1]` </>
 		<asm_comment> `\t\t;` </>
 		<ucs_nmo> `%f1(%p,)` </>
@@ -442,7 +431,7 @@ Pushes the variable stored at {varoffset} onto the stack.
 		<param_types> {extoffset} </>
 		<num_pop> 0 </>
 		<num_push> 0 </>
-		<call_effect> 1 </>
+		<call_effect/>
 		<!--
 References the "external usecode function table" (Exult code calls this
 "externals"), with the {extoffset} value passed in the opcode call
@@ -451,7 +440,7 @@ execution.
 		-->
 	</>
 	<0x25>
-		<name> RET </>
+		<name> UC_RET </>
 		<asm_nmo> `ret` </>
 		<asm_comment> `` </>
 		<ucs_nmo> `return` </>
@@ -459,23 +448,20 @@ execution.
 		<param_types> {} </>
 		<num_pop> 0 </>
 		<num_push> 0 </>
-		<call_effect> 0 </>
 		<!--
 Returns to the "caller" function, after showing any text remaining in the
-string buffer (Exult: say_string() buffer). Does not return any elements
-on the stack (ie: returns "void").
+string buffer. Does not return any elements on the stack (ie: returns "void").
 		-->
 	</>
 	<0x26>
-		<name> AIDX </>
-		<asm_nmo> `aid\t[%1]` </>
+		<name> UC_AIDX </>
+		<asm_nmo> `aidx\t[%1]` </>
 		<asm_comment> `\t\t\t;` </>
-		<ucs_nmo> `var%1[%p1]` </>
+		<ucs_nmo> `%v1[%p1]` </>
 		<num_bytes> 2 </>
 		<param_types> {varoffset} </>
 		<num_pop> 1 </>
 		<num_push> 1 </>
-		<call_effect> 0 </>
 		<!--
 Pops one (pop v1) element off the stack (the array index), and uses it as an
 index of the local variable {varoffset}. (varoffset[v1]) The element obtained
@@ -484,65 +470,61 @@ TODO: NOTE: This opcode has been changed... need to redocument.
 		-->
 	</>
 	<0x2C>
-		<name> EXIT2 </>
-		<asm_nmo> `exit2` </>
+		<name> UC_RET2 </>
+		<asm_nmo> `ret2` </>
 		<asm_comment> `` </>
 		<ucs_nmo> `return` </>
 		<num_bytes> 0 </>
 		<param_types> {} </>
 		<num_pop> 0 </>
 		<num_push> 0 </>
-		<call_effect> 0 </>
 		<!--
 Yet Another Return. Exult implements this identically to the RET opcode (0x25).
 		-->
 	</>
 	<0x2D>
-		<name> SETR </>
-		<asm_nmo> `setr` </>
+		<name> UC_RETV </>
+		<asm_nmo> `retv` </>
 		<asm_comment> `` </>
 		<ucs_nmo> `return %p1` </>
 		<num_bytes> 0 </>
 		<param_types> {} </>
 		<num_pop> 1 </>
 		<num_push> 0 </>
-		<call_effect> 0 </>
 		<return/>
 		<!--
 Pops the top most element off the stack, stores it in the return register and returns from function.
 		-->
 	</>
 	<0x2E>
-		<name> ENUM </>
-		<asm_nmo> `enum` </>
+		<name> UC_LOOP </>
+		<asm_nmo> `initloop` </>
 		<asm_comment> `` </>
 		<ucs_nmo> `//enum()` </>
 		<num_bytes> 0 </>
 		<param_types> {} </>
 		<num_pop> 0 </>
 		<num_push> 0 </>
-		<call_effect> 0 </>
 		<!--
 Part one of the two opcode for...each opcode loop. Details under opcode 0x02.
 		-->
 	</>
 	<0x2F>
-		<name> ADDSV </>
+		<name> UC_ADDSV </>
 		<asm_nmo> `addsv\t[%1]` </>
 		<asm_comment> `\t\t\t;` </>
-		<ucs_nmo> `message(var%1)` </>
+		<ucs_nmo> `message(%v1)` </>
 		<num_bytes> 2 </>
 		<param_types> {varoffset} </>
 		<num_pop> 0 </>
 		<num_push> 0 </>
-		<call_effect> 0 </>
 		<!--
 Appends the local variable pointed to by {varoffset} onto the end of the
 string register.
 		-->
 	</>
 	<0x30>
-		<name> IN </>
+		<name> UC_IN </>
 		<asm_nmo> `in` </>
 		<asm_comment> `\t\t\t\t;` </>
 		<ucs_nmo> `%p2 in %p1` </>
@@ -550,7 +532,6 @@ string register.
 		<param_types> {} </>
 		<num_pop> 2 </>
 		<num_push> 1 </>
-		<call_effect> 0 </>
 		<paren/>
 		<!--
 Tests if a value is in an array. Pops two elements from the stack (pop v1,
@@ -560,15 +541,14 @@ on the stack.
 		-->
 	</>
 	<0x31>
-		<name> SMTH </>
-		<asm_nmo> `smth\t%1 %2` </>
+		<name> UC_CONVSMTH </>
+		<asm_nmo> `conv_something\t%1, %2` </>
 		<asm_comment> `\t\t\t;` </>
 		<ucs_nmo> `smth(0x%1) atend label%f*_%2` </>
 		<num_bytes> 4 </>
 		<param_types> {short,offset} </>
 		<num_pop> 0 </>
 		<num_push> 0 </>
-		<call_effect> 0 </>
 		<!--
 Does something related to conversations. Only occurs (2x) in the usecode
 function handling the 'audition' in Britain. Current implementation
@@ -578,22 +558,21 @@ function of this opcode.
 		-->
 	</>
 	<0x32>
-		<name> RTS </>
-		<asm_nmo> `rts` </>
+		<name> UC_RETZ </>
+		<asm_nmo> `retz` </>
 		<asm_comment> `` </>
 		<ucs_nmo> `return 0` </>
 		<num_bytes> 0 </>
 		<param_types> {} </>
 		<num_pop> 0 </>
 		<num_push> 0 </>
-		<call_effect> 0 </>
 		<return/>
 		<!--
 Stores the value zero on the return value and returns from the function.
 		-->
 	</>
 	<0x33>
-		<name> SAY </>
+		<name> UC_SAY </>
 		<asm_nmo> `say` </>
 		<asm_comment> `` </>
 		<ucs_nmo> `say()` </>
@@ -601,14 +580,13 @@ Stores the value zero on the return value and returns from the function.
 		<param_types> {} </>
 		<num_pop> 0 </>
 		<num_push> 0 </>
-		<call_effect> 0 </>
 		<!--
 Displays the string register to the screen (as appropriate talk, sign, scroll,
 book, whatever). Has the side effect of clearing the string register.
 		-->
 	</>
 	<0x38>
-		<name> CALLIS </>
+		<name> UC_CALLIS </>
 		<asm_nmo> `callis\t%i1@%b2` </>
 		<asm_comment> `\t\t; %1` </>
 		<ucs_nmo> `UI_%i1(%p,)` </>
@@ -616,7 +594,6 @@ book, whatever). Has the side effect of clearing the string register.
 		<param_types> {short,byte} </>
 		<num_pop> 0xFE </>
 		<num_push> 1 </>
-		<call_effect> 0 </>
 		<!--
 Calls the intrinsic {short} with {byte} number of parameters popped from the
 stack passed to it. Eg: if you were calling intrinsic 23 (short) with 3 (byte)
@@ -630,7 +607,7 @@ The intrinsic called also has the same "event" flag as the caller function.
 		-->
 	</>
 	<0x39>
-		<name> CALLI </>
+		<name> UC_CALLI </>
 		<asm_nmo> `calli\t%i1@%b2` </>
 		<asm_comment> `\t\t; %1, %d2` </>
 		<ucs_nmo> `UI_%i1(%p,)` </>
@@ -638,13 +615,12 @@ The intrinsic called also has the same "event" flag as the caller function.
 		<param_types> {short,byte} </>
 		<num_pop> 0xFE </>
 		<num_push> 0 </>
-		<call_effect> 0 </>
 		<!--
 Same as opcode CALLIS (0x38), except no return value.
 		-->
 	</>
 	<0x3E>
-		<name> PUSHITM </>
+		<name> UC_PUSHITEMREF </>
 		<asm_nmo> `push\titemref` </>
 		<asm_comment> `\t\t\t;` </>
 		<ucs_nmo> `item` </>
@@ -652,14 +628,13 @@ Same as opcode CALLIS (0x38), except no return value.
 		<param_types> {} </>
 		<num_pop> 0 </>
 		<num_push> 1 </>
-		<call_effect> 0 </>
 		<!--
-(ucdump &amp; exult call this "push itemref") Pushes the identifier of the item
-(for which the usecode event handler is called) onto the stack.
+Pushes the identifier of the item (for which the usecode event handler is
+called) onto the stack.
 		-->
 	</>
 	<0x3F>
-		<name> ABRT </>
+		<name> UC_ABRT </>
 		<asm_nmo> `abrt` </>
 		<asm_comment> `` </>
 		<ucs_nmo> `abort` </>
@@ -667,30 +642,28 @@ Same as opcode CALLIS (0x38), except no return value.
 		<param_types> {} </>
 		<num_pop> 0 </>
 		<num_push> 0 </>
-		<call_effect> 0 </>
+		<abort/>
 		<!--
-(ucdump calles this "exit") (exult says this is "really like a throw") Shows
-any text in the string register, and exits the function immediatly.
+Shows any text in the string register, and exits the function immediatly.
 ABRT also exits all calling functions, effectively stopping the usecode interpreter.
 		-->
 	</>
 	<0x40>
-		<name> END_CONV </>
-		<asm_nmo> `end_conv` </>
+		<name> UC_CONVERSELOC </>
+		<asm_nmo> `endconv` </>
 		<asm_comment> `` </>
 		<ucs_nmo> `break` </>
 		<num_bytes> 0 </>
 		<param_types> {} </>
 		<num_pop> 0 </>
 		<num_push> 0 </>
-		<call_effect> 0 </>
 		<!--
 Always seems to be called right before a "goodbye", so guessing
 it means 'end conversation'.
 		-->
 	</>
 	<0x42>
-		<name> PUSHF </>
+		<name> UC_PUSHF </>
 		<asm_nmo> `pushf\tflag:[%1]` </>
 		<asm_comment> `\t\t\t;` </>
 		<ucs_nmo> `gflags[0x%1]` </>
@@ -698,11 +671,10 @@ it means 'end conversation'.
 		<param_types> {flag} </>
 		<num_pop> 0 </>
 		<num_push> 1 </>
-		<call_effect> 0 </>
 		<!-- TODO: document -->
 	</>
 	<0x43>
-		<name> POPF </>
+		<name> UC_POPF </>
 		<asm_nmo> `popf\tflag:[%1]` </>
 		<asm_comment> `\t\t;` </>
 		<ucs_nmo> `gflags[0x%1] = %p1` </>
@@ -710,46 +682,39 @@ it means 'end conversation'.
 		<param_types> {flag} </>
 		<num_pop> 1 </>
 		<num_push> 0 </>
-		<call_effect> 0 </>
 		<!-- TODO: document -->
 	</>
 	<0x44>
-		<name> PUSHB </>
+		<name> UC_PUSHB </>
 		<asm_nmo> `pushb\t%b1H` </>
 		<asm_comment> `\t\t\t; %d1` </>
-		<ucs_nmo> `0x%b1` </>
+		<ucs_nmo> `(byte)0x%b1` </>
 		<num_bytes> 1 </>
 		<param_types> {byte} </>
 		<num_pop> 0 </>
 		<num_push> 1 </>
-		<call_effect> 0 </>
-		<!--
-(ucdump calls this "pushbi")
-TODO: document
-		-->
+		<!-- TODO: document -->
 	</>
 	<0x46>
-		<name> APUT </>
-		<asm_nmo> `aput\t[%1]` </>
+		<name> UC_POPARR </>
+		<asm_nmo> `setarrayelem\t[%1]` </>
 		<asm_comment> `\t\t\t;` </>
-		<ucs_nmo> `var%1[%p1] = %p2` </>
+		<ucs_nmo> `%v1[%p1] = %p2` </>
 		<num_bytes> 2 </>
 		<param_types> {varoffset} </>
 		<num_pop> 2 </>
 		<num_push> 0 </>
-		<call_effect> 0 </>
 		<!-- TODO: document -->
 	</>
 	<0x47>
-		<name> CALLE </>
+		<name> UC_CALLE </>
 		<asm_nmo> `calle\t%1H` </>
 		<asm_comment> `\t\t\t;` </>
-		<ucs_nmo> `%p1-&gt;Func%1()` </>
+		<ucs_nmo> `%p1-&gt;%f#1()` </>
 		<num_bytes> 2 </>
 		<param_types> {short} </>
 		<num_pop> 1 </>
 		<num_push> 1 </>
-		<call_effect> 0 </>
 		<!--
 Calls the function (short) with "item" being equal to the
 element at the top of the stack. It does not return a
@@ -762,7 +727,7 @@ inside Func0261, "item" would be the avatar.
 		-->
 	</>
 	<0x48>
-		<name> PUSHEID </>
+		<name> UC_PUSHEVENTID </>
 		<asm_nmo> `push\teventid` </>
 		<asm_comment> `` </>
 		<ucs_nmo> `event` </>
@@ -770,14 +735,10 @@ inside Func0261, "item" would be the avatar.
 		<param_types> {} </>
 		<num_pop> 0 </>
 		<num_push> 1 </>
-		<call_effect> 0 </>
-		<!--
-(ucdump &amp; exult calles this "push eventid")
-TODO: document
-		-->
+		<!-- TODO: document -->
 	</>
 	<0x4A>
-		<name> ARRA </>
+		<name> UC_ARRA </>
 		<asm_nmo> `arra` </>
 		<asm_comment> `\t\t\t\t;` </>
 		<ucs_nmo> `%p2 &amp; %p1` </>
@@ -785,14 +746,13 @@ TODO: document
 		<param_types> {} </>
 		<num_pop> 2 </>
 		<num_push> 1 </>
-		<call_effect> 0 </>
 		<paren/>
 		<!--
 Appends second param. to the list in first param.
 		-->
 	</>
 	<0x4B>
-		<name> POPEID </>
+		<name> UC_POPEVENTID </>
 		<asm_nmo> `pop\teventid` </>
 		<asm_comment> `` </>
 		<ucs_nmo> `event = %p1` </>
@@ -800,14 +760,10 @@ Appends second param. to the list in first param.
 		<param_types> {} </>
 		<num_pop> 1 </>
 		<num_push> 0 </>
-		<call_effect> 0 </>
-		<!--
-(ucdump &amp; exult calls this "pop eventid")
-TODO: document
-		-->
+		<!-- TODO: document -->
 	</>
 	<0x4C>
-		<name> DBGLINE </>
+		<name> UC_DBGLINE </>
 		<asm_nmo> `dbgline %1` </>
 		<asm_comment> `` </>
 		<ucs_nmo> `// Line: %1` </>
@@ -815,13 +771,12 @@ TODO: document
 		<param_types> {short} </>
 		<num_pop> 0 </>
 		<num_push> 0 </>
-		<call_effect> 0 </>
 		<!--
 Debug opcode -- currently only found in the .es version of SI
 		-->
 	</>
 	<0x4D>
-		<name> DBGFUNC </>
+		<name> UC_DBGFUNC </>
 		<asm_nmo> `dbgfunc %1 %2 ` </>
 		<asm_comment> `; %t1` </>
 		<ucs_nmo> `// Function: %t1 %2` </>
@@ -829,37 +784,282 @@ Debug opcode -- currently only found in the .es version of SI
 		<param_types> {short,dataoffset} </>
 		<num_pop> 0 </>
 		<num_push> 0 </>
-		<call_effect> 0 </>
+		<debug/>
 		<!--
 Debug opcode -- currently only found in the .es version of SI
 		-->
 	</>
-	<0x82>
-		<name> LOOP </>
-		<asm_nmo> `next32\t[%1], [%2], [%3], [%4], %5` </>
+	<0x50>
+		<name> UC_PUSHSTATIC </>
+		<asm_nmo> `push\tstatic\t[%1]` </>
 		<asm_comment> `\t\t\t;` </>
-		<ucs_nmo> `for (var%3 in var%4 with var%1 to var%2) atend label%f*_%n5` </>
+		<ucs_nmo> `%vs1` </>
+		<num_bytes> 2 </>
+		<param_types> {varoffset} </>
+		<num_pop> 0 </>
+		<num_push> 1 </>
+		<staticref/>
+		<!--
+Pushes the static variable stored at {varoffset} onto the stack.
+		-->
+	</>
+	<0x51>
+		<name> UC_POPSTATIC </>
+		<asm_nmo> `pop\tstatic\t[%1]` </>
+		<asm_comment> `\t\t\t;` </>
+		<ucs_nmo> `%vs1 = %p1` </>
+		<num_bytes> 2 </>
+		<param_types> {varoffset} </>
+		<num_pop> 1 </>
+		<num_push> 0 </>
+		<staticref/>
+		<!--
+Pops one element from the stack and assigns it to the static variable pointed
+to by {varoffset}.
+MENTAL NOTE: assert(varoffset&gt;=0 &amp;&amp; varoffset&lt;num_local_variables);
+		-->
+	</>
+	<0x52>
+		<name> UC_CALLO </>
+		<asm_nmo> `callo\t%1H` </>
+		<asm_comment> `\t\t\t;` </>
+		<ucs_nmo> `%p1-&gt;%f#1.original()` </>
+		<num_bytes> 2 </>
+		<param_types> {short} </>
+		<num_pop> 1 </>
+		<num_push> 1 </>
+		<!--
+Calls the original game function (short) with "item" being equal
+to the element at the top of the stack. It does not return a
+value on the stack.
+
+In c-style notation, if the topmost element of the stack 
+is AVATAR = -356, and function 0x261 (Func0261) is 
+being called, we would have AVATAR->Func0261() and 
+inside Func0261, "item" would be the avatar.
+		-->
+	</>
+	<0x53>
+		<name> UC_CALLIND </>
+		<asm_nmo> `callind\t%1H` </>
+		<asm_comment> `\t\t\t;` </>
+		<ucs_nmo> `%p2-&gt;(*%p1)()` </>
+		<num_bytes> 0 </>
+		<param_types> {} </>
+		<num_pop> 2 </>
+		<num_push> 0 </>
+		<!--
+Calls function pushed onto the stack.
+		-->
+	</>
+	<0x54>
+		<name> UC_PUSHTHV </>
+		<asm_nmo> `push\tclsvar\t[%1]` </>
+		<asm_comment> `\t\t\t;` </>
+		<ucs_nmo> `%vc1` </>
+		<num_bytes> 2 </>
+		<param_types> {varoffset} </>
+		<num_pop> 0 </>
+		<num_push> 1 </>
+		<!--
+Pushes the class variable stored at {varoffset} onto the stack.
+		-->
+	</>
+	<0x55>
+		<name> UC_POPTHV </>
+		<asm_nmo> `pop\tclsvar\t[%1]` </>
+		<asm_comment> `\t\t\t;` </>
+		<ucs_nmo> `%vc1 = %p1` </>
+		<num_bytes> 2 </>
+		<param_types> {varoffset} </>
+		<num_pop> 1 </>
+		<num_push> 0 </>
+		<!--
+Pops one element from the stack and assigns it to the class variable pointed
+to by {varoffset}.
+MENTAL NOTE: assert(varoffset&gt;=0 &amp;&amp; varoffset&lt;num_local_variables);
+		-->
+	</>
+	<0x56>
+		<name> UC_CALLM </>
+		<asm_nmo> `callm\t[%1]` </>
+		<asm_comment> `\t\t\t;` </>
+		<ucs_nmo> `(%p1-&gt;*0x%1)(%p+2)` </>
+		<num_bytes> 2 </>
+		<param_types> {short} </>
+		<num_pop> 0 </>
+		<num_push> 0 </>
+		<method_effect/>
+		<!-- TODO: document. Opcode partially decoded; needs static data flow analysis. -->
+	</>
+	<0x57>
+		<name> UC_CALLMS </>
+		<asm_nmo> `callms\t[%2:%1]` </>
+		<asm_comment> `\t\t\t;` </>
+		<ucs_nmo> `%p1-&gt;%fm21(%p+2)` </>
+		<num_bytes> 4 </>
+		<param_types> {short,short} </>
+		<num_pop> 0 </>
+		<num_push> 0 </>
+		<method_effect/>
+		<!-- TODO: document -->
+	</>
+	<0x58>
+		<name> UC_CLSCREATE </>
+		<asm_nmo> `clscreate` </>
+		<asm_comment> `\t\t\t;` </>
+		<ucs_nmo> `new %c1(%p,)` </>
+		<num_bytes> 2 </>
+		<param_types> {short} </>
+		<num_pop> 0 </>
+		<num_push> 1 </>
+		<new_effect/>
+		<!-- TODO: document -->
+	</>
+	<0x59>
+		<name> UC_CLASSDEL </>
+		<asm_nmo> `classdel` </>
+		<asm_comment> `\t\t\t;` </>
+		<ucs_nmo> `delete %p1` </>
+		<num_bytes> 0 </>
+		<param_types> {} </>
+		<num_pop> 1 </>
+		<num_push> 0 </>
+		<!--
+Pops one element from the stack and deletes its class data.
+		-->
+	</>
+	<0x5A>
+		<name> UC_AIDXS </>
+		<asm_nmo> `aidxs\t[%1]` </>
+		<asm_comment> `\t\t\t;` </>
+		<ucs_nmo> `%vs1[%p1]` </>
+		<num_bytes> 2 </>
+		<param_types> {varoffset} </>
+		<num_pop> 1 </>
+		<num_push> 1 </>
+		<staticref/>
+		<!--
+Pops one (pop v1) element off the stack (the array index), and uses it as an
+index of the static variable {varoffset}. (varoffset[v1]) The element obtained
+is then pushed onto the stack.
+TODO: NOTE: This opcode has been changed... need to redocument.
+		-->
+	</>
+	<0x5B>
+		<name> UC_POPARRS </>
+		<asm_nmo> `setstaticarrayelem\t[%1]` </>
+		<asm_comment> `\t\t\t;` </>
+		<ucs_nmo> `%vs1[%p1] = %p2` </>
+		<num_bytes> 2 </>
+		<param_types> {varoffset} </>
+		<num_pop> 2 </>
+		<num_push> 0 </>
+		<staticref/>
+		<!-- TODO: document -->
+	</>
+	<0x5C>
+		<name> UC_LOOPTOPS </>
+		<asm_nmo> `staticloop\t[%1], [%2], [%3], [%4], %5` </>
+		<asm_comment> `\t\t\t;` </>
+		<ucs_nmo> `for (%v3 in %vs4 with %v1 to %v2) atend label%f*_%5` </>
+		<num_bytes> 10 </>
+		<param_types> {short,short,short,varoffset,offset} </>
+		<num_pop> 0 </>
+		<num_push> 0 </>
+		<staticref/>
+		<loop/>
+		<!--
+TODO: To be done...
+* {varoffset} is the array to loop over.
+* {short}(1st) is used to store the "counter".
+* {short}(2nd) is used to store the "max" value. Which is the number of elements  stored in {varoffset} or 1 if it's a string or integer.
+* {offset} is the relative offset to jump to after the loop is completed.
+		-->
+	</>
+	<0x5D>
+		<name> UC_AIDXTHV </>
+		<asm_nmo> `aidxclsvar\t[%1]` </>
+		<asm_comment> `\t\t\t;` </>
+		<ucs_nmo> `%vc1[%p1]` </>
+		<num_bytes> 2 </>
+		<param_types> {varoffset} </>
+		<num_pop> 1 </>
+		<num_push> 1 </>
+		<!--
+Pops one (pop v1) element off the stack (the array index), and uses it as an
+index of the class variable {varoffset}. (varoffset[v1]) The element obtained
+is then pushed onto the stack.
+TODO: NOTE: This opcode has been changed... need to redocument.
+		-->
+	</>
+	<0x5E>
+		<name> UC_POPARRTHV </>
+		<asm_nmo> `setclsvararrayelem\t[%1]` </>
+		<asm_comment> `\t\t\t;` </>
+		<ucs_nmo> `%vc1[%p1] = %p2` </>
+		<num_bytes> 2 </>
+		<param_types> {varoffset} </>
+		<num_pop> 2 </>
+		<num_push> 0 </>
+		<!-- TODO: document -->
+	</>
+	<0x5F>
+		<name> UC_LOOPTOPTHV </>
+		<asm_nmo> `clsvarloop\t[%1], [%2], [%3], [%4], %5` </>
+		<asm_comment> `\t\t\t;` </>
+		<ucs_nmo> `for (%v3 in %vc4 with %v1 to %v2) atend label%f*_%5` </>
+		<num_bytes> 10 </>
+		<param_types> {short,short,short,varoffset,offset} </>
+		<num_pop> 0 </>
+		<num_push> 0 </>
+		<loop/>
+		<!--
+TODO: To be done...
+* {varoffset} is the array to loop over.
+* {short}(1st) is used to store the "counter".
+* {short}(2nd) is used to store the "max" value. Which is the number of elements  stored in {varoffset} or 1 if it's a string or integer.
+* {offset} is the relative offset to jump to after the loop is completed.
+		-->
+	</>
+	<0x60>
+		<name> PUSHCHOICE </>
+		<asm_nmo> `push\tchoice` </>
+		<asm_comment> `\t\t\t;` </>
+		<ucs_nmo> `user_choice` </>
+		<num_bytes> 0 </>
+		<param_types> {} </>
+		<num_pop> 0 </>
+		<num_push> 1 </>
+		<!--
+Pushes the element {short} to the stack as a signed 16bit integer.
+		-->
+	</>
+	<0x82>
+		<name> UC_LOOPTOP32 </>
+		<asm_nmo> `loop32\t[%1], [%2], [%3], [%4], %5` </>
+		<asm_comment> `\t\t\t;` </>
+		<ucs_nmo> `for (%v3 in %v4 with %v1 to %v2) atend label%f*_%n5` </>
 		<num_bytes> 12 </>
 		<param_types> {short,short,short,varoffset,offset32} </>
 		<num_pop> 0 </>
 		<num_push> 0 </>
-		<call_effect> 0 </>
-		<!-- The 32bit version of 0x02 - LOOP -->
+		<loop/>
+		<!-- The 32bit version of 0x02 - UC_LOOPTOP -->
 	</>
 	<0x84>
-		<name> CONV32 </>
-		<asm_nmo> `ask32\t%1` </>
+		<name> UC_CONVERSE32 </>
+		<asm_nmo> `startconv32\t%1` </>
 		<asm_comment> `` </>
 		<ucs_nmo> `converse (0) atend label%f*_%1` </>
 		<num_bytes> 4 </>
 		<param_types> {offset32} </>
 		<num_pop> 0 </>
 		<num_push> 0 </>
-		<call_effect> 0 </>
-		<!-- The 32bit version of 0x04 - ASK -->
+		<!-- The 32bit version of 0x04 - UC_CONVERSE -->
 	</>
 	<0x85>
-		<name> JNE32 </>
+		<name> UC_JNE32 </>
 		<asm_nmo> `jne32\t%1` </>
 		<asm_comment> `` </>
 		<ucs_nmo> `if (!%p1) goto label%f*_%n1` </>
@@ -867,11 +1067,10 @@ Debug opcode -- currently only found in the .es version of SI
 		<param_types> {offset32} </>
 		<num_pop> 1 </>
 		<num_push> 0 </>
-		<call_effect> 0 </>
-		<!-- The 32bit version of 0x05 - JNE -->
+		<!-- The 32bit version of 0x05 - UC_JNE -->
 	</>
 	<0x86>
-		<name> JMP32 </>
+		<name> UC_JMP32 </>
 		<asm_nmo> `jmp32\t%1` </>
 		<asm_comment> `` </>
 		<ucs_nmo> `goto label%f*_%n1` </>
@@ -879,11 +1078,10 @@ Debug opcode -- currently only found in the .es version of SI
 		<param_types> {offset32} </>
 		<num_pop> 0 </>
 		<num_push> 0 </>
-		<call_effect> 0 </>
-		<!-- The 32bit version of 0x06 - JMP -->
+		<!-- The 32bit version of 0x06 - UC_JMP -->
 	</>
 	<0x87>
-		<name> CMPS32 </>
+		<name> UC_CMPS32 </>
 		<asm_nmo> `cmps32\t%1H, %n2` </>
 		<asm_comment> `\t\t;` </>
 		<ucs_nmo> `case %p, atend label%f*_%2:` </>
@@ -891,11 +1089,11 @@ Debug opcode -- currently only found in the .es version of SI
 		<param_types> {short,offset32} </>
 		<num_pop> 0xFF </>
 		<num_push> 0 </>
-		<call_effect> 0 </>
-		<!-- The 32bit version of 0x07 - CMPS -->
+		<nosemicolon/>
+		<!-- The 32bit version of 0x07 - UC_CMPS -->
 	</>
 	<0x9C>
-		<name> ADDSI32 </>
+		<name> UC_ADDSI32 </>
 		<asm_nmo> `addsi32\tL%n1` </>
 		<asm_comment> `\t\t\t; %tc1` </>
 		<ucs_nmo> `message(\"%t1\")` </>
@@ -903,11 +1101,10 @@ Debug opcode -- currently only found in the .es version of SI
 		<param_types> {dataoffset32} </>
 		<num_pop> 0 </>
 		<num_push> 0 </>
-		<call_effect> 0 </>
-		<!-- The 32bit version of 0x1C - ADDSI -->
+		<!-- The 32bit version of 0x1C - UC_ADDSI -->
 	</>
 	<0x9D>
-		<name> PUSHS32 </>
+		<name> UC_PUSHS32 </>
 		<asm_nmo> `pushs32\t%n1H` </>
 		<asm_comment> `\t\t\t; %tc1` </>
 		<ucs_nmo> `\"%t1\"` </>
@@ -915,45 +1112,146 @@ Debug opcode -- currently only found in the .es version of SI
 		<param_types> {dataoffset32} </>
 		<num_pop> 0 </>
 		<num_push> 1 </>
-		<call_effect> 0 </>
-		<!-- The 32bit version of 0x1D - PUSHS -->
+		<!-- The 32bit version of 0x1D - UC_PUSHS -->
 	</>
 	<0x9F>
-		<name> PUSHI32 </>
+		<name> UC_PUSHI32 </>
 		<asm_nmo> `pushi32\t%n1H` </>
 		<asm_comment> `\t\t\t; %d1` </>
-		<ucs_nmo> `0x%1` </>
+		<ucs_nmo> `(long)0x%1` </>
 		<num_bytes> 4 </>
 		<param_types> {long} </>
 		<num_pop> 0 </>
 		<num_push> 1 </>
-		<call_effect> 0 </>
-		<!-- The 32bit version of 0x1F - PUSHI -->
+		<!-- The 32bit version of 0x1F - UC_PUSHI -->
+	</>
+	<0xA4>
+		<name> UC_CALL32 </>
+		<asm_nmo> `call32\t%1` </>
+		<asm_comment> `\t\t;` </>
+		<ucs_nmo> `%f#1(%p,)` </>
+		<num_bytes> 4 </>
+		<param_types> {long} </>
+		<num_pop> 0 </>
+		<num_push> 0 </>
+		<call_effect/>
+		<!--
+Calls the function specified by the 32-bit parameter.
+		-->
 	</>
 	<0xAE>
-		<name> ENUM32 </>
-		<asm_nmo> `enum32` </>
+		<name> UC_LOOP32 </>
+		<asm_nmo> `initloop32` </>
 		<asm_comment> `` </>
 		<ucs_nmo> `//enum32()` </>
 		<num_bytes> 0 </>
 		<param_types> {} </>
 		<num_pop> 0 </>
 		<num_push> 0 </>
-		<call_effect> 0 </>
-		<!-- The 32bit version of 0x2E - ENUM -->
+		<!-- The 32bit version of 0x2E - UC_LOOP -->
 	</>
-	<0xB2>
-		<name> RTS32 </>
-		<asm_nmo> `rts32` </>
-		<asm_comment> `` </>
-		<ucs_nmo> `return rr` </>
-		<num_bytes> 0 </>
-		<param_types> {} </>
+	<0xB1>
+		<name> UC_CONVSMTH32 </>
+		<asm_nmo> `conv_something32\t%1 %2` </>
+		<asm_comment> `\t\t\t;` </>
+		<ucs_nmo> `smth32(0x%1) atend label%f*_%2` </>
+		<num_bytes> 6 </>
+		<param_types> {short,offset32} </>
 		<num_pop> 0 </>
 		<num_push> 0 </>
-		<call_effect> 0 </>
-		<return/>
-		<!-- The 32bit version of 0x32 - RTS -->
+		<!-- The 32bit version of 0x31 - UC_CONVSMTH -->
+	</>
+	<0xC2>
+		<name> UC_PUSHFVAR </>
+		<asm_nmo> `pushfvar` </>
+		<asm_comment> `\t\t\t;` </>
+		<ucs_nmo> `gflags[%p1]` </>
+		<num_bytes> 0 </>
+		<param_types> {} </>
+		<num_pop> 1 </>
+		<num_push> 1 </>
+		<!-- TODO: document -->
+	</>
+	<0xC3>
+		<name> UC_POPFVAR </>
+		<asm_nmo> `popfvar` </>
+		<asm_comment> `\t\t;` </>
+		<ucs_nmo> `gflags[%p1] = %p2` </>
+		<num_bytes> 0 </>
+		<param_types> {} </>
+		<num_pop> 2 </>
+		<num_push> 0 </>
+		<!-- TODO: document -->
+	</>
+	<0xC7>
+		<name> CALLE32 </>
+		<asm_nmo> `calle32\t%1H` </>
+		<asm_comment> `\t\t\t;` </>
+		<ucs_nmo> `%p1-&gt;%f#1()` </>
+		<num_bytes> 4 </>
+		<param_types> {long} </>
+		<num_pop> 1 </>
+		<num_push> 1 </>
+		<!--
+Calls the function (long) with "item" being equal to the
+element at the top of the stack. It does not return a
+value on the stack.
+
+In c-style notation, if the topmost element of the stack 
+is AVATAR = -356, and function 0x261 (Func0261) is 
+being called, we would have AVATAR->Func0261() and 
+inside Func0261, "item" would be the avatar.
+		-->
+	</>
+	<0xCD>
+		<name> UC_DBGFUNC32 </>
+		<asm_nmo> `dbgfunc32 %1 %2 ` </>
+		<asm_comment> `; %t1` </>
+		<ucs_nmo> `// Function: %t1 %2` </>
+		<num_bytes> 6 </>
+		<param_types> {short,dataoffset32} </>
+		<num_pop> 0 </>
+		<num_push> 0 </>
+		<debug/>
+		<!-- Debug opcode, 32-bit version -->
+	</>
+	<0xD4>
+		<name> UC_CALLINDEX </>
+		<asm_nmo> `callindex\t%1H` </>
+		<asm_comment> `\t\t\t;` </>
+		<ucs_nmo> `%p2-&gt;(*%p1)(%p+3)` </>
+		<num_bytes> 1 </>
+		<param_types> {byte} </>
+		<num_pop> 0xBF </>
+		<num_push> 0 </>
+		<!--
+Calls function pushed onto the stack.
+		-->
+	</>
+	<0xDC>
+		<name> UC_LOOPTOPS32 </>
+		<asm_nmo> `staticloop32\t[%1], [%2], [%3], [%4], %5` </>
+		<asm_comment> `\t\t\t;` </>
+		<ucs_nmo> `for (%v3 in %vs4 with %v1 to %v2) atend label%f*_%5` </>
+		<num_bytes> 12 </>
+		<param_types> {short,short,short,varoffset,offset32} </>
+		<num_pop> 0 </>
+		<num_push> 0 </>
+		<staticref/>
+		<loop/>
+		<!-- The 32bit version of 0x5C - UC_LOOPTOPS -->
+	</>
+	<0xDF>
+		<name> UC_LOOPTOPTHV32 </>
+		<asm_nmo> `clsvarloop32\t[%1], [%2], [%3], [%4], %5` </>
+		<asm_comment> `\t\t\t;` </>
+		<ucs_nmo> `for (%v3 in %vc4 with %v1 to %v2) atend label%f*_%5` </>
+		<num_bytes> 12 </>
+		<param_types> {short,short,short,varoffset,offset32} </>
+		<num_pop> 0 </>
+		<num_push> 0 </>
+		<loop/>
+		<!-- The 32bit version of 0x5F - UC_LOOPTOPTHV -->
 	</>
 	<0x101>
 		<name> LABEL </>
@@ -964,7 +1262,6 @@ Debug opcode -- currently only found in the .es version of SI
 		<param_types> {offset} </>
 		<num_pop> 1 </>
 		<num_push> 0 </>
-		<call_effect> 0 </>
 		<indent_tmpdec/>
 		<!--
 Fake opcode -- for use with optimisations within ucxt
