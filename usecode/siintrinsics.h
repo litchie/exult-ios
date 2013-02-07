@@ -160,7 +160,7 @@ USECODE_INTRINSIC_PTR(get_random),          // 0
                       USECODE_INTRINSIC_PTR(is_readied),          // 0x88
                       USECODE_INTRINSIC_PTR(restart_game),            // 0x89
                       USECODE_INTRINSIC_PTR(start_speech),            // 0x8a
-                      USECODE_INTRINSIC_PTR(run_endgame),         // 0x8b StartEndGame (ucdump.c)
+                      USECODE_INTRINSIC_PTR(run_endgame),         // 0x8b
                       USECODE_INTRINSIC_PTR(fire_projectile),     // 0x8c - known
                       USECODE_INTRINSIC_PTR(nap_time),            // 0x8d
                       USECODE_INTRINSIC_PTR(advance_time),            // 0x8e

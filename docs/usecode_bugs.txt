@@ -3,7 +3,7 @@ Started by: Artaxerxes (artaxerxes@users.sf.net)
 
 Forewords:
 every action on usecode should be done on the _disassembled_ usecode. Please
-use "rip" and "wud" to disassemble usecode appropriately. Once the changes are
+use "rip" and "ucxt" to disassemble usecode appropriately. Once the changes are
 made, re-assemble using "wuc" and "rip". Those tools can be found on Exult's
 download page.
 

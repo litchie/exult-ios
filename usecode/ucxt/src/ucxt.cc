@@ -99,42 +99,6 @@ int main(int argc, char **argv) {
 	ucxtInit init;
 	init.init(*config, uc.options);
 
-#if 0
-	{
-		cout << "<opcodes>" << endl;
-
-		for (typeof(opcode_table_data.begin()) i = opcode_table_data.begin(); i != opcode_table_data.end(); ++i) {
-			if (i->opcode != 0 && i->name != "NULL") {
-				cout << "\t<0x" << setw(2) << i->opcode << '>' << endl;
-
-				cout << "\t\t<name> " << i->name << " </>" << endl;
-				cout << "\t\t<asm_nmo> `" << i->asm_nmo << "` </>" << endl;
-				cout << "\t\t<asm_comment> `" << i->asm_comment << "` </>" << endl;
-				cout << "\t\t<ucs_nmo> `" << i->ucs_nmo << "` </>" << endl;
-				cout << "\t\t<num_bytes> " << i->num_bytes << " </>" << endl;
-
-				cout << "\t\t<param_types> {";
-				for (typeof(i->param_types.begin()) j = i->param_types.begin(); j != i->param_types.end(); ++j)
-					cout << *j << ',';
-				cout << "} </>" << endl;
-
-				cout << "\t\t<num_pop> " << i->num_pop << " </>" << endl;
-				cout << "\t\t<num_push> " << i->num_push << " </>" << endl;
-				cout << "\t\t<call_effect> " << i->call_effect << " </>" << endl;
-				if (i->flag_return) cout << "\t\t<return/>" << endl;
-				if (i->flag_paren) cout << "\t\t<paren/>" << endl;
-				if (i->flag_indent_inc) cout << "\t\t<indent_inc/>" << endl;
-				if (i->flag_indent_dec) cout << "\t\t<indent_dec/>" << endl;
-				if (i->flag_indent_tmpinc) cout << "\t\t<indent_tmpinc/>" << endl;
-				if (i->flag_indent_tmpdec) cout << "\t\t<indent_tmpdec/>" << endl;
-
-				cout << "\t</>" << endl;
-			}
-		}
-		cout << "</>" << endl;
-	}
-#endif
-
 	// ICK! Don't try this at home kids...
 	// done because for some reason it started crashing upon piping or redirection to file... wierd.
 	// yes, it's a hack to fix an eldritch bug I could't find... it seems appropriate
@@ -157,7 +121,7 @@ int main(int argc, char **argv) {
 	if (uc.opt().output_extern_header) {
 		uc.output_extern_header(cout);
 	} else if (uc.options.mode_dis || uc.options.mode_all) {
-		uc.disassamble();
+		uc.disassamble(cout);
 	} else if (uc.options.output_flag) {
 		uc.dump_flags(cout);
 	} else
@@ -381,12 +345,6 @@ void usage() {
 	     << "\t\t- prints all of the functions" << endl
 	     << "\tucxt [options] <hex function number>" << endl
 	     << "\t\t- disassembles single function to stdout" << endl
-//       << "\tucdump -c - scans the whole usecode file for unknown opcodes" << endl
-//       << "\tucdump -o <hex number> - prints list of functions which use "
-//       << "the given opcode" << endl
-//       << "\tucdump -i <hex number> - prints list of functions which use "
-//       << "the given intrinsic function\n" << endl
-//       << "\tucxt -f - prints list of all flags x functions" << endl
 	     << endl
 	     << "\tMisc Flags (any/all of these):" << endl
 	     << "\t\t-nc\t- don't look for exult's .xml config file" << endl

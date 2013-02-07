@@ -30,6 +30,8 @@ public:
 		: _id(id), _offset(offset), _params(params), _tagged(false) {};
 	UCc(const unsigned int id, const std::string &miscstr)
 		: _id(id), _miscstr(miscstr) {};
+	UCc(const std::vector<unsigned int> &params_parsed)
+		: _id(0), _offset(0), _params_parsed(params_parsed), _tagged(false) {};
 	//UCc() : _id(0), _offset(0), _tagged(false) {};
 
 	unsigned int               _id;
@@ -72,6 +74,9 @@ public:
 	};
 	bool game_ss()      const {
 		return _game == GAME_SS;
+	};
+	bool game_u7()      const {
+		return game_bg() || game_si() || game_fov() || game_ss();
 	};
 	bool game_u8()      const {
 		return _game == GAME_U8;

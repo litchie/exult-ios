@@ -48,11 +48,11 @@ class Basic_block;
 
 class Opcode {
 protected:
-	char opcode;
+	UsecodeOps opcode;
 	vector<char> params;
 	bool is_jump;
 public:
-	Opcode(char op) : opcode(op) {
+	Opcode(UsecodeOps op) : opcode(op) {
 		switch (opcode) {
 		case UC_LOOPTOP:
 		case UC_LOOPTOPS:
@@ -126,7 +126,7 @@ public:
 			break;
 		}
 	}
-	int get_opcode() const {
+	UsecodeOps get_opcode() const {
 		return opcode;
 	}
 	void WriteParam1(unsigned short val) {
@@ -139,12 +139,12 @@ public:
 		Write4(params, val);
 	}
 	void write(vector<char> &out) {
-		Write1(out, opcode);
+		Write1(out, static_cast<uint32>(opcode));
 		out.insert(out.end(), params.begin(), params.end());
 	}
 #ifdef DEBUG    // For debugging.
 	void write_text() const {
-		cout << setw(2) << setfill('0') << static_cast<int>(static_cast<unsigned char>(opcode)) << ' ';
+		cout << setw(2) << setfill('0') << static_cast<int>(opcode) << ' ';
 		for (vector<char>::const_iterator it = params.begin();
 		        it != params.end(); ++it)
 			cout << setw(2) << setfill('0') << static_cast<int>(static_cast<unsigned char>(*it)) << ' ';
@@ -193,7 +193,7 @@ public:
 
 class Basic_block {
 	friend void PopOpcode(Basic_block *dest);
-	friend void WriteOp(Basic_block *dest, unsigned short val);
+	friend void WriteOp(Basic_block *dest, UsecodeOps val);
 	friend void WriteOpParam1(Basic_block *dest, unsigned short val);
 	friend void WriteOpParam2(Basic_block *dest, unsigned short val);
 	friend void WriteOpParam4(Basic_block *dest, unsigned int val);
@@ -230,7 +230,7 @@ public:
 		    jmp_op(0), reachable(false) {
 		instructions.reserve(100);
 	}
-	Basic_block(int ind, Basic_block *t = 0, Basic_block *n = 0, int ins = -1)
+	Basic_block(int ind, Basic_block *t = 0, Basic_block *n = 0, UsecodeOps ins = UC_INVALID)
 		:   index(ind), taken(t), taken_index(-1), ntaken(n), ntaken_index(-1),
 		    jmp_op(new Opcode(ins)), reachable(false) {
 		if (index != -1) instructions.reserve(100);
@@ -249,15 +249,15 @@ public:
 	void set_index(int ind) {
 		index = ind;
 	}
-	int get_opcode() const {
-		return jmp_op ? jmp_op->get_opcode() : -1;
+	UsecodeOps get_opcode() const {
+		return jmp_op ? jmp_op->get_opcode() : UC_INVALID;
 	}
 	void clear_jump() {
 		delete jmp_op;
 		jmp_op = 0;
 	}
-	int get_last_instruction() const {
-		return instructions.size() ? instructions.back()->get_opcode() : -1;
+	UsecodeOps get_last_instruction() const {
+		return instructions.size() ? instructions.back()->get_opcode() : UC_INVALID;
 	}
 	void set_32bit_jump() {
 		if (jmp_op) jmp_op->set_32bit();
@@ -315,8 +315,8 @@ public:
 		}
 		return true;
 	}
-	int get_return_opcode() const {
-		return ends_in_return() ? instructions.back()->get_opcode() : -1;
+	UsecodeOps get_return_opcode() const {
+		return ends_in_return() ? instructions.back()->get_opcode() : UC_INVALID;
 	}
 	bool is_simple_return_block() const {
 		return instructions.size() == 1 && instructions.back()->is_return();
@@ -375,7 +375,7 @@ public:
 			ntaken->predecessors.erase(this);
 		ntaken = dest;
 	}
-	void set_targets(int op, Basic_block *t = 0, Basic_block *n = 0) {
+	void set_targets(UsecodeOps op, Basic_block *t = 0, Basic_block *n = 0) {
 		clear_jump();
 		if (op != -1)
 			jmp_op = new Opcode(op);
@@ -497,7 +497,7 @@ inline void PopOpcode(Basic_block *dest) {
  *  and marks it as the last opcode.
  */
 
-inline void WriteOp(Basic_block *dest, unsigned short val) {
+inline void WriteOp(Basic_block *dest, UsecodeOps val) {
 	Opcode *op = new Opcode(val);
 	dest->instructions.push_back(op);
 }

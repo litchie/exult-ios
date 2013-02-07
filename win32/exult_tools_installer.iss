@@ -55,7 +55,6 @@ Source: Tools\tools\u7voice2syx.exe; DestDir: {app}\tools\; Flags: ignoreversion
 Source: Tools\tools\ucc.exe; DestDir: {app}\tools\; Flags: ignoreversion
 Source: Tools\tools\ucformat.txt; DestDir: {app}\tools\; Flags: ignoreversion
 Source: Tools\tools\wuc.exe; DestDir: {app}\tools\; Flags: ignoreversion
-Source: Tools\tools\wud.exe; DestDir: {app}\tools\; Flags: ignoreversion
 
 [Dirs]
 Name: {app}\data

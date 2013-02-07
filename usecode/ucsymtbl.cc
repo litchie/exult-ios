@@ -226,3 +226,13 @@ void Usecode_class_symbol::write(ostream &out) {
 		Write2(out, *it);
 	Write2(out, num_vars);
 }
+
+bool Usecode_symbol_table::has_symbol_table(std::istream &in) {
+	uint32 magic = Read4(in);   // Test for symbol table.
+	if (magic == UCSYMTBL_MAGIC0 && (magic = Read4(in)) == UCSYMTBL_MAGIC1)
+		return true;
+	else {
+		in.seekg(0);
+		return false;
+	}
+}

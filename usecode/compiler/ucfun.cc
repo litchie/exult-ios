@@ -300,7 +300,7 @@ Uc_symbol *Uc_function::add_int_const_symbol(
 	if (cur_scope->is_dup(nm))
 		return 0;
 	// Create & assign slot.
-	Uc_const_int_symbol *var = new Uc_const_int_symbol(nm, value, opcode);
+	Uc_const_int_symbol *var = new Uc_const_int_symbol(nm, value, static_cast<UsecodeOps>(opcode));
 	cur_scope->add(var);
 	return var;
 }
@@ -319,7 +319,7 @@ Uc_symbol *Uc_function::add_global_int_const_symbol(
 	if (globals.is_dup(nm))
 		return 0;
 	// Create & assign slot.
-	Uc_const_int_symbol *var = new Uc_const_int_symbol(nm, value, opcode);
+	Uc_const_int_symbol *var = new Uc_const_int_symbol(nm, value, static_cast<UsecodeOps>(opcode));
 	globals.add(var);
 	return var;
 }
@@ -531,7 +531,7 @@ static int Optimize_jumps(
 					}
 					if (remove) {
 						// Set destination to end block.
-						block->set_targets(-1, aux->get_taken());
+						block->set_targets(UC_INVALID, aux->get_taken());
 						++nremoved;
 						continue;
 					}
@@ -560,7 +560,7 @@ static int Optimize_jumps(
 					// Conditional jump followed by jump block which
 					// descends solely from current block.
 					// Reverse condition.
-					int opcode = block->get_last_instruction();
+					UsecodeOps opcode = block->get_last_instruction();
 					switch (opcode) {
 					case UC_CMPG:
 						opcode = UC_CMPLE;
@@ -583,10 +583,10 @@ static int Optimize_jumps(
 					case UC_NOT:
 						break;
 					default:
-						opcode = -1;
+						opcode = UC_INVALID;
 						break;
 					}
-					if (opcode == -1)
+					if (opcode == UC_INVALID)
 						WriteOp(block, UC_NOT);
 					else {
 						PopOpcode(block);
@@ -716,7 +716,7 @@ void Uc_function::gen(
 		statement->gen(this, fun_blocks, current, endblock, label_blocks);
 	assert(initial->no_parents() && endblock->is_childless());
 	if (!fun_blocks.back()->is_end_block())
-		fun_blocks.back()->set_targets(-1, endblock);
+		fun_blocks.back()->set_targets(UC_INVALID, endblock);
 	// Mark all blocks reachable from initial block.
 	initial->mark_reachable();
 	// Labels map is no longer needed.

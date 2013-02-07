@@ -426,9 +426,9 @@ public:
  */
 class Uc_const_int_symbol : public Uc_symbol {
 	int value;
-	int opcode;
+	UsecodeOps opcode;
 public:
-	Uc_const_int_symbol(const char *nm, int v, int op = UC_PUSHI)
+	Uc_const_int_symbol(const char *nm, int v, UsecodeOps op = UC_PUSHI)
 		: Uc_symbol(nm), opcode(op) {
 		if (opcode == UC_PUSHB)
 			value = static_cast<char>(v & 0xff);
@@ -444,7 +444,7 @@ public:
 	int get_value() const {
 		return value;
 	}
-	bool get_opcode() const {
+	UsecodeOps get_opcode() const {
 		return opcode;
 	}
 	virtual int get_sym_type() const {

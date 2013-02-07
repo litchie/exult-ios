@@ -101,6 +101,9 @@ public:
 	Usecode_class_symbol *get_class(int n) {
 		return static_cast<unsigned>(n) < classes.size() ? classes[n] : 0;
 	}
+	int get_num_classes() const {
+		return static_cast<int>(classes.size());
+	}
 	Usecode_class_symbol *get_class(const char *nm);
 	int get_high_shape_fun(int val);
 	bool is_object_fun(int val);
@@ -128,6 +131,9 @@ public:
 	int get_num_vars() {
 		return num_vars;
 	}
+	int get_num_methods() {
+		return static_cast<int>(methods.size());
+	}
 	void read(std::istream &in);
 	void write(std::ostream &out);
 };
@@ -140,6 +146,7 @@ public:
 class Usecode_symbol_table : public Usecode_scope_symbol {
 public:
 	Usecode_symbol_table() {  }
+	static bool has_symbol_table(std::istream &in);
 };
 
 #endif

@@ -17,7 +17,7 @@ GTHUMB=
 endif
 
 if BUILD_TOOLS
-NOINSTTOOLS = wuc wud mklink rip ucdump cmanip
+NOINSTTOOLS = wuc mklink rip cmanip
 EXTRATOOLS = splitshp shp2pcx textpack
 else
 EXTRATOOLS =
@@ -71,18 +71,9 @@ wuc_SOURCES = \
 	wuc.c \
 	uctools.h
 
-wud_SOURCES = wud.cc
-
-wud_LDADD = \
-	$(SYSLIBS) \
-	../files/libu7file.la \
-	../usecode/libusecode.la
-
 mklink_SOURCES = mklink.c
 
 rip_SOURCES = rip.c
-
-#ucdump_SOURCES = ucdump.c
 
 shp2pcx_SOURCES = shp2pcx.cc
 
