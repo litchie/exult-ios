@@ -71,6 +71,7 @@
 #include "ucsymtbl.h"
 #include "databuf.h"
 #include "usefuns.h"
+#include "opcodes.h"
 
 #if (defined(USE_EXULTSTUDIO) && defined(USECODE_DEBUGGER))
 #include "server.h"
@@ -1880,9 +1881,9 @@ int Usecode_internal::run() {
 
 			int current_IP = frame->ip - frame->code;
 
-			int opcode = *(frame->ip);
+			UsecodeOps opcode = static_cast<UsecodeOps>(*(frame->ip));
 
-			if (frame->ip + get_opcode_length(opcode) > frame->endp) {
+			if (frame->ip + get_opcode_length(static_cast<int>(opcode)) > frame->endp) {
 				cerr << "Operands lie outside of code segment. ";
 				CERR_CURRENT_IP();
 				continue;
@@ -1970,9 +1971,9 @@ int Usecode_internal::run() {
 			frame->ip++;
 
 			switch (opcode) {
-			case 0x04:  // start conversation
-			case 0x84: { // (32 bit version)
-				if (opcode < 0x80)
+			case UC_CONVERSE:     // start conversation
+			case UC_CONVERSE32: { // (32 bit version)
+				if (opcode < UC_EXTOPCODE)
 					offset = Read2s(frame->ip);
 				else
 					offset = Read4s(frame->ip);
@@ -1982,9 +1983,9 @@ int Usecode_internal::run() {
 					frame->ip += offset; // (Emps and honey.)
 				break;
 			}
-			case 0x05:      // JNE.
-			case 0x85: {    // JNE32
-				if (opcode < 0x80)
+			case UC_JNE:        // JNE.
+			case UC_JNE32: {    // JNE32
+				if (opcode < UC_EXTOPCODE)
 					offset = Read2s(frame->ip);
 				else
 					offset = Read4s(frame->ip);
@@ -1993,18 +1994,18 @@ int Usecode_internal::run() {
 					frame->ip += offset;
 				break;
 			}
-			case 0x06:      // JMP.
-			case 0x86:      // JMP32
-				if (opcode < 0x80)
+			case UC_JMP:        // JMP.
+			case UC_JMP32:      // JMP32
+				if (opcode < UC_EXTOPCODE)
 					offset = Read2s(frame->ip);
 				else
 					offset = Read4s(frame->ip);
 				frame->ip += offset;
 				break;
-			case 0x07:      // CMPS.
-			case 0x87: { // (32 bit version)
+			case UC_CMPS:     // CMPS.
+			case UC_CMPS32: { // (32 bit version)
 				int cnt = Read2(frame->ip); // # strings.
-				if (opcode < 0x80)
+				if (opcode < UC_EXTOPCODE)
 					offset = Read2s(frame->ip);
 				else
 					offset = Read4s(frame->ip);
@@ -2026,59 +2027,59 @@ int Usecode_internal::run() {
 					frame->ip += offset;
 			}
 			break;
-			case 0x09: {    // ADD.
+			case UC_ADD: {    // ADD.
 				Usecode_value v2 = pop();
 				Usecode_value v1 = pop();
 				Usecode_value retval = v1 + v2;
 				push(retval);
 				break;
 			}
-			case 0x0a: {    // SUB.
+			case UC_SUB: {    // SUB.
 				Usecode_value v2 = pop();
 				Usecode_value v1 = pop();
 				Usecode_value retval = v1 - v2;
 				push(retval);
 				break;
 			}
-			case 0x0b: {    // DIV.
+			case UC_DIV: {    // DIV.
 				Usecode_value v2 = pop();
 				Usecode_value v1 = pop();
 				Usecode_value retval = v1 / v2;
 				push(retval);
 				break;
 			}
-			case 0x0c: {    // MUL.
+			case UC_MUL: {    // MUL.
 				Usecode_value v2 = pop();
 				Usecode_value v1 = pop();
 				Usecode_value retval = v1 * v2;
 				push(retval);
 				break;
 			}
-			case 0x0d: {    // MOD.
+			case UC_MOD: {    // MOD.
 				Usecode_value v2 = pop();
 				Usecode_value v1 = pop();
 				Usecode_value retval = v1 % v2;
 				push(retval);
 				break;
 			}
-			case 0x0e: {    // AND.
+			case UC_AND: {    // AND.
 				Usecode_value v1 = pop();
 				Usecode_value v2 = pop();
 				int result = v1.is_true() && v2.is_true();
 				pushi(result);
 				break;
 			}
-			case 0x0f: {    // OR.
+			case UC_OR: {    // OR.
 				Usecode_value v1 = pop();
 				Usecode_value v2 = pop();
 				int result = v1.is_true() || v2.is_true();
 				pushi(result);
 				break;
 			}
-			case 0x10:      // NOT.
+			case UC_NOT:      // NOT.
 				pushi(!pop().is_true());
 				break;
-			case 0x12: {    // POP into a variable.
+			case UC_POP: {    // POP into a variable.
 				offset = Read2(frame->ip);
 				// Get value.
 				Usecode_value val = pop();
@@ -2089,37 +2090,37 @@ int Usecode_internal::run() {
 				}
 				break;
 			}
-			case 0x13:      // PUSH true.
+			case UC_PUSHTRUE:      // PUSH true.
 				pushi(1);
 				break;
-			case 0x14:      // PUSH false.
+			case UC_PUSHFALSE:     // PUSH false.
 				pushi(0);
 				break;
-			case 0x16:      // CMPGT.
+			case UC_CMPG:      // CMPG.
 				sval = popi();
 				pushi(popi() > sval);   // Order?
 				break;
-			case 0x17:      // CMPL.
+			case UC_CMPL:      // CMPL.
 				sval = popi();
 				pushi(popi() < sval);
 				break;
-			case 0x18:      // CMPGE.
+			case UC_CMPGE:     // CMPGE.
 				sval = popi();
 				pushi(popi() >= sval);
 				break;
-			case 0x19:      // CMPLE.
+			case UC_CMPLE:     // CMPLE.
 				sval = popi();
 				pushi(popi() <= sval);
 				break;
-			case 0x1a: {    // CMPNE.
+			case UC_CMPNE: {   // CMPNE.
 				Usecode_value val1 = pop();
 				Usecode_value val2 = pop();
 				pushi(!(val1 == val2));
 				break;
 			}
-			case 0x1c:      // ADDSI.
-			case 0x9c:      // ADDSI32
-				if (opcode < 0x80)
+			case UC_ADDSI:        // ADDSI.
+			case UC_ADDSI32:      // ADDSI32
+				if (opcode < UC_EXTOPCODE)
 					offset = Read2(frame->ip);
 				else
 					offset = Read4s(frame->ip);
@@ -2129,9 +2130,9 @@ int Usecode_internal::run() {
 				}
 				append_string(frame->data + offset);
 				break;
-			case 0x1d:      // PUSHS.
-			case 0x9d:      // PUSHS32
-				if (opcode < 0x80)
+			case UC_PUSHS:        // PUSHS.
+			case UC_PUSHS32:      // PUSHS32
+				if (opcode < UC_EXTOPCODE)
 					offset = Read2(frame->ip);
 				else
 					offset = Read4s(frame->ip);
@@ -2141,7 +2142,7 @@ int Usecode_internal::run() {
 				}
 				pushs(frame->data + offset);
 				break;
-			case 0x1e: {    // ARRC.
+			case UC_ARRC: {    // ARRC.
 				// Get # values to pop into array.
 				int num = Read2(frame->ip);
 				int cnt = num;
@@ -2156,18 +2157,18 @@ int Usecode_internal::run() {
 				push(arr);
 				break;
 			}
-			case 0x1f:      // PUSHI.
-			case 0x9f: {    // PUSHI32
+			case UC_PUSHI:        // PUSHI.
+			case UC_PUSHI32: {    // PUSHI32
 				// Might be negative.
 				int ival;
-				if (opcode < 0x80)
+				if (opcode < UC_EXTOPCODE)
 					ival = Read2s(frame->ip);
 				else
 					ival = Read4s(frame->ip);
 				pushi(ival);
 				break;
 			}
-			case 0x21:      // PUSH.
+			case UC_PUSH:      // PUSH.
 				offset = Read2(frame->ip);
 				if (offset < 0 || offset >= num_locals) {
 					LOCAL_VAR_ERROR(offset);
@@ -2176,13 +2177,13 @@ int Usecode_internal::run() {
 					push(frame->locals[offset]);
 				}
 				break;
-			case 0x22: {    // CMPEQ.
+			case UC_CMPEQ: {    // CMPEQ.
 				Usecode_value val1 = pop();
 				Usecode_value val2 = pop();
 				pushi(val1 == val2);
 				break;
 			}
-			case 0x24: {    // CALL.
+			case UC_CALL: {    // CALL.
 				offset = Read2(frame->ip);
 				if (offset < 0 || offset >= frame->num_externs) {
 					EXTERN_ERROR();
@@ -2196,27 +2197,27 @@ int Usecode_internal::run() {
 				frame_changed = true;
 				break;
 			}
-			case 0xa4: {    // 32-bit CALL.
+			case UC_CALL32: {    // 32-bit CALL.
 				offset = Read4s(frame->ip);
 				call_function(offset, frame->eventid);
 				frame_changed = true;
 				break;
 			}
-			case 0x25:      // RET. (End of procedure reached)
-			case 0x2C:      // RET. (Return from procedure)
+			case UC_RET:       // RET. (End of procedure reached)
+			case UC_RET2:      // RET. (Return from procedure)
 				show_pending_text();
 
 				return_from_procedure();
 				frame_changed = true;
 				break;
-			case 0x26:      // AIDX.
-			case 0x5A:      // AIDXS.
-			case 0x5D: {    // AIDXTHV.
+			case UC_AIDX:         // AIDX.
+			case UC_AIDXS:        // AIDXS.
+			case UC_AIDXTHV: {    // AIDXTHV.
 				sval = popi();  // Get index into array.
 				sval--;     // It's 1 based.
 				// Get # of local to index.
 				Usecode_value *val;
-				if (opcode == 0x26) {
+				if (opcode == UC_AIDX) {
 					offset = Read2(frame->ip);
 					if (offset < 0 || offset >= num_locals) {
 						LOCAL_VAR_ERROR(offset);
@@ -2224,7 +2225,7 @@ int Usecode_internal::run() {
 						break;
 					}
 					val = &(frame->locals[offset]);
-				} else if (opcode == 0x5d) {
+				} else if (opcode == UC_AIDXTHV) {
 					offset = Read2(frame->ip);
 					Usecode_value &ths = frame->get_this();
 					if (offset < 0 || offset >= ths.get_class_var_count()) {
@@ -2266,7 +2267,7 @@ int Usecode_internal::run() {
 					push(val->get_elem(sval));
 				break;
 			}
-			case 0x2d: {    // RET. (Return from function)
+			case UC_RETV: {    // RET. (Return from function)
 				// ++++ Testing.
 				show_pending_text();
 				Usecode_value r = pop();
@@ -2275,20 +2276,14 @@ int Usecode_internal::run() {
 				frame_changed = true;
 				break;
 			}
-			case 0x2e:      // INITLOOP (1st byte of loop)
-			case 0xae: {    // (32 bit version)
+			case UC_LOOP:        // INITLOOP (1st byte of loop)
+			case UC_LOOP32: {    // (32 bit version)
 				int nextopcode = *(frame->ip);
 				// No real reason to have 32-bit version of this instruction;
 				// keeping it for backward compatibility only.
-#if 0
-				if ((opcode & 0x80) != (nextopcode & 0x80)) {
-					cerr << "32-bit instruction mixed with 16-bit instruction in loop usecode!" << endl;
-					break;
-				}
-#endif
 				nextopcode &= 0x7f;
-				if (nextopcode != 0x02 && nextopcode != 0x5c &&
-				        nextopcode != 0x5f) {
+				if (nextopcode != UC_LOOPTOP && nextopcode != UC_LOOPTOPS &&
+				        nextopcode != UC_LOOPTOPTHV) {
 					cerr << "Invalid 2nd byte in loop!" << endl;
 					break;
 				} else {
@@ -2296,12 +2291,12 @@ int Usecode_internal::run() {
 				}
 				break;
 			}
-			case 0x02:  // LOOP (2nd byte of loop)
-			case 0x82:  // (32 bit version)
-			case 0x5c:  // LOOP (2nd byte of loop) using static array
-			case 0xdc:  // (32 bit version)
-			case 0x5f:  // LOOP (2nd byte of loop) using class member array
-			case 0xdf: { // (32 bit version)
+			case UC_LOOPTOP:        // LOOP (2nd byte of loop)
+			case UC_LOOPTOP32:      // (32 bit version)
+			case UC_LOOPTOPS:       // LOOP (2nd byte of loop) using static array
+			case UC_LOOPTOPS32:     // (32 bit version)
+			case UC_LOOPTOPTHV:     // LOOP (2nd byte of loop) using class member array
+			case UC_LOOPTOPTHV32: { // (32 bit version)
 				// Counter (1-based).
 				int local1 = Read2(frame->ip);
 				// Total count.
@@ -2310,10 +2305,10 @@ int Usecode_internal::run() {
 				int local3 = Read2(frame->ip);
 				// Array of values to loop over.
 				int local4;
-				bool is_32bit = (opcode > 0x80);
+				bool is_32bit = (opcode >= UC_EXTOPCODE);
 				// Mask off 32bit flag.
 				opcode &= 0x7f;
-				if (opcode == 0x5C)
+				if (opcode == UC_LOOPTOPS)
 					local4 = Read2s(frame->ip);
 				else
 					local4 = Read2(frame->ip);
@@ -2336,7 +2331,7 @@ int Usecode_internal::run() {
 					LOCAL_VAR_ERROR(local3);
 					break;
 				}
-				if (opcode == 0x5c) {
+				if (opcode == UC_LOOPTOPS) {
 					if (local4 < 0) {// Global static.
 						if (static_cast<unsigned>(-local4) >= statics.size()) {
 							cerr << "Global static variable #" << (-local4) << " out of range!";
@@ -2350,7 +2345,7 @@ int Usecode_internal::run() {
 							break;
 						}
 					}
-				} else if (opcode == 0x5f) {
+				} else if (opcode == UC_LOOPTOPTHV) {
 					Usecode_value &ths = frame->get_this();
 					if (local4 < 0 || local4 >= ths.get_class_var_count()) {
 						cerr << "Class variable #" << (local4) << " out of range!";
@@ -2365,10 +2360,10 @@ int Usecode_internal::run() {
 				}
 
 				// Get array to loop over.
-				Usecode_value &arr = opcode == 0x5C ?
+				Usecode_value &arr = opcode == UC_LOOPTOPS ?
 				                     (local4 < 0 ? statics[-local4]
 				                      : frame->function->statics[local4])
-					                     : (opcode == 0x5f ?
+					                     : (opcode == UC_LOOPTOPTHV ?
 					                        frame->get_this().nth_class_var(local4) :
 					                        frame->locals[local4]);
 				if (initializing_loop && arr.is_undefined()) {
@@ -2467,7 +2462,7 @@ int Usecode_internal::run() {
 				}
 				break;
 			}
-			case 0x2f: {    // ADDSV.
+			case UC_ADDSV: {    // ADDSV.
 				offset = Read2(frame->ip);
 				if (offset < 0 || offset >= num_locals) {
 					LOCAL_VAR_ERROR(offset);
@@ -2489,20 +2484,20 @@ int Usecode_internal::run() {
 				}
 				break;
 			}
-			case 0x30: {    // IN.  Is a val. in an array?
+			case UC_IN: {    // IN.  Is a val. in an array?
 				Usecode_value arr = pop();
 				// If an array, use 1st elem.
 				Usecode_value val = pop().get_elem0();
 				pushi(arr.find_elem(val) >= 0);
 				break;
 			}
-			case 0x31:      // Unknown.
-			case 0xB1:      // (32 bit version)
+			case UC_CONVSMTH:        // Unknown.
+			case UC_CONVSMTH32:      // (32 bit version)
 				// this opcode only occurs in the 'audition' usecode function (BG)
 				// not sure what it's supposed to do, but this function results
 				// in the same behaviour as the original
 				frame->ip += 2;
-				if (opcode < 0x80)
+				if (opcode < UC_EXTOPCODE)
 					offset = Read2s(frame->ip);
 				else
 					offset = Read4s(frame->ip);
@@ -2513,7 +2508,7 @@ int Usecode_internal::run() {
 					frame->ip += offset;
 				break;
 
-			case 0x32: {    // RET. (End of function reached)
+			case UC_RETZ: {    // RET. (End of function reached)
 				show_pending_text();
 
 				Usecode_value zero(0);
@@ -2521,10 +2516,10 @@ int Usecode_internal::run() {
 				frame_changed = true;
 				break;
 			}
-			case 0x33:      // SAY.
+			case UC_SAY:      // SAY.
 				say_string();
 				break;
-			case 0x38: {    // CALLIS.
+			case UC_CALLIS: {    // CALLIS.
 				offset = Read2(frame->ip);
 				sval = *(frame->ip)++;  // # of parameters.
 				Usecode_value ival = call_intrinsic(frame->eventid,
@@ -2533,28 +2528,28 @@ int Usecode_internal::run() {
 				frame_changed = true;
 				break;
 			}
-			case 0x39:      // CALLI.
+			case UC_CALLI:       // CALLI.
 				offset = Read2(frame->ip);
 				sval = *(frame->ip)++; // # of parameters.
 				call_intrinsic(frame->eventid, offset, sval);
 				frame_changed = true;
 				break;
-			case 0x3e:      // PUSH ITEMREF.
+			case UC_PUSHITEMREF:      // PUSH ITEMREF.
 				pushref(frame->caller_item);
 				break;
-			case 0x3f:      // ABRT.
+			case UC_ABRT:      // ABRT.
 				show_pending_text();
 
 				abort_function();
 				frame_changed = true;
 				aborted = true;
 				break;
-			case 0x40:      // end conversation
+			case UC_CONVERSELOC:      // end conversation
 				found_answer = true;
 				break;
-			case 0x42:      // PUSHF.
-			case 0xC2:      // PUSHF2.
-				if (opcode > 0x80)
+			case UC_PUSHF:      // PUSHF.
+			case UC_PUSHFVAR:   // PUSHF2.
+				if (opcode >= UC_EXTOPCODE)
 					offset = popi();
 				else
 					offset = Read2(frame->ip);
@@ -2565,9 +2560,9 @@ int Usecode_internal::run() {
 					pushi(gflags[offset]);
 				}
 				break;
-			case 0x43:      // POPF.
-			case 0xC3:      // POPF2.
-				if (opcode > 0x80)
+			case UC_POPF:      // POPF.
+			case UC_POPFVAR:   // POPF2.
+				if (opcode >= UC_EXTOPCODE)
 					offset = popi();
 				else
 					offset = Read2(frame->ip);
@@ -2583,19 +2578,18 @@ int Usecode_internal::run() {
 #endif
 					}
 					// ++++KLUDGE for Monk Isle:
-					if (offset == 0x272 && Game::get_game_type() ==
-					        SERPENT_ISLE)
+					if (offset == 0x272 && GAME_SI)
 						gflags[offset] = 0;
 				}
 				break;
-			case 0x44:      // PUSHB.
+			case UC_PUSHB:      // PUSHB.
 				pushi(*(frame->ip)++);
 				break;
-			case 0x46:      // Set array element.
-			case 0x5B:      // Set static array element.
-			case 0x5E: {    // Set class member array element.
+			case UC_POPARR:         // Set array element.
+			case UC_POPARRS:        // Set static array element.
+			case UC_POPARRTHV: {    // Set class member array element.
 				Usecode_value *arr;
-				if (opcode == 0x46) {
+				if (opcode == UC_POPARR) {
 					offset = Read2(frame->ip);
 					// Get # of local array.
 					if (offset < 0 || offset >= num_locals) {
@@ -2603,7 +2597,7 @@ int Usecode_internal::run() {
 						break;
 					}
 					arr = &(frame->locals[offset]);
-				} else if (opcode == 0x5e) {
+				} else if (opcode == UC_POPARRTHV) {
 					offset = Read2(frame->ip);
 					Usecode_value &ths = frame->get_this();
 					if (offset < 0 || offset >= ths.get_class_var_count()) {
@@ -2641,12 +2635,12 @@ int Usecode_internal::run() {
 					arr->put_elem(index, val);
 				break;
 			}
-			case 0x47:      // CALLE.  Stack has caller_item.
-			case 0xc7: {    // 32-bit version.
+			case UC_CALLE:        // CALLE.  Stack has caller_item.
+			case UC_CALLE32: {    // 32-bit version.
 				Usecode_value ival = pop();
 				Game_object *caller = get_item(ival);
 				push(ival); // put caller_item back on stack
-				if (opcode < 0x80)
+				if (opcode < UC_EXTOPCODE)
 					offset = Read2(frame->ip);
 				else
 					offset = Read4s(frame->ip);
@@ -2654,27 +2648,27 @@ int Usecode_internal::run() {
 				frame_changed = true;
 				break;
 			}
-			case 0x48:      // PUSH EVENTID.
+			case UC_PUSHEVENTID:      // PUSH EVENTID.
 				pushi(frame->eventid);
 				break;
-			case 0x4a: {    // ARRA.
+			case UC_ARRA: {    // ARRA.
 				Usecode_value val = pop();
 				Usecode_value arr = pop();
 				push(arr.concat(val));
 				break;
 			}
-			case 0x4b:      // POP EVENTID.
+			case UC_POPEVENTID:      // POP EVENTID.
 				frame->eventid = popi();
 				break;
-			case 0x4c: { // debugging opcode from spanish SI (line number)
+			case UC_DBGLINE: { // debugging opcode from spanish SI (line number)
 				frame->line_number = Read2(frame->ip);
 				break;
 			}
-			case 0x4d: // debugging opcode from spanish SI (function init)
-			case 0xcd: { // 32 bit debugging function init
+			case UC_DBGFUNC:     // debugging opcode from spanish SI (function init)
+			case UC_DBGFUNC32: { // 32 bit debugging function init
 				int funcname;
 				int paramnames;
-				if (opcode < 0x80) {
+				if (opcode < UC_EXTOPCODE) {
 					funcname = Read2(frame->ip);
 					paramnames = Read2(frame->ip);
 				} else {
@@ -2747,7 +2741,7 @@ int Usecode_internal::run() {
 					cout << endl;
 				break;
 			}
-			case 0x50:      // PUSH static.
+			case UC_PUSHSTATIC:      // PUSH static.
 				offset = Read2s(frame->ip);
 				if (offset < 0) {// Global static.
 					if (static_cast<unsigned>(-offset) < statics.size())
@@ -2761,7 +2755,7 @@ int Usecode_internal::run() {
 						pushi(0);
 				}
 				break;
-			case 0x51: {    // POP static.
+			case UC_POPSTATIC: {    // POP static.
 				offset = Read2s(frame->ip);
 				// Get value.
 				Usecode_value val = pop();
@@ -2774,9 +2768,9 @@ int Usecode_internal::run() {
 						frame->function->statics.resize(offset + 1);
 					frame->function->statics[offset] = val;
 				}
+				break;
 			}
-			break;
-			case 0x52: {    // CALLO (call original).
+			case UC_CALLO: {    // CALLO (call original).
 				// Otherwise, like CALLE.
 				Usecode_value ival = pop();
 				Game_object *caller = get_item(ival);
@@ -2787,18 +2781,18 @@ int Usecode_internal::run() {
 				frame_changed = true;
 				break;
 			}
-			case 0x53:      // CALLIND:  call indirect.
-			case 0xD3:      // CALLINDEX_OLD:  call indirect with arguments.
-			case 0xD4: {    // CALLINDEX: call indirect with arguments.
+			case UC_CALLIND:         // CALLIND:  call indirect.
+			case UC_CALLINDEX_OLD:   // CALLINDEX_OLD:  call indirect with arguments.
+			case UC_CALLINDEX: {     // CALLINDEX: call indirect with arguments.
 				//  Function # is on stack.
 				Usecode_value funval = pop();
 				int offset = funval.get_int_value();
 				Usecode_value ival = pop();
 				Game_object *caller = get_item(ival);
 				int numargs;
-				if (opcode < 0x80)
+				if (opcode < UC_EXTOPCODE)
 					numargs = 0;
-				else if (opcode == 0xD3)
+				else if (opcode == UC_CALLINDEX_OLD)
 					numargs = popi();
 				else
 					numargs = *(frame->ip)++;
@@ -2806,13 +2800,13 @@ int Usecode_internal::run() {
 				frame_changed = true;
 				break;
 			}
-			case 0x54: {    // PUSH class this->var.
+			case UC_PUSHTHV: {    // PUSH class this->var.
 				offset = Read2(frame->ip);
 				Usecode_value &ths = frame->get_this();
 				push(ths.nth_class_var(offset));
 				break;
 			}
-			case 0x55: {    // POP class this->var.
+			case UC_POPTHV: {    // POP class this->var.
 				// Get value.
 				Usecode_value val = pop();
 				offset = Read2(frame->ip);
@@ -2820,11 +2814,11 @@ int Usecode_internal::run() {
 				ths.nth_class_var(offset) = val;
 				break;
 			}
-			case 0x56:      // CALLM - call method, use pushed var vtable.
-			case 0x57: {    // CALLMS - call method, use parameter vtable.
+			case UC_CALLM:       // CALLM - call method, use pushed var vtable.
+			case UC_CALLMS: {    // CALLMS - call method, use parameter vtable.
 				offset = Read2(frame->ip);
 				Usecode_class_symbol *c;
-				if (opcode == 0x56) {
+				if (opcode == UC_CALLM) {
 					Usecode_value thisptr = pop();
 					c = thisptr.get_class_ptr();
 				} else {
@@ -2840,7 +2834,7 @@ int Usecode_internal::run() {
 				frame_changed = true;
 				break;
 			}
-			case 0x58: {    // CLSCREATE
+			case UC_CLSCREATE: {    // CLSCREATE
 				int cnum = Read2(frame->ip);
 				Usecode_class_symbol *cls = symtbl->get_class(cnum);
 				if (!cls) {
@@ -2861,12 +2855,12 @@ int Usecode_internal::run() {
 				push(new_class);
 				break;
 			}
-			case 0x59: {    //CLASSDEL
+			case UC_CLASSDEL: {    //CLASSDEL
 				Usecode_value cls = pop();
 				cls.class_delete();
 				break;
 			}
-			case 0x60:      // PUSHCHOICE
+			case UC_PUSHCHOICE:    // PUSHCHOICE
 				pushs(user_choice);
 				break;
 			default:

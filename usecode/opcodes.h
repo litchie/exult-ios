@@ -9,6 +9,7 @@
 
 enum UsecodeOps {
 	UC_INVALID = -1,
+	UC_EXTOPCODE = 0x80,
 	UC_LOOPTOP = 0x02,
 	UC_CONVERSE = 0x04,
 	UC_JNE = 0x05,
