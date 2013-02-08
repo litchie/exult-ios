@@ -38,6 +38,9 @@
 	  incorrectly optimized if they ended with a return statement.
 	* usecode/compiler/basic_block.h: Using UsecodeOps enum.
 	* content/sifixes/src/header/si/si_npcs.uc: Extraneous space in comment URL.
+	Rev 7366
+	* all: Moved opcodes.h to usecode directory. Usecode_internal::run now uses
+	  the enum values from opcodes.h on switch statement.
 
 2013-02-01	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* audio/midi_drivers/MidiDriver/*, conf/Configuration.*: Eliminating extra
