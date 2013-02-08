@@ -841,7 +841,7 @@ inside Func0261, "item" would be the avatar.
 	</>
 	<0x53>
 		<name> UC_CALLIND </>
-		<asm_nmo> `callind\t%1H` </>
+		<asm_nmo> `callind` </>
 		<asm_comment> `\t\t\t;` </>
 		<ucs_nmo> `%p2-&gt;(*%p1)()` </>
 		<num_bytes> 0 </>
