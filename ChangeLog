@@ -32,6 +32,12 @@
 	  the 'FIXME's. Fixed bug introduced in Rev 7328 when fixing bug #1205910
 	  "UCXT: Parameter order reversed in function definitions".
 	* usecode/ucxt/makefile.unix, ucxt/data/opcodes.txt: Removing unused files.
+	Rev 7365
+	* usecode/ucxt/data/u7opcodes.data: Incorrect data for callind disassembly.
+	* usecode/compiler/ucfun.cc: Functions with a single basic block were being
+	  incorrectly optimized if they ended with a return statement.
+	* usecode/compiler/basic_block.h: Using UsecodeOps enum.
+	* content/sifixes/src/header/si/si_npcs.uc: Extraneous space in comment URL.
 
 2013-02-01	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* audio/midi_drivers/MidiDriver/*, conf/Configuration.*: Eliminating extra

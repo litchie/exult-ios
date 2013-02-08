@@ -389,7 +389,7 @@ enum monkisle_npcs
 // Residents of Castle of the White Dragon
 enum white_dragon_castle
 {
-	// The quotes are from http:// www.it-he.org
+	// The quotes are from http://www.it-he.org
 	ANTI_DUPRE = -263, // Haha! I am Dupre, bane of drunkenness!
 	ANTI_IOLO = -262,  // I am Iolo! Bane of shooting-the-Avatar-through-the-
 	                   // heart-with-the-triple-crossbow!
