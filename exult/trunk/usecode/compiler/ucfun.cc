@@ -715,10 +715,15 @@ void Uc_function::gen(
 	if (statement)
 		statement->gen(this, fun_blocks, current, endblock, label_blocks);
 	assert(initial->no_parents() && endblock->is_childless());
-	if (!fun_blocks.back()->is_end_block())
-		fun_blocks.back()->set_targets(UC_INVALID, endblock);
+	while (fun_blocks.size() && fun_blocks.back()->no_parents()) {
+		Basic_block *blk = fun_blocks.back();
+		fun_blocks.pop_back();
+		delete blk;
+	}
 	// Mark all blocks reachable from initial block.
 	initial->mark_reachable();
+	if (fun_blocks.size() && !fun_blocks.back()->is_end_block())
+		fun_blocks.back()->set_targets(UC_INVALID, endblock);
 	// Labels map is no longer needed.
 	for (map<string, Basic_block *>::iterator it = label_blocks.begin();
 	        it != label_blocks.end(); ++it) {

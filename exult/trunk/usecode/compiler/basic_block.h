@@ -377,7 +377,7 @@ public:
 	}
 	void set_targets(UsecodeOps op, Basic_block *t = 0, Basic_block *n = 0) {
 		clear_jump();
-		if (op != -1)
+		if (op != UC_INVALID)
 			jmp_op = new Opcode(op);
 		set_taken(t);
 		set_ntaken(n);
