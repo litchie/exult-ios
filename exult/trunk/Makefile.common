@@ -407,7 +407,7 @@ BG_MR_FACES = $(EXULT_BG_MR_FACES_VGA)
 
 all: $(EXEC)
 
-ucinternal.o : ucinternal.cc ucinternal.h bgintrinsics.h siintrinsics.h usefuns.h
+ucinternal.o : ucinternal.cc ucinternal.h bgintrinsics.h siintrinsics.h opcodes.h usefuns.h
 
 # Generated flex dependencies...
 
@@ -547,7 +547,7 @@ UCC_OBJS=\
 	usecode/compiler/ucsym.o \
 	usecode/compiler/ucclass.o
 
-ucc$(EXEEXT) : $(UCC_OBJS) files/utils.h usecode/bgintrinsics.h usecode/siintrinsics.h usecode/ucsymtbl.h
+ucc$(EXEEXT) : $(UCC_OBJS) files/utils.h usecode/bgintrinsics.h usecode/siintrinsics.h usecode/opcodes.h usecode/ucsymtbl.h
 	$(CXX) $(LDFLAGS) -o $(@) $(UCC_OBJS) -liberty
 
 ucparse.cc: usecode/compiler/ucparse.yy
