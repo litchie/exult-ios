@@ -1771,9 +1771,7 @@ expression:
 		{
 		if (!converse)	/* Only valid in converse blocks */
 			{
-			char buf[150];
-			sprintf(buf, "'CHOICE' can only be used in a conversation block!");
-			yyerror(buf);
+			yyerror("'CHOICE' can only be used in a conversation block!");
 			$$ = 0;
 			}
 		$$ = new Uc_choice_expression();
@@ -2036,9 +2034,7 @@ function_call:
 		int num;
 		if (!$3->eval_const(num))
 			{
-			char buf[150];
-			sprintf(buf, "Failed to obtain value from integer constant");
-			yyerror(buf);
+			yyerror("Failed to obtain value from integer constant");
 			$$ = 0;
 			}
 		else
