@@ -12,6 +12,7 @@ EXPACK=$(EXPACKDIR)/expack
 
 USECODE_OBJECTS = \
 	src/cutscenes/fawn_storm.uc	\
+	src/cutscenes/fawn_trial.uc	\
 	src/cutscenes/monitor_banquet.uc	\
 	src/cutscenes/wall_of_lights.uc	\
 	src/header/constants.uc	\

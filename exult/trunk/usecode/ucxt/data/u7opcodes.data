@@ -12,7 +12,10 @@
 # num_push: number of elements it pushes to the stack
 # The following are self-closing tags, whose presence is enough to set a flag
 # to true (and whose absence sets this flag to zero).
-#       call_effect: If present, this is a 'call type' opcode.
+#       call_effect: If present, this is a 'call type' opcode. Uses the extern
+#               function passed as parameter.
+#       function_effect: If present, this is a 'call type' opcode. Uses passed
+#                parameter as function ID.
 #       return: If present, it signifises that the function this opcode is found
 #               in returns a variable on the stack.
 #       paren:  If present, we output a pair of parenthesis around the usecode
@@ -284,7 +287,7 @@ MENTAL NOTE: assert(varoffset&gt;=0 &amp;&amp; varoffset&lt;num_local_variables)
 		<!-- Pushes false onto the stack. -->
 	</>
 	<0x16>
-		<name> UC_CMPG </>
+		<name> UC_CMPGT </>
 		<asm_nmo> `cmpgt` </>
 		<asm_comment> `` </>
 		<ucs_nmo> `%p2 &gt; %p1` </>
@@ -296,7 +299,7 @@ MENTAL NOTE: assert(varoffset&gt;=0 &amp;&amp; varoffset&lt;num_local_variables)
 		<!-- Tests if %p2 is greater then %p1. -->
 	</>
 	<0x17>
-		<name> UC_CMPL </>
+		<name> UC_CMPLT </>
 		<asm_nmo> `cmplt` </>
 		<asm_comment> `` </>
 		<ucs_nmo> `%p2 &lt; %p1` </>
@@ -714,7 +717,8 @@ it means 'end conversation'.
 		<num_bytes> 2 </>
 		<param_types> {short} </>
 		<num_pop> 1 </>
-		<num_push> 1 </>
+		<num_push> 0 </>
+		<function_effect/>
 		<!--
 Calls the function (short) with "item" being equal to the
 element at the top of the stack. It does not return a
@@ -823,11 +827,12 @@ MENTAL NOTE: assert(varoffset&gt;=0 &amp;&amp; varoffset&lt;num_local_variables)
 		<name> UC_CALLO </>
 		<asm_nmo> `callo\t%1H` </>
 		<asm_comment> `\t\t\t;` </>
-		<ucs_nmo> `%p1-&gt;%f#1.original()` </>
+		<ucs_nmo> `%p1-&gt;%f#1.original(%p+2)` </>
 		<num_bytes> 2 </>
 		<param_types> {short} </>
 		<num_pop> 1 </>
-		<num_push> 1 </>
+		<num_push> 0 </>
+		<function_effect/>
 		<!--
 Calls the original game function (short) with "item" being equal
 to the element at the top of the stack. It does not return a
@@ -1184,14 +1189,15 @@ Calls the function specified by the 32-bit parameter.
 		<!-- TODO: document -->
 	</>
 	<0xC7>
-		<name> CALLE32 </>
+		<name> UC_CALLE32 </>
 		<asm_nmo> `calle32\t%1H` </>
 		<asm_comment> `\t\t\t;` </>
 		<ucs_nmo> `%p1-&gt;%f#1()` </>
 		<num_bytes> 4 </>
 		<param_types> {long} </>
 		<num_pop> 1 </>
-		<num_push> 1 </>
+		<num_push> 0 </>
+		<function_effect/>
 		<!--
 Calls the function (long) with "item" being equal to the
 element at the top of the stack. It does not return a

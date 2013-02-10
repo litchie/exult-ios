@@ -135,7 +135,7 @@ static opcode_desc opcode_table[] = {
 	{ "pushb", 1, op_byte, 0, 1 },                  // 44
 	{ NULL, 0, 0, 0, 0 },                       // 45
 	{ "setarrayelem", 2, op_immed, 2, 0 },          // 46
-	{ "calle", 2, op_funid, 1, 1 },                 // 47
+	{ "calle", 2, op_funid, 1, 0 },                 // 47
 	{ "push\teventid", 0, 0, 0, 1 },                // 48
 	{ NULL, 0, 0, 0, 0 },                       // 49
 	{ "arra", 0, 0, 2, 1 },                 // 4a
@@ -239,7 +239,7 @@ static opcode_desc opcode_table[] = {
 	{ NULL, 0, 0, 0, 0 },                   // c4
 	{ NULL, 0, 0, 0, 0 },                       // c5
 	{ NULL, 0, 0, 0, 0 },           // c6
-	{ "calle32", 4, op_funid32, 1, 1 },         // c7
+	{ "calle32", 4, op_funid32, 1, 0 },         // c7
 	{ NULL, 0, 0, 0, 0 },               // c8
 	{ NULL, 0, 0, 0, 0 },                       // c9
 	{ NULL, 0, 0, 0, 0 },                   // ca

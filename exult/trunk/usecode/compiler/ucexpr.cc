@@ -377,10 +377,10 @@ bool Uc_binary_expression::eval_const(
 		}
 		val = val1 % val2;
 		return true;
-	case UC_CMPG:
+	case UC_CMPGT:
 		val = val1 > val2;
 		return true;
-	case UC_CMPL:
+	case UC_CMPLT:
 		val = val1 < val2;
 		return true;
 	case UC_CMPGE:

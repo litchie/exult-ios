@@ -165,6 +165,8 @@ version: 0.15.09
 	    
 6	Version history
 -------------------
+version: 0.15.10
+	- Fixed some missing barks in Fawn trial.
 version: 0.15.09
 	- Ship sails no longer have an ankh.
 version: 0.15.08
