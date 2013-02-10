@@ -283,7 +283,7 @@ bool Usecode_internal::call_function(int funcid,
 	}
 	cout << ") with event " << eventid
 	     << ", depth " << frame->call_depth << endl;
-	if (added_args)
+	if (added_args > 0)
 		cout << added_args << (added_args > 1 ? " args" : " arg")
 		     << " had to be added to the stack for this call" << endl;
 #endif
@@ -2096,11 +2096,11 @@ int Usecode_internal::run() {
 			case UC_PUSHFALSE:     // PUSH false.
 				pushi(0);
 				break;
-			case UC_CMPG:      // CMPG.
+			case UC_CMPGT:      // CMPGT.
 				sval = popi();
 				pushi(popi() > sval);   // Order?
 				break;
-			case UC_CMPL:      // CMPL.
+			case UC_CMPLT:      // CMPLT.
 				sval = popi();
 				pushi(popi() < sval);
 				break;
@@ -2639,7 +2639,6 @@ int Usecode_internal::run() {
 			case UC_CALLE32: {    // 32-bit version.
 				Usecode_value ival = pop();
 				Game_object *caller = get_item(ival);
-				push(ival); // put caller_item back on stack
 				if (opcode < UC_EXTOPCODE)
 					offset = Read2(frame->ip);
 				else
@@ -2774,8 +2773,6 @@ int Usecode_internal::run() {
 				// Otherwise, like CALLE.
 				Usecode_value ival = pop();
 				Game_object *caller = get_item(ival);
-				push(ival); // put caller_item back on stack
-
 				offset = Read2(frame->ip);
 				call_function(offset, frame->eventid, caller, false, true);
 				frame_changed = true;

@@ -1781,11 +1781,11 @@ expression:
 	| nonclass_expr NEQUALS nonclass_expr
 		{ $$ = new Uc_binary_expression(UC_CMPNE, $1, $3); }
 	| nonclass_expr '<' nonclass_expr
-		{ $$ = new Uc_binary_expression(UC_CMPL, $1, $3); }
+		{ $$ = new Uc_binary_expression(UC_CMPLT, $1, $3); }
 	| nonclass_expr LTEQUALS nonclass_expr
 		{ $$ = new Uc_binary_expression(UC_CMPLE, $1, $3); }
 	| nonclass_expr '>' nonclass_expr
-		{ $$ = new Uc_binary_expression(UC_CMPG, $1, $3); }
+		{ $$ = new Uc_binary_expression(UC_CMPGT, $1, $3); }
 	| nonclass_expr GTEQUALS nonclass_expr
 		{ $$ = new Uc_binary_expression(UC_CMPGE, $1, $3); }
 	| nonclass_expr AND nonclass_expr

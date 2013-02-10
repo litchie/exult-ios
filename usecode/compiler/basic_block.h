@@ -217,7 +217,7 @@ protected:
 	Opcode *jmp_op; // 0 for no instruction (fall-through) to taken
 	// block; otherwise, one of:
 	//  conditional jumps:
-	//      UC_JNE, UC_CMPS, UC_CONVERSE, UC_LOOPTOP, UC_LOOPTOPS
+	//      UC_JNE, UC_CMPS, UC_CONVERSE, UC_LOOPTOP, UC_LOOPTOPS, UC_LOOPTOPTHV
 	//  unconditional jumps:
 	//      UC_JMP
 	// or the 32-bit versions of these instructions.

@@ -182,24 +182,32 @@ PAPERDOL_VGA_OBJECTS = \
 
 SHAPES_VGA_OBJECTS = \
 	src/graphics/shapes.in	\
-	src/graphics/shapes/Avatar_Bodies.shp	\
+	src/graphics/../../../common/shapes/Avatar_Bodies.shp	\
+	src/graphics/../../../common/shapes/Black_Female_Avatar.shp	\
+	src/graphics/../../../common/shapes/Black_Female_Nude.shp	\
+	src/graphics/../../../common/shapes/Black_Male_Avatar.shp	\
+	src/graphics/../../../common/shapes/Black_Male_Nude.shp	\
+	src/graphics/../../../common/shapes/Blonde_Female_Avatar.shp	\
+	src/graphics/../../../common/shapes/Blonde_Female_Nude.shp	\
+	src/graphics/../../../common/shapes/Blonde_Male_Avatar.shp	\
+	src/graphics/../../../common/shapes/Blonde_Male_Nude.shp	\
+	src/graphics/../../../common/shapes/Brunette_Female_Avatar.shp	\
+	src/graphics/../../../common/shapes/Brunette_Female_Nude.shp	\
+	src/graphics/../../../common/shapes/Brunette_Male_Avatar.shp	\
+	src/graphics/../../../common/shapes/Brunette_Male_Nude.shp	\
+	src/graphics/../../../common/shapes/Buckethead_Female_Avatar.shp	\
+	src/graphics/../../../common/shapes/Buckethead_Male_Avatar.shp	\
+	src/graphics/../../../common/shapes/Raven_Female_Avatar.shp	\
+	src/graphics/../../../common/shapes/Raven_Female_Nude.shp	\
+	src/graphics/../../../common/shapes/Raven_Male_Avatar.shp	\
+	src/graphics/../../../common/shapes/Raven_Male_Nude.shp	\
+	src/graphics/../../../common/shapes/Redhead_Female_Avatar.shp	\
+	src/graphics/../../../common/shapes/Redhead_Female_Nude.shp	\
+	src/graphics/../../../common/shapes/Redhead_Male_Avatar.shp	\
+	src/graphics/../../../common/shapes/Redhead_Male_Nude.shp	\
 	src/graphics/shapes/Barrier.shp	\
-	src/graphics/shapes/Black_Female_Avatar.shp	\
-	src/graphics/shapes/Black_Female_Nude.shp	\
-	src/graphics/shapes/Black_Male_Avatar.shp	\
-	src/graphics/shapes/Black_Male_Nude.shp	\
-	src/graphics/shapes/Blonde_Female_Avatar.shp	\
-	src/graphics/shapes/Blonde_Female_Nude.shp	\
-	src/graphics/shapes/Blonde_Male_Avatar.shp	\
-	src/graphics/shapes/Blonde_Male_Nude.shp	\
 	src/graphics/shapes/Bodies.shp	\
 	src/graphics/shapes/Book.shp	\
-	src/graphics/shapes/Brunette_Female_Avatar.shp	\
-	src/graphics/shapes/Brunette_Female_Nude.shp	\
-	src/graphics/shapes/Brunette_Male_Avatar.shp	\
-	src/graphics/shapes/Brunette_Male_Nude.shp	\
-	src/graphics/shapes/Buckethead_Female_Avatar.shp	\
-	src/graphics/shapes/Buckethead_Male_Avatar.shp	\
 	src/graphics/shapes/Bucket.shp	\
 	src/graphics/shapes/Codex_Barrier.shp	\
 	src/graphics/shapes/Codex_Carpet.shp	\
@@ -232,14 +240,6 @@ SHAPES_VGA_OBJECTS = \
 	src/graphics/shapes/Moongate_NE_SW.shp	\
 	src/graphics/shapes/Moongate_NW_SE.shp	\
 	src/graphics/shapes/Potion.shp	\
-	src/graphics/shapes/Raven_Female_Avatar.shp	\
-	src/graphics/shapes/Raven_Female_Nude.shp	\
-	src/graphics/shapes/Raven_Male_Avatar.shp	\
-	src/graphics/shapes/Raven_Male_Nude.shp	\
-	src/graphics/shapes/Redhead_Female_Avatar.shp	\
-	src/graphics/shapes/Redhead_Female_Nude.shp	\
-	src/graphics/shapes/Redhead_Male_Avatar.shp	\
-	src/graphics/shapes/Redhead_Male_Nude.shp	\
 	src/graphics/shapes/Rooted_Laurianna.shp	\
 	src/graphics/shapes/Shamino.shp	\
 	src/graphics/shapes/Shrines.shp	\

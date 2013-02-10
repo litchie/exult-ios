@@ -360,7 +360,8 @@ vector<UCc *> UCFunc::parse_ucs_pass2a(vector<pair<UCc *, bool> >::reverse_itera
 
 		if (current->second == false) {
 			if ((opcode_table_data[current->first->_id].num_pop != 0) || (opcode_table_data[current->first->_id].flag_call_effect) ||
-			        (opcode_table_data[current->first->_id].flag_new_effect) || (opcode_table_data[current->first->_id].flag_method_effect)) {
+			        (opcode_table_data[current->first->_id].flag_new_effect) || (opcode_table_data[current->first->_id].flag_method_effect) ||
+			        (opcode_table_data[current->first->_id].flag_function_effect)) {
 				//if(opcode_table_data[current->first->_id].num_pop<0x7F)
 				{
 #ifdef DEBUG_PARSE2
@@ -429,13 +430,23 @@ vector<UCc *> UCFunc::parse_ucs_pass2a(vector<pair<UCc *, bool> >::reverse_itera
 #ifdef DEBUG_PARSE2a
 						cout << num_args << endl;
 #endif
+						
+					} else if (opcode_table_data[current->first->_id].flag_function_effect) {
+						assert(current->first->_params_parsed.size() >= 1);
+						FuncMap::const_iterator fmp = funcmap.find(current->first->_params_parsed[0]);
+						assert(fmp != funcmap.end());
+#ifdef DEBUG_PARSE2
+						cout << "CALL:     " << fmp->second.funcid << '\t' << fmp->second.num_args << endl;
+#endif
+
+						num_args = fmp->second.num_args + opcode_table_data[current->first->_id].num_pop;
 					} else if (opcode_table_data[current->first->_id].flag_call_effect) {
 						assert(current->first->_params_parsed.size() >= 1);
 						assert(_externs.size() >= current->first->_params_parsed[0]);
 						FuncMap::const_iterator fmp = funcmap.find(_externs[current->first->_params_parsed[0]]);
 						assert(fmp != funcmap.end());
 #ifdef DEBUG_PARSE2
-						cout << "CALL:     " << fmp->second.funcid << '\t' << fmp->second.num_args << endl;
+						cout << "CALL EXTERN:" << fmp->second.funcid << '\t' << fmp->second.num_args << endl;
 #endif
 
 						num_args = fmp->second.num_args;
@@ -453,6 +464,12 @@ vector<UCc *> UCFunc::parse_ucs_pass2a(vector<pair<UCc *, bool> >::reverse_itera
 						vector<pair<UCc *, bool> >::reverse_iterator ret(current);
 
 						ret->first->_popped = parse_ucs_pass2a(++current, vec, num_args, funcmap, intrinsics, symtbl);
+						unsigned nargs = static_cast<unsigned>(num_args);
+						if (num_args < 0 || nargs <= ret->first->_popped.size()) {
+							ret->first->_missing_args = 0;
+						} else {
+							ret->first->_missing_args = nargs - ret->first->_popped.size();
+						}
 
 						assert(current != ret);
 
@@ -506,6 +523,21 @@ vector<UCc *> UCFunc::parse_ucs_pass2a(vector<pair<UCc *, bool> >::reverse_itera
 					}
 				}
 				// if it's a call to a function that returns a variable...
+				else if (opcode_table_data[current->first->_id].flag_function_effect) {
+					FuncMap::const_iterator fmp = funcmap.find(current->first->_params_parsed[0]);
+					assert(fmp != funcmap.end());
+
+					if (fmp->second.return_var) {
+#ifdef DEBUG_PARSE2
+						output_asm_opcode(tab_indent(4, cout << "C-"), *this, funcmap, opcode_table_data, intrinsics, *(current->first));
+#endif
+
+						opsfound += 1;
+						vucc.push_back(current->first);
+						current->second = true;
+					}
+				}
+				// if it's a call to an extern function that returns a variable...
 				else if (opcode_table_data[current->first->_id].flag_call_effect) {
 					FuncMap::const_iterator fmp = funcmap.find(_externs[current->first->_params_parsed[0]]);
 					assert(fmp != funcmap.end());
@@ -520,19 +552,17 @@ vector<UCc *> UCFunc::parse_ucs_pass2a(vector<pair<UCc *, bool> >::reverse_itera
 						current->second = true;
 					}
 				}
-				// FIXME: Hack for partial UC_CALLM support.
-				else if (opsneeded >= 0)
-					current->second = true;
 
 				// if we've found all the ops we were searching for, return them
-				if (opsneeded >= 0 && opsfound >= opsneeded) {
-					return vucc;
-				} else if (opsneeded < 0 && current->second == false) {
-					// FIXME: Hack for partial UC_CALLM support.
-					// Need to unmark some as being visited.
+				if (opsneeded != 0 && current->second == false) {
+					if (opsneeded >= 0 && opsfound < opsneeded) {
+						cout << "DID NOT FIND ALL OPCODE PARAMETERS." << endl;
+					}
 					while (++current != vec.rend() && current->second == true) {
 						current->second = false;
 					}
+					return vucc;
+				} else if (opsneeded >= 0 && opsfound >= opsneeded) {
 					return vucc;
 				}
 			}
@@ -969,14 +999,19 @@ string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmst
 
 					for (; it != op._popped.end();) {
 						str << demunge_ocstring(ucf, funcmap, opcode_table_data[(*it)->_id].ucs_nmo, intrinsics, **it, ucs_output, symtbl);
-						if (++it != op._popped.end())
+						if (++it != op._popped.end() || op._missing_args != 0)
+							str << ", ";
+					}
+					for (unsigned ii = 0; ii < op._missing_args; ) {
+						str << "0x0000/*stack underflow*/";
+						if (++ii < op._missing_args)
 							str << ", ";
 					}
 				}
 
 				if (t != 0) {
 					if (t > op._popped.size())
-						str << "SOMETHING_GOES_HERE()";
+						str << "0x0000/*stack underflow*/";
 					else {
 						UCc &ucc(*op._popped[t - 1]);
 						str << demunge_ocstring(ucf, funcmap, opcode_table_data[ucc._id].ucs_nmo, intrinsics, ucc, ucs_output, symtbl);

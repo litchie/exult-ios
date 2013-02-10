@@ -27,12 +27,11 @@ class UCc;
 class UCc {
 public:
 	UCc(const unsigned int offset = 0, const unsigned int id = 0, const std::vector<unsigned char> &params = std::vector<unsigned char>())
-		: _id(id), _offset(offset), _params(params), _tagged(false) {};
+		: _id(id), _offset(offset), _params(params), _tagged(false), _missing_args(0) {};
 	UCc(const unsigned int id, const std::string &miscstr)
-		: _id(id), _miscstr(miscstr) {};
+		: _id(id), _miscstr(miscstr), _missing_args(0) {};
 	UCc(const std::vector<unsigned int> &params_parsed)
-		: _id(0), _offset(0), _params_parsed(params_parsed), _tagged(false) {};
-	//UCc() : _id(0), _offset(0), _tagged(false) {};
+		: _id(0), _offset(0), _params_parsed(params_parsed), _tagged(false), _missing_args(0) {};
 
 	unsigned int               _id;
 	std::string                _miscstr;
@@ -41,6 +40,7 @@ public:
 	std::vector<unsigned int>  _params_parsed;
 	bool                       _tagged;
 	std::vector<unsigned int>  _jump_offsets;
+	unsigned int               _missing_args;
 
 	/* A temporary array to hold the items this opcode theoretically popped
 	   from the stack. This should probably go in it's own wrapper class with
