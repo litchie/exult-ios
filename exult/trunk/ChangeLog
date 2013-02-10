@@ -1,3 +1,6 @@
+2013-02-10	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* usecode/compiler/ucparse.yy: Eliminated needless sprintfs.
+
 2013-02-09	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* usecode/*: Changed CMPG and CMPL opcodes to CMPGT and CMPLT. Fixed usecode
 	  stack buffer overrun (with potentially disastrous results) implicit in the
