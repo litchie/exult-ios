@@ -79,7 +79,7 @@ public:
 		flag_indent_dec(false), flag_indent_tmpinc(false),
 		flag_indent_tmpdec(false), flag_debug(false), flag_nosemicolon(false),
 		flag_abort(false), flag_staticref(false), flag_loop(false),
-		flag_new_effect(false), flag_method_effect(false)
+		flag_new_effect(false), flag_method_effect(false), flag_function_effect(false)
 	{};
 	UCOpcodeData(unsigned int op, const Configuration::KeyTypeList &ktl)
 		: opcode(op), num_bytes(0), num_pop(0),
@@ -88,7 +88,7 @@ public:
 		  flag_indent_dec(false), flag_indent_tmpinc(false),
 		  flag_indent_tmpdec(false), flag_debug(false) ,flag_nosemicolon(false),
 		  flag_abort(false), flag_staticref(false), flag_loop(false),
-		  flag_new_effect(false), flag_method_effect(false) {
+		  flag_new_effect(false), flag_method_effect(false), flag_function_effect(false) {
 		for (Configuration::KeyTypeList::const_iterator k = ktl.begin(); k != ktl.end(); ++k) {
 			switch (k->first[0]) {
 			case 'a':
@@ -101,6 +101,9 @@ public:
 				break;
 			case 'd':
 				if (k->first == "debug/")              flag_debug = true;
+				break;
+			case 'f':
+				if (k->first == "function_effect/")    flag_function_effect = true;
 				break;
 			case 'i':
 				if (k->first == "indent_inc/")         flag_indent_inc = true;
@@ -169,6 +172,7 @@ public:
 		o << "flag_loop: " << flag_loop << std::endl;
 		o << "flag_new_effect: " << flag_new_effect << std::endl;
 		o << "flag_method_effect: " << flag_method_effect << std::endl;
+		o << "flag_function_effect: " << flag_function_effect << std::endl;
 	};
 
 	unsigned int   opcode;
@@ -194,6 +198,7 @@ public:
 	bool           flag_loop;
 	bool           flag_new_effect;
 	bool           flag_method_effect;
+	bool           flag_function_effect;
 
 	std::vector<std::string> param_types;
 	// values caluclated from param_types

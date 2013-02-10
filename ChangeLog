@@ -1,3 +1,15 @@
+2013-02-09	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* usecode/*: Changed CMPG and CMPL opcodes to CMPGT and CMPLT. Fixed usecode
+	  stack buffer overrun (with potentially disastrous results) implicit in the
+	  CALLE/CALLE32/CALLO opcodes. This bug also caused the CALLO opcode to fail
+	  for functions with parameters. Eliminated spurious output when "adding" a
+	  negative number of items to the stack. Fixed bug in UCXT that caused the
+	  output of -fs to not print many things in the event of a stack underflow
+	  (as happens on function 0x329 in BG/FoV, function 0x91F in SI and function
+	  0x939 in SS). Improved handling of CALLE/CALLE32/CALLO opcodes in UCXT.
+	* docs/usecode_bugs.txt: Documented SS function 0x939 bug and its fix.
+	* content/sifixes/*: Fixed bug in function 0x939.
+
 2013-02-07	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* mapedit/shapelst.cc: Looking for shapes within two pixels of the clicked
 	  position in ES to allow selection of empty shapes.

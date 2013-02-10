@@ -562,17 +562,17 @@ static int Optimize_jumps(
 					// Reverse condition.
 					UsecodeOps opcode = block->get_last_instruction();
 					switch (opcode) {
-					case UC_CMPG:
+					case UC_CMPGT:
 						opcode = UC_CMPLE;
 						break;
-					case UC_CMPL:
+					case UC_CMPLT:
 						opcode = UC_CMPGE;
 						break;
 					case UC_CMPGE:
-						opcode = UC_CMPL;
+						opcode = UC_CMPLT;
 						break;
 					case UC_CMPLE:
-						opcode = UC_CMPG;
+						opcode = UC_CMPGT;
 						break;
 					case UC_CMPNE:
 						opcode = UC_CMPEQ;

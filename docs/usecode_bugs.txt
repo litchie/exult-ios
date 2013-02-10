@@ -216,11 +216,10 @@ with
 ==========================
 
 Gwennos activity flag gets set to 3 (talk) by the resurrect function (She 
-is even handled especially). This
-triggers an automatic conversation when the Avatar stands near her (event 
-== 0 or 9 I assume) and skips the function that checks for her 
-status: (!UI_get_item_flag(0xFF6B, 0x001E). When you stand far enough 
-apart this should not happen anyway. 
+is even handled especially). This triggers an automatic conversation when
+the Avatar stands near her (event == 0 or 9 I assume) and skips the
+function that checks for her status: (!UI_get_item_flag(0xFF6B, 0x001E).
+When you stand far enough apart this should not happen anyway. 
 
 Usecode function 08FE:
 
@@ -230,3 +229,31 @@ with
 0109: 1F 0C 00          pushi   000CH                   ; 12
 
 (0C = wander) and this should not happen.
+
+
+(SI) Fawn trial barks
+==========================
+
+The infamous functions 0x939 has problems in two of its code blocks that
+cause stack underflows and nothing much to happen. The root cause of these
+problems is that the last two extern function entries are swapped.
+When they are unswapped, there are a few extra barks, such as the avatar
+greeting the imprisoned party member, and Lady Yelinda calling Zulith.
+
+Usecode function 0939 (SS): in the function header:
+
+replace
+	.externsize  0004H
+	  .extern    08ACH
+	  .extern    08C5H
+	  .extern    0954H
+	  .extern    097FH
+with
+	.externsize  0004H
+	  .extern    08ACH
+	  .extern    08C5H
+	  .extern    097FH
+	  .extern    0954H
+
+With this, the function calls make sense without any further changes.
+

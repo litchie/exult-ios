@@ -107,6 +107,8 @@
 
 // Fixes the Fawn storm so that Iolo's lute is not duplicated
 #include "cutscenes/fawn_storm.uc"
+// Fixes the Fawn trial so some extra barks intented are shown
+#include "cutscenes/fawn_trial.uc"
 // Prevents deletion of the training pikeman egg
 #include "cutscenes/monitor_banquet.uc"
 // Absolutely force companions to be there and force-kills them after
