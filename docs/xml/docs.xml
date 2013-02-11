@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE readme SYSTEM "docs.dtd">
-<readme title="Exult" changed="15 January 2013 (GMT)">	
+<readme title="Exult" changed="11 February 2013 (GMT)">	
 	<section title="Introduction">
 		<sub name="exult_version">
 			<header>Exult Version</header>
@@ -497,6 +497,11 @@
 								<comment>**path to the sound font that will be used to render the MIDI music </comment>
 								<comment>when Fluidsynth is chosen as driver.</comment>
 								</configtag>
+								<configtag name="fluidsynth_soundfontN" manual="true">
+								path
+								<comment>**support for FluidSynth soundfont stack, add multiple soundfonts </comment>
+								<comment>(N = 0 to 9). See <ref target="midi_music"/>.</comment>
+								</configtag>
 								<configtag name="volume_curve" manual="true">
 								1.000000
 								<comment>**set volume (kind of at least, best don't change)</comment>
@@ -925,6 +930,10 @@
 					click on the menu item "Go" while pressing <key>Option/Alt</key> and "Library" will be an option 
 					to click on.
 				</para>
+				<para>
+					If you followed all the instructions and <Exult/> still won't recognize the games, you can try
+					deleting exult.cfg in ~/Library/Preferences and then start <Exult/>.
+				</para>
 			</body>
 		</sub>
 		<sub name="path_config_nix">
@@ -1148,10 +1157,14 @@
         				is another software synthesizer, which uses SoundFont 2 technology without need for a 
 						SoundFont-compatible sound card. It is available for many Operating Systems and opposed 
 						to TiMidity still actively developed.<br/>
-						Since Fluidsynth pulls in many dependencies it is not compiled into <Exult/> at the moment.
+						Since Fluidsynth pulls in many dependencies it is not compiled into <Exult/> at the moment.<br/>
 						If you compiled <Exult/> ourself and you enabled Fluidsynth you just need to edit 
 						exult.cfg and point &lt;config&gt;&lt;audio&gt;&lt;midi&gt;&lt;fluidsynth_soundfont&gt; 
-						to the SoundFont you want to use.</li>
+						to the SoundFont you want to use.<br/>
+						<Exult/> supports FluidSynth's soundfont stack. Soundfonts are specified in the 
+						&lt;config&gt;&lt;audio&gt;&lt;midi&gt;&lt;fluidsynth_soundfontN&gt; exult.cfg entries 
+						(N = 0 to 9) which are loaded in numerical order (0 first), plus the old 
+						&lt;fluidsynth_soundfont&gt; entry, which loads after all others.</li>
 					<li><strong>MT32Emu</strong><br/>
         				Roland MT32 emulation requires either the ROM set "MT32_CONTROL.ROM" and "MT32_PCM.ROM" or 
 						the ROM set "CM32L_CONTROL.ROM" and "CM32L_PCM.ROM" in the <Exult/> data folder.
@@ -2696,6 +2709,37 @@
 				</para>
 			</body>
 		</sub>
+		<sub name="gog_mac">
+			<header>Using the version for OS X from GOG.com</header>
+			<body>
+				<para>
+					Since January 2013 <extref target="http://www.gog.com">GOG</extref> also offers a download for 
+					Mac OS X. It's a disk image (dmg) that you can open in Mac OS X' Finder by doubleclicking it. You 
+					will only see one application named "Ultima 7 The Complete Edition". When you start that application 
+					you can play both games through a modified version of DOSBox for Mac OS X. If you want to make Exult 
+					automatically find the games from this download, you will need to copy the game files from this 
+					application to your hard drive. To do this follow the next few steps.
+				</para>
+				<para>
+					Open Terminal.app found in the Utilitiess subfolder of your Applications folder and enter the following commands:<br/>
+					<kbd>sudo mkdir -p "/Library/Application Support/Exult/blackgate"</kbd><br/>
+					<kbd>sudo mkdir -p "/Library/Application Support/Exult/serpentisle"</kbd><br/>
+					<kbd>sudo cp -p -R "/Volumes/Ultima 7 The Complete Edition/Ultima 7 The Complete Edition.app/Contents/Resources/Ultima VII The Complete Edition.boxer/C.harddisk/U7/ultima7/STATIC" "/Library/Application Support/Exult/blackgate"</kbd><br/>
+					<kbd>sudo cp -p -R "/Volumes/Ultima 7 The Complete Edition/Ultima 7 The Complete Edition.app/Contents/Resources/Ultima VII The Complete Edition.boxer/C.harddisk/U7/serpent/STATIC" "/Library/Application Support/Exult/serpentisle"</kbd><br/>
+					Because we need elevated rights the commands are using sudo and will ask for your password and you 
+					will need to do this with an administrator account. If you don't have that, please ask your administrator 
+					to do this for you.
+				</para>
+				<para>
+					If you are on a *nix system you can access this disk image with the following two commands:<br/>
+					<kbd>dmg2img ultima_7_the_complete_edition_1.0.0.4.dmg</kbd><br/>
+					<kbd>sudo kpartx -a ultima_7_the_complete_edition_1.0.0.4.img</kbd><br/>
+					When you are done, close the partition with<br/>
+					<kbd>sudo kpartx -d ultima_7_the_complete_edition_1.0.0.4.img</kbd><br/>
+					You might need to have HFS support enabled on your system.
+				</para>
+			</body>
+		</sub>
 	</section>
   	<section title="Credits and Contact">
 		<sub name="thanks">
@@ -2728,6 +2772,17 @@
 		</sub>
 	</section>
 	<section title="Changes to the Documentation">
+		<sub name="02102013">
+			<header>- 11 February 2013</header>
+			<body>
+				<ul>
+				<li><ref1 target="exult_config"/> FluidSynth soundfont stack added.</li>
+				<li><ref1 target="path_config_osx"/> deleting exult.cfg might help.</li>
+				<li><ref1 target="midi_music"/> FluidSynth soundfont stack added.</li>
+				<li><ref1 target="gog_mac"/> added.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="01152013">
 			<header>- 15 January 2013</header>
 			<body>
