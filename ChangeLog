@@ -1,3 +1,8 @@
+2013-02-24  Malignant Manor <malignantmanor@users.sourceforge.net>
+	* Fix bug where any npcs would attack the Avatar when attack_avatar was
+	  called and there are no guards in the area. Also don't have npcs with the
+	  guard shape automatically attack in attack_avatar if in a dungeon.
+
 2013-02-10	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* usecode/compiler/ucparse.yy: Eliminated needless sprintfs.
 

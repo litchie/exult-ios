@@ -2703,7 +2703,7 @@ void Game_window::attack_avatar(
 	        it != npcs.end() && numhelpers < maxhelpers; ++it) {
 		Actor *npc = *it;
 		if (npc->can_act() && !npc->is_in_party() && npc->is_sentient() &&
-		        (gshape < 0 || npc->get_shapenum() == gshape ||
+		        ((npc->get_shapenum() == gshape && !in_dungeon) ||
 		         align == npc->get_effective_alignment()) &&
 		        // Only if can get there.
 		        Fast_pathfinder_client::is_grabable(npc, main_actor)) {
