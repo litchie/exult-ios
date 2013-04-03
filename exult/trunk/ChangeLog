@@ -1,3 +1,7 @@
+2013-04-03 Dominik Reichardt <dominus@users.sourceforge.net>
+	* usecode/ucinternal.cc: reverted fix for "error case of opcode CALLMS" of 
+	  rev. 7363 to fix keyring in BG Keyring mod.
+	
 2013-02-24  Malignant Manor <malignantmanor@users.sourceforge.net>
 	* Fix bug where any npcs would attack the Avatar when attack_avatar was
 	  called and there are no guards in the area. Also don't have npcs with the
