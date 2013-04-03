@@ -2816,7 +2816,7 @@ int Usecode_internal::run() {
 				offset = Read2(frame->ip);
 				Usecode_class_symbol *c;
 				if (opcode == UC_CALLM) {
-					Usecode_value thisptr = pop();
+					Usecode_value thisptr = peek();
 					c = thisptr.get_class_ptr();
 				} else {
 					Usecode_value thisptr = Read2(frame->ip);
@@ -2824,6 +2824,7 @@ int Usecode_internal::run() {
 				}
 				if (!c) {
 					THIS_ERROR();
+					(void) pop();
 					break;
 				}
 				int index = c->get_method_id(offset);
