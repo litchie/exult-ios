@@ -246,7 +246,6 @@ class Patrol_schedule : public Schedule {
 	vector<Game_object *> paths; // Each 'path' object.
 	int pathnum;            // # of next we're heading towards.
 	int dir;                // 1 or -1;
-	bool gotpath;           // If true, there are path eggs nearby.
 	int failures;           // # of failures to find marker.
 	int state;              // The patrol state.
 	Tile_coord center;      // For 'loiter' and 'pace' path eggs.
