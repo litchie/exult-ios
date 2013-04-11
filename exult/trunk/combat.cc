@@ -1355,7 +1355,7 @@ void Combat_schedule::now_what(
 		} else if (npc->get_alignment() == Actor::good &&
 		           prev_schedule != Schedule::combat) {
 			// Return to normal schedule.
-			npc->update_schedule(gclock->get_hour() / 3, 7);
+			npc->update_schedule(gclock->get_hour() / 3);
 			if (npc->get_schedule_type() == Schedule::combat)
 				npc->set_schedule_type(prev_schedule);
 		} else {

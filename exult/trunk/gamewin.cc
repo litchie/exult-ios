@@ -1259,7 +1259,7 @@ void Game_window::init_actors(
 
 	// Update gamedat if there was a change
 	if (changed) {
-		schedule_npcs(6, 7, false);
+		schedule_npcs(6, false);
 		write_npcs();
 	}
 
@@ -2446,7 +2446,6 @@ void Game_window::get_nearby_npcs(
 
 void Game_window::schedule_npcs(
     int hour,           // 24 hour
-    int backwards,          // Extra periods to look backwards.
     bool repaint
 ) {
 	// Go through npc's, skipping Avatar.
@@ -2459,7 +2458,7 @@ void Game_window::schedule_npcs(
 		if (npc->get_schedule_type() != Schedule::wait &&
 		        (npc->get_schedule_type() != Schedule::combat ||
 		         npc->get_target() == 0))
-			npc->update_schedule(hour / 3, backwards, hour % 3 == 0 ? -1 : 0);
+			npc->update_schedule(hour / 3, hour % 3 == 0 ? -1 : 0);
 	}
 
 	if (repaint)
