@@ -1,3 +1,7 @@
+2013-04-12 Dominik Reichardt <dominus@users.sourceforge.net>
+	* schedule.cc: fixed looping change of patrol schedule to patrol in SI, setting 
+	  it to loiter instead if preset schedule is patrol or if there are no presets.
+
 2013-04-03 Dominik Reichardt <dominus@users.sourceforge.net>
 	* usecode/ucinternal.cc: reverted fix for "error case of opcode CALLMS" of 
 	  rev. 7363 to fix keyring in BG Keyring mod.
