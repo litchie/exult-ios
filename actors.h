@@ -740,6 +740,7 @@ protected:
 	unsigned char num_schedules;    // # entries below.
 	Schedule_change *schedules; // List of schedule changes.
 	int find_schedule_change(int hour3);
+	int find_schedule_at_time(int hour3);
 public:
 	Npc_actor(const std::string &nm, int shapenum, int num = -1,
 	          int uc = -1);
