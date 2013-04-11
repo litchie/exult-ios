@@ -675,6 +675,7 @@ public:
 	virtual void get_schedules(Schedule_change *&list, int &cnt) {
 		list = NULL, cnt = 0;
 	}
+	virtual int find_schedule_at_time(int hour3) { return -1; }
 
 	void show_inventory();
 	int inventory_shapenum();
@@ -740,7 +741,6 @@ protected:
 	unsigned char num_schedules;    // # entries below.
 	Schedule_change *schedules; // List of schedule changes.
 	int find_schedule_change(int hour3);
-	int find_schedule_at_time(int hour3);
 public:
 	Npc_actor(const std::string &nm, int shapenum, int num = -1,
 	          int uc = -1);
@@ -766,6 +766,7 @@ public:
 	// Update schedule for new 3-hour time.
 	virtual void update_schedule(int hour3, int delay = -1,
 	                             Tile_coord *pos = 0);
+	virtual int find_schedule_at_time(int hour3);
 	// Render.
 	virtual void paint();
 	// Run usecode function.
