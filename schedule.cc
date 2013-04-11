@@ -962,19 +962,15 @@ void Patrol_schedule::now_what(
 				Schedule_change *list;
 				int cnt;
 				npc->get_schedules(list, cnt);
-				if (cnt != 0 && list[npc->find_schedule_at_time(gclock->get_hour() / 3)].get_type() != Schedule::patrol){
-						Actor *safenpc = npc;
-						// May delete us.
-						safenpc->update_schedule(gclock->get_hour() / 3);
-						// So bail out if it happens.
-						if (safenpc->get_schedule() != this)
-							return;
-				}else{
+				if (cnt != 0 && list[npc->find_schedule_at_time(gclock->get_hour() / 3)].get_type() != Schedule::patrol) {
+					npc->update_schedule(gclock->get_hour() / 3);
+				} else {
 					// when the preset schedule is patrol or there is no preset
 					// change schedule to loiter
 					npc->set_schedule_type(loiter);
-					return;
 				}
+				// The above will have deleted us, so return immediately.
+				return;
 			}
 			seek_combat = true;
 			state = 4;
