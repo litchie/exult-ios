@@ -917,25 +917,12 @@ void Preach_schedule::now_what(
 
 Patrol_schedule::Patrol_schedule(
     Actor *n
-) : Schedule(n), pathnum(-1), dir(1), gotpath(false), failures(0), state(0),
+) : Schedule(n), pathnum(-1), dir(1), failures(0), state(-1),
 	center(0, 0, 0), whichdir(0), phase(1), pace_count(0), hammer(0),
 	book(0), seek_combat(false), forever(false) {
 	if (num_path_eggs < 0) {
 		Shapes_vga_file &shapes = Shape_manager::get_instance()->get_shapes();
 		num_path_eggs = shapes.get_num_frames(PATH_SHAPE) - 1;
-	}
-	Game_object_vector nearby;
-	npc->find_nearby(nearby, PATH_SHAPE, 25, 0x10, c_any_qual, c_any_framenum);
-	gotpath = nearby.size() != 0;
-	if (gotpath) {
-		// Start at nearest (to prevent NPCs from going all the way back to
-		// the start of the path in case of saving then reloading, which can
-		// cause issues in Freedom).
-		Game_object *path = find_nearest(npc, nearby);
-		pathnum = path->get_framenum();
-		paths.resize(pathnum + 1);
-		paths[pathnum] = path;
-		pathnum--;
 	}
 }
 
@@ -949,7 +936,24 @@ void Patrol_schedule::now_what(
 		return;
 	int speed = gwin->get_std_delay();
 	Game_object *path;
+	bool gotpath = true;
 	switch (state) {
+	case -1: { // Initialization
+		Game_object_vector nearby;
+		npc->find_nearby(nearby, PATH_SHAPE, 25, 0x10, c_any_qual, c_any_framenum);
+		gotpath = nearby.size() != 0;
+		if (gotpath) {
+			// Start at nearest (to prevent NPCs from going all the way back to
+			// the start of the path in case of saving then reloading, which can
+			// cause issues in Freedom).
+			Game_object *path = find_nearest(npc, nearby);
+			pathnum = path->get_framenum();
+			paths.resize(pathnum + 1);
+			paths[pathnum] = path;
+			pathnum--;
+		}
+		// Fall-through to state 0
+	}
 	case 0: { // Find next path.
 		if (!gotpath) {
 			// SI seems to try switching to preprogrammed schedules
