@@ -455,9 +455,9 @@ void Street_maintenance_schedule::now_what(
 	Actor *safenpc = npc;
 	Tile_coord safeloc = oldloc;
 	// This sometimes fails after a restore.
-	safenpc->update_schedule(period, 7, 0, &safeloc);
+	safenpc->update_schedule(period, 0, &safeloc);
 	if (safenpc->get_schedule_type() == static_cast<int>(street_maintenance))
-		safenpc->update_schedule(period, 7, 0, &safeloc);
+		safenpc->update_schedule(period, 0, &safeloc);
 }
 
 void Street_maintenance_schedule::ending(int newtype) {
@@ -965,7 +965,7 @@ void Patrol_schedule::now_what(
 				if (cnt != 0) {
 					Actor *safenpc = npc;
 					// May delete us.
-					safenpc->update_schedule(gclock->get_hour() / 3, 8, -1);
+					safenpc->update_schedule(gclock->get_hour() / 3);
 					// So bail out if it happens.
 					if (safenpc->get_schedule() != this)
 						return;
