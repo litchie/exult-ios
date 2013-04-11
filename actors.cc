@@ -4844,6 +4844,24 @@ int Npc_actor::find_schedule_change(
 	return -1;
 }
 
+int Npc_actor::find_schedule_at_time(
+    int hour3           // 0=midnight, 1=3am, etc.
+) {
+	if (party_id >= 0 || is_dead() || num_schedules == 0)
+		return -1;      // Fail if a party member or dead.
+	int closest_dist = 100;
+	int closest_index = 0;
+	for (int i = 0; i < num_schedules; i++) {
+		int dist = (hour3 - schedules[i].get_time() + 8) % 8;
+		if (dist < closest_dist) {
+			closest_dist = dist;
+			closest_index = i;
+		}
+	}
+	assert(closest_dist != 100);
+	return closest_index;
+}
+
 /*
  *  Update schedule at a 3-hour time change.
  */
@@ -4856,9 +4874,7 @@ void Npc_actor::update_schedule(
 	int i = find_schedule_change(hour3);
 	if (i < 0) {
 		// Not found?  Look at prev.
-		int backwards = 8;
-		while (backwards-- && i < 0)
-			i = find_schedule_change((--hour3 + 8) % 8);
+		i = find_schedule_at_time(hour3);
 		if (i < 0)
 			return;
 		if ((schedule_type == schedules[i].get_type() ||
