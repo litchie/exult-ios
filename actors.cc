@@ -4850,17 +4850,13 @@ int Npc_actor::find_schedule_change(
 
 void Npc_actor::update_schedule(
     int hour3,          // 0=midnight, 1=3am, etc.
-    int backwards,      // Extra periods to look backwards.
     int delay,          // Delay in msecs, or -1 for random.
     Tile_coord *pos     // Were we want to return to.
 ) {
 	int i = find_schedule_change(hour3);
 	if (i < 0) {
-		// Not found?  Look at prev.?
-		// Always if noon of first day.
-		long hour = gclock->get_total_hours();
-		if (hour == 12 && !backwards)
-			backwards++;
+		// Not found?  Look at prev.
+		int backwards = 8;
 		while (backwards-- && i < 0)
 			i = find_schedule_change((--hour3 + 8) % 8);
 		if (i < 0)

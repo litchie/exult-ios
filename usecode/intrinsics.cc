@@ -2707,7 +2707,7 @@ USECODE_INTRINSIC(run_schedule) {
 	Actor *actor = as_actor(get_item(parms[0]));
 
 	if (actor) {
-		actor->update_schedule(gclock->get_hour() / 3, 7);
+		actor->update_schedule(gclock->get_hour() / 3);
 
 	}
 
