@@ -189,10 +189,10 @@ void Background_noise::handle_event(
 		currentstate = Outside;
 
 	MyMidiPlayer *player = Audio::get_ptr()->get_midi();
-	// Lets allow this for midi music too. It might be best to restrict this to
-	// MT32 or MT32Emu, but I won't worry about it yet.
-	//if (player && player->get_ogg_enabled())
-	if (player) {
+	// Lets allow this for Digital Muisc and MT32Emu only.
+	// Probably should be allowed for MT32 conversion as well.
+	// if (player) { 
+	if (player && (player->get_ogg_enabled() || player->get_midi_driver() == "mt32emu")) {
 		delay = 1000;   //Quickly get back to this function check
 		//We've got OGG so play the background SFX tracks
 
