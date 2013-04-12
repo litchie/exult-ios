@@ -87,6 +87,7 @@
 #include "keyactions.h"
 #include "monstinf.h"
 #include "usefuns.h"
+#include "audio/midi_drivers/XMidiFile.h"
 
 #ifdef USE_EXULTSTUDIO
 #include "server.h"
@@ -189,10 +190,13 @@ void Background_noise::handle_event(
 		currentstate = Outside;
 
 	MyMidiPlayer *player = Audio::get_ptr()->get_midi();
-	// Lets allow this for Digital Muisc and MT32Emu only.
-	// Probably should be allowed for MT32 conversion as well.
+	// Lets allow this for Digital Muisc and MT32Emu only,
+	// for MT32/FakeMT32 conversion as well.
 	// if (player) { 
-	if (player && (player->get_ogg_enabled() || player->get_midi_driver() == "mt32emu")) {
+	//if (player && player->get_ogg_enabled()){
+	if (player && (player->get_ogg_enabled() || player->get_midi_driver() == "mt32emu" || 
+		player->get_music_conversion() == XMIDIFILE_CONVERT_NOCONVERSION || 
+		player->get_music_conversion() == XMIDIFILE_CONVERT_GM_TO_MT32)) {
 		delay = 1000;   //Quickly get back to this function check
 		//We've got OGG so play the background SFX tracks
 
@@ -244,9 +248,7 @@ void Background_noise::handle_event(
 				Audio::get_ptr()->start_music(tracknum, true);
 			}
 		}
-	}
-#if 0
-	else {
+	}else {
 		Main_actor *ava = gwin->get_main_actor();
 		//Tests to see if track is playing the SFX tracks, possible
 		//when the game has been restored
@@ -286,7 +288,6 @@ void Background_noise::handle_event(
 			}
 		}
 	}
-#endif
 
 	gwin->get_tqueue()->add(curtime + delay, this, udata);
 #endif
