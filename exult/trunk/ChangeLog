@@ -1,6 +1,9 @@
 2013-04-12 Dominik Reichardt <dominus@users.sourceforge.net>
 	* schedule.cc: fixed looping change of patrol schedule to patrol in SI, setting 
 	  it to loiter instead if preset schedule is patrol or if there are no presets.
+	* gamewin.cc: only allow background sfx tracks for oggs and MT32Emu. The tracks
+	  do not play nicely for normal midi devices. Should probably be allowed for
+	  MT32 and FakeMT32 conversions as well.
 
 2013-04-03 Dominik Reichardt <dominus@users.sourceforge.net>
 	* usecode/ucinternal.cc: reverted fix for "error case of opcode CALLMS" of 
