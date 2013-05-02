@@ -1557,7 +1557,7 @@
 #	showing a gump when double-clicked.
 #	reagents: Gives effectivelly infinite reagents.
 #
-#	Swamp boots.
+#	Ring of Reagents.
 #
 :296/3/-1/0/0/0/0/0/0/0/0/0/0/0/0/1
 
