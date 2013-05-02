@@ -385,7 +385,7 @@ bool Container_game_object::show_gump(
 	if (cheat.in_map_editor())
 		return true;    // Do nothing.
 	else if (inf.has_object_flag(get_framenum(),
-	                             inf.has_quality() ? get_quality() : -1, Frame_flags::force_usecode))
+	                             inf.has_quality() ? get_quality() : -1, Frame_flags::fp_force_usecode))
 		// Run normal usecode fun.
 		return false;
 	else if ((gump = inf.get_gump_shape()) >= 0) {
