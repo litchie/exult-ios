@@ -396,7 +396,7 @@ int Shape_info::get_effective_hps(int frame, int quality) {
 
 int Shape_info::get_object_flags(int frame, int qual) {
 	Frame_flags_info *inf = Search_vector_data_double_wildcards(frflagsinf,
-	                        frame, quality,
+	                        frame, qual,
 	                        &Frame_flags_info::frame, &Frame_flags_info::quality);
 	return inf ? inf->m_flags : 0;  // Default to no flagss.
 }
