@@ -1,3 +1,7 @@
+2013-04-13	Malignant Manor <malignantmanor@users.sourceforge.net>
+	* actors.cc: Fix charmed_more_difficult breaking double clicking on npcs
+	  (r7343 regression)
+
 2013-04-12 Dominik Reichardt <dominus@users.sourceforge.net>
 	* schedule.cc: fixed looping change of patrol schedule to patrol in SI, setting 
 	  it to loiter instead if preset schedule is patrol or if there are no presets.

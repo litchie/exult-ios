@@ -2130,7 +2130,7 @@ void Actor::activate(
 	                      gwin->in_combat();
 	Schedule::Schedule_types sched =
 	    static_cast<Schedule::Schedule_types>(get_schedule_type());
-	if (!can_act_charmed() &&                     // if in party and charmed more difficult
+	if (party_id >= 0 && !can_act_charmed() &&    // if in party, charmed, and charmed more difficult
 	        !cheat.in_pickpocket() && event == 1) // and not pickpocket, return if double click
 		return;
 	if (!npc_num ||     // Avatar
