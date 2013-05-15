@@ -257,7 +257,12 @@ void ActionDarker(int const *params) {
 void ActionFullscreen(int const *params) {
 	Game_window *gwin = Game_window::get_instance();
 	setup_video(!gwin->get_win()->is_fullscreen(), TOGGLE_FULLSCREEN);
-	if (Countdown_gump::ask("Fullscreen applied.\nKeep? %i...", 20))
+	const char *msg;
+	if (gwin->get_win()->is_fullscreen())
+		msg = "Fullscreen applied.\nKeep? %i...";
+	else
+		msg = "Windowed mode.\nKeep? %i...";
+	if (Countdown_gump::ask(msg, 20))
 		config->set("config/video/fullscreen",
 		            gwin->get_win()->is_fullscreen() ? "yes" : "no",
 		            true);

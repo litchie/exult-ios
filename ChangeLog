@@ -1,4 +1,7 @@
-2013-04-13	Malignant Manor <malignantmanor@users.sourceforge.net>
+2013-05-15 Dominik Reichardt <dominus@users.sourceforge.net>
+	* keyactions.cc: different messages for toggling fullscreen mode
+
+2013-05-13	Malignant Manor <malignantmanor@users.sourceforge.net>
 	* actors.cc: Fix charmed_more_difficult breaking double clicking on npcs
 	  (r7343 regression)
 
