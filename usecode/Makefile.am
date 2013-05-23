@@ -1,7 +1,7 @@
 AM_CPPFLAGS = -I$(srcdir)/../headers -I$(srcdir)/.. -I$(srcdir)/../files -I$(srcdir)/../imagewin \
 		-I$(srcdir)/../shapes -I$(srcdir)/../objs -I$(srcdir)/../audio\
 		-I$(srcdir)/../gumps -I$(srcdir)/../tools -I$(srcdir)/../shapes/shapeinf \
-		-I$(srcdir)/../server $(SDL_CFLAGS) $(INCDIRS) \
+		-I$(srcdir)/../server $(SDL_CFLAGS) $(VORBIS_CFLAGS) $(OGG_CFLAGS) $(INCDIRS) \
 		$(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS)
 
 SUBDIRS = . compiler ucxt

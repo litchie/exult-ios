@@ -1,7 +1,7 @@
 AM_CPPFLAGS = -I$(srcdir)/../headers -I$(srcdir)/.. -I$(srcdir)/../imagewin -I$(srcdir)/../shapes \
 		-I$(srcdir)/../pathfinder -I$(srcdir)/../files \
 		-I$(srcdir)/../server -I$(srcdir)/../gumps -I$(srcdir)/../shapes/shapeinf \
-		-I$(srcdir)/../audio -I$(srcdir)/../usecode $(SDL_CFLAGS) \
+		-I$(srcdir)/../audio -I$(srcdir)/../usecode $(SDL_CFLAGS) $(VORBIS_CFLAGS) $(OGG_CFLAGS) \
 		$(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS)
 
 noinst_LTLIBRARIES = libobjs.la

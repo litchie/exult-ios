@@ -3,7 +3,8 @@ AM_CPPFLAGS = -I$(srcdir)/../headers -I$(srcdir)/.. -I$(srcdir)/../files \
 		-I$(srcdir)/../audio -I$(srcdir)/../audio/midi_drivers \
 		-I$(srcdir)/../conf -I$(srcdir)/../usecode -I$(srcdir)/../data \
 		-I$(srcdir)/../shapes/shapeinf \
-	$(SDL_CFLAGS) $(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS)
+		$(SDL_CFLAGS) $(VORBIS_CFLAGS) $(OGG_CFLAGS) $(INCDIRS)	\
+		$(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS)
 
 noinst_LTLIBRARIES = libgumps.la
 
