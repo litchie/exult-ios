@@ -2453,6 +2453,9 @@ void Desk_schedule::now_what(
 		add_client(chair);
 	}
 	int frnum = npc->get_framenum();
+	if (rand() % 2 == 0)        // Check for lamps, etc.
+		if (try_street_maintenance())
+			return;     // We no longer exist.
 	if ((frnum & 0xf) != Actor::sit_frame) {
 		if (!Sit_schedule::set_action(npc, chair, 0)) {
 			chair = 0;  // Look for any nearby chair.
