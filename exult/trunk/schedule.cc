@@ -2428,7 +2428,26 @@ bool Sit_schedule::set_action(
 
 Desk_schedule::Desk_schedule(
     Actor *n
-) : Schedule(n), chair(0) {
+) : Schedule(n), chair(0), desk(0), state(desk_setup) {
+}
+
+/*
+ *  Find tables.
+ */
+void Desk_schedule::find_tables(
+    int shapenum
+) {
+	Game_object_vector vec;
+	npc->find_nearby(vec, shapenum, 32, 0);
+	int floor = npc->get_lift() / 5; // Make sure it's on same floor.
+	for (Game_object_vector::const_iterator it = vec.begin(); it != vec.end();
+	        ++it) {
+		Game_object *table = *it;
+		if (table->get_lift() / 5 != floor)
+			continue;
+		tables.push_back(table);
+		add_client(table);
+	}
 }
 
 /*
@@ -2437,10 +2456,15 @@ Desk_schedule::Desk_schedule(
 
 void Desk_schedule::now_what(
 ) {
-	if (!chair) {       // No chair found yet.
+	if (rand() % 2 == 0)        // Check for lamps, etc.
+		if (try_street_maintenance())
+			return;     // We no longer exist.
+
+	switch (state) {
+	case desk_setup:
 		static int desks[2] = {283, 407};
 		Stand_up(npc);
-		Game_object *desk = npc->find_closest(desks, 2);
+		desk = npc->find_closest(desks, 2);
 		if (desk) {
 			static int chairs[2] = {873, 292};
 			chair = desk->find_closest(chairs, 2);
@@ -2451,25 +2475,33 @@ void Desk_schedule::now_what(
 			return;
 		}
 		add_client(chair);
-	}
-	int frnum = npc->get_framenum();
-	if (rand() % 2 == 0)        // Check for lamps, etc.
-		if (try_street_maintenance())
-			return;     // We no longer exist.
-	if ((frnum & 0xf) != Actor::sit_frame) {
-		if (!Sit_schedule::set_action(npc, chair, 0)) {
-			chair = 0;  // Look for any nearby chair.
-			npc->start(200, 5000);  // Failed?  Try again later.
-		} else
-			npc->start(250, 0);
-	} else {            // Stand up a second.
-		signed char frames[3];
-		frames[0] = npc->get_dir_framenum(Actor::standing);
-		frames[1] = npc->get_dir_framenum(Actor::bow_frame);
-		frames[2] = npc->get_dir_framenum(Actor::sit_frame);
-		npc->set_action(new Frames_actor_action(frames,
-		                                        sizeof(frames) / sizeof(frames[0])));
-		npc->start(250, 10000 + rand() % 5000);
+		if (tables.empty()) {
+		    find_tables(890);
+			find_tables(633);
+			find_tables(1000);
+		}
+		state = sit_at_desk;
+		/* FALL THROUGH */		
+	case sit_at_desk: {
+		int frnum = npc->get_framenum();
+		if ((frnum & 0xf) != Actor::sit_frame) {
+		    if (!Sit_schedule::set_action(npc, chair, 0)) {
+			    chair = 0;  // Look for any nearby chair.
+				state = desk_setup;
+				npc->start(200, 5000);  // Failed?  Try again later.
+			} else
+			    npc->start(250, 0);
+		} else {            // Stand up a second.
+		    signed char frames[3];
+			frames[0] = npc->get_dir_framenum(Actor::standing);
+			frames[1] = npc->get_dir_framenum(Actor::bow_frame);
+			frames[2] = npc->get_dir_framenum(Actor::sit_frame);
+			npc->set_action(new Frames_actor_action(frames,
+		                                sizeof(frames) / sizeof(frames[0])));
+			npc->start(250, 10000 + rand() % 5000);
+		}
+		break;
+		}
 	}
 }
 
@@ -2483,11 +2515,29 @@ void Desk_schedule::im_dormant() {
 }
 
 /*
+ *	Done.
+ */
+void Desk_schedule::ending(
+    int new_type				// New schedule.
+) {
+    remove_clients();
+}
+
+/*
  *  Notify that an object is no longer present.
  */
 void Desk_schedule::notify_object_gone(Game_object *obj) {
 	if (obj == chair) {
 		chair = 0;
+	} else if (obj == desk) {
+	    desk = 0;
+	}
+	vector<Game_object *>::iterator it;
+	for (it = tables.begin(); it != tables.end(); ++it) {
+		if (*it == obj) {
+		    tables.erase(it);
+			break;
+		}
 	}
 }
 

@@ -429,9 +429,18 @@ public:
  */
 class Desk_schedule : public Schedule {
 	Game_object *chair;     // What to sit in.
+	Game_object *desk;
+	vector<Game_object *> tables;	// Other tables to work at.
+	enum {
+	    desk_setup,
+	    sit_at_desk,
+		work_at_table
+	} state;
+	void find_tables(int shapenum);
 public:
 	Desk_schedule(Actor *n);
 	virtual void now_what();    // Now what should NPC do?
+	virtual void ending(int newtype);// Switching to another schedule.
 	virtual void notify_object_gone(Game_object *obj);
 	virtual void im_dormant();  // Just went dormant.
 };
