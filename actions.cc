@@ -875,8 +875,12 @@ int Pickup_actor_action::handle_event(
 		frnum = actor->get_dir_framenum(dir, Actor::standing);
 		cnt++;
 		break;
-	case 1:             // Bend down.
-		frnum = actor->get_dir_framenum(dir, Actor::bow_frame);
+	case 1: {            // Bend down.
+		int tz = pickup ? obj->get_lift() : objpos.tz;
+		frnum = (tz >= actor->get_lift() + 2) ?
+			  ((rand()%2) ? Actor::reach1_frame : Actor::reach2_frame) :
+			  Actor::bow_frame;
+		frnum = actor->get_dir_framenum(dir, frnum);
 		cnt++;
 		if (pickup) {
 			if (actor->distance(obj) > 8) {
@@ -893,6 +897,7 @@ int Pickup_actor_action::handle_event(
 			if (temp)
 				obj->set_flag(Obj_flags::is_temporary);
 			gwin->add_dirty(obj);
+		}
 		}
 		break;
 	case 2:
