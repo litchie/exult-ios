@@ -2428,7 +2428,7 @@ bool Sit_schedule::set_action(
 
 Desk_schedule::Desk_schedule(
     Actor *n
-) : Schedule(n), chair(0), desk(0), state(desk_setup) {
+) : Schedule(n), chair(0), desk(0), table(0), state(desk_setup) {
 }
 
 /*
@@ -2438,7 +2438,7 @@ void Desk_schedule::find_tables(
     int shapenum
 ) {
 	Game_object_vector vec;
-	npc->find_nearby(vec, shapenum, 32, 0);
+	npc->find_nearby(vec, shapenum, 16, 0);
 	int floor = npc->get_lift() / 5; // Make sure it's on same floor.
 	for (Game_object_vector::const_iterator it = vec.begin(); it != vec.end();
 	        ++it) {
@@ -2451,12 +2451,30 @@ void Desk_schedule::find_tables(
 }
 
 /*
+ *  Walk to table.
+ *  Output: false if failed.
+ */
+bool Desk_schedule::walk_to_table() {
+	if (tables.size()) {
+		table = tables[rand() % tables.size()];
+		add_client(table);
+		Tile_coord pos = Map_chunk::find_spot(table->get_tile(), 1, npc);
+		if (pos.tx != -1 &&
+		        npc->walk_path_to_tile(pos, gwin->get_std_delay(),
+		                               1000 + rand() % 1000))
+			return true;
+	} else
+		table = 0;
+	return false;
+}
+
+/*
  *  Schedule change for 'desk work':
  */
 
 void Desk_schedule::now_what(
 ) {
-	if (rand() % 2 == 0)        // Check for lamps, etc.
+	if (rand() % 3 == 0)        // Check for lamps, etc.
 		if (try_street_maintenance())
 			return;     // We no longer exist.
 
@@ -2484,6 +2502,7 @@ void Desk_schedule::now_what(
 		/* FALL THROUGH */		
 	case sit_at_desk: {
 		int frnum = npc->get_framenum();
+		// Not sitting?
 		if ((frnum & 0xf) != Actor::sit_frame) {
 		    if (!Sit_schedule::set_action(npc, chair, 0)) {
 			    chair = 0;  // Look for any nearby chair.
@@ -2491,17 +2510,35 @@ void Desk_schedule::now_what(
 				npc->start(200, 5000);  // Failed?  Try again later.
 			} else
 			    npc->start(250, 0);
+		} else if (rand() % 2 && walk_to_table()) {
+		    state = work_at_table;
 		} else {            // Stand up a second.
-		    signed char frames[3];
+		    signed char frames[5];
 			frames[0] = npc->get_dir_framenum(Actor::standing);
-			frames[1] = npc->get_dir_framenum(Actor::bow_frame);
-			frames[2] = npc->get_dir_framenum(Actor::sit_frame);
+			frames[1] = npc->get_dir_framenum(Actor::reach1_frame);
+			frames[2] = npc->get_dir_framenum(Actor::standing);
+			frames[3] = npc->get_dir_framenum(Actor::bow_frame);
+			frames[4] = npc->get_dir_framenum(Actor::sit_frame);
 			npc->set_action(new Frames_actor_action(frames,
 		                                sizeof(frames) / sizeof(frames[0])));
-			npc->start(250, 10000 + rand() % 5000);
+			npc->start(250, 4000 + rand() % 4000);
 		}
 		break;
 		}
+	case work_at_table:
+		if (rand() %3 == 0) {
+		    state = sit_at_desk;		// Back to desk.
+		} else {
+		    signed char frames[3];
+			frames[0] = npc->get_dir_framenum(Actor::standing);
+			frames[1] = npc->get_dir_framenum((rand()%2)
+					  ? Actor::reach1_frame : Actor::reach2_frame);
+			frames[2] = npc->get_dir_framenum(Actor::standing);
+			npc->set_action(new Frames_actor_action(frames,
+		                                sizeof(frames) / sizeof(frames[0])));
+		}
+		npc->start(250, 2000 + rand() % 1000);
+		break;
 	}
 }
 
@@ -2531,6 +2568,8 @@ void Desk_schedule::notify_object_gone(Game_object *obj) {
 		chair = 0;
 	} else if (obj == desk) {
 	    desk = 0;
+	} else if (obj == table) {
+	    table = 0;
 	}
 	vector<Game_object *>::iterator it;
 	for (it = tables.begin(); it != tables.end(); ++it) {
