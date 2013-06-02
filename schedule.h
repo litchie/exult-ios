@@ -429,15 +429,18 @@ public:
  */
 class Desk_schedule : public Schedule {
 	Game_object *chair;     // What to sit in.
-	Game_object *desk, *table;
+	Game_object *desk, *table, *desk_item;
 	vector<Game_object *> tables;	// Other tables to work at.
 	enum {
 	    desk_setup,
 	    sit_at_desk,
+		get_desk_item,
+		picked_up_item,
 		work_at_table
 	} state;
 	void find_tables(int shapenum);
 	bool walk_to_table();
+	bool walk_to_desk_item();
 public:
 	Desk_schedule(Actor *n);
 	virtual void now_what();    // Now what should NPC do?
