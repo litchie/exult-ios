@@ -2428,7 +2428,8 @@ bool Sit_schedule::set_action(
 
 Desk_schedule::Desk_schedule(
     Actor *n
-) : Schedule(n), chair(0), desk(0), table(0), desk_item(0), state(desk_setup) {
+) : Schedule(n), chair(0), desk(0), table(0), desk_item(0), 
+  				 items_in_hand(0), state(desk_setup) {
 }
 
 /*
@@ -2539,10 +2540,10 @@ void Desk_schedule::now_what(
 				npc->start(200, 5000);  // Failed?  Try again later.
 			} else
 			    npc->start(250, 0);
+		} else if (rand() % (2 + items_in_hand) && walk_to_table()) {
+		    state = work_at_table;
 		} else if (rand() % 2 && walk_to_desk_item()) {
 		    state = get_desk_item;
-		} else if (rand() % 2 && walk_to_table()) {
-		    state = work_at_table;
 		} else {            // Stand up a second.
 		    signed char frames[5];
 			frames[0] = npc->get_dir_framenum(Actor::standing);
@@ -2574,8 +2575,38 @@ void Desk_schedule::now_what(
 		npc->start(250, 1000 + rand() % 500);
 		break;
 	case work_at_table:
-		if (rand() %3 == 0) {
+		if (rand() % 3 == 0) {
 		    state = sit_at_desk;		// Back to desk.
+		} else if (rand() % 4) {		// Put down an item.
+		    Game_object_vector items;
+		    int nitems = npc->get_objects(items, 675, 
+					   	 					c_any_qual, c_any_framenum);
+			items_in_hand = nitems;		// Save value.
+			if (nitems) {
+			    Tile_coord spot = npc->get_tile();
+			    Rectangle foot = table->get_footprint();
+				Game_object *to_drop = items[rand()%nitems];
+				// East/West of table?
+				if (spot.ty >= foot.y && spot.ty < foot.y + foot.h)
+				    spot.tx = spot.tx <= foot.x ? foot.x
+			          		  		  : foot.x + foot.w - 1;
+				else            // North/south.
+				    spot.ty = spot.ty <= foot.y ? foot.y
+			          		  		  : foot.y + foot.h - 1;
+				Shape_info &info = table->get_info();
+				spot.tz = table->get_lift() + info.get_3d_height();
+				Tile_coord pos = Map_chunk::find_spot(spot, 1, to_drop);
+			    if (pos.tx != -1 && pos.tz == spot.tz &&
+				    	   foot.has_world_point(pos.tx, pos.ty)) {
+				    // Passes test.
+					npc->set_action(new Pickup_actor_action(
+						to_drop, pos, 250, false));
+					--items_in_hand;
+					if (rand() % 2)
+					    state = sit_at_desk;
+				}
+			} else
+			   state = sit_at_desk;
 		} else {
 		    int dir = npc->get_direction(table);
 		    signed char frames[3];
