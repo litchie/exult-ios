@@ -431,6 +431,7 @@ class Desk_schedule : public Schedule {
 	Game_object *chair;     // What to sit in.
 	Game_object *desk, *table, *desk_item;
 	vector<Game_object *> tables;	// Other tables to work at.
+	int items_in_hand; 	  	// # NPC's desk items.
 	enum {
 	    desk_setup,
 	    sit_at_desk,
