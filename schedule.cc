@@ -2469,13 +2469,8 @@ bool Desk_schedule::walk_to_table() {
 	return false;
 }
 
-/*
- *  Walk to desk item.
- *  Output: false if failed.
- */
-bool Desk_schedule::walk_to_desk_item() {
-	Game_object_vector vec;
-	desk_item = 0;
+static int find_desk_items(Game_object_vector &vec, Actor *npc)
+{
 	npc->find_nearby(vec, 675, 16, 0);
 	int floor = npc->get_lift() / 5; // Make sure it's on same floor.
 	for (Game_object_vector::iterator it = vec.begin(); it != vec.end();
@@ -2484,10 +2479,22 @@ bool Desk_schedule::walk_to_desk_item() {
 		if (item->get_lift() / 5 != floor)
 			vec.erase(it);
 	}
-	if (vec.size()) {
-	    desk_item = vec[rand() % vec.size()];
+	return vec.size();
+}
+
+/*
+ *  Walk to desk item.
+ *  Output: false if failed.
+ */
+bool Desk_schedule::walk_to_desk_item() {
+	Game_object_vector vec;
+	desk_item = 0;
+	int nitems = find_desk_items(vec, npc);
+	if (nitems) {
+	    desk_item = vec[rand() % nitems];
 		add_client(desk_item);
 		Tile_coord spot = desk_item->get_tile();
+		int floor = npc->get_lift() / 5;
 		spot.tz = floor*5;
 		Tile_coord pos = Map_chunk::find_spot(spot, 1, npc);
 		if (pos.tx != -1 &&
@@ -2509,9 +2516,28 @@ void Desk_schedule::now_what(
 			return;     // We no longer exist.
 
 	switch (state) {
-	case desk_setup:
+	case desk_setup: {
 		static int desks[2] = {283, 407};
 		Stand_up(npc);
+		if (tables.empty()) {
+		    find_tables(890);
+			find_tables(633);
+			find_tables(1000);
+		}
+		// Create desk items if needed.
+		items_in_hand = npc->count_objects(675);
+		Game_object_vector vec;
+		int nearby = find_desk_items(vec, npc);
+		int nitems = (7 + rand()%5) - items_in_hand - nearby;
+		if (nitems > 0) {
+		    int nframes = ShapeID(675, 0).get_num_frames();
+			items_in_hand += nitems;
+			for (int i = 0; i < nitems; ++i) {
+				int frame = rand() % nframes;
+				Game_object *item = new Ireg_game_object(675, frame, 0, 0, 0);
+				npc->add(item, true);
+			}
+		}
 		desk = npc->find_closest(desks, 2);
 		if (desk) {
 			static int chairs[2] = {873, 292};
@@ -2523,12 +2549,8 @@ void Desk_schedule::now_what(
 			return;
 		}
 		add_client(chair);
-		if (tables.empty()) {
-		    find_tables(890);
-			find_tables(633);
-			find_tables(1000);
-		}
 		state = sit_at_desk;
+		}
 		/* FALL THROUGH */		
 	case sit_at_desk: {
 		int frnum = npc->get_framenum();
@@ -2595,7 +2617,8 @@ void Desk_schedule::now_what(
 			          		  		  : foot.y + foot.h - 1;
 				Shape_info &info = table->get_info();
 				spot.tz = table->get_lift() + info.get_3d_height();
-				Tile_coord pos = Map_chunk::find_spot(spot, 1, to_drop);
+				Tile_coord pos = Map_chunk::find_spot(spot, 1, 
+						   to_drop->get_shapenum(), to_drop->get_framenum());
 			    if (pos.tx != -1 && pos.tz == spot.tz &&
 				    	   foot.has_world_point(pos.tx, pos.ty)) {
 				    // Passes test.
@@ -2619,7 +2642,7 @@ void Desk_schedule::now_what(
 								new Frames_actor_action(frames,
 		                                sizeof(frames) / sizeof(frames[0]))));
 		}
-		npc->start(250, 2000 + rand() % 1000);
+		npc->start(250, 1000 + rand() % 500);
 		break;
 	}
 }
