@@ -2505,6 +2505,31 @@ bool Desk_schedule::walk_to_desk_item() {
 	return false;
 }
 
+// Pick a 'reasonable' desk item frame to create.
+static int Desk_item_frame()
+{
+	static int quills[] = {1, 14, 15};
+	static int documents[] = {6, 13};
+	static int wax[] = {7, 12};
+	static int non_docs = 0;					// Make sure to create docs.
+
+	int n = non_docs >= 2 ? 6 : rand() % 10;
+	++non_docs;
+	switch (n) {
+	case 0:  return 0;							// Gavel.
+	case 1:  return quills[rand()%3];
+	case 2:  return 2;							// Inkwell
+	case 3:  return 3;							// Quill holder
+	case 4:  return 4;							// Book mark.
+	case 5:  return 5;							// Letter opener.
+	case 6:  non_docs = 0; return documents[rand()%2];
+	case 7:  return wax[rand()%2];
+	case 8:	 return 8;							// Seal.
+	case 9:	 return 9;							// Blotter.
+	default: return 0;
+	}
+}
+
 /*
  *  Schedule change for 'desk work':
  */
@@ -2530,10 +2555,9 @@ void Desk_schedule::now_what(
 		int nearby = find_desk_items(vec, npc);
 		int nitems = (7 + rand()%5) - items_in_hand - nearby;
 		if (nitems > 0) {
-		    int nframes = ShapeID(675, 0).get_num_frames();
 			items_in_hand += nitems;
 			for (int i = 0; i < nitems; ++i) {
-				int frame = rand() % nframes;
+				int frame = Desk_item_frame();
 				Game_object *item = new Ireg_game_object(675, frame, 0, 0, 0);
 				npc->add(item, true);
 			}
