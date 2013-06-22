@@ -281,7 +281,7 @@ osxdmg: bundle
 	CpMac -r $(bundle_name) ./Exult-snapshot/
 	hdiutil create -ov -format UDZO -imagekey zlib-level=9 -fs HFS+ \
 					-srcfolder Exult-snapshot \
-					-volname "Exult SVN snapshot" \
+					-volname "Exult SVN snapshot$(REVISION)" \
 					Exult-snapshot.dmg
 	rm -rf Exult-snapshot
 
