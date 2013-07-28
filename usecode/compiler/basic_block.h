@@ -64,62 +64,71 @@ public:
 			params.reserve(8);
 			break;
 		case UC_CMPS:
+		case UC_CONVSMTH:
 		case UC_CMPS32:
+		case UC_CONVSMTH32:
 			is_jump = true;
 			params.reserve(2);
 			break;
 		case UC_CONVERSE:
-		case UC_CONVERSE32:
-		case UC_JNE:
-		case UC_JNE32:
 		case UC_JMP:
+		case UC_JNE:
+		case UC_CONVERSE32:
 		case UC_JMP32:
+		case UC_JNE32:
 			is_jump = true;
 			break;
+		case UC_CALLINDEX:
 		case UC_PUSHB:
 			is_jump = false;
 			params.reserve(1);
 			break;
-		case UC_PUSHI:
-		case UC_PUSHS:
-		case UC_POP:
-		case UC_PUSH:
-		case UC_POPSTATIC:
-		case UC_PUSHSTATIC:
-		case UC_POPTHV:
-		case UC_PUSHTHV:
 		case UC_ADDSI:
 		case UC_ADDSV:
-		case UC_CALLO:
-		case UC_CALLM:
-		case UC_CALLE:
-		case UC_CALL:
-		case UC_ARRC:
 		case UC_AIDX:
 		case UC_AIDXS:
+		case UC_AIDXTHV:
+		case UC_ARRC:
+		case UC_CALL:
+		case UC_CALLE:
+		case UC_CALLM:
+		case UC_CALLO:
+		case UC_CLSCREATE:
+		case UC_DBGLINE:
+		case UC_POP:
 		case UC_POPARR:
 		case UC_POPARRS:
-		case UC_PUSHF:
-		case UC_POPF:
-		case UC_AIDXTHV:
 		case UC_POPARRTHV:
-		case UC_CLSCREATE:
+		case UC_POPF:
+		case UC_POPSTATIC:
+		case UC_POPTHV:
+		case UC_PUSH:
+		case UC_PUSHF:
+		case UC_PUSHI:
+		case UC_PUSHS:
+		case UC_PUSHSTATIC:
+		case UC_PUSHTHV:
 			is_jump = false;
 			params.reserve(2);
 			break;
-		case UC_CALLIS:
 		case UC_CALLI:
+		case UC_CALLIS:
 			is_jump = false;
 			params.reserve(3);
 			break;
 		case UC_CALLMS:
-		case UC_PUSHI32:
-		case UC_PUSHS32:
+		case UC_DBGFUNC:
 		case UC_ADDSI32:
 		case UC_CALL32:
 		case UC_CALLE32:
+		case UC_PUSHI32:
+		case UC_PUSHS32:
 			is_jump = false;
 			params.reserve(4);
+			break;
+		case UC_DBGFUNC32:
+			is_jump = false;
+			params.reserve(6);
 			break;
 		default:
 			is_jump = false;

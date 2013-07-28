@@ -1,3 +1,14 @@
+2013-07-28 Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* content/sifixes/src/items/bucket_cure.uc: Fixed bug #1856 "SI Fixes:
+	  Discipline water / Gwenno".
+	* objs/egg.cc: Fixed bug #1848 "SS: Broken traps in Abandoned Outpost".
+	* content/sifixes/src/cutscenes/fawn_trial.uc: Use symbolic constant.
+	* usecode/compiler/basic_block.h: Handle all opcode cases.
+	* usecode/compiler/{test1.uc,ucdefs.h}: Updating test usecode.
+	* usecode/ucxt/src/ucfunc.cc: Output local statics with an 'l' prefix.
+	* usecode/compiler/ucparse.yy: Allow implicit pushing of 'item' for original
+	  usecode function calls.
+
 2013-05-15 Dominik Reichardt <dominus@users.sourceforge.net>
 	* keyactions.cc: different messages for toggling fullscreen mode
 

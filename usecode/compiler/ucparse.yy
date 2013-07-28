@@ -2337,9 +2337,12 @@ static bool Uc_is_valid_calle
 	(
 	Uc_symbol *sym,
 	Uc_expression *&ths,
-	char *nm
+	char *nm,
+	bool original
 	)
 	{
+	if (original)
+		return true;
 	Uc_function_symbol *fun = dynamic_cast<Uc_function_symbol *>(sym);
 	if (!fun)		// Most likely an intrinsic.
 		return true;
@@ -2396,7 +2399,9 @@ static Uc_call_expression *cls_function_call
 	if (!sym)
 		{
 		sym = cur_fun->search_up(nm);
-		if (!original && !Uc_is_valid_calle(sym, ths, nm))
+		if (original && !ths)
+			ths = new Uc_item_expression();
+		if (!Uc_is_valid_calle(sym, ths, nm, original))
 			return 0;
 		}
 

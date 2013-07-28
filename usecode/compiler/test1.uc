@@ -1,14 +1,15 @@
 #game "blackgate"
+#autonumber 0xC00
 #include "ucdefs.h"
 
-extern var adder 0xC00(a, b);	// Declaration.
+extern var adder (a, b);	// Declaration.
 const int const13 = 13;
 
 /*
  *	Return sum.
  */
 
-var adder1 0xC01 (a, b)
+var adder1 (a, b)
 	{
 	var c;
 	var d;
@@ -76,8 +77,8 @@ var adder1 0xC01 (a, b)
 class Test
 {
 	var testvar;
-	now_what() { ; }
-	Fun2() { ; }
+	void now_what() { ; }
+	void Fun2() { ; }
 }
 
 class Test2 : Test	// Inheritance: class Test2 has all data members and
@@ -85,7 +86,7 @@ class Test2 : Test	// Inheritance: class Test2 has all data members and
 		// needed by e.g., a function call.
 {
 	var testvar1;
-	now_what1() { testvar1 = 0; Test::Fun2(); now_what(); Fun2(); }
+	void now_what1() { testvar1 = 0; Test::Fun2(); now_what(); Fun2(); }
 	class<Test> Fun5()
 	{
 		testvar1 = 1;
@@ -96,8 +97,8 @@ class Test2 : Test	// Inheritance: class Test2 has all data members and
 				// derived from class<Test> hence can be
 				// converted to it
 	}
-	Fun2() { ; }
-	Fun3()
+	void Fun2() { ; }
+	void Fun3()
 	{
 		//return 1;	// Fails to compile
 		//return this;	// Fails to compile
@@ -111,7 +112,7 @@ class Test3 : Test
 class Test4 : Test2
 {  }
 
-class<Test> Fun2 0xB00 (class<Test> a)
+class<Test> Fun2 (class<Test> a)
 {
 	class<Test> mytest;
 	class<Test2> foo = new Test2(5, 6);	// Constructor example
@@ -143,7 +144,7 @@ class<Test> Fun2 0xB00 (class<Test> a)
 }
 
 /*
-var adder 0x480 (a, b)
+var adder (a, b)
 	{
 	return a + b;
 	}
