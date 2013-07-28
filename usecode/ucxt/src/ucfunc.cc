@@ -71,7 +71,7 @@ using std::less;
 
 const string UCFunc::VARPREFIX = "var";
 const string UCFunc::CLASSVARPREFIX = "cvar";
-const string UCFunc::STATICPREFIX = "svar";
+const string UCFunc::STATICPREFIX = "lsvar";
 const string UCFunc::GLOBALSTATICPREFIX = "gsvar";
 const string UCFunc::THISVAR = "this";
 const string UCFunc::VARNAME = "var";

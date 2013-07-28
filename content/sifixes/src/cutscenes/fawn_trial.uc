@@ -30,7 +30,7 @@ void FawnTrialBarks 0x939 (var quality)
 		UI_si_path_run_usecode(trialnpc, [0x407, 0x66B], PATH_SUCCESS, UI_get_npc_object(trialnpc), FawnTrialTrigger, false);
 		partySetTrialFacing();
 		delayedBark(trialnpc, "@" + getPoliteTitle() + "...@", 10);
-		delayedBark(0xFE9C, "@" + getTrialNPC(false) + "!@", 5);
+		delayedBark(AVATAR, "@" + getTrialNPC(false) + "!@", 5);
 		abort;
 	}
 	else if (quality == 0x00FD)

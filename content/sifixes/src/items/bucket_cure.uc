@@ -28,7 +28,7 @@
  *	post-insanity dialog.
  */
 
-void DumpBucket 0x88A ()
+void DumpBucket 0x88A (var bucket)
 {
 	var target = UI_click_on_item();
 	if (!target)
@@ -47,8 +47,8 @@ void DumpBucket 0x88A ()
 			CANTRA->set_schedule_type(WAIT);
 			// Without UI_set_path_failure, Cantra's would be stuck in waiting
 			// mode if the player moved the Avatar before reaching Cantra:
-			if (UI_path_run_usecode([target[2], target[3], target[4]], CureCantra, item, PATH_SUCCESS))
-				UI_set_path_failure(CureCantra, item, PATH_FAILURE);
+			if (UI_path_run_usecode([target[2], target[3], target[4]], CureCantra, bucket, PATH_SUCCESS))
+				UI_set_path_failure(CureCantra, bucket, PATH_FAILURE);
 			abort;
 		}
 		else if (((npcnum == DUPRE) && (bucket_quality == QUALITY_DISCIPLINE)) ||
@@ -57,13 +57,13 @@ void DumpBucket 0x88A ()
 		{
 			npcnum->set_schedule_type(WAIT);
 
-			if (UI_path_run_usecode([target[2], target[3], target[4]], CureCompanion, item, PATH_SUCCESS))
-				UI_set_path_failure(CureCompanion, item, PATH_FAILURE);
+			if (UI_path_run_usecode([target[2], target[3], target[4]], CureCompanion, bucket, PATH_SUCCESS))
+				UI_set_path_failure(CureCompanion, bucket, PATH_FAILURE);
 			abort;
 		}
 	}
 
 	// Let orig. function handle it.
 	target->set_intercept_item();
-	DumpBucket.original();
+	DumpBucket.original(bucket);
 }
