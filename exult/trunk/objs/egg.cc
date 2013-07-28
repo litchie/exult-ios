@@ -389,6 +389,7 @@ public:
 	virtual void hatch_now(Game_object *obj, bool must) {
 		Egg_vector eggs;
 		find_nearby_eggs(eggs, 275, dist);
+		find_nearby_eggs(eggs, 200, dist);
 		for (Egg_vector::const_iterator it = eggs.begin();
 		        it != eggs.end(); ++it) {
 			Egg_object *egg = *it;

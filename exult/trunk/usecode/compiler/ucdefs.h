@@ -1,6 +1,6 @@
 /*
  *  Common defines for U7 Usecode.
  */
-#define UC_ANY -359
+const int UC_ANY = -359;
 
 
