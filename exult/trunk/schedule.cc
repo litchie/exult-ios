@@ -1519,8 +1519,11 @@ void Loiter_schedule::now_what(
 	// Pure guess. Since only some schedules seem to call proximity
 	// usecode, I guess I should put it in here.
 	// Seems rare for pure loiter, quite frequent for tend shop.
-	if ((npc->get_schedule_type() == Schedule::loiter && try_proximity_usecode(12)) ||
-	        (npc->get_schedule_type() == Schedule::tend_shop && try_proximity_usecode(8)))
+	if ((npc->get_schedule_type() == Schedule::loiter
+	     && !(GAME_SI && npc->get_shapenum() == 0x355)
+	     && try_proximity_usecode(12))
+	    || (npc->get_schedule_type() == Schedule::tend_shop
+	        && try_proximity_usecode(8)))
 		return;
 	int newx = center.tx - dist + rand() % (2 * dist);
 	int newy = center.ty - dist + rand() % (2 * dist);
