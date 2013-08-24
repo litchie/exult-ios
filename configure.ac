@@ -12,17 +12,17 @@ AC_CONFIG_SRCDIR([exult.cc])
 # Do iPhone stuff first, as we may need to manipulate the host variable
 AC_ARG_WITH(iphone_sdk, AS_HELP_STRING([--with-iphone-sdk=SDK_NAME], [Compile using iPhone SDK]),,)
 if test x$with_iphone_sdk != x; then
-	osplat="/Developer/Platforms"
+	osplat="/Applications/Xcode.app/Contents/Developer/Platforms"
 	iphone_sdk="$with_iphone_sdk"
 	if test "$(echo $iphone_sdk | grep -c 'iPhoneSimulator')" != "0"; then
 		DEV_iOS="${osplat}/iPhoneSimulator.platform/Developer"
 		SDK_iOS="${DEV_iOS}/SDKs/${iphone_sdk}.sdk"
-		host_alias="i686-apple-darwin10"
+		host_alias="i686-apple-darwin11"
 		ARCH_iOS="i686"
 	else
 		DEV_iOS="${osplat}/iPhoneOS.platform/Developer"
 		SDK_iOS="${DEV_iOS}/SDKs/${iphone_sdk}.sdk"
-		host_alias="arm-apple-darwin10"
+		host_alias="arm-apple-darwin11"
 		ARCH_iOS="armv6"
 	fi
 	#LD_LIBRARY_PATH=${COMPILER_iOS}/usr/lib
@@ -32,7 +32,7 @@ if test x$with_iphone_sdk != x; then
 	LDFLAGS="-arch ${ARCH_iOS} -pipe -Os -gdwarf-2 -no-cpp-precomp -mthumb -isysroot ${SDK_iOS}"
 	CFLAGS=${LDFLAGS}
 	CXXFLAGS=${LDFLAGS}
-	#CPPFLAGS="-DSDL_VER_1_3 -D__IPHONEOS__"
+	CPPFLAGS="-DSDL_VER_1_3 -D__IPHONEOS__"
 	AC_DEFINE(__IPHONEOS__, 1, [Using iPhone])
 	AC_DEFINE(SDL_VER_1_3, 1, [SDL 1.3])
 	enable_sdltest="no"

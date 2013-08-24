@@ -1,3 +1,8 @@
+2013-08-23	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
+	* configure.ac: Updated for newer locations of XCode installs (for iOS)
+	* sdl-compat.h: Updated to handle SDL_GetKeyState for SDL 1.3 (for iOS) 
+	* drag.cc: Added sdl-compat.h to prevent SDL 1.3 failure on SDL_GetKeyState
+
 2013-07-28 Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* content/sifixes/src/items/bucket_cure.uc: Fixed bug #1856 "SI Fixes:
 	  Discipline water / Gwenno".
