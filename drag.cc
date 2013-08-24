@@ -37,6 +37,7 @@
 #include "Gump_manager.h"
 #include "ucmachine.h"
 #include "barge.h"
+#include "sdl-compat.h"
 
 using std::cout;
 using std::endl;
