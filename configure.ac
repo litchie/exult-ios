@@ -986,6 +986,7 @@ AC_SUBST(WARNINGS)
 AC_OUTPUT([
 exult.spec
 Info.plist
+Info-ios.plist
 Makefile
 audio/Makefile
 audio/midi_drivers/Makefile

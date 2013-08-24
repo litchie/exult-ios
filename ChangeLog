@@ -1,4 +1,9 @@
 2013-08-24	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
+	* Info-ios.plist.in: Added for iOS Info.plist file
+	* Makefile.am: Modified to include Info-ios.plist and new target iosbundle
+	* configure.ac: Updated to include Info-ios.plist
+
+2013-08-24	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
 	* configure.ac: Updated for newer locations of XCode installs (for iOS)
 	* sdl-compat.h: Updated to handle SDL_GetKeyState for SDL 1.3 (for iOS) 
 	* drag.cc: Added sdl-compat.h to prevent SDL 1.3 failure on SDL_GetKeyState

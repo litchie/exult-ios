@@ -157,6 +157,7 @@ EXTRA_DIST = 	\
 	Makefile.studio.mingw \
 	Makefile.MorphOS \
 	Info.plist.in \
+	Info-ios.plist.in \
 	exult.spec \
 	windrag.cc	\
 	windrag.h \
@@ -246,6 +247,27 @@ bundle: ${EXE_TARGET}
 	$(INSTALL_DATA) $(srcdir)/data/exult_bg.flx $(bundle_name)/Contents/Resources/data
 	$(INSTALL_DATA) $(srcdir)/data/exult_si.flx $(bundle_name)/Contents/Resources/data
 	$(INSTALL_DATA) $(srcdir)/data/exultmsg.txt $(bundle_name)/Contents/Resources/data
+	$(INSTALL_DATA) $(srcdir)/AUTHORS $(bundle_name)
+	$(INSTALL_DATA) $(srcdir)/COPYING $(bundle_name)
+	$(INSTALL_DATA) $(srcdir)/FAQ $(bundle_name)
+	$(INSTALL_DATA) $(srcdir)/NEWS $(bundle_name)
+	$(INSTALL_DATA) $(srcdir)/README $(bundle_name)
+	$(INSTALL_DATA) $(srcdir)/README.MacOSX $(bundle_name)
+if WITH_OSX_CODE_SIGNATURE
+	codesign -f -s "$(OSX_CODE_SIGNATURE)" $(bundle_name)
+endif
+
+iosbundle: ${EXE_TARGET}
+	mkdir -p $(bundle_name)/data/
+	echo "APPL????" > $(bundle_name)/PkgInfo
+	$(INSTALL_DATA) Info-ios.plist $(bundle_name)/Info.plist
+	$(INSTALL_PROGRAM) $< $(bundle_name)/
+	$(INSTALL_DATA) $(srcdir)/macosx/exult.icns $(bundle_name)/
+	$(INSTALL_DATA) $(srcdir)/data/exult.flx $(bundle_name)/data
+	$(INSTALL_DATA) $(srcdir)/data/exult_bg.flx $(bundle_name)/data
+	$(INSTALL_DATA) $(srcdir)/data/exult_si.flx $(bundle_name)/data
+	$(INSTALL_DATA) $(srcdir)/data/exult_iphone.flx $(bundle_name)/data
+	$(INSTALL_DATA) $(srcdir)/data/exultmsg.txt $(bundle_name)/data
 	$(INSTALL_DATA) $(srcdir)/AUTHORS $(bundle_name)
 	$(INSTALL_DATA) $(srcdir)/COPYING $(bundle_name)
 	$(INSTALL_DATA) $(srcdir)/FAQ $(bundle_name)
