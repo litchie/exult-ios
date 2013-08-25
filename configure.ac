@@ -23,7 +23,7 @@ if test x$with_iphone_sdk != x; then
 		DEV_iOS="${osplat}/iPhoneOS.platform/Developer"
 		SDK_iOS="${DEV_iOS}/SDKs/${iphone_sdk}.sdk"
 		host_alias="arm-apple-darwin11"
-		ARCH_iOS="armv6"
+		ARCH_iOS="armv7"
 	fi
 	#LD_LIBRARY_PATH=${COMPILER_iOS}/usr/lib
 	COMPILER_iOS=${DEV_iOS}/usr/bin
