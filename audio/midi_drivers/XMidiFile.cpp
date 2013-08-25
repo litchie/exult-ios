@@ -1028,7 +1028,11 @@ void XMidiFile::AdjustTimings(uint32 ppqn)
 			// require 52 bits in some circumstances
 
 			uint64 aim = event->time - time_prev;
+#ifndef __IPHONEOS__
 			aim *= tempo;
+#elseif
+			aim = aim * tempo;
+#endif
 
 			hs_rem += aim%ppqn;
 			hs += aim/ppqn;
