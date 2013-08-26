@@ -1,3 +1,6 @@
+2013-08-25	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
+	* audio/midi_drivers/XMidiFile.cpp: Fixed issue where iOS would not compile when doing armv7
+
 2013-08-24	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
 	* Info-ios.plist.in: Added for iOS Info.plist file
 	* Makefile.am: Modified to include Info-ios.plist and new target iosbundle

@@ -787,7 +787,11 @@ void XMidiFile::ApplyFirstState(first_state &fs, int chan_mask)
 	}
 }
 
-#ifndef BEOS
+#ifdef __IPHONEOS__
+#define uint64 uint64_t
+#endif
+
+#if !(BEOS) && !(__IPHONEOS__)
 // Unsigned 64 Bit Int emulation. Only supports SOME operations
 struct uint64 {
 	uint32	low;		// Low is first so uint64 can be cast as uint32 to get low dword
@@ -1028,11 +1032,7 @@ void XMidiFile::AdjustTimings(uint32 ppqn)
 			// require 52 bits in some circumstances
 
 			uint64 aim = event->time - time_prev;
-#ifndef __IPHONEOS__
 			aim *= tempo;
-#elseif
-			aim = aim * tempo;
-#endif
 
 			hs_rem += aim%ppqn;
 			hs += aim/ppqn;
