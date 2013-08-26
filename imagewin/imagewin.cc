@@ -342,7 +342,23 @@ void Image_window::static_init() {
 
 	cout << "Checking rendering support" << std::endl;
 
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+	SDL_DisplayMode dispmode;
+	int bpp;
+	Uint32 Rmask, Gmask, Bmask, Amask;
+	if (SDL_GetDesktopDisplayMode(SDL_COMPAT_DISPLAY_INDEX, &dispmode) == 0
+		&& SDL_PixelFormatEnumToMasks(dispmode.format, &bpp, &Rmask, &Gmask, &Bmask, &Amask) == SDL_TRUE)
+	{
+	   desktop_depth = bpp;
+	}
+	else
+	{
+	   desktop_depth = 0;
+	   cout << "Error: Couldn't get desktop display depth!" << std::endl;
+        }
+#else
 	desktop_depth = SDL_GetVideoInfo()->vfmt->BitsPerPixel;
+#endif
 
 	windowed_8 = SDL_VideoModeOK(640, 400, 8, SDL_SWSURFACE | SDL_HWPALETTE);
 	windowed_16 = SDL_VideoModeOK(640, 400, 16, SDL_SWSURFACE);
@@ -367,7 +383,22 @@ void Image_window::static_init() {
 			format.BitsPerPixel = bpps[i];
 			pformat = &format;
 		}
-
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+	 	for (int i = 0; i < SDL_GetNumDisplayModes(0); i++)
+		{
+			SDL_DisplayMode dispmode;
+			if (SDL_GetDisplayMode(SDL_COMPAT_DISPLAY_INDEX, i, &dispmode) == 0)
+			{
+			   Resolution res = { dispmode.w, dispmode.h, false, false, false};
+			   p_resolutions[(res.width << 16) | res.height] = res;
+			
+			}
+			else
+			{
+			    cout << " Error getting display mode #" << i << ": " << SDL_GetError() << std::endl;
+			}
+		}	
+#else
 		SDL_Rect **modes = SDL_ListModes(pformat, SDL_FULLSCREEN | SDL_SWSURFACE | ((bpps[i] == 8) ? SDL_HWPALETTE : 0));
 
 		// No mode for this bpp
@@ -386,6 +417,7 @@ void Image_window::static_init() {
 			Resolution res = { (*modes)->w, (*modes)->h, false, false, false};
 			p_resolutions[(res.width << 16) | res.height] = res;
 		}
+#endif
 	}
 
 	// It's empty, so add in some basic resolutions that would be nice to support
@@ -541,7 +573,20 @@ void Image_window::create_surface(
 
 	if (!paletted_surface && !force_bpp) {      // No scaling, or failed?
 		uint32 flags = SDL_SWSURFACE | (fullscreen ? SDL_FULLSCREEN : 0) | (ibuf->depth == 8 ? SDL_HWPALETTE : 0);
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+		screen = SDL_CreateWindow("", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOW_POS_UNDEFINED, w / scale, h / scale, flags);
+		sRenderer = SDL_CreateRenderer(screen, -1, 0);
+
+		// Do an initial grey draw
+		SDL_SetRenderDrawColor(sRenderer, 128, 128, 128, 255);
+		SDL_RenderClear(sRenderer);
+		SDL_RenderPresent(sRenderer);
+
+		// TODO: Create surfaces and possibly a screen texture? -Lanica
 		inter_surface = draw_surface = paletted_surface = display_surface = SDL_SetVideoMode(w / scale, h / scale, ibuf->depth, flags);
+#else
+		inter_surface = draw_surface = paletted_surface = display_surface = SDL_SetVideoMode(w / scale, h / scale, ibuf->depth, flags);
+#endif
 		inter_width = w / scale;
 		inter_height = h / scale;
 		scale = 1;
@@ -955,7 +1000,11 @@ bool Image_window::screenshot(SDL_RWops *dst) {
 }
 
 void Image_window::set_title(const char *title) {
+#ifdef SDL_VERSION_ATLEAST(2, 0, 0)
+	SDL_SetWindowTitle(screen, title);
+#else
 	SDL_WM_SetCaption(title, 0);
+#endif
 }
 
 #ifdef HAVE_OPENGL
