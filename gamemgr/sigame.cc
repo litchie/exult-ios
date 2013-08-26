@@ -1365,7 +1365,11 @@ bool SI_Game::new_game(Vga_file &shapes) {
 						npc_name[strlen(npc_name) - 1] = 0;
 					break;
 				default: {
+#ifdef SDL_VER_1_3
+					if ((isTextInput && selected == 0) || (!isTextInput && event.key.keysym.unicode > (int)'~' && selected == 0))
+#else
 					if (selected == 0) { // on the text input field?
+#endif
 						int len = strlen(npc_name);
 						char chr = 0;
 
