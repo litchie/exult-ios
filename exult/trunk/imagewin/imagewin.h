@@ -33,6 +33,8 @@ Boston, MA  02111-1307, USA.
 #include <vector>
 #include <map>
 
+#include "sdl-compat.h"
+
 struct SDL_Surface;
 struct SDL_RWops;
 
@@ -171,6 +173,12 @@ protected:
 
 	FillMode fill_mode;
 	int fill_scaler;
+
+#ifdef SDL_VERSION_ATLEAST(2, 0, 0)
+	SDL_Window *screen;
+	SDL_Renderer *sRenderer;
+	SDL_Texture *sTexture;
+#endif
 
 	SDL_Surface *paletted_surface;  // Surface that palette is set on   (Example res)
 	SDL_Surface *display_surface;   // Final surface that is displayed  (1024x1024)
