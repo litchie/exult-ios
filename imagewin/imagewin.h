@@ -174,7 +174,7 @@ protected:
 	FillMode fill_mode;
 	int fill_scaler;
 
-#ifdef SDL_VERSION_ATLEAST(2, 0, 0)
+#if SDL_VERSION_ATLEAST(2, 0, 0)
 	SDL_Window *screen;
 	SDL_Renderer *sRenderer;
 	SDL_Texture *sTexture;

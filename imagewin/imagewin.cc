@@ -1000,7 +1000,7 @@ bool Image_window::screenshot(SDL_RWops *dst) {
 }
 
 void Image_window::set_title(const char *title) {
-#ifdef SDL_VERSION_ATLEAST(2, 0, 0)
+#if SDL_VERSION_ATLEAST(2, 0, 0)
 	SDL_SetWindowTitle(screen, title);
 #else
 	SDL_WM_SetCaption(title, 0);
