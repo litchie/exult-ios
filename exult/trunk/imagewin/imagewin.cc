@@ -384,10 +384,10 @@ void Image_window::static_init() {
 			pformat = &format;
 		}
 #if SDL_VERSION_ATLEAST(2, 0, 0)
-	 	for (int i = 0; i < SDL_GetNumDisplayModes(0); i++)
+	 	for (int j = 0; j < SDL_GetNumDisplayModes(0); j++)
 		{
 			SDL_DisplayMode dispmode;
-			if (SDL_GetDisplayMode(SDL_COMPAT_DISPLAY_INDEX, i, &dispmode) == 0)
+			if (SDL_GetDisplayMode(SDL_COMPAT_DISPLAY_INDEX, j, &dispmode) == 0)
 			{
 			   Resolution res = { dispmode.w, dispmode.h, false, false, false};
 			   p_resolutions[(res.width << 16) | res.height] = res;
@@ -395,7 +395,7 @@ void Image_window::static_init() {
 			}
 			else
 			{
-			    cout << " Error getting display mode #" << i << ": " << SDL_GetError() << std::endl;
+			    cout << " Error getting display mode #" << j << ": " << SDL_GetError() << std::endl;
 			}
 		}	
 #else

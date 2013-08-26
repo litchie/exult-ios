@@ -1,7 +1,7 @@
 #ifndef SDL_COMPAT_H
 #define SDL_COMPAT_H
 
-#include <SDL.h>
+#include "SDL_version.h"
 
 #if SDL_VERSION_ATLEAST(2, 0, 0)
 #define SDL_COMPAT_DISPLAY_INDEX 0 // TODO: Add multiple screen support...
