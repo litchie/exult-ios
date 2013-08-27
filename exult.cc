@@ -838,14 +838,21 @@ static void Init(
 #endif
 
 	SDL_SysWMinfo info;     // Get system info.
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+	// Doesn't look like info is used for anything... let's try not getting it
+	//SDL_GetWindowWMInfo(win->screen_window, &info);
+#else
 	SDL_GetWMInfo(&info);
+#endif
 #ifdef USE_EXULTSTUDIO
 	// Want drag-and-drop events.
 	SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
 #endif
 	// KBD repeat should be nice.
+#if !(SDL_VERSION_ATLEAST(2, 0, 0)) // Not seeing the keyboard repeat options in SDL2
 	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY,
 	                    SDL_DEFAULT_REPEAT_INTERVAL);
+#endif
 	SDL_ShowCursor(0);
 	SDL_VERSION(&info.version);
 
@@ -1617,22 +1624,35 @@ static void Handle_event(
 		break;
 	}
 	case SDL_ACTIVEEVENT:
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+		if (event.window.event == SDL_WINDOWEVENT_ENTER) {
+#else
 		if (event.active.state & SDL_APPMOUSEFOCUS) {
 			if (event.active.gain) {
+#endif
 				int x, y;
 				SDL_GetMouseState(&x, &y);
 				gwin->get_win()->screen_to_game(x, y, gwin->get_fastmouse(), x, y);
 				Mouse::mouse->set_location(x, y);
+#if !(SDL_VERSION_ATLEAST(2, 0, 0))
 			}
+#endif
 			gwin->set_painted();
 		}
 
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+		if (event.window.event == SDL_WINDOWEVENT_FOCUS_GAINED)
+			gwin->get_focus();
+		else if (event.window.event == SDL_WINDOWEVENT_FOCUS_LOST)
+			gwin->lose_focus();
+#else
 		if (event.active.state & SDL_APPINPUTFOCUS) {
 			if (event.active.gain)
 				gwin->get_focus();
 			else
 				gwin->lose_focus();
 		}
+#endif
 #if 0
 		if (event.active.state & SDL_APPACTIVE)
 			// Became active.
@@ -1823,12 +1843,17 @@ static int Get_click(
 				case SDLK_LCTRL:
 				case SDLK_RALT:
 				case SDLK_LALT:
-#ifndef SDL_VER_1_3
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+				case SDLK_RGUI:
+				case SDLK_LGUI:
+#else
+   #ifndef SDL_VER_1_3
 				case SDLK_RMETA:
 				case SDLK_LMETA:
-#endif
+   #endif
 				case SDLK_RSUPER:
 				case SDLK_LSUPER:
+#endif
 				case SDLK_NUMLOCK:
 				case SDLK_CAPSLOCK:
 				case SDLK_SCROLLOCK:
@@ -1853,12 +1878,19 @@ static int Get_click(
 				break;
 			}
 			case SDL_ACTIVEEVENT:
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+				if (event.window.event == SDL_WINDOWEVENT_FOCUS_GAINED)
+					gwin->get_focus();
+				else if (event.window.event == SDL_WINDOWEVENT_FOCUS_LOST)
+					gwin->lose_focus();
+#else
 				if (event.active.state & SDL_APPINPUTFOCUS) {
 					if (event.active.gain)
 						gwin->get_focus();
 					else
 						gwin->lose_focus();
 				}
+#endif
 			}
 		if (GL_manager::get_instance()) {
 			gwin->paint();

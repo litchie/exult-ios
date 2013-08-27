@@ -540,12 +540,17 @@ int wait_delay(int ms, int startcol, int ncol) {
 				case SDLK_LCTRL:
 				case SDLK_RALT:
 				case SDLK_LALT:
-#ifndef SDL_VER_1_3
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+				case SDLK_RGUI:
+				case SDLK_LGUI:
+#else
+   #ifndef SDL_VER_1_3
 				case SDLK_RMETA:
 				case SDLK_LMETA:
-#endif
+   #endif
 				case SDLK_RSUPER:
 				case SDLK_LSUPER:
+#endif
 				case SDLK_NUMLOCK:
 				case SDLK_CAPSLOCK:
 				case SDLK_SCROLLOCK:

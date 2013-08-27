@@ -293,7 +293,11 @@ protected:
 	static int windowed_32;
 
 public:
-
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+        inline class SDL_Window *get_screen_window() const {
+                return screen_window;
+        }
+#endif
 	int Get_best_bpp(int w, int h, int bpp, uint32 flags);
 
 	// Create with given buffer.
