@@ -58,6 +58,8 @@ Boston, MA  02111-1307, USA.
 #include "shapes/glshape.h"
 #endif
 
+#include "SDL.h"
+
 #include "Configuration.h"
 
 bool SavePCX_RW(SDL_Surface *saveme, SDL_RWops *dst, bool freedst);
@@ -349,6 +351,7 @@ void Image_window::static_init() {
 	if (SDL_GetDesktopDisplayMode(SDL_COMPAT_DISPLAY_INDEX, &dispmode) == 0
 		&& SDL_PixelFormatEnumToMasks(dispmode.format, &bpp, &Rmask, &Gmask, &Bmask, &Amask) == SDL_TRUE)
 	{
+	   desktop_displaymode = dispmode;
 	   desktop_depth = bpp;
 	}
 	else
@@ -574,16 +577,28 @@ void Image_window::create_surface(
 	if (!paletted_surface && !force_bpp) {      // No scaling, or failed?
 		uint32 flags = SDL_SWSURFACE | (fullscreen ? SDL_FULLSCREEN : 0) | (ibuf->depth == 8 ? SDL_HWPALETTE : 0);
 #if SDL_VERSION_ATLEAST(2, 0, 0)
-		screen = SDL_CreateWindow("", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOW_POS_UNDEFINED, w / scale, h / scale, flags);
-		sRenderer = SDL_CreateRenderer(screen, -1, 0);
+		screen_window = SDL_CreateWindow("", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w / scale, h / scale, flags);
+		screen_renderer = SDL_CreateRenderer(screen_window, -1, 0);
 
 		// Do an initial grey draw
-		SDL_SetRenderDrawColor(sRenderer, 128, 128, 128, 255);
-		SDL_RenderClear(sRenderer);
-		SDL_RenderPresent(sRenderer);
+		SDL_SetRenderDrawColor(screen_renderer, 128, 128, 128, 255);
+		SDL_RenderClear(screen_renderer);
+		SDL_RenderPresent(screen_renderer);
+        
+		int sbpp;
+        	Uint32 sRmask, sGmask, sBmask, sAmask;
+		SDL_PixelFormatEnumToMasks(desktop_displaymode.format, &sbpp, &sRmask, &sGmask, &sBmask, &sAmask);
 
-		// TODO: Create surfaces and possibly a screen texture? -Lanica
-		inter_surface = draw_surface = paletted_surface = display_surface = SDL_SetVideoMode(w / scale, h / scale, ibuf->depth, flags);
+		SDL_Surface *display_surface = SDL_CreateRGBSurface(0,
+				(w / scale), (h / scale), sbpp,
+                                sRmask, sGmask, sBmask, sAmask);
+		SDL_Texture *screen_texture = SDL_CreateTexture(screen_renderer,
+                                desktop_displaymode.format,
+                                SDL_TEXTUREACCESS_STREAMING,
+                                (w / scale), (h / scale));
+
+		inter_surface = draw_surface = paletted_surface = display_surface;
+
 #else
 		inter_surface = draw_surface = paletted_surface = display_surface = SDL_SetVideoMode(w / scale, h / scale, ibuf->depth, flags);
 #endif
@@ -643,7 +658,30 @@ bool Image_window::create_scale_surfaces(int w, int h, int bpp) {
 	hwdepth = Get_best_bpp(w, h, hwdepth, flags);
 	if (!hwdepth) return false;
 
-	if (!(display_surface = SDL_SetVideoMode(w, h, hwdepth, flags))) {
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+	screen_window = SDL_CreateWindow("", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w / scale, h / scale, flags);
+	screen_renderer = SDL_CreateRenderer(screen_window, -1, 0);
+
+	// Do an initial grey draw
+	SDL_SetRenderDrawColor(screen_renderer, 128, 128, 128, 255);
+	SDL_RenderClear(screen_renderer);
+	SDL_RenderPresent(screen_renderer);
+        
+	int sbpp;
+       	Uint32 sRmask, sGmask, sBmask, sAmask;
+	SDL_PixelFormatEnumToMasks(desktop_displaymode.format, &sbpp, &sRmask, &sGmask, &sBmask, &sAmask);
+
+	SDL_Surface *display_surface = SDL_CreateRGBSurface(0,
+			(w / scale), (h / scale), sbpp,
+                        sRmask, sGmask, sBmask, sAmask);
+	SDL_Texture *screen_texture = SDL_CreateTexture(screen_renderer,
+                        desktop_displaymode.format,
+                        SDL_TEXTUREACCESS_STREAMING,
+                        (w / scale), (h / scale));
+#else
+	display_surface = SDL_SetVideoMode(w, h, hwdepth, flags);
+#endif
+	if (!display_surface) {
 		cerr << "Unable to set video mode to" << w << "x" << h << " " << hwdepth << " bpp" << endl;
 		free_surface();
 		return false;
@@ -950,9 +988,12 @@ void Image_window::show(
 		w = display_surface->w;
 		h = display_surface->h;
 	}
-
 	// Phase 3 notify SDL
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+        UpdateRect(display_surface, x, y, w, h);
+#else
 	SDL_UpdateRect(display_surface, x, y, w, h);
+#endif
 }
 
 
@@ -1001,7 +1042,7 @@ bool Image_window::screenshot(SDL_RWops *dst) {
 
 void Image_window::set_title(const char *title) {
 #if SDL_VERSION_ATLEAST(2, 0, 0)
-	SDL_SetWindowTitle(screen, title);
+	SDL_SetWindowTitle(screen_window, title);
 #else
 	SDL_WM_SetCaption(title, 0);
 #endif
@@ -1267,4 +1308,13 @@ bool Image_window::fillmode_to_string(FillMode fmode, std::string &str) {
 	return false;
 
 
+}
+
+void Image_window::UpdateRect(SDL_Surface *surf, int x, int y, int w, int h)
+{
+	SDL_UpdateTexture(screen_texture, NULL, surf->pixels, surf->pitch);
+	SDL_RenderClear(screen_renderer);
+	SDL_Rect destRect = {x, y, w, h};
+	SDL_RenderCopy(screen_renderer, screen_texture, NULL, &destRect);
+	SDL_RenderPresent(screen_renderer);
 }

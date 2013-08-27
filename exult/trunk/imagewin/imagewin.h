@@ -33,6 +33,7 @@ Boston, MA  02111-1307, USA.
 #include <vector>
 #include <map>
 
+#include "SDL_video.h"
 #include "sdl-compat.h"
 
 struct SDL_Surface;
@@ -175,9 +176,11 @@ protected:
 	int fill_scaler;
 
 #if SDL_VERSION_ATLEAST(2, 0, 0)
-	SDL_Window *screen;
-	SDL_Renderer *sRenderer;
-	SDL_Texture *sTexture;
+	static SDL_DisplayMode desktop_displaymode;
+	class SDL_Window *screen_window;
+	class SDL_Renderer *screen_renderer;
+	class SDL_Texture *screen_texture;
+	void UpdateRect(SDL_Surface *surf, int x, int y, int w, int h);
 #endif
 
 	SDL_Surface *paletted_surface;  // Surface that palette is set on   (Example res)
