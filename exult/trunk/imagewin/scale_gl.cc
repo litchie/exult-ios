@@ -31,7 +31,7 @@
 void Image_window::show_scaledOpenGL(
     int x, int y, int w, int h  // Area to show.
 ) {
-#ifdef SDL_VERSION_ATLEAST(2, 0, 0)
+#if SDL_VERSION_ATLEAST(2, 0, 0)
 	SDL_GL_SwapWindow(screen_window);
 #else
 	SDL_GL_SwapBuffers();       // Blit.
