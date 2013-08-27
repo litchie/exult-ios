@@ -1310,6 +1310,7 @@ bool Image_window::fillmode_to_string(FillMode fmode, std::string &str) {
 
 }
 
+#if SDL_VERSION_ATLEAST(2, 0, 0)
 void Image_window::UpdateRect(SDL_Surface *surf, int x, int y, int w, int h)
 {
 	SDL_UpdateTexture(screen_texture, NULL, surf->pixels, surf->pitch);
@@ -1318,3 +1319,4 @@ void Image_window::UpdateRect(SDL_Surface *surf, int x, int y, int w, int h)
 	SDL_RenderCopy(screen_renderer, screen_texture, NULL, &destRect);
 	SDL_RenderPresent(screen_renderer);
 }
+#endif
