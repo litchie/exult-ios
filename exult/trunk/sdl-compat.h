@@ -21,6 +21,7 @@
 #define SDLK_KP9 SDLK_KP_9
 #define SDLK_NUMLOCK SDLK_NUMLOCKCLEAR
 #define SDLK_SCROLLOCK SDLK_SCROLLLOCK
+#define KMOD_META KMOD_GUI
 // End of keys that have changed a bit
 // Events that have changed a bit
 #define SDL_ACTIVEEVENT SDL_WINDOWEVENT

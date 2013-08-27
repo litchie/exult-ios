@@ -313,7 +313,19 @@ const struct {
 	{"ESC",       SDLK_ESCAPE},
 	{"SPACE",     SDLK_SPACE},
 	{"DEL",       SDLK_DELETE},
-	{"KP0",       SDLK_KP0},
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+	{"KP0",       SDLK_KP_0},
+	{"KP1",       SDLK_KP_1},
+	{"KP2",       SDLK_KP_2},
+	{"KP3",       SDLK_KP_3},
+	{"KP4",       SDLK_KP_4},
+	{"KP5",       SDLK_KP_5},
+	{"KP6",       SDLK_KP_6},
+	{"KP7",       SDLK_KP_7},
+	{"KP8",       SDLK_KP_8},
+	{"KP9",       SDLK_KP_9},
+	{"KP0",       SDLK_KP_0},
+#else
 	{"KP1",       SDLK_KP1},
 	{"KP2",       SDLK_KP2},
 	{"KP3",       SDLK_KP3},
@@ -323,6 +335,7 @@ const struct {
 	{"KP7",       SDLK_KP7},
 	{"KP8",       SDLK_KP8},
 	{"KP9",       SDLK_KP9},
+#endif
 	{"KP.",       SDLK_KP_PERIOD},
 	{"KP/",       SDLK_KP_DIVIDE},
 	{"KP*",       SDLK_KP_MULTIPLY},
@@ -376,14 +389,16 @@ void KeyBinder::AddKeyBinding(SDLKey key, int mod, const Action *action,
 	SDL_keysym k;
 	ActionType a;
 
-#ifdef SDL_VER_1_3
+#if defined(SDL_VER_1_3) || SDL_VERSION_ATLEAST(2, 0, 0)
 	k.scancode = static_cast<SDL_Scancode>(0);
 #else
 	k.scancode = 0;
 #endif
 	k.sym      = key;
 	k.mod      = static_cast<SDLMod>(mod);
+#if !SDL_VERSION_ATLEAST(2, 0, 0)
 	k.unicode  = 0;
+#endif
 	a.action    = action;
 	int i;  // For MSVC
 	for (i = 0; i < c_maxparams && i < nparams; i++)

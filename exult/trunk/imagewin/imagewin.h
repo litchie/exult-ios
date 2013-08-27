@@ -543,5 +543,4 @@ public:
 
 	bool screenshot(SDL_RWops *dst);
 };
-
 #endif  /* INCL_IMAGEWIN    */

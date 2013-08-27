@@ -36,7 +36,7 @@
 
 #include "SDL_timer.h"
 #include "SDL_events.h"
-#ifdef SDL_VER_1_3
+#if defined(SDL_VER_1_3) || SDL_VERSION_ATLEAST(2, 0, 0)
 #  include "SDL_stdinc.h"
 #  include "SDL_scancode.h"
 #else
