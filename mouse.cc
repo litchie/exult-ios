@@ -150,7 +150,11 @@ void Mouse::move(int x, int y) {
 	if (warp && gwin->get_fastmouse()) {
 		int wx, wy;
 		gwin->get_win()->game_to_screen(x, y, gwin->get_fastmouse(), wx, wy);
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+		SDL_WarpMouseInWindow(gwin->get_win()->get_screen_window(), wx, wy);
+#else
 		SDL_WarpMouse(wx, wy);
+#endif
 	}
 #ifdef DEBUG
 	if (onscreen)
