@@ -637,7 +637,12 @@ bool Notebook_gump::handle_kbd_event(
     void *vev
 ) {
 	SDL_Event &ev = *reinterpret_cast<SDL_Event *>(vev);
-	int chr = ev.key.keysym.sym, unicode = ev.key.keysym.unicode;
+	int chr = ev.key.keysym.sym;
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+	int unicode = 0; // Unicode is way different in SDL2
+#else	
+	int unicode = ev.key.keysym.unicode;
+#endif
 
 	if (ev.type == SDL_KEYUP)
 		return true;        // Ignoring key-up at present.
@@ -704,7 +709,7 @@ bool Notebook_gump::handle_kbd_event(
 		break;
 	default:
 #if 1   /* Assumes unicode is enabled. */
-		if ((unicode & 0xFF80) == 0)
+		if (unicode != 0 && (unicode & 0xFF80) == 0)
 			chr = unicode & 0x7F;
 		else
 			chr = 0;

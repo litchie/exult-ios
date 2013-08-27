@@ -543,7 +543,11 @@ int Gump_manager::handle_modal_gump_event(
 		}
 #  endif
 		gump->key_down(event.key.keysym.sym);
+  #if SDL_VERSION_ATLEAST(2, 0, 0)
+		gump->text_input(event.key.keysym.sym, 0); // Unicode is waay different in SDL2
+  #else
 		gump->text_input(event.key.keysym.sym, event.key.keysym.unicode);
+  #endif
 #endif
 
 		break;

@@ -156,7 +156,15 @@ LowLevelMidiDriver::~LowLevelMidiDriver()
 	{
 		perr <<	"Warning: Destructing LowLevelMidiDriver and destroyMidiDriver() wasn't called!" << std::endl;
 		//destroyMidiDriver();
-		if (thread) SDL_KillThread(thread);
+		if (thread)
+		{
+#ifdef SDL_VERSION_ATLEAST(2, 0, 0)
+			int status_thread;
+			SDL_WaitThread(thread, &status_thread); // TODO: Fix this ugly workaround
+#else
+			SDL_KillThread(thread);
+#endif
+		}
 	}
 	thread = 0;
 }
@@ -439,7 +447,11 @@ int LowLevelMidiDriver::initThreadedSynth()
 	ComMessage message(LLMD_MSG_THREAD_INIT);
 	sendComMessage(message);
 
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+	thread = SDL_CreateThread (threadMain_Static, "LowLevelMidiDriver", static_cast<void*>(this));
+#else
 	thread = SDL_CreateThread (threadMain_Static, static_cast<void*>(this));
+#endif
 
 	while (peekComMessageType() == LLMD_MSG_THREAD_INIT) 
 		yield ();
@@ -486,7 +498,12 @@ void LowLevelMidiDriver::destroyThreadedSynth()
 	// We waited a while and it still didn't terminate
 	if (count == 400 && peekComMessageType() != 0) {
 		perr << "MidiPlayer Thread failed to stop in time. Killing it." << std::endl;
+#ifdef SDL_VERSION_ATLEAST(2, 0, 0)
+		int status_thread;
+		SDL_WaitThread(thread, &status_thread); // TODO: Fix this ugly workaround
+#else
 		SDL_KillThread (thread);
+#endif
 	}
 
 	lockComMessage();
