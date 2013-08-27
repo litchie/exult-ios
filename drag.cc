@@ -478,7 +478,11 @@ bool Dragging_info::drop(
 	// Don't prompt if within same gump
 	//or if alternate drop is enabled (ctrl inverts).
 
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+	const Uint8 *keystate = SDL_GetKeyboardState(NULL);
+#else
 	Uint8 *keystate = SDL_GetKeyState(NULL);
+#endif
 	bool drop = (keystate[SDLK_LCTRL] || keystate[SDLK_RCTRL]) ?
 	            gwin->get_alternate_drop() : !gwin->get_alternate_drop();
 	bool temp = obj->get_flag(Obj_flags::is_temporary);
