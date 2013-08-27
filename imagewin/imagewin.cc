@@ -1319,4 +1319,5 @@ void Image_window::UpdateRect(SDL_Surface *surf, int x, int y, int w, int h)
 	SDL_RenderCopy(screen_renderer, screen_texture, NULL, &destRect);
 	SDL_RenderPresent(screen_renderer);
 }
+SDL_DisplayMode Image_window::desktop_displaymode;
 #endif
