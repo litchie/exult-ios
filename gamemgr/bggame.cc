@@ -1959,9 +1959,14 @@ bool BG_Game::new_game(Vga_file &shapes) {
 					{
 						int len = strlen(npc_name);
 						char chr = 0;
-
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+						const char *chr_name = SDL_GetKeyName(event.key.keysym.sym);
+						if (strlen(chr_name) > 0)
+							chr = chr_name[0];
+#else
 						if ((event.key.keysym.unicode & 0xFF80) == 0)
 							chr = event.key.keysym.unicode & 0x7F;
+#endif
 
 						if (chr >= ' ' && len < max_name_len) {
 							npc_name[len] = chr;

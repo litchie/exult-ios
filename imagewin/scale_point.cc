@@ -44,7 +44,11 @@ void Image_window::show_scaled8to8_point(
 	 display_surface->pitch,
 	 manip, scale);
 
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+	UpdateRect(display_surface, scale * x, scale * y, scale * w, scale * h);
+#else   
 	SDL_UpdateRect(display_surface, scale * x, scale * y, scale * w, scale * h);
+#endif
 }
 
 void Image_window::show_scaled8to16_point(
@@ -59,7 +63,11 @@ void Image_window::show_scaled8to16_point(
 	 display_surface->pitch /
 	 display_surface->format->BytesPerPixel,
 	 manip, scale);
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+	UpdateRect(display_surface, scale * x, scale * y, scale * w, scale * h);
+#else   
 	SDL_UpdateRect(display_surface, scale * x, scale * y, scale * w, scale * h);
+#endif
 }
 
 void Image_window::show_scaled8to555_point(
@@ -74,7 +82,11 @@ void Image_window::show_scaled8to555_point(
 	 display_surface->pitch /
 	 display_surface->format->BytesPerPixel,
 	 manip, scale);
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+	UpdateRect(display_surface, scale * x, scale * y, scale * w, scale * h);
+#else   
 	SDL_UpdateRect(display_surface, scale * x, scale * y, scale * w, scale * h);
+#endif
 }
 
 void Image_window::show_scaled8to565_point(
@@ -89,7 +101,11 @@ void Image_window::show_scaled8to565_point(
 	 display_surface->pitch /
 	 display_surface->format->BytesPerPixel,
 	 manip, scale);
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+	UpdateRect(display_surface, scale * x, scale * y, scale * w, scale * h);
+#else   
 	SDL_UpdateRect(display_surface, scale * x, scale * y, scale * w, scale * h);
+#endif
 }
 
 void Image_window::show_scaled8to32_point(
@@ -104,5 +120,9 @@ void Image_window::show_scaled8to32_point(
 	 display_surface->pitch /
 	 display_surface->format->BytesPerPixel,
 	 manip, scale);
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+	UpdateRect(display_surface, scale * x, scale * y, scale * w, scale * h);
+#else   
 	SDL_UpdateRect(display_surface, scale * x, scale * y, scale * w, scale * h);
+#endif
 }
