@@ -1,3 +1,6 @@
+2013-08-27	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
+	* sdl-compat.h, imagewin/imagewin.cc, imagewin/imagewin.h: Some SDL2 fixes ... no longer crashes EVERY time.  If you disable scaling entirely, it will actually show SOME output.
+
 2013-08-26	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
 	* sdl-compat.h, imagewin/imagewin.h, imagewin/imagewin.cc, gamemgr/bggame.cc, gamemgr/sigame.cc, imagewin/scale_gl.cc, imagewin/scale_point.cc, exult.cc, audio/midi_drivers/LowLevelMidiDriver.cpp, game.cc, gumps/Gump_manager.cc, gumps/Notebook_gump.cc, drag.cc, gamewin.cc, mouse.cc, keys.cc, txtscroll.cc: Working on SDL2 code -- compiles but does not work! (does not affect existing pre-SDL2, or should not anyway)
 
