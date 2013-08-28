@@ -5,10 +5,11 @@
 
 #if SDL_VERSION_ATLEAST(2, 0, 0)
 #define SDL_COMPAT_DISPLAY_INDEX 0 // TODO: Add multiple screen support...
+#define SDL2_INITIAL_FILL 0, 0, 0, 255 // Make it black
 #define SDL_FULLSCREEN SDL_WINDOW_FULLSCREEN
 #define SDL_HWPALETTE 0 // Doesn't exist any longer and there's no alternative
-// TODO: Make SDL_VideoModeOK do something worthwhile
 #define SDL_VideoModeOK(a,b,c,d) VideoModeOK(a,b,c,d)
+#define SDL_UpdateRect(a,b,c,d,e) UpdateRect(a,b,c,d,e) // Should only be called from Image_window
 #define SDL_SETCOLORS(a,b,c,d) SDL_SetPaletteColors(a->format->palette,b,c,d)
 #define SDL_BYTEORDERH "SDL_endian.h"
 #define SDL_EnableUNICODE(a) 0 // Doesn't need to be ran anymore with SDL 2

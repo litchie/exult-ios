@@ -1,3 +1,8 @@
+2013-08-28	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
+	* sdl-compat.h: Added SDL2 define for SDL_UpdateRect; Added SDL2_INITIAL_FILL for background color
+	* imagewin/scale_point.cc: Removed many ifdefs for UpdateRect SDL2
+	* imagewin/imagewin.cc: Fixed errors with creating windows, textures, and surfaces for SDL2 in some cases; Changed initial SDL2 color fill to SDL2_INITIAL_FILL
+
 2013-08-27	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
 	* sdl-compat.h, imagewin/imagewin.cc, imagewin/imagewin.h: Some SDL2 fixes ... no longer crashes EVERY time.  If you disable scaling entirely, it will actually show SOME output.
 

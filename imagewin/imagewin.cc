@@ -585,22 +585,19 @@ void Image_window::create_surface(
 		if (screen_renderer == NULL)
 			cout << "Couldn't create renderer: " << SDL_GetError() << std::endl;
 
-		// Do an initial grey draw
-		SDL_SetRenderDrawColor(screen_renderer, 128, 128, 128, 255);
+		// Do an initial draw/fill
+		SDL_SetRenderDrawColor(screen_renderer, SDL2_INITIAL_FILL);
 		SDL_RenderClear(screen_renderer);
 		SDL_RenderPresent(screen_renderer);
         
 		int sbpp;
         	Uint32 sRmask, sGmask, sBmask, sAmask;
 		SDL_PixelFormatEnumToMasks(desktop_displaymode.format, &sbpp, &sRmask, &sGmask, &sBmask, &sAmask);
-
 		display_surface = SDL_CreateRGBSurface(0,
 				(w / scale), (h / scale), sbpp,
                                 sRmask, sGmask, sBmask, sAmask);
 		if (display_surface == NULL)
 			cout << "Couldn't create display surface: " << SDL_GetError() << std::endl;
-		else
-			cout << "Created display surface: " << display_surface << std::endl;
 		screen_texture = SDL_CreateTexture(screen_renderer,
                                 desktop_displaymode.format,
                                 SDL_TEXTUREACCESS_STREAMING,
@@ -670,15 +667,15 @@ bool Image_window::create_scale_surfaces(int w, int h, int bpp) {
 	if (!hwdepth) return false;
 
 #if SDL_VERSION_ATLEAST(2, 0, 0)
-	screen_window = SDL_CreateWindow("", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w / scale, h / scale, flags);
+	screen_window = SDL_CreateWindow("", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h, flags);
 	if (screen_window == NULL)
 		cout << "Couldn't create window: " << SDL_GetError() << std::endl;
 	screen_renderer = SDL_CreateRenderer(screen_window, -1, 0);
 	if (screen_renderer == NULL)
 		cout << "Couldn't create renderer: " << SDL_GetError() << std::endl;
 
-	// Do an initial grey draw
-	SDL_SetRenderDrawColor(screen_renderer, 128, 128, 128, 255);
+	// Do an initial draw/fill
+	SDL_SetRenderDrawColor(screen_renderer, SDL2_INITIAL_FILL);
 	SDL_RenderClear(screen_renderer);
 	SDL_RenderPresent(screen_renderer);
         
@@ -687,16 +684,14 @@ bool Image_window::create_scale_surfaces(int w, int h, int bpp) {
 	SDL_PixelFormatEnumToMasks(desktop_displaymode.format, &sbpp, &sRmask, &sGmask, &sBmask, &sAmask);
 
 	display_surface = SDL_CreateRGBSurface(0,
-			(w / scale), (h / scale), sbpp,
+			w, h, sbpp,
                         sRmask, sGmask, sBmask, sAmask);
 	if (display_surface == NULL)
 		cout << "Couldn't create display surface: " << SDL_GetError() << std::endl;
-	else
-		cout << "Created display surface: " << display_surface << std::endl;
 	screen_texture = SDL_CreateTexture(screen_renderer,
                         desktop_displaymode.format,
                         SDL_TEXTUREACCESS_STREAMING,
-                        (w / scale), (h / scale));
+                        w, h);
 	if (screen_texture == NULL)
 		cout << "Couldn't create texture: " << SDL_GetError() << std::endl;
 #else
@@ -1334,10 +1329,12 @@ bool Image_window::fillmode_to_string(FillMode fmode, std::string &str) {
 #if SDL_VERSION_ATLEAST(2, 0, 0)
 void Image_window::UpdateRect(SDL_Surface *surf, int x, int y, int w, int h)
 {
+	// TODO: Only update the necessary portion of the screen.
+	// Seem to get flicker like crazy or some other ill effect no matter
+	// what I try. -Lanica 08/28/2013
 	SDL_UpdateTexture(screen_texture, NULL, surf->pixels, surf->pitch);
-	SDL_RenderClear(screen_renderer);
 	SDL_Rect destRect = {x, y, w, h};
-	SDL_RenderCopy(screen_renderer, screen_texture, NULL, &destRect);
+	SDL_RenderCopy(screen_renderer, screen_texture, NULL, NULL);
 	SDL_RenderPresent(screen_renderer);
 }
 int Image_window::VideoModeOK(int width, int height, int bpp, Uint32 flags)
