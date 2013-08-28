@@ -180,6 +180,7 @@ protected:
 	class SDL_Window *screen_window;
 	class SDL_Renderer *screen_renderer;
 	class SDL_Texture *screen_texture;
+	static int VideoModeOK(int width, int height, int bpp, Uint32 flags);
 	void UpdateRect(SDL_Surface *surf, int x, int y, int w, int h);
 #endif
 

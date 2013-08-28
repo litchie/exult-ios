@@ -8,7 +8,7 @@
 #define SDL_FULLSCREEN SDL_WINDOW_FULLSCREEN
 #define SDL_HWPALETTE 0 // Doesn't exist any longer and there's no alternative
 // TODO: Make SDL_VideoModeOK do something worthwhile
-#define SDL_VideoModeOK(a,b,c,d) 0
+#define SDL_VideoModeOK(a,b,c,d) VideoModeOK(a,b,c,d)
 #define SDL_SETCOLORS(a,b,c,d) SDL_SetPaletteColors(a->format->palette,b,c,d)
 #define SDL_BYTEORDERH "SDL_endian.h"
 #define SDL_EnableUNICODE(a) 0 // Doesn't need to be ran anymore with SDL 2
