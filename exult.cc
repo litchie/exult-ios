@@ -782,11 +782,17 @@ static void SetIcon() {
 		iconpal[i].g = ExultIcon::header_data_cmap[i][1];
 		iconpal[i].b = ExultIcon::header_data_cmap[i][2];
 	}
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+	SDL_Palette spIconpal;
+	SDL_SetPaletteColors(&spIconpal, iconpal, 0, 256);
+	SDL_SetSurfacePalette(iconsurface, &spIconpal);
+	SDL_SetColorKey(iconsurface, SDL_TRUE, 0); // TODO: Figure out why this icon doesn't look the same as it does in SDL 1.2...
+	SDL_SetWindowIcon(gwin->get_win()->get_screen_window(), iconsurface);
+#else
 	SDL_SetPalette(iconsurface, SDL_LOGPAL, iconpal, 0, 256);
-
 	SDL_SetColorKey(iconsurface, SDL_SRCCOLORKEY, 0);
-
 	SDL_WM_SetIcon(iconsurface, 0);
+#endif
 
 	SDL_FreeSurface(iconsurface);
 }
@@ -856,10 +862,6 @@ static void Init(
 	SDL_ShowCursor(0);
 	SDL_VERSION(&info.version);
 
-#ifndef MACOSX      // Don't set icon on OS X; the external icon is *much* nicer
-	SetIcon();
-#endif
-
 	// Load games and mods; also stores system paths:
 	gamemanager = new GameManager();
 
@@ -897,6 +899,10 @@ static void Init(
 		config->value("config/video/disable_fades", disable_fades, false);
 
 		setup_video(fullscreen, VIDEO_INIT);
+#ifndef MACOSX      // Don't set icon on OS X; the external icon is *much* nicer
+	SetIcon();
+#endif
+
 		Audio::Init();
 
 		gwin->get_pal()->set_fades_enabled(!disable_fades);
