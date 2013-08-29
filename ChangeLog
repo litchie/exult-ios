@@ -1,4 +1,5 @@
 2013-08-28	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
+	* exult.cc: Fixed SetIcon (mostly...) for SDL2 for non-OSX platforms
 	* sdl-compat.h: Added SDL2 define for SDL_UpdateRect; Added SDL2_INITIAL_FILL for background color
 	* imagewin/scale_point.cc: Removed many ifdefs for UpdateRect SDL2
 	* imagewin/imagewin.cc: Fixed errors with creating windows, textures, and surfaces for SDL2 in some cases; Changed initial SDL2 color fill to SDL2_INITIAL_FILL
