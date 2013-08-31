@@ -1,3 +1,6 @@
+2013-08-31	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
+	* exult.cc: SDL2 SetIcon fix (hopefully) for Windows.  Icon still looks as ugly as sin in Linux.
+
 2013-08-30	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
 	* imagewin/imagewin.cc: Applied Malignant Manor's fix for SDL2 window resizes.  Added NULL-check instead of using test variable.
 	* gamemgr/bggame.cc, gamemgr/sigame.cc: Fixed text input for initial BG and SI game screen for SDL2
