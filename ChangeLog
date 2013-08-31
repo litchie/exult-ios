@@ -4,8 +4,6 @@
 	* gumps/Gump_manager.cc: Fixed text input for save screens and such for SDL2
 	* drag.cc: Fixed crash when dragging items for SDL2
 
-2013-08-30	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
-
 2013-08-28	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
 	* exult.cc: Fixed SetIcon (mostly...) for SDL2 for non-OSX platforms
 	* sdl-compat.h: Added SDL2 define for SDL_UpdateRect; Added SDL2_INITIAL_FILL for background color
