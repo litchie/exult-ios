@@ -307,7 +307,9 @@ public:
 		  fullscreen(fs), game_width(gamew), game_height(gameh),
 		  fill_mode(fmode), fill_scaler(fillsclr),
 		  paletted_surface(0), display_surface(0), inter_surface(0), draw_surface(0) {
+#if SDL_VERSION_ATLEAST(2, 0, 0)
 		screen_window = NULL;
+#endif
 		static_init();
 		create_surface(w, h);
 	}
