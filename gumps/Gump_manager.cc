@@ -443,6 +443,7 @@ int Gump_manager::handle_modal_gump_event(
 	static bool rightclick;
 
 	int gx, gy;
+	Uint16 keysym_unicode = 0;
 
 	switch (event.type) {
 #ifdef UNDER_CE
@@ -517,10 +518,13 @@ int Gump_manager::handle_modal_gump_event(
 	case SDL_QUIT:
 		if (okay_to_quit())
 			return (0);
-#ifdef SDL_VER_1_3
+#if (SDL_VER_1_3) || SDL_VERSION_ATLEAST(2, 0, 0)
 	case SDL_TEXTINPUT:
 		event.key.keysym.sym = NULL;
+		keysym_unicode = event.text.text[0];
+   #ifdef SDL_VER_1_3
 		event.key.keysym.unicode = event.text.text[0];
+   #endif
 #endif
 	case SDL_KEYDOWN: {
 		if (event.key.keysym.sym == SDLK_ESCAPE)
@@ -537,17 +541,18 @@ int Gump_manager::handle_modal_gump_event(
 		gump->key_down((event.key.keysym.mod & KMOD_SHIFT)
 		               ? toupper(chr) : chr, event);
 #else
-#  ifdef SDL_VER_1_3
-		if (event.key.keysym.sym != NULL && event.key.keysym.sym > (int)'~') {
-			event.key.keysym.unicode = event.key.keysym.sym;
+   #if (SDL_VER_1_3) || SDL_VERSION_ATLEAST(2, 0, 0)
+		if (event.key.keysym.sym != 0 && event.key.keysym.sym > (int)'~') {
+			keysym_unicode = event.key.keysym.sym;
+      #ifdef SDL_VER_1_3
+			event.key.keysym.unicode = keysym_unicode;
+      #endif
 		}
-#  endif
+   #else
+		keysym_unicode = event.key.keysym.unicode;
+   #endif
 		gump->key_down(event.key.keysym.sym);
-  #if SDL_VERSION_ATLEAST(2, 0, 0)
-		gump->text_input(event.key.keysym.sym, 0); // Unicode is waay different in SDL2
-  #else
-		gump->text_input(event.key.keysym.sym, event.key.keysym.unicode);
-  #endif
+		gump->text_input(event.key.keysym.sym, keysym_unicode);
 #endif
 
 		break;

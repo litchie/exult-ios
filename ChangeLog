@@ -1,5 +1,6 @@
 2013-08-30	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
 	* gamemgr/bggame.cc, gamemgr/sigame.cc: Fixed text input for initial BG and SI game screen
+	* gumps/Gump_manager.cc: Fixed text input for save screens and such
 
 2013-08-30	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
 	* imagewin/imagewin.cc: Applied Malignant Manor's fix for SDL2 window resizes.  Added NULL-check instead of using test variable.
