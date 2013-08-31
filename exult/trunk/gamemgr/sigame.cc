@@ -1297,13 +1297,17 @@ bool SI_Game::new_game(Vga_file &shapes) {
 			if (gkeybb->handle_event(&event))
 				redraw = true;
 #endif
-#ifdef SDL_VER_1_3
+			Uint16 keysym_unicode = 0;
+#if (SDL_VER_1_3) || SDL_VERSION_ATLEAST(2, 0, 0)
 			bool isTextInput = false;
 			if (event.type == SDL_TEXTINPUT) {
 				isTextInput = true;
 				event.type = SDL_KEYDOWN;
 				event.key.keysym.sym = NULL;
-				event.key.keysym.unicode = event.text.text[0];
+				keysym_unicode = event.text.text[0];
+   #ifdef SDL_VER_1_3
+				event.key.keysym.unicode = keysym_unicode;
+   #endif
 			}
 #endif
 			if (event.type == SDL_KEYDOWN) {
@@ -1365,22 +1369,19 @@ bool SI_Game::new_game(Vga_file &shapes) {
 						npc_name[strlen(npc_name) - 1] = 0;
 					break;
 				default: {
-#ifdef SDL_VER_1_3
-					if ((isTextInput && selected == 0) || (!isTextInput && event.key.keysym.unicode > (int)'~' && selected == 0))
+#if (SDL_VER_1_3) || SDL_VERSION_ATLEAST(2, 0, 0)
+                                        if ((isTextInput && selected == 0) || (!isTextInput && keysym_unicode > (int)'~' && selected == 0))
 #else
 					if (selected == 0) // on the text input field?
 #endif
 					{
 						int len = strlen(npc_name);
 						char chr = 0;
-#if SDL_VERSION_ATLEAST(2, 0, 0)
-                                                const char *chr_name = SDL_GetKeyName(event.key.keysym.sym);
-                                                if (strlen(chr_name) > 0)
-                                                        chr = chr_name[0];
-#else
-						if ((event.key.keysym.unicode & 0xFF80) == 0)
-							chr = event.key.keysym.unicode & 0x7F;
+#if !(SDL_VERSION_ATLEAST(2, 0, 0))
+                                                keysym_unicode = event.key.keysym.unicode;
 #endif
+                                                if ((keysym_unicode & 0xFF80) == 0)
+                                                       chr = keysym_unicode & 0x7F;
 
 						if (chr >= ' ' && len < max_len) {
 							npc_name[len] = chr;
