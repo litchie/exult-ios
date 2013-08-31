@@ -3,6 +3,7 @@
 	* gamemgr/bggame.cc, gamemgr/sigame.cc: Fixed text input for initial BG and SI game screen for SDL2
 	* gumps/Gump_manager.cc: Fixed text input for save screens and such for SDL2
 	* drag.cc: Fixed crash when dragging items for SDL2
+	* audio/midi_drivers/LowLevelMidiDriver.cpp, audio/midi_drivers/LowLevelMidiDriver.h: Added a quit_thread flag -- really only used for SDL2
 
 2013-08-28	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
 	* exult.cc: Fixed SetIcon (mostly...) for SDL2 for non-OSX platforms
