@@ -160,7 +160,8 @@ LowLevelMidiDriver::~LowLevelMidiDriver()
 		{
 #ifdef SDL_VERSION_ATLEAST(2, 0, 0)
 			int status_thread;
-			SDL_WaitThread(thread, &status_thread); // TODO: Fix this ugly workaround
+			quit_thread = true; // The thread should stop based upon this flag
+			SDL_WaitThread(thread, &status_thread);
 #else
 			SDL_KillThread(thread);
 #endif
@@ -447,6 +448,7 @@ int LowLevelMidiDriver::initThreadedSynth()
 	ComMessage message(LLMD_MSG_THREAD_INIT);
 	sendComMessage(message);
 
+	quit_thread = false;
 #if SDL_VERSION_ATLEAST(2, 0, 0)
 	thread = SDL_CreateThread (threadMain_Static, "LowLevelMidiDriver", static_cast<void*>(this));
 #else
@@ -500,7 +502,8 @@ void LowLevelMidiDriver::destroyThreadedSynth()
 		perr << "MidiPlayer Thread failed to stop in time. Killing it." << std::endl;
 #ifdef SDL_VERSION_ATLEAST(2, 0, 0)
 		int status_thread;
-		SDL_WaitThread(thread, &status_thread); // TODO: Fix this ugly workaround
+		quit_thread = true; // The thread should stop based upon this flag
+		SDL_WaitThread(thread, &status_thread);
 #else
 		SDL_KillThread (thread);
 #endif
@@ -552,7 +555,7 @@ int LowLevelMidiDriver::threadMain()
 	increaseThreadPriority();
 
 	// Execute the play loop
-	for (;;)
+	while (!quit_thread)
 	{
 		xmidi_clock = SDL_GetTicks()*6;
 		if (playSequences()) break;

@@ -242,6 +242,8 @@ private:
 	void					destroyThreadedSynth();
 	static int				threadMain_Static(void *data);
 	int						threadMain();
+	// Thread flag -- set to true when ready to quit
+	bool					quit_thread;
 
 	// Software methods
 	int						initSoftwareSynth();
