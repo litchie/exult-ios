@@ -783,10 +783,14 @@ static void SetIcon() {
 		iconpal[i].b = ExultIcon::header_data_cmap[i][2];
 	}
 #if SDL_VERSION_ATLEAST(2, 0, 0)
-	SDL_Palette spIconpal;
-	SDL_SetPaletteColors(&spIconpal, iconpal, 0, 256);
-	SDL_SetSurfacePalette(iconsurface, &spIconpal);
-	SDL_SetColorKey(iconsurface, SDL_TRUE, 0); // TODO: Figure out why this icon doesn't look the same as it does in SDL 1.2...
+	if (SDL_SetPaletteColors(iconsurface->format->palette, iconpal, 0, 256) != 0)
+		cout << "Error setting palette colors for icon: " << SDL_GetError() << std::endl;
+	int colorkeyret = SDL_SetColorKey(iconsurface, SDL_TRUE,
+		SDL_MapRGB(iconsurface->format,
+		iconpal[0].r, iconpal[0].g, iconpal[0].b));
+	if (colorkeyret != 0)
+		cout << "Error setting color key for icon: " << SDL_GetError() << std::endl;
+
 	SDL_SetWindowIcon(gwin->get_win()->get_screen_window(), iconsurface);
 #else
 	SDL_SetPalette(iconsurface, SDL_LOGPAL, iconpal, 0, 256);
