@@ -544,7 +544,6 @@ Image_window::~Image_window() {
 /*
 *   Create the surface.
 */
-
 void Image_window::create_surface(
     unsigned int w,
     unsigned int h
@@ -577,7 +576,13 @@ void Image_window::create_surface(
 	if (!paletted_surface && !force_bpp) {      // No scaling, or failed?
 		uint32 flags = SDL_SWSURFACE | (fullscreen ? SDL_FULLSCREEN : 0) | (ibuf->depth == 8 ? SDL_HWPALETTE : 0);
 #if SDL_VERSION_ATLEAST(2, 0, 0)
-		screen_window = SDL_CreateWindow("", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w / scale, h / scale, flags);
+		if (screen_window != NULL) {
+			SDL_SetWindowSize(screen_window, w / scale, h / scale);
+			SDL_SetWindowFullscreen(screen_window, flags);
+			SDL_DestroyRenderer(screen_renderer);
+			SDL_DestroyTexture(screen_texture);
+		} else
+			screen_window = SDL_CreateWindow("", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w / scale, h / scale, flags);
 		if (screen_window == NULL)
 			cout << "Couldn't create window: " << SDL_GetError() << std::endl;
 
@@ -667,7 +672,13 @@ bool Image_window::create_scale_surfaces(int w, int h, int bpp) {
 	if (!hwdepth) return false;
 
 #if SDL_VERSION_ATLEAST(2, 0, 0)
-	screen_window = SDL_CreateWindow("", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h, flags);
+	if (screen_window != NULL) {
+		SDL_SetWindowSize(screen_window, w, h);
+		SDL_SetWindowFullscreen(screen_window, flags);
+		SDL_DestroyRenderer(screen_renderer);
+		SDL_DestroyTexture(screen_texture);
+	} else
+		screen_window = SDL_CreateWindow("", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h, flags);
 	if (screen_window == NULL)
 		cout << "Couldn't create window: " << SDL_GetError() << std::endl;
 	screen_renderer = SDL_CreateRenderer(screen_window, -1, 0);
