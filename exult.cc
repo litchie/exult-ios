@@ -770,12 +770,6 @@ namespace ExultIcon {
 
 #ifndef MACOSX      // Don't set icon on OS X; the external icon is *much* nicer
 static void SetIcon() {
-	SDL_Surface *iconsurface = SDL_CreateRGBSurfaceFrom(ExultIcon::header_data,
-	                           ExultIcon::width,
-	                           ExultIcon::height,
-	                           8,
-	                           ExultIcon::width,
-	                           0, 0, 0, 0);
 	SDL_Color iconpal[256];
 	for (int i = 0; i < 256; ++i) {
 		iconpal[i].r = ExultIcon::header_data_cmap[i][0];
@@ -783,16 +777,36 @@ static void SetIcon() {
 		iconpal[i].b = ExultIcon::header_data_cmap[i][2];
 	}
 #if SDL_VERSION_ATLEAST(2, 0, 0)
-	if (SDL_SetPaletteColors(iconsurface->format->palette, iconpal, 0, 256) != 0)
-		cout << "Error setting palette colors for icon: " << SDL_GetError() << std::endl;
-	int colorkeyret = SDL_SetColorKey(iconsurface, SDL_TRUE,
-		SDL_MapRGB(iconsurface->format,
-		iconpal[0].r, iconpal[0].g, iconpal[0].b));
-	if (colorkeyret != 0)
-		cout << "Error setting color key for icon: " << SDL_GetError() << std::endl;
-
+	SDL_Surface *iconsurface = SDL_CreateRGBSurface(0,
+				ExultIcon::width,
+				ExultIcon::height,
+				32,
+				0, 0, 0, 0);
+	if (iconsurface == NULL)
+		cout << "Error creating icon surface: " << SDL_GetError() << std::endl;
+	for (int y = 0; y < ExultIcon::height; y++)
+	{
+		for (int x = 0; x < ExultIcon::width; x++)
+		{
+			int idx = ExultIcon::header_data[(y*ExultIcon::height)+x];
+			if (idx == 0)
+				continue; // Transparent -- skip
+			Uint32 pix = SDL_MapRGB(iconsurface->format,
+					iconpal[idx].r,
+					iconpal[idx].g,
+					iconpal[idx].b);
+			SDL_Rect destRect = {x, y, 1, 1};
+			SDL_FillRect(iconsurface, &destRect, pix);
+		}
+	}
 	SDL_SetWindowIcon(gwin->get_win()->get_screen_window(), iconsurface);
 #else
+	SDL_Surface *iconsurface = SDL_CreateRGBSurfaceFrom(ExultIcon::header_data,
+	                           ExultIcon::width,
+	                           ExultIcon::height,
+	                           8,
+	                           ExultIcon::width,
+	                           0, 0, 0, 0);
 	SDL_SetPalette(iconsurface, SDL_LOGPAL, iconpal, 0, 256);
 	SDL_SetColorKey(iconsurface, SDL_SRCCOLORKEY, 0);
 	SDL_WM_SetIcon(iconsurface, 0);

@@ -1,4 +1,7 @@
 2013-08-31	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
+	* exult.cc: SDL2 SetIcon looks correct now.  However the workaround is NOT optimal.  Seems like there's no way to get a paletted surface working right in SDL2... but I'm probably just missing it.
+
+2013-08-31	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
 	* exult.cc: SDL2 SetIcon fix (hopefully) for Windows.  Icon still looks as ugly as sin in Linux.
 
 2013-08-30	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
