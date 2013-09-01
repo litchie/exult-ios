@@ -1,3 +1,9 @@
+2013-09-01	Malignant Manor <malignantmanor@users.sourceforge.net>
+	* exult.cc: Fix ES drag and drop with SDL2 (only tested Win32)
+	* Makefile.mingw: Added SDL2 define so SDL2 can compile
+	* sdl-compat.h: Added SDL_putenv (at least temporarily). I don't even know
+	  if the variables we use still work.
+
 2013-08-31	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
 	* exult.cc: SDL2 SetIcon looks correct now.  However the workaround is NOT optimal.  Seems like there's no way to get a paletted surface working right in SDL2... but I'm probably just missing it.
 
