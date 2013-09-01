@@ -665,7 +665,9 @@ bool Image_window::create_scale_surfaces(int w, int h, int bpp) {
 	// Turn on landscape mode if desired
 	if (w > h) {
 		SDL_SetHint(SDL_HINT_ORIENTATIONS, "LandscapeLeft LandscapeRight");
+#if !(SDL_VERSION_ATLEAST(2, 0, 0))
 		flags |= SDL_RESIZABLE;
+#endif
 	}
 #endif
 	hwdepth = Get_best_bpp(w, h, hwdepth, flags);

@@ -1722,7 +1722,9 @@ static void Handle_event(
 		} else {
 			break;
 		}
+	#if !(SDL_VERSION_ATLEAST(2, 0, 0))
 		event.key.keysym.unicode = event.key.keysym.sym;
+	#endif
 		// Should continue on to the SDL_KEY* cases
 #endif
 	case SDL_KEYDOWN:       // Keystroke.
