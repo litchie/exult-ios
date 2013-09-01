@@ -46,9 +46,9 @@ else
 endif
 
 ### OpenGL mode support
-#OPENGL_LIBS:=-lopengl32
-#OPENGL_OBJS:=shapes/glshape.o
-#OPENGL_CFLAGS:=-DHAVE_OPENGL
+OPENGL_LIBS:=-lopengl32
+OPENGL_OBJS:=shapes/glshape.o
+OPENGL_CFLAGS:=-DHAVE_OPENGL
 
 ### GTK+ libs and includes, for Exult Studio.
 # If this doesn't work, insert output of `pkg-config --cflags gtk+-win32-2.0` manually
