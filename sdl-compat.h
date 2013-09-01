@@ -30,6 +30,29 @@
 //#define SDL_APPINPUTFOCUS SDL_WINDOWEVENT_FOCUS_GAINED
 // End of events that have changed a bit
 
+#if defined(WIN32) || (defined(MACOSX) && defined(USE_EXULTSTUDIO))
+static int SDLCALL SDL_putenv(const char *variable);
+
+static int SDL_putenv(const char *_var) {
+    char *ptr = NULL;
+    char *var = SDL_strdup(_var);
+    if (var == NULL) {
+        return -1;  /* we don't set errno. */
+    }
+
+    ptr = SDL_strchr(var, '=');
+    if (ptr == NULL) {
+        SDL_free(var);
+        return -1;
+    }
+
+    *ptr = '\0';  /* split the string into name and value. */
+    SDL_setenv(var, ptr + 1, 1);
+    SDL_free(var);
+    return 0;
+}
+#endif
+
 #elif SDL_VERSION_ATLEAST(1, 3, 0)
 #include <SDL_Compat.h>
 #define SDL_SETCOLORS(a,b,c,d) SDL_SetPaletteColors(a->format->palette,b,c,d)
