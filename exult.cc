@@ -864,7 +864,7 @@ static void Init(
 	SDL_SysWMinfo info;     // Get system info.
 #if SDL_VERSION_ATLEAST(2, 0, 0)
 	// Doesn't look like info is used for anything... let's try not getting it
-	//SDL_GetWindowWMInfo(win->screen_window, &info);
+	//SDL_GetWindowWMInfo(gwin->get_win()->get_screen_window(), &info);
 #else
 	SDL_GetWMInfo(&info);
 #endif
@@ -1041,7 +1041,11 @@ static void Init(
 	// Get scale factor for mouse.
 #ifdef USE_EXULTSTUDIO
 #ifndef WIN32
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+	SDL_GetWindowWMInfo(gwin->get_win()->get_screen_window(), &info);
+#else
 	SDL_GetWMInfo(&info);
+#endif
 	xfd = ConnectionNumber(info.info.x11.display);
 	Server_init();          // Initialize server (for map-editor).
 	xdnd = new Xdnd(info.info.x11.display, info.info.x11.wmwindow,
@@ -1050,9 +1054,14 @@ static void Init(
 	                Drop_dragged_shape, Drop_dragged_chunk,
 	                Drop_dragged_npc, Drop_dragged_combo);
 #elif !defined(UNDER_CE)
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+	SDL_GetWindowWMInfo(gwin->get_win()->get_screen_window(), &info);
+	hgwin = info.info.win.window;
+#else
 	SDL_GetWMInfo(&info);
-	Server_init();          // Initialize server (for map-editor).
 	hgwin = info.window;
+#endif
+	Server_init();          // Initialize server (for map-editor).
 	OleInitialize(NULL);
 	windnd = new Windnd(hgwin,
 	                    Move_dragged_shape, Move_dragged_combo,
