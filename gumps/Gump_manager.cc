@@ -522,7 +522,7 @@ int Gump_manager::handle_modal_gump_event(
 	case SDL_TEXTINPUT:
 		event.key.keysym.sym = NULL;
 		keysym_unicode = event.text.text[0];
-   #ifdef SDL_VER_1_3
+   #if !(SDL_VERSION_ATLEAST(2, 0, 0))
 		event.key.keysym.unicode = event.text.text[0];
    #endif
 #endif
@@ -544,7 +544,7 @@ int Gump_manager::handle_modal_gump_event(
    #if (SDL_VER_1_3) || SDL_VERSION_ATLEAST(2, 0, 0)
 		if (event.key.keysym.sym != 0 && event.key.keysym.sym > (int)'~') {
 			keysym_unicode = event.key.keysym.sym;
-      #ifdef SDL_VER_1_3
+      #if !(SDL_VERSION_ATLEAST(2, 0, 0))
 			event.key.keysym.unicode = keysym_unicode;
       #endif
 		}

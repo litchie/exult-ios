@@ -1891,7 +1891,7 @@ bool BG_Game::new_game(Vga_file &shapes) {
 				event.type = SDL_KEYDOWN;
 				event.key.keysym.sym = NULL;
 				keysym_unicode = event.text.text[0];
-   #ifdef SDL_VER_1_3
+   #if !(SDL_VERSION_ATLEAST(2, 0, 0))
 				event.key.keysym.unicode = keysym_unicode;
    #endif
 			}
