@@ -18,7 +18,7 @@ ifdef SDL2
 	LIB_SDL_MAIN=-lSDL2main
 	SDL_DLL_NAME=SDL2.dll
 else
-	LIB_SDL=-lSDL2
+	LIB_SDL=-lSDL
 	LIB_SDL_MAIN=-lSDLmain
 	LIB_SDL_IMAGE=-lSDL_image
 	SDL_DLL_NAME=SDL.dll
