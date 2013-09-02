@@ -1889,7 +1889,7 @@ bool BG_Game::new_game(Vga_file &shapes) {
 			if (event.type == SDL_TEXTINPUT) {
 				isTextInput = true;
 				event.type = SDL_KEYDOWN;
-				event.key.keysym.sym = NULL;
+				event.key.keysym.sym = SDLK_UNKNOWN;
 				keysym_unicode = event.text.text[0];
    #if !(SDL_VERSION_ATLEAST(2, 0, 0))
 				event.key.keysym.unicode = keysym_unicode;
