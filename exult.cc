@@ -789,8 +789,6 @@ static void SetIcon() {
 		for (int x = 0; x < ExultIcon::width; x++)
 		{
 			int idx = ExultIcon::header_data[(y*ExultIcon::height)+x];
-			if (idx == 0)
-				continue; // Transparent -- skip
 			Uint32 pix = SDL_MapRGB(iconsurface->format,
 					iconpal[idx].r,
 					iconpal[idx].g,
@@ -799,6 +797,9 @@ static void SetIcon() {
 			SDL_FillRect(iconsurface, &destRect, pix);
 		}
 	}
+	SDL_SetColorKey(iconsurface, SDL_TRUE,
+		SDL_MapRGB(iconsurface->format,
+			iconpal[0].r, iconpal[0].g, iconpal[0].b));
 	SDL_SetWindowIcon(gwin->get_win()->get_screen_window(), iconsurface);
 #else
 	SDL_Surface *iconsurface = SDL_CreateRGBSurfaceFrom(ExultIcon::header_data,

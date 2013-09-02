@@ -1,3 +1,6 @@
+2013-09-02	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
+	* exult.cc: Fixed SetIcon transparency for SDL2
+
 2013-09-01	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
 	* exult.cc, gamemgr/bggame.cc, gamemgr/sigame.cc, gumps/Gump_manager.cc, imagewin/imagewin.cc: Some fixes to allow SDL2 iphone compilation -- get a bunch of undefined references with the SDL2 library for some reason.
 
