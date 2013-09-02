@@ -520,7 +520,7 @@ int Gump_manager::handle_modal_gump_event(
 			return (0);
 #if (SDL_VER_1_3) || SDL_VERSION_ATLEAST(2, 0, 0)
 	case SDL_TEXTINPUT:
-		event.key.keysym.sym = NULL;
+		event.key.keysym.sym = SDLK_UNKNOWN;
 		keysym_unicode = event.text.text[0];
    #if !(SDL_VERSION_ATLEAST(2, 0, 0))
 		event.key.keysym.unicode = event.text.text[0];
