@@ -2472,6 +2472,8 @@ bool Desk_schedule::walk_to_table() {
 	return false;
 }
 
+static char desk_frames[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 12, 13, 14, 15};
+#define DESK_FRAMES_CNT   	sizeof(desk_frames)/sizeof(desk_frames[0])
 static int find_desk_items(Game_object_vector &vec, Actor *npc)
 {
 	npc->find_nearby(vec, 675, 16, 0);
@@ -2479,7 +2481,8 @@ static int find_desk_items(Game_object_vector &vec, Actor *npc)
 	for (Game_object_vector::iterator it = vec.begin(); it != vec.end();
 	        ++it) {
 		Game_object *item = *it;
-		if (item->get_lift() / 5 != floor)
+		if (item->get_lift() / 5 != floor ||
+		    memchr(desk_frames, item->get_framenum(), DESK_FRAMES_CNT) == 0)
 			vec.erase(it);
 	}
 	return vec.size();
