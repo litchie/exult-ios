@@ -942,6 +942,7 @@ void Patrol_schedule::now_what(
 		Game_object_vector nearby;
 		npc->find_nearby(nearby, PATH_SHAPE, 25, 0x10, c_any_qual, c_any_framenum);
 		gotpath = nearby.size() != 0;
+#if 0 // will make the automaton (160) not open the door in the first place unless the closest is 0
 		if (gotpath) {
 			// Start at nearest (to prevent NPCs from going all the way back to
 			// the start of the path in case of saving then reloading, which can
@@ -952,6 +953,7 @@ void Patrol_schedule::now_what(
 			paths[pathnum] = path;
 			pathnum--;
 		}
+#endif
 		// Fall-through to state 0
 	}
 	case 0: { // Find next path.
