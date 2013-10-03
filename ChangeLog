@@ -1,3 +1,11 @@
+2013-10-03	Malignant Manor <malignantmanor@users.sourceforge.net>
+	* schedule.cc: Don't build the patrol code that starts at the nearest egg
+	  since it will break some npcs like the automaton (npc 160) in Freedom.
+	* Makefile.mingw: Don't build OpenGL scaler if using SDL2 (not yet updated)
+
+2013-09-29    <jeff@mini.nerble.net>
+	* Don't have an NPC on the Desk_schedule pick up parrots.
+
 2013-09-02	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
 	* exult.cc: Fixed SetIcon transparency for SDL2
 
