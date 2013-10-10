@@ -355,7 +355,7 @@ void Combat_schedule::find_opponents(
 				continue;
 			// Is actor attacking a party member?
 			if ((t->get_flag(Obj_flags::in_party) || t == avatar) &&
-			        t->as_actor() && t->as_actor()->get_effective_alignment() == npc_align) {
+			        t->as_actor() && is_enemy(npc_align, t->as_actor()->get_effective_alignment())) {
 				opponents.push_back(actor);
 				if (combat_trace)
 					cout << npc->get_name() << " pushed back(2) " << actor->get_name() << endl;
@@ -366,7 +366,7 @@ void Combat_schedule::find_opponents(
 			Actor *oppr = gwin->get_npc(oppressor);
 			// Is actor being attacked by a party member?
 			if ((oppr->get_flag(Obj_flags::in_party) || oppr == avatar) &&
-			        oppr->get_effective_alignment() == npc_align) {
+			        is_enemy(npc_align, oppr->get_effective_alignment())) {
 				opponents.push_back(actor);
 				if (combat_trace)
 					cout << npc->get_name() << " pushed back(3) " << actor->get_name() << endl;
