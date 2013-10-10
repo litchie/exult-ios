@@ -4,6 +4,7 @@
 	* usecode/ucinternal.cc: UI_remove_item now removes the contents if it
 	  deletes a container. This stops the scroll from being in your inventory
 	  when you deliver the package to Elynor.
+	* schedule.cc: Fix crash caused by find_desk_items in desk schedule
 
 2013-10-03	Malignant Manor <malignantmanor@users.sourceforge.net>
 	* schedule.cc: Don't build the patrol code that starts at the nearest egg
