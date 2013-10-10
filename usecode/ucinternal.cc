@@ -846,6 +846,9 @@ void Usecode_internal::remove_item(
 	if (!last_created.empty() && obj == last_created.back())
 		last_created.pop_back();
 	add_dirty(obj);
+	Container_game_object *container = obj->as_container();
+	if(container)
+		container->delete_contents();
 	obj->remove_this(obj->as_actor() != 0);
 }
 
