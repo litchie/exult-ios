@@ -2480,12 +2480,13 @@ static int find_desk_items(Game_object_vector &vec, Actor *npc)
 {
 	npc->find_nearby(vec, 675, 16, 0);
 	int floor = npc->get_lift() / 5; // Make sure it's on same floor.
-	for (Game_object_vector::iterator it = vec.begin(); it != vec.end();
-	        ++it) {
+	for (Game_object_vector::iterator it = vec.begin(); it != vec.end();) {
 		Game_object *item = *it;
 		if (item->get_lift() / 5 != floor ||
 		    memchr(desk_frames, item->get_framenum(), DESK_FRAMES_CNT) == 0)
-			vec.erase(it);
+			it = vec.erase(it);
+		else
+			++it;
 	}
 	return vec.size();
 }
