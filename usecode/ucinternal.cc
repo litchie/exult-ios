@@ -847,8 +847,16 @@ void Usecode_internal::remove_item(
 		last_created.pop_back();
 	add_dirty(obj);
 	Container_game_object *container = obj->as_container();
-	if(container)
-		container->delete_contents();
+	if(container) {
+		/*
+		 * Remove (un)sealed box contents when delivered to Elynor in Minoc
+		 * SI remove_item doesn't delete the contents
+		 * (else chest contents will disappear when broken)
+		 * I'm not sure if BG will have problems with general deletion
+		 */
+		if(GAME_BG && (obj->get_shapenum() == 798 || obj->get_shapenum() == 799)) // (un)sealed box
+			container->delete_contents();
+	}
 	obj->remove_this(obj->as_actor() != 0);
 }
 
