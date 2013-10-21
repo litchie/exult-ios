@@ -1,3 +1,9 @@
+2013-10-21	Malignant Manor <malignantmanor@users.sourceforge.net>
+	* usecode/ucinternal.cc: restrict container content deletion to BG
+	  (un)sealed box. Fixes bug #1862. r7436 regression. The UI_remove_item
+	  doesn't delete contents in SI. The (un)sealed box restriction may not be
+	  needed for BG but I can't test all cases.
+
 2013-10-10	Malignant Manor <malignantmanor@users.sourceforge.net>
 	* combat.cc: Fix r6914 regression that caused party members to attack each
 	  other after friendly fire occurred
