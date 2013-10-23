@@ -1,3 +1,7 @@
+2013-10-23	Dominik Reichardt <dominus@users.sourceforge.net>
+	* effects.cc: anti magic storm egg was not recognized. Thus anti magic 
+	  rain in the generators and the generators wasn't working correctly.
+
 2013-10-21	Malignant Manor <malignantmanor@users.sourceforge.net>
 	* usecode/ucinternal.cc: restrict container content deletion to BG
 	  (un)sealed box. Fixes bug #1862. r7436 regression. The UI_remove_item
