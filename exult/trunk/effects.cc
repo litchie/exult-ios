@@ -1466,7 +1466,7 @@ Sparkle_effect::Sparkle_effect(
     Game_object *egg        // Egg that caused it, or null.
 ) : Weather_effect(duration, delay, 3, egg), start(true) {
 	// Start snowing soon.
-	eman->add_effect(new Rain_effect<Sparkle>(duration, delay, MAXDROPS / 2, 3));
+	eman->add_effect(new Rain_effect<Sparkle>(duration, delay, MAXDROPS / 10, 3));
 }
 
 /**
