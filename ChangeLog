@@ -1,3 +1,8 @@
+2013-11-01	Dominik Reichardt <dominus@users.sourceforge.net>
+	* usecode/ucinternal.cc: reenable the automatic Time Lord speech after
+	  destryoing the generators. This was somehow broken 12 years ago. Thanks
+	  to Marzo for finding this kludge.
+	
 2013-10-23	Dominik Reichardt <dominus@users.sourceforge.net>
 	* effects.cc: anti magic storm egg was not recognized. Thus anti magic 
 	  rain in the generators and the generators wasn't working correctly.

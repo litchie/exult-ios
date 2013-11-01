@@ -494,7 +494,7 @@ Game_object *Usecode_internal::get_item(
 	else if (val >= 0) {
 		// Special case:  palace guards, Time Lord.
 		if (val < 0x400 && !itemref.is_array() &&
-		        caller_item && val == caller_item->get_shapenum())
+		        caller_item && ((GAME_BG && val == 0x269) || val == caller_item->get_shapenum()))
 			obj = caller_item;
 #if 0
 		// NO! BAD! Causes weird bug with Celia & slain wolf (and maybe others).
