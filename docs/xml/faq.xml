@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE faqs SYSTEM "docs.dtd">
-<faqs title="Exult" changed="01 December 2011(GMT)">
+<faqs title="Exult" changed="21 November 2013(GMT)">
 	<section title="Introduction">
 		<sub name="exult_version">
 			<header>Exult Version</header>
@@ -144,13 +144,23 @@
 					to download the source code from SVN can be found at 
 					<extref target="http://sourceforge.net/scm/?type=svn&amp;group_id=2335"/>. You 
 					can also browse the source online from this link.<br/>
-					Daily snapshots (by Travis Howell) of the Win32 binary and of the SVN source tree
+					Daily snapshots (by Travis Howell) of the Windows binary and of the SVN source tree
 					can be found at
 					<extref target="http://exult.sourceforge.net/download.php"/>.<br/>
 					Dominus provides snapshots for OS X 10.4 and upwards whenever he manages to at
-					<extref target="http://exult.sourceforge.net/download.php"/>.
-					Lanica Dragon provided very infrequent snapshots for the PocketPC port at 
 					<extref target="http://exult.sourceforge.net/download.php"/>.<br/>
+					Paulo started a PPA for Ubuntu at 
+					<extref target="https://launchpad.net/~exult-team/+archive/exult-daily"/>.<br/>
+				</para>
+				<para>
+					To use the PPA for Ubuntu folllow these steps in terminal:<br/>
+					<kbd>$  sudo apt-add-repository ppa:exult-team/exult-daily</kbd><br/>
+					#Adds the repository - you will be required to accept the key file. 
+					Just press 'Enter'<br/>
+					<kbd>$ sudo apt-get update</kbd><br/>
+					#Updates your cache.<br/>
+					<kbd>$ sudo apt-get install exult exult-audiopack</kbd><br/>
+					#Installs Exult itself and audio files
 				</para>
 			</body>
 		</sub>
@@ -192,8 +202,9 @@
 					To find out which version you are running, press <key>v</key> while in game.
 				</para>
 				<para>
-					Even though it is labeled RC1 (release candidate 1) we recommend that people use 
-					this version rather than our very old last official version.
+					At the moment we recommend that people use the latest snapshot rather than 
+					our last official version since many critical bugs have been fixed since the 
+					last release.
 				</para>
 			</body>
 		</sub>
@@ -769,7 +780,7 @@
 			<body>
 				<para>
 					To see a list of open bugs and bug reports go to
-					<extref target="http://sourceforge.net/tracker/?group_id=2335"/>.
+					<extref target="sourceforge.net/p/exult/bugs"/>.
 				</para>
 			</body>
 		</sub>
@@ -780,7 +791,7 @@
 				<li>Read the <extref target="http://exult.sourceforge.net/docs.php">Documentation</extref>
 					and this FAQ to see if that is not already covered and you have all set up correctly.</li>
 				<li>Before you report a bug to the
-					<extref target="http://sourceforge.net/tracker/?group_id=2335">bug tracker</extref>
+					<extref target="sourceforge.net/p/exult/bugs">bug tracker</extref>
 					please try the latest
 					<extref target="http://exult.sourceforge.net/download.php">snapshot</extref>.
 					If the bug still occurs make sure that no one else already reported the bug
@@ -792,11 +803,10 @@
 					notified by eMail.</li>
 				<li>Make sense in the topic! For example, if the problem is with Rowenna in Skara Brae
 					don't just choose "Skara Brae" in the topic. "BG: Rowenna crashes game" makes more
-					sense. Sadly the space for the topics is limited. Explain the topic in "Detailed
-					Description".</li>
+					sense. Sadly the space for the topics is limited.</li>
 				<li>Include information on what version of <Exult/> you are using. You should have used
 					the latest snapshot but please tell us the date of the snapshot.</li>
-				<li>State which Operating System you use (Windows 9X, Linux, ...).</li>
+				<li>State which Operating System you use (Windows 7, Linux, OS X 10.9,...).</li>
 				<li>Please include a save game (use common sense if it is really needed). You will find
 					those in the game directories you put in the exult.cfg. They are called exult**bg.sav
 					(** is a number) for BG and exult**si.sav for SI. You can look up the filename in the
@@ -889,7 +899,7 @@
 						add some X11 libraries or <Exult/> won't link (for example, by adding "AC_PATH_XTRA" 
 						to configure.ac). Since the Ubuntu version "Jaunty Jackalope" that fix isn't needed 
 						anymore, though.</li>
-					<li>After compiling yourself remember to copy the exult*.flx files from the data folder in
+					<li>After compiling, remember to copy the exult*.flx files from the data folder in
 						the source to the <Exult/> data folder you chose in exult.cfg. This applies only if
 						you don't use "make install"</li>
 				</ul>
@@ -992,7 +1002,7 @@
 					<li>SI Imbalance<br/>
 						Original game and <Exult/> use bloodspawn, nightshade, serpent scale, sulfurous ash, 
 						worm heart,<br/>
-						Manual nightshade, serpent scale, sulfurous ash, worm heart.</li>
+						while the Manual lists nightshade, serpent scale, sulfurous ash, worm heart.</li>
 				</ul>
 				<para>
 					Unfortunately <Exult/> version 1.2 was also wrong in more spell requirements and 
@@ -1233,6 +1243,35 @@
 				</para>
 			</body>
 		</sub>
+		<sub name="altar_discipline">
+			<header>Left or right on the Altar of Discipline (SI-SS)</header>
+			<body>
+				<para>
+					In the Temple of Discipline you need to place a quartz and obsidian symbol 
+					(Y-shape) onto the altar to disable the trap and to call a bridge into being.<br/>
+					The book "The Symbol of Discipline" you find in the upper floor sates:
+				</para>
+				<cite name="The Symbol of Discipline by Sharless">
+					The altar before the serpent statue doth have upon it two slots ... 
+					bolts of lightning fire from the altar unless the quartz symbol is placed 
+					in the slot on the left side. A bridge ... is called into being if the obsidian 
+					symbol is placed in the right slot...
+				</cite>
+				<para>
+					This is highly confusing as the player looks at the screen and associates west 
+					in the game with left and east with right. Whoever wrote this originally must 
+					have imagined the Avatar standing to the north of the altar and facing the temple 
+					entrance.<br/>
+					So you need to place the quartz symbol onto the east depression of the altar and 
+					the obsidian symbol onto the west depression.
+				</para>
+				<para>
+					Unfortunately Exult currently exhibits a bug and doesn't disable the trap when you 
+					place the quartz symbol.<br/>
+					Also a bug from the original game allows in <Exult/> to move the Y-Shape depressions.
+				</para>
+			</body>
+		</sub>
 	</section>
 	<section title="Questions and Answers">
 		<sub name="howto_get_answers">
@@ -1284,7 +1323,7 @@
 					<li><Exult/> homepage at <extref target="http://exult.sourceforge.net/"/></li>
 					<li>Daily code snapshot at <extref target="http://exult.sourceforge.net/download.php"/></li>
 					<li>Message board at <extref target="http://exult.sourceforge.net/forum/"/></li>
-					<li>Bug reports to <extref target="http://sourceforge.net/tracker/?group_id=2335"/></li>
+					<li>Bug reports to <extref target="http://sourceforge.net/p/exult/bugs"/></li>
 				</ul>
 			</body>
 		</sub>
@@ -1311,6 +1350,17 @@
 		</sub>
 	</section>
 	<section title="Changes to the FAQ">
+		<sub name="21112013">
+			<header>- 21 November 2013</header>
+			<body>
+				<ul>
+				<li><ref1 target="whereis_exult"/> added the Ubuntu PPA and deleted the PocketPC one.</li>
+				<li><ref1 target="latest_version"/> use snapshots rather than release.</li>
+				<li><ref1 target="bug_report"/> some little changes since the tracker changed.</li>
+				<li><ref1 target="altar_discipline"/> left or right is not very precise.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="28102012">
 			<header>- 28 October 2012</header>
 			<body>

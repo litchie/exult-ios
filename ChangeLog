@@ -1,3 +1,7 @@
+2013-11-21	Dominik Reichardt <dominus@users.sourceforge.net>
+	* documentation, FAQ updated. Added Crowley's ifix/ireg reference chart to 
+	  the Studio documentation.
+	
 2013-11-01	Dominik Reichardt <dominus@users.sourceforge.net>
 	* usecode/ucinternal.cc: reenable the automatic Time Lord speech after
 	  destryoing the generators. This was somehow broken 12 years ago. Thanks

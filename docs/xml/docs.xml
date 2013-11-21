@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE readme SYSTEM "docs.dtd">
-<readme title="Exult" changed="11 February 2013 (GMT)">	
+<readme title="Exult" changed="21 November 2013(GMT)">	
 	<section title="Introduction">
 		<sub name="exult_version">
 			<header>Exult Version</header>
@@ -2703,9 +2703,12 @@
 				<para>
 					Right now the only way to get at the game files is to run the installer on Windows (or in WINE 
 					if you are not a Windows user). After the installation you will find the game files in 
-					<strong>C:\Program Files\GOG.com\The Complete Ultima VII\Ultima7</strong> and 
-					<strong>C:\Program Files\GOG.com\The Complete Ultima VII\Serpent</strong>.<br/>
-					If you are on a 64bit Windows OS the path will be <strong>C:\Program Files (x86)\GOG.com\...</strong>.
+					<strong>C:\GOG Games\Ultima VII - Complete\Ultima7</strong> and 
+					<strong>C:\GOG Games\Ultima VII - Complete\Serpent</strong>.
+				</para>
+				<para>
+					After installation you can just run our installer and when asked where the games are installed 
+					enter or browse to the above paths.
 				</para>
 			</body>
 		</sub>
@@ -2772,7 +2775,15 @@
 		</sub>
 	</section>
 	<section title="Changes to the Documentation">
-		<sub name="02102013">
+		<sub name="21112013">
+			<header>- 21 November 2013</header>
+			<body>
+				<ul>
+				<li><ref1 target="gog_windows"/> default installation path changed.</li>
+				</ul>
+			</body>
+		</sub>
+		<sub name="11022013">
 			<header>- 11 February 2013</header>
 			<body>
 				<ul>

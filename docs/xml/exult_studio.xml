@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE studiodoc SYSTEM "docs.dtd">
-<studiodoc title="Exult" changed="19 February 2011 (GMT)">
+<studiodoc title="Exult" changed="21 November 2013 (GMT)">
 	<section title="Introduction">
 		<sub name="whatis_studio">
 			<header>What is <Studio/>?</header>
@@ -1679,6 +1679,21 @@
 				</para>
 			</body>
 		</sub>
+		<sub name="ifix_iregs">
+			<header>ifix and ireg reference chart</header>
+			<body>
+				<para>
+					Crowley from our forum made this chart to easily reference the u7iregnn 
+					and u7ifixnn files in both BG and SI. Thanks a lot!
+				</para>
+				<para>
+					<img alt="green grid" src="images/studiobgiregs.png"/><br/>
+				</para>
+				<para>
+					<img alt="green grid" src="images/studiosiiregs.png"/><br/>
+				</para>
+			</body>
+		</sub>
 		<sub name="what_next">
 			<header>What's next?</header>
 			<body>
@@ -1731,11 +1746,20 @@
 		</sub>
 	</section>
 	<section title="Changes to the Documentation">
+		<sub name="21112013">
+			<header>- 21 November 2013</header>
+			<body>
+				<ul>
+				<li><ref1 target="ifix_iregs"/> finally added Crowley's ifix/ireg chart.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="19022011">
 			<header>- 19 February 2011</header>
 			<body>
 				<ul>
-				<li><ref1 target="command_line"/> added -c -m, added space between -x -g, even though it works without space as well.</li>
+				<li><ref1 target="command_line"/> added -c -m, added space between -x -g, 
+				even though it works without space as well.</li>
 				</ul>
 			</body>
 		</sub>
