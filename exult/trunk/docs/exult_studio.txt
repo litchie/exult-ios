@@ -1,5 +1,5 @@
 Exult Studio Documentation
-last changed: 19 February 2011 (GMT)
+last changed: 21 November 2013 (GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/studio.php
 
@@ -84,21 +84,23 @@ The latest version of this document can be found at http://exult.sourceforge.net
 9.5. Porting Exult Studio to other platforms
 9.6. About this client/server stuff?
 9.7. About this 'terrain-editing' stuff and why you can't just drag objects to where you want.
-9.8. What's next?
-9.9. Known Bugs with the Windows port
-9.10. Known Bugs with the Linux port
+9.8. iref and ifix reference chart
+9.9. What's next?
+9.10. Known Bugs with the Windows port
+9.11. Known Bugs with the Linux port
 
 10. Credits
 10.1. Thanks
 
 11. Changes to the Documentation
-11.1. - 19 February 2011
-11.2. - 23 January 2011
-11.3. - 18 December 2010
-11.4. - 11 March 2010
-11.5. - 01 March 2005
-11.6. - 23 May 2004
-11.7. - 06 February 2004
+11.1. - 21 November 2013
+11.2. - 19 February 2011
+11.3. - 23 January 2011
+11.4. - 18 December 2010
+11.5. - 11 March 2010
+11.6. - 01 March 2005
+11.7. - 23 May 2004
+11.8. - 06 February 2004
 
 
 --------------------------------------------------------------------------------
@@ -697,7 +699,13 @@ The challenge of writing a map-editor is keeping the above straight, and reading
 For a more detailed explanation, see Gary Thompson's paper, 'u7edit.txt' in our 'docs' folder.
 
 
-9.8. What's next?
+9.8. iref and ifix reference chart
+Crowley from our forum made this chart to easily reference the u7iregnn and u7ifixnn files in both BG and SI. Thanks a lot!
+
+
+
+
+9.9. What's next?
 The next things to be implemented are:
 * Exult Studio needs to be able to automatically create palettes 1-n from palette 0 using the code from ipack.
 * It will also be very nice to have a Usecode debugger someday as well (Willem is actually working on it).
@@ -705,11 +713,11 @@ The next things to be implemented are:
 
 
 
-9.9. Known Bugs with the Windows port
+9.10. Known Bugs with the Windows port
 Exult Studio runs fine on all versions of Windows, except Windows 95 (and of course Windows 3.x). However there may still be unexpected crashes. If you can reproduce a crash, please contact us.
 
 
-9.10. Known Bugs with the Linux port
+9.11. Known Bugs with the Linux port
 On Linux two issues have surfaced:
 * on case sensitive OS the static folder of the games need to be lower case or Exult Studio won't find the files in it.
 * when you load games or mods with more than one map, Exult Studio has problems creating and saving the extra maps.
@@ -729,31 +737,36 @@ On Linux two issues have surfaced:
 --------------------------------------------------------------------------------
 
 11. Changes to the Documentation
-11.1. - 19 February 2011
+11.1. - 21 November 2013
+* 9.8. iref and ifix reference chart finally added Crowley's ifix/ireg chart.
+
+
+
+11.2. - 19 February 2011
 * 2.6. Command line options added -c -m, added space between -x -g, even though it works without space as well.
 
 
 
-11.2. - 23 January 2011
+11.3. - 23 January 2011
 * 11. Changes to the Documentation moved to the bottom.
 * 2.6. Command line options added portable option.
 
 
 
-11.3. - 18 December 2010
+11.4. - 18 December 2010
 * 5.3. Custom Usecode added intriniscs docs from TFL and fixed the link to Pertex' site.
-* 9.10. Known Bugs with the Linux port the patch folder NEEDS to be writeable.
+* 9.11. Known Bugs with the Linux port the patch folder NEEDS to be writeable.
 
 
 
-11.4. - 11 March 2010
+11.5. - 11 March 2010
 * 2.1. Installation added Vista/W7 to the Windows list, Windows 95 is not supported.
 * 2.4. What you can do at the moment the patch folder NEEDS to be writeable.
-* 9.9. Known Bugs with the Windows port Windows 95 is not supported.
+* 9.10. Known Bugs with the Windows port Windows 95 is not supported.
 
 
 
-11.5. - 01 March 2005
+11.6. - 01 March 2005
 * 4.3. Edit Create Barg added.
 * 4.6. Map added this menu option.
 * 6.2. The different types of eggs intermap egg added.
@@ -765,7 +778,7 @@ On Linux two issues have surfaced:
 
 
 
-11.6. - 23 May 2004
+11.7. - 23 May 2004
 * 3.4. Palettes files palette files are compatible with the Gimp.
 * 4.3. Edit note about map-editing operations.
 * 6.4. Properties of eggs some more infos.
@@ -774,7 +787,7 @@ On Linux two issues have surfaced:
 
 
 
-11.7. - 06 February 2004
+11.8. - 06 February 2004
 * 1.3. Terms we use in regard to Exult and Ultima 7 some corrections by Willem.
 * 2.3. Step-by-step instructions to run Exult Studio some corrections.
 * 2.2. Running Exult Studio some corrections.
