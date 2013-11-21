@@ -84,7 +84,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 9.5. Porting Exult Studio to other platforms
 9.6. About this client/server stuff?
 9.7. About this 'terrain-editing' stuff and why you can't just drag objects to where you want.
-9.8. iref and ifix reference chart
+9.8. ifix and ireg reference chart
 9.9. What's next?
 9.10. Known Bugs with the Windows port
 9.11. Known Bugs with the Linux port
@@ -699,7 +699,7 @@ The challenge of writing a map-editor is keeping the above straight, and reading
 For a more detailed explanation, see Gary Thompson's paper, 'u7edit.txt' in our 'docs' folder.
 
 
-9.8. iref and ifix reference chart
+9.8. ifix and ireg reference chart
 Crowley from our forum made this chart to easily reference the u7iregnn and u7ifixnn files in both BG and SI. Thanks a lot!
 
 
@@ -738,7 +738,7 @@ On Linux two issues have surfaced:
 
 11. Changes to the Documentation
 11.1. - 21 November 2013
-* 9.8. iref and ifix reference chart finally added Crowley's ifix/ireg chart.
+* 9.8. ifix and ireg reference chart finally added Crowley's ifix/ireg chart.
 
 
 
