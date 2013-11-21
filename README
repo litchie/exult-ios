@@ -1508,6 +1508,7 @@ On OS X select both game folders, bring up info, go to Ownership and Permissions
 11.9. Using the version for Windows from GOG.com
 Since November 2011 you can buy Ultima 7 from GOG. Unfortunately GOG only offers a Windows installer that you can't easily circumvent, which makes it a challenge for users that use a different OS than Windows.
 Right now the only way to get at the game files is to run the installer on Windows (or in WINE if you are not a Windows user). After the installation you will find the game files in C:\GOG Games\Ultima VII - Complete\Ultima7 and C:\GOG Games\Ultima VII - Complete\Serpent.
+After installation you can just run our installer and when asked where the games are installed enter or browse to the above paths.
 
 
 11.10. Using the version for OS X from GOG.com
@@ -1540,9 +1541,6 @@ You can contact the Exult team and/or get more information from: http://exult.so
 13. Changes to the Documentation
 13.1. - 21 November 2013
 * 11.9. Using the version for Windows from GOG.com default installation path changed.
-* 2.7. Path-Settings for Mac OS X deleting exult.cfg might help.
-* 3.2. MIDI Music FluidSynth soundfont stack added.
-* 11.10. Using the version for OS X from GOG.com added.
 
 
 
