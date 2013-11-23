@@ -724,7 +724,7 @@ void Uc_converse_statement::gen(
  *  Delete.
  */
 
-inline Uc_switch_expression_case_statement::~Uc_switch_expression_case_statement(
+Uc_switch_expression_case_statement::~Uc_switch_expression_case_statement(
 ) {
 	delete check;
 }
