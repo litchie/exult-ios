@@ -1,3 +1,9 @@
+2013-12-11	Dominik Reichardt <dominus@users.sourceforge.net>
+	* configure.ac, data/makefile.am, usecode/ucxt/data/makefile.am:
+	  while cross compiling you can add a native built expack and head2data to the
+	  path or point to them vie EXPACK and HEAD2DATA environment variables. This
+	  should make cross compiling for iOS and other targets less annoying.
+
 2013-11-21	Dominik Reichardt <dominus@users.sourceforge.net>
 	* documentation, FAQ updated. Added Crowley's ifix/ireg reference chart to 
 	  the Studio documentation.
