@@ -171,26 +171,32 @@ EXTRA_DIST = flx.in $(EXULT_FLX_OBJECTS) $(EXULT_BG_FLX_OBJECTS) \
 	exultmsg.txt bginclude.uc \
 	$(EXULT_BG_PAPERDOL_VGA_OBJECTS) $(EXULT_BG_MR_FACES_VGA_OBJECTS)
 
+if CROSS_COMPILING
+expack = $(EXPACK)
+else
+expack = ../tools/expack
+endif
+
 ../tools/expack:
 	+(cd ../tools;$(MAKE) expack)
 
-bg/bg_paperdol.vga: ../tools/expack $(EXULT_BG_PAPERDOL_VGA_OBJECTS)
-	../tools/expack -i $(srcdir)/bg/bg_paperdol.in
+bg/bg_paperdol.vga: $(expack) $(EXULT_BG_PAPERDOL_VGA_OBJECTS)
+	$(expack) -i $(srcdir)/bg/bg_paperdol.in
 
-bg/bg_mr_faces.vga: ../tools/expack $(EXULT_BG_MR_FACES_VGA_OBJECTS)
-	../tools/expack -i $(srcdir)/bg/bg_mr_faces.in
+bg/bg_mr_faces.vga: $(expack) $(EXULT_BG_MR_FACES_VGA_OBJECTS)
+	$(expack) -i $(srcdir)/bg/bg_mr_faces.in
 
-exult.flx: ../tools/expack $(EXULT_FLX_OBJECTS)
-	../tools/expack -i $(srcdir)/flx.in
+exult.flx: $(expack) $(EXULT_FLX_OBJECTS)
+	$(expack) -i $(srcdir)/flx.in
 
-exult_bg.flx: ../tools/expack $(EXULT_BG_FLX_OBJECTS)
-	../tools/expack -i $(srcdir)/bg/flx.in
+exult_bg.flx: $(expack) $(EXULT_BG_FLX_OBJECTS)
+	$(expack) -i $(srcdir)/bg/flx.in
 
-exult_si.flx: ../tools/expack $(EXULT_SI_FLX_OBJECTS)
-	../tools/expack -i $(srcdir)/si/flx.in
+exult_si.flx: $(expack) $(EXULT_SI_FLX_OBJECTS)
+	$(expack) -i $(srcdir)/si/flx.in
 
-exult_iphone.flx: ../tools/expack $(EXULT_IPHONE_FLX_OBJECTS)
-	../tools/expack -i $(srcdir)/iphone/flx.in
+exult_iphone.flx: $(expack) $(EXULT_IPHONE_FLX_OBJECTS)
+	$(expack) -i $(srcdir)/iphone/flx.in
 	
 exult_bg_flx.h: exult.flx
 
