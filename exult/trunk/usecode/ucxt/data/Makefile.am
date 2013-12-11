@@ -1,8 +1,13 @@
 ucxtdir = $(datadir)/exult
 
 if BUILD_TOOLS
-u7bgintrinsics.data u7siintrinsics.data: ../head2data ../../bgintrinsics.h ../../siintrinsics.h
-	../head2data u7bgintrinsics.data u7siintrinsics.data
+if CROSS_COMPILING
+head2data = $(HEAD2DATA)
+else
+head2data = ../head2data
+endif
+u7bgintrinsics.data u7siintrinsics.data: $(head2data) ../../bgintrinsics.h ../../siintrinsics.h
+	$(head2data) u7bgintrinsics.data u7siintrinsics.data
 endif
 
 ucxt_DATA = \
