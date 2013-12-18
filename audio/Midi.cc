@@ -657,6 +657,16 @@ bool MyMidiPlayer::init_device(bool timbre_load)
 	return true;
 }
 
+// Check for true mt32, mt32emu or fakemt32
+// primarily for the mt32 background music tracks
+
+bool MyMidiPlayer::is_mt32()
+{
+	return midi_driver && (midi_driver->isMT32() || 
+		get_music_conversion() == XMIDIFILE_CONVERT_NOCONVERSION ||
+		get_music_conversion() == XMIDIFILE_CONVERT_GM_TO_MT32) &&
+		!midi_driver->isFMSynth();
+}
 
 MyMidiPlayer::MyMidiPlayer()	: repeating(false),current_track(-1),
 				  midi_driver_name("default"), midi_driver(0), initialized(false),
