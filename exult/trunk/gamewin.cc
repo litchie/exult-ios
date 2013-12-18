@@ -194,9 +194,7 @@ void Background_noise::handle_event(
 	// for MT32/FakeMT32 conversion as well.
 	// if (player) { 
 	//if (player && player->get_ogg_enabled()){
-	if (player && (player->get_ogg_enabled() || player->get_midi_driver() == "mt32emu" || 
-		player->get_music_conversion() == XMIDIFILE_CONVERT_NOCONVERSION || 
-		player->get_music_conversion() == XMIDIFILE_CONVERT_GM_TO_MT32)) {
+	if (player && (player->get_ogg_enabled() || player->is_mt32())) {
 		delay = 1000;   //Quickly get back to this function check
 		//We've got OGG so play the background SFX tracks
 
