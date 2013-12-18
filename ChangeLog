@@ -1,3 +1,9 @@
+2013-12-18	Dominik Reichardt <dominus@users.sourceforge.net>
+	* audio/Midi.*: added a check for true mt32, fakemt32 and mt32emu.
+	  Thanks to wjp for his help
+	* gamewin.cc: with this check made sure the background sfx tracks 
+	  are only played by those. Fixes bug #1872
+	
 2013-12-11	Dominik Reichardt <dominus@users.sourceforge.net>
 	* configure.ac, data/makefile.am, usecode/ucxt/data/makefile.am:
 	  while cross compiling you can add a native built expack and head2data to the
