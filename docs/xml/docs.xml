@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE readme SYSTEM "docs.dtd">
-<readme title="Exult" changed="21 November 2013(GMT)">	
+<readme title="Exult" changed="19 December 2013(GMT)">	
 	<section title="Introduction">
 		<sub name="exult_version">
 			<header>Exult Version</header>
@@ -2727,11 +2727,14 @@
 					Open Terminal.app found in the Utilitiess subfolder of your Applications folder and enter the following commands:<br/>
 					<kbd>sudo mkdir -p "/Library/Application Support/Exult/blackgate"</kbd><br/>
 					<kbd>sudo mkdir -p "/Library/Application Support/Exult/serpentisle"</kbd><br/>
-					<kbd>sudo cp -p -R "/Volumes/Ultima 7 The Complete Edition/Ultima 7 The Complete Edition.app/Contents/Resources/Ultima VII The Complete Edition.boxer/C.harddisk/U7/ultima7/STATIC" "/Library/Application Support/Exult/blackgate"</kbd><br/>
-					<kbd>sudo cp -p -R "/Volumes/Ultima 7 The Complete Edition/Ultima 7 The Complete Edition.app/Contents/Resources/Ultima VII The Complete Edition.boxer/C.harddisk/U7/serpent/STATIC" "/Library/Application Support/Exult/serpentisle"</kbd><br/>
+					<kbd>sudo cp -p -R "/Volumes/Ultima 7/Ultima 7 The Complete Edition.app/Contents/Resources/Ultima 7 The Complete Edition.boxer/C.harddisk/U7/ultima7/STATIC" "/Library/Application Support/Exult/blackgate"</kbd><br/>
+					<kbd>sudo cp -p -R "/Volumes/Ultima 7/Ultima 7 The Complete Edition.app/Contents/Resources/Ultima 7 The Complete Edition.boxer/C.harddisk/U7/serpent/STATIC" "/Library/Application Support/Exult/serpentisle"</kbd><br/>
 					Because we need elevated rights the commands are using sudo and will ask for your password and you 
 					will need to do this with an administrator account. If you don't have that, please ask your administrator 
-					to do this for you.
+					to do this for you.<br/>
+					Sometimes GOG changes the disk image and thus the path may have changed. If you get a "file not found" 
+					error, try downloading the newest disk image and mounting that. If it still doesn't work visit our forum 
+					and tell us. 
 				</para>
 				<para>
 					If you are on a *nix system you can access this disk image with the following two commands:<br/>
@@ -2775,6 +2778,14 @@
 		</sub>
 	</section>
 	<section title="Changes to the Documentation">
+		<sub name="19122013">
+			<header>- 19 December 2013</header>
+			<body>
+				<ul>
+				<li><ref1 target="gog_mac"/> paths in the disk image changed.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="21112013">
 			<header>- 21 November 2013</header>
 			<body>
