@@ -1,5 +1,5 @@
 Exult Documentation
-last changed: 21 November 2013(GMT)
+last changed: 19 December 2013(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/docs.php
 
@@ -102,39 +102,40 @@ The latest version of this document can be found at http://exult.sourceforge.net
 12.2. Contacting us
 
 13. Changes to the Documentation
-13.1. - 21 November 2013
-13.2. - 11 February 2013
-13.3. - 15 January 2013
-13.4. - 01 January 2013
-13.5. - 16 December 2012
-13.6. - 14 November 2012
-13.7. - 28 October 2012
-13.8. - 01 December 2011
-13.9. - 16 March 2011
-13.10. - 19 February 2011
-13.11. - 24 January 2011
-13.12. - 23 January 2011
-13.13. - 13 October 2010
-13.14. - 30 August 2010
-13.15. - 25 August 2010
-13.16. - 15 August 2010
-13.17. - 28 April 2010
-13.18. - 11 March 2010
-13.19. - 10 March 2010
-13.20. - 08 March 2010
-13.21. - 16 July 2009
-13.22. - 03 June 2009
-13.23. - 20 May 2009
-13.24. - 19 May 2009
-13.25. - 18 May 2009
-13.26. - 28 April 2009
-13.27. - 21 October 2007
-13.28. - 08 April 2006
-13.29. - 14 March 2005
-13.30. - 14 August 2004
-13.31. - 23 May 2004
-13.32. - 11 February 2004
-13.33. - 12 December 2003
+13.1. - 19 December 2013
+13.2. - 21 November 2013
+13.3. - 11 February 2013
+13.4. - 15 January 2013
+13.5. - 01 January 2013
+13.6. - 16 December 2012
+13.7. - 14 November 2012
+13.8. - 28 October 2012
+13.9. - 01 December 2011
+13.10. - 16 March 2011
+13.11. - 19 February 2011
+13.12. - 24 January 2011
+13.13. - 23 January 2011
+13.14. - 13 October 2010
+13.15. - 30 August 2010
+13.16. - 25 August 2010
+13.17. - 15 August 2010
+13.18. - 28 April 2010
+13.19. - 11 March 2010
+13.20. - 10 March 2010
+13.21. - 08 March 2010
+13.22. - 16 July 2009
+13.23. - 03 June 2009
+13.24. - 20 May 2009
+13.25. - 19 May 2009
+13.26. - 18 May 2009
+13.27. - 28 April 2009
+13.28. - 21 October 2007
+13.29. - 08 April 2006
+13.30. - 14 March 2005
+13.31. - 14 August 2004
+13.32. - 23 May 2004
+13.33. - 11 February 2004
+13.34. - 12 December 2003
 
 
 --------------------------------------------------------------------------------
@@ -1513,7 +1514,7 @@ After installation you can just run our installer and when asked where the games
 
 11.10. Using the version for OS X from GOG.com
 Since January 2013 GOG also offers a download for Mac OS X. It's a disk image (dmg) that you can open in Mac OS X' Finder by doubleclicking it. You will only see one application named "Ultima 7 The Complete Edition". When you start that application you can play both games through a modified version of DOSBox for Mac OS X. If you want to make Exult automatically find the games from this download, you will need to copy the game files from this application to your hard drive. To do this follow the next few steps.
-Open Terminal.app found in the Utilitiess subfolder of your Applications folder and enter the following commands: sudo mkdir -p "/Library/Application Support/Exult/blackgate" sudo mkdir -p "/Library/Application Support/Exult/serpentisle" sudo cp -p -R "/Volumes/Ultima 7 The Complete Edition/Ultima 7 The Complete Edition.app/Contents/Resources/Ultima VII The Complete Edition.boxer/C.harddisk/U7/ultima7/STATIC" "/Library/Application Support/Exult/blackgate" sudo cp -p -R "/Volumes/Ultima 7 The Complete Edition/Ultima 7 The Complete Edition.app/Contents/Resources/Ultima VII The Complete Edition.boxer/C.harddisk/U7/serpent/STATIC" "/Library/Application Support/Exult/serpentisle" Because we need elevated rights the commands are using sudo and will ask for your password and you will need to do this with an administrator account. If you don't have that, please ask your administrator to do this for you.
+Open Terminal.app found in the Utilitiess subfolder of your Applications folder and enter the following commands: sudo mkdir -p "/Library/Application Support/Exult/blackgate" sudo mkdir -p "/Library/Application Support/Exult/serpentisle" sudo cp -p -R "/Volumes/Ultima 7/Ultima 7 The Complete Edition.app/Contents/Resources/Ultima 7 The Complete Edition.boxer/C.harddisk/U7/ultima7/STATIC" "/Library/Application Support/Exult/blackgate" sudo cp -p -R "/Volumes/Ultima 7/Ultima 7 The Complete Edition.app/Contents/Resources/Ultima 7 The Complete Edition.boxer/C.harddisk/U7/serpent/STATIC" "/Library/Application Support/Exult/serpentisle" Because we need elevated rights the commands are using sudo and will ask for your password and you will need to do this with an administrator account. If you don't have that, please ask your administrator to do this for you. Sometimes GOG changes the disk image and thus the path may have changed. If you get a "file not found" error, try downloading the newest disk image and mounting that. If it still doesn't work visit our forum and tell us.
 If you are on a *nix system you can access this disk image with the following two commands: dmg2img ultima_7_the_complete_edition_1.0.0.4.dmg sudo kpartx -a ultima_7_the_complete_edition_1.0.0.4.img When you are done, close the partition with sudo kpartx -d ultima_7_the_complete_edition_1.0.0.4.img You might need to have HFS support enabled on your system.
 
 
@@ -1539,12 +1540,17 @@ You can contact the Exult team and/or get more information from: http://exult.so
 --------------------------------------------------------------------------------
 
 13. Changes to the Documentation
-13.1. - 21 November 2013
+13.1. - 19 December 2013
+* 11.10. Using the version for OS X from GOG.com paths in the disk image changed.
+
+
+
+13.2. - 21 November 2013
 * 11.9. Using the version for Windows from GOG.com default installation path changed.
 
 
 
-13.2. - 11 February 2013
+13.3. - 11 February 2013
 * 2.3. Settings in exult.cfg FluidSynth soundfont stack added.
 * 2.7. Path-Settings for Mac OS X deleting exult.cfg might help.
 * 3.2. MIDI Music FluidSynth soundfont stack added.
@@ -1552,18 +1558,18 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.3. - 15 January 2013
+13.4. - 15 January 2013
 * 5.2. Keyboard commands orb of the moons keyboard command.
 
 
 
-13.4. - 01 January 2013
+13.5. - 01 January 2013
 * 3.2. MIDI Music timidity.cfg needs to be in ~/.exult on Linux systems.
 * 5.1. Movement and 5.2. Keyboard commands walk and run keys were switched.
 
 
 
-13.5. - 16 December 2012
+13.6. - 16 December 2012
 * 2.3. Settings in exult.cfg wrong height for windowed default.
 * 2.10. Command line options added --reset-video and --mapnum and sorted it a bit.
 * 4.4. Scaler xBR scalers added.
@@ -1571,7 +1577,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.6. - 14 November 2012
+13.7. - 14 November 2012
 * 1.1. Exult Version it's for the SVN of Exult.
 * 2.3. Settings in exult.cfg added autonotes options.
 * 6.1. Using the Notebook saved when saved game and when cheating you see the coordinates.
@@ -1580,7 +1586,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.7. - 28 October 2012
+13.8. - 28 October 2012
 * 2.3. Settings in exult.cfg added right click pathfind, fixed the text backgrounds and some other small fixes.
 * 5.1. Movement righht click pathfinding can be single or double.
 * 7.5. Gameplay Options same as above and the paperdolls option needs SI installed.
@@ -1588,7 +1594,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.8. - 01 December 2011
+13.9. - 01 December 2011
 * 2.3. Settings in exult.cfg added alternate_drop setting.
 * 2.7. Path-Settings for Mac OS X explained difference between the Library folders and how to access ~/Library on Lion.
 * 4.4. Scaler added HQ4x.
@@ -1597,13 +1603,13 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.9. - 16 March 2011
+13.10. - 16 March 2011
 * 2.3. Settings in exult.cfg added coreaudio_soundfont setting.
 * 3.2. MIDI Music as above.
 
 
 
-13.10. - 19 February 2011
+13.11. - 19 February 2011
 * 2.3. Settings in exult.cfg stereo/mono is switched by yes/no, facestats needed the setting for left status bars.
 * 3.6. Digital Wave Sound Effects split off the installation part.
 * 3.7. All-in-One Audio Data pack and installers added.
@@ -1613,7 +1619,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.11. - 24 January 2011
+13.12. - 24 January 2011
 * 2.3. Settings in exult.cfg there is no extra border setting for windows mode settings.
 * 2.10. Command line options fixed copy/paste error and added more explanations.
 * 3.6. Digital Wave Sound Effects switching sfx works right away, removed note.
@@ -1621,7 +1627,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.12. - 23 January 2011
+13.13. - 23 January 2011
 * 13. Changes to the Documentation moved to the bottom.
 * 2.3. Settings in exult.cfg new options for combat and windowed video settings and several other settings added.
 * 2.10. Command line options added portable option.
@@ -1637,7 +1643,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.13. - 13 October 2010
+13.14. - 13 October 2010
 * 1.1. Exult Version new official version.
 * 4.4. Scaler OpenGL is only available in snapshots.
 * 5.3. Cheat keys Alt+KP+/- no longer works.
@@ -1648,7 +1654,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.14. - 30 August 2010
+13.15. - 30 August 2010
 * 2.3. Settings in exult.cfg added the new config options for video.
 * 4.1. Resolution rewrote some more with Colourless' latest changes.
 * 4.2. Fill modes added.
@@ -1656,7 +1662,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.15. - 25 August 2010
+13.16. - 25 August 2010
 * 2.3. Settings in exult.cfg added the new config options for video and audio.
 * 4.1. Resolution rewrote a bit to explain the new rendering.
 * 4.3. Higher resolution is cheating added.
@@ -1665,7 +1671,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.16. - 15 August 2010
+13.17. - 15 August 2010
 * 3.2. MIDI Music Fluidsynth support is not compiled into the snapshots, also MT32 is supported on OS X.
 * 3.4. Windows MIDI Mapper the log files are now where exult.cfg is saved to not necessarily where exult.exe is.
 * 9.2. Error Log also about location of log files.
@@ -1674,12 +1680,12 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.17. - 28 April 2010
+13.18. - 28 April 2010
 * 2.3. Settings in exult.cfg audio options for sample rate and stereo added.
 
 
 
-13.18. - 11 March 2010
+13.19. - 11 March 2010
 * 2.7. Path-Settings for Mac OS X we changed the default paths for OS X once more.
 * 3.6. Digital Wave Sound Effects the SFX pack can now be chosen in the Game Menu.
 * 7.4. Audio Options added new SFX pack option and updated screenshot.
@@ -1687,7 +1693,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.19. - 10 March 2010
+13.20. - 10 March 2010
 * 2.4. Path-Settings I've split this up for all the different OS'.
 * added Path-Settings chapters for the most common OS with examples.
 * 3.2. MIDI Music CoreMIDI driver added.
@@ -1697,7 +1703,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.20. - 08 March 2010
+13.21. - 08 March 2010
 * 1.2. What is Exult? fixed typo in Jakob Schonberg's name.
 * 2.2. Location of exult.cfg needs its own chapter now.
 * 2.4. Path-Settings needed a lot of changes because of the LOCAL_APPDATA changes.
@@ -1708,25 +1714,25 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.21. - 16 July 2009
+13.22. - 16 July 2009
 * 3.2. MIDI Music MT32 device type is not supported on Mac OS X.
 
 
 
-13.22. - 03 June 2009
+13.23. - 03 June 2009
 * Spell checked the whole documentation.
 * 3.2. MIDI Music slightly rewrote the FluidSynth section and explained fakemt32 option a bit better.
 
 
 
-13.23. - 20 May 2009
+13.24. - 20 May 2009
 * 3.5. Digital Music mentioned two issues with it.
 * 3.8. Installation of the digital music packs cleaned up.
 * 3.6. Digital Wave Sound Effects some more information.
 
 
 
-13.24. - 19 May 2009
+13.25. - 19 May 2009
 * 2. Configurations coloured tags to differentiate between manual and in game settings.
 * 2.4. Path-SettingsExult and Exult Studio don't trust exult.cfg.
 * 2.9. Advanced Configuration: Using both the original and the Add-OnsExult and Exult Studio don't trust exult.cfg.
@@ -1737,7 +1743,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.25. - 18 May 2009
+13.26. - 18 May 2009
 * 1.1. Exult Version this docs are for the SVN version.
 * 2.1. Installation the Windows installer asks for BG/SI location.
 * 2.3. Settings in exult.cfg now up to date with SVN.
@@ -1756,43 +1762,43 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.26. - 28 April 2009
+13.27. - 28 April 2009
 * 2.3. Settings in exult.cfg tried to explain data_path a bit more.
 * 3.10. Speech can also be toggled via the in-game menu.
 * 11.7. Installing the CD-ROM versions of Ultima VII added EA Compilation to the list.
 
 
 
-13.27. - 21 October 2007
+13.28. - 21 October 2007
 * 1.1. added.
 * 11.8. Fixing permissions of Ultima Collection on *nix systems added.
 
 
 
-13.28. - 08 April 2006
+13.29. - 08 April 2006
 * 2.1. Installation needed some polishing.
 * 2.4. Path-Settings synched the path settings with the new Installation section.
 * 11. Installing the original Ultima VII games for use with Exult might help some people.
 
 
 
-13.29. - 14 March 2005
+13.30. - 14 March 2005
 * 10. Zaurus Guide Newest ROM instructions updated.
 
 
 
-13.30. - 14 August 2004
+13.31. - 14 August 2004
 * 2.1. Installation on Windows you can use Notepad to edit exult.cfg.
 
 
 
-13.31. - 23 May 2004
+13.32. - 23 May 2004
 * 1.1. Exult Version I'm confident that the new Version will be 1.2.
 * 9.1. How to get the Zaurus port working we shouldn't call our data files shared files..
 
 
 
-13.32. - 11 February 2004
+13.33. - 11 February 2004
 * A lot of clean up and small changes, too numerous to list.
 * 2.4. Path-Settings fixed some outdated instructions.
 * 3.8. Installation of the digital music packs added as the instructions in the music-pack readme.txt are no longer valid.
@@ -1803,7 +1809,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.33. - 12 December 2003
+13.34. - 12 December 2003
 * 2.3. Settings in exult.cfg fixed bad path settings and updated audio settings.
 * 2.4. Path-Settings moved stuff over to next point.
 * 1.1. added to give some explanation for Static/Gamedat.
