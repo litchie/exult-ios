@@ -27,8 +27,10 @@ if test x$with_iphone_sdk != x; then
 	fi
 	#LD_LIBRARY_PATH=${COMPILER_iOS}/usr/lib
 	COMPILER_iOS=${DEV_iOS}/usr/bin
-	CC=${COMPILER_iOS}/llvm-gcc
-	CXX=${COMPILER_iOS}/llvm-g++
+	# newer Xcode (5.x) doesn't have llvm-gcc anymore just uses clang for everything
+	# for older Xcode enable it
+	#CC=${COMPILER_iOS}/llvm-gcc
+	#CXX=${COMPILER_iOS}/llvm-g++
 	LDFLAGS="-arch ${ARCH_iOS} -pipe -Os -gdwarf-2 -no-cpp-precomp -mthumb -isysroot ${SDK_iOS}"
 	CFLAGS=${LDFLAGS}
 	CXXFLAGS=${LDFLAGS}
