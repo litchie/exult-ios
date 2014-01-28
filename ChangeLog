@@ -1,3 +1,10 @@
+2014-01-28	Dominik Reichardt <dominus@users.sourceforge.net>
+	* objs/chunks.cc: Added ugly hack to fix relative ordering of Y shapes and
+	  Y depressions in SI Discipline shrine.
+	* gamewin.cc: Added ugly hack to make Y depressions not clickable, so that
+	  they can't be dragged and so that they do not prevent you from dragging a
+	  Y shape.
+	
 2013-12-18	Dominik Reichardt <dominus@users.sourceforge.net>
 	* audio/Midi.*: added a check for true mt32, fakemt32 and mt32emu.
 	  Thanks to wjp for his help
