@@ -57,11 +57,12 @@ using std::ostream;
  */
 static inline bool Can_be_added(
     Container_game_object *cont,
-    int shapenum
+    int shapenum,
+    bool allow_locked = false
 ) {
 	Shape_info &info = cont->get_info();
 	return !(cont->get_shapenum() == shapenum   // Shape can't be inside itself.
-	         || info.is_container_locked()   // Locked container.
+	         || (!allow_locked && info.is_container_locked())   // Locked container.
 	         || !info.is_shape_accepted(shapenum));  // Shape can't be inside.
 }
 
@@ -353,7 +354,7 @@ Game_object *Container_game_object::find_item(
     int qual,           // Quality, or c_any_qual for any.
     int framenum            // Frame, or c_any_framenum for any.
 ) {
-	if (objects.is_empty() || !Can_be_added(this, shapenum))
+	if (objects.is_empty() || !Can_be_added(this, shapenum, true))
 		return 0;       // Empty.
 	Game_object *obj;
 	Object_iterator next(objects);
@@ -526,7 +527,7 @@ int Container_game_object::count_objects(
     int qual,           // Quality, or c_any_qual for any.
     int framenum            // Frame#, or c_any_framenum for any.
 ) {
-	if (!Can_be_added(this, shapenum))
+	if (!Can_be_added(this, shapenum, true))
 		return 0;
 	int total = 0;
 	Game_object *obj;
