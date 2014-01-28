@@ -1,3 +1,7 @@
+2014-01-28	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* combat.cc: If there are no awake enemies nearby, AI will now gladly mop up
+	  any sleeping foes around.
+
 2014-01-28	Malignant Manor <malignantmanor@users.sourceforge.net>
 	* audio/AudioMixer.cc: Fix uninitialized audio buffer in SDL 2.
 

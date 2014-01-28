@@ -329,7 +329,7 @@ void Combat_schedule::find_opponents(
 ) {
 	opponents.clear();
 	Game_window *gwin = Game_window::get_instance();
-	Actor_vector nearby;            // Get all nearby NPC's.
+	Actor_vector nearby, sleeping;            // Get all nearby NPC's.
 	gwin->get_nearby_npcs(nearby);
 	Actor *avatar = gwin->get_main_actor();
 	nearby.push_back(avatar);   // Incl. Avatar!
@@ -342,13 +342,19 @@ void Combat_schedule::find_opponents(
 	for (Actor_vector::const_iterator it = nearby.begin();
 	        it != nearby.end(); ++it) {
 		Actor *actor = *it;
-		if (actor->is_dead() || (!see_invisible && actor->get_flag(Obj_flags::invisible)) ||
-		        (actor->get_flag(Obj_flags::asleep) && (!opponents.empty() || (npc == avatar && !charmed_avatar))))
-			continue;   // Dead, sleeping or invisible.
+		if (actor->is_dead() || (!see_invisible && actor->get_flag(Obj_flags::invisible)))
+			continue;   // Dead or invisible.
 		if (is_enemy(npc_align, actor->get_effective_alignment())) {
-			opponents.push_back(actor);
-			if (combat_trace)
-				cout << npc->get_name() << " pushed back(1) " << actor->get_name() << endl;
+			if (actor->get_flag(Obj_flags::asleep)) {
+				// sleeping
+				sleeping.push_back(actor);
+				if (combat_trace)
+					cout << npc->get_name() << " pushed back(asleep,1) " << actor->get_name() << endl;
+			} else {
+				opponents.push_back(actor);
+				if (combat_trace)
+					cout << npc->get_name() << " pushed back(1) " << actor->get_name() << endl;
+			}
 		} else if (in_party) {  // Attacking party member?
 			Game_object *t = actor->get_target();
 			if (!t)
@@ -384,6 +390,13 @@ void Combat_schedule::find_opponents(
 			if (combat_trace)
 				cout << npc->get_name() << " pushed back (4) " << oppnpc->get_name() << endl;
 		}
+	}
+	// Still none? Try the sleeping/unconscious foes.
+	if (opponents.empty() && !sleeping.empty()
+	    && (npc != avatar || charmed_avatar)) {
+		opponents.insert(opponents.begin(), sleeping.begin(), sleeping.end());
+		if (combat_trace)
+			cout << npc->get_name() << " pushed back asleep opponents" << endl;
 	}
 }
 
