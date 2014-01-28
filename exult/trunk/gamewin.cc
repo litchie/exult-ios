@@ -2026,18 +2026,16 @@ Game_object *Game_window::find_object(
 					continue;
 				// Fixes key under rock in BG at [915, 2434, 0]; need to
 				// know if there are side effects.
-				if (!best || trans) {
-					if (best && !best->lt(*obj)) {
-						// TODO: Fix this properly, instead of with an ugly hack.
-						// This fixes clicking the Y shapes instead of the Y
-						// depression in SI. This has the effect of also making
-						// the Y depressions not draggable.
-						if (!GAME_SI || obj->get_shapenum() != 0xd1
-						    || obj->get_framenum() == 17) {
-							continue;
-						}
-					}
+				if (!best || best->lt(*obj) != 0 || trans) {
 					bool ftrans = obj->get_info().is_transparent() != 0;
+					// TODO: Fix this properly, instead of with an ugly hack.
+					// This fixes clicking the Y shapes instead of the Y
+					// depression in SI. This has the effect of also making
+					// the Y depressions not draggable.
+					if (GAME_SI && obj->get_shapenum() == 0xd1
+					    && obj->get_framenum() == 17) {
+						ftrans = true;  // Pretend it is transparent
+					}
 					if (!ftrans || trans) {
 						best = obj;
 						trans = ftrans;
