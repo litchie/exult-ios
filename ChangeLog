@@ -1,6 +1,14 @@
 2014-01-28	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* combat.cc: If there are no awake enemies nearby, AI will now gladly mop up
 	  any sleeping foes around.
+	* objs/egg.cc: Fixed bug #1874 "Fireball/Explosion trap triggers to late,
+	  fires too long" by using weapon range as trap range and extending how far
+	  offscreen traps can be and still fire.
+	* objs/contain.cc,usecode/ucinternal.cc: Fixed bug #1863 "Delete intrinsic
+	  needs to be able to find stuff in locked containers" by allowing locked
+	  containers to have their contents searched and counted. This allows Elynor
+	  to find and delete the contents of the sealed box. Also, reverted the hack
+	  from revision 7438.
 
 2014-01-28	Malignant Manor <malignantmanor@users.sourceforge.net>
 	* audio/AudioMixer.cc: Fix uninitialized audio buffer in SDL 2.
