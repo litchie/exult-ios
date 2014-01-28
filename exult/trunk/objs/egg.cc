@@ -40,6 +40,7 @@
 #include "ucsched.h"
 #include "Gump_manager.h"
 #include "databuf.h"
+#include "shapeinf.h"
 #include "weaponinf.h"
 
 #ifdef USE_EXULTSTUDIO
@@ -69,10 +70,16 @@ class Missile_launcher : public Time_sensitive, public Game_singletons {
 	int shapenum;           // Shape for missile.
 	int dir;            // Direction (0-7).  (8==??).
 	int delay;          // Delay (msecs) between launches.
+	int range;
 public:
 	Missile_launcher(Egg_object *e, int weap, int shnum, int di, int del)
-		: egg(e), weapon(weap), shapenum(shnum), dir(di), delay(del)
-	{  }
+		: egg(e), weapon(weap), shapenum(shnum), dir(di), delay(del), range(20) {
+		Weapon_info *winfo = ShapeID::get_info(weapon).get_weapon_info();
+		// Guessing.
+		if (winfo) {
+			range = winfo->get_range();
+		}
+	}
 	virtual void handle_event(unsigned long curtime, long udata);
 };
 
@@ -85,18 +92,18 @@ void Missile_launcher::handle_event(
     long udata
 ) {
 	Tile_coord src = egg->get_tile();
-	// Is egg off the screen?
-	if (!gwin->get_win_tile_rect().has_world_point(src.tx, src.ty))
+	// Is egg a ways off the screen?
+	if (!gwin->get_win_tile_rect().enlarge(10).has_world_point(src.tx, src.ty))
 		return;         // Return w'out adding back to queue.
 	Projectile_effect *proj = 0;
 	if (dir < 8) {          // Direction given?
 		// Get adjacent tile in direction.
 		Tile_coord adj = src.get_neighbor(dir % 8);
-		// Make it go 20 tiles.
+		// Make it go (range) tiles.
 		int dx = adj.tx - src.tx, dy = adj.ty - src.ty;
 		Tile_coord dest = src;
-		dest.tx += 20 * dx;
-		dest.ty += 20 * dy;
+		dest.tx += range * dx;
+		dest.ty += range * dy;
 		proj = new Projectile_effect(egg, dest, weapon, shapenum, shapenum);
 	} else {            // Target a party member.
 		Actor *party[9];
