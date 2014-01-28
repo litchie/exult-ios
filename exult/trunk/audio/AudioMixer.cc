@@ -377,9 +377,13 @@ void AudioMixer::MixAudio(sint16 *stream, uint32 bytes)
 {
 	if (!audio_ok) return;
 
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+	std::memset(stream,0,bytes);
+#endif
 	if (midi) midi->produceSamples(stream, bytes);
+#if !SDL_VERSION_ATLEAST(2, 0, 0)
 	else std::memset(stream,0,bytes);
-
+#endif
 	if (channels) for (int i=0;i<num_channels;i++)
 		if (channels[i]->isPlaying()) channels[i]->resampleAndMix(stream,bytes);
 }

@@ -1,3 +1,6 @@
+2014-01-28	Malignant Manor <malignantmanor@users.sourceforge.net>
+	* audio/AudioMixer.cc: Fix uninitialized audio buffer in SDL 2.
+
 2014-01-28	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* objs/chunks.cc: Added ugly hack to fix relative ordering of Y shapes and
 	  Y depressions in SI Discipline shrine.
