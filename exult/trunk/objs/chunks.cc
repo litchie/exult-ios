@@ -709,6 +709,13 @@ void Map_chunk::add_dependencies(
 		//cout << "Here " << __LINE__ << " " << obj << endl;
 		/* Compare returns -1 if lt, 0 if dont_care, 1 if gt. */
 		int cmp = Game_object::compare(newinfo, obj);
+		// TODO: Fix this properly, instead of with an ugly hack.
+		// This fixes relative ordering between the Y depression and the Y
+		// shapes in SI. Done so in a way that the depression is not clickable.
+		if (!cmp && GAME_SI && newobj->get_shapenum() == 0xd1
+		    && obj->get_shapenum() == 0xd1 && obj->get_framenum() == 17) {
+			cmp = 1;
+		}
 		if (cmp == 1) {     // Bigger than this object?
 			newobj->dependencies.insert(obj);
 			obj->dependors.insert(newobj);
