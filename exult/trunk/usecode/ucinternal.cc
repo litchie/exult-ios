@@ -847,18 +847,7 @@ void Usecode_internal::remove_item(
 		last_created.pop_back();
 	add_dirty(obj);
 	Container_game_object *container = obj->as_container();
-	if (container) {
-		/*
-		 * FIXME:Remove sealed box contents when delivered to Elynor in Minoc
-		 * This is a regression from rev.5911, the delete intrinsic can't find 
-		 * the scroll inside a locked/sealed container.
-		 * SI remove_item doesn't delete the contents
-		 * (else chest contents will disappear when broken)
-		 * I'm not sure if BG will have problems with general deletion
-		 */
-		if (GAME_BG && (obj->get_shapenum() == 798)) // sealed box
-			container->delete_contents();
-	} else if (GAME_SI && frame->function->id == 0x70e
+	if (GAME_SI && frame->function->id == 0x70e
 	           && obj->get_shapenum() == 0x113 && obj->get_quality() == 0xd) {
 		// Hack to fix broken trap switch in SI temple of Discipline.
 		// This works better than the original, in that the trap will stay
