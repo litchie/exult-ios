@@ -847,7 +847,7 @@ void Usecode_internal::remove_item(
 		last_created.pop_back();
 	add_dirty(obj);
 	Container_game_object *container = obj->as_container();
-	if (GAME_SI && frame->function->id == 0x70e
+	if (GAME_SI && frame && frame->function->id == 0x70e
 	           && obj->get_shapenum() == 0x113 && obj->get_quality() == 0xd) {
 		// Hack to fix broken trap switch in SI temple of Discipline.
 		// This works better than the original, in that the trap will stay
