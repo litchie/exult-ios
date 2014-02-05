@@ -1,3 +1,7 @@
+2014-02-05	Dominik Reichardt <dominus@users.sourceforge.net>
+	* usecode/ucinternal.cc: fixed regression from rev.7458 which crashed at the 
+	  SI lightning storms - thanks wjp for finding the fix
+	
 2014-01-28	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* combat.cc: If there are no awake enemies nearby, AI will now gladly mop up
 	  any sleeping foes around.
