@@ -510,8 +510,9 @@ AudioOptions_gump::~AudioOptions_gump() {
 
 void AudioOptions_gump::save_settings() {
 	int track_playing = -1;
-	if (Audio::get_ptr()->get_midi())
-		track_playing = Audio::get_ptr()->get_midi()->get_current_track();
+	MyMidiPlayer *midi = Audio::get_ptr()->get_midi();
+	if (midi)
+		track_playing = midi->get_current_track();
 	config->set("config/audio/sample_rate", sample_rates[sample_rate], false);
 	config->set("config/audio/stereo", speaker_type ? "yes" : "no", false);
 	if (sample_rates[sample_rate] != static_cast<uint32>(o_sample_rate) ||
@@ -554,9 +555,6 @@ void AudioOptions_gump::save_settings() {
 #ifdef ENABLE_MIDISFX
 	config->set("config/audio/effects/midi", sfx_enabled == 1 + have_digital_sfx() ? "yes" : "no", false);
 #endif
-
-	MyMidiPlayer *midi = Audio::get_ptr()->get_midi();
-
 	if (midi) {
 		std::string s = "default";
 		if (midi_driver != MidiDriver::getDriverCount()) s = MidiDriver::getDriverName(midi_driver);
@@ -603,8 +601,8 @@ void AudioOptions_gump::save_settings() {
 	config->write_back();
 	Audio::get_ptr()->Init_sfx();
 	// restart music track if one was playing and isn't anymore
-	if (Audio::get_ptr()->get_midi() && Audio::get_ptr()->is_music_enabled() &&
-	        Audio::get_ptr()->get_midi()->get_current_track() != track_playing) {
+	if (midi && Audio::get_ptr()->is_music_enabled() && midi->get_current_track() != track_playing &&
+	    (!gwin->is_bg_track(track_playing) || midi->get_ogg_enabled() || midi->is_mt32())) {
 		if (gwin->is_in_exult_menu())
 			Audio::get_ptr()->start_music(EXULT_FLX_MEDITOWN_MID, true, EXULT_FLX);
 		else

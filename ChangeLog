@@ -1,3 +1,9 @@
+2014-03-02	Malignant Manor <malignantmanor@users.sourceforge.net>
+	* Audio/Midi.cc, gamewin.*, gumps/AudioOptions_gump.cc: Stop music when
+	  music conversion changes. Don't stop music when the midi driver changes
+	  and oggs are playing. Don't try to play bg tracks if the settings aren't
+	  capable of playing them properly.
+
 2014-02-05	Dominik Reichardt <dominus@users.sourceforge.net>
 	* usecode/ucinternal.cc: fixed regression from rev.7458 which crashed at the 
 	  SI lightning storms - thanks wjp for finding the fix
