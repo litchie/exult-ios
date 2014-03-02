@@ -323,6 +323,7 @@ public:
 	Game_clock *get_clock() {
 		return clock;
 	}
+	bool is_bg_track(int num); // ripped out of Background_noise
 	Game_map *get_map(int num); // Read in additional map.
 	void set_map(int num);      // Make map #num the current map.
 	/*

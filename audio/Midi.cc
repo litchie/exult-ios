@@ -142,8 +142,8 @@ void	MyMidiPlayer::start_music(int num,bool repeat,std::string flex)
 		// midi synth mode
 		ogg_stop_track();
 
-		// No midi driver so don't fall through
-		if (!midi_driver) return;
+		// No midi driver or bg track and we can't play it properly so don't fall through
+		if (!midi_driver || (!is_mt32() && Game_window::get_instance()->is_bg_track(num) && flex == MAINMUS)) return;
 	}
 	
 	// Handle FM Synth
@@ -459,7 +459,8 @@ void MyMidiPlayer::set_music_conversion(int conv)
 {
 	// Same, do nothing
 	if (music_conversion == conv) return;
-
+	if (!ogg_enabled || !ogg_is_playing()) // if ogg is playing we don't care about drivers
+		stop_music();
 	music_conversion = conv;
 	
 	switch(music_conversion) {
@@ -468,7 +469,7 @@ void MyMidiPlayer::set_music_conversion(int conv)
 		break;
 	case XMIDIFILE_CONVERT_NOCONVERSION:
 		config->set("config/audio/midi/convert","mt32",true);
-		if (midi_driver && !midi_driver->isFMSynth() && !midi_driver->isMT32()) load_timbres();
+		if ((!ogg_enabled || !ogg_is_playing()) && midi_driver && !midi_driver->isFMSynth() && !midi_driver->isMT32()) load_timbres();
 		break;
 	case XMIDIFILE_CONVERT_MT32_TO_GS127:
 		config->set("config/audio/midi/convert","gs127",true);
@@ -504,7 +505,8 @@ void MyMidiPlayer::set_effects_conversion(int conv)
 void MyMidiPlayer::set_midi_driver(std::string desired_driver, bool use_oggs)
 {
 	// Don't kill the device if we don't need to
-	if (midi_driver_name != desired_driver || ogg_enabled != use_oggs) {
+	if ((midi_driver_name != desired_driver && (!ogg_enabled || !ogg_is_playing())) || // if ogg is playing we don't care about drivers
+	    ogg_enabled != use_oggs) {
 		stop_music();
 		if (midi_driver) midi_driver->destroyMidiDriver();
 		delete midi_driver;

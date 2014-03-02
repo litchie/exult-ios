@@ -149,15 +149,6 @@ public:
 		return (num >= Audio::game_music(9) && num <= Audio::game_music(12)) ||
 		       (num >= Audio::game_music(15) && num <= Audio::game_music(18));
 	}
-	static bool is_bg_track(int num) {
-		// Have to do it this way because of SI.
-		if (num == Audio::game_music(4) || num == Audio::game_music(5) ||
-		        num == Audio::game_music(6) || num == Audio::game_music(7) ||
-		        num == Audio::game_music(8) || num == Audio::game_music(52))
-			return true;
-		else
-			return false;
-	}
 };
 
 /*
@@ -215,7 +206,7 @@ void Background_noise::handle_event(
 			// ++++ TODO: Need to come up with a way to replace repeating songs
 			// here, just so they don't loop forever.
 			// Conditions: not playing music, playing a background music
-			if (curr_track == -1 || is_bg_track(curr_track) ||
+			if (curr_track == -1 || gwin->is_bg_track(curr_track) ||
 			        (((currentstate == Dungeon && notbees) ||
 			          currentstate == DangerNear) && !is_combat_music(curr_track))) {
 				//Not already playing music
@@ -545,6 +536,16 @@ void Game_window::abort(
 	cerr << "Exult (fatal): " << buf << endl;
 	delete this;
 	throw quit_exception(-1);
+}
+
+bool Game_window::is_bg_track(int num) { // ripped out of Background_noise
+	// Have to do it this way because of SI.
+	if (num == Audio::game_music(4) || num == Audio::game_music(5) ||
+			num == Audio::game_music(6) || num == Audio::game_music(7) ||
+			num == Audio::game_music(8) || num == Audio::game_music(52))
+		return true;
+	else
+		return false;
 }
 
 #if 0
@@ -1457,8 +1458,9 @@ void Game_window::read_gwin(
 		Audio::get_ptr()->stop_music();
 		return;
 	}
-
-	Audio::get_ptr()->start_music(track_num, repeat != 0);
+	MyMidiPlayer *midi = Audio::get_ptr()->get_midi();
+	if(!is_bg_track(track_num) || (midi && (midi->get_ogg_enabled() || midi->is_mt32())))
+		Audio::get_ptr()->start_music(track_num, repeat != 0);
 	armageddon = gin.read1() == 1 ? true : false;
 	if (!gin_stream.good())
 		armageddon = false;
