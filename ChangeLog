@@ -1,3 +1,6 @@
+2014-03-11	Malignant Manor <malignantmanor@users.sourceforge.net>
+	* actorio.cc: Fix might timer not being started when reloading a saved game.
+
 2014-03-02	Malignant Manor <malignantmanor@users.sourceforge.net>
 	* Audio/Midi.cc, gamewin.*, gumps/AudioOptions_gump.cc: Stop music when
 	  music conversion changes. Don't stop music when the midi driver changes
