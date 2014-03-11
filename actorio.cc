@@ -347,6 +347,8 @@ void Actor::read(
 		flags |= f;
 		if (get_flag(Obj_flags::invisible)) /* Force timer. */
 			need_timers()->start_invisibility();
+		if (get_flag(Obj_flags::might)) /* Force timer. */
+			need_timers()->start_might();
 
 		// Was SIFlags -- now used for schedule z coord
 		schedule_loc.tz = nfile->read1();
