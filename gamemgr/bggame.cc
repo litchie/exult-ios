@@ -810,6 +810,7 @@ void BG_Game::scene_guardian() {
 
 		bool speech = Audio::get_ptr()->is_audio_enabled() &&
 		              Audio::get_ptr()->is_speech_enabled();
+		bool need_to_play_speech = speech; // speech timing can screw up due
 
 #define ERASE_TEXT() do { \
 		win->put(backup3, win->get_start_x(), txt_ypos); \
@@ -851,9 +852,10 @@ void BG_Game::scene_guardian() {
 
 		// start speech
 		while (time < 1040) {
-			if (time == 40)
-				if (Audio::get_ptr()->is_speech_enabled())
+			if (need_to_play_speech && time >= 40) {
+				need_to_play_speech = false;
 					Audio::get_ptr()->playfile(INTROSND, PATCH_INTROSND, false);
+			}
 
 			if (time >= eye_times[eye_index] && eye_index < eye_num_frames) {
 				eye_index++;
