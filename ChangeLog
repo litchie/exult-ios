@@ -1,3 +1,6 @@
+2014-03-23	Malignant Manor <malignantmanor@users.sourceforge.net>
+	* Fix timing issue that could cause the Guardian's intro speech not to play.
+
 2014-03-11	Malignant Manor <malignantmanor@users.sourceforge.net>
 	* actorio.cc: Fix might timer not being started when reloading a saved game.
 
