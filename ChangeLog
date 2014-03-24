@@ -1,3 +1,7 @@
+2014-03-24	Dominik Reichardt <dominus@users.sourceforge.net>
+	* gumps/AudioOptions_gump.cc: chnaging audio settings during playback of 
+	  non-looping music tracks flagged these as looping - fixed by i30817
+
 2014-03-23	Malignant Manor <malignantmanor@users.sourceforge.net>
 	* Fix timing issue that could cause the Guardian's intro speech not to play.
 
