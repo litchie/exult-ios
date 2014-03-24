@@ -510,9 +510,12 @@ AudioOptions_gump::~AudioOptions_gump() {
 
 void AudioOptions_gump::save_settings() {
 	int track_playing = -1;
+	bool looping = false;
 	MyMidiPlayer *midi = Audio::get_ptr()->get_midi();
-	if (midi)
+	if (midi) {
 		track_playing = midi->get_current_track();
+		looping = midi->is_repeating();
+	}
 	config->set("config/audio/sample_rate", sample_rates[sample_rate], false);
 	config->set("config/audio/stereo", speaker_type ? "yes" : "no", false);
 	if (sample_rates[sample_rate] != static_cast<uint32>(o_sample_rate) ||
@@ -606,7 +609,7 @@ void AudioOptions_gump::save_settings() {
 		if (gwin->is_in_exult_menu())
 			Audio::get_ptr()->start_music(EXULT_FLX_MEDITOWN_MID, true, EXULT_FLX);
 		else
-			Audio::get_ptr()->start_music(track_playing, midi_looping == 1);
+			Audio::get_ptr()->start_music(track_playing, looping);
 	}
 }
 
