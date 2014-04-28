@@ -1,5 +1,13 @@
+2014-04-29	Dominik Reichardt <dominus@users.sourceforge.net>
+	* audio/midi_drivers/CoreMidiDriver.cpp: On OS X if you have more than 
+	  one MIDI device (real as in more than one Roland device or software as in MUNT)
+	  you can now tell Exult which one to use via setting audio/midi/coremidi_device
+	  in exult.cfg. Stdout prints the device IDs and names when you use the CoreMidi
+	  midi driver. Thanks to Qbix of DOSBox and Digitall of ScummVM for most of
+	  the code.
+
 2014-03-24	Dominik Reichardt <dominus@users.sourceforge.net>
-	* gumps/AudioOptions_gump.cc: chnaging audio settings during playback of 
+	* gumps/AudioOptions_gump.cc: changing audio settings during playback of 
 	  non-looping music tracks flagged these as looping - fixed by i30817
 
 2014-03-23	Malignant Manor <malignantmanor@users.sourceforge.net>
