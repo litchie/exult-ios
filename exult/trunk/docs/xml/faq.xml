@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE faqs SYSTEM "docs.dtd">
-<faqs title="Exult" changed="21 November 2013(GMT)">
+<faqs title="Exult" changed="21 April 2014(GMT)">
 	<section title="Introduction">
 		<sub name="exult_version">
 			<header>Exult Version</header>
@@ -1265,11 +1265,6 @@
 					So you need to place the quartz symbol onto the east depression of the altar and 
 					the obsidian symbol onto the west depression.
 				</para>
-				<para>
-					Unfortunately Exult currently exhibits a bug and doesn't disable the trap when you 
-					place the quartz symbol.<br/>
-					Also a bug from the original game allows in <Exult/> to move the Y-Shape depressions.
-				</para>
 			</body>
 		</sub>
 	</section>
@@ -1350,6 +1345,14 @@
 		</sub>
 	</section>
 	<section title="Changes to the FAQ">
+		<sub name="21042014">
+			<header>- 21 April 2014</header>
+			<body>
+				<ul>
+				<li><ref1 target="altar_discipline"/> the altar is now bug free.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="21112013">
 			<header>- 21 November 2013</header>
 			<body>
