@@ -76,8 +76,10 @@ int CoreMidiDriver::open() {
 
 	// Default to the first CoreMidi device (ID 0) 
 	// when the device ID in the cfg isn't possible anymore
-	if (deviceId < 0 || deviceId >= dests )
+	if (deviceId < 0 || deviceId >= dests ){
+		std::cout << "CoreMidi destination " << deviceId << " not available, trying destination 0 instead." << std::endl;
 		deviceId = 0;
+	}
 
 	if (dests > deviceId && mClient) {
 		mDest = MIDIGetDestination(deviceId);
