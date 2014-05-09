@@ -1,3 +1,8 @@
+2014-05-10	Dominik Reichardt <dominus@users.sourceforge.net>
+	* audio/midi_drivers/CoreMidiDriver.cpp: added stdout message when CoreMidi 
+	  destination is not available and default is used.
+	* updated documentation and FAQ
+		
 2014-04-29	Dominik Reichardt <dominus@users.sourceforge.net>
 	* audio/midi_drivers/CoreMidiDriver.cpp: On OS X if you have more than 
 	  one MIDI device (real as in more than one Roland device or software as in MUNT)
