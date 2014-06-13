@@ -71,6 +71,7 @@ class Missile_launcher : public Time_sensitive, public Game_singletons {
 	int dir;            // Direction (0-7).  (8==??).
 	int delay;          // Delay (msecs) between launches.
 	int range;
+	bool chk_range;     // For party near and avatar near.
 public:
 	Missile_launcher(Egg_object *e, int weap, int shnum, int di, int del)
 		: egg(e), weapon(weap), shapenum(shnum), dir(di), delay(del), range(20) {
@@ -78,6 +79,12 @@ public:
 		// Guessing.
 		if (winfo) {
 			range = winfo->get_range();
+		}
+		int crit = e->get_criteria();
+		if (crit == Egg_object::party_near || crit == Egg_object::avatar_near) {
+			chk_range = true;
+		} else {
+			chk_range = false;
 		}
 	}
 	virtual void handle_event(unsigned long curtime, long udata);
@@ -95,6 +102,13 @@ void Missile_launcher::handle_event(
 	// Is egg a ways off the screen?
 	if (!gwin->get_win_tile_rect().enlarge(10).has_world_point(src.tx, src.ty))
 		return;         // Return w'out adding back to queue.
+	// Add back to queue for next time.
+	if (chk_range) {
+		Actor *main_actor = gwin->get_main_actor();
+		if (!main_actor || main_actor->distance(egg) > range) {
+			return;
+		}
+	}
 	Projectile_effect *proj = 0;
 	if (dir < 8) {          // Direction given?
 		// Get adjacent tile in direction.
@@ -119,8 +133,8 @@ void Missile_launcher::handle_event(
 	}
 	if (proj)
 		eman->add_effect(proj);
-	// Add back to queue for next time.
-	gwin->get_tqueue()->add(curtime + (delay > 0 ? delay : 1), this, udata);
+	if (chk_range)
+		gwin->get_tqueue()->add(curtime + (delay > 0 ? delay : 1), this, udata);
 }
 
 /*
@@ -297,7 +311,8 @@ public:
 	}
 	virtual void paint() {
 		// Make sure launcher is active.
-		if (launcher && !launcher->in_queue())
+		if (launcher && !launcher->in_queue() &&
+		    (criteria == party_near || criteria == avatar_near))
 			gwin->get_tqueue()->add(0L, launcher, 0);
 		Egg_object::paint();
 	}
