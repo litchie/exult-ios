@@ -789,12 +789,13 @@ AC_ARG_ENABLE(warnings, AS_HELP_STRING([--enable-warnings], [Enable all warnings
 # more warnings
 AC_ARG_ENABLE(paranoid-warnings, AS_HELP_STRING([--enable-paranoid-warnings], [Enable paranoid warnings @<:@default no@:>@]),,enable_paranoid_warnings=no)
 if test x$enable_paranoid_warnings = xyes; then
-	WARNINGS="-O -Wall -Wextra -Wcast-qual -Wwrite-strings -Wconversion -Wredundant-decls -Winline -Wdisabled-optimization -fcheck-new -Wctor-dtor-privacy -Wnon-virtual-dtor -Wold-style-cast -Woverloaded-virtual"
+#	WARNINGS="-O -Wall -Wextra -Wcast-qual -Wwrite-strings -Wconversion -Wredundant-decls -Winline -Wdisabled-optimization -fcheck-new -Wctor-dtor-privacy -Wnon-virtual-dtor -Wold-style-cast -Woverloaded-virtual"
+	WARNINGS="-O -Wall -Wextra -Wcast-qual -Wwrite-strings -Wredundant-decls -Wdisabled-optimization -fcheck-new -Wctor-dtor-privacy -Wnon-virtual-dtor -Wold-style-cast -Woverloaded-virtual"
 #	DEBUG_FLAGS="$DEBUG_FLAGS -Wall -O -Wunused -Wuninitialized -Woverloaded-virtual -Wpointer-arith -Wcast-qual -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes -Winline"
-	DEBUG_FLAGS="$DEBUG_FLAGS -O -Wall -Wextra -Wcast-qual -Wwrite-strings -Wconversion -Wredundant-decls -Winline -Wdisabled-optimization -fcheck-new -Wctor-dtor-privacy -Wnon-virtual-dtor -Wold-style-cast -Woverloaded-virtual -Wpointer-arith"
+	DEBUG_FLAGS="$DEBUG_FLAGS $WARNINGS"
 	WARNING_LEVEL="paranoid"
 elif test x$enable_warnings = xyes; then
- 	DEBUG_FLAGS="$DEBUG_FLAGS -O -Wall -Wunused -Wuninitialized -Woverloaded-virtual -Wpointer-arith -Wcast-qual -Wwrite-strings"
+ 	DEBUG_FLAGS="$DEBUG_FLAGS -O -Wall -Wextra -Wunused -Wuninitialized -Woverloaded-virtual -Wpointer-arith -Wcast-qual -Wwrite-strings"
 	WARNING_LEVEL="all"
 fi
 
