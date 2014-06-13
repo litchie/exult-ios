@@ -1,3 +1,9 @@
+2014-06-13	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* objs/egg.cc: Fixing bug #1865 "(Anti magic/sparkle) Weather takes too long
+	  to change": weather eggs now reset weather when they are deleted, which
+	  matches the original's behavior.
+	* configure.ac: Removed a couple of options in paranoid-warnings.
+
 2014-05-10	Dominik Reichardt <dominus@users.sourceforge.net>
 	* audio/midi_drivers/CoreMidiDriver.cpp: added stdout message when CoreMidi 
 	  destination is not available and default is used.
