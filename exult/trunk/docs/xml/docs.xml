@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE readme SYSTEM "docs.dtd">
-<readme title="Exult" changed="19 December 2013(GMT)">	
+<readme title="Exult" changed="09 May 2014(GMT)">	
 	<section title="Introduction">
 		<sub name="exult_version">
 			<header>Exult Version</header>
@@ -431,7 +431,7 @@
 								default
 								<comment>**choose your music driver between default, MT32Emu, Fluidsynth, FMOPL, </comment>
 								<comment>TiMidity, Windows, Amiga, Be_midi, Forked, KMIDI, alsa, CoreAudio, </comment>
-								<comment>UnixSeqDevice. </comment>
+								<comment>CoreMidi, UnixSeqDevice. </comment>
 								<comment>See <ref target="music"/> for details.</comment>
 								</configtag>
 								<configtag name="convert">
@@ -482,6 +482,12 @@
 								path
 								<comment>**path to the sound font you want to use for CoreAudio on OS X. </comment>
 								<comment>CoreAudio uses the system sound font by default.</comment>
+								</configtag>
+								<configtag name="coremidi_device" manual="true">
+								path
+								<comment>**select the CoreMidi device ID on OS X. </comment>
+								<comment>You need to start Exult from Terminal.app to see the IDs when you select CoreMidi as Midi driver.</comment>
+								<comment>See <ref target="coremidi_device"/>.</comment>
 								</configtag>
 								<configtag name="alsa_port" manual="true">
 								65:0
@@ -1179,7 +1185,11 @@
         				uses XMIDI on Mac OS X. You can use a different soundfont than OS X' default by pointing
 						&lt;config&gt;&lt;audio&gt;&lt;midi&gt;&lt;coreaudio_soundfont&gt; to it in exult.cfg.</li>
 					<li><strong>CoreMIDI</strong><br/>
-	        			with this MIDI driver a Real MT32 can be used on Mac OS X.</li>
+	        			on Mac OS X this MIDI driver allows using a real MIDI device like a Roland MT32 or software 
+						MIDI devices like  Munt MT-32 Emulator. If you have more than one MIDI device you can choose the 
+						the device by setting the device ID in exult.cfg 
+						&lt;config&gt;&lt;audio&gt;&lt;midi&gt;&lt;coremidi_device&gt; 
+						- see <ref target="coremidi_device"/>.</li>
 					<li><strong>alsa</strong><br/>
         				uses ALSA on Linux systems. If your ALSA port is not on 65:0 you need to change
 						&lt;config&gt;&lt;audio&gt;&lt;midi&gt;&lt;alsa_port&gt; in the exult.cfg.</li>
@@ -1273,12 +1283,66 @@
 					To change the MIDI Device open exult.cfg and change
 				 </para>
 				 <configdesc>
-				 	<configtag name="win32_device">
-					-1
+	 				<configtag name="config" closing-tag="no">
+	 					<configtag name="audio" closing-tag="no">
+							<configtag name="midi" closing-tag="no">
+								<configtag name="win32_device">
+								-1
+								</configtag>
+							</configtag>
+						</configtag>
 					</configtag>
 				</configdesc>
 				<para>
 					with the device you want to use.
+				</para>
+			</body>
+		</sub>
+		<sub name="coremidi_device">
+			<header>OS X CoreMidi device ID</header>
+			<body>
+				<para>
+					Similar to the above Windows MIDI mapper you can now tell <Exult/> on OS X which MIDI device 
+					it should use. By default <Exult/> uses OS X' CoreAudio device to output MIDI music. If you 
+					have a real MIDI device (e.g. Roland MT32) or another software MIDI device (e.g. Munt MT-32 Emulator) 
+					you want to use, you will need to select the CoreMidi MIDI driver.<br/>
+					CoreMidi uses by default the MIDI device with the first device ID (0), if you have more than 
+					one device you will need to learn the device IDs first and then set it in exult.cfg.
+				</para>
+				<para>
+					To do this you will need to start <Exult/> in a special way:<br/>
+					right click on the <Exult/>.app, select "Show Package Contents" which will show you the folder/file 
+					structure of the <Exult/>.app. Doubleclick on "Contents", doubleclick on MacOS, doubleclick on exult.<br/>
+					Terminal.app will open a window and will show you all kind of output while <Exult/> will also start. in 
+					<Exult/> click on setup and in the Audio settings select the CoreMidi driver (make sure to disable 
+					digital music).<br/>
+					In the Terminal.app window you should now see a listing of the MIDI devices which could look like this:<br/>
+				</para>
+				<para>
+					Trying config specified Midi driver: `CoreMidi'<br/>
+					CoreMidi driver found 4 destinations:<br/>
+					0: USB Midi Cable<br/>
+					1: uMIDI/O22 Port 1<br/>
+					2: uMIDI/O22 Port 2<br/>
+					3: Mt32EmuPort<br/>
+				</para>
+				<para>
+					By default <Exult/> uses the first device with the device ID 0, in this case "USB Midi Cable".<br/>
+					To change the MIDI Device open exult.cfg and change
+				 </para>
+				 <configdesc>
+ 					<configtag name="config" closing-tag="no">
+ 						<configtag name="audio" closing-tag="no">
+							<configtag name="midi" closing-tag="no">
+								<configtag name="coremidi_device">
+								0
+								</configtag>
+							</configtag>
+						</configtag>
+					</configtag>
+				</configdesc>
+				<para>
+					with the device ID of the device you want to use.
 				</para>
 			</body>
 		</sub>
@@ -2778,6 +2842,16 @@
 		</sub>
 	</section>
 	<section title="Changes to the Documentation">
+		<sub name="09052014">
+			<header>- 09 May 2014</header>
+			<body>
+				<ul>
+				<li><ref1 target="exult_config"/> added coremidi_device setting.</li>
+				<li><ref1 target="midi_music"/> added coremidi_device setting.</li>
+				<li><ref1 target="coremidi_device"/> added to explain the coremidi_device setting.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="19122013">
 			<header>- 19 December 2013</header>
 			<body>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE faqs SYSTEM "docs.dtd">
-<faqs title="Exult" changed="21 April 2014(GMT)">
+<faqs title="Exult" changed="17 July 2014(GMT)">
 	<section title="Introduction">
 		<sub name="exult_version">
 			<header>Exult Version</header>
@@ -780,7 +780,7 @@
 			<body>
 				<para>
 					To see a list of open bugs and bug reports go to
-					<extref target="sourceforge.net/p/exult/bugs"/>.
+					<extref target="http://sourceforge.net/p/exult/bugs/"/>.
 				</para>
 			</body>
 		</sub>
@@ -791,7 +791,7 @@
 				<li>Read the <extref target="http://exult.sourceforge.net/docs.php">Documentation</extref>
 					and this FAQ to see if that is not already covered and you have all set up correctly.</li>
 				<li>Before you report a bug to the
-					<extref target="sourceforge.net/p/exult/bugs">bug tracker</extref>
+					<extref target="http://sourceforge.net/p/exult/bugs/">bug tracker</extref>
 					please try the latest
 					<extref target="http://exult.sourceforge.net/download.php">snapshot</extref>.
 					If the bug still occurs make sure that no one else already reported the bug
@@ -1345,6 +1345,14 @@
 		</sub>
 	</section>
 	<section title="Changes to the FAQ">
+		<sub name="17072014">
+			<header>- 17 July 2014</header>
+			<body>
+				<ul>
+				<li>Fixed links to our bug tracker.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="21042014">
 			<header>- 21 April 2014</header>
 			<body>
