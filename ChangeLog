@@ -1,3 +1,7 @@
+2014-07-17	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* usecode/compiler/ucexpr.cc: Fixed regression in usecode compiler from bug
+	  #1879 "Keyring: healing and resurrecting broken".
+
 2014-06-13	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* objs/egg.cc: Fixing bug #1865 "(Anti magic/sparkle) Weather takes too long
 	  to change": weather eggs now reset weather when they are deleted, which
