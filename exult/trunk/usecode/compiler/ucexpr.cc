@@ -795,13 +795,13 @@ void Uc_call_expression::gen_value(
     Basic_block *out
 ) {
 	if (ind) {          // Indirect?
+		size_t parmcnt = parms->gen_values(out);    // Want to push parm. values.
 		if (!itemref) {
 			Uc_item_expression item;
 			item.gen_value(out);
 		} else
 			itemref->gen_value(out);
 		ind->gen_value(out);    // Function #.
-		size_t parmcnt = parms->gen_values(out);    // Want to push parm. values.
 		if (parmcnt) {
 			WriteOp(out, UC_CALLINDEX);
 			WriteOpParam1(out, parmcnt);
