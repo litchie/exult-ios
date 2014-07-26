@@ -11,7 +11,6 @@ SRC=.
 
 ### Modify these paths
 SDL_CFLAGS:=-I$(SRC)/sdl/include
-SDL2=1
 ifdef SDL2
 	LIB_SDL=-lSDL2
 	LIB_SDL_IMAGE=-lSDL2_image
@@ -82,7 +81,7 @@ ES_LIBS:=$(GTK_LIBS) $(LIBGLADE_LIBS) $(FREETYPE2_LIBS) $(ZIP_LIBS) $(OPENGL_LIB
 
 ### Ogg vorbis inclides
 OGG_INCLUDES:=$(shell pkg-config --cflags ogg vorbis vorbisfile)
-OGG_LIBS:=$(shell pkg-config --libs ogg vorbis vorbisfile)
+OGG_LIBS:=$(shell pkg-config --libs vorbisfile vorbis ogg)
 
 ifdef DEBUG_SYMBOLS
 	DEBUG_LEVEL=-ggdb3
