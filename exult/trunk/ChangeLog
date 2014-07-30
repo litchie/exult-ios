@@ -1,3 +1,6 @@
+2014-07-29	Malignant Manor <malignantmanor@users.sourceforge.net>
+	* Makefile.mingw: Remove code from accidental commit.
+
 2014-07-17	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* usecode/compiler/ucexpr.cc: Fixed regression in usecode compiler from bug
 	  #1879 "Keyring: healing and resurrecting broken".
