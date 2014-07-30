@@ -116,7 +116,7 @@ CPPFLAGS=$(strip -DVERSION=\"$(VERSION)\" -DEXULT_DATADIR=\"data\" -DSIZEOF_SHOR
 	-I$(SRC)/mapedit -I$(SRC)/shapes/shapeinf $(SDL_CFLAGS) \
 	$(ZIP_CFLAGS) $(OPENGL_CFLAGS) $(ES_INCLUDES) \
 	$(EXTRA_OPTIONS))
-OPT_LEVEL=-O0
+
 ifndef OPT_LEVEL
 	OPT_LEVEL=-O2
 endif
