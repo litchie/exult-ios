@@ -1300,7 +1300,7 @@ void zaurielLastTalk ()
 	say("Zauriel is clearly overjoyed to see his daughter returned.");
 	
 	LAURIANNA->show_npc_face1(0);
-	say("Laurianna runs to his father and hugs him, relieved to be reunited with her father. @Father! I missed thee so much! I was so afraid...@");
+	say("Laurianna runs to her father and hugs him, relieved to be reunited with her father. @Father! I missed thee so much! I was so afraid...@");
 	
 	UI_set_conversation_slot(0);
 	say("@Yes, my child, I know, I could feel thy fear. I am overjoyed that thou art safe once again! How dost thou fare, my child? Art thou well?@");

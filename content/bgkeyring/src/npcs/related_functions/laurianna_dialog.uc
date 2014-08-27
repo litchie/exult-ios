@@ -659,7 +659,7 @@ void lauriannaPostQuestDialog ()
 	LAURIANNA->show_npc_face(0);
 	say("Laurianna seems different than she was a few moments ago -- she acts as if a great burden has been lifted from her shoulders.");
 	say("She seems happier than before, but even then, a great sorrow is evident -- for the loss of her father, you guess.");
-	say("But despite all that, you have the feeling that she fells... lost. It is evident that this is all new to her, and she isn't entirely sure how to proceed.");
+	say("But despite all that, you have the feeling that she feels... lost. It is evident that this is all new to her, and she isn't entirely sure how to proceed.");
 	say("It is then that she talks to you. @It is... strange. I am not entirely sure what happened, but I am certain that I no longer am who I was.");
 	say("@I am terribly sorry for my father's death, but he gave me a gift I can scarcely understand yet. It is a pity that he had to die...");
 	say("@But thou hast not to worry, Avatar, for I bear thee no ill will. It is true that thou didst slay my father, @but thou wouldst have been slain hadst thou hesitated.");
@@ -725,7 +725,7 @@ void lauriannaPostQuestDialog ()
 		case "No ill will" (remove):
 			say("@I know that my father gave thee little choice in the matter -- hence, I shall not seek any form of revenge or compensation.");
 			say("@Besides, given the spells that he had woven, he would have taken his own life had thou not killed him...");
-			say("@Thou seest, the used his own life force to repair my mind. He had to die to free his life force, for otherwise the spell would not take effect.");
+			say("@Thou seest, he used his own life force to repair my mind. He had to die to free his life force, for otherwise the spell would not take effect.");
 			if (gflags[READ_ZAURIEL_JOURNAL])
 				say("@But thou hast already read about that in his journal...");
 			

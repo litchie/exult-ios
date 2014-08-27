@@ -84,7 +84,7 @@ void ZaurielJournal shape#(0x44E) ()
 				"~~    The longer I spend protected from the damaged Ether, the longer I stay in this strange state of mind... I wonder what might happen if I spend too much time protected from the Ether?*");
 			say("Year 350",
 				"~~June 20",
-				"~~    I, the great Lord Zauriel, have attained some success in working with the Blackrock. It is still beyond my capabilities to craft an effective helmet from it, although I have uncovered a way to distill a potion from it that protects my daughter's damaged mind form the damaged Ether. Apparently, the potion is deadly poison to all save her, therefore I shall not even write it to my journal.*");
+				"~~    I, the great Lord Zauriel, have attained some success in working with the Blackrock. It is still beyond my capabilities to craft an effective helmet from it, although I have uncovered a way to distill a potion from it that protects my daughter's damaged mind from the damaged Ether. Apparently, the potion is deadly poison to all save her, therefore I shall not even write it to my journal.*");
 			say("Year 356",
 				"~~February 18",
 				"~~    Today is my birthday, and I have been graced with visions of what will come to pass. I put them forth here, up and until the moment of my death by the hands of the mighty Avatar -- who shall return to save Britannia from the mounting threat and will restore the Ether to normal in the process. It is perhaps poetic justice that I should perish by the hands of such a valiant mortal, due to all the transgressions I have made in the past and all the woe and destruction I have caused.",
@@ -125,16 +125,16 @@ void ZaurielJournal shape#(0x44E) ()
 				msg = "Iolo, Shamino, Dupre and myself";
 			
 			else if (npc_num == IOLO)
-				msg = "the avatar, Shamino, Dupre and myself";
+				msg = "the Avatar, Shamino, Dupre and myself";
 			
 			else if (npc_num == SHAMINO)
-				msg = "the avatar, Iolo, Dupre and myself";
+				msg = "the Avatar, Iolo, Dupre and myself";
 			
 			else if (npc_num == DUPRE)
-				msg = "the avatar, Iolo, Shamino and myself";
+				msg = "the Avatar, Iolo, Shamino and myself";
 			
 			else
-				msg = "the avatar, Iolo, Shamino and Dupre";
+				msg = "the Avatar, Iolo, Shamino and Dupre";
 			
 			say("@Zauriel also developed a strong interest in ", msg,
 			    " while in the Lycaeum. He seems to be completely obsessed...@");
