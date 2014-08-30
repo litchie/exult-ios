@@ -58,6 +58,9 @@ static void InitMidiDriverVector()
 {
 	if (midi_drivers.size()) return;
 
+#ifdef USE_FMOPL_MIDI
+	midi_drivers.push_back(FMOplMidiDriver::getDesc());
+#endif
 #ifdef USE_CORE_AUDIO_MIDI
 	midi_drivers.push_back(CoreAudioMidiDriver::getDesc());
 #endif
@@ -99,9 +102,6 @@ static void InitMidiDriverVector()
 #endif
 #ifdef USE_MIXER_MIDI
 	midi_drivers.push_back(Mixer_MidiOut::getDesc());
-#endif
-#ifdef USE_FMOPL_MIDI
-	midi_drivers.push_back(FMOplMidiDriver::getDesc());
 #endif
 
 	midi_drivers.push_back(&Disabled_desc);
