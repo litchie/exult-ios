@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define _MIDI_driver_forked_player_h_
 
 #ifdef XWIN
-#define USE_FORKED_PLAYER_MIDI
+//#define USE_FORKED_PLAYER_MIDI
 
 #include <vector>
 #include <sys/types.h>
