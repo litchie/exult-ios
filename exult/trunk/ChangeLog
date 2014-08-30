@@ -2,6 +2,8 @@
 	* audio/midi_drivers/forked_player.h: disabled forked midi since "using forked 
 	  is a very bad idea" (wjp) and people were having crashes due to it. Thanks 
 	  to i30817 for the patch. Someone else may remove it completely.
+	* audio/midi_drivers/MidiDriver.cpp: moved FMOpl Midi driver to the top of the 
+	  list as it should always work right away. Thanks to i30817 for the patch.
 
 2014-07-29	Malignant Manor <malignantmanor@users.sourceforge.net>
 	* Makefile.mingw: Remove code from accidental commit.
