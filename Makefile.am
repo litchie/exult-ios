@@ -239,6 +239,7 @@ bundle_name = Exult.app
 bundle: ${EXE_TARGET}
 	mkdir -p $(bundle_name)/Contents/MacOS
 	mkdir -p $(bundle_name)/Contents/Resources/data/
+	mkdir -p $(bundle_name)/Contents/Documents
 	echo "APPL????" > $(bundle_name)/Contents/PkgInfo
 	$(INSTALL_DATA) Info.plist $(bundle_name)/Contents/
 	$(INSTALL_PROGRAM) $< $(bundle_name)/Contents/MacOS/
@@ -247,12 +248,12 @@ bundle: ${EXE_TARGET}
 	$(INSTALL_DATA) $(srcdir)/data/exult_bg.flx $(bundle_name)/Contents/Resources/data
 	$(INSTALL_DATA) $(srcdir)/data/exult_si.flx $(bundle_name)/Contents/Resources/data
 	$(INSTALL_DATA) $(srcdir)/data/exultmsg.txt $(bundle_name)/Contents/Resources/data
-	$(INSTALL_DATA) $(srcdir)/AUTHORS $(bundle_name)
-	$(INSTALL_DATA) $(srcdir)/COPYING $(bundle_name)
-	$(INSTALL_DATA) $(srcdir)/FAQ $(bundle_name)
-	$(INSTALL_DATA) $(srcdir)/NEWS $(bundle_name)
-	$(INSTALL_DATA) $(srcdir)/README $(bundle_name)
-	$(INSTALL_DATA) $(srcdir)/README.MacOSX $(bundle_name)
+	$(INSTALL_DATA) $(srcdir)/AUTHORS $(bundle_name)/Contents/Documents
+	$(INSTALL_DATA) $(srcdir)/COPYING $(bundle_name)/Contents/Documents
+	$(INSTALL_DATA) $(srcdir)/FAQ $(bundle_name)/Contents/Documents
+	$(INSTALL_DATA) $(srcdir)/NEWS $(bundle_name)/Contents/Documents
+	$(INSTALL_DATA) $(srcdir)/README $(bundle_name)/Contents/Documents
+	$(INSTALL_DATA) $(srcdir)/README.MacOSX $(bundle_name)/Contents/Documents
 if WITH_OSX_CODE_SIGNATURE
 	codesign -f -s "$(OSX_CODE_SIGNATURE)" $(bundle_name)
 endif
