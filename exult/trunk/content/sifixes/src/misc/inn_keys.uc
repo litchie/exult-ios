@@ -63,7 +63,7 @@ void eggLockInnDoors object#(0xCB0) ()
 					   JENDON, JENDON, JENDON,
 					   DEVRA, ARGUS, DEVRA, ARGUS,
 					   PETRA];
-	var inn_names = ["Blue Boar Inn",
+	var inn_names = ["Sleeping Soldier",
 					 "Broken Oar Inn", "Broken Oar Inn", "Broken Oar Inn",
 					 "Sleeping Bull Inn", "Sleeping Bull Inn",
 					 "Sleeping Bull Inn", "Sleeping Bull Inn",
