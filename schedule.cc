@@ -2562,7 +2562,13 @@ void Desk_schedule::now_what(
 		items_in_hand = npc->count_objects(675);
 		Game_object_vector vec;
 		int nearby = find_desk_items(vec, npc);
-		int nitems = (7 + rand()%5) - items_in_hand - nearby;
+		/* int nitems = (7 + rand()%5) - items_in_hand - nearby;
+		see bug #1891 - we were adding too many desk items to
+		the NPCs inventory and never cleaned up, which was
+		causing problems.
+		For now only add 1 item - maybe needs to be redone 
+		like lab or waiter schedule */
+		int nitems = 1 - items_in_hand - nearby;
 		if (nitems > 0) {
 			items_in_hand += nitems;
 			for (int i = 0; i < nitems; ++i) {

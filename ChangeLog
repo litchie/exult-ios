@@ -1,3 +1,10 @@
+2014-11-17	Dominik Reichardt <dominus@users.sourceforge.net>
+	* schedule.cc: temporarily fixed bug 1891 - the desk schedule was adding too 
+	  many desk items to the NPCs inventory and never cleaned up, which was causing 
+	  problems. For now only add 1 item - but maybe desk schedule needs to be 
+	  redone similar to lab or waiter schedule (not adding items to the inventory 
+	  but creating out of thin air).
+
 2014-08-30	Dominik Reichardt <dominus@users.sourceforge.net>
 	* audio/midi_drivers/forked_player.h: disabled forked midi since "using forked 
 	  is a very bad idea" (wjp) and people were having crashes due to it. Thanks 
