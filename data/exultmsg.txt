@@ -96,3 +96,25 @@
 0x555:'Tis my worst fear!
 0x556:I must send the Avatar through
 0x557:the pillars to the Serpent Isle!
+#SI end
+0x558:There, we are done.
+0x559:Balance is restored
+0x55A:Serpent Isle, Britannia, your Earth,
+0x55B:the entire universe, all are saved.
+0x55C:Worry not about your friend Dupre.
+0x55D:He is one with us, and content.
+0x55E:Goodbye, Avatar.
+0x55F:We thank you.
+0x560:Well well well, Avatar. You
+0x561:have managed to thwart me once again.
+0x562:By restoring balance where
+0x563:once chaos reigned, you have
+0x564:saved your accursed world.
+0x565:But now here you are, poised
+0x566:at the edge of Eternity.
+0x567:Where would you go?
+0x568:Back to Britannia?
+0x569:To Earth?
+0x56A:Perhaps you would join me in
+0x56B:another world alltogether?
+0x56C:We do have a score to settle!
