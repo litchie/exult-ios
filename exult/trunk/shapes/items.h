@@ -136,19 +136,28 @@ const int txt_screen4 = 0x135; //to 0x138
 const int lord_castle = 0x139, dick_castle = 0x13A;
 const int bg_fellow = 0x13B; //to 0x13D
 const int my_leige = 0x13E, yo_homes = 0x13F;
-const int all_we0 = 0x140; //to 0x541
-const int and_a0 = 0x142; //to 0x543
-const int indeed = 0x144; //to 0x545
+const int all_we0 = 0x140; //to 0x141
+const int and_a0 = 0x142; //to 0x143
+const int indeed = 0x144; //to 0x145
 const int iree = 0x146;
 const int stand_back = 0x147;
 const int jump_back = 0x148;
-const int batlin = 0x149;
-const int you_shall = 0x14B;
-const int there_i = 0x14D;
-const int batlin2 = 0x14F;
-const int you_must = 0x151;
-const int soon_i = 0x153;
+const int batlin = 0x149; //to 0x14A
+const int you_shall = 0x14B; //to 0x14C
+const int there_i = 0x14D; //to 0x14E
+const int batlin2 = 0x14F; //to 0x150
+const int you_must = 0x151; //to 0x152
+const int soon_i = 0x153; //to 0x154
 const int tis_my = 0x155;
+const int balance = 0x158; //to 0x159
+const int si_earth = 0x15A; //to 0x15B
+const int dupre = 0x15C; //to 0x15D
+const int goodbye = 0x15E; //to 0x15F
+const int well_well = 0x160; //to 0x161
+const int balance2 = 0x162; //to 0x164
+const int poised = 0x165; //to 0x167
+const int brit_earth = 0x168; //to 0x169
+const int pagan = 0x16A; //to 0x16C
 
 //	Misc. text (frames, etc.) start at 0x500 in text.flx.
 const int misc_name0 = 0x500;
