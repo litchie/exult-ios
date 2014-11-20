@@ -1,3 +1,7 @@
+2014-11-20	Dominik Reichardt <dominus@users.sourceforge.net>
+	* data/exultmsg.txt, shapes/items.h: added the subtitle texts of SI's end scene.
+	  No idea how to actually display those when speech is disabled.
+
 2014-11-17	Dominik Reichardt <dominus@users.sourceforge.net>
 	* schedule.cc: temporarily fixed bug 1891 - the desk schedule was adding too 
 	  many desk items to the NPCs inventory and never cleaned up, which was causing 
