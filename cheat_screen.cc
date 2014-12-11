@@ -500,14 +500,20 @@ void CheatScreen::NormalDisplay() {
 	         clock->get_day());
 	font->paint_text_fixedwidth(ibuf, buf, 0, 45, 8);
 
-	snprintf(buf, 512, "Coords in hex (%04x, %04x, %02x)",
-	         t.tx, t.ty, t.tz);
+	int longi = ((t.tx - 0x3A5) / 10);
+	int lati = ((t.ty - 0x46E) / 10);
+	snprintf(buf, 512, "Coords geo    %d %s %d %s", 
+		abs(lati), (lati < 0 ? "North" : "South"),
+		abs(longi), (longi < 0 ? "West" : "East"));
 	font->paint_text_fixedwidth(ibuf, buf, 0, 63, 8);
 
-	snprintf(buf, 512, "Coords in dec (%04i, %04i, %02i)",
+	snprintf(buf, 512, "Coords in hex (%04x, %04x, %02x)",
 	         t.tx, t.ty, t.tz);
 	font->paint_text_fixedwidth(ibuf, buf, 0, 72, 8);
 
+	snprintf(buf, 512, "Coords in dec (%04i, %04i, %02i)",
+	         t.tx, t.ty, t.tz);
+	font->paint_text_fixedwidth(ibuf, buf, 0, 81, 8);
 }
 
 void CheatScreen::NormalMenu() {
@@ -559,10 +565,8 @@ void CheatScreen::NormalMenu() {
 	// Global Flag Modify
 	font->paint_text_fixedwidth(ibuf, "[F]lag Modifier", 160, maxy - 90, 8);
 
-#if 0
 	// Teleport
 	font->paint_text_fixedwidth(ibuf, "[T]eleport", 160, maxy - 81, 8);
-#endif
 
 #if 0
 	// Create Item
@@ -624,12 +628,10 @@ void CheatScreen::NormalActivate(char *input, int &command, Cheat_Prompt &mode) 
 			clock->set_time_rate(clock->get_time_rate() + 1);
 		break;
 
-#if 0
 		// Teleport
 	case 't':
-		mode = CP_NotAvail;
+		mode = TeleportLoop();
 		break;
-#endif
 
 		// NPC Tool
 	case 'n':
@@ -2465,4 +2467,187 @@ CheatScreen::Cheat_Prompt CheatScreen::AdvancedFlagLoop(int num, Actor *actor) {
 		}
 	}
 	return CP_Command;
+}
+
+
+//
+// Teleport screen
+//
+
+CheatScreen::Cheat_Prompt CheatScreen::TeleportLoop() {
+	bool looping = true;
+
+	// This is for the prompt message
+	Cheat_Prompt mode = CP_Command;
+
+	// This is the command
+	char input[5];
+	int i;
+	int command;
+	bool activate = false;
+	int prev = 0;
+
+	for (i = 0; i < 5; i++) input[i] = 0;
+
+	while (looping) {
+		gwin->clear_screen();
+
+		// First the display
+		TeleportDisplay();
+
+		// Now the Menu Column
+		TeleportMenu();
+
+		// Finally the Prompt...
+		SharedPrompt(input, mode);
+
+		// Draw it!
+		gwin->get_win()->show();
+
+		// Check to see if we need to change menus
+		if (activate) {
+			TeleportActivate(input, command, mode, prev);
+			activate = false;
+			continue;
+		}
+
+		if (SharedInput(input, 5, command, mode, activate))
+			looping = TeleportCheck(input, command, mode, activate);
+	}
+}
+
+void CheatScreen::TeleportDisplay() {
+	char    buf[512];
+	Tile_coord t = gwin->get_main_actor()->get_tile();
+
+	font->paint_text_fixedwidth(ibuf, "Teleport Menu", 0, 0, 8);
+	font->paint_text_fixedwidth(ibuf, "Dangerous - use with care!", 0, 18, 8);
+
+	int longi = ((t.tx - 0x3A5) / 10);
+	int lati = ((t.ty - 0x46E) / 10);
+	snprintf(buf, 512, "Coordinates   %d %s %d %s", 
+		abs(lati), (lati < 0 ? "North" : "South"),
+		abs(longi), (longi < 0 ? "West" : "East"));
+	font->paint_text_fixedwidth(ibuf, buf, 0, 63, 8);
+
+	snprintf(buf, 512, "Coords in hex (%04x, %04x, %02x)",
+	         t.tx, t.ty, t.tz);
+	font->paint_text_fixedwidth(ibuf, buf, 0, 72, 8);
+
+	snprintf(buf, 512, "Coords in dec (%04i, %04i, %02i)",
+	         t.tx, t.ty, t.tz);
+	font->paint_text_fixedwidth(ibuf, buf, 0, 81, 8);
+}
+
+
+void CheatScreen::TeleportMenu() {
+	// Left Column
+
+	// Geo
+	font->paint_text_fixedwidth(ibuf, "[G]eographic Coordinates", 0, maxy - 99, 8);
+
+	// Hex
+	font->paint_text_fixedwidth(ibuf, "[H]exadecimal Coordinates", 0, maxy - 90, 8);
+
+	// Dec
+	font->paint_text_fixedwidth(ibuf, "[D]ecimal Coordinates", 0, maxy - 81, 8);
+	
+	// NPC
+	font->paint_text_fixedwidth(ibuf, "[N]PC Number", 0, maxy - 72, 8);
+
+	// eXit
+	font->paint_text_fixedwidth(ibuf, "[X]it", 0, maxy - 36, 8);
+}
+
+void CheatScreen::TeleportActivate(char *input, int &command, Cheat_Prompt &mode, int &prev) {
+	Actor *actor;
+	int i = std::atoi(input);
+	int npc = std::atoi(input);
+	Tile_coord t = gwin->get_main_actor()->get_tile();
+
+	mode = CP_Command;
+	switch (command) {
+
+	case 'g':   // Geographic
+		mode = CP_NotAvail;
+		break;
+
+	case 'h':   // hex coord
+		mode = CP_NotAvail;
+		break;
+
+	case 'd':   // dec X coord
+		if (i < -1 || i > c_num_tiles) mode = CP_InvalidValue;
+		else if (i == -1) mode = CP_Canceled;
+		else if (!input[0]) {
+			mode = CP_XCoord;
+			command = 'd';
+		} else {
+			prev = i;
+			mode = CP_YCoord;
+			command = 'e';
+		}
+		break;
+
+	case 'e':   // dec Y coord
+		if (i < -1 || i > c_num_tiles) mode = CP_InvalidValue;
+		else if (i == -1) mode = CP_Canceled;
+		else if (!input[0]) {
+			mode = CP_YCoord;
+			command = 'e';
+		} else {
+			t.tx = prev;
+			t.ty = i;
+			t.tz = 0;
+			gwin->teleport_party(t);
+		}
+		break;
+
+	case 'n':   // NPC
+		if (npc < -1 || (npc >= 356 && npc <= 359)) mode = CP_InvalidNPC;
+		else if (npc == -1) mode = CP_Canceled;
+		else {
+			actor = gwin->get_npc(npc);
+			Game_window::get_instance()->teleport_party(actor->get_tile(),
+			false, actor->get_map_num());
+		}
+		break;
+
+	default:
+		break;
+	}
+	for (i = 0; i < 5; i++) input[i] = 0;
+}
+
+// Checks the input
+bool CheatScreen::TeleportCheck(char *input, int &command, Cheat_Prompt &mode, bool &activate) {
+	switch (command) {
+		// Simple commands
+	case 'g':   // geographic
+	case 'h':   // hex
+		input[0] = command;
+		activate = true;
+		break;
+
+	case 'n':   // NPC teleport
+		mode = CP_ChooseNPC;
+		break;
+
+	case 'd':   // dec teleport
+			mode = CP_XCoord;
+			return true;
+
+		// X and Escape leave
+	case SDLK_ESCAPE:
+	case 'x':
+		input[0] = command;
+		return false;
+
+	default:
+		command = 0;
+		mode = CP_InvalidCom;
+		break;
+	}
+
+	return true;
 }
