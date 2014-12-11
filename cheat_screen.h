@@ -121,6 +121,11 @@ private:
 	void StatActivate(char *input, int &command, Cheat_Prompt &mode, Actor *actor);
 	bool StatCheck(char *input, int &command, Cheat_Prompt &mode, bool &activate, Actor *actor);
 
+	Cheat_Prompt TeleportLoop();
+	void TeleportDisplay();
+	void TeleportMenu();
+	void TeleportActivate(char *input, int &command, Cheat_Prompt &mode, int &prev);
+	bool TeleportCheck(char *input, int &command, Cheat_Prompt &mode, bool &activate);
 };
 
 #endif

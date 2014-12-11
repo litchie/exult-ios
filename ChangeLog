@@ -1,3 +1,8 @@
+2014-12-11	Dominik Reichardt <dominus@users.sourceforge.net>
+	* cheat_screen.*: Added display of geographic coordinates to the cheat screen.
+	  Also begun work on the teleport cheat screen, teleport to dec coords and NPC
+	  is working.
+
 2014-11-20	Dominik Reichardt <dominus@users.sourceforge.net>
 	* data/exultmsg.txt, shapes/items.h: added the subtitle texts of SI's end scene.
 	  No idea how to actually display those when speech is disabled.
