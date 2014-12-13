@@ -2437,6 +2437,25 @@ Desk_schedule::Desk_schedule(
   				 items_in_hand(0), state(desk_setup) {
 }
 
+Desk_schedule::~Desk_schedule()
+{
+    cleanup();
+}
+
+/*
+ *  Remove desk items NPC is holding (that we created).
+ */
+
+void Desk_schedule::cleanup()
+{
+	while (!created.empty()) {
+        Game_object *item = created.back();
+		created.pop_back();
+		if (item->get_owner() == npc)
+		    item->remove_this();
+	}
+}
+
 /*
  *  Find tables.
  */
@@ -2562,19 +2581,14 @@ void Desk_schedule::now_what(
 		items_in_hand = npc->count_objects(675);
 		Game_object_vector vec;
 		int nearby = find_desk_items(vec, npc);
-		/* int nitems = (7 + rand()%5) - items_in_hand - nearby;
-		see bug #1891 - we were adding too many desk items to
-		the NPCs inventory and never cleaned up, which was
-		causing problems.
-		For now only add 1 item - maybe needs to be redone 
-		like lab or waiter schedule */
-		int nitems = 1 - items_in_hand - nearby;
+		int nitems = (7 + rand()%5) - items_in_hand - nearby;
 		if (nitems > 0) {
 			items_in_hand += nitems;
 			for (int i = 0; i < nitems; ++i) {
 				int frame = Desk_item_frame();
 				Game_object *item = new Ireg_game_object(675, frame, 0, 0, 0);
 				npc->add(item, true);
+				created.push_back(item);
 			}
 		}
 		desk = npc->find_closest(desks, 2);
@@ -2701,6 +2715,7 @@ void Desk_schedule::im_dormant() {
 void Desk_schedule::ending(
     int new_type				// New schedule.
 ) {
+    cleanup();
     remove_clients();
 }
 
@@ -2721,6 +2736,12 @@ void Desk_schedule::notify_object_gone(Game_object *obj) {
 	for (it = tables.begin(); it != tables.end(); ++it) {
 		if (*it == obj) {
 		    tables.erase(it);
+			break;
+		}
+	}
+	for (it = created.begin(); it != created.end(); ++it) {
+		if (*it == obj) {
+		    created.erase(it);
 			break;
 		}
 	}
