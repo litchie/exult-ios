@@ -432,6 +432,7 @@ class Desk_schedule : public Schedule {
 	Game_object *desk, *table, *desk_item;
 	vector<Game_object *> tables;	// Other tables to work at.
 	int items_in_hand; 	  	// # NPC's desk items.
+	vector<Game_object *> created;	// Items we created.
 	enum {
 	    desk_setup,
 	    sit_at_desk,
@@ -442,8 +443,10 @@ class Desk_schedule : public Schedule {
 	void find_tables(int shapenum);
 	bool walk_to_table();
 	bool walk_to_desk_item();
+	void cleanup();				// Remove items we created.
 public:
 	Desk_schedule(Actor *n);
+	~Desk_schedule();
 	virtual void now_what();    // Now what should NPC do?
 	virtual void ending(int newtype);// Switching to another schedule.
 	virtual void notify_object_gone(Game_object *obj);
