@@ -339,9 +339,32 @@ void CheatScreen::SharedPrompt(char *input, const Cheat_Prompt &mode) {
 		font->paint_text_fixedwidth(ibuf, "Enter Temperature 0-63. (-1 to cancel.)", 0, maxy - 9, 8);
 		break;
 
+	case CP_NLatitude:
+		font->paint_text_fixedwidth(ibuf, "Enter Latitude value. Max 113 (-1 to cancel.)", 0, maxy - 9, 8);
+		break;
+
+	case CP_SLatitude:
+		font->paint_text_fixedwidth(ibuf, "Enter Latitude value. Max 193 (-1 to cancel.)", 0, maxy - 9, 8);
+		break;
+
+	case CP_WLongitude:
+		font->paint_text_fixedwidth(ibuf, "Enter Longitude value. Max 93 (-1 to cancel.)", 0, maxy - 9, 8);
+		break;
+
+	case CP_ELongitude:
+		font->paint_text_fixedwidth(ibuf, "Enter Longitude value. Max 213 (-1 to cancel.)", 0, maxy - 9, 8);
+		break;
 
 	case CP_Name:
 		font->paint_text_fixedwidth(ibuf, "Enter a new Name...", 0, maxy - 9, 8);
+		break;
+
+	case CP_NorthSouth:
+		font->paint_text_fixedwidth(ibuf, "Latitude [N]orth or [S]outh?", 0, maxy - 9, 8);
+		break;
+
+	case CP_WestEast:
+		font->paint_text_fixedwidth(ibuf, "Longitude [W]est or [E]ast?", 0, maxy - 9, 8);
 		break;
 
 	}
@@ -362,7 +385,17 @@ bool CheatScreen::SharedInput(char *input, int len, int &command, Cheat_Prompt &
 				return false;
 			}
 
-			if (mode >= CP_Name) {      // Want Text input (len chars)
+			if (mode == CP_NorthSouth) {
+				if (!input[0] && (key.sym == 'n' || key.sym == 's')) {
+					input[0] = key.sym;
+					activate = true;
+				}
+			} else if (mode == CP_WestEast) {
+				if (!input[0] && (key.sym == 'w' || key.sym == 'e')) {
+					input[0] = key.sym;
+					activate = true;
+				}
+			} else if (mode >= CP_Name) {      // Want Text input (len chars)
 				if (key.sym == SDLK_RETURN || key.sym == SDLK_KP_ENTER) {
 					activate = true;
 				} else if ((key.sym >= '0' && key.sym <= 'z') || key.sym == ' ') {
@@ -630,7 +663,7 @@ void CheatScreen::NormalActivate(char *input, int &command, Cheat_Prompt &mode) 
 
 		// Teleport
 	case 't':
-		mode = TeleportLoop();
+		TeleportLoop();
 		break;
 
 		// NPC Tool
@@ -2474,7 +2507,7 @@ CheatScreen::Cheat_Prompt CheatScreen::AdvancedFlagLoop(int num, Actor *actor) {
 // Teleport screen
 //
 
-CheatScreen::Cheat_Prompt CheatScreen::TeleportLoop() {
+void CheatScreen::TeleportLoop() {
 	bool looping = true;
 
 	// This is for the prompt message
@@ -2563,13 +2596,72 @@ void CheatScreen::TeleportActivate(char *input, int &command, Cheat_Prompt &mode
 	Actor *actor;
 	int i = std::atoi(input);
 	int npc = std::atoi(input);
+	static int lat;
 	Tile_coord t = gwin->get_main_actor()->get_tile();
 
 	mode = CP_Command;
 	switch (command) {
 
-	case 'g':   // Geographic
-		mode = CP_NotAvail;
+	case 'g':   // North or South
+		if (!input[0]) {
+			mode = CP_NorthSouth;
+			command = 'g';
+		} else if (input[0] == 'n' || input[0] == 's') {
+			prev = input[0];
+			if (prev == 'n') mode = CP_NLatitude;
+			else mode = CP_SLatitude;
+			command = 'a';
+		}else
+			mode = CP_InvalidValue;
+		break;
+
+	case 'a':   // latitude
+		if (i < -1 || (prev == 'n' && i > 113) || (prev == 's' && i > 193)) mode = CP_InvalidValue;
+		else if (i == -1) mode = CP_Canceled;
+		else if (!input[0]) {
+			if (prev == 'n') mode = CP_NLatitude;
+			else mode = CP_SLatitude;
+			command = 'a';
+		} else {
+			if (prev == 'n')
+				lat = ((i * -10) + 0x46E);
+			else
+				lat = ((i * 10) + 0x46E);
+			mode = CP_WestEast;
+			command = 'b';
+		}
+		break;
+
+	case 'b':   // West or East
+		if (!input[0]) {
+			mode = CP_WestEast;
+			command = 'b';
+		} else if (input[0] == 'w' || input[0] == 'e') {
+			prev = input[0];
+			if (prev == 'w') mode = CP_WLongitude;
+			else mode = CP_ELongitude;
+			command = 'c';
+		}
+		else
+			mode = CP_InvalidValue;
+		break;
+
+	case 'c':   // longitude
+		if (i < -1 || (prev == 'w' && i > 93) || (prev == 'e' && i > 213)) mode = CP_InvalidValue;
+		else if (i == -1) mode = CP_Canceled;
+		else if (!input[0]) {
+			if (prev == 'w') mode = CP_WLongitude;
+			else mode = CP_ELongitude;
+			command = 'c';
+		} else {
+			if (prev == 'w')
+				t.tx = ((i * -10) + 0x3A5);
+			else
+				t.tx = ((i * 10) + 0x3A5);
+			t.ty = lat;
+			t.tz = 0;
+			gwin->teleport_party(t);
+		}
 		break;
 
 	case 'h':   // hex coord
@@ -2624,6 +2716,9 @@ bool CheatScreen::TeleportCheck(char *input, int &command, Cheat_Prompt &mode, b
 	switch (command) {
 		// Simple commands
 	case 'g':   // geographic
+		mode = CP_NorthSouth;
+		return true;
+
 	case 'h':   // hex
 		input[0] = command;
 		activate = true;
@@ -2634,8 +2729,8 @@ bool CheatScreen::TeleportCheck(char *input, int &command, Cheat_Prompt &mode, b
 		break;
 
 	case 'd':   // dec teleport
-			mode = CP_XCoord;
-			return true;
+		mode = CP_XCoord;
+		return true;
 
 		// X and Escape leave
 	case SDLK_ESCAPE:
