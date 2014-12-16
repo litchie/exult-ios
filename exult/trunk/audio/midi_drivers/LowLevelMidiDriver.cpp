@@ -158,7 +158,7 @@ LowLevelMidiDriver::~LowLevelMidiDriver()
 		//destroyMidiDriver();
 		if (thread)
 		{
-#ifdef SDL_VERSION_ATLEAST(2, 0, 0)
+#if SDL_VERSION_ATLEAST(2, 0, 0)
 			int status_thread;
 			quit_thread = true; // The thread should stop based upon this flag
 			SDL_WaitThread(thread, &status_thread);
@@ -500,7 +500,7 @@ void LowLevelMidiDriver::destroyThreadedSynth()
 	// We waited a while and it still didn't terminate
 	if (count == 400 && peekComMessageType() != 0) {
 		perr << "MidiPlayer Thread failed to stop in time. Killing it." << std::endl;
-#ifdef SDL_VERSION_ATLEAST(2, 0, 0)
+#if SDL_VERSION_ATLEAST(2, 0, 0)
 		int status_thread;
 		quit_thread = true; // The thread should stop based upon this flag
 		SDL_WaitThread(thread, &status_thread);
