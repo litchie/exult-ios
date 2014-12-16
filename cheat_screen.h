@@ -72,8 +72,15 @@ private:
 	    CP_GFlagNum = 26,
 	    CP_NFlagNum = 27,
 	    CP_TempNum = 28,
+	    CP_NLatitude = 29,
+	    CP_SLatitude = 30,
+	    CP_WLongitude = 31,
+	    CP_ELongitude = 32,
 
-	    CP_Name = 32
+	    CP_Name = 33,
+	    CP_NorthSouth = 34,
+	    CP_WestEast = 35
+
 	};
 	Game_window *gwin;
 	Image_buffer8 *ibuf;
@@ -121,7 +128,7 @@ private:
 	void StatActivate(char *input, int &command, Cheat_Prompt &mode, Actor *actor);
 	bool StatCheck(char *input, int &command, Cheat_Prompt &mode, bool &activate, Actor *actor);
 
-	Cheat_Prompt TeleportLoop();
+	void TeleportLoop();
 	void TeleportDisplay();
 	void TeleportMenu();
 	void TeleportActivate(char *input, int &command, Cheat_Prompt &mode, int &prev);
