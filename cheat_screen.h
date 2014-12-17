@@ -79,7 +79,10 @@ private:
 
 	    CP_Name = 33,
 	    CP_NorthSouth = 34,
-	    CP_WestEast = 35
+	    CP_WestEast = 35,
+
+	    CP_HexXCoord = 37,
+	    CP_HexYCoord = 38
 
 	};
 	Game_window *gwin;
