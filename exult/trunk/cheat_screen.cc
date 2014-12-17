@@ -367,6 +367,16 @@ void CheatScreen::SharedPrompt(char *input, const Cheat_Prompt &mode) {
 		font->paint_text_fixedwidth(ibuf, "Longitude [W]est or [E]ast?", 0, maxy - 9, 8);
 		break;
 
+	case CP_HexXCoord:
+		snprintf(buf, 512, "Enter X Coord. Max %04x (-1 to cancel.)", c_num_tiles);
+		font->paint_text_fixedwidth(ibuf, buf, 0, maxy - 9, 8);
+		break;
+
+	case CP_HexYCoord:
+		snprintf(buf, 512, "Enter Y Coord. Max %04x (-1 to cancel.)", c_num_tiles);
+		font->paint_text_fixedwidth(ibuf, buf, 0, maxy - 9, 8);
+		break;
+
 	}
 }
 
@@ -394,6 +404,28 @@ bool CheatScreen::SharedInput(char *input, int len, int &command, Cheat_Prompt &
 				if (!input[0] && (key.sym == 'w' || key.sym == 'e')) {
 					input[0] = key.sym;
 					activate = true;
+				}
+			} else if (mode >= CP_HexXCoord) { // Want hex input
+				// Activate (if possible)
+				if (key.sym == SDLK_RETURN || key.sym == SDLK_KP_ENTER) {
+					activate = true;
+				} else if ((key.sym == '-' || key.sym == SDLK_KP_MINUS) && !input[0]) {
+					input[0] = '-';
+				} else if ((key.sym >= '0' && key.sym <= 'f')) {
+					int curlen = std::strlen(input);
+					if (curlen < (len - 1)) {
+						input[curlen] = key.sym;
+						input[curlen + 1] = 0;
+					}
+				} else if (key.sym >= SDLK_KP0 && key.sym <= SDLK_KP9) {
+					int curlen = std::strlen(input);
+					if (curlen < (len - 1)) {
+						input[curlen] = key.sym - SDLK_KP0 + '0';
+						input[curlen + 1] = 0;
+					}
+				} else if (key.sym == SDLK_BACKSPACE) {
+					int curlen = std::strlen(input);
+					if (curlen) input[curlen - 1] = 0;
 				}
 			} else if (mode >= CP_Name) {      // Want Text input (len chars)
 				if (key.sym == SDLK_RETURN || key.sym == SDLK_KP_ENTER) {
@@ -2664,8 +2696,33 @@ void CheatScreen::TeleportActivate(char *input, int &command, Cheat_Prompt &mode
 		}
 		break;
 
-	case 'h':   // hex coord
-		mode = CP_NotAvail;
+	case 'h':   // hex X coord
+		i = strtol(input, 0, 16);
+		if (i < -1 || i > c_num_tiles) mode = CP_InvalidValue;
+		else if (i == -1) mode = CP_Canceled;
+		else if (!input[0]) {
+			mode = CP_HexXCoord;
+			command = 'h';
+		} else {
+			prev = i;
+			mode = CP_HexYCoord;
+			command = 'i';
+		}
+		break;
+
+	case 'i':   // hex Y coord
+		i = strtol(input, 0, 16);
+		if (i < -1 || i > c_num_tiles) mode = CP_InvalidValue;
+		else if (i == -1) mode = CP_Canceled;
+		else if (!input[0]) {
+			mode = CP_HexYCoord;
+			command = 'i';
+		} else {
+			t.tx = prev;
+			t.ty = i;
+			t.tz = 0;
+			gwin->teleport_party(t);
+		}
 		break;
 
 	case 'd':   // dec X coord
@@ -2720,17 +2777,16 @@ bool CheatScreen::TeleportCheck(char *input, int &command, Cheat_Prompt &mode, b
 		return true;
 
 	case 'h':   // hex
-		input[0] = command;
-		activate = true;
-		break;
-
-	case 'n':   // NPC teleport
-		mode = CP_ChooseNPC;
-		break;
+		mode = CP_HexXCoord;
+		return true;
 
 	case 'd':   // dec teleport
 		mode = CP_XCoord;
 		return true;
+
+	case 'n':   // NPC teleport
+		mode = CP_ChooseNPC;
+		break;
 
 		// X and Escape leave
 	case SDLK_ESCAPE:
