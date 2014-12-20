@@ -939,6 +939,7 @@
 #
 #	Fire field
 #
+:825/0
 :895/0
 
 #	Sleep field

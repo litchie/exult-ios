@@ -1,3 +1,10 @@
+2014-12-20	Dominik Reichardt <dominus@users.sourceforge.net>
+	* shape_info.txt: Campfire (BG) and fire (SI) added to fire fields.
+	* objs/egg.cc: Fields need to hurt any actor, not just the avatar/party.
+	  Campfire (shape 825) frame 0 is burnt out and shouldn't cause damage. 
+	  Testing with the original's item creator cheat revealed that the original 
+	  seems to have confused frame 0 with frame 8.
+
 2014-12-17	Dominik Reichardt <dominus@users.sourceforge.net>
 	* cheat_screen.*: The teleport cheat screen now supports hexadecimal coords
 	  and is now finished.
