@@ -32,6 +32,8 @@ extern void Add_experience 0x911(var incr);	// Add exper. to each party member.
  *	NPC #'s:
  */
 const int AMY = -349;
+// Amy doesn't have her own face so AMY.say would show none
+const int AMYFACE = -221;
 const int AVATAR = -356;
 
 /*
@@ -77,11 +79,11 @@ void new_island_egg1 object#(0x741) ()
 					// Place on top of egg.
 	UI_update_last_created(get_object_position());
 	remove_item();		// Done with this egg.
-	AMY.say("Look!  There appears to be a book here!");
+	AMYFACE.say("Look!  There appears to be a book here!");
 	AVATAR.say("Can it be...");
-	AMY.say("Yes!  It is!  The lost FAQ!");
+	AMYFACE.say("Yes!  It is!  The lost FAQ!");
 	AVATAR.hide();
-	AMY.hide();
+	AMYFACE.hide();
 	}
 
 void Random_barks 0xC00 (var barks)
@@ -138,12 +140,12 @@ void DrCode object#(0x564) ()
 			if (gflags[WILL_FIND_FAQ] &&
 			    AMY->get_npc_object() in UI_get_party_list())
 				{
-				AMY.say("Say, Dr. Code...~" +
+				AMYFACE.say("Say, Dr. Code...~" +
 				        "You certainly have a lot of papers and books strewn about");
 				item.say("Er, yes, I suppose I do.");
-				AMY.say("Are you sure the FAQ isn't somewhere amongst them?");
-				AMY.hide();
-				say("Dr.Code looks away from Amy as he hides his shaking hands in his pockets.");
+				AMYFACE.say("Are you sure the FAQ isn't somewhere amongst them?");
+				AMYFACE.hide();
+				item.say("Dr.Code looks away from Amy as he hides his shaking hands in his pockets.");
 				add("FAQ");
 				}
 		case "Usecode" (remove):
@@ -161,8 +163,8 @@ void DrCode object#(0x564) ()
 			break;
 		case "FAQ" (remove):
 			say("I don't know what you are talking about!");
-			AMY.say("Are you sure?");
-			AMY.hide();
+			AMYFACE.say("Are you sure?");
+			AMYFACE.hide();
 			say("YES!  I can stand the guilt no more!");
 			say("But... I only meant to borrow it.  I, er, hoped that it " +
 			    "would help me with my research into Usecode.");
@@ -367,10 +369,9 @@ void Amy object#(0x568) ()
 		item.say("Hello again Avatar!");
 	var answers = "Name";
 	var party = UI_get_party_list();
+	answers << "Job";
 	if (item in party)
 		answers << "Leave";
-	else
-		answers << "Job";
 	answers << "Bye";
 	converse (answers)
 		{
@@ -381,7 +382,10 @@ void Amy object#(0x568) ()
 		case "Job" (remove):
 			say("I don't have a job. I'm just hanging out here and ",
 			    "give information about the people on this island");
-			add(["Island?", "Who lives here?", "Are you happy here?"]);
+			if (item in party)
+				add(["Island?", "Who lives here?"]);
+			else
+				add(["Island?", "Who lives here?", "Are you happy here?"]);
 		case "Island?" (remove):
 			say("It is called SourceForge Island. To remember the smithy who provided us with our tools");
 		case "Are you happy here?" (remove):
@@ -524,8 +528,8 @@ void Darke object#(0x56A) ()
 			else if (gflags[RABBIT_TRACKS] &&
 					AMY->get_item_flag(IN_PARTY))
 				{
-				AMY.say("We're those your tracks over by the shrine?");
-				AMY.hide();
+				AMYFACE.say("Were those your tracks over by the shrine?");
+				AMYFACE.hide();
 				item.say("Perhaps....");
 				say("Am I in trouble?");
 				AVATAR.say("Not if you help us.");
@@ -576,7 +580,8 @@ void Darke object#(0x56A) ()
 		case "Cute?" (remove):
 			say("Well... really it's more close to 'handsome' then 'cute'." +
 			    " But since he lacks a nice coat of fur, he can't really be handsome," +
-			    " so cute in a pet-iguana-that's-rather-larger-then-an-iguana-and-doesn't-eat-insects" +
+			    " so cute in a pet-iguana-that's-rather-larger-" +
+				" than-an-iguana-and-doesn't-eat-insects" +
 			    " kind of way, he's rather stuck at.");
 			add("Fur?");
 		case "Fur?" (remove):
@@ -731,12 +736,12 @@ void Kirben object#(0x56D) ()
 		case "Name" (remove):
 			say("My name is Kirben.");
 		case "Job" (remove):
-			say("I am the official scribe of the Open Church of Sourceforge Island!");
-			add(["Sourceforge Island?", "Open Church?", "Scribe?"]);
-		case "Sourceforge Island?" (remove):
+			say("I am the official scribe of the Open Church of SourceForge Island!");
+			add(["SourceForge Island?", "Open Church?", "Scribe?"]);
+		case "SourceForge Island?" (remove):
 			say("Amy knows all about our island and its inhabitants. Ask her for more information.");
 		case "Open Church?" (remove):
-			say("In the Open Church of Sourceforge Island everyone " +
+			say("In the Open Church of SourceForge Island everyone " +
 			    "can preach his beliefs as long as he makes them freely available to everyone. ");
 			say("Do you want to know more?");
 			if (Ask_yesno())
