@@ -4,6 +4,8 @@
 	* exult.cc: Useless .c_str() call.
 	* content/sifixes/src/misc/inn_keys.uc: Fixed bug #1890 "SI FIXES: No
 	  possibility to use the swith on room 4 in Sleeping Bull".
+	* content/sifixes/src/misc/resurrect.uc, content/sifixes/src/npcs/gwenno.uc:
+	  Fixed bug #1895 "SI Fixes: Disappearing Gwenno".
 
 2015-01-06	Dominik Reichardt <dominus@users.sourceforge.net>
 	* content/islefaq/*: fixed the island mod. Gave Colourless a ghost body, 
