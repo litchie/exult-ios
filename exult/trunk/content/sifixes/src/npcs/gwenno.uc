@@ -38,12 +38,18 @@ void Gwenno object#(0x495) ()
 		GWENNO->makePartyFaceNPC();
 		if (!GWENNO->get_item_flag(SI_ZOMBIE))
 		{
+			if (!gflags[SERPENT_GWENNO_BANE_SPEECH])
+			{
+				gflags[SERPENT_GWENNO_BANE_SPEECH] = true;
+				GWENNO->set_new_schedules(MIDNIGHT, DESK_WORK, [0x977, 0x48C]);
+				GWENNO->run_schedule();
+			}
 			delayedBark(GWENNO, "@'Tis good to see thee!@", 2);
 			GWENNO->set_schedule_type(TALK);
 		}
 		else
 		{
-			GWENNO->set_new_schedules(MIDNIGHT, SI_ZOMBIE, [0x977, 0x48C]);
+			GWENNO->set_new_schedules(MIDNIGHT, DESK_WORK, [0x977, 0x48C]);
 			GWENNO->run_schedule();
 			if (!gflags[SERPENT_GWENNO_BANE_SPEECH])
 			{

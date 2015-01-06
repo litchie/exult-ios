@@ -17,6 +17,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+extern void Gwenno object#(0x495) ();
+
 void Resurrect 0x8FE ()
 {
 	var resurrectlist;
@@ -72,7 +74,7 @@ void Resurrect 0x8FE ()
 				// Prevent resurrection of Dupre after the Crematorium:
 				flag_dont_resurrect = true;
 				say("@I am sorry, my ", msg,
-					", but I cannot -- this isn't Dupre's body, but merely shadow of him. See how it diappears when I try to rause it...@");
+					", but I cannot -- this isn't Dupre's body, but merely shadow of him. See how it diappears when I try to raise it...@");
 			}
 
 			var pos = npc->get_object_position();
@@ -112,7 +114,14 @@ void Resurrect 0x8FE ()
 					setPropValue(npc, FOODLEVEL, foodlevel);
 
 					if (npc == GWENNO)
+					{
 						gflags[GWENNO_IS_DEAD] = false;
+						npc->set_schedule_type(TALK);
+						script AVATAR after 5 ticks
+						{
+							call Gwenno;
+						}
+					}
 				}
 				else
 					say("@Thy friend ", name, " hath been lost forever.@");
