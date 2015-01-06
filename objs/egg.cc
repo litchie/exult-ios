@@ -1214,7 +1214,6 @@ bool Field_object::field_effect(
 	if (!actor)
 		return false;
 	bool del = false;       // Only delete poison, sleep fields.
-	Shape_info &info = get_info();
 	int shape = get_shapenum();
 	int frame = get_framenum();
 	switch (type) {
@@ -1230,10 +1229,12 @@ bool Field_object::field_effect(
 			del = true;
 		}
 		break;
-	case fire_field:
+	case campfire_field:
 		// Campfire (Fire in SI) doesn't hurt when burnt out
-		if (shape == 825 && frame == 0)
+		if (frame == 0)
 			return false;
+		// Fall through to fire_field case.
+	case fire_field:
 		actor->reduce_health(2 + rand() % 3, Weapon_data::fire_damage);
 		// But no sleeping here.
 		if (actor->get_flag(Obj_flags::asleep) && !actor->is_knocked_out())
@@ -1246,9 +1247,11 @@ bool Field_object::field_effect(
 			actor->reduce_health(1 + rand() % 2, Weapon_data::normal_damage);
 		return false;
 	}
-	if (!del && info.is_animated())       // Tell animator to keep checking.
-	                                      // Campfire is not animated so check info
-		reinterpret_cast<Field_frame_animator *>(animator)->activated = true;
+
+	Field_frame_animator *ani;
+	if (!del && (ani = dynamic_cast<Field_frame_animator *>(animator)) != 0)
+		// Tell animator to keep checking.
+		ani->activated = true;
 	return del;
 }
 

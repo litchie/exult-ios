@@ -87,7 +87,8 @@ public:
 	    sleep_field = 129,
 	    poison_field = 130,
 	    caltrops_field = 131,
-	    mirror_object = 132
+		campfire_field = 132,
+	    mirror_object = 133
 	};
 	enum Egg_flag_shifts {
 	    nocturnal = 0,
