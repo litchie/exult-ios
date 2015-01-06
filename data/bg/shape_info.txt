@@ -936,10 +936,10 @@
 #		sleep field = 1
 #		poison field = 2
 #		caltrops = 3
+#		campfire = 4
 #
 #	Fire field
 #
-:825/0
 :895/0
 
 #	Sleep field
@@ -953,6 +953,9 @@
 #	Caltrops
 #
 :756/3
+
+#	Campfire
+:825/4
 %%endsection
 
 %%section frame_usecode
