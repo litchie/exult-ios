@@ -2,6 +2,8 @@
 	* data/{bg,si}/shape_info.txt, mapedit/{exult_studio.glade,shapeedit.cc},
 	  objs/egg.*: Fixing bug #1896 "Campfires should hurt".
 	* exult.cc: Useless .c_str() call.
+	* content/sifixes/src/misc/inn_keys.uc: Fixed bug #1890 "SI FIXES: No
+	  possibility to use the swith on room 4 in Sleeping Bull".
 
 2015-01-06	Dominik Reichardt <dominus@users.sourceforge.net>
 	* content/islefaq/*: fixed the island mod. Gave Colourless a ghost body, 
