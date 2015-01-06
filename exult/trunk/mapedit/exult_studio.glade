@@ -18743,6 +18743,13 @@ will be added automatically</property>
         <property name="use_underline">True</property>
       </widget>
     </child>
+    <child>
+      <widget class="GtkMenuItem" id="menuitem546">
+        <property name="visible">True</property>
+        <property name="label" translatable="yes">Campfire</property>
+        <property name="use_underline">True</property>
+      </widget>
+    </child>
   </widget>
   <widget class="GtkMenu" id="shinfo_mountaintop_type_menu">
     <property name="visible">True</property>

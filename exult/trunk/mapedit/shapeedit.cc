@@ -2808,7 +2808,7 @@ void ExultStudio::init_shape_notebook(
 	set_optmenu("shinfo_barge_type", barge_on ? barge_type : 0, barge_on);
 
 	int field_type = info.get_field_type();
-	if (field_type > 3)
+	if (field_type > 4)
 		field_type = 0;
 	bool field_on = get_toggle("shinfo_field_check");
 	set_toggle("shinfo_fieldinfo_check", field_type >= 0);
