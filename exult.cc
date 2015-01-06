@@ -318,7 +318,7 @@ int main(
 #endif
 	// Process the args
 	parameters.process(argc, argv);
-	add_system_path("<alt_cfg>", arg_configfile.c_str());
+	add_system_path("<alt_cfg>", arg_configfile);
 #if defined WIN32
 	if (portable)
 		add_system_path("<HOME>", ".");
