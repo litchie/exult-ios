@@ -6,7 +6,11 @@
 #if SDL_VERSION_ATLEAST(2, 0, 0)
 #define SDL_COMPAT_DISPLAY_INDEX 0 // TODO: Add multiple screen support...
 #define SDL2_INITIAL_FILL 0, 0, 0, 255 // Make it black
+#ifdef MACOSX
+#define SDL_FULLSCREEN SDL_WINDOW_FULLSCREEN_DESKTOP // or other monitors go black on fullscreen
+#else
 #define SDL_FULLSCREEN SDL_WINDOW_FULLSCREEN
+#endif
 #define SDL_HWPALETTE 0 // Doesn't exist any longer and there's no alternative
 #define SDL_VideoModeOK(a,b,c,d) VideoModeOK(a,b,c,d)
 #define SDL_UpdateRect(a,b,c,d,e) UpdateRect(a,b,c,d,e) // Should only be called from Image_window
