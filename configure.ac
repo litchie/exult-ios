@@ -351,11 +351,7 @@ PKG_PROG_PKG_CONFIG
 # SDL
 # ---------------------------------------------------------------------
 
-SDL_VERSION=1.2.0
-AM_PATH_SDL($SDL_VERSION,
-	:,
-	AC_MSG_ERROR([*** SDL version $SDL_VERSION not found!])
-)
+EXULT_CHECK_SDL(:,AC_MSG_ERROR([[*** SDL not found!]]))
 
 # ---------------------------------------------------------------------
 # libogg, libvorbis, libvorbisfile
@@ -432,7 +428,7 @@ if test x$enable_static_libs != xno; then
 
 		# SDL Mac OS X readme lists this as needed.
 		# We should have sdl-config by this point, or we would have
-		# died in AM_PATH_SDL.
+		# died in EXULT_CHECK_SDL.
 		SDL_LIBS=`$SDL_CONFIG $sdl_config_args --static-libs`
 		OGG_LIBS="$with_macosx_static_lib_path/libogg.a"
 		VORBISFILE_LIBS="$with_macosx_static_lib_path/libvorbisfile.a"
@@ -617,6 +613,10 @@ if test x$enable_opengl = xyes; then
 		AC_CHECK_HEADER(GL/gl.h,,enable_opengl=no)
 	else
 		AC_CHECK_HEADER(OpenGL/gl.h,,enable_opengl=no)
+	fi
+	# OpenGL scaler is broken with SDL2
+	if test x$sdl_ver = xsdl2; then
+		enable_opengl=no
 	fi
 fi
 

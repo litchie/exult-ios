@@ -1,3 +1,10 @@
+2015-01-14	Dominik Reichardt <dominus@users.sourceforge.net>
+	* configure.ac, acinclude.m4: Better handling of SDL 1.2x and SDL2.
+	  Configure will find either version when only one is installed and 
+	  will default to SDL 1.2x when both are installed. Use the configure 
+	  switch --with-sdl=sdl12,sdl2 to force a version. Thanks to wjp for
+	  battling autoconf!
+
 2015-01-06	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* data/{bg,si}/shape_info.txt, mapedit/{exult_studio.glade,shapeedit.cc},
 	  objs/egg.*: Fixing bug #1896 "Campfires should hurt".
