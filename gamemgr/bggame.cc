@@ -238,6 +238,7 @@ BG_Game::BG_Game()
 	fontManager.add_font("NORMAL_FONT", FONTS_VGA, PATCH_FONTS, 0, -1);
 	fontManager.add_font("SMALL_BLACK_FONT", FONTS_VGA, PATCH_FONTS, 2, 0);
 	fontManager.add_font("TINY_BLACK_FONT", FONTS_VGA, PATCH_FONTS, 4, 0);
+	fontManager.add_font("GUARDIAN_FONT", MAINSHP_FLX, PATCH_MAINSHP, 3, -2);
 }
 
 BG_Game::~BG_Game() {
@@ -789,7 +790,7 @@ void BG_Game::scene_guardian() {
 		sman->paint_shape(centerx, centery - FORHEAD_DIST, s3); // forehead isn't animated
 
 		// prepare Guardian speech
-		Font *font = fontManager.get_font("END3_FONT");
+		Font *font = fontManager.get_font("GUARDIAN_FONT");
 		U7multiobject textobj(MAINSHP_FLX, PATCH_MAINSHP, 0x0D);
 		size_t txt_len;
 		next_txt = txt_ptr = txt = textobj.retrieve(txt_len);
