@@ -37,6 +37,7 @@
 @implementation SDL_uikitviewcontroller
 
 @synthesize window;
+@synthesize screenView;
 
 - (id)initWithSDLWindow:(SDL_Window *)_window
 {
@@ -49,13 +50,44 @@
     return self;
 }
 
+- (void)dealloc
+{
+	self.screenView = nil;
+    [super dealloc];
+}
+
 - (void)loadView
 {
-    /* do nothing. */
+	self.view = [[[UIView alloc] initWithFrame:CGRectZero] autorelease];
+    self.view.backgroundColor = [UIColor blueColor];
+}
+
+- (void)setScreenView:(UIView *)_screenView
+{
+	if (screenView != nil) {
+    	[screenView removeFromSuperview];
+		[screenView release];
+    }
+    screenView = [_screenView retain];
+    [self.view addSubview:screenView];
+    [self adjustScreenView];
+}
+
+- (void)adjustScreenView
+{
+	if (screenView == nil)
+    	return;
+    
+    float scalex =self.view.frame.size.width/screenView.bounds.size.width;
+    float scaley = self.view.frame.size.height/screenView.bounds.size.height;
+    
+    screenView.transform = CGAffineTransformMakeScale(scalex, scaley);
+    screenView.center = CGPointMake(self.view.frame.size.width/2, self.view.frame.size.height/2);
 }
 
 - (void)viewDidLayoutSubviews
 {
+	[self adjustScreenView];
     if (self->window->flags & SDL_WINDOW_RESIZABLE) {
         SDL_WindowData *data = self->window->driverdata;
         SDL_VideoDisplay *display = SDL_GetDisplayForWindow(self->window);

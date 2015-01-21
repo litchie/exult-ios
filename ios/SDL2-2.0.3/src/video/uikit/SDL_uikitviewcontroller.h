@@ -26,9 +26,11 @@
 @interface SDL_uikitviewcontroller : UIViewController {
 @private
     SDL_Window *window;
+    UIView *screenView;
 }
 
 @property (readwrite) SDL_Window *window;
+@property (nonatomic,retain) UIView *screenView;
 
 - (id)initWithSDLWindow:(SDL_Window *)_window;
 - (void)loadView;

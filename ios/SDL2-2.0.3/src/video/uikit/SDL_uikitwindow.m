@@ -61,7 +61,8 @@ static int SetupWindowData(_THIS, SDL_Window *window, UIWindow *uiwindow, SDL_bo
     data->view = nil;
 
     /* Fill in the SDL window with the window data */
-    {
+    if (0) { /* Don't do this because we want to honor the window size
+              * request from apps */
         window->x = 0;
         window->y = 0;
 

@@ -125,9 +125,6 @@
 
         glBindRenderbufferOES(GL_RENDERBUFFER_OES, viewRenderbuffer);
         /* end create buffers */
-
-        self.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
-        self.autoresizesSubviews = YES;
     }
     return self;
 }

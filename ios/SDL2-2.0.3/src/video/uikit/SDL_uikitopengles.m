@@ -111,13 +111,13 @@ SDL_GLContext UIKit_GL_CreateContext(_THIS, SDL_Window * window)
         share_group = [view.context sharegroup];
     }
 
-    /* construct our view, passing in SDL's OpenGL configuration data */
-    CGRect frame;
-    if (window->flags & (SDL_WINDOW_FULLSCREEN|SDL_WINDOW_BORDERLESS)) {
-        frame = [displaydata->uiscreen bounds];
-    } else {
-        frame = [displaydata->uiscreen applicationFrame];
-    }
+    /* construct our view, passing in SDL's OpenGL configuration data 
+     * In order to have the accurate size in real pixels,
+     * we need to take the scaling (retina display) into account.
+     */
+    CGRect frame = CGRectMake(0, 0,
+                              window->w / displaymodedata->scale,
+                              window->h / displaymodedata->scale);
     view = [[SDL_uikitopenglview alloc] initWithFrame: frame
                                     scale: displaymodedata->scale
                                     retainBacking: _this->gl_config.retained_backing
@@ -136,10 +136,9 @@ SDL_GLContext UIKit_GL_CreateContext(_THIS, SDL_Window * window)
     data->view = view;
     view->viewcontroller = data->viewcontroller;
     if (view->viewcontroller != nil) {
-        [view->viewcontroller setView:view];
+       	view->viewcontroller.screenView = view;
         [view->viewcontroller retain];
     }
-    [uiwindow addSubview: view];
 
     /* The view controller needs to be the root in order to control rotation on iOS 6.0 */
     if (uiwindow.rootViewController == nil) {
@@ -165,7 +164,7 @@ void UIKit_GL_DeleteContext(_THIS, SDL_GLContext context)
     /* the delegate has retained the view, this will release him */
     SDL_uikitopenglview *view = (SDL_uikitopenglview *)context;
     if (view->viewcontroller) {
-        UIWindow *uiwindow = (UIWindow *)view.superview;
+        UIWindow *uiwindow = (UIWindow *)view.window;
         if (uiwindow.rootViewController == view->viewcontroller) {
             uiwindow.rootViewController = nil;
         }
