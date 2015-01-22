@@ -1,6 +1,9 @@
 2015-01-22	Marzo Sette Torres Junior <marzojr@yahoo.com>
-	* content/bgkeyring/src/npcs/menion.uc.uc: Fixed bug #1904 "[BG:FV + BG
-	  Keyring MOD] add & case in code not being used. file: menion.uc ".
+	* content/bgkeyring/src/npcs/menion.uc: Fixed bug #1904 "[BG:FV + BG Keyring
+	  MOD] add & case in code not being used. file: menion.uc ".
+	* shapes/font.cc: Fixed bug #1903 "Uppercase in usecode with '^' (Caret)".
+	  Also fixed mismatch between paint_text_box and find_cursor with regards to
+	  the caret.
 
 2015-01-14	Dominik Reichardt <dominus@users.sourceforge.net>
 	* configure.ac, acinclude.m4: Better handling of SDL 1.2x and SDL2.
