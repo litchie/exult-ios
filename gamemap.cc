@@ -54,7 +54,7 @@
 #include "gamewin.h"    /* With some work, could get rid of this. */
 #include "game.h"
 #include "effects.h"
-#include "objiter.cc"   /* Yes we #include the .cc here on purpose! Please don't "fix" this */
+#include "objs/objiter.cc"   /* Yes we #include the .cc here on purpose! Please don't "fix" this */
 #include "databuf.h"
 #include "weaponinf.h"
 #include <fstream>

@@ -1,6 +1,16 @@
 #ifndef IOS_UTILS_H
 #define IOS_UTILS_H
 
+#include "touchui.h"
+
+class TouchUI_iOS: public TouchUI {
+public:
+	TouchUI_iOS();
+	void promptForName(const char *name);
+	void showGameControls();
+	void hideGameControls();
+};
+
 const char* ios_get_documents_dir();
 
 #endif

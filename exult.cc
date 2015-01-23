@@ -110,6 +110,8 @@ using namespace Pentagram;
 #endif
 #ifdef __IPHONEOS__
 #  include "iphone_gumps.h"
+#  include "touchui.h"
+#  include "ios_utils.h"
 #endif
 #ifndef UNDER_EMBEDDED_CE
 using std::atof;
@@ -153,6 +155,7 @@ clsTouchscreen *Touchscreen;
 #ifdef __IPHONEOS__
 KeyboardButton_gump *gkeybb;
 SDL_Joystick *sdl_joy;
+TouchUI *touchui;
 #endif
 
 #if 0 && USECODE_DEBUGGER
@@ -721,6 +724,7 @@ int exult_main(const char *runpath) {
 #endif
 #ifdef __IPHONEOS__
 	gkeybb = new KeyboardButton_gump();
+	touchui = new TouchUI_iOS();
 #endif
 	Init();             // Create main window.
 
@@ -738,13 +742,18 @@ int exult_main(const char *runpath) {
 	gkeyboard->autopaint = true;
 #endif
 #ifdef __IPHONEOS__
-	gkeybb->autopaint = true;
+	//gkeybb->autopaint = true;
+	touchui->showGameControls();
 #endif
 
 	int result = Play();        // start game
 
 #ifdef UNDER_CE
 	GXCloseInput();
+#endif
+
+#ifdef __IPHONEOS__
+	touchui->hideGameControls();
 #endif
 
 #ifdef USE_EXULTSTUDIO
@@ -854,12 +863,15 @@ static void Init(
 	std::atexit(SDL_Quit);
 
 #ifdef __IPHONEOS__
+
+#if 0 // FIXME: temporarily disabled
 	std::cout << "There are " << SDL_NumJoysticks() << " joystick(s) available" << std::endl;
 	std::cout << "Default joystick (index 0) is " << SDL_JoystickName(0) << std::endl;
 	sdl_joy = SDL_JoystickOpen(0);
 	if (sdl_joy == NULL)
 		std::cout << "Error: could not open joystick" << std::endl;
 	std::cout << "joystick number of axis: " << SDL_JoystickNumAxes(sdl_joy) << ", number of hats: " << SDL_JoystickNumHats(sdl_joy) << ", number of balls: " << SDL_JoystickNumBalls(sdl_joy) << ", number of buttons: " << SDL_JoystickNumButtons(sdl_joy) << std::endl;
+#endif
 #endif
 
 	SDL_SysWMinfo info;     // Get system info.
@@ -2361,6 +2373,9 @@ void setup_video(bool fullscreen, int setup_video_type, int resx, int resy,
 		string default_scaler, fill_scaler_str;
 #ifdef UNDER_CE
 		// WinCE default resolution is 320x240 with no scaling
+		w = 320, h = 240, sc = 1;
+		default_scaler = "point";
+#elif defined(__IPHONEOS__)
 		w = 320, h = 240, sc = 1;
 		default_scaler = "point";
 #else

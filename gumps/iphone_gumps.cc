@@ -16,11 +16,14 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#ifdef __IPHONEOS__
+
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
+
+#ifdef __IPHONEOS__
+
 
 #include "SDL_events.h"
 
@@ -59,15 +62,18 @@ KeyboardButton_gump::~KeyboardButton_gump() {
 
 
 void KeyboardButton_gump::paint() {
+#if 0
 	Game_window *gwin = Game_window::get_instance();
 	Shape_manager *sman = Shape_manager::get_instance();
 	sman->paint_shape(locx, locy,
 	                  iphone_vga.get_shape(EXULT_IPHONE_FLX_KEYBOARDBUTTON_SHP, 0), 0);
 	gwin->add_dirty(Rectangle(locx, locy, width + 4, height + 4));
 	gwin->set_painted();
+#endif	
 }
 
 int KeyboardButton_gump::handle_event(SDL_Event *event) {
+#if 0
 	if (event->type == SDL_MOUSEBUTTONDOWN || event->type == SDL_MOUSEBUTTONUP) {
 		void (KeyboardButton_gump::*mouseFunc)(int, int) = &KeyboardButton_gump::mouse_down; // Mouse down by default
 		if (event->type == SDL_MOUSEBUTTONUP)
@@ -82,11 +88,12 @@ int KeyboardButton_gump::handle_event(SDL_Event *event) {
 			return 1;
 		}
 	}
-
+#endif
 	return 0;
 }
 
 void KeyboardButton_gump::mouse_down(int mx, int my) {
+#if 0
 	// Find the SDL window...
 	SDL_Window *window = NULL;
 	unsigned int idWin = -1;
@@ -95,6 +102,7 @@ void KeyboardButton_gump::mouse_down(int mx, int my) {
 		window = SDL_GetWindowFromID(idWin);
 	}
 	SDL_iPhoneKeyboardToggle(window);
+#endif	
 }
 
 void KeyboardButton_gump::mouse_up(int mx, int my) {

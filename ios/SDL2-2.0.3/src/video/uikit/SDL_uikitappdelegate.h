@@ -22,7 +22,10 @@
 #import <UIKit/UIKit.h>
 
 @interface SDLUIKitDelegate : NSObject<UIApplicationDelegate> {
+	UIWindow *window;
 }
+
+@property (nonatomic, retain) UIWindow *window;
 
 + (id) sharedAppDelegate;
 + (NSString *)getAppDelegateClassName;

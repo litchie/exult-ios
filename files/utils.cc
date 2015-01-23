@@ -781,14 +781,20 @@ void setup_data_dir(
 	exit(-1);
 }
 
+#if defined(__IPHONEOS__)
+
+#include "ios_utils.h"
+
+#endif
+
 void setup_program_paths() {
 	string home_dir(Get_home()), config_dir(home_dir),
 	       savehome_dir(home_dir), gamehome_dir(".");
 
 #if defined(__IPHONEOS__)
-	config_dir = "../Library/Preferences";
-	savehome_dir = "../Documents/save";
-	gamehome_dir = "game";
+	config_dir = ios_get_documents_dir();
+	savehome_dir = config_dir + "/save";
+	gamehome_dir = config_dir + "/game";
 #elif defined(MACOSX)
 	config_dir += "/Library/Preferences";
 	savehome_dir += "/Library/Application Support/Exult";

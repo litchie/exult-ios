@@ -279,9 +279,22 @@
 		E700E1231A6E8244006C8BE4 /* Default@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = E700E1041A6E8244006C8BE4 /* Default@2x~ipad.png */; };
 		E700E1241A6E8244006C8BE4 /* Default~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = E700E1051A6E8244006C8BE4 /* Default~ipad.png */; };
 		E700E12E1A6F83CE006C8BE4 /* libSDL2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E700E12D1A6F839F006C8BE4 /* libSDL2.a */; };
+		E71BBD821A725E150003F662 /* GamePadView.m in Sources */ = {isa = PBXBuildFile; fileRef = E71BBD811A725E150003F662 /* GamePadView.m */; };
+		E71BBD941A725E1E0003F662 /* btn.png in Resources */ = {isa = PBXBuildFile; fileRef = E71BBD891A725E1E0003F662 /* btn.png */; };
+		E71BBD951A725E1E0003F662 /* btnpressed.png in Resources */ = {isa = PBXBuildFile; fileRef = E71BBD8A1A725E1E0003F662 /* btnpressed.png */; };
+		E71BBD961A725E1E0003F662 /* dpadglass-east.png in Resources */ = {isa = PBXBuildFile; fileRef = E71BBD8B1A725E1E0003F662 /* dpadglass-east.png */; };
+		E71BBD971A725E1E0003F662 /* dpadglass-north.png in Resources */ = {isa = PBXBuildFile; fileRef = E71BBD8C1A725E1E0003F662 /* dpadglass-north.png */; };
+		E71BBD981A725E1E0003F662 /* dpadglass-northeast.png in Resources */ = {isa = PBXBuildFile; fileRef = E71BBD8D1A725E1E0003F662 /* dpadglass-northeast.png */; };
+		E71BBD991A725E1E0003F662 /* dpadglass-northwest.png in Resources */ = {isa = PBXBuildFile; fileRef = E71BBD8E1A725E1E0003F662 /* dpadglass-northwest.png */; };
+		E71BBD9A1A725E1E0003F662 /* dpadglass-south.png in Resources */ = {isa = PBXBuildFile; fileRef = E71BBD8F1A725E1E0003F662 /* dpadglass-south.png */; };
+		E71BBD9B1A725E1E0003F662 /* dpadglass-southeast.png in Resources */ = {isa = PBXBuildFile; fileRef = E71BBD901A725E1E0003F662 /* dpadglass-southeast.png */; };
+		E71BBD9C1A725E1E0003F662 /* dpadglass-southwest.png in Resources */ = {isa = PBXBuildFile; fileRef = E71BBD911A725E1E0003F662 /* dpadglass-southwest.png */; };
+		E71BBD9D1A725E1E0003F662 /* dpadglass-west.png in Resources */ = {isa = PBXBuildFile; fileRef = E71BBD921A725E1E0003F662 /* dpadglass-west.png */; };
+		E71BBD9E1A725E1E0003F662 /* dpadglass.png in Resources */ = {isa = PBXBuildFile; fileRef = E71BBD931A725E1E0003F662 /* dpadglass.png */; };
 		E738C8551A6FFF71003A950D /* liblibogg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E738C84E1A6FFF58003A950D /* liblibogg.a */; };
 		E738C8561A6FFF75003A950D /* libvorbis.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E738C8541A6FFF65003A950D /* libvorbis.a */; };
 		E738C85D1A7000E1003A950D /* liblibpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E738C85C1A7000DA003A950D /* liblibpng.a */; };
+		E738C8611A71DEA1003A950D /* touchui.cc in Sources */ = {isa = PBXBuildFile; fileRef = E738C85F1A71DEA1003A950D /* touchui.cc */; };
 		FD779EDE0E26BA1200F39101 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FD779EDD0E26BA1200F39101 /* CoreAudio.framework */; };
 		FD77A0850E26BDB800F39101 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FD77A0840E26BDB800F39101 /* AudioToolbox.framework */; };
 		FDB8BFC60E5A0F6A00980157 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FDB8BFC50E5A0F6A00980157 /* CoreGraphics.framework */; };
@@ -864,9 +877,24 @@
 		E700E1041A6E8244006C8BE4 /* Default@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x~ipad.png"; sourceTree = "<group>"; };
 		E700E1051A6E8244006C8BE4 /* Default~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default~ipad.png"; sourceTree = "<group>"; };
 		E700E1271A6F839E006C8BE4 /* SDL.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SDL.xcodeproj; path = "SDL2-2.0.3/Xcode-iOS/SDL/SDL.xcodeproj"; sourceTree = "<group>"; };
+		E71BBD801A725E150003F662 /* GamePadView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GamePadView.h; sourceTree = "<group>"; };
+		E71BBD811A725E150003F662 /* GamePadView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GamePadView.m; sourceTree = "<group>"; };
+		E71BBD891A725E1E0003F662 /* btn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = btn.png; sourceTree = "<group>"; };
+		E71BBD8A1A725E1E0003F662 /* btnpressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = btnpressed.png; sourceTree = "<group>"; };
+		E71BBD8B1A725E1E0003F662 /* dpadglass-east.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dpadglass-east.png"; sourceTree = "<group>"; };
+		E71BBD8C1A725E1E0003F662 /* dpadglass-north.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dpadglass-north.png"; sourceTree = "<group>"; };
+		E71BBD8D1A725E1E0003F662 /* dpadglass-northeast.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dpadglass-northeast.png"; sourceTree = "<group>"; };
+		E71BBD8E1A725E1E0003F662 /* dpadglass-northwest.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dpadglass-northwest.png"; sourceTree = "<group>"; };
+		E71BBD8F1A725E1E0003F662 /* dpadglass-south.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dpadglass-south.png"; sourceTree = "<group>"; };
+		E71BBD901A725E1E0003F662 /* dpadglass-southeast.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dpadglass-southeast.png"; sourceTree = "<group>"; };
+		E71BBD911A725E1E0003F662 /* dpadglass-southwest.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dpadglass-southwest.png"; sourceTree = "<group>"; };
+		E71BBD921A725E1E0003F662 /* dpadglass-west.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dpadglass-west.png"; sourceTree = "<group>"; };
+		E71BBD931A725E1E0003F662 /* dpadglass.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = dpadglass.png; sourceTree = "<group>"; };
 		E738C8491A6FFF58003A950D /* libogg.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = libogg.xcodeproj; path = "libogg-1.3.2/Xcode-iOS/libogg.xcodeproj"; sourceTree = "<group>"; };
 		E738C84F1A6FFF65003A950D /* vorbis.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = vorbis.xcodeproj; path = "libvorbis-1.3.4/Xcode-iOS/vorbis.xcodeproj"; sourceTree = "<group>"; };
 		E738C8571A7000DA003A950D /* libpng.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = libpng.xcodeproj; path = "libpng/Xcode-iOS/libpng.xcodeproj"; sourceTree = "<group>"; };
+		E738C85F1A71DEA1003A950D /* touchui.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = touchui.cc; path = ../touchui.cc; sourceTree = "<group>"; };
+		E738C8601A71DEA1003A950D /* touchui.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = touchui.h; path = ../touchui.h; sourceTree = "<group>"; };
 		FD779EDD0E26BA1200F39101 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		FD77A0840E26BDB800F39101 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		FDB8BFC50E5A0F6A00980157 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -907,6 +935,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				E71BBD881A725E1E0003F662 /* Images */,
 				29B97315FDCFA39411CA2CEA /* Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				E738C85E1A7000E8003A950D /* Libs */,
@@ -919,9 +948,9 @@
 		29B97315FDCFA39411CA2CEA /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				E71BBD9F1A7276940003F662 /* iOS */,
 				E700DAF31A6E2CE7006C8BE4 /* audio */,
 				E700DF7B1A6E364E006C8BE4 /* conf */,
-				E700DC321A6E2E29006C8BE4 /* config.h */,
 				E700DF7A1A6E3624006C8BE4 /* data */,
 				E700DD661A6E3146006C8BE4 /* files */,
 				E700E0D31A6E4782006C8BE4 /* flic */,
@@ -929,8 +958,6 @@
 				E700DE351A6E3478006C8BE4 /* gumps */,
 				E700DC2D1A6E2DBC006C8BE4 /* headers */,
 				E700DDDE1A6E3408006C8BE4 /* imagewin */,
-				E700E0E21A6E4A3F006C8BE4 /* ios_utils.h */,
-				E700E0E01A6E4A35006C8BE4 /* ios_utils.mm */,
 				E700DC331A6E302F006C8BE4 /* main */,
 				E700DCE61A6E30DF006C8BE4 /* objs */,
 				E700DFA11A6E372A006C8BE4 /* pathfinder */,
@@ -1206,6 +1233,8 @@
 				E700DC801A6E30A7006C8BE4 /* tiles.h */,
 				E700DC811A6E30A7006C8BE4 /* touchscreen.cc */,
 				E700DC821A6E30A7006C8BE4 /* touchscreen.h */,
+				E738C85F1A71DEA1003A950D /* touchui.cc */,
+				E738C8601A71DEA1003A950D /* touchui.h */,
 				E700DC831A6E30A7006C8BE4 /* tqueue.cc */,
 				E700DC841A6E30A7006C8BE4 /* tqueue.h */,
 				E700DC851A6E30A7006C8BE4 /* txtscroll.cc */,
@@ -1700,6 +1729,36 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		E71BBD881A725E1E0003F662 /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				E71BBD891A725E1E0003F662 /* btn.png */,
+				E71BBD8A1A725E1E0003F662 /* btnpressed.png */,
+				E71BBD8B1A725E1E0003F662 /* dpadglass-east.png */,
+				E71BBD8C1A725E1E0003F662 /* dpadglass-north.png */,
+				E71BBD8D1A725E1E0003F662 /* dpadglass-northeast.png */,
+				E71BBD8E1A725E1E0003F662 /* dpadglass-northwest.png */,
+				E71BBD8F1A725E1E0003F662 /* dpadglass-south.png */,
+				E71BBD901A725E1E0003F662 /* dpadglass-southeast.png */,
+				E71BBD911A725E1E0003F662 /* dpadglass-southwest.png */,
+				E71BBD921A725E1E0003F662 /* dpadglass-west.png */,
+				E71BBD931A725E1E0003F662 /* dpadglass.png */,
+			);
+			path = Images;
+			sourceTree = "<group>";
+		};
+		E71BBD9F1A7276940003F662 /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				E700DC321A6E2E29006C8BE4 /* config.h */,
+				E71BBD801A725E150003F662 /* GamePadView.h */,
+				E71BBD811A725E150003F662 /* GamePadView.m */,
+				E700E0E21A6E4A3F006C8BE4 /* ios_utils.h */,
+				E700E0E01A6E4A35006C8BE4 /* ios_utils.mm */,
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
 		E738C84A1A6FFF58003A950D /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -1837,28 +1896,38 @@
 			files = (
 				E700E1061A6E8244006C8BE4 /* Icon-iPad-29.png in Resources */,
 				E700E1241A6E8244006C8BE4 /* Default~ipad.png in Resources */,
+				E71BBD981A725E1E0003F662 /* dpadglass-northeast.png in Resources */,
 				E700E1161A6E8244006C8BE4 /* Icon-iPhone-57@2x.png in Resources */,
 				E700E1211A6E8244006C8BE4 /* Default.png in Resources */,
+				E71BBD9E1A725E1E0003F662 /* dpadglass.png in Resources */,
 				E700E10E1A6E8244006C8BE4 /* Icon-iPad-76.png in Resources */,
+				E71BBD971A725E1E0003F662 /* dpadglass-north.png in Resources */,
 				E700E11C1A6E8244006C8BE4 /* Default-667h@2x.png in Resources */,
 				E700E11F1A6E8244006C8BE4 /* Default-Landscape@2x~ipad.png in Resources */,
 				E700E1171A6E8244006C8BE4 /* Icon-iPhone-60@2x.png in Resources */,
 				E700E1151A6E8244006C8BE4 /* Icon-iPhone-57.png in Resources */,
 				E700E1231A6E8244006C8BE4 /* Default@2x~ipad.png in Resources */,
+				E71BBD961A725E1E0003F662 /* dpadglass-east.png in Resources */,
 				E700E1111A6E8244006C8BE4 /* Icon-iPhone-29@2x.png in Resources */,
 				E700E1201A6E8244006C8BE4 /* Default-Landscape~ipad.png in Resources */,
 				E700E11D1A6E8244006C8BE4 /* Default-6Plus-Landscape@3x.png in Resources */,
 				E700E1191A6E8244006C8BE4 /* iTunesArtwork in Resources */,
 				E700E1181A6E8244006C8BE4 /* Icon-iPhone-60@3x.png in Resources */,
+				E71BBD9A1A725E1E0003F662 /* dpadglass-south.png in Resources */,
 				E700E11B1A6E8244006C8BE4 /* Default-568h@2x.png in Resources */,
+				E71BBD9C1A725E1E0003F662 /* dpadglass-southwest.png in Resources */,
 				E700E1121A6E8244006C8BE4 /* Icon-iPhone-29@3x.png in Resources */,
 				E700E1101A6E8244006C8BE4 /* Icon-iPhone-29.png in Resources */,
 				E700E1131A6E8244006C8BE4 /* Icon-iPhone-40@2x.png in Resources */,
+				E71BBD991A725E1E0003F662 /* dpadglass-northwest.png in Resources */,
 				E700E1141A6E8244006C8BE4 /* Icon-iPhone-40@3x.png in Resources */,
 				E700E10D1A6E8244006C8BE4 /* Icon-iPad-72@2x.png in Resources */,
+				E71BBD9B1A725E1E0003F662 /* dpadglass-southeast.png in Resources */,
+				E71BBD941A725E1E0003F662 /* btn.png in Resources */,
 				E700E10F1A6E8244006C8BE4 /* Icon-iPad-76@2x.png in Resources */,
 				E700E11A1A6E8244006C8BE4 /* iTunesArtwork@2x in Resources */,
 				E700E10A1A6E8244006C8BE4 /* Icon-iPad-50.png in Resources */,
+				E71BBD9D1A725E1E0003F662 /* dpadglass-west.png in Resources */,
 				E700E1081A6E8244006C8BE4 /* Icon-iPad-40.png in Resources */,
 				E700E10C1A6E8244006C8BE4 /* Icon-iPad-72.png in Resources */,
 				E700E0E41A6E6665006C8BE4 /* data in Resources */,
@@ -1867,6 +1936,7 @@
 				E700E11E1A6E8244006C8BE4 /* Default-6Plus-Portrait@3x.png in Resources */,
 				E700E1071A6E8244006C8BE4 /* Icon-iPad-29@2x.png in Resources */,
 				E700E10B1A6E8244006C8BE4 /* Icon-iPad-50@2x.png in Resources */,
+				E71BBD951A725E1E0003F662 /* btnpressed.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1892,6 +1962,7 @@
 				E700DD531A6E3121006C8BE4 /* effhpinf.cc in Sources */,
 				E700DCAC1A6E30A7006C8BE4 /* readnpcs.cc in Sources */,
 				E700DD3D1A6E3121006C8BE4 /* pngio.cc in Sources */,
+				E71BBD821A725E150003F662 /* GamePadView.m in Sources */,
 				E700DCA41A6E30A7006C8BE4 /* menulist.cc in Sources */,
 				E700DE281A6E344D006C8BE4 /* iwin8.cc in Sources */,
 				E700DCD81A6E30D8006C8BE4 /* barge.cc in Sources */,
@@ -2048,6 +2119,7 @@
 				E700DCB01A6E30A7006C8BE4 /* tqueue.cc in Sources */,
 				E700DC921A6E30A7006C8BE4 /* cheat_screen.cc in Sources */,
 				E700DC8D1A6E30A7006C8BE4 /* actions.cc in Sources */,
+				E738C8611A71DEA1003A950D /* touchui.cc in Sources */,
 				E700DC191A6E2CE7006C8BE4 /* timidity_sdl_c.cpp in Sources */,
 				E700DFB91A6E372A006C8BE4 /* path.cc in Sources */,
 				E700DD8D1A6E3161006C8BE4 /* Flex.cc in Sources */,

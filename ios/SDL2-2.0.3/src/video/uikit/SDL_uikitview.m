@@ -411,6 +411,7 @@ void _uikit_keyboard_set_height(int height) {
 }
 
 void _uikit_keyboard_init() {
+#if 0
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
     NSOperationQueue *queue = [NSOperationQueue mainQueue];
     [center addObserverForName:UIKeyboardWillShowNotification
@@ -437,6 +438,7 @@ void _uikit_keyboard_init() {
                         _uikit_keyboard_set_height(0);
                     }
      ];
+#endif
 }
 
 void
