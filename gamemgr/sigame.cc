@@ -1282,9 +1282,6 @@ bool SI_Game::new_game(Vga_file &shapes) {
 #ifdef UNDER_CE
 			gkeyboard->paint();
 #endif
-#ifdef __IPHONEOS__
-			gkeybb->paint();
-#endif
 			gwin->get_win()->show();
 			redraw = false;
 		}
@@ -1294,9 +1291,58 @@ bool SI_Game::new_game(Vga_file &shapes) {
 				redraw = true;
 #endif
 #ifdef __IPHONEOS__
-			if (gkeybb->handle_event(&event))
-				redraw = true;
-#endif
+			/* Use touch based control instead of navigation with keyboard.
+			 * Also there is no direction keys on native iPhone keyboard.
+			 */
+			if (event.type == SDL_MOUSEBUTTONDOWN || event.type == SDL_MOUSEBUTTONUP) {
+				SDL_Rect rectName   = {   9, 134, 130,  16 };
+				SDL_Rect rectSex    = {   9, 153, 130,  16 };
+				SDL_Rect rectOnward = {   9, 197, 130,  16 };
+				SDL_Rect rectReturn = { 167, 197, 130,  16 };
+				SDL_Point point;
+				int scale = gwin->get_fastmouse() ? 1 : gwin->get_win()->get_scale_factor();
+				point.x = event.button.x / scale;
+				point.y = event.button.y / scale;
+				std::cout << "x: " << point.x << " y:" << point.y << std::endl;
+				if (SDL_EnclosePoints(&point, 1, &rectName, NULL)) {
+					if (event.type == SDL_MOUSEBUTTONDOWN) {
+						selected = 0;
+					} else if (selected == 0) {
+						touchui->promptForName(npc_name);
+					}
+					redraw = true;				
+				} else if (SDL_EnclosePoints(&point, 1, &rectSex, NULL)) {
+					if (event.type == SDL_MOUSEBUTTONDOWN) {
+						selected = 1;
+					}
+					redraw = true;				
+				} else if (SDL_EnclosePoints(&point, 1, &rectOnward, NULL)) {
+					if (event.type == SDL_MOUSEBUTTONDOWN) {
+						selected = 2;
+					} else if (selected == 2) {
+						editing = false;
+						ok = true;
+					}
+					redraw = true;				
+				} else if (SDL_EnclosePoints(&point, 1, &rectReturn, NULL)) {
+					if (event.type == SDL_MOUSEBUTTONDOWN) {
+						selected = 3;
+					} else if (selected == 3) {
+						editing = false;
+						ok = false;
+					}
+					redraw = true;				
+				}
+			} else if (event.type == TouchUI::eventType) {
+				if (event.user.code == TouchUI::EVENT_CODE_TEXT_INPUT) {
+					if (selected == 0 && event.user.data1 != NULL) {
+						strcpy(npc_name, (char*)event.user.data1);
+						redraw = true;
+					}
+				}
+			}
+			
+#else // __IPHONEOS__
 			Uint16 keysym_unicode = 0;
 #if (SDL_VER_1_3) || SDL_VERSION_ATLEAST(2, 0, 0)
 			bool isTextInput = false;
@@ -1361,9 +1407,6 @@ bool SI_Game::new_game(Vga_file &shapes) {
 					} else
 						editing = ok = false;
 					break;
-#ifdef __IPHONEOS__
-				case SDLK_DELETE:
-#endif
 				case SDLK_BACKSPACE:
 					if (selected == 0 && strlen(npc_name) > 0)
 						npc_name[strlen(npc_name) - 1] = 0;
@@ -1393,6 +1436,7 @@ bool SI_Game::new_game(Vga_file &shapes) {
 				break;
 				}
 			}
+#endif // __IPHONEOS__
 		}
 	} while (editing);
 
