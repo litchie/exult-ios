@@ -1314,6 +1314,8 @@ bool SI_Game::new_game(Vga_file &shapes) {
 				} else if (SDL_EnclosePoints(&point, 1, &rectSex, NULL)) {
 					if (event.type == SDL_MOUSEBUTTONDOWN) {
 						selected = 1;
+					} else if (selected == 1) {
+						skindata = Shapeinfo_lookup::GetNextSelSkin(skindata, true, true);
 					}
 					redraw = true;				
 				} else if (SDL_EnclosePoints(&point, 1, &rectOnward, NULL)) {
