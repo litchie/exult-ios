@@ -1,4 +1,7 @@
 2015-01-27	Malignant Manor <malignantmanor@users.sourceforge.net>
+	objs/egg.cc: Remove r7474 changes to Weather eggs due to crash on exit and
+	 the fact that it didn't do a good job of fixing the bug bug #1865.
+2015-01-27	Malignant Manor <malignantmanor@users.sourceforge.net>
 	*gumps/AudioOptions_gump.cc: Fix crash from deleted pointer being referenced
 
 2015-01-22	Marzo Sette Torres Junior <marzojr@yahoo.com>
