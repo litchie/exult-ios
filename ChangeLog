@@ -1,3 +1,6 @@
+2015-01-27	Malignant Manor <malignantmanor@users.sourceforge.net>
+	*gumps/AudioOptions_gump.cc: Fix crash from deleted pointer being referenced
+
 2015-01-22	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* content/bgkeyring/src/npcs/menion.uc: Fixed bug #1904 "[BG:FV + BG Keyring
 	  MOD] add & case in code not being used. file: menion.uc ".
