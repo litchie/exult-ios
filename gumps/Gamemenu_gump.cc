@@ -95,7 +95,9 @@ Gamemenu_gump::Gamemenu_gump() : Modal_gump(0, EXULT_FLX_GAMEMENU_SHP, SF_EXULT_
 	buttons[2] = new Gamemenu_button(this, audioopttext, colx, rowy[y++]);
 	buttons[3] = new Gamemenu_button(this, gameopttext, colx, rowy[y++]);
 	buttons[4] = new Gamemenu_button(this, misctext, colx, rowy[y++]);
+#ifndef __IPHONEOS__
 	if (!gwin->is_in_exult_menu()) buttons[5] = new Gamemenu_button(this, quittext, colx, rowy[y++]);
+#endif
 }
 
 Gamemenu_gump::~Gamemenu_gump() {
