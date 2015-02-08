@@ -276,7 +276,7 @@
 #define USE_MT32EMU_MIDI 1
 
 /* Enable timidity midi */
-#define USE_TIMIDITY_MIDI 1
+/*#define USE_TIMIDITY_MIDI 1*/
 
 /* Build NxBR scalers */
 #define USE_XBR_SCALER 1
