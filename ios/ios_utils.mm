@@ -15,6 +15,7 @@ extern "C" int SDL_SendKeyboardKey(Uint8 state, SDL_Scancode scancode);
 	DPadView *dpad;
 	GamePadButton *btn1;
 	GamePadButton *btn2;
+	SDL_Scancode recurringKeycode;
 };
 
 - (void)promptForName:(NSString*)name;
@@ -23,13 +24,23 @@ extern "C" int SDL_SendKeyboardKey(Uint8 state, SDL_Scancode scancode);
 
 @implementation UIManager
 
+- (void)sendRecurringKeycode
+{
+	SDL_SendKeyboardKey(SDL_PRESSED, recurringKeycode);
+	[self performSelector:@selector(sendRecurringKeycode) withObject:nil afterDelay:.5];
+}
+
 - (void)keydown:(SDL_Scancode)keycode
 {
 	SDL_SendKeyboardKey(SDL_PRESSED, keycode);
+	recurringKeycode = keycode;
+	[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(sendRecurringKeycode) object:nil];
+	[self performSelector:@selector(sendRecurringKeycode) withObject:nil afterDelay:.5];
 }
 
 - (void)keyup:(SDL_Scancode)keycode
 {
+	[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(sendRecurringKeycode) object:nil];
 	SDL_SendKeyboardKey(SDL_RELEASED, keycode);
 }
 
