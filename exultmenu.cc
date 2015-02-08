@@ -497,10 +497,14 @@ BaseGameInfo *ExultMenu::run() {
 		font->center_text(gwin->get_win()->get_ib8(),
 		                  centerx, topy + 70, "and restart Exult");
 		gpal->apply();
+#ifndef __IPHONEOS__
 		while (!wait_delay(200))
 			;
 		throw quit_exception(1);
-
+#else
+		/* Never quits */
+		while (1) wait_delay(1000);
+#endif
 	}
 	ExultDataSource mouse_data(BUNDLE_CHECK(BUNDLE_EXULT_FLX, EXULT_FLX),
 	                           EXULT_FLX_POINTERS_SHP);
@@ -598,12 +602,16 @@ BaseGameInfo *ExultMenu::run() {
 		}
 		break;
 		case -1: // Exit
+#ifdef __IPHONEOS__
+			break;
+#else
 			gpal->fade_out(c_fade_out_time);
 			Audio::get_ptr()->stop_music();
 			delete menu;
 			delete logobg;
 			delete menu_mouse;
 			throw quit_exception();
+#endif
 		default:
 			if (choice >= 0 && choice < MAX_GAMES) {
 				// Load the game:

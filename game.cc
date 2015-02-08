@@ -327,11 +327,15 @@ bool Game::show_menu(bool skip) {
 		int choice = menu->handle_events(gwin, menu_mouse);
 		switch (choice) {
 		case -1: // Exit
+#ifdef __IPHONEOS__
+			break;
+#else
 			pal->fade_out(c_fade_out_time);
 			Audio::get_ptr()->stop_music();
 			delete menu_mouse;
 			delete menu;
 			throw quit_exception();
+#endif
 		case 0: // Intro
 			if (game_type == EXULT_DEVEL_GAME)
 				break;
