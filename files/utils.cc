@@ -38,6 +38,10 @@
 #endif
 #include <unistd.h>
 
+#ifdef __IPHONEOS__
+#   include "ios_utils.h"
+#endif
+
 #ifdef WIN32
 #include <windows.h>
 #include <shlobj.h>
@@ -728,6 +732,16 @@ void setup_data_dir(
 			if (!U7exists(BUNDLE_EXULT_FLX))
 				clear_system_path("<BUNDLE>");
 		}
+	}
+#endif
+
+#ifdef __IPHONEOS__
+	{
+		string path(ios_get_documents_dir());
+		path += "/data";
+		add_system_path("<DATA>", path.c_str());
+		if (U7exists(EXULT_FLX))
+			return;
 	}
 #endif
 
