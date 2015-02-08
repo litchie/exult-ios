@@ -68,6 +68,10 @@ using std::time;
 #include <time.h>
 #endif
 
+#ifdef __IPHONEOS__
+#   include "touchui.h"
+#endif
+
 /*
  *  Macros:
  */
@@ -734,7 +738,7 @@ bool Newfile_gump::mouse_down(
 		details = games[selected].details;
 		party = games[selected].party;
 		strcpy(newname, games[selected].savename);
-		cursor = strlen(newname);
+		cursor = (int)strlen(newname);
 		is_readable = want_load = games[selected].readable;
 		filename = games[selected].filename;
 	}
@@ -786,6 +790,12 @@ bool Newfile_gump::mouse_up(
 			pushed->activate(button);
 		pushed = 0;
 	}
+	
+#ifdef __IPHONEOS__
+	if (selected == -2 || selected >= 0) {
+		touchui->promptForName(newname);
+	}
+#endif
 
 	return true;
 }
@@ -842,6 +852,39 @@ void Newfile_gump::mouse_drag(
 		list_position = new_pos;
 		paint();
 	}
+}
+
+void Newfile_gump::text_input(const char *text)
+{
+	if (cursor == -1 || strlen(text) >= MAX_SAVEGAME_NAME_LEN - 1)
+		return;
+	if (strcmp(text, newname) == 0) /* No Changed */
+		return;
+	
+	strcpy(newname, text);
+	cursor = (int)strlen(text);
+	
+	if (newname[0] && !buttons[1]) {
+		buttons[1] = new Newfile_Textbutton(this, savetext,
+											btn_cols[0],
+											btn_rows[0], 40);
+		buttons[1]->paint();
+	}
+
+	// Remove Load and Delete Button
+	if (buttons[0] || buttons[2]) {
+		delete buttons[0];
+		delete buttons[2];
+		buttons[0] = buttons[2] = 0;
+	}
+
+	screenshot = cur_shot;
+	details = cur_details;
+	party = cur_party;
+	
+	paint();
+	gwin->set_painted();
+	
 }
 
 /*

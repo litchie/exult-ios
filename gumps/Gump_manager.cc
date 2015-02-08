@@ -45,6 +45,10 @@
 #include "gump_utils.h"
 #include "Slider_gump.h"
 
+#ifdef __IPHONEOS__
+#   include "touchui.h"
+#endif
+
 using std::cout;
 using std::endl;
 
@@ -557,6 +561,20 @@ int Gump_manager::handle_modal_gump_event(
 
 		break;
 	}
+	
+	default:
+#ifdef __IPHONEOS__
+		if (event.type == TouchUI::eventType) {
+			if (event.user.code == TouchUI::EVENT_CODE_TEXT_INPUT) {
+				if (event.user.data1 != NULL) {
+					char *text = (char*)event.user.data1;
+					if (text) gump->text_input(text);
+				}
+			}
+		}
+#endif
+		break;
+
 	}
 	return (1);
 }

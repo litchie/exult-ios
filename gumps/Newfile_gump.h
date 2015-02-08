@@ -201,6 +201,7 @@ public:
 	virtual bool mouse_up(int mx, int my, int button);
 	virtual void mouse_drag(int mx, int my);
 	virtual void text_input(int chr, int unicode); // Character typed.
+	virtual void text_input(const char *text); // Character typed.
 
 	virtual void mousewheel_up();
 	virtual void mousewheel_down();

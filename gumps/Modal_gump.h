@@ -59,6 +59,8 @@ public:
 	{  }
 	virtual void text_input(int chr, int unicode) // Character typed (unicode)
 	{ }
+	virtual void text_input(const char *text) // complete string input
+	{ }
 	virtual bool is_modal() const {
 		return true;
 	}
