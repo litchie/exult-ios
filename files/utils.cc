@@ -739,9 +739,7 @@ void setup_data_dir(
 	{
 		string path(ios_get_documents_dir());
 		path += "/data";
-		add_system_path("<DATA>", path.c_str());
-		if (U7exists(EXULT_FLX))
-			return;
+		add_system_path("<BUNDLE>", path.c_str());
 	}
 #endif
 
@@ -787,6 +785,7 @@ void setup_data_dir(
 	}
 #endif
 
+	
 	// We've tried them all...
 	std::cerr << "Could not find 'exult.flx' anywhere." << std::endl;
 	std::cerr << "Please make sure Exult is correctly installed," << std::endl;
@@ -794,12 +793,6 @@ void setup_data_dir(
 	std::cerr << "(See the README file for more information)" << std::endl;
 	exit(-1);
 }
-
-#if defined(__IPHONEOS__)
-
-#include "ios_utils.h"
-
-#endif
 
 void setup_program_paths() {
 	string home_dir(Get_home()), config_dir(home_dir),
