@@ -209,12 +209,13 @@ if ((x) > 1.0) { \
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
-	[[self superview] touchesEnded:touches withEvent:event];
+	self.pressed = NO;
+//	[[self superview] touchesEnded:touches withEvent:event];
 }
 
 -(void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
-	[[self superview] touchesMoved:touches withEvent:event];
+//	[[self superview] touchesMoved:touches withEvent:event];
 }
 
 - (void)drawRect:(CGRect)rect 
