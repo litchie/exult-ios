@@ -844,7 +844,7 @@
 		E700E0DA1A6E4782006C8BE4 /* playfli.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = playfli.h; sourceTree = "<group>"; };
 		E700E0E01A6E4A35006C8BE4 /* ios_utils.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ios_utils.mm; sourceTree = "<group>"; };
 		E700E0E21A6E4A3F006C8BE4 /* ios_utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ios_utils.h; path = include/ios_utils.h; sourceTree = "<group>"; };
-		E700E0E31A6E6665006C8BE4 /* data */ = {isa = PBXFileReference; lastKnownFileType = folder; name = data; path = ../data; sourceTree = "<group>"; };
+		E700E0E31A6E6665006C8BE4 /* data */ = {isa = PBXFileReference; lastKnownFileType = folder; path = data; sourceTree = "<group>"; };
 		E700E0E61A6E8244006C8BE4 /* Icon-iPad-29.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-iPad-29.png"; sourceTree = "<group>"; };
 		E700E0E71A6E8244006C8BE4 /* Icon-iPad-29@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-iPad-29@2x.png"; sourceTree = "<group>"; };
 		E700E0E81A6E8244006C8BE4 /* Icon-iPad-40.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-iPad-40.png"; sourceTree = "<group>"; };
