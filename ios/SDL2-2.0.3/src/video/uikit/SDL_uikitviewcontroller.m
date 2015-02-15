@@ -78,11 +78,12 @@
 	if (screenView == nil)
     	return;
     
-    float scalex =self.view.frame.size.width/screenView.bounds.size.width;
-    float scaley = self.view.frame.size.height/screenView.bounds.size.height;
-    
+    float availWidth = self.view.bounds.size.width;
+    float availHeight = self.view.bounds.size.height;
+    float scalex = availWidth/screenView.bounds.size.width;
+    float scaley = availHeight/screenView.bounds.size.height;
     screenView.transform = CGAffineTransformMakeScale(scalex, scaley);
-    screenView.center = CGPointMake(self.view.frame.size.width/2, self.view.frame.size.height/2);
+    screenView.center = CGPointMake(availWidth/2, availHeight/2);
 }
 
 - (void)viewDidLayoutSubviews
