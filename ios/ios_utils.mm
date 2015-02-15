@@ -173,3 +173,9 @@ const char* ios_get_documents_dir()
 	}
 	return docs_dir;
 }
+
+void ios_open_url(const char *sUrl)
+{
+	NSURL *url = [NSURL URLWithString:[NSString stringWithUTF8String:sUrl]];
+	[[UIApplication sharedApplication] openURL:url];
+}

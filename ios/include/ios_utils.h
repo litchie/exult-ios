@@ -12,5 +12,6 @@ public:
 };
 
 const char* ios_get_documents_dir();
+void ios_open_url(const char *);
 
 #endif

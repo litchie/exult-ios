@@ -315,7 +315,11 @@ MenuList *ExultMenu::create_main_menu(Shape_frame *bg, int first) {
 		"SETUP",
 		"CREDITS",
 		"QUOTES",
+#ifdef __IPHONEOS__
+		"HELP"
+#else
 		"EXIT"
+#endif
 	};
 	int num_entries = sizeof(menuchoices) / sizeof(menuchoices[0]);
 	int max_width = maximum_size(font, menuchoices, num_entries, centerx);
@@ -603,6 +607,7 @@ BaseGameInfo *ExultMenu::run() {
 		break;
 		case -1: // Exit
 #ifdef __IPHONEOS__
+			ios_open_url("http://exult.sourceforge.net/docs.php");
 			break;
 #else
 			gpal->fade_out(c_fade_out_time);
