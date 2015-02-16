@@ -69,7 +69,7 @@ static File *openFileProc
 	std::string basedir;
 	if (mode == File::OpenMode_read)
 		{
-#ifdef MACOSX
+#if defined(MACOSX) || defined(__IPHONEOS__)
 		// May be in bundle.
 		if (is_system_path_defined("<BUNDLE>"))
 			{

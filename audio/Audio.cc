@@ -333,7 +333,7 @@ bool	Audio::can_sfx(const std::string &file, std::string *out)
 		return true;
 		}
 
-#ifdef MACOSX
+#if defined(MACOSX) || defined(__IPHONEOS__)
 	// Check in the app bundle:
 	d = "<BUNDLE>/" + file;
 	if (is_system_path_defined("<BUNDLE>") && U7exists(d.c_str()))

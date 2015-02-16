@@ -33,7 +33,7 @@
 #endif
 #endif
 
-#if (defined(MACOS) || defined(MACOSX)) && !defined(EXULT_DATADIR)
+#if (defined(MACOS) || defined(MACOSX) || defined(__IPHONEOS__)) && !defined(EXULT_DATADIR)
 #define EXULT_DATADIR   "data"
 #endif
 
@@ -176,6 +176,7 @@
 #endif
 #ifdef __IPHONEOS__
 #define IPHONE_FLX "<DATA>/exult_iphone.flx"
+#define BUNDLE_IPHONE_FLX "<BUNDLE>/exult_iphone.flx"
 #endif
 
 #define AUTONOTES   "autonotes.txt"

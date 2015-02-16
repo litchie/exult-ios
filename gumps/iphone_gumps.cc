@@ -49,7 +49,7 @@ using std::endl;
 
 KeyboardButton_gump::KeyboardButton_gump(int placex, int placey) {
 	autopaint = true;
-	iphone_vga.load(IPHONE_FLX);
+	iphone_vga.load(BUNDLE_CHECK(BUNDLE_IPHONE_FLX, IPHONE_FLX));
 	width = iphone_vga.get_shape(EXULT_IPHONE_FLX_KEYBOARDBUTTON_SHP, 0)->get_width();
 	height = iphone_vga.get_shape(EXULT_IPHONE_FLX_KEYBOARDBUTTON_SHP, 0)->get_height();
 	locx = placex;

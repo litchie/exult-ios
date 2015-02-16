@@ -172,12 +172,12 @@ void	MyMidiPlayer::start_music(int num,bool repeat,std::string flex)
 		
 	}
 	pflex += flex.c_str() + prefix_len;
-#ifdef MACOSX
+#if defined(MACOSX) || defined(__IPHONEOS__)
 	string bflex("<BUNDLE>/");
 	bflex += flex.c_str() + prefix_len;
 #endif
 	mid_data = 
-#ifdef MACOSX
+#if defined(MACOSX) || defined(__IPHONEOS__)
 		is_system_path_defined("<BUNDLE>") ?
 			new ExultDataSource(File_spec(flex), File_spec(bflex), 
 						File_spec(pflex), num):
@@ -728,7 +728,7 @@ void    MyMidiPlayer::start_sound_effect(int num)
 	DataSource  *mid_data;
 
 	U7object	*track =
-#ifdef MACOSX
+#if defined(MACOSX) || defined(__IPHONEOS__)
 		is_system_path_defined("<BUNDLE>") ?
 			new U7multiobject("<DATA>/midisfx.flx",
 			                  "<BUNDLE>/midisfx.flx", real_num) :
@@ -845,7 +845,7 @@ bool MyMidiPlayer::ogg_play_track(std::string filename, int num, bool repeat)
 
 	if (U7exists("<PATCH>/music/" + ogg_name))
 		ogg_name = get_system_path("<PATCH>/music/" + ogg_name);
-#ifdef MACOSX
+#if defined(MACOSX) || defined(__IPHONEOS__)
 	else if (is_system_path_defined("<BUNDLE>") &&
 	         U7exists("<BUNDLE>/music/" + ogg_name))
 		ogg_name = get_system_path("<BUNDLE>/music/" + ogg_name);

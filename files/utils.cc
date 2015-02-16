@@ -720,7 +720,7 @@ void setup_data_dir(
     const std::string &data_path,
     const char *runpath
 ) {
-#ifdef MACOSX
+#if defined(MACOSX) || defined(__IPHONEOS__)
 	// Can we try from the bundle?
 	CFURLRef fileUrl = CFBundleCopyResourcesDirectoryURL(CFBundleGetMainBundle());
 	if (fileUrl) {
@@ -734,12 +734,14 @@ void setup_data_dir(
 		}
 	}
 #endif
-
 #ifdef __IPHONEOS__
-	{
+	if (is_system_path_defined("<BUNDLE>")) {
+		// We have the flxfiles in the bundle, so lets use it.
+		// But lets use <DATA> in the iTunes file sharing.
 		string path(ios_get_documents_dir());
 		path += "/data";
-		add_system_path("<BUNDLE>", path.c_str());
+		add_system_path("<DATA>", path.c_str());
+		return;
 	}
 #endif
 
@@ -785,7 +787,6 @@ void setup_data_dir(
 	}
 #endif
 
-	
 	// We've tried them all...
 	std::cerr << "Could not find 'exult.flx' anywhere." << std::endl;
 	std::cerr << "Please make sure Exult is correctly installed," << std::endl;
