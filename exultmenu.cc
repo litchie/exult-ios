@@ -497,7 +497,11 @@ BaseGameInfo *ExultMenu::run() {
 		font->center_text(gwin->get_win()->get_ib8(),
 		                  centerx, topy + 50, "\"The Black Gate\" or \"Serpent Isle\".");
 		font->center_text(gwin->get_win()->get_ib8(),
+#ifndef __IPHONEOS__
 		                  centerx, topy + 60, "Please edit the configuration file");
+#else
+		                  centerx, topy + 60, "Please add the games in iTunes file sharing");
+#endif
 		font->center_text(gwin->get_win()->get_ib8(),
 		                  centerx, topy + 70, "and restart Exult");
 		gpal->apply();
