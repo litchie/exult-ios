@@ -139,6 +139,11 @@ class Game_window {
 	bool alternate_drop;    // don't split stacks, can be inverted with a CTRL key modifier
 	bool allow_autonotes;
 	bool in_exult_menu;     // used for menu options
+#ifdef __IPHONEOS__
+	//iphoneOS Options
+	bool item_menu;
+	int dpad_location;
+#endif
 	// Private methods:
 	void set_scrolls(Tile_coord cent);
 	void clear_world(bool restoremapedit);      // Clear out world's contents.
@@ -287,6 +292,23 @@ public:
 	void set_in_exult_menu(bool im) {
 		in_exult_menu = im;
 	}
+#ifdef __IPHONEOS__
+	/*
+	 *  iphoneOS options:
+ 	*/
+	bool get_item_menu() const {
+		return item_menu;
+	}
+	void set_item_menu(bool s) {
+		item_menu = s;
+	}
+	inline void set_dpad_location(int a) {
+		dpad_location = a;
+	}
+	inline int get_dpad_location() {
+		return dpad_location;
+	}
+#endif
 	/*
 	 *  Game components:
 	 */

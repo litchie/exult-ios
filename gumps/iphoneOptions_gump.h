@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2001-2013 The Exult Team
+Copyright (C) 2001-2015 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -16,43 +16,52 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#ifndef _GAMEMENU_GUMP_H
-#define _GAMEMENU_GUMP_H
+#ifndef _IPHONEOPTIONS_GUMP_H
+#define _IPHONEOPTIONS_GUMP_H
+
+#ifdef __IPHONEOS__
 
 #include "Modal_gump.h"
+#include <string>
 
 class Gump_button;
 
-class Gamemenu_gump : public Modal_gump {
-	UNREPLICATABLE_CLASS_I(Gamemenu_gump, Modal_gump(0, 0, 0, 0));
+class iphoneOptions_gump : public Modal_gump {
+	UNREPLICATABLE_CLASS_I(iphoneOptions_gump, Modal_gump(0, 0, 0, 0));
 
 private:
-	Gump_button *buttons[6];
+	bool item_menu;
+	int dpad_location;
+
+	enum button_ids {
+	    id_first = 0,
+	    id_ok = id_first,
+	    id_cancel,
+	    id_item_menu,
+	    id_dpad_location,
+	    id_count
+	};
+	Gump_button *buttons[id_count];
 
 public:
-	Gamemenu_gump();
-	virtual ~Gamemenu_gump();
+	iphoneOptions_gump();
+	virtual ~iphoneOptions_gump();
 
 	// Paint it and its contents.
 	virtual void paint();
-	virtual void close() {
-		done = 1;
-	}
+	virtual void close();
+
 	// Handle events:
 	virtual bool mouse_down(int mx, int my, int button);
 	virtual bool mouse_up(int mx, int my, int button);
 
-	void quit(bool return_to_menu = false);
-	void loadsave();
-	void video_options();
-	void audio_options();
-	void gameplay_options();
-	void misc_options();
-#ifdef __IPHONEOS__
-	void iphone_options();
-#endif
+	void toggle(Gump_button *btn, int state);
+	void build_buttons();
 
-	static void do_exult_menu();
+	void load_settings();
+	void save_settings();
+	void cancel();
 };
 
+#endif
 #endif

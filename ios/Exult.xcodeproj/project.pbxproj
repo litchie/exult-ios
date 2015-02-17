@@ -11,6 +11,7 @@
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		28FD15000DC6FC520079059D /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD14FF0DC6FC520079059D /* OpenGLES.framework */; };
 		28FD15080DC6FC5B0079059D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD15070DC6FC5B0079059D /* QuartzCore.framework */; };
+		8AD4A9311A92B9DB0004762D /* iphoneOptions_gump.cc in Sources */ = {isa = PBXBuildFile; fileRef = 8AD4A92F1A92B9DB0004762D /* iphoneOptions_gump.cc */; };
 		E700DBBA1A6E2CE7006C8BE4 /* Audio.cc in Sources */ = {isa = PBXBuildFile; fileRef = E700DB001A6E2CE7006C8BE4 /* Audio.cc */; };
 		E700DBBB1A6E2CE7006C8BE4 /* AudioChannel.cc in Sources */ = {isa = PBXBuildFile; fileRef = E700DB021A6E2CE7006C8BE4 /* AudioChannel.cc */; };
 		E700DBBC1A6E2CE7006C8BE4 /* AudioMixer.cc in Sources */ = {isa = PBXBuildFile; fileRef = E700DB041A6E2CE7006C8BE4 /* AudioMixer.cc */; };
@@ -337,6 +338,8 @@
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		28FD14FF0DC6FC520079059D /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		28FD15070DC6FC5B0079059D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		8AD4A92F1A92B9DB0004762D /* iphoneOptions_gump.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = iphoneOptions_gump.cc; path = ../gumps/iphoneOptions_gump.cc; sourceTree = "<group>"; };
+		8AD4A9301A92B9DB0004762D /* iphoneOptions_gump.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = iphoneOptions_gump.h; path = ../gumps/iphoneOptions_gump.h; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E700DB001A6E2CE7006C8BE4 /* Audio.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Audio.cc; sourceTree = "<group>"; };
 		E700DB011A6E2CE7006C8BE4 /* Audio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Audio.h; sourceTree = "<group>"; };
@@ -1460,6 +1463,8 @@
 		E700DE351A6E3478006C8BE4 /* gumps */ = {
 			isa = PBXGroup;
 			children = (
+				8AD4A92F1A92B9DB0004762D /* iphoneOptions_gump.cc */,
+				8AD4A9301A92B9DB0004762D /* iphoneOptions_gump.h */,
 				E700DE361A6E3497006C8BE4 /* Actor_gump.cc */,
 				E700DE371A6E3497006C8BE4 /* Actor_gump.h */,
 				E700DE381A6E3497006C8BE4 /* AudioOptions_gump.cc */,
@@ -2075,6 +2080,7 @@
 				E700DE331A6E344D006C8BE4 /* scale_point.cc in Sources */,
 				E700DE941A6E3497006C8BE4 /* Notebook_gump.cc in Sources */,
 				E700DBC21A6E2CE7006C8BE4 /* Midi.cc in Sources */,
+				8AD4A9311A92B9DB0004762D /* iphoneOptions_gump.cc in Sources */,
 				E700DC141A6E2CE7006C8BE4 /* timidity_output.cpp in Sources */,
 				E700DBBB1A6E2CE7006C8BE4 /* AudioChannel.cc in Sources */,
 				E700DD8B1A6E3161006C8BE4 /* crc.cc in Sources */,

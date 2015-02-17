@@ -27,6 +27,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "VideoOptions_gump.h"
 #include "GameplayOptions_gump.h"
 #include "MiscOptions_gump.h"
+#ifdef __IPHONEOS__
+#include "iphoneOptions_gump.h"
+#endif
 #include "Gump_button.h"
 #include "Yesno_gump.h"
 #include "gamewin.h"
@@ -52,6 +55,9 @@ static const char *gameopttext = "Gameplay Options";
 static const char *misctext = "Misc Options";
 static const char *quitmenutext = "Quit to Menu";
 static const char *quittext = "Quit";
+#ifdef __IPHONEOS__
+static const char *iphonetext = "iOS Options";
+#endif
 
 class Gamemenu_button : public Text_button {
 public:
@@ -79,6 +85,10 @@ bool Gamemenu_button::activate(int button) {
 		reinterpret_cast<Gamemenu_gump *>(parent)->quit(true);
 	} else if (text == quittext) {
 		reinterpret_cast<Gamemenu_gump *>(parent)->quit(false);
+#ifdef __IPHONEOS__
+	}else if (text == iphonetext) {
+		reinterpret_cast<Gamemenu_gump *>(parent)->iphone_options();
+#endif
 	}
 	return true;
 }
@@ -97,6 +107,8 @@ Gamemenu_gump::Gamemenu_gump() : Modal_gump(0, EXULT_FLX_GAMEMENU_SHP, SF_EXULT_
 	buttons[4] = new Gamemenu_button(this, misctext, colx, rowy[y++]);
 #ifndef __IPHONEOS__
 	if (!gwin->is_in_exult_menu()) buttons[5] = new Gamemenu_button(this, quittext, colx, rowy[y++]);
+#else
+	buttons[5] = new Gamemenu_button(this, iphonetext, colx, rowy[y++]);
 #endif
 }
 
@@ -159,6 +171,14 @@ void Gamemenu_gump::misc_options() {
 	gumpman->do_modal_gump(cbt_opts, Mouse::hand);
 	delete cbt_opts;
 }
+
+#ifdef __IPHONEOS__
+void Gamemenu_gump::iphone_options() {
+	iphoneOptions_gump *ios_opts = new iphoneOptions_gump();
+	gumpman->do_modal_gump(ios_opts, Mouse::hand);
+	delete ios_opts;
+}
+#endif
 
 void Gamemenu_gump::paint() {
 	Gump::paint();

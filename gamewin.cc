@@ -476,6 +476,21 @@ Game_window::Game_window(
 	scroll_with_mouse = str == "yes";
 	config->set("config/gameplay/scroll_with_mouse",
 	            scroll_with_mouse ? "yes" : "no", false);
+#ifdef __IPHONEOS__
+	config->value("config/iphoneos/item_menu", str, "yes");
+	item_menu = str == "yes";
+	config->set("config/iphoneos/item_menu", item_menu ? "yes" : "no", false);
+	config->value("config/iphoneos/dpad_location", str, "right");
+	if (str == "no")
+		dpad_location = 0;
+	else if (str == "left")
+		dpad_location = 1;
+	else {
+		str = "right";
+		dpad_location = 2;
+	}
+	config->set("config/iphoneos/dpad_location", str, false);
+#endif
 	config->write_back();
 }
 
@@ -2104,9 +2119,11 @@ void Game_window::show_items(
 		obj = find_object(x, y);
 	}
 #ifdef __IPHONEOS__
+	string yn;
+	config->value("config/iphoneos/item_menu", yn, "yes");
 	Game_object_map_xy mobjxy;
 	find_nearby_objects(&mobjxy, x, y, gump);
-	if (mobjxy.size() > 0) {
+	if ((mobjxy.size() > 0) && (yn == "yes")) {
 		Itemmenu_gump *itemgump = new Itemmenu_gump(&mobjxy, x, y);
 		Game_window::get_instance()->get_gump_man()->do_modal_gump(itemgump, Mouse::hand);
 		itemgump->postCloseActions();
