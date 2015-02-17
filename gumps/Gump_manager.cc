@@ -182,6 +182,10 @@ bool Gump_manager::close_gump(Gump *gump) {
 	if (dragged == gump)
 		gwin->stop_dragging();
 	delete gump;
+#ifdef __IPHONEOS__
+	if (non_persistent_count == 0)
+		touchui->showGameControls();
+#endif
 	return ret;
 }
 
@@ -299,6 +303,9 @@ void Gump_manager::add_gump(
 
 	// Paint new one last.
 	add_gump(new_gump);
+#ifdef __IPHONEOS__
+	touchui->hideGameControls();
+#endif
 	if (++cnt == 8)
 		cnt = 0;
 	int sfx = Audio::game_sfx(14);
@@ -619,6 +626,7 @@ int Gump_manager::do_modal_gump(
 	gkeyboard->paint();
 #endif
 #ifdef __IPHONEOS__
+	touchui->hideGameControls();
 	gkeybb->paint();
 #endif
 	do {
@@ -658,6 +666,10 @@ int Gump_manager::do_modal_gump(
 
 	if (!modal_gump_count)
 		SDL_EnableUNICODE(0);
+#ifdef __IPHONEOS__	
+	if (!modal_gump_count && non_persistent_count == 0)
+		touchui->showGameControls();
+#endif
 
 	return (!escaped);
 }
