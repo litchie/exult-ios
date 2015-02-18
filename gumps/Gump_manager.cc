@@ -667,7 +667,7 @@ int Gump_manager::do_modal_gump(
 	if (!modal_gump_count)
 		SDL_EnableUNICODE(0);
 #ifdef __IPHONEOS__	
-	if (!modal_gump_count && non_persistent_count == 0)
+	if (!modal_gump_count && non_persistent_count == 0 && !gwin->is_in_exult_menu())
 		touchui->showGameControls();
 #endif
 
