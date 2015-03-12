@@ -2124,7 +2124,15 @@ void Game_window::show_items(
 	Game_object_map_xy mobjxy;
 	find_nearby_objects(&mobjxy, x, y, gump);
 	if ((mobjxy.size() > 0) && (yn == "yes")) {
-		Itemmenu_gump *itemgump = new Itemmenu_gump(&mobjxy, x, y);
+		// Make sure menu is visible on the screen
+		int w = Game_window::get_instance()->get_width();
+		int h = Game_window::get_instance()->get_height();
+		int left = w - 100;
+		int top = h - (int)mobjxy.size()*25;
+		if (left > x) left = x;
+		if (top > y) top = y;
+		
+		Itemmenu_gump *itemgump = new Itemmenu_gump(&mobjxy, left, top);
 		Game_window::get_instance()->get_gump_man()->do_modal_gump(itemgump, Mouse::hand);
 		itemgump->postCloseActions();
 		delete itemgump;

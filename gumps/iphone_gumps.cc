@@ -242,7 +242,10 @@ bool Itemmenu_gump::mouse_down(int mx, int my, int button) {
 
 bool Itemmenu_gump::mouse_up(int mx, int my, int button) {
 	// Not Pushing a button?
-	if (!pushed) return false;
+	if (!pushed) {
+		close();
+		return false;
+	}
 
 	if (pushed->get_pushed() != button) return button == 1;
 
@@ -291,12 +294,23 @@ void Itemmenu_gump::postCloseActions() {
 					gwin->drop_dragged(tmpX, tmpY, true);
 		break;
 	case ITEMMENU_ACTION_NONE:
+	{
+		// Make sure menu is visible on the screen
+		int w = Game_window::get_instance()->get_width();
+		int h = Game_window::get_instance()->get_height();
+		int left = w - 100;
+		int top = h - 100;
+		if (left > x) left = x;
+		if (top > y) top = y;
+	
 		// This will draw a selection menu for the object
-		itemgump = new Itemmenu_gump(objectSelected, objectSelectedClickXY[0], objectSelectedClickXY[1], x, y);
+		itemgump = new Itemmenu_gump(objectSelected, objectSelectedClickXY[0], objectSelectedClickXY[1], left, top);
 		Game_window::get_instance()->get_gump_man()->do_modal_gump(itemgump, Mouse::hand);
 		itemgump->postCloseActions();
 		delete itemgump;
 		break;
+	}
+	
 	case ITEMMENU_ACTION_MENU:
 		break;
 	}
