@@ -2,6 +2,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import "GamePadView.h"
+#include "Configuration.h"
 
 #include <cassert>
 
@@ -77,18 +78,42 @@ extern "C" int SDL_SendKeyboardKey(Uint8 state, SDL_Scancode scancode);
 	[alert release];
 }
 
+- (CGRect)calcRectForDPad
+{
+	UIWindow *window = [[[UIApplication sharedApplication] delegate] window];
+	UIViewController *controller = window.rootViewController;
+	CGRect rcScreen = controller.view.bounds;
+	CGSize sizeDpad = CGSizeMake(180, 180);
+	float margin_bottom = 30;
+
+	std::string str;
+	float left = rcScreen.size.width - sizeDpad.width;
+	config->value("config/iphoneos/dpad_location", str, "right");
+	if (str == "no") {
+		return CGRectZero;
+	} else if (str == "left") {
+		left = 0;
+	}
+	CGRect rcDpad = CGRectMake(
+		left,
+		rcScreen.size.height-sizeDpad.height-margin_bottom,
+		sizeDpad.width,
+		sizeDpad.height);
+	return rcDpad;
+}
+
+- (void)onDpadLocationChanged
+{
+	dpad.frame = [self calcRectForDPad];
+}
+
 - (void)showGameControls
 {
 	if (dpad == nil) {
 		UIWindow *window = [[[UIApplication sharedApplication] delegate] window];
 		UIViewController *controller = window.rootViewController;
 		CGRect rcScreen = controller.view.bounds;
-		CGSize sizeDpad = CGSizeMake(180, 180);
-		CGRect rcDpad = CGRectMake(
-			rcScreen.size.width-sizeDpad.width,
-			rcScreen.size.height-sizeDpad.height,
-			sizeDpad.width, sizeDpad.height);
-		dpad = [[DPadView alloc] initWithFrame:rcDpad];
+		dpad = [[DPadView alloc] initWithFrame:[self calcRectForDPad]];
 		dpad.images = @[
 			[UIImage imageNamed:@"dpadglass.png"],
 			[UIImage imageNamed:@"dpadglass-east.png"],
@@ -158,6 +183,10 @@ void TouchUI_iOS::hideGameControls()
 	[_defaultManager hideGameControls];
 }
 
+void TouchUI_iOS::onDpadLocationChanged()
+{
+	[_defaultManager onDpadLocationChanged];
+}
 
 /* ---------------------------------------------------------------------- */
 

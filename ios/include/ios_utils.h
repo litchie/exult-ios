@@ -9,6 +9,7 @@ public:
 	void promptForName(const char *name);
 	void showGameControls();
 	void hideGameControls();
+	void onDpadLocationChanged();
 };
 
 const char* ios_get_documents_dir();

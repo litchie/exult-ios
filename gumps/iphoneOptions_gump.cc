@@ -170,6 +170,8 @@ void iphoneOptions_gump::save_settings() {
 	config->set("config/iphoneos/dpad_location", dpad_texts[dpad_location], false);
 
 	config->write_back();
+	
+	touchui->onDpadLocationChanged();
 }
 
 void iphoneOptions_gump::paint() {

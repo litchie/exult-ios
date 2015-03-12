@@ -17,6 +17,7 @@ public:
 	virtual void promptForName(const char *name)=0;
 	virtual void showGameControls()=0;
 	virtual void hideGameControls()=0;
+	virtual void onDpadLocationChanged()=0;
 };
 
 #endif
