@@ -357,7 +357,7 @@ void Frame_animator::Initialize() {
 	if (aniinf->get_type() == Animation_info::FA_TIMESYNCHED)
 		created = currpos = last_frame % nframes;
 	else
-		created = currpos = 0;
+		created = currpos = last_frame - first_frame;
 	// Add rotate flag back.
 	first_frame |= rotflag;
 	last_frame |= rotflag;
