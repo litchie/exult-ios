@@ -1,6 +1,8 @@
 2015-03-17	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* objs/animate.cc, shapes/shapeinf/aniinf.cc: Fixed bug #1909 "[BG] Minoc
 	  sawmill messed up".
+	* content/bgkeyring/src/npcs/{gordon.uc,tory.uc}: Fixed bug #1907 "[BG+FoV+
+	  BG Keyring] tory.uc & gordon.uc".
 
 2015-01-27	Malignant Manor <malignantmanor@users.sourceforge.net>
 	objs/egg.cc: Remove r7474 changes to Weather eggs due to crash on exit and
