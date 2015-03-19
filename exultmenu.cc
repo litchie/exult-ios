@@ -611,7 +611,7 @@ BaseGameInfo *ExultMenu::run() {
 		break;
 		case -1: // Exit
 #ifdef __IPHONEOS__
-			ios_open_url("http://exult.sourceforge.net/docs.php");
+			ios_open_url("http://exult.sourceforge.net/docs.php#iOS%20Guide");
 			break;
 #else
 			gpal->fade_out(c_fade_out_time);
