@@ -10,7 +10,7 @@ Install
 =======
 
 - Install the Gimp (example: C:\Program Files\GIMP 2)
-- execute Gimp20Plugin.exe and choose C:\Program Files\GIMP 2\lib\gimp2\2.0\plug-ins (if you installed the Gimp somewhere else, change accordingly) for extract path. If you extracted the file to some other directory copy u7shp.exe into that directory
+- execute Gimp20Plugin.exe and choose C:\Program Files\GIMP 2\lib\gimp\2.0\plug-ins (if you installed the Gimp somewhere else, change accordingly) for extract path. If you extracted the file to some other directory copy u7shp.exe into that directory
 
 
 Usage
