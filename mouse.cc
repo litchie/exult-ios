@@ -43,7 +43,7 @@ using std::max;
 #endif
 
 #ifdef __IPHONEOS__
-#define SHOULD_HIDE_ON_IOS(a) ((a) == 0 || ((a)>=8 && (a)<= 31))
+#define SHOULD_HIDE_ON_IOS(a) ((a) == 0 || ((a)>=8 && (a)<= 47))
 #endif
 
 short Mouse::short_arrows[8] = {8, 9, 10, 11, 12, 13, 14, 15};
