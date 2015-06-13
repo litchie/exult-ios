@@ -107,6 +107,21 @@ extern "C" int SDL_SendKeyboardKey(Uint8 state, SDL_Scancode scancode);
 	dpad.frame = [self calcRectForDPad];
 }
 
+
+- (GamePadButton*)createButton:(NSString*)title keycode:(int)keycode rect:(CGRect)rect
+{
+	GamePadButton *btn = [[GamePadButton alloc] initWithFrame:rect];
+	btn.keyCodes = @[@(keycode)];
+	btn.images = @[
+		[UIImage imageNamed:@"btn.png"],
+		[UIImage imageNamed:@"btnpressed.png"],
+	];
+	btn.textColor = [UIColor whiteColor];
+	btn.title = title;
+	btn.delegate = self;
+	return btn;
+}
+
 - (void)showGameControls
 {
 	if (dpad == nil) {
@@ -128,15 +143,10 @@ extern "C" int SDL_SendKeyboardKey(Uint8 state, SDL_Scancode scancode);
 		dpad.keyInput = self;
 		[controller.view addSubview:dpad];
 		CGSize sizeButton = CGSizeMake(60,30);
-		CGRect rcButton1 = CGRectMake(10, rcScreen.size.height-sizeButton.height, sizeButton.width, sizeButton.height);
-		btn1 = [[GamePadButton alloc] initWithFrame:rcButton1];
-		btn1.keyCodes = @[@(SDL_SCANCODE_ESCAPE)];
-		btn1.images = @[
-			[UIImage imageNamed:@"btn.png"],
-			[UIImage imageNamed:@"btnpressed.png"],
-		];
-		btn1.title = @"MENU";
-		btn1.delegate = self;
+		
+		CGRect rcButton = CGRectMake(10, rcScreen.size.height-sizeButton.height, sizeButton.width, sizeButton.height);
+		btn1 = [self createButton:@"ESC" keycode:(int)SDL_SCANCODE_ESCAPE rect:rcButton];
+
 		[controller.view addSubview:btn1];
 	}
 	dpad.alpha = 1;
