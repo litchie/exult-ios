@@ -101,7 +101,7 @@ extern class clsTouchscreen *Touchscreen;
 #ifdef __IPHONEOS__
 #include "iphone_gumps.h"
 #include "ios_utils.h"
-extern class KeyboardButton_gump *gkeybb;
+extern class ShortcutBar_gump *g_shortcutBar;
 extern class TouchUI *touchui;
 #endif
 

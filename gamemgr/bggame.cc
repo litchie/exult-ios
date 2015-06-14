@@ -1841,9 +1841,7 @@ bool BG_Game::new_game(Vga_file &shapes) {
 	gkeyboard->autopaint = false;
 	gkeyboard->minimize();
 #endif
-#ifdef __IPHONEOS__
-	gkeybb->autopaint = false;
-#endif
+
 	do {
 		Delay();
 		if (redraw || GL_manager::get_instance()) {
@@ -2043,9 +2041,6 @@ bool BG_Game::new_game(Vga_file &shapes) {
 #ifdef UNDER_CE
 		gkeyboard->minimize();
 		gkeyboard->autopaint = true;
-#endif
-#ifdef __IPHONEOS__
-		gkeybb->autopaint = true;
 #endif
 		set_avskin(skindata->skin_id);
 		set_avname(npc_name);

@@ -427,7 +427,7 @@ void Gump_manager::paint(bool modal) {
 	gkeyboard->paint();
 #endif
 #ifdef __IPHONEOS__
-	gkeybb->paint();
+	g_shortcutBar->paint();
 #endif
 }
 
@@ -478,7 +478,7 @@ int Gump_manager::handle_modal_gump_event(
 			break;
 #endif
 #ifdef __IPHONEOS__
-		if (gkeybb->handle_event(&event))
+		if (g_shortcutBar->handle_event(&event))
 			break;
 #endif
 		if (event.button.button == 1) {
@@ -506,7 +506,7 @@ int Gump_manager::handle_modal_gump_event(
 			break;
 #endif
 #ifdef __IPHONEOS__
-		if (gkeybb->handle_event(&event))
+		if (g_shortcutBar->handle_event(&event))
 			break;
 #endif
 		if (event.button.button != 3)
@@ -627,7 +627,7 @@ int Gump_manager::do_modal_gump(
 #endif
 #ifdef __IPHONEOS__
 	touchui->hideGameControls();
-	gkeybb->paint();
+	g_shortcutBar->paint();
 #endif
 	do {
 		Delay();        // Wait a fraction of a second.
@@ -650,7 +650,7 @@ int Gump_manager::do_modal_gump(
 		gkeyboard->paint();
 #endif
 #ifdef __IPHONEOS__
-		gkeybb->paint();
+		g_shortcutBar->paint();
 #endif
 	} while (!gump->is_done() && !escaped);
 	Mouse::mouse->hide();

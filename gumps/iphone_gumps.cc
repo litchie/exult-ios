@@ -33,81 +33,286 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "exult_iphone_flx.h"
 #include "keyactions.h"
 #include "gamewin.h"
+#include "game.h"
 #include "shapeid.h"
 #include "actors.h"
 #include <string>
-
+#include "Gamemenu_gump.h"
 #include "Gump_manager.h"
 #include "Gump_button.h"
 #include "exult_flx.h"
 #include "gamewin.h"
 #include "Text_button.h"
+#include "cheat.h"
 
 using std::string;
 using std::cout;
 using std::endl;
 
-KeyboardButton_gump::KeyboardButton_gump(int placex, int placey) {
-	autopaint = true;
-	iphone_vga.load(BUNDLE_CHECK(BUNDLE_IPHONE_FLX, IPHONE_FLX));
-	width = iphone_vga.get_shape(EXULT_IPHONE_FLX_KEYBOARDBUTTON_SHP, 0)->get_width();
-	height = iphone_vga.get_shape(EXULT_IPHONE_FLX_KEYBOARDBUTTON_SHP, 0)->get_height();
+/*
+ * To align button shapes vertically, we need to micro-manage the shapeOffsetY
+ * values to shift shapes up or down.
+ */
+void ShortcutBar_gump::createButtons()
+{
+	int x = 0;
+	int barItemWidth = 40;
+	
+	memset(buttonItems, 0, sizeof(buttonItems));
+	
+	buttonItems[0].shapeId = new ShapeID(24, 0, SF_GUMPS_VGA);
+	buttonItems[0].name = "disk";
+	buttonItems[0].type = SB_ITEM_DISK;
+	
+	buttonItems[1].shapeId = new ShapeID(46, 1, SF_GUMPS_VGA);
+	buttonItems[1].name = "toggle combat";
+	buttonItems[1].type = SB_ITEM_TOGGLE_COMBAT;
+	buttonItems[1].shapeOffsetY = 5;
+	
+	buttonItems[2].shapeId = new ShapeID(178, 0, SF_SHAPES_VGA);
+	buttonItems[2].name = "map";
+	buttonItems[2].type = SB_ITEM_MAP;
+	
+	buttonItems[3].shapeId = new ShapeID(761, 0, SF_SHAPES_VGA);
+	buttonItems[3].name = "spellbook";
+	buttonItems[3].type = SB_ITEM_SPELLBOOK;
+	
+	buttonItems[4].shapeId = new ShapeID(801, 0, SF_SHAPES_VGA);
+	buttonItems[4].name = "backpack";
+	buttonItems[4].type = SB_ITEM_BACKPACK;
+	
+	buttonItems[5].shapeId = new ShapeID(641, 2, SF_SHAPES_VGA);
+	buttonItems[5].name = "key";
+	buttonItems[5].type = SB_ITEM_KEY;
+	buttonItems[5].shapeOffsetY = -5;
+	
+	buttonItems[6].shapeId = new ShapeID(642, 7, SF_SHAPES_VGA);
+	buttonItems[6].name = "notebook";
+	buttonItems[6].type = SB_ITEM_NOTEBOOK;
+	buttonItems[6].shapeOffsetY = -4;
+	
+	buttonItems[7].shapeId = new ShapeID(EXULT_FLX_POINTERS_SHP, 0, SF_EXULT_FLX);
+	buttonItems[7].name = "target";
+	buttonItems[7].type = SB_ITEM_TARGET;
+	buttonItems[7].shapeOffsetY = -12;
+	
+	numButtons = 8;
+	
+	for (int i = 0; i < numButtons; i++, x += barItemWidth) {
+		Shape_frame*frame = buttonItems[i].shapeId->get_shape();
+		
+		int left = (barItemWidth-frame->get_width())/2;
+		int top = (height-frame->get_height())/2;
+		buttonItems[i].shapeOffsetX += frame->get_xleft() + left;
+		buttonItems[i].shapeOffsetY += -5 + top;
+		buttonItems[i].rect = new Rectangle(x, 0, barItemWidth, height);
+	}
+	
+}
+
+void ShortcutBar_gump::deleteButtons()
+{
+	for (int i = 0; i < numButtons; i++) {
+		delete buttonItems[i].shapeId;
+		delete buttonItems[i].rect;
+	}
+}
+
+/*
+ * Construct a shortcut bar gump at the top of screen.
+ * Also register it to gump manager.
+ * This gump is persistent, not draggable.
+ * There must be only one shortcut bar in the game.
+ */
+ShortcutBar_gump::ShortcutBar_gump(int placex, int placey)
+:	Gump(0, placex, placey,/*shape number=*/ EXULT_IPHONE_FLX_TRANSPARENTMENU_SHP, SF_IPHONE_FLX)
+{
+	static bool init = false;
+	assert(init == 0); // Protect against re-entry
+	init = true;
+	
+	width = 320;
+	height = 20;
 	locx = placex;
 	locy = placey;
+
+	createButtons();
+	menu = NULL;
+	gumpman->add_gump(this);
 }
 
-KeyboardButton_gump::~KeyboardButton_gump() {
-
+ShortcutBar_gump::~ShortcutBar_gump()
+{
+	deleteButtons();
+	delete menu;
+	gumpman->close_gump(this);
 }
 
-
-void KeyboardButton_gump::paint() {
-#if 0
+void ShortcutBar_gump::paint()
+{
 	Game_window *gwin = Game_window::get_instance();
 	Shape_manager *sman = Shape_manager::get_instance();
-	sman->paint_shape(locx, locy,
-	                  iphone_vga.get_shape(EXULT_IPHONE_FLX_KEYBOARDBUTTON_SHP, 0), 0);
-	gwin->add_dirty(Rectangle(locx, locy, width + 4, height + 4));
+	
+	Gump::paint();
+	
+	for (int i = 0; i < numButtons; i++) {
+		int x = locx + buttonItems[i].rect->x + buttonItems[i].shapeOffsetX;
+		int y = locy + buttonItems[i].rect->y + buttonItems[i].shapeOffsetY;
+		sman->paint_shape(x, y, buttonItems[i].shapeId->get_shape(), 0);
+	}
+	
 	gwin->set_painted();
-#endif	
 }
 
-int KeyboardButton_gump::handle_event(SDL_Event *event) {
-#if 0
+int ShortcutBar_gump::handle_event(SDL_Event *event)
+{
 	if (event->type == SDL_MOUSEBUTTONDOWN || event->type == SDL_MOUSEBUTTONUP) {
-		void (KeyboardButton_gump::*mouseFunc)(int, int) = &KeyboardButton_gump::mouse_down; // Mouse down by default
-		if (event->type == SDL_MOUSEBUTTONUP)
-			mouseFunc = &KeyboardButton_gump::mouse_up;
 		Game_window *gwin = Game_window::get_instance();
 		int scale = gwin->get_fastmouse() ? 1 : gwin->get_win()->get_scale_factor();
-		int x = event->button.x / scale, y = event->button.y / scale;
-		//std::cout << "x,y: " << x << "," << y << " locx,locy: " << locx << "," << locy << " widthXheight: " << width << "X" << height << std::endl;
-		if (x >= locx && x <= (locx + width)
-		        && y >= locy && y <= (locy + height)) {
-			(*this.*mouseFunc)(x - locx, y - locy);
+		int x = event->button.x / scale;
+		int y = event->button.y / scale;
+
+#if 0
+		std::cout << "clicks:" << (int)event->button.clicks << ", x,y: "
+			<< x << "," << y << " locx,locy: " << locx << "," << locy
+			<< " widthXheight: " << width << "X" << height << std::endl;
+#endif
+		
+		if (x >= locx && x <= (locx + width) && y >= locy && y <= (locy + height)) {
+			if (event->type == SDL_MOUSEBUTTONDOWN) {
+				mouse_down(event, x - locx, y - locy);
+			} else if (event->type == SDL_MOUSEBUTTONUP) {
+				mouse_up(event, x - locx, y - locy);
+			}
 			return 1;
 		}
 	}
-#endif
 	return 0;
 }
 
-void KeyboardButton_gump::mouse_down(int mx, int my) {
-#if 0
-	// Find the SDL window...
-	SDL_Window *window = NULL;
-	unsigned int idWin = -1;
-	while (window == NULL) {
-		idWin++;
-		window = SDL_GetWindowFromID(idWin);
+void ShortcutBar_gump::mouse_down(SDL_Event *event, int mx, int my)
+{
+	int i;
+	for (i = 0; i < numButtons; i++) {
+		if (buttonItems[i].rect->has_point(mx, my))
+			break;
 	}
-	SDL_iPhoneKeyboardToggle(window);
-#endif	
+	if (i == numButtons)
+		return;
+	
+	ShortcutBarButtonItem *item = buttonItems + i;
+	item->pushed = true;
+	
+	lastClickTime = SDL_GetTicks();
 }
 
-void KeyboardButton_gump::mouse_up(int mx, int my) {
 
+void ShortcutBar_gump::mouse_up(SDL_Event *event, int mx, int my)
+{
+	int i;
+	
+	for (i = 0; i < numButtons; i++) {
+		if (buttonItems[i].rect->has_point(mx, my))
+			break;
+	}
+	
+	if (i == numButtons) {
+		goto Done;
+	}
+	
+	/* NOTE: for every double click,
+	 * there is usually a previous single click.
+	 */
+	if (event->button.clicks >= 2) {
+		onItemClicked(i, true);
+	} else {
+		onItemClicked(i, false);
+	}
+	
+Done:
+	for (i = 0; i < numButtons; i++) {
+		buttonItems[i].pushed = false;
+	}
 }
+
+void ShortcutBar_gump::onItemClicked(int index, bool doubleClicked)
+{
+	printf("Item %s is %sclicked\n", buttonItems[index].name, doubleClicked? "double " : "");
+	
+	switch (buttonItems[index].type) {
+		case SB_ITEM_DISK:
+		{
+			if (menu == NULL) {
+				menu = new Gamemenu_gump();
+				gumpman->do_modal_gump(menu, Mouse::hand);
+				delete menu;
+				menu = NULL;
+			}
+			
+			/* 
+			 * Why test `menu` here? Surely it is NULL, right?
+			 * The truth is that this function can be called inside previous
+			 * `do_modal_gump` event loop, so that `menu` instance can be
+			 * perfectly valid when we get to here.
+			 * For example, when a double click event happens,
+			 * we enter the modal loop at the first click,
+			 * on the second click we can open the load/save dialog
+			 * as a short cut way.
+			 */
+			if (menu && doubleClicked) {
+				menu->loadsave();
+			}
+			break;
+		}
+
+		case SB_ITEM_BACKPACK:
+		{
+			break;
+		}
+
+		case SB_ITEM_SPELLBOOK:
+		{
+			break;
+		}
+		
+		case SB_ITEM_NOTEBOOK:
+		{
+			break;
+		}
+		
+		case SB_ITEM_KEY:
+		{
+			break;
+		}
+		
+		case SB_ITEM_MAP:
+		{
+			cheat.map_teleport();
+			break;
+		}
+		
+		case SB_ITEM_TOGGLE_COMBAT:
+		{
+			Game_window *gwin = Game_window::get_instance();
+			gwin->toggle_combat();
+			break;
+		}
+		
+		case SB_ITEM_TARGET:
+		{
+			cheat.cursor_teleport();
+			break;
+		}
+		
+		default:
+		{
+			break;
+		}
+	}
+}
+
+
+/* ------------------------------------------------------- */
 
 class Itemmenu_button : public Text_button {
 public:
@@ -269,7 +474,6 @@ void Itemmenu_gump::postCloseActions() {
 	int avaY = (avaLoc.ty - gwin->get_scrollty()) * c_tilesize;
 	Game_object *tmpObj;
 	int tmpX, tmpY;
-	bool ret;
 
 	switch (objectAction) {
 	case ITEMMENU_ACTION_USE:

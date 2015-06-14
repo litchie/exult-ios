@@ -153,7 +153,7 @@ Keyboard_gump *gkeyboard;
 clsTouchscreen *Touchscreen;
 #endif
 #ifdef __IPHONEOS__
-KeyboardButton_gump *gkeybb;
+ShortcutBar_gump *g_shortcutBar;
 SDL_Joystick *sdl_joy;
 TouchUI *touchui;
 #endif
@@ -724,7 +724,6 @@ int exult_main(const char *runpath) {
 	Touchscreen = new clsTouchscreen();
 #endif
 #ifdef __IPHONEOS__
-	gkeybb = new KeyboardButton_gump();
 	touchui = new TouchUI_iOS();
 #endif
 	Init();             // Create main window.
@@ -742,8 +741,10 @@ int exult_main(const char *runpath) {
 	gkeyboard->minimize();
 	gkeyboard->autopaint = true;
 #endif
+
 #ifdef __IPHONEOS__
-	//gkeybb->autopaint = true;
+	g_shortcutBar = new ShortcutBar_gump(0,0);
+	
 	touchui->showGameControls();
 #endif
 
@@ -1441,7 +1442,7 @@ static void Handle_event(
 		Touchscreen->handle_event(&event);
 #endif
 #ifdef __IPHONEOS__
-		if (gkeybb->handle_event(&event))
+		if (g_shortcutBar->handle_event(&event))
 			break;
 #endif
 		int x, y;
@@ -1534,6 +1535,10 @@ static void Handle_event(
 		if (gkeyboard->handle_event(&event))
 			break;
 		Touchscreen->handle_event(&event);
+#endif
+#ifdef __IPHONEOS__
+		if (g_shortcutBar->handle_event(&event))
+			break;
 #endif
 		int x , y;
 		gwin->get_win()->screen_to_game(event.button.x, event.button.y, gwin->get_fastmouse(), x, y);
@@ -1831,8 +1836,8 @@ static int Get_click(
 				Touchscreen->handle_event(&event);
 #endif
 #ifdef __IPHONEOS__
-				if (gkeybb->handle_event(&event))
-					break;
+			if (g_shortcutBar->handle_event(&event))
+				break;
 #endif
 				if (event.button.button == 3)
 					rightclick = true;
@@ -1849,7 +1854,7 @@ static int Get_click(
 				Touchscreen->handle_event(&event);
 #endif
 #ifdef __IPHONEOS__
-				if (gkeybb->handle_event(&event))
+				if (g_shortcutBar->handle_event(&event))
 					break;
 #endif
 				if (event.button.button == 1) {

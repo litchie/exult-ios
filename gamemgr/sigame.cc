@@ -1253,9 +1253,7 @@ bool SI_Game::new_game(Vga_file &shapes) {
 	gkeyboard->autopaint = false;
 	gkeyboard->minimize();
 #endif
-#ifdef __IPHONEOS__
-	gkeybb->autopaint = false;
-#endif
+
 	do {
 		Delay();
 #ifdef HAVE_OPENGL
@@ -1452,9 +1450,7 @@ bool SI_Game::new_game(Vga_file &shapes) {
 		gkeyboard->minimize();
 		gkeyboard->autopaint = true;
 #endif
-#ifdef __IPHONEOS__
-		gkeybb->autopaint = true;
-#endif
+
 		set_avskin(skindata->skin_id);
 		set_avname(npc_name);
 		set_avsex(skindata->is_female);

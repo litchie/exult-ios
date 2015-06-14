@@ -539,7 +539,7 @@ void Game_window::paint_dirty() {
 	gkeyboard->paint();
 #endif
 #ifdef __IPHONEOS_
-	gkeybb->paint();
+	g_shortcutBar->paint();
 #endif
 }
 

@@ -24,9 +24,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "SDL.h"
 #include "gamewin.h"
 #include "../objs/objs.h"
-
+#include "misc_buttons.h"
 #include "Modal_gump.h"
 #include <string>
+#include "Gamemenu_gump.h"
 
 using std::string;
 
@@ -35,18 +36,62 @@ extern "C" int SDLCALL SDL_iPhoneKeyboardHide(SDL_Window *window);
 extern "C" SDL_bool SDLCALL SDL_iPhoneKeyboardIsShown(SDL_Window *window);
 extern "C" int SDLCALL SDL_iPhoneKeyboardToggle(SDL_Window *window);
 
-class KeyboardButton_gump {
+/* -------------------------------------------- */
+
+typedef enum {
+	SB_ITEM_DISK,
+	SB_ITEM_TOGGLE_COMBAT,
+	SB_ITEM_MAP,
+	SB_ITEM_SPELLBOOK,
+	SB_ITEM_BACKPACK,
+	SB_ITEM_KEY,
+	SB_ITEM_NOTEBOOK,
+	SB_ITEM_TARGET,
+} ShortcutBarButtonItemType;
+
+struct ShortcutBarButtonItem {
+	const char *name;
+	ShortcutBarButtonItemType type;
+	ShapeID *shapeId;
+	Rectangle *rect; /* coordinate values related to shortcut bar */
+	int shapeOffsetX;
+	int shapeOffsetY;
+	bool pushed;
+};
+
+#define MAX_SHORTCUT_BAR_ITEMS 10
+
+class ShortcutBar_gump: public Gump {
 public:
-	KeyboardButton_gump(int placex = 0, int placey = 0);
-	~KeyboardButton_gump();
+	ShortcutBar_gump(int placex = 0, int placey = 0);
+	~ShortcutBar_gump();
 	int handle_event(SDL_Event *event);
 	void paint();
-	bool autopaint;
 
+	// Don't close on end_gump_mode
+	virtual bool is_persistent() const {
+		return true;
+	}
+	// Can't be dragged with mouse
+	virtual bool is_draggable() const {
+		return false;
+	}
+	// Show the hand cursor
+	virtual bool no_handcursor() const {
+		return true;
+	}
+	
 private:
-	Vga_file iphone_vga;
-	void mouse_down(int mx, int my);
-	void mouse_up(int mx, int my);
+	ShortcutBarButtonItem buttonItems[MAX_SHORTCUT_BAR_ITEMS];
+	int numButtons;
+	uint32_t lastClickTime;
+	Gamemenu_gump *menu;
+	
+	void createButtons();
+	void deleteButtons();
+	void onItemClicked(int index, bool doubleClicked);
+	void mouse_down(SDL_Event *event, int mx, int my);
+	void mouse_up(SDL_Event *event, int mx, int my);
 
 	int locx;
 	int locy;
@@ -57,6 +102,7 @@ private:
 class Gump_button;
 typedef std::vector<Gump_button *> Gump_button_vector;
 typedef std::map<Game_object *, int *> Game_object_map_xy;
+
 
 enum ITEMMENU_ACTIONS { ITEMMENU_ACTION_NONE, ITEMMENU_ACTION_MENU, ITEMMENU_ACTION_USE, ITEMMENU_ACTION_PICKUP, ITEMMENU_ACTION_MOVE, ITEMMENU_ACTION_COUNT };
 class Itemmenu_gump : public Modal_gump {
