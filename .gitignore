@@ -20,3 +20,5 @@ ltmain.sh
 ylwrap
 
 stamp-h1
+
+*.in
