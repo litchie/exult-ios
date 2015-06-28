@@ -60,11 +60,17 @@ void ShortcutBar_gump::createButtons()
 	
 	memset(buttonItems, 0, sizeof(buttonItems));
 	
-	buttonItems[0].shapeId = new ShapeID(24, 0, SF_GUMPS_VGA);
+	if (GAME_SI)
+		buttonItems[0].shapeId = new ShapeID(19, 0, SF_GUMPS_VGA);
+	else
+		buttonItems[0].shapeId = new ShapeID(24, 0, SF_GUMPS_VGA);
 	buttonItems[0].name = "disk";
 	buttonItems[0].type = SB_ITEM_DISK;
 	
-	buttonItems[1].shapeId = new ShapeID(46, 1, SF_GUMPS_VGA);
+	if (GAME_SI)
+		buttonItems[1].shapeId = new ShapeID(41, 1, SF_GUMPS_VGA);
+	else
+		buttonItems[1].shapeId = new ShapeID(46, 1, SF_GUMPS_VGA);
 	buttonItems[1].name = "toggle combat";
 	buttonItems[1].type = SB_ITEM_TOGGLE_COMBAT;
 	buttonItems[1].shapeOffsetY = 5;
@@ -81,20 +87,19 @@ void ShortcutBar_gump::createButtons()
 	buttonItems[4].name = "backpack";
 	buttonItems[4].type = SB_ITEM_BACKPACK;
 	
-	buttonItems[5].shapeId = new ShapeID(641, 2, SF_SHAPES_VGA);
+	buttonItems[5].shapeId = new ShapeID(641, 28, SF_SHAPES_VGA);
 	buttonItems[5].name = "key";
 	buttonItems[5].type = SB_ITEM_KEY;
-	buttonItems[5].shapeOffsetY = -5;
 	
 	buttonItems[6].shapeId = new ShapeID(642, 7, SF_SHAPES_VGA);
 	buttonItems[6].name = "notebook";
 	buttonItems[6].type = SB_ITEM_NOTEBOOK;
 	buttonItems[6].shapeOffsetY = -4;
 	
-	buttonItems[7].shapeId = new ShapeID(EXULT_FLX_POINTERS_SHP, 0, SF_EXULT_FLX);
+	buttonItems[7].shapeId = new ShapeID(19, 0, SF_SPRITES_VGA);
 	buttonItems[7].name = "target";
 	buttonItems[7].type = SB_ITEM_TARGET;
-	buttonItems[7].shapeOffsetY = -12;
+	buttonItems[7].shapeOffsetY = -6;
 	
 	numButtons = 8;
 	
