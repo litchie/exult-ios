@@ -56,7 +56,6 @@ using std::endl;
 void ShortcutBar_gump::createButtons()
 {
 	int x = 0;
-	int barItemWidth = 40;
 	
 	memset(buttonItems, 0, sizeof(buttonItems));
 	
@@ -101,8 +100,18 @@ void ShortcutBar_gump::createButtons()
 	buttonItems[7].type = SB_ITEM_TARGET;
 	buttonItems[7].shapeOffsetY = -6;
 	
-	numButtons = 8;
-	
+	if (GAME_SI){
+		buttonItems[8].shapeId = new ShapeID(555, 0, SF_SHAPES_VGA);
+		buttonItems[8].name = "jawbone";
+		buttonItems[8].type = SB_ITEM_JAWBONE;
+
+		numButtons = 9;
+	}
+	else
+		numButtons = 8;
+
+	int barItemWidth = (320/numButtons);
+
 	for (int i = 0; i < numButtons; i++, x += barItemWidth) {
 		Shape_frame*frame = buttonItems[i].shapeId->get_shape();
 		
@@ -306,6 +315,11 @@ void ShortcutBar_gump::onItemClicked(int index, bool doubleClicked)
 		case SB_ITEM_TARGET:
 		{
 			cheat.cursor_teleport();
+			break;
+		}
+		
+		case SB_ITEM_JAWBONE:
+		{
 			break;
 		}
 		

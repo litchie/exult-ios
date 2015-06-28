@@ -47,6 +47,7 @@ typedef enum {
 	SB_ITEM_KEY,
 	SB_ITEM_NOTEBOOK,
 	SB_ITEM_TARGET,
+	SB_ITEM_JAWBONE,
 } ShortcutBarButtonItemType;
 
 struct ShortcutBarButtonItem {
