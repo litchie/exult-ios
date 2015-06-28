@@ -281,27 +281,34 @@ void ShortcutBar_gump::onItemClicked(int index, bool doubleClicked)
 
 		case SB_ITEM_BACKPACK:
 		{
+			//ActionInventory
 			break;
 		}
 
 		case SB_ITEM_SPELLBOOK:
 		{
+			gwin->activate_item(761);
 			break;
 		}
 		
 		case SB_ITEM_NOTEBOOK:
 		{
+			//ActionNotebook
 			break;
 		}
 		
 		case SB_ITEM_KEY:
 		{
+			//ActionTryKeys
 			break;
 		}
 		
 		case SB_ITEM_MAP:
 		{
-			cheat.map_teleport();
+			if (doubleClicked)
+				cheat.map_teleport();
+			else
+				gwin->activate_item(178);
 			break;
 		}
 		
@@ -314,12 +321,19 @@ void ShortcutBar_gump::onItemClicked(int index, bool doubleClicked)
 		
 		case SB_ITEM_TARGET:
 		{
-			cheat.cursor_teleport();
+			int x, y;
+			if (!Get_click(x, y, Mouse::greenselect))
+				return;
+			if (doubleClicked) 
+				cheat.cursor_teleport();
+			else
+				Game_window::get_instance()->double_clicked(x, y);
 			break;
 		}
 		
 		case SB_ITEM_JAWBONE:
 		{
+			gwin->activate_item(555);
 			break;
 		}
 		
