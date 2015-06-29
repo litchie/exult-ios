@@ -45,6 +45,7 @@ typedef enum {
 	SB_ITEM_SPELLBOOK,
 	SB_ITEM_BACKPACK,
 	SB_ITEM_KEY,
+	SB_ITEM_KEYRING,
 	SB_ITEM_NOTEBOOK,
 	SB_ITEM_TARGET,
 	SB_ITEM_JAWBONE,
@@ -88,6 +89,8 @@ private:
 	uint32_t lastClickTime;
 	Gamemenu_gump *menu;
 	
+	bool is_party_item(int shnum, int frnum = c_any_framenum,
+	                   int qual = c_any_qual);
 	void createButtons();
 	void deleteButtons();
 	void onItemClicked(int index, bool doubleClicked);

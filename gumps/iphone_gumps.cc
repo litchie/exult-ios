@@ -50,6 +50,27 @@ using std::cout;
 using std::endl;
 
 /*
+ * some buttons should only be there or change appearance
+ * when a certain item is in the party's inventory
+ */
+bool ShortcutBar_gump::is_party_item(
+    int shnum,          // Desired shape.
+    int frnum,          // Desired frame
+    int qual            // Desired quality
+) {
+	Actor *party[9];        // Get party.
+	int cnt = gwin->get_party(party, 1);
+	for (int i = 0; i < cnt; i++) {
+		Actor *person = party[i];
+		Game_object *obj = person->find_item(shnum, qual, frnum);
+		if (obj) {
+			return true;
+		}
+	}
+	return false;
+}
+
+/*
  * To align button shapes vertically, we need to micro-manage the shapeOffsetY
  * values to shift shapes up or down.
  */
@@ -78,6 +99,7 @@ void ShortcutBar_gump::createButtons()
 	buttonItems[2].name = "map";
 	buttonItems[2].type = SB_ITEM_MAP;
 	
+	//if (is_party_item(761)
 	buttonItems[3].shapeId = new ShapeID(761, 0, SF_SHAPES_VGA);
 	buttonItems[3].name = "spellbook";
 	buttonItems[3].type = SB_ITEM_SPELLBOOK;
@@ -86,10 +108,15 @@ void ShortcutBar_gump::createButtons()
 	buttonItems[4].name = "backpack";
 	buttonItems[4].type = SB_ITEM_BACKPACK;
 	
-	buttonItems[5].shapeId = new ShapeID(641, 28, SF_SHAPES_VGA);
-	buttonItems[5].name = "key";
-	buttonItems[5].type = SB_ITEM_KEY;
-	
+	if (is_party_item(485) && GAME_SI){
+		buttonItems[5].shapeId = new ShapeID(485, 0, SF_SHAPES_VGA);
+		buttonItems[5].name = "keyring";
+		buttonItems[5].type = SB_ITEM_KEYRING;
+	}else{
+		buttonItems[5].shapeId = new ShapeID(641, 28, SF_SHAPES_VGA);
+		buttonItems[5].name = "key";
+		buttonItems[5].type = SB_ITEM_KEY;
+	}
 	buttonItems[6].shapeId = new ShapeID(642, 7, SF_SHAPES_VGA);
 	buttonItems[6].name = "notebook";
 	buttonItems[6].type = SB_ITEM_NOTEBOOK;
@@ -100,14 +127,13 @@ void ShortcutBar_gump::createButtons()
 	buttonItems[7].type = SB_ITEM_TARGET;
 	buttonItems[7].shapeOffsetY = -6;
 	
-	if (GAME_SI){
+	if (is_party_item(555) && GAME_SI) {
 		buttonItems[8].shapeId = new ShapeID(555, 0, SF_SHAPES_VGA);
 		buttonItems[8].name = "jawbone";
 		buttonItems[8].type = SB_ITEM_JAWBONE;
 
 		numButtons = 9;
-	}
-	else
+	}else
 		numButtons = 8;
 
 	int barItemWidth = (320/numButtons);
@@ -300,6 +326,12 @@ void ShortcutBar_gump::onItemClicked(int index, bool doubleClicked)
 		case SB_ITEM_KEY:
 		{
 			//ActionTryKeys
+			break;
+		}
+		
+		case SB_ITEM_KEYRING:
+		{
+			gwin->activate_item(485);
 			break;
 		}
 		
