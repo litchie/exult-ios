@@ -44,10 +44,27 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gamewin.h"
 #include "Text_button.h"
 #include "cheat.h"
+#include "ucmachine.h"
+#include "Notebook_gump.h"
+#include "party.h"
 
 using std::string;
 using std::cout;
 using std::endl;
+
+
+/*
+ * Get the i'th party member, with the 0'th being the Avatar.
+ * Needed for opening the inventories
+ */
+static Actor *Get_party_member(
+    int num             // 0=avatar.
+) {
+	int npc_num = 0;        // Default to Avatar
+	if (num > 0)
+		npc_num = Game_window::get_instance()->get_party_man()->get_member(num - 1);
+	return Game_window::get_instance()->get_npc(npc_num);
+} 
 
 /*
  * some buttons should only be there or change appearance
@@ -108,11 +125,11 @@ void ShortcutBar_gump::createButtons()
 	buttonItems[4].name = "backpack";
 	buttonItems[4].type = SB_ITEM_BACKPACK;
 	
-	if (is_party_item(485) && GAME_SI){
+	if (is_party_item(485) && GAME_SI) {
 		buttonItems[5].shapeId = new ShapeID(485, 0, SF_SHAPES_VGA);
 		buttonItems[5].name = "keyring";
 		buttonItems[5].type = SB_ITEM_KEYRING;
-	}else{
+	} else {
 		buttonItems[5].shapeId = new ShapeID(641, 28, SF_SHAPES_VGA);
 		buttonItems[5].name = "key";
 		buttonItems[5].type = SB_ITEM_KEY;
@@ -127,14 +144,22 @@ void ShortcutBar_gump::createButtons()
 	buttonItems[7].type = SB_ITEM_TARGET;
 	buttonItems[7].shapeOffsetY = -6;
 	
-	if (is_party_item(555) && GAME_SI) {
-		buttonItems[8].shapeId = new ShapeID(555, 0, SF_SHAPES_VGA);
-		buttonItems[8].name = "jawbone";
-		buttonItems[8].type = SB_ITEM_JAWBONE;
+	if (GAME_SI)
+		buttonItems[8].shapeId = new ShapeID(23, 3, SF_GUMPS_VGA);
+	else
+		buttonItems[8].shapeId = new ShapeID(28, 3, SF_GUMPS_VGA);
+	buttonItems[8].name = "feed";
+	buttonItems[8].type = SB_ITEM_FEED;
+	buttonItems[8].shapeOffsetY = -2;
 
+	if (is_party_item(555) && GAME_SI) {
+		buttonItems[9].shapeId = new ShapeID(555, 0, SF_SHAPES_VGA);
+		buttonItems[9].name = "jawbone";
+		buttonItems[9].type = SB_ITEM_JAWBONE;
+
+		numButtons = 10;
+	} else
 		numButtons = 9;
-	}else
-		numButtons = 8;
 
 	int barItemWidth = (320/numButtons);
 
@@ -307,7 +332,30 @@ void ShortcutBar_gump::onItemClicked(int index, bool doubleClicked)
 
 		case SB_ITEM_BACKPACK:
 		{
-			//ActionInventory
+			Game_window *gwin = Game_window::get_instance();
+			static int inventory_page = -1;
+			Actor *actor;
+			Gump_manager *gump_man = gwin->get_gump_man();
+			int party_count = gwin->get_party_man()->get_count();
+			int shapenum;
+			for (int i = 0; i <= party_count; ++i) {
+				actor = Get_party_member(i);
+				if (!actor)
+					continue;
+				shapenum = actor->inventory_shapenum();
+				// Check if this actor's inventory page is open or not
+				if (!gump_man->find_gump(actor, shapenum) && actor->can_act_charmed()) {
+					gump_man->add_gump(actor, shapenum, true); //force showing inv.
+					inventory_page = i;
+					return;
+				}
+			}
+			inventory_page = (inventory_page + 1) % (party_count + 1);
+			actor = Get_party_member(inventory_page);
+			if (actor && actor->can_act_charmed()) {
+				actor->show_inventory(); //force showing inv.
+			}
+			Mouse::mouse->set_speed_cursor();
 			break;
 		}
 
@@ -319,19 +367,74 @@ void ShortcutBar_gump::onItemClicked(int index, bool doubleClicked)
 		
 		case SB_ITEM_NOTEBOOK:
 		{
-			//ActionNotebook
+			if (doubleClicked)
+				cheat.cheat_screen();
+			else {
+				Game_window *gwin = Game_window::get_instance();
+				Gump_manager *gman = gwin->get_gump_man();
+				Notebook_gump *notes = Notebook_gump::get_instance();
+				if (notes)
+					gman->remove_gump(notes);   // Want to raise to top.
+				else
+					notes = Notebook_gump::create();
+				gman->add_gump(notes);
+				gwin->paint();
+			} 
 			break;
 		}
 		
 		case SB_ITEM_KEY:
 		{
-			//ActionTryKeys
+			if (doubleClicked)
+				// Lockpicks
+				gwin->activate_item(627);
+			else {
+				Game_window *gwin = Game_window::get_instance();
+				int x, y;           // Allow dragging.
+				if (!Get_click(x, y, Mouse::greenselect, 0, true))
+					return;
+				// Look for obj. in open gump.
+				Gump *gump = gwin->get_gump_man()->find_gump(x, y);
+				Game_object *obj;
+				if (gump)
+					obj = gump->find_object(x, y);
+				else                // Search rest of world.
+					obj = gwin->find_object(x, y);
+				if (!obj)
+					return;
+				int qual = obj->get_quality();  // Key quality should match.
+				Actor *party[10];       // Get ->party members.
+				int party_cnt = gwin->get_party(&party[0], 1);
+				for (int i = 0; i < party_cnt; i++) {
+					Actor *act = party[i];
+					Game_object_vector keys;        // Get keys.
+					if (act->get_objects(keys, 641, qual, c_any_framenum)) {
+						for (size_t i = 0; i < keys.size(); i++)
+							if (!keys[i]->inside_locked()) {
+								// intercept the click_on_item call made by the key-usecode
+								Usecode_machine *ucmachine = gwin->get_usecode();
+								Game_object *oldtarg;
+								Tile_coord *oldtile;
+								ucmachine->save_intercept(oldtarg, oldtile);
+								ucmachine->intercept_click_on_item(obj);
+								keys[0]->activate();
+								ucmachine->restore_intercept(oldtarg, oldtile);
+								return;
+							}
+					}
+				}
+				Mouse::mouse->flash_shape(Mouse::redx);
+			}
 			break;
 		}
 		
 		case SB_ITEM_KEYRING:
 		{
-			gwin->activate_item(485);
+			if (doubleClicked)
+				// Lockpicks
+				gwin->activate_item(627);
+			else
+				gwin->activate_item(485);
 			break;
 		}
 		
@@ -366,6 +469,20 @@ void ShortcutBar_gump::onItemClicked(int index, bool doubleClicked)
 		case SB_ITEM_JAWBONE:
 		{
 			gwin->activate_item(555);
+			break;
+		}
+		
+		case SB_ITEM_FEED:
+		{
+			if (GAME_SI) {
+				Usecode_machine *usecode = Game_window::get_instance()->get_usecode();
+				usecode->call_usecode(1557,static_cast<Game_object *>(0), static_cast<Usecode_machine::Usecode_events>(0));
+				Mouse::mouse->set_speed_cursor();
+			} else {
+				Game_window *gwin = Game_window::get_instance();
+					if (gwin->activate_item(377) && !gwin->activate_item(616))
+						Mouse::mouse->set_speed_cursor();
+			}
 			break;
 		}
 		
