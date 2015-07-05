@@ -61,7 +61,13 @@ EXULT_SI_FLX_OBJECTS = \
 EXULT_IPHONE_FLX_OBJECTS = \
 	iphone/flx.in \
 	iphone/keyboardbutton.shp \
-	iphone/transparentmenu.shp
+	iphone/transparentmenu.shp \
+	iphone/combat.shp \
+	iphone/disk.shp \
+	iphone/jawbone.shp \
+	iphone/keyring.shp \
+	iphone/spellbook.shp \
+	iphone/target.shp
 
 EXULT_BG_PAPERDOL_VGA_OBJECTS = \
 	bg/amulets.shp \

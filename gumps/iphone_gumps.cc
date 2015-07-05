@@ -97,17 +97,12 @@ void ShortcutBar_gump::createButtons()
 	
 	memset(buttonItems, 0, sizeof(buttonItems));
 	
-	if (GAME_SI)
-		buttonItems[0].shapeId = new ShapeID(19, 0, SF_GUMPS_VGA);
-	else
-		buttonItems[0].shapeId = new ShapeID(24, 0, SF_GUMPS_VGA);
+	buttonItems[0].shapeId = new ShapeID(3, 0, SF_IPHONE_FLX);
 	buttonItems[0].name = "disk";
 	buttonItems[0].type = SB_ITEM_DISK;
+	buttonItems[0].shapeOffsetY = -4;
 	
-	if (GAME_SI)
-		buttonItems[1].shapeId = new ShapeID(41, 1, SF_GUMPS_VGA);
-	else
-		buttonItems[1].shapeId = new ShapeID(46, 1, SF_GUMPS_VGA);
+	buttonItems[1].shapeId = new ShapeID(2, 1, SF_IPHONE_FLX);
 	buttonItems[1].name = "toggle combat";
 	buttonItems[1].type = SB_ITEM_TOGGLE_COMBAT;
 	buttonItems[1].shapeOffsetY = 5;
@@ -115,34 +110,48 @@ void ShortcutBar_gump::createButtons()
 	buttonItems[2].shapeId = new ShapeID(178, 0, SF_SHAPES_VGA);
 	buttonItems[2].name = "map";
 	buttonItems[2].type = SB_ITEM_MAP;
+	buttonItems[2].shapeOffsetY = -1;
 	
-	//if (is_party_item(761)
-	buttonItems[3].shapeId = new ShapeID(761, 0, SF_SHAPES_VGA);
+	if (GAME_SI) {
+		if (is_party_item(761))
+			buttonItems[3].shapeId = new ShapeID(6, 2, SF_IPHONE_FLX);
+		else
+			buttonItems[3].shapeId = new ShapeID(6, 3, SF_IPHONE_FLX);
+	} else {
+		if (is_party_item(761))
+			buttonItems[3].shapeId = new ShapeID(6, 0, SF_IPHONE_FLX);
+		else
+			buttonItems[3].shapeId = new ShapeID(6, 1, SF_IPHONE_FLX);
+	}
 	buttonItems[3].name = "spellbook";
 	buttonItems[3].type = SB_ITEM_SPELLBOOK;
+	buttonItems[3].shapeOffsetY = -4;
 	
 	buttonItems[4].shapeId = new ShapeID(801, 0, SF_SHAPES_VGA);
 	buttonItems[4].name = "backpack";
 	buttonItems[4].type = SB_ITEM_BACKPACK;
+	buttonItems[4].shapeOffsetY = -2;
 	
 	if (is_party_item(485) && GAME_SI) {
-		buttonItems[5].shapeId = new ShapeID(485, 0, SF_SHAPES_VGA);
+		buttonItems[5].shapeId = new ShapeID(5, 0, SF_IPHONE_FLX);
 		buttonItems[5].name = "keyring";
 		buttonItems[5].type = SB_ITEM_KEYRING;
+		buttonItems[5].shapeOffsetY = -2;
 	} else {
 		buttonItems[5].shapeId = new ShapeID(641, 28, SF_SHAPES_VGA);
 		buttonItems[5].name = "key";
 		buttonItems[5].type = SB_ITEM_KEY;
+		buttonItems[5].shapeOffsetY = -1;
 	}
 	buttonItems[6].shapeId = new ShapeID(642, 7, SF_SHAPES_VGA);
 	buttonItems[6].name = "notebook";
 	buttonItems[6].type = SB_ITEM_NOTEBOOK;
-	buttonItems[6].shapeOffsetY = -4;
+	buttonItems[6].shapeOffsetY = -3;
 	
-	buttonItems[7].shapeId = new ShapeID(19, 0, SF_SPRITES_VGA);
+	buttonItems[7].shapeId = new ShapeID(7, 0, SF_IPHONE_FLX);
 	buttonItems[7].name = "target";
 	buttonItems[7].type = SB_ITEM_TARGET;
-	buttonItems[7].shapeOffsetY = -6;
+	buttonItems[7].shapeOffsetY = -8;
 	
 	if (GAME_SI)
 		buttonItems[8].shapeId = new ShapeID(23, 3, SF_GUMPS_VGA);
@@ -150,12 +159,16 @@ void ShortcutBar_gump::createButtons()
 		buttonItems[8].shapeId = new ShapeID(28, 3, SF_GUMPS_VGA);
 	buttonItems[8].name = "feed";
 	buttonItems[8].type = SB_ITEM_FEED;
-	buttonItems[8].shapeOffsetY = -2;
+	buttonItems[8].shapeOffsetY = -1;
 
-	if (is_party_item(555) && GAME_SI) {
-		buttonItems[9].shapeId = new ShapeID(555, 0, SF_SHAPES_VGA);
+	if (GAME_SI) {
+		if (is_party_item(555))
+			buttonItems[9].shapeId = new ShapeID(4, 0, SF_IPHONE_FLX);
+		else
+			buttonItems[9].shapeId = new ShapeID(4, 1, SF_IPHONE_FLX);
 		buttonItems[9].name = "jawbone";
 		buttonItems[9].type = SB_ITEM_JAWBONE;
+		buttonItems[9].shapeOffsetY = -1;
 
 		numButtons = 10;
 	} else
@@ -197,7 +210,7 @@ ShortcutBar_gump::ShortcutBar_gump(int placex, int placey)
 	init = true;
 	
 	width = 320;
-	height = 20;
+	height = 25;
 	locx = placex;
 	locy = placey;
 
