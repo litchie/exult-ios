@@ -382,7 +382,8 @@ void ShortcutBar_gump::onItemClicked(int index, bool doubleClicked)
 		{
 			if (doubleClicked && cheat())
 				cheat.cheat_screen();
-			else {
+			
+			if (!doubleClicked) {
 				Game_window *gwin = Game_window::get_instance();
 				Gump_manager *gman = gwin->get_gump_man();
 				Notebook_gump *notes = Notebook_gump::get_instance();
@@ -401,7 +402,8 @@ void ShortcutBar_gump::onItemClicked(int index, bool doubleClicked)
 			if (doubleClicked)
 				// Lockpicks
 				gwin->activate_item(627);
-			else {
+
+			if (!doubleClicked) {
 				Game_window *gwin = Game_window::get_instance();
 				int x, y;           // Allow dragging.
 				if (!Get_click(x, y, Mouse::greenselect, 0, true))
@@ -446,7 +448,8 @@ void ShortcutBar_gump::onItemClicked(int index, bool doubleClicked)
 			if (doubleClicked)
 				// Lockpicks
 				gwin->activate_item(627);
-			else
+			
+			if (!doubleClicked)
 				gwin->activate_item(485);
 			break;
 		}
@@ -455,7 +458,8 @@ void ShortcutBar_gump::onItemClicked(int index, bool doubleClicked)
 		{
 			if (doubleClicked && cheat())
 				cheat.map_teleport();
-			else
+
+			if (!doubleClicked)
 				gwin->activate_item(178);
 			break;
 		}
@@ -472,9 +476,11 @@ void ShortcutBar_gump::onItemClicked(int index, bool doubleClicked)
 			int x, y;
 			if (!Get_click(x, y, Mouse::greenselect))
 				return;
+			
 			if (doubleClicked && cheat()) 
 				cheat.cursor_teleport();
-			else
+			
+			if (!doubleClicked)
 				Game_window::get_instance()->double_clicked(x, y);
 			break;
 		}
