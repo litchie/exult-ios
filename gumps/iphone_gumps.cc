@@ -380,7 +380,7 @@ void ShortcutBar_gump::onItemClicked(int index, bool doubleClicked)
 		
 		case SB_ITEM_NOTEBOOK:
 		{
-			if (doubleClicked)
+			if (doubleClicked && cheat())
 				cheat.cheat_screen();
 			else {
 				Game_window *gwin = Game_window::get_instance();
@@ -453,7 +453,7 @@ void ShortcutBar_gump::onItemClicked(int index, bool doubleClicked)
 		
 		case SB_ITEM_MAP:
 		{
-			if (doubleClicked)
+			if (doubleClicked && cheat())
 				cheat.map_teleport();
 			else
 				gwin->activate_item(178);
@@ -472,7 +472,7 @@ void ShortcutBar_gump::onItemClicked(int index, bool doubleClicked)
 			int x, y;
 			if (!Get_click(x, y, Mouse::greenselect))
 				return;
-			if (doubleClicked) 
+			if (doubleClicked && cheat()) 
 				cheat.cursor_teleport();
 			else
 				Game_window::get_instance()->double_clicked(x, y);
