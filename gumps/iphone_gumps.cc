@@ -93,7 +93,8 @@ bool ShortcutBar_gump::is_party_item(
  */
 void ShortcutBar_gump::createButtons()
 {
-	int x = 0;
+	int x = (gamex - 320)/2;
+	int y = 20+starty;
 	
 	memset(buttonItems, 0, sizeof(buttonItems));
 	
@@ -183,7 +184,7 @@ void ShortcutBar_gump::createButtons()
 		int top = (height-frame->get_height())/2;
 		buttonItems[i].shapeOffsetX += frame->get_xleft() + left;
 		buttonItems[i].shapeOffsetY += -5 + top;
-		buttonItems[i].rect = new Rectangle(x, 0, barItemWidth, height);
+		buttonItems[i].rect = new Rectangle(x, y, barItemWidth, height);
 	}
 	
 }
@@ -237,6 +238,10 @@ void ShortcutBar_gump::paint()
 		int x = locx + buttonItems[i].rect->x + buttonItems[i].shapeOffsetX;
 		int y = locy + buttonItems[i].rect->y + buttonItems[i].shapeOffsetY;
 		sman->paint_shape(x, y, buttonItems[i].shapeId->get_shape(), 0);
+		// when the bar is on the game screen it may need an outline
+		// could be made into an option of the iOS gump with several colors or disabled
+		if (resy - gamey < 20)
+			sman->paint_outline(x, y, buttonItems[i].shapeId->get_shape(), PROTECT_PIXEL);
 	}
 	
 	gwin->set_painted();

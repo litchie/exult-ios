@@ -83,6 +83,10 @@ public:
 	virtual bool no_handcursor() const {
 		return true;
 	}
+	int gamex = gwin->get_game_width();
+	int starty = gwin->get_win()->get_start_y();
+	int resy = gwin->get_win()->get_full_height();
+	int gamey = gwin->get_game_height();
 	
 private:
 	ShortcutBarButtonItem buttonItems[MAX_SHORTCUT_BAR_ITEMS];
