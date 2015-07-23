@@ -480,7 +480,7 @@ void ShortcutBar_gump::onItemClicked(int index, bool doubleClicked)
 		{
 			int x, y;
 
-			if (doubleClicked){
+			if (doubleClicked && cheat()){
 				if (!Get_click(x, y, Mouse::redx))
 					return;
 				cheat.cursor_teleport();
