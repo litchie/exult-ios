@@ -156,9 +156,17 @@ extern "C" int SDL_SendKeyboardKey(Uint8 state, SDL_Scancode scancode);
 - (void)hideGameControls
 {
 	dpad.alpha = 0;
-	btn1.alpha = 0;
 }
 
+- (void)showButtonControls
+{
+	btn1.alpha = 1;
+}
+
+- (void)hideButtonControls
+{
+	btn1.alpha = 0;
+}
 @end
 
 
@@ -191,6 +199,16 @@ void TouchUI_iOS::showGameControls()
 void TouchUI_iOS::hideGameControls()
 {
 	[_defaultManager hideGameControls];
+}
+
+void TouchUI_iOS::showButtonControls()
+{
+	[_defaultManager showButtonControls];
+}
+
+void TouchUI_iOS::hideButtonControls()
+{
+	[_defaultManager hideButtonControls];
 }
 
 void TouchUI_iOS::onDpadLocationChanged()

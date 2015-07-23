@@ -313,6 +313,9 @@ Newfile_gump::Newfile_gump(
 	buttons[7] = new Newfile_button(this, btn_cols[4], btn_rows[4], EXULT_FLX_SAV_DOWNDOWN_SHP);
 
 	LoadSaveGameDetails();
+#ifdef __IPHONEOS__
+	touchui->hideButtonControls();
+#endif
 }
 
 /*
@@ -329,6 +332,9 @@ Newfile_gump::~Newfile_gump(
 	FreeSaveGameDetails();
 
 	delete back;
+#ifdef __IPHONEOS__
+	touchui->showButtonControls();
+#endif
 }
 
 /*

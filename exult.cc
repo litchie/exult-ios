@@ -756,6 +756,7 @@ int exult_main(const char *runpath) {
 
 #ifdef __IPHONEOS__
 	touchui->hideGameControls();
+	touchui->hideButtonControls();
 #endif
 
 #ifdef USE_EXULTSTUDIO

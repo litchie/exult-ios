@@ -9,6 +9,8 @@ public:
 	void promptForName(const char *name);
 	void showGameControls();
 	void hideGameControls();
+	void showButtonControls();
+	void hideButtonControls();
 	void onDpadLocationChanged();
 };
 
