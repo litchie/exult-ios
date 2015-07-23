@@ -479,14 +479,18 @@ void ShortcutBar_gump::onItemClicked(int index, bool doubleClicked)
 		case SB_ITEM_TARGET:
 		{
 			int x, y;
-			if (!Get_click(x, y, Mouse::greenselect))
-				return;
-			
-			if (doubleClicked && cheat()) 
+
+			if (doubleClicked){
+				if (!Get_click(x, y, Mouse::redx))
+					return;
 				cheat.cursor_teleport();
+			}
 			
-			if (!doubleClicked)
+			if (!doubleClicked) {
+				if (!Get_click(x, y, Mouse::greenselect))
+					return;
 				Game_window::get_instance()->double_clicked(x, y);
+			}
 			break;
 		}
 		
