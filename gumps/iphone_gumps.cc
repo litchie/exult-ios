@@ -194,6 +194,8 @@ void ShortcutBar_gump::deleteButtons()
 	for (int i = 0; i < numButtons; i++) {
 		delete buttonItems[i].shapeId;
 		delete buttonItems[i].rect;
+		buttonItems[i].shapeId = NULL;
+		buttonItems[i].rect = NULL;
 	}
 }
 
@@ -217,14 +219,12 @@ ShortcutBar_gump::ShortcutBar_gump(int placex, int placey)
 
 	createButtons();
 	menu = NULL;
-	gumpman->add_gump(this);
 }
 
 ShortcutBar_gump::~ShortcutBar_gump()
 {
 	deleteButtons();
 	delete menu;
-	gumpman->close_gump(this);
 }
 
 void ShortcutBar_gump::paint()
