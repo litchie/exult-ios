@@ -36,6 +36,8 @@ extern "C" int SDLCALL SDL_iPhoneKeyboardHide(SDL_Window *window);
 extern "C" SDL_bool SDLCALL SDL_iPhoneKeyboardIsShown(SDL_Window *window);
 extern "C" int SDLCALL SDL_iPhoneKeyboardToggle(SDL_Window *window);
 
+#define SHORTCUT_BAR_USER_EVENT 0x53425545 // "SBUE"
+
 /* -------------------------------------------- */
 
 typedef enum {
@@ -87,12 +89,13 @@ public:
 	int starty = gwin->get_win()->get_start_y();
 	int resy = gwin->get_win()->get_full_height();
 	int gamey = gwin->get_game_height();
+	void onUserEvent(SDL_Event *event);
 	
 private:
 	ShortcutBarButtonItem buttonItems[MAX_SHORTCUT_BAR_ITEMS];
 	int numButtons;
-	uint32_t lastClickTime;
-	Gamemenu_gump *menu;
+	int lastClickedButton;
+	SDL_TimerID timerId;
 	
 	bool is_party_item(int shnum, int frnum = c_any_framenum,
 	                   int qual = c_any_qual);

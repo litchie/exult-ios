@@ -218,13 +218,11 @@ ShortcutBar_gump::ShortcutBar_gump(int placex, int placey)
 	locy = placey;
 
 	createButtons();
-	menu = NULL;
 }
 
 ShortcutBar_gump::~ShortcutBar_gump()
 {
 	deleteButtons();
-	delete menu;
 }
 
 void ShortcutBar_gump::paint()
@@ -286,9 +284,50 @@ void ShortcutBar_gump::mouse_down(SDL_Event *event, int mx, int my)
 	ShortcutBarButtonItem *item = buttonItems + i;
 	item->pushed = true;
 	
-	lastClickTime = SDL_GetTicks();
 }
 
+#define DID_MOUSE_UP 1
+
+/*
+ * Runs on timer thread. Should never directly access anything in main thread.
+ * Just push an event to main thread so that our global shortcut bar instance
+ * can catch it.
+ */
+static Uint32 didMouseUp(Uint32 interval, void *param)
+{
+    SDL_UserEvent userevent;
+    userevent.type = SDL_USEREVENT;
+    userevent.code = SHORTCUT_BAR_USER_EVENT;
+    userevent.data1 = param;
+    userevent.data2 = (void*)DID_MOUSE_UP;
+
+    SDL_Event event;
+    event.type = SDL_USEREVENT;
+    event.user = userevent;
+    SDL_PushEvent(&event);
+    return 0;
+}
+
+/*
+ * Runs on main thread.
+ */
+void ShortcutBar_gump::onUserEvent(SDL_Event *event)
+{
+	switch ((intptr_t)(event->user.data2)) {
+		case DID_MOUSE_UP:
+			if (lastClickedButton >= 0 && lastClickedButton < numButtons) {
+				onItemClicked(lastClickedButton, false);
+				lastClickedButton = -1;
+				if (timerId > 0) {
+					SDL_RemoveTimer(timerId);
+					timerId = 0;
+				}
+			}
+			break;
+		default:
+			break;
+	}
+}
 
 void ShortcutBar_gump::mouse_up(SDL_Event *event, int mx, int my)
 {
@@ -299,20 +338,33 @@ void ShortcutBar_gump::mouse_up(SDL_Event *event, int mx, int my)
 			break;
 	}
 	
-	if (i == numButtons) {
-		goto Done;
+	if (i < numButtons) {
+		/*
+		 * Button i is hit.
+		 * Cancel the previous mouse up timer
+		 */
+		if (timerId > 0) {
+			SDL_RemoveTimer(timerId);
+			timerId = 0;
+		}
+		lastClickedButton = -1;
+		
+		/*
+		 * For every double click,
+		 * there are usually two clicks:
+		 *    MOUSEDOWN MOUSEUP MOUSEDOWN MOUSEUP
+		 * Therefore when we get the first MOUSEUP, we
+		 * have no idea if we are going to get another one.
+		 * So we delay the handler.
+		 */
+		if (event->button.clicks >= 2) {
+			onItemClicked(i, true);
+		} else {
+			lastClickedButton = i;
+			timerId = SDL_AddTimer(500/*ms delay*/, didMouseUp, this);
+		}
 	}
-	
-	/* NOTE: for every double click,
-	 * there is usually a previous single click.
-	 */
-	if (event->button.clicks >= 2) {
-		onItemClicked(i, true);
-	} else {
-		onItemClicked(i, false);
-	}
-	
-Done:
+
 	for (i = 0; i < numButtons; i++) {
 		buttonItems[i].pushed = false;
 	}
@@ -325,25 +377,16 @@ void ShortcutBar_gump::onItemClicked(int index, bool doubleClicked)
 	switch (buttonItems[index].type) {
 		case SB_ITEM_DISK:
 		{
-			if (menu == NULL) {
+			Gamemenu_gump *menu;
+
+			if (doubleClicked) {
+				menu = new Gamemenu_gump();
+				menu->loadsave();
+				delete menu;
+			} else {
 				menu = new Gamemenu_gump();
 				gumpman->do_modal_gump(menu, Mouse::hand);
 				delete menu;
-				menu = NULL;
-			}
-			
-			/* 
-			 * Why test `menu` here? Surely it is NULL, right?
-			 * The truth is that this function can be called inside previous
-			 * `do_modal_gump` event loop, so that `menu` instance can be
-			 * perfectly valid when we get to here.
-			 * For example, when a double click event happens,
-			 * we enter the modal loop at the first click,
-			 * on the second click we can open the load/save dialog
-			 * as a short cut way.
-			 */
-			if (menu && doubleClicked) {
-				menu->loadsave();
 			}
 			break;
 		}

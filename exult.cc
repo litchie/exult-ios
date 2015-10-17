@@ -1434,6 +1434,22 @@ static void Handle_event(
 	float ax, ay;
 #endif
 	switch (event.type) {
+	
+#ifdef __IPHONEOS__
+	case SDL_USEREVENT: {
+		switch (event.user.code) {
+			case SHORTCUT_BAR_USER_EVENT: {
+				g_shortcutBar->onUserEvent(&event);
+				break;
+			}
+			default:
+				break;
+		}
+		break;
+	}
+
+#endif
+	
 	case SDL_MOUSEBUTTONDOWN: {
 		if (dont_move_mode)
 			break;
