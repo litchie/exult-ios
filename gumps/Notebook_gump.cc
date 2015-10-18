@@ -33,6 +33,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "fnames.h"
 #include "cheat.h"
 #include "U7file.h"
+#include "Gump_manager.h"
+#include "exult.h"
 
 using std::ofstream;
 using std::ifstream;
@@ -310,8 +312,12 @@ Notebook_gump *Notebook_gump::create(
 ) {
 	if (!initialized)
 		initialize();
-	if (!instance)
+	if (!instance) {
 		instance = new Notebook_gump;
+#ifdef __IPHONEOS__
+		touchui->hideGameControls();
+#endif
+	}
 	return instance;
 }
 
@@ -333,6 +339,11 @@ Notebook_gump::~Notebook_gump(
 	delete rightpage;
 	if (this == instance)
 		instance = 0;
+#ifdef __IPHONEOS__	
+	Gump_manager *gumpman = gwin->get_gump_man();
+	if (!gumpman->modal_gump_mode() && !gumpman->showing_gumps())
+		touchui->showGameControls();
+#endif
 }
 
 /*

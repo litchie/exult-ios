@@ -44,6 +44,7 @@
 #include "party.h"
 #include "miscinf.h"
 #include "gump_utils.h"
+#include "Gump_manager.h"
 
 const char *CheatScreen::schedules[33] = {
 	"Combat",
@@ -178,6 +179,9 @@ void CheatScreen::show_screen() {
 	maxy = gwin->get_height();
 	centerx = maxx / 2;
 	centery = maxy / 2;
+#ifdef __IPHONEOS__
+	touchui->hideGameControls();
+#endif
 
 	// Pause the game
 	gwin->get_tqueue()->pause(SDL_GetTicks());
@@ -196,6 +200,11 @@ void CheatScreen::show_screen() {
 	// Reset the palette
 	clock->reset();
 	clock->set_palette();
+#ifdef __IPHONEOS__	
+    Gump_manager *gumpman = gwin->get_gump_man();
+	if (!gumpman->modal_gump_mode() && !gumpman->showing_gumps())
+		touchui->showGameControls();
+#endif
 }
 
 
