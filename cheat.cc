@@ -809,10 +809,18 @@ public:
 
 void Cheat::map_teleport(void) const {
 	if (!enabled) return;
+#ifdef __IPHONEOS__
+	Gump_manager *gumpman = gwin->get_gump_man();
+	touchui->hideGameControls();
+#endif
 	Cheat_map map(gwin->get_map()->get_num());
 	int xx, yy;
 	if (!Get_click(xx, yy, Mouse::greenselect, 0, false, &map)) {
 		gwin->paint();
+#ifdef __IPHONEOS__	
+	if (!gumpman->gump_mode())
+		touchui->showGameControls();
+#endif
 		return;
 	}
 
@@ -827,6 +835,10 @@ void Cheat::map_teleport(void) const {
 	t.ty = (t.ty + c_num_tiles) % c_num_tiles;
 	cout << "Teleporting to " << t.tx << "," << t.ty << "!" << endl;
 	t.tz = 0;
+#ifdef __IPHONEOS__	
+	if (!gumpman->gump_mode())
+		touchui->showGameControls();
+#endif
 	gwin->teleport_party(t);
 	eman->center_text("Teleport!!!");
 }

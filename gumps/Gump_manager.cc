@@ -346,6 +346,10 @@ void Gump_manager::close_all_gumps(
 	set_kbd_focus(0);
 	gwin->get_npc_prox()->wait(4);      // Delay "barking" for 4 secs.
 	if (removed) gwin->paint();
+#ifdef __IPHONEOS__	
+	if (!modal_gump_count && non_persistent_count == 0 && !gwin->is_in_exult_menu())
+		touchui->showGameControls();
+#endif
 }
 
 /*

@@ -341,7 +341,7 @@ Notebook_gump::~Notebook_gump(
 		instance = 0;
 #ifdef __IPHONEOS__	
 	Gump_manager *gumpman = gwin->get_gump_man();
-	if (!gumpman->modal_gump_mode() && !gumpman->showing_gumps())
+	if (!gumpman->gump_mode())
 		touchui->showGameControls();
 #endif
 }

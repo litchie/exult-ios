@@ -1212,12 +1212,20 @@ USECODE_INTRINSIC(display_map) {
 	long sextants = count_objects(v_357, v650, v_359, v_359).get_int_value();
 	bool loc = !gwin->is_main_actor_inside() && (sextants > 0);
 	// Display map.
+#ifdef __IPHONEOS__
+	touchui->hideGameControls();
+#endif
 	ShapeID msid(game->get_shape("sprites/map"), 0, SF_SPRITES_VGA);
 	Paint_map map(&msid, loc);
 
 	int xx, yy;
 	Get_click(xx, yy, Mouse::hand, 0, false, &map);
 	gwin->paint();
+#ifdef __IPHONEOS__	
+    Gump_manager *gumpman = gwin->get_gump_man();
+	if (!gumpman->gump_mode())
+		touchui->showGameControls();
+#endif
 	return(no_ret);
 }
 
@@ -1250,12 +1258,19 @@ USECODE_INTRINSIC(si_display_map) {
 	// Display map.
 
 	// Display map.
+#ifdef __IPHONEOS__
+	touchui->hideGameControls();
+#endif
 	ShapeID msid(shapenum, 0, SF_SPRITES_VGA);
 	Paint_centered map(&msid);
 	int xx, yy;
 	Get_click(xx, yy, Mouse::hand, 0, false, &map);
 	gwin->paint();
-
+#ifdef __IPHONEOS__	
+    Gump_manager *gumpman = gwin->get_gump_man();
+	if (!gumpman->gump_mode())
+		touchui->showGameControls();
+#endif
 	return no_ret;
 }
 
@@ -1264,12 +1279,20 @@ USECODE_INTRINSIC(display_map_ex) {
 	bool loc = parms[1].get_int_value() != 0;
 
 	// Display map.
+#ifdef __IPHONEOS__
+	touchui->hideGameControls();
+#endif
 	ShapeID msid(map_shp, 0, SF_SPRITES_VGA);
 	Paint_map map(&msid, loc);
 
 	int xx, yy;
 	Get_click(xx, yy, Mouse::hand, 0, false, &map);
 	gwin->paint();
+#ifdef __IPHONEOS__	
+    Gump_manager *gumpman = gwin->get_gump_man();
+	if (!gumpman->gump_mode())
+		touchui->showGameControls();
+#endif
 	return(no_ret);
 }
 

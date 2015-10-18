@@ -202,7 +202,7 @@ void CheatScreen::show_screen() {
 	clock->set_palette();
 #ifdef __IPHONEOS__	
     Gump_manager *gumpman = gwin->get_gump_man();
-	if (!gumpman->modal_gump_mode() && !gumpman->showing_gumps())
+	if (!gumpman->gump_mode())
 		touchui->showGameControls();
 #endif
 }
