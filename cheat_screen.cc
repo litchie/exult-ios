@@ -219,171 +219,179 @@ void CheatScreen::show_screen() {
 void CheatScreen::SharedPrompt(char *input, const Cheat_Prompt &mode) {
 	char buf[512];
 
-	font->paint_text_fixedwidth(ibuf, "Select->", 0, maxy - 18, 8);
+#ifdef __IPHONEOS__
+	int prompt = 81;
+	int promptmes = 90;
+	font->paint_text_fixedwidth(ibuf, "Select->", 0, prompt, 8);
+#else
+	char prompt = maxy - 18;
+	char promptmes = maxy - 9;
+	font->paint_text_fixedwidth(ibuf, "Select->", prompt, , 8);
+#endif
 
 	if (input && std::strlen(input)) {
-		font->paint_text_fixedwidth(ibuf, input, 64, maxy - 18, 8);
-		font->paint_text_fixedwidth(ibuf, "_", 64 + std::strlen(input) * 8, maxy - 18, 8);
+		font->paint_text_fixedwidth(ibuf, input, 64, prompt, 8);
+		font->paint_text_fixedwidth(ibuf, "_", 64 + std::strlen(input) * 8, prompt, 8);
 	} else
-		font->paint_text_fixedwidth(ibuf, "_", 64, maxy - 18, 8);
+		font->paint_text_fixedwidth(ibuf, "_", 64, prompt, 8);
 
 	// ...and Prompt Message
 	switch (mode) {
 	default:
 	case CP_Command:
-		font->paint_text_fixedwidth(ibuf, "Enter Command.", 0, maxy - 9, 8);
+		font->paint_text_fixedwidth(ibuf, "Enter Command.", 0, promptmes, 8);
 		break;
 
 	case CP_HitKey:
-		font->paint_text_fixedwidth(ibuf, "Hit a key.", 0, maxy - 9, 8);
+		font->paint_text_fixedwidth(ibuf, "Hit a key.", 0, promptmes, 8);
 		break;
 
 	case CP_NotAvail:
-		font->paint_text_fixedwidth(ibuf, "Not yet available. Hit a key.", 0, maxy - 9, 8);
+		font->paint_text_fixedwidth(ibuf, "Not yet available. Hit a key.", 0, promptmes, 8);
 		break;
 
 	case CP_InvalidNPC:
-		font->paint_text_fixedwidth(ibuf, "Invalid NPC. Hit a key", 0, maxy - 9, 8);
+		font->paint_text_fixedwidth(ibuf, "Invalid NPC. Hit a key", 0, promptmes, 8);
 		break;
 
 	case CP_InvalidCom:
-		font->paint_text_fixedwidth(ibuf, "Invalid Command. Hit a key.", 0, maxy - 9, 8);
+		font->paint_text_fixedwidth(ibuf, "Invalid Command. Hit a key.", 0, promptmes, 8);
 		break;
 
 	case CP_Canceled:
-		font->paint_text_fixedwidth(ibuf, "Canceled. Hit a key.", 0, maxy - 9, 8);
+		font->paint_text_fixedwidth(ibuf, "Canceled. Hit a key.", 0, promptmes, 8);
 		break;
 
 	case CP_ClockSet:
-		font->paint_text_fixedwidth(ibuf, "Clock Set. Hit a key.", 0, maxy - 9, 8);
+		font->paint_text_fixedwidth(ibuf, "Clock Set. Hit a key.", 0, promptmes, 8);
 		break;
 
 	case CP_InvalidTime:
-		font->paint_text_fixedwidth(ibuf, "Invalid Time. Hit a key.", 0, maxy - 9, 8);
+		font->paint_text_fixedwidth(ibuf, "Invalid Time. Hit a key.", 0, promptmes, 8);
 		break;
 
 	case CP_InvalidShape:
-		font->paint_text_fixedwidth(ibuf, "Invalid Shape. Hit a key.", 0, maxy - 9, 8);
+		font->paint_text_fixedwidth(ibuf, "Invalid Shape. Hit a key.", 0, promptmes, 8);
 		break;
 
 	case CP_InvalidValue:
-		font->paint_text_fixedwidth(ibuf, "Invalid Value. Hit a key.", 0, maxy - 9, 8);
+		font->paint_text_fixedwidth(ibuf, "Invalid Value. Hit a key.", 0, promptmes, 8);
 		break;
 
 	case CP_Created:
-		font->paint_text_fixedwidth(ibuf, "Item Created. Hit a key.", 0, maxy - 9, 8);
+		font->paint_text_fixedwidth(ibuf, "Item Created. Hit a key.", 0, promptmes, 8);
 		break;
 
 	case CP_ShapeSet:
-		font->paint_text_fixedwidth(ibuf, "Shape Set. Hit a key.", 0, maxy - 9, 8);
+		font->paint_text_fixedwidth(ibuf, "Shape Set. Hit a key.", 0, promptmes, 8);
 		break;
 
 	case CP_ValueSet:
-		font->paint_text_fixedwidth(ibuf, "Clock Set. Hit a key.", 0, maxy - 9, 8);
+		font->paint_text_fixedwidth(ibuf, "Clock Set. Hit a key.", 0, promptmes, 8);
 		break;
 
 	case CP_NameSet:
-		font->paint_text_fixedwidth(ibuf, "Name Changed. Hit a key.", 0, maxy - 9, 8);
+		font->paint_text_fixedwidth(ibuf, "Name Changed. Hit a key.", 0, promptmes, 8);
 		break;
 
 	case CP_WrongShapeFile:
-		font->paint_text_fixedwidth(ibuf, "Wrong shape file. Must be SHAPES.VGA. Hit a key.", 0, maxy - 9, 8);
+		font->paint_text_fixedwidth(ibuf, "Wrong shape file. Must be SHAPES.VGA. Hit a key.", 0, promptmes, 8);
 		break;
 
 
 	case CP_ChooseNPC:
-		font->paint_text_fixedwidth(ibuf, "Which NPC? (-1 to cancel.)", 0, maxy - 9, 8);
+		font->paint_text_fixedwidth(ibuf, "Which NPC? (-1 to cancel.)", 0, promptmes, 8);
 		break;
 
 	case CP_EnterValue:
-		font->paint_text_fixedwidth(ibuf, "Enter Value. (-1 to cancel.)", 0, maxy - 9, 8);
+		font->paint_text_fixedwidth(ibuf, "Enter Value. (-1 to cancel.)", 0, promptmes, 8);
 		break;
 
 	case CP_Minute:
-		font->paint_text_fixedwidth(ibuf, "Enter Minute. (-1 to cancel.)", 0, maxy - 9, 8);
+		font->paint_text_fixedwidth(ibuf, "Enter Minute. (-1 to cancel.)", 0, promptmes, 8);
 		break;
 
 	case CP_Hour:
-		font->paint_text_fixedwidth(ibuf, "Enter Hour. (-1 to cancel.)", 0, maxy - 9, 8);
+		font->paint_text_fixedwidth(ibuf, "Enter Hour. (-1 to cancel.)", 0, promptmes, 8);
 		break;
 
 	case CP_Day:
-		font->paint_text_fixedwidth(ibuf, "Enter Day. (-1 to cancel.)", 0, maxy - 9, 8);
+		font->paint_text_fixedwidth(ibuf, "Enter Day. (-1 to cancel.)", 0, promptmes, 8);
 		break;
 
 	case CP_Shape:
-		font->paint_text_fixedwidth(ibuf, "Enter Shape (B=Browse or -1=Cancel)", 0, maxy - 9, 8);
+		font->paint_text_fixedwidth(ibuf, "Enter Shape (B=Browse or -1=Cancel)", 0, promptmes, 8);
 		break;
 
 	case CP_Activity:
-		font->paint_text_fixedwidth(ibuf, "Enter Activity 0-31. (-1 to cancel.)", 0, maxy - 9, 8);
+		font->paint_text_fixedwidth(ibuf, "Enter Activity 0-31. (-1 to cancel.)", 0, promptmes, 8);
 		break;
 
 	case CP_XCoord:
 		snprintf(buf, 512, "Enter X Coord. Max %i (-1 to cancel.)", c_num_tiles);
-		font->paint_text_fixedwidth(ibuf, buf, 0, maxy - 9, 8);
+		font->paint_text_fixedwidth(ibuf, buf, 0, promptmes, 8);
 		break;
 
 	case CP_YCoord:
 		snprintf(buf, 512, "Enter Y Coord. Max %i (-1 to cancel.)", c_num_tiles);
-		font->paint_text_fixedwidth(ibuf, buf, 0, maxy - 9, 8);
+		font->paint_text_fixedwidth(ibuf, buf, 0, promptmes, 8);
 		break;
 
 	case CP_Lift:
-		font->paint_text_fixedwidth(ibuf, "Enter Lift. (-1 to cancel.)", 0, maxy - 9, 8);
+		font->paint_text_fixedwidth(ibuf, "Enter Lift. (-1 to cancel.)", 0, promptmes, 8);
 		break;
 
 	case CP_GFlagNum: {
 		char buf[50];
 		snprintf(buf, 50, "Enter Global Flag 0-%d. (-1 to cancel.)", c_last_gflag);
-		font->paint_text_fixedwidth(ibuf, buf, 0, maxy - 9, 8);
+		font->paint_text_fixedwidth(ibuf, buf, 0, promptmes, 8);
 		break;
 	}
 
 	case CP_NFlagNum:
-		font->paint_text_fixedwidth(ibuf, "Enter NPC Flag 0-63. (-1 to cancel.)", 0, maxy - 9, 8);
+		font->paint_text_fixedwidth(ibuf, "Enter NPC Flag 0-63. (-1 to cancel.)", 0, promptmes, 8);
 		break;
 
 	case CP_TempNum:
-		font->paint_text_fixedwidth(ibuf, "Enter Temperature 0-63. (-1 to cancel.)", 0, maxy - 9, 8);
+		font->paint_text_fixedwidth(ibuf, "Enter Temperature 0-63. (-1 to cancel.)", 0, promptmes, 8);
 		break;
 
 	case CP_NLatitude:
-		font->paint_text_fixedwidth(ibuf, "Enter Latitude value. Max 113 (-1 to cancel.)", 0, maxy - 9, 8);
+		font->paint_text_fixedwidth(ibuf, "Enter Latitude value. Max 113 (-1 to cancel.)", 0, promptmes, 8);
 		break;
 
 	case CP_SLatitude:
-		font->paint_text_fixedwidth(ibuf, "Enter Latitude value. Max 193 (-1 to cancel.)", 0, maxy - 9, 8);
+		font->paint_text_fixedwidth(ibuf, "Enter Latitude value. Max 193 (-1 to cancel.)", 0, promptmes, 8);
 		break;
 
 	case CP_WLongitude:
-		font->paint_text_fixedwidth(ibuf, "Enter Longitude value. Max 93 (-1 to cancel.)", 0, maxy - 9, 8);
+		font->paint_text_fixedwidth(ibuf, "Enter Longitude value. Max 93 (-1 to cancel.)", 0, promptmes, 8);
 		break;
 
 	case CP_ELongitude:
-		font->paint_text_fixedwidth(ibuf, "Enter Longitude value. Max 213 (-1 to cancel.)", 0, maxy - 9, 8);
+		font->paint_text_fixedwidth(ibuf, "Enter Longitude value. Max 213 (-1 to cancel.)", 0, promptmes, 8);
 		break;
 
 	case CP_Name:
-		font->paint_text_fixedwidth(ibuf, "Enter a new Name...", 0, maxy - 9, 8);
+		font->paint_text_fixedwidth(ibuf, "Enter a new Name...", 0, promptmes, 8);
 		break;
 
 	case CP_NorthSouth:
-		font->paint_text_fixedwidth(ibuf, "Latitude [N]orth or [S]outh?", 0, maxy - 9, 8);
+		font->paint_text_fixedwidth(ibuf, "Latitude [N]orth or [S]outh?", 0, promptmes, 8);
 		break;
 
 	case CP_WestEast:
-		font->paint_text_fixedwidth(ibuf, "Longitude [W]est or [E]ast?", 0, maxy - 9, 8);
+		font->paint_text_fixedwidth(ibuf, "Longitude [W]est or [E]ast?", 0, promptmes, 8);
 		break;
 
 	case CP_HexXCoord:
 		snprintf(buf, 512, "Enter X Coord. Max %04x (-1 to cancel.)", c_num_tiles);
-		font->paint_text_fixedwidth(ibuf, buf, 0, maxy - 9, 8);
+		font->paint_text_fixedwidth(ibuf, buf, 0, promptmes, 8);
 		break;
 
 	case CP_HexYCoord:
 		snprintf(buf, 512, "Enter Y Coord. Max %04x (-1 to cancel.)", c_num_tiles);
-		font->paint_text_fixedwidth(ibuf, buf, 0, maxy - 9, 8);
+		font->paint_text_fixedwidth(ibuf, buf, 0, promptmes, 8);
 		break;
 
 	}
@@ -550,8 +558,12 @@ void CheatScreen::NormalLoop() {
 void CheatScreen::NormalDisplay() {
 	char    buf[512];
 	Tile_coord t = gwin->get_main_actor()->get_tile();
-
+#ifdef __IPHONEOS__
+	font->paint_text_fixedwidth(ibuf, "Colourless' Advanced Option Cheat Screen", 0, 108, 8);
+	font->paint_text_fixedwidth(ibuf, "Special crammed iOS Edition", 0, 117, 8);
+#else
 	font->paint_text_fixedwidth(ibuf, "Colourless' Advanced Option Cheat Screen", 0, 0, 8);
+#endif
 
 	if (Game::get_game_type() == BLACK_GATE)
 		snprintf(buf, 512, "Running \"Ultima 7: The Black Gate\"");
@@ -559,12 +571,17 @@ void CheatScreen::NormalDisplay() {
 		snprintf(buf, 512, "Running \"Ultima 7: Part 2: Serpent Isle\"");
 	else
 		snprintf(buf, 512, "Running Unknown Game Type %i", Game::get_game_type());
-
+#ifdef __IPHONEOS__
+	font->paint_text_fixedwidth(ibuf, buf, 0, 135, 8);
+#else
 	font->paint_text_fixedwidth(ibuf, buf, 0, 18, 8);
-
+#endif
 	snprintf(buf, 512, "Exult Version %s", VERSION);
+#ifdef __IPHONEOS__	
+	font->paint_text_fixedwidth(ibuf, buf, 0, 144, 8);
+#else
 	font->paint_text_fixedwidth(ibuf, buf, 0, 27, 8);
-
+#endif
 
 
 	snprintf(buf, 512, "Current time: %i:%02i %s  Day: %i",
@@ -572,22 +589,38 @@ void CheatScreen::NormalDisplay() {
 	         clock->get_minute(),
 	         clock->get_hour() < 12 ? "AM" : "PM",
 	         clock->get_day());
+#ifdef __IPHONEOS__
+	font->paint_text_fixedwidth(ibuf, buf, 0, 0, 8);
+#else
 	font->paint_text_fixedwidth(ibuf, buf, 0, 45, 8);
-
+#endif
+	
 	int longi = ((t.tx - 0x3A5) / 10);
 	int lati = ((t.ty - 0x46E) / 10);
 	snprintf(buf, 512, "Coords geo    %d %s %d %s", 
 		abs(lati), (lati < 0 ? "North" : "South"),
 		abs(longi), (longi < 0 ? "West" : "East"));
+#ifdef __IPHONEOS__
+	font->paint_text_fixedwidth(ibuf, buf, 0, 9, 8);
+#else
 	font->paint_text_fixedwidth(ibuf, buf, 0, 63, 8);
+#endif
 
 	snprintf(buf, 512, "Coords in hex (%04x, %04x, %02x)",
 	         t.tx, t.ty, t.tz);
+#ifdef __IPHONEOS__
+	font->paint_text_fixedwidth(ibuf, buf, 0, 18, 8);
+#else
 	font->paint_text_fixedwidth(ibuf, buf, 0, 72, 8);
+#endif
 
 	snprintf(buf, 512, "Coords in dec (%04i, %04i, %02i)",
 	         t.tx, t.ty, t.tz);
+#ifdef __IPHONEOS__
+	font->paint_text_fixedwidth(ibuf, buf, 0, 27, 8);
+#else
 	font->paint_text_fixedwidth(ibuf, buf, 0, 81, 8);
+#endif
 }
 
 void CheatScreen::NormalMenu() {
@@ -596,51 +629,94 @@ void CheatScreen::NormalMenu() {
 	// Left Column
 
 	// Use
+#ifndef __IPHONEOS__
+	// Paperdolls can be toggled in the gumps, no need here for iOS
 	Shape_manager *sman = Shape_manager::get_instance();
 	if (sman->can_use_paperdolls() && sman->are_paperdolls_enabled())
 		snprintf(buf, 512, "[P]aperdolls..: Yes");
 	else
 		snprintf(buf, 512, "[P]aperdolls..:  No");
 	font->paint_text_fixedwidth(ibuf, buf, 0, maxy - 99, 8);
+#endif
 
 	// GodMode
 	snprintf(buf, 512, "[G]od Mode....: %3s", cheat.in_god_mode() ? "On" : "Off");
+#ifdef __IPHONEOS__
+	font->paint_text_fixedwidth(ibuf, buf, 0, 36, 8);
+#else
 	font->paint_text_fixedwidth(ibuf, buf, 0, maxy - 90, 8);
+#endif
 
 	// Archwizzard Mode
 	snprintf(buf, 512, "[W]izard Mode.: %3s", cheat.in_wizard_mode() ? "On" : "Off");
+#ifdef __IPHONEOS__
+	font->paint_text_fixedwidth(ibuf, buf, 0, 45, 8);
+#else
 	font->paint_text_fixedwidth(ibuf, buf, 0, maxy - 81, 8);
+#endif
 
 	// Infravision
 	snprintf(buf, 512, "[I]nfravision.: %3s", cheat.in_infravision() ? "On" : "Off");
+#ifdef __IPHONEOS__
+	font->paint_text_fixedwidth(ibuf, buf, 0, 54, 8);
+#else
 	font->paint_text_fixedwidth(ibuf, buf, 0, maxy - 72, 8);
+#endif
 
 	// Hackmover
 	snprintf(buf, 512, "[H]ack Mover..: %3s", cheat.in_hack_mover() ? "Yes" : "No");
+#ifdef __IPHONEOS__
+	font->paint_text_fixedwidth(ibuf, buf, 0, 63, 8);
+#else
 	font->paint_text_fixedwidth(ibuf, buf, 0, maxy - 63, 8);
+#endif
 
 	// Eggs
 	snprintf(buf, 512, "[E]ggs Visible: %3s", gwin->paint_eggs ? "Yes" : "No");
+#ifdef __IPHONEOS__
+	font->paint_text_fixedwidth(ibuf, buf, 0, 72, 8);
+#else
 	font->paint_text_fixedwidth(ibuf, buf, 0, maxy - 54, 8);
+#endif
 
 	// Set Time
+#ifdef __IPHONEOS__
+	// for iOS we want to cram everything on the top, so we begin right column here
+	font->paint_text_fixedwidth(ibuf, "[S]et Time", 160, 36, 8);
+#else
 	font->paint_text_fixedwidth(ibuf, "[S]et Time", 0, maxy - 45, 8);
+#endif
 
 	// Time Rate
 	snprintf(buf, 512, "[+-] Time Rate: %3i", clock->get_time_rate());
+#ifndef __IPHONEOS__
+	// for iOS taking the liberty of leaving that out
 	font->paint_text_fixedwidth(ibuf, buf, 0, maxy - 36, 8);
+#endif
 
 
 	// Right Column
 
 	// NPC Tool
+#ifdef __IPHONEOS__
+	font->paint_text_fixedwidth(ibuf, "[N]PC Tool", 160, 45, 8);
+#else
 	font->paint_text_fixedwidth(ibuf, "[N]PC Tool", 160, maxy - 99, 8);
+#endif
 
 	// Global Flag Modify
+#ifdef __IPHONEOS__
+	font->paint_text_fixedwidth(ibuf, "[F]lag Modifier", 160, 54, 8);
+#else
 	font->paint_text_fixedwidth(ibuf, "[F]lag Modifier", 160, maxy - 90, 8);
+#endif
 
 	// Teleport
+#ifdef __IPHONEOS__
+	font->paint_text_fixedwidth(ibuf, "[T]eleport", 160, 63, 8);
+#else
 	font->paint_text_fixedwidth(ibuf, "[T]eleport", 160, maxy - 81, 8);
+#endif
 
 #if 0
 	// Create Item
@@ -648,7 +724,11 @@ void CheatScreen::NormalMenu() {
 #endif
 
 	// eXit
+#ifdef __IPHONEOS__
+	font->paint_text_fixedwidth(ibuf, "[X]it", 160, 72, 8);
+#else
 	font->paint_text_fixedwidth(ibuf, "[X]it", 160, maxy - 36, 8);
+#endif
 
 }
 
@@ -931,29 +1011,53 @@ CheatScreen::Cheat_Prompt CheatScreen::GlobalFlagLoop(int num) {
 	while (looping) {
 		gwin->clear_screen();
 
-
+#ifdef __IPHONEOS__
+		// on iOS we want lean and mean, so begone NormalDisplay
+		font->paint_text_fixedwidth(ibuf, "Global Flags", 0, 0, 8);
+#else
 		NormalDisplay();
-
+#endif
 
 		// First the info
 		snprintf(buf, 512, "Global Flag %i", num);
+#ifdef __IPHONEOS__
+		font->paint_text_fixedwidth(ibuf, buf, 0, 18, 8);
+#else
 		font->paint_text_fixedwidth(ibuf, buf, 0, maxy - 99, 8);
+#endif
 
 		snprintf(buf, 512, "Flag is %s", usecode->get_global_flag(num) ? "SET" : "UNSET");
+#ifdef __IPHONEOS__
+		font->paint_text_fixedwidth(ibuf, buf, 0, 27, 8);
+#else
 		font->paint_text_fixedwidth(ibuf, buf, 0, maxy - 90, 8);
-
+#endif
 
 		// Now the Menu Column
+#ifdef __IPHONEOS__
+		if (!usecode->get_global_flag(num)) font->paint_text_fixedwidth(ibuf, "[S]et Flag", 160, 27, 8);
+		else font->paint_text_fixedwidth(ibuf, "[U]nset Flag", 160, 27, 8);
+#else
 		if (!usecode->get_global_flag(num)) font->paint_text_fixedwidth(ibuf, "[S]et Flag", 160, maxy - 99, 8);
 		else font->paint_text_fixedwidth(ibuf, "[U]nset Flag", 160, maxy - 99, 8);
+#endif
 
 		// Change Flag
+#ifdef __IPHONEOS__
+		font->paint_text_fixedwidth(ibuf, "[*] Change Flag", 0, 45, 8);
+		if (num > 0 && num < c_last_gflag) font->paint_text_fixedwidth(ibuf, "[+-] Scroll Flags", 0, 54, 8);
+		else if (num == 0) font->paint_text_fixedwidth(ibuf, "[+] Scroll Flags", 0, 54, 8);
+		else font->paint_text_fixedwidth(ibuf, "[-] Scroll Flags", 0, 54, 8);
+
+		font->paint_text_fixedwidth(ibuf, "[X]it", 0, 72, 8);
+#else
 		font->paint_text_fixedwidth(ibuf, "[*] Change Flag", 0, maxy - 72, 8);
 		if (num > 0 && num < c_last_gflag) font->paint_text_fixedwidth(ibuf, "[+-] Scroll Flags", 0, maxy - 63, 8);
 		else if (num == 0) font->paint_text_fixedwidth(ibuf, "[+] Scroll Flags", 0, maxy - 63, 8);
 		else font->paint_text_fixedwidth(ibuf, "[-] Scroll Flags", 0, maxy - 63, 8);
 
 		font->paint_text_fixedwidth(ibuf, "[X]it", 0, maxy - 36, 8);
+#endif
 
 		// Finally the Prompt...
 		SharedPrompt(input, mode);
@@ -2595,22 +2699,36 @@ void CheatScreen::TeleportDisplay() {
 	Tile_coord t = gwin->get_main_actor()->get_tile();
 
 	font->paint_text_fixedwidth(ibuf, "Teleport Menu", 0, 0, 8);
+#ifndef __IPHONEOS__
 	font->paint_text_fixedwidth(ibuf, "Dangerous - use with care!", 0, 18, 8);
+#endif
 
 	int longi = ((t.tx - 0x3A5) / 10);
 	int lati = ((t.ty - 0x46E) / 10);
 	snprintf(buf, 512, "Coordinates   %d %s %d %s", 
 		abs(lati), (lati < 0 ? "North" : "South"),
 		abs(longi), (longi < 0 ? "West" : "East"));
+#ifdef __IPHONEOS__
+	font->paint_text_fixedwidth(ibuf, buf, 0, 9, 8);
+#else
 	font->paint_text_fixedwidth(ibuf, buf, 0, 63, 8);
+#endif
 
 	snprintf(buf, 512, "Coords in hex (%04x, %04x, %02x)",
 	         t.tx, t.ty, t.tz);
+#ifdef __IPHONEOS__
+	font->paint_text_fixedwidth(ibuf, buf, 0, 18, 8);
+#else
 	font->paint_text_fixedwidth(ibuf, buf, 0, 72, 8);
+#endif
 
 	snprintf(buf, 512, "Coords in dec (%04i, %04i, %02i)",
 	         t.tx, t.ty, t.tz);
+#ifdef __IPHONEOS__
+	font->paint_text_fixedwidth(ibuf, buf, 0, 27, 8);
+#else
 	font->paint_text_fixedwidth(ibuf, buf, 0, 81, 8);
+#endif
 }
 
 
@@ -2618,19 +2736,39 @@ void CheatScreen::TeleportMenu() {
 	// Left Column
 
 	// Geo
+#ifdef __IPHONEOS__
+	font->paint_text_fixedwidth(ibuf, "[G]eographic Coordinates", 0, 36, 8);
+#else
 	font->paint_text_fixedwidth(ibuf, "[G]eographic Coordinates", 0, maxy - 99, 8);
+#endif
 
 	// Hex
+#ifdef __IPHONEOS__
+	font->paint_text_fixedwidth(ibuf, "[H]exadecimal Coordinates", 0, 45, 8);
+#else
 	font->paint_text_fixedwidth(ibuf, "[H]exadecimal Coordinates", 0, maxy - 90, 8);
+#endif
 
 	// Dec
+#ifdef __IPHONEOS__
+	font->paint_text_fixedwidth(ibuf, "[D]ecimal Coordinates", 0, 54, 8);
+#else
 	font->paint_text_fixedwidth(ibuf, "[D]ecimal Coordinates", 0, maxy - 81, 8);
+#endif
 	
 	// NPC
+#ifdef __IPHONEOS__
+	font->paint_text_fixedwidth(ibuf, "[N]PC Number", 0, 63, 8);
+#else
 	font->paint_text_fixedwidth(ibuf, "[N]PC Number", 0, maxy - 72, 8);
+#endif
 
 	// eXit
+#ifdef __IPHONEOS__
+	font->paint_text_fixedwidth(ibuf, "[X]it", 0, 72, 8);
+#else
 	font->paint_text_fixedwidth(ibuf, "[X]it", 0, maxy - 36, 8);
+#endif
 }
 
 void CheatScreen::TeleportActivate(char *input, int &command, Cheat_Prompt &mode, int &prev) {
