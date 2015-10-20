@@ -431,7 +431,9 @@ void Gump_manager::paint(bool modal) {
 	gkeyboard->paint();
 #endif
 #ifdef __IPHONEOS__
-	g_shortcutBar->paint();
+	if (g_shortcutBar) {
+		g_shortcutBar->paint();
+	}
 #endif
 }
 
@@ -482,7 +484,7 @@ int Gump_manager::handle_modal_gump_event(
 			break;
 #endif
 #ifdef __IPHONEOS__
-		if (g_shortcutBar->handle_event(&event))
+		if (g_shortcutBar && g_shortcutBar->handle_event(&event))
 			break;
 #endif
 		if (event.button.button == 1) {
@@ -510,7 +512,7 @@ int Gump_manager::handle_modal_gump_event(
 			break;
 #endif
 #ifdef __IPHONEOS__
-		if (g_shortcutBar->handle_event(&event))
+		if (g_shortcutBar && g_shortcutBar->handle_event(&event))
 			break;
 #endif
 		if (event.button.button != 3)
