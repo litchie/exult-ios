@@ -205,6 +205,8 @@ void CheatScreen::show_screen() {
     Gump_manager *gumpman = gwin->get_gump_man();
 	if (!gumpman->gump_mode())
 		touchui->showGameControls();
+	if (SDL_IsTextInputActive())
+		SDL_StopTextInput();
 #endif
 }
 
