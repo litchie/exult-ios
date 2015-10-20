@@ -71,8 +71,15 @@ extern "C" int SDL_SendKeyboardKey(Uint8 state, SDL_Scancode scancode);
     	cancelButtonTitle:@"Cancel"
 	otherButtonTitles:@"OK", nil];
 	[alert setAlertViewStyle:UIAlertViewStylePlainTextInput];
+	UITextField *textField = [alert textFieldAtIndex:0];
+	
+	if ([textField respondsToSelector:@selector(inputAssistantItem)]) {
+		textField.inputAssistantItem.trailingBarButtonGroups = @[];
+		textField.inputAssistantItem.leadingBarButtonGroups  = @[];
+	}
+
 	if (name) {
-		[[alert textFieldAtIndex:0] setText:name];
+		[textField setText:name];
 	}
 	[alert show];
 	[alert release];

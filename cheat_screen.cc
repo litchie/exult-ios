@@ -181,6 +181,7 @@ void CheatScreen::show_screen() {
 	centery = maxy / 2;
 #ifdef __IPHONEOS__
 	touchui->hideGameControls();
+	SDL_StartTextInput();
 #endif
 
 	// Pause the game
@@ -403,6 +404,13 @@ bool CheatScreen::SharedInput(char *input, int len, int &command, Cheat_Prompt &
 	while (1) {
 		Delay();
 		while (SDL_PollEvent(&event)) {
+#ifdef __IPHONEOS__
+			// Touch on the cheat screen will bring up the keyboard
+			if (event.type == SDL_MOUSEBUTTONDOWN) {
+				SDL_StartTextInput();
+			}
+#endif
+		
 			if (event.type != SDL_KEYDOWN)
 				continue;
 			SDL_keysym &key = event.key.keysym;
