@@ -62,6 +62,7 @@ struct ShortcutBarButtonItem {
 	int shapeOffsetX;
 	int shapeOffsetY;
 	bool pushed;
+	bool translucent;
 };
 
 #define MAX_SHORTCUT_BAR_ITEMS 10
