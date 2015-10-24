@@ -124,7 +124,17 @@ void ShortcutBar_gump::createButtons()
 	buttonItems[1].shapeOffsetY = 5;
 
 	// map
-	buttonItems[2].shapeId = new ShapeID(178, 0, SF_SHAPES_VGA);
+	if (GAME_SI) {
+		if (resy - gamey < 20)
+			buttonItems[2].shapeId = new ShapeID(10, 3, SF_IPHONE_FLX);
+		else
+			buttonItems[2].shapeId = new ShapeID(10, 2, SF_IPHONE_FLX);
+	} else {
+		if (resy - gamey < 20)
+			buttonItems[2].shapeId = new ShapeID(10, 1, SF_IPHONE_FLX);
+		else
+			buttonItems[2].shapeId = new ShapeID(10, 0, SF_IPHONE_FLX);
+	}
 	buttonItems[2].name = "map";
 	buttonItems[2].type = SB_ITEM_MAP;
 	buttonItems[2].shapeOffsetY = -1;
@@ -152,7 +162,10 @@ void ShortcutBar_gump::createButtons()
 	buttonItems[3].shapeOffsetY = -4;
 
 	// backpack
-	buttonItems[4].shapeId = new ShapeID(801, 0, SF_SHAPES_VGA);
+	if (resy - gamey < 20)
+		buttonItems[4].shapeId = new ShapeID(12, 1, SF_IPHONE_FLX);
+	else
+		buttonItems[4].shapeId = new ShapeID(12, 0, SF_IPHONE_FLX);
 	buttonItems[4].name = "backpack";
 	buttonItems[4].type = SB_ITEM_BACKPACK;
 	buttonItems[4].shapeOffsetY = -2;
@@ -167,14 +180,20 @@ void ShortcutBar_gump::createButtons()
 		buttonItems[5].type = SB_ITEM_KEYRING;
 		buttonItems[5].shapeOffsetY = -2;
 	} else {
-		buttonItems[5].shapeId = new ShapeID(641, 28, SF_SHAPES_VGA);
+		if (resy - gamey < 20)
+			buttonItems[5].shapeId = new ShapeID(9, 1, SF_IPHONE_FLX);
+		else
+			buttonItems[5].shapeId = new ShapeID(9, 0, SF_IPHONE_FLX);
 		buttonItems[5].name = "key";
 		buttonItems[5].type = SB_ITEM_KEY;
 		buttonItems[5].shapeOffsetY = -1;
 	}
 
 	// notebook
-	buttonItems[6].shapeId = new ShapeID(642, 7, SF_SHAPES_VGA);
+	if (resy - gamey < 20)
+		buttonItems[6].shapeId = new ShapeID(11, 1, SF_IPHONE_FLX);
+	else
+		buttonItems[6].shapeId = new ShapeID(11, 0, SF_IPHONE_FLX);
 	buttonItems[6].name = "notebook";
 	buttonItems[6].type = SB_ITEM_NOTEBOOK;
 	buttonItems[6].shapeOffsetY = -3;
@@ -188,20 +207,23 @@ void ShortcutBar_gump::createButtons()
 	buttonItems[7].type = SB_ITEM_TARGET;
 	buttonItems[7].shapeOffsetY = -8;
 	
-	if (GAME_SI)
-		buttonItems[8].shapeId = new ShapeID(23, 3, SF_GUMPS_VGA);
+	if (resy - gamey < 20)
+		buttonItems[8].shapeId = new ShapeID(8, 1, SF_IPHONE_FLX);
 	else
-		buttonItems[8].shapeId = new ShapeID(28, 3, SF_GUMPS_VGA);
+		buttonItems[8].shapeId = new ShapeID(8, 0, SF_IPHONE_FLX);
 	buttonItems[8].name = "feed";
 	buttonItems[8].type = SB_ITEM_FEED;
 	buttonItems[8].shapeOffsetY = -1;
 
 	// jawbone
 	if (GAME_SI) {
-		if (is_party_item(555))
-			buttonItems[9].shapeId = new ShapeID(4, 0, SF_IPHONE_FLX);
-		else
-			buttonItems[9].shapeId = new ShapeID(4, 1, SF_IPHONE_FLX);
+		if (is_party_item(555)) {
+			if (resy - gamey < 20)
+				buttonItems[9].shapeId = new ShapeID(4, 1, SF_IPHONE_FLX);
+			else
+				buttonItems[9].shapeId = new ShapeID(4, 0, SF_IPHONE_FLX);
+		} else
+			buttonItems[9].shapeId = new ShapeID(4, 2, SF_IPHONE_FLX);
 		buttonItems[9].name = "jawbone";
 		buttonItems[9].type = SB_ITEM_JAWBONE;
 		buttonItems[9].shapeOffsetY = -1;

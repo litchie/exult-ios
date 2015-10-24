@@ -67,7 +67,12 @@ EXULT_IPHONE_FLX_OBJECTS = \
 	iphone/jawbone.shp \
 	iphone/keyring.shp \
 	iphone/spellbook.shp \
-	iphone/target.shp
+	iphone/target.shp \
+	iphone/food.shp \
+	iphone/key.shp \
+	iphone/maps.shp \
+	iphone/notebook.shp \
+	iphone/backpack.shp
 
 EXULT_BG_PAPERDOL_VGA_OBJECTS = \
 	bg/amulets.shp \
