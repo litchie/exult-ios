@@ -146,16 +146,20 @@ void ShortcutBar_gump::createButtons()
 				buttonItems[3].shapeId = new ShapeID(6, 4, SF_IPHONE_FLX);
 			else
 				buttonItems[3].shapeId = new ShapeID(6, 3, SF_IPHONE_FLX);
-		} else
+		} else {
 			buttonItems[3].shapeId = new ShapeID(6, 5, SF_IPHONE_FLX);
+			buttonItems[3].translucent = 1;
+		}
 	} else {
 		if (is_party_item(761)) {
 			if (resy - gamey < 20)
 				buttonItems[3].shapeId = new ShapeID(6, 1, SF_IPHONE_FLX);
 			else
 				buttonItems[3].shapeId = new ShapeID(6, 0, SF_IPHONE_FLX);
-		} else
+		} else {
 			buttonItems[3].shapeId = new ShapeID(6, 2, SF_IPHONE_FLX);
+			buttonItems[3].translucent = 1;
+		}
 	}
 	buttonItems[3].name = "spellbook";
 	buttonItems[3].type = SB_ITEM_SPELLBOOK;
@@ -222,8 +226,10 @@ void ShortcutBar_gump::createButtons()
 				buttonItems[9].shapeId = new ShapeID(4, 1, SF_IPHONE_FLX);
 			else
 				buttonItems[9].shapeId = new ShapeID(4, 0, SF_IPHONE_FLX);
-		} else
+		} else {
 			buttonItems[9].shapeId = new ShapeID(4, 2, SF_IPHONE_FLX);
+			buttonItems[9].translucent = 1;
+		}
 		buttonItems[9].name = "jawbone";
 		buttonItems[9].type = SB_ITEM_JAWBONE;
 		buttonItems[9].shapeOffsetY = -1;
@@ -245,7 +251,7 @@ void ShortcutBar_gump::createButtons()
 		// this is save to do since it only effects certain palette colors
 		// which will be color cycling otherwise
 		if (resy - gamey < 20)
-			buttonItems[i].translucent = 1;	
+			buttonItems[i].translucent = 1;
 	}
 	
 }
@@ -308,7 +314,7 @@ void ShortcutBar_gump::paint()
 
 int ShortcutBar_gump::handle_event(SDL_Event *event)
 {
-	if (event->type == SDL_MOUSEBUTTONDOWN || event->type == SDL_MOUSEBUTTONUP) {
+	if ((event->type == SDL_MOUSEBUTTONDOWN || event->type == SDL_MOUSEBUTTONUP) && !event->motion.state) {
 		Game_window *gwin = Game_window::get_instance();
 		int scale = gwin->get_fastmouse() ? 1 : gwin->get_win()->get_scale_factor();
 		int x = event->button.x / scale;
