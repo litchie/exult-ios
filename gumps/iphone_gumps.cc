@@ -314,7 +314,7 @@ void ShortcutBar_gump::paint()
 
 int ShortcutBar_gump::handle_event(SDL_Event *event)
 {
-	if ((event->type == SDL_MOUSEBUTTONDOWN || event->type == SDL_MOUSEBUTTONUP) {
+	if (event->type == SDL_MOUSEBUTTONDOWN || event->type == SDL_MOUSEBUTTONUP) {
 		Game_window *gwin = Game_window::get_instance();
 		int scale = gwin->get_fastmouse() ? 1 : gwin->get_win()->get_scale_factor();
 		int x = event->button.x / scale;
