@@ -490,6 +490,12 @@ Game_window::Game_window(
 		dpad_location = 2;
 	}
 	config->set("config/iphoneos/dpad_location", str, false);
+	config->value("config/iphoneos/trlucent_bar", str, "yes");
+	trlucent_bar = str == "yes";
+	config->set("config/iphoneos/trlucent_bar", trlucent_bar ? "yes" : "no", false);
+	config->value("config/iphoneos/missing_button_bar", str, "no");
+	missing_button_bar = str != "no";
+	config->set("config/iphoneos/missing_button_bar", missing_button_bar ? "yes" : "no", false);
 #endif
 	config->write_back();
 }

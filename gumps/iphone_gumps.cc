@@ -97,9 +97,9 @@ void ShortcutBar_gump::createButtons()
 	int y = 20+starty;
 	
 	memset(buttonItems, 0, sizeof(buttonItems));
-	
+
 	// disk
-	if (resy - gamey < 20)
+	if (resy - gamey < 20 && gwin->get_trlucent_bar())
 		buttonItems[0].shapeId = new ShapeID(3, 1, SF_IPHONE_FLX);
 	else
 		buttonItems[0].shapeId = new ShapeID(3, 0, SF_IPHONE_FLX);
@@ -109,12 +109,12 @@ void ShortcutBar_gump::createButtons()
 
 	// peace/combat
 	if (gwin->in_combat()) {
-		if (resy - gamey < 20)
+		if (resy - gamey < 20 && gwin->get_trlucent_bar())
 			buttonItems[1].shapeId = new ShapeID(2, 3, SF_IPHONE_FLX);
 		else
 			buttonItems[1].shapeId = new ShapeID(2, 2, SF_IPHONE_FLX);
 	} else {
-		if (resy - gamey < 20)
+		if (resy - gamey < 20 && gwin->get_trlucent_bar())
 			buttonItems[1].shapeId = new ShapeID(2, 1, SF_IPHONE_FLX);
 		else
 			buttonItems[1].shapeId = new ShapeID(2, 0, SF_IPHONE_FLX);
@@ -125,12 +125,12 @@ void ShortcutBar_gump::createButtons()
 
 	// map
 	if (GAME_SI) {
-		if (resy - gamey < 20)
+		if (resy - gamey < 20 && gwin->get_trlucent_bar())
 			buttonItems[2].shapeId = new ShapeID(10, 3, SF_IPHONE_FLX);
 		else
 			buttonItems[2].shapeId = new ShapeID(10, 2, SF_IPHONE_FLX);
 	} else {
-		if (resy - gamey < 20)
+		if (resy - gamey < 20 && gwin->get_trlucent_bar())
 			buttonItems[2].shapeId = new ShapeID(10, 1, SF_IPHONE_FLX);
 		else
 			buttonItems[2].shapeId = new ShapeID(10, 0, SF_IPHONE_FLX);
@@ -142,17 +142,21 @@ void ShortcutBar_gump::createButtons()
 	// spellbook
 	if (GAME_SI) {
 		if (is_party_item(761)) {
-			if (resy - gamey < 20)
+			if (resy - gamey < 20 && gwin->get_trlucent_bar())
 				buttonItems[3].shapeId = new ShapeID(6, 4, SF_IPHONE_FLX);
 			else
 				buttonItems[3].shapeId = new ShapeID(6, 3, SF_IPHONE_FLX);
 		} else {
-			buttonItems[3].shapeId = new ShapeID(6, 5, SF_IPHONE_FLX);
-			buttonItems[3].translucent = 1;
+			if (gwin->get_missing_button_bar()) {
+				buttonItems[3].shapeId = new ShapeID(1, 0, SF_IPHONE_FLX);
+			} else {
+				buttonItems[3].shapeId = new ShapeID(6, 5, SF_IPHONE_FLX);
+				buttonItems[3].translucent = 1;
+			}
 		}
 	} else {
 		if (is_party_item(761)) {
-			if (resy - gamey < 20)
+			if (resy - gamey < 20 && gwin->get_trlucent_bar())
 				buttonItems[3].shapeId = new ShapeID(6, 1, SF_IPHONE_FLX);
 			else
 				buttonItems[3].shapeId = new ShapeID(6, 0, SF_IPHONE_FLX);
@@ -166,7 +170,7 @@ void ShortcutBar_gump::createButtons()
 	buttonItems[3].shapeOffsetY = -4;
 
 	// backpack
-	if (resy - gamey < 20)
+	if (resy - gamey < 20 && gwin->get_trlucent_bar())
 		buttonItems[4].shapeId = new ShapeID(12, 1, SF_IPHONE_FLX);
 	else
 		buttonItems[4].shapeId = new ShapeID(12, 0, SF_IPHONE_FLX);
@@ -176,7 +180,7 @@ void ShortcutBar_gump::createButtons()
 
 	// key/keyring
 	if (is_party_item(485) && GAME_SI) {
-		if (resy - gamey < 20)
+		if (resy - gamey < 20 && gwin->get_trlucent_bar())
 			buttonItems[5].shapeId = new ShapeID(5, 1, SF_IPHONE_FLX);
 		else
 			buttonItems[5].shapeId = new ShapeID(5, 0, SF_IPHONE_FLX);
@@ -184,7 +188,7 @@ void ShortcutBar_gump::createButtons()
 		buttonItems[5].type = SB_ITEM_KEYRING;
 		buttonItems[5].shapeOffsetY = -2;
 	} else {
-		if (resy - gamey < 20)
+		if (resy - gamey < 20 && gwin->get_trlucent_bar())
 			buttonItems[5].shapeId = new ShapeID(9, 1, SF_IPHONE_FLX);
 		else
 			buttonItems[5].shapeId = new ShapeID(9, 0, SF_IPHONE_FLX);
@@ -194,7 +198,7 @@ void ShortcutBar_gump::createButtons()
 	}
 
 	// notebook
-	if (resy - gamey < 20)
+	if (resy - gamey < 20 && gwin->get_trlucent_bar())
 		buttonItems[6].shapeId = new ShapeID(11, 1, SF_IPHONE_FLX);
 	else
 		buttonItems[6].shapeId = new ShapeID(11, 0, SF_IPHONE_FLX);
@@ -203,7 +207,7 @@ void ShortcutBar_gump::createButtons()
 	buttonItems[6].shapeOffsetY = -3;
 
 	// target
-	if (resy - gamey < 20)
+	if (resy - gamey < 20 && gwin->get_trlucent_bar())
 		buttonItems[7].shapeId = new ShapeID(7, 1, SF_IPHONE_FLX);
 	else
 		buttonItems[7].shapeId = new ShapeID(7, 0, SF_IPHONE_FLX);
@@ -211,7 +215,7 @@ void ShortcutBar_gump::createButtons()
 	buttonItems[7].type = SB_ITEM_TARGET;
 	buttonItems[7].shapeOffsetY = -8;
 	
-	if (resy - gamey < 20)
+	if (resy - gamey < 20 && gwin->get_trlucent_bar())
 		buttonItems[8].shapeId = new ShapeID(8, 1, SF_IPHONE_FLX);
 	else
 		buttonItems[8].shapeId = new ShapeID(8, 0, SF_IPHONE_FLX);
@@ -222,13 +226,17 @@ void ShortcutBar_gump::createButtons()
 	// jawbone
 	if (GAME_SI) {
 		if (is_party_item(555)) {
-			if (resy - gamey < 20)
+			if (resy - gamey < 20 && gwin->get_trlucent_bar())
 				buttonItems[9].shapeId = new ShapeID(4, 1, SF_IPHONE_FLX);
 			else
 				buttonItems[9].shapeId = new ShapeID(4, 0, SF_IPHONE_FLX);
 		} else {
-			buttonItems[9].shapeId = new ShapeID(4, 2, SF_IPHONE_FLX);
-			buttonItems[9].translucent = 1;
+			if (gwin->get_missing_button_bar()) {
+				buttonItems[9].shapeId = new ShapeID(1, 0, SF_IPHONE_FLX);
+			} else {
+				buttonItems[9].shapeId = new ShapeID(4, 2, SF_IPHONE_FLX);
+				buttonItems[9].translucent = 1;
+			}
 		}
 		buttonItems[9].name = "jawbone";
 		buttonItems[9].type = SB_ITEM_JAWBONE;
@@ -250,7 +258,7 @@ void ShortcutBar_gump::createButtons()
 		buttonItems[i].rect = new Rectangle(x, y, barItemWidth, height);
 		// this is save to do since it only effects certain palette colors
 		// which will be color cycling otherwise
-		if (resy - gamey < 20)
+		if (resy - gamey < 20 && gwin->get_trlucent_bar())
 			buttonItems[i].translucent = 1;
 	}
 	

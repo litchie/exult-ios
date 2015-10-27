@@ -32,6 +32,8 @@ class iphoneOptions_gump : public Modal_gump {
 private:
 	bool item_menu;
 	int dpad_location;
+	bool trlucent_bar;
+	bool missing_button_bar;
 
 	enum button_ids {
 	    id_first = 0,
@@ -39,6 +41,8 @@ private:
 	    id_cancel,
 	    id_item_menu,
 	    id_dpad_location,
+		id_trlucent_bar,
+		id_missing_button_bar,
 	    id_count
 	};
 	Gump_button *buttons[id_count];

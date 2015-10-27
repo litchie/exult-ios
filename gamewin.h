@@ -143,6 +143,8 @@ class Game_window {
 	//iphoneOS Options
 	bool item_menu;
 	int dpad_location;
+	bool trlucent_bar;
+	bool missing_button_bar;
 #endif
 	// Private methods:
 	void set_scrolls(Tile_coord cent);
@@ -307,6 +309,18 @@ public:
 	}
 	inline int get_dpad_location() {
 		return dpad_location;
+	}
+	bool get_trlucent_bar() const {
+		return trlucent_bar;
+	}
+	void set_trlucent_bar(bool s) {
+		trlucent_bar = s;
+	}
+	bool get_missing_button_bar() const {
+		return missing_button_bar;
+	}
+	void set_missing_button_bar(bool s) {
+		missing_button_bar = s;
 	}
 #endif
 	/*

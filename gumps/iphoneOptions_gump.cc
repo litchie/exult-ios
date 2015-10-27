@@ -109,6 +109,10 @@ void iphoneOptions_gump::toggle(Gump_button *btn, int state) {
 		item_menu = state;
 	else if (btn == buttons[id_dpad_location])
 		dpad_location = state;
+	else if (btn == buttons[id_trlucent_bar])
+		trlucent_bar = state;
+	else if (btn == buttons[id_missing_button_bar])
+		missing_button_bar = state;
 }
 
 void iphoneOptions_gump::build_buttons() {
@@ -129,11 +133,17 @@ void iphoneOptions_gump::build_buttons() {
 	dpad_text[1] = "Left";
 	dpad_text[2] = "Right";
 
-	buttons[id_item_menu] = new iphoneTextToggle(this, yesNo1, colx[4], rowy[0],
-	        59, item_menu, 2);
-	
+	buttons[id_item_menu] = new iphoneEnabledToggle(this, colx[4], rowy[0],
+	        59, item_menu);
+
 	buttons[id_dpad_location] = new iphoneTextToggle(this, dpad_text, colx[4], rowy[1],
 		59, dpad_location, num_dpad_texts);
+
+	buttons[id_trlucent_bar] = new iphoneEnabledToggle(this, colx[4], rowy[2],
+			59, trlucent_bar);
+
+	buttons[id_missing_button_bar] = new iphoneEnabledToggle(this, colx[4], rowy[3],
+			59, missing_button_bar);
 
 	// Ok
 	buttons[id_ok] = new iphoneOptions_button(this, oktext, colx[0], rowy[12]);
@@ -145,11 +155,16 @@ void iphoneOptions_gump::load_settings() {
 	//string yn;
 	item_menu = gwin->get_item_menu();
 	dpad_location = gwin->get_dpad_location();
+	trlucent_bar = gwin->get_trlucent_bar();
+	missing_button_bar = gwin->get_missing_button_bar();
 }
 
 iphoneOptions_gump::iphoneOptions_gump()
 	: Modal_gump(0, EXULT_FLX_GAMEPLAYOPTIONS_SHP, SF_EXULT_FLX) {
 	set_object_area(Rectangle(0, 0, 0, 0), 8, 162);//++++++ ???
+
+	for (int i = id_first; i < id_count; i++)
+		buttons[i] = 0;
 
 	load_settings();
 	build_buttons();
@@ -169,8 +184,15 @@ void iphoneOptions_gump::save_settings() {
 	gwin->set_dpad_location(dpad_location);
 	config->set("config/iphoneos/dpad_location", dpad_texts[dpad_location], false);
 
+	gwin->set_trlucent_bar(trlucent_bar != 0);
+	config->set("config/iphoneos/trlucent_bar",
+	            trlucent_bar ? "yes" : "no", false);
+
+	gwin->set_missing_button_bar(missing_button_bar != 0);
+	config->set("config/iphoneos/missing_button_bar",
+	            missing_button_bar ? "yes" : "no", false);
 	config->write_back();
-	
+
 	touchui->onDpadLocationChanged();
 }
 
@@ -183,7 +205,9 @@ void iphoneOptions_gump::paint() {
 	Image_window8 *iwin = gwin->get_win();
 	font->paint_text(iwin->get_ib8(), "Item helper menu:", x + colx[0], y + rowy[0] + 1);
 	font->paint_text(iwin->get_ib8(), "D-Pad screen location:", x + colx[0], y + rowy[1] + 1);
-	
+	font->paint_text(iwin->get_ib8(), "Translucent Shortcutbar:", x + colx[0], y + rowy[2] + 1);
+	font->paint_text(iwin->get_ib8(), "Invisible missing baricon:", x + colx[0], y + rowy[3] + 1);
+
 	gwin->set_painted();
 }
 
