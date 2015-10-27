@@ -42,6 +42,7 @@
 #include "party.h"
 #include "Text_button.h"
 #include "miscinf.h"
+#include "Gump_manager.h"
 
 #ifndef UNDER_EMBEDDED_CE
 using std::atoi;
@@ -314,6 +315,7 @@ Newfile_gump::Newfile_gump(
 
 	LoadSaveGameDetails();
 #ifdef __IPHONEOS__
+	touchui->hideGameControls();
 	touchui->hideButtonControls();
 #endif
 }
@@ -334,6 +336,8 @@ Newfile_gump::~Newfile_gump(
 	delete back;
 #ifdef __IPHONEOS__
 	touchui->showButtonControls();
+	if (!gumpman->gump_mode() || (!gumpman->modal_gump_mode() && gumpman->gumps_dont_pause_game()))
+		touchui->showGameControls(); 
 #endif
 }
 

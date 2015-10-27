@@ -304,7 +304,8 @@ void Gump_manager::add_gump(
 	// Paint new one last.
 	add_gump(new_gump);
 #ifdef __IPHONEOS__
-	touchui->hideGameControls();
+	if (!gumps_dont_pause_game())
+		touchui->hideGameControls();
 #endif
 	if (++cnt == 8)
 		cnt = 0;
@@ -669,7 +670,7 @@ int Gump_manager::do_modal_gump(
 	if (!modal_gump_count)
 		SDL_EnableUNICODE(0);
 #ifdef __IPHONEOS__	
-	if (!modal_gump_count && non_persistent_count == 0 && !gwin->is_in_exult_menu())
+	if ((non_persistent_count == 0 || gumpman->gumps_dont_pause_game()) && !modal_gump_count && !gwin->is_in_exult_menu())
 		touchui->showGameControls();
 #endif
 
