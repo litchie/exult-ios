@@ -229,7 +229,7 @@ void CheatScreen::SharedPrompt(char *input, const Cheat_Prompt &mode) {
 #else
 	char prompt = maxy - 18;
 	char promptmes = maxy - 9;
-	font->paint_text_fixedwidth(ibuf, "Select->", prompt, , 8);
+	font->paint_text_fixedwidth(ibuf, "Select->", 0, prompt, 8);
 #endif
 
 	if (input && std::strlen(input)) {
