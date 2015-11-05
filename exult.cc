@@ -1553,10 +1553,6 @@ static void Handle_event(
 			break;
 		Touchscreen->handle_event(&event);
 #endif
-#ifdef __IPHONEOS__
-		if (g_shortcutBar->handle_event(&event))
-			break;
-#endif
 		int x , y;
 		gwin->get_win()->screen_to_game(event.button.x, event.button.y, gwin->get_fastmouse(), x, y);
 
@@ -1597,6 +1593,10 @@ static void Handle_event(
 				click_handled = gwin->drop_dragged(x, y, dragged);
 				Mouse::mouse->set_speed_cursor();
 			}
+#ifdef __IPHONEOS__
+			if (g_shortcutBar->handle_event(&event))
+				break;
+#endif
 			// Last click within .5 secs?
 			if (curtime - last_b1_click < 500 &&
 			        left_down_x - 1 <= x && x <= left_down_x + 1 &&
