@@ -1437,14 +1437,17 @@ static void Handle_event(
 	
 #ifdef __IPHONEOS__
 	case SDL_USEREVENT: {
-		switch (event.user.code) {
-			case SHORTCUT_BAR_USER_EVENT: {
-				g_shortcutBar->onUserEvent(&event);
-				break;
+		if (!dragged) {
+			switch (event.user.code) {
+				case SHORTCUT_BAR_USER_EVENT: {
+					g_shortcutBar->onUserEvent(&event);
+					break;
+				}
+				default:
+					break;
 			}
-			default:
-				break;
 		}
+		dragging = dragged = false;
 		break;
 	}
 
