@@ -45,6 +45,7 @@ using ::snprintf;
 #include "effects.h"
 #include "cheat.h"
 #include "drag.h"
+#include "exult.h"
 
 /*
  *  Paint just the map with given top-left-corner tile.
@@ -538,8 +539,9 @@ void Game_window::paint_dirty() {
 #ifdef UNDER_CE
 	gkeyboard->paint();
 #endif
-#ifdef __IPHONEOS_
-	g_shortcutBar->paint();
+#ifdef __IPHONEOS__
+	if (g_shortcutBar)
+		g_shortcutBar->paint();
 #endif
 }
 
