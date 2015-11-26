@@ -132,10 +132,7 @@ extern "C" int SDL_SendKeyboardKey(Uint8 state, SDL_Scancode scancode);
 - (void)showGameControls
 {
 	if (dpad == nil) {
-		UIWindow *window = [[[UIApplication sharedApplication] delegate] window];
-		UIViewController *controller = window.rootViewController;
-		CGRect rcScreen = controller.view.bounds;
-		dpad = [[DPadView alloc] initWithFrame:[self calcRectForDPad]];
+		dpad = [[DPadView alloc] initWithFrame:CGRectZero];
 		dpad.images = @[
 			[UIImage imageNamed:@"dpadglass.png"],
 			[UIImage imageNamed:@"dpadglass-east.png"],
@@ -148,14 +145,24 @@ extern "C" int SDL_SendKeyboardKey(Uint8 state, SDL_Scancode scancode);
 			[UIImage imageNamed:@"dpadglass-southeast.png"],
 		];
 		dpad.keyInput = self;
-		[controller.view addSubview:dpad];
-		CGSize sizeButton = CGSizeMake(60,30);
-		
-		CGRect rcButton = CGRectMake(10, rcScreen.size.height-sizeButton.height, sizeButton.width, sizeButton.height);
-		btn1 = [self createButton:@"ESC" keycode:(int)SDL_SCANCODE_ESCAPE rect:rcButton];
-
-		[controller.view addSubview:btn1];
 	}
+
+	if (btn1 == nil) {
+		btn1 = [self createButton:@"ESC" keycode:(int)SDL_SCANCODE_ESCAPE rect:CGRectZero];
+	}
+
+	UIWindow *window = [[[UIApplication sharedApplication] delegate] window];
+	UIViewController *controller = window.rootViewController;
+	dpad.frame = [self calcRectForDPad];
+	[controller.view addSubview:dpad];
+	
+	
+	CGRect rcScreen = controller.view.bounds;
+	CGSize sizeButton = CGSizeMake(60,30);
+	CGRect rcButton = CGRectMake(10, rcScreen.size.height-sizeButton.height, sizeButton.width, sizeButton.height);
+	btn1.frame = rcButton;
+	[controller.view addSubview:btn1];
+
 	dpad.alpha = 1;
 	btn1.alpha = 1;
 }
