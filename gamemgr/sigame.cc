@@ -962,6 +962,37 @@ bool ExCineVoc::play_it(Image_window *win, uint32 t) {
 	return false;
 }
 
+// ExSubEvent
+struct ExSubEvent {
+	uint32    time;   // Time to start, In MS
+	const int first_sub;
+	const int num_subs;
+	Font *    sub_font;
+
+	ExSubEvent(uint32 t, const int first, const int cnt, Font *fnt) :
+		time(t), first_sub(first), num_subs(cnt), sub_font(fnt) { }
+
+	void show_sub(Image_buffer8 *ibuf, int centerx, int centery) {
+		int suby;
+		switch (num_subs) {
+			case 1:
+				suby = centery + 87;
+				break;
+			case 2:
+				suby = centery + 74;
+				break;
+			default:
+				suby = centery + 61;
+				break;
+		}
+		for (int ii = first_sub; ii < first_sub + num_subs; ii++, suby += 13) {
+			sub_font->draw_text(ibuf,
+			                    centerx - sub_font->get_text_width(text_msgs[ii])/2,
+			                    suby, text_msgs[ii]);
+		}
+	}
+};
+
 //
 // Serpent Isle Endgame
 //
@@ -973,8 +1004,12 @@ void SI_Game::end_game(bool success) {
 		if (midi) midi->set_timbre_lib(MyMidiPlayer::TIMBRE_LIB_ENDGAME);
 	}
 
-	gwin->clear_screen(true);
+	Font *sifont = fontManager.get_font("SIINTRO_FONT");
 
+	bool speech = Audio::get_ptr()->is_audio_enabled() &&
+	              Audio::get_ptr()->is_speech_enabled();
+
+	gwin->clear_screen(true);
 
 	/* Endgame General Timings (in ms)
 
@@ -987,7 +1022,7 @@ void SI_Game::end_game(bool success) {
 	  22900 - "briatnnia"
 	  24300 - "your earth"
 	  26000 - "the entire universe"
-	  28600 - "all are phased"
+	  28600 - "all are saved"
 	  31600 - Avatar floating right, "worry not about your friend dupre"
 	  35100 - "he is one with us"
 	  37000 - "and content"
@@ -1097,8 +1132,25 @@ void SI_Game::end_game(bool success) {
 		ExCineVoc(70250, INTRO_DAT, PATCH_INTRO, 28),
 		ExCineVoc(74750, INTRO_DAT, PATCH_INTRO, 29)
 	};
-	int last_voc = 7;
+
+	int last_voc = sizeof(vocs) / sizeof(vocs[0]) - 1;
 	int cur_voc = -1;
+
+	// Subtitle times
+	ExSubEvent subs[] = {
+		ExSubEvent(14643, balance, 2, sifont),	// "There, we are done.\nBalance is restored"
+		ExSubEvent(21300, si_earth, 2, sifont),	// "Serpent Isle, Britannia, your Earth,\nthe entire universe, all are saved."
+		ExSubEvent(31600, dupre, 2, sifont),	// "Worry not about your friend Dupre.\nHe is one with us, and content."
+		ExSubEvent(39800, goodbye, 2, sifont),	// "Goodbye, Avatar.\nWe thank you."
+		ExSubEvent(48900, well_well, 2, sifont),	// "Well well well, Avatar. You\nhave managed to thwart me once again."
+		ExSubEvent(55500, balance2, 3, sifont),	// "By restoring balance where\nonce chaos reigned, you have\nsaved your accursed world."
+		ExSubEvent(62500, poised, 3, sifont),	// "But now here you are, poised\nat the edge of Eternity.\nWhere would you go?"
+		ExSubEvent(70250, brit_earth, 2, sifont),	// "Back to Britannia?\nTo Earth?"
+		ExSubEvent(74750, pagan, 3, sifont),	// "Perhaps you would join me in\nanother world alltogether?\nWe do have a score to settle!"
+	};
+
+	int last_sub = sizeof(subs) / sizeof(subs[0]) - 1;
+	int cur_sub = -1;
 
 	// Start the music
 	if (audio) {
@@ -1106,6 +1158,7 @@ void SI_Game::end_game(bool success) {
 	}
 
 	int start_time = SDL_GetTicks();
+	bool showing_subs = false;
 
 	while (1) {
 
@@ -1152,17 +1205,25 @@ void SI_Game::end_game(bool success) {
 		// Need to go to the next voc?
 		if (cur_voc < last_voc && vocs[cur_voc + 1].time <= time) {
 			cur_voc++;
-			ExCineVoc *voc = vocs + cur_voc;
+			ExCineVoc& voc = vocs[cur_voc];
 
 			// Just play it!
-			voc->play_it(NULL, time);
+			voc.play_it(NULL, time);
 			//else COUT("Teminator ");
-			COUT("voc at time: " << voc->time);
+			COUT("voc at time: " << voc.time);
+		}
 
+		// Need to go to the next subtitle?
+		if (cur_sub < last_sub && subs[cur_sub + 1].time <= time) {
+			cur_sub++;
+			if (!speech) {
+				showing_subs = true;
+				COUT("Subtitle at time: " << subs[cur_sub].time);
+			}
 		}
 
 		// We've finished
-		if (cur_flic == last_flic && cur_voc == last_voc) {
+		if (cur_flic == last_flic && cur_voc == last_voc && cur_sub == last_sub) {
 			// Do a fade out
 			if (pal_flic && pal_flic->can_play()) pal_flic->fade_out(100);
 
@@ -1175,6 +1236,12 @@ void SI_Game::end_game(bool success) {
 		bool updated = false;
 
 		if (flic->can_play()) updated = flic->play_it(win, time);
+
+		// Need to go to the next subtitle?
+		if (!speech && showing_subs && cur_sub <= last_sub) {
+			updated = true;
+			subs[cur_sub].show_sub(ibuf, centerx, centery);
+		}
 
 		if (updated
 #ifdef HAVE_OPENGL

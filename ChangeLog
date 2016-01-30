@@ -1,4 +1,5 @@
 2016-01-30	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* gamemgr/sigame.cc: Fixed bug #1893 "SI: final cutscene without subtitles".
 	* schedule.cc, usecode/ucinternal.cc: Make Schedule::try_proximity_usecode
 	  queue the usecode call with a script since this function can be arrived at
 	  from within usecode. This allows removing an existing  hackish workaround
