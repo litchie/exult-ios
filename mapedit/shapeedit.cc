@@ -438,6 +438,7 @@ void ExultStudio::open_equip_window(
 	}
 	// This will cause the data to be set:
 	set_spin("equip_recnum", recnum, 1, ecnt);
+	set_sensitive("equip_new", ecnt < 255);
 	gtk_widget_show(equipwin);
 //	show_shinfo_shape();     // Be sure picture is updated.
 }
@@ -487,6 +488,7 @@ void ExultStudio::new_equip_record(
 	int recnum = ecnt;
 	// Show new entry.
 	set_spin("equip_recnum", recnum, 1, ecnt);
+	set_sensitive("equip_new", ecnt < 255);
 	shape_info_modified = true;
 }
 

@@ -1,4 +1,8 @@
 2016-01-30	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* mapedit/exult_studio.glade, mapedit/shapeedit.cc: Fixed bug #1915 "Exult
+	  Studio bug - Equip Rec#: on npc monster tab limited to 100" by increasing
+	  limit to 255, the maximum that the file formats allow. Also limited the
+	  creation of new records to this.
 	* gamemgr/sigame.cc: Fixed bug #1893 "SI: final cutscene without subtitles".
 	* schedule.cc, usecode/ucinternal.cc: Make Schedule::try_proximity_usecode
 	  queue the usecode call with a script since this function can be arrived at

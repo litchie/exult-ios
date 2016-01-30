@@ -8531,7 +8531,7 @@ Coordinates</property>
                               <widget class="GtkSpinButton" id="shinfo_monster_equip">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
-                                <property name="adjustment">0 0 100 1 4 0</property>
+                                <property name="adjustment">0 0 255 1 4 0</property>
                                 <property name="climb_rate">1</property>
                               </widget>
                               <packing>
@@ -13762,7 +13762,7 @@ Coordinates</property>
                   <widget class="GtkSpinButton" id="equip_recnum">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="adjustment">0 0 100 1 10 0</property>
+                    <property name="adjustment">0 0 255 1 10 0</property>
                     <property name="climb_rate">1</property>
                     <signal name="changed" handler="on_equip_recnum_changed"/>
                   </widget>
