@@ -1,3 +1,7 @@
+2016-01-29	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* usecode/compiler/Makefile.am: Workaround for compilation error due to
+	  boneheaded automake 1.12 decision; fixes bug #1761 "missing ucparse.h".
+
 2015-03-17	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* objs/animate.cc, shapes/shapeinf/aniinf.cc: Fixed bug #1909 "[BG] Minoc
 	  sawmill messed up".
