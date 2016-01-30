@@ -1009,10 +1009,12 @@ void LowLevelMidiDriver::sequenceSendEvent(uint16 sequence_id, uint32 message)
 void LowLevelMidiDriver::sequenceSendSysEx(uint16 sequence_id, uint8 status, const uint8 *msg, uint16 length)
 {
 	// Ignore Metadata
-	if (status == 0xFF) return;
+	if (status == 0xFF)
+		return;
 
 	// Ignore what would appear to be invalid SysEx data
-	if (!msg || !length) return;
+	if (!msg || !length)
+		return;
 
 	// When uploading timbres, we will not send certain data types
 	if (uploading_timbres && length > 7)
@@ -1068,9 +1070,10 @@ void LowLevelMidiDriver::sequenceSendSysEx(uint16 sequence_id, uint8 status, con
 	// Just send it
 
 	int ticks = SDL_GetTicks();
-	if (next_sysex > ticks) SDL_Delay(next_sysex-ticks); // Wait till we think the buffer is empty
-	send_sysex(status,msg,length);
-	next_sysex = SDL_GetTicks() + 40;
+	if (next_sysex > ticks)
+		SDL_Delay(next_sysex - ticks); // Wait till we think the buffer is empty
+	send_sysex(status, msg, length);
+	next_sysex = SDL_GetTicks() + 40 + (length + 2) * 1000.0 / 3125.0;
 }
 
 uint32 LowLevelMidiDriver::getTickCount(uint16 sequence_id)
@@ -1554,7 +1557,8 @@ void LowLevelMidiDriver::sendMT32SystemMessage(uint32 address_base, uint16 addre
 	sysex_buffer[6] = actual_address&0x7F;
 
 	// Only copy if required
-	if (data) std::memcpy (sysex_buffer+sysex_data_start, data, len);
+	if (data)
+		std::memcpy (sysex_buffer+sysex_data_start, data, len);
 
 	// Calc checksum
 	char checksum = 0;
@@ -1562,7 +1566,8 @@ void LowLevelMidiDriver::sendMT32SystemMessage(uint32 address_base, uint16 addre
 		checksum += sysex_buffer[j];
 
 	checksum = checksum & 0x7f;
-	if (checksum) checksum = 0x80 - checksum;
+	if (checksum)
+		checksum = 0x80 - checksum;
 
 	// Set checksum
 	sysex_buffer[sysex_data_start+len] = checksum;
@@ -1574,9 +1579,10 @@ void LowLevelMidiDriver::sendMT32SystemMessage(uint32 address_base, uint16 addre
 
 	int ticks = SDL_GetTicks();
 	// Making assumption that software MT32 can instantly consume sysex
-	if(!isSampleProducer() && next_sysex > ticks) SDL_Delay(next_sysex-ticks);	// Wait till we think the buffer is empty
-	send_sysex(0xF0,sysex_buffer,sysex_data_start+len+2);
-	next_sysex = SDL_GetTicks() + 40;
+	if (!isSampleProducer() && next_sysex > ticks)
+		SDL_Delay(next_sysex - ticks);	// Wait till we think the buffer is empty
+	send_sysex(0xF0, sysex_buffer, sysex_data_start+len+2);
+	next_sysex = SDL_GetTicks() + 40 + (sysex_data_start+len+2 + 2) * 1000.0 / 3125.0;
 }
 
 void LowLevelMidiDriver::setPatchBank(int bank, int patch)
