@@ -228,6 +228,7 @@ private:
 	void					extractTimbreLibrary(XMidiEventList *eventlist);
     void					uploadTimbre(int bank, int timbre);
 	void					setPatchBank(int bank, int patch);
+	void					loadRhythm(const MT32Rhythm &rhythm, int note);
 	void					loadRhythmTemp(int temp);
 	void					sendMT32SystemMessage(uint32 address_base, uint16 address_offset, uint32 len, const void *data);
 
