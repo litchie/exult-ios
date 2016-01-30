@@ -1,4 +1,7 @@
 2016-01-30	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* audio/midi_drivers/LowLevelMidiDriver.cpp: Fixed bug #1715 "MT-32: sysex
+	  is not delayed properly (exc. buffer overflow)" by doing what colourless
+	  did not want to do.
 	* mapedit/exult_studio.glade, mapedit/shapeedit.cc: Fixed bug #1915 "Exult
 	  Studio bug - Equip Rec#: on npc monster tab limited to 100" by increasing
 	  limit to 255, the maximum that the file formats allow. Also limited the
