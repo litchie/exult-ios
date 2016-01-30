@@ -1,3 +1,10 @@
+2016-01-30	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* schedule.cc, usecode/ucinternal.cc: Make Schedule::try_proximity_usecode
+	  queue the usecode call with a script since this function can be arrived at
+	  from within usecode. This allows removing an existing  hackish workaround
+	  for BG, as well as fixing bug #1901 "SI: Flicken conversation vanishes at
+	  times".
+
 2016-01-29	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* content/bgkeyring/*: Some minor usecode cleanup.
 	* usecode/compiler/Makefile.am: Workaround for compilation error due to
