@@ -32,6 +32,8 @@ const int SHAPE_LAMPPOST				= 889;
 const int SHAPE_BACKPACK				= 801;
 const int SHAPE_BAG						= 802;
 
+const int SHAPE_SPEAR					= 592;
+const int SHAPE_1H_SWORD				= 599;
 const int SHAPE_2H_HAMMER				= 600;
 const int SHAPE_2H_SWORD				= 602;
 const int SHAPE_MORNINGSTAR				= 596;
