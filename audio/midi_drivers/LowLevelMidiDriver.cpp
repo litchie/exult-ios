@@ -894,13 +894,15 @@ bool LowLevelMidiDriver::playSequences ()
 										int bank = bank_sel[e->status & 0xF];
 										int patch = e->data[0];
 										//pout << "Program in seq: " << message.sequence << " Channel: " << (e->status & 0xF) << " Bank: " << bank << " Patch: " << patch << std::endl;
-										if (bank != mt32_patch_bank_sel[patch]) setPatchBank(bank,patch);
+										if (bank != mt32_patch_bank_sel[patch])
+											setPatchBank(bank,patch);
 									}
 								}
 								else if (e->status == ((MIDI_STATUS_NOTE_ON << 4) | 0x9))
 								{
 									int temp = e->data[0];
-									if (mt32_rhythm_bank[temp]) loadRhythmTemp(temp);
+									if (mt32_rhythm_bank[temp])
+										loadRhythmTemp(temp);
 								}
 							}
 						}
@@ -918,16 +920,21 @@ bool LowLevelMidiDriver::playSequences ()
 									uploadTimbre(bank,timbre);
 									count++;
 
-									if (count == 64) break;
+									if (count == 64)
+										break;
 								}
 							}
-							if (count == 64) break;
+							if (count == 64)
+								break;
 						}
 
-						if (mt32_patch_banks[0]) for (int patch = 0; patch < 128; patch++)
+						if (mt32_patch_banks[0])
 						{
-							if (mt32_patch_banks[0][patch] && mt32_patch_banks[0][patch]->timbre_bank >= 2)
-								setPatchBank(0,patch);
+							for (int patch = 0; patch < 128; patch++)
+							{
+								if (mt32_patch_banks[0][patch] && mt32_patch_banks[0][patch]->timbre_bank >= 2)
+									setPatchBank(0,patch);
+							}
 						}
 					}
 				}
@@ -1009,12 +1016,10 @@ void LowLevelMidiDriver::sequenceSendEvent(uint16 sequence_id, uint32 message)
 void LowLevelMidiDriver::sequenceSendSysEx(uint16 sequence_id, uint8 status, const uint8 *msg, uint16 length)
 {
 	// Ignore Metadata
-	if (status == 0xFF)
-		return;
+	if (status == 0xFF) return;
 
 	// Ignore what would appear to be invalid SysEx data
-	if (!msg || !length)
-		return;
+	if (!msg || !length) return;
 
 	// When uploading timbres, we will not send certain data types
 	if (uploading_timbres && length > 7)
@@ -1070,10 +1075,9 @@ void LowLevelMidiDriver::sequenceSendSysEx(uint16 sequence_id, uint8 status, con
 	// Just send it
 
 	int ticks = SDL_GetTicks();
-	if (next_sysex > ticks)
-		SDL_Delay(next_sysex - ticks); // Wait till we think the buffer is empty
-	send_sysex(status, msg, length);
-	next_sysex = SDL_GetTicks() + 40 + (length + 2) * 1000.0 / 3125.0;
+	if (next_sysex > ticks) SDL_Delay(next_sysex-ticks); // Wait till we think the buffer is empty
+	send_sysex(status,msg,length);
+	next_sysex = SDL_GetTicks() + 40;
 }
 
 uint32 LowLevelMidiDriver::getTickCount(uint16 sequence_id)
@@ -1308,6 +1312,33 @@ void LowLevelMidiDriver::loadTimbreLibrary(IDataSource *ds, TimbreLibraryType ty
 		*(mt32_patch_banks[0][i]) = mt32_patch_template;
 		mt32_patch_banks[0][i]->timbre_bank = 0;
 		mt32_patch_banks[0][i]->timbre_num = i;
+	}
+
+	// TODO: This should not be hard-coded.
+	// Setup default rhythm library (thanks to the munt folks for making it show
+	// data on the terminal).
+	// This data is the same for all of the originals.
+	struct MT32RhythmSpec { int note; MT32Rhythm rhythm; };
+	static const MT32RhythmSpec default_rhythms[] = {
+		{28, {0x00, 0x5a, 0x07, 0x00}},
+		{33, {0x06, 0x64, 0x07, 0x01}},
+		{74, {0x01, 0x5a, 0x05, 0x00}},
+		{76, {0x01, 0x5a, 0x06, 0x00}},
+		{77, {0x01, 0x5a, 0x07, 0x00}},
+		{78, {0x02, 0x64, 0x07, 0x01}},
+		{79, {0x01, 0x5a, 0x08, 0x00}},
+		{80, {0x05, 0x5a, 0x07, 0x01}},
+		{81, {0x01, 0x5a, 0x09, 0x00}},
+		{82, {0x03, 0x5f, 0x07, 0x01}},
+		{83, {0x04, 0x64, 0x04, 0x01}},
+		{84, {0x04, 0x64, 0x05, 0x01}},
+		{85, {0x04, 0x64, 0x06, 0x01}},
+		{86, {0x04, 0x64, 0x07, 0x01}},
+		{87, {0x04, 0x64, 0x08, 0x01}}
+	};
+
+	for (int ii = 0; ii < sizeof(default_rhythms)/sizeof(default_rhythms[0]); ii++) {
+		loadRhythm(default_rhythms[ii].rhythm, default_rhythms[ii].note);
 	}
 
 	XMidiFile *xmidi = 0;
@@ -1557,8 +1588,7 @@ void LowLevelMidiDriver::sendMT32SystemMessage(uint32 address_base, uint16 addre
 	sysex_buffer[6] = actual_address&0x7F;
 
 	// Only copy if required
-	if (data)
-		std::memcpy (sysex_buffer+sysex_data_start, data, len);
+	if (data) std::memcpy (sysex_buffer+sysex_data_start, data, len);
 
 	// Calc checksum
 	char checksum = 0;
@@ -1566,8 +1596,7 @@ void LowLevelMidiDriver::sendMT32SystemMessage(uint32 address_base, uint16 addre
 		checksum += sysex_buffer[j];
 
 	checksum = checksum & 0x7f;
-	if (checksum)
-		checksum = 0x80 - checksum;
+	if (checksum) checksum = 0x80 - checksum;
 
 	// Set checksum
 	sysex_buffer[sysex_data_start+len] = checksum;
@@ -1579,10 +1608,9 @@ void LowLevelMidiDriver::sendMT32SystemMessage(uint32 address_base, uint16 addre
 
 	int ticks = SDL_GetTicks();
 	// Making assumption that software MT32 can instantly consume sysex
-	if (!isSampleProducer() && next_sysex > ticks)
-		SDL_Delay(next_sysex - ticks);	// Wait till we think the buffer is empty
-	send_sysex(0xF0, sysex_buffer, sysex_data_start+len+2);
-	next_sysex = SDL_GetTicks() + 40 + (sysex_data_start+len+2 + 2) * 1000.0 / 3125.0;
+	if(!isSampleProducer() && next_sysex > ticks) SDL_Delay(next_sysex-ticks);	// Wait till we think the buffer is empty
+	send_sysex(0xF0,sysex_buffer,sysex_data_start+len+2);
+	next_sysex = SDL_GetTicks() + 40;
 }
 
 void LowLevelMidiDriver::setPatchBank(int bank, int patch)
@@ -1657,6 +1685,12 @@ void LowLevelMidiDriver::setPatchBank(int bank, int patch)
 	// Upload the patch
 	pout << "LLMD: Uploading Patch for " << bank << ":" << patch << " using timbre " << static_cast<int>(p.timbre_bank) << ":" << static_cast<int>(p.timbre_num) << std::endl;
 	sendMT32SystemMessage(patch_base,patch_mem_offset(patch),patch_mem_size, &p );
+}
+
+void LowLevelMidiDriver::loadRhythm(const MT32Rhythm &rhythm, int note)
+{
+	pout << "LLMD: Uploading Rhythm for note " << note << std::endl;
+	sendMT32SystemMessage(rhythm_base, rhythm_mem_offset_note(note), rhythm_mem_size, &rhythm);
 }
 
 void LowLevelMidiDriver::loadRhythmTemp(int temp)

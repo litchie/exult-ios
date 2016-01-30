@@ -1,4 +1,9 @@
 2016-01-30	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* audio/midi_drivers/LowLevelMidiDriver.*: Hopefully fixed bug #1743 "MT-32
+	  SYSEX is wrong - sounds weird". This wasn't solely due to missing sysex,
+	  as I had previously thought; some hard-coded rhythms were not uploaded by
+	  Exult. DOSBox + Munt allowed me to fetch the relevant data, and confirm it
+	  is the same in BG, FoV, SI and SS.
 	* audio/midi_drivers/LowLevelMidiDriver.cpp: Fixed bug #1715 "MT-32: sysex
 	  is not delayed properly (exc. buffer overflow)" by doing what colourless
 	  did not want to do.
