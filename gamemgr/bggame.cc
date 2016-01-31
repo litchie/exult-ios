@@ -652,7 +652,7 @@ void BG_Game::scene_guardian() {
 			if (GL_manager::get_instance())
 				Delay();
 #endif
-			if (SDL_GetTicks() > ticks + 1800)//400)
+			if (SDL_GetTicks() > ticks + 400)//400)
 				break;
 		}
 
@@ -674,7 +674,7 @@ void BG_Game::scene_guardian() {
 			if (GL_manager::get_instance())
 				Delay();
 #endif
-			if (SDL_GetTicks() > ticks + 800)
+			if (SDL_GetTicks() > ticks + 200)
 				break;
 		}
 
@@ -696,7 +696,7 @@ void BG_Game::scene_guardian() {
 			if (GL_manager::get_instance())
 				Delay();
 #endif
-			if (SDL_GetTicks() > ticks + 500)
+			if (SDL_GetTicks() > ticks + 100)
 				break;
 		}
 
@@ -932,7 +932,7 @@ void BG_Game::scene_guardian() {
 			if (GL_manager::get_instance())
 				Delay();
 #endif
-			if (SDL_GetTicks() > ticks + 1500)
+			if (SDL_GetTicks() > ticks + 400)
 				break;
 		}
 
@@ -959,6 +959,7 @@ void BG_Game::scene_guardian() {
 		gl_clear_win();
 	} catch (const UserSkipException &/*x*/) {
 		// Waste disposal
+		Audio::get_ptr()->stop_speech();
 		FORGET_ARRAY(txt);
 		FORGET_OBJECT(backup);
 		FORGET_OBJECT(backup2);
@@ -971,6 +972,7 @@ void BG_Game::scene_guardian() {
 		enable_direct_gl_render();
 	} catch (const UserBreakException &x) {
 		// Waste disposal
+		Audio::get_ptr()->stop_speech();
 		FORGET_ARRAY(txt);
 		FORGET_OBJECT(backup);
 		FORGET_OBJECT(backup2);
