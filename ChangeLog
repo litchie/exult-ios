@@ -1,3 +1,7 @@
+2016-02-06	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* content/sifixes/*: SI Fixes: Fixed spell incantation runes in spellbook
+	  and spell scrolls.
+
 2016-01-30	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* audio/midi_drivers/LowLevelMidiDriver.*: Hopefully fixed bug #1743 "MT-32
 	  SYSEX is wrong - sounds weird". This wasn't solely due to missing sysex,
