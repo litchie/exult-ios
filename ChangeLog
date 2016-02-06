@@ -1,4 +1,6 @@
 2016-02-06	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* audio/midi_drivers/LowLevelMidiDriver.cpp: Undoing mistake in r7530, which
+	  undid some of the work of r7529.
 	* content/sifixes/*: SI Fixes: Fixed spell incantation runes in spellbook
 	  and spell scrolls.
 
