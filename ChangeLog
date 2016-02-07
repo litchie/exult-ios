@@ -1,3 +1,7 @@
+2016-02-07	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* gamemgr/modmgr.cc: Allowing multiple co-existing installations of BG, FoV,
+	  SI and SS.
+
 2016-02-06	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* audio/midi_drivers/LowLevelMidiDriver.cpp: Undoing mistake in r7530, which
 	  undid some of the work of r7529.
