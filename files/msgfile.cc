@@ -247,3 +247,18 @@ void Write_msg_file_section(
 	out << "%%endsection " << section << endl;
 }
 
+/*
+ *  Write one section.
+ */
+
+void Write_msg_file_section(
+    ostream &out,
+    const char *section,
+    vector<char *> &items
+) {
+	out << "%%section " << section << endl;
+	for (unsigned i = 0; i < items.size(); ++i)
+		if (items[i])
+			out << hex << "0x" << i << ':' << items[i] << endl;
+	out << "%%endsection " << section << endl;
+}

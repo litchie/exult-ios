@@ -1,4 +1,10 @@
 2016-02-07	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	*browser.cc,exult.cc,files/msgfile.{cc,h},gamemap.cc, gamemgr/bggame.cc,
+	  gamemgr/sigame.cc,gamewin.cc,gumps/Spellbook_gump.cc,mapedit/shapeedit.cc,
+	  mapedit/shapelst.cc,mapedit/studio.cc,objs/objnames.cc,objs/objs.cc,
+	  schedule.cc,shapes/items.{cc,h},shapes/shapeinf/weaponinf.cc,
+	  usecode/intrinsics.cc: Slightly improving shapes/items.{cc,h}, and making
+	  needed changes everywhere. Making exultmsg.txt always be read.
 	* gamemgr/modmgr.cc: Allowing multiple co-existing installations of BG, FoV,
 	  SI and SS.
 

@@ -3133,11 +3133,11 @@ void ExultStudio::init_shape_notebook(
 				first = &*it;
 			int type = nmit.get_type(), msgid = nmit.get_msgid();
 			const char *msgstr = type == -255 ? sname :
-			                     (type == -1 || msgid >= num_misc_names ? 0 : misc_names[msgid]);
+			                     (type == -1 || msgid >= get_num_misc_names() ? 0 : get_misc_name(msgid));
 			int otmsg = nmit.get_othermsg();
 			int otype = type <= 0 ? -1 : (otmsg < 0 ? otmsg : 2);
 			const char *otmsgstr = otype == -255 ? sname :
-			                       (otype == -1 || otmsg >= num_misc_names ? 0 : misc_names[otmsg]);
+			                       (otype == -1 || otmsg >= get_num_misc_names() ? 0 : get_misc_name(otmsg));
 			utf8Str utf8msg(msgstr);
 			utf8Str utf8otmsg(otmsgstr);
 			gtk_tree_store_append(store, &iter, NULL);
@@ -3156,11 +3156,11 @@ void ExultStudio::init_shape_notebook(
 		if (first) {
 			int type = first->get_type(), msgid = first->get_msgid();
 			const char *msgstr = type == -255 ? sname :
-			                     (type == -1 || msgid >= num_misc_names ? "" : misc_names[msgid]);
+			                     (type == -1 || msgid >= get_num_misc_names() ? "" : get_misc_name(msgid));
 			int otmsg = first->get_othermsg();
 			int otype = type <= 0 ? -1 : (otmsg < 0 ? otmsg : 2);
 			const char *otmsgstr = otype == -255 ? sname :
-			                       (otype == -1 || otmsg >= num_misc_names ? "" : misc_names[otmsg]);
+			                       (otype == -1 || otmsg >= get_num_misc_names() ? "" : get_misc_name(otmsg));
 			utf8Str utf8msg(msgstr);
 			utf8Str utf8otmsg(otmsgstr);
 			Set_framenames_fields(first->get_frame(), first->get_quality(),
@@ -3317,12 +3317,8 @@ int ExultStudio::find_misc_name(const char *id) const {
 }
 
 int ExultStudio::add_misc_name(const char *id) {
-	int num = num_misc_names++;
-	char **newlist = new char*[num_misc_names];
-	memcpy(newlist, misc_names, num * sizeof(char *));
-	delete [] misc_names;
-	misc_names = newlist;
-	misc_names[num] = newstrdup(id);
+	int num = get_num_misc_names();
+	Set_misc_name(num, id);
 	misc_name_map.insert(std::pair<string, int>(string(id), num));
 	shape_names_modified = true;
 	return num;

@@ -2166,8 +2166,8 @@ USECODE_INTRINSIC(nap_time) {
 		                 rand() % party_cnt) : 356;
 		Usecode_value actval(-npcnum), frval(0);
 		show_npc_face(actval, frval);
-		conv->show_npc_message(text_msgs[first_bed_occupied +
-		                                 rand() % num_bed_occupied]);
+		conv->show_npc_message(get_text_msg(first_bed_occupied +
+		                                 rand() % num_bed_occupied));
 		remove_npc_face(actval);
 		gwin->get_main_actor()->set_schedule_type(
 		    Schedule::follow_avatar);
