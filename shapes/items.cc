@@ -237,8 +237,8 @@ static void Setup_text(
 	// Start by reading from exultmsg
 	vector<char *> msglist;
 	int first_msg;
-	first_msg = Read_text_msg_file(msgs, msglist);
-	total_msgs = static_cast<int>(msglist.size() - 0x400);
+	first_msg = Read_text_msg_file(exultmsg, msglist);
+	unsigned total_msgs = static_cast<int>(msglist.size() - 0x400);
 	if (first_msg >= 0) {
 		first_msg -= 0x400;
 	}
