@@ -187,9 +187,14 @@ void Game_window::restore_gamedat(
 		msg += id;
 		msg += "'.  Open anyway?";
 		int ok = Yesno_gump::ask(msg.c_str());
-		if (!ok)
+		if (!ok) {
+			delete [] id;
+			delete [] static_identity;
 			return;
+		}
 	}
+	delete [] id;
+	delete [] static_identity;
 	// Check for a ZIP file first
 #ifdef HAVE_ZIP_SUPPORT
 	if (restore_gamedat_zip(fname) != false)

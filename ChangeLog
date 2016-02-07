@@ -1,3 +1,6 @@
+2016-02-07	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* gamedat.cc: Fixing small memory leaks.
+
 2016-02-07	Dominik Reichardt <dominus@users.sourceforge.net>
 	* data/exultmsg*.txt: Added hardcoded French and German subtitles for the 
 	  BG final cutscene and added the Spanish localization for both BG and SI.
