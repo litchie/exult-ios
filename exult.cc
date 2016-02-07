@@ -1223,7 +1223,7 @@ static void Select_for_combo(
 		return;
 	ShapeID id = *obj;
 	Tile_coord t = obj->get_tile();
-	std::string name = item_names[id.get_shapenum()];
+	std::string name = get_item_name(id.get_shapenum());
 	if (toggle)
 		cheat.toggle_selected(obj);
 	else if (!cheat.is_selected(obj)) {

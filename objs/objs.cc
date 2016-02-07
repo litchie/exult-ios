@@ -976,7 +976,7 @@ void Game_object::say(
 void Game_object::say(
     int msgnum
 ) {
-	say(text_msgs[msgnum]);
+	say(get_text_msg(msgnum));
 }
 
 /*
@@ -989,8 +989,8 @@ void Game_object::say(
 ) {
 	if (from > to) return;
 	int offset = rand() % (to - from + 1);
-	if (from + offset < num_text_msgs)
-		say(text_msgs[from + offset]);
+	if (from + offset < get_num_text_msgs())
+		say(get_text_msg(from + offset));
 }
 
 /*

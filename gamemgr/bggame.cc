@@ -1369,13 +1369,13 @@ void BG_Game::end_game(bool success) {
 		pal->fade_out(c_fade_out_time);
 
 		gwin->clear_screen();
-		font->center_text(ibuf, centerx, centery - 10, text_msgs[end_of_ultima7]);
+		font->center_text(ibuf, centerx, centery - 10, get_text_msg(end_of_ultima7));
 		pal->fade_in(c_fade_in_time);
 		wait_delay(4000);
 		pal->fade_out(c_fade_out_time);
 
 		gwin->clear_screen();
-		font->center_text(ibuf, centerx, centery - 10, text_msgs[end_of_britannia]);
+		font->center_text(ibuf, centerx, centery - 10, get_text_msg(end_of_britannia));
 		pal->fade_in(c_fade_in_time);
 		wait_delay(4000);
 		pal->fade_out(c_fade_out_time);
@@ -1456,7 +1456,7 @@ void BG_Game::end_game(bool success) {
 		Font *endfont3 = fontManager.get_font("END3_FONT");
 		Font *normal = fontManager.get_font("NORMAL_FONT");
 
-		const char *message = text_msgs[you_cannot_do_that];
+		const char *message = get_text_msg(you_cannot_do_that);
 		int height = topy + 200 - endfont2->get_text_height() * 2;
 		int width = (gwin->get_width() - endfont2->get_text_width(message)) / 2;
 
@@ -1479,7 +1479,7 @@ void BG_Game::end_game(bool success) {
 
 		if (audio) speech2.play_it();
 
-		message = text_msgs[damn_avatar];
+		message = get_text_msg(damn_avatar);
 		width = (gwin->get_width() - endfont2->get_text_width(message)) / 2;
 
 		for (i = 0; i < 100; i++) {
@@ -1524,7 +1524,7 @@ void BG_Game::end_game(bool success) {
 		win->fill8(0);
 
 		// Paint text
-		message = text_msgs[blackgate_destroyed];
+		message = get_text_msg(blackgate_destroyed);
 		width = (gwin->get_width() - normal->get_text_width(message)) / 2;
 		height = (gwin->get_height() - normal->get_text_height()) / 2;
 
@@ -1551,7 +1551,7 @@ void BG_Game::end_game(bool success) {
 		win->fill8(0);
 
 		// Paint text
-		message = text_msgs[guardian_has_stopped];
+		message = get_text_msg(guardian_has_stopped);
 		width = (gwin->get_width() - normal->get_text_width(message)) / 2;
 
 		normal->draw_text(ibuf, width, height, message);
@@ -1602,7 +1602,7 @@ void BG_Game::end_game(bool success) {
 			for (j = 0; j < static_cast<unsigned>(finfo.frames); j++) {
 				next = fli3.play(win, j, j, next);
 				for (m = 0; m < 6; m++)
-					endfont3->center_text(ibuf, centerx, starty + endfont3->get_text_height()*m, text_msgs[txt_screen0 + m]);
+					endfont3->center_text(ibuf, centerx, starty + endfont3->get_text_height()*m, get_text_msg(txt_screen0 + m));
 				non_gl_blit();
 				if (wait_delay(10, 0, 1)) {
 					do_break = true;
@@ -1645,7 +1645,7 @@ void BG_Game::end_game(bool success) {
 		starty = (gwin->get_height() - normal->get_text_height() * 10) / 2;
 
 		for (i = 0; i < 10; i++) {
-			message = text_msgs[txt_screen1 + i];
+			message = get_text_msg(txt_screen1 + i);
 			normal->draw_text(ibuf, centerx - normal->get_text_width(message) / 2, starty + normal->get_text_height()*i, message);
 		}
 
@@ -1676,7 +1676,7 @@ void BG_Game::end_game(bool success) {
 		starty = (gwin->get_height() - normal->get_text_height() * 6) / 2;
 
 		for (i = 0; i < 6; i++) {
-			message = text_msgs[txt_screen2 + i];
+			message = get_text_msg(txt_screen2 + i);
 			normal->draw_text(ibuf, centerx - normal->get_text_width(message) / 2, starty + normal->get_text_height()*i, message);
 		}
 
@@ -1703,7 +1703,7 @@ void BG_Game::end_game(bool success) {
 		starty = (gwin->get_height() - normal->get_text_height() * 6) / 2;
 
 		for (i = 0; i < 6; i++) {
-			message = text_msgs[txt_screen3 + i];
+			message = get_text_msg(txt_screen3 + i);
 			normal->draw_text(ibuf, centerx - normal->get_text_width(message) / 2, starty + normal->get_text_height()*i, message);
 		}
 
@@ -1730,7 +1730,7 @@ void BG_Game::end_game(bool success) {
 		starty = (gwin->get_height() - normal->get_text_height() * 4) / 2;
 
 		for (i = 0; i < 4; i++) {
-			message = text_msgs[txt_screen4 + i];
+			message = get_text_msg(txt_screen4 + i);
 			normal->draw_text(ibuf, centerx - normal->get_text_width(message) / 2, starty + normal->get_text_height()*i, message);
 		}
 

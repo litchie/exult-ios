@@ -53,5 +53,10 @@ void Write_msg_file_section(
     char **items,
     int num_items
 );
+void Write_msg_file_section(
+    ostream &out,
+    const char *section,
+    vector<char *> &items
+);
 
 #endif
