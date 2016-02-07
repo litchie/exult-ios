@@ -1,25 +1,25 @@
 # These messages are used in the Exult engine, and follow the
 # game-specific ones.
-0x500:Put that chair back!
-0x501:Thief!!
-0x502:Thou scoundrel!!
-0x503:Not funny!
-0x504:Who moved my chair??
-0x505:You look like you're doing fine.
-0x506:Everything okay?
-0x507:Ready for dessert?
-0x508:Enjoy!
-0x509:Specialty of the house!
-0x50a:Avatar!  Please restrain thyself!
-0x50b:Hast thou noticed that this bed is occupied?
-0x50c:The resident of this bed may not be desirouth of company at the moment.
-0x50d:Thou shan't lose me so easily!
-0x50e:Ah, there thou art!
-0x50f:Found ye!
+0x500:Devuelve esa silla!
+0x501:Ladron!!
+0x502:Canalla!!
+0x503:No es divertido!
+0x504:Quien movio mi silla??
+0x505:Parece que te va bien.
+0x506:Todo esta bien?
+0x507:Listo para el postre?
+0x508:Disfruta!
+0x509:La especialidad de la casa!
+0x50a:Avatar!  Por favor controlate!
+0x50b:Has visto que esta cama esta ocupada?
+0x50c:Quien ocupa esta cama puede no desear tu compania en el momento.
+0x50d:No me perderas tan facil!
+0x50e:Ah, ahi estas!
+0x50f:Te encontre!
 # Intro messages
-0x510:with help from
-0x511:The Exult Team
-0x512:Driven by Exult
+0x510:con ayuda de
+0x511:El Equipo Exult
+0x512:Manejado por Exult
 # Ending Messages
 0x513:EL FIN DE ULTIMA VII
 0x514:EL FIN DE BRITANIA, COMO YA SABES...
@@ -56,9 +56,9 @@
 0x52F:Aunque nada puedes hacer sobre la
 0x530:amenaza final del Guardian,
 0x531:hay algo que te preguntas:
-0x532:another thought nags at you...
-0x533:Donde habra ido Batlin y que
-0x534:estara haciendo?
+0x532:Donde habra ido Batlin y que
+0x533:estara haciendo?
+0x534:
 # End5
 0x535:Esa es otra historia...
 0x536:una que te llevara a
@@ -66,33 +66,33 @@
 0x538:SERPIENTE
 #SI intro
 0x539:Reino de Lord British
-0x53A:Dick British's Castle
+0x53A:Sitio de Dick British
 0x53B:Dieciocho meses tras la destruccion
 0x53C:de la Puerta Negra y la
 0x53D:proscripcion de la Hermandad
 0x53E:Mi rey
-0x53F:Yo, homes
+0x53F:Hey, patron
 0x540:Entre las cosas de Batlin
 0x541:encontramos este pergamino y un mapa
-0x542:para ir a un lugar llamad
+0x542:para ir a un lugar llamado
 0x543:Isla de la Serpiente.
 0x544:Veamos.
 0x545:Colocalo en la mesa.
-0x546:Iree. Slap it down there!
+0x546:Ahhh. Sueltalo ahi!
 0x547:Cuidado!
-0x548:Jump Back!
+0x548:Oe, para atras!
 0x549:Batlin!  Si el Avatar logra 
 0x54A:destruir la Puerta Negra,
 0x54B:ve junto con la humana llamada
 0x54C:Gweeno a la Isla de la Serpiente
 0x54D:Alli conoceras mi nuevo plan
 0x54E:en contra de Britania
-0x54F:Batlin! Know that my face is most
-0x550:muppet like!
-0x551:You must go to the Serpent Isle
-0x552:to learn the secret of Acne Medication
-0x553:Soon I and my horde of muppets will
-0x554:destroy Britannia!
+0x54F:Batlin! Debes saber que mi cara
+0x550:es bastante parecida a un titere!
+0x551:Debes ir a la Isla de la Serpiente
+0x552:para aprender la cura secreta del Acne
+0x553:Pronto yo y mi horda de titeres
+0x554:destruiremos Britania!
 0x555:Confirma mi temor!
 0x556:Debo enviar al Avatar hacia
 0x557:los pilares de la Serpiente...
