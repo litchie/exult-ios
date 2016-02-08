@@ -62,7 +62,7 @@
 0x530:ist, etwas gegen die Drohung des
 0x531:Wchters auszurichten, beunruhigt
 0x532:dich auch noch ein anderer Gedanke...
-0x533:Was ist aus dem Stan Batlin
+0x533:Was ist aus dem Satan Batlin
 0x534:geworden, dem es auf irgendeine
 #0x???:Weise gelang, seiner Strafe durch
 #0x???:Flucht zu entgehen?
