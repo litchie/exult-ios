@@ -1,3 +1,7 @@
+2016-02-09	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* gamemgr/bggame.cc: Guardian lipsynch using original data. This data can be
+	  patched in mods: it is in mainshp.flx, entry 15.
+
 2016-02-07	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* gamedat.cc: Fixing small memory leaks.
 
