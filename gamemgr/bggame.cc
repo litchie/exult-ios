@@ -540,70 +540,83 @@ void BG_Game::scene_butterfly() {
 #define EYES_DIST       12
 #define FORHEAD_DIST    49
 
-static int eye_times[] = {
-	0,   1,   7,   17,  28,  81,  83,  85,  144, 163, 182, 185, 186,
-	190, 225, 243, 258, 366, 412, 428, 471, 487, 527, 543, 589, 591,
-	593, 597, 633, 678, 682, 684, 686, 763, 817, 822, 876, 901
+static int text_times[] = {
+	250, 1700, 5250, 8200, 10550, 12900, 16000, 19950, 22700, 27200, 32400,
+	36400, 39650, 42400
 };
-static int eye_frames[] = {
-	3,   5,   4,   10,  4,   6,   5,   4,   7,   1,   3,   6,   5,
-	4,   7,   4,   1,   4,   7,   4,   7,   4,   10,  1,   3,   2,
-	1,   4,   1,   4,   6,   5,   4,   7,   4,   10,  4,   1
-};
-static const int eye_num_frames = sizeof(eye_times) / sizeof(int);
-
-
-static int mouth_times[] = {
-	0,   44,  47,  48,  50,  53,  62,  78,  88,  91,  94,  103, 108,
-	110, 112, 114, 116, 118, 123, 126, 128, 130, 133, 135, 137, 141,
-	141, 148, 153, 161, 163, 165, 168, 169, 172, 173, 174, 177, 179,
-	187, 193, 197, 199, 206, 207, 207, 209, 212, 213, 217, 220, 223,
-	224, 228, 233, 235, 237, 239, 241, 246, 247, 249, 251, 252, 259,
-	262, 269, 270, 274, 276, 277, 279, 280, 281, 285, 287, 289, 290,
-	292, 294, 296, 298, 300, 303, 306, 310, 313, 316, 318, 319, 321,
-	325, 327, 329, 330, 335, 338, 341, 342, 344, 363, 367, 369, 373,
-	375, 377, 379, 387, 392, 393, 397, 399, 401, 401, 403, 407, 408,
-	409, 411, 412, 415, 420, 423, 426, 433, 435, 437, 439, 444, 446,
-	447, 448, 452, 453, 455, 457, 459, 464, 466, 471, 473, 479, 485,
-	489, 491, 496, 499, 503, 504, 507, 516, 519, 522, 524, 548, 553,
-	555, 559, 574, 599, 600, 603, 605, 606, 607, 610, 613, 615, 627,
-	628, 635, 639, 641, 643, 644, 646, 649, 653, 655, 659, 661, 662,
-	664, 666, 673, 687, 690, 695, 697, 706, 709, 715, 719, 722, 723,
-	727, 729, 730, 733, 735, 736, 737, 740, 742, 745, 748, 761, 765,
-	766, 767, 775, 777, 779, 781, 783, 787, 789, 793, 794, 797, 799,
-	803, 814, 828, 830, 836, 845, 849, 851, 852, 853, 858, 872, 880,
-	885, 902, 904, 908, 912, 917, 921, 925, 938, 943, 955, 994, 1014
-};
-static int mouth_frames[] = {
-	1,   3,   13,  6,   7,   4,   7,   1,   7,   9,   10,  4,   12,
-	7,   4,   7,   6,   4,   7,   4,   2,   7,   10,  6,   7,   10,
-	4,   10,  4,   10,  9,   2,   7,   6,   7,   2,   1,   2,   7,
-	1,   7,   9,   10,  7,   4,   7,   2,   7,   4,   1,   4,   7,
-	13,  4,   7,   5,   8,   10,  1,   13,  9,   7,   10,  4,   7,
-	10,  7,   9,   7,   9,   13,  12,  6,   7,   4,   7,   6,   4,
-	7,   10,  7,   4,   8,   5,   7,   12,  4,   7,   6,   7,   5,
-	2,   9,   13,  5,   7,   12,  5,   12,  7,   1,   10,  7,   2,
-	7,   1,   2,   4,   7,   4,   7,   12,  6,   7,   4,   7,   6,
-	4,   10,  6,   13,  10,  7,   10,  1,   4,   7,   4,   7,   9,
-	11,  7,   12,  5,   12,  7,   10,  4,   7,   8,   9,   7,   1,
-	4,   7,   12,  4,   1,   4,   10,  7,   2,   7,   10,  4,   7,
-	5,   7,   1,   7,   9,   10,  7,   4,   7,   10,  7,   10,  4,
-	7,   5,   7,   12,  5,   11,  9,   7,   1,   5,   3,   11,  3,
-	7,   4,   7,   5,   10,  7,   10,  6,   7,   10,  7,   2,   7,
-	4,   7,   2,   10,  1,   5,   4,   7,   9,   7,   5,   1,   13,
-	7,   4,   10,  4,   7,   12,  5,   10,  7,   8,   1,   12,  4,
-	7,   1,   5,   10,  10,  1,   12,  4,   13,  5,   7,   1,   4,
-	7,   5,   10,  7,   1,   4,   7,   11,  5,   3,   2,   5,   1
-};
-static const int mouth_num_frames = sizeof(mouth_times) / sizeof(int);
-
-
-static int text_times[] =
-{ 45, 74, 145, 204, 251, 298, 360, 439, 494, 584, 688, 768, 833, 888 };
 
 static const int text_num_frames = sizeof(text_times) / sizeof(int);
 
+static const char surfacing_data[] {
+	0x03, 0x00, 0x02,	// Eyebrows -> neutral
+	0x03, 0x00, 0x05,	// Eyes -> half-open
+	0x15, 0x00, 0x04,	// Eyes -> fully open
+	0x33, 0x00, 0x07,	// Eyes -> Look down
+	0x54, 0x00, 0x04,	// Eyes -> fully open
+	0x77, 0x00, 0x00
+};
 
+// Lookup table for translating lipsynch data. The table is indexed by the
+// current frame-1, then by read lipsynch data-1.
+static const int eye_frame_LUT[6][9] = {
+//   1, 2, 3, 4, 5, 6, 7, 8, 9		// Last eye frame (or the one before, if it was 10)
+	{1, 2, 3, 1, 2, 3, 1, 2, 3},	// 1: Change eyebrows to angry
+	{4, 5, 6, 4, 5, 6, 4, 5, 6},	// 2: Change eyebrows to neutral
+	{7, 8, 9, 7, 8, 9, 7, 8, 9},	// 3: Change eyebrows to raised
+	{1, 1, 1, 4, 4, 4, 7, 7, 7},	// 4: Change eyes to fully open
+	{2, 2, 2, 5, 5, 5, 8, 8, 8},	// 5: Change eyes to half-open
+	{3, 3, 3, 6, 6, 6, 9, 9, 9},	// 6: Change eyes to fully closed
+};
+
+class LipSynchReader {
+	char * data;
+	unsigned char *ptr;
+	size_t len;
+public:
+	LipSynchReader() {
+		U7multiobject lipdata(MAINSHP_FLX, PATCH_MAINSHP, 0x0F);
+		data = lipdata.retrieve(len);
+		ptr = reinterpret_cast<unsigned char *>(data);
+		len /= 3;
+	}
+	LipSynchReader(char const *pp, int ll) {
+		data = new char[ll];
+		memcpy(data, pp, ll);
+		ptr = reinterpret_cast<unsigned char *>(data);
+		len = ll / 3;
+	}
+	~LipSynchReader() {
+		delete [] data;
+	}
+	bool have_events() const {
+		return len > 0;
+	}
+	void get_event(int &time, int &code) {
+		if (len == 0) {
+			ptr -= 3;
+			len++;
+		}
+		int curr_time = Read2(ptr);
+		time = curr_time * 1000.0 / 60.0;
+		code = Read1(ptr);
+		len--;
+	}
+	void translate_code(int code, int &mouth, int &eyes, int &lasteyes) {
+		// Set based on code read
+		if (code > 8) {
+			// This changes mouth frame
+			mouth = code - 8;
+		} else if (code == 7) {
+			// This sets eyes to looking down
+			// Don't update last eye frame
+			eyes = 10;
+		} else if (code > 0 && code < 7) {
+			// This changes eyes and eyebrows
+			eyes = eye_frame_LUT[code-1][lasteyes-1];
+			lasteyes = eyes;
+		}
+	}
+};
 
 void BG_Game::scene_guardian() {
 	Image_buffer *backup = 0, *backup2 = 0, *backup3 = 0;
@@ -802,9 +815,13 @@ void BG_Game::scene_guardian() {
 		backup3 = win->create_buffer(win->get_full_width(), txt_height);
 		win->get(backup3, win->get_start_x(), txt_ypos);
 
-		int eye_index = 0;
-		int mouth_index = 0;
-		int text_index = 0;
+		// Lipsynching
+		int eye_frame = 3, last_eye_frame = 3;
+		int mouth_frame = 1;
+		int text_index = -1;
+		int next_time, next_code;
+		LipSynchReader lipsync;
+		LipSynchReader surfacing(surfacing_data, sizeof(surfacing_data));
 
 		int time = 0;
 		unsigned long start = SDL_GetTicks();
@@ -833,14 +850,14 @@ void BG_Game::scene_guardian() {
 		win->put(backup2, centerx - s2->get_xleft(),    \
 		         centery-EYES_DIST - s2->get_yabove());  \
 		sman->paint_shape(centerx,centery-EYES_DIST,    \
-		                  shapes.get_shape(guardian_eyes_shp, eye_frames[eye_index - 1]));    \
+		                  shapes.get_shape(guardian_eyes_shp, eye_frame));    \
 	} while (0)
 
 #define ERASE_AND_DRAW_MOUTH() do { \
 		win->put(backup, centerx - s->get_xleft(),  \
 		         centery - s->get_yabove());     \
 		sman->paint_shape(centerx,centery,      \
-		                  shapes.get_shape(guardian_mouth_shp, mouth_frames[mouth_index - 1]));   \
+		                  shapes.get_shape(guardian_mouth_shp, mouth_frame));   \
 	} while (0)
 
 #define DRAW_SPEECH() do { \
@@ -851,20 +868,38 @@ void BG_Game::scene_guardian() {
 			DRAW_TEXT();    \
 	} while (0)
 
-		// start speech
-		while (time < 1040) {
-			if (need_to_play_speech && time >= 40) {
-				need_to_play_speech = false;
-					Audio::get_ptr()->playfile(INTROSND, PATCH_INTROSND, false);
-			}
-
-			if (time >= eye_times[eye_index] && eye_index < eye_num_frames) {
-				eye_index++;
+		// First event needs to be read here
+		surfacing.get_event(next_time, next_code);
+		DRAW_SPEECH();
+		// before speech
+		while (time < 2000) {
+			while (surfacing.have_events() && time >= next_time) {
+				surfacing.translate_code(next_code, mouth_frame, eye_frame, last_eye_frame);
+				surfacing.get_event(next_time, next_code);
 				DRAW_SPEECH();
 			}
 
-			if (time >= mouth_times[mouth_index] && mouth_index < mouth_num_frames) {
-				mouth_index++;
+			non_gl_blit();
+			WAITDELAYCYCLE(10);
+			non_gl_blit();
+			time = (SDL_GetTicks() - start);
+		}
+
+		if (need_to_play_speech) {
+			Audio::get_ptr()->playfile(INTROSND, PATCH_INTROSND, false);
+		}
+
+		time = 0;
+		start = SDL_GetTicks();
+
+		// First event needs to be read here
+		lipsync.get_event(next_time, next_code);
+		text_index = 0;
+		// start speech
+		while (time < 50000) {
+			while (lipsync.have_events() && time >= next_time) {
+				lipsync.translate_code(next_code, mouth_frame, eye_frame, last_eye_frame);
+				lipsync.get_event(next_time, next_code);
 				DRAW_SPEECH();
 			}
 
@@ -877,7 +912,7 @@ void BG_Game::scene_guardian() {
 			non_gl_blit();
 			WAITDELAYCYCLE(10);
 			non_gl_blit();
-			time = (SDL_GetTicks() - start) / 50;
+			time = (SDL_GetTicks() - start);
 		}
 
 		win->put(backup3, 0, txt_ypos);
