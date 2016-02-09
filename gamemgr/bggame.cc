@@ -253,7 +253,7 @@ class UserSkipException : public UserBreakException {
 	case 2: throw UserSkipException(); break; \
 	}
 
-#define WAITDELAYCYCLE(x) switch (wait_delay((x), 16, 78)) { \
+#define WAITDELAYCYCLE1(x) switch (wait_delay((x), 16, 78, 50)) { \
 	case 1: throw UserBreakException(); break; \
 	case 2: throw UserSkipException(); break; \
 	}
@@ -264,6 +264,21 @@ class UserSkipException : public UserBreakException {
 	}
 
 #define WAITDELAYCYCLE3(x) switch (wait_delay((x), 240, 15)) { \
+	case 1: throw UserBreakException(); break; \
+	case 2: throw UserSkipException(); break; \
+	}
+
+#define WAITDELAYCYCLE4(x) switch (wait_delay((x), 16, 78, 15)) { \
+	case 1: throw UserBreakException(); break; \
+	case 2: throw UserSkipException(); break; \
+	}
+
+#define WAITDELAYCYCLE5(x) switch (wait_delay((x), 16, -78, 50)) { \
+	case 1: throw UserBreakException(); break; \
+	case 2: throw UserSkipException(); break; \
+	}
+
+#define WAITDELAYCYCLE6(x) switch (wait_delay((x), 16, -78, 15)) { \
 	case 1: throw UserBreakException(); break; \
 	case 2: throw UserSkipException(); break; \
 	}
@@ -530,10 +545,17 @@ void BG_Game::scene_butterfly() {
 	}
 }
 
-#define FLASH_SHAPE(x,y,shape,frame,delay)  do {    \
+#define FLASH_SHAPE1(x,y,shape,frame,delay)  do {    \
 		sman->paint_shape((x),(y),shapes.get_shape((shape),(frame)));   \
 		non_gl_blit();  \
-		WAITDELAYCYCLE((delay));    \
+		WAITDELAYCYCLE1((delay));    \
+		win->put(backup,(x)-s->get_xleft(),(y)-s->get_yabove());    \
+	} while(0)
+
+#define FLASH_SHAPE2(x,y,shape,frame,delay)  do {    \
+		sman->paint_shape((x),(y),shapes.get_shape((shape),(frame)));   \
+		non_gl_blit();  \
+		WAITDELAYCYCLE4((delay));    \
 		win->put(backup,(x)-s->get_xleft(),(y)-s->get_yabove());    \
 	} while(0)
 
@@ -542,7 +564,7 @@ void BG_Game::scene_butterfly() {
 
 static int text_times[] = {
 	250, 1700, 5250, 8200, 10550, 12900, 16000, 19950, 22700, 27200, 32400,
-	36400, 39650, 42400
+		36400, 39650, 42400
 };
 
 static const int text_num_frames = sizeof(text_times) / sizeof(int);
@@ -571,35 +593,36 @@ static const int eye_frame_LUT[6][9] = {
 class LipSynchReader {
 	char * data;
 	unsigned char *ptr;
-	size_t len;
+	unsigned char *eptr;
 public:
 	LipSynchReader() {
 		U7multiobject lipdata(MAINSHP_FLX, PATCH_MAINSHP, 0x0F);
+		size_t len;
 		data = lipdata.retrieve(len);
 		ptr = reinterpret_cast<unsigned char *>(data);
-		len /= 3;
+		eptr = ptr + len;
 	}
-	LipSynchReader(char const *pp, int ll) {
-		data = new char[ll];
-		memcpy(data, pp, ll);
+	LipSynchReader(char const *pp, int len) {
+		data = new char[len];
+		memcpy(data, pp, len);
 		ptr = reinterpret_cast<unsigned char *>(data);
-		len = ll / 3;
+		eptr = ptr + len;
 	}
 	~LipSynchReader() {
 		delete [] data;
 	}
 	bool have_events() const {
-		return len > 0;
+		return ptr < eptr;
 	}
 	void get_event(int &time, int &code) {
-		if (len == 0) {
-			ptr -= 3;
-			len++;
+		if (ptr >= eptr) {
+			time = 0;
+			code = 0;
+		} else {
+			int curr_time = Read2(ptr);
+			time = curr_time * 1000.0 / 60.0;
+			code = Read1(ptr);
 		}
-		int curr_time = Read2(ptr);
-		time = curr_time * 1000.0 / 60.0;
-		code = Read1(ptr);
-		len--;
 	}
 	void translate_code(int code, int &mouth, int &eyes, int &lasteyes) {
 		// Set based on code read
@@ -660,7 +683,7 @@ void BG_Game::scene_guardian() {
 			else
 #endif
 				win->show();
-			WAITDELAYCYCLE(2);
+			WAITDELAYCYCLE1(2);
 #ifdef HAVE_OPENGL
 			if (GL_manager::get_instance())
 				Delay();
@@ -671,7 +694,7 @@ void BG_Game::scene_guardian() {
 
 		win->put(plasma, win->get_start_x(), win->get_start_y());
 		non_gl_blit();
-		WAITDELAYCYCLE(200);
+		WAITDELAYCYCLE1(200);
 
 		ticks = SDL_GetTicks();
 		while (1) {
@@ -682,7 +705,7 @@ void BG_Game::scene_guardian() {
 			else
 #endif
 				win->show();
-			WAITDELAYCYCLE(2);
+			WAITDELAYCYCLE1(2);
 #ifdef HAVE_OPENGL
 			if (GL_manager::get_instance())
 				Delay();
@@ -693,7 +716,7 @@ void BG_Game::scene_guardian() {
 
 		win->put(plasma, win->get_start_x(), win->get_start_y());
 		non_gl_blit();
-		WAITDELAYCYCLE(200);
+		WAITDELAYCYCLE1(200);
 
 		ticks = SDL_GetTicks();
 		while (1) {
@@ -704,7 +727,7 @@ void BG_Game::scene_guardian() {
 			else
 #endif
 				win->show();
-			WAITDELAYCYCLE(2);
+			WAITDELAYCYCLE1(2);
 #ifdef HAVE_OPENGL
 			if (GL_manager::get_instance())
 				Delay();
@@ -722,7 +745,7 @@ void BG_Game::scene_guardian() {
 		//
 		Audio::get_ptr()->start_music(guardian_midi, false, INTROMUS);
 
-		WAITDELAYCYCLE(3800);
+		WAITDELAYCYCLE1(3800);
 
 		//
 		// First 'popup' (sh. 0x21)
@@ -734,9 +757,9 @@ void BG_Game::scene_guardian() {
 		win->get(backup, centerx - 53 - s->get_xleft(), centery - 68 - s->get_yabove());
 		disable_direct_gl_render();
 		for (i = 8; i >= -8; i--)
-			FLASH_SHAPE(centerx - 53, centery - 68, 0x21, 1 + abs(i), 80);
+		FLASH_SHAPE2(centerx - 53, centery - 68, 0x21, 1 + abs(i), 80);
 		FORGET_OBJECT(backup);
-		WAITDELAYCYCLE(2000);
+		WAITDELAYCYCLE1(2000);
 
 
 		//
@@ -746,9 +769,9 @@ void BG_Game::scene_guardian() {
 		backup = win->create_buffer(s->get_width(), s->get_height());
 		win->get(backup, centerx - s->get_xleft(), centery - 45 - s->get_yabove());
 		for (i = 9; i >= -9; i--)
-			FLASH_SHAPE(centerx, centery - 45, 0x22, 9 - abs(i), 80);
+		FLASH_SHAPE2(centerx, centery - 45, 0x22, 9 - abs(i), 80);
 		FORGET_OBJECT(backup);
-		WAITDELAYCYCLE(2000);
+		WAITDELAYCYCLE1(2000);
 
 
 		//
@@ -762,12 +785,12 @@ void BG_Game::scene_guardian() {
 		sman->paint_shape(centerx, centery, s); // frame 0 is static background
 		win->get(backup, centerx - s->get_xleft(), centery - s->get_yabove());
 		for (i = 1; i < 16; i++)
-			FLASH_SHAPE(centerx, centery, 0x23, i, 70);
+		FLASH_SHAPE2(centerx, centery, 0x23, i, 70);
 
 		sman->paint_shape(centerx, centery, shapes.get_shape(0x23, 15));
 		non_gl_blit();
 
-		WAITDELAYCYCLE(500);    // - show his face for half a second
+		WAITDELAYCYCLE1(500);    // - show his face for half a second
 		// before he opens his eyes.
 
 		win->put(cbackup, centerx - s->get_xleft(), centery - s->get_yabove());
@@ -873,14 +896,14 @@ void BG_Game::scene_guardian() {
 		DRAW_SPEECH();
 		// before speech
 		while (time < 2000) {
-			while (surfacing.have_events() && time >= next_time) {
+			if (surfacing.have_events() && time >= next_time) {
 				surfacing.translate_code(next_code, mouth_frame, eye_frame, last_eye_frame);
 				surfacing.get_event(next_time, next_code);
 				DRAW_SPEECH();
 			}
 
 			non_gl_blit();
-			WAITDELAYCYCLE(10);
+			WAITDELAYCYCLE5(15);
 			non_gl_blit();
 			time = (SDL_GetTicks() - start);
 		}
@@ -896,8 +919,8 @@ void BG_Game::scene_guardian() {
 		lipsync.get_event(next_time, next_code);
 		text_index = 0;
 		// start speech
-		while (time < 50000) {
-			while (lipsync.have_events() && time >= next_time) {
+		while (time < 47537) {
+			if (next_code && lipsync.have_events() && time >= next_time) {
 				lipsync.translate_code(next_code, mouth_frame, eye_frame, last_eye_frame);
 				lipsync.get_event(next_time, next_code);
 				DRAW_SPEECH();
@@ -910,10 +933,14 @@ void BG_Game::scene_guardian() {
 			}
 
 			non_gl_blit();
-			WAITDELAYCYCLE(10);
+			WAITDELAYCYCLE6(15);
 			non_gl_blit();
 			time = (SDL_GetTicks() - start);
 		}
+
+		non_gl_blit();
+		WAITDELAYCYCLE6(1000);
+		non_gl_blit();
 
 		win->put(backup3, 0, txt_ypos);
 		win->put(cbackup, centerx - s->get_xleft(), centery - s->get_yabove());
@@ -938,14 +965,14 @@ void BG_Game::scene_guardian() {
 		sman->paint_shape(centerx, centery, s); // frame 0 is background
 		win->get(backup, centerx - s->get_xleft(), centery - s->get_yabove());
 		for (i = 15; i > 0; i--)
-			FLASH_SHAPE(centerx, centery, 0x23, i, 70);
+		FLASH_SHAPE2(centerx, centery, 0x23, i, 70);
 		win->put(cbackup, centerx - s->get_xleft(), centery - s->get_yabove());
 		FORGET_OBJECT(backup);
 		FORGET_OBJECT(cbackup);
 
 		non_gl_blit();
 		enable_direct_gl_render();
-		WAITDELAYCYCLE(1200);
+		WAITDELAYCYCLE1(1200);
 
 		Audio::get_ptr()->stop_music();
 
@@ -962,7 +989,7 @@ void BG_Game::scene_guardian() {
 			else
 #endif
 				win->show();
-			WAITDELAYCYCLE(2);
+			WAITDELAYCYCLE1(2);
 #ifdef HAVE_OPENGL
 			if (GL_manager::get_instance())
 				Delay();
@@ -985,8 +1012,8 @@ void BG_Game::scene_guardian() {
 		while (true) {
 			int x = centerx + rand() % 3 - 1;
 			int y = centery + rand() % 3 - 1;
-			FLASH_SHAPE(x, y, 0x14, 0, 0);
-			WAITDELAYCYCLE(2);
+			FLASH_SHAPE1(x, y, 0x14, 0, 0);
+			WAITDELAYCYCLE1(2);
 			if (SDL_GetTicks() - ticks > 800)
 				break;
 		}

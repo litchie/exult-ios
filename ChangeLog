@@ -1,4 +1,8 @@
 2016-02-09	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* game.{cc,h}, gamemgr/bggame.cc, imagewin/ibuf16.cc, imagewin/iwin8.cc:
+	  Improving Guardian's lipsynch, as well as fixing palette cycling in the
+	  background. Made palette cycles faster on moongate. Also, palette rotation
+	  was inconsistent between 8- and 16-bit code.
 	* gamemgr/bggame.cc: Guardian lipsynch using original data. This data can be
 	  patched in mods: it is in mainshp.flx, entry 15.
 
