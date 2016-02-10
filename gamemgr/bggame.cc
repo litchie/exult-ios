@@ -569,7 +569,7 @@ static int text_times[] = {
 
 static const int text_num_frames = sizeof(text_times) / sizeof(int);
 
-static const char surfacing_data[] {
+static const char surfacing_data[] = {
 	0x03, 0x00, 0x02,	// Eyebrows -> neutral
 	0x03, 0x00, 0x05,	// Eyes -> half-open
 	0x15, 0x00, 0x04,	// Eyes -> fully open
@@ -757,7 +757,7 @@ void BG_Game::scene_guardian() {
 		win->get(backup, centerx - 53 - s->get_xleft(), centery - 68 - s->get_yabove());
 		disable_direct_gl_render();
 		for (i = 8; i >= -8; i--)
-		FLASH_SHAPE2(centerx - 53, centery - 68, 0x21, 1 + abs(i), 80);
+			FLASH_SHAPE2(centerx - 53, centery - 68, 0x21, 1 + abs(i), 80);
 		FORGET_OBJECT(backup);
 		WAITDELAYCYCLE1(2000);
 
@@ -769,7 +769,7 @@ void BG_Game::scene_guardian() {
 		backup = win->create_buffer(s->get_width(), s->get_height());
 		win->get(backup, centerx - s->get_xleft(), centery - 45 - s->get_yabove());
 		for (i = 9; i >= -9; i--)
-		FLASH_SHAPE2(centerx, centery - 45, 0x22, 9 - abs(i), 80);
+			FLASH_SHAPE2(centerx, centery - 45, 0x22, 9 - abs(i), 80);
 		FORGET_OBJECT(backup);
 		WAITDELAYCYCLE1(2000);
 
@@ -785,7 +785,7 @@ void BG_Game::scene_guardian() {
 		sman->paint_shape(centerx, centery, s); // frame 0 is static background
 		win->get(backup, centerx - s->get_xleft(), centery - s->get_yabove());
 		for (i = 1; i < 16; i++)
-		FLASH_SHAPE2(centerx, centery, 0x23, i, 70);
+			FLASH_SHAPE2(centerx, centery, 0x23, i, 70);
 
 		sman->paint_shape(centerx, centery, shapes.get_shape(0x23, 15));
 		non_gl_blit();
@@ -965,7 +965,7 @@ void BG_Game::scene_guardian() {
 		sman->paint_shape(centerx, centery, s); // frame 0 is background
 		win->get(backup, centerx - s->get_xleft(), centery - s->get_yabove());
 		for (i = 15; i > 0; i--)
-		FLASH_SHAPE2(centerx, centery, 0x23, i, 70);
+			FLASH_SHAPE2(centerx, centery, 0x23, i, 70);
 		win->put(cbackup, centerx - s->get_xleft(), centery - s->get_yabove());
 		FORGET_OBJECT(backup);
 		FORGET_OBJECT(cbackup);
