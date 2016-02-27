@@ -1,7 +1,8 @@
-#include <assert.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cassert>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+using namespace std;
 
 void rebuild(void) {
 	unsigned int c;

@@ -15,23 +15,19 @@
 
 #ifdef HAVE_ZIP_SUPPORT
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include "zlib.h"
-#include "unzip.h"
-
-#ifdef STDC
-#  include <stddef.h>
-#  include <string.h>
-#  include <stdlib.h>
-#endif
+#include <cstddef>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #ifdef NO_ERRNO_H
 extern int errno;
 #else
-#   include <errno.h>
+#  include <cerrno>
 #endif
+using namespace std;
 
+#include "zlib.h"
+#include "unzip.h"
 
 #ifndef local
 #  define local static
