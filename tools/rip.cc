@@ -48,7 +48,7 @@ void rebuild(void) {
 int main(int argc, char *argv[]) {
 	unsigned short fn, fnc;
 	unsigned short temp;
-	int fs, fsc;
+	unsigned fs, fsc;
 	unsigned int i, put = 0;
 	int number;
 	int extended;
@@ -73,10 +73,10 @@ int main(int argc, char *argv[]) {
 	else if (!strcasecmp(argv[1], "index"))
 		number = -2;
 	else if (!strcasecmp(argv[1], "put")) {
-		sscanf(argv[2], "%x", &number);
+		sscanf(argv[2], "%x", reinterpret_cast<unsigned int *>(&number));
 		put = 1;
 	} else
-		sscanf(argv[1], "%x", &number);
+		sscanf(argv[1], "%x", reinterpret_cast<unsigned int *>(&number));
 
 	if ((fi = fopen("usecode", "rb+")) == NULL) {
 		printf("Can't open usecode file.\n");
