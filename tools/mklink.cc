@@ -5,9 +5,9 @@
  * Copyright (c) 1999 Keldon Jones
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
+#include <cstdio>
+#include <cstdlib>
+using namespace std;
 
 /* Some basic types */
 typedef unsigned char byte;
@@ -174,7 +174,7 @@ u16b *get_tree(u16b func_num, u16b *num) {
 	our_size = 1;
 
 	/* Start array */
-	our_tree = (u16b *)malloc(sizeof(u16b));
+	our_tree = static_cast<u16b *>(malloc(sizeof(u16b)));
 
 	/* Copy our number into tree */
 	our_tree[0] = func_num;
@@ -194,7 +194,7 @@ u16b *get_tree(u16b func_num, u16b *num) {
 		our_size += sub_size;
 
 		/* Grow our tree */
-		our_tree = (u16b *)realloc(our_tree, sizeof(u16b) * our_size);
+		our_tree = static_cast<u16b *>(realloc(our_tree, sizeof(u16b) * our_size));
 
 		/* Copy elements from sub-tree */
 		for (j = 0; j < sub_size; j++) {
@@ -229,8 +229,8 @@ void clear_visited(void) {
  * Compare two function numbers.
  */
 int comp_func(const void *one, const void *two) {
-	const u16b first = *((const u16b *)one);
-	const u16b second = *((const u16b *)two);
+	const u16b first = *static_cast<const u16b *>(one);
+	const u16b second = *static_cast<const u16b *>(two);
 
 	/* Equal */
 	if (first == second) return 0;
@@ -304,7 +304,7 @@ int main(void) {
 		read_u16b(usecode, &u_ptr->num_call);
 
 		/* Allocate space for table */
-		u_ptr->called = (u16b *)malloc(sizeof(u16b) * u_ptr->num_call);
+		u_ptr->called = static_cast<u16b *>(malloc(sizeof(u16b) * u_ptr->num_call));
 
 		/* Read table */
 		for (i = 0; i < u_ptr->num_call; i++) {

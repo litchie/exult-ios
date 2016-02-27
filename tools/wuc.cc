@@ -1,6 +1,8 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+
+using namespace std;
 
 #include "uctools.h"
 
@@ -26,16 +28,17 @@ static const char *compiler_table[] = {
 #define TOKEN_LENGTH 25600
 
 char token[TOKEN_LENGTH], *token2, curlabel[256], indata;
-int byte, word, pass, offset, datasize, codesize, funcnum;
+int pass,offset;
+unsigned byte, word, funcnum, datasize, codesize;
 int extended;
 
 char labels[MAX_LABELS][10];
 int offsets[MAX_LABELS];
-int lindex;
+unsigned lindex;
 
 FILE *fo, *fi;
 
-void emit_byte(int i) {
+void emit_byte(unsigned i) {
 	if (pass > 0) {
 		fputc(i, fo);
 		if (indata) datasize++;
@@ -44,20 +47,32 @@ void emit_byte(int i) {
 	codesize++;
 }
 
-void emit_word(int i) {
+void emit_word(unsigned i) {
 	emit_byte(i & 0xff);
 	emit_byte((i >> 8) & 0xff);
 }
 
-void emit_dword(int i) {
+void emit_dword(unsigned i) {
 	emit_byte(i & 0xff);
 	emit_byte((i >> 8) & 0xff);
 	emit_byte((i >> 16) & 0xff);
 	emit_byte((i >> 24) & 0xff);
 }
 
-void add_label(void) {
-	int i;
+inline void emit_byte(int i) {
+	emit_byte(static_cast<unsigned>(i));
+}
+
+inline void emit_word(int i) {
+	emit_word(static_cast<unsigned>(i));
+}
+
+inline void emit_dword(int i) {
+	emit_dword(static_cast<unsigned>(i));
+}
+
+void add_label() {
+	unsigned i;
 	if (token[strlen(token) - 1] == ':')
 		token[strlen(token) - 1] = 0;
 	if (lindex >= MAX_LABELS) {
@@ -75,7 +90,7 @@ void add_label(void) {
 }
 
 int get_label(void) {
-	int i;
+	unsigned i;
 	for (i = 0; i < lindex; i++) {
 		if (!strcasecmp(token, labels[i]))
 			return(offsets[i]);
@@ -98,8 +113,8 @@ void check_data_label_16(int label) {
 		printf("Warning: offset too big for 16 bit at label %s!\n", curlabel);
 }
 
-int find_intrinsic(const char **func_table, int funsize, const char *name) {
-	int i;
+int find_intrinsic(const char **func_table, unsigned funsize, const char *name) {
+	unsigned i;
 	for (i = 0; i < funsize; i++) {
 		if (!strcasecmp(name, func_table[i]))
 			return(i);
@@ -143,8 +158,8 @@ void read_token(FILE *fi) {
 	token[i] = 0;
 }
 
-int main(int argc, char *argv[]) {
-	int i, opsize = sizeof(opcode_table) / sizeof(opcode_desc),
+int main(int argc,char *argv[]) {
+	unsigned i, opsize = sizeof(opcode_table) / sizeof(opcode_desc),
 	       pushsize = sizeof(push_table) / sizeof(opcode_desc),
 	       popsize = sizeof(pop_table) / sizeof(opcode_desc),
 	       compsize = sizeof(compiler_table) / sizeof(char *);
@@ -265,12 +280,12 @@ int main(int argc, char *argv[]) {
 										sscanf(token, "(%x)", &word);
 									}
 									emit_word(word);
-									sscanf(token2, "%d", &word);
+									sscanf(token2, "%u", &word);
 								} else {
 									sscanf(token, "%x", &word);
 									emit_word(word);
 									read_token(fi);
-									sscanf(token, "%d", &word);
+									sscanf(token, "%u", &word);
 								}
 								emit_byte(word);
 								break;
