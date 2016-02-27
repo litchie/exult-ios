@@ -13,9 +13,17 @@
 
 #ifdef HAVE_ZIP_SUPPORT
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstddef>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#ifdef NO_ERRNO_H
+extern int errno;
+#else
+#  include <cerrno>
+#endif
+using namespace std;
+
 #include "zlib.h"
 #include "zip.h"
 
@@ -24,17 +32,6 @@
 #  define DEF_MEM_LEVEL 8
 #else
 #  define DEF_MEM_LEVEL  MAX_MEM_LEVEL
-#endif
-
-#ifdef STDC
-#  include <stddef.h>
-#  include <string.h>
-#  include <stdlib.h>
-#endif
-#ifdef NO_ERRNO_H
-extern int errno;
-#else
-#   include <errno.h>
 #endif
 
 /* Added by Max Horn - work around a work around in zlib 1.1.3 on MacOS */
