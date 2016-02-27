@@ -49,17 +49,8 @@ USECODE_OBJECTS = \
 	src/spells/spells.uc	\
 	src/usecode.uc	
 
-MAINSHP_FLX_OBJECTS = \
-	src/graphics/mainshp.in	\
-	src/graphics/mainshp/title.shp	
-
-SHAPES_VGA_OBJECTS = \
-	src/graphics/shapes.in	\
-	src/graphics/shapes/sails.shp	
-
 GUMPS_VGA_OBJECTS = \
-	src/graphics/shapes.in	\
-	src/graphics/shapes/sails.shp	\
+	src/graphics/gumps.in	\
 	src/graphics/gumps/magic_scroll_1st.shp	\
 	src/graphics/gumps/magic_scroll_4th.shp	\
 	src/graphics/gumps/magic_scroll_5th.shp	\
@@ -70,7 +61,15 @@ GUMPS_VGA_OBJECTS = \
 	src/graphics/gumps/spellbook_3.shp	\
 	src/graphics/gumps/spellbook_5.shp	\
 	src/graphics/gumps/spellbook_6.shp	\
-	src/graphics/gumps/spellbook_7.shp
+	src/graphics/gumps/spellbook_7.shp	
+
+MAINSHP_FLX_OBJECTS = \
+	src/graphics/mainshp.in	\
+	src/graphics/mainshp/title.shp	
+
+SHAPES_VGA_OBJECTS = \
+	src/graphics/shapes.in	\
+	src/graphics/shapes/sails.shp	
 
 sifixesdir = $(datadir)/exult/silverseed/mods
 
@@ -81,19 +80,19 @@ sifixesdatadir = $(sifixesdir)/sifixes/data
 
 sifixesdata_DATA = \
 	data/usecode	\
+	data/gumps.vga	\
 	data/mainshp.flx	\
 	data/shapes.vga	\
-	data/gumps.vga	\
-	data/initgame.dat
+	data/initgame.dat	
 
 CLEANFILES = \
 	data/usecode	\
+	data/gumps.vga	\
+	data/gumps_vga.h	\
 	data/mainshp.flx	\
 	data/mainshp_flx.h	\
 	data/shapes.vga	\
-	data/shapes_vga.h	\
-	data/gumps.vga	\
-	data/gumps_vga.h
+	data/shapes_vga.h	
 
 $(EXPACK):
 	+(cd $(EXPACKDIR);$(MAKE) expack)
@@ -105,12 +104,12 @@ $(UCC):
 data/usecode: $(UCC) $(USECODE_OBJECTS)
 	$(UCC) -I src -o data/usecode src/usecode.uc
 
+data/gumps.vga: $(EXPACK) $(GUMPS_VGA_OBJECTS)
+	$(EXPACK) -i $(srcdir)/src/graphics/gumps.in
+
 data/mainshp.flx: $(EXPACK) $(MAINSHP_FLX_OBJECTS)
 	$(EXPACK) -i $(srcdir)/src/graphics/mainshp.in
 
 data/shapes.vga: $(EXPACK) $(SHAPES_VGA_OBJECTS)
 	$(EXPACK) -i $(srcdir)/src/graphics/shapes.in
-
-data/gumps.vga: $(EXPACK) $(GUMPS_VGA_OBJECTS)
-	$(EXPACK) -i $(srcdir)/src/graphics/gumps.in
 
