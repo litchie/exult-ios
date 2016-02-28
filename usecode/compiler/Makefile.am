@@ -35,4 +35,4 @@ uclex.o: uclex.cc ucparse.h
 
 
 CLEANFILES = *~
-MAINTAINERCLEANFILES = uclex.cc ucparse.cc ucparse.h
+MAINTAINERCLEANFILES = uclex.cc ucparse.cc ucparse.h ucparse.hh

@@ -1,4 +1,5 @@
 2016-02-27	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* usecode/compiler/Makefile.am: Clean deletes ucparse.hh as well.
 	* content/sifixes/{Makefile.am,Makefile.mingw,src/graphics/gumps.in}: Fixing
 	  makefiles for SI Fixes.
 	* files/zip/{zip,unzip}.cc,tools/rip.cc: Sorting out headers.
