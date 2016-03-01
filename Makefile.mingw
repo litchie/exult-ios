@@ -249,7 +249,7 @@ $(EXP_FILE): $(ES_OBJS)
 exultstudioico.o: $(SRC)/win32/exultstudioico.rc $(SRC)/win32/exultstudio.ico
 	windres --include-dir $(SRC)/win32 $(SRC)/win32/exultstudioico.rc $@
 
-u7shp$(EXEEXT) : u7shp.o
+u7shp$(EXEEXT) : mapedit/u7shp.o
 	$(CXX) $(LDFLAGS) -o $(@) $+ $(GTK_LIBS) $(GIMP_LIBS) -mwindows
 
 install: $(EXEC)

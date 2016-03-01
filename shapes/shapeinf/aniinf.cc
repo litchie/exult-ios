@@ -85,7 +85,7 @@ Animation_info *Animation_info::create_from_tfa(
 		inf->set(FA_LOOPING, nframes, 6);
 		break;
 	case 11:
-		inf->set(FA_LOOPING, nframes, 1, 0);
+		inf->set(FA_LOOPING, nframes, nframes-1, 0);
 		break;
 	case 12:    // Slow advance.
 	case 14:    // Grandfather clock.

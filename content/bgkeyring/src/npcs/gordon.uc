@@ -76,7 +76,7 @@ void Gordon object#(0x43A) ()
 		else if (gflags[ASKED_GORDON_ABOUT_FISHING]) add("fishing");
 	
 		//Start of regular conversation tree
-		converse([])
+		converse(0)
 		{
 			case "name" (remove):
 				say("@My name is Gordon.@");

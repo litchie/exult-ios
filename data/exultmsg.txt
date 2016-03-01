@@ -21,8 +21,8 @@
 0x511:The Exult Team
 0x512:Driven by Exult
 # Ending Messages
-0x513:The end of Ultima VII
-0x514:The end of Britannia as you know it!
+0x513:THE END OF ULTIMA VII
+0x514:THE END OF BRITANNIA AS YOU KNOW IT...
 0x515:No. You cannot do that! You must not!
 0x516:Damn you Avatar!  Damn you!
 0x517:The Black Gate is destroyed.

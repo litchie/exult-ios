@@ -28,8 +28,11 @@ ucc_LDADD = 			\
 	../libusecode.la	\
 	$(SYSLIBS)
 
+ucparse.h: ucparse.cc
+	test -e ucparse.hh && cp ucparse.hh ucparse.h
+
 uclex.o: uclex.cc ucparse.h
 
 
 CLEANFILES = *~
-MAINTAINERCLEANFILES = uclex.cc ucparse.cc
+MAINTAINERCLEANFILES = uclex.cc ucparse.cc ucparse.h ucparse.hh

@@ -1976,7 +1976,7 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
 			<File
-				RelativePath="..\tools\mklink.c"
+				RelativePath="..\tools\mklink.cc"
 				>
 			</File>
 		</Filter>

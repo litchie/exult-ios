@@ -30,17 +30,24 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include  <iosfwd>
 #endif
 
-extern char **item_names;       // The game items' names.
-extern int num_item_names;
-extern char **text_msgs;        // Msgs. (0x400 - ).
-extern int num_text_msgs;
-extern char **misc_names;       // Frames, etc (0x500 - 0x5ff/0x685 (BG/SI)).
-extern int num_misc_names;
+// The game items' names.
+unsigned get_num_item_names();
+char const *get_item_name(unsigned num);
+void Set_item_name(unsigned num, char const *name);
+
+// Msgs. (0x400 - ).
+unsigned get_num_text_msgs();
+char const *get_text_msg(unsigned num);
+void Set_text_msg(unsigned num, char const *msg);
+
+// Frames, etc (0x500 - 0x5ff/0x685 (BG/SI)).
+unsigned get_num_misc_names();
+char const *get_misc_name(unsigned num);
+void Set_misc_name(unsigned num, char const *name);
 
 void Setup_text(bool si, bool expansion);
 void Free_text();
 void Write_text_file();
-void Set_item_name(int num, const char *name);
 
 /*
  *  Message #'s.  These are (offset-0x400) in text.flx and exultmsg.txt:

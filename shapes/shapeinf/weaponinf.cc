@@ -120,8 +120,8 @@ bool Weapon_info::read(
 	//   shape if shoot/throw.
 	projectile = Read2(ptr);    // What a projectile fired will look like.
 #if 0
-	extern char **item_names;
-	cout << dec << "Weapon " //  << item_names[shapenum]
+	extern char const *get_item_name(unsigned num);
+	cout << dec << "Weapon " //  << get_item_name(shapenum)
 	     << '(' << shapenum << ')' << endl;
 #endif
 	damage = *ptr++;
@@ -143,9 +143,9 @@ bool Weapon_info::read(
 #if 0
 	// Testing if 'throwable'.  Looks like ammo==-3 => throwable UNLESS
 	//   uses == 0.
-	extern char **item_names;
+	extern char const *get_item_name(unsigned num);
 	if ((ammo == -3) != (uses == 1 || uses == 2))
-		cout << "Shape #" << shapenum << "(" << item_names[shapenum]
+		cout << "Shape #" << shapenum << "(" << get_item_name(shapenum)
 		     << ") has ammo = " << ammo << " and uses = "
 		     << (int) uses << endl;
 #endif

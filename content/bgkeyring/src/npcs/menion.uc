@@ -182,7 +182,7 @@ void Menion object#(0x4C0) ()
 				else
 					say("@I can help thee with that when I am at work.@");
 
-			case "Could I have my sword?" (remove):
+			case "Could I have my sword now?" (remove):
 				//Player returned for a sword they couldn't carry the last time
 				if (UI_add_party_items(1, SHAPE_CUSTOM_SWORD, QUALITY_ANY, FRAME_ANY))
 				{

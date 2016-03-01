@@ -716,6 +716,13 @@ void Map_chunk::add_dependencies(
 		    && obj->get_shapenum() == 0xd1 && obj->get_framenum() == 17) {
 			cmp = 1;
 		}
+		// TODO: Fix this properly, instead of with an ugly hack.
+		// This fixes the the bodies of the slain bane-companions being
+		// placed beneath the elevated carpet
+		if (!cmp && GAME_SI
+		    && obj->get_shapenum() == 0x10d && obj->get_framenum() > 13) {
+			cmp = 1;
+		}
 		if (cmp == 1) {     // Bigger than this object?
 			newobj->dependencies.insert(obj);
 			obj->dependors.insert(newobj);

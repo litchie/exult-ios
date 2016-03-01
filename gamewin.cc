@@ -2098,9 +2098,9 @@ void Game_window::find_nearby_objects(Game_object_map_xy *mobjxy, int x, int y, 
 static inline string Get_object_name(Game_object *obj) {
 	if (obj == Game_window::get_instance()->get_main_actor()) {
 		if (GAME_BG)
-			return misc_names[0x42];
+			return get_misc_name(0x42);
 		else if (GAME_SI)
-			return misc_names[0x4e];
+			return get_misc_name(0x4e);
 		else
 			return obj->get_name();
 	}
@@ -3169,7 +3169,7 @@ void Game_window::got_bad_feeling(int odds) {
 	if (!(GAME_BG || GAME_SI))
 		return;
 	if ((rand() % odds) == 0) {
-		char const *badfeeling = GAME_BG ? misc_names[0x44] : misc_names[0x50];
+		char const *badfeeling = get_misc_name(GAME_BG ? 0x44 : 0x50);
 		effects->remove_text_effect(main_actor);
 		effects->add_text(badfeeling, main_actor);
 	}

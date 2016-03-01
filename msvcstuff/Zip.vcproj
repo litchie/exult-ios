@@ -164,11 +164,11 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
 			<File
-				RelativePath="..\files\zip\unzip.c"
+				RelativePath="..\files\zip\unzip.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\files\zip\zip.c"
+				RelativePath="..\files\zip\zip.cc"
 				>
 			</File>
 		</Filter>

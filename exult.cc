@@ -1065,7 +1065,11 @@ static void Init(
 #endif
 	xfd = ConnectionNumber(info.info.x11.display);
 	Server_init();          // Initialize server (for map-editor).
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+	xdnd = new Xdnd(info.info.x11.display, info.info.x11.window,
+#else
 	xdnd = new Xdnd(info.info.x11.display, info.info.x11.wmwindow,
+#endif
 	                info.info.x11.window,
 	                Move_dragged_shape, Move_dragged_combo,
 	                Drop_dragged_shape, Drop_dragged_chunk,
@@ -1235,7 +1239,7 @@ static void Select_for_combo(
 		return;
 	ShapeID id = *obj;
 	Tile_coord t = obj->get_tile();
-	std::string name = item_names[id.get_shapenum()];
+	std::string name = get_item_name(id.get_shapenum());
 	if (toggle)
 		cheat.toggle_selected(obj);
 	else if (!cheat.is_selected(obj)) {
@@ -1776,7 +1780,11 @@ static void Handle_event(
 #ifdef USE_EXULTSTUDIO
 #ifndef WIN32
 	case SDL_SYSWMEVENT: {
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+		XEvent &ev = event.syswm.msg->msg.x11.event;
+#else
 		XEvent &ev = event.syswm.msg->event.xevent;
+#endif
 		if (ev.type == ClientMessage)
 			xdnd->client_msg(reinterpret_cast<XClientMessageEvent &>(ev));
 		else if (ev.type == SelectionNotify)

@@ -4,9 +4,9 @@ AM_CPPFLAGS = $(SDL_CFLAGS) $(INCDIRS) $(WINDOWING_SYSTEM) \
 noinst_LTLIBRARIES = libminizip.la
 
 libminizip_la_SOURCES =	\
-	zip.c \
+	zip.cc \
 	zip.h \
-	unzip.c \
+	unzip.cc \
 	unzip.h
 
 CLEANFILES = *~

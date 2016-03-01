@@ -394,9 +394,6 @@ public:
 		if (!len)       // Means continuous.
 			len = 120;  // How about a couple game hours?
 	}
-	virtual ~Weather_egg() {
-		set_weather(0, 1, 0);
-	}
 	virtual void hatch_now(Game_object *obj, bool must) {
 		set_weather(weather, len, this);
 	}

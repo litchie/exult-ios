@@ -68,7 +68,7 @@ static const char *Pass_space(
 static const char *Pass_word(
     const char *text
 ) {
-	while (*text && (!Is_space(*text) || (*text == '\f') || (*text == '\v')))
+	while (*text && (*text != '^') && (!Is_space(*text) || (*text == '\f') || (*text == '\v')))
 		text++;
 	return (text);
 }
@@ -593,9 +593,18 @@ int Font::find_cursor(
 			if (cur_line)
 				break;
 		}
+		bool ucase_next = *text == '^';
+		if (ucase_next) // Skip it.
+			text++;
 		// Pass word & get its width.
 		const char *ewrd = Pass_word(text);
-		int width = get_text_width(text, static_cast<int>(ewrd - text));
+		int width;
+		if (ucase_next) {
+			const char c = static_cast<const char>(toupper(*text));
+			width = get_text_width(&c, 1u)
+			        + get_text_width(text + 1, static_cast<uint32>(ewrd - text - 1));
+		} else
+			width = get_text_width(text, static_cast<uint32>(ewrd - text));
 		if (curx + width - hor_lead > endx) {
 			// Word-wrap.
 			// Past end of this line?

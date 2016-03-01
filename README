@@ -1,5 +1,5 @@
 Exult Documentation
-last changed: 09 May 2014(GMT)
+last changed: 19 March 2015(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/docs.php
 
@@ -20,6 +20,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 2.8. Path-Settings for *nix based systems
 2.9. Advanced Configuration: Using both the original and the Add-Ons
 2.10. Command line options
+2.11. Error Log
 
 3. Audio
 3.1. Music
@@ -70,21 +71,26 @@ The latest version of this document can be found at http://exult.sourceforge.net
 8.5. Where to find the savegames of modded games
 8.6. Exchanging Savegames between original games and Mods
 
-9. OS specific notes
-9.1. How to get the Zaurus port working
-9.2. Error Log
+9. iOS Guide
+9.1. The port to iOS
+9.2. Installing Exult on your iPhone/iPad
+9.3. Installing the games on your iPhone/iPad
+9.4. Installing sfx and digital music
+9.5. iOS controls
+9.6. Additional iOS settings
 
 10. Zaurus Guide
 10.1. Author of this Guide
 10.2. Sharp Zaurus
-10.3. Zaurus SL5x00 and ROMs
-10.4. Exult and Zaurus
-10.5. Installing new packages
-10.6. Using the standard ROM
-10.7. Installing the non-required packages
-10.8. Using the latest ROM
-10.9. Solving the problems with the latest ROM
-10.10. Useful tidbits
+10.3. How to get the Zaurus port working
+10.4. Zaurus SL5x00 and ROMs
+10.5. Exult and Zaurus
+10.6. Installing new packages
+10.7. Using the standard ROM
+10.8. Installing the non-required packages
+10.9. Using the latest ROM
+10.10. Solving the problems with the latest ROM
+10.11. Useful tidbits
 
 11. Installing the original Ultima VII games for use with Exult
 11.1. Installing the floppy disks of BG/SI on Windows
@@ -103,41 +109,42 @@ The latest version of this document can be found at http://exult.sourceforge.net
 12.2. Contacting us
 
 13. Changes to the Documentation
-13.1. - 09 May 2014
-13.2. - 19 December 2013
-13.3. - 21 November 2013
-13.4. - 11 February 2013
-13.5. - 15 January 2013
-13.6. - 01 January 2013
-13.7. - 16 December 2012
-13.8. - 14 November 2012
-13.9. - 28 October 2012
-13.10. - 01 December 2011
-13.11. - 16 March 2011
-13.12. - 19 February 2011
-13.13. - 24 January 2011
-13.14. - 23 January 2011
-13.15. - 13 October 2010
-13.16. - 30 August 2010
-13.17. - 25 August 2010
-13.18. - 15 August 2010
-13.19. - 28 April 2010
-13.20. - 11 March 2010
-13.21. - 10 March 2010
-13.22. - 08 March 2010
-13.23. - 16 July 2009
-13.24. - 03 June 2009
-13.25. - 20 May 2009
-13.26. - 19 May 2009
-13.27. - 18 May 2009
-13.28. - 28 April 2009
-13.29. - 21 October 2007
-13.30. - 08 April 2006
-13.31. - 14 March 2005
-13.32. - 14 August 2004
-13.33. - 23 May 2004
-13.34. - 11 February 2004
-13.35. - 12 December 2003
+13.1. - 19 March 2015
+13.2. - 09 May 2014
+13.3. - 19 December 2013
+13.4. - 21 November 2013
+13.5. - 11 February 2013
+13.6. - 15 January 2013
+13.7. - 01 January 2013
+13.8. - 16 December 2012
+13.9. - 14 November 2012
+13.10. - 28 October 2012
+13.11. - 01 December 2011
+13.12. - 16 March 2011
+13.13. - 19 February 2011
+13.14. - 24 January 2011
+13.15. - 23 January 2011
+13.16. - 13 October 2010
+13.17. - 30 August 2010
+13.18. - 25 August 2010
+13.19. - 15 August 2010
+13.20. - 28 April 2010
+13.21. - 11 March 2010
+13.22. - 10 March 2010
+13.23. - 08 March 2010
+13.24. - 16 July 2009
+13.25. - 03 June 2009
+13.26. - 20 May 2009
+13.27. - 19 May 2009
+13.28. - 18 May 2009
+13.29. - 28 April 2009
+13.30. - 21 October 2007
+13.31. - 08 April 2006
+13.32. - 14 March 2005
+13.33. - 14 August 2004
+13.34. - 23 May 2004
+13.35. - 11 February 2004
+13.36. - 12 December 2003
 
 
 --------------------------------------------------------------------------------
@@ -923,6 +930,13 @@ Exult offers some "hidden" command line options:
 
 
 
+2.11. Error Log
+* Windows: Exult generates the files 'stdout.txt' and 'stderr.txt'. These may give you some idea of what is going on under the hood. When Exult suddenly quits, sometimes these files can help. You can find these files in the folder where exult.cfg is located (see 2.2.)
+* UNIX/UNIX clones: the above mentioned logs are shown in the console from which Exult is started. ./exult >&log will send both stderr and stdout to the file named "log".
+* Mac OS X: When you are running the app bundle Exult.app then the error log will be shown in the OS X Application Console (/Applications/Utilities/Console.app).
+
+
+
 
 --------------------------------------------------------------------------------
 
@@ -1408,20 +1422,39 @@ You cannot exchange savegames between original games and mods. For example, when
 
 --------------------------------------------------------------------------------
 
-9. OS specific notes
-9.1. How to get the Zaurus port working
-Some people were confused where to put the Exult and U7 files and this is just a quick guide. The long guide is in the next section.
-* BG and SI are expected to be installed in /mnt/cf/exult-data/bg and /mnt/cf/exult-data/si
-* Exult binary is in /opt/QtPalmtop/bin/
-* the data files (like exult_bg.flx) go into /opt/QtPalmtop/share/exult/
-* exult.cfg is can be found as /home/root/.exult.cfg
+9. iOS Guide
+9.1. The port to iOS
+In January 2015 Chaoji Li (aka Litchie) forked Exult on Github to work on the initial porting effort by Lanica Dragon (which had stopped in 2013). Even while this port is a fork and not an official port, this documentation aims to help iOS users.
+Note that Exult runs very nicely on iPads but the item management of the games makes playing on the smaller iPhone screens a bit of a challenge. Starting with the screen size of the iPhone 6 things become easier.
+
+
+9.2. Installing Exult on your iPhone/iPad
+For now Exult is not on the App Store but there are two other ways to get it on your device.
+* If you have a paid iOS developer account in Apple's Developer Program, you can clone the git repository, run the Xcode project file and easily install Exult.
+* Write an email to Dominus Dragon (see About Us) to sign up for the beta testing.
 
 
 
-9.2. Error Log
-* Windows: Exult generates the files 'stdout.txt' and 'stderr.txt'. These may give you some idea of what is going on under the hood. When Exult suddenly quits, sometimes these files can help. You can find these files in the folder where exult.cfg is located (see 2.2.)
-* UNIX/UNIX clones: the above mentioned logs are shown in the console from which Exult is started. ./exult >&log will send both stderr and stdout to the file named "log".
-* Mac OS X: When you are running the app bundle Exult.app then the error log will be shown in the OS X Application Console (/Applications/Utilities/Console.app).
+9.3. Installing the games on your iPhone/iPad
+Once you have the Exult app on your device, you will need to upload the games to your device using iTunes file sharing. But it needs a bit of preparing.
+First you will need to put the games into a folder called game and use the following folder structure: game game +-- blackgate | +--- static | +---- *.* +-- serpentisle | +--- static | +---- *.* Please make sure that all the file and folder names are in lowercase, iOS is case sensitive and the games might not be detected otherwise.
+Now connect your device to your computer, start iTunes and select your device in it. Click "Apps", scroll down to "File Sharing" and select Exult. Now drag and drop the game folder you prepared in the first step.
+Note: if you want to use mods just add them to the game folder structure before you drag and drop that in iTunes file sharing. Example with the BG keyring and SI fixes mods: game +-- blackgate | +--- static | +---- *.* | +--- mods | +---- keyring | +----- *.* | +---- keyring.cfg +-- serpentisle | +--- static | +---- *.* | +--- mods | +---- sifixes | +----- *.* | +---- sifixes.cfg
+
+
+9.4. Installing sfx and digital music
+To install the optional sfx and digital music, please download the "Zipped all-in-one audio pack for manual installation" zip file from our download page. Unzip everything to a folder called "data" and drag and drop this also in iTunes file sharing. Do NOT put it in the "game" folder.
+
+
+9.5. iOS controls
+When playing you have a dpad overlaying the game screen which by default is on theright of the screen (but can be set to the left side). Tapping with your finger is equal to a left click in the game. The green (and eventually red (combat)) movement cursor and the hand pointer are invisible on iOS as they are more distracting than helping when you control and click with your finger.
+There is also a helper menu when you click near objects in the games, which can be helpful on the smaller iPhone screens but can be disabled in the iOS settings.
+
+
+9.6. Additional iOS settings
+There is an additional "iOS Options" item in both the Exult Setup and Game menu which offers to change the following settings:
+* Item helper menu enable or disable the helper menu that opens when you click near objects.
+* D-Pad screen location you can disable the D-Pad (not advisable) or choose on which side of your screen it should be shown.
 
 
 
@@ -1430,38 +1463,47 @@ Some people were confused where to put the Exult and U7 files and this is just a
 
 10. Zaurus Guide
 10.1. Author of this Guide
-This file was written by Artaxerxes (Aurelien Marchand). He can be contacted at artaxerxes2 at iname dot com. Please ask if you want to send attachments no matter what their size.
+This part of the documentation was written by Artaxerxes (Aurelien Marchand). He can be contacted at artaxerxes2 at iname dot com. Please ask if you want to send attachments no matter what their size.
 
 
 10.2. Sharp Zaurus
 Introduced in April 2002, this PDA is really a pico-computer (one degree of magnitude less than micro). It runs a version of Linux on the ARM processor. It is possible to use cross-compilers to create programs that will run on the Zaurus, even if compiling from a x86 machine. This is notably the case for the Zaurus port of Exult. More information about the Zaurus can be gleaned on http://www.myZaurus.com.
 
 
-10.3. Zaurus SL5x00 and ROMs
+10.3. How to get the Zaurus port working
+Some people were confused where to put the Exult and U7 files and this is just a quick guide. The long guide is below.
+* BG and SI are expected to be installed in /mnt/cf/exult-data/bg and /mnt/cf/exult-data/si
+* Exult binary is in /opt/QtPalmtop/bin/
+* the data files (like exult_bg.flx) go into /opt/QtPalmtop/share/exult/
+* exult.cfg is can be found as /home/root/.exult.cfg
+
+
+
+10.4. Zaurus SL5x00 and ROMs
 Sharp occasionally releases new versions of its ROM for Zaurus. Consider a new ROM like a new Linux distribution: new packages, new look, new kernel etc. It is possible to update the ROM thanks to information found on the Zaurus web site mentioned earlier. The current Exult package for the Zaurus is created for the stock SL-5500 ROM v2.12, but will work with some modifications on more recent ROMs. It has been reported to work on the SL5000-D (the earlier and less capable version). The package will not run of-the-shelf using the latest ROM (no matter what version of the Zaurus you use) unless you make a couple of changes. More detailed information on how to fix this problem will be found further down this document.
 
 
-10.4. Exult and Zaurus
+10.5. Exult and Zaurus
 Exult uses SDL for multimedia access to the computer (music and video in particular). In order to play Exult on your Zaurus, you need to install the SDL library as well as the SDL-mixer library. Do not use the stock versions found on http://www.libsdl.org. Rather, use the specially prepared versions for Zaurus found on http://www.gnurou.org. These versions support more features and are the only tested ones.
 
 
-10.5. Installing new packages
+10.6. Installing new packages
 The first step to install a new package is to have the package downloaded and accessible from your Zaurus. I use a method I am comfortable with. If you have your own method and if it works, please keep using it! To copy packages on my Zaurus, I plug the cradle via USB to my Linux machine (Mandrake 10.1). Inserting the Zaurus on the cradle will automatically use the usbnet module to access the Zaurus via USB-over-ethernet. I then assign an IP to the net device usb0. Search the net to find out how. Once the connection is done, I upload the file via FTP to /mnt/cf/Documents/application/ipkg/. Then I start the add/remove package, select add new package and choose the file I just uploaded.
 
 
-10.6. Using the standard ROM
+10.7. Using the standard ROM
 Using the standard ROM has lead people to some issues. I recommend you install a newer version, in particular v3.10 (at this time of writing). All the current package for Exult and SDL will work fine. Simply install the SDL, SDL-mixer and Exult packages. You will also have to transfer the U7 data files to the Zaurus. I chose to install the data files on my Compact Flash card (/mnt/cf/) on the /mnt/cf/exult-data/si/static folder. Simply copy the content of your U7's static/ folder to this folder and you'll be done. The previous example is for Serpent Isle ("si" as you can see in the file path). For Black Gate, you would put "bg" instead of "si". Only the static folder is relevant. You can copy everything if you want to but it will take space for nothing.
 
 
-10.7. Installing the non-required packages
+10.8. Installing the non-required packages
 Two additional packages exist and are not required. They hold the new music for Exult and thus can be found on the Exult's download page. If you choose to install them as well, simply copy them to the Zaurus (see 5.1) and install them normally.
 
 
-10.8. Using the latest ROM
+10.9. Using the latest ROM
 As mentioned earlier, Exult won't run properly on the latest ROM (v3.10 as of 20030801) without some changes. There are a few reason why. I know they have changed the default user to be "zaurus" instead of "root", which mess up the paths and the config file. Indeed, by default, Exult reads its config file on ~/.exult.cfg which gets expanded to /home/root/.exult.cfg on the default ROM but to /home/zaurus/.exult.cfg on the newest ROM. Since the package installs all user-related files to /home/root, Exult won't find them on the latest ROM. Not only ~/.exult.cfg is concerned, but also ~/.exult/ which contains the gamedat (current running game) and the savegames. Finally, the files' owner is set to "root" so the user "zaurus" won't be able to alter files and folders.
 
 
-10.9. Solving the problems with the latest ROM
+10.10. Solving the problems with the latest ROM
 In order to play, you'll have to change the location of the files installed by the package to /home/zaurus/ instead of /home/root/. You'll have to type "su" to be able to change it. "su" is a command to become superuser (root). Not only you want to move the files ~/.exult.cfg and ~/.exult/ to /home/zaurus/ but you also want to edit the ~/.exult.cfg so that every occurrence of /home/root/ is replaced with /home/zaurus. First, open a terminal (install one if you don't have one).
 From the terminal, verify who you are by typing ($ is the prompt): $ cd ~/ $ whoami $ pwd
 The "whoami" command should return "zaurus". The "pwd" command should return "/home/zaurus/". Then copy the Exult files: $ cp /home/root/.exult* ~/ -rf
@@ -1471,7 +1513,7 @@ Normally, you should be able to start and play the game normally. Let me know if
 Updated packages will come up soon so that no additional work will be required.
 
 
-10.10. Useful tidbits
+10.11. Useful tidbits
 The key mappings are found in the files /opt/QtPalmtop/share/exult/keys_bg.txt and /opt/QtPalmtop/share/exult/keys_si.txt
 The Application keys are mapped this way: 'Calendar' = 'F9' = inventory (like pressing 'I') 'Address Book' = 'F10' = target mode (like pressing 'T') 'Home' = 'F12' = combat mode (like pressing 'C') 'Menu Popup' = 'F11' = use all keys (like pressing 'K' or 'Alt-K') 'Email' = 'F13' = spellbook (like pressing 'B')
 Save often. I have not had a crash since I'm using the latest SDL packages but you never know.
@@ -1565,24 +1607,31 @@ You can contact the Exult team and/or get more information from: http://exult.so
 --------------------------------------------------------------------------------
 
 13. Changes to the Documentation
-13.1. - 09 May 2014
+13.1. - 19 March 2015
+* 2.11. Error Log moved.
+* 9. iOS Guide added iOS guide.
+* 10.3. How to get the Zaurus port working moved.
+
+
+
+13.2. - 09 May 2014
 * 2.3. Settings in exult.cfg added coremidi_device setting.
 * 3.2. MIDI Music added coremidi_device setting.
 * 3.5. OS X CoreMidi device ID added to explain the coremidi_device setting.
 
 
 
-13.2. - 19 December 2013
+13.3. - 19 December 2013
 * 11.10. Using the version for OS X from GOG.com paths in the disk image changed.
 
 
 
-13.3. - 21 November 2013
+13.4. - 21 November 2013
 * 11.9. Using the version for Windows from GOG.com default installation path changed.
 
 
 
-13.4. - 11 February 2013
+13.5. - 11 February 2013
 * 2.3. Settings in exult.cfg FluidSynth soundfont stack added.
 * 2.7. Path-Settings for Mac OS X deleting exult.cfg might help.
 * 3.2. MIDI Music FluidSynth soundfont stack added.
@@ -1590,18 +1639,18 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.5. - 15 January 2013
+13.6. - 15 January 2013
 * 5.2. Keyboard commands orb of the moons keyboard command.
 
 
 
-13.6. - 01 January 2013
+13.7. - 01 January 2013
 * 3.2. MIDI Music timidity.cfg needs to be in ~/.exult on Linux systems.
 * 5.1. Movement and 5.2. Keyboard commands walk and run keys were switched.
 
 
 
-13.7. - 16 December 2012
+13.8. - 16 December 2012
 * 2.3. Settings in exult.cfg wrong height for windowed default.
 * 2.10. Command line options added --reset-video and --mapnum and sorted it a bit.
 * 4.4. Scaler xBR scalers added.
@@ -1609,7 +1658,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.8. - 14 November 2012
+13.9. - 14 November 2012
 * 1.1. Exult Version it's for the SVN of Exult.
 * 2.3. Settings in exult.cfg added autonotes options.
 * 6.1. Using the Notebook saved when saved game and when cheating you see the coordinates.
@@ -1618,7 +1667,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.9. - 28 October 2012
+13.10. - 28 October 2012
 * 2.3. Settings in exult.cfg added right click pathfind, fixed the text backgrounds and some other small fixes.
 * 5.1. Movement righht click pathfinding can be single or double.
 * 7.5. Gameplay Options same as above and the paperdolls option needs SI installed.
@@ -1626,7 +1675,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.10. - 01 December 2011
+13.11. - 01 December 2011
 * 2.3. Settings in exult.cfg added alternate_drop setting.
 * 2.7. Path-Settings for Mac OS X explained difference between the Library folders and how to access ~/Library on Lion.
 * 4.4. Scaler added HQ4x.
@@ -1635,13 +1684,13 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.11. - 16 March 2011
+13.12. - 16 March 2011
 * 2.3. Settings in exult.cfg added coreaudio_soundfont setting.
 * 3.2. MIDI Music as above.
 
 
 
-13.12. - 19 February 2011
+13.13. - 19 February 2011
 * 2.3. Settings in exult.cfg stereo/mono is switched by yes/no, facestats needed the setting for left status bars.
 * 3.7. Digital Wave Sound Effects split off the installation part.
 * 3.8. All-in-One Audio Data pack and installers added.
@@ -1651,7 +1700,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.13. - 24 January 2011
+13.14. - 24 January 2011
 * 2.3. Settings in exult.cfg there is no extra border setting for windows mode settings.
 * 2.10. Command line options fixed copy/paste error and added more explanations.
 * 3.7. Digital Wave Sound Effects switching sfx works right away, removed note.
@@ -1659,7 +1708,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.14. - 23 January 2011
+13.15. - 23 January 2011
 * 13. Changes to the Documentation moved to the bottom.
 * 2.3. Settings in exult.cfg new options for combat and windowed video settings and several other settings added.
 * 2.10. Command line options added portable option.
@@ -1675,7 +1724,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.15. - 13 October 2010
+13.16. - 13 October 2010
 * 1.1. Exult Version new official version.
 * 4.4. Scaler OpenGL is only available in snapshots.
 * 5.3. Cheat keys Alt+KP+/- no longer works.
@@ -1686,7 +1735,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.16. - 30 August 2010
+13.17. - 30 August 2010
 * 2.3. Settings in exult.cfg added the new config options for video.
 * 4.1. Resolution rewrote some more with Colourless' latest changes.
 * 4.2. Fill modes added.
@@ -1694,7 +1743,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.17. - 25 August 2010
+13.18. - 25 August 2010
 * 2.3. Settings in exult.cfg added the new config options for video and audio.
 * 4.1. Resolution rewrote a bit to explain the new rendering.
 * 4.3. Higher resolution is cheating added.
@@ -1703,21 +1752,21 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.18. - 15 August 2010
+13.19. - 15 August 2010
 * 3.2. MIDI Music Fluidsynth support is not compiled into the snapshots, also MT32 is supported on OS X.
 * 3.4. Windows MIDI Mapper the log files are now where exult.cfg is saved to not necessarily where exult.exe is.
-* 9.2. Error Log also about location of log files.
+* 2.11. Error Log also about location of log files.
 * 11.5. Manual installation of the BG floppy disks some *nix command.
 * 11.6. Manual installation of the SI floppy disks some *nix command.
 
 
 
-13.19. - 28 April 2010
+13.20. - 28 April 2010
 * 2.3. Settings in exult.cfg audio options for sample rate and stereo added.
 
 
 
-13.20. - 11 March 2010
+13.21. - 11 March 2010
 * 2.7. Path-Settings for Mac OS X we changed the default paths for OS X once more.
 * 3.7. Digital Wave Sound Effects the SFX pack can now be chosen in the Game Menu.
 * 7.4. Audio Options added new SFX pack option and updated screenshot.
@@ -1725,17 +1774,17 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.21. - 10 March 2010
+13.22. - 10 March 2010
 * 2.4. Path-Settings I've split this up for all the different OS'.
 * added Path-Settings chapters for the most common OS with examples.
 * 3.2. MIDI Music CoreMIDI driver added.
 * 3.7. Digital Wave Sound EffectsExult finds and uses the SFX pack automatically and defaults to MT32 SFX.
 * 8.5. Where to find the savegames of modded games added this so savegames of modded games can be found.
-* 9.2. Error Log added where to find the error log on OS X.
+* 2.11. Error Log added where to find the error log on OS X.
 
 
 
-13.22. - 08 March 2010
+13.23. - 08 March 2010
 * 1.2. What is Exult? fixed typo in Jakob Schonberg's name.
 * 2.2. Location of exult.cfg needs its own chapter now.
 * 2.4. Path-Settings needed a lot of changes because of the LOCAL_APPDATA changes.
@@ -1746,25 +1795,25 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.23. - 16 July 2009
+13.24. - 16 July 2009
 * 3.2. MIDI Music MT32 device type is not supported on Mac OS X.
 
 
 
-13.24. - 03 June 2009
+13.25. - 03 June 2009
 * Spell checked the whole documentation.
 * 3.2. MIDI Music slightly rewrote the FluidSynth section and explained fakemt32 option a bit better.
 
 
 
-13.25. - 20 May 2009
+13.26. - 20 May 2009
 * 3.6. Digital Music mentioned two issues with it.
 * 3.9. Installation of the digital music packs cleaned up.
 * 3.7. Digital Wave Sound Effects some more information.
 
 
 
-13.26. - 19 May 2009
+13.27. - 19 May 2009
 * 2. Configurations coloured tags to differentiate between manual and in game settings.
 * 2.4. Path-SettingsExult and Exult Studio don't trust exult.cfg.
 * 2.9. Advanced Configuration: Using both the original and the Add-OnsExult and Exult Studio don't trust exult.cfg.
@@ -1775,7 +1824,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.27. - 18 May 2009
+13.28. - 18 May 2009
 * 1.1. Exult Version this docs are for the SVN version.
 * 2.1. Installation the Windows installer asks for BG/SI location.
 * 2.3. Settings in exult.cfg now up to date with SVN.
@@ -1794,43 +1843,43 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.28. - 28 April 2009
+13.29. - 28 April 2009
 * 2.3. Settings in exult.cfg tried to explain data_path a bit more.
 * 3.11. Speech can also be toggled via the in-game menu.
 * 11.7. Installing the CD-ROM versions of Ultima VII added EA Compilation to the list.
 
 
 
-13.29. - 21 October 2007
+13.30. - 21 October 2007
 * 1.1. added.
 * 11.8. Fixing permissions of Ultima Collection on *nix systems added.
 
 
 
-13.30. - 08 April 2006
+13.31. - 08 April 2006
 * 2.1. Installation needed some polishing.
 * 2.4. Path-Settings synched the path settings with the new Installation section.
 * 11. Installing the original Ultima VII games for use with Exult might help some people.
 
 
 
-13.31. - 14 March 2005
+13.32. - 14 March 2005
 * 10. Zaurus Guide Newest ROM instructions updated.
 
 
 
-13.32. - 14 August 2004
+13.33. - 14 August 2004
 * 2.1. Installation on Windows you can use Notepad to edit exult.cfg.
 
 
 
-13.33. - 23 May 2004
+13.34. - 23 May 2004
 * 1.1. Exult Version I'm confident that the new Version will be 1.2.
-* 9.1. How to get the Zaurus port working we shouldn't call our data files shared files..
+* 10.3. How to get the Zaurus port working we shouldn't call our data files shared files..
 
 
 
-13.34. - 11 February 2004
+13.35. - 11 February 2004
 * A lot of clean up and small changes, too numerous to list.
 * 2.4. Path-Settings fixed some outdated instructions.
 * 3.9. Installation of the digital music packs added as the instructions in the music-pack readme.txt are no longer valid.
@@ -1841,7 +1890,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.35. - 12 December 2003
+13.36. - 12 December 2003
 * 2.3. Settings in exult.cfg fixed bad path settings and updated audio settings.
 * 2.4. Path-Settings moved stuff over to next point.
 * 1.1. added to give some explanation for Static/Gamedat.
