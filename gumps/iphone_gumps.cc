@@ -87,6 +87,35 @@ bool ShortcutBar_gump::is_party_item(
 	return false;
 }
 
+// add dirty region, if dirty
+void ShortcutBar_gump::update_gump() {
+	if (has_changed()) {
+		deleteButtons();
+		createButtons();
+	}
+}
+
+// Has this changed?
+bool ShortcutBar_gump::has_changed() {
+	if (resx != gwin->get_win()->get_full_width() ||
+          resy != gwin->get_win()->get_full_height() ||
+          gamex != gwin->get_game_width() ||
+          gamey != gwin->get_game_height())
+			return true;
+//spellbook
+	if (is_party_item(761)) return true;
+
+// SI keyring
+	if (is_party_item(485) && GAME_SI) return true;
+	
+	if (!is_party_item(485) && GAME_SI) return true;
+
+// SI Jawbone
+	if (is_party_item(555) && GAME_SI) return true;
+
+	return false;
+}
+
 /*
  * To align button shapes vertically, we need to micro-manage the shapeOffsetY
  * values to shift shapes up or down.
@@ -283,9 +312,9 @@ void ShortcutBar_gump::deleteButtons()
 ShortcutBar_gump::ShortcutBar_gump(int placex, int placey)
 :	Gump(0, placex, placey,/*shape number=*/ EXULT_IPHONE_FLX_TRANSPARENTMENU_SHP, SF_IPHONE_FLX)
 {
-	static bool init = false;
+	/*static bool init = false;
 	assert(init == 0); // Protect against re-entry
-	init = true;
+	init = true;*/
 	
 	width = 320;
 	height = 25;
@@ -293,11 +322,13 @@ ShortcutBar_gump::ShortcutBar_gump(int placex, int placey)
 	locy = placey;
 
 	createButtons();
+	gumpman->add_gump(this);
 }
 
 ShortcutBar_gump::~ShortcutBar_gump()
 {
 	deleteButtons();
+	gwin->set_all_dirty();
 }
 
 void ShortcutBar_gump::paint()
@@ -322,6 +353,10 @@ void ShortcutBar_gump::paint()
 
 int ShortcutBar_gump::handle_event(SDL_Event *event)
 {
+	// When the Save/Load menu is open, don't handle events
+	if (gumpman->modal_gump_mode())
+		return 0;
+
 	if (event->type == SDL_MOUSEBUTTONDOWN || event->type == SDL_MOUSEBUTTONUP) {
 		Game_window *gwin = Game_window::get_instance();
 		int scale = gwin->get_fastmouse() ? 1 : gwin->get_win()->get_scale_factor();
@@ -591,6 +626,8 @@ void ShortcutBar_gump::onItemClicked(int index, bool doubleClicked)
 		{
 			Game_window *gwin = Game_window::get_instance();
 			gwin->toggle_combat();
+			gwin->paint();
+			Mouse::mouse->set_speed_cursor();
 			break;
 		}
 		

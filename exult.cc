@@ -743,8 +743,6 @@ int exult_main(const char *runpath) {
 #endif
 
 #ifdef __IPHONEOS__
-	g_shortcutBar = new ShortcutBar_gump(0,0);
-	
 	touchui->showGameControls();
 #endif
 

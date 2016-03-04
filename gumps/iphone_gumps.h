@@ -86,11 +86,15 @@ public:
 	virtual bool no_handcursor() const {
 		return true;
 	}
+	int startx = gwin->get_win()->get_start_x();
+	int resx = gwin->get_win()->get_full_width();
 	int gamex = gwin->get_game_width();
 	int starty = gwin->get_win()->get_start_y();
 	int resy = gwin->get_win()->get_full_height();
 	int gamey = gwin->get_game_height();
 	void onUserEvent(SDL_Event *event);
+// add dirty region, if dirty
+	virtual void update_gump();
 	
 private:
 	ShortcutBarButtonItem buttonItems[MAX_SHORTCUT_BAR_ITEMS];
@@ -105,6 +109,7 @@ private:
 	void onItemClicked(int index, bool doubleClicked);
 	void mouse_down(SDL_Event *event, int mx, int my);
 	void mouse_up(SDL_Event *event, int mx, int my);
+	bool has_changed();
 
 	int locx;
 	int locy;

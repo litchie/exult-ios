@@ -431,11 +431,11 @@ void Gump_manager::paint(bool modal) {
 #ifdef UNDER_CE
 	gkeyboard->paint();
 #endif
-#ifdef __IPHONEOS__
+/*#ifdef __IPHONEOS__
 	if (g_shortcutBar) {
 		g_shortcutBar->paint();
 	}
-#endif
+#endif*/
 }
 
 

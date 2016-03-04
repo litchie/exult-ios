@@ -2890,6 +2890,7 @@ void Game_window::setup_game(
 	painted = true;         // Main loop uses this.
 	gump_man->close_all_gumps(true);        // Kill gumps.
 	Face_stats::load_config(config);
+	g_shortcutBar = new ShortcutBar_gump(0,0);
 
 	// Set palette for time-of-day.
 	clock->reset();
