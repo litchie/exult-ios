@@ -436,7 +436,7 @@ extern "C" {
 }
 #endif
 
-BOOL APIENTRY DllMain(HANDLE hModule,
+BOOL APIENTRY DllMain(HINSTANCE hModule,
                       DWORD  ul_reason_for_call,
                       LPVOID lpReserved
                      ) {
