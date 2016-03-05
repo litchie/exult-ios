@@ -122,9 +122,16 @@ bool ShortcutBar_gump::has_changed() {
  */
 void ShortcutBar_gump::createButtons()
 {
+	startx = gwin->get_win()->get_start_x();
+	resx = gwin->get_win()->get_full_width();
+	gamex = gwin->get_game_width();
+	starty = gwin->get_win()->get_start_y();
+	resy = gwin->get_win()->get_full_height();
+	gamey = gwin->get_game_height();
+
 	int x = (gamex - 320)/2;
 	int y = starty + 20;
-	
+
 	memset(buttonItems, 0, sizeof(buttonItems));
 
 	// disk
@@ -301,6 +308,12 @@ void ShortcutBar_gump::deleteButtons()
 		buttonItems[i].shapeId = NULL;
 		buttonItems[i].rect = NULL;
 	}
+	startx = 0;
+	resx = 0;
+	gamex = 0;
+	starty = 0;
+	resy = 0;
+	gamey = 0;
 }
 
 /*
@@ -316,6 +329,7 @@ ShortcutBar_gump::ShortcutBar_gump(int placex, int placey)
 	assert(init == 0); // Protect against re-entry
 	init = true;*/
 	
+	resx = gwin->get_win()->get_full_width();
 	width = resx;
 	height = 25;
 	locx = placex;
