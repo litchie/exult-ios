@@ -123,12 +123,12 @@ bool ShortcutBar_gump::has_changed() {
 void ShortcutBar_gump::createButtons()
 {
 	int x = (gamex - 320)/2;
-	int y = 20+starty;
+	int y = starty + 20;
 	
 	memset(buttonItems, 0, sizeof(buttonItems));
 
 	// disk
-	if (resy - gamey < 20 && gwin->get_trlucent_bar())
+	if (starty >= 0 && gwin->get_trlucent_bar())
 		buttonItems[0].shapeId = new ShapeID(3, 1, SF_IPHONE_FLX);
 	else
 		buttonItems[0].shapeId = new ShapeID(3, 0, SF_IPHONE_FLX);
@@ -138,12 +138,12 @@ void ShortcutBar_gump::createButtons()
 
 	// peace/combat
 	if (gwin->in_combat()) {
-		if (resy - gamey < 20 && gwin->get_trlucent_bar())
+		if (starty >= 0 && gwin->get_trlucent_bar())
 			buttonItems[1].shapeId = new ShapeID(2, 3, SF_IPHONE_FLX);
 		else
 			buttonItems[1].shapeId = new ShapeID(2, 2, SF_IPHONE_FLX);
 	} else {
-		if (resy - gamey < 20 && gwin->get_trlucent_bar())
+		if (starty >= 0 && gwin->get_trlucent_bar())
 			buttonItems[1].shapeId = new ShapeID(2, 1, SF_IPHONE_FLX);
 		else
 			buttonItems[1].shapeId = new ShapeID(2, 0, SF_IPHONE_FLX);
@@ -154,12 +154,12 @@ void ShortcutBar_gump::createButtons()
 
 	// map
 	if (GAME_SI) {
-		if (resy - gamey < 20 && gwin->get_trlucent_bar())
+		if (starty >= 0 && gwin->get_trlucent_bar())
 			buttonItems[2].shapeId = new ShapeID(10, 3, SF_IPHONE_FLX);
 		else
 			buttonItems[2].shapeId = new ShapeID(10, 2, SF_IPHONE_FLX);
 	} else {
-		if (resy - gamey < 20 && gwin->get_trlucent_bar())
+		if (starty >= 0 && gwin->get_trlucent_bar())
 			buttonItems[2].shapeId = new ShapeID(10, 1, SF_IPHONE_FLX);
 		else
 			buttonItems[2].shapeId = new ShapeID(10, 0, SF_IPHONE_FLX);
@@ -171,7 +171,7 @@ void ShortcutBar_gump::createButtons()
 	// spellbook
 	if (GAME_SI) {
 		if (is_party_item(761)) {
-			if (resy - gamey < 20 && gwin->get_trlucent_bar())
+			if (starty >= 0 && gwin->get_trlucent_bar())
 				buttonItems[3].shapeId = new ShapeID(6, 4, SF_IPHONE_FLX);
 			else
 				buttonItems[3].shapeId = new ShapeID(6, 3, SF_IPHONE_FLX);
@@ -185,7 +185,7 @@ void ShortcutBar_gump::createButtons()
 		}
 	} else {
 		if (is_party_item(761)) {
-			if (resy - gamey < 20 && gwin->get_trlucent_bar())
+			if (starty >= 0 && gwin->get_trlucent_bar())
 				buttonItems[3].shapeId = new ShapeID(6, 1, SF_IPHONE_FLX);
 			else
 				buttonItems[3].shapeId = new ShapeID(6, 0, SF_IPHONE_FLX);
@@ -199,7 +199,7 @@ void ShortcutBar_gump::createButtons()
 	buttonItems[3].shapeOffsetY = -4;
 
 	// backpack
-	if (resy - gamey < 20 && gwin->get_trlucent_bar())
+	if (starty >= 0 && gwin->get_trlucent_bar())
 		buttonItems[4].shapeId = new ShapeID(12, 1, SF_IPHONE_FLX);
 	else
 		buttonItems[4].shapeId = new ShapeID(12, 0, SF_IPHONE_FLX);
@@ -209,7 +209,7 @@ void ShortcutBar_gump::createButtons()
 
 	// key/keyring
 	if (is_party_item(485) && GAME_SI) {
-		if (resy - gamey < 20 && gwin->get_trlucent_bar())
+		if (starty >= 0 && gwin->get_trlucent_bar())
 			buttonItems[5].shapeId = new ShapeID(5, 1, SF_IPHONE_FLX);
 		else
 			buttonItems[5].shapeId = new ShapeID(5, 0, SF_IPHONE_FLX);
@@ -217,7 +217,7 @@ void ShortcutBar_gump::createButtons()
 		buttonItems[5].type = SB_ITEM_KEYRING;
 		buttonItems[5].shapeOffsetY = -2;
 	} else {
-		if (resy - gamey < 20 && gwin->get_trlucent_bar())
+		if (starty >= 0 && gwin->get_trlucent_bar())
 			buttonItems[5].shapeId = new ShapeID(9, 1, SF_IPHONE_FLX);
 		else
 			buttonItems[5].shapeId = new ShapeID(9, 0, SF_IPHONE_FLX);
@@ -227,7 +227,7 @@ void ShortcutBar_gump::createButtons()
 	}
 
 	// notebook
-	if (resy - gamey < 20 && gwin->get_trlucent_bar())
+	if (starty >= 0 && gwin->get_trlucent_bar())
 		buttonItems[6].shapeId = new ShapeID(11, 1, SF_IPHONE_FLX);
 	else
 		buttonItems[6].shapeId = new ShapeID(11, 0, SF_IPHONE_FLX);
@@ -236,7 +236,7 @@ void ShortcutBar_gump::createButtons()
 	buttonItems[6].shapeOffsetY = -3;
 
 	// target
-	if (resy - gamey < 20 && gwin->get_trlucent_bar())
+	if (starty >= 0 && gwin->get_trlucent_bar())
 		buttonItems[7].shapeId = new ShapeID(7, 1, SF_IPHONE_FLX);
 	else
 		buttonItems[7].shapeId = new ShapeID(7, 0, SF_IPHONE_FLX);
@@ -244,7 +244,7 @@ void ShortcutBar_gump::createButtons()
 	buttonItems[7].type = SB_ITEM_TARGET;
 	buttonItems[7].shapeOffsetY = -8;
 	
-	if (resy - gamey < 20 && gwin->get_trlucent_bar())
+	if (starty >= 0 && gwin->get_trlucent_bar())
 		buttonItems[8].shapeId = new ShapeID(8, 1, SF_IPHONE_FLX);
 	else
 		buttonItems[8].shapeId = new ShapeID(8, 0, SF_IPHONE_FLX);
@@ -255,7 +255,7 @@ void ShortcutBar_gump::createButtons()
 	// jawbone
 	if (GAME_SI) {
 		if (is_party_item(555)) {
-			if (resy - gamey < 20 && gwin->get_trlucent_bar())
+			if (starty >= 0 && gwin->get_trlucent_bar())
 				buttonItems[9].shapeId = new ShapeID(4, 1, SF_IPHONE_FLX);
 			else
 				buttonItems[9].shapeId = new ShapeID(4, 0, SF_IPHONE_FLX);
@@ -287,7 +287,7 @@ void ShortcutBar_gump::createButtons()
 		buttonItems[i].rect = new Rectangle(x, y, barItemWidth, height);
 		// this is save to do since it only effects certain palette colors
 		// which will be color cycling otherwise
-		if (resy - gamey < 20 && gwin->get_trlucent_bar())
+		if (starty >= 0 && gwin->get_trlucent_bar())
 			buttonItems[i].translucent = 1;
 	}
 	
@@ -316,7 +316,7 @@ ShortcutBar_gump::ShortcutBar_gump(int placex, int placey)
 	assert(init == 0); // Protect against re-entry
 	init = true;*/
 	
-	width = 320;
+	width = resx;
 	height = 25;
 	locx = placex;
 	locy = placey;
@@ -357,28 +357,29 @@ int ShortcutBar_gump::handle_event(SDL_Event *event)
 	if (gumpman->modal_gump_mode())
 		return 0;
 
-	if (event->type == SDL_MOUSEBUTTONDOWN || event->type == SDL_MOUSEBUTTONUP) {
-		Game_window *gwin = Game_window::get_instance();
-		int scale = gwin->get_fastmouse() ? 1 : gwin->get_win()->get_scale_factor();
-		int x = event->button.x / scale;
-		int y = event->button.y / scale;
+	for (int i = 0; i < numButtons; i++) {
+		if (event->type == SDL_MOUSEBUTTONDOWN || event->type == SDL_MOUSEBUTTONUP) {
+			Game_window *gwin = Game_window::get_instance();
+			int x, y;
+			gwin->get_win()->screen_to_game(event->button.x, event->button.y, gwin->get_fastmouse(), x, y);
 
 #if 0
 		std::cout << "clicks:" << (int)event->button.clicks << ", x,y: "
 			<< x << "," << y << " locx,locy: " << locx << "," << locy
 			<< " widthXheight: " << width << "X" << height << std::endl;
 #endif
-		
-		if (x >= locx && x <= (locx + width) && y >= locy && y <= (locy + height)) {
-			if (event->type == SDL_MOUSEBUTTONDOWN) {
-				mouse_down(event, x - locx, y - locy);
-			} else if (event->type == SDL_MOUSEBUTTONUP) {
-				mouse_up(event, x - locx, y - locy);
+
+			if (x >= startx && x <= (locx + width) && y >= starty && y <= (starty + height)) {
+				if (event->type == SDL_MOUSEBUTTONDOWN) {
+					mouse_down(event, x, buttonItems[i].rect->y);
+				} else if (event->type == SDL_MOUSEBUTTONUP) {
+					mouse_up(event, x, buttonItems[i].rect->y);
+				}
+				return 1;
 			}
-			return 1;
 		}
+		return 0;
 	}
-	return 0;
 }
 
 void ShortcutBar_gump::mouse_down(SDL_Event *event, int mx, int my)
