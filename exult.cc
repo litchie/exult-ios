@@ -1438,6 +1438,17 @@ static void Handle_event(
 	switch (event.type) {
 	
 #ifdef __IPHONEOS__
+	//Quick saving to make sure no game progress gets lost 
+	//when the app goes into backgroun
+	case SDL_APP_WILLENTERBACKGROUND: {
+		Game_window *gwin = Game_window::get_instance();
+		try {
+			gwin->write();
+		} catch (exult_exception &/*e*/) {
+			return;
+		}
+	}
+
 	case SDL_USEREVENT: {
 		if (!dragged) {
 			switch (event.user.code) {
