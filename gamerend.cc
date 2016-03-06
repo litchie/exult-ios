@@ -539,10 +539,6 @@ void Game_window::paint_dirty() {
 #ifdef UNDER_CE
 	gkeyboard->paint();
 #endif
-#ifdef __IPHONEOS__
-	if (g_shortcutBar)
-		g_shortcutBar->paint();
-#endif
 }
 
 /*
