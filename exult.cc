@@ -1445,8 +1445,9 @@ static void Handle_event(
 		try {
 			gwin->write();
 		} catch (exult_exception &/*e*/) {
-			return;
+			break;
 		}
+		break;
 	}
 
 	case SDL_USEREVENT: {
