@@ -104,6 +104,7 @@ bool ShortcutBar_gump::has_changed() {
 			return true;
 //spellbook
 	if (is_party_item(761)) return true;
+	if (!is_party_item(761)) return true;
 
 // SI keyring
 	if (is_party_item(485) && GAME_SI) return true;
@@ -197,8 +198,12 @@ void ShortcutBar_gump::createButtons()
 			else
 				buttonItems[3].shapeId = new ShapeID(6, 0, SF_IPHONE_FLX);
 		} else {
-			buttonItems[3].shapeId = new ShapeID(6, 2, SF_IPHONE_FLX);
-			buttonItems[3].translucent = 1;
+			if (gwin->get_missing_button_bar()) {
+				buttonItems[3].shapeId = new ShapeID(1, 0, SF_IPHONE_FLX);
+			} else {
+				buttonItems[3].shapeId = new ShapeID(6, 2, SF_IPHONE_FLX);
+				buttonItems[3].translucent = 1;
+			}
 		}
 	}
 	buttonItems[3].name = "spellbook";
