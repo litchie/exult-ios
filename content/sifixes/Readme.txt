@@ -145,41 +145,26 @@ version: 0.15.09
 	  Just make sure not to stand too close to your target...
 	- Spell incantations. In the original SI, there were no less than *four* "Ex
 	  Por" spells, and slightly more spells were out of synch with the manual.
-	  Moreover, the runes in the spellbook and the runes in the magic scrolls
-	  were often at odds with one another, with the spoken incantation, with the
-	  manual or any combination of these. The details are:
-		Spell                Spoken words        Spellbook runes     Magic scroll runes  Manual              This Mod
-		======================================================================================================================
-		Cure                 An Nox              An Nox              Ylem Nox            An Nox              An Nox
-		Columna's Intuition  Wis Jux Ylem        Wis Jux Nox         Wis Jux Ylem        Wis Jux Ylem        Wis Jux Ylem
-		Paralyze             An Por              Vas Por             An Por              An Por              An Por
-		Create Soul Prism    An Mani Ex%         An Mani Ex%         Ylem Mani Ex        (not shown)         An Mani Ex%
-		Unlock Magic         Ex Por              Ex Por              Ex Ort              Ex Por              Ex Por
-		Conjure              Kal Xen             Kal Xen             Kal Wis             Kal Xen             Kal Xen
-		Explosion            Vas Frio Hur        Vas Frio Por        Ylem Frio Hur       Vas Frio Hur        Vas Frio Hur
-		Erstam's Surprise    Ex Por              Uus Vas Grav        Uus Ylem Grav       Uus Vas Grav        Ex Jux Hur*
-		Cold Strike          Vas In Frio Grav    Vas In Frio Grav    Ylem In Frio Grav   Vas In Frio Grav    Vas In Frio Grav
-		Serpent Bond         An Frio Xen Ex      Kal Frio Xen Ex     Kal Frio Xen Ex     Kal Frio Xen Ex     Kal Frio Xen Ex
-		Create Ammo          In Hur Sanct        In Hur Sanct        In Hur Sanct        In Jux Ylem         In Jux Ylem
-		Vibrate              Ex Por              An Uus Mani         Rel Uus Mani        An Grav Ex          Uus Des Por Grav*
-		Create Ice           In Sanct Grav       In Frio             In Frio             In Frio             In Frio
-		Fetch                An Frio Xen Ex      Por Nox             Por Ylem            Por Ylem            Por Ylem
-		Firesnake            (nothing)           Kal Sanct           Kal Sanct           Kal Vas Frio Grav   Kal Vas Frio Grav
-		Swordstrike          In Jux Por Ylem     In Lor Por Nox      In Jux Por Ylem     In Jux Por Ylem     In Jux Por Ylem
-		Spiral Missile       Uus Vas Jux Ylem    Uus Vas Jux Nox     Uus Vas Jux Ylem    Uus Vas Jux Ylem    Uus Vas Jux Ylem
-		Stop Storm           Rel Hur             An Hur              An Hur              An Hur              An Hur
-		Imbalance            Ex Por              Kal Vas An Grav$    Kal Vas An Grav$    Kal Vas An Grav$    Kal Vas An Grav$
-
+	  Specifically:
+		Spell                Original SI       Manual/This Mod
+		=========================================================
+		Unlock Magic         Ex Por            Ex Por
+		Erstam's Surprise    Ex Por            Ex Jux Hur*
+		Vibrate              Ex Por            Uus Des Por Grav*
+		Imbalance            Ex Por            Kal Vas An Grav**
+		Create Ammo          In Hur Sanct      In Jux Ylem
+		Create Ice           In Sanct Grav     In Frio
+		Fetch                An Frio Xen Ex    Por Ylem
+		Serpent Bond         An Frio Xen Ex    Kal Frio Xen Ex
+		Stop Storm           Rel Hur           An Hur
+	  
 	    *	Thanks to Neutronium Dragon for the suggestions.
-	    %	"Ylem Mani Ex" fits better, but I decided to keep "An Mani Ex".
-	    $	Perhaps "Kal Vas In Grav" is a better fit to the spell...
+	    **	Perhaps "Kal Vas In Grav" is a better fit to the spell...
 	- Ankh-less sails, as there was no reason the residents would use one of the
 	  symbols of Beast British's tyrannical commands.
 	    
 6	Version history
 -------------------
-version: 0.15.11
-	- Fixed spell incantation runes in spellbook and spell scrolls.
 version: 0.15.10
 	- Fixed some missing barks in Fawn trial.
 version: 0.15.09

@@ -33,7 +33,7 @@
 #define	EXULT_FLX_STATS_EXTRA_SHP		25
 #define	EXULT_FLX_MTGM_MID		26
 
-#define	EXULT_FLX_CRC32	0x9c1ac047U
+#define	EXULT_FLX_CRC32	0x438bb36dU
 
 #endif
 

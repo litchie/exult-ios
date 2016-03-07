@@ -793,7 +793,7 @@ class_expr:
 			yyerror(buf);
 			cur_fun->add_symbol($1);
 			}
-		else if (sym->get_sym_type() != Uc_symbol::Class)
+		else if (!sym->get_sym_type() == Uc_symbol::Class)
 			{
 			char buf[150];
 			sprintf(buf, "'%s' not a class", $1);

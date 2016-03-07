@@ -142,16 +142,16 @@ string Game_object::get_name(
 	Frame_name_info *nminf = info.get_frame_name(get_framenum(), qual);
 	int shnum = get_shapenum();
 	const char *name;
-	const char *shpname = (shnum >= 0 && shnum < get_num_item_names()) ?
-	                      get_item_name(shnum) : 0;
+	const char *shpname = (shnum >= 0 && shnum < num_item_names) ?
+	                      item_names[shnum] : 0;
 	int type = nminf ? nminf->get_type() : -255;
 	int msgid;
 	if (type < 0 && type != -255)   // This is a "catch all" default.
 		return "";  // None.
-	else if (type == -255 || (msgid = nminf->get_msgid()) >= get_num_misc_names())
+	else if (type == -255 || (msgid = nminf->get_msgid()) >= num_misc_names)
 		name = shpname;
 	else if (!type)
-		name = get_misc_name(msgid);
+		name = misc_names[msgid];
 	else if (!info.has_quality() && !info.is_body_shape())
 		name = shpname;     // Use default name for these.
 	else {
@@ -173,17 +173,17 @@ string Game_object::get_name(
 				if (other.empty())  // No name.
 					defname = true;
 				else
-					msg = get_misc_name(msgid);
+					msg = misc_names[msgid];
 			} else  // Default name.
 				defname = true;
 		} else {
-			msg = get_misc_name(msgid);
-			other = (othermsg >= 0 && othermsg < get_num_misc_names()) ?
-			        get_misc_name(othermsg) : shpname;
+			msg = misc_names[msgid];
+			other = (othermsg >= 0 && othermsg < num_misc_names) ?
+			        misc_names[othermsg] : shpname;
 		}
 		if (defname) {
-			if (othermsg >= 0 && othermsg < get_num_misc_names())
-				name = get_misc_name(othermsg);
+			if (othermsg >= 0 && othermsg < num_misc_names)
+				name = misc_names[othermsg];
 			else if (othermsg < 0 && othermsg != -255)  // None.
 				return "";
 			else    // Use shape's.

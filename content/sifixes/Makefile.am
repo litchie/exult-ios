@@ -49,20 +49,6 @@ USECODE_OBJECTS = \
 	src/spells/spells.uc	\
 	src/usecode.uc	
 
-GUMPS_VGA_OBJECTS = \
-	src/graphics/gumps.in	\
-	src/graphics/gumps/magic_scroll_1st.shp	\
-	src/graphics/gumps/magic_scroll_4th.shp	\
-	src/graphics/gumps/magic_scroll_5th.shp	\
-	src/graphics/gumps/magic_scroll_6th.shp	\
-	src/graphics/gumps/magic_scroll_7th.shp	\
-	src/graphics/gumps/magic_scroll_8th.shp	\
-	src/graphics/gumps/spellbook_2.shp	\
-	src/graphics/gumps/spellbook_3.shp	\
-	src/graphics/gumps/spellbook_5.shp	\
-	src/graphics/gumps/spellbook_6.shp	\
-	src/graphics/gumps/spellbook_7.shp	
-
 MAINSHP_FLX_OBJECTS = \
 	src/graphics/mainshp.in	\
 	src/graphics/mainshp/title.shp	
@@ -80,15 +66,12 @@ sifixesdatadir = $(sifixesdir)/sifixes/data
 
 sifixesdata_DATA = \
 	data/usecode	\
-	data/gumps.vga	\
 	data/mainshp.flx	\
 	data/shapes.vga	\
 	data/initgame.dat	
 
 CLEANFILES = \
 	data/usecode	\
-	data/gumps.vga	\
-	data/gumps_vga.h	\
 	data/mainshp.flx	\
 	data/mainshp_flx.h	\
 	data/shapes.vga	\
@@ -103,9 +86,6 @@ $(UCC):
 
 data/usecode: $(UCC) $(USECODE_OBJECTS)
 	$(UCC) -I src -o data/usecode src/usecode.uc
-
-data/gumps.vga: $(EXPACK) $(GUMPS_VGA_OBJECTS)
-	$(EXPACK) -i $(srcdir)/src/graphics/gumps.in
 
 data/mainshp.flx: $(EXPACK) $(MAINSHP_FLX_OBJECTS)
 	$(EXPACK) -i $(srcdir)/src/graphics/mainshp.in

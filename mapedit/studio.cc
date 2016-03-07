@@ -770,7 +770,7 @@ Object_browser *ExultStudio::create_browser(const char *fname) {
 const char *ExultStudio::get_shape_name(
     int shnum
 ) {
-	return shnum >= 0 && shnum < get_num_item_names() ? get_item_name(shnum) : 0;
+	return shnum >= 0 && shnum < num_item_names ? item_names[shnum] : 0;
 }
 
 /*
@@ -1265,9 +1265,9 @@ void ExultStudio::set_game_path(string gamename, string modname) {
 	spritefile = open_shape_file("sprites.vga");
 	Setup_text(game_type == SERPENT_ISLE, expansion);   // Read in shape names.
 	misc_name_map.clear();
-	for (int i = 0; i < get_num_misc_names(); i++)
-		if (get_misc_name(i) != 0)
-			misc_name_map.insert(std::pair<string, int>(string(get_misc_name(i)), i));
+	for (int i = 0; i < num_misc_names; i++)
+		if (misc_names[i] != 0)
+			misc_name_map.insert(std::pair<string, int>(string(misc_names[i]), i));
 	setup_file_list();      // Set up file-list window.
 	set_browser("", 0);     // No browser.
 	connect_to_server();        // Connect to server with 'gamedat'.

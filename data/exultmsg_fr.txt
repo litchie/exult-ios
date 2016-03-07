@@ -1,68 +1,18 @@
 # These messages are used in the Exult engine, and follow the
 # game-specific ones.
-0x500:Remets cette chaise  sa place !
+0x500:Remets cette chaise à sa place !
 0x501:Voleur !!
 0x502:Sale rascal !!
-0x503:C'est pas drle!
-0x504:Qui a dplac ma chaise ??
+0x503:C'est pas drôle !
+0x504:Qui a déplacé ma chaise ??
 0x505:On dirait que tu vas bien.
 0x506:Tout va bien ?
 0x507:Un dessert ?
-0x508:Bon apptit !
-0x509:Spcialit de la maison !
+0x508:Bon appétit !
+0x509:Spécialité de la maison !
 0x50a:Avatar ! Retiens-toi !
-0x50b:Tu vois bien que le lit est occup !
+0x50b:Tu vois bien que le lit est occupé !
 0x50c:La personne dans ce lit n'a pas l'air de vouloir de compagnie.
 0x50d:Tu ne me perdras pas si facilement !
 0x50e:Ah, te voila !
-0x50f:Trouv !
-# Intro messages
-0x510:with help from
-0x511:The Exult Team
-0x512:Driven by Exult
-# Ending Messages
-0x513:LA FIN D'ULTIMA VII
-0x514:LA FIN DE BRITANNIA TELLE QU'ELLE EXISTA...
-0x515:Non! Tu ne dois pas!
-0x516:Sois maudit Avatar! Sois maudit!
-0x517:La Porte Noire est dtruite.
-0x518:Le Gardien a t cart.
-# End1
-0x519:Avatar! Tu crois avoir gagn?
-0x51A:Rflchis bien!
-0x51B:Tu ne peux quitter Britannia,
-0x51C:alors que je suis libre
-0x51D:de pntrer dans d'autres mondes!
-0x51E:Hmmm...
-#0x???:Peut-tre que ta chtive Terre sera
-#0x???:ma PROCHAINE cible!
-# End2
-0x51F:Dans les mois qui ont suivi la bataille
-0x520:corse de la Porte Noire, Britannia
-0x521:est sur la longue route
-0x522:du rtablissement de
-0x523:ses divers maux.
-0x524:A ton retour sur Britain,
-0x525:Lord British dcrta que
-0x526:La Confrrie serait proscrite,
-0x527:et que toutes les cellules seraient
-0x528:rapidement dtruites.
-# End3
-0x529:La frustration que tu ressens pour
-0x52A:avoir t en rade sur Britannia est
-0x52B:quelque peu allge par la satisfaction
-0x52C:d'avoir rsolu les horribles meurtres
-0x52D:commis par La Confrrie et mme veng
-0x52E:la mort du pre de Spark.
-# End4
-0x52F:Bien que tu sois, pour l'instant,
-0x530:impuissant devant l' ultime
-0x531:menace du Gardien, une
-0x532:autre pense te tracasse...
-0x533:Qu'est-il advenu du diabolique Batlin,
-0x534:qui est parvenu  s' chapper?
-# End5
-0x535:Mais cecy est une autre histoire...
-0x536:qui t' amnera
-0x537:dans un endroit qui s' appelle
-0x538:L' Isle Serpent...
+0x50f:Trouvé !

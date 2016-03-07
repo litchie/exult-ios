@@ -346,9 +346,9 @@ void SI_Game::play_intro() {
 					fli1.play(win, i, i, next);
 
 			if (jive)
-				sifont->center_text(ibuf, centerx, centery + 50, get_text_msg(dick_castle));
+				sifont->center_text(ibuf, centerx, centery + 50, text_msgs[dick_castle]);
 			else
-				sifont->center_text(ibuf, centerx, centery + 50, get_text_msg(lord_castle));
+				sifont->center_text(ibuf, centerx, centery + 50, text_msgs[lord_castle]);
 
 			prev = num;
 			next += 75;
@@ -385,7 +385,7 @@ void SI_Game::play_intro() {
 					fli1.play(win, i, i, next);
 
 			for (i = 0; i < 3; i++) {
-				sifont->center_text(ibuf, centerx, centery + 50 + 15 * i, get_text_msg(bg_fellow + i));
+				sifont->center_text(ibuf, centerx, centery + 50 + 15 * i, text_msgs[bg_fellow + i]);
 			}
 
 			prev = num;
@@ -445,9 +445,9 @@ void SI_Game::play_intro() {
 			next = fli2.play(win, j, j, next);
 
 			if (jive)
-				sifont->draw_text(ibuf, centerx + 30, centery + 87, get_text_msg(yo_homes));
+				sifont->draw_text(ibuf, centerx + 30, centery + 87, text_msgs[yo_homes]);
 			else if (!speech)
-				sifont->draw_text(ibuf, centerx + 30, centery + 87, get_text_msg(my_leige));
+				sifont->draw_text(ibuf, centerx + 30, centery + 87, text_msgs[my_leige]);
 
 			non_gl_blit();
 			if (wait_delay(0, 0, 1))
@@ -458,7 +458,7 @@ void SI_Game::play_intro() {
 		non_gl_blit();
 		wait_delay(0, 0, 1);
 
-		const char *all_we[2] = { get_text_msg(all_we0), get_text_msg(all_we0 + 1) };
+		const char *all_we[2] = { text_msgs[all_we0], text_msgs[all_we0 + 1] };
 
 		if (speech && !jive) {
 			U7multiobject voc_all_we(INTRO_DAT, PATCH_INTRO, 17);
@@ -483,7 +483,7 @@ void SI_Game::play_intro() {
 			if (wait_delay(10))
 				throw UserBreakException();
 
-		const char *and_a[2] = { get_text_msg(and_a0), get_text_msg(and_a0 + 1) };
+		const char *and_a[2] = { text_msgs[and_a0], text_msgs[and_a0 + 1] };
 
 		next = fli2.play(win, j, j, next);
 
@@ -521,10 +521,10 @@ void SI_Game::play_intro() {
 			next = fli2.play(win, j, j, next);
 
 			if (jive)
-				sifont->draw_text(ibuf, topx + 40, centery + 74, get_text_msg(iree));
+				sifont->draw_text(ibuf, topx + 40, centery + 74, text_msgs[iree]);
 			else if (!speech) {
-				sifont->draw_text(ibuf, topx + 40, centery + 74, get_text_msg(indeed));
-				sifont->draw_text(ibuf, topx + 40, centery + 87, get_text_msg(indeed + 1));
+				sifont->draw_text(ibuf, topx + 40, centery + 74, text_msgs[indeed]);
+				sifont->draw_text(ibuf, topx + 40, centery + 87, text_msgs[indeed + 1]);
 			}
 
 			non_gl_blit();
@@ -570,9 +570,9 @@ void SI_Game::play_intro() {
 			next = fli3.play(win, j, j, next) + 20;
 
 			if (jive)
-				sifont->draw_text(ibuf, topx + 70, centery + 60, get_text_msg(jump_back));
+				sifont->draw_text(ibuf, topx + 70, centery + 60, text_msgs[jump_back]);
 			else if (!speech)
-				sifont->draw_text(ibuf, topx + 70, centery + 60, get_text_msg(stand_back));
+				sifont->draw_text(ibuf, topx + 70, centery + 60, text_msgs[stand_back]);
 
 			non_gl_blit();
 			if (wait_delay(0, 0, 1))
@@ -622,23 +622,23 @@ void SI_Game::play_intro() {
 				sman->paint_shape(centerx - 36, centery, sf);
 
 			if (j < 100 && jive) {
-				sifont->center_text(ibuf, centerx, centery + 74, get_text_msg(batlin2));
-				sifont->center_text(ibuf, centerx, centery + 87, get_text_msg(batlin2 + 1));
+				sifont->center_text(ibuf, centerx, centery + 74, text_msgs[batlin2]);
+				sifont->center_text(ibuf, centerx, centery + 87, text_msgs[batlin2 + 1]);
 			} else if (j < 200 && jive) {
-				sifont->center_text(ibuf, centerx, centery + 74, get_text_msg(you_must));
-				sifont->center_text(ibuf, centerx, centery + 87, get_text_msg(you_must + 1));
+				sifont->center_text(ibuf, centerx, centery + 74, text_msgs[you_must]);
+				sifont->center_text(ibuf, centerx, centery + 87, text_msgs[you_must + 1]);
 			} else if (j < 300 && jive) {
-				sifont->center_text(ibuf, centerx, centery + 74, get_text_msg(soon_i));
-				sifont->center_text(ibuf, centerx, centery + 87, get_text_msg(soon_i + 1));
+				sifont->center_text(ibuf, centerx, centery + 74, text_msgs[soon_i]);
+				sifont->center_text(ibuf, centerx, centery + 87, text_msgs[soon_i + 1]);
 			} else if (j < 100 && !speech) {
-				sifont->center_text(ibuf, centerx, centery + 74, get_text_msg(batlin));
-				sifont->center_text(ibuf, centerx, centery + 87, get_text_msg(batlin + 1));
+				sifont->center_text(ibuf, centerx, centery + 74, text_msgs[batlin]);
+				sifont->center_text(ibuf, centerx, centery + 87, text_msgs[batlin + 1]);
 			} else if (j < 200 && !speech) {
-				sifont->center_text(ibuf, centerx, centery + 74, get_text_msg(you_shall));
-				sifont->center_text(ibuf, centerx, centery + 87, get_text_msg(you_shall + 1));
+				sifont->center_text(ibuf, centerx, centery + 74, text_msgs[you_shall]);
+				sifont->center_text(ibuf, centerx, centery + 87, text_msgs[you_shall + 1]);
 			} else if (j < 300 && !speech) {
-				sifont->center_text(ibuf, centerx, centery + 74, get_text_msg(there_i));
-				sifont->center_text(ibuf, centerx, centery + 87, get_text_msg(there_i + 1));
+				sifont->center_text(ibuf, centerx, centery + 74, text_msgs[there_i]);
+				sifont->center_text(ibuf, centerx, centery + 87, text_msgs[there_i + 1]);
 			}
 
 			non_gl_blit();
@@ -687,10 +687,10 @@ void SI_Game::play_intro() {
 			next = fli5.play(win, j, j, next) + 30;
 
 			if (j < 20 && (!speech || jive)) {
-				sifont->center_text(ibuf, centerx, centery + 74, get_text_msg(tis_my));
+				sifont->center_text(ibuf, centerx, centery + 74, text_msgs[tis_my]);
 			} else if (j > 22 && (!speech || jive)) {
-				sifont->center_text(ibuf, centerx, centery + 74, get_text_msg(tis_my + 1));
-				sifont->center_text(ibuf, centerx, centery + 87, get_text_msg(tis_my + 2));
+				sifont->center_text(ibuf, centerx, centery + 74, text_msgs[tis_my + 1]);
+				sifont->center_text(ibuf, centerx, centery + 87, text_msgs[tis_my + 2]);
 			}
 
 			non_gl_blit();
@@ -962,37 +962,6 @@ bool ExCineVoc::play_it(Image_window *win, uint32 t) {
 	return false;
 }
 
-// ExSubEvent
-struct ExSubEvent {
-	uint32    time;   // Time to start, In MS
-	const int first_sub;
-	const int num_subs;
-	Font *    sub_font;
-
-	ExSubEvent(uint32 t, const int first, const int cnt, Font *fnt) :
-		time(t), first_sub(first), num_subs(cnt), sub_font(fnt) { }
-
-	void show_sub(Image_buffer8 *ibuf, int centerx, int centery) {
-		int suby;
-		switch (num_subs) {
-			case 1:
-				suby = centery + 87;
-				break;
-			case 2:
-				suby = centery + 74;
-				break;
-			default:
-				suby = centery + 61;
-				break;
-		}
-		for (int ii = first_sub; ii < first_sub + num_subs; ii++, suby += 13) {
-			sub_font->draw_text(ibuf,
-			                    centerx - sub_font->get_text_width(get_text_msg(ii))/2,
-			                    suby, get_text_msg(ii));
-		}
-	}
-};
-
 //
 // Serpent Isle Endgame
 //
@@ -1004,12 +973,8 @@ void SI_Game::end_game(bool success) {
 		if (midi) midi->set_timbre_lib(MyMidiPlayer::TIMBRE_LIB_ENDGAME);
 	}
 
-	Font *sifont = fontManager.get_font("SIINTRO_FONT");
-
-	bool speech = Audio::get_ptr()->is_audio_enabled() &&
-	              Audio::get_ptr()->is_speech_enabled();
-
 	gwin->clear_screen(true);
+
 
 	/* Endgame General Timings (in ms)
 
@@ -1022,7 +987,7 @@ void SI_Game::end_game(bool success) {
 	  22900 - "briatnnia"
 	  24300 - "your earth"
 	  26000 - "the entire universe"
-	  28600 - "all are saved"
+	  28600 - "all are phased"
 	  31600 - Avatar floating right, "worry not about your friend dupre"
 	  35100 - "he is one with us"
 	  37000 - "and content"
@@ -1132,25 +1097,8 @@ void SI_Game::end_game(bool success) {
 		ExCineVoc(70250, INTRO_DAT, PATCH_INTRO, 28),
 		ExCineVoc(74750, INTRO_DAT, PATCH_INTRO, 29)
 	};
-
-	int last_voc = sizeof(vocs) / sizeof(vocs[0]) - 1;
+	int last_voc = 7;
 	int cur_voc = -1;
-
-	// Subtitle times
-	ExSubEvent subs[] = {
-		ExSubEvent(14643, balance, 2, sifont),	// "There, we are done.\nBalance is restored"
-		ExSubEvent(21300, si_earth, 2, sifont),	// "Serpent Isle, Britannia, your Earth,\nthe entire universe, all are saved."
-		ExSubEvent(31600, dupre, 2, sifont),	// "Worry not about your friend Dupre.\nHe is one with us, and content."
-		ExSubEvent(39800, goodbye, 2, sifont),	// "Goodbye, Avatar.\nWe thank you."
-		ExSubEvent(48900, well_well, 2, sifont),	// "Well well well, Avatar. You\nhave managed to thwart me once again."
-		ExSubEvent(55500, balance2, 3, sifont),	// "By restoring balance where\nonce chaos reigned, you have\nsaved your accursed world."
-		ExSubEvent(62500, poised, 3, sifont),	// "But now here you are, poised\nat the edge of Eternity.\nWhere would you go?"
-		ExSubEvent(70250, brit_earth, 2, sifont),	// "Back to Britannia?\nTo Earth?"
-		ExSubEvent(74750, pagan, 3, sifont),	// "Perhaps you would join me in\nanother world alltogether?\nWe do have a score to settle!"
-	};
-
-	int last_sub = sizeof(subs) / sizeof(subs[0]) - 1;
-	int cur_sub = -1;
 
 	// Start the music
 	if (audio) {
@@ -1158,7 +1106,6 @@ void SI_Game::end_game(bool success) {
 	}
 
 	int start_time = SDL_GetTicks();
-	bool showing_subs = false;
 
 	while (1) {
 
@@ -1205,25 +1152,17 @@ void SI_Game::end_game(bool success) {
 		// Need to go to the next voc?
 		if (cur_voc < last_voc && vocs[cur_voc + 1].time <= time) {
 			cur_voc++;
-			ExCineVoc& voc = vocs[cur_voc];
+			ExCineVoc *voc = vocs + cur_voc;
 
 			// Just play it!
-			voc.play_it(NULL, time);
+			voc->play_it(NULL, time);
 			//else COUT("Teminator ");
-			COUT("voc at time: " << voc.time);
-		}
+			COUT("voc at time: " << voc->time);
 
-		// Need to go to the next subtitle?
-		if (cur_sub < last_sub && subs[cur_sub + 1].time <= time) {
-			cur_sub++;
-			if (!speech) {
-				showing_subs = true;
-				COUT("Subtitle at time: " << subs[cur_sub].time);
-			}
 		}
 
 		// We've finished
-		if (cur_flic == last_flic && cur_voc == last_voc && cur_sub == last_sub) {
+		if (cur_flic == last_flic && cur_voc == last_voc) {
 			// Do a fade out
 			if (pal_flic && pal_flic->can_play()) pal_flic->fade_out(100);
 
@@ -1236,12 +1175,6 @@ void SI_Game::end_game(bool success) {
 		bool updated = false;
 
 		if (flic->can_play()) updated = flic->play_it(win, time);
-
-		// Need to go to the next subtitle?
-		if (!speech && showing_subs && cur_sub <= last_sub) {
-			updated = true;
-			subs[cur_sub].show_sub(ibuf, centerx, centery);
-		}
 
 		if (updated
 #ifdef HAVE_OPENGL

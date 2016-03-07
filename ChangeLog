@@ -1,90 +1,3 @@
-2016-02-27	Marzo Sette Torres Junior <marzojr@yahoo.com>
-	* usecode/compiler/Makefile.am: Clean deletes ucparse.hh as well.
-	* content/sifixes/{Makefile.am,Makefile.mingw,src/graphics/gumps.in}: Fixing
-	  makefiles for SI Fixes.
-	* files/zip/{zip,unzip}.cc,tools/rip.cc: Sorting out headers.
-	* files/zip/{zip,unzip}.cc,tools/{mklink,rip,wuc}.cc: Eliminating warnings.
-	* files/zip/{Makefile.am,zip.cc,unzip.cc},tools/{Makefile.am,mklink.cc,
-	  rip.cc,wuc.cc},{msvc9,msvcstuff}/{mklink,rip,wuc,Zip}.vcproj: Making some
-	  pure C tools into C++ tools instead.
-
-2016-02-09	Marzo Sette Torres Junior <marzojr@yahoo.com>
-	* game.{cc,h}, gamemgr/bggame.cc, imagewin/ibuf16.cc, imagewin/iwin8.cc:
-	  Improving Guardian's lipsynch, as well as fixing palette cycling in the
-	  background. Made palette cycles faster on moongate. Also, palette rotation
-	  was inconsistent between 8- and 16-bit code.
-	* gamemgr/bggame.cc: Guardian lipsynch using original data. This data can be
-	  patched in mods: it is in mainshp.flx, entry 15.
-
-2016-02-07	Marzo Sette Torres Junior <marzojr@yahoo.com>
-	* gamedat.cc: Fixing small memory leaks.
-
-2016-02-07	Dominik Reichardt <dominus@users.sourceforge.net>
-	* data/exultmsg*.txt: Added hardcoded French and German subtitles for the 
-	  BG final cutscene and added the Spanish localization for both BG and SI.
-	  Both French and German subtitles needed control characters and they both 
-	  added more lines than we currently support (prefixed with #0x??? for now).
-
-2016-02-07	Marzo Sette Torres Junior <marzojr@yahoo.com>
-	* browser.cc,exult.cc,files/msgfile.{cc,h},gamemap.cc, gamemgr/bggame.cc,
-	  gamemgr/sigame.cc,gamewin.cc,gumps/Spellbook_gump.cc,mapedit/shapeedit.cc,
-	  mapedit/shapelst.cc,mapedit/studio.cc,objs/objnames.cc,objs/objs.cc,
-	  schedule.cc,shapes/items.{cc,h},shapes/shapeinf/weaponinf.cc,
-	  usecode/intrinsics.cc: Slightly improving shapes/items.{cc,h}, and making
-	  needed changes everywhere. Making exultmsg.txt always be read.
-	* gamemgr/modmgr.cc: Allowing multiple co-existing installations of BG, FoV,
-	  SI and SS.
-
-2016-02-06	Marzo Sette Torres Junior <marzojr@yahoo.com>
-	* audio/midi_drivers/LowLevelMidiDriver.cpp: Undoing mistake in r7530, which
-	  undid some of the work of r7529.
-	* content/sifixes/*: SI Fixes: Fixed spell incantation runes in spellbook
-	  and spell scrolls.
-
-2016-01-30	Marzo Sette Torres Junior <marzojr@yahoo.com>
-	* audio/midi_drivers/LowLevelMidiDriver.*: Hopefully fixed bug #1743 "MT-32
-	  SYSEX is wrong - sounds weird". This wasn't solely due to missing sysex,
-	  as I had previously thought; some hard-coded rhythms were not uploaded by
-	  Exult. DOSBox + Munt allowed me to fetch the relevant data, and confirm it
-	  is the same in BG, FoV, SI and SS.
-	* audio/midi_drivers/LowLevelMidiDriver.cpp: Fixed bug #1715 "MT-32: sysex
-	  is not delayed properly (exc. buffer overflow)" by doing what colourless
-	  did not want to do.
-	* mapedit/exult_studio.glade, mapedit/shapeedit.cc: Fixed bug #1915 "Exult
-	  Studio bug - Equip Rec#: on npc monster tab limited to 100" by increasing
-	  limit to 255, the maximum that the file formats allow. Also limited the
-	  creation of new records to this.
-	* gamemgr/sigame.cc: Fixed bug #1893 "SI: final cutscene without subtitles".
-	* schedule.cc, usecode/ucinternal.cc: Make Schedule::try_proximity_usecode
-	  queue the usecode call with a script since this function can be arrived at
-	  from within usecode. This allows removing an existing  hackish workaround
-	  for BG, as well as fixing bug #1901 "SI: Flicken conversation vanishes at
-	  times".
-
-2016-01-29	Marzo Sette Torres Junior <marzojr@yahoo.com>
-	* content/bgkeyring/*: Some minor usecode cleanup.
-	* usecode/compiler/Makefile.am: Workaround for compilation error due to
-	  boneheaded automake 1.12 decision; fixes bug #1761 "missing ucparse.h".
-
-2015-03-17	Marzo Sette Torres Junior <marzojr@yahoo.com>
-	* objs/animate.cc, shapes/shapeinf/aniinf.cc: Fixed bug #1909 "[BG] Minoc
-	  sawmill messed up".
-	* content/bgkeyring/src/npcs/{gordon.uc,tory.uc}: Fixed bug #1907 "[BG+FoV+
-	  BG Keyring] tory.uc & gordon.uc".
-
-2015-01-27	Malignant Manor <malignantmanor@users.sourceforge.net>
-	objs/egg.cc: Remove r7474 changes to Weather eggs due to crash on exit and
-	 the fact that it didn't do a good job of fixing the bug bug #1865.
-2015-01-27	Malignant Manor <malignantmanor@users.sourceforge.net>
-	*gumps/AudioOptions_gump.cc: Fix crash from deleted pointer being referenced
-
-2015-01-22	Marzo Sette Torres Junior <marzojr@yahoo.com>
-	* content/bgkeyring/src/npcs/menion.uc: Fixed bug #1904 "[BG:FV + BG Keyring
-	  MOD] add & case in code not being used. file: menion.uc ".
-	* shapes/font.cc: Fixed bug #1903 "Uppercase in usecode with '^' (Caret)".
-	  Also fixed mismatch between paint_text_box and find_cursor with regards to
-	  the caret.
-
 2015-01-14	Dominik Reichardt <dominus@users.sourceforge.net>
 	* configure.ac, acinclude.m4: Better handling of SDL 1.2x and SDL2.
 	  Configure will find either version when only one is installed and 
@@ -2811,8 +2724,6 @@
 	* cheat_screen.cc: Prevent more than 8 party members.
 
 2008-09-02	Marzo Sette Torres Junior <marzojr@yahoo.com>
-	* audio/Audio.*, gamemgr/bggame.cc: Synchronized static with static sound in
-	  BG intro. Made skipping speech stop speech.
 	* usecode/*: Reverted demonstrably wrong itemref behavior. Added usecode
 	  array stealing to create_script instead of making a copy.
 	* audio/*, drag.cc: A few SFX fixes for BG/SI.

@@ -194,7 +194,7 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
 			<File
-				RelativePath="..\tools\mklink.cc"
+				RelativePath="..\tools\mklink.c"
 				>
 			</File>
 		</Filter>

@@ -466,8 +466,8 @@ void Spellbook_gump::paint(
 			                 y + spell->y + numy);
 		}
 	if (page > 0 || GAME_SI) {      // Paint circle.
-		char const *circ = get_misc_name(CIRCLE);
-		char const *cnum = get_misc_name(CIRCLENUM + page);
+		char *circ = misc_names[CIRCLE];
+		char *cnum = misc_names[CIRCLENUM + page];
 		sman->paint_text(5, cnum, x + 40 +
 		                 (44 - sman->get_text_width(5, cnum)) / 2, y + 20);
 		sman->paint_text(5, circ, x + 92 +

@@ -646,14 +646,6 @@ bool Audio::start_speech(int num, bool wait)
 	return true;
 }
 
-void Audio::stop_speech()
-{
-	if (!audio_enabled || !speech_enabled)
-		return;
-
-	mixer->reset();
-}
-
 /*
 *	This returns a 'unique' ID, but only for .wav SFX's (for now).
 */

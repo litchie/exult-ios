@@ -11,8 +11,6 @@
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		28FD15000DC6FC520079059D /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD14FF0DC6FC520079059D /* OpenGLES.framework */; };
 		28FD15080DC6FC5B0079059D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD15070DC6FC5B0079059D /* QuartzCore.framework */; };
-		8A37FDD71C8340C600684E83 /* unzip.cc in Sources */ = {isa = PBXBuildFile; fileRef = 8A37FDD51C8340C600684E83 /* unzip.cc */; };
-		8A37FDD81C8340C600684E83 /* zip.cc in Sources */ = {isa = PBXBuildFile; fileRef = 8A37FDD61C8340C600684E83 /* zip.cc */; };
 		8AD4A9311A92B9DB0004762D /* iphoneOptions_gump.cc in Sources */ = {isa = PBXBuildFile; fileRef = 8AD4A92F1A92B9DB0004762D /* iphoneOptions_gump.cc */; };
 		E700DBBA1A6E2CE7006C8BE4 /* Audio.cc in Sources */ = {isa = PBXBuildFile; fileRef = E700DB001A6E2CE7006C8BE4 /* Audio.cc */; };
 		E700DBBB1A6E2CE7006C8BE4 /* AudioChannel.cc in Sources */ = {isa = PBXBuildFile; fileRef = E700DB021A6E2CE7006C8BE4 /* AudioChannel.cc */; };
@@ -340,8 +338,6 @@
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		28FD14FF0DC6FC520079059D /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		28FD15070DC6FC5B0079059D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		8A37FDD51C8340C600684E83 /* unzip.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = unzip.cc; sourceTree = "<group>"; };
-		8A37FDD61C8340C600684E83 /* zip.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zip.cc; sourceTree = "<group>"; };
 		8AD4A92F1A92B9DB0004762D /* iphoneOptions_gump.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = iphoneOptions_gump.cc; path = ../gumps/iphoneOptions_gump.cc; sourceTree = "<group>"; };
 		8AD4A9301A92B9DB0004762D /* iphoneOptions_gump.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = iphoneOptions_gump.h; path = ../gumps/iphoneOptions_gump.h; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -1406,8 +1402,6 @@
 		E700DD801A6E3161006C8BE4 /* zip */ = {
 			isa = PBXGroup;
 			children = (
-				8A37FDD51C8340C600684E83 /* unzip.cc */,
-				8A37FDD61C8340C600684E83 /* zip.cc */,
 				E700DD871A6E3161006C8BE4 /* unzip.c */,
 				E700DD881A6E3161006C8BE4 /* unzip.h */,
 				E700DD891A6E3161006C8BE4 /* zip.c */,
@@ -1831,11 +1825,6 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				TargetAttributes = {
-					1D6058900D05DD3D006BFB54 = {
-						DevelopmentTeam = 5PRK96AWD5;
-					};
-				};
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Exult" */;
 			compatibilityVersion = "Xcode 3.1";
@@ -1964,7 +1953,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				E700DC111A6E2CE7006C8BE4 /* timidity_filter.cpp in Sources */,
-				8A37FDD81C8340C600684E83 /* zip.cc in Sources */,
 				E700DC161A6E2CE7006C8BE4 /* timidity_readmidi.cpp in Sources */,
 				E700DF441A6E34C6006C8BE4 /* debugserver.cc in Sources */,
 				E700DCB31A6E30A7006C8BE4 /* windrag.cc in Sources */,
@@ -2145,7 +2133,6 @@
 				E700DD961A6E3161006C8BE4 /* U7obj.cc in Sources */,
 				E700DD3C1A6E3121006C8BE4 /* miscinf.cc in Sources */,
 				E700DC911A6E30A7006C8BE4 /* browser.cc in Sources */,
-				8A37FDD71C8340C600684E83 /* unzip.cc in Sources */,
 				E700DD611A6E3121006C8BE4 /* shapeinf.cc in Sources */,
 				E700DF431A6E34C6006C8BE4 /* conversation.cc in Sources */,
 				E700DF4D1A6E34C6006C8BE4 /* ucfunction.cc in Sources */,
@@ -2212,8 +2199,6 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD)";
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -2241,7 +2226,6 @@
 					"\"$(SRCROOT)/SDL/lib\"",
 				);
 				PRODUCT_NAME = Exult;
-				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
 			};
@@ -2253,7 +2237,6 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD)";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "";
@@ -2278,7 +2261,6 @@
 					"\"$(SRCROOT)/SDL/lib\"",
 				);
 				PRODUCT_NAME = Exult;
-				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
 			};

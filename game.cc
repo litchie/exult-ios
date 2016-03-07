@@ -497,7 +497,7 @@ static inline void Reset_gl_rotates() {
 // wait ms milliseconds, while cycling colours startcol to startcol+ncol-1
 // return 0 if time passed completly, 1 if user pressed any key or mouse button,
 // and 2 if user pressed Return/Enter
-int wait_delay(int ms, int startcol, int ncol, int rotspd) {
+int wait_delay(int ms, int startcol, int ncol) {
 	SDL_Event event;
 	unsigned long delay;
 	int loops;
@@ -512,18 +512,18 @@ int wait_delay(int ms, int startcol, int ncol, int rotspd) {
 		loops = ms / static_cast<long>(delay);
 	}
 	Game_window *gwin = Game_window::get_instance();
-	int rot_speed = rotspd << (gwin->get_win()->fast_palette_rotate() ? 0 : 1);
+	int rot_speed = 100 << (gwin->get_win()->fast_palette_rotate() ? 0 : 1);
 
 	static unsigned long last_rotate = 0;
 
 #ifdef HAVE_OPENGL
 	Shape_frame *screen = 0;
-	if (ncol != 0 && GL_manager::get_instance()) {
+	if (ncol > 0 && GL_manager::get_instance()) {
 		int w = gwin->get_width(), h = gwin->get_height();
 		Image_buffer8 *buf = gwin->get_win()->get_ib8();
 		screen = new Shape_frame(buf->get_bits(), w, h, 0, 0, true);
 		GL_manager::get_instance()->set_palette_rotation(startcol,
-		        startcol + abs(ncol) - 1);
+		        startcol + ncol - 1);
 		// Want to reset them all.
 		Set_glpalette();
 		GL_manager::get_instance()->paint(screen, 0, 0);
@@ -596,7 +596,7 @@ int wait_delay(int ms, int startcol, int ncol, int rotspd) {
 			i += (ticks2 - ticks1) / delay - 1;
 		else
 			SDL_Delay(delay - (ticks2 - ticks1));
-		if (abs(ncol) > 1 && ticks2 > last_rotate + rot_speed) {
+		if (ncol > 1 && ticks2 > last_rotate + rot_speed) {
 			gwin->get_win()->rotate_colors(startcol, ncol, 1);
 			while (ticks2 > last_rotate + rot_speed)
 				last_rotate += rot_speed;

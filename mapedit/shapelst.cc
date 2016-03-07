@@ -2148,10 +2148,10 @@ void Shape_chooser::search(
 			for (std::vector<Frame_name_info>::iterator it = nminf.begin();
 			        it != nminf.end(); ++it) {
 				int type = it->get_type(), msgid = it->get_msgid();
-				if (type == -255 || type == -1 || msgid >= get_num_misc_names()
-				        || !get_misc_name(msgid))
+				if (type == -255 || type == -1 || msgid >= num_misc_names
+				        || !misc_names[msgid])
 					continue;   // Keep looking.
-				if (search_name(get_misc_name(msgid), srch)) {
+				if (search_name(misc_names[msgid], srch)) {
 					found = true;
 					break;      // Found it.
 				}
@@ -2433,8 +2433,8 @@ void Shape_chooser::update_statusbar(
 			if (inf.has_frame_name_info() &&
 			        (nminf = inf.get_frame_name(frnum, -1)) != 0) {
 				int type = nminf->get_type(), msgid = nminf->get_msgid();
-				if (type >= 0 && msgid < get_num_misc_names()) {
-					const char *msgstr = get_misc_name(msgid);
+				if (type >= 0 && msgid < num_misc_names) {
+					const char *msgstr = misc_names[msgid];
 					int len = strlen(buf);
 					// For safety.
 					if (!nm) nm = "";
@@ -2446,8 +2446,8 @@ void Shape_chooser::update_statusbar(
 						else {
 							int otmsg = nminf->get_othermsg();
 							otmsgstr = otmsg == -255 ? nm :
-							           (otmsg == -1 || otmsg >= get_num_misc_names() ? "" :
-							            get_misc_name(otmsg));
+							           (otmsg == -1 || otmsg >= num_misc_names ? "" :
+							            misc_names[otmsg]);
 							if (!otmsgstr) otmsgstr = "";
 						}
 						const char *prefix = 0, *suffix = 0;

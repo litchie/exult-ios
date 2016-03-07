@@ -123,7 +123,6 @@ public:
 
 	void	stop_sound_effects();
 	bool	start_speech(int num,bool wait=false);
-	void	stop_speech();
 	bool	is_speech_enabled() const { return speech_enabled; }
 	void	set_speech_enabled(bool ena) { speech_enabled = ena; }
 	bool	is_music_enabled() const { return music_enabled; }

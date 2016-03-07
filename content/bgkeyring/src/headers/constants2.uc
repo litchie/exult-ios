@@ -26,43 +26,34 @@
  */
 
 //Sprite effects
-enum sprite_effects
-{
-   ANIMATION_BIG_BLAST			= 1,
-   ANIMATION_CLOUDS				= 3,
-   ANIMATION_MEDIUM_BLAST		= 4,
-   ANIMATION_SMALL_BLAST		= 5,
-   ANIMATION_TELEPORT			= 7,
-   ANIMATION_DEATH_VORTEX		= 8,
-   ANIMATION_POOF				= 9,
-   ANIMATION_FIREWORKS			= 12,
-   ANIMATION_GREEN_BUBBLES		= 13,
-   ANIMATION_CIRCLE_BARRIER		= 15,
-   ANIMATION_LIGHTNING			= 17,
-   ANIMATION_BLUE_BEADS			= 18,
-   ANIMATION_PURPLE_BUBBLES		= 21,
-   ANIMATION_MUSIC				= 24
-};
+const int ANIMATION_BIG_BLAST			= 1;
+const int ANIMATION_CLOUDS				= 3;
+const int ANIMATION_MEDIUM_BLAST		= 4;
+const int ANIMATION_SMALL_BLAST			= 5;
+const int ANIMATION_TELEPORT			= 7;
+const int ANIMATION_DEATH_VORTEX		= 8;
+const int ANIMATION_POOF				= 9;
+const int ANIMATION_FIREWORKS			= 12;
+const int ANIMATION_GREEN_BUBBLES		= 13;
+const int ANIMATION_CIRCLE_BARRIER		= 15;
+const int ANIMATION_LIGHTNING			= 17;
+const int ANIMATION_BLUE_BEADS			= 18;
+const int ANIMATION_PURPLE_BUBBLES		= 21;
+const int ANIMATION_MUSIC				= 24;
 
 //SFX
-enum sound_effects
-{
-   SOUND_BLAST					= 8,	// Fireball spell sound effect.
-   SOUND_BIG_BLAST				= 9,	// Explosion spell sound effect.
-   SOUND_MOONGATE				= 11,	// Moongate raising sound effect.
-   SOUND_BOOK					= 14,	// Played when the book gump displays.
-   SOUND_KEY					= 27,	// Sound made by keys when you use them.
-   SOUND_GLASS_SHATTER			= 37,	// Glass breaking sound effect.
-   SOUND_HIT					= 62,	// Something getting hit in combat.
-   SOUND_TELEPORT				= 72	// Teleportation sound effect.
-};
+const int SOUND_BLAST					= 8;
+const int SOUND_BIG_BLAST				= 9;
+const int SOUND_MOONGATE				= 11;	//0x000B
+const int SOUND_BOOK					= 14;	//0x00E
+const int SOUND_KEY						= 27;	//Sound made by keys when you use them
+const int SOUND_GLASS_SHATTER			= 37;	//0x25
+const int SOUND_HIT						= 62;	//0x003E
+const int SOUND_TELEPORT				= 72;
 
 //Some faces:
-enum faces
-{
-   DRACOTHRAXUS_FACE			= -293,
-   BLACK_SWORD_FACE				= -292,
-   ARCADION_GEM_FACE			= -291,
-   ARCADION_MIRROR_FACE			= -290,
-   ERETHIAN_FACE				= -286
-};
+const int DRACOTHRAXUS_FACE				= -293;
+const int BLACK_SWORD_FACE				= -292;
+const int ARCADION_GEM_FACE				= -291;
+const int ARCADION_MIRROR_FACE			= -290;
+const int ERETHIAN_FACE					= -286;

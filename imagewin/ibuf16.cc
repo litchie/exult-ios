@@ -29,9 +29,6 @@
 #  include <cstdlib>
 #endif
 
-#include <algorithm>
-using std::rotate;
-
 #ifndef UNDER_EMBEDDED_CE
 using std::memmove;
 #endif
@@ -266,15 +263,11 @@ void Image_buffer16::rotate_colors(
     int num,            // # in range.
     int upd             // 1 to update hardware now.
 ) {
-	int cnt = abs(num);
-	unsigned short *start = palette + first, *finish = start + cnt;
-	if (num > 0) {
-		// Shift upward.
-		rotate(start, finish - 1, finish);
-	} else {
-		// Shift downward.
-		rotate(start, start + 1, finish);
-	}
+	int cnt = num - 1;      // Shift downward.
+	unsigned short c0 = palette[first];
+	for (int i = first; cnt; i++, cnt--)
+		palette[i] = palette[i + 1];
+	palette[first + num - 1] = c0;  // Shift 1st to end.
 	// +++++upd?
 }
 

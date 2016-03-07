@@ -41,9 +41,6 @@ Boston, MA  02111-1307, USA.
 #include "shapes/glshape.h"
 #endif
 
-#include <algorithm>
-using std::rotate;
-
 #ifndef UNDER_EMBEDDED_CE
 using std::memmove;
 #endif
@@ -121,16 +118,14 @@ void Image_window8::rotate_colors(
 ) {
 	first *= 3;
 	num *= 3;
-	int cnt = abs(num);
-	unsigned char  *start = colors + first, *finish = start + cnt;
-	if (num > 0) {
-		// Shift upward.
-		rotate(start, finish - 3, finish);
-	} else {
-		// Shift downward.
-		rotate(start, start + 3, finish);
-	}
-
+	int cnt = num - 3;      // Shift downward.
+	unsigned char c0 = colors[first + num - 3];
+	unsigned char c1 = colors[first + num - 2];
+	unsigned char c2 = colors[first + num - 1];
+	memmove(colors + first + 3, colors + first, cnt);
+	colors[first ] = c0;    // Shift 1st to end.
+	colors[first + 1] = c1; // Shift 1st to end.
+	colors[first + 2] = c2; // Shift 1st to end.
 	if (upd) {          // Take effect now?
 		SDL_Color colors2[256];
 		for (int i = 0; i < 256; i++) {
