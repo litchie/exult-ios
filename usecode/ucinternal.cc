@@ -2910,12 +2910,6 @@ int Usecode_internal::call_usecode(
     Game_object *item,      // Item ref.
     Usecode_events event
 ) {
-	// Avoid these when already execing.
-	if (!call_stack.empty() &&
-	        event == npc_proximity && Game::get_game_type() ==
-	        BLACK_GATE)
-		return (0);
-
 	conv->clear_answers();
 
 	int ret;

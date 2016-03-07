@@ -852,7 +852,7 @@ void Read_special_ireg(
 			scr->start(scr->get_delay());
 #if 0
 			COUT("Restored script for '" <<
-			     item_names[obj->get_shapenum()]
+			     get_item_name(obj->get_shapenum())
 			     << "'" << endl);
 			scr->print(cout);
 			cout << endl;

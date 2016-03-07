@@ -52,7 +52,7 @@ void Lady_Tory object#(0x4C8) ()
 			item.say("Tory smiles and reaches out to you. @Hello, ", player_name,
 				". I sense thou art troubled.@");
 
-		converse([])
+		converse(0)
 		{
 			case "name" (remove):
 				say("@I am Lady Tory, ", polite_title, ".@");

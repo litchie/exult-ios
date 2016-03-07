@@ -300,7 +300,6 @@ ModManager::ModManager(const string &name, const string &menu, bool needtitle,
                        bool silent) {
 	cfgname = name;
 	mod_title = "";
-	to_uppercase(name);
 
 	// We will NOT trust config with these values.
 	// We MUST NOT use path tags at this point yet!
@@ -383,6 +382,12 @@ ModManager::ModManager(const string &name, const string &menu, bool needtitle,
 		path_prefix = "DEVEL" + to_uppercase(name);
 		new_title = menu;   // To be safe.
 		expansion = false;
+	}
+
+	// If the "default" path selected above is already taken, then use a unique
+	// one based on the exult.cfg entry instead.
+	if (is_system_path_defined("<" + path_prefix + "_STATIC>")) {
+		path_prefix = to_uppercase(name);
 	}
 
 	if (found)

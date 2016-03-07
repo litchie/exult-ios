@@ -27,8 +27,11 @@
 // Basic takeoff logic from original carpet.
 extern void CarpetTakeOff 0x812 (var barge);
 
-const int AVATAR_CARPET = 20;
-const int PARTY_CARPET = 21;
+enum carpet_events
+{
+	AVATAR_CARPET = 20,
+	PARTY_CARPET = 21
+};
 
 void Magic_Carpet shape#(SHAPE_MAGIC_CARPET) ()
 {

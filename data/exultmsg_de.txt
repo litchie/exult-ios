@@ -1,18 +1,74 @@
 # These messages are used in the Exult engine, and follow the
 # game-specific ones.
-0x500:Stell den Stuhl zurück!
+0x500:Stell den Stuhl zurck!
 0x501:Dieb!!
 0x502:Du Schurke!!
 0x503:Nicht lustig!
 0x504:Wer hat meinen Stuhl bewegt??
-0x505:Du siehst aus, als würde es dir gut gehn.
+0x505:Du siehst aus, als wrde es dir gut gehn.
 0x506:Alles klar?
-0x507:Bereit für das Dessert?
+0x507:Bereit fr das Dessert?
 0x508:Guten Appetit!
-0x509:Spezialität des Hauses!
+0x509:Spezialitt des Hauses!
 0x50a:Avatar!  Benimm dich!
-0x50b:Hast Du bemerkt, daß schon jemand im Bett liegt?
+0x50b:Hast Du bemerkt, da schon jemand im Bett liegt?
 0x50c:Der Benutzer dieses Bettes wird wohl gerade keinen Wert auf Gesellschaft legen.
 0x50d:So einfach wirst du mich nicht los!
 0x50e:Ah, hier bist du!
 0x50f:Hab dich gefunden!
+# Intro messages
+0x510:mit der Hilfe
+0x511:des Exult Teams
+0x512:Unter Exult laufend
+# Ending Messages
+#0x513:DAS ENDE VON ULTIMA VII
+#0x514:DAS ENDE VON BRITANNIA...
+0x515:NEIN! Das darfst du nicht!
+0x516:Ich verfluche dich!  Sei verflucht!
+0x517:Die Schwarze Pforte ist zerstrt!
+0x518:Der Wchter konnte aufgehalten werden!
+# End1
+0x519:Avatar! Glaubst du, da du mich
+0x51A:besiegt hast? Denk nochmal nach!
+0x51B:Du kannst Britannia nicht mehr
+0x51C:verlassen. Ich hingegen kann jede
+0x51D:Welt betreten! Hmmm...
+0x51E:vielleicht mache ich deine armselige
+#0x???:Erde zu meinem NCHSTEN Ziel!
+# End2
+0x51F:Es wird Monate dauern, bis Britannia
+0x520:sich von dieser entscheidenden
+0x521:Schlacht um die Schwarze Pforte
+0x522:und von den Intrigen des Wchters
+0x523:erholen wird. Doch das
+0x524:Gute hat das Bse besiegt!
+0x525:Als Du nach Britain zurckkehrst,
+0x526:verkndet Lord British, da die
+0x527:Gemeinschaft ihrer Macht enthoben
+0x528:und alle ihre Niederlassungen in
+#0x???:Britannia zerstrt werden sollten.
+# End3
+0x529:Deine Frustration, Britannia nicht
+0x52A:verlassen zu knnen, wird von der
+0x52B:Genugtuung des Sieges und der
+0x52C:Befriedigung, die entsetzlichen
+0x52D:Morde aufgeklrt zu haben,
+0x52E:bertroffen. Selbst der Mord an
+#0x???:Sparks Vater ist durch die
+#0x???:Beseitigung der heuchlerischen
+#0x???:Gemeinschaft gercht.
+# End4
+0x52F:Zudem es dir momentan nicht mglich
+0x530:ist, etwas gegen die Drohung des
+0x531:Wchters auszurichten, beunruhigt
+0x532:dich auch noch ein anderer Gedanke...
+0x533:Was ist aus dem Satan Batlin
+0x534:geworden, dem es auf irgendeine
+#0x???:Weise gelang, seiner Strafe durch
+#0x???:Flucht zu entgehen?
+# End5
+0x535:Doch davon erzhlt eine andere
+0x536:Geschichte... Eine Geschichte,
+0x537:die dich zu Serpent Isle, einem
+0x538:Ort namens Schlangeninsel,
+#0x???:fhren wird ...

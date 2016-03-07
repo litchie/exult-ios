@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE readme SYSTEM "docs.dtd">
-<readme title="Exult" changed="09 May 2014(GMT)">	
+<readme title="Exult" changed="19 March 2015(GMT)">	
 	<section title="Introduction">
 		<sub name="exult_version">
 			<header>Exult Version</header>
@@ -1116,6 +1116,28 @@
 					<li>--reset-video<br/>
 						resets <Exult/>'s video settings to the default values. Very helpful when <Exult/> 
 						isn't playable anymore because of wrong settings.</li>
+				</ul>
+			</body>
+		</sub>
+		<sub name="error_log">
+			<header>Error Log</header>
+			<body>
+				<ul>
+					<li><strong>Windows:</strong><br/>
+						<Exult/> generates the files 'stdout.txt' and 'stderr.txt'.
+						These may give you some idea of what is going on
+						under the hood. When <Exult/> suddenly quits, sometimes
+						these files can help.<br/>
+						You can find these files in the folder where exult.cfg is 
+						located (see <ref target="exult_config_location"/>)</li>
+					<li><strong>UNIX/UNIX clones:</strong><br/>
+						the above mentioned logs are shown in the console from which <Exult/>
+						is started.<br/>
+						<kbd>./exult &gt;&amp;log</kbd><br/>
+						will send both stderr and stdout to the file named "log".</li>
+					<li><strong>Mac OS X:</strong><br/>
+						When you are running the app bundle Exult.app then the error log will be shown 
+						in the OS X Application Console (/Applications/Utilities/Console.app).</li>
 				</ul>
 			</body>
 		</sub>
@@ -2288,43 +2310,128 @@
 			</body>
 		</sub>
 	</section>
-  	<section title="OS specific notes">
-		<sub name="zaurus_install">
-			<header>How to get the Zaurus port working</header>
+  	<section title="iOS Guide">
+		<sub name="ios_port">
+			<header>The port to iOS</header>
 			<body>
 				<para>
-					Some people were confused where to put the <Exult/> and U7 files and
-					this is just a quick guide. The long guide is in the next section.
+					In January 2015 Chaoji Li (aka Litchie) forked <Exult/> on 
+					<extref target="https://github.com/litchie/exult-ios">Github</extref> to work 
+					on the initial porting effort by Lanica Dragon (which had stopped in 2013).<br/>
+					Even while this port is a fork and not an official port, this documentation aims 
+					to help iOS users.
+				</para>
+				<para>
+					Note that <Exult/> runs very nicely on iPads but the item management of the games makes 
+					playing on the smaller iPhone screens a bit of a challenge. Starting with the 
+					screen size of the iPhone 6 things become easier.
+				</para>
+			</body>
+		</sub>
+		<sub name="ios_install">
+			<header>Installing Exult on your iPhone/iPad</header>
+			<body>
+				<para>
+					For now <Exult/> is not on the App Store but there are two other ways to get it on your device.
 				</para>
 				<ul>
-					<li>BG and SI are expected to be installed in <strong>/mnt/cf/exult-data/bg</strong>
-						and <strong>/mnt/cf/exult-data/si</strong></li>
-					<li><Exult/> binary is in <strong>/opt/QtPalmtop/bin/</strong></li>
-					<li>the data files (like exult_bg.flx) go into
-						<strong>/opt/QtPalmtop/share/exult/</strong></li>
-					<li>exult.cfg is can be found as <strong>/home/root/.exult.cfg</strong></li>
+				<li>If you have a paid iOS developer account in Apple's Developer Program, you can clone the git 
+					repository, run the Xcode project file and easily install <Exult/>.</li>
+				<li>Write an email to Dominus Dragon 
+					(see <extref target="http://exult.sourceforge.net/about.php">About Us</extref>) to sign up for 
+					the beta testing.</li>
 				</ul>
 			</body>
 		</sub>
-		<sub name="error_log">
-			<header>Error Log</header>
+		<sub name="ios_games">
+			<header>Installing the games on your iPhone/iPad</header>
 			<body>
+				<para>
+					Once you have the <Exult/> app on your device, you will need to upload the games to your 
+					device using iTunes file sharing. But it needs a bit of preparing.
+				</para>
+				<para>
+					First you will need to put the games into a folder called game and use the following 
+					folder structure:<br/>
+					game<br/>
+					<kbd>game</kbd><br/>
+					<kbd>+-- blackgate</kbd><br/>
+					<kbd>|     +--- static</kbd><br/>
+					<kbd>|          +---- *.*</kbd><br/>
+					<kbd>+-- serpentisle</kbd><br/>
+					<kbd>|     +--- static</kbd><br/>
+					<kbd>|          +---- *.*</kbd><br/>
+					Please make sure that all the file and folder names are in lowercase, iOS is case sensitive 
+					and the games might not be detected otherwise.
+				</para>
+				<para>
+					Now connect your device to your computer, start iTunes and select your device in it. Click "Apps", 
+					scroll down to "File Sharing" and select <Exult/>. Now drag and drop the game folder you prepared 
+					in the first step.
+				</para>
+				<para>
+					Note: if you want to use mods just add them to the game folder structure before you drag and drop 
+					that in iTunes file sharing.<br/>
+					Example with the BG keyring and SI fixes mods:<br/>
+					<kbd>game</kbd><br/>
+					<kbd>+-- blackgate</kbd><br/>
+					<kbd>|     +--- static</kbd><br/>
+					<kbd>|          +---- *.*</kbd><br/>
+					<kbd>|     +--- mods</kbd><br/>
+					<kbd>|          +---- keyring</kbd><br/>
+					<kbd>|                 +----- *.*</kbd><br/>
+					<kbd>|          +---- keyring.cfg</kbd><br/>
+					<kbd>+-- serpentisle</kbd><br/>
+					<kbd>|     +--- static</kbd><br/>
+					<kbd>|          +---- *.*</kbd><br/>
+					<kbd>|     +--- mods</kbd><br/>
+					<kbd>|          +---- sifixes</kbd><br/>
+					<kbd>|                 +----- *.*</kbd><br/>
+					<kbd>|          +---- sifixes.cfg</kbd><br/>
+				</para>
+			</body>
+		</sub>
+		<sub name="ios_data">
+			<header>Installing sfx and digital music</header>
+			<body>
+				<para>
+					To install the optional sfx and digital music, please download the "Zipped all-in-one audio pack 
+					for manual installation" zip file from our 
+					<extref target="http://exult.sourceforge.net/download.php">download page</extref>. 
+					Unzip everything to a folder called "data" and drag and drop this also in iTunes file sharing. 
+					Do NOT put it in the "game" folder.
+				</para>
+			</body>
+		</sub>
+		<sub name="ios_controls">
+			<header>iOS controls</header>
+			<body>
+				<para>
+					When playing you have a dpad overlaying the game screen which by default is on theright of the 
+					screen (but can be set to the left side).<br/>
+					Tapping with your finger is equal to a left click in the game.<br/>
+					The green (and eventually red (combat)) movement cursor and the hand pointer are invisible on 
+					iOS as they are more distracting than helping when you control and click with your finger.
+				</para>
+				<para>
+					There is also a helper menu when you click near objects in the games, which can be helpful on 
+					the smaller iPhone screens but can be disabled in the iOS settings.
+				</para>
+			</body>
+		</sub>
+		<sub name="ios_settings">
+			<header>Additional iOS settings</header>
+			<body>
+				<para>
+					There is an additional "iOS Options" item in both the <Exult/> Setup and Game menu which offers 
+					to change the following settings:
+				</para>
 				<ul>
-					<li><strong>Windows:</strong><br/>
-						<Exult/> generates the files 'stdout.txt' and 'stderr.txt'.
-						These may give you some idea of what is going on
-						under the hood. When <Exult/> suddenly quits, sometimes
-						these files can help.<br/>
-						You can find these files in the folder where exult.cfg is 
-						located (see <ref target="exult_config_location"/>)</li>
-					<li><strong>UNIX/UNIX clones:</strong><br/>
-						the above mentioned logs are shown in the console from which <Exult/>
-						is started.<br/>
-						<kbd>./exult &gt;&amp;log</kbd><br/>
-						will send both stderr and stdout to the file named "log".</li>
-					<li><strong>Mac OS X:</strong><br/>
-						When you are running the app bundle Exult.app then the error log will be shown 
-						in the OS X Application Console (/Applications/Utilities/Console.app).</li>
+					<li><strong>Item helper menu</strong><br/>
+						enable or disable the helper menu that opens when you click near objects.</li>
+					<li><strong>D-Pad screen location</strong><br/>
+						you can disable the D-Pad (not advisable) or choose on which side of your screen it 
+						should be shown.</li>
 				</ul>
 			</body>
 		</sub>
@@ -2334,7 +2441,7 @@
 			<header>Author of this Guide</header>
 			<body>
 				<para>
-					This file was written by Artaxerxes (Aurelien Marchand). He can be
+					This part of the documentation was written by Artaxerxes (Aurelien Marchand). He can be
 					contacted at artaxerxes2 at iname dot com. Please ask if you want to
 					send attachments no matter what their size.
 				</para>
@@ -2352,6 +2459,23 @@
 					information about the Zaurus can be gleaned on
 					<extref target="http://www.myZaurus.com"/>.
 				</para>
+			</body>
+		</sub>
+		<sub name="zaurus_install">
+			<header>How to get the Zaurus port working</header>
+			<body>
+				<para>
+					Some people were confused where to put the <Exult/> and U7 files and
+					this is just a quick guide. The long guide is below.
+				</para>
+				<ul>
+					<li>BG and SI are expected to be installed in <strong>/mnt/cf/exult-data/bg</strong>
+						and <strong>/mnt/cf/exult-data/si</strong></li>
+					<li><Exult/> binary is in <strong>/opt/QtPalmtop/bin/</strong></li>
+					<li>the data files (like exult_bg.flx) go into
+						<strong>/opt/QtPalmtop/share/exult/</strong></li>
+					<li>exult.cfg is can be found as <strong>/home/root/.exult.cfg</strong></li>
+				</ul>
 			</body>
 		</sub>
 		<sub name="roms_pt1">
@@ -2842,6 +2966,16 @@
 		</sub>
 	</section>
 	<section title="Changes to the Documentation">
+		<sub name="19032015">
+			<header>- 19 March 2015</header>
+			<body>
+				<ul>
+				<li><ref1 target="error_log"/> moved.</li>
+				<li><section_ref target="iOS Guide"/> added iOS guide.</li>
+				<li><ref1 target="zaurus_install"/> moved.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="09052014">
 			<header>- 09 May 2014</header>
 			<body>

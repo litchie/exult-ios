@@ -68,12 +68,12 @@ $(thumbnailer_DATA): $(thumbnailer_in_files)
 endif
 
 wuc_SOURCES = \
-	wuc.c \
+	wuc.cc \
 	uctools.h
 
-mklink_SOURCES = mklink.c
+mklink_SOURCES = mklink.cc
 
-rip_SOURCES = rip.c
+rip_SOURCES = rip.cc
 
 shp2pcx_SOURCES = shp2pcx.cc
 

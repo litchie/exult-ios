@@ -522,6 +522,7 @@ void AudioOptions_gump::save_settings() {
 	        speaker_type != o_speaker_type) {
 		Audio::Destroy();
 		Audio::Init();
+		midi = Audio::get_ptr()->get_midi(); // old pointer got deleted
 	}
 	Audio::get_ptr()->set_audio_enabled(audio_enabled == 1);
 	Audio::get_ptr()->set_music_enabled(midi_enabled == 1);

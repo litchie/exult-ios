@@ -289,8 +289,12 @@ int Schedule::get_actual_type(
 
 bool Schedule::try_proximity_usecode(int odds) {
 	if ((rand() % odds) == 0) {
-		gwin->get_usecode()->call_usecode(npc->get_usecode(), npc,
-		                                  Usecode_machine::npc_proximity);
+		// Note: since we can get here from within usecode, lets not
+		// call the function directly but queue it instead.
+		Usecode_script *scr = new Usecode_script(npc);
+		(*scr) << Ucscript::dont_halt << Ucscript::usecode2
+		       << npc->get_usecode() << Usecode_machine::npc_proximity;
+		scr->start();
 		npc->start(gwin->get_std_delay(), 500 + rand() % 1000);
 		return true;
 	}
@@ -843,8 +847,8 @@ void Preach_schedule::now_what(
 			scr->add(Ucscript::delay_ticks, 3);
 			scr->add(Ucscript::face_dir, member->get_dir_facing());
 			scr->add(Ucscript::npc_frame + Actor::standing);
-			scr->add(Ucscript::say, text_msgs[first_amen +
-			                                  rand() % (last_amen - first_amen + 1)]);
+			scr->add(Ucscript::say, get_text_msg(first_amen +
+			                                  rand() % (last_amen - first_amen + 1)));
 			scr->add(Ucscript::delay_ticks, 2);
 			scr->add(Ucscript::npc_frame + Actor::sit_frame);
 			scr->start();   // Start next tick.
@@ -898,7 +902,7 @@ void Preach_schedule::now_what(
 		       << (Ucscript::npc_frame + Actor::bow_frame)
 		       << Ucscript::delay_ticks << 3
 		       << (Ucscript::npc_frame + Actor::kneel_frame);
-		scr->add(Ucscript::say, text_msgs[first_amen + rand() % 2]);
+		scr->add(Ucscript::say, get_text_msg(first_amen + rand() % 2));
 		(*scr)  << Ucscript::delay_ticks << 5
 		        << (Ucscript::npc_frame + Actor::bow_frame)
 		        << Ucscript::delay_ticks << 3

@@ -1,0 +1,120 @@
+# These messages are used in the Exult engine, and follow the
+# game-specific ones.
+0x500:Devuelve esa silla!
+0x501:Ladron!!
+0x502:Canalla!!
+0x503:No es divertido!
+0x504:Quien movio mi silla??
+0x505:Parece que te va bien.
+0x506:Todo esta bien?
+0x507:Listo para el postre?
+0x508:Disfruta!
+0x509:La especialidad de la casa!
+0x50a:Avatar!  Por favor controlate!
+0x50b:Has visto que esta cama esta ocupada?
+0x50c:Quien ocupa esta cama puede no desear tu compania en el momento.
+0x50d:No me perderas tan facil!
+0x50e:Ah, ahi estas!
+0x50f:Te encontre!
+# Intro messages
+0x510:con ayuda de
+0x511:El Equipo Exult
+0x512:Manejado por Exult
+# Ending Messages
+0x513:EL FIN DE ULTIMA VII
+0x514:EL FIN DE BRITANIA, COMO YA SABES...
+0x515:No! No lo hagas!
+0x516:No puedes Avatar...! 
+0x517:La Puerta esta destruida.
+0x518:El Guardian ha sido detenido.
+# End1
+0x519:Avatar! Crees que has ganado?
+0x51A:Piensalo! No puedes abandonar
+0x51B:Britania, mientras que yo soy
+0x51C:libre de ir a otros mundos.
+0x51D:Puede que tu Tierra sea mi
+0x51E:DESTINO!
+# End2
+0x51F:En los meses siguientes a la titanica
+0x520:batalla de la Puerta Negra,Britania
+0x521:emprendio el largo camino de la
+0x522:recuperacion.
+0x523: 
+0x524:Tras tu regreso a Britain,
+0x525:Lord British decreto que
+0x526:la Hermandad era ilegal,
+0x527:y las sucursales fueron
+0x528:destruidas.
+# End3
+0x529:La frustracion de no poder abandonar
+0x52A:Britania esta compensada por la
+0x52B:alegria de haber desenmascarado a la
+0x52C:Hermandad y vengado el asesinato del
+0x52D:padre de Spark.
+0x52E:
+# End4
+0x52F:Aunque nada puedes hacer sobre la
+0x530:amenaza final del Guardian,
+0x531:hay algo que te preguntas:
+0x532:Donde habra ido Batlin y que
+0x533:estara haciendo?
+0x534:
+# End5
+0x535:Esa es otra historia...
+0x536:una que te llevara a
+0x537:la ISLA DE LA
+0x538:SERPIENTE
+#SI intro
+0x539:Reino de Lord British
+0x53A:Sitio de Dick British
+0x53B:Dieciocho meses tras la destruccion
+0x53C:de la Puerta Negra y la
+0x53D:proscripcion de la Hermandad
+0x53E:Mi rey
+0x53F:Hey, patron
+0x540:Entre las cosas de Batlin
+0x541:encontramos este pergamino y un mapa
+0x542:para ir a un lugar llamado
+0x543:Isla de la Serpiente.
+0x544:Veamos.
+0x545:Colocalo en la mesa.
+0x546:Ahhh. Sueltalo ahi!
+0x547:Cuidado!
+0x548:Oe, para atras!
+0x549:Batlin!  Si el Avatar logra 
+0x54A:destruir la Puerta Negra,
+0x54B:ve junto con la humana llamada
+0x54C:Gweeno a la Isla de la Serpiente
+0x54D:Alli conoceras mi nuevo plan
+0x54E:en contra de Britania
+0x54F:Batlin! Debes saber que mi cara
+0x550:es bastante parecida a un titere!
+0x551:Debes ir a la Isla de la Serpiente
+0x552:para aprender la cura secreta del Acne
+0x553:Pronto yo y mi horda de titeres
+0x554:destruiremos Britania!
+0x555:Confirma mi temor!
+0x556:Debo enviar al Avatar hacia
+0x557:los pilares de la Serpiente...
+#SI end
+0x558:El equilibrio
+0x559:ha sido restaurado.
+0x55A:La Isla de la Serpiente, Britania,
+0x55B:y el universo entero estan a salvo.
+0x55C:No te preocupes por tu amigo Dupre
+0x55D:Se ha unido a mi y es feliz.
+0x55E:Adios, Avatar.
+0x55F:Y gracias.
+0x560:Bien bien bien, Avatar.  Una
+0x561:vez mas has estropeado mis planes.
+0x562:Al restaurar el Equilibrio
+0x563:has salvado a tu maldito
+0x564:universo del Caos.
+0x565:Pero has quedado atrapado
+0x566:aqui, fuera del Tiempo.
+0x567:A donde iras ahora?
+0x568:Acaso a la Tierra?
+0x569:Britania?
+0x56A:O Puede que nos reunamos tu
+0x56B:y yo en algun otro lugar.
+0x56C:Tenemos cuentas pendientes!

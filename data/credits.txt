@@ -6,7 +6,6 @@
 
 
 \CJeff S. "DrCode" Freedman
-\C<jsf@users.sourceforge.net>
 \CThe man who started it all: from usecode 
 \Cto map browser to usecode to animation 
 \Cto usecode to ExultStudio to usecode.
@@ -14,61 +13,75 @@
 
 
 \CDancer Vesperman
-\C<dancer@users.sourceforge.net>
 \CMusic, sounds, XML configuration, usecode...
 \Cwhat more could you possibly ask for ?
 
 
 \CWillem Jan Palenstijn
-\C<wjpalenstijn@users.sourceforge.net>
 \CPorting to obscure OSs (Windows) and less
 \Cobscure ones (BeOS), cheats, autoconf, 
 \Cexultbot and lots more !
 
 
 \CTristan "Nadir" Tarrant
-\C<nadir@users.sourceforge.net>
 \CIntro, ending, menus, autoconf/automake, 
 \CGIMP plugin, FLEX packing, CVS config,
 \CFree Software advocate, Forum police
 
 
 \CMax "Fingolfin" Horn
-\C<max@quendi.de>
 \CPorting to MacOS, error handling,
 \CC++ standard police, the webpage
 
 
 \CLuke "Coder Infidel" Dunstan
-\C<coder_infidel@hotmail.com>
 \CHunter of lost info in U7's data files,
 \Cweapon animations, bits of combat.
 
 
 \CRyan "Colourless" Nunn
-\C<triforce@merlin.net.au>
 \CXMIDI meister, endings, roof removalist,
 \CSI Intro, NPC flag IO, Avatar identity,
 \CBG Paperdolls, "Big Commits(tm)"
 
 
-\CPatrick Burke
-\C<takhisisii@yahoo.com.au>
+\CPatrick "SharpTooth/Darke" Burke
 \CUsecode decompiler/disassembler/docs
 
 
+\CMarzo "Geometrodynamic" Sette Torres Junior
+\CIndispensable
+\CMajor 'mods' such as SIfixes, BG Keyring
+\CLots of bug-fixing
+
+
+\CTravis "Kirben" Howell
+\C MinGW build system
+\C daily Windows binaries
+
+
 \CDominik "Dominus" Reichardt
-\C<gigdr@tesionmail.de>
-\COur trusty FAQ maintainer
+\CDocumentation and FAQ
+\COS X snapshots
+
+
+\CAurelien "Artaxerxes" Marchand
+\CZaurus port and Exult Studio tools
+
+
+\CPhillip T. George
+\CPort to PocketPC, SDL2, iOS
+
+
+\CMalignant Manor
+\CBug hunter and fixer
 
 
 \CChristoph "Jameson" Reichenbach
-\C<jameson@linuxgames.com>
 \CPorting to Alpha
 
 
 \CRuediger Hanke
-\C<tomjoad@muenster.de>
 \CPorting to MorphOS/AmigaOS
 
 
@@ -77,36 +90,31 @@
 \CSuperEagle scaler
 \CSuper2xSaI scaler
 
-\CAndrea Mazzoleni.
+
+\CAndrea Mazzoleni
 \CScale2x non-blur scaler
 
+
 \CChristian Ohm
-\C<chr.ohm@gmx.net>
 \CGameplay Options menu, fast mouse, 
 \Cmiddle mouse button support
 
 
 \CMark Siewert
-\C<Mark.Siewert@t-online.de>
 \CExult Studio for Windows
 
-\CSimon Quinn
-\C<simonquinn@users.sourceforge.net>
+
+\CSimon "Mungo" Quinn
 \CAudio enhancements
 
-\CAurelien "Artaxerxes" Marchand
-\C<artaxerxes@users.sourceforge.net>
-\CZaurus port and Exult Studio tools
-
-\CMarzo Sette Torres Junior
-\C<marzojr@yahoo.com>
-\CMajor 'mods' such as SIfixes
-\CLots of bug-fixing
 
 \CEric Wasylishen
 \CLip-syncing in the BG intro.
 
+
+
 \COTHER CONTRIBUTORS
+
 
 \COlivier Marcoux
 
@@ -135,7 +143,9 @@
 \CRobert Bihlmeyer
 
 
+
 \CARTISTS
+
 
 \CAdam Delman
 
@@ -153,6 +163,8 @@
 
 \CCrysta the Elf
 
+
+
 \CTHANKS
 
 
@@ -160,8 +172,8 @@
 \CSourceForge & VA Linux
 \CFor making it easy to code together.
 
-\CJackchaos.com
-\CFor hosting the old Exult message board
+\CJackchaos
+\CFor hosting the first Exult message board
 
 \CTravis "Kirben" Howell
 \CFor making daily Windows binaries
