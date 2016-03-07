@@ -58,7 +58,11 @@ vector<char *> Notebook_gump::auto_text;
 
 const int font = 4;         // Small black.
 const int vlead = 1;            // Extra inter-line spacing.
-const int pagey = 10;           // Top of text area of page.
+#ifdef __IPHONEOS__
+	const int pagey = 7;           // Top of text area of page.
+#else
+	const int pagey = 10;           // Top of text area of page.
+#endif
 const int lpagex = 36, rpagex = 174;    // X-coord. of text area of page.
 
 class One_note {
@@ -194,7 +198,11 @@ void One_note::write(
  */
 
 inline Rectangle Get_text_area(bool right, bool startnote) {
+#ifdef __IPHONEOS__
+	const int ninf = 0;        // Space for note info.
+#else
 	const int ninf = 12;        // Space for note info.
+#endif
 	if (!startnote)
 		return right ? Rectangle(rpagex, pagey, 122, 130)
 		       : Rectangle(lpagex, pagey, 122, 130);
@@ -293,7 +301,11 @@ void Notebook_gump::add_new(
  */
 
 Notebook_gump::Notebook_gump(
-) : Gump(0, EXULT_FLX_NOTEBOOK_SHP, SF_EXULT_FLX), curnote(0),
+) : Gump(0, 
+#ifdef __IPHONEOS__
+5, -4, 
+#endif
+EXULT_FLX_NOTEBOOK_SHP, SF_EXULT_FLX), curnote(0),
 	curpage(0), updnx(0) {
 	handles_kbd = true;
 	cursor.offset = 0;
@@ -370,22 +382,38 @@ bool Notebook_gump::paint_page(
 		}
 		snprintf(buf, sizeof(buf), "Day %d, %02d:%02d%s",
 		         note->day, h ? h : 12, note->minute, ampm);
+#ifdef __IPHONEOS__
+		sman->paint_text(2, buf, x + box.x, box.h - 7);
+#else
 		sman->paint_text(2, buf, x + box.x, y + pagey);
+#endif
 		//when cheating show location of entry (in dec - could use sextant postions)
 		if (cheat()) {
 			snprintf(buf, sizeof(buf), "%d, %d",
 			         note->tx, note->ty);
+#ifdef __IPHONEOS__
+			sman->paint_text(4, buf, x + box.x + 80, box.h - 15);
+#else
 			sman->paint_text(4, buf, x + box.x + 80, y + pagey - 4);
+#endif
 		}
 		// Use bright green for automatic text.
 		gwin->get_win()->fill8(sman->get_special_pixel(
 		                           note->gflag >= 0 ? POISON_PIXEL : CHARMED_PIXEL),
-		                       box.w, 1, x + box.x, y + box.y - 3);
+#ifdef __IPHONEOS__
+		                       box.w, 1, x + box.x, box.h - 17);
+#else
+							   box.w, 1, x + box.x, y + box.y - 3);
+#endif
 	}
 	char *str = note->text + offset;
 	cursor.offset -= offset;
 	int endoff = sman->paint_text_box(font, str, x + box.x,
-	                                  y + box.y, box.w, box.h, vlead,
+#ifdef __IPHONEOS__
+	                                  y + box.y , box.w, box.h -35, vlead,
+#else
+									  y + box.y , box.w, box.h, vlead,
+#endif
 	                                  false, false, -1, find_cursor ? &cursor : 0);
 	cursor.offset += offset;
 	if (endoff > 0) {       // All painted?
