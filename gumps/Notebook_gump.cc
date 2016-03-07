@@ -303,20 +303,28 @@ void Notebook_gump::add_new(
 Notebook_gump::Notebook_gump(
 ) : Gump(0, 
 #ifdef __IPHONEOS__
-5, -4, 
-#endif
+5, -4, game->get_shape("gumps/book")), curnote(0),
+#else
 EXULT_FLX_NOTEBOOK_SHP, SF_EXULT_FLX), curnote(0),
+#endif
 	curpage(0), updnx(0) {
 	handles_kbd = true;
 	cursor.offset = 0;
 	// (Obj. area doesn't matter.)
+#ifndef __IPHONEOS__
 	set_object_area(Rectangle(36, 10, 100, 100), 7, 40);
+#endif
 	if (page_info.empty())
 		page_info.push_back(Notebook_top(0, 0));
 	// Where to paint page marks:
 	const int lpagex = 35, rpagex = 300, lrpagey = 12;
+#ifdef __IPHONEOS__
+	leftpage = new Notebook_page_button(this, lpagex + 1, lrpagey - 3, 0);
+	rightpage = new Notebook_page_button(this, rpagex +1 , lrpagey -3, 1);
+#else
 	leftpage = new Notebook_page_button(this, lpagex, lrpagey, 0);
 	rightpage = new Notebook_page_button(this, rpagex, lrpagey, 1);
+#endif
 	add_new();          // Add new note to end.
 }
 
@@ -678,8 +686,8 @@ bool Notebook_gump::handle_kbd_event(
 	SDL_Event &ev = *reinterpret_cast<SDL_Event *>(vev);
 	int chr = ev.key.keysym.sym;
 #if SDL_VERSION_ATLEAST(2, 0, 0)
-	int unicode = 0; // Unicode is way different in SDL2
-#else	
+	int unicode = ev.key.keysym.sym; // Unicode is way different in SDL2
+#else
 	int unicode = ev.key.keysym.unicode;
 #endif
 

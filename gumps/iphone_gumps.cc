@@ -372,8 +372,8 @@ void ShortcutBar_gump::paint()
 
 int ShortcutBar_gump::handle_event(SDL_Event *event)
 {
-	// When the Save/Load menu is open, don't handle events
-	if (gumpman->modal_gump_mode())
+	// When the Save/Load menu or the Notebook are open, don't handle events
+	if (gumpman->modal_gump_mode()  || Notebook_gump::get_instance())
 		return 0;
 
 	for (int i = 0; i < numButtons; i++) {
