@@ -708,8 +708,8 @@ bool Notebook_gump::handle_kbd_event(
 		change_page(1);
 		break;
 	default:
-#if 1   /* Assumes unicode is enabled. */
-		if (unicode != 0 && (unicode & 0xFF80) == 0)
+#if 1 && !SDL_VERSION_ATLEAST(2, 0, 0)   /* Assumes unicode is enabled. */
+		if ((unicode & 0xFF80) == 0)
 			chr = unicode & 0x7F;
 		else
 			chr = 0;
