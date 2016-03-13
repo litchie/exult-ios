@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE readme SYSTEM "docs.dtd">
-<readme title="Exult" changed="19 March 2015(GMT)">	
+<readme title="Exult" changed="13 March 2016(GMT)">	
 	<section title="Introduction">
 		<sub name="exult_version">
 			<header>Exult Version</header>
 			<body>
 				<para>
-					This documentation is for the 1.5.0 SVN version of <Exult/>.
+					This documentation is for the 1.5.0 GIT version of <Exult/>.
 					If you have another <Exult/> version, its documentation can be found where you installed the release.
 				</para>
 			</body>
@@ -1926,8 +1926,8 @@
 				</para>
 				<para>
 					You can also write your own autonotes and override the ones that come with <Exult/>.<br/>
-					For BG download <extref target="http://exult.svn.sourceforge.net/viewvc/exult/exult/trunk/data/bg/autonotes.txt"/>.<br/>
-					For SI download <extref target="http://exult.svn.sourceforge.net/viewvc/exult/exult/trunk/data/si/autonotes.txt"/>.<br/>
+					For BG download <extref target="https://github.com/exult/exult/raw/master/data/bg/autonotes.txt"/>.<br/>
+					For SI download <extref target="https://github.com/exult/exult/raw/master/data/si/autonotes.txt"/>.<br/>
 					Then change the &lt;autonotes&gt; setting in exult.cfg to point at the path of these files instead 
 					of being set to (default).<br/>
 					Example:
@@ -2966,6 +2966,15 @@
 		</sub>
 	</section>
 	<section title="Changes to the Documentation">
+		<sub name="13032016">
+			<header>- 13 March 2016</header>
+			<body>
+				<ul>
+				<li><ref1 target="exult_version"/> GIT instead of SVN.</li>
+				<li><ref1 target="autonotebook"/> point at GIT instead of SVN.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="19032015">
 			<header>- 19 March 2015</header>
 			<body>

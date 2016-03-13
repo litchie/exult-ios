@@ -2,7 +2,7 @@ Exult Installation
 ==================
 
 If you're reading this you have either downloaded a source distribution and 
-untarred it, or you've checked out the latest tree from SVN. Good.
+untarred it, or you've checked out the latest master from Git. Good.
 Make sure you have the following things installed (and make sure you install the devel 
 packages if you use a packet manager):
 
@@ -30,7 +30,7 @@ packages if you use a packet manager):
 	http://www.libsdl.org/projects/SDL_mixer/timidity/timidity.tar.gz
 
 
-If you're building from SVN you'll also need recent versions of:
+If you're building from Git you'll also need recent versions of:
 
 	automake
 	autoconf

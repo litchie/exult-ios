@@ -23,7 +23,7 @@ Copy these files to the same directory that contains the xml and xsl files of th
 
 By running make you get readme.txt/html/dat and faq.txt/html/dat.
 
-- Replace Readme and FAQ in the root directory of the exult svn with the text files, replace ReadMe.html, 
+- Replace Readme and FAQ in the root directory of the exult Git with the text files, replace ReadMe.html, 
   faq.html and exult_studio.html in /docs with the newly generated files.
 
 - Copy the text files docs.txt, faq.txt and exult_studio.txt to the root of the web module and the *.dat files 

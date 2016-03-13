@@ -1,5 +1,5 @@
 Exult Studio Documentation
-last changed: 21 November 2013 (GMT)
+last changed: 13 March 2016(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/studio.php
 
@@ -93,14 +93,15 @@ The latest version of this document can be found at http://exult.sourceforge.net
 10.1. Thanks
 
 11. Changes to the Documentation
-11.1. - 21 November 2013
-11.2. - 19 February 2011
-11.3. - 23 January 2011
-11.4. - 18 December 2010
-11.5. - 11 March 2010
-11.6. - 01 March 2005
-11.7. - 23 May 2004
-11.8. - 06 February 2004
+11.1. - 13 March 2016
+11.2. - 21 November 2013
+11.3. - 19 February 2011
+11.4. - 23 January 2011
+11.5. - 18 December 2010
+11.6. - 11 March 2010
+11.7. - 01 March 2005
+11.8. - 23 May 2004
+11.9. - 06 February 2004
 
 
 --------------------------------------------------------------------------------
@@ -166,7 +167,7 @@ You can also reconnect by selecting File-Connect in Exult Studio's menus.
 2.3. Step-by-step instructions to run Exult Studio
 The above instructions may still be too technical for everybody. You have to make sure all these steps are taken care of before you're going to get very far with your world building.
 1. While it is not explicitly needed it is useful to have a working copy of either BG or SI properly installed onto your computer.
-2. Next, you need to have the latest Exult snapshot and the SDL mixer installed properly onto your computer and working correctly. If you are currently playing either BG or SI on your machine this is probably done right. To make sure you have the correct version, ensure that it says X.XX SVN (X.XX stands for some version number) during Exult's start-up screen (for example see http://exult.sourceforge.net/images/screenshots/mainmenu.png).
+2. Next, you need to have the latest Exult snapshotinstalled properly onto your computer and working correctly. If you are currently playing either BG or SI on your machine this is probably done right. To make sure you have the correct version, ensure that it says X.XX GIT (X.XX stands for some version number) during Exult's start-up screen (for example see http://exult.sourceforge.net/images/screenshots/mainmenu.png).
 3. You need to make sure the newest version of Exult Studio is installed properly onto your computer as well. Exult Studio should be installed in the same folder as the Exult snapshot.
 4. The patch folder needs to be in folder which you are allowed to write, so Exult Studio can save any changes to existing games. See 2.4. What you can do at the moment on how to change exult.cfg accordingly.
 5. In order for Exult Studio to work properly, you need to have Exult running in windowed mode. If you can see your desktop while playing, then you're doing it right.
@@ -737,36 +738,41 @@ On Linux two issues have surfaced:
 --------------------------------------------------------------------------------
 
 11. Changes to the Documentation
-11.1. - 21 November 2013
+11.1. - 13 March 2016
+* 2.3. Step-by-step instructions to run Exult Studio GIT vs SVN.
+
+
+
+11.2. - 21 November 2013
 * 9.8. ifix and ireg reference chart finally added Crowley's ifix/ireg chart.
 
 
 
-11.2. - 19 February 2011
+11.3. - 19 February 2011
 * 2.6. Command line options added -c -m, added space between -x -g, even though it works without space as well.
 
 
 
-11.3. - 23 January 2011
+11.4. - 23 January 2011
 * 11. Changes to the Documentation moved to the bottom.
 * 2.6. Command line options added portable option.
 
 
 
-11.4. - 18 December 2010
+11.5. - 18 December 2010
 * 5.3. Custom Usecode added intriniscs docs from TFL and fixed the link to Pertex' site.
 * 9.11. Known Bugs with the Linux port the patch folder NEEDS to be writeable.
 
 
 
-11.5. - 11 March 2010
+11.6. - 11 March 2010
 * 2.1. Installation added Vista/W7 to the Windows list, Windows 95 is not supported.
 * 2.4. What you can do at the moment the patch folder NEEDS to be writeable.
 * 9.10. Known Bugs with the Windows port Windows 95 is not supported.
 
 
 
-11.6. - 01 March 2005
+11.7. - 01 March 2005
 * 4.3. Edit Create Barg added.
 * 4.6. Map added this menu option.
 * 6.2. The different types of eggs intermap egg added.
@@ -778,7 +784,7 @@ On Linux two issues have surfaced:
 
 
 
-11.7. - 23 May 2004
+11.8. - 23 May 2004
 * 3.4. Palettes files palette files are compatible with the Gimp.
 * 4.3. Edit note about map-editing operations.
 * 6.4. Properties of eggs some more infos.
@@ -787,7 +793,7 @@ On Linux two issues have surfaced:
 
 
 
-11.8. - 06 February 2004
+11.9. - 06 February 2004
 * 1.3. Terms we use in regard to Exult and Ultima 7 some corrections by Willem.
 * 2.3. Step-by-step instructions to run Exult Studio some corrections.
 * 2.2. Running Exult Studio some corrections.

@@ -1,3 +1,6 @@
+2016-03-14	Dominik Reichardt <dominus@users.sourceforge.net>
+	* Various files and documentation changed from SVN to Git.
+
 2016-02-27	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* usecode/compiler/Makefile.am: Clean deletes ucparse.hh as well.
 	* content/sifixes/{Makefile.am,Makefile.mingw,src/graphics/gumps.in}: Fixing

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE studiodoc SYSTEM "docs.dtd">
-<studiodoc title="Exult" changed="21 November 2013 (GMT)">
+<studiodoc title="Exult" changed="13 March 2016(GMT)">
 	<section title="Introduction">
 		<sub name="whatis_studio">
 			<header>What is <Studio/>?</header>
@@ -162,10 +162,10 @@
 				<ol>
 				<li>While it is not explicitly needed it is useful to have a working copy of either
 					BG or SI properly installed onto your computer.</li>
-				<li>Next, you need to have the latest <Exult/> snapshot and the SDL mixer installed properly
+				<li>Next, you need to have the latest <Exult/> snapshotinstalled properly
 					onto your computer and working correctly. If you are currently playing either BG or SI
 					on your machine this is probably done right. To make sure you have the correct version,
-					ensure that it says X.XX SVN (X.XX stands for some version number) during <Exult/>'s 
+					ensure that it says X.XX GIT (X.XX stands for some version number) during <Exult/>'s 
 					start-up screen (for example see 
 					<extref target="http://exult.sourceforge.net/images/screenshots/mainmenu.png"/>).</li>
 				<li>You need to make sure the newest version of <Studio/> is installed properly onto your
@@ -1746,6 +1746,14 @@
 		</sub>
 	</section>
 	<section title="Changes to the Documentation">
+		<sub name="13032016">
+			<header>- 13 March 2016</header>
+			<body>
+				<ul>
+				<li><ref1 target="run_steps"/> GIT vs SVN.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="21112013">
 			<header>- 21 November 2013</header>
 			<body>
