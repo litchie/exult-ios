@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE faqs SYSTEM "docs.dtd">
-<faqs title="Exult" changed="19 March 2015(GMT)">
+<faqs title="Exult" changed="13 March 2016(GMT)">
 	<section title="Introduction">
 		<sub name="exult_version">
 			<header>Exult Version</header>
@@ -139,11 +139,9 @@
 				<para>
 					The latest official version is found on
 					<extref target="http://exult.sourceforge.net/"/><br/>
-					The source of <Exult/> is hosted on Sourceforge's SVN server. Instructions on how 
-					to download the source code from SVN can be found at 
-					<extref target="http://sourceforge.net/scm/?type=svn&amp;group_id=2335"/>. You 
-					can also browse the source online from this link.<br/>
-					Daily snapshots (by Travis Howell) of the Windows binary and of the SVN source tree
+					The source code of <Exult/> is hosted on GitHub's GIT server which you can 
+					browse and download at <extref target="https://github.com/exult"/>.<br/>
+					Daily snapshots (by Travis Howell) of the Windows binary and of the GIT master
 					can be found at
 					<extref target="http://exult.sourceforge.net/download.php"/>.<br/>
 					Dominus provides snapshots for OS X 10.4 and upwards whenever he manages to at
@@ -1358,6 +1356,14 @@
 		</sub>
 	</section>
 	<section title="Changes to the FAQ">
+		<sub name="13032016">
+			<header>- 13 March 2016</header>
+			<body>
+				<ul>
+				<li><ref1 target="whereis_exult"/> Switched to GIT on GitHub.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="19032015">
 			<header>- 19 March 2015</header>
 			<body>

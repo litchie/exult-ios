@@ -60,7 +60,7 @@ Or if you use MacPorts install
 Installing these packages with either Fink or MacPorts will actually
 install many other packages required by these packages.
   
-If you are compiling the source code SVN, as opposed to the source of
+If you are compiling the source code from Git, as opposed to the source of
 a released version, you also need to install these packages with Fink:
   automake1.11
   libtool2
@@ -81,11 +81,11 @@ If you use MacPorts:
   export CFLAGS=-I/opt/local/include
   export CXXFLAGS=$CFLAGS
 
-Now you are ready to compile Exult. If you are compiling from SVN, the
+Now you are ready to compile Exult. If you are compiling from Git, the
 first thing you have to run is this:
   ./autogen.sh
 
-The next step is the same whether you compile a release version or SVN:
+The next step is the same whether you compile a release version or Git:
   ./configure
   make
 
@@ -147,6 +147,6 @@ static libs in the configure option "--with-macosx-static-lib-path=path/to/stati
 For Fink it should be "--with-macosx-static-lib-path=/sw/lib".
 For MacPorts "--with-macosx-static-lib-path=/opt/local/lib".
 
-On our dowloads page we currently provide a static built snapshot of SVN for 
+On our dowloads page we currently provide a static built snapshot of Git for 
 OS X 10.4 and newer for both PowerPC and Intel machines.
 Take note however that compiling a static version of Exult Studio does not work.
