@@ -1232,8 +1232,8 @@ Exult 1.4.05cvs text message file.  Written by ExultStudio.
 0x110:with help from
 0x111:The Exult Team
 0x112:Driven by Exult
-0x113:The end of Ultima VII
-0x114:The end of Britannia as you know it!
+0x113:THE END OF ULTIMA VII
+0x114:THE END OF BRITANNIA AS YOU KNOW IT...
 0x115:No. You cannot do that! You must not!
 0x116:Damn you Avatar!  Damn you!
 0x117:The Black Gate is destroyed.
@@ -1294,13 +1294,34 @@ Exult 1.4.05cvs text message file.  Written by ExultStudio.
 0x14e:to destroy Britannia!
 0x14f:Batlin! Know that my face is most
 0x150:muppet like!
-0x151:You must go to the Serpent Isl
+0x151:You must go to the Serpent Isle
 0x152:to learn the secret of Acne Medication
 0x153:Soon I and my horde of muppets will
 0x154:destroy Britannia!
 0x155:'Tis my worst fear!
 0x156:I must send the Avatar through
 0x157:the pillars to the Serpent Isle!
+0x158:There, we are done.
+0x159:Balance is restored
+0x15a:Serpent Isle, Britannia, your Earth,
+0x15b:the entire universe, all are saved.
+0x15c:Worry not about your friend Dupre.
+0x15d:He is one with us, and content.
+0x15e:Goodbye, Avatar.
+0x15f:We thank you.
+0x160:Well well well, Avatar. You
+0x161:have managed to thwart me once again.
+0x162:By restoring balance where
+0x163:once chaos reigned, you have
+0x164:saved your accursed world.
+0x165:But now here you are, poised
+0x166:at the edge of Eternity.
+0x167:Where would you go?
+0x168:Back to Britannia?
+0x169:To Earth?
+0x16a:Perhaps you would join me in
+0x16b:another world alltogether?
+0x16c:We do have a score to settle!
 %%endsection msgs
 %%section miscnames
 0x0:a/black pearl//s

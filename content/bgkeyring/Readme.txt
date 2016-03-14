@@ -96,7 +96,7 @@ version: 0.11.25
 	In previous releases of this mod, the mod's full source was included in the
 	zip file. Starting with version 0.11.01, only the files required to play the
 	mod are included. You can obtain the source of the mod in the Exult source
-	code, available at the 'Downloads' page or through anonymous SVN access.
+	code, available at the 'Downloads' page or through GitHub.
 	It is in the 'content/bgkeyring' directory.
 
 5	What this mod does
