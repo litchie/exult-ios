@@ -27,6 +27,7 @@
 #include "rect.h"
 #include "tiles.h"
 #include "vgafile.h"
+#include "shapeid.h"
 
 #include <string>   // STL string
 #include <vector>
@@ -139,6 +140,11 @@ class Game_window {
 	bool alternate_drop;    // don't split stacks, can be inverted with a CTRL key modifier
 	bool allow_autonotes;
 	bool in_exult_menu;     // used for menu options
+	bool use_shortcutbar;
+	bool trlucent_bar;
+	bool use_shortcutbar_outline;
+	Pixel_colors outline_color;
+	bool sb_hide_missing;
 	// Private methods:
 	void set_scrolls(Tile_coord cent);
 	void clear_world(bool restoremapedit);      // Clear out world's contents.
@@ -286,6 +292,36 @@ public:
 	}
 	void set_in_exult_menu(bool im) {
 		in_exult_menu = im;
+	}
+	bool using_shortcutbar() const {
+		return use_shortcutbar;
+	}
+	void set_shortcutbar(bool s) {
+		use_shortcutbar = s;
+	}
+	bool get_trlucent_bar() const {
+		return trlucent_bar;
+	}
+	void set_trlucent_bar(bool s) {
+		trlucent_bar = s;
+	}
+	bool using_shortcutbar_outline() const {
+		return use_shortcutbar_outline;
+	}
+	void set_use_shortcutbar_outline(bool s) {
+		use_shortcutbar_outline = s;
+	}
+	Pixel_colors get_outline_color() const {
+		return outline_color;
+	}
+	void set_outline_color(Pixel_colors s) {
+		outline_color = s;
+	}
+	bool sb_hide_missing_items() const {
+		return sb_hide_missing;
+	}
+	void set_sb_hide_missing_items(bool s) {
+		sb_hide_missing = s;
 	}
 	/*
 	 *  Game components:

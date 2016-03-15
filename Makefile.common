@@ -160,6 +160,7 @@ GUMPS_OBJS= \
 	gumps/Gump_manager.o \
 	gumps/Gump_widget.o \
 	gumps/Gump_ToggleButton.o \
+	gumps/ShortcutBar_gump.o \
 	gumps/Jawbone_gump.o \
 	gumps/misc_buttons.o \
 	gumps/Newfile_gump.o \
@@ -305,7 +306,19 @@ EXULT_FLX_OBJECTS = \
 	data/videooptions.shp \
 	data/hp_bar.shp \
 	data/sfx_icon.shp \
-	data/mtgm.mid
+	data/mtgm.mid \
+	data/sb_combat.shp \
+	data/sb_disk.shp \
+	data/sb_jawbone.shp \
+	data/sb_keyring.shp \
+	data/sb_spellbook.shp \
+	data/sb_target.shp \
+	data/sb_food.shp \
+	data/sb_key.shp \
+	data/sb_maps.shp \
+	data/sb_notebook.shp \
+	data/sb_backpack.shp \
+	data/transparentmenu.shp
 
 EXULT_BG_FLX = data/exult_bg.flx data/exult_bg_flx.h
 EXULT_BG_FLX_OBJECTS = \

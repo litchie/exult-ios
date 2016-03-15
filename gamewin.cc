@@ -463,7 +463,6 @@ Game_window::Game_window(
 	config->set("config/gameplay/formation", walk_in_formation ? "yes" : "no",
 	            false);
 
-	// For now this is being set to default enabled because everyone wants it...
 	config->value("config/gameplay/smooth_scrolling", lerping_enabled, 0);
 	config->set("config/gameplay/smooth_scrolling", lerping_enabled, false);
 	config->value("config/gameplay/alternate_drop", str, "no");
@@ -476,6 +475,45 @@ Game_window::Game_window(
 	scroll_with_mouse = str == "yes";
 	config->set("config/gameplay/scroll_with_mouse",
 	            scroll_with_mouse ? "yes" : "no", false);
+	// ShortcutBar
+#ifdef __IPHONEOS__
+	config->value("config/shortcutbar/use_shortcutbar", str, "yes");
+#else
+	config->value("config/shortcutbar/use_shortcutbar", str, "no");
+#endif
+	use_shortcutbar = str == "yes";
+	config->set("config/shortcutbar/use_shortcutbar", use_shortcutbar ? "yes" : "no", false);
+
+	config->value("config/shortcutbar/translucent", str, "yes");
+	trlucent_bar = str == "yes";
+	config->set("config/shortcutbar/translucent", trlucent_bar ? "yes" : "no", false);
+
+	config->value("config/shortcutbar/use_outline_color", str, "yes");
+	use_shortcutbar_outline = str == "yes";
+	config->set("config/shortcutbar/use_outline_color", use_shortcutbar_outline ? "yes" : "no", false);
+
+	config->value("config/shortcutbar/outline_color", str, "black");
+	if(str == "green") {
+		outline_color = POISON_PIXEL;
+	} else if(str == "white") {
+		outline_color = PROTECT_PIXEL;
+	} else if(str == "yellow") {
+		outline_color = CURSED_PIXEL;
+	} else if(str == "blue") {
+		outline_color = CHARMED_PIXEL;
+	} else if(str == "red") {
+		outline_color = HIT_PIXEL;
+	} else if(str == "purple") {
+		outline_color = PARALYZE_PIXEL;
+	} else {
+		str = "black";
+		outline_color = BLACK_PIXEL;
+	}
+	config->set("config/shortcutbar/outline_color", str, false);
+
+	config->value("config/shortcutbar/hide_missing_items", str, "yes");
+	sb_hide_missing = str != "no";
+	config->set("config/shortcutbar/hide_missing_items", sb_hide_missing ? "yes" : "no", false);
 	config->write_back();
 }
 
@@ -803,6 +841,8 @@ void Game_window::toggle_combat(
 		}
 	} else              // Ending combat.
 		Combat::resume();   // Make sure not still paused.
+	if(g_shortcutBar)
+		g_shortcutBar->set_changed();
 }
 
 /*
@@ -909,6 +949,8 @@ void Game_window::resized(
 		snprintf(msg, 80, "%ux%ux%u", neww, newh, newsc);
 		effects->center_text(msg);
 	}
+	if(g_shortcutBar)
+		g_shortcutBar->set_changed();
 }
 
 /*
@@ -2859,6 +2901,8 @@ void Game_window::setup_game(
 	painted = true;         // Main loop uses this.
 	gump_man->close_all_gumps(true);        // Kill gumps.
 	Face_stats::load_config(config);
+	if(use_shortcutbar)
+		g_shortcutBar = new ShortcutBar_gump(0,0);
 
 	// Set palette for time-of-day.
 	clock->reset();

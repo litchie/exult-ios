@@ -21,38 +21,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #ifdef __IPHONEOS__
 
-#include "SDL.h"
 #include "gamewin.h"
 #include "../objs/objs.h"
 
 #include "Modal_gump.h"
 #include <string>
-
-using std::string;
-
-extern "C" int SDLCALL SDL_iPhoneKeyboardShow(SDL_Window *window);
-extern "C" int SDLCALL SDL_iPhoneKeyboardHide(SDL_Window *window);
-extern "C" SDL_bool SDLCALL SDL_iPhoneKeyboardIsShown(SDL_Window *window);
-extern "C" int SDLCALL SDL_iPhoneKeyboardToggle(SDL_Window *window);
-
-class KeyboardButton_gump {
-public:
-	KeyboardButton_gump(int placex = 0, int placey = 0);
-	~KeyboardButton_gump();
-	int handle_event(SDL_Event *event);
-	void paint();
-	bool autopaint;
-
-private:
-	Vga_file iphone_vga;
-	void mouse_down(int mx, int my);
-	void mouse_up(int mx, int my);
-
-	int locx;
-	int locy;
-	int width;
-	int height;
-};
 
 class Gump_button;
 typedef std::vector<Gump_button *> Gump_button_vector;

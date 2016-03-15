@@ -38,6 +38,7 @@
 #include "ready.h"
 #include "weaponinf.h"
 #include "frflags.h"
+#include "exult.h"
 
 #ifdef USE_EXULTSTUDIO
 #include "server.h"
@@ -84,10 +85,13 @@ void Container_game_object::remove(
 ) {
 	if (objects.is_empty())
 		return;
+	int shapenum = obj->get_shapenum();
 	volume_used -= obj->get_volume();
 	obj->set_owner(0);
 	objects.remove(obj);
 	obj->set_invalid();     // No longer part of world.
+	if(g_shortcutBar)
+		g_shortcutBar->check_for_updates(shapenum);
 }
 
 /*
@@ -132,7 +136,10 @@ bool Container_game_object::add(
 		                            info.has_quality() ? obj->get_quality() : c_any_qual,
 		                            obj->get_framenum(), true);
 		if (newquant == 0) { // All added?
+			int shape_num = obj->get_shapenum();
 			obj->remove_this();
+			if(g_shortcutBar)
+				g_shortcutBar->check_for_updates(shape_num);
 			return true;
 		} else if (newquant < quant) // Partly successful.
 			obj->modify_quantity(newquant - quant);
@@ -150,6 +157,8 @@ bool Container_game_object::add(
 	// Guessing:
 	if (get_flag(Obj_flags::okay_to_take))
 		obj->set_flag(Obj_flags::okay_to_take);
+	if(g_shortcutBar)
+		g_shortcutBar->check_for_updates(obj->get_shapenum());
 	return true;
 }
 

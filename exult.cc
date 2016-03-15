@@ -102,6 +102,7 @@
 #include "AudioMixer.h"
 #include "VideoOptions_gump.h"
 #include "Gump_button.h"
+#include "ShortcutBar_gump.h"
 using namespace Pentagram;
 
 #ifdef UNDER_CE
@@ -154,6 +155,7 @@ clsTouchscreen *Touchscreen;
 KeyboardButton_gump *gkeybb;
 SDL_Joystick *sdl_joy;
 #endif
+ShortcutBar_gump *g_shortcutBar;
 
 #if 0 && USECODE_DEBUGGER
 bool    usecode_debugging = false;  // Do we enable the usecode debugger?
@@ -1422,6 +1424,21 @@ static void Handle_event(
 	float ax, ay;
 #endif
 	switch (event.type) {
+	case SDL_USEREVENT: {
+		if (!dragged) {
+			switch (event.user.code) {
+				case SHORTCUT_BAR_USER_EVENT: {
+					if(g_shortcutBar) // just in case
+						g_shortcutBar->onUserEvent(&event);
+					break;
+				}
+				default:
+					break;
+			}
+		}
+		dragging = dragged = false;
+		break;
+	}
 	case SDL_MOUSEBUTTONDOWN: {
 		if (dont_move_mode)
 			break;
@@ -1434,6 +1451,8 @@ static void Handle_event(
 		if (gkeybb->handle_event(&event))
 			break;
 #endif
+		if (g_shortcutBar && g_shortcutBar->handle_event(&event))
+			break;
 		int x, y;
 		gwin->get_win()->screen_to_game(event.button.x, event.button.y, gwin->get_fastmouse(), x, y);
 		if (event.button.button == 1) {
@@ -1565,6 +1584,8 @@ static void Handle_event(
 				click_handled = gwin->drop_dragged(x, y, dragged);
 				Mouse::mouse->set_speed_cursor();
 			}
+			if (g_shortcutBar && g_shortcutBar->handle_event(&event))
+				break;
 			// Last click within .5 secs?
 			if (curtime - last_b1_click < 500 &&
 			        left_down_x - 1 <= x && x <= left_down_x + 1 &&
@@ -1828,6 +1849,8 @@ static int Get_click(
 				if (gkeybb->handle_event(&event))
 					break;
 #endif
+				if (g_shortcutBar && g_shortcutBar->handle_event(&event))
+					break;
 				if (event.button.button == 3)
 					rightclick = true;
 				else if (drag_ok && event.button.button == 1) {
@@ -1846,6 +1869,8 @@ static int Get_click(
 				if (gkeybb->handle_event(&event))
 					break;
 #endif
+				if (g_shortcutBar && g_shortcutBar->handle_event(&event))
+					break;
 				if (event.button.button == 1) {
 					gwin->get_win()->screen_to_game(event.button.x, event.button.y, gwin->get_fastmouse(), x, y);
 					bool drg = dragging, drged = dragged;

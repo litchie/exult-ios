@@ -44,62 +44,6 @@ using std::string;
 using std::cout;
 using std::endl;
 
-KeyboardButton_gump::KeyboardButton_gump(int placex, int placey) {
-	autopaint = true;
-	iphone_vga.load(IPHONE_FLX);
-	width = iphone_vga.get_shape(EXULT_IPHONE_FLX_KEYBOARDBUTTON_SHP, 0)->get_width();
-	height = iphone_vga.get_shape(EXULT_IPHONE_FLX_KEYBOARDBUTTON_SHP, 0)->get_height();
-	locx = placex;
-	locy = placey;
-}
-
-KeyboardButton_gump::~KeyboardButton_gump() {
-
-}
-
-
-void KeyboardButton_gump::paint() {
-	Game_window *gwin = Game_window::get_instance();
-	Shape_manager *sman = Shape_manager::get_instance();
-	sman->paint_shape(locx, locy,
-	                  iphone_vga.get_shape(EXULT_IPHONE_FLX_KEYBOARDBUTTON_SHP, 0), 0);
-	gwin->add_dirty(Rectangle(locx, locy, width + 4, height + 4));
-	gwin->set_painted();
-}
-
-int KeyboardButton_gump::handle_event(SDL_Event *event) {
-	if (event->type == SDL_MOUSEBUTTONDOWN || event->type == SDL_MOUSEBUTTONUP) {
-		void (KeyboardButton_gump::*mouseFunc)(int, int) = &KeyboardButton_gump::mouse_down; // Mouse down by default
-		if (event->type == SDL_MOUSEBUTTONUP)
-			mouseFunc = &KeyboardButton_gump::mouse_up;
-		Game_window *gwin = Game_window::get_instance();
-		int scale = gwin->get_fastmouse() ? 1 : gwin->get_win()->get_scale_factor();
-		int x = event->button.x / scale, y = event->button.y / scale;
-		//std::cout << "x,y: " << x << "," << y << " locx,locy: " << locx << "," << locy << " widthXheight: " << width << "X" << height << std::endl;
-		if (x >= locx && x <= (locx + width)
-		        && y >= locy && y <= (locy + height)) {
-			(*this.*mouseFunc)(x - locx, y - locy);
-			return 1;
-		}
-	}
-
-	return 0;
-}
-
-void KeyboardButton_gump::mouse_down(int mx, int my) {
-	// Find the SDL window...
-	SDL_Window *window = NULL;
-	unsigned int idWin = -1;
-	while (window == NULL) {
-		idWin++;
-		window = SDL_GetWindowFromID(idWin);
-	}
-	SDL_iPhoneKeyboardToggle(window);
-}
-
-void KeyboardButton_gump::mouse_up(int mx, int my) {
-
-}
 
 class Itemmenu_button : public Text_button {
 public:
@@ -145,7 +89,7 @@ public:
 };
 
 Itemmenu_gump::Itemmenu_gump(Game_object_map_xy *mobjxy, int cx, int cy)
-	: Modal_gump(0, cx, cy, EXULT_IPHONE_FLX_TRANSPARENTMENU_SHP, SF_IPHONE_FLX) {
+	: Modal_gump(0, cx, cy, EXULT_FLX_TRANSPARENTMENU_SHP, SF_EXULT_FLX) {
 	objectSelected = NULL;
 	objectSelectedClickXY[0] = -1;
 	objectSelectedClickXY[1] = -1;
@@ -170,7 +114,7 @@ Itemmenu_gump::Itemmenu_gump(Game_object_map_xy *mobjxy, int cx, int cy)
 }
 
 Itemmenu_gump::Itemmenu_gump(Game_object *obj, int ox, int oy, int cx, int cy)
-	: Modal_gump(0, cx, cy, EXULT_IPHONE_FLX_TRANSPARENTMENU_SHP, SF_IPHONE_FLX) {
+	: Modal_gump(0, cx, cy, EXULT_FLX_TRANSPARENTMENU_SHP, SF_EXULT_FLX) {
 	objectSelected = obj;
 	objectAction = ITEMMENU_ACTION_MENU;
 	int btop = 0;
@@ -234,7 +178,10 @@ bool Itemmenu_gump::mouse_down(int mx, int my, int button) {
 
 bool Itemmenu_gump::mouse_up(int mx, int my, int button) {
 	// Not Pushing a button?
-	if (!pushed) return false;
+	if (!pushed) {
+		close();
+		return false;
+	}
 
 	if (pushed->get_pushed() != button) return button == 1;
 
@@ -258,7 +205,6 @@ void Itemmenu_gump::postCloseActions() {
 	int avaY = (avaLoc.ty - gwin->get_scrollty()) * c_tilesize;
 	Game_object *tmpObj;
 	int tmpX, tmpY;
-	bool ret;
 
 	switch (objectAction) {
 	case ITEMMENU_ACTION_USE:
@@ -283,12 +229,23 @@ void Itemmenu_gump::postCloseActions() {
 					gwin->drop_dragged(tmpX, tmpY, true);
 		break;
 	case ITEMMENU_ACTION_NONE:
+	{
+		// Make sure menu is visible on the screen
+		int w = Game_window::get_instance()->get_width();
+		int h = Game_window::get_instance()->get_height();
+		int left = w - 100;
+		int top = h - 100;
+		if (left > x) left = x;
+		if (top > y) top = y;
+
 		// This will draw a selection menu for the object
-		itemgump = new Itemmenu_gump(objectSelected, objectSelectedClickXY[0], objectSelectedClickXY[1], x, y);
+		itemgump = new Itemmenu_gump(objectSelected, objectSelectedClickXY[0], objectSelectedClickXY[1], left, top);
 		Game_window::get_instance()->get_gump_man()->do_modal_gump(itemgump, Mouse::hand);
 		itemgump->postCloseActions();
 		delete itemgump;
 		break;
+	}
+
 	case ITEMMENU_ACTION_MENU:
 		break;
 	}

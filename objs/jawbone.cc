@@ -22,6 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "jawbone.h"
 #include "objiter.h"
+#include "exult.h"
 
 // Add an object.
 bool Jawbone_object::add(
@@ -36,6 +37,8 @@ bool Jawbone_object::add(
 
 	find_teeth();
 	update_frame();
+	if(g_shortcutBar)
+		g_shortcutBar->set_changed();
 	return true;
 }
 
@@ -45,6 +48,8 @@ void Jawbone_object::remove(Game_object *obj) {
 
 	find_teeth();
 	update_frame();
+	if(g_shortcutBar)
+		g_shortcutBar->set_changed();
 }
 
 void Jawbone_object::find_teeth() {

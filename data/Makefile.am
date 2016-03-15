@@ -26,7 +26,19 @@ EXULT_FLX_OBJECTS = \
 	videooptions.shp	\
 	hp_bar.shp		\
 	sfx_icon.shp		\
-	mtgm.mid
+	mtgm.mid			\
+	sb_combat.shp \
+	sb_disk.shp \
+	sb_jawbone.shp \
+	sb_keyring.shp \
+	sb_spellbook.shp \
+	sb_target.shp \
+	sb_food.shp \
+	sb_key.shp \
+	sb_maps.shp \
+	sb_notebook.shp \
+	sb_backpack.shp \
+	transparentmenu.shp
 
 EXULT_BG_FLX_OBJECTS = \
 	bg/flx.in \
@@ -60,8 +72,7 @@ EXULT_SI_FLX_OBJECTS = \
 
 EXULT_IPHONE_FLX_OBJECTS = \
 	iphone/flx.in \
-	iphone/keyboardbutton.shp \
-	iphone/transparentmenu.shp
+	iphone/keyboardbutton.shp
 
 EXULT_BG_PAPERDOL_VGA_OBJECTS = \
 	bg/amulets.shp \
