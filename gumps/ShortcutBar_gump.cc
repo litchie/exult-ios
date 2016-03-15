@@ -160,8 +160,12 @@ void ShortcutBar_gump::createButtons()
 			else
 				buttonItems[3].shapeId = new ShapeID(761, 0, SF_SHAPES_VGA);
 		} else {
-			buttonItems[3].shapeId = new ShapeID(EXULT_FLX_SB_SPELLBOOK_SHP, 1, SF_EXULT_FLX);
-			buttonItems[3].translucent = 1;
+			if (gwin->sb_hide_missing_items()) {
+				buttonItems[3].shapeId = new ShapeID(EXULT_FLX_TRANSPARENTMENU_SHP, 0, SF_EXULT_FLX);
+			} else {
+				buttonItems[3].shapeId = new ShapeID(EXULT_FLX_SB_SPELLBOOK_SHP, 1, SF_EXULT_FLX);
+				buttonItems[3].translucent = 1;
+			}
 		}
 	}
 	buttonItems[3].name = "spellbook";
