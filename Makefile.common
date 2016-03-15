@@ -448,6 +448,8 @@ gumps/Newfile_gump.o : gumps/Newfile_gump.cc $(EXULT_FLX)
 
 gumps/Notebook_gump.o : gumps/Notebook_gump.cc $(EXULT_FLX)
 
+gumps/ShortcutBar_gump.o : gumps/ShortcutBar_gump.cc $(EXULT_FLX)
+
 gumps/Stats_gump.o : gumps/Stats_gump.cc $(EXULT_FLX)
 
 gumps/VideoOptions_gump.o : gumps/VideoOptions_gump.cc $(EXULT_FLX)
