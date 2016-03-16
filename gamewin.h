@@ -140,9 +140,7 @@ class Game_window {
 	bool alternate_drop;    // don't split stacks, can be inverted with a CTRL key modifier
 	bool allow_autonotes;
 	bool in_exult_menu;     // used for menu options
-	bool use_shortcutbar;
-	bool trlucent_bar;
-	bool use_shortcutbar_outline;
+	uint8 use_shortcutbar; // 0 = no, 1 = trans, 2 = yes
 	Pixel_colors outline_color;
 	bool sb_hide_missing;
 	// Private methods:
@@ -294,20 +292,11 @@ public:
 		in_exult_menu = im;
 	}
 	bool using_shortcutbar() const {
+		return use_shortcutbar > 0;
+	}
+	void set_shortcutbar(uint8 s);
+	uint8 get_shortcutbar_type() const {
 		return use_shortcutbar;
-	}
-	void set_shortcutbar(bool s);
-	bool get_trlucent_bar() const {
-		return trlucent_bar;
-	}
-	void set_trlucent_bar(bool s) {
-		trlucent_bar = s;
-	}
-	bool using_shortcutbar_outline() const {
-		return use_shortcutbar_outline;
-	}
-	void set_use_shortcutbar_outline(bool s) {
-		use_shortcutbar_outline = s;
 	}
 	Pixel_colors get_outline_color() const {
 		return outline_color;

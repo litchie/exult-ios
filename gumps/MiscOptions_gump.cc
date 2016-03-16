@@ -157,15 +157,15 @@ void MiscOptions_gump::build_buttons() {
 	sc_enabled_txt[1] = "transparent";
 	sc_enabled_txt[2] = "Yes";
 
-	sc_outline_txt = new string[8];
-	sc_outline_txt[0] = "No";
-	sc_outline_txt[1] = "green";
-	sc_outline_txt[2] = "white";
-	sc_outline_txt[3] = "yellow";
-	sc_outline_txt[4] = "blue";
-	sc_outline_txt[5] = "red";
-	sc_outline_txt[6] = "purple";
-	sc_outline_txt[7] = "black";
+	sc_outline_txt = new string[8]; // keep in order of Pixel_colors
+	sc_outline_txt[0] = "green";
+	sc_outline_txt[1] = "white";
+	sc_outline_txt[2] = "yellow";
+	sc_outline_txt[3] = "blue";
+	sc_outline_txt[4] = "red";
+	sc_outline_txt[5] = "purple";
+	sc_outline_txt[6] = "black";
+	sc_outline_txt[7] = "No"; // needs to be last
 
 	string *yesNo4 = new string[2];
 	yesNo4[0] = "No";
@@ -220,19 +220,9 @@ void MiscOptions_gump::load_settings() {
 	config->value("config/gameplay/skip_splash", yn, "no");
 	menu_intro = (yn == "yes");
 
-	if(gwin->using_shortcutbar()) {
-		if(gwin->get_trlucent_bar())
-			sc_enabled = 1;
-		else
-			sc_enabled = 2;
-	} else {
-		sc_enabled = 0;
-	}
-	if(gwin->using_shortcutbar_outline())
-		sc_outline = gwin->get_outline_color() + 1;
-	else
-		sc_outline = 0;
-	sb_hide_missing = gwin->sb_hide_missing_items() ? true : false;
+	sc_enabled = gwin->get_shortcutbar_type();
+	sc_outline = gwin->get_outline_color();
+	sb_hide_missing = gwin->sb_hide_missing_items();
 
 	difficulty = Combat::difficulty;
 	if (difficulty < -3)
@@ -281,14 +271,9 @@ void MiscOptions_gump::save_settings() {
 	config->set("config/shortcutbar/use_outline_color", sc_outline_txt[sc_outline], false);
 	config->set("config/shortcutbar/hide_missing_items", sb_hide_missing ? "yes" : "no", false);
 
-	gwin->set_trlucent_bar(sc_enabled == 1);
-	if(!gwin->get_trlucent_bar())
-		gwin->set_use_shortcutbar_outline(false);
-	else
-		gwin->set_use_shortcutbar_outline(sc_outline != 0);
-	gwin->set_outline_color((Pixel_colors)(sc_outline == 0 ? 0 : sc_outline - 1));
+	gwin->set_outline_color((Pixel_colors)(sc_outline));
 	gwin->set_sb_hide_missing_items(sb_hide_missing);
-	gwin->set_shortcutbar(sc_enabled != 0);
+	gwin->set_shortcutbar((uint8)sc_enabled);
 	if(g_shortcutBar)
 		g_shortcutBar->set_changed();
 

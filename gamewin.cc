@@ -482,22 +482,24 @@ Game_window::Game_window(
 	config->value("config/shortcutbar/use_shortcutbar", str, "no");
 #endif
 	if(str == "no") {
-		trlucent_bar = use_shortcutbar = false;
+		use_shortcutbar = 0;
 	} else if(str == "yes") {
-		use_shortcutbar = true;
-		trlucent_bar = false;
+		use_shortcutbar = 2;
 	} else {
 		str = "translucent";
-		use_shortcutbar = trlucent_bar = true;
+		use_shortcutbar = 1;
 	}
 	config->set("config/shortcutbar/use_shortcutbar", str, false);
 
+#ifdef __IPHONEOS__
 	config->value("config/shortcutbar/use_outline_color", str, "black");
-	if(str == "no" || !trlucent_bar) 
-		use_shortcutbar_outline = false;
-	else
-		use_shortcutbar_outline = true;
-	if(str == "green") {
+#else
+	config->value("config/shortcutbar/use_outline_color", str, "no");
+#endif
+
+	if(str == "no") {
+		outline_color = NPIXCOLORS;
+	} else if(str == "green") {
 		outline_color = POISON_PIXEL;
 	} else if(str == "white") {
 		outline_color = PROTECT_PIXEL;
@@ -510,10 +512,10 @@ Game_window::Game_window(
 	} else if(str == "purple") {
 		outline_color = PARALYZE_PIXEL;
 	} else {
-		if(str != "no")
-			str = "black";
+		str = "black";
 		outline_color = BLACK_PIXEL;
 	}
+	config->set("config/shortcutbar/hide_missing_items", str, false);
 
 	config->value("config/shortcutbar/hide_missing_items", str, "yes");
 	sb_hide_missing = str != "no";
@@ -2905,7 +2907,7 @@ void Game_window::setup_game(
 	painted = true;         // Main loop uses this.
 	gump_man->close_all_gumps(true);        // Kill gumps.
 	Face_stats::load_config(config);
-	if(use_shortcutbar)
+	if(using_shortcutbar())
 		g_shortcutBar = new ShortcutBar_gump(0,0);
 
 	// Set palette for time-of-day.
@@ -3192,11 +3194,11 @@ void Game_window::got_bad_feeling(int odds) {
 	}
 }
 
-void Game_window::set_shortcutbar(bool s) {
-	if(use_shortcutbar == s)
+void Game_window::set_shortcutbar(uint8 s) {
+	if(use_shortcutbar == s || using_shortcutbar() && s > 0)
 		return;
 	use_shortcutbar = s;
-	if(use_shortcutbar) {
+	if(using_shortcutbar()) {
 		g_shortcutBar = new ShortcutBar_gump(0,0);
 	} else {
 		gump_man->remove_gump(g_shortcutBar);

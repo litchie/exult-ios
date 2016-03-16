@@ -109,7 +109,7 @@ void ShortcutBar_gump::createButtons()
 	int y = starty + 20;
 
 	memset(buttonItems, 0, sizeof(buttonItems));
-	bool trlucent = gwin->get_trlucent_bar() && starty >= 0;
+	bool trlucent = gwin->get_shortcutbar_type() == 1 && starty >= 0;
 	// disk
 	buttonItems[0].shapeId = new ShapeID(EXULT_FLX_SB_DISK_SHP, trlucent ? 1 : 0, SF_EXULT_FLX);
 	buttonItems[0].name = "disk";
@@ -259,7 +259,7 @@ void ShortcutBar_gump::createButtons()
 		buttonItems[i].rect = new Rectangle(x, y, barItemWidth, height);
 		// this is safe to do since it only effects certain palette colors
 		// which will be color cycling otherwise
-		if (gwin->get_trlucent_bar())
+		if (trlucent)
 			buttonItems[i].translucent = 1;
 	}
 }
@@ -322,7 +322,7 @@ void ShortcutBar_gump::paint()
 		int y = locy + buttonItems[i].rect->y + buttonItems[i].shapeOffsetY;
 		sman->paint_shape(x, y, buttonItems[i].shapeId->get_shape(), buttonItems[i].translucent);
 		// when the bar is on the game screen it may need an outline
-		if (gwin->using_shortcutbar_outline() && starty >= 0)
+		if (gwin->get_outline_color() < NPIXCOLORS && starty >= 0)
 			sman->paint_outline(x, y, buttonItems[i].shapeId->get_shape(), gwin->get_outline_color());
 	}
 
