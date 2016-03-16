@@ -51,6 +51,10 @@ ifndef SDL2 # hasn't been updated to support SDL2 yet
 	OPENGL_CFLAGS:=-DHAVE_OPENGL
 endif
 
+### FLUIDSYNTH libs, for Exult.
+# If this doesn't work, insert output of `pkg-config --libs fluidsynth` manually
+FLUIDSYNTH_LIBS:=$(shell pkg-config --libs fluidsynth)
+
 ### GTK+ libs and includes, for Exult Studio.
 # If this doesn't work, insert output of `pkg-config --cflags gtk+-win32-2.0` manually
 GTK_INCLUDES:=$(shell pkg-config --cflags gtk+-win32-2.0)
@@ -132,7 +136,7 @@ CFLAGS=$(strip $(OPT_LEVEL) -mms-bitfields)
 CC=gcc
 
 LDFLAGS=-static-libgcc -static-libstdc++
-LIBS=-lmingw32 $(SDL_LIBS) $(ZIP_LIBS) $(OPENGL_LIBS) $(OGG_LIBS) -lfluidsynth -ldsound -lwinmm -lole32 -luuid -lws2_32 -mwindows $(MTHREADS)
+LIBS=-lmingw32 $(SDL_LIBS) $(ZIP_LIBS) $(OPENGL_LIBS) $(OGG_LIBS) $(FLUIDSYNTH_LIBS) -ldsound -lwinmm -lole32 -luuid -lws2_32 -mwindows $(MTHREADS)
 
 EXEC=Exult.exe
 EXEEXT=.exe
