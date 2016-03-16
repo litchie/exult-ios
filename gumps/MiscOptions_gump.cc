@@ -289,7 +289,8 @@ void MiscOptions_gump::save_settings() {
 	gwin->set_outline_color((Pixel_colors)(sc_outline == 0 ? 0 : sc_outline - 1));
 	gwin->set_sb_hide_missing_items(sb_hide_missing);
 	gwin->set_shortcutbar(sc_enabled != 0);
-	g_shortcutBar->set_changed();
+	if(g_shortcutBar)
+		g_shortcutBar->set_changed();
 
 	Combat::difficulty = difficulty - 3;
 	config->set("config/gameplay/combat/difficulty",

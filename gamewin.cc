@@ -3196,8 +3196,12 @@ void Game_window::set_shortcutbar(bool s) {
 	if(use_shortcutbar == s)
 		return;
 	use_shortcutbar = s;
-	if(use_shortcutbar)
+	if(use_shortcutbar) {
 		g_shortcutBar = new ShortcutBar_gump(0,0);
-	else
+	} else {
 		gump_man->remove_gump(g_shortcutBar);
+		if(g_shortcutBar)
+			delete g_shortcutBar;
+		g_shortcutBar = NULL;
+	}
 }
