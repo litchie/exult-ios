@@ -24,6 +24,7 @@ EXULT_FLX_OBJECTS = \
 	gamemenu.shp		\
 	audiooptions.shp	\
 	videooptions.shp	\
+	miscoptions.shp		\
 	hp_bar.shp		\
 	sfx_icon.shp		\
 	mtgm.mid			\

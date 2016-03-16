@@ -304,6 +304,7 @@ EXULT_FLX_OBJECTS = \
 	data/gamemenu.shp \
 	data/audiooptions.shp \
 	data/videooptions.shp \
+	data/miscoptions.shp \
 	data/hp_bar.shp \
 	data/sfx_icon.shp \
 	data/mtgm.mid \

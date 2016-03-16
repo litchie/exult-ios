@@ -1,3 +1,9 @@
+2016-03-16	Malignant Manor <malignantmanor@users.sourceforge.net>
+	* party.cc: Update ShortcutBar_gump when adding/removing party members.
+	* data/miscoptions.shp, gumps/MiscOptions_gump.*, gamewin,* : 
+	  AddShortcutBar_gump cfg options to the menu.
+	* msvcstuff/Exult.vcproj, msvc9/Exult.vcproj: update for ShortcutBar_gump
+
 2016-03-15	Malignant Manor <malignantmanor@users.sourceforge.net>
 	* Add ShortcutBar_gump from https://github.com/litchie/exult-ios fork.
 

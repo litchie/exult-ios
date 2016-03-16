@@ -477,22 +477,26 @@ Game_window::Game_window(
 	            scroll_with_mouse ? "yes" : "no", false);
 	// ShortcutBar
 #ifdef __IPHONEOS__
-	config->value("config/shortcutbar/use_shortcutbar", str, "yes");
+	config->value("config/shortcutbar/use_shortcutbar", str, "translucent");
 #else
 	config->value("config/shortcutbar/use_shortcutbar", str, "no");
 #endif
-	use_shortcutbar = str == "yes";
-	config->set("config/shortcutbar/use_shortcutbar", use_shortcutbar ? "yes" : "no", false);
+	if(str == "no") {
+		trlucent_bar = use_shortcutbar = false;
+	} else {
+		use_shortcutbar = true;
+	}
+	if(str == "yes")
+		trlucent_bar = false;
+	else
+		trlucent_bar = true;
+	config->set("config/shortcutbar/use_shortcutbar", str, false);
 
-	config->value("config/shortcutbar/translucent", str, "yes");
-	trlucent_bar = str == "yes";
-	config->set("config/shortcutbar/translucent", trlucent_bar ? "yes" : "no", false);
-
-	config->value("config/shortcutbar/use_outline_color", str, "yes");
-	use_shortcutbar_outline = str == "yes";
-	config->set("config/shortcutbar/use_outline_color", use_shortcutbar_outline ? "yes" : "no", false);
-
-	config->value("config/shortcutbar/outline_color", str, "black");
+	config->value("config/shortcutbar/use_outline_color", str, "black");
+	if(str == "no" || !trlucent_bar) 
+		use_shortcutbar_outline = false;
+	else
+		use_shortcutbar_outline = true;
 	if(str == "green") {
 		outline_color = POISON_PIXEL;
 	} else if(str == "white") {
@@ -506,10 +510,10 @@ Game_window::Game_window(
 	} else if(str == "purple") {
 		outline_color = PARALYZE_PIXEL;
 	} else {
-		str = "black";
+		if(str != "no")
+			str = "black";
 		outline_color = BLACK_PIXEL;
 	}
-	config->set("config/shortcutbar/outline_color", str, false);
 
 	config->value("config/shortcutbar/hide_missing_items", str, "yes");
 	sb_hide_missing = str != "no";
@@ -3186,4 +3190,14 @@ void Game_window::got_bad_feeling(int odds) {
 		effects->remove_text_effect(main_actor);
 		effects->add_text(badfeeling, main_actor);
 	}
+}
+
+void Game_window::set_shortcutbar(bool s) {
+	if(use_shortcutbar == s)
+		return;
+	use_shortcutbar = s;
+	if(use_shortcutbar)
+		g_shortcutBar = new ShortcutBar_gump(0,0);
+	else
+		gump_man->remove_gump(g_shortcutBar);
 }

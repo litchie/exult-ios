@@ -41,8 +41,8 @@
 #include "Notebook_gump.h"
 using std::string;
 
-static const int rowy[] = { 4, 16, 28, 40, 52, 64, 76, 88, 100, 112, 124, 136, 148 };
-static const int colx[] = { 35, 50, 120, 170, 192, 215 };
+static const int rowy[] = { 4, 16, 28, 40, 52, 64, 76, 88, 100, 112, 124, 136, 148, 160, 172 };
+static const int colx[] = { 35, 50, 120, 170, 192, 211 };
 
 static const char *oktext = "OK";
 static const char *canceltext = "CANCEL";
@@ -107,6 +107,12 @@ void MiscOptions_gump::toggle(Gump_button *btn, int state) {
 		menu_intro = state;
 	else if (btn == buttons[id_usecode_intro])
 		usecode_intro = state;
+	else if (btn == buttons[id_sc_enabled])
+		sc_enabled = state;
+	else if (btn == buttons[id_sc_outline])
+		sc_outline = state;
+	else if (btn == buttons[id_sb_hide_missing])
+		sb_hide_missing = state;
 	else if (btn == buttons[id_difficulty])
 		difficulty = state;
 	else if (btn == buttons[id_show_hits])
@@ -146,35 +152,64 @@ void MiscOptions_gump::build_buttons() {
 	autonotes_text[0] = "No";
 	autonotes_text[1] = "Yes";
 
-	buttons[id_scroll_mouse] = new MiscTextToggle(this, yesNo1, colx[5], rowy[0],
-	        40, scroll_mouse, 2);
-	buttons[id_menu_intro] = new MiscTextToggle(this, yesNo2, colx[5], rowy[1],
-	        40, menu_intro, 2);
-	buttons[id_usecode_intro] = new MiscTextToggle(this, yesNo3, colx[5], rowy[2],
-	        40, usecode_intro, 2);
-	buttons[id_alternate_drop] = new MiscTextToggle(this, stacks_text, colx[5], rowy[3],
-	        40, alternate_drop, 2);
-	buttons[id_allow_autonotes] = new MiscTextToggle(this, autonotes_text, colx[5], rowy[4],
-	        40, allow_autonotes, 2);
-	buttons[id_difficulty] = new MiscTextToggle(this, diffs, colx[3], rowy[8],
-	        85, difficulty, 7);
-	buttons[id_show_hits] = new MiscEnabledToggle(this, colx[3], rowy[9],
-	        85, show_hits);
+	string *sc_enabled_txt = new string[3];
+	sc_enabled_txt[0] = "No";
+	sc_enabled_txt[1] = "transparent";
+	sc_enabled_txt[2] = "Yes";
+
+	sc_outline_txt = new string[8];
+	sc_outline_txt[0] = "No";
+	sc_outline_txt[1] = "green";
+	sc_outline_txt[2] = "white";
+	sc_outline_txt[3] = "yellow";
+	sc_outline_txt[4] = "blue";
+	sc_outline_txt[5] = "red";
+	sc_outline_txt[6] = "purple";
+	sc_outline_txt[7] = "black";
+
+	string *yesNo4 = new string[2];
+	yesNo4[0] = "No";
+	yesNo4[1] = "Yes";
+
+	int y_index = 0;
+	int small_size = 44;
+	int large_size = 85;
+	buttons[id_scroll_mouse] = new MiscTextToggle(this, yesNo1, colx[5], rowy[y_index],
+	        small_size, scroll_mouse, 2);
+	buttons[id_menu_intro] = new MiscTextToggle(this, yesNo2, colx[5], rowy[++y_index],
+	        small_size, menu_intro, 2);
+	buttons[id_usecode_intro] = new MiscTextToggle(this, yesNo3, colx[5], rowy[++y_index],
+	        small_size, usecode_intro, 2);
+	buttons[id_alternate_drop] = new MiscTextToggle(this, stacks_text, colx[5], rowy[++y_index],
+	        small_size, alternate_drop, 2);
+	buttons[id_allow_autonotes] = new MiscTextToggle(this, autonotes_text, colx[5], rowy[++y_index],
+	        small_size, allow_autonotes, 2);
+	buttons[id_sc_enabled] = new MiscTextToggle(this, sc_enabled_txt, colx[3], rowy[++y_index],
+	        large_size, sc_enabled, 3);
+	buttons[id_sc_outline] = new MiscTextToggle(this, sc_outline_txt, colx[5], rowy[++y_index],
+	        small_size, sc_outline, 8);
+	buttons[id_sb_hide_missing] = new MiscTextToggle(this, yesNo4, colx[5], rowy[++y_index],
+	        small_size, sb_hide_missing, 2);
+	// two row gap
+	buttons[id_difficulty] = new MiscTextToggle(this, diffs, colx[3], rowy[y_index+=3],
+	        large_size, difficulty, 7);
+	buttons[id_show_hits] = new MiscEnabledToggle(this, colx[3], rowy[++y_index],
+	        large_size, show_hits);
 
 	std::string *modes = new std::string[2];
 	modes[0] = "Original";
 	modes[1] = "Space pauses";
-	buttons[id_mode] = new MiscTextToggle(this, modes, colx[3], rowy[10],
-	                                      85, mode, 2);
+	buttons[id_mode] = new MiscTextToggle(this, modes, colx[3], rowy[++y_index],
+	                                      large_size, mode, 2);
 	std::string *charmedDiff = new std::string[2];
 	charmedDiff[0] = "Normal";
 	charmedDiff[1] = "Hard";
-	buttons[id_charmDiff] = new MiscTextToggle(this, charmedDiff, colx[3], rowy[11],
-	        85, charmDiff, 2);
+	buttons[id_charmDiff] = new MiscTextToggle(this, charmedDiff, colx[3], rowy[++y_index],
+	        large_size, charmDiff, 2);
 	// Ok
-	buttons[id_ok] = new MiscOptions_button(this, oktext, colx[0], rowy[12]);
+	buttons[id_ok] = new MiscOptions_button(this, oktext, colx[0], rowy[++y_index]);
 	// Cancel
-	buttons[id_cancel] = new MiscOptions_button(this, canceltext, colx[4], rowy[12]);
+	buttons[id_cancel] = new MiscOptions_button(this, canceltext, colx[4], rowy[y_index]);
 }
 
 void MiscOptions_gump::load_settings() {
@@ -184,6 +219,21 @@ void MiscOptions_gump::load_settings() {
 	usecode_intro = (yn == "yes");
 	config->value("config/gameplay/skip_splash", yn, "no");
 	menu_intro = (yn == "yes");
+
+	if(gwin->using_shortcutbar()) {
+		if(gwin->get_trlucent_bar())
+			sc_enabled = 1;
+		else
+			sc_enabled = 2;
+	} else {
+		sc_enabled = 0;
+	}
+	if(gwin->using_shortcutbar_outline())
+		sc_outline = gwin->get_outline_color() + 1;
+	else
+		sc_outline = 0;
+	sb_hide_missing = gwin->sb_hide_missing_items() ? true : false;
+
 	difficulty = Combat::difficulty;
 	if (difficulty < -3)
 		difficulty = -3;
@@ -200,8 +250,8 @@ void MiscOptions_gump::load_settings() {
 }
 
 MiscOptions_gump::MiscOptions_gump()
-	: Modal_gump(0, EXULT_FLX_GAMEPLAYOPTIONS_SHP, SF_EXULT_FLX) {
-	set_object_area(Rectangle(0, 0, 0, 0), 8, 162);//++++++ ???
+	: Modal_gump(0, EXULT_FLX_MISCOPTIONS_SHP, SF_EXULT_FLX) {
+	set_object_area(Rectangle(0, 0, 0, 0), 8, 184);//++++++ ???
 
 	load_settings();
 	build_buttons();
@@ -221,6 +271,26 @@ void MiscOptions_gump::save_settings() {
 	            usecode_intro ? "yes" : "no", false);
 	config->set("config/gameplay/skip_splash",
 	            menu_intro ? "yes" : "no", false);
+
+	string str = "no";
+	if(sc_enabled == 1)
+		str = "transparent";
+	else if(sc_enabled == 2)
+		str = "yes";
+	config->set("config/shortcutbar/use_shortcutbar", str, false);
+	config->set("config/shortcutbar/use_outline_color", sc_outline_txt[sc_outline], false);
+	config->set("config/shortcutbar/hide_missing_items", sb_hide_missing ? "yes" : "no", false);
+
+	gwin->set_trlucent_bar(sc_enabled == 1);
+	if(!gwin->get_trlucent_bar())
+		gwin->set_use_shortcutbar_outline(false);
+	else
+		gwin->set_use_shortcutbar_outline(sc_outline != 0);
+	gwin->set_outline_color((Pixel_colors)(sc_outline == 0 ? 0 : sc_outline - 1));
+	gwin->set_sb_hide_missing_items(sb_hide_missing);
+	gwin->set_shortcutbar(sc_enabled != 0);
+	g_shortcutBar->set_changed();
+
 	Combat::difficulty = difficulty - 3;
 	config->set("config/gameplay/combat/difficulty",
 	            Combat::difficulty, false);
@@ -228,7 +298,7 @@ void MiscOptions_gump::save_settings() {
 	config->set("config/gameplay/combat/show_hits",
 	            show_hits ? "yes" : "no", false);
 	Combat::mode = static_cast<Combat::Mode>(mode);
-	std::string str = Combat::mode == Combat::keypause ? "keypause"
+	str = Combat::mode == Combat::keypause ? "keypause"
 	                  : "original";
 	config->set("config/gameplay/combat/mode", str, false);
 	Combat::charmed_more_difficult = (charmDiff != 0);
@@ -240,7 +310,6 @@ void MiscOptions_gump::save_settings() {
 	gwin->set_allow_autonotes(allow_autonotes);
 	config->set("config/gameplay/allow_autonotes",
 	            allow_autonotes ? "yes" : "no", false);
-
 	config->write_back();
 }
 
@@ -251,17 +320,21 @@ void MiscOptions_gump::paint() {
 			buttons[i]->paint();
 	Font *font = fontManager.get_font("SMALL_BLACK_FONT");
 	Image_window8 *iwin = gwin->get_win();
-	font->paint_text(iwin->get_ib8(), "Scroll game view with mouse:", x + colx[0], y + rowy[0] + 1);
-	font->paint_text(iwin->get_ib8(), "Skip intro:", x + colx[0], y + rowy[1] + 1);
-	font->paint_text(iwin->get_ib8(), "Skip scripted first scene:", x + colx[0], y + rowy[2] + 1);
-	font->paint_text(iwin->get_ib8(), "Alternate drag'n'drop:", x + colx[0], y + rowy[3] + 1);
-	font->paint_text(iwin->get_ib8(), "Allow Autonotes:", x + colx[0], y + rowy[4] + 1);
-
-	font->paint_text(iwin->get_ib8(), "Combat Options:", x + colx[0], y + rowy[7] + 1);
-	font->paint_text(iwin->get_ib8(), "Difficulty:", x + colx[1], y + rowy[8] + 1);
-	font->paint_text(iwin->get_ib8(), "Show Hits:", x + colx[1], y + rowy[9] + 1);
-	font->paint_text(iwin->get_ib8(), "Mode:", x + colx[1], y + rowy[10] + 1);
-	font->paint_text(iwin->get_ib8(), "Charmed Difficulty:", x + colx[1], y + rowy[11] + 1);
+	int y_index = 0;
+	font->paint_text(iwin->get_ib8(), "Scroll game view with mouse:", x + colx[0], y + rowy[y_index] + 1);
+	font->paint_text(iwin->get_ib8(), "Skip intro:", x + colx[0], y + rowy[++y_index] + 1);
+	font->paint_text(iwin->get_ib8(), "Skip scripted first scene:", x + colx[0], y + rowy[++y_index] + 1);
+	font->paint_text(iwin->get_ib8(), "Alternate drag'n'drop:", x + colx[0], y + rowy[++y_index] + 1);
+	font->paint_text(iwin->get_ib8(), "Allow Autonotes:", x + colx[0], y + rowy[++y_index] + 1);
+	font->paint_text(iwin->get_ib8(), "Use ShortcutBar :", x + colx[0], y + rowy[++y_index] + 1);
+	font->paint_text(iwin->get_ib8(), "Use outline color :", x + colx[1], y + rowy[++y_index] + 1);
+	font->paint_text(iwin->get_ib8(), "Hide missing items:", x + colx[1], y + rowy[++y_index] + 1);
+	// 1 row gap
+	font->paint_text(iwin->get_ib8(), "Combat Options:", x + colx[0], y + rowy[y_index+=2] + 1);
+	font->paint_text(iwin->get_ib8(), "Difficulty:", x + colx[1], y + rowy[++y_index] + 1);
+	font->paint_text(iwin->get_ib8(), "Show Hits:", x + colx[1], y + rowy[++y_index] + 1);
+	font->paint_text(iwin->get_ib8(), "Mode:", x + colx[1], y + rowy[++y_index] + 1);
+	font->paint_text(iwin->get_ib8(), "Charmed Difficulty:", x + colx[1], y + rowy[++y_index] + 1);
 	gwin->set_painted();
 }
 

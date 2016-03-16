@@ -38,6 +38,10 @@ private:
 	bool alternate_drop;
 	bool allow_autonotes;
 	void build_buttons();
+	int sc_enabled;
+	int sc_outline;
+	bool sb_hide_missing;
+	std::string *sc_outline_txt;
 
 	enum button_ids {
 	    id_first = 0,
@@ -48,6 +52,9 @@ private:
 	    id_usecode_intro,
 	    id_alternate_drop,
 	    id_allow_autonotes,
+	    id_sc_enabled,
+	    id_sc_outline,
+	    id_sb_hide_missing,
 	    id_difficulty,
 	    id_show_hits,
 	    id_mode,

@@ -296,9 +296,7 @@ public:
 	bool using_shortcutbar() const {
 		return use_shortcutbar;
 	}
-	void set_shortcutbar(bool s) {
-		use_shortcutbar = s;
-	}
+	void set_shortcutbar(bool s);
 	bool get_trlucent_bar() const {
 		return trlucent_bar;
 	}

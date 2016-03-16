@@ -1286,14 +1286,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\gumps\MiscOptions_gump.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\gumps\MiscOptions_gump.h"
-					>
-				</File>
-				<File
 					RelativePath="..\gumps\CombatStats_gump.cc"
 					>
 				</File>
@@ -1418,6 +1410,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\gumps\MiscOptions_gump.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\gumps\MiscOptions_gump.h"
+					>
+				</File>
+				<File
 					RelativePath="..\gumps\Modal_gump.h"
 					>
 				</File>
@@ -1451,6 +1451,14 @@
 				</File>
 				<File
 					RelativePath="..\gumps\Scroll_gump.h"
+					>
+				</File>
+				<File
+					RelativePath="..\gumps\ShortcutBar_gump.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\gumps\ShortcutBar_gump.h"
 					>
 				</File>
 				<File
