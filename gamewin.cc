@@ -483,13 +483,13 @@ Game_window::Game_window(
 #endif
 	if(str == "no") {
 		trlucent_bar = use_shortcutbar = false;
-	} else {
+	} else if(str == "yes") {
 		use_shortcutbar = true;
-	}
-	if(str == "yes")
 		trlucent_bar = false;
-	else
-		trlucent_bar = true;
+	} else {
+		str = "translucent";
+		use_shortcutbar = trlucent_bar = true;
+	}
 	config->set("config/shortcutbar/use_shortcutbar", str, false);
 
 	config->value("config/shortcutbar/use_outline_color", str, "black");
