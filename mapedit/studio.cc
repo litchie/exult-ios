@@ -2926,7 +2926,7 @@ void convertFromUTF8::convert(gchar *&_convstr, const char *str, const char *enc
 			*end = 0;
 			// Must always be < 5, but just to be safe...
 			//int len = end - ptr;
-			ptrdiff_t len = end - ptr;
+			std::ptrdiff_t len = end - ptr;
 			size_t pos;
 
 			while ((pos = force.find(illegal)) != string::npos)

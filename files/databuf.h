@@ -325,7 +325,7 @@ public:
 	};
 
 	virtual bool eof() {
-		return (buf_ptr - buf) >= static_cast<ptrdiff_t>(size);
+		return (buf_ptr - buf) >= static_cast<std::ptrdiff_t>(size);
 	}
 
 };
