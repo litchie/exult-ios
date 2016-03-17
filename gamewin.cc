@@ -3195,8 +3195,12 @@ void Game_window::got_bad_feeling(int odds) {
 }
 
 void Game_window::set_shortcutbar(uint8 s) {
-	if(use_shortcutbar == s || using_shortcutbar() && s > 0)
+	if(use_shortcutbar == s)
 		return;
+	if(using_shortcutbar() && s > 0) {
+		use_shortcutbar = s;
+		return;
+	}
 	use_shortcutbar = s;
 	if(using_shortcutbar()) {
 		g_shortcutBar = new ShortcutBar_gump(0,0);

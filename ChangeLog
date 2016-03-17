@@ -1,3 +1,9 @@
+2016-03-17	Malignant Manor <malignantmanor@users.sourceforge.net>
+	* gamewin.cc: Fix use_shortcutbar not changing when switching between yes
+	  and translucent
+	* files/databuf.h, files/U7obj.h, mapedit/studio.cc: Add std:: in front of
+	  ptrdiff_t required for some compilers to compile.
+
 2016-03-16	Malignant Manor <malignantmanor@users.sourceforge.net>
 	* party.cc: Update ShortcutBar_gump when adding/removing party members.
 	* data/miscoptions.shp, gumps/MiscOptions_gump.*, gamewin.*, data/flx.in,
