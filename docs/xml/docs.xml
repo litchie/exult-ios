@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE readme SYSTEM "docs.dtd">
-<readme title="Exult" changed="13 March 2016(GMT)">	
+<readme title="Exult" changed="17 March 2016(GMT)">	
 	<section title="Introduction">
 		<sub name="exult_version">
 			<header>Exult Version</header>
@@ -280,7 +280,7 @@
 							</configtag>
 							<configtag name="textbackground">
 							-1
-							<comment>**with this enabled all the text in the games have a coloured background </comment>
+							<comment>**with this enabled all the text in the games have a colored background </comment>
 							<comment>to improve readability. 0 gives a solid light gray,  1 dark purple, </comment>
 							<comment>2 bright yellow, 3 light blue, 4 dark green, 5 dark red, 6 purple, </comment>
 							<comment>7 orange, 8 light gray, 9 green, 10 yellow, 11 pale blue, 12 dark green, </comment>
@@ -372,7 +372,7 @@
 								</configtag>
 								<configtag name="show_hits">
 								no
-								<comment>**no is default. With yes you see the hitpoints of NPCs </comment>
+								<comment>**no is default. With yes you see the hit points of NPCs </comment>
 								<comment>in brackets after their name.</comment>
 								</configtag>
 								<configtag name="charmDifficulty">
@@ -639,6 +639,23 @@
 								<configtag name="blue"  manual="true">
 								1
 								</configtag>
+							</configtag>
+						</configtag>
+						<configtag name="shortcutbar">
+							<configtag name="use_shortcutbar">
+							no
+							<comment>**options are yes/translucent (will not be translucent if not on </comment> 
+							<comment>map, default on iOS)</comment>
+							</configtag>
+							<configtag name="use_outline_color">
+							black
+							<comment>**outline around shortcutbar buttons only if the bar is on the map.</comment> 
+							<comment>Options are: no, green, white, yellow, blue, red, purple, black (default).</comment>
+							</configtag>
+							<configtag name="hide_missing_items">
+							yes
+							<comment>**hides ShortcutBar buttons the party doesn't have.</comment> 
+							<comment>no shows those buttons greyed out.</comment>
 							</configtag>
 						</configtag>
 						<configtag name="debug"  manual="true">
@@ -1900,7 +1917,54 @@
 			</body>
 		</sub>
   	</section>
-	<section title="Notebook and Screenshots">
+	<section title="ShortcutBar, Notebook and Screenshots">
+		<sub name="shortcutbar">
+			<header>ShortcutBar for one or double click actions</header>
+			<body>
+				<para>
+					Especially on mobile devices it makes sense to have a shortcutbar that allows quick actions
+					with just one or a double click. This was first implemented in the 
+					<extref target="https://github.com/litchie/exult-ios">Exult for iOS</extref> fork but later 
+					back ported and improved in main <Exult/>. By default the shortcutbar is disabled, but can be 
+					enabled and further configured in the <ref1 target="misc_gump"/>.<br/>
+					You can make the bar transparent (only when drawn on the map) and select different colors 
+					for the outlines around the buttons. Some buttons only work when you have a certain item 
+					(spellbook, jawbone in SI). You can choose to hide those buttons or display them greyed out.
+				</para>
+				<para>
+					The buttons have the following functions (cheat functions only work when you enabled cheats 
+					in <ref1 target="gameplay_gump"/>):
+				</para>
+				<ul>
+					<li><strong>Floppy Disk</strong><br/>
+					Single click opens the game menu, double click the <ref1 target="savemenu"/></li>
+					<li><strong>Dove/Flaming Sword</strong><br/>
+					Toggles combat but also shows you whether you are in combat mode (flaming sword) when combat 
+					is toggled in another way.</li>
+					<li><strong>Map</strong><br/>
+					Shows you the map, on double click opens the map teleporter</li>
+					<li><strong>Spellbook</strong><br/>
+					Opens your spellbook if you have it.</li>
+					<li><strong>Backpack</strong><br/>
+					On each click opens the paperdoll of party members.</li>
+					<li><strong>Key (Keyring in SI)</strong><br/>
+					Single click gives you a target pointer that tries all keys on the lock you click on. A double 
+					click uses a lockpick if you have any in your party.<br/>
+					When you acquire the keyring in SI, the button will change into the keyring and use that on a 
+					single click.</li>
+					<li><strong>Notebook</strong><br/>
+					Opens the notebook (see <ref1 target="notebook"/>), on double click shows you the 
+					cheat menu.</li>
+					<li><strong>Target</strong><br/>
+					single click gives you the target pointer, double click changes the pointer to a red cross 
+					which will cheat teleport you wherever you click.</li>
+					<li><strong>Fork and Knife</strong><br/>
+					Click this to feed the party.</li>
+					<li><strong>Jawbone (SI only)</strong><br/>
+					Opens the jawbone gump if you have the jawbone.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="notebook">
 			<header>Using the Notebook</header>
 			<body>
@@ -1960,7 +2024,7 @@
 				<ul>
 					<li>On Windows <Exult/> saves the screenshot to the same location where exult.cfg is found, see 
 						<ref1 target="exult_config_location"/>.</li>
-					<li>On *nix systems, inluding OS X, <Exult/> saves to the HOME folder.</li>
+					<li>On *nix systems, including OS X, <Exult/> saves to the HOME folder.</li>
 				</ul>
 			</body>
 		</sub>
@@ -2088,7 +2152,7 @@
 						shows a tinted background behind text in conversations to make it easier to read.
 						Either disable it or choose between the colors purple, orange, light gray, green,
 						yellow, pale blue, dark green, red, bright white, dark gray and white.</li>
-					<li><strong>Fulscreen Fast Mouse</strong><br/>
+					<li><strong>Fullscreen Fast Mouse</strong><br/>
 						makes the mouse cursor move faster in full screen modes. Enable or disable it.</li>
 					<li><strong>Use middle mouse button</strong><br/>
 						In the normal game, the middle mouse button activates the target-function
@@ -2147,6 +2211,15 @@
 						if you need to split a stack.</li>
 					<li><strong>Autonotes</strong><br/>
 						Toggle writing automatic notes to the notebook - see <ref1 target="autonotebook"/>.</li>
+					<li><strong>Use ShortcutBar</strong><br/>
+						Toggle the ShortcutBar or make it transparent when on the map - 
+						see <ref1 target="shortcutbar"/>.</li>
+					<li><strong>Use outline color</strong><br/>
+						Choose a the color of the outline around the ShortcutBar buttons or disable it - see 
+						<ref1 target="shortcutbar"/>.</li>
+					<li><strong>Hide missing items</strong><br/>
+						hides ShortcutBar items the party doesn't have, otherwise missing items are greyed out - 
+						see <ref1 target="shortcutbar"/>.</li>
 					<li><strong>Combat options:</strong><br/>
 						As many people think that the U7 combat engine is far too easy, too hard or
 						just can't stand the real-time-combat Jeff put in some options to make combat more
@@ -2155,13 +2228,13 @@
 						Ranges from Easiest (-3) to Hardest (3). It affects the chance of a hit, and
 						the HP that is lost if a hit occurs.</li>
 					<li><strong>ShowHits</strong><br/>
-						With this enabled you can see the hitpoints of NPCs in brackets after their name when
+						With this enabled you can see the hit points of NPCs in brackets after their name when
 						you left-click on them.</li>
 					<li><strong>Mode</strong><br/>
 						choose between Original and SpacePauses. SpacePauses gives you a little more control of
 						combat. When you hit space the game pauses and you can direct a party member by
 						right-clicking, then clicking on a target to attack. Or change weapons, choose a
-						favourite spell.</li>
+						favorite spell.</li>
 					<li><strong>Charmed difficulty</strong><br/>
 						choose between Normal and Hard. With Normal the Avatar can't be charmed. The original game allowed 
 						him to be charmed though that only highlighted him as charmed and the charmed status icon showed 
@@ -2335,11 +2408,12 @@
 					For now <Exult/> is not on the App Store but there are two other ways to get it on your device.
 				</para>
 				<ul>
-				<li>If you have a paid iOS developer account in Apple's Developer Program, you can clone the git 
-					repository, run the Xcode project file and easily install <Exult/>.</li>
+				<li>If your iOS device is on iOS version 9.x and higher and you are running a Mac, you can download 
+					Xcode from the AppStore, clone the git repository, run the Xcode project file and easily install 
+					<Exult/> on your device. This is called "sideloading", if you need more information.</li>
 				<li>Write an email to Dominus Dragon 
 					(see <extref target="http://exult.sourceforge.net/about.php">About Us</extref>) to sign up for 
-					the beta testing.</li>
+					the beta testing (through Apple's iTunes Connect/TestFlight).</li>
 				</ul>
 			</body>
 		</sub>
@@ -2407,7 +2481,7 @@
 			<header>iOS controls</header>
 			<body>
 				<para>
-					When playing you have a dpad overlaying the game screen which by default is on theright of the 
+					When playing you have a dpad overlaying the game screen which by default is on the right of the 
 					screen (but can be set to the left side).<br/>
 					Tapping with your finger is equal to a left click in the game.<br/>
 					The green (and eventually red (combat)) movement cursor and the hand pointer are invisible on 
@@ -2667,7 +2741,7 @@
 					installation is done, the installer will complain, that "something has put your system 
 					in protected mode...", ignore that and press any key to continue. Again it will complain 
 					that "your current system configuration is not compatible with Ultima VII!...", ignore 
-					that as well and press "N" (you don't need a bootdisk for playing U7 with <Exult/>). Finally 
+					that as well and press "N" (you don't need a boot disk for playing U7 with <Exult/>). Finally 
 					hit any key to finish your installation. The installer will finish and the game can be 
 					found at <strong>C:\Exult\ULTIMA7</strong> or <strong>C:\Exult\SERPENT</strong>.
 				</para>
@@ -2735,7 +2809,7 @@
 					installation is done, the installer will complain, that "something has put your system 
 					in protected mode...", ignore that and press any key to continue. Again it will complain 
 					that "your current system configuration is not compatible with Ultima VII!...", ignore 
-					that as well and press "N" (you don't need a bootdisk for playing U7 with <Exult/>). Finally 
+					that as well and press "N" (you don't need a boot disk for playing U7 with <Exult/>). Finally 
 					hit any key to finish your installation. Close DOSBox. The game can now be found at 
 					<strong>C:\Exult\ULTIMA7</strong> or <strong>C:\Exult\SERPENT</strong>.
 				</para>
@@ -2905,14 +2979,14 @@
 			<body>
 				<para>
 					Since January 2013 <extref target="http://www.gog.com">GOG</extref> also offers a download for 
-					Mac OS X. It's a disk image (dmg) that you can open in Mac OS X' Finder by doubleclicking it. You 
+					Mac OS X. It's a disk image (dmg) that you can open in Mac OS X' Finder by double clicking it. You 
 					will only see one application named "Ultima 7 The Complete Edition". When you start that application 
 					you can play both games through a modified version of DOSBox for Mac OS X. If you want to make Exult 
 					automatically find the games from this download, you will need to copy the game files from this 
 					application to your hard drive. To do this follow the next few steps.
 				</para>
 				<para>
-					Open Terminal.app found in the Utilitiess subfolder of your Applications folder and enter the following commands:<br/>
+					Open Terminal.app found in the Utilities subfolder of your Applications folder and enter the following commands:<br/>
 					<kbd>sudo mkdir -p "/Library/Application Support/Exult/blackgate"</kbd><br/>
 					<kbd>sudo mkdir -p "/Library/Application Support/Exult/serpentisle"</kbd><br/>
 					<kbd>sudo cp -p -R "/Volumes/Ultima 7/Ultima 7 The Complete Edition.app/Contents/Resources/Ultima 7 The Complete Edition.boxer/C.harddisk/U7/ultima7/STATIC" "/Library/Application Support/Exult/blackgate"</kbd><br/>
@@ -2926,10 +3000,10 @@
 				</para>
 				<para>
 					If you are on a *nix system you can access this disk image with the following two commands:<br/>
-					<kbd>dmg2img ultima_7_the_complete_edition_1.0.0.4.dmg</kbd><br/>
-					<kbd>sudo kpartx -a ultima_7_the_complete_edition_1.0.0.4.img</kbd><br/>
+					<kbd>dmg2img ultima_7_the_complete_edition_1.0.0.6.dmg</kbd><br/>
+					<kbd>sudo kpartx -a ultima_7_the_complete_edition_1.0.0.6.img</kbd><br/>
 					When you are done, close the partition with<br/>
-					<kbd>sudo kpartx -d ultima_7_the_complete_edition_1.0.0.4.img</kbd><br/>
+					<kbd>sudo kpartx -d ultima_7_the_complete_edition_1.0.0.6.img</kbd><br/>
 					You might need to have HFS support enabled on your system.
 				</para>
 			</body>
@@ -2966,6 +3040,17 @@
 		</sub>
 	</section>
 	<section title="Changes to the Documentation">
+		<sub name="17032016">
+			<header>- 17 March 2016</header>
+			<body>
+				<ul>
+				<li><ref1 target="exult_config"/> ShortcutBar cfg settings.</li>
+				<li><section_ref target="ShortcutBar, Notebook and Screenshots"/> added ShortcutBar documentation</li>
+				<li><ref1 target="misc_gump"/> ShortcutBar options added.</li>
+				<li><ref1 target="ios_install"/> changed a bit.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="13032016">
 			<header>- 13 March 2016</header>
 			<body>

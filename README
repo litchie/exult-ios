@@ -1,5 +1,5 @@
 Exult Documentation
-last changed: 13 March 2016(GMT)
+last changed: 17 March 2016(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/docs.php
 
@@ -49,10 +49,11 @@ The latest version of this document can be found at http://exult.sourceforge.net
 5.3. Cheat keys
 5.4. Map Editing keys
 
-6. Notebook and Screenshots
-6.1. Using the Notebook
-6.2. The automatic Notebook
-6.3. Screenshots
+6. ShortcutBar, Notebook and Screenshots
+6.1. ShortcutBar for one or double click actions
+6.2. Using the Notebook
+6.3. The automatic Notebook
+6.4. Screenshots
 
 7. Exult Setup and Game Menu
 7.1. Access to the Exult Setup and Game menu
@@ -109,43 +110,44 @@ The latest version of this document can be found at http://exult.sourceforge.net
 12.2. Contacting us
 
 13. Changes to the Documentation
-13.1. - 13 March 2016
-13.2. - 19 March 2015
-13.3. - 09 May 2014
-13.4. - 19 December 2013
-13.5. - 21 November 2013
-13.6. - 11 February 2013
-13.7. - 15 January 2013
-13.8. - 01 January 2013
-13.9. - 16 December 2012
-13.10. - 14 November 2012
-13.11. - 28 October 2012
-13.12. - 01 December 2011
-13.13. - 16 March 2011
-13.14. - 19 February 2011
-13.15. - 24 January 2011
-13.16. - 23 January 2011
-13.17. - 13 October 2010
-13.18. - 30 August 2010
-13.19. - 25 August 2010
-13.20. - 15 August 2010
-13.21. - 28 April 2010
-13.22. - 11 March 2010
-13.23. - 10 March 2010
-13.24. - 08 March 2010
-13.25. - 16 July 2009
-13.26. - 03 June 2009
-13.27. - 20 May 2009
-13.28. - 19 May 2009
-13.29. - 18 May 2009
-13.30. - 28 April 2009
-13.31. - 21 October 2007
-13.32. - 08 April 2006
-13.33. - 14 March 2005
-13.34. - 14 August 2004
-13.35. - 23 May 2004
-13.36. - 11 February 2004
-13.37. - 12 December 2003
+13.1. - 17 March 2016
+13.2. - 13 March 2016
+13.3. - 19 March 2015
+13.4. - 09 May 2014
+13.5. - 19 December 2013
+13.6. - 21 November 2013
+13.7. - 11 February 2013
+13.8. - 15 January 2013
+13.9. - 01 January 2013
+13.10. - 16 December 2012
+13.11. - 14 November 2012
+13.12. - 28 October 2012
+13.13. - 01 December 2011
+13.14. - 16 March 2011
+13.15. - 19 February 2011
+13.16. - 24 January 2011
+13.17. - 23 January 2011
+13.18. - 13 October 2010
+13.19. - 30 August 2010
+13.20. - 25 August 2010
+13.21. - 15 August 2010
+13.22. - 28 April 2010
+13.23. - 11 March 2010
+13.24. - 10 March 2010
+13.25. - 08 March 2010
+13.26. - 16 July 2009
+13.27. - 03 June 2009
+13.28. - 20 May 2009
+13.29. - 19 May 2009
+13.30. - 18 May 2009
+13.31. - 28 April 2009
+13.32. - 21 October 2007
+13.33. - 08 April 2006
+13.34. - 14 March 2005
+13.35. - 14 August 2004
+13.36. - 23 May 2004
+13.37. - 11 February 2004
+13.38. - 12 December 2003
 
 
 --------------------------------------------------------------------------------
@@ -253,7 +255,7 @@ Note: yes means enabled, no means disabled
         <autonotes>
         (default)
 				**set path to a custom autonotes file or leave the (default) 
-				- see 6.2.
+				- see 6.3.
         </autonotes>
         <waves>
         jmsfx.flx
@@ -294,7 +296,7 @@ Note: yes means enabled, no means disabled
         <autonotes>
         (default)
 				**set path to a custom autonotes file or leave the (default)
-				- see 6.2.
+				- see 6.3.
         </autonotes>
         <waves>
         jmsisfx.flx
@@ -319,7 +321,7 @@ Note: yes means enabled, no means disabled
     </facestats>
     <textbackground>
     -1
-				**with this enabled all the text in the games have a coloured background 
+				**with this enabled all the text in the games have a colored background 
 				to improve readability. 0 gives a solid light gray,  1 dark purple, 
 				2 bright yellow, 3 light blue, 4 dark green, 5 dark red, 6 purple, 
 				7 orange, 8 light gray, 9 green, 10 yellow, 11 pale blue, 12 dark green, 
@@ -395,7 +397,7 @@ Note: yes means enabled, no means disabled
     <allow_autonotes>
     no
 				**Automatically fill the notebook with entries when game flags are set. 
-				See 6.2.
+				See 6.3.
     </allow_autonotes>
     <combat>
       <difficulty>
@@ -411,7 +413,7 @@ Note: yes means enabled, no means disabled
       </mode>
       <show_hits>
       no
-				**no is default. With yes you see the hitpoints of NPCs 
+				**no is default. With yes you see the hit points of NPCs 
 				in brackets after their name.
       </show_hits>
       <charmDifficulty>
@@ -679,6 +681,23 @@ Note: yes means enabled, no means disabled
       </blue>
     </gamma>
   </video>
+  <shortcutbar>
+    <use_shortcutbar>
+    no
+				**options are yes/translucent (will not be translucent if not on 
+				map, default on iOS)
+    </use_shortcutbar>
+    <use_outline_color>
+    black
+				**outline around shortcutbar buttons only if the bar is on the map.
+				Options are: no, green, white, yellow, blue, red, purple, black (default).
+    </use_outline_color>
+    <hide_missing_items>
+    yes
+				**hides ShortcutBar buttons the party doesn't have.
+				no shows those buttons greyed out.
+    </hide_missing_items>
+  </shortcutbar>
   <debug>
     <trace>
       <usecode>
@@ -1261,13 +1280,29 @@ Ctrl-Alt-m : Toggle Map editor
 
 --------------------------------------------------------------------------------
 
-6. Notebook and Screenshots
-6.1. Using the Notebook
+6. ShortcutBar, Notebook and Screenshots
+6.1. ShortcutBar for one or double click actions
+Especially on mobile devices it makes sense to have a shortcutbar that allows quick actions with just one or a double click. This was first implemented in the Exult for iOS fork but later back ported and improved in main Exult. By default the shortcutbar is disabled, but can be enabled and further configured in the 7.6. Misc Options. You can make the bar transparent (only when drawn on the map) and select different colors for the outlines around the buttons. Some buttons only work when you have a certain item (spellbook, jawbone in SI). You can choose to hide those buttons or display them greyed out.
+The buttons have the following functions (cheat functions only work when you enabled cheats in 7.5. Gameplay Options):
+* Floppy Disk Single click opens the game menu, double click the 7.2. Load/Save Game
+* Dove/Flaming Sword Toggles combat but also shows you whether you are in combat mode (flaming sword) when combat is toggled in another way.
+* Map Shows you the map, on double click opens the map teleporter
+* Spellbook Opens your spellbook if you have it.
+* Backpack On each click opens the paperdoll of party members.
+* Key (Keyring in SI) Single click gives you a target pointer that tries all keys on the lock you click on. A double click uses a lockpick if you have any in your party. When you acquire the keyring in SI, the button will change into the keyring and use that on a single click.
+* Notebook Opens the notebook (see 6.2. Using the Notebook), on double click shows you the cheat menu.
+* Target single click gives you the target pointer, double click changes the pointer to a red cross which will cheat teleport you wherever you click.
+* Fork and Knife Click this to feed the party.
+* Jawbone (SI only) Opens the jawbone gump if you have the jawbone.
+
+
+
+6.2. Using the Notebook
 We implemented a notebook you can access by pressing 'n'. With this you can make notes of things you saw, or "heard" from any of the NPCs. Entries will be saved when you close the notebook and save the game.
 Additionally when you have cheats enabled you will see the coordinates (in decimal) where you wrote your note.
 
 
-6.2. The automatic Notebook
+6.3. The automatic Notebook
 If you want you can also have Exult automatically make some notes on its own when certain things happen in game. This feature has not yet progressed very far, especially for SI we have mostly basic pointers of what was noted. You can enable autonotes in the 7.6. Misc Options.
 You can also write your own autonotes and override the ones that come with Exult. For BG download https://github.com/exult/exult/raw/master/data/bg/autonotes.txt. For SI download https://github.com/exult/exult/raw/master/data/si/autonotes.txt. Then change the <autonotes> setting in exult.cfg to point at the path of these files instead of being set to (default). Example:
 <config>
@@ -1283,10 +1318,10 @@ You can also write your own autonotes and override the ones that come with Exult
       </gamename>
 
 
-6.3. Screenshots
+6.4. Screenshots
 When you press 'Ctrl-Alt-s'Exult will make a screenshot of your game window in PCX image file format. The save location of the screenshot depends on your Operating system.
 * On Windows Exult saves the screenshot to the same location where exult.cfg is found, see 2.2. Location of exult.cfg.
-* On *nix systems, inluding OS X, Exult saves to the HOME folder.
+* On *nix systems, including OS X, Exult saves to the HOME folder.
 
 
 
@@ -1338,7 +1373,7 @@ Look at 3. Audio to see explanation on the settings.
 
 * Status Bars You can either disable the status bars or choose its position on the bottom of the screen (left, middle, right).
 * Text Background shows a tinted background behind text in conversations to make it easier to read. Either disable it or choose between the colors purple, orange, light gray, green, yellow, pale blue, dark green, red, bright white, dark gray and white.
-* Fulscreen Fast Mouse makes the mouse cursor move faster in full screen modes. Enable or disable it.
+* Fullscreen Fast Mouse makes the mouse cursor move faster in full screen modes. Enable or disable it.
 * Use middle mouse button In the normal game, the middle mouse button activates the target-function (which could also be accomplished by pressing 't'). For modal gumps, the middle mouse acts as 'return', the right button as 'escape', so you can now for example accept the default slider value by just pressing the middle button. The escape function is also available during most other actions like selecting a target or conversations. Enable or disable it.
 * Doubleclick closes gumps pretty straightforward, right?
 * Right click closes gumps the same but different.
@@ -1358,11 +1393,14 @@ Look at 3. Audio to see explanation on the settings.
 * Skip intro When enabled you don't have to watch the splash screen and intro when you select a game from the Exult menu.
 * Skip scripted first scene When you start a new game of BG or SI the game starts with a scripted scene during which you can't move the Avatar. Enable this to skip this part but only do this if you have already played the game and have seen this scene.
 * Alternate drag'n'drop When enabled dropping a stack of items (coins, bolts...) will drop the whole stack without asking for confirmation of the amount of items to drop. Hold 'Ctrl' while dropping if you need to split a stack.
-* Autonotes Toggle writing automatic notes to the notebook - see 6.2. The automatic Notebook.
+* Autonotes Toggle writing automatic notes to the notebook - see 6.3. The automatic Notebook.
+* Use ShortcutBar Toggle the ShortcutBar or make it transparent when on the map - see 6.1. ShortcutBar for one or double click actions.
+* Use outline color Choose a the color of the outline around the ShortcutBar buttons or disable it - see 6.1. ShortcutBar for one or double click actions.
+* Hide missing items hides ShortcutBar items the party doesn't have, otherwise missing items are greyed out - see 6.1. ShortcutBar for one or double click actions.
 * Combat options: As many people think that the U7 combat engine is far too easy, too hard or just can't stand the real-time-combat Jeff put in some options to make combat more interesting.
 * Difficulty Ranges from Easiest (-3) to Hardest (3). It affects the chance of a hit, and the HP that is lost if a hit occurs.
-* ShowHits With this enabled you can see the hitpoints of NPCs in brackets after their name when you left-click on them.
-* Mode choose between Original and SpacePauses. SpacePauses gives you a little more control of combat. When you hit space the game pauses and you can direct a party member by right-clicking, then clicking on a target to attack. Or change weapons, choose a favourite spell.
+* ShowHits With this enabled you can see the hit points of NPCs in brackets after their name when you left-click on them.
+* Mode choose between Original and SpacePauses. SpacePauses gives you a little more control of combat. When you hit space the game pauses and you can direct a party member by right-clicking, then clicking on a target to attack. Or change weapons, choose a favorite spell.
 * Charmed difficulty choose between Normal and Hard. With Normal the Avatar can't be charmed. The original game allowed him to be charmed though that only highlighted him as charmed and the charmed status icon showed but you could control him as usual. Hard will neither allow the player to control charmed party members, including the Avatar, nor access the inventory of a charmed party member. But you can still manipulate objects that are not in the charmed party members possessions even if the Avatar is the one who is charmed. Charmed party members will continue to attack, even if the player ends combat.
 
 
@@ -1431,8 +1469,8 @@ Note that Exult runs very nicely on iPads but the item management of the games m
 
 9.2. Installing Exult on your iPhone/iPad
 For now Exult is not on the App Store but there are two other ways to get it on your device.
-* If you have a paid iOS developer account in Apple's Developer Program, you can clone the git repository, run the Xcode project file and easily install Exult.
-* Write an email to Dominus Dragon (see About Us) to sign up for the beta testing.
+* If your iOS device is on iOS version 9.x and higher and you are running a Mac, you can download Xcode from the AppStore, clone the git repository, run the Xcode project file and easily install Exult on your device. This is called "sideloading", if you need more information.
+* Write an email to Dominus Dragon (see About Us) to sign up for the beta testing (through Apple's iTunes Connect/TestFlight).
 
 
 
@@ -1448,7 +1486,7 @@ To install the optional sfx and digital music, please download the "Zipped all-i
 
 
 9.5. iOS controls
-When playing you have a dpad overlaying the game screen which by default is on theright of the screen (but can be set to the left side). Tapping with your finger is equal to a left click in the game. The green (and eventually red (combat)) movement cursor and the hand pointer are invisible on iOS as they are more distracting than helping when you control and click with your finger.
+When playing you have a dpad overlaying the game screen which by default is on the right of the screen (but can be set to the left side). Tapping with your finger is equal to a left click in the game. The green (and eventually red (combat)) movement cursor and the hand pointer are invisible on iOS as they are more distracting than helping when you control and click with your finger.
 There is also a helper menu when you click near objects in the games, which can be helpful on the smaller iPhone screens but can be disabled in the iOS settings.
 
 
@@ -1526,7 +1564,7 @@ Report any problem to the Exult forum at http://exult.sf.net/forum/ or email me 
 
 11. Installing the original Ultima VII games for use with Exult
 11.1. Installing the floppy disks of BG/SI on Windows
-Insert Disk 1 in your floppy drive, open explorer and click on the floppy drive (a:\). Double click on install.exe, choose the drive you want to install to, and then in which folder you want BG/SI to be installed to (Let's assume C:\Exult\ULTIMA7 for BG and C:\Exult\SERPENT for SI). Next you choose the sound card, but as this is not relevant for Exult, choose "No sound card". Confirm the settings with "Y" and the installer begins to make noise in your floppy drive... When asked to insert the next floppy disk and hit any key (or ESC to cancel). When the installation is done, the installer will complain, that "something has put your system in protected mode...", ignore that and press any key to continue. Again it will complain that "your current system configuration is not compatible with Ultima VII!...", ignore that as well and press "N" (you don't need a bootdisk for playing U7 with Exult). Finally hit any key to finish your installation. The installer will finish and the game can be found at C:\Exult\ULTIMA7 or C:\Exult\SERPENT.
+Insert Disk 1 in your floppy drive, open explorer and click on the floppy drive (a:\). Double click on install.exe, choose the drive you want to install to, and then in which folder you want BG/SI to be installed to (Let's assume C:\Exult\ULTIMA7 for BG and C:\Exult\SERPENT for SI). Next you choose the sound card, but as this is not relevant for Exult, choose "No sound card". Confirm the settings with "Y" and the installer begins to make noise in your floppy drive... When asked to insert the next floppy disk and hit any key (or ESC to cancel). When the installation is done, the installer will complain, that "something has put your system in protected mode...", ignore that and press any key to continue. Again it will complain that "your current system configuration is not compatible with Ultima VII!...", ignore that as well and press "N" (you don't need a boot disk for playing U7 with Exult). Finally hit any key to finish your installation. The installer will finish and the game can be found at C:\Exult\ULTIMA7 or C:\Exult\SERPENT.
 When installing Ultima VII from floppy disks in Windows you can run into some problems. The installer assumes that all drives in the computer are hard drives and can't cope with drives like CD-ROMs and card readers. It tries to read how much free space the drives have and if there is no media in the drive it gives an error and you can't proceed. To solve this you have to insert a CD-ROM in your CD/DVD-ROM drive. If you have a multi card reader disconnect that if possible (or insert cards in all the slots if you have them). If disconnecting the reader is not possible you have to use one of the other ways to install the floppy versions or use a different computer.
 Unfortunately it is possible that one of the floppies is no longer working. In that case the installation will fail and the installer might suggest that there is a device error and asks you to reboot your computer. Don't follow that advice a reboot is not likely to fix it.
 
@@ -1539,7 +1577,7 @@ When installing the add-ons you might run into the same problems as when install
 11.3. Installing the floppy disks of BG/SI using DOSBox
 DOSBox is a program that emulates the old Dos and should run on any operating system that Exult runs on (and more). So this is perfect for users that don't run Windows.
 To install Ultima VII with DOSBox, download and install DOSBox from http://http://dosbox.com. Make a new folder in your C:\ drive called Exult. Insert Disk 1 in your floppy drive, start DOSBox and type the following: mount c C:\Exult mount a a:\ -t floppy a: install
-The installer will start and ask you on which drive to install Ultima VII to. Choose c and when it asks for the target folder choose C:\ULTIMA7 for BG or C:\SERPENT for SI (in both cases you can just hit enter). Next you choose the sound card, but as this is not relevant for Exult, choose "No sound card". Confirm the settings with "Y" and the installer begins to make noise in your floppy drive... When asked to insert the next floppy disk and hit any key (or ESC to cancel). When the installation is done, the installer will complain, that "something has put your system in protected mode...", ignore that and press any key to continue. Again it will complain that "your current system configuration is not compatible with Ultima VII!...", ignore that as well and press "N" (you don't need a bootdisk for playing U7 with Exult). Finally hit any key to finish your installation. Close DOSBox. The game can now be found at C:\Exult\ULTIMA7 or C:\Exult\SERPENT.
+The installer will start and ask you on which drive to install Ultima VII to. Choose c and when it asks for the target folder choose C:\ULTIMA7 for BG or C:\SERPENT for SI (in both cases you can just hit enter). Next you choose the sound card, but as this is not relevant for Exult, choose "No sound card". Confirm the settings with "Y" and the installer begins to make noise in your floppy drive... When asked to insert the next floppy disk and hit any key (or ESC to cancel). When the installation is done, the installer will complain, that "something has put your system in protected mode...", ignore that and press any key to continue. Again it will complain that "your current system configuration is not compatible with Ultima VII!...", ignore that as well and press "N" (you don't need a boot disk for playing U7 with Exult). Finally hit any key to finish your installation. Close DOSBox. The game can now be found at C:\Exult\ULTIMA7 or C:\Exult\SERPENT.
 
 
 11.4. Installing the floppy disks of the Add-Ons FoV/SS using DOSBox
@@ -1581,9 +1619,9 @@ After installation you can just run our installer and when asked where the games
 
 
 11.10. Using the version for OS X from GOG.com
-Since January 2013 GOG also offers a download for Mac OS X. It's a disk image (dmg) that you can open in Mac OS X' Finder by doubleclicking it. You will only see one application named "Ultima 7 The Complete Edition". When you start that application you can play both games through a modified version of DOSBox for Mac OS X. If you want to make Exult automatically find the games from this download, you will need to copy the game files from this application to your hard drive. To do this follow the next few steps.
-Open Terminal.app found in the Utilitiess subfolder of your Applications folder and enter the following commands: sudo mkdir -p "/Library/Application Support/Exult/blackgate" sudo mkdir -p "/Library/Application Support/Exult/serpentisle" sudo cp -p -R "/Volumes/Ultima 7/Ultima 7 The Complete Edition.app/Contents/Resources/Ultima 7 The Complete Edition.boxer/C.harddisk/U7/ultima7/STATIC" "/Library/Application Support/Exult/blackgate" sudo cp -p -R "/Volumes/Ultima 7/Ultima 7 The Complete Edition.app/Contents/Resources/Ultima 7 The Complete Edition.boxer/C.harddisk/U7/serpent/STATIC" "/Library/Application Support/Exult/serpentisle" Because we need elevated rights the commands are using sudo and will ask for your password and you will need to do this with an administrator account. If you don't have that, please ask your administrator to do this for you. Sometimes GOG changes the disk image and thus the path may have changed. If you get a "file not found" error, try downloading the newest disk image and mounting that. If it still doesn't work visit our forum and tell us.
-If you are on a *nix system you can access this disk image with the following two commands: dmg2img ultima_7_the_complete_edition_1.0.0.4.dmg sudo kpartx -a ultima_7_the_complete_edition_1.0.0.4.img When you are done, close the partition with sudo kpartx -d ultima_7_the_complete_edition_1.0.0.4.img You might need to have HFS support enabled on your system.
+Since January 2013 GOG also offers a download for Mac OS X. It's a disk image (dmg) that you can open in Mac OS X' Finder by double clicking it. You will only see one application named "Ultima 7 The Complete Edition". When you start that application you can play both games through a modified version of DOSBox for Mac OS X. If you want to make Exult automatically find the games from this download, you will need to copy the game files from this application to your hard drive. To do this follow the next few steps.
+Open Terminal.app found in the Utilities subfolder of your Applications folder and enter the following commands: sudo mkdir -p "/Library/Application Support/Exult/blackgate" sudo mkdir -p "/Library/Application Support/Exult/serpentisle" sudo cp -p -R "/Volumes/Ultima 7/Ultima 7 The Complete Edition.app/Contents/Resources/Ultima 7 The Complete Edition.boxer/C.harddisk/U7/ultima7/STATIC" "/Library/Application Support/Exult/blackgate" sudo cp -p -R "/Volumes/Ultima 7/Ultima 7 The Complete Edition.app/Contents/Resources/Ultima 7 The Complete Edition.boxer/C.harddisk/U7/serpent/STATIC" "/Library/Application Support/Exult/serpentisle" Because we need elevated rights the commands are using sudo and will ask for your password and you will need to do this with an administrator account. If you don't have that, please ask your administrator to do this for you. Sometimes GOG changes the disk image and thus the path may have changed. If you get a "file not found" error, try downloading the newest disk image and mounting that. If it still doesn't work visit our forum and tell us.
+If you are on a *nix system you can access this disk image with the following two commands: dmg2img ultima_7_the_complete_edition_1.0.0.6.dmg sudo kpartx -a ultima_7_the_complete_edition_1.0.0.6.img When you are done, close the partition with sudo kpartx -d ultima_7_the_complete_edition_1.0.0.6.img You might need to have HFS support enabled on your system.
 
 
 
@@ -1608,37 +1646,45 @@ You can contact the Exult team and/or get more information from: http://exult.so
 --------------------------------------------------------------------------------
 
 13. Changes to the Documentation
-13.1. - 13 March 2016
+13.1. - 17 March 2016
+* 2.3. Settings in exult.cfg ShortcutBar cfg settings.
+* 6. ShortcutBar, Notebook and Screenshots added ShortcutBar documentation
+* 7.6. Misc Options ShortcutBar options added.
+* 9.2. Installing Exult on your iPhone/iPad changed a bit.
+
+
+
+13.2. - 13 March 2016
 * 1.1. Exult Version GIT instead of SVN.
-* 6.2. The automatic Notebook point at GIT instead of SVN.
+* 6.3. The automatic Notebook point at GIT instead of SVN.
 
 
 
-13.2. - 19 March 2015
+13.3. - 19 March 2015
 * 2.11. Error Log moved.
 * 9. iOS Guide added iOS guide.
 * 10.3. How to get the Zaurus port working moved.
 
 
 
-13.3. - 09 May 2014
+13.4. - 09 May 2014
 * 2.3. Settings in exult.cfg added coremidi_device setting.
 * 3.2. MIDI Music added coremidi_device setting.
 * 3.5. OS X CoreMidi device ID added to explain the coremidi_device setting.
 
 
 
-13.4. - 19 December 2013
+13.5. - 19 December 2013
 * 11.10. Using the version for OS X from GOG.com paths in the disk image changed.
 
 
 
-13.5. - 21 November 2013
+13.6. - 21 November 2013
 * 11.9. Using the version for Windows from GOG.com default installation path changed.
 
 
 
-13.6. - 11 February 2013
+13.7. - 11 February 2013
 * 2.3. Settings in exult.cfg FluidSynth soundfont stack added.
 * 2.7. Path-Settings for Mac OS X deleting exult.cfg might help.
 * 3.2. MIDI Music FluidSynth soundfont stack added.
@@ -1646,18 +1692,18 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.7. - 15 January 2013
+13.8. - 15 January 2013
 * 5.2. Keyboard commands orb of the moons keyboard command.
 
 
 
-13.8. - 01 January 2013
+13.9. - 01 January 2013
 * 3.2. MIDI Music timidity.cfg needs to be in ~/.exult on Linux systems.
 * 5.1. Movement and 5.2. Keyboard commands walk and run keys were switched.
 
 
 
-13.9. - 16 December 2012
+13.10. - 16 December 2012
 * 2.3. Settings in exult.cfg wrong height for windowed default.
 * 2.10. Command line options added --reset-video and --mapnum and sorted it a bit.
 * 4.4. Scaler xBR scalers added.
@@ -1665,16 +1711,16 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.10. - 14 November 2012
+13.11. - 14 November 2012
 * 1.1. Exult Version it's for the SVN of Exult.
 * 2.3. Settings in exult.cfg added autonotes options.
-* 6.1. Using the Notebook saved when saved game and when cheating you see the coordinates.
-* 6.2. The automatic Notebook Autonotes are bundled and can be toggled.
+* 6.2. Using the Notebook saved when saved game and when cheating you see the coordinates.
+* 6.3. The automatic Notebook Autonotes are bundled and can be toggled.
 * 7.6. Misc Options Autonotes option added.
 
 
 
-13.11. - 28 October 2012
+13.12. - 28 October 2012
 * 2.3. Settings in exult.cfg added right click pathfind, fixed the text backgrounds and some other small fixes.
 * 5.1. Movement righht click pathfinding can be single or double.
 * 7.5. Gameplay Options same as above and the paperdolls option needs SI installed.
@@ -1682,7 +1728,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.12. - 01 December 2011
+13.13. - 01 December 2011
 * 2.3. Settings in exult.cfg added alternate_drop setting.
 * 2.7. Path-Settings for Mac OS X explained difference between the Library folders and how to access ~/Library on Lion.
 * 4.4. Scaler added HQ4x.
@@ -1691,13 +1737,13 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.13. - 16 March 2011
+13.14. - 16 March 2011
 * 2.3. Settings in exult.cfg added coreaudio_soundfont setting.
 * 3.2. MIDI Music as above.
 
 
 
-13.14. - 19 February 2011
+13.15. - 19 February 2011
 * 2.3. Settings in exult.cfg stereo/mono is switched by yes/no, facestats needed the setting for left status bars.
 * 3.7. Digital Wave Sound Effects split off the installation part.
 * 3.8. All-in-One Audio Data pack and installers added.
@@ -1707,7 +1753,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.15. - 24 January 2011
+13.16. - 24 January 2011
 * 2.3. Settings in exult.cfg there is no extra border setting for windows mode settings.
 * 2.10. Command line options fixed copy/paste error and added more explanations.
 * 3.7. Digital Wave Sound Effects switching sfx works right away, removed note.
@@ -1715,7 +1761,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.16. - 23 January 2011
+13.17. - 23 January 2011
 * 13. Changes to the Documentation moved to the bottom.
 * 2.3. Settings in exult.cfg new options for combat and windowed video settings and several other settings added.
 * 2.10. Command line options added portable option.
@@ -1731,18 +1777,18 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.17. - 13 October 2010
+13.18. - 13 October 2010
 * 1.1. Exult Version new official version.
 * 4.4. Scaler OpenGL is only available in snapshots.
 * 5.3. Cheat keys Alt+KP+/- no longer works.
 * 5.4. Map Editing keys only with a snapshot.
-* 6.1. Using the Notebook added.
-* 6.2. The automatic Notebook added.
-* 6.3. Screenshots added.
+* 6.2. Using the Notebook added.
+* 6.3. The automatic Notebook added.
+* 6.4. Screenshots added.
 
 
 
-13.18. - 30 August 2010
+13.19. - 30 August 2010
 * 2.3. Settings in exult.cfg added the new config options for video.
 * 4.1. Resolution rewrote some more with Colourless' latest changes.
 * 4.2. Fill modes added.
@@ -1750,7 +1796,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.19. - 25 August 2010
+13.20. - 25 August 2010
 * 2.3. Settings in exult.cfg added the new config options for video and audio.
 * 4.1. Resolution rewrote a bit to explain the new rendering.
 * 4.3. Higher resolution is cheating added.
@@ -1759,7 +1805,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.20. - 15 August 2010
+13.21. - 15 August 2010
 * 3.2. MIDI Music Fluidsynth support is not compiled into the snapshots, also MT32 is supported on OS X.
 * 3.4. Windows MIDI Mapper the log files are now where exult.cfg is saved to not necessarily where exult.exe is.
 * 2.11. Error Log also about location of log files.
@@ -1768,12 +1814,12 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.21. - 28 April 2010
+13.22. - 28 April 2010
 * 2.3. Settings in exult.cfg audio options for sample rate and stereo added.
 
 
 
-13.22. - 11 March 2010
+13.23. - 11 March 2010
 * 2.7. Path-Settings for Mac OS X we changed the default paths for OS X once more.
 * 3.7. Digital Wave Sound Effects the SFX pack can now be chosen in the Game Menu.
 * 7.4. Audio Options added new SFX pack option and updated screenshot.
@@ -1781,7 +1827,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.23. - 10 March 2010
+13.24. - 10 March 2010
 * 2.4. Path-Settings I've split this up for all the different OS'.
 * added Path-Settings chapters for the most common OS with examples.
 * 3.2. MIDI Music CoreMIDI driver added.
@@ -1791,7 +1837,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.24. - 08 March 2010
+13.25. - 08 March 2010
 * 1.2. What is Exult? fixed typo in Jakob Schonberg's name.
 * 2.2. Location of exult.cfg needs its own chapter now.
 * 2.4. Path-Settings needed a lot of changes because of the LOCAL_APPDATA changes.
@@ -1802,25 +1848,25 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.25. - 16 July 2009
+13.26. - 16 July 2009
 * 3.2. MIDI Music MT32 device type is not supported on Mac OS X.
 
 
 
-13.26. - 03 June 2009
+13.27. - 03 June 2009
 * Spell checked the whole documentation.
 * 3.2. MIDI Music slightly rewrote the FluidSynth section and explained fakemt32 option a bit better.
 
 
 
-13.27. - 20 May 2009
+13.28. - 20 May 2009
 * 3.6. Digital Music mentioned two issues with it.
 * 3.9. Installation of the digital music packs cleaned up.
 * 3.7. Digital Wave Sound Effects some more information.
 
 
 
-13.28. - 19 May 2009
+13.29. - 19 May 2009
 * 2. Configurations coloured tags to differentiate between manual and in game settings.
 * 2.4. Path-SettingsExult and Exult Studio don't trust exult.cfg.
 * 2.9. Advanced Configuration: Using both the original and the Add-OnsExult and Exult Studio don't trust exult.cfg.
@@ -1831,7 +1877,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.29. - 18 May 2009
+13.30. - 18 May 2009
 * 1.1. Exult Version this docs are for the SVN version.
 * 2.1. Installation the Windows installer asks for BG/SI location.
 * 2.3. Settings in exult.cfg now up to date with SVN.
@@ -1850,43 +1896,43 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.30. - 28 April 2009
+13.31. - 28 April 2009
 * 2.3. Settings in exult.cfg tried to explain data_path a bit more.
 * 3.11. Speech can also be toggled via the in-game menu.
 * 11.7. Installing the CD-ROM versions of Ultima VII added EA Compilation to the list.
 
 
 
-13.31. - 21 October 2007
+13.32. - 21 October 2007
 * 1.1. added.
 * 11.8. Fixing permissions of Ultima Collection on *nix systems added.
 
 
 
-13.32. - 08 April 2006
+13.33. - 08 April 2006
 * 2.1. Installation needed some polishing.
 * 2.4. Path-Settings synched the path settings with the new Installation section.
 * 11. Installing the original Ultima VII games for use with Exult might help some people.
 
 
 
-13.33. - 14 March 2005
+13.34. - 14 March 2005
 * 10. Zaurus Guide Newest ROM instructions updated.
 
 
 
-13.34. - 14 August 2004
+13.35. - 14 August 2004
 * 2.1. Installation on Windows you can use Notepad to edit exult.cfg.
 
 
 
-13.35. - 23 May 2004
+13.36. - 23 May 2004
 * 1.1. Exult Version I'm confident that the new Version will be 1.2.
 * 10.3. How to get the Zaurus port working we shouldn't call our data files shared files..
 
 
 
-13.36. - 11 February 2004
+13.37. - 11 February 2004
 * A lot of clean up and small changes, too numerous to list.
 * 2.4. Path-Settings fixed some outdated instructions.
 * 3.9. Installation of the digital music packs added as the instructions in the music-pack readme.txt are no longer valid.
@@ -1897,7 +1943,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.37. - 12 December 2003
+13.38. - 12 December 2003
 * 2.3. Settings in exult.cfg fixed bad path settings and updated audio settings.
 * 2.4. Path-Settings moved stuff over to next point.
 * 1.1. added to give some explanation for Static/Gamedat.
