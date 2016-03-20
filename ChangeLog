@@ -1,3 +1,9 @@
+2016-03-20	Malignant Manor <malignantmanor@users.sourceforge.net>
+	* exult.*, gumps/ShortcutBar_gump.cc: don't have ShortcutBar_gump intercept
+	  clicks when in usecode or when waiting for a click.
+	* ShortcutBar_gump.cc: Stop double food use in BG.
+	* gamewin.cc: Use close_gump instead of remove_gump
+
 2016-03-17	Malignant Manor <malignantmanor@users.sourceforge.net>
 	* gamewin.cc: Fix use_shortcutbar not changing when switching between yes
 	  and translucent

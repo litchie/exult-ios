@@ -155,7 +155,8 @@ clsTouchscreen *Touchscreen;
 KeyboardButton_gump *gkeybb;
 SDL_Joystick *sdl_joy;
 #endif
-ShortcutBar_gump *g_shortcutBar;
+bool g_waiting_for_click = false;
+ShortcutBar_gump *g_shortcutBar = NULL;;
 
 #if 0 && USECODE_DEBUGGER
 bool    usecode_debugging = false;  // Do we enable the usecode debugger?
@@ -1806,7 +1807,7 @@ static int Get_click(
 ) {
 	dragging = false;       // Init.
 	uint32 last_rotate = 0;
-
+	g_waiting_for_click = true;
 	while (1) {
 		SDL_Event event;
 		Delay();        // Wait a fraction of a second.
@@ -1878,6 +1879,7 @@ static int Get_click(
 					if (!drg ||
 					        !gwin->drop_dragged(x, y, drged)) {
 						if (chr) *chr = 0;
+						g_waiting_for_click = false;
 						return (1);
 					}
 				} else if (event.button.button == 3) {
@@ -1885,6 +1887,7 @@ static int Get_click(
 					gwin->get_main_actor()->stop();
 					if (gwin->get_mouse3rd() && rightclick) {
 						rightclick = false;
+						g_waiting_for_click = false;
 						return 0;
 					}
 				}
@@ -1905,6 +1908,7 @@ static int Get_click(
 				int c = event.key.keysym.sym;
 				switch (c) {
 				case SDLK_ESCAPE:
+					g_waiting_for_click = false;
 					return 0;
 				case SDLK_RSHIFT:
 				case SDLK_LSHIFT:
@@ -1940,6 +1944,7 @@ static int Get_click(
 						*chr = (event.key.keysym.mod &
 						        KMOD_SHIFT)
 						       ? toupper(c) : c;
+						g_waiting_for_click = false;
 						return (1);
 					}
 					break;
@@ -1972,6 +1977,7 @@ static int Get_click(
 		        Mouse::mouse_update)
 			Mouse::mouse->blit_dirty();
 	}
+	g_waiting_for_click = false;
 	return (0);         // Shouldn't get here.
 }
 

@@ -331,13 +331,13 @@ void ShortcutBar_gump::paint()
 
 int ShortcutBar_gump::handle_event(SDL_Event *event)
 {
+	Game_window *gwin = Game_window::get_instance();
 	// When the Save/Load menu is open, don't handle events
-	if (gumpman->modal_gump_mode())
+	if (gumpman->modal_gump_mode() || gwin->get_usecode()->in_usecode() || g_waiting_for_click)
 		return 0;
 
 	for (int i = 0; i < numButtons; i++) {
 		if (event->type == SDL_MOUSEBUTTONDOWN || event->type == SDL_MOUSEBUTTONUP) {
-			Game_window *gwin = Game_window::get_instance();
 			int x, y;
 			gwin->get_win()->screen_to_game(event->button.x, event->button.y, gwin->get_fastmouse(), x, y);
 
@@ -642,7 +642,7 @@ void ShortcutBar_gump::onItemClicked(int index, bool doubleClicked)
 				Mouse::mouse->set_speed_cursor();
 			} else {
 				Game_window *gwin = Game_window::get_instance();
-					if (gwin->activate_item(377) && !gwin->activate_item(616))
+					if (gwin->activate_item(377) || gwin->activate_item(616))
 						Mouse::mouse->set_speed_cursor();
 			}
 			break;
