@@ -36,6 +36,7 @@ class GameManager;
  *  Output: 0 if user hit ESC.
  *      Chr gets keyboard char., or 0 if it's was a mouse click.
  */
+extern bool g_waiting_for_click;
 
 extern int Get_click(
     int &x, int &y,         // Location returned (if not ESC).

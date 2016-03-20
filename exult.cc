@@ -157,7 +157,8 @@ clsTouchscreen *Touchscreen;
 SDL_Joystick *sdl_joy;
 TouchUI *touchui;
 #endif
-ShortcutBar_gump *g_shortcutBar;
+bool g_waiting_for_click = false;
+ShortcutBar_gump *g_shortcutBar = NULL;
 
 #if 0 && USECODE_DEBUGGER
 bool    usecode_debugging = false;  // Do we enable the usecode debugger?
@@ -1829,6 +1830,7 @@ static int Get_click(
 ) {
 	dragging = false;       // Init.
 	uint32 last_rotate = 0;
+	g_waiting_for_click = true;
 
 	while (1) {
 		SDL_Event event;
@@ -1884,10 +1886,8 @@ static int Get_click(
 					break;
 				Touchscreen->handle_event(&event);
 #endif
-#ifdef __IPHONEOS__
-				if (g_shortcutBar->handle_event(&event))
+				if (g_shortcutBar && g_shortcutBar->handle_event(&event))
 					break;
-#endif
 				if (event.button.button == 1) {
 					gwin->get_win()->screen_to_game(event.button.x, event.button.y, gwin->get_fastmouse(), x, y);
 					bool drg = dragging, drged = dragged;
@@ -1895,6 +1895,7 @@ static int Get_click(
 					if (!drg ||
 					        !gwin->drop_dragged(x, y, drged)) {
 						if (chr) *chr = 0;
+						g_waiting_for_click = false;
 						return (1);
 					}
 				} else if (event.button.button == 3) {
@@ -1902,6 +1903,7 @@ static int Get_click(
 					gwin->get_main_actor()->stop();
 					if (gwin->get_mouse3rd() && rightclick) {
 						rightclick = false;
+						g_waiting_for_click = false;
 						return 0;
 					}
 				}
@@ -1922,6 +1924,7 @@ static int Get_click(
 				int c = event.key.keysym.sym;
 				switch (c) {
 				case SDLK_ESCAPE:
+					g_waiting_for_click = false;
 					return 0;
 				case SDLK_RSHIFT:
 				case SDLK_LSHIFT:
@@ -1957,6 +1960,7 @@ static int Get_click(
 						*chr = (event.key.keysym.mod &
 						        KMOD_SHIFT)
 						       ? toupper(c) : c;
+						g_waiting_for_click = false;
 						return (1);
 					}
 					break;
@@ -1989,6 +1993,7 @@ static int Get_click(
 		        Mouse::mouse_update)
 			Mouse::mouse->blit_dirty();
 	}
+	g_waiting_for_click = false;
 	return (0);         // Shouldn't get here.
 }
 
