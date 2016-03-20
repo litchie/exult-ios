@@ -177,6 +177,7 @@ int main(int argc, char *argv[]) {
 			fseek(fi, fs, SEEK_CUR);
 	}
 	fclose(fi);
+	fclose(fo2);
 	printf("All done\n");
 	return 0;
 }

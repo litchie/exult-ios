@@ -806,6 +806,7 @@ static gint32 save_image(gchar  *filename,
 	fp = fopen(filename, "wb");
 	if (!fp) {
 		g_message("SHP: can't create \"%s\"\n", filename);
+		free(shape.frames);
 		return -1;
 	}
 

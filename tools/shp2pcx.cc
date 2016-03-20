@@ -288,7 +288,7 @@ u7shape *load_shape(char *filename) {
 
 		delete [] pixptr;
 	}
-
+	fclose(fp);
 	return shape;
 }
 
@@ -326,6 +326,7 @@ uint8 *load_palette(char *filename) {
 	} else {
 		cerr << "Not a valid palette file: " << filename << endl;
 		delete [] palette;
+		fclose(fp);
 		return 0;
 	}
 	fclose(fp);
@@ -405,6 +406,7 @@ void save_image(uint8 *pixels, uint8 *palette, int width, int height, char *file
 
 	fputc(0x0c, fp);
 	fwrite(palette, 3, 256, fp);
+	fclose(fp);
 }
 
 int main(int argc, char *argv[]) {
