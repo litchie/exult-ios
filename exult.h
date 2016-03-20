@@ -98,10 +98,10 @@ extern bool minimized;
 extern class Keyboard_gump *gkeyboard;
 extern class clsTouchscreen *Touchscreen;
 #endif
-#ifdef __IPHONEOS__
-#include "iphone_gumps.h"
-#include "ios_utils.h"
+#include "ShortcutBar_gump.h"
 extern class ShortcutBar_gump *g_shortcutBar;
+#ifdef __IPHONEOS__
+#include "ios_utils.h"
 extern class TouchUI *touchui;
 #endif
 

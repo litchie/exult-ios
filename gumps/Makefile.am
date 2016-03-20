@@ -75,6 +75,8 @@ libgumps_la_SOURCES = \
 	iphone_gumps.h \
 	iphone_gumps.cc \
 	iphoneOptions_gump.h \
-	iphoneOptions_gump.cc
+	iphoneOptions_gump.cc \
+	ShortcutBar_gump.h \
+	ShortcutBar_gump.cc
 
 CLEANFILES = *~

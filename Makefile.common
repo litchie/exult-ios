@@ -160,6 +160,7 @@ GUMPS_OBJS= \
 	gumps/Gump_manager.o \
 	gumps/Gump_widget.o \
 	gumps/Gump_ToggleButton.o \
+	gumps/ShortcutBar_gump.o \
 	gumps/Jawbone_gump.o \
 	gumps/misc_buttons.o \
 	gumps/Newfile_gump.o \
@@ -303,9 +304,22 @@ EXULT_FLX_OBJECTS = \
 	data/gamemenu.shp \
 	data/audiooptions.shp \
 	data/videooptions.shp \
+	data/miscoptions.shp \
 	data/hp_bar.shp \
 	data/sfx_icon.shp \
-	data/mtgm.mid
+	data/mtgm.mid \
+	data/sb_combat.shp \
+	data/sb_disk.shp \
+	data/sb_jawbone.shp \
+	data/sb_keyring.shp \
+	data/sb_spellbook.shp \
+	data/sb_target.shp \
+	data/sb_food.shp \
+	data/sb_key.shp \
+	data/sb_maps.shp \
+	data/sb_notebook.shp \
+	data/sb_backpack.shp \
+	data/transparentmenu.shp
 
 EXULT_BG_FLX = data/exult_bg.flx data/exult_bg_flx.h
 EXULT_BG_FLX_OBJECTS = \
@@ -434,6 +448,8 @@ gumps/GameplayOptions_gump.o : gumps/GameplayOptions_gump.cc $(EXULT_FLX)
 gumps/Newfile_gump.o : gumps/Newfile_gump.cc $(EXULT_FLX)
 
 gumps/Notebook_gump.o : gumps/Notebook_gump.cc $(EXULT_FLX)
+
+gumps/ShortcutBar_gump.o : gumps/ShortcutBar_gump.cc $(EXULT_FLX)
 
 gumps/Stats_gump.o : gumps/Stats_gump.cc $(EXULT_FLX)
 

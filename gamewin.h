@@ -27,6 +27,7 @@
 #include "rect.h"
 #include "tiles.h"
 #include "vgafile.h"
+#include "shapeid.h"
 
 #include <string>   // STL string
 #include <vector>
@@ -139,12 +140,13 @@ class Game_window {
 	bool alternate_drop;    // don't split stacks, can be inverted with a CTRL key modifier
 	bool allow_autonotes;
 	bool in_exult_menu;     // used for menu options
+	uint8 use_shortcutbar; // 0 = no, 1 = trans, 2 = yes
+	Pixel_colors outline_color;
+	bool sb_hide_missing;
 #ifdef __IPHONEOS__
 	//iphoneOS Options
 	bool item_menu;
 	int dpad_location;
-	bool trlucent_bar;
-	bool missing_button_bar;
 #endif
 	// Private methods:
 	void set_scrolls(Tile_coord cent);
@@ -294,6 +296,25 @@ public:
 	void set_in_exult_menu(bool im) {
 		in_exult_menu = im;
 	}
+	bool using_shortcutbar() const {
+		return use_shortcutbar > 0;
+	}
+	void set_shortcutbar(uint8 s);
+	uint8 get_shortcutbar_type() const {
+		return use_shortcutbar;
+	}
+	Pixel_colors get_outline_color() const {
+		return outline_color;
+	}
+	void set_outline_color(Pixel_colors s) {
+		outline_color = s;
+	}
+	bool sb_hide_missing_items() const {
+		return sb_hide_missing;
+	}
+	void set_sb_hide_missing_items(bool s) {
+		sb_hide_missing = s;
+	}
 #ifdef __IPHONEOS__
 	/*
 	 *  iphoneOS options:
@@ -309,18 +330,6 @@ public:
 	}
 	inline int get_dpad_location() {
 		return dpad_location;
-	}
-	bool get_trlucent_bar() const {
-		return trlucent_bar;
-	}
-	void set_trlucent_bar(bool s) {
-		trlucent_bar = s;
-	}
-	bool get_missing_button_bar() const {
-		return missing_button_bar;
-	}
-	void set_missing_button_bar(bool s) {
-		missing_button_bar = s;
 	}
 #endif
 	/*

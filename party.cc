@@ -33,6 +33,7 @@
 #include "frameseq.h"
 #include "dir.h"
 #include "schedule.h"
+#include "exult.h"
 
 using std::cout;
 using std::endl;
@@ -67,6 +68,8 @@ bool Party_manager::add_to_party(
 	// We can take items.
 	npc->set_flag_recursively(Obj_flags::okay_to_take);
 	party[party_count++] = npc->get_npc_num();
+	if(g_shortcutBar)
+		g_shortcutBar->set_changed();
 	return true;
 }
 
@@ -100,6 +103,8 @@ bool Party_manager::remove_from_party(
 	party_count--;
 	party[party_count] = 0;
 	npc->set_party_id(-1);
+	if(g_shortcutBar)
+		g_shortcutBar->set_changed();
 	return true;
 }
 

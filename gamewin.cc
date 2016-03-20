@@ -88,12 +88,13 @@
 #include "monstinf.h"
 #include "usefuns.h"
 #include "audio/midi_drivers/XMidiFile.h"
-
 #ifdef USE_EXULTSTUDIO
 #include "server.h"
 #include "servemsg.h"
 #endif
-
+#ifdef __IPHONEOS__
+#include "iphone_gumps.h"
+#endif
 #ifndef UNDER_EMBEDDED_CE
 using std::cerr;
 using std::cout;
@@ -490,13 +491,49 @@ Game_window::Game_window(
 		dpad_location = 2;
 	}
 	config->set("config/iphoneos/dpad_location", str, false);
-	config->value("config/iphoneos/trlucent_bar", str, "yes");
-	trlucent_bar = str == "yes";
-	config->set("config/iphoneos/trlucent_bar", trlucent_bar ? "yes" : "no", false);
-	config->value("config/iphoneos/missing_button_bar", str, "no");
-	missing_button_bar = str != "no";
-	config->set("config/iphoneos/missing_button_bar", missing_button_bar ? "yes" : "no", false);
+	config->value("config/shortcutbar/use_shortcutbar", str, "translucent");
+#else
+	config->value("config/shortcutbar/use_shortcutbar", str, "no");
 #endif
+	if(str == "no") {
+		use_shortcutbar = 0;
+	} else if(str == "yes") {
+		use_shortcutbar = 2;
+	} else {
+		str = "translucent";
+		use_shortcutbar = 1;
+	}
+	config->set("config/shortcutbar/use_shortcutbar", str, false);
+
+#ifdef __IPHONEOS__
+	config->value("config/shortcutbar/use_outline_color", str, "black");
+#else
+	config->value("config/shortcutbar/use_outline_color", str, "no");
+#endif
+
+	if(str == "no") {
+		outline_color = NPIXCOLORS;
+	} else if(str == "green") {
+		outline_color = POISON_PIXEL;
+	} else if(str == "white") {
+		outline_color = PROTECT_PIXEL;
+	} else if(str == "yellow") {
+		outline_color = CURSED_PIXEL;
+	} else if(str == "blue") {
+		outline_color = CHARMED_PIXEL;
+	} else if(str == "red") {
+		outline_color = HIT_PIXEL;
+	} else if(str == "purple") {
+		outline_color = PARALYZE_PIXEL;
+	} else {
+		str = "black";
+		outline_color = BLACK_PIXEL;
+	}
+	config->set("config/shortcutbar/hide_missing_items", str, false);
+
+	config->value("config/shortcutbar/hide_missing_items", str, "yes");
+	sb_hide_missing = str != "no";
+	config->set("config/shortcutbar/hide_missing_items", sb_hide_missing ? "yes" : "no", false);
 	config->write_back();
 }
 
@@ -824,6 +861,8 @@ void Game_window::toggle_combat(
 		}
 	} else              // Ending combat.
 		Combat::resume();   // Make sure not still paused.
+	if(g_shortcutBar)
+		g_shortcutBar->set_changed();
 }
 
 /*
@@ -930,6 +969,8 @@ void Game_window::resized(
 		snprintf(msg, 80, "%ux%ux%u", neww, newh, newsc);
 		effects->center_text(msg);
 	}
+	if(g_shortcutBar)
+		g_shortcutBar->set_changed();
 }
 
 /*
@@ -2890,9 +2931,8 @@ void Game_window::setup_game(
 	painted = true;         // Main loop uses this.
 	gump_man->close_all_gumps(true);        // Kill gumps.
 	Face_stats::load_config(config);
-#ifdef __IPHONEOS__
-	g_shortcutBar = new ShortcutBar_gump(0,0);
-#endif
+	if(using_shortcutbar())
+		g_shortcutBar = new ShortcutBar_gump(0,0);
 
 	// Set palette for time-of-day.
 	clock->reset();
@@ -3175,5 +3215,23 @@ void Game_window::got_bad_feeling(int odds) {
 		char const *badfeeling = get_misc_name(GAME_BG ? 0x44 : 0x50);
 		effects->remove_text_effect(main_actor);
 		effects->add_text(badfeeling, main_actor);
+	}
+}
+
+void Game_window::set_shortcutbar(uint8 s) {
+	if(use_shortcutbar == s)
+		return;
+	if(using_shortcutbar() && s > 0) {
+		use_shortcutbar = s;
+		return;
+	}
+	use_shortcutbar = s;
+	if(using_shortcutbar()) {
+		g_shortcutBar = new ShortcutBar_gump(0,0);
+	} else {
+		gump_man->remove_gump(g_shortcutBar);
+		if(g_shortcutBar)
+			delete g_shortcutBar;
+		g_shortcutBar = NULL;
 	}
 }

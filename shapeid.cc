@@ -143,6 +143,8 @@ void Shape_manager::load(
 	special_pixels[HIT_PIXEL] = pal.find_color(63, 4, 4);
 	// Purple for paralyze.
 	special_pixels[PARALYZE_PIXEL] = pal.find_color(49, 27, 49);
+	// Black for ShortcutBar_gump
+	special_pixels[BLACK_PIXEL] = pal.find_color(0, 0, 0);
 
 	files[SF_GUMPS_VGA].load(GUMPS_VGA, PATCH_GUMPS, true);
 
