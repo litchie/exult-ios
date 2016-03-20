@@ -424,6 +424,7 @@ void Usecode_internal::append_string(
 		String = strcat(newstr, str);
 	} else
 		String = strcpy(newstr, str);
+	delete [] newstr;
 }
 
 // Push/pop stack.

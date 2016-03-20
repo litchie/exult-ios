@@ -42,7 +42,7 @@ using std::memmove;
 
 void Image_buffer16::create_default_palette(
 ) {
-	delete palette;         // Delete old.
+	delete [] palette;         // Delete old.
 	palette = new unsigned short[256];
 	for (int i = 0; i < 256; i++)
 		palette[i] = rgb(4 * ((i >> 5) & 0x7),

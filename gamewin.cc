@@ -515,7 +515,7 @@ Game_window::Game_window(
 		str = "black";
 		outline_color = BLACK_PIXEL;
 	}
-	config->set("config/shortcutbar/hide_missing_items", str, false);
+	config->set("config/shortcutbar/use_outline_color", str, false);
 
 	config->value("config/shortcutbar/hide_missing_items", str, "yes");
 	sb_hide_missing = str != "no";

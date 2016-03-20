@@ -2,7 +2,10 @@
 	* exult.*, gumps/ShortcutBar_gump.cc: don't have ShortcutBar_gump intercept
 	  clicks when in usecode or when waiting for a click.
 	* ShortcutBar_gump.cc: Stop double food use in BG.
-	* gamewin.cc: Use close_gump instead of remove_gump
+	* gamewin.cc: Use close_gump instead of remove_gump. Fix copy/paste error.
+	* mapedit/u7shp.c, tools/rip.cc, tools/shp2pcx.cc, usecode/ucinternal.cc:
+	  Fix leaks
+	* imagewin/ibuf16.cc: Fix mismatching allocation and deallocation
 
 2016-03-17	Malignant Manor <malignantmanor@users.sourceforge.net>
 	* gamewin.cc: Fix use_shortcutbar not changing when switching between yes
