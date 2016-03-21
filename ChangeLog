@@ -1,3 +1,6 @@
+2016-03-21	Malignant Manor <malignantmanor@users.sourceforge.net>
+	* usecode/ucinternal.cc: Revert change as it causes issues.
+
 2016-03-20	Malignant Manor <malignantmanor@users.sourceforge.net>
 	* exult.*, gumps/ShortcutBar_gump.cc: don't have ShortcutBar_gump intercept
 	  clicks when in usecode or when waiting for a click.
