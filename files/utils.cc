@@ -56,7 +56,7 @@
 #include "utils.h"
 #include "fnames.h"
 
-#ifdef MACOSX
+#if defined(MACOSX) || defined(__IPHONEOS__)
 #include <CoreFoundation/CoreFoundation.h>
 #include <sys/param.h> // for MAXPATHLEN
 #endif
@@ -534,7 +534,7 @@ int U7mkdir(
     int mode
 ) {
 	string name = get_system_path(dirname);
-#if (defined(MACOSX) || defined(BEOS))
+#if (defined(MACOSX) || defined(BEOS) || (__IPHONEOS__))
 	// remove any trailing slashes
 	string::size_type pos = name.find_last_not_of('/');
 	if (pos != string::npos)
@@ -778,7 +778,7 @@ void setup_data_dir(
 	if (U7exists(EXULT_FLX))
 		return;
 
-#ifdef MACOSX
+#if defined(MACOSX) || defined(__IPHONEOS__)
 	if (is_system_path_defined("<BUNDLE>")) {
 		// We have the bundle, so lets use it. But lets also leave <DATA>
 		// with a sensible default.

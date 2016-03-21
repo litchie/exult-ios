@@ -188,7 +188,7 @@
 #define LT_OBJDIR ".libs/"
 
 /* Using MacOSX */
-#define MACOSX 1
+/*#define MACOSX 1*/
 //#define HAVE_OPENGL 0
 /* Using NetBSD */
 /* #undef NETBSD */
@@ -282,7 +282,7 @@
 #define USE_XBR_SCALER 1
 
 /* Package Version */
-#define VERSION "1.5.0svn"
+#define VERSION "1.5.0git-iOS"
 
 /* X11 (needed by Exult Studio support in Mac OS X) */
 /* #undef XWIN */
