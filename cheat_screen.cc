@@ -1227,35 +1227,68 @@ void CheatScreen::NPCDisplay(Actor *actor, int &num) {
 		font->paint_text_fixedwidth(ibuf, buf, 0, 18, 8);
 
 		snprintf(buf, 512, "Current Activity: %2i - %s", actor->get_schedule_type(), schedules[actor->get_schedule_type()]);
+#ifdef __IPHONEOS__
+		font->paint_text_fixedwidth(ibuf, buf, 0, maxy - 99, 8);
+#else
 		font->paint_text_fixedwidth(ibuf, buf, 0, 36, 8);
+#endif
 
 		snprintf(buf, 512, "Experience: %i", actor->get_property(Actor::exp));
+#ifdef __IPHONEOS__
+		font->paint_text_fixedwidth(ibuf, buf, 0, maxy - 90, 8);
+#else
 		font->paint_text_fixedwidth(ibuf, buf, 0, 45, 8);
+#endif
+		
 		snprintf(buf, 512, "Level: %i", actor->get_level());
+#ifdef __IPHONEOS__
+		font->paint_text_fixedwidth(ibuf, buf, 144, maxy - 90, 8);
+#else
 		font->paint_text_fixedwidth(ibuf, buf, 144, 45, 8);
+#endif
 
 		snprintf(buf, 512, "Training: %2i  Health: %2i", actor->get_property(Actor::training), actor->get_property(Actor::health));
+#ifdef __IPHONEOS__
+		font->paint_text_fixedwidth(ibuf, buf, 0, maxy - 81, 8);
+#else
 		font->paint_text_fixedwidth(ibuf, buf, 0, 54, 8);
+#endif
 
 		if (num != -1) {
 			int ucitemnum = 0x10000 - num;
 			if (!num) ucitemnum = 0xfe9c;
 			snprintf(buf, 512, "Usecode item %4x function %x", ucitemnum, actor->get_usecode());
+#ifdef __IPHONEOS__
+			font->paint_text_fixedwidth(ibuf, buf, 0, maxy - 72, 8);
+#else
 			font->paint_text_fixedwidth(ibuf, buf, 0, 63, 8);
+#endif
 		} else {
 			snprintf(buf, 512, "Usecode function %x", actor->get_usecode());
+#ifdef __IPHONEOS__
+			font->paint_text_fixedwidth(ibuf, buf, 0, maxy - 72, 8);
+#else
 			font->paint_text_fixedwidth(ibuf, buf, 0, 63, 8);
+#endif
 		}
 
 		if (actor->get_flag(Obj_flags::charmed))
 			snprintf(buf, 512, "Alignment: %s (orig: %s)", alignments[actor->get_effective_alignment()], alignments[actor->get_alignment()]);
 		else
 			snprintf(buf, 512, "Alignment: %s", alignments[actor->get_alignment()]);
+#ifdef __IPHONEOS__
+		font->paint_text_fixedwidth(ibuf, buf, 0, maxy - 63, 8);
+#else
 		font->paint_text_fixedwidth(ibuf, buf, 0, 72, 8);
+#endif
 
 		if (actor->get_polymorph() != -1) {
 			snprintf(buf, 512, "Polymorphed from %04i", actor->get_polymorph());
+#ifdef __IPHONEOS__
+			font->paint_text_fixedwidth(ibuf, buf, 0, maxy - 54, 8);
+#else
 			font->paint_text_fixedwidth(ibuf, buf, 0, 81, 8);
+#endif
 		}
 	} else {
 		snprintf(buf, 512, "NPC %i - Invalid NPC!", num);
@@ -1271,6 +1304,7 @@ void CheatScreen::NPCMenu(Actor *actor, int &num) {
 	if (actor) font->paint_text_fixedwidth(ibuf, "[A]ttack Mode", 0, maxy - 99, 8);
 #endif
 
+#ifndef __IPHONEOS__
 	// Business Activity
 	if (actor) font->paint_text_fixedwidth(ibuf, "[B]usiness Activity", 0, maxy - 99, 8);
 
@@ -1316,7 +1350,36 @@ void CheatScreen::NPCMenu(Actor *actor, int &num) {
 
 	// Change NPC
 	font->paint_text_fixedwidth(ibuf, "[+-] Scroll NPCs", 160, maxy - 36, 8);
+#else
+	// XP
+	if (actor) font->paint_text_fixedwidth(ibuf, "[E]xperience", 0, 36, 8);
 
+	// NPC Flags
+	if (actor) font->paint_text_fixedwidth(ibuf, "[N]pc Flags", 0, 45, 8);
+
+	// Name
+	if (actor) font->paint_text_fixedwidth(ibuf, "[1] Name", 0, 54, 8);
+
+	// Stats
+	if (actor) font->paint_text_fixedwidth(ibuf, "[S]tats", 0, 63, 8);
+
+	// Training Points
+	if (actor) font->paint_text_fixedwidth(ibuf, "[2] Training Points", 0, 72, 8);
+
+	// Right Column
+
+	// Teleport
+	if (actor) font->paint_text_fixedwidth(ibuf, "[T]eleport", 160, 36, 8);
+
+	// Change NPC
+	font->paint_text_fixedwidth(ibuf, "[*] Change NPC", 160, 45, 8);
+
+	// Change NPC
+	font->paint_text_fixedwidth(ibuf, "[+-] Scroll NPCs", 160, 54, 8);
+
+	// eXit
+	font->paint_text_fixedwidth(ibuf, "[X]it", 160, 72, 8);
+#endif
 }
 
 void CheatScreen::NPCActivate(char *input, int &command, Cheat_Prompt &mode, Actor *actor, int &num) {
@@ -1520,8 +1583,10 @@ void CheatScreen::FlagLoop(Actor *actor) {
 	while (looping) {
 		gwin->clear_screen();
 
+#ifndef __IPHONEOS__
 		// First the display
 		NPCDisplay(actor, num);
+#endif
 
 		// Now the Menu Column
 		FlagMenu(actor);
@@ -1547,6 +1612,7 @@ void CheatScreen::FlagLoop(Actor *actor) {
 void CheatScreen::FlagMenu(Actor *actor) {
 	char    buf[512];
 
+#ifndef __IPHONEOS__
 	// Left Column
 
 	// Asleep
@@ -1690,7 +1756,151 @@ void CheatScreen::FlagMenu(Actor *actor) {
 		snprintf(buf, 512, "[5] Petra..%c", actor->get_flag(Obj_flags::petra) ? 'Y' : 'N');
 		font->paint_text_fixedwidth(ibuf, buf, 208, maxy - 27, 8);
 	}
+#else
+	// Left Column
 
+	// Asleep
+	snprintf(buf, 512, "[A] Asleep.%c", actor->get_flag(Obj_flags::asleep) ? 'Y' : 'N');
+	font->paint_text_fixedwidth(ibuf, buf, 0, 0, 8);
+
+	// Charmed
+	snprintf(buf, 512, "[B] Charmd.%c", actor->get_flag(Obj_flags::charmed) ? 'Y' : 'N');
+	font->paint_text_fixedwidth(ibuf, buf, 0, 9, 8);
+
+	// Cursed
+	snprintf(buf, 512, "[C] Cursed.%c", actor->get_flag(Obj_flags::cursed) ? 'Y' : 'N');
+	font->paint_text_fixedwidth(ibuf, buf, 0, 18, 8);
+
+	// Paralyzed
+	snprintf(buf, 512, "[D] Prlyzd.%c", actor->get_flag(Obj_flags::paralyzed) ? 'Y' : 'N');
+	font->paint_text_fixedwidth(ibuf, buf, 0, 27, 8);
+
+	// Poisoned
+	snprintf(buf, 512, "[E] Poisnd.%c", actor->get_flag(Obj_flags::poisoned) ? 'Y' : 'N');
+	font->paint_text_fixedwidth(ibuf, buf, 0, 36, 8);
+
+	// Protected
+	snprintf(buf, 512, "[F] Prtctd.%c", actor->get_flag(Obj_flags::protection) ? 'Y' : 'N');
+	font->paint_text_fixedwidth(ibuf, buf, 0, 45, 8);
+
+	// Advanced Editor
+	font->paint_text_fixedwidth(ibuf, "[*] Advanced", 0, 63, 8);
+
+	// Exit
+	font->paint_text_fixedwidth(ibuf, "[X]it", 0, 72, 8);
+
+
+	// Center Column
+
+	// Party
+	snprintf(buf, 512, "[I] Party..%c", actor->get_flag(Obj_flags::in_party) ? 'Y' : 'N');
+	font->paint_text_fixedwidth(ibuf, buf, 104, 0, 8);
+
+	// Invisible
+	snprintf(buf, 512, "[J] Invsbl.%c", actor->get_flag(Obj_flags::invisible) ? 'Y' : 'N');
+	font->paint_text_fixedwidth(ibuf, buf, 104, 9, 8);
+
+	// Fly
+	snprintf(buf, 512, "[K] Fly....%c", actor->get_type_flag(Actor::tf_fly) ? 'Y' : 'N');
+	font->paint_text_fixedwidth(ibuf, buf, 104, 18, 8);
+
+	// Walk
+	snprintf(buf, 512, "[L] Walk...%c", actor->get_type_flag(Actor::tf_walk) ? 'Y' : 'N');
+	font->paint_text_fixedwidth(ibuf, buf, 104, 27, 8);
+
+	// Swim
+	snprintf(buf, 512, "[M] Swim...%c", actor->get_type_flag(Actor::tf_swim) ? 'Y' : 'N');
+	font->paint_text_fixedwidth(ibuf, buf, 104, 36, 8);
+
+	// Ethereal
+	snprintf(buf, 512, "[N] Ethrel.%c", actor->get_type_flag(Actor::tf_ethereal) ? 'Y' : 'N');
+	font->paint_text_fixedwidth(ibuf, buf, 104, 45, 8);
+
+	// Protectee
+	snprintf(buf, 512, "[O] Prtcee.%c", '?');
+	font->paint_text_fixedwidth(ibuf, buf, 104, 54, 8);
+
+	// Conjured
+	snprintf(buf, 512, "[P] Conjrd.%c", actor->get_type_flag(Actor::tf_conjured) ? 'Y' : 'N');
+	font->paint_text_fixedwidth(ibuf, buf, 104, 63, 8);
+
+	// Tournament (Original is SI only -- allowing for BG in Exult)
+	snprintf(buf, 512, "[3] Tourna.%c", actor->get_flag(
+	             Obj_flags::tournament) ? 'Y' : 'N');
+	font->paint_text_fixedwidth(ibuf, buf, 104, 72, 8);
+
+	// Naked (AV ONLY)
+	if (!actor->get_npc_num()) {
+		snprintf(buf, 512, "[7] Naked..%c", actor->get_flag(Obj_flags::naked) ? 'Y' : 'N');
+		font->paint_text_fixedwidth(ibuf, buf, 0, 54, 8);
+	}
+
+
+	// Right Column
+
+	// Summoned
+	snprintf(buf, 512, "[Q] Summnd.%c", actor->get_type_flag(Actor::tf_summonned) ? 'Y' : 'N');
+	font->paint_text_fixedwidth(ibuf, buf, 208, 0, 8);
+
+	// Bleeding
+	snprintf(buf, 512, "[R] Bleedn.%c", actor->get_type_flag(Actor::tf_bleeding) ? 'Y' : 'N');
+	font->paint_text_fixedwidth(ibuf, buf, 208, 9, 8);
+
+	if (!actor->get_npc_num()) { // Avatar
+		// Sex
+		snprintf(buf, 512, "[S] Sex....%c", actor->get_type_flag(Actor::tf_sex) ? 'F' : 'M');
+		font->paint_text_fixedwidth(ibuf, buf, 208, 18, 8);
+
+		// Skin
+		snprintf(buf, 512, "[1] Skin...%d", actor->get_skin_color());
+		font->paint_text_fixedwidth(ibuf, buf, 208, 27, 8);
+
+		// Read
+		snprintf(buf, 512, "[4] Read...%c", actor->get_flag(Obj_flags::read) ? 'Y' : 'N');
+		font->paint_text_fixedwidth(ibuf, buf, 208, 36, 8);
+	} else { // Not Avatar
+		// Met
+		snprintf(buf, 512, "[T] Met....%c", actor->get_flag(Obj_flags::met) ? 'Y' : 'N');
+		font->paint_text_fixedwidth(ibuf, buf, 208, 18, 8);
+
+		// NoCast
+		snprintf(buf, 512, "[U] NoCast.%c", actor->get_flag(
+		             Obj_flags::no_spell_casting) ? 'Y' : 'N');
+		font->paint_text_fixedwidth(ibuf, buf, 208, 27, 8);
+
+		// ID
+		snprintf(buf, 512, "[V] ID#:%02i", actor->get_ident());
+		font->paint_text_fixedwidth(ibuf, buf, 208, 36, 8);
+	}
+
+	// Freeze
+	snprintf(buf, 512, "[W] Freeze.%c", actor->get_flag(
+	             Obj_flags::freeze) ? 'Y' : 'N');
+	font->paint_text_fixedwidth(ibuf, buf, 208, 45, 8);
+
+	// Party
+	if (actor->is_in_party()) {
+		// Temp
+		snprintf(buf, 512, "[Y] Temp: %02i",
+		         actor->get_temperature());
+		font->paint_text_fixedwidth(ibuf, buf, 208, 54, 8);
+
+		// Conjured
+		snprintf(buf, 512, "Warmth: %04i",
+		         actor->figure_warmth());
+		font->paint_text_fixedwidth(ibuf, buf, 208, 63, 8);
+	}
+
+	// Polymorph
+	snprintf(buf, 512, "[2] Polymo.%c", actor->get_flag(Obj_flags::polymorph) ? 'Y' : 'N');
+	font->paint_text_fixedwidth(ibuf, buf, 208, 72, 8);
+
+	// Patra (AV SI ONLY)
+	if (!actor->get_npc_num()) {
+		snprintf(buf, 512, "[5] Petra..%c", actor->get_flag(Obj_flags::petra) ? 'Y' : 'N');
+		font->paint_text_fixedwidth(ibuf, buf, 208, 81, 8);
+	}
+#endif
 }
 
 void CheatScreen::FlagActivate(char *input, int &command, Cheat_Prompt &mode, Actor *actor) {
@@ -2354,8 +2564,10 @@ void CheatScreen::StatLoop(Actor *actor) {
 	while (looping) {
 		gwin->clear_screen();
 
+#ifndef __IPHONEOS__
 		// First the display
 		NPCDisplay(actor, num);
+#endif
 
 		// Now the Menu Column
 		StatMenu(actor);
@@ -2383,6 +2595,7 @@ void CheatScreen::StatMenu(Actor *actor) {
 
 	// Left Column
 
+#ifndef __IPHONEOS__
 	// Dexterity
 	snprintf(buf, 512, "[D]exterity....%3i", actor->get_property(Actor::dexterity));
 	font->paint_text_fixedwidth(ibuf, buf, 0, maxy - 108, 8);
@@ -2420,7 +2633,45 @@ void CheatScreen::StatMenu(Actor *actor) {
 
 	// Exit
 	font->paint_text_fixedwidth(ibuf, "[X]it", 0, maxy - 36, 8);
+#else
+	// Dexterity
+	snprintf(buf, 512, "[D]exterity....%3i", actor->get_property(Actor::dexterity));
+	font->paint_text_fixedwidth(ibuf, buf, 0, 0, 8);
 
+	// Food Level
+	snprintf(buf, 512, "[F]ood Level...%3i", actor->get_property(Actor::food_level));
+	font->paint_text_fixedwidth(ibuf, buf, 0, 9, 8);
+
+	// Intelligence
+	snprintf(buf, 512, "[I]ntellicence.%3i", actor->get_property(Actor::intelligence));
+	font->paint_text_fixedwidth(ibuf, buf, 0, 18, 8);
+
+	// Strength
+	snprintf(buf, 512, "[S]trength.....%3i", actor->get_property(Actor::strength));
+	font->paint_text_fixedwidth(ibuf, buf, 0, 27, 8);
+
+	// Combat Skill
+	snprintf(buf, 512, "[C]ombat Skill.%3i", actor->get_property(Actor::combat));
+	font->paint_text_fixedwidth(ibuf, buf, 0, 36, 8);
+
+	// Hit Points
+	snprintf(buf, 512, "[H]it Points...%3i", actor->get_property(Actor::health));
+	font->paint_text_fixedwidth(ibuf, buf, 0, 45, 8);
+
+	// Magic - Avatar Only
+	if (actor->get_effective_prop(Actor::magic) > 0) {
+		// Magic Points
+		snprintf(buf, 512, "[M]agic Points.%3i", actor->get_property(Actor::magic));
+		font->paint_text_fixedwidth(ibuf, buf, 0, 54, 8);
+
+		// Mana
+		snprintf(buf, 512, "[V]ana Level...%3i", actor->get_property(Actor::mana));
+		font->paint_text_fixedwidth(ibuf, buf, 0, 63, 8);
+	}
+
+	// Exit
+	font->paint_text_fixedwidth(ibuf, "[X]it", 0, 72, 8);
+#endif
 
 }
 
@@ -2537,7 +2788,9 @@ CheatScreen::Cheat_Prompt CheatScreen::AdvancedFlagLoop(int num, Actor *actor) {
 	while (looping) {
 		gwin->clear_screen();
 
-		NPCDisplay(actor, npc_num);
+#ifndef __IPHONEOS__
+		NPCDisplay(actor, num);
+#endif
 
 		if (num < 0) num = 0;
 		else if (num > 63) num = 63;
@@ -2548,6 +2801,7 @@ CheatScreen::Cheat_Prompt CheatScreen::AdvancedFlagLoop(int num, Actor *actor) {
 		else
 			snprintf(buf, 512, "NPC Flag %i", num);
 
+#ifndef __IPHONEOS__
 		font->paint_text_fixedwidth(ibuf, buf, 0, maxy - 108, 8);
 
 		snprintf(buf, 512, "Flag is %s", actor->get_flag(num) ? "SET" : "UNSET");
@@ -2565,6 +2819,25 @@ CheatScreen::Cheat_Prompt CheatScreen::AdvancedFlagLoop(int num, Actor *actor) {
 		else font->paint_text_fixedwidth(ibuf, "[-] Scroll Flags", 0, maxy - 63, 8);
 
 		font->paint_text_fixedwidth(ibuf, "[X]it", 0, maxy - 36, 8);
+#else
+		font->paint_text_fixedwidth(ibuf, buf, 0, 9, 8);
+
+		snprintf(buf, 512, "Flag is %s", actor->get_flag(num) ? "SET" : "UNSET");
+		font->paint_text_fixedwidth(ibuf, buf, 0, 27, 8);
+
+
+		// Now the Menu Column
+		if (!actor->get_flag(num)) font->paint_text_fixedwidth(ibuf, "[S]et Flag", 160, 27, 8);
+		else font->paint_text_fixedwidth(ibuf, "[U]nset Flag", 160, 27, 8);
+
+		// Change Flag
+		font->paint_text_fixedwidth(ibuf, "[*] Change Flag", 0, 45, 8);
+		if (num > 0 && num < 63) font->paint_text_fixedwidth(ibuf, "[+-] Scroll Flags", 0, 54, 8);
+		else if (num == 0) font->paint_text_fixedwidth(ibuf, "[+] Scroll Flags", 0, 54, 8);
+		else font->paint_text_fixedwidth(ibuf, "[-] Scroll Flags", 0, 54, 8);
+
+		font->paint_text_fixedwidth(ibuf, "[X]it", 0, 72, 8);
+#endif
 
 		// Finally the Prompt...
 		SharedPrompt(input, mode);
