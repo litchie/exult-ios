@@ -1,3 +1,7 @@
+2016-03-22	Malignant Manor <malignantmanor@users.sourceforge.net>
+	* cheat_screen.*: Allow canceling of stat changing. Show magic points and
+	  mana when Avatar has 0 mp.
+
 2016-03-21	Malignant Manor <malignantmanor@users.sourceforge.net>
 	* usecode/ucinternal.cc: Revert change as it causes issues.
 

@@ -290,6 +290,10 @@ void CheatScreen::SharedPrompt(char *input, const Cheat_Prompt &mode) {
 		font->paint_text_fixedwidth(ibuf, "Enter Value. (-1 to cancel.)", 0, maxy - 9, 8);
 		break;
 
+	case CP_EnterValueNoCancel:
+		font->paint_text_fixedwidth(ibuf, "Enter Value.", 0, maxy - 9, 8);
+		break;
+
 	case CP_Minute:
 		font->paint_text_fixedwidth(ibuf, "Enter Minute. (-1 to cancel.)", 0, maxy - 9, 8);
 		break;
@@ -2285,7 +2289,7 @@ void CheatScreen::StatMenu(Actor *actor) {
 	font->paint_text_fixedwidth(ibuf, buf, 0, maxy - 63, 8);
 
 	// Magic - Avatar Only
-	if (actor->get_effective_prop(Actor::magic) > 0) {
+	if (actor->get_npc_num() == 0) {
 		// Magic Points
 		snprintf(buf, 512, "[M]agic Points.%3i", actor->get_property(Actor::magic));
 		font->paint_text_fixedwidth(ibuf, buf, 0, maxy - 54, 8);
@@ -2303,15 +2307,22 @@ void CheatScreen::StatMenu(Actor *actor) {
 
 void CheatScreen::StatActivate(char *input, int &command, Cheat_Prompt &mode, Actor *actor) {
 	int i = std::atoi(input);
-	// Enforce sane bounds.
-	if (i > 60)
-		i = 60;
-	else if (i < 0 && command != 'h')
-		i = 0;
-	else if (i < -50)
-		i = -50;
-
 	mode = CP_Command;
+	// Enforce sane bounds.
+	if (i > 60) {
+		i = 60;
+	} else if (i < 0 && command != 'h') {
+		if (i == -1) {   // canceled
+			for (i = 0; i < 17; i++)
+				input[i] = 0;
+			command = 0;
+			return;
+		}
+		i = 0;
+	} else if (i < -50) {
+		i = -50;
+	}
+
 	switch (command) {
 	case 'd':   // Dexterity
 		actor->set_property(Actor::dexterity, i);
@@ -2357,12 +2368,15 @@ void CheatScreen::StatActivate(char *input, int &command, Cheat_Prompt &mode, Ac
 bool CheatScreen::StatCheck(char *input, int &command, Cheat_Prompt &mode, bool &activate, Actor *actor) {
 	switch (command) {
 		// Everyone
+	case 'h':   // Hit Points
+		input[0] = 0;
+		mode = CP_EnterValueNoCancel;
+		break;
 	case 'd':   // Dexterity
 	case 'f':   // Food Level
 	case 'i':   // Intelligence
 	case 's':   // Strength
 	case 'c':   // Combat Points
-	case 'h':   // Hit Points
 		input[0] = 0;
 		mode = CP_EnterValue;
 		break;

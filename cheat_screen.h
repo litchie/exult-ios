@@ -82,8 +82,8 @@ private:
 	    CP_WestEast = 35,
 
 	    CP_HexXCoord = 37,
-	    CP_HexYCoord = 38
-
+	    CP_HexYCoord = 38,
+	    CP_EnterValueNoCancel = 39
 	};
 	Game_window *gwin;
 	Image_buffer8 *ibuf;
