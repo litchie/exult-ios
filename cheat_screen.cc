@@ -2288,8 +2288,7 @@ void CheatScreen::StatMenu(Actor *actor) {
 	snprintf(buf, 512, "[H]it Points...%3i", actor->get_property(Actor::health));
 	font->paint_text_fixedwidth(ibuf, buf, 0, maxy - 63, 8);
 
-	// Magic - Avatar Only
-	if (actor->get_npc_num() == 0) {
+	// Magic
 		// Magic Points
 		snprintf(buf, 512, "[M]agic Points.%3i", actor->get_property(Actor::magic));
 		font->paint_text_fixedwidth(ibuf, buf, 0, maxy - 54, 8);
@@ -2297,7 +2296,6 @@ void CheatScreen::StatMenu(Actor *actor) {
 		// Mana
 		snprintf(buf, 512, "[V]ana Level...%3i", actor->get_property(Actor::mana));
 		font->paint_text_fixedwidth(ibuf, buf, 0, maxy - 45, 8);
-	}
 
 	// Exit
 	font->paint_text_fixedwidth(ibuf, "[X]it", 0, maxy - 36, 8);
@@ -2377,16 +2375,10 @@ bool CheatScreen::StatCheck(char *input, int &command, Cheat_Prompt &mode, bool 
 	case 'i':   // Intelligence
 	case 's':   // Strength
 	case 'c':   // Combat Points
-		input[0] = 0;
-		mode = CP_EnterValue;
-		break;
-
-		// Avatar Only
 	case 'm':   // Magic
 	case 'v':   // [V]ana
-		if (actor->get_npc_num()) command = 0;
-		else mode = CP_EnterValue;
 		input[0] = 0;
+		mode = CP_EnterValue;
 		break;
 
 		// X and Escape leave

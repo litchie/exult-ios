@@ -16,8 +16,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#ifndef PARTY_PORTRAIT_H
-#define PARTY_PORTRAIT_H
+#ifndef FACE_STATS_H
+#define FACE_STATS_H
 
 #include "Configuration.h"
 #include "Gump.h"
@@ -40,7 +40,6 @@ class Face_stats : public Gump {
 	int     gamex;
 	int     gamey;
 
-	bool        has_changed();
 	void        create_buttons();
 	void        delete_buttons();
 
@@ -84,9 +83,10 @@ public:
 	static void CreateGump();
 	static void RemoveGump();
 	static void AdvanceState();
+	static void UpdateButtons();
 	static void save_config(Configuration *config);
 	static void load_config(Configuration *config);
 };
 
 
-#endif //PARTY_PORTRAIT
+#endif //FACE_STATS_H

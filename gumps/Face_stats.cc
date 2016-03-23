@@ -322,30 +322,8 @@ Gump_button *Face_stats::on_button(int mx, int my) {
 
 // add dirty region, if dirty
 void Face_stats::update_gump() {
-	if (has_changed()) {
-		delete_buttons();
-		create_buttons();
-	} else {
 		for (int i = 0; i < 8; i++)
 			if (party[i]) party[i]->update_widget();
-	}
-}
-
-// Has this changed?
-bool Face_stats::has_changed() {
-	if (resx != gwin->get_win()->get_full_width() ||
-	        resy != gwin->get_win()->get_full_height() ||
-	        gamex != gwin->get_game_width() ||
-	        gamey != gwin->get_game_height())
-		return true;
-
-	if (party_size != partyman->get_count()) return true;
-
-	for (int i = 0; i < party_size; i++)
-		if (npc_nums[i + 1] != partyman->get_member(i))
-			return true;
-
-	return false;
 }
 
 // Delete all the buttons
@@ -500,6 +478,16 @@ void Face_stats::AdvanceState() {
 		mode++;
 		mode %= PORTRAIT_NUM_MODES;
 		if (mode) CreateGump();
+	}
+}
+
+// Used for updating mana bar when magic value changes and when gwin resizes
+void Face_stats::UpdateButtons() {
+	if (!self) {
+		return;
+	} else {
+		self->delete_buttons();
+		self->create_buttons();
 	}
 }
 

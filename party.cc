@@ -29,6 +29,7 @@
 #include <cstring>
 #include "party.h"
 #include "actors.h"
+#include "Face_stats.h"
 #include "gamewin.h"
 #include "frameseq.h"
 #include "dir.h"
@@ -70,6 +71,7 @@ bool Party_manager::add_to_party(
 	party[party_count++] = npc->get_npc_num();
 	if(g_shortcutBar)
 		g_shortcutBar->set_changed();
+	Face_stats::UpdateButtons();
 	return true;
 }
 
@@ -105,6 +107,7 @@ bool Party_manager::remove_from_party(
 	npc->set_party_id(-1);
 	if(g_shortcutBar)
 		g_shortcutBar->set_changed();
+	Face_stats::UpdateButtons();
 	return true;
 }
 
