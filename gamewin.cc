@@ -971,6 +971,7 @@ void Game_window::resized(
 	}
 	if(g_shortcutBar)
 		g_shortcutBar->set_changed();
+	Face_stats::UpdateButtons();
 }
 
 /*

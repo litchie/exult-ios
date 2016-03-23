@@ -46,6 +46,7 @@
 #include "dir.h"
 #include "egg.h"
 #include "exult.h"
+#include "Face_stats.h"
 #include "frameseq.h"
 #include "game.h"
 #include "gamewin.h"
@@ -2427,11 +2428,17 @@ void Actor::set_property(
 			val = 0;
 		properties[prop] = val;
 		break;
-	case combat:            // These two are limited to 30.
-	case magic:
+	case combat:            // limited to 30.
 		properties[prop] = val > 30 ? 30 : val;
 		break;
-	case training:          // Don't let this go negative.
+	case magic: {
+		int old_val = properties[prop];
+		properties[prop] = val > 30 ? 30 : val; // limited to 30.
+		// check if magic changes to and from 0
+		if(is_in_party() && old_val != val && (old_val == 0 || val == 0))
+			Face_stats::UpdateButtons();
+		break;
+	} case training:          // Don't let this go negative.
 		properties[prop] = val < 0 ? 0 : val;
 		break;
 	case sex_flag:
