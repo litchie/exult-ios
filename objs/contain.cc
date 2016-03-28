@@ -115,8 +115,8 @@ bool Container_game_object::add(
 	if (obj == static_cast<void *>(gwin->get_main_actor()))
 		return false;
 	Shape_info &info = get_info();
-	if (get_shapenum() == obj->get_shapenum()   // Shape can't be inside itself.
-	        || (!dont_check && info.is_container_locked())) // Locked container.
+	if (!dont_check && (get_shapenum() == obj->get_shapenum()   // Shape can't be inside itself (not sure originals check this).
+	        || info.is_container_locked())) // Locked container.
 		return false;
 	if (!info.is_shape_accepted(obj->get_shapenum()))   // Shape can't be inside.
 		return false;

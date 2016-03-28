@@ -1,3 +1,9 @@
+2016-03-28	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* objs/contain.cc: Fixing bug #1935 'SI: Odd bug when you select "fight"
+	  with a chest in your Inventory...' by skipping over the shape check when
+	  dont_check is active. ote: This check may not happen in originals; need to
+	  do some investigation.
+
 2016-03-23	Malignant Manor <malignantmanor@users.sourceforge.net>
 	* cheat_screen.cc: Allow editing of any npc's magic and mana values.
 	* actors.cc, gamewin.cc, party.cc, gumps/Face_stats.*: Don't actively check
