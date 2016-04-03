@@ -1,3 +1,7 @@
+2016-04-03	Malignant Manor <malignantmanor@users.sourceforge.net>
+	* gamewin.cc: Fix crash caused by Face_stats updating during actor read.
+	  306c52981888b45b4c4e7daf34973f8fa2c69a5 regression
+
 2016-03-28	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* objs/contain.cc: Fixing bug #1935 'SI: Odd bug when you select "fight"
 	  with a chest in your Inventory...' by skipping over the shape check when
