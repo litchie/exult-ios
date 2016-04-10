@@ -34,6 +34,7 @@
 #include "items.h"
 #include "game.h"
 #include "cheat.h"
+#include "ignore_unused_variable_warning.h"
 
 #include "SDL_timer.h"
 
@@ -81,6 +82,7 @@ bool Bg_dont_wake(
     Game_window *gwin,
     Actor *npc
 ) {
+	ignore_unused_variable_warning(gwin);
 	int num;
 	return (Game::get_game_type() == BLACK_GATE &&
 	        (npc->get_info().has_translucency() ||

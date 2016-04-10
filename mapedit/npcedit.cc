@@ -38,6 +38,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "shapefile.h"
 #include "shapedraw.h"
 #include "npclst.h"
+#include "ignore_unused_variable_warning.h"
 
 #ifdef WIN32
 #include "windrag.h"
@@ -53,6 +54,7 @@ C_EXPORT void on_open_npc_activate(
     GtkMenuItem     *menuitem,
     gpointer         user_data
 ) {
+	ignore_unused_variable_warning(menuitem, user_data);
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->open_npc_window();
 }
@@ -64,6 +66,7 @@ C_EXPORT void on_npc_apply_btn_clicked(
     GtkButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(btn, user_data);
 	ExultStudio::get_instance()->set_npc_modified();
 	ExultStudio::get_instance()->save_npc_window();
 }
@@ -75,6 +78,7 @@ C_EXPORT void on_npc_cancel_btn_clicked(
     GtkButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(btn, user_data);
 	ExultStudio::get_instance()->close_npc_window();
 }
 
@@ -86,6 +90,7 @@ C_EXPORT void on_npc_show_gump_clicked(
     GtkButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	cout << "In on_npc_show_gump_clicked()" << endl;
 	unsigned char data[Exult_server::maxlength];
 	// Get container address.
@@ -107,6 +112,7 @@ C_EXPORT gboolean on_npc_window_delete_event(
     GdkEvent *event,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(widget, event, user_data);
 	ExultStudio::get_instance()->close_npc_window();
 	return TRUE;
 }
@@ -118,6 +124,7 @@ C_EXPORT void on_npc_usecode_browse_clicked(
     GtkButton *button,
     gpointer         user_data
 ) {
+	ignore_unused_variable_warning(button, user_data);
 	ExultStudio *studio = ExultStudio::get_instance();
 	const char *uc = studio->browse_usecode(true);
 	if (*uc)
@@ -132,6 +139,7 @@ C_EXPORT gboolean on_npc_draw_expose_event(
     GdkEventExpose *event,
     gpointer data           // ->Shape_chooser.
 ) {
+	ignore_unused_variable_warning(widget, data);
 	ExultStudio::get_instance()->show_npc_shape(
 	    event->area.x, event->area.y, event->area.width,
 	    event->area.height);
@@ -146,6 +154,7 @@ C_EXPORT gboolean on_npc_shape_focus_out_event(
     GdkEventFocus *event,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(widget, event, user_data);
 	ExultStudio::get_instance()->show_npc_shape();
 	return FALSE;
 }
@@ -173,6 +182,7 @@ C_EXPORT gboolean on_npc_face_draw_expose_event(
     GdkEventExpose *event,
     gpointer data           // ->Shape_chooser.
 ) {
+	ignore_unused_variable_warning(widget, data);
 	ExultStudio::get_instance()->show_npc_face(
 	    event->area.x, event->area.y, event->area.width,
 	    event->area.height);
@@ -587,6 +597,7 @@ static void Npc_response(
     int datalen,
     void * /* client */
 ) {
+	ignore_unused_variable_warning(data, datalen);
 	ExultStudio *studio = ExultStudio::get_instance();
 	if (id == Exult_server::user_responded) {
 		studio->close_npc_window();
@@ -750,6 +761,7 @@ void ExultStudio::set_npc_face(
     int shape,
     int frame
 ) {
+	ignore_unused_variable_warning(frame);
 //	set_entry("npc_shape", shape);
 //	set_entry("npc_frame", frame);
 	if (shape < 0)
@@ -806,6 +818,7 @@ C_EXPORT void on_npc_set_sched(
     GtkWidget *btn,         // One of the 'set' buttons.
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	static int first = 1;       // To initialize signal handlers.
 	const char *name = glade_get_widget_name(btn);
 	const char *numptr = name + strlen(name) - 1;
@@ -837,6 +850,7 @@ static void Game_loc_response(
     int datalen,
     void *client
 ) {
+	ignore_unused_variable_warning(datalen);
 	if (id != Exult_server::game_pos)
 		return;
 	// Get box with loc. spin btns.
@@ -863,6 +877,7 @@ C_EXPORT void on_sched_loc_clicked(
     GtkWidget *btn,         // One of the 'Game' buttons.
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	ExultStudio *studio = ExultStudio::get_instance();
 	// Get location box.
 	GtkBox *box = GTK_BOX(gtk_widget_get_parent(btn));

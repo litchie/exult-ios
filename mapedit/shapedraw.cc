@@ -30,6 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "vgafile.h"
 #include "ibuf8.h"
 #include "u7drag.h"
+#include "ignore_unused_variable_warning.h"
 
 using std::cout;
 using std::endl;
@@ -206,6 +207,7 @@ void Shape_draw::drag_data_received(
     guint time,
     gpointer udata          // Should point to Shape_draw.
 ) {
+	ignore_unused_variable_warning(widget, context, x, y, info, time);
 	Shape_draw *draw = (Shape_draw *) udata;
 	cout << "drag_data_received" << endl;
 	if (draw->drop_callback &&

@@ -21,12 +21,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "BilinearScalerInternal.h"
 #include "manip.h"
 
-
 namespace Pentagram {
 
 template<class uintX, class Manip, class uintS>
 bool BilinearScalerInternal_X2Y24(SDL_Surface *tex, sint32 sx, sint32 sy, sint32 sw, sint32 sh,
                                   uint8 *pixel, sint32 dw, sint32 dh, sint32 pitch, bool clamp_src) {
+	ignore_unused_variable_warning(dh);
 	// Source buffer pointers
 	int tpitch = tex->pitch / sizeof(uintS);
 	uintS *texel = reinterpret_cast<uintS *>(tex->pixels) + (sy * tpitch + sx);

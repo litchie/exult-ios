@@ -36,6 +36,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "shapefile.h"
 #include "shapedraw.h"
 #include "shapevga.h"
+#include "ignore_unused_variable_warning.h"
 
 using std::cout;
 using std::endl;
@@ -47,6 +48,7 @@ C_EXPORT void on_cont_okay_clicked(
     GtkButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(btn, user_data);
 	ExultStudio::get_instance()->save_cont_window();
 	ExultStudio::get_instance()->close_cont_window();
 }
@@ -58,6 +60,7 @@ C_EXPORT void on_cont_apply_clicked(
     GtkButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(btn, user_data);
 	ExultStudio::get_instance()->save_cont_window();
 }
 
@@ -68,6 +71,7 @@ C_EXPORT void on_cont_cancel_clicked(
     GtkButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(btn, user_data);
 	ExultStudio::get_instance()->close_cont_window();
 }
 
@@ -78,6 +82,7 @@ C_EXPORT void on_cont_show_gump_clicked(
     GtkButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(btn, user_data);
 	cout << "In on_cont_show_gump_clicked()" << endl;
 	unsigned char data[Exult_server::maxlength];
 	// Get container address.
@@ -98,6 +103,7 @@ C_EXPORT void on_cont_rotate_clicked(
     GtkButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(btn, user_data);
 	ExultStudio::get_instance()->rotate_cont();
 }
 
@@ -109,6 +115,7 @@ C_EXPORT gboolean on_cont_window_delete_event(
     GdkEvent *event,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(widget, event, user_data);
 	ExultStudio::get_instance()->close_cont_window();
 	return TRUE;
 }
@@ -121,6 +128,7 @@ C_EXPORT gboolean on_cont_draw_expose_event(
     GdkEventExpose *event,
     gpointer data           // ->Shape_chooser.
 ) {
+	ignore_unused_variable_warning(widget, data);
 	ExultStudio::get_instance()->show_cont_shape(
 	    event->area.x, event->area.y, event->area.width,
 	    event->area.height);
@@ -135,6 +143,7 @@ C_EXPORT gboolean on_cont_shape_changed(
     GdkEventFocus *event,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(widget, event, user_data);
 	ExultStudio *studio = ExultStudio::get_instance();
 	int shnum = studio->get_num_entry("cont_shape");
 	int frnum = studio->get_num_entry("cont_frame");
@@ -158,6 +167,7 @@ C_EXPORT gboolean on_cont_pos_changed(
     GdkEventFocus *event,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(widget, event, user_data);
 	//++++Maybe later, change pos. immediately?
 	return TRUE;
 }

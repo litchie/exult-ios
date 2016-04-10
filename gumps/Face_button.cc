@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "actors.h"
 #include "gamewin.h"
 #include "npcdollinf.h"
+#include "ignore_unused_variable_warning.h"
 
 Face_button::Face_button(Gump *par, int px, int py, Actor *a)
 	: Gump_button(par, 0, px, py), actor(a) {
@@ -47,6 +48,7 @@ Face_button::Face_button(Gump *par, int px, int py, Actor *a)
 
 
 void Face_button::double_clicked(int x, int y) {
+	ignore_unused_variable_warning(x, y);
 	actor->show_inventory();
 }
 

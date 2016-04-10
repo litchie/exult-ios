@@ -51,6 +51,7 @@
 #include "exceptions.h"
 #include "utils.h"
 #include "fnames.h"
+#include "ignore_unused_variable_warning.h"
 
 #ifdef MACOSX
 #include <CoreFoundation/CoreFoundation.h>
@@ -314,6 +315,7 @@ static void switch_slashes(
 
 	name = new_name;
 #else
+	ignore_unused_variable_warning(name);
 	// do nothing
 #endif
 }

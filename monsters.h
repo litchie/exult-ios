@@ -22,6 +22,7 @@
 #define INCL_MONSTERS   1
 
 #include "actors.h"
+#include "ignore_unused_variable_warning.h"
 
 /*
  *  Monsters get their own class because they have a bigger footprint
@@ -56,6 +57,7 @@ public:
 		in_world = 0;
 	}
 	virtual int move_aside(Actor *for_actor, int dir) {
+		ignore_unused_variable_warning(for_actor, dir);
 		return 0;    // Monsters don't move aside.
 	}
 	// Render.

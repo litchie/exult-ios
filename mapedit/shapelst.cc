@@ -55,6 +55,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "databuf.h"
 #include "items.h"
 #include "frnameinf.h"
+#include "ignore_unused_variable_warning.h"
 
 using std::cout;
 using std::endl;
@@ -468,6 +469,7 @@ static gint Configure_chooser(
     GdkEventConfigure *event,
     gpointer data           // ->Shape_chooser
 ) {
+	ignore_unused_variable_warning(widget);
 	Shape_chooser *chooser = (Shape_chooser *) data;
 	return chooser->configure(event);
 }
@@ -500,6 +502,7 @@ gint Shape_chooser::expose(
     GdkEventExpose *event,
     gpointer data           // ->Shape_chooser.
 ) {
+	ignore_unused_variable_warning(widget);
 	Shape_chooser *chooser = (Shape_chooser *) data;
 	chooser->show(event->area.x, event->area.y, event->area.width,
 	              event->area.height);
@@ -555,6 +558,7 @@ gint Shape_chooser::drag_motion(
     GdkEventMotion *event,
     gpointer data           // ->Shape_chooser.
 ) {
+	ignore_unused_variable_warning(widget);
 	Shape_chooser *chooser = (Shape_chooser *) data;
 	if (!chooser->dragging && chooser->selected >= 0)
 		chooser->start_drag(U7_TARGET_SHAPEID_NAME,
@@ -637,6 +641,7 @@ static gint Mouse_release(
     GdkEventButton *event,
     gpointer data           // ->Shape_chooser.
 ) {
+	ignore_unused_variable_warning(widget, event);
 	Shape_chooser *chooser = (Shape_chooser *) data;
 	chooser->mouse_up();
 	return true;
@@ -649,6 +654,7 @@ C_EXPORT gboolean
 on_draw_key_press(GtkEntry   *entry,
                   GdkEventKey    *event,
                   gpointer    user_data) {
+	ignore_unused_variable_warning(entry);
 	Shape_chooser *chooser = (Shape_chooser *) user_data;
 	switch (event->keyval) {
 	case GDK_Delete:
@@ -1417,6 +1423,7 @@ void Shape_chooser::new_frame(
 C_EXPORT void
 on_new_shape_okay_clicked(GtkButton       *button,
                           gpointer         user_data) {
+	ignore_unused_variable_warning(user_data);
 	GtkWidget *win = gtk_widget_get_toplevel(GTK_WIDGET(button));
 	Shape_chooser *chooser = (Shape_chooser *)
 	                         gtk_object_get_user_data(GTK_OBJECT(win));
@@ -1428,6 +1435,7 @@ C_EXPORT void on_new_shape_font_toggled(
     GtkToggleButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	GtkWidget *win = gtk_widget_get_toplevel(GTK_WIDGET(btn));
 	Shape_chooser *chooser = (Shape_chooser *)
@@ -1439,6 +1447,7 @@ C_EXPORT gboolean on_new_shape_font_color_draw_expose_event(
     GdkEventExpose *event,
     gpointer data
 ) {
+	ignore_unused_variable_warning(data);
 	ExultStudio *studio = ExultStudio::get_instance();
 	int index = studio->get_spin("new_shape_font_color");
 	Shape_chooser *ed = (Shape_chooser *)
@@ -1459,6 +1468,7 @@ C_EXPORT void on_new_shape_font_color_changed(
     GtkSpinButton *button,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(button, user_data);
 	ExultStudio *studio = ExultStudio::get_instance();
 	// Show new color.
 	GtkWidget *draw = glade_xml_get_widget(studio->get_xml(),
@@ -1477,6 +1487,7 @@ static void font_file_chosen(
     const char *fname,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->set_entry("new_shape_font_name", fname);
 	studio->set_spin("new_shape_nframes", 128);
@@ -1682,6 +1693,7 @@ void Shape_chooser::drag_data_get(
     guint time,
     gpointer data           // ->Shape_chooser.
 ) {
+	ignore_unused_variable_warning(widget, context, time);
 	cout << "In DRAG_DATA_GET" << endl;
 	Shape_chooser *chooser = (Shape_chooser *) data;
 	if (chooser->selected < 0 || info != U7_TARGET_SHAPEID)
@@ -1718,6 +1730,7 @@ gint Shape_chooser::selection_clear(
     GdkEventSelection *event,
     gpointer data           // ->Shape_chooser.
 ) {
+	ignore_unused_variable_warning(widget, event, data);
 //	Shape_chooser *chooser = (Shape_chooser *) data;
 	cout << "SELECTION_CLEAR" << endl;
 	return TRUE;
@@ -1732,6 +1745,7 @@ gint Shape_chooser::drag_begin(
     GdkDragContext *context,
     gpointer data           // ->Shape_chooser.
 ) {
+	ignore_unused_variable_warning(widget);
 	cout << "In DRAG_BEGIN" << endl;
 	Shape_chooser *chooser = (Shape_chooser *) data;
 	if (chooser->selected < 0)
@@ -1929,6 +1943,7 @@ void Shape_chooser::on_shapes_popup_info_activate(
     GtkMenuItem *item,
     gpointer udata
 ) {
+	ignore_unused_variable_warning(item);
 	((Shape_chooser *) udata)->edit_shape_info();
 }
 
@@ -1936,6 +1951,7 @@ void Shape_chooser::on_shapes_popup_edit_activate(
     GtkMenuItem *item,
     gpointer udata
 ) {
+	ignore_unused_variable_warning(item);
 	((Shape_chooser *) udata)->edit_shape();
 }
 
@@ -1943,6 +1959,7 @@ void Shape_chooser::on_shapes_popup_edtiles_activate(
     GtkMenuItem *item,
     gpointer udata
 ) {
+	ignore_unused_variable_warning(item);
 	Shape_chooser *ch = (Shape_chooser *) udata;
 	if (ch->selected < 0)
 		return;         // Shouldn't happen.
@@ -1968,6 +1985,7 @@ static void on_shapes_popup_import(
     GtkMenuItem *item,
     gpointer udata
 ) {
+	ignore_unused_variable_warning(item);
 	GtkFileSelection *fsel = Create_file_selection(
 	                             "Import frame from a .png file",
 	                             (File_sel_okay_fun) Shape_chooser::import_frame,
@@ -1983,6 +2001,7 @@ static void on_shapes_popup_export(
     GtkMenuItem *item,
     gpointer udata
 ) {
+	ignore_unused_variable_warning(item);
 	GtkFileSelection *fsel = Create_file_selection(
 	                             "Export frame to a .png file",
 	                             (File_sel_okay_fun) Shape_chooser::export_frame,
@@ -1998,6 +2017,7 @@ static void on_shapes_popup_export_all(
     GtkMenuItem *item,
     gpointer udata
 ) {
+	ignore_unused_variable_warning(item);
 	GtkFileSelection *fsel = Create_file_selection(
 	                             "Choose the base .png file name for all frames",
 	                             (File_sel_okay_fun) Shape_chooser::export_all_frames,
@@ -2013,6 +2033,7 @@ static void on_shapes_popup_import_all(
     GtkMenuItem *item,
     gpointer udata
 ) {
+	ignore_unused_variable_warning(item);
 	GtkFileSelection *fsel = Create_file_selection(
 	                             "Choose the one of the .png sprites to import",
 	                             (File_sel_okay_fun) Shape_chooser::import_all_frames,
@@ -2028,6 +2049,7 @@ static void on_shapes_popup_export_shape(
     GtkMenuItem *item,
     gpointer udata
 ) {
+	ignore_unused_variable_warning(item);
 	GtkFileSelection *fsel = Create_file_selection(
 	                             "Choose the shp file name",
 	                             (File_sel_okay_fun) Shape_chooser::export_shape,
@@ -2043,6 +2065,7 @@ static void on_shapes_popup_import_shape(
     GtkMenuItem *item,
     gpointer udata
 ) {
+	ignore_unused_variable_warning(item);
 	GtkFileSelection *fsel = Create_file_selection(
 	                             "Choose the shp file to import",
 	                             (File_sel_okay_fun) Shape_chooser::import_shape,
@@ -2058,12 +2081,14 @@ static void on_shapes_popup_new_frame(
     GtkMenuItem *item,
     gpointer udata
 ) {
+	ignore_unused_variable_warning(item);
 	((Shape_chooser *) udata)->new_frame();
 }
 static void on_shapes_popup_new_shape(
     GtkMenuItem *item,
     gpointer udata
 ) {
+	ignore_unused_variable_warning(item);
 	((Shape_chooser *) udata)->new_shape();
 }
 
@@ -2073,6 +2098,7 @@ static void on_shapes_popup_new_shape(
 C_EXPORT void
 on_export_tiles_okay_clicked(GtkButton       *button,
                              gpointer         user_data) {
+	ignore_unused_variable_warning(user_data);
 	GtkWidget *win = gtk_widget_get_toplevel(GTK_WIDGET(button));
 	Shape_chooser *chooser = (Shape_chooser *)
 	                         gtk_object_get_user_data(GTK_OBJECT(win));
@@ -2092,6 +2118,7 @@ void Shape_chooser::shape_dropped_here(
     int shape,
     int frame
 ) {
+	ignore_unused_variable_warning(frame);
 	// Got to be from same file type.
 	if (ifile->get_u7drag_type() == file && group != 0) {
 		// Add to group.

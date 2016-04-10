@@ -26,6 +26,7 @@
 #include "Flat.h"
 #include "databuf.h"
 #include "utils.h"
+#include "ignore_unused_variable_warning.h"
 
 using std::ifstream;
 using std::size_t;
@@ -38,6 +39,7 @@ using std::size_t;
  *  or null in any failure.
  */
 char *Flat::retrieve(uint32 objnum, size_t &len) {
+	ignore_unused_variable_warning(objnum);
 	if (!data || !data->good()) {
 		len = 0;
 		return 0;

@@ -45,6 +45,7 @@ using ::snprintf;
 #include "effects.h"
 #include "cheat.h"
 #include "drag.h"
+#include "ignore_unused_variable_warning.h"
 
 /*
  *  Paint just the map with given top-left-corner tile.
@@ -465,6 +466,7 @@ void Game_render::paint_chunk_flat_rles(
     int cx, int cy,         // Chunk coords (0 - 12*16).
     int xoff, int yoff      // Pixel offset of top-of-screen.
 ) {
+	ignore_unused_variable_warning(xoff, yoff);
 	Game_window *gwin = Game_window::get_instance();
 	Map_chunk *olist = gwin->map->get_chunk(cx, cy);
 	Flat_object_iterator next(olist);// Do flat RLE objects.

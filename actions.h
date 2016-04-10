@@ -46,13 +46,15 @@ public:
 	}
 	virtual ~Actor_action() { }
 	void set_get_party(bool tf = true) {
+		ignore_unused_variable_warning(tf);
 		get_party = true;
 	}
 	int handle_event_safely(Actor *actor, bool &deleted);
 	// Handle time event.
 	virtual int handle_event(Actor *actor) = 0;
-	virtual void stop(Actor *actor) // Stop moving.
-	{  }
+	virtual void stop(Actor *actor) { // Stop moving.
+		ignore_unused_variable_warning(actor);
+	}
 	// Set simple path to destination.
 	virtual Actor_action *walk_to_tile(Actor *npc, Tile_coord const &src,
 	                                   Tile_coord const &dest, int dist = 0, bool ignnpc = false);
@@ -63,6 +65,7 @@ public:
 	        bool from_off_screen = false, bool ignnpc = false);
 	// Get destination, or ret. 0.
 	virtual int get_dest(Tile_coord &dest) const {
+		ignore_unused_variable_warning(dest);
 		return 0;
 	}
 	// Check for Astar.

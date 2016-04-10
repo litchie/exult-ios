@@ -59,6 +59,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "shapelst.h"
 #include "ready.h"
 #include "data_utils.h"
+#include "ignore_unused_variable_warning.h"
 
 using   std::cout;
 using   std::endl;
@@ -160,6 +161,7 @@ C_EXPORT void on_equip_okay_clicked(
     GtkButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(btn, user_data);
 	ExultStudio::get_instance()->save_equip_window();
 	ExultStudio::get_instance()->close_equip_window();
 }
@@ -167,6 +169,7 @@ C_EXPORT void on_equip_apply_clicked(
     GtkButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(btn, user_data);
 	ExultStudio::get_instance()->save_equip_window();
 }
 
@@ -177,6 +180,7 @@ C_EXPORT void on_equip_cancel_clicked(
     GtkButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(btn, user_data);
 	ExultStudio::get_instance()->close_equip_window();
 }
 
@@ -188,6 +192,7 @@ C_EXPORT gboolean on_equip_window_delete_event(
     GdkEvent *event,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(widget, event, user_data);
 	ExultStudio::get_instance()->close_equip_window();
 	return TRUE;
 }
@@ -199,6 +204,7 @@ C_EXPORT gboolean on_equip_recnum_changed(
     GtkWidget *widget,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	int recnum = gtk_spin_button_get_value_as_int(
 	                 GTK_SPIN_BUTTON(widget));
 	ExultStudio::get_instance()->init_equip_window(recnum);
@@ -212,6 +218,7 @@ C_EXPORT void on_equip_new_clicked(
     GtkButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(btn, user_data);
 	ExultStudio::get_instance()->new_equip_record();
 }
 
@@ -223,6 +230,7 @@ C_EXPORT gboolean on_equip_draw_expose_event(
     GdkEventExpose *event,
     gpointer data           // ->row.
 ) {
+	ignore_unused_variable_warning(widget);
 	ExultStudio::get_instance()->show_equip_shape(
 	    (Equip_row_widgets *) data,
 	    event->area.x, event->area.y, event->area.width,
@@ -236,6 +244,7 @@ C_EXPORT gboolean on_equip_shape_changed(
     GtkWidget *widget,
     gpointer data           // ->row info.
 ) {
+	ignore_unused_variable_warning(widget);
 	Equip_row_widgets *eq = (Equip_row_widgets *) data;
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->show_equip_shape(eq);
@@ -256,6 +265,7 @@ static void Equip_shape_dropped(
     int frame,
     void *udata         // ->row.
 ) {
+	ignore_unused_variable_warning(frame);
 	Equip_row_widgets *eq = (Equip_row_widgets *) udata;
 	if (file == U7_SHAPE_SHAPES && shape >= 0 && shape < c_max_shapes) {
 		// Set shape #.
@@ -499,6 +509,7 @@ C_EXPORT void on_shinfo_okay_clicked(
     GtkButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(btn, user_data);
 	ExultStudio::get_instance()->save_shape_window();
 	ExultStudio::get_instance()->close_shape_window();
 }
@@ -506,6 +517,7 @@ C_EXPORT void on_shinfo_apply_clicked(
     GtkButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(btn, user_data);
 	ExultStudio::get_instance()->save_shape_window();
 }
 
@@ -516,6 +528,7 @@ C_EXPORT void on_shinfo_cancel_clicked(
     GtkButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(btn, user_data);
 	ExultStudio::get_instance()->close_shape_window();
 }
 
@@ -527,6 +540,7 @@ C_EXPORT gboolean on_shape_window_delete_event(
     GdkEvent *event,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(widget, event, user_data);
 	ExultStudio::get_instance()->close_shape_window();
 	return TRUE;
 }
@@ -539,6 +553,7 @@ C_EXPORT gboolean on_shinfo_draw_expose_event(
     GdkEventExpose *event,
     gpointer data           // ->Shape_chooser.
 ) {
+	ignore_unused_variable_warning(widget, data);
 	ExultStudio::get_instance()->show_shinfo_shape(
 	    event->area.x, event->area.y, event->area.width,
 	    event->area.height);
@@ -553,6 +568,7 @@ C_EXPORT gboolean on_shinfo_gump_draw_expose_event(
     GdkEventExpose *event,
     gpointer data           // ->Shape_chooser.
 ) {
+	ignore_unused_variable_warning(widget, data);
 	ExultStudio::get_instance()->show_shinfo_gump(
 	    event->area.x, event->area.y, event->area.width,
 	    event->area.height);
@@ -567,6 +583,7 @@ C_EXPORT gboolean on_shinfo_gump_num_changed(
     GdkEventFocus *event,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(widget, event, user_data);
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->show_shinfo_gump();
 	return TRUE;
@@ -580,6 +597,7 @@ C_EXPORT gboolean on_shinfo_body_draw_expose_event(
     GdkEventExpose *event,
     gpointer data           // ->Shape_chooser.
 ) {
+	ignore_unused_variable_warning(widget, data);
 	ExultStudio::get_instance()->show_shinfo_body(
 	    event->area.x, event->area.y, event->area.width,
 	    event->area.height);
@@ -594,6 +612,7 @@ C_EXPORT gboolean on_shinfo_body_shape_changed(
     GdkEventFocus *event,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(widget, event, user_data);
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->show_shinfo_body();
 	return TRUE;
@@ -607,6 +626,7 @@ C_EXPORT gboolean on_shinfo_body_frame_changed(
     GdkEventFocus *event,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(widget, event, user_data);
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->show_shinfo_body();
 	return TRUE;
@@ -620,6 +640,7 @@ C_EXPORT gboolean on_shinfo_explosion_draw_expose_event(
     GdkEventExpose *event,
     gpointer data           // ->Shape_chooser.
 ) {
+	ignore_unused_variable_warning(widget, data);
 	ExultStudio::get_instance()->show_shinfo_explosion(
 	    event->area.x, event->area.y, event->area.width,
 	    event->area.height);
@@ -634,6 +655,7 @@ C_EXPORT gboolean on_shinfo_explosion_sprite_changed(
     GdkEventFocus *event,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(widget, event, user_data);
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->show_shinfo_explosion();
 	return TRUE;
@@ -646,6 +668,7 @@ C_EXPORT gboolean on_shinfo_weapon_ammo_changed(
     GtkWidget *widget,
     gpointer data
 ) {
+	ignore_unused_variable_warning(data);
 	GtkWidget *menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(widget));
 	GtkWidget *active = gtk_menu_get_active(GTK_MENU(menu));
 	int sel = g_list_index(GTK_MENU_SHELL(menu)->children, active);
@@ -662,6 +685,7 @@ C_EXPORT gboolean on_shinfo_weapon_sprite_changed(
     GtkWidget *widget,
     gpointer data
 ) {
+	ignore_unused_variable_warning(data);
 	GtkWidget *menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(widget));
 	GtkWidget *active = gtk_menu_get_active(GTK_MENU(menu));
 	int sel = g_list_index(GTK_MENU_SHELL(menu)->children, active);
@@ -678,6 +702,7 @@ C_EXPORT gboolean on_shinfo_ammo_sprite_changed(
     GtkWidget *widget,
     gpointer data
 ) {
+	ignore_unused_variable_warning(data);
 	GtkWidget *menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(widget));
 	GtkWidget *active = gtk_menu_get_active(GTK_MENU(menu));
 	int sel = g_list_index(GTK_MENU_SHELL(menu)->children, active);
@@ -694,6 +719,7 @@ C_EXPORT gboolean on_shinfo_animation_type_changed(
     GtkWidget *widget,
     gpointer data
 ) {
+	ignore_unused_variable_warning(data);
 	GtkWidget *menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(widget));
 	GtkWidget *active = gtk_menu_get_active(GTK_MENU(menu));
 	int sel = g_list_index(GTK_MENU_SHELL(menu)->children, active);
@@ -719,6 +745,7 @@ C_EXPORT gboolean on_shinfo_animation_frtype_toggled(
     GtkToggleButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	bool on = !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->set_sensitive("shinfo_animation_frcount", on);
@@ -733,6 +760,7 @@ C_EXPORT gboolean on_shinfo_animation_rectype_toggled(
     GtkToggleButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	bool on = !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->set_sensitive("shinfo_animation_recycle", on);
@@ -746,6 +774,7 @@ C_EXPORT gboolean on_shinfo_animation_sfxsynch_toggled(
     GtkToggleButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	bool on = !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->set_sensitive("shinfo_animation_sfxdelay", on);
@@ -759,6 +788,7 @@ C_EXPORT gboolean on_shinfo_animation_freezefirst_changed(
     GtkWidget *widget,
     gpointer data
 ) {
+	ignore_unused_variable_warning(data);
 	GtkWidget *menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(widget));
 	GtkWidget *active = gtk_menu_get_active(GTK_MENU(menu));
 	int sel = g_list_index(GTK_MENU_SHELL(menu)->children, active);
@@ -774,6 +804,7 @@ C_EXPORT gboolean on_shinfo_effhps_frame_type_toggled(
     GtkToggleButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	bool on = !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->set_sensitive("shinfo_effhps_frame_num", on);
@@ -787,6 +818,7 @@ C_EXPORT gboolean on_shinfo_effhps_qual_type_toggled(
     GtkToggleButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	bool on = !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->set_sensitive("shinfo_effhps_qual_num", on);
@@ -800,6 +832,7 @@ C_EXPORT gboolean on_shinfo_effhps_hp_type_toggled(
     GtkToggleButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	bool on = !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->set_sensitive("shinfo_effhps_hp_val", on);
@@ -813,6 +846,7 @@ C_EXPORT gboolean on_shinfo_frameusecode_frame_type_toggled(
     GtkToggleButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	bool on = !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->set_sensitive("shinfo_frameusecode_frame_num", on);
@@ -826,6 +860,7 @@ C_EXPORT gboolean on_shinfo_frameusecode_qual_type_toggled(
     GtkToggleButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	bool on = !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->set_sensitive("shinfo_frameusecode_qual_num", on);
@@ -839,6 +874,7 @@ C_EXPORT gboolean on_shinfo_framenames_frame_type_toggled(
     GtkToggleButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	bool on = !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->set_sensitive("shinfo_framenames_frame_num", on);
@@ -852,6 +888,7 @@ C_EXPORT gboolean on_shinfo_framenames_qual_type_toggled(
     GtkToggleButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	bool on = !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->set_sensitive("shinfo_framenames_qual_num", on);
@@ -865,6 +902,7 @@ C_EXPORT gboolean on_shinfo_framenames_name_type_changed(
     GtkWidget *widget,
     gpointer data
 ) {
+	ignore_unused_variable_warning(data);
 	GtkWidget *menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(widget));
 	GtkWidget *active = gtk_menu_get_active(GTK_MENU(menu));
 	int type = g_list_index(GTK_MENU_SHELL(menu)->children, active);
@@ -902,6 +940,7 @@ C_EXPORT gboolean on_shinfo_framenames_comp_msg_type_changed(
     GtkWidget *widget,
     gpointer data
 ) {
+	ignore_unused_variable_warning(data);
 	GtkWidget *menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(widget));
 	GtkWidget *active = gtk_menu_get_active(GTK_MENU(menu));
 	int val = g_list_index(GTK_MENU_SHELL(menu)->children, active);
@@ -917,6 +956,7 @@ C_EXPORT gboolean on_shinfo_framenames_comp_type_changed(
     GtkWidget *widget,
     gpointer data
 ) {
+	ignore_unused_variable_warning(data);
 	GtkWidget *menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(widget));
 	GtkWidget *active = gtk_menu_get_active(GTK_MENU(menu));
 	int val = g_list_index(GTK_MENU_SHELL(menu)->children, active);
@@ -937,6 +977,7 @@ C_EXPORT gboolean on_shinfo_frameflags_frame_type_toggled(
     GtkToggleButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	bool on = !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->set_sensitive("shinfo_frameflags_frame_num", on);
@@ -950,6 +991,7 @@ C_EXPORT gboolean on_shinfo_frameflags_qual_type_toggled(
     GtkToggleButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	bool on = !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->set_sensitive("shinfo_frameflags_qual_num", on);
@@ -963,6 +1005,7 @@ C_EXPORT gboolean on_shinfo_warmth_frame_type_toggled(
     GtkToggleButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	bool on = !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->set_sensitive("shinfo_warmth_frame_num", on);
@@ -976,6 +1019,7 @@ C_EXPORT gboolean on_shinfo_cntrules_shape_type_toggled(
     GtkToggleButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	bool on = !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->set_sensitive("shinfo_cntrules_shape_num", on);
@@ -989,6 +1033,7 @@ C_EXPORT gboolean on_shinfo_explosion_sfx_type_toggled(
     GtkToggleButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	bool on = !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->set_sensitive("shinfo_explosion_sfx_number", on);
@@ -1002,6 +1047,7 @@ C_EXPORT void on_open_equip_button_clicked(
     GtkButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(btn, user_data);
 	ExultStudio *s = ExultStudio::get_instance();
 	s->open_equip_window(s->get_spin("shinfo_monster_equip"));
 }
@@ -1012,6 +1058,7 @@ C_EXPORT void on_open_equip_button_clicked(
 C_EXPORT void
 on_shinfo_frame_changed(GtkSpinButton *button,
                         gpointer     user_data) {
+	ignore_unused_variable_warning(user_data);
 	ExultStudio *s = ExultStudio::get_instance();
 	s->set_shape_notebook_frame(
 	    gtk_spin_button_get_value_as_int(button));
@@ -1136,6 +1183,7 @@ C_EXPORT void on_shinfo_effhps_update_clicked(
     GtkButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(btn, user_data);
 	ExultStudio *studio = ExultStudio::get_instance();
 	GtkTreeView *hptree = GTK_TREE_VIEW(
 	                          glade_xml_get_widget(studio->get_xml(), "shinfo_effhps_list"));
@@ -1173,6 +1221,7 @@ C_EXPORT void on_shinfo_effhps_remove_clicked(
     GtkButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(btn, user_data);
 	ExultStudio *studio = ExultStudio::get_instance();
 	GtkTreeView *hptree = GTK_TREE_VIEW(
 	                          glade_xml_get_widget(studio->get_xml(), "shinfo_effhps_list"));
@@ -1194,6 +1243,7 @@ C_EXPORT void on_shinfo_effhps_list_cursor_changed(
     GtkTreeView *treeview,
     gpointer     user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	GtkTreeIter iter;
 	GtkTreePath *path;
 	GtkTreeViewColumn *col;
@@ -1217,6 +1267,7 @@ C_EXPORT gboolean on_shinfo_shape_class_changed(
     GtkWidget *widget,
     gpointer data
 ) {
+	ignore_unused_variable_warning(widget, data);
 	ExultStudio *studio = ExultStudio::get_instance();
 	if (!Have_quality()) {
 		studio->set_toggle("shinfo_effhps_qual_type", true, false);
@@ -1278,6 +1329,7 @@ C_EXPORT void on_shinfo_warmth_update_clicked(
     GtkButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(btn, user_data);
 	ExultStudio *studio = ExultStudio::get_instance();
 	unsigned int newfrnum, newwarm;
 	Get_warmth_fields(studio, newfrnum, &newwarm);
@@ -1315,6 +1367,7 @@ C_EXPORT void on_shinfo_warmth_remove_clicked(
     GtkButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(btn, user_data);
 	ExultStudio *studio = ExultStudio::get_instance();
 	GtkTreeView *warmtree = GTK_TREE_VIEW(
 	                            glade_xml_get_widget(studio->get_xml(), "shinfo_warmth_list"));
@@ -1336,6 +1389,7 @@ C_EXPORT void on_shinfo_warmth_list_cursor_changed(
     GtkTreeView *treeview,
     gpointer     user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	GtkTreeIter iter;
 	GtkTreePath *path;
 	GtkTreeViewColumn *col;
@@ -1384,6 +1438,7 @@ C_EXPORT void on_shinfo_cntrules_update_clicked(
     GtkButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(btn, user_data);
 	ExultStudio *studio = ExultStudio::get_instance();
 	unsigned int newshnum;
 	bool newaccept;
@@ -1422,6 +1477,7 @@ C_EXPORT void on_shinfo_cntrules_remove_clicked(
     GtkButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(btn, user_data);
 	ExultStudio *studio = ExultStudio::get_instance();
 	GtkTreeView *cnttree = GTK_TREE_VIEW(
 	                           glade_xml_get_widget(studio->get_xml(), "shinfo_cntrules_list"));
@@ -1443,6 +1499,7 @@ C_EXPORT void on_shinfo_cntrules_list_cursor_changed(
     GtkTreeView *treeview,
     gpointer     user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	GtkTreeIter iter;
 	GtkTreePath *path;
 	GtkTreeViewColumn *col;
@@ -1531,6 +1588,7 @@ C_EXPORT void on_shinfo_frameflags_update_clicked(
     GtkButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(btn, user_data);
 	ExultStudio *studio = ExultStudio::get_instance();
 	unsigned int newfrnum;
 	unsigned int newqual;
@@ -1572,6 +1630,7 @@ C_EXPORT void on_shinfo_frameflags_remove_clicked(
     GtkButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(btn, user_data);
 	ExultStudio *studio = ExultStudio::get_instance();
 	GtkTreeView *cnttree = GTK_TREE_VIEW(
 	                           glade_xml_get_widget(studio->get_xml(), "shinfo_frameflags_list"));
@@ -1594,6 +1653,7 @@ C_EXPORT void on_shinfo_frameflags_list_cursor_changed(
     GtkTreeView *treeview,
     gpointer     user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	GtkTreeIter iter;
 	GtkTreePath *path;
 	GtkTreeViewColumn *col;
@@ -1650,6 +1710,7 @@ C_EXPORT void on_shinfo_frameusecode_update_clicked(
     GtkButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(btn, user_data);
 	ExultStudio *studio = ExultStudio::get_instance();
 	unsigned int newfrnum;
 	unsigned int newqual;
@@ -1691,6 +1752,7 @@ C_EXPORT void on_shinfo_frameusecode_remove_clicked(
     GtkButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(btn, user_data);
 	ExultStudio *studio = ExultStudio::get_instance();
 	GtkTreeView *cnttree = GTK_TREE_VIEW(
 	                           glade_xml_get_widget(studio->get_xml(), "shinfo_frameusecode_list"));
@@ -1713,6 +1775,7 @@ C_EXPORT void on_shinfo_frameusecode_browse_clicked(
     GtkButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(btn, user_data);
 	ExultStudio *studio = ExultStudio::get_instance();
 	const char *uc = studio->browse_usecode(true);
 	if (*uc)
@@ -1726,6 +1789,7 @@ C_EXPORT void on_shinfo_frameusecode_list_cursor_changed(
     GtkTreeView *treeview,
     gpointer     user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	GtkTreeIter iter;
 	GtkTreePath *path;
 	GtkTreeViewColumn *col;
@@ -1845,6 +1909,7 @@ C_EXPORT void on_shinfo_framenames_update_clicked(
     GtkButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(btn, user_data);
 	ExultStudio *studio = ExultStudio::get_instance();
 	unsigned int newfrnum, newqual;
 	int newtype, newothertype;
@@ -1894,6 +1959,7 @@ C_EXPORT void on_shinfo_framenames_remove_clicked(
     GtkButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(btn, user_data);
 	ExultStudio *studio = ExultStudio::get_instance();
 	GtkTreeView *nametree = GTK_TREE_VIEW(
 	                            glade_xml_get_widget(studio->get_xml(), "shinfo_framenames_list"));
@@ -1915,6 +1981,7 @@ C_EXPORT void on_shinfo_framenames_list_cursor_changed(
     GtkTreeView *treeview,
     gpointer     user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	GtkTreeIter iter;
 	GtkTreePath *path;
 	GtkTreeViewColumn *col;
@@ -2055,6 +2122,7 @@ C_EXPORT void on_shinfo_objpaperdoll_list_cursor_changed(
     GtkTreeView *treeview,
     gpointer     user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	GtkTreeIter iter;
 	GtkTreePath *path;
 	GtkTreeViewColumn *col;
@@ -2088,6 +2156,7 @@ C_EXPORT gboolean on_shinfo_objpaperdoll_frame_type_toggled(
     GtkToggleButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	bool on = !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->set_sensitive("shinfo_objpaperdoll_wframe", on);
@@ -2101,6 +2170,7 @@ C_EXPORT void on_shinfo_objpaperdoll_update_clicked(
     GtkButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(btn, user_data);
 	ExultStudio *studio = ExultStudio::get_instance();
 	unsigned int newfrnum;
 	int newspot, newshape, newframe0, newframe1, newframe2, newframe3, newtype;
@@ -2158,6 +2228,7 @@ C_EXPORT void on_shinfo_objpaperdoll_remove_clicked(
     GtkButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(btn, user_data);
 	ExultStudio *studio = ExultStudio::get_instance();
 	GtkTreeView *hptree = GTK_TREE_VIEW(
 	                          glade_xml_get_widget(studio->get_xml(), "shinfo_objpaperdoll_list"));
@@ -2180,6 +2251,7 @@ C_EXPORT gboolean on_shinfo_objpaperdoll_spot_changed(
     GtkWidget *widget,
     gpointer data
 ) {
+	ignore_unused_variable_warning(data);
 	GtkWidget *menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(widget));
 	GtkWidget *active = gtk_menu_get_active(GTK_MENU(menu));
 	int spot = g_list_index(GTK_MENU_SHELL(menu)->children, active);
@@ -2196,6 +2268,7 @@ C_EXPORT gboolean on_shinfo_ready_spot_changed(
     GtkWidget *widget,
     gpointer data
 ) {
+	ignore_unused_variable_warning(data);
 	GtkWidget *menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(widget));
 	GtkWidget *active = gtk_menu_get_active(GTK_MENU(menu));
 	int ready = g_list_index(GTK_MENU_SHELL(menu)->children, active);
@@ -2212,6 +2285,7 @@ C_EXPORT void on_shinfo_weapon_check_toggled(
     GtkToggleButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio::get_instance()->set_visible("shinfo_weapon_box", on);
 }
@@ -2219,6 +2293,7 @@ C_EXPORT void on_shinfo_ammo_check_toggled(
     GtkToggleButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio::get_instance()->set_visible("shinfo_ammo_box", on);
 }
@@ -2226,6 +2301,7 @@ C_EXPORT void on_shinfo_armor_check_toggled(
     GtkToggleButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio::get_instance()->set_visible("shinfo_armor_box", on);
 }
@@ -2233,6 +2309,7 @@ C_EXPORT void on_shinfo_monster_check_toggled(
     GtkToggleButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio::get_instance()->set_visible("shinfo_monster_box", on);
 }
@@ -2240,6 +2317,7 @@ C_EXPORT void on_shinfo_container_check_toggled(
     GtkToggleButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio::get_instance()->set_visible("shinfo_container_box", on);
 }
@@ -2247,6 +2325,7 @@ C_EXPORT void on_shinfo_mountaintop_check_toggled(
     GtkToggleButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio::get_instance()->set_visible("shinfo_mountaintop_box", on);
 }
@@ -2254,6 +2333,7 @@ C_EXPORT void on_shinfo_bargetype_check_toggled(
     GtkToggleButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio::get_instance()->set_visible("shinfo_barge_box", on);
 }
@@ -2261,6 +2341,7 @@ C_EXPORT void on_shinfo_fieldinfo_check_toggled(
     GtkToggleButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio::get_instance()->set_visible("shinfo_fieldinfo_box", on);
 }
@@ -2268,6 +2349,7 @@ C_EXPORT void on_shinfo_barge_check_toggled(
     GtkToggleButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio::get_instance()->set_sensitive("shinfo_barge_type", on);
 }
@@ -2275,6 +2357,7 @@ C_EXPORT void on_shinfo_field_check_toggled(
     GtkToggleButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio::get_instance()->set_sensitive("shinfo_fieldinfo_type", on);
 }
@@ -2282,6 +2365,7 @@ C_EXPORT void on_shinfo_body_check_toggled(
     GtkToggleButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio::get_instance()->set_visible("shinfo_coffin", on);
 }
@@ -2289,6 +2373,7 @@ C_EXPORT void on_shinfo_animation_check_toggled(
     GtkToggleButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio::get_instance()->set_visible("shinfo_animation_box", on);
 }
@@ -2296,6 +2381,7 @@ C_EXPORT void on_shinfo_explosion_check_toggled(
     GtkToggleButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio::get_instance()->set_visible("shinfo_explosion_box", on);
 }
@@ -2303,6 +2389,7 @@ C_EXPORT void on_shinfo_effhps_check_toggled(
     GtkToggleButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio::get_instance()->set_visible("shinfo_effhps_box", on);
 }
@@ -2310,6 +2397,7 @@ C_EXPORT void on_shinfo_npcflags_check_toggled(
     GtkToggleButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio::get_instance()->set_visible("shinfo_npcflags_box", on);
 }
@@ -2317,6 +2405,7 @@ C_EXPORT void on_shinfo_sound_check_toggled(
     GtkToggleButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio::get_instance()->set_visible("shinfo_sfx_box", on);
 }
@@ -2324,6 +2413,7 @@ C_EXPORT void on_shinfo_warmth_check_toggled(
     GtkToggleButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio::get_instance()->set_visible("shinfo_warmth_box", on);
 }
@@ -2331,6 +2421,7 @@ C_EXPORT void on_shinfo_cntrules_check_toggled(
     GtkToggleButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio::get_instance()->set_visible("shinfo_cntrules_box", on);
 }
@@ -2338,6 +2429,7 @@ C_EXPORT void on_shinfo_framenames_check_toggled(
     GtkToggleButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio::get_instance()->set_visible("shinfo_framenames_box", on);
 }
@@ -2345,6 +2437,7 @@ C_EXPORT void on_shinfo_frameflags_check_toggled(
     GtkToggleButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio::get_instance()->set_visible("shinfo_frameflags_box", on);
 }
@@ -2352,6 +2445,7 @@ C_EXPORT void on_shinfo_frameusecode_check_toggled(
     GtkToggleButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio::get_instance()->set_visible("shinfo_frameusecode_box", on);
 }
@@ -2359,6 +2453,7 @@ C_EXPORT void on_shinfo_npcpaperdoll_check_toggled(
     GtkToggleButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio::get_instance()->set_visible("shinfo_npcpaperdoll_box", on);
 }
@@ -2366,6 +2461,7 @@ C_EXPORT void on_shinfo_objpaperdoll_check_toggled(
     GtkToggleButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio::get_instance()->set_visible("shinfo_objpaperdoll_box", on);
 }
@@ -2373,6 +2469,7 @@ C_EXPORT void on_shinfo_ammo_special_check_toggled(
     GtkToggleButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio::get_instance()->set_sensitive("shinfo_ammo_drop", !on);
 }
@@ -2380,6 +2477,7 @@ C_EXPORT void on_shinfo_single_sfx_toggled(
     GtkToggleButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	bool on = !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio::get_instance()->set_sensitive("shinfo_sfx_type", on);
 	ExultStudio::get_instance()->set_sensitive("shinfo_sfx_count", on);
@@ -2388,6 +2486,7 @@ C_EXPORT void on_shinfo_sfx_clock_check_toggled(
     GtkToggleButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio::get_instance()->set_sensitive("shinfo_sfx_clock_sfx", on);
 }
@@ -2399,6 +2498,7 @@ C_EXPORT void on_shinfo_weapon_uc_browse_clicked(
     GtkButton *button,
     gpointer         user_data
 ) {
+	ignore_unused_variable_warning(button, user_data);
 	ExultStudio *studio = ExultStudio::get_instance();
 	const char *uc = studio->browse_usecode(true);
 	if (*uc)
@@ -2415,6 +2515,7 @@ static void Gump_shape_dropped(
     int frame,
     void *udata
 ) {
+	ignore_unused_variable_warning(frame, udata);
 	if (file == U7_SHAPE_GUMPS && shape >= 0) {
 		// Set shape #.
 		ExultStudio::get_instance()->set_spin(
@@ -2432,6 +2533,7 @@ static void Body_shape_dropped(
     int frame,
     void *udata
 ) {
+	ignore_unused_variable_warning(udata);
 	if (file == U7_SHAPE_SHAPES && shape >= 0) {
 		// Set shape #.
 		ExultStudio::get_instance()->set_spin(
@@ -2451,6 +2553,7 @@ static void Explosion_shape_dropped(
     int frame,
     void *udata
 ) {
+	ignore_unused_variable_warning(frame, udata);
 	if (file == U7_SHAPE_SPRITES && shape >= 0) {
 		// Set shape #.
 		ExultStudio::get_instance()->set_spin(

@@ -35,6 +35,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream>
 using std::vector;
 #include "opcodes.h"
+#include "ignore_unused_variable_warning.h"
 
 class Uc_array_expression;
 class Uc_expression;
@@ -271,6 +272,7 @@ public:
 		return var->is_static();
 	}
 	virtual int is_object_function(bool error = true) const {
+		ignore_unused_variable_warning(error);
 		return var->is_object_function();
 	}
 	virtual void set_is_obj_fun(int s) {
@@ -328,10 +330,12 @@ public:
 		return cls;
 	}
 	virtual int is_object_function(bool error = true) const {
+		ignore_unused_variable_warning(error);
 		return false;
 	}
-	virtual void set_is_obj_fun(int s)
-	{  }
+	virtual void set_is_obj_fun(int s) {
+		ignore_unused_variable_warning(s);
+	}
 };
 
 /*

@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "exult_constants.h"
 #include "sfxinf.h"
+#include "ignore_unused_variable_warning.h"
 using std::istream;
 
 bool SFX_info::read(
@@ -32,6 +33,7 @@ bool SFX_info::read(
     int version,        // Data file version.
     Exult_Game game     // Loading BG file.
 ) {
+	ignore_unused_variable_warning(game);
 	sfxnum = ReadInt(in);
 	if (sfxnum == -0xff) {  // means delete entry.
 		set_invalid(true);

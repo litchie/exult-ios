@@ -30,7 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "game.h"
 #include "Gump_manager.h"
 #include "combat_opts.h"
-
+#include "ignore_unused_variable_warning.h"
 
 #define PALETTE_INDEX_RED   22
 #define PALETTE_INDEX_GREEN 64
@@ -59,7 +59,9 @@ public:
 	virtual bool push(int button) {
 		return button == 1;
 	}
-	virtual void unpush(int button) {}
+	virtual void unpush(int button) {
+		ignore_unused_variable_warning(button);
+	}
 	// update dirty region, if required
 	virtual void update_widget();
 
@@ -78,6 +80,7 @@ Stat_bar::Stat_bar(Gump *par, int px, int py, Actor *a, int s, int m, unsigned c
 }
 
 void Stat_bar::double_clicked(int x, int y) {
+	ignore_unused_variable_warning(x, y);
 	gumpman->add_gump(actor, game->get_shape("gumps/statsdisplay"));
 }
 

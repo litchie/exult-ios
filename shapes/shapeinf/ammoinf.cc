@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "exult_constants.h"
 #include "ammoinf.h"
+#include "ignore_unused_variable_warning.h"
 using std::istream;
 
 Ammo_info Ammo_info::default_info;
@@ -79,6 +80,7 @@ bool Ammo_info::read(
     int version,        // Data file version.
     Exult_Game game     // Loading BG file.
 ) {
+	ignore_unused_variable_warning(version, game);
 	uint8 buf[Ammo_info::entry_size - 2];       // Entry length.
 	in.read(reinterpret_cast<char *>(buf), sizeof(buf));
 	uint8 *ptr = buf;

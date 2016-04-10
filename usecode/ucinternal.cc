@@ -1189,6 +1189,7 @@ Usecode_value Usecode_internal::remove_party_items(
     Usecode_value &frameval,    // Frame.
     Usecode_value &flagval      // Flag??
 ) {
+	ignore_unused_variable_warning(flagval);
 	int quantity = quantval.need_int_value();
 	int shapenum = shapeval.get_int_value();
 	int framenum = frameval.get_int_value();
@@ -1555,16 +1556,18 @@ Usecode_value Usecode_internal::Execute_Intrinsic(UsecodeIntrinsicFn func, const
 	}
 #endif
 #endif
-#ifdef DEBUG
+#ifndef DEBUG
+	ignore_unused_variable_warning(name);
+#else
 	if (intrinsic_trace) {
 		Usecode_Trace(name, intrinsic, num_parms, parms);
 		cout.flush();
 		Usecode_value u = ((*this).*func)(event, intrinsic, num_parms, parms);
 		Usecode_TraceReturn(u);
 		return (u);
-	} else
+	}
 #endif
-		return ((*this).*func)(event, intrinsic, num_parms, parms);
+	return ((*this).*func)(event, intrinsic, num_parms, parms);
 }
 
 

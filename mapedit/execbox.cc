@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include "execbox.h"
+#include "ignore_unused_variable_warning.h"
 #include <iostream> /* Debugging only */
 #include <string>
 #include <cstring>
@@ -93,6 +94,7 @@ static void Read_from_child(
     gint id,            // Pipe ID.
     GdkInputCondition condition
 ) {
+	ignore_unused_variable_warning(condition);
 	Exec_process *ex = (Exec_process *) data;
 	ex->read_from_child(id);
 }

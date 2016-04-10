@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "objiter.h"
 #include "misc_buttons.h"
 #include "jawbone.h"
+#include "ignore_unused_variable_warning.h"
 
 const int toothx[19] = { 34, 32, 31, 31, 28, 31, 27, 31, 40, 50,
                          57, 63, 72, 70, 75, 82, 83, 87, 0
@@ -47,6 +48,7 @@ Jawbone_gump::Jawbone_gump(
 
 int Jawbone_gump::add(Game_object *obj, int mx, int my, int sx, int sy,
                       bool dont_check, bool combine) {
+	ignore_unused_variable_warning(mx, my, sx, sy);
 	// Jawbone_object handles all the checks required
 	return jawbone->add(obj, dont_check, combine);
 }

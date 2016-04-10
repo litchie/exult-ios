@@ -34,6 +34,7 @@
 
 #include "exult_types.h"
 #include "utils.h"
+#include "ignore_unused_variable_warning.h"
 
 using std::cerr;
 using std::endl;
@@ -304,6 +305,7 @@ void Image_buffer8::fill_line_translucent8(
     int destx, int desty,
     Xform_palette &xform        // Transform table.
 ) {
+	ignore_unused_variable_warning(val);
 	int srcx = 0;
 	// Constrain to window's space.
 	if (!clip_x(srcx, srcw, destx, desty))

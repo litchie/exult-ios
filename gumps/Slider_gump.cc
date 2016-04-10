@@ -29,7 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "misc_buttons.h"
 #include "Slider_gump.h"
 #include "Gump_manager.h"
-
+#include "ignore_unused_variable_warning.h"
 
 using std::cout;
 using std::endl;
@@ -248,6 +248,7 @@ bool Slider_gump::mouse_up(
 void Slider_gump::mouse_drag(
     int mx, int my          // Where mouse is.
 ) {
+	ignore_unused_variable_warning(mx, my);
 	if (!dragging)
 		return;
 	diamondx += mx - prev_dragx;

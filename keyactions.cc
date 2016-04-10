@@ -46,6 +46,7 @@
 #include "effects.h"
 #include "palette.h"
 #include "Yesno_gump.h"
+#include "ignore_unused_variable_warning.h"
 
 #ifdef UNDER_CE
 #  include "Keyboard_gump.h"
@@ -68,11 +69,13 @@ static Actor *Get_party_member(
 
 //  { ActionQuit, 0, "Quit", normal_keys, NONE },
 void ActionQuit(int const *params) {
+	ignore_unused_variable_warning(params);
 	Game_window::get_instance()->get_gump_man()->okay_to_quit();
 }
 
 // { ActionOldFileGump, 0, "Save/restore", normal_keys, NONE },
 void ActionOldFileGump(int const *params) {
+	ignore_unused_variable_warning(params);
 	File_gump *fileio = new File_gump();
 	Game_window::get_instance()->get_gump_man()->do_modal_gump(fileio,
 	        Mouse::hand);
@@ -144,6 +147,7 @@ void ActionKeyboardMode(int const *params) {
 
 // { ActionMenuGump, 0, "GameMenu", normal_keys, NONE },
 void ActionMenuGump(int const *params) {
+	ignore_unused_variable_warning(params);
 	Gamemenu_gump *gmenu = new Gamemenu_gump();
 	Game_window::get_instance()->get_gump_man()->do_modal_gump(gmenu,
 	        Mouse::hand);
@@ -152,6 +156,7 @@ void ActionMenuGump(int const *params) {
 
 // { ActionFileGump, 0, "Save/restore", normal_keys, NONE },
 void ActionFileGump(int const *params) {
+	ignore_unused_variable_warning(params);
 	Newfile_gump *fileio = new Newfile_gump();
 	Game_window::get_instance()->get_gump_man()->do_modal_gump(fileio,
 	        Mouse::hand);
@@ -159,6 +164,7 @@ void ActionFileGump(int const *params) {
 }
 //  { ActionQuicksave, 0, "Quick-save", normal_keys, NONE },
 void ActionQuicksave(int const *params) {
+	ignore_unused_variable_warning(params);
 	Game_window *gwin = Game_window::get_instance();
 	try {
 		gwin->write();
@@ -172,6 +178,7 @@ void ActionQuicksave(int const *params) {
 
 //  { ActionQuickrestore, 0, "Quick-restore", normal_keys, NONE },
 void ActionQuickrestore(int const *params) {
+	ignore_unused_variable_warning(params);
 	Game_window *gwin = Game_window::get_instance();
 	try {
 		gwin->read();
@@ -185,6 +192,7 @@ void ActionQuickrestore(int const *params) {
 
 //  { ActionAbout, 0, "About Exult", normal_keys, NONE },
 void ActionAbout(int const *params) {
+	ignore_unused_variable_warning(params);
 	Game_window *gwin = Game_window::get_instance();
 	Scroll_gump *scroll;
 	scroll = new Scroll_gump();
@@ -206,16 +214,19 @@ void ActionAbout(int const *params) {
 
 //  { ActionHelp, 0, "List keys", normal_keys, NONE },
 void ActionHelp(int const *params) {
+	ignore_unused_variable_warning(params);
 	keybinder->ShowHelp();
 }
 
 //  { ActionCloseGumps, 0, "Close gumps", dont_show, NONE },
 void ActionCloseGumps(int const *params) {
+	ignore_unused_variable_warning(params);
 	Game_window::get_instance()->get_gump_man()->close_all_gumps();
 }
 
 //  { ActionCloseOrMenu, "Game menu", normal_keys, NONE },
 void ActionCloseOrMenu(int const *params) {
+	ignore_unused_variable_warning(params);
 	Game_window *gwin = Game_window::get_instance();
 	if (gwin->get_gump_man()->showing_gumps(true))
 		gwin->get_gump_man()->close_all_gumps();
@@ -225,36 +236,43 @@ void ActionCloseOrMenu(int const *params) {
 
 //  { ActionScreenshot, 0, "Take screenshot", normal_keys, NONE },
 void ActionScreenshot(int const *params) {
+	ignore_unused_variable_warning(params);
 	make_screenshot();
 }
 
 //  { ActionRepaint, 0, "Repaint screen", dont_show, NONE },
 void ActionRepaint(int const *params) {
+	ignore_unused_variable_warning(params);
 	Game_window::get_instance()->paint();
 }
 
 //  { ActionResIncrease, 0, "Increase resolution", cheat_keys, NONE },
 void ActionResIncrease(int const *params) {
+	ignore_unused_variable_warning(params);
 	increase_resolution();
 }
 
 //  { ActionResDecrease, 0, "Decrease resolution", cheat_keys, NONE },
 void ActionResDecrease(int const *params) {
+	ignore_unused_variable_warning(params);
 	decrease_resolution();
 }
 
 //  { ActionBrighter, 0, "Increase brightness", normal_keys, NONE },
 void ActionBrighter(int const *params) {
+	ignore_unused_variable_warning(params);
 	change_gamma(true);
 }
 
 //  { ActionDarker, 0, "Decrease brightness", normal_keys, NONE },
 void ActionDarker(int const *params) {
+	ignore_unused_variable_warning(params);
 	change_gamma(false);
 }
 
 //  { ActionFullscreen, 0, "Toggle fullscreen", normal_keys, NONE },
 void ActionFullscreen(int const *params) {
+	ignore_unused_variable_warning(params);
 	Game_window *gwin = Game_window::get_instance();
 	setup_video(!gwin->get_win()->is_fullscreen(), TOGGLE_FULLSCREEN);
 	const char *msg;
@@ -284,6 +302,7 @@ void ActionUseItem(int const *params) {
 
 //  { ActionUseItem, 3, "Use food", dont_show, NONE },
 void ActionUseFood(int const *params) {
+	ignore_unused_variable_warning(params);
 	Game_window *gwin = Game_window::get_instance();
 	if (gwin->activate_item(377) && // Food
 	        (GAME_SI && !gwin->activate_item(404))  &&  // Special SI food
@@ -304,6 +323,7 @@ void ActionCallUsecode(int const *params) {
 
 //  { ActionCombat, 0, "Toggle combat", normal_keys, NONE },
 void ActionCombat(int const *params) {
+	ignore_unused_variable_warning(params);
 	Game_window *gwin = Game_window::get_instance();
 	gwin->toggle_combat();
 	gwin->paint();
@@ -312,12 +332,14 @@ void ActionCombat(int const *params) {
 
 //  { ActionCombatPause, 0, "Pause combat", normal_keys, NONE },
 void ActionCombatPause(int const *params) {
+	ignore_unused_variable_warning(params);
 	Combat::toggle_pause();
 	Mouse::mouse->set_speed_cursor();
 }
 
 //  { ActionTarget, 0, "Target mode", normal_keys, NONE },
 void ActionTarget(int const *params) {
+	ignore_unused_variable_warning(params);
 	int x, y;
 	if (!Get_click(x, y, Mouse::greenselect))
 		return;
@@ -368,6 +390,7 @@ void ActionInventory(int const *params) {
 
 //  { ActionTryKeys, 0, "Try keys", normal_keys, NONE },
 void ActionTryKeys(int const *params) {
+	ignore_unused_variable_warning(params);
 	Game_window *gwin = Game_window::get_instance();
 	int x, y;           // Allow dragging.
 	if (!Get_click(x, y, Mouse::greenselect, 0, true))
@@ -445,6 +468,7 @@ void ActionStats(int const *params) {
 
 //  { ActionCombatStats, 0, "Show Combat stats", normal_keys, SERPENT_ISLE }
 void ActionCombatStats(int const *params) {
+	ignore_unused_variable_warning(params);
 	Game_window *gwin = Game_window::get_instance();
 	int cnt = gwin->get_party_man()->get_count();
 	gwin->get_gump_man()->add_gump(0, game->get_shape("gumps/cstats/1") + cnt);
@@ -452,6 +476,7 @@ void ActionCombatStats(int const *params) {
 
 //  { ActionFaceStats, 0, "Change Face Stats State", normal_keys, NONE }
 void ActionFaceStats(int const *params) {
+	ignore_unused_variable_warning(params);
 	Face_stats::AdvanceState();
 	Face_stats::save_config(config);
 }
@@ -459,6 +484,7 @@ void ActionFaceStats(int const *params) {
 
 //  { ActionSIIntro, 0,  "Show SI intro", cheat_keys, SERPENT_ISLE },
 void ActionSIIntro(int const *params) {
+	ignore_unused_variable_warning(params);
 	Game_window *gwin = Game_window::get_instance();
 	game->set_jive();
 	game->play_intro();
@@ -482,6 +508,7 @@ void ActionEndgame(int const *params) {
 
 //  { ActionScrollLeft, 0, "Scroll left", cheat_keys, NONE },
 void ActionScrollLeft(int const *params) {
+	ignore_unused_variable_warning(params);
 	Game_window *gwin = Game_window::get_instance();
 	for (int i = 16; i; i--)
 		gwin->view_left();
@@ -489,6 +516,7 @@ void ActionScrollLeft(int const *params) {
 
 //  { ActionScrollRight, 0, "Scroll right", cheat_keys, NONE },
 void ActionScrollRight(int const *params) {
+	ignore_unused_variable_warning(params);
 	Game_window *gwin = Game_window::get_instance();
 	for (int i = 16; i; i--)
 		gwin->view_right();
@@ -496,6 +524,7 @@ void ActionScrollRight(int const *params) {
 
 //  { ActionScrollUp, 0, "Scroll up", cheat_keys, NONE },
 void ActionScrollUp(int const *params) {
+	ignore_unused_variable_warning(params);
 	Game_window *gwin = Game_window::get_instance();
 	for (int i = 16; i; i--)
 		gwin->view_up();
@@ -503,6 +532,7 @@ void ActionScrollUp(int const *params) {
 
 //  { ActionScrollDown, 0, "Scroll down", cheat_keys, NONE },
 void ActionScrollDown(int const *params) {
+	ignore_unused_variable_warning(params);
 	Game_window *gwin = Game_window::get_instance();
 	for (int i = 16; i; i--)
 		gwin->view_down();
@@ -579,12 +609,14 @@ void ActionWalkSouthWest(int const *params) {
 
 //  { ActionStopWalking, 0, "Stop Walking", cheat_keys, NONE },
 void ActionStopWalking(int const *params) {
+	ignore_unused_variable_warning(params);
 	Game_window *gwin = Game_window::get_instance();
 	gwin->stop_actor();
 }
 
 //  { ActionCenter, 0, "Center screen", cheat_keys, NONE },
 void ActionCenter(int const *params) {
+	ignore_unused_variable_warning(params);
 	Game_window *gwin = Game_window::get_instance();
 	gwin->center_view(gwin->get_camera_actor()->get_tile());
 	gwin->paint();
@@ -592,10 +624,12 @@ void ActionCenter(int const *params) {
 
 //  { ActionShapeBrowser, 0, "Shape browser", cheat_keys, NONE },
 void ActionShapeBrowser(int const *params) {
+	ignore_unused_variable_warning(params);
 	cheat.shape_browser();
 }
 
 void ActionShapeBrowserHelp(int const *params) {
+	ignore_unused_variable_warning(params);
 	keybinder->ShowBrowserKeys();
 }
 
@@ -620,11 +654,13 @@ void ActionCreateShape(int const *params) {
 
 //  { ActionDeleteObject, 0, "Delete object", cheat_keys, NONE },
 void ActionDeleteObject(int const *params) {
+	ignore_unused_variable_warning(params);
 	cheat.delete_object();
 }
 
 //  { ActionDeleteSelected, "Delete selected", true, ture, NONE, false },
 void ActionDeleteSelected(int const *params) {
+	ignore_unused_variable_warning(params);
 	cheat.delete_selected();
 }
 
@@ -638,6 +674,7 @@ void ActionMoveSelected(int const *params) {
 
 //  { ActionToggleEggs, 0, "Toggle egg display", cheat_keys, NONE },
 void ActionToggleEggs(int const *params) {
+	ignore_unused_variable_warning(params);
 	cheat.toggle_eggs();
 }
 
@@ -652,16 +689,19 @@ void ActionGodMode(int const *params) {
 
 //  { ActionGender, 0, "Change gender", cheat_keys, NONE },
 void ActionGender(int const *params) {
+	ignore_unused_variable_warning(params);
 	cheat.change_gender();
 }
 
 //  { ActionCheatHelp, 0, "List cheat keys", cheat_keys, NONE },
 void ActionCheatHelp(int const *params) {
+	ignore_unused_variable_warning(params);
 	keybinder->ShowCheatHelp();
 }
 
 //  { ActionMapeditHelp, 0, "List mapedit keys", mapedit_keys, NONE },
 void ActionMapeditHelp(int const *params) {
+	ignore_unused_variable_warning(params);
 	keybinder->ShowMapeditHelp();
 }
 
@@ -711,26 +751,31 @@ void ActionHackMover(int const *params) {
 
 //  { ActionMapTeleport, 0, "Map teleport", cheat_keys, NONE },
 void ActionMapTeleport(int const *params) {
+	ignore_unused_variable_warning(params);
 	cheat.map_teleport();
 }
 
 //  { ActionWriteMiniMap, 0, "Write minimap", cheat_keys, NONE },
 void ActionWriteMiniMap(int const *params) {
+	ignore_unused_variable_warning(params);
 	Game_map::write_minimap();
 }
 
 //  { ActionTeleport, 0, "Teleport to cursor", cheat_keys, NONE },
 void ActionTeleport(int const *params) {
+	ignore_unused_variable_warning(params);
 	cheat.cursor_teleport();
 }
 
 //  { ActionNextMapTeleport, 0, "Teleport to next map", cheat_keys, NONE },
 void ActionNextMapTeleport(int const *params) {
+	ignore_unused_variable_warning(params);
 	cheat.next_map_teleport();
 }
 
 //  { ActionTime, 0, "Next time period", cheat_keys, NONE },
 void ActionTime(int const *params) {
+	ignore_unused_variable_warning(params);
 	cheat.fake_time_period();
 }
 
@@ -745,11 +790,13 @@ void ActionWizard(int const *params) {
 
 //  { ActionHeal, 0, "Heal party", cheat_keys, NONE },
 void ActionHeal(int const *params) {
+	ignore_unused_variable_warning(params);
 	cheat.heal_party();
 }
 
 //  { ActionCheatScreen, 0, "Cheat Screen", cheat_keys, NONE },
 void ActionCheatScreen(int const *params) {
+	ignore_unused_variable_warning(params);
 	cheat.cheat_screen();
 }
 
@@ -782,16 +829,19 @@ void ActionGrabActor(int const *params) {
 
 //  { ActionCut, "Cut Selected Objects", normal_keys, NONE, true},
 void ActionCut(int const *params) {
+	ignore_unused_variable_warning(params);
 	cheat.cut(false);
 }
 
 //  { ActionCopy, "Copy Selected Objects", normal_keys, NONE, true},
 void ActionCopy(int const *params) {
+	ignore_unused_variable_warning(params);
 	cheat.cut(true);
 }
 
 //  { ActionPaste, "Paste Selected Objects", normal_keys, NONE, true},
 void ActionPaste(int const *params) {
+	ignore_unused_variable_warning(params);
 	cheat.paste();
 }
 
@@ -813,21 +863,25 @@ void ActionPlayMusic(int const *params) {
 
 //  { ActionNaked, 0, "Toggle naked mode", cheat_keys, SERPENT_ISLE },
 void ActionNaked(int const *params) {
+	ignore_unused_variable_warning(params);
 	cheat.toggle_naked();
 }
 
 //  { ActionPetra, 0, "Toggle Petra mode", cheat_keys, SERPENT_ISLE },
 void ActionPetra(int const *params) {
+	ignore_unused_variable_warning(params);
 	cheat.toggle_Petra();
 }
 
 //  { ActionSkinColour, 0 "Change skin colour", cheat_keys, NONE },
 void ActionSkinColour(int const *params) {
+	ignore_unused_variable_warning(params);
 	cheat.change_skin();
 }
 
 //   { ActionNotebook, 0, "Show notebook", normal_keys, NONE, false },
 void ActionNotebook(int const *params) {
+	ignore_unused_variable_warning(params);
 	Game_window *gwin = Game_window::get_instance();
 	Gump_manager *gman = gwin->get_gump_man();
 	Notebook_gump *notes = Notebook_gump::get_instance();
@@ -841,9 +895,11 @@ void ActionNotebook(int const *params) {
 
 //  { ActionSoundTester, 0, "Sound tester", cheat_keys, NONE }
 void ActionSoundTester(int const *params) {
+	ignore_unused_variable_warning(params);
 	cheat.sound_tester();
 }
 
 void ActionTest(int const *params) {
+	ignore_unused_variable_warning(params);
 }
 

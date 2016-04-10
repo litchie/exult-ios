@@ -33,6 +33,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "exult_constants.h"
 #include "shapefile.h"
 #include "shapedraw.h"
+#include "ignore_unused_variable_warning.h"
 
 using std::cout;
 using std::cerr;
@@ -47,6 +48,7 @@ C_EXPORT void on_open_egg_activate(
     GtkMenuItem     *menuitem,
     gpointer         user_data
 ) {
+	ignore_unused_variable_warning(menuitem, user_data);
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->open_egg_window();
 }
@@ -58,6 +60,7 @@ C_EXPORT void on_egg_apply_btn_clicked(
     GtkButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(btn, user_data);
 	ExultStudio::get_instance()->save_egg_window();
 }
 
@@ -68,6 +71,7 @@ C_EXPORT void on_egg_cancel_btn_clicked(
     GtkButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(btn, user_data);
 	ExultStudio::get_instance()->close_egg_window();
 }
 
@@ -79,6 +83,7 @@ C_EXPORT gboolean on_egg_window_delete_event(
     GdkEvent *event,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(widget, event, user_data);
 	ExultStudio::get_instance()->close_egg_window();
 	return TRUE;
 }
@@ -90,6 +95,7 @@ C_EXPORT void on_egg_browse_usecode_clicked(
     GtkButton *button,
     gpointer         user_data
 ) {
+	ignore_unused_variable_warning(button, user_data);
 	ExultStudio *studio = ExultStudio::get_instance();
 	const char *uc = studio->browse_usecode(true);
 	if (*uc)
@@ -104,6 +110,7 @@ C_EXPORT gboolean on_egg_monster_draw_expose_event(
     GdkEventExpose *event,
     gpointer data           // ->Shape_chooser.
 ) {
+	ignore_unused_variable_warning(widget, data);
 	ExultStudio::get_instance()->show_egg_monster(
 	    event->area.x, event->area.y, event->area.width,
 	    event->area.height);
@@ -118,6 +125,7 @@ C_EXPORT gboolean on_monst_shape_focus_out_event(
     GdkEventFocus *event,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(widget, event, user_data);
 	ExultStudio::get_instance()->show_egg_monster();
 	return FALSE;
 }
@@ -128,6 +136,7 @@ C_EXPORT void on_teleport_coord_toggled(
     GtkToggleButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	ExultStudio *studio = ExultStudio::get_instance();
 	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	studio->set_sensitive("teleport_x", on);
@@ -357,6 +366,7 @@ static void Egg_response(
     int datalen,
     void * /* client */
 ) {
+	ignore_unused_variable_warning(data, datalen);
 	if (id == Exult_server::user_responded)
 		ExultStudio::get_instance()->close_egg_window();
 	//+++++cancel??

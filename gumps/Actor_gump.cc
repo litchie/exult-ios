@@ -24,6 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "actors.h"
 #include "gamewin.h"
 #include "misc_buttons.h"
+#include "ignore_unused_variable_warning.h"
 
 #ifndef ALPHA_LINUX_CXX
 #  include <cstdio>
@@ -133,6 +134,7 @@ int Actor_gump::add(
 )
 #if 1
 {
+	ignore_unused_variable_warning(sx, sy);
 	Game_object *cont = find_object(mx, my);
 
 	if (cont && cont->add(obj, false, combine))
@@ -150,6 +152,7 @@ int Actor_gump::add(
 }
 #else
 {
+	ignore_unused_variable_warning(sx, sy);
 	// Find index of closest spot.
 	int index = find_closest(mx, my);
 	if (!container->add_readied(obj, index)) {
@@ -245,5 +248,6 @@ void Actor_gump::paint(
 }
 
 Container_game_object *Actor_gump::find_actor(int mx, int my) {
+	ignore_unused_variable_warning(mx, my);
 	return container;
 }

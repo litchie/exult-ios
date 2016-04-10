@@ -40,6 +40,7 @@
 #include "timidity_resample.h"
 #include "timidity_tables.h"
 #include "timidity_filter.h"
+#include "ignore_unused_variable_warning.h"
 
 #ifdef NS_TIMIDITY
 namespace NS_TIMIDITY {
@@ -184,6 +185,7 @@ static Instrument *load_instrument(char *name, int percussion,
                                    int strip_loop, int strip_envelope,
                                    int strip_tail)
 {
+	ignore_unused_variable_warning(percussion);
 	Instrument *ip;
 	Sample *sp;
 	FILE *fp;

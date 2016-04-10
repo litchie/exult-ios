@@ -300,6 +300,7 @@ public:
 	// Is the dungeon an ICE dungeon.NOTE: This is a
 	// Hack and splits the chunk into 4 parts. Only if
 	inline bool is_ice_dungeon(int tx, int ty) { // all 4 are ice, will we have an ice dungeon
+		ignore_unused_variable_warning(tx, ty);
 		return ice_dungeon == 0x0F;//0 != ((ice_dungeon >> ( (tx>>3) + 2*(ty>>3) ) )&1);
 	}
 

@@ -39,6 +39,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ucmachine.h"
 #include "frflags.h"
 #include "usefuns.h"
+#include "ignore_unused_variable_warning.h"
 
 #ifndef UNDER_EMBEDDED_CE
 using std::memcpy;
@@ -299,6 +300,7 @@ void Spellbook_object::execute_spell(
 void Spellbook_object::activate(
     int event
 ) {
+	ignore_unused_variable_warning(event);
 	gumpman->add_gump(this, get_info().get_gump_shape());
 }
 

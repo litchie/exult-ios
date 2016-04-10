@@ -41,6 +41,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "dir.h"
 #include "actors.h"
 #include "miscinf.h"
+#include "ignore_unused_variable_warning.h"
 
 #if 0
 #include <iostream>
@@ -210,6 +211,7 @@ void Chunk_cache::update_object(
     Game_object *obj,
     bool add                // 1 to add, 0 to remove.
 ) {
+	ignore_unused_variable_warning(chunk);
 	Shape_info &info = obj->get_info();
 	if (info.is_door()) {   // Special door list.
 		if (add)
@@ -314,6 +316,7 @@ void Chunk_cache::update_egg(
     Egg_object *egg,
     bool add                // 1 to add, 0 to remove.
 ) {
+	ignore_unused_variable_warning(chunk);
 	// Get footprint with abs. tiles.
 	Rectangle foot = egg->get_area();
 	if (!foot.w)

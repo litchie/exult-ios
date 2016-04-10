@@ -11,6 +11,8 @@
 #  include <config.h>
 #endif
 
+#include "ignore_unused_variable_warning.h"
+
 #ifdef HAVE_ZIP_SUPPORT
 
 #include <cstddef>
@@ -261,6 +263,7 @@ static void ziplocal_putValue_inmemory(void *dest, uLong x, int nbByte) {
 
 
 static uLong ziplocal_TmzDateToDosDate(const tm_zip *ptm, uLong uLongdosDate) {
+	ignore_unused_variable_warning(uLongdosDate);
 	uLong year = ptm->tm_year;
 	if (year > 1980)
 		year -= 1980;

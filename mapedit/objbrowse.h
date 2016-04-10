@@ -20,6 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define OBJBROWSE_H
 
 #include <gtk/gtk.h>
+#include "ignore_unused_variable_warning.h"
 
 //#include <glade/glade.h>
 
@@ -70,10 +71,11 @@ public:
 	GtkWidget *get_loc_f() {
 		return loc_f;
 	}
-	virtual void load()     // Load from file data.
-	{  }
-	virtual void setup_info(bool savepos = true)
-	{  }
+	virtual void load() {   // Load from file data.
+	}
+	virtual void setup_info(bool savepos = true) {
+		ignore_unused_variable_warning(savepos);
+	}
 	virtual void render() = 0;
 	// Blit onto screen.
 	virtual void show(int x, int y, int w, int h) = 0;
@@ -103,12 +105,15 @@ public:
 	};
 	GtkWidget *create_controls(int controls);
 	// Virtuals for controls.
-	virtual void search(const char *srch, int dir)
-	{  }
-	virtual void locate(bool upwards)// Locate terrain on game map.
-	{  }
-	virtual void move(bool upwards) // Move current selected chunk.
-	{  }
+	virtual void search(const char *srch, int dir) {
+		ignore_unused_variable_warning(srch, dir);
+	}
+	virtual void locate(bool upwards) { // Locate terrain on game map.
+		ignore_unused_variable_warning(upwards);
+	}
+	virtual void move(bool upwards) { // Move current selected chunk.
+		ignore_unused_variable_warning(upwards);
+	}
 };
 
 // File-selector utility:

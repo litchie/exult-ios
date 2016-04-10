@@ -74,6 +74,7 @@
 #include "npcdollinf.h"
 #include "spellbook.h"
 #include "usefuns.h"
+#include "ignore_unused_variable_warning.h"
 
 #ifdef USE_EXULTSTUDIO
 #include "server.h"
@@ -792,6 +793,7 @@ Game_object *Actor::find_blocking(
     Tile_coord const &tile,
     int dir
 ) {
+	ignore_unused_variable_warning(tile);
 	Rectangle footprint = get_footprint();
 	Rectangle base = get_footprint();
 	switch (dir) {
@@ -1463,6 +1465,7 @@ void Actor::get_tile_info(
     int &water,         // Returns 1 if water.
     int &poison         // Returns 1 if poison.
 ) {
+	ignore_unused_variable_warning(gwin);
 	ShapeID flat = nlist->get_flat(tx, ty);
 	if (flat.get_shapenum() == -1)
 		water = poison = 0;
@@ -2469,6 +2472,7 @@ public:
 };
 
 void Clear_casting::handle_event(unsigned long curtime, long udata) {
+	ignore_unused_variable_warning(curtime);
 	Actor *a = reinterpret_cast<Actor *>(udata);
 	a->add_dirty();
 	a->hide_casting_frames();
@@ -2493,6 +2497,7 @@ public:
 };
 
 void Clear_hit::handle_event(unsigned long curtime, long udata) {
+	ignore_unused_variable_warning(curtime);
 	Actor *a = reinterpret_cast<Actor *>(udata);
 	a->hit = false;
 	a->add_dirty();
@@ -3309,6 +3314,7 @@ void Actor::call_readied_usecode(
     Game_object *obj,
     int eventid
 ) {
+	ignore_unused_variable_warning(index);
 	// Limit to certain types.
 	if (!obj->get_info().has_usecode_events())
 		return;
@@ -5119,6 +5125,7 @@ void Npc_actor::switched_chunks(
     Map_chunk *olist,   // Old chunk, or null.
     Map_chunk *nlist    // New chunk, or null.
 ) {
+	ignore_unused_variable_warning(olist, nlist);
 	//++++++++++No longer needed.  Maybe it should go away.
 }
 

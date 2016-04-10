@@ -35,6 +35,7 @@
 #include "timidity_controls.h"
 #include "timidity_instrum.h"
 #include "timidity_playmidi.h"
+#include "ignore_unused_variable_warning.h"
 
 #ifdef NS_TIMIDITY
 namespace NS_TIMIDITY {
@@ -76,6 +77,7 @@ ControlMode ctl=
 
 static int ctl_open(int using_stdin, int using_stdout)
 {
+	ignore_unused_variable_warning(using_stdin, using_stdout);
 	ctl.opened=1;
 	return 0;
 }
@@ -87,6 +89,7 @@ static void ctl_close(void)
 
 static int ctl_read(sint32 *valp)
 {
+	ignore_unused_variable_warning(valp);
 	return TM_RC_NONE;
 }
 
@@ -105,27 +108,49 @@ static int cmsg(int type, int verbosity_level, const char *fmt, ...)
 
 static void ctl_refresh(void) { }
 
-static void ctl_total_time(int tt) {}
+static void ctl_total_time(int tt) {
+	ignore_unused_variable_warning(tt);
+}
 
-static void ctl_master_volume(int mv) {}
+static void ctl_master_volume(int mv) {
+	ignore_unused_variable_warning(mv);
+}
 
-static void ctl_file_name(char *name) {}
+static void ctl_file_name(char *name) {
+	ignore_unused_variable_warning(name);
+}
 
-static void ctl_current_time(int ct) {}
+static void ctl_current_time(int ct) {
+	ignore_unused_variable_warning(ct);
+}
 
-static void ctl_note(int v) {}
+static void ctl_note(int v) {
+	ignore_unused_variable_warning(v);
+}
 
-static void ctl_program(int ch, int val) {}
+static void ctl_program(int ch, int val) {
+	ignore_unused_variable_warning(ch, val);
+}
 
-static void ctl_volume(int channel, int val) {}
+static void ctl_volume(int channel, int val) {
+	ignore_unused_variable_warning(channel, val);
+}
 
-static void ctl_expression(int channel, int val) {}
+static void ctl_expression(int channel, int val) {
+	ignore_unused_variable_warning(channel, val);
+}
 
-static void ctl_panning(int channel, int val) {}
+static void ctl_panning(int channel, int val) {
+	ignore_unused_variable_warning(channel, val);
+}
 
-static void ctl_sustain(int channel, int val) {}
+static void ctl_sustain(int channel, int val) {
+	ignore_unused_variable_warning(channel, val);
+}
 
-static void ctl_pitch_bend(int channel, int val) {}
+static void ctl_pitch_bend(int channel, int val) {
+	ignore_unused_variable_warning(channel, val);
+}
 
 static void ctl_reset(void) {}
 

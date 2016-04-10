@@ -21,6 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define FILE_MIDI_DRIVER_H_INCLUDED
 
 #include "MidiDriver.h"
+#include "ignore_unused_variable_warning.h"
 
 class	FileMidiDriver : public MidiDriver
 {
@@ -66,7 +67,9 @@ protected:
 	virtual bool		is_playing()=0;
 
 	//! Set the volume
-	virtual void		set_volume(int vol) { };
+	virtual void		set_volume(int vol) {
+		ignore_unused_variable_warning(vol);
+	}
 
 	//! Get the temporary filename
 	virtual const char	*get_temp_name();

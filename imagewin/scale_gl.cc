@@ -24,6 +24,7 @@
 #include "SDL_video.h"
 #include "imagewin.h"
 #include "sdl-compat.h"
+#include "ignore_unused_variable_warning.h"
 
 //
 // OpenGL 'scaler':
@@ -31,6 +32,7 @@
 void Image_window::show_scaledOpenGL(
     int x, int y, int w, int h  // Area to show.
 ) {
+	ignore_unused_variable_warning(x, y, w, h);
 #if SDL_VERSION_ATLEAST(2, 0, 0)
 	SDL_GL_SwapWindow(screen_window);
 #else

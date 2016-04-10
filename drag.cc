@@ -38,6 +38,7 @@
 #include "ucmachine.h"
 #include "barge.h"
 #include "sdl-compat.h"
+#include "ignore_unused_variable_warning.h"
 
 using std::cout;
 using std::endl;
@@ -292,6 +293,7 @@ static bool Check_weight(
     Game_object *to_drop,
     Game_object *owner      // Who the new owner will be.
 ) {
+	ignore_unused_variable_warning(gwin);
 	if (cheat.in_hack_mover())  // hack-mover  -> no weight checking
 		return true;
 

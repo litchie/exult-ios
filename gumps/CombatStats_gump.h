@@ -22,6 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Gump.h"
 #include "misc_buttons.h"
 #include "Face_button.h"
+#include "ignore_unused_variable_warning.h"
 
 class Actor;
 
@@ -38,6 +39,7 @@ public:
 	virtual int add(Game_object *obj, int mx = -1, int my = -1,
 	                int sx = -1, int sy = -1, bool dont_check = false,
 	                bool combine = false) {
+		ignore_unused_variable_warning(obj, mx, my, sx, sy, dont_check, combine);
 		return 0;    // Can't drop onto it.
 	}
 	// Paint it and its contents.

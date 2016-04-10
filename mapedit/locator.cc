@@ -31,6 +31,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "exult_constants.h"
 #include "locator.h"
 #include "utils.h"
+#include "ignore_unused_variable_warning.h"
 
 using   std::cout;
 using   std::endl;
@@ -43,6 +44,7 @@ C_EXPORT void on_locator1_activate(
     GtkMenuItem     *menuitem,
     gpointer         user_data
 ) {
+	ignore_unused_variable_warning(menuitem, user_data);
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->open_locator_window();
 }
@@ -61,6 +63,7 @@ C_EXPORT void on_loc_close_clicked(
     GtkButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	Locator *loc = (Locator *) gtk_object_get_user_data(
 	                   GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(btn))));
 	loc->show(false);
@@ -74,6 +77,7 @@ C_EXPORT gboolean on_loc_window_delete_event(
     GdkEvent *event,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(event, user_data);
 	Locator *loc = (Locator *)
 	               gtk_object_get_user_data(GTK_OBJECT(widget));
 	loc->show(false);
@@ -88,6 +92,7 @@ C_EXPORT gint on_loc_draw_configure_event(
     GdkEventConfigure *event,
     gpointer data           // ->Shape_chooser
 ) {
+	ignore_unused_variable_warning(event, data);
 	Locator *loc = (Locator *) gtk_object_get_user_data(
 	                   GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(widget))));
 	loc->configure(widget);
@@ -101,6 +106,7 @@ C_EXPORT gint on_loc_draw_expose_event(
     GdkEventExpose *event,
     gpointer data           // ->Shape_chooser.
 ) {
+	ignore_unused_variable_warning(data);
 	Locator *loc = (Locator *) gtk_object_get_user_data(
 	                   GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(widget))));
 	loc->render(&event->area);
@@ -114,6 +120,7 @@ C_EXPORT gint on_loc_draw_button_press_event(
     GdkEventButton *event,
     gpointer data           // ->Chunk_chooser.
 ) {
+	ignore_unused_variable_warning(data);
 	Locator *loc = (Locator *) gtk_object_get_user_data(
 	                   GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(widget))));
 	return loc->mouse_press(event);
@@ -124,6 +131,7 @@ C_EXPORT gint on_loc_draw_button_release_event(
     GdkEventButton *event,
     gpointer data           // ->Chunk_chooser.
 ) {
+	ignore_unused_variable_warning(data);
 	Locator *loc = (Locator *) gtk_object_get_user_data(
 	                   GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(widget))));
 	return loc->mouse_release(event);
@@ -134,6 +142,7 @@ C_EXPORT gint on_loc_draw_motion_notify_event(
     GdkEventMotion *event,
     gpointer data           // ->Chunk_chooser.
 ) {
+	ignore_unused_variable_warning(data);
 	Locator *loc = (Locator *) gtk_object_get_user_data(
 	                   GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(widget))));
 	return loc->mouse_motion(event);
@@ -490,6 +499,7 @@ gint Locator::mouse_press(
 gint Locator::mouse_release(
     GdkEventButton *event
 ) {
+	ignore_unused_variable_warning(event);
 	dragging = false;
 	return TRUE;
 }

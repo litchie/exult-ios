@@ -44,6 +44,7 @@
 #include "usefuns.h"
 #include "combat.h"
 #include "Audio.h"
+#include "ignore_unused_variable_warning.h"
 
 #ifndef UNDER_EMBEDDED_CE
 using std::cout;
@@ -465,6 +466,7 @@ void Street_maintenance_schedule::now_what(
 }
 
 void Street_maintenance_schedule::ending(int newtype) {
+	ignore_unused_variable_warning(newtype);
 	remove_clients();
 }
 
@@ -744,6 +746,7 @@ void Eat_at_inn_schedule::now_what(
 
 // TODO: This should be in a loop to remove food one at a time with a delay
 void Eat_at_inn_schedule::ending(int new_type) { // new schedule type
+	ignore_unused_variable_warning(new_type);
 	Game_object_vector foods;           // Food nearby?
 	int cnt = npc->find_nearby(foods, 377, 2, 0);
 	if (cnt) {          // Found?
@@ -1343,6 +1346,7 @@ void Patrol_schedule::now_what(
 void Patrol_schedule::ending(
     int new_type            // New schedule.
 ) {
+	ignore_unused_variable_warning(new_type);
 	remove_clients();
 	if (hammer) {
 		hammer->remove_this();
@@ -1500,6 +1504,7 @@ void Arrest_avatar_schedule::ending(
 }
 // For Usecode intrinsic.
 int Arrest_avatar_schedule::get_actual_type(Actor *npc) const {
+	ignore_unused_variable_warning(npc);
 	return combat;
 }
 
@@ -2719,8 +2724,9 @@ void Desk_schedule::im_dormant() {
 void Desk_schedule::ending(
     int new_type				// New schedule.
 ) {
-    cleanup();
-    remove_clients();
+	ignore_unused_variable_warning(new_type);
+	cleanup();
+	remove_clients();
 }
 
 /*
@@ -3411,6 +3417,7 @@ void Waiter_schedule::now_what(
 void Waiter_schedule::ending(
     int new_type            // New schedule.
 ) {
+	ignore_unused_variable_warning(new_type);
 	remove_clients();
 	// Remove what he/she is carrying.
 	Game_object *obj = npc->get_readied(lhand);
@@ -3707,6 +3714,7 @@ void Sew_schedule::now_what(
 void Sew_schedule::ending(
     int new_type            // New schedule.
 ) {
+	ignore_unused_variable_warning(new_type);
 	remove_clients();
 	// Remove shears.
 	Game_object *obj = npc->get_readied(lhand);
@@ -4214,6 +4222,7 @@ void Bake_schedule::now_what() {
  */
 
 void Bake_schedule::ending(int new_type) {
+	ignore_unused_variable_warning(new_type);
 	remove_clients();
 	if (dough) {
 		dough->remove_this();
@@ -4600,6 +4609,7 @@ void Forge_schedule::now_what(
 void Forge_schedule::ending(
     int new_type            // New schedule.
 ) {
+	ignore_unused_variable_warning(new_type);
 	remove_clients();
 	// Remove any tools.
 	if (tongs) {
@@ -4729,6 +4739,7 @@ void Eat_schedule::now_what() {
 
 // TODO: This should be in a loop to remove food one at a time with a delay
 void Eat_schedule::ending(int new_type) { // new schedule type
+	ignore_unused_variable_warning(new_type);
 	remove_clients();
 	Game_object_vector foods;           // Food nearby?
 	int cnt = npc->find_nearby(foods, 377, 2, 0);

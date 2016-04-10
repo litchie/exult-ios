@@ -39,6 +39,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ucmachine.h"
 #include "Notebook_gump.h"
 #include "party.h"
+#include "ignore_unused_variable_warning.h"
 
 using std::cout;
 using std::endl;
@@ -362,6 +363,7 @@ int ShortcutBar_gump::handle_event(SDL_Event *event)
 
 void ShortcutBar_gump::mouse_down(SDL_Event *event, int mx, int my)
 {
+	ignore_unused_variable_warning(event);
 	int i;
 	for (i = 0; i < numButtons; i++) {
 		if (buttonItems[i].rect->has_point(mx, my))
@@ -384,17 +386,18 @@ void ShortcutBar_gump::mouse_down(SDL_Event *event, int mx, int my)
  */
 static Uint32 didMouseUp(Uint32 interval, void *param)
 {
-    SDL_UserEvent userevent;
-    userevent.type = SDL_USEREVENT;
-    userevent.code = SHORTCUT_BAR_USER_EVENT;
-    userevent.data1 = param;
-    userevent.data2 = (void*)DID_MOUSE_UP;
+	ignore_unused_variable_warning(interval);
+	SDL_UserEvent userevent;
+	userevent.type = SDL_USEREVENT;
+	userevent.code = SHORTCUT_BAR_USER_EVENT;
+	userevent.data1 = param;
+	userevent.data2 = (void*)DID_MOUSE_UP;
 
-    SDL_Event event;
-    event.type = SDL_USEREVENT;
-    event.user = userevent;
-    SDL_PushEvent(&event);
-    return 0;
+	SDL_Event event;
+	event.type = SDL_USEREVENT;
+	event.user = userevent;
+	SDL_PushEvent(&event);
+	return 0;
 }
 
 /*
@@ -402,6 +405,7 @@ static Uint32 didMouseUp(Uint32 interval, void *param)
  */
 void ShortcutBar_gump::onUserEvent(SDL_Event *event)
 {
+	ignore_unused_variable_warning(event);
 	switch ((intptr_t)(event->user.data2)) {
 		case DID_MOUSE_UP:
 			if (lastClickedButton >= 0 && lastClickedButton < numButtons) {
@@ -420,6 +424,7 @@ void ShortcutBar_gump::onUserEvent(SDL_Event *event)
 
 void ShortcutBar_gump::mouse_up(SDL_Event *event, int mx, int my)
 {
+	ignore_unused_variable_warning(event);
 	int i;
 	
 	for (i = 0; i < numButtons; i++) {

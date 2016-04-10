@@ -41,6 +41,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cstring>
 #include "studio.h"
 #include "shapefile.h"
+#include "ignore_unused_variable_warning.h"
 
 using   std::cout;
 using   std::endl;
@@ -195,6 +196,7 @@ int Palette_edit::color_closed(
     GdkEvent *event,
     gpointer data
 ) {
+	ignore_unused_variable_warning(dlg, event);
 	cout << "color_closed" << endl;
 	Palette_edit *paled = (Palette_edit *) data;
 	paled->colorsel = 0;
@@ -209,6 +211,7 @@ void Palette_edit::color_cancel(
     GtkWidget *dlg,
     gpointer data
 ) {
+	ignore_unused_variable_warning(dlg);
 	Palette_edit *paled = (Palette_edit *) data;
 	if (paled->colorsel)
 		gtk_widget_destroy(GTK_WIDGET(paled->colorsel));
@@ -223,6 +226,7 @@ void Palette_edit::color_okay(
     GtkWidget *dlg,
     gpointer data
 ) {
+	ignore_unused_variable_warning(dlg);
 	Palette_edit *paled = (Palette_edit *) data;
 	if (paled->colorsel) {
 		gdouble rgb[3];
@@ -285,6 +289,7 @@ gint Palette_edit::configure(
     GdkEventConfigure *event,
     gpointer data           // ->Palette_edit
 ) {
+	ignore_unused_variable_warning(event);
 	Palette_edit *paled = (Palette_edit *) data;
 	if (!paled->width) {    // First time?
 		paled->drawgc = gdk_gc_new(widget->window);
@@ -305,6 +310,7 @@ gint Palette_edit::expose(
     GdkEventExpose *event,
     gpointer data           // ->Palette_edit.
 ) {
+	ignore_unused_variable_warning(widget);
 	Palette_edit *paled = (Palette_edit *) data;
 	paled->show(event->area.x, event->area.y, event->area.width,
 	            event->area.height);
@@ -320,6 +326,7 @@ gint Palette_edit::mouse_press(
     GdkEventButton *event,
     gpointer data           // ->Palette_edit.
 ) {
+	ignore_unused_variable_warning(widget);
 	Palette_edit *paled = (Palette_edit *) data;
 
 	if (event->button == 4 || event->button == 5) // mouse wheel
@@ -372,6 +379,7 @@ void Palette_edit::drag_data_get(
     guint time,
     gpointer data           // ->Palette_edit.
 ) {
+	ignore_unused_variable_warning(widget, context, seldata, info, time);
 	cout << "In DRAG_DATA_GET" << endl;
 	Palette_edit *paled = (Palette_edit *) data;
 #if 0
@@ -402,6 +410,7 @@ gint Palette_edit::selection_clear(
     GdkEventSelection *event,
     gpointer data           // ->Palette_edit.
 ) {
+	ignore_unused_variable_warning(widget, event, data);
 //	Palette_edit *paled = (Palette_edit *) data;
 	cout << "SELECTION_CLEAR" << endl;
 	return TRUE;
@@ -416,6 +425,7 @@ gint Palette_edit::drag_begin(
     GdkDragContext *context,
     gpointer data           // ->Palette_edit.
 ) {
+	ignore_unused_variable_warning(widget, context);
 	cout << "In DRAG_BEGIN" << endl;
 	Palette_edit *paled = (Palette_edit *) data;
 	// Maybe someday.
@@ -444,6 +454,7 @@ void Palette_edit::palnum_changed(
 void
 on_exportbtn_clicked(GtkButton       *button,
                      gpointer         user_data) {
+	ignore_unused_variable_warning(button);
 	GtkFileSelection *fsel = Create_file_selection(
 	                             "Export palette to text format",
 	                             (File_sel_okay_fun) Palette_edit::export_palette,
@@ -459,6 +470,7 @@ on_exportbtn_clicked(GtkButton       *button,
 void
 on_importbtn_clicked(GtkButton       *button,
                      gpointer         user_data) {
+	ignore_unused_variable_warning(button);
 	GtkFileSelection *fsel = Create_file_selection(
 	                             "Import palette from text format",
 	                             (File_sel_okay_fun) Palette_edit::import_palette,
@@ -469,24 +481,28 @@ on_importbtn_clicked(GtkButton       *button,
 void
 on_insert_btn_clicked(GtkButton       *button,
                       gpointer         user_data) {
+	ignore_unused_variable_warning(button);
 	Palette_edit *ed = (Palette_edit *) user_data;
 	ed->add_palette();
 }
 void
 on_remove_btn_clicked(GtkButton       *button,
                       gpointer         user_data) {
+	ignore_unused_variable_warning(button);
 	Palette_edit *ed = (Palette_edit *) user_data;
 	ed->remove_palette();
 }
 void
 on_up_btn_clicked(GtkButton       *button,
                   gpointer         user_data) {
+	ignore_unused_variable_warning(button);
 	Palette_edit *ed = (Palette_edit *) user_data;
 	ed->move_palette(true);
 }
 void
 on_down_btn_clicked(GtkButton       *button,
                     gpointer         user_data) {
+	ignore_unused_variable_warning(button);
 	Palette_edit *ed = (Palette_edit *) user_data;
 	ed->move_palette(false);
 }

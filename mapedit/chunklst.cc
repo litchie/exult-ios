@@ -43,6 +43,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "studio.h"
 #include "utils.h"
 #include "shapegroup.h"
+#include "ignore_unused_variable_warning.h"
+
 
 #include <iosfwd>
 
@@ -298,6 +300,7 @@ gint Chunk_chooser::configure(
     GdkEventConfigure *event,
     gpointer data           // ->Chunk_chooser
 ) {
+	ignore_unused_variable_warning(widget);
 	Chunk_chooser *chooser = (Chunk_chooser *) data;
 	chooser->Shape_draw::configure();
 	chooser->render();
@@ -328,6 +331,7 @@ gint Chunk_chooser::expose(
     GdkEventExpose *event,
     gpointer data           // ->Chunk_chooser.
 ) {
+	ignore_unused_variable_warning(widget);
 	Chunk_chooser *chooser = (Chunk_chooser *) data;
 	chooser->show(event->area.x, event->area.y, event->area.width,
 	              event->area.height);
@@ -384,6 +388,7 @@ gint Chunk_chooser::drag_motion(
     GdkEventMotion *event,
     gpointer data           // ->Shape_chooser.
 ) {
+	ignore_unused_variable_warning(widget);
 	Chunk_chooser *chooser = (Chunk_chooser *) data;
 	if (!chooser->dragging && chooser->selected >= 0)
 		chooser->start_drag(U7_TARGET_CHUNKID_NAME,
@@ -397,6 +402,7 @@ gint Chunk_chooser::mouse_press(
     GdkEventButton *event,
     gpointer data           // ->Chunk_chooser.
 ) {
+	ignore_unused_variable_warning(widget);
 	Chunk_chooser *chooser = (Chunk_chooser *) data;
 
 	if (event->button == 4) {
@@ -450,6 +456,7 @@ static gint Mouse_release(
     GdkEventButton *event,
     gpointer data           // ->Shape_chooser.
 ) {
+	ignore_unused_variable_warning(widget, event);
 	Chunk_chooser *chooser = (Chunk_chooser *) data;
 	chooser->mouse_up();
 	return true;
@@ -467,6 +474,7 @@ void Chunk_chooser::drag_data_get(
     guint time,
     gpointer data           // ->Chunk_chooser.
 ) {
+	ignore_unused_variable_warning(widget, context, time);
 	cout << "In DRAG_DATA_GET" << endl;
 	Chunk_chooser *chooser = (Chunk_chooser *) data;
 	if (chooser->selected < 0 || info != U7_TARGET_CHUNKID)
@@ -497,6 +505,7 @@ gint Chunk_chooser::selection_clear(
     GdkEventSelection *event,
     gpointer data           // ->Chunk_chooser.
 ) {
+	ignore_unused_variable_warning(widget, event, data);
 //	Chunk_chooser *chooser = (Chunk_chooser *) data;
 	cout << "SELECTION_CLEAR" << endl;
 	return TRUE;
@@ -511,6 +520,7 @@ gint Chunk_chooser::drag_begin(
     GdkDragContext *context,
     gpointer data           // ->Chunk_chooser.
 ) {
+	ignore_unused_variable_warning(widget, context);
 	cout << "In DRAG_BEGIN" << endl;
 	Chunk_chooser *chooser = (Chunk_chooser *) data;
 	if (chooser->selected < 0)
@@ -572,6 +582,7 @@ void Chunk_chooser::drag_data_received(
     guint time,
     gpointer udata          // Should point to Shape_draw.
 ) {
+	ignore_unused_variable_warning(widget, context, x, y, info, time);
 	Chunk_chooser *chooser = (Chunk_chooser *) udata;
 	cout << "Chunk drag_data_received" << endl;
 	if (seldata->type == gdk_atom_intern(U7_TARGET_CHUNKID_NAME, 0) &&
@@ -686,6 +697,7 @@ static void on_insert_empty(
     GtkMenuItem *item,
     gpointer udata
 ) {
+	ignore_unused_variable_warning(item);
 	Chunk_chooser *chooser = (Chunk_chooser *) udata;
 	chooser->insert(false);
 }
@@ -694,6 +706,7 @@ static void on_insert_dup(
     GtkMenuItem *item,
     gpointer udata
 ) {
+	ignore_unused_variable_warning(item);
 	Chunk_chooser *chooser = (Chunk_chooser *) udata;
 	chooser->insert(true);
 }
@@ -701,6 +714,7 @@ static void on_delete(
     GtkMenuItem *item,
     gpointer udata
 ) {
+	ignore_unused_variable_warning(item);
 	Chunk_chooser *chooser = (Chunk_chooser *) udata;
 	chooser->del();
 }
@@ -971,6 +985,7 @@ void Chunk_chooser::locate_response(
     unsigned char *data,
     int datalen
 ) {
+	ignore_unused_variable_warning(datalen);
 	unsigned char *ptr = data;
 	int tnum = Read2(ptr);
 	if (selected < 0 || tnum != info[selected].num) {
@@ -1038,6 +1053,7 @@ void Chunk_chooser::insert_response(
     unsigned char *data,
     int datalen
 ) {
+	ignore_unused_variable_warning(datalen);
 	unsigned char *ptr = data;
 	int tnum = (short) Read2(ptr);
 	bool dup = *ptr++ ? true : false;
@@ -1068,6 +1084,7 @@ void Chunk_chooser::delete_response(
     unsigned char *data,
     int datalen
 ) {
+	ignore_unused_variable_warning(datalen);
 	unsigned char *ptr = data;
 	int tnum = (short) Read2(ptr);
 	if (!*ptr)
@@ -1112,6 +1129,7 @@ void Chunk_chooser::swap_response(
     unsigned char *data,
     int datalen
 ) {
+	ignore_unused_variable_warning(datalen);
 	unsigned char *ptr = data;
 	int tnum = (short) Read2(ptr);
 	if (!*ptr)

@@ -18,6 +18,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "pent_include.h"
 #include "FileMidiDriver.h"
+#include "ignore_unused_variable_warning.h"
 
 #ifdef PENTAGRAM_IN_EXULT
 #include "fnames.h"
@@ -50,6 +51,7 @@ const char *FileMidiDriver::get_temp_name()
 
 int FileMidiDriver::initMidiDriver(uint32 sample_rate, bool stereo)
 {
+	ignore_unused_variable_warning(sample_rate, stereo);
 	if (!initialized) destroyMidiDriver();
 
 	global_volume = 255;
@@ -96,6 +98,7 @@ bool	FileMidiDriver::isSequencePlaying(int seq_num)
 
 void	FileMidiDriver::startSequence(int seq_num, XMidiEventList *list, bool repeat, int vol, int branch)
 {
+	ignore_unused_variable_warning(branch);
 	if (seq_num != 0) return;
 
 	stop_track();
@@ -139,5 +142,6 @@ void FileMidiDriver::setSequenceVolume(int seq_num, int vol)
 
 void FileMidiDriver::setSequenceSpeed(int seq_num, int speed)
 {
+	ignore_unused_variable_warning(seq_num, speed);
 	if (seq_num != 0) return;
 }

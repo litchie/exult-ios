@@ -26,6 +26,8 @@
 
 #ifdef USE_XBR_SCALER
 
+#include "ignore_unused_variable_warning.h"
+
 #define XBR_VARIANT 4   // Tweaked xBR-z (Zenju's version)
 //#define XBR_VARIANT 3  // xBR-C: Hyllian's "squared flavor" version
 //#define XBR_VARIANT 2  // xBR-B: Hyllian's "semi-rounded flavor" version
@@ -152,6 +154,7 @@ void scalePixel(
     Buffer_Type const &g5, Buffer_Type const &h5, Buffer_Type const &i5,
     OutputMatrix &out, const Manip_pixels &manip
 ) {
+	ignore_unused_variable_warning(a1, a0, manip);
 	int const weight = 4;
 	double const detectSteepWeight = 2.2;
 

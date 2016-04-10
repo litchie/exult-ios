@@ -23,6 +23,7 @@
 #define INCL_IBUF16 1
 
 #include "imagebuf.h"
+#include "ignore_unused_variable_warning.h"
 
 /*
  *  A 16-bit image buffer:
@@ -117,16 +118,19 @@ public:
 	    unsigned char *src_pixels, int srcw,
 	    int destx, int desty, int first_translucent,
 	    int last_translucent, Xform_palette *xforms) {
+		ignore_unused_variable_warning(first_translucent, last_translucent, xforms);
 		copy_line8(src_pixels, srcw, destx, desty);
 	}
 	// Apply translucency to a line.
 	virtual void fill_line_translucent8(unsigned char val,
 	                                    int srcw, int destx, int desty, Xform_palette &xform) {
+		ignore_unused_variable_warning(xform);
 		fill_line8(val, srcw, destx, desty);
 	}
 	// Apply translucency to a rectangle
 	virtual void fill_translucent8(unsigned char val, int srcw, int srch,
 	                               int destx, int desty, Xform_palette &xform) {
+		ignore_unused_variable_warning(xform);
 		fill8(val, srcw, srcw, destx, desty);
 	}
 	// Copy rect. with transp. color.

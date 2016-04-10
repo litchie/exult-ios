@@ -31,6 +31,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "objserial.h"
 #include "exult_constants.h"
 #include "shapefile.h"
+#include "ignore_unused_variable_warning.h"
 
 using std::cout;
 using std::cerr;
@@ -43,6 +44,7 @@ C_EXPORT void on_open_barge_activate(
     GtkMenuItem     *menuitem,
     gpointer         user_data
 ) {
+	ignore_unused_variable_warning(menuitem, user_data);
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->open_barge_window();
 }
@@ -54,6 +56,7 @@ C_EXPORT void on_barge_apply_btn_clicked(
     GtkButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(btn, user_data);
 	ExultStudio::get_instance()->save_barge_window();
 }
 
@@ -64,6 +67,7 @@ C_EXPORT void on_barge_cancel_btn_clicked(
     GtkButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(btn, user_data);
 	ExultStudio::get_instance()->close_barge_window();
 }
 
@@ -75,6 +79,7 @@ C_EXPORT gboolean on_barge_window_delete_event(
     GdkEvent *event,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(widget, event, user_data);
 	ExultStudio::get_instance()->close_barge_window();
 	return TRUE;
 }
@@ -157,6 +162,7 @@ static void Barge_response(
     int datalen,
     void * /* client */
 ) {
+	ignore_unused_variable_warning(data, datalen);
 	if (id == Exult_server::user_responded)
 		ExultStudio::get_instance()->close_barge_window();
 	//+++++cancel??

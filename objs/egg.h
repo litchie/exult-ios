@@ -26,6 +26,7 @@ class   Monster_actor;
 class   Missile_launcher;
 
 #include "iregobjs.h"
+#include "ignore_unused_variable_warning.h"
 
 /*
  *  Here's a class for eggs and paths; i.e., objects that generally aren't
@@ -133,8 +134,9 @@ public:
 	virtual const char *get_str1() {
 		return "";
 	}
-	virtual void set_str1(const char *s)
-	{  }
+	virtual void set_str1(const char *s) {
+		ignore_unused_variable_warning(s);
+	}
 	// Can this be clicked on?
 	virtual int is_findable();
 	virtual void set(int crit, int dist);
@@ -156,8 +158,9 @@ public:
 	virtual bool edit();        // Edit in ExultStudio.
 	// Saved from ExultStudio.
 	static void update_from_studio(unsigned char *data, int datalen);
-	virtual void hatch_now(Game_object *obj, bool must)
-	{  }
+	virtual void hatch_now(Game_object *obj, bool must) {
+		ignore_unused_variable_warning(obj, must);
+	}
 	virtual void hatch(Game_object *obj, bool must = false);
 	void print_debug();
 	static void set_weather(int weather, int len = 15,

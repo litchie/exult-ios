@@ -32,6 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "exult_constants.h"
 #include "utils.h"
 #include "fnames.h"
+#include "ignore_unused_variable_warning.h"
 
 using   std::cout;
 using   std::endl;
@@ -59,6 +60,7 @@ static void on_map_activate(
     GtkMenuItem *item,
     gpointer udata
 ) {
+	ignore_unused_variable_warning(item);
 	unsigned char data[50];
 	unsigned char *ptr = &data[0];
 	Write2(ptr, (uintptr) udata);
@@ -69,6 +71,7 @@ C_EXPORT void on_main_map_activate(
     GtkMenuItem *item,
     gpointer udata
 ) {
+	ignore_unused_variable_warning(udata);
 	on_map_activate(item, (gpointer) 0);
 }
 
@@ -80,6 +83,7 @@ C_EXPORT void on_newmap_activate(
     GtkMenuItem     *menuitem,
     gpointer         user_data
 ) {
+	ignore_unused_variable_warning(menuitem, user_data);
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->new_map_dialog();
 }
@@ -125,6 +129,7 @@ C_EXPORT void on_newmap_ok_clicked(
     GtkMenuItem     *menuitem,
     gpointer         user_data
 ) {
+	ignore_unused_variable_warning(menuitem, user_data);
 	char fname[128], sname[128];
 	ExultStudio *studio = ExultStudio::get_instance();
 	GtkWidget *win = glade_xml_get_widget(studio->get_xml(),

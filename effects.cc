@@ -39,6 +39,7 @@
 #include "ammoinf.h"
 #include "weaponinf.h"
 #include "ucmachine.h"
+#include "ignore_unused_variable_warning.h"
 
 #include "SDL_timer.h"
 
@@ -687,6 +688,7 @@ inline Game_object *Find_target(
     Game_window *gwin,
     Tile_coord pos
 ) {
+	ignore_unused_variable_warning(gwin);
 	if (pos.tz % 5 == 0)    // On floor?
 		pos.tz++;       // Look up 1 tile.
 	Tile_coord dest = pos;      // This gets modified.
@@ -1060,6 +1062,7 @@ void Text_effect::handle_event(
     unsigned long curtime,      // Current time of day.
     long udata          // Ignored.
 ) {
+	ignore_unused_variable_warning(curtime, udata);
 	Game_window *gwin = Game_window::get_instance();
 	if (++num_ticks == 10) {    // About 1-2 seconds.
 		// All done.
@@ -1142,6 +1145,7 @@ Fog_effect::~Fog_effect() {
 }
 
 void Fog_effect::handle_event(unsigned long curtime, long udata) {
+	ignore_unused_variable_warning(curtime);
 	if (start) {
 		start = false;
 		// Nothing more to do but end.
@@ -1183,8 +1187,9 @@ public:
 class Particledrop {
 protected:
 	virtual void do_move(Particle &drop, int x, int y, int w, int h,
-	                     int ascrollx, int ascrolly)
-	{  }
+	                     int ascrollx, int ascrolly) {
+		ignore_unused_variable_warning(drop, x, y, w, h, ascrollx, ascrolly);
+	}
 public:
 	virtual ~Particledrop() {  }
 	void move
@@ -1417,6 +1422,7 @@ void Storm_effect::handle_event(
     unsigned long curtime,      // Current time of day.
     long udata
 ) {
+	ignore_unused_variable_warning(curtime);
 	Game_window *gwin = Game_window::get_instance();
 	if (start) {
 		start = false;
@@ -1447,6 +1453,7 @@ void Snowstorm_effect::handle_event(
     unsigned long curtime,      // Current time of day.
     long udata
 ) {
+	ignore_unused_variable_warning(curtime);
 	Game_window *gwin = Game_window::get_instance();
 	if (start) {
 		start = false;
@@ -1477,6 +1484,7 @@ void Sparkle_effect::handle_event(
     unsigned long curtime,      // Current time of day.
     long udata
 ) {
+	ignore_unused_variable_warning(curtime);
 	Game_window *gwin = Game_window::get_instance();
 	if (start) {
 		start = false;

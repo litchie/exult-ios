@@ -49,6 +49,7 @@
 #include "exceptions.h"
 #include "ready.h"
 #include "data_utils.h"
+#include "ignore_unused_variable_warning.h"
 
 using std::ifstream;
 using std::ios;
@@ -342,6 +343,7 @@ void Animation_info::write(
     int shapenum,       // Shape number.
     Exult_Game game     // Writing BG file.
 ) {
+	ignore_unused_variable_warning(game);
 	out << ":";
 	WriteInt(out, shapenum);
 	WriteInt(out, type);
@@ -363,6 +365,7 @@ void Body_info::write(
     int shapenum,       // Shape number.
     Exult_Game game     // Writing BG file.
 ) {
+	ignore_unused_variable_warning(game);
 	out << ":";
 	WriteInt(out, shapenum);
 	WriteInt(out, bshape);
@@ -374,6 +377,7 @@ void Frame_name_info::write(
     int shapenum,       // Shape number.
     Exult_Game game     // Writing BG file.
 ) {
+	ignore_unused_variable_warning(game);
 	out << ":";
 	WriteInt(out, shapenum);
 	WriteInt(out, frame < 0 ? -1 : (frame & 0xff));
@@ -393,6 +397,7 @@ void Frame_flags_info::write(
     int shapenum,       // Shape number.
     Exult_Game game     // Writing BG file.
 ) {
+	ignore_unused_variable_warning(game);
 	out << ":";
 	WriteInt(out, shapenum);
 	WriteInt(out, frame < 0 ? -1 : (frame & 0xff));
@@ -412,6 +417,7 @@ void Frame_usecode_info::write(
     int shapenum,       // Shape number.
     Exult_Game game     // Writing BG file.
 ) {
+	ignore_unused_variable_warning(game);
 	out << ":";
 	WriteInt(out, shapenum);
 	WriteInt(out, frame < 0 ? -1 : (frame & 0xff));
@@ -434,6 +440,7 @@ void Effective_hp_info::write(
     int shapenum,       // Shape number.
     Exult_Game game     // Writing BG file.
 ) {
+	ignore_unused_variable_warning(game);
 	out << ":";
 	WriteInt(out, shapenum);
 	WriteInt(out, frame < 0 ? -1 : (frame & 0xff));
@@ -446,6 +453,7 @@ void Warmth_info::write(
     int shapenum,       // Shape number.
     Exult_Game game     // Writing BG file.
 ) {
+	ignore_unused_variable_warning(game);
 	out << ":";
 	WriteInt(out, shapenum);
 	WriteInt(out, frame < 0 ? -1 : (frame & 0xff));
@@ -457,6 +465,7 @@ void Content_rules::write(
     int shapenum,       // Shape number.
     Exult_Game game     // Writing BG file.
 ) {
+	ignore_unused_variable_warning(game);
 	out << ":";
 	WriteInt(out, shapenum);
 	WriteInt(out, shape < 0 ? -1 : shape);
@@ -468,6 +477,7 @@ void Paperdoll_npc::write(
     int shapenum,       // Shape number.
     Exult_Game game     // Writing BG file.
 ) {
+	ignore_unused_variable_warning(game);
 	out << ":";
 	WriteInt(out, shapenum);
 	WriteInt(out, is_female);
@@ -488,6 +498,7 @@ void Paperdoll_item::write(
     int shapenum,       // Shape number.
     Exult_Game game     // Writing BG file.
 ) {
+	ignore_unused_variable_warning(game);
 	out << ":";
 	WriteInt(out, shapenum);
 	WriteInt(out, world_frame < 0 ? -1 : world_frame);
@@ -514,6 +525,7 @@ void Explosion_info::write(
     int shapenum,       // Shape number.
     Exult_Game game     // Writing BG file.
 ) {
+	ignore_unused_variable_warning(game);
 	out << ":";
 	WriteInt(out, shapenum);
 	WriteInt(out, sprite, sfxnum < 0);
@@ -526,6 +538,7 @@ void SFX_info::write(
     int shapenum,       // Shape number.
     Exult_Game game     // Writing BG file.
 ) {
+	ignore_unused_variable_warning(game);
 	out << ":";
 	WriteInt(out, shapenum);
 	WriteInt(out, sfxnum);
@@ -582,6 +595,7 @@ void Ammo_info::write(
     int shapenum,       // Shape number.
     Exult_Game game     // Writing BG file.
 ) {
+	ignore_unused_variable_warning(game);
 	uint8 buf[13];          // Entry length.
 	uint8 *ptr = buf;
 	Write2(ptr, shapenum);
@@ -608,6 +622,7 @@ void Armor_info::write(
     int shapenum,       // Shape number.
     Exult_Game game     // Writing BG file.
 ) {
+	ignore_unused_variable_warning(game);
 	uint8 buf[10];          // Entry length.
 	uint8 *ptr = buf;
 	Write2(ptr, shapenum);

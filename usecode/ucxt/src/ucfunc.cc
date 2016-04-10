@@ -32,6 +32,7 @@
 #include <iomanip>
 #include "files/utils.h"
 #include "usecode/ucsymtbl.h"
+#include "headers/ignore_unused_variable_warning.h"
 
 #include "ops.h"
 
@@ -173,6 +174,7 @@ bool UCFunc::output_ucs(ostream &o, const FuncMap &funcmap, const map<unsigned i
 ostream &UCFunc::output_ucs_funcname(ostream &o, const FuncMap &funcmap,
                                      unsigned int funcid, unsigned int numargs,
                                      Usecode_symbol_table *symtbl) {
+	ignore_unused_variable_warning(symtbl);
 	FuncMap::const_iterator fmp = funcmap.find(funcid);
 	// do we return a variable
 	if (fmp->second.return_var) o << VARNAME << ' ';
@@ -575,7 +577,7 @@ vector<UCc *> UCFunc::parse_ucs_pass2a(vector<pair<UCc *, bool> >::reverse_itera
 
 /* The 'optimisation' phase. Attempting to remove as many goto...labels as possible. */
 void UCFunc::parse_ucs_pass3(vector<GotoSet> &gotoset, const map<unsigned int, string> &intrinsics) {
-
+	ignore_unused_variable_warning(gotoset, intrinsics);
 }
 
 bool UCFunc::output_tt(std::ostream &o) {
@@ -1301,6 +1303,6 @@ void readbin_U7UCFunc(
 }
 
 void readbin_U8UCFunc(ifstream &f, UCFunc &ucf) {
-
+	ignore_unused_variable_warning(f, ucf);
 }
 

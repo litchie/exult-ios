@@ -31,6 +31,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "exult_constants.h"
 #include "utils.h"
 #include "execbox.h"
+#include "ignore_unused_variable_warning.h"
 
 using std::cout;
 using std::endl;
@@ -43,6 +44,7 @@ C_EXPORT void on_compile_btn_clicked(
     GtkButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(btn, user_data);
 	ExultStudio::get_instance()->compile();
 }
 
@@ -53,6 +55,7 @@ C_EXPORT void on_halt_compile_btn_clicked(
     GtkButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(btn, user_data);
 	ExultStudio::get_instance()->halt_compile();
 }
 
@@ -65,6 +68,7 @@ void Ucc_done(
     Exec_box *box,          // Box that called this.
     gpointer user_data      // Not used.
 ) {
+	ignore_unused_variable_warning(user_data);
 	if (exit_code == 0) {   // Success?
 		ExultStudio::get_instance()->reload_usecode();
 		box->add_message("Reloaded usecode\n");

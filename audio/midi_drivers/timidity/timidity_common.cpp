@@ -42,6 +42,7 @@ static char *strerror(int _errno)
 #include "timidity_common.h"
 #include "timidity_output.h"
 #include "timidity_controls.h"
+#include "ignore_unused_variable_warning.h"
 
 #ifdef NS_TIMIDITY
 namespace NS_TIMIDITY
@@ -65,6 +66,7 @@ static PathList *pathlist=0;
  defined compressor extensions, pipe the file through the decompressor */
 static FILE *try_to_open(char *name, int decompress, int noise_mode)
 {
+	ignore_unused_variable_warning(decompress, noise_mode);
 	FILE *fp;
 
 	fp=fopen(name, OPEN_MODE); /* First just check that the file exists */

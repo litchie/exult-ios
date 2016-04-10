@@ -29,6 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string>
 #include <map>
 #include "ucloc.h"
+#include "ignore_unused_variable_warning.h"
 
 class Uc_expression;
 class Uc_call_expression;
@@ -372,6 +373,7 @@ public:
 	                      Basic_block *&curr, Basic_block *end,
 	                      std::map<std::string, Basic_block *> &labels,
 	                      Basic_block *case_block = 0) {
+		ignore_unused_variable_warning(fun, blocks, curr, end, labels, case_block);
 		return 1;
 	}
 };
