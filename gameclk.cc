@@ -300,7 +300,7 @@ void Game_clock::increment(
 
 void Game_clock::handle_event(
     unsigned long curtime,      // Current time of day.
-    long udata          // ->game window.
+    uintptr udata          // ->game window.
 ) {
 	Game_window *gwin = reinterpret_cast<Game_window *>(udata);
 

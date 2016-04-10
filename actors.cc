@@ -1286,7 +1286,7 @@ void Actor::start(
 			gwin->get_tqueue()->remove(this);
 		uint32 curtime = Game::get_ticks();
 		gwin->get_tqueue()->add(curtime + delay, this,
-		                        reinterpret_cast<long>(gwin));
+		                        reinterpret_cast<uintptr>(gwin));
 	}
 }
 
@@ -2176,7 +2176,7 @@ bool Actor::edit(
 	        cheat.in_map_editor()) {
 		editing = 0;
 		Tile_coord t = get_tile();
-		unsigned long addr = reinterpret_cast<unsigned long>(this);
+		uintptr addr = reinterpret_cast<uintptr>(this);
 		int num_schedules;  // Set up schedule-change list.
 		Schedule_change *changes;
 		get_schedules(changes, num_schedules);
@@ -2213,7 +2213,7 @@ void Actor::update_from_studio(
     int datalen
 ) {
 #ifdef USE_EXULTSTUDIO
-	unsigned long addr;
+	uintptr addr;
 	int tx, ty, tz;
 	int shape, frame, face;
 	std::string name;
@@ -2468,10 +2468,10 @@ class Clear_casting : public Time_sensitive {
 public:
 	Clear_casting()
 	{  }
-	virtual void handle_event(unsigned long curtime, long udata);
+	virtual void handle_event(unsigned long curtime, uintptr udata);
 };
 
-void Clear_casting::handle_event(unsigned long curtime, long udata) {
+void Clear_casting::handle_event(unsigned long curtime, uintptr udata) {
 	ignore_unused_variable_warning(curtime);
 	Actor *a = reinterpret_cast<Actor *>(udata);
 	a->add_dirty();
@@ -2483,7 +2483,7 @@ void Clear_casting::handle_event(unsigned long curtime, long udata) {
 void Actor::end_casting_mode(int delay) {
 	Clear_casting *c = new Clear_casting();
 	gwin->get_tqueue()->add(Game::get_ticks() + 2 * delay, c,
-	                        reinterpret_cast<long>(this));
+	                        reinterpret_cast<uintptr>(this));
 }
 
 /*
@@ -2493,10 +2493,10 @@ class Clear_hit : public Time_sensitive {
 public:
 	Clear_hit()
 	{  }
-	virtual void handle_event(unsigned long curtime, long udata);
+	virtual void handle_event(unsigned long curtime, uintptr udata);
 };
 
-void Clear_hit::handle_event(unsigned long curtime, long udata) {
+void Clear_hit::handle_event(unsigned long curtime, uintptr udata) {
 	ignore_unused_variable_warning(curtime);
 	Actor *a = reinterpret_cast<Actor *>(udata);
 	a->hit = false;
@@ -2684,7 +2684,7 @@ int Actor::apply_damage(
 		add_dirty();
 		Clear_hit *c = new Clear_hit();
 		gwin->get_tqueue()->add(Game::get_ticks() + 200, c,
-		                        reinterpret_cast<long>(this));
+		                        reinterpret_cast<uintptr>(this));
 		// Attack back.
 		fight_back(attacker);
 		return 0;   // No damage == no powers (usually).
@@ -2751,7 +2751,7 @@ int Actor::reduce_health(
 		add_dirty();
 		Clear_hit *c = new Clear_hit();
 		gwin->get_tqueue()->add(Game::get_ticks() + 200, c,
-		                        reinterpret_cast<long>(this));
+		                        reinterpret_cast<uintptr>(this));
 	}
 	if (oldhp >= maxhp / 2 && val < maxhp / 2 && rand() % 2 != 0) {
 		// A little oomph.
@@ -4359,7 +4359,7 @@ bool Actor::is_really_blocked(
 
 void Main_actor::handle_event(
     unsigned long curtime,      // Current time of day.
-    long udata          // Ignored.
+    uintptr udata          // Ignored.
 ) {
 	purge_deleted_actions();
 	if (action) {       // Doing anything?
@@ -4919,7 +4919,7 @@ void Npc_actor::paint(
 		// Force schedule->now_what() in .5secs
 		// DO NOT call now_what here!!!
 		uint32 curtime = Game::get_ticks();
-		gwin->get_tqueue()->add(curtime + 500, this, reinterpret_cast<long>(gwin));
+		gwin->get_tqueue()->add(curtime + 500, this, reinterpret_cast<uintptr>(gwin));
 	}
 	if (!nearby)            // Make sure we're in 'nearby' list.
 		gwin->add_nearby_npc(this);
@@ -4959,7 +4959,7 @@ void Npc_actor::activate(
 
 void Npc_actor::handle_event(
     unsigned long curtime,      // Current time of day.
-    long udata          // Ignored.
+    uintptr udata          // Ignored.
 ) {
 	purge_deleted_actions();
 	if ((cheat.in_map_editor() && party_id < 0) ||

@@ -29,7 +29,7 @@
 #  include <iosfwd>
 #endif
 
-#include "exult_types.h"
+#include "common_types.h"
 
 class Actor;
 class Barge_object;

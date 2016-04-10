@@ -32,7 +32,7 @@
 #include <cstring>
 #include <cstdlib>
 
-#include "exult_types.h"
+#include "common_types.h"
 #include "utils.h"
 #include "ignore_unused_variable_warning.h"
 

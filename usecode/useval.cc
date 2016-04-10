@@ -365,7 +365,7 @@ void Usecode_value::print(
 		break;
 	case pointer_type:
 		out << hex << setfill('0') << setw(8);
-		out << reinterpret_cast<long>(value.ptr);
+		out << reinterpret_cast<uintptr>(value.ptr);
 		out << dec;
 		break;
 	case string_type:

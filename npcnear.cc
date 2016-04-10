@@ -60,7 +60,7 @@ void Npc_proximity_handler::add(
 		msecs = (rand() % 4000) + 2000;
 	unsigned long newtime = curtime + msecs;
 	newtime += 1000 * additional_secs;
-	gwin->get_tqueue()->add(newtime, this, reinterpret_cast<long>(npc));
+	gwin->get_tqueue()->add(newtime, this, reinterpret_cast<uintptr>(npc));
 }
 
 /*
@@ -71,7 +71,7 @@ void Npc_proximity_handler::remove(
     Npc_actor *npc
 ) {
 	npc->clear_nearby();
-	gwin->get_tqueue()->remove(this, reinterpret_cast<long>(npc));
+	gwin->get_tqueue()->remove(this, reinterpret_cast<uintptr>(npc));
 }
 
 /*
@@ -96,7 +96,7 @@ bool Bg_dont_wake(
 
 void Npc_proximity_handler::handle_event(
     unsigned long curtime,
-    long udata
+    uintptr udata
 ) {
 	Npc_actor *npc = reinterpret_cast<Npc_actor *>(udata);
 	int extra_delay = 5;        // For next time.
@@ -182,7 +182,7 @@ void Npc_proximity_handler::get_all(
 ) {
 	Time_queue_iterator next(gwin->get_tqueue(), this);
 	Time_sensitive *obj;
-	long data;          // NPC is the data.
+	uintptr data;          // NPC is the data.
 	while (next(obj, data))
 		alist.push_back(reinterpret_cast<Npc_actor *>(data));
 }

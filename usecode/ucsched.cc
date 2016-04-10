@@ -133,7 +133,7 @@ void Usecode_script::start(
 //++++ Messes up Moonshade Trial.
 //	gwin->get_tqueue()->add(d + Game::get_ticks(), this,
 	gwin->get_tqueue()->add(d + SDL_GetTicks(), this,
-	                        reinterpret_cast<long>(gwin->get_usecode()));
+	                        reinterpret_cast<uintptr>(gwin->get_usecode()));
 }
 
 /*
@@ -280,7 +280,7 @@ inline void Usecode_script::activate_egg(Usecode_internal *usecode,
 
 void Usecode_script::handle_event(
     unsigned long curtime,      // Current time of day.
-    long udata          // ->usecode machine.
+    uintptr udata          // ->usecode machine.
 ) {
 	Actor *act = obj->as_actor();
 	if (act && act->get_casting_mode() == Actor::init_casting)

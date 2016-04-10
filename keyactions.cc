@@ -29,7 +29,7 @@
 #include "actors.h"
 #include "game.h"
 #include "exult.h"
-#include "exult_types.h"
+#include "common_types.h"
 #include "exult_constants.h"
 #include "File_gump.h"
 #include "Scroll_gump.h"

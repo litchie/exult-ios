@@ -104,7 +104,7 @@ public:
 		return this;
 	}
 	// For Time_sensitive:
-	virtual void handle_event(unsigned long curtime, long udata);
+	virtual void handle_event(unsigned long curtime, uintptr udata);
 	// Move to new abs. location.
 	virtual void move(int newtx, int newty, int newlift, int newmap = -1);
 	// Remove an object.

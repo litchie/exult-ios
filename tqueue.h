@@ -25,7 +25,7 @@
 #include <vector>
 #include <list>
 
-#include "exult_types.h"
+#include "common_types.h"
 
 
 
@@ -52,7 +52,7 @@ public:
 	{
 		always = tf;
 	}
-	virtual void handle_event(unsigned long curtime, long udata) = 0;
+	virtual void handle_event(unsigned long curtime, uintptr udata) = 0;
 };
 
 class Time_queue;
@@ -63,9 +63,9 @@ class Time_queue;
 struct Queue_entry {
 	// Queue_entry *next, *prev;    // Next, prev. in queue.
 	Time_sensitive *handler;    // Object to activate.
-	long udata;         // Data to pass to handler.
+	uintptr udata;         // Data to pass to handler.
 	uint32 time;            // Time when this is due.
-	inline void set(uint32 t, Time_sensitive *h, long ud) {
+	inline void set(uint32 t, Time_sensitive *h, uintptr ud) {
 		time = t;
 		handler = h;
 		udata = ud;
@@ -94,10 +94,10 @@ public:
 	{  }
 	void clear();           // Remove all entries.
 	// Add an entry.
-	void add(uint32 t, Time_sensitive *obj, long ud);
+	void add(uint32 t, Time_sensitive *obj, uintptr ud);
 	// Remove object's entry.
 	int remove(Time_sensitive *obj);
-	int remove(Time_sensitive *obj, long udata);
+	int remove(Time_sensitive *obj, uintptr udata);
 	int find(Time_sensitive const *obj) const;  // Find an entry.
 	// Find delay when obj. is due.
 	long find_delay(Time_sensitive const *obj, uint32 curtime) const;
@@ -125,7 +125,7 @@ public:
 	Time_queue_iterator(Time_queue *tq, Time_sensitive *obj)
 		: iter(tq->data.begin()), tqueue(tq), this_obj(obj)
 	{  }
-	int operator()(Time_sensitive  *&obj, long &data);
+	int operator()(Time_sensitive  *&obj, uintptr &data);
 };
 
 #endif  /* TQUEUE_H */

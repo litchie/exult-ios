@@ -21,7 +21,7 @@
 #ifndef _STACKFRAME_H
 #define _STACKFRAME_H
 
-#include "exult_types.h"
+#include "common_types.h"
 #include <iosfwd>
 
 class Usecode_function;

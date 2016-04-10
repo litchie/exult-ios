@@ -2301,7 +2301,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\exult_types.h"
+				RelativePath="..\headers\common_types.h"
 				>
 			</File>
 			<File

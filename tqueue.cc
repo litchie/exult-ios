@@ -62,7 +62,7 @@ void Time_queue::clear(
 void Time_queue::add(
     uint32 t,       // When entry is to be activated.
     Time_sensitive *obj,        // Object to be added.
-    long ud             // User data.
+    uintptr ud             // User data.
 ) {
 	obj->queue_cnt++;       // It's going in, no matter what.
 	Queue_entry newent;
@@ -120,7 +120,7 @@ int Time_queue::remove(
 
 int Time_queue::remove(
     Time_sensitive *obj,
-    long udata
+    uintptr udata
 ) {
 	if (data.empty())
 		return 0;
@@ -192,7 +192,7 @@ void Time_queue::activate0(
 	do {
 		ent = data.front();
 		Time_sensitive *obj = ent.handler;
-		long udata = ent.udata;
+		uintptr udata = ent.udata;
 		data.pop_front();   // Remove from chain.
 		obj->queue_cnt--;
 		obj->handle_event(curtime, udata);
@@ -218,7 +218,7 @@ void Time_queue::activate_always(
 		Time_sensitive *obj = ent.handler;
 		if (obj->always) {
 			obj->queue_cnt--;
-			long udata = ent.udata;
+			uintptr udata = ent.udata;
 			data.erase(it);
 			obj->handle_event(curtime, udata);
 		}
@@ -252,7 +252,7 @@ void Time_queue::resume(
 
 int Time_queue_iterator::operator()(
     Time_sensitive  *&obj,      // Main object.
-    long &data          // Data that was added with it.
+    uintptr &data          // Data that was added with it.
 ) {
 	while (iter != tqueue->data.end() && this_obj &&
 	        (*iter).handler != this_obj)

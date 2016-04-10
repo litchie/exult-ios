@@ -61,7 +61,7 @@ public:
 	}
 	virtual ~Npc_hunger_timer();
 	// Handle events:
-	void handle_event(unsigned long curtime, long udata);
+	void handle_event(unsigned long curtime, uintptr udata);
 };
 
 /*
@@ -73,7 +73,7 @@ public:
 	Npc_poison_timer(Npc_timer_list *l);
 	virtual ~Npc_poison_timer();
 	// Handle events:
-	void handle_event(unsigned long curtime, long udata);
+	void handle_event(unsigned long curtime, uintptr udata);
 };
 
 /*
@@ -90,7 +90,7 @@ public:
 		list->sleep = 0;
 	}
 	// Handle events:
-	void handle_event(unsigned long curtime, long udata);
+	void handle_event(unsigned long curtime, uintptr udata);
 };
 
 /*
@@ -107,7 +107,7 @@ public:
 		list->invisibility = 0;
 	}
 	// Handle events:
-	void handle_event(unsigned long curtime, long udata);
+	void handle_event(unsigned long curtime, uintptr udata);
 };
 
 /*
@@ -124,7 +124,7 @@ public:
 		list->protection = 0;
 	}
 	// Handle events:
-	void handle_event(unsigned long curtime, long udata);
+	void handle_event(unsigned long curtime, uintptr udata);
 };
 
 /*
@@ -144,7 +144,7 @@ public:
 		*listloc = 0;
 	}
 	// Handle events:
-	void handle_event(unsigned long curtime, long udata);
+	void handle_event(unsigned long curtime, uintptr udata);
 };
 
 
@@ -303,7 +303,7 @@ Npc_hunger_timer::~Npc_hunger_timer(
 
 void Npc_hunger_timer::handle_event(
     unsigned long curtime,
-    long udata
+    uintptr udata
 ) {
 	ignore_unused_variable_warning(udata);
 	Actor *npc = list->npc;
@@ -356,7 +356,7 @@ Npc_poison_timer::~Npc_poison_timer(
 
 void Npc_poison_timer::handle_event(
     unsigned long curtime,
-    long udata
+    uintptr udata
 ) {
 	ignore_unused_variable_warning(udata);
 	Actor *npc = list->npc;
@@ -382,7 +382,7 @@ void Npc_poison_timer::handle_event(
 
 void Npc_sleep_timer::handle_event(
     unsigned long curtime,
-    long udata
+    uintptr udata
 ) {
 	ignore_unused_variable_warning(udata);
 	Actor *npc = list->npc;
@@ -450,7 +450,7 @@ inline int Wearing_ring(
 
 void Npc_invisibility_timer::handle_event(
     unsigned long curtime,
-    long udata
+    uintptr udata
 ) {
 	ignore_unused_variable_warning(udata);
 	Actor *npc = list->npc;
@@ -477,7 +477,7 @@ void Npc_invisibility_timer::handle_event(
 
 void Npc_protection_timer::handle_event(
     unsigned long curtime,
-    long udata
+    uintptr udata
 ) {
 	ignore_unused_variable_warning(udata);
 	Actor *npc = list->npc;
@@ -504,7 +504,7 @@ void Npc_protection_timer::handle_event(
 
 void Npc_flag_timer::handle_event(
     unsigned long curtime,
-    long udata
+    uintptr udata
 ) {
 	ignore_unused_variable_warning(udata);
 	Actor *npc = list->npc;

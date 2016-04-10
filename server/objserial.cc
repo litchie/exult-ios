@@ -72,7 +72,7 @@ Serial_in &Serial_in::operator<<(
 template <class Serial>
 void Common_obj_io(
     Serial &io,
-    unsigned long &addr,        // Address.
+    uintptr &addr,        // Address.
     int &tx, int &ty, int &tz,  // Absolute tile coords.
     int &shape, int &frame
 ) {
@@ -88,7 +88,7 @@ void Common_obj_io(
 template <class Serial>
 void Object_io(
     Serial &io,         // Where to store data.
-    unsigned long &addr,        // Address.
+    uintptr &addr,        // Address.
     int &tx, int &ty, int &tz,  // Absolute tile coords.
     int &shape, int &frame,
     int &quality,
@@ -107,7 +107,7 @@ void Object_io(
 template <class Serial>
 void Container_io(
     Serial &io,         // Where to store data.
-    unsigned long &addr,        // Address.
+    uintptr &addr,        // Address.
     int &tx, int &ty, int &tz,      // Absolute tile coords.
     int &shape, int &frame,
     int &quality,
@@ -128,7 +128,7 @@ void Container_io(
 template <class Serial>
 void Barge_object_io(
     Serial &io,         // Where to store data.
-    unsigned long &addr,        // Address.
+    uintptr &addr,        // Address.
     int &tx, int &ty, int &tz,  // Absolute tile coords.
     int &shape, int &frame,
     int &xtiles,
@@ -148,7 +148,7 @@ void Barge_object_io(
 template <class Serial>
 void Egg_object_io(
     Serial &io,         // Where to store data.
-    unsigned long &addr,        // Address.
+    uintptr &addr,        // Address.
     int &tx, int &ty, int &tz,  // Absolute tile coords.
     int &shape, int &frame,
     int &type,
@@ -177,7 +177,7 @@ void Egg_object_io(
 template <class Serial>
 static void Npc_actor_io(
     Serial &io,         // Where to store data.
-    unsigned long &addr,        // Address.
+    uintptr &addr,        // Address.
     int &tx, int &ty, int &tz,  // Absolute tile coords.
     int &shape, int &frame, int &face,
     std::string &name,
@@ -216,7 +216,7 @@ static void Npc_actor_io(
 int Object_out(
     int fd,             // Socket.
     Exult_server::Msg_type id,  // Message id.
-    unsigned long addr,     // Address.
+    uintptr addr,     // Address.
     int tx, int ty, int tz,     // Absolute tile coords.
     int shape, int frame,
     int quality,
@@ -239,7 +239,7 @@ int Object_out(
 int Object_in(
     unsigned char *data,        // Data that was read.
     int datalen,            // Length of data.
-    unsigned long &addr,        // Address.
+    uintptr &addr,        // Address.
     int &tx, int &ty, int &tz,  // Absolute tile coords.
     int &shape, int &frame,
     int &quality,
@@ -260,7 +260,7 @@ int Object_in(
 
 int Container_out(
     int fd,             // Socket.
-    unsigned long addr,     // Address.
+    uintptr addr,     // Address.
     int tx, int ty, int tz,     // Absolute tile coords.
     int shape, int frame,
     int quality,
@@ -285,7 +285,7 @@ int Container_out(
 int Container_in(
     unsigned char *data,        // Data that was read.
     int datalen,            // Length of data.
-    unsigned long &addr,        // Address.
+    uintptr &addr,        // Address.
     int &tx, int &ty, int &tz,      // Absolute tile coords.
     int &shape, int &frame,
     int &quality,
@@ -308,7 +308,7 @@ int Container_in(
 
 int Barge_object_out(
     int fd,             // Socket.
-    unsigned long addr,     // Address.
+    uintptr addr,     // Address.
     int tx, int ty, int tz, // Absolute tile coords.
     int shape, int frame,
     int xtiles,
@@ -332,7 +332,7 @@ int Barge_object_out(
 int Barge_object_in(
     unsigned char *data,        // Data that was read.
     int datalen,            // Length of data.
-    unsigned long &addr,        // Address.
+    uintptr &addr,        // Address.
     int &tx, int &ty, int &tz,  // Absolute tile coords.
     int &shape, int &frame,
     int &xtiles,
@@ -354,7 +354,7 @@ int Barge_object_in(
 
 int Egg_object_out(
     int fd,             // Socket.
-    unsigned long addr,     // Address.
+    uintptr addr,     // Address.
     int tx, int ty, int tz, // Absolute tile coords.
     int shape, int frame,
     int type,
@@ -387,7 +387,7 @@ int Egg_object_out(
 int Egg_object_in(
     unsigned char *data,        // Data that was read.
     int datalen,            // Length of data.
-    unsigned long &addr,        // Address.
+    uintptr &addr,        // Address.
     int &tx, int &ty, int &tz,  // Absolute tile coords.
     int &shape, int &frame,
     int &type,
@@ -418,7 +418,7 @@ int Egg_object_in(
 
 int Npc_actor_out(
     int fd,             // Socket.
-    unsigned long addr,     // Address.
+    uintptr addr,     // Address.
     int tx, int ty, int tz,     // Absolute tile coords.
     int shape, int frame, int face,
     std::string name,
@@ -455,7 +455,7 @@ int Npc_actor_out(
 int Npc_actor_in(
     unsigned char *data,        // Data that was read.
     int datalen,            // Length of data.
-    unsigned long &addr,        // Address.
+    uintptr &addr,        // Address.
     int &tx, int &ty, int &tz,  // Absolute tile coords.
     int &shape, int &frame, int &face,
     std::string &name,

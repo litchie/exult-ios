@@ -34,7 +34,7 @@ Boston, MA  02111-1307, USA.
 #include "SDL_video.h"
 #include "sdl-compat.h"
 #include "iwin8.h"
-#include "exult_types.h"
+#include "common_types.h"
 #include "gamma.h"
 #include <limits.h>
 #ifdef HAVE_OPENGL

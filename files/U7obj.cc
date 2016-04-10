@@ -83,7 +83,7 @@ U7multiobject::U7multiobject(
     const File_spec &file0,
     int objnum
 )
-	: U7object(file0, objnum), buffer(0), length(-1) {
+	: U7object(file0, objnum), buffer(0), length(0) {
 	size_t len;
 	char *buf = U7object::retrieve(len);
 	// Only len > 0 means a valid object.
@@ -105,7 +105,7 @@ U7multiobject::U7multiobject(
     const File_spec &file1,
     int objnum
 )
-	: U7object(file0, objnum), buffer(0), length(-1) {
+	: U7object(file0, objnum), buffer(0), length(0) {
 	std::vector<U7object> objects;
 	objects.push_back(U7object(file1, objnum));
 	objects.push_back(U7object(file0, objnum));
@@ -125,7 +125,7 @@ U7multiobject::U7multiobject(
     const File_spec &file2,
     int objnum
 )
-	: U7object(file0, objnum), buffer(0), length(-1) {
+	: U7object(file0, objnum), buffer(0), length(0) {
 	std::vector<U7object> objects;
 	objects.push_back(U7object(file2, objnum));
 	objects.push_back(U7object(file1, objnum));
@@ -148,7 +148,7 @@ U7multiobject::U7multiobject(
     const File_spec &file3,
     int objnum
 )
-	: U7object(file0, objnum), buffer(0), length(-1) {
+	: U7object(file0, objnum), buffer(0), length(0) {
 	std::vector<U7object> objects;
 	objects.push_back(U7object(file3, objnum));
 	objects.push_back(U7object(file2, objnum));
@@ -166,7 +166,7 @@ U7multiobject::U7multiobject(
     const std::vector<File_spec> &files,
     int objnum
 )
-	: U7object("", objnum), buffer(0), length(-1) {
+	: U7object("", objnum), buffer(0), length(0) {
 	if (files.size()) {
 		identifier = files[0];
 		std::vector<U7object> objects;
@@ -185,12 +185,11 @@ U7multiobject::U7multiobject(
  *  the object or null on any failure.
  */
 char *U7multiobject::retrieve(size_t &len) const {
-	if (length <= 0) {
+	len = length;
+	if (length == 0) {
 		// This means we didn't find the object on construction.
-		len = 0;
 		return 0;
 	} else {
-		len = length;
 		char *buf = new char[len];
 		std::copy(buffer, buffer + len, buf);
 		return buf;

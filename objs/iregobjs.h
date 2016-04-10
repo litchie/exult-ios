@@ -22,7 +22,7 @@
 #ifndef IREGOBJS_H
 #define IREGOBJS_H  1
 
-#include "exult_types.h"
+#include "common_types.h"
 #include "objs.h"
 
 /*

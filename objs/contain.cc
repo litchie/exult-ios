@@ -435,7 +435,7 @@ bool Container_game_object::edit(
 	        cheat.in_map_editor()) {
 		editing = 0;
 		Tile_coord t = get_tile();
-		unsigned long addr = reinterpret_cast<unsigned long>(this);
+		uintptr addr = reinterpret_cast<uintptr>(this);
 		std::string name = get_name();
 		if (Container_out(client_socket, addr, t.tx, t.ty, t.tz,
 		                  get_shapenum(), get_framenum(), get_quality(), name,
@@ -461,7 +461,7 @@ void Container_game_object::update_from_studio(
     int datalen
 ) {
 #ifdef USE_EXULTSTUDIO
-	unsigned long addr;
+	uintptr addr;
 	int tx, ty, tz;
 	int shape, frame, quality;
 	unsigned char res;

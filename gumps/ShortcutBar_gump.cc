@@ -395,7 +395,7 @@ static Uint32 didMouseUp(Uint32 interval, void *param)
  */
 void ShortcutBar_gump::onUserEvent(SDL_Event *event)
 {
-	switch ((intptr_t)(event->user.data2)) {
+	switch ((uintptr)(event->user.data2)) {
 		case DID_MOUSE_UP:
 			if (lastClickedButton >= 0 && lastClickedButton < numButtons) {
 				onItemClicked(lastClickedButton, false);

@@ -242,7 +242,7 @@ int ExultStudio::init_egg_window(
     unsigned char *data,
     int datalen
 ) {
-	unsigned long addr;
+	uintptr addr;
 	int tx, ty, tz;
 	int shape, frame;
 	int type;
@@ -382,8 +382,8 @@ int ExultStudio::save_egg_window(
 ) {
 	cout << "In save_egg_window()" << endl;
 	// Get egg (null if creating new).
-	unsigned long addr = (unsigned long) gtk_object_get_user_data(
-	                         GTK_OBJECT(eggwin));
+	uintptr addr = reinterpret_cast<uintptr>(gtk_object_get_user_data(
+	                         GTK_OBJECT(eggwin)));
 	int tx = -1, ty = -1, tz = -1;  // +++++For now.
 	int shape = -1, frame = -1; // For now.
 	int type = -1;

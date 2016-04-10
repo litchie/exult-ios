@@ -25,7 +25,7 @@
 #include <string>   // STL string
 #include <set>
 #include "exult_constants.h"
-#include "exult_types.h"
+#include "common_types.h"
 #include "flags.h"
 #include "rect.h"
 #include "shapeid.h"

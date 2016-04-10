@@ -467,7 +467,7 @@ static void Handle_client_message(
 	}
 	case Exult_server::cont_show_gump: {
 		Serial_in io(ptr);
-		unsigned long addr;
+		uintptr addr;
 		io << addr;
 		Game_object *p = reinterpret_cast<Game_object *>(addr);
 		Container_game_object *obj = dynamic_cast<Container_game_object *>(p);

@@ -384,7 +384,7 @@ inline void Sprites_effect::add_dirty(
 
 void Sprites_effect::handle_event(
     unsigned long curtime,      // Current time of day.
-    long udata
+    uintptr udata
 ) {
 	int frame_num = sprite.get_framenum();
 	Game_window *gwin = Game_window::get_instance();
@@ -473,7 +473,7 @@ Explosion_effect::Explosion_effect(
 
 void Explosion_effect::handle_event(
     unsigned long curtime,      // Current time of day.
-    long udata
+    uintptr udata
 ) {
 	int frnum = sprite.get_framenum();
 	if (!frnum) {       // Max. volume, with stereo position.
@@ -704,7 +704,7 @@ inline Game_object *Find_target(
 
 void Projectile_effect::handle_event(
     unsigned long curtime,      // Current time of day.
-    long udata
+    uintptr udata
 ) {
 	Game_window *gwin = Game_window::get_instance();
 	int delay = gwin->get_std_delay() / 2;
@@ -881,7 +881,7 @@ inline int Homing_projectile::add_dirty(
 
 void Homing_projectile::handle_event(
     unsigned long curtime,      // Current time of day.
-    long udata
+    uintptr udata
 ) {
 	Game_window *gwin = Game_window::get_instance();
 	int width = add_dirty();    // Repaint old area.
@@ -1060,7 +1060,7 @@ Text_effect::Text_effect(
 
 void Text_effect::handle_event(
     unsigned long curtime,      // Current time of day.
-    long udata          // Ignored.
+    uintptr udata          // Ignored.
 ) {
 	ignore_unused_variable_warning(curtime, udata);
 	Game_window *gwin = Game_window::get_instance();
@@ -1144,7 +1144,7 @@ Fog_effect::~Fog_effect() {
 	gclock->set_fog(false);
 }
 
-void Fog_effect::handle_event(unsigned long curtime, long udata) {
+void Fog_effect::handle_event(unsigned long curtime, uintptr udata) {
 	ignore_unused_variable_warning(curtime);
 	if (start) {
 		start = false;
@@ -1309,7 +1309,7 @@ public:
 	virtual void handle_event
 	(
 	    unsigned long curtime,      // Current time of day.
-	    long udata
+	    uintptr udata
 	) {
 		Game_window *gwin = Game_window::get_instance();
 
@@ -1369,7 +1369,7 @@ Lightning_effect::~Lightning_effect(
 
 void Lightning_effect::handle_event(
     unsigned long curtime,      // Current time of day.
-    long udata
+    uintptr udata
 ) {
 	Game_window *gwin = Game_window::get_instance();
 	int r = rand();         // Get a random #.
@@ -1420,7 +1420,7 @@ Storm_effect::Storm_effect(
  */
 void Storm_effect::handle_event(
     unsigned long curtime,      // Current time of day.
-    long udata
+    uintptr udata
 ) {
 	ignore_unused_variable_warning(curtime);
 	Game_window *gwin = Game_window::get_instance();
@@ -1451,7 +1451,7 @@ Snowstorm_effect::Snowstorm_effect(
  */
 void Snowstorm_effect::handle_event(
     unsigned long curtime,      // Current time of day.
-    long udata
+    uintptr udata
 ) {
 	ignore_unused_variable_warning(curtime);
 	Game_window *gwin = Game_window::get_instance();
@@ -1482,7 +1482,7 @@ Sparkle_effect::Sparkle_effect(
 
 void Sparkle_effect::handle_event(
     unsigned long curtime,      // Current time of day.
-    long udata
+    uintptr udata
 ) {
 	ignore_unused_variable_warning(curtime);
 	Game_window *gwin = Game_window::get_instance();
@@ -1643,7 +1643,7 @@ Clouds_effect::Clouds_effect(
 
 void Clouds_effect::handle_event(
     unsigned long curtime,      // Current time of day.
-    long udata
+    uintptr udata
 ) {
 	const int delay = 100;
 	Game_window *gwin = Game_window::get_instance();
@@ -1686,7 +1686,7 @@ Clouds_effect::~Clouds_effect() {
 
 void Earthquake::handle_event(
     unsigned long curtime,      // Current time of day.
-    long udata
+    uintptr udata
 ) {
 	static int eqsoundonce;
 
@@ -1750,7 +1750,7 @@ Fire_field_effect::Fire_field_effect(
 
 void Fire_field_effect::handle_event(
     unsigned long curtime,      // Current time of day.
-    long udata
+    uintptr udata
 ) {
 	int frnum = field->get_framenum();
 	if (frnum == 0) {       // All done?

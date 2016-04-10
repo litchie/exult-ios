@@ -142,7 +142,7 @@ public:
 	virtual ~Background_noise() {
 		gwin->get_tqueue()->remove(this);
 	}
-	virtual void handle_event(unsigned long curtime, long udata);
+	virtual void handle_event(unsigned long curtime, uintptr udata);
 	static bool is_combat_music(int num) {
 		// Lumping music 16 as if it were a combat music in order to simplify
 		// the check.
@@ -157,7 +157,7 @@ public:
 
 void Background_noise::handle_event(
     unsigned long curtime,
-    long udata
+    uintptr udata
 ) {
 #ifndef COLOURLESS_REALLY_HATES_THE_BG_SFX
 
@@ -627,7 +627,7 @@ void Game_window::init_files(bool cycle) {
 	unsigned long timer = SDL_GetTicks();
 	srand(timer);           // Use time to seed rand. generator.
 	// Force clock to start.
-	tqueue->add(timer, clock, reinterpret_cast<long>(this));
+	tqueue->add(timer, clock, reinterpret_cast<uintptr>(this));
 	// Go to starting chunk
 	scrolltx_lp = scrolltx_l = scrolltx = game->get_start_tile_x();
 	scrollty_lp = scrollty_l = scrollty = game->get_start_tile_y();
@@ -1471,7 +1471,7 @@ void Game_window::read_gwin(
 ) {
 	if (!clock->in_queue())     // Be sure clock is running.
 		tqueue->add(Game::get_ticks(), clock,
-		            reinterpret_cast<long>(this));
+		            reinterpret_cast<uintptr>(this));
 	ifstream gin_stream;
 	try {
 		U7open(gin_stream, GWINDAT);    // Gamewin.dat.

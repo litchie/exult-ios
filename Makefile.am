@@ -38,6 +38,7 @@ exult_SOURCES =	\
 	combat.cc	\
 	combat.h	\
 	combat_opts.h	\
+	common_types.h	\
 	delobjs.cc	\
 	delobjs.h	\
 	dir.cc		\
@@ -51,7 +52,6 @@ exult_SOURCES =	\
 	exulticon.h	\
 	exultmenu.cc	\
 	exultmenu.h	\
-	exult_types.h	\
 	exult_constants.h	\
 	fnames.h	\
 	frameseq.h	\

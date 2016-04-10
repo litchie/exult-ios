@@ -102,7 +102,7 @@ public:
 	void set_overcast(bool onoff);  // Start/end cloud cover.
 	void set_fog(bool onoff);   // Start/end cloud cover.
 	void increment(int num_minutes);// Increment clock.
-	virtual void handle_event(unsigned long curtime, long udata);
+	virtual void handle_event(unsigned long curtime, uintptr udata);
 	void fake_next_period();    // For debugging.
 	int get_time_rate() {
 		return time_rate;

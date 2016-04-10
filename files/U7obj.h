@@ -138,7 +138,7 @@ public:
 class U7multiobject : public U7object {
 protected:
 	char *buffer;
-	std::ptrdiff_t length;
+	size_t length;
 	void set_object(const std::vector<U7object> &objects);
 public:
 	U7multiobject(const File_spec &file0, int objnum);
