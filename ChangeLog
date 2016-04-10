@@ -1,4 +1,7 @@
 2016-04-09	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* usecode/intrinsics.cc,usecoede/ucinternal.*: Intrinsics do not need either
+	  event or intrinsic parameters, and so they have been removed. The only two
+	  intrinsics that used event now just use frame->eventid instead.
 	* all: Getting rid of -Wunused-parameter warnings by using a Boost-derived
 	  ignore_unused_variable_warning template function.
 

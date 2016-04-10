@@ -63,7 +63,7 @@ Barge_object *Get_barge(
     Game_object *obj
 );
 
-#define USECODE_INTRINSIC_DECL(NAME)    Usecode_value UI_## NAME (int event,int intrinsic,int num_parms,Usecode_value parms[12])
+#define USECODE_INTRINSIC_DECL(NAME)    Usecode_value UI_## NAME (int num_parms,Usecode_value parms[12])
 
 /*
  *  Here's our virtual machine for running usecode.
@@ -123,7 +123,7 @@ class Usecode_internal : public Usecode_machine {
 	 *  Built-in usecode functions:
 	 */
 	typedef Usecode_value(Usecode_internal::*UsecodeIntrinsicFn)(
-	    int event, int intrinsic, int num_parms, Usecode_value parms[12]);
+	    int num_parms, Usecode_value parms[12]);
 
 	int get_face_shape(Usecode_value &arg1, Actor *&npc, int &frame);
 	int get_face_shape(Usecode_value &arg1, Actor *&npc) {
@@ -183,7 +183,7 @@ class Usecode_internal : public Usecode_machine {
 		UsecodeIntrinsicFn  func;
 		const char *name;
 	} intrinsic_table[], serpent_table[];
-	Usecode_value   Execute_Intrinsic(UsecodeIntrinsicFn func, const char *name, int event, int intrinsic, int num_parms, Usecode_value parms[12]);
+	Usecode_value   Execute_Intrinsic(UsecodeIntrinsicFn func, const char *name, int intrinsic, int num_parms, Usecode_value parms[12]);
 	USECODE_INTRINSIC_DECL(NOP);
 	USECODE_INTRINSIC_DECL(UNKNOWN);
 	USECODE_INTRINSIC_DECL(get_random);
@@ -401,7 +401,7 @@ class Usecode_internal : public Usecode_machine {
 	 *  Other private methods:
 	 */
 	// Call instrinsic function.
-	Usecode_value call_intrinsic(int event, int intrinsic, int num_parms);
+	Usecode_value call_intrinsic(int intrinsic, int num_parms);
 	void click_to_continue();   // Wait for user to click.
 	void set_book(Text_gump *b);    // Set book/scroll to display.
 	const char *get_user_choice();  // Get user's choice.
