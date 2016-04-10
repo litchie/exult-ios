@@ -44,31 +44,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 using std::cout;
 using std::endl;
 
-
-/*
- * Get the i'th party member, with the 0'th being the Avatar.
- * Needed for opening the inventories
- */
-static Actor *Get_party_member(
-    int num             // 0=avatar.
-) {
-	int npc_num = 0;        // Default to Avatar
-	if (num > 0)
-		npc_num = Game_window::get_instance()->get_party_man()->get_member(num - 1);
-	return Game_window::get_instance()->get_npc(npc_num);
-} 
-
 /*
  * some buttons should only be there or change appearance
  * when a certain item is in the party's inventory
  */
-Game_object *ShortcutBar_gump::is_party_item(
+Game_object *is_party_item(
     int shnum,          // Desired shape.
     int frnum,          // Desired frame
     int qual            // Desired quality
 ) {
 	Actor *party[9];        // Get party.
-	int cnt = gwin->get_party(party, 1);
+	int cnt = Game_window::get_instance()->get_party(party, 1);
 	for (int i = 0; i < cnt; i++) {
 		Actor *person = party[i];
 		Game_object *obj = person->find_item(shnum, qual, frnum);
@@ -105,7 +91,10 @@ void ShortcutBar_gump::createButtons()
 	starty = gwin->get_win()->get_start_y();
 	resy = gwin->get_win()->get_full_height();
 	gamey = gwin->get_game_height();
-
+	for(int i = 0; i < MAX_SHORTCUT_BAR_ITEMS; ++i) {
+		buttonItems[i].pushed = false;
+		buttonItems[i].translucent = false;
+	}
 	int x = (gamex - 320)/2;
 	int y = starty + 20;
 
@@ -183,7 +172,7 @@ void ShortcutBar_gump::createButtons()
 	buttonItems[4].shapeOffsetY = -2;
 
 	// key/keyring
-	if (is_party_item(485) && GAME_SI) {
+	if (GAME_SI && is_party_item(485)) {
 		buttonItems[5].shapeId = new ShapeID(EXULT_FLX_SB_KEYRING_SHP, trlucent ? 1 : 0, SF_EXULT_FLX);
 		buttonItems[5].name = "keyring";
 		buttonItems[5].type = SB_ITEM_KEYRING;
@@ -364,6 +353,7 @@ int ShortcutBar_gump::handle_event(SDL_Event *event)
 		}
 		return 0;
 	}
+	return 0;
 }
 
 void ShortcutBar_gump::mouse_down(SDL_Event *event, int mx, int my)
@@ -477,188 +467,72 @@ void ShortcutBar_gump::onItemClicked(int index, bool doubleClicked)
 	printf("Item %s is %sclicked\n", buttonItems[index].name, doubleClicked? "double " : "");
 
 	switch (buttonItems[index].type) {
-		case SB_ITEM_DISK:
-		{
-			Gamemenu_gump *menu;
-
-			if (doubleClicked) {
-				menu = new Gamemenu_gump();
-				menu->loadsave();
-				delete menu;
-			} else {
-				menu = new Gamemenu_gump();
-				gumpman->do_modal_gump(menu, Mouse::hand);
-				delete menu;
-			}
+		case SB_ITEM_DISK: {
+			if (doubleClicked)
+				ActionFileGump(NULL);
+			else
+				ActionCloseOrMenu(NULL);
 			break;
-		}
-
-		case SB_ITEM_BACKPACK:
-		{
-			Game_window *gwin = Game_window::get_instance();
-			static int inventory_page = -1;
-			Actor *actor;
-			Gump_manager *gump_man = gwin->get_gump_man();
-			int party_count = gwin->get_party_man()->get_count();
-			int shapenum;
-			for (int i = 0; i <= party_count; ++i) {
-				actor = Get_party_member(i);
-				if (!actor)
-					continue;
-				shapenum = actor->inventory_shapenum();
-				// Check if this actor's inventory page is open or not
-				if (!gump_man->find_gump(actor, shapenum) && actor->can_act_charmed()) {
-					gump_man->add_gump(actor, shapenum, true); //force showing inv.
-					inventory_page = i;
-					return;
-				}
-			}
-			inventory_page = (inventory_page + 1) % (party_count + 1);
-			actor = Get_party_member(inventory_page);
-			if (actor && actor->can_act_charmed()) {
-				actor->show_inventory(); //force showing inv.
-			}
-			Mouse::mouse->set_speed_cursor();
+		} case SB_ITEM_BACKPACK: {
+			const int j = -1;
+			ActionInventory(const_cast<int*>(&j));
 			break;
-		}
-
-		case SB_ITEM_SPELLBOOK:
-		{
+		} case SB_ITEM_SPELLBOOK: {
 			gwin->activate_item(761);
 			break;
-		}
-
-		case SB_ITEM_NOTEBOOK:
-		{
+		} case SB_ITEM_NOTEBOOK: {
 			if (doubleClicked && cheat())
 				cheat.cheat_screen();
-			
-			if (!doubleClicked) {
-				Game_window *gwin = Game_window::get_instance();
-				Gump_manager *gman = gwin->get_gump_man();
-				Notebook_gump *notes = Notebook_gump::get_instance();
-				if (notes)
-					gman->remove_gump(notes);   // Want to raise to top.
-				else
-					notes = Notebook_gump::create();
-				gman->add_gump(notes);
-				gwin->paint();
-			} 
+			else
+				ActionNotebook(NULL);
 			break;
-		}
-
-		case SB_ITEM_KEY:
-		{
-			if (doubleClicked) { // Lockpicks
+		} case SB_ITEM_KEY:{
+			if (doubleClicked) // Lockpicks
 				gwin->activate_item(627);
-			} else {
-				Game_window *gwin = Game_window::get_instance();
-				int x, y;           // Allow dragging.
-				if (!Get_click(x, y, Mouse::greenselect, 0, true))
-					return;
-				// Look for obj. in open gump.
-				Gump *gump = gwin->get_gump_man()->find_gump(x, y);
-				Game_object *obj;
-				if (gump)
-					obj = gump->find_object(x, y);
-				else                // Search rest of world.
-					obj = gwin->find_object(x, y);
-				if (!obj)
-					return;
-				int qual = obj->get_quality();  // Key quality should match.
-				Actor *party[10];       // Get ->party members.
-				int party_cnt = gwin->get_party(&party[0], 1);
-				for (int i = 0; i < party_cnt; i++) {
-					Actor *act = party[i];
-					Game_object_vector keys;        // Get keys.
-					if (act->get_objects(keys, 641, qual, c_any_framenum)) {
-						for (size_t i = 0; i < keys.size(); i++)
-							if (!keys[i]->inside_locked()) {
-								// intercept the click_on_item call made by the key-usecode
-								Usecode_machine *ucmachine = gwin->get_usecode();
-								Game_object *oldtarg;
-								Tile_coord *oldtile;
-								ucmachine->save_intercept(oldtarg, oldtile);
-								ucmachine->intercept_click_on_item(obj);
-								keys[0]->activate();
-								ucmachine->restore_intercept(oldtarg, oldtile);
-								return;
-							}
-					}
-				}
-				Mouse::mouse->flash_shape(Mouse::redx);
-			}
+			else
+				ActionTryKeys(NULL);
 			break;
-		}
-
-		case SB_ITEM_KEYRING:
-		{
+		} case SB_ITEM_KEYRING: {
 			if (doubleClicked) // Lockpicks
 				gwin->activate_item(627);
 			else
 				gwin->activate_item(485);
 			break;
-		}
-
-		case SB_ITEM_MAP:
-		{
+		} case SB_ITEM_MAP: {
 			if (doubleClicked && cheat())
 				cheat.map_teleport();
-
-			if (!doubleClicked)
+			else if (!doubleClicked)
 				gwin->activate_item(178);
 			break;
-		}
-
-		case SB_ITEM_TOGGLE_COMBAT:
-		{
-			Game_window *gwin = Game_window::get_instance();
-			gwin->toggle_combat();
-			gwin->paint();
-			Mouse::mouse->set_speed_cursor();
+		} case SB_ITEM_TOGGLE_COMBAT: {
+			ActionCombat(NULL);
 			break;
-		}
-
-		case SB_ITEM_TARGET:
-		{
-			int x, y;
-
+		} case SB_ITEM_TARGET: {
 			if (doubleClicked && cheat()){
+				int x, y;
 				if (!Get_click(x, y, Mouse::redx))
 					return;
 				cheat.cursor_teleport();
-			}
-			
-			if (!doubleClicked) {
-				if (!Get_click(x, y, Mouse::greenselect))
-					return;
-				Game_window::get_instance()->double_clicked(x, y);
+			} else if (!doubleClicked) {
+				ActionTarget(NULL);
 			}
 			break;
-		}
-
-		case SB_ITEM_JAWBONE:
-		{
+		} case SB_ITEM_JAWBONE: {
 			gwin->activate_item(555);
 			break;
-		}
-
-		case SB_ITEM_FEED:
-		{
-			if (GAME_SI) {
-				Usecode_machine *usecode = Game_window::get_instance()->get_usecode();
-				usecode->call_usecode(1557,static_cast<Game_object *>(0), static_cast<Usecode_machine::Usecode_events>(0));
-				Mouse::mouse->set_speed_cursor();
+		} case SB_ITEM_FEED: {
+			if(doubleClicked) {
+				ActionUseHealingItems(NULL);
+			} else if (GAME_SI) {
+				int params[2];
+				params[0] = 1557;
+				params[1] = 0;
+				ActionCallUsecode(params);
 			} else {
-				Game_window *gwin = Game_window::get_instance();
-				if (gwin->activate_item(377) || gwin->activate_item(616))
-						Mouse::mouse->set_speed_cursor();
+				ActionUseFood(NULL);
 			}
 			break;
-		}
-
-		default:
-		{
+		} default: {
 			break;
 		}
 	}

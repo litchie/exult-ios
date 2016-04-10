@@ -304,9 +304,9 @@ void ActionUseItem(int const *params) {
 void ActionUseFood(int const *params) {
 	ignore_unused_variable_warning(params);
 	Game_window *gwin = Game_window::get_instance();
-	if (gwin->activate_item(377) && // Food
-	        (GAME_SI && !gwin->activate_item(404))  &&  // Special SI food
-	        !gwin->activate_item(616))  // Drinks
+	if (gwin->activate_item(377) || // Food
+	        (GAME_SI && gwin->activate_item(404)) ||  // Special SI food
+	         gwin->activate_item(616))  // Drinks
 		Mouse::mouse->set_speed_cursor();
 }
 
@@ -481,6 +481,32 @@ void ActionFaceStats(int const *params) {
 	Face_stats::save_config(config);
 }
 
+void ActionUseHealingItems(int const *params) {
+	ignore_unused_variable_warning(params);
+	Game_window *gwin = Game_window::get_instance();
+	if (gwin->activate_item(827)) // bandage
+		return;
+
+	// Potions are wasted if at full health so we will check for that
+	int x, y;
+	if (!is_party_item(340, 1) || !Get_click(x, y, Mouse::greenselect))
+		return;
+	Game_object *obj = gwin->find_object(x, y);
+	if(obj) {
+		Actor *target = obj->as_actor();
+		if(target && target->get_property(Actor::health) < target->get_property(Actor::strength)) {
+			Game_object *oldtarg;
+			Tile_coord *oldtile;
+			Usecode_machine *ucmachine = gwin->get_usecode();
+
+			ucmachine->save_intercept(oldtarg, oldtile);
+			ucmachine->intercept_click_on_item(obj);
+			gwin->activate_item(340, 1); // healing potion
+			ucmachine->restore_intercept(oldtarg, oldtile);
+			return;
+		}
+	}
+}
 
 //  { ActionSIIntro, 0,  "Show SI intro", cheat_keys, SERPENT_ISLE },
 void ActionSIIntro(int const *params) {

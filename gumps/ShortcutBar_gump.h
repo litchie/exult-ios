@@ -42,8 +42,11 @@ typedef enum {
 	SB_ITEM_NOTEBOOK,
 	SB_ITEM_TARGET,
 	SB_ITEM_JAWBONE,
-	SB_ITEM_FEED,
+	SB_ITEM_FEED
 } ShortcutBarButtonItemType;
+
+	Game_object *is_party_item(int shnum, int frnum = c_any_framenum,
+	                   int qual = c_any_qual);
 
 struct ShortcutBarButtonItem {
 	const char *name;
@@ -95,8 +98,6 @@ private:
 	int numButtons;
 	int lastClickedButton;
 	SDL_TimerID timerId;
-	Game_object *is_party_item(int shnum, int frnum = c_any_framenum,
-	                   int qual = c_any_qual);
 	void createButtons();
 	void deleteButtons();
 	void onItemClicked(int index, bool doubleClicked);
