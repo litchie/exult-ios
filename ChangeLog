@@ -1,4 +1,5 @@
 2016-04-10	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* keyactions.cc: Adding whitespace to account for C++11 literal suffixes.
 	* *.*: Deprecating exult_types.h in favor of common_types.h. Fixing several
 	  cases where Exult used longs instead of pointer-sized integers to convert
 	  pointers to integers (or the reverse); this fails on 64-bit Windows.
