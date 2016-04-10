@@ -54,7 +54,8 @@ AM_INIT_AUTOMAKE
 AC_DEFINE_UNQUOTED(PACKAGE, "$PACKAGE", [Package Name])
 AC_DEFINE_UNQUOTED(VERSION, "$VERSION", [Package Version])
 
-AC_CONFIG_HEADER(config.h)
+AC_CONFIG_HEADER([config.h])
+AC_CONFIG_MACRO_DIR([m4])
 
 AH_BOTTOM([
 #ifdef ALPHA_LINUX_CXX
@@ -186,6 +187,8 @@ else
 	AC_PROG_CXX([$CXX])
 fi
 
+AX_CXX_COMPILE_STDCXX_11(,[optional])
+
 AM_DISABLE_SHARED
 
 AM_PROG_LIBTOOL
@@ -235,8 +238,11 @@ AC_CHECK_HEADERS(sys/wait.h signal.h)
 AC_CHECK_HEADERS(png.h, AM_CONDITIONAL(HAVE_PNG,true), AM_CONDITIONAL(HAVE_PNG, false))
 AC_CHECK_ALPHA_LINUX_CXX
 AC_CHECK_HEADERS(sstream)
-AC_CHECK_HEADERS(tr1/unordered_map ext/hash_map hash_map, [], AC_DEFINE(DONT_HAVE_HASH_MAP, 1, [Doesn't have hash map]))
-AC_CHECK_HEADERS(tr1/unordered_set ext/hash_set hash_set, [], AC_DEFINE(DONT_HAVE_HASH_SET, 1, [Doesn't have hash set]))
+
+if test "$HAVE_CXX11" = "0"; then
+	AC_CHECK_HEADERS(tr1/unordered_map ext/hash_map hash_map, [], AC_DEFINE(DONT_HAVE_HASH_MAP, 1, [Doesn't have hash map]))
+	AC_CHECK_HEADERS(tr1/unordered_set ext/hash_set hash_set, [], AC_DEFINE(DONT_HAVE_HASH_SET, 1, [Doesn't have hash set]))
+fi
 
 # ---------------------------------------------------------------------
 # Checks for typedefs, structures, and compiler characteristics.

@@ -1,4 +1,9 @@
 2016-04-09	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* m4/ax_cxx_compile_stdcxx_11.m4, .gitignore, Makefile.am, configure.ac,
+	  hash_utils.h: Getting rid of -Wdeprecated warnings on newer compilers due
+	  to deprecation of std::tr1::unordered_(map|set). This is done by enabling
+	  C++11 if compiler supports it, and using straight std::unordered_(map|set)
+	  instead.
 	* mapedit/*: Getting rid of -Wint-to-pointer-cast warnings by constructing
 	  ptrdiff_t before castng (with reinterpret_cast) to pointer.
 	* effects.cc: Fixing bug found due to the -Wunused-parameter purge: retpath

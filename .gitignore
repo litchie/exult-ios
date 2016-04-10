@@ -235,3 +235,10 @@ exult.anjuta
 # Linux trash folder which might appear on any partition or disk
 .Trash-*
 
+# More autogen/autoconf stuff
+m4/libtool.m4
+m4/ltoptions.m4
+m4/ltsugar.m4
+m4/ltversion.m4
+m4/lt~obsolete.m4
+
