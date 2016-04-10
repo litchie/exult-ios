@@ -628,7 +628,7 @@ Projectile_effect::Projectile_effect(
     int spd,            // Projectile speed, or -1 to use default.
     bool retpath            // Return of a boomerang.
 ) : attacker(att), target(0), weapon(weap), projectile_shape(proj),
-	sprite(spr, 0), return_path(false), skip_render(spr < 0),
+	sprite(spr, 0), return_path(retpath), skip_render(spr < 0),
 	speed(spd), attval(attpts), autohit(false) {
 	init(att->get_tile(), d);
 }
