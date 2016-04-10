@@ -48,7 +48,7 @@ public:
 	int get_sfxnum() {
 		return sfx;
 	}
-	virtual void handle_event(unsigned long time, long udata);
+	virtual void handle_event(unsigned long time, uintptr udata);
 };
 
 /*
@@ -134,7 +134,7 @@ public:
 	Frame_animator(Game_object *o);
 	int get_next_frame();
 	// For Time_sensitive:
-	virtual void handle_event(unsigned long time, long udata);
+	virtual void handle_event(unsigned long time, uintptr udata);
 	virtual int get_framenum() {
 		return obj->get_framenum();
 	}
@@ -147,7 +147,7 @@ class Sfx_animator : public Animator {
 public:
 	Sfx_animator(Game_object *o);
 	// For Time_sensitive:
-	virtual void handle_event(unsigned long time, long udata);
+	virtual void handle_event(unsigned long time, uintptr udata);
 };
 
 /*
@@ -159,7 +159,7 @@ public:
 	friend class Field_object;
 	Field_frame_animator(Game_object *o);
 	// For Time_sensitive:
-	virtual void handle_event(unsigned long time, long udata);
+	virtual void handle_event(unsigned long time, uintptr udata);
 };
 
 /*
@@ -170,7 +170,7 @@ public:
 	Wiggle_animator(Game_object *o) : Animator(o)
 	{  }
 	// For Time_sensitive:
-	virtual void handle_event(unsigned long time, long udata);
+	virtual void handle_event(unsigned long time, uintptr udata);
 };
 
 /*

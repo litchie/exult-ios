@@ -30,28 +30,44 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "servemsg.h"
 
 class Serial_out {
-	unsigned char  *&buf;
+	unsigned char *&buf;
 public:
-	Serial_out(unsigned char  *&b) : buf(b)
+	Serial_out(unsigned char *&b) : buf(b)
 	{  }
-	Serial_out &operator<<(int v) {
+	Serial_out &operator<<(sint8 c) {
+		*buf++ = static_cast<uint8>(c);
+		return *this;
+	}
+	Serial_out &operator<<(uint8 c) {
+		*buf++ = c;
+		return *this;
+	}
+	Serial_out &operator<<(sint16 v) {
+		Write2(buf, static_cast<uint16>(v));
+		return *this;
+	}
+	Serial_out &operator<<(uint16 v) {
+		Write2(buf, v);
+		return *this;
+	}
+	Serial_out &operator<<(sint32 v) {
+		Write4(buf, static_cast<uint32>(v));
+		return *this;
+	}
+	Serial_out &operator<<(uint32 v) {
 		Write4(buf, v);
 		return *this;
 	}
-	Serial_out &operator<<(unsigned long v) {
-		WriteN(buf, v);
+	Serial_out &operator<<(sint64 v) {
+		WriteN(buf, static_cast<uint64>(v));
 		return *this;
 	}
-	Serial_out &operator<<(short v) {
-		Write2(buf, v);
+	Serial_out &operator<<(uint64 v) {
+		WriteN(buf, v);
 		return *this;
 	}
 	Serial_out &operator<<(bool v) {
 		*buf++ = (v ? 1 : 0);
-		return *this;
-	}
-	Serial_out &operator<<(unsigned char c) {
-		*buf++ = c;
 		return *this;
 	}
 	Serial_out &operator<<(std::string &s);
@@ -61,28 +77,44 @@ public:
  *  Decode.
  */
 class Serial_in {
-	unsigned char  *&buf;
+	unsigned char *&buf;
 public:
-	Serial_in(unsigned char  *&b) : buf(b)
+	Serial_in(unsigned char *&b) : buf(b)
 	{  }
-	Serial_in &operator<<(int &v) {
+	Serial_in &operator<<(sint8 &c) {
+		c = static_cast<sint8>(*buf++);
+		return *this;
+	}
+	Serial_in &operator<<(uint8 &c) {
+		c = *buf++;
+		return *this;
+	}
+	Serial_in &operator<<(sint16 &v) {
+		v = static_cast<sint16>(Read2(buf));
+		return *this;
+	}
+	Serial_in &operator<<(uint16 &v) {
+		v = Read2(buf);
+		return *this;
+	}
+	Serial_in &operator<<(sint32 &v) {
+		v = static_cast<sint32>(Read4(buf));
+		return *this;
+	}
+	Serial_in &operator<<(uint32 &v) {
 		v = Read4(buf);
 		return *this;
 	}
-	Serial_in &operator<<(unsigned long &v) {
-		v = ReadN<unsigned long>(buf);
+	Serial_in &operator<<(sint64 &v) {
+		v = static_cast<sint64>(ReadN<uint64>(buf));
 		return *this;
 	}
-	Serial_in &operator<<(short &v) {
-		v = Read2(buf);
+	Serial_in &operator<<(uint64 &v) {
+		v = ReadN<uint64>(buf);
 		return *this;
 	}
 	Serial_in &operator<<(bool &v) {
 		v = *buf++ ? true : false;
-		return *this;
-	}
-	Serial_in &operator<<(unsigned char &c) {
-		c = *buf++;
 		return *this;
 	}
 	Serial_in &operator<<(std::string &s);
@@ -92,7 +124,7 @@ public:
 extern int Object_out(
     int fd,             // Socket.
     Exult_server::Msg_type id,  // Message id.
-    unsigned long addr,     // Address.
+    uintptr addr,     // Address.
     int tx, int ty, int tz,     // Absolute tile coords.
     int shape, int frame,
     int quality,
@@ -101,7 +133,7 @@ extern int Object_out(
 extern int Object_in(
     unsigned char *data,        // Data that was read.
     int datalen,            // Length of data.
-    unsigned long &addr,        // Address.
+    uintptr &addr,        // Address.
     int &tx, int &ty, int &tz,  // Absolute tile coords.
     int &shape, int &frame,
     int &quality,
@@ -110,7 +142,7 @@ extern int Object_in(
 
 extern int Container_out(
     int fd,             // Socket.
-    unsigned long addr,     // Address.
+    uintptr addr,     // Address.
     int tx, int ty, int tz,     // Absolute tile coords.
     int shape, int frame,
     int quality,
@@ -121,7 +153,7 @@ extern int Container_out(
 extern int Container_in(
     unsigned char *data,        // Data that was read.
     int datalen,            // Length of data.
-    unsigned long &addr,        // Address.
+    uintptr &addr,        // Address.
     int &tx, int &ty, int &tz,  // Absolute tile coords.
     int &shape, int &frame,
     int &quality,
@@ -132,7 +164,7 @@ extern int Container_in(
 
 extern int Barge_object_out(
     int fd,             // Socket.
-    unsigned long addr,     // Address.
+    uintptr addr,     // Address.
     int tx, int ty, int tz, // Absolute tile coords.
     int shape, int frame,
     int xtiles,
@@ -142,7 +174,7 @@ extern int Barge_object_out(
 extern int Barge_object_in(
     unsigned char *data,        // Data that was read.
     int datalen,            // Length of data.
-    unsigned long &addr,        // Address.
+    uintptr &addr,        // Address.
     int &tx, int &ty, int &tz,  // Absolute tile coords.
     int &shape, int &frame,
     int &xtiles,
@@ -152,7 +184,7 @@ extern int Barge_object_in(
 
 extern int Egg_object_out(
     int fd,             // Socket.
-    unsigned long addr,     // Address.
+    uintptr addr,     // Address.
     int tx, int ty, int tz, // Absolute tile coords.
     int shape, int frame,
     int type,
@@ -169,7 +201,7 @@ extern int Egg_object_out(
 extern int Egg_object_in(
     unsigned char *data,        // Data that was read.
     int datalen,            // Length of data.
-    unsigned long &addr,        // Address.
+    uintptr &addr,        // Address.
     int &tx, int &ty, int &tz,  // Absolute tile coords.
     int &shape, int &frame,
     int &type,
@@ -192,7 +224,7 @@ struct Serial_schedule {        // For passing a schedule change.
 
 int Npc_actor_out(
     int fd,             // Socket.
-    unsigned long addr,     // Address.
+    uintptr addr,     // Address.
     int tx, int ty, int tz,     // Absolute tile coords.
     int shape, int frame, int face,
     std::string name,
@@ -212,7 +244,7 @@ int Npc_actor_out(
 int Npc_actor_in(
     unsigned char *data,        // Data that was read.
     int datalen,            // Length of data.
-    unsigned long &addr,        // Address.
+    uintptr &addr,        // Address.
     int &tx, int &ty, int &tz,  // Absolute tile coords.
     int &shape, int &frame, int &face,
     std::string &name,

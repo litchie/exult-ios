@@ -28,7 +28,7 @@ Boston, MA  02111-1307, USA.
 
 //#include "SDL_video.h"
 #include "imagebuf.h"
-#include "exult_types.h"
+#include "common_types.h"
 #include <string>
 #include <vector>
 #include <map>

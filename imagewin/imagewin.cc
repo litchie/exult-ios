@@ -35,7 +35,7 @@ Boston, MA  02111-1307, USA.
 #  include <iostream>
 #  include <string>
 #endif
-#include "exult_types.h"
+#include "common_types.h"
 #include "utils.h"
 
 #include <algorithm>

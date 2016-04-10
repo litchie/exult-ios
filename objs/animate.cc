@@ -85,7 +85,7 @@ Object_sfx::Object_sfx(Game_object *o, int s, int delay)
 		delay = 100;
 	}
 	gwin->get_tqueue()->add(Game::get_ticks() + delay, this,
-	                        reinterpret_cast<long>(gwin));
+	                        reinterpret_cast<uintptr>(gwin));
 }
 
 void Object_sfx::stop_playing() {
@@ -127,7 +127,7 @@ void Object_sfx::notify_object_gone(Game_object *o) {
 
 void Object_sfx::handle_event(
     unsigned long curtime,      // Current time of day.
-    long udata          // Game window.
+    uintptr udata          // Game window.
 ) {
 	const int delay = 100;      // Guessing this will be enough.
 
@@ -304,7 +304,7 @@ void Animator::start_animation(
 	// Clean out old entry if there.
 	gwin->get_tqueue()->remove(this);
 	gwin->get_tqueue()->add(Game::get_ticks() + 20, this,
-	                        reinterpret_cast<long>(gwin));
+	                        reinterpret_cast<uintptr>(gwin));
 	animating = 1;
 }
 
@@ -431,7 +431,7 @@ int Frame_animator::get_next_frame() {
 
 void Frame_animator::handle_event(
     unsigned long curtime,      // Current time of day.
-    long udata          // Game window.
+    uintptr udata          // Game window.
 ) {
 	const int delay = 100;
 	Game_window *gwin = reinterpret_cast<Game_window *>(udata);
@@ -493,7 +493,7 @@ Sfx_animator::Sfx_animator(
 
 void Sfx_animator::handle_event(
     unsigned long curtime,      // Current time of day.
-    long udata          // Game window.
+    uintptr udata          // Game window.
 ) {
 	const int delay = 100;      // Guessing this will be enough.
 
@@ -530,7 +530,7 @@ Field_frame_animator::Field_frame_animator(
 
 void Field_frame_animator::handle_event(
     unsigned long curtime,      // Current time of day.
-    long udata          // Game window.
+    uintptr udata          // Game window.
 ) {
 	Frame_animator::handle_event(curtime, udata);
 	if (activated && rand() % 10 == 0) // Check for damage?
@@ -543,7 +543,7 @@ void Field_frame_animator::handle_event(
 
 void Wiggle_animator::handle_event(
     unsigned long curtime,      // Current time of day.
-    long udata          // Game window.
+    uintptr udata          // Game window.
 ) {
 	const int delay = 100;      // Delay between frames.
 	Game_window *gwin = reinterpret_cast<Game_window *>(udata);

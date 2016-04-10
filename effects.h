@@ -108,7 +108,7 @@ public:
 	Sprites_effect(int num, Game_object *it,
 	               int xf, int yf, int dx, int dy, int frm = 0, int rps = -1);
 	// For Time_sensitive:
-	virtual void handle_event(unsigned long time, long udata);
+	virtual void handle_event(unsigned long time, uintptr udata);
 	// Render.
 	virtual void paint();
 };
@@ -127,7 +127,7 @@ class Explosion_effect : public Sprites_effect {
 public:
 	Explosion_effect(Tile_coord const &p, Game_object *exp, int delay = 0, int weap = -1,
 	                 int proj = -1, Game_object *att = 0);
-	virtual void handle_event(unsigned long time, long udata);
+	virtual void handle_event(unsigned long time, uintptr udata);
 };
 
 /*
@@ -164,7 +164,7 @@ public:
 	                  bool retpath = false);
 	~Projectile_effect();
 	// For Time_sensitive:
-	virtual void handle_event(unsigned long time, long udata);
+	virtual void handle_event(unsigned long time, uintptr udata);
 	// Render.
 	virtual void paint();
 	void set_speed(int s) {
@@ -196,7 +196,7 @@ public:
 	Homing_projectile(int shnum, Game_object *att, Game_object *trg,
 	                  Tile_coord const &sp, Tile_coord const &tp);
 	// For Time_sensitive:
-	virtual void handle_event(unsigned long time, long udata);
+	virtual void handle_event(unsigned long time, uintptr udata);
 	// Render.
 	virtual void paint();
 };
@@ -222,7 +222,7 @@ public:
 	Text_effect(const std::string &m, Game_object *it);
 	Text_effect(const std::string &m, int t_x, int t_y);
 	// At timeout, remove from screen.
-	virtual void handle_event(unsigned long curtime, long udata);
+	virtual void handle_event(unsigned long curtime, uintptr udata);
 	// Render.
 	virtual void paint();
 	// Check for matching item.
@@ -265,7 +265,7 @@ public:
 	{  }
 	virtual ~Fog_effect();
 	// Execute when due.
-	virtual void handle_event(unsigned long curtime, long udata);
+	virtual void handle_event(unsigned long curtime, uintptr udata);
 };
 
 /*
@@ -285,7 +285,7 @@ public:
 	}
 	virtual ~Lightning_effect();
 	// Execute when due.
-	virtual void handle_event(unsigned long curtime, long udata);
+	virtual void handle_event(unsigned long curtime, uintptr udata);
 };
 
 /*
@@ -296,7 +296,7 @@ class Storm_effect : public Weather_effect {
 public:
 	Storm_effect(int duration, int delay = 0, Game_object *egg = 0);
 	// Execute when due.
-	virtual void handle_event(unsigned long curtime, long udata);
+	virtual void handle_event(unsigned long curtime, uintptr udata);
 };
 
 /*
@@ -307,7 +307,7 @@ class Snowstorm_effect : public Weather_effect {
 public:
 	Snowstorm_effect(int duration, int delay = 0, Game_object *egg = 0);
 	// Execute when due.
-	virtual void handle_event(unsigned long curtime, long udata);
+	virtual void handle_event(unsigned long curtime, uintptr udata);
 };
 
 /*
@@ -318,7 +318,7 @@ class Sparkle_effect : public Weather_effect {
 public:
 	Sparkle_effect(int duration, int delay = 0, Game_object *egg = 0);
 	// Execute when due.
-	virtual void handle_event(unsigned long curtime, long udata);
+	virtual void handle_event(unsigned long curtime, uintptr udata);
 };
 
 /*
@@ -350,7 +350,7 @@ class Clouds_effect : public Weather_effect {
 public:
 	Clouds_effect(int duration, int delay = 0, Game_object *egg = 0, int n = -1);
 	// Execute when due.
-	virtual void handle_event(unsigned long curtime, long udata);
+	virtual void handle_event(unsigned long curtime, uintptr udata);
 	// Render.
 	virtual void paint();
 	virtual ~Clouds_effect();
@@ -366,7 +366,7 @@ public:
 	Earthquake(int l) : len(l), i(0) {
 	}
 	// Execute when due.
-	virtual void handle_event(unsigned long curtime, long udata);
+	virtual void handle_event(unsigned long curtime, uintptr udata);
 };
 
 /*
@@ -376,7 +376,7 @@ class Fire_field_effect : public Special_effect {
 	Game_object *field;     // What we create.
 public:
 	Fire_field_effect(Tile_coord const &t);
-	virtual void handle_event(unsigned long curtime, long udata);
+	virtual void handle_event(unsigned long curtime, uintptr udata);
 };
 
 #endif

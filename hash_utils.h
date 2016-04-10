@@ -19,7 +19,7 @@
 #ifndef _HASH_UTILS_H_
 #define _HASH_UTILS_H_
 
-#include "exult_types.h"
+#include "common_types.h"
 
 #include <cstring>
 

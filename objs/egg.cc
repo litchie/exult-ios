@@ -88,7 +88,7 @@ public:
 			chk_range = false;
 		}
 	}
-	virtual void handle_event(unsigned long curtime, long udata);
+	virtual void handle_event(unsigned long curtime, uintptr udata);
 };
 
 /*
@@ -97,7 +97,7 @@ public:
 
 void Missile_launcher::handle_event(
     unsigned long curtime,
-    long udata
+    uintptr udata
 ) {
 	Tile_coord src = egg->get_tile();
 	// Is egg a ways off the screen?
@@ -858,7 +858,7 @@ bool Egg_object::edit(
 	        cheat.in_map_editor()) {
 		editing = 0;
 		Tile_coord t = get_tile();
-		unsigned long addr = reinterpret_cast<unsigned long>(this);
+		uintptr addr = reinterpret_cast<uintptr>(this);
 		// Usecode function name.
 		string str1 = get_str1();
 		if (Egg_object_out(client_socket, addr, t.tx, t.ty, t.tz,
@@ -888,7 +888,7 @@ void Egg_object::update_from_studio(
 ) {
 #ifdef USE_EXULTSTUDIO
 	int x, y;           // Mouse click for new egg.
-	unsigned long addr;
+	uintptr addr;
 	int tx, ty, tz;
 	int shape, frame;
 	int type;

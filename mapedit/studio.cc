@@ -2314,7 +2314,7 @@ void ExultStudio::background_color_okay(
 	GtkWidget *backgrnd = glade_xml_get_widget(studio->app_xml,
 	                      "prefs_background");
 	gtk_object_set_user_data(GTK_OBJECT(backgrnd),
-	                         reinterpret_cast<gpointer>(ptrdiff_t(studio->background_color)));
+	                         reinterpret_cast<gpointer>(uintptr(studio->background_color)));
 	GdkRectangle area = {0, 0, backgrnd->allocation.width,
 	                     backgrnd->allocation.height
 	                    };
@@ -2391,7 +2391,7 @@ void ExultStudio::open_preferences(
 	GtkWidget *backgrnd = glade_xml_get_widget(app_xml,
 	                      "prefs_background");
 	gtk_object_set_user_data(GTK_OBJECT(backgrnd),
-	                         reinterpret_cast<gpointer>(ptrdiff_t(background_color)));
+	                         reinterpret_cast<gpointer>(uintptr(background_color)));
 	GtkWidget *win = glade_xml_get_widget(app_xml, "prefs_window");
 	gtk_widget_show(win);
 }

@@ -563,7 +563,7 @@ int Barge_object::okay_to_land(
 
 void Barge_object::handle_event(
     unsigned long curtime,      // Current time of day.
-    long udata          // Ignored.
+    uintptr udata          // Ignored.
 ) {
 	if (!path || !frame_time || gwin->get_moving_barge() != this)
 		return;         // We shouldn't be doing anything.
@@ -748,7 +748,7 @@ bool Barge_object::edit(
 	        cheat.in_map_editor()) {
 		editing = 0;
 		Tile_coord t = get_tile();
-		unsigned long addr = reinterpret_cast<unsigned long>(this);
+		uintptr addr = reinterpret_cast<uintptr>(this);
 		if (Barge_object_out(client_socket, addr, t.tx, t.ty, t.tz,
 		                     get_shapenum(), get_framenum(),
 		                     xtiles, ytiles, dir) != -1) {
@@ -773,7 +773,7 @@ void Barge_object::update_from_studio(
     int datalen
 ) {
 #ifdef USE_EXULTSTUDIO
-	unsigned long addr;
+	uintptr addr;
 	int tx, ty, tz;
 	int shape, frame;
 	int xtiles, ytiles, dir;

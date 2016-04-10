@@ -31,6 +31,19 @@
 typedef int8 sint8;
 typedef int16 sint16;
 typedef int32 sint32;
+typedef int64 sint64;
+#  if (SIZEOF_INT == SIZEOF_INTP)
+typedef sint32 sintptr;
+typedef uint32 uintptr;
+#  elif (SIZEOF_LONG == SIZEOF_INTP)
+typedef   signed long sintptr;
+typedef unsigned long uintptr;
+#  elif (SIZEOF_LONG_LONG == SIZEOF_INTP)
+typedef   signed long long sintptr;
+typedef unsigned long long uintptr;
+#  else
+#    error "Size of pointer type not equal to int, long or long long"
+#  endif
 
 #else
 //
@@ -51,7 +64,6 @@ typedef int32 sint32;
 #  endif
 #endif /* !EX_TYPE_INT16 */
 
-
 #ifndef EX_TYPE_INT32
 #  if (SIZEOF_INT == 4)
 #    define EX_TYPE_INT32 int
@@ -64,28 +76,39 @@ typedef int32 sint32;
 #  endif
 #endif /* !EX_TYPE_INT32 */
 
+#ifndef EX_TYPE_INT64
+#  if (SIZEOF_LONG == 8)
+#    define EX_TYPE_INT64 long
+#  elif (SIZEOF_LONG_LONG == 8)
+#    define EX_TYPE_INT64 long long
+#  else
+#    error "Please make sure a 64 bit type is provided by common_types.h"
+#  endif
+#endif /* !EX_TYPE_INT32 */
+
 #ifndef EX_TYPE_INTPTR
-#  if (SIZEOF_INTP == SIZEOF_INT)
+#  if (SIZEOF_INT == SIZEOF_INTP)
 #    define EX_TYPE_INTPTR int
-#  elif (SIZEOF_INTP == SIZEOF_LONG)
+#  elif (SIZEOF_LONG == SIZEOF_INTP)
 #    define EX_TYPE_INTPTR long
-#  elif (SIZEOF_INTP == SIZEOF_LONG_LONG)
+#  elif (SIZEOF_LONG_LONG == SIZEOF_INTP)
 #    define EX_TYPE_INTPTR long long
 #  else
 #    error "Size of pointer type not equal to int, long or long long"
 #  endif
-#endif
+#endif /* !EX_TYPE_INTPTR */
 
 typedef unsigned EX_TYPE_INT8   uint8;
 typedef unsigned EX_TYPE_INT16  uint16;
 typedef unsigned EX_TYPE_INT32  uint32;
+typedef unsigned EX_TYPE_INT64  uint64;
+typedef unsigned EX_TYPE_INTPTR uintptr;
 
 typedef signed EX_TYPE_INT8     sint8;
 typedef signed EX_TYPE_INT16    sint16;
 typedef signed EX_TYPE_INT32    sint32;
-
-typedef unsigned EX_TYPE_INTPTR uintptr;
-typedef signed EX_TYPE_INTPTR sintptr;
+typedef signed EX_TYPE_INT64    sint64;
+typedef signed EX_TYPE_INTPTR   sintptr;
 
 #endif //BeOS
 

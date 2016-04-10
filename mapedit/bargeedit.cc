@@ -135,7 +135,7 @@ int ExultStudio::init_barge_window(
     unsigned char *data,
     int datalen
 ) {
-	unsigned long addr;
+	uintptr addr;
 	int tx, ty, tz;
 	int shape, frame;
 	int xtiles, ytiles, dir;
@@ -178,8 +178,8 @@ int ExultStudio::save_barge_window(
 ) {
 	cout << "In save_barge_window()" << endl;
 	// Get barge (null if creating new).
-	unsigned long addr = (unsigned long) gtk_object_get_user_data(
-	                         GTK_OBJECT(bargewin));
+	uintptr addr = reinterpret_cast<uintptr>(gtk_object_get_user_data(
+	                         GTK_OBJECT(bargewin)));
 	int tx = -1, ty = -1, tz = -1;  // +++++For now.
 	int shape = -1, frame = -1; // For now.
 	int dir = get_optmenu("barge_dir");

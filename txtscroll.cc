@@ -26,7 +26,7 @@
 #endif
 
 #include "sdl-compat.h"
-#include "exult_types.h"
+#include "common_types.h"
 #include "files/U7file.h"
 #include "gamewin.h"
 #include "shapeid.h"

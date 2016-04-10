@@ -35,7 +35,7 @@
 #include "databuf.h"
 #include "font.h"
 #include "txtscroll.h"
-#include "exult_types.h"
+#include "common_types.h"
 #include "mappatch.h"
 #include "shapeid.h"
 #include "items.h"

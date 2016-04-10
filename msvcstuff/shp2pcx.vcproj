@@ -205,7 +205,7 @@
 			Filter="h;hpp;hxx;hm;inl"
 			>
 			<File
-				RelativePath="..\exult_types.h"
+				RelativePath="..\headers\common_types.h"
 				>
 			</File>
 			<File

@@ -37,7 +37,7 @@
 #include "databuf.h"
 #include "font.h"
 #include "txtscroll.h"
-#include "exult_types.h"
+#include "common_types.h"
 
 #ifndef UNDER_EMBEDDED_CE
 using std::cout;

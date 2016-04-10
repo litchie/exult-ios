@@ -234,7 +234,6 @@ using std::getline;
 #include "../headers/common_types.h"
 #include "../exult.h"
 #include "../exult_constants.h"
-#include "../exult_types.h"
 #include "../exultmenu.h"
 #include "../fnames.h"
 #include "../frameseq.h"

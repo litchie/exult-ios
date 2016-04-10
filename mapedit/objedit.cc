@@ -233,7 +233,7 @@ int ExultStudio::init_obj_window(
     unsigned char *data,
     int datalen
 ) {
-	unsigned long addr;
+	uintptr addr;
 	int tx, ty, tz;
 	int shape, frame, quality;
 	std::string name;
@@ -279,8 +279,8 @@ int ExultStudio::save_obj_window(
 ) {
 	cout << "In save_obj_window()" << endl;
 	// Get object address.
-	unsigned long addr = (unsigned long) gtk_object_get_user_data(
-	                         GTK_OBJECT(objwin));
+	uintptr addr = reinterpret_cast<uintptr>(gtk_object_get_user_data(
+	                         GTK_OBJECT(objwin)));
 	int tx = get_spin("obj_x"), ty = get_spin("obj_y"),
 	    tz = get_spin("obj_z");
 	std::string name(get_text_entry("obj_name"));

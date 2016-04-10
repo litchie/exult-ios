@@ -22,7 +22,7 @@
 // Handy argument processor. I'm certain the implementation could be better
 // but it suffices quite well at the moment.
 
-#include "exult_types.h"
+#include "common_types.h"
 
 #ifdef __DECCXX
 #  undef declare

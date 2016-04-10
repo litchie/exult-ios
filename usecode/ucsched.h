@@ -81,7 +81,7 @@ public:
 	static void clear();        // Delete all.
 	// Remove all whose objs. are too far.
 	static void purge(Tile_coord const &pos, int dist);
-	virtual void handle_event(unsigned long curtime, long udata);
+	virtual void handle_event(unsigned long curtime, uintptr udata);
 	int exec(Usecode_internal *usecode, bool finish);
 	// Move object in given direction.
 	void step(Usecode_internal *usecode, int dir, int dz);

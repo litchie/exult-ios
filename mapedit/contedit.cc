@@ -86,8 +86,8 @@ C_EXPORT void on_cont_show_gump_clicked(
 	cout << "In on_cont_show_gump_clicked()" << endl;
 	unsigned char data[Exult_server::maxlength];
 	// Get container address.
-	unsigned long addr = (unsigned long) gtk_object_get_user_data(
-	                         GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(btn))));
+	uintptr addr = reinterpret_cast<uintptr>(gtk_object_get_user_data(
+	                         GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(btn)))));
 	unsigned char *ptr = &data[0];
 	Serial_out io(ptr);
 	io << addr;
@@ -255,7 +255,7 @@ int ExultStudio::init_cont_window(
     unsigned char *data,
     int datalen
 ) {
-	unsigned long addr;
+	uintptr addr;
 	int tx, ty, tz;
 	int shape, frame, quality;
 	std::string name;
@@ -304,8 +304,8 @@ int ExultStudio::save_cont_window(
 ) {
 	cout << "In save_cont_window()" << endl;
 	// Get container address.
-	unsigned long addr = (unsigned long) gtk_object_get_user_data(
-	                         GTK_OBJECT(contwin));
+	uintptr addr = reinterpret_cast<uintptr>(gtk_object_get_user_data(
+	                         GTK_OBJECT(contwin)));
 	int tx = get_spin("cont_x"), ty = get_spin("cont_y"),
 	    tz = get_spin("cont_z");
 	std::string name(get_text_entry("cont_name"));

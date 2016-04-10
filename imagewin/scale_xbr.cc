@@ -34,7 +34,7 @@
 #include <cstdlib>
 #include <cstring>
 
-#include "exult_types.h"
+#include "common_types.h"
 
 #include "manip.h"
 #include "scale_xbr.h"

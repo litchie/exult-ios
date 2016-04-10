@@ -734,7 +734,7 @@ public:
 	}
 	virtual ~Main_actor();
 	// For Time_sensitive:
-	virtual void handle_event(unsigned long curtime, long udata);
+	virtual void handle_event(unsigned long curtime, uintptr udata);
 	void get_followers();       // Get party to follow.
 	// Step onto an (adjacent) tile.
 	virtual int step(Tile_coord t, int frame, bool force = false);
@@ -787,7 +787,7 @@ public:
 	// Run usecode function.
 	virtual void activate(int event = 1);
 	// For Time_sensitive:
-	virtual void handle_event(unsigned long curtime, long udata);
+	virtual void handle_event(unsigned long curtime, uintptr udata);
 	// Step onto an (adjacent) tile.
 	virtual int step(Tile_coord t, int frame, bool force = false);
 	// Remove/delete this object.

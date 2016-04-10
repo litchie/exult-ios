@@ -695,7 +695,7 @@ void Combo_editor::add(
     int datalen,
     bool toggle
 ) {
-	unsigned long addr;
+	uintptr addr;
 	int tx, ty, tz;
 	int shape, frame, quality;
 	std::string name;
