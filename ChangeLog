@@ -1,4 +1,6 @@
 2016-04-09	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* mapedit/Makefile.am: Corrected Gimp plugin deletion when $(EXEEXT) is not
+	  empty in automake.
 	* m4/ax_cxx_compile_stdcxx_11.m4, .gitignore, Makefile.am, configure.ac,
 	  hash_utils.h: Getting rid of -Wdeprecated warnings on newer compilers due
 	  to deprecation of std::tr1::unordered_(map|set). This is done by enabling

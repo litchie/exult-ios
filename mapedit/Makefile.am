@@ -97,4 +97,5 @@ else
 install-exec-local:
 endif
 
-CLEANFILES = *~ u7shp
+CLEANFILES = *~ u7shp$(EXEEXT)
+
