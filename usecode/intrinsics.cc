@@ -80,21 +80,21 @@ static Game_object *sailor = 0;     // The current barge captain.  Maybe
 
 #define PARTY_MAX (sizeof(party)/sizeof(party[0]))
 
-#define USECODE_INTRINSIC(NAME) Usecode_value   Usecode_internal:: UI_## NAME (int event,int intrinsic,int num_parms,Usecode_value parms[12])
+#define USECODE_INTRINSIC(NAME) Usecode_value   Usecode_internal:: UI_## NAME (int num_parms,Usecode_value parms[12])
 
 USECODE_INTRINSIC(NOP) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms, parms);
+	ignore_unused_variable_warning(num_parms, parms);
 	return(no_ret);
 }
 
 USECODE_INTRINSIC(UNKNOWN) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms, parms);
-//	Unhandled(intrinsic, num_parms, parms);
+	ignore_unused_variable_warning(num_parms, parms);
+//	Unhandled(num_parms, parms);
 	return(no_ret);
 }
 
 USECODE_INTRINSIC(get_random) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	int range = parms[0].get_int_value();
 	if (range == 0) {
 		Usecode_value u(0);
@@ -105,7 +105,7 @@ USECODE_INTRINSIC(get_random) {
 }
 
 USECODE_INTRINSIC(execute_usecode_array) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	COUT("Executing intrinsic 1");
 	// Start on next tick.
 	create_script(parms[0], parms[1], 1);
@@ -115,11 +115,11 @@ USECODE_INTRINSIC(execute_usecode_array) {
 }
 
 USECODE_INTRINSIC(delayed_execute_usecode_array) {
-	ignore_unused_variable_warning(intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Delay = .20 sec.?
 	// +++++Special problem with inf. loop:
 	if (Game::get_game_type() == BLACK_GATE &&
-	        event == internal_exec && parms[1].get_array_size() == 3 &&
+	        frame->eventid == internal_exec && parms[1].get_array_size() == 3 &&
 	        parms[1].get_elem(2).get_int_value() == 0x6f7)
 		return(no_ret);
 	int delay = parms[2].get_int_value();
@@ -131,26 +131,26 @@ USECODE_INTRINSIC(delayed_execute_usecode_array) {
 }
 
 USECODE_INTRINSIC(show_npc_face) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	show_npc_face(parms[0], parms[1]);
 	return(no_ret);
 }
 
 USECODE_INTRINSIC(remove_npc_face) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	remove_npc_face(parms[0]);
 	return(no_ret);
 }
 
 USECODE_INTRINSIC(add_answer) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	conv->add_answer(parms[0]);
 	//  user_choice = 0;
 	return(no_ret);
 }
 
 USECODE_INTRINSIC(remove_answer) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	conv->remove_answer(parms[0]);
 // Commented out 'user_choice = 0' 8/3/00 for Tseramed conversation.
 //	user_choice = 0;
@@ -158,13 +158,13 @@ USECODE_INTRINSIC(remove_answer) {
 }
 
 USECODE_INTRINSIC(push_answers) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms, parms);
+	ignore_unused_variable_warning(num_parms, parms);
 	conv->push_answers();
 	return(no_ret);
 }
 
 USECODE_INTRINSIC(pop_answers) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms, parms);
+	ignore_unused_variable_warning(num_parms, parms);
 	if (!conv->stack_empty()) {
 		conv->pop_answers();
 		delete [] user_choice;
@@ -174,13 +174,13 @@ USECODE_INTRINSIC(pop_answers) {
 }
 
 USECODE_INTRINSIC(clear_answers) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms, parms);
+	ignore_unused_variable_warning(num_parms, parms);
 	conv->clear_answers();
 	return(no_ret);
 }
 
 USECODE_INTRINSIC(select_from_menu) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms, parms);
+	ignore_unused_variable_warning(num_parms, parms);
 	delete [] user_choice;
 	user_choice = 0;
 	Usecode_value u(get_user_choice());
@@ -190,7 +190,7 @@ USECODE_INTRINSIC(select_from_menu) {
 }
 
 USECODE_INTRINSIC(select_from_menu2) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms, parms);
+	ignore_unused_variable_warning(num_parms, parms);
 	// Return index (1-n) of choice.
 	delete [] user_choice;
 	user_choice = 0;
@@ -201,7 +201,7 @@ USECODE_INTRINSIC(select_from_menu2) {
 }
 
 USECODE_INTRINSIC(input_numeric_value) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Ask for # (min, max, step, default).  Be sure to show conversation.
 	Usecode_value ret(gumpman->prompt_for_number(
 	                      parms[0].get_int_value(), parms[1].get_int_value(),
@@ -211,21 +211,21 @@ USECODE_INTRINSIC(input_numeric_value) {
 }
 
 USECODE_INTRINSIC(set_item_shape) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Set item shape.
 	set_item_shape(parms[0], parms[1]);
 	return(no_ret);
 }
 
 USECODE_INTRINSIC(find_nearest) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Think it rets. nearest obj. near parm0.
 	Usecode_value u(find_nearest(parms[0], parms[1], parms[2]));
 	return(u);
 }
 
 USECODE_INTRINSIC(die_roll) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Rand. # within range.
 	int low = parms[0].get_int_value();
 	int high = parms[1].get_int_value();
@@ -240,7 +240,7 @@ USECODE_INTRINSIC(die_roll) {
 }
 
 USECODE_INTRINSIC(get_item_shape) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	Game_object *item = get_item(parms[0]);
 	// Want the actual, not polymorph'd.
 	Actor *act = as_actor(item);
@@ -249,7 +249,7 @@ USECODE_INTRINSIC(get_item_shape) {
 }
 
 USECODE_INTRINSIC(get_item_frame) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Returns frame without rotated bit.
 	Game_object *item = get_item(parms[0]);
 	// Don't count rotated frames.
@@ -257,7 +257,7 @@ USECODE_INTRINSIC(get_item_frame) {
 }
 
 USECODE_INTRINSIC(set_item_frame) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Set frame, but don't change rotated bit.
 //++++++++Seems like in BG, this should be the same as set_item_frame_rot()??
 	set_item_frame(get_item(parms[0]), parms[1].get_int_value());
@@ -265,7 +265,7 @@ USECODE_INTRINSIC(set_item_frame) {
 }
 
 USECODE_INTRINSIC(get_item_quality) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	Game_object *obj = get_item(parms[0]);
 	if (!obj)
 		return Usecode_value(0);
@@ -274,7 +274,7 @@ USECODE_INTRINSIC(get_item_quality) {
 }
 
 USECODE_INTRINSIC(set_item_quality) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Guessing it's
 	//  set_quality(item, value).
 	int qual = parms[1].get_int_value();
@@ -292,7 +292,7 @@ USECODE_INTRINSIC(set_item_quality) {
 }
 
 USECODE_INTRINSIC(get_item_quantity) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Get quantity of an item.
 	//   Get_quantity(item, mystery).
 	Usecode_value ret(0);
@@ -303,7 +303,7 @@ USECODE_INTRINSIC(get_item_quantity) {
 }
 
 USECODE_INTRINSIC(set_item_quantity) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Set_quantity (item, newcount).  Rets 1 iff item.has_quantity().
 	Usecode_value ret(0);
 	Game_object *obj = get_item(parms[0]);
@@ -322,7 +322,7 @@ USECODE_INTRINSIC(set_item_quantity) {
 }
 
 USECODE_INTRINSIC(get_object_position) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Takes itemref.  ?Think it rets.
 	//  hotspot coords: (x, y, z).
 	Game_object *obj = get_item(parms[0]);
@@ -337,7 +337,7 @@ USECODE_INTRINSIC(get_object_position) {
 }
 
 USECODE_INTRINSIC(get_distance) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Distance from parm[0] -> parm[1].  Guessing how it's computed.
 	Game_object *obj0 = get_item(parms[0]);
 	Game_object *obj1 = get_item(parms[1]);
@@ -348,7 +348,7 @@ USECODE_INTRINSIC(get_distance) {
 }
 
 USECODE_INTRINSIC(find_direction) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Direction from parm[0] -> parm[1].
 	// Rets. 0-7.  Is 0 east?
 	Usecode_value u = find_direction(parms[0], parms[1]);
@@ -356,7 +356,7 @@ USECODE_INTRINSIC(find_direction) {
 }
 
 USECODE_INTRINSIC(get_npc_object) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Takes -npc.  Returns object, or array of objects.
 	Usecode_value &v = parms[0];
 	if (v.is_array()) {     // Do it for each element of array.
@@ -374,7 +374,7 @@ USECODE_INTRINSIC(get_npc_object) {
 }
 
 USECODE_INTRINSIC(get_schedule_type) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// GetSchedule(npc).  Rets. schedtype.
 	Actor *npc = as_actor(get_item(parms[0]));
 	if (!npc)
@@ -394,7 +394,7 @@ USECODE_INTRINSIC(get_schedule_type) {
 }
 
 USECODE_INTRINSIC(set_schedule_type) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// SetSchedule?(npc, schedtype).
 	// Looks like 15=wait here, 11=go home, 0=train/fight... This is the
 	// 'bNum' field in schedules.
@@ -415,7 +415,7 @@ USECODE_INTRINSIC(set_schedule_type) {
 }
 
 USECODE_INTRINSIC(add_to_party) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// NPC joins party.
 	Actor *npc = as_actor(get_item(parms[0]));
 	if (!partyman->add_to_party(npc))
@@ -427,7 +427,7 @@ USECODE_INTRINSIC(add_to_party) {
 }
 
 USECODE_INTRINSIC(remove_from_party) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// NPC leaves party.
 	Actor *npc = as_actor(get_item(parms[0]));
 	if (partyman->remove_from_party(npc))
@@ -436,7 +436,7 @@ USECODE_INTRINSIC(remove_from_party) {
 }
 
 USECODE_INTRINSIC(get_npc_prop) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Get NPC prop (item, prop_id).
 	Game_object *obj = get_item(parms[0]);
 	Actor *npc = as_actor(obj);
@@ -456,7 +456,7 @@ USECODE_INTRINSIC(get_npc_prop) {
 }
 
 USECODE_INTRINSIC(set_npc_prop) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Set NPC prop (item, prop_id, delta_value).
 	Game_object *obj = get_item(parms[0]);
 	Actor *npc = as_actor(obj);
@@ -489,21 +489,21 @@ USECODE_INTRINSIC(set_npc_prop) {
 }
 
 USECODE_INTRINSIC(get_avatar_ref) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms, parms);
+	ignore_unused_variable_warning(num_parms, parms);
 	// Guessing it's Avatar's itemref.
 	Usecode_value u(gwin->get_main_actor());
 	return(u);
 }
 
 USECODE_INTRINSIC(get_party_list) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms, parms);
+	ignore_unused_variable_warning(num_parms, parms);
 	// Return array with party members.
 	Usecode_value u(get_party());
 	return(u);
 }
 
 USECODE_INTRINSIC(create_new_object) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// create_new_object(shapenum).   Stores it in 'last_created'.
 	int shapenum = parms[0].get_int_value();
 	Game_object *obj = create_object(shapenum, false);
@@ -520,13 +520,13 @@ USECODE_INTRINSIC(create_new_object2) {
 	// Create, and equip if monster.
 	Game_object *obj = create_object(shapenum, true);
 	if (obj)
-		UI_update_last_created(event, intrinsic, 1, &parms[1]);
+		UI_update_last_created(1, &parms[1]);
 	Usecode_value u(obj);
 	return u;
 }
 
 USECODE_INTRINSIC(set_last_created) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Take itemref off map and set last_created to it.
 	Game_object *obj = get_item(parms[0]);
 	// Don't do it for same object if already there.
@@ -545,7 +545,7 @@ USECODE_INTRINSIC(set_last_created) {
 }
 
 USECODE_INTRINSIC(update_last_created) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Think it takes array from 0x18,
 	//   updates last-created object.
 	//   ??guessing??
@@ -592,7 +592,7 @@ USECODE_INTRINSIC(update_last_created) {
 }
 
 USECODE_INTRINSIC(get_npc_name) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Get NPC name(s).  Works on arrays, too.
 	static const char *unknown = "??name??";
 	Actor *npc;
@@ -622,7 +622,7 @@ USECODE_INTRINSIC(get_npc_name) {
 }
 
 USECODE_INTRINSIC(set_npc_name) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Set NPC name.
 	Actor *npc = as_actor(get_item(parms[0]));
 	if (!npc)
@@ -632,7 +632,7 @@ USECODE_INTRINSIC(set_npc_name) {
 }
 
 USECODE_INTRINSIC(count_objects) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// How many?
 	// ((npc?-357==party, -356=avatar),
 	//   item, quality, frame (c_any_framenum = any)).
@@ -642,7 +642,7 @@ USECODE_INTRINSIC(count_objects) {
 }
 
 USECODE_INTRINSIC(find_object) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Find_object(container(-357=party) OR loc, shapenum, qual?? (-359=any),
 	//                      frame??(-359=any)).
 	int shnum = parms[1].get_int_value(),
@@ -694,7 +694,7 @@ USECODE_INTRINSIC(find_object) {
 }
 
 USECODE_INTRINSIC(get_cont_items) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Get cont. items(container, shape, qual, frame).
 	// recursively find items in container
 	Usecode_value u(get_objects(parms[0], parms[1], parms[2], parms[3]));
@@ -703,14 +703,14 @@ USECODE_INTRINSIC(get_cont_items) {
 
 
 USECODE_INTRINSIC(remove_party_items) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Remove items(quantity, item, ??quality?? (-359), frame(-359), T/F).
 	return remove_party_items(parms[0], parms[1], parms[2],
 	                          parms[3], parms[4]);
 }
 
 USECODE_INTRINSIC(add_party_items) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Add items(num, item, ??quality?? (-359), frame (or -359), T/F).
 	// Returns array of NPC's (->'s) who got the items.
 	Usecode_value u(add_party_items(parms[0], parms[1], parms[2],
@@ -719,7 +719,7 @@ USECODE_INTRINSIC(add_party_items) {
 }
 
 USECODE_INTRINSIC(get_music_track) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms, parms);
+	ignore_unused_variable_warning(num_parms, parms);
 	// Returns the song currently playing. In the original BG, this
 	// returned a word: the high byte was the current song and the
 	// low byte could be the current song (most cases) or, in some
@@ -737,7 +737,7 @@ USECODE_INTRINSIC(get_music_track) {
 }
 
 USECODE_INTRINSIC(play_music) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Play music(songnum, item).
 	// ??Show notes by item?
 #ifdef DEBUG
@@ -770,7 +770,7 @@ USECODE_INTRINSIC(play_music) {
 }
 
 USECODE_INTRINSIC(npc_nearby) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// NPC nearby? (item).
 	Game_object *obj = get_item(parms[0]);
 	if (!obj)
@@ -785,7 +785,7 @@ USECODE_INTRINSIC(npc_nearby) {
 }
 
 USECODE_INTRINSIC(npc_nearby2) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Guessing wildly (SI).  Handles start of Moonshade trial where
 	//   companions are a fair distance away.
 
@@ -804,7 +804,7 @@ USECODE_INTRINSIC(npc_nearby2) {
 }
 
 USECODE_INTRINSIC(find_nearby_avatar) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Find objs. with given shape near Avatar?
 	Usecode_value av(gwin->get_main_actor());
 	// Try bigger # for Test of Love tree.
@@ -814,7 +814,7 @@ USECODE_INTRINSIC(find_nearby_avatar) {
 }
 
 USECODE_INTRINSIC(is_npc) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Is item an NPC?
 	Actor *npc = as_actor(get_item(parms[0]));
 	Usecode_value u(npc != 0);
@@ -822,7 +822,7 @@ USECODE_INTRINSIC(is_npc) {
 }
 
 USECODE_INTRINSIC(display_runes) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Render text into runes for signs, tombstones, plaques and the like
 	// Display sign (gump #, array_of_text).
 	int cnt = parms[1].get_array_size();
@@ -844,7 +844,7 @@ USECODE_INTRINSIC(display_runes) {
 }
 
 USECODE_INTRINSIC(click_on_item) {
-	ignore_unused_variable_warning(intrinsic, num_parms, parms);
+	ignore_unused_variable_warning(num_parms, parms);
 	// Doesn't ret. until user single-
 	//   clicks on an item.  Rets. item.
 	Game_object *obj;
@@ -866,7 +866,7 @@ USECODE_INTRINSIC(click_on_item) {
 		intercept_tile = 0;
 	}
 	// Special case for weapon hit:
-	else if (event == weapon && caller_item) {
+	else if (frame->eventid == weapon && caller_item) {
 		// Special hack for weapons (needed for hitting Draygan with
 		// sleep arrows (SI) and worms with worm hammer (also SI)).
 		// Spells cast from readied spellbook in combat have been
@@ -906,7 +906,7 @@ USECODE_INTRINSIC(click_on_item) {
  *  Added for Exult.
  */
 USECODE_INTRINSIC(set_intercept_item) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	intercept_item = get_item(parms[0]);
 	if (intercept_item) {
 		delete intercept_tile;
@@ -941,14 +941,14 @@ USECODE_INTRINSIC(set_intercept_item) {
 }
 
 USECODE_INTRINSIC(find_nearby) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Think it rets. objs. near parm0.
 	Usecode_value u(find_nearby(parms[0], parms[1], parms[2], parms[3]));
 	return(u);
 }
 
 USECODE_INTRINSIC(give_last_created) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Think it's give_last_created(container).
 	Game_object *cont = get_item(parms[0]);
 	int ret = 0;
@@ -968,7 +968,7 @@ USECODE_INTRINSIC(give_last_created) {
 }
 
 USECODE_INTRINSIC(is_dead) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Return 1 if parm0 is a dead NPC.
 	Actor *npc = as_actor(get_item(parms[0]));
 	Usecode_value u(npc && npc->is_dead());
@@ -976,21 +976,21 @@ USECODE_INTRINSIC(is_dead) {
 }
 
 USECODE_INTRINSIC(game_hour) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms, parms);
+	ignore_unused_variable_warning(num_parms, parms);
 	// Return. game time hour (0-23).
 	Usecode_value u(gclock->get_hour());
 	return(u);
 }
 
 USECODE_INTRINSIC(game_minute) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms, parms);
+	ignore_unused_variable_warning(num_parms, parms);
 	// Return minute (0-59).
 	Usecode_value u(gclock->get_minute());
 	return(u);
 }
 
 USECODE_INTRINSIC(get_npc_number) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Returns NPC# of item. (-356 =
 	//   avatar).
 	Actor *npc = as_actor(get_item(parms[0]));
@@ -1004,14 +1004,14 @@ USECODE_INTRINSIC(get_npc_number) {
 }
 
 USECODE_INTRINSIC(part_of_day) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms, parms);
+	ignore_unused_variable_warning(num_parms, parms);
 	// Return 3-hour # (0-7, 0=midnight).
 	Usecode_value u(gclock->get_hour() / 3);
 	return(u);
 }
 
 USECODE_INTRINSIC(get_alignment) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Get npc's alignment.
 	Actor *npc = as_actor(get_item(parms[0]));
 	Usecode_value u(npc ? npc->get_effective_alignment() : 0);
@@ -1019,7 +1019,7 @@ USECODE_INTRINSIC(get_alignment) {
 }
 
 USECODE_INTRINSIC(set_alignment) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Set npc's alignment.
 	// 2,3==bad towards Ava. 0==good.
 	Actor *npc = as_actor(get_item(parms[0]));
@@ -1039,7 +1039,6 @@ USECODE_INTRINSIC(set_alignment) {
 }
 
 USECODE_INTRINSIC(move_object) {
-	ignore_unused_variable_warning(event, intrinsic);
 	// move_object(obj(-357=party), (tx, ty, tz)).
 	Usecode_value &p = parms[1];
 	Tile_coord tile(p.get_elem(0).get_int_value(),
@@ -1082,7 +1081,7 @@ USECODE_INTRINSIC(move_object) {
 }
 
 USECODE_INTRINSIC(remove_npc) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Remove_npc(npc) - Remove npc from world.
 	Actor *npc = as_actor(get_item(parms[0]));
 	if (npc) {
@@ -1096,7 +1095,7 @@ USECODE_INTRINSIC(remove_npc) {
 }
 
 USECODE_INTRINSIC(item_say) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Show str. near item (item, str).
 	if (!conv->is_npc_text_pending())
 		item_say(parms[0], parms[1]);   // Do it now.
@@ -1104,7 +1103,7 @@ USECODE_INTRINSIC(item_say) {
 }
 
 USECODE_INTRINSIC(clear_item_say) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Clear str. near item (item).
 	Game_object *item = get_item(parms[0]);
 	if (item) {
@@ -1119,7 +1118,7 @@ USECODE_INTRINSIC(clear_item_say) {
 }
 
 USECODE_INTRINSIC(set_to_attack) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// set_to_attack(fromnpc, to, weaponshape).
 	// fromnpc attacks the target 'to' with weapon weaponshape.
 	// 'to' can be a game object or the return of a click_on_item
@@ -1155,7 +1154,7 @@ USECODE_INTRINSIC(set_to_attack) {
 }
 
 USECODE_INTRINSIC(get_lift) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// ?? Guessing rets. lift(item).
 	Game_object *obj = get_item(parms[0]);
 	Usecode_value u(obj ? Usecode_value(obj->get_lift())
@@ -1164,7 +1163,7 @@ USECODE_INTRINSIC(get_lift) {
 }
 
 USECODE_INTRINSIC(set_lift) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// ?? Guessing setlift(item, lift).
 	Game_object *obj = get_item(parms[0]);
 	if (obj) {
@@ -1180,13 +1179,13 @@ USECODE_INTRINSIC(set_lift) {
 }
 
 USECODE_INTRINSIC(get_weather) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms, parms);
+	ignore_unused_variable_warning(num_parms, parms);
 	// Get_weather()
 	return Usecode_value(gwin->get_effects()->get_weather());
 }
 
 USECODE_INTRINSIC(set_weather) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Set_weather(i)
 	Egg_object::set_weather(parms[0].get_int_value());
 	return no_ret;
@@ -1194,7 +1193,7 @@ USECODE_INTRINSIC(set_weather) {
 
 
 USECODE_INTRINSIC(sit_down) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Sit_down(npc, chair).
 	Game_object *nobj = get_item(parms[0]);
 	Actor *npc = as_actor(nobj);
@@ -1208,7 +1207,7 @@ USECODE_INTRINSIC(sit_down) {
 }
 
 USECODE_INTRINSIC(summon) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// summon(shape, flag??).  Create monster of desired shape.
 
 	int shapenum = parms[0].get_int_value();
@@ -1284,7 +1283,7 @@ public:
 };
 
 USECODE_INTRINSIC(display_map) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms, parms);
+	ignore_unused_variable_warning(num_parms, parms);
 	//count all sextants in party
 	Usecode_value v_357(-357), v650(650), v_359(-359);
 	long sextants = count_objects(v_357, v650, v_359, v_359).get_int_value();
@@ -1305,7 +1304,7 @@ USECODE_INTRINSIC(si_display_map) {
 
 	switch (mapnum) {
 	case 0:
-		return UI_display_map(event, intrinsic, num_parms, parms);
+		return UI_display_map(num_parms, parms);
 	case 1:
 		shapenum = 57;
 		break;
@@ -1338,7 +1337,7 @@ USECODE_INTRINSIC(si_display_map) {
 }
 
 USECODE_INTRINSIC(display_map_ex) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	int map_shp = parms[0].get_int_value();
 	bool loc = parms[1].get_int_value() != 0;
 
@@ -1353,7 +1352,7 @@ USECODE_INTRINSIC(display_map_ex) {
 }
 
 USECODE_INTRINSIC(kill_npc) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// kill_npc(npc).
 	Game_object *item = get_item(parms[0]);
 	Actor *npc = as_actor(item);
@@ -1364,7 +1363,7 @@ USECODE_INTRINSIC(kill_npc) {
 }
 
 USECODE_INTRINSIC(roll_to_win) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// roll_to_win(attackpts, defendpts)
 	int attack = parms[0].get_int_value();
 	int defend = parms[1].get_int_value();
@@ -1372,7 +1371,7 @@ USECODE_INTRINSIC(roll_to_win) {
 }
 
 USECODE_INTRINSIC(set_attack_mode) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// set_attack_mode(npc, mode).
 	Actor *npc = as_actor(get_item(parms[0]));
 	if (npc)
@@ -1381,7 +1380,7 @@ USECODE_INTRINSIC(set_attack_mode) {
 }
 
 USECODE_INTRINSIC(get_attack_mode) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// get_attack_mode(npc).
 	Actor *npc = as_actor(get_item(parms[0]));
 	if (npc)
@@ -1390,7 +1389,7 @@ USECODE_INTRINSIC(get_attack_mode) {
 }
 
 USECODE_INTRINSIC(set_opponent) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// set_opponent(npc, new_opponent).
 	Actor *npc = as_actor(get_item(parms[0]));
 	Game_object *opponent = get_item(parms[1]);
@@ -1400,7 +1399,7 @@ USECODE_INTRINSIC(set_opponent) {
 }
 
 USECODE_INTRINSIC(clone) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// clone(npc)
 	Actor *npc = as_actor(get_item(parms[0]));
 	if (npc) {
@@ -1414,14 +1413,14 @@ USECODE_INTRINSIC(clone) {
 }
 
 USECODE_INTRINSIC(get_oppressor) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// get_oppressor(npc) Returns 0-n, NPC # (0=avatar).
 	Actor *npc = as_actor(get_item(parms[0]));
 	return Usecode_value(npc ? npc->get_oppressor() : 0);
 }
 
 USECODE_INTRINSIC(set_oppressor) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// set_oppressor(npc, opp)
 	Actor *npc = as_actor(get_item(parms[0]));
 	Actor *opp = as_actor(get_item(parms[1]));
@@ -1435,7 +1434,7 @@ USECODE_INTRINSIC(set_oppressor) {
 }
 
 USECODE_INTRINSIC(get_weapon) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// get_weapon(npc).  Returns shape.
 	Actor *npc = as_actor(get_item(parms[0]));
 	if (npc) {
@@ -1479,7 +1478,7 @@ public:
 };
 
 USECODE_INTRINSIC(display_area) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// display_area(tilepos) - used for crystal balls.
 	int size = parms[0].get_array_size();
 	if (size >= 3) {
@@ -1542,7 +1541,7 @@ USECODE_INTRINSIC(display_area) {
 }
 
 USECODE_INTRINSIC(wizard_eye) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// wizard_eye(#ticks, ??);
 	extern void Wizard_eye(long);
 	// Let's give 50% longer.
@@ -1551,7 +1550,7 @@ USECODE_INTRINSIC(wizard_eye) {
 }
 
 USECODE_INTRINSIC(resurrect) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// resurrect(body).  Returns actor if successful.
 	Game_object *body = get_item(parms[0]);
 	int npc_num = body ? body->get_live_npc_num() : -1;
@@ -1569,7 +1568,7 @@ USECODE_INTRINSIC(resurrect) {
 }
 
 USECODE_INTRINSIC(resurrect_npc) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// resurrect_npc(npc).
 	// Behaves like the original does.
 	Actor *actor = as_actor(get_item(parms[0]));
@@ -1582,7 +1581,7 @@ USECODE_INTRINSIC(resurrect_npc) {
 }
 
 USECODE_INTRINSIC(get_body_npc) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// get_body_npc(body).  Returns npc # (negative).
 	Game_object *obj = get_item(parms[0]);
 	int num = obj ? obj->get_live_npc_num() : -1;
@@ -1590,7 +1589,7 @@ USECODE_INTRINSIC(get_body_npc) {
 }
 
 USECODE_INTRINSIC(add_spell) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// add_spell(spell# (0-71), ??, spellbook).
 	// Returns 0 if book already has that spell.
 	Game_object *obj = get_item(parms[2]);
@@ -1603,7 +1602,7 @@ USECODE_INTRINSIC(add_spell) {
 }
 
 USECODE_INTRINSIC(remove_all_spells) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// remove_all_spells(spellbook).
 	// Removes all spells from spellbook.
 	Game_object *obj = get_item(parms[0]);
@@ -1617,7 +1616,7 @@ USECODE_INTRINSIC(remove_all_spells) {
 }
 
 USECODE_INTRINSIC(has_spell) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// has_spell(spellbook, spell#).
 	// Returns true if the spellbook has desired spell, false if not.
 	Game_object *obj = get_item(parms[0]);
@@ -1630,7 +1629,7 @@ USECODE_INTRINSIC(has_spell) {
 }
 
 USECODE_INTRINSIC(remove_spell) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// remove_spell(spellbook, spell#).
 	// Returns true if the spellbook has desired spell, false if not.
 	Game_object *obj = get_item(parms[0]);
@@ -1643,7 +1642,7 @@ USECODE_INTRINSIC(remove_spell) {
 }
 
 USECODE_INTRINSIC(sprite_effect) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Display animation from sprites.vga.
 	// show_sprite(sprite#, tx, ty, dx, dy, frame, length??);
 	gwin->get_effects()->add_effect(
@@ -1656,7 +1655,7 @@ USECODE_INTRINSIC(sprite_effect) {
 }
 
 USECODE_INTRINSIC(obj_sprite_effect) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// obj_sprite_effect(obj, sprite#, -xoff, -yoff, dx, dy,
 	//                      frame, length??)
 	Game_object *obj = get_item(parms[0]);
@@ -1670,7 +1669,7 @@ USECODE_INTRINSIC(obj_sprite_effect) {
 }
 
 USECODE_INTRINSIC(attack_object) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// attack_object(attacker, target, wshape).
 	Game_object *att = get_item(parms[0]);
 	Game_object *trg = get_item(parms[1]);
@@ -1683,7 +1682,7 @@ USECODE_INTRINSIC(attack_object) {
 }
 
 USECODE_INTRINSIC(book_mode) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Display book or scroll.
 	Text_gump *gump;
 	Game_object *obj = get_item(parms[0]);
@@ -1707,7 +1706,6 @@ USECODE_INTRINSIC(book_mode) {
 }
 
 USECODE_INTRINSIC(book_mode_ex) {
-	ignore_unused_variable_warning(event, intrinsic);
 	// Display book or scroll.
 	Text_gump *gump;
 	bool is_scroll = parms[0].get_int_value() != 0;
@@ -1723,7 +1721,7 @@ USECODE_INTRINSIC(book_mode_ex) {
 }
 
 USECODE_INTRINSIC(stop_time) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// stop_time(.25 secs).
 
 	int length = parms[0].get_int_value();
@@ -1732,7 +1730,7 @@ USECODE_INTRINSIC(stop_time) {
 }
 
 USECODE_INTRINSIC(cause_light) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Cause_light(game_minutes??)
 
 	gwin->add_special_light(parms[0].get_int_value());
@@ -1740,7 +1738,7 @@ USECODE_INTRINSIC(cause_light) {
 }
 
 USECODE_INTRINSIC(get_barge) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// get_barge(obj) - returns barge object is part of or lying on.
 
 	Game_object *obj = get_item(parms[0]);
@@ -1750,7 +1748,7 @@ USECODE_INTRINSIC(get_barge) {
 }
 
 USECODE_INTRINSIC(earthquake) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	int len = parms[0].get_int_value();
 	gwin->get_tqueue()->add(Game::get_ticks() + 10,
 	                        new Earthquake(len), reinterpret_cast<long>(this));
@@ -1758,7 +1756,7 @@ USECODE_INTRINSIC(earthquake) {
 }
 
 USECODE_INTRINSIC(is_pc_female) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms, parms);
+	ignore_unused_variable_warning(num_parms, parms);
 	// Is player female?
 	Usecode_value u(gwin->get_main_actor()->get_type_flag(Actor::tf_sex));
 	return(u);
@@ -1784,7 +1782,7 @@ static inline void Armageddon_death(Actor *npc, bool barks, Rectangle const &scr
 }
 
 USECODE_INTRINSIC(armageddon) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms, parms);
+	ignore_unused_variable_warning(num_parms, parms);
 	int cnt = gwin->get_num_npcs();
 	Rectangle screen = gwin->get_win_tile_rect();
 	for (int i = 1; i < cnt; i++)   // Almost everyone dies.
@@ -1802,7 +1800,7 @@ USECODE_INTRINSIC(armageddon) {
 }
 
 USECODE_INTRINSIC(halt_scheduled) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Halt_scheduled(item)
 	Game_object *obj = get_item(parms[0]);
 	if (obj)
@@ -1811,7 +1809,7 @@ USECODE_INTRINSIC(halt_scheduled) {
 }
 
 USECODE_INTRINSIC(lightning) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms, parms);
+	ignore_unused_variable_warning(num_parms, parms);
 	// 1 sec. is long enough for 1 flash.
 	gwin->get_effects()->remove_usecode_lightning();
 	gwin->get_effects()->add_effect(new Lightning_effect(1000, 0, true));
@@ -1819,7 +1817,7 @@ USECODE_INTRINSIC(lightning) {
 }
 
 USECODE_INTRINSIC(get_array_size) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	int cnt;
 	if (parms[0].is_array())    // An array?  We might return 0.
 		cnt = parms[0].get_array_size();
@@ -1830,7 +1828,7 @@ USECODE_INTRINSIC(get_array_size) {
 }
 
 USECODE_INTRINSIC(mark_virtue_stone) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	Game_object *obj = get_item(parms[0]);
 	Virtue_stone_object *vs = dynamic_cast<Virtue_stone_object *>(obj);
 	if (vs) {
@@ -1841,7 +1839,6 @@ USECODE_INTRINSIC(mark_virtue_stone) {
 }
 
 USECODE_INTRINSIC(recall_virtue_stone) {
-	ignore_unused_variable_warning(event, intrinsic);
 	Game_object *obj = get_item(parms[0]);
 	Virtue_stone_object *vs = dynamic_cast<Virtue_stone_object *>(obj);
 	if (vs) {
@@ -1870,7 +1867,7 @@ USECODE_INTRINSIC(recall_virtue_stone) {
 }
 
 USECODE_INTRINSIC(apply_damage) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// apply_damage(str, hps, type, obj);
 	Game_object *obj = get_item(parms[3]);
 	if (!obj)   // No valid target.
@@ -1885,13 +1882,13 @@ USECODE_INTRINSIC(apply_damage) {
 }
 
 USECODE_INTRINSIC(is_pc_inside) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms, parms);
+	ignore_unused_variable_warning(num_parms, parms);
 	Usecode_value u(gwin->is_main_actor_inside());
 	return(u);
 }
 
 USECODE_INTRINSIC(set_orrery) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// set_orrery(pos, state(0-9)).
 	/*
 	 *  This code is based on the Planets.txt document written
@@ -1959,7 +1956,7 @@ USECODE_INTRINSIC(set_orrery) {
 }
 
 USECODE_INTRINSIC(get_timer) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	int tnum = parms[0].get_int_value();
 	int ret;
 	std::map<int, uint32>::iterator it = timers.find(tnum);
@@ -1972,14 +1969,14 @@ USECODE_INTRINSIC(get_timer) {
 }
 
 USECODE_INTRINSIC(set_timer) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	int tnum = parms[0].get_int_value();
 	timers[tnum] = gclock->get_total_hours();
 	return(no_ret);
 }
 
 USECODE_INTRINSIC(wearing_fellowship) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms, parms);
+	ignore_unused_variable_warning(num_parms, parms);
 	Game_object *obj = gwin->get_main_actor()->get_readied(amulet);
 	if (obj && obj->get_shapenum() == 955 && obj->get_framenum() == 1)
 		return Usecode_value(1);
@@ -1988,19 +1985,19 @@ USECODE_INTRINSIC(wearing_fellowship) {
 }
 
 USECODE_INTRINSIC(mouse_exists) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms, parms);
+	ignore_unused_variable_warning(num_parms, parms);
 	Usecode_value u(1);
 	return(u);
 }
 
 USECODE_INTRINSIC(get_speech_track) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms, parms);
+	ignore_unused_variable_warning(num_parms, parms);
 	// Get speech track set by 0x74 or 0x8f.
 	return Usecode_value(speech_track);
 }
 
 USECODE_INTRINSIC(flash_mouse) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// flash_mouse(code)
 	Mouse::Mouse_shapes shape;
 	switch (parms[0].need_int_value()) {
@@ -2030,21 +2027,21 @@ USECODE_INTRINSIC(flash_mouse) {
 }
 
 USECODE_INTRINSIC(get_item_frame_rot) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Same as get_item_frame, but (guessing!) include rotated bit.
 	Game_object *obj = get_item(parms[0]);
 	return Usecode_value(obj ? obj->get_framenum() : 0);
 }
 
 USECODE_INTRINSIC(set_item_frame_rot) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Set entire frame, including rotated bit.
 	set_item_frame(get_item(parms[0]), parms[1].get_int_value(), 0, 1);
 	return(no_ret);
 }
 
 USECODE_INTRINSIC(on_barge) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms, parms);
+	ignore_unused_variable_warning(num_parms, parms);
 	// Only used once for BG, in usecode for magic-carpet.
 	// For SI, used for turtle.
 	// on_barge()
@@ -2070,7 +2067,7 @@ USECODE_INTRINSIC(on_barge) {
 }
 
 USECODE_INTRINSIC(get_container) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Takes itemref, returns container.
 	Game_object *obj = get_item(parms[0]);
 	Usecode_value u(static_cast<Game_object *>(NULL));
@@ -2080,7 +2077,7 @@ USECODE_INTRINSIC(get_container) {
 }
 
 USECODE_INTRINSIC(remove_item) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Think it's 'delete object'.
 	remove_item(get_item(parms[0]));
 	modified_map = true;
@@ -2088,7 +2085,7 @@ USECODE_INTRINSIC(remove_item) {
 }
 
 USECODE_INTRINSIC(reduce_health) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Reduce_health(obj, amount, type).
 	Game_object *obj = get_item(parms[0]);
 	int type = parms[2].get_int_value();
@@ -2098,7 +2095,7 @@ USECODE_INTRINSIC(reduce_health) {
 }
 
 USECODE_INTRINSIC(is_readied) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// is_readied(npc, where, itemshape, frame (-359=any)).
 	// Where:
 	//   0=back,
@@ -2137,7 +2134,7 @@ USECODE_INTRINSIC(is_readied) {
 }
 
 USECODE_INTRINSIC(get_readied) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// get_readied(npc, where)
 	// Where:
 	//   0=other hand,
@@ -2173,7 +2170,7 @@ USECODE_INTRINSIC(get_readied) {
 }
 
 USECODE_INTRINSIC(restart_game) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms, parms);
+	ignore_unused_variable_warning(num_parms, parms);
 	// Think it's 'restart game'.
 	// Happens if you die before leaving trinsic.
 	Audio::get_ptr()->stop_music();
@@ -2182,7 +2179,7 @@ USECODE_INTRINSIC(restart_game) {
 }
 
 USECODE_INTRINSIC(start_speech) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Start_speech(num).  Also sets speech_track.
 	bool okay = false;
 	speech_track = parms[0].get_int_value();
@@ -2225,7 +2222,7 @@ USECODE_INTRINSIC(start_speech) {
 }
 
 USECODE_INTRINSIC(is_water) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Is_water(pos).
 	int size = parms[0].get_array_size();
 	if (size >= 3) {
@@ -2247,7 +2244,7 @@ USECODE_INTRINSIC(is_water) {
 }
 
 USECODE_INTRINSIC(run_endgame) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	Audio::get_ptr()->stop_sound_effects();
 	game->end_game(parms[0].get_int_value() != 0);
 	// If successful enable menu entry and play credits afterwards
@@ -2262,7 +2259,7 @@ USECODE_INTRINSIC(run_endgame) {
 }
 
 USECODE_INTRINSIC(fire_projectile) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// fire_projectile(attacker, dir, missile, attval, wshape, ashape)
 
 	Game_object *attacker = get_item(parms[0]);
@@ -2289,7 +2286,7 @@ USECODE_INTRINSIC(fire_projectile) {
 }
 
 USECODE_INTRINSIC(nap_time) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// nap_time(bed)
 	Game_object *bed = get_item(parms[0]);
 	if (!bed)
@@ -2316,14 +2313,14 @@ USECODE_INTRINSIC(nap_time) {
 }
 
 USECODE_INTRINSIC(advance_time) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Incr. clock by (parm[0]*.04min.).
 	gclock->increment(parms[0].get_int_value() / ticks_per_minute);
 	return(no_ret);
 }
 
 USECODE_INTRINSIC(in_usecode) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// in_usecode(item):  Return 1 if executing usecode on parms[0].
 
 	Game_object *obj = get_item(parms[0]);
@@ -2333,21 +2330,20 @@ USECODE_INTRINSIC(in_usecode) {
 }
 
 USECODE_INTRINSIC(call_guards) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms, parms);
+	ignore_unused_variable_warning(num_parms, parms);
 	// Attack thieving Avatar.
 	gwin->call_guards();
 	return no_ret;
 }
 
 USECODE_INTRINSIC(attack_avatar) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms, parms);
+	ignore_unused_variable_warning(num_parms, parms);
 	// Attack thieving Avatar.
 	gwin->attack_avatar();
 	return no_ret;
 }
 
 USECODE_INTRINSIC(path_run_usecode) {
-	ignore_unused_variable_warning(event, intrinsic);
 	// exec(loc(x,y,z)?, usecode#, itemref, eventid).
 	// Think it should have Avatar walk path to loc, return 0
 	//  if he can't get there (and return), 1 if he can.
@@ -2361,7 +2357,7 @@ USECODE_INTRINSIC(path_run_usecode) {
 }
 
 USECODE_INTRINSIC(close_gump) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// close_gump(container)
 	if (!gwin->is_dragging()) { // NOT while dragging stuff.
 		Game_object *obj = get_item(parms[0]);
@@ -2375,20 +2371,20 @@ USECODE_INTRINSIC(close_gump) {
 }
 
 USECODE_INTRINSIC(close_gumps) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms, parms);
+	ignore_unused_variable_warning(num_parms, parms);
 	if (!gwin->is_dragging())   // NOT while dragging stuff.
 		gumpman->close_all_gumps();
 	return(no_ret);
 }
 
 USECODE_INTRINSIC(in_gump_mode) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms, parms);
+	ignore_unused_variable_warning(num_parms, parms);
 	// No persistent
 	return Usecode_value(gumpman->showing_gumps(true));
 }
 
 USECODE_INTRINSIC(is_not_blocked) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Is_not_blocked(tile, shape, frame (or -359).
 	Usecode_value fail(0);
 	// Parm. 0 should be tile coords.
@@ -2419,7 +2415,7 @@ USECODE_INTRINSIC(is_not_blocked) {
 }
 
 USECODE_INTRINSIC(direction_from) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// ?Direction from parm[0] -> parm[1].
 	// Rets. 0-7, with 0 = North, 1 = Northeast, etc.
 	// Same as 0x1a??
@@ -2446,7 +2442,7 @@ static int Is_moving_barge_flag(
 }
 
 USECODE_INTRINSIC(get_item_flag) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Get npc flag(item, flag#).
 	Game_object *obj = get_item(parms[0]);
 	if (!obj)
@@ -2491,7 +2487,7 @@ USECODE_INTRINSIC(get_item_flag) {
 }
 
 USECODE_INTRINSIC(set_item_flag) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Set npc flag(item, flag#).
 	Game_object *obj = get_item(parms[0]);
 	int flag = parms[1].get_int_value();
@@ -2534,7 +2530,7 @@ USECODE_INTRINSIC(set_item_flag) {
 }
 
 USECODE_INTRINSIC(clear_item_flag) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Clear npc flag(item, flag#).
 	Game_object *obj = get_item(parms[0]);
 	int flag = parms[1].get_int_value();
@@ -2558,7 +2554,7 @@ USECODE_INTRINSIC(clear_item_flag) {
 }
 
 USECODE_INTRINSIC(set_path_failure) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// set_path_failure(fun, itemref, eventid) for the last NPC in
 	//  a path_run_usecode() call.
 
@@ -2577,7 +2573,7 @@ USECODE_INTRINSIC(set_path_failure) {
 }
 
 USECODE_INTRINSIC(fade_palette) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Fade(cycles?, ??(always 1), in_out (0=fade to black, 1=fade in)).
 	int cycles = parms[0].get_int_value();
 	int inout = parms[2].get_int_value();
@@ -2588,7 +2584,7 @@ USECODE_INTRINSIC(fade_palette) {
 }
 
 USECODE_INTRINSIC(get_party_list2) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms, parms);
+	ignore_unused_variable_warning(num_parms, parms);
 	// Return party.  Same as 0x23
 	// Probably returns a list of everyone with (or without) some flag
 	// List of live chars? Dead chars?
@@ -2597,7 +2593,7 @@ USECODE_INTRINSIC(get_party_list2) {
 }
 
 USECODE_INTRINSIC(set_camera) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Set_camera(actor)
 	Actor *actor = as_actor(get_item(parms[0]));
 	if (actor) {
@@ -2616,13 +2612,13 @@ USECODE_INTRINSIC(set_camera) {
 }
 
 USECODE_INTRINSIC(in_combat) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms, parms);
+	ignore_unused_variable_warning(num_parms, parms);
 	// Are we in combat mode?
 	return Usecode_value(gwin->in_combat());
 }
 
 USECODE_INTRINSIC(center_view) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Center view around given item.
 	Game_object *obj = get_item(parms[0]);
 	if (obj) {
@@ -2634,7 +2630,7 @@ USECODE_INTRINSIC(center_view) {
 }
 
 USECODE_INTRINSIC(view_tile) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Center view around given item.
 	Tile_coord t;
 	if (!parms[0].is_array() || parms[0].get_array_size() < 2)
@@ -2647,7 +2643,7 @@ USECODE_INTRINSIC(view_tile) {
 }
 
 USECODE_INTRINSIC(get_dead_party) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Return list of dead companions' bodies.
 	Game_object *obj = get_item(parms[0]);
 	if (!obj)
@@ -2667,7 +2663,6 @@ USECODE_INTRINSIC(get_dead_party) {
 }
 
 USECODE_INTRINSIC(play_sound_effect) {
-	ignore_unused_variable_warning(event, intrinsic);
 	if (num_parms < 1) return(no_ret);
 	// Play music(isongnum).
 	COUT("Sound effect " << parms[0].get_int_value() << " request in usecode");
@@ -2677,7 +2672,6 @@ USECODE_INTRINSIC(play_sound_effect) {
 }
 
 USECODE_INTRINSIC(play_sound_effect2) {
-	ignore_unused_variable_warning(event, intrinsic);
 	if (num_parms < 2) return(no_ret);
 	// Play music(songnum, item).
 	Game_object *obj = get_item(parms[1]);
@@ -2690,14 +2684,14 @@ USECODE_INTRINSIC(play_sound_effect2) {
 }
 
 USECODE_INTRINSIC(get_npc_id) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	Actor *actor = as_actor(get_item(parms[0]));
 	if (!actor) return(Usecode_value(0));
 	return Usecode_value(actor->get_ident());
 }
 
 USECODE_INTRINSIC(set_npc_id) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	Actor *actor = as_actor(get_item(parms[0]));
 	if (actor) actor->set_ident(parms[1].get_int_value());
 	return(no_ret);
@@ -2705,7 +2699,7 @@ USECODE_INTRINSIC(set_npc_id) {
 
 
 USECODE_INTRINSIC(add_cont_items) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Add items(num, item, ??quality?? (-359), frame (or -359), T/F).
 	return add_cont_items(parms[0], parms[1], parms[2],
 	                      parms[3], parms[4], parms[5]);
@@ -2713,7 +2707,7 @@ USECODE_INTRINSIC(add_cont_items) {
 
 // Is this SI Only
 USECODE_INTRINSIC(remove_cont_items) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Add items(num, item, ??quality?? (-359), frame (or -359), T/F).
 	return remove_cont_items(parms[0], parms[1], parms[2],
 	                         parms[3], parms[4], parms[5]);
@@ -2724,62 +2718,62 @@ USECODE_INTRINSIC(remove_cont_items) {
  */
 
 USECODE_INTRINSIC(show_npc_face0) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Show_npc_face0(npc, frame).  Show in position 0.
 	show_npc_face(parms[0], parms[1], 0);
 	return no_ret;
 }
 
 USECODE_INTRINSIC(show_npc_face1) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Show_npc_face1(npc, frame).  Show in position 1.
 	show_npc_face(parms[0], parms[1], 1);
 	return no_ret;
 }
 
 USECODE_INTRINSIC(remove_npc_face0) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms, parms);
+	ignore_unused_variable_warning(num_parms, parms);
 	show_pending_text();
 	conv->remove_slot_face(0);
 	return no_ret;
 }
 
 USECODE_INTRINSIC(remove_npc_face1) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms, parms);
+	ignore_unused_variable_warning(num_parms, parms);
 	show_pending_text();
 	conv->remove_slot_face(1);
 	return no_ret;
 }
 
 USECODE_INTRINSIC(change_npc_face0) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	show_pending_text();
 	conv->change_face_frame(parms[0].get_int_value(), 0);
 	return no_ret;
 }
 
 USECODE_INTRINSIC(change_npc_face1) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	show_pending_text();
 	conv->change_face_frame(parms[0].get_int_value(), 1);
 	return no_ret;
 }
 
 USECODE_INTRINSIC(set_conversation_slot) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// set_conversation_slot(0 or 1) - Choose which face is talking.
 	conv->set_slot(parms[0].get_int_value());
 	return no_ret;
 }
 
 USECODE_INTRINSIC(init_conversation) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms, parms);
+	ignore_unused_variable_warning(num_parms, parms);
 	init_conversation();
 	return no_ret;
 }
 
 USECODE_INTRINSIC(end_conversation) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms, parms);
+	ignore_unused_variable_warning(num_parms, parms);
 	show_pending_text();        // Wait for click if needed.
 	conv->init_faces();     // Removes faces from screen.
 	gwin->set_all_dirty();
@@ -2787,7 +2781,7 @@ USECODE_INTRINSIC(end_conversation) {
 }
 
 USECODE_INTRINSIC(si_path_run_usecode) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// exec(npc, loc(x,y,z)?, eventid, itemref, usecode#, ??true/false).
 	// Schedule Npc to walk to loc and then execute usecode.
 	// Guessing:
@@ -2798,7 +2792,6 @@ USECODE_INTRINSIC(si_path_run_usecode) {
 }
 
 USECODE_INTRINSIC(error_message) {
-	ignore_unused_variable_warning(event, intrinsic);
 	// exec(array)
 	// Output everything to stdout
 
@@ -2818,7 +2811,7 @@ USECODE_INTRINSIC(error_message) {
 }
 
 USECODE_INTRINSIC(set_polymorph) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// exec(npc, shape).
 	// Npc's shape is change to shape.
 	Actor *actor = as_actor(get_item(parms[0]));
@@ -2827,7 +2820,7 @@ USECODE_INTRINSIC(set_polymorph) {
 }
 
 USECODE_INTRINSIC(set_new_schedules) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// set_new_schedules ( npc, time, activity, [x, y] )
 	//
 	// or
@@ -2865,7 +2858,7 @@ USECODE_INTRINSIC(set_new_schedules) {
 }
 
 USECODE_INTRINSIC(revert_schedule) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// revert_schedule(npc)
 	// Reverts the schedule of the npc to the saved state in
 	// <STATIC>/schedule.dat
@@ -2877,7 +2870,7 @@ USECODE_INTRINSIC(revert_schedule) {
 }
 
 USECODE_INTRINSIC(run_schedule) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// run_schedule(npc)
 	// I think this is actually reset activity to current
 	// scheduled activity - Colourless
@@ -2892,7 +2885,7 @@ USECODE_INTRINSIC(run_schedule) {
 }
 
 USECODE_INTRINSIC(modify_schedule) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// modify_schedule ( npc, time, activity, [x, y] )
 
 	Actor *actor = as_actor(get_item(parms[0]));
@@ -2912,13 +2905,13 @@ USECODE_INTRINSIC(modify_schedule) {
 }
 
 USECODE_INTRINSIC(get_temperature) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	Actor *npc = as_actor(get_item(parms[0]));
 	return Usecode_value(npc ? npc->get_temperature() : 0);
 }
 
 USECODE_INTRINSIC(set_temperature) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// set_temperature(npc, value (0-63)).
 	Actor *npc = as_actor(get_item(parms[0]));
 	if (npc)
@@ -2927,7 +2920,7 @@ USECODE_INTRINSIC(set_temperature) {
 }
 
 USECODE_INTRINSIC(get_temperature_zone) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// get_temperature_zone(npc).
 	Actor *npc = as_actor(get_item(parms[0]));
 	if (npc)
@@ -2936,7 +2929,7 @@ USECODE_INTRINSIC(get_temperature_zone) {
 }
 
 USECODE_INTRINSIC(get_npc_warmth) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// get_npc_warmth(npc).
 	Actor *npc = as_actor(get_item(parms[0]));
 	if (npc)
@@ -3077,7 +3070,7 @@ USECODE_INTRINSIC(add_removed_npc) {
 #endif
 
 USECODE_INTRINSIC(approach_avatar) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Approach_avatar(npc, ?, ?).
 	// In the original, this intrinsic seems to create 'npc' off-screen, while it
 	// approaches the avatar due to si_path_run_usecode or the 'TALK' schedule.
@@ -3096,7 +3089,7 @@ USECODE_INTRINSIC(approach_avatar) {
 }
 
 USECODE_INTRINSIC(set_barge_dir) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// set_barge_dir(barge, dir (0-7)).
 	Game_object *obj = get_item(parms[0]);
 	int dir = parms[1].get_int_value();
@@ -3107,14 +3100,14 @@ USECODE_INTRINSIC(set_barge_dir) {
 }
 
 USECODE_INTRINSIC(telekenesis) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// telekenesis(fun#) - Save item for executing Usecode on.
 	telekenesis_fun = parms[0].get_int_value();
 	return no_ret;
 }
 
 USECODE_INTRINSIC(a_or_an) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// a_or_an (word)
 	// return a/an depending on 'word'
 
@@ -3126,7 +3119,7 @@ USECODE_INTRINSIC(a_or_an) {
 }
 
 USECODE_INTRINSIC(remove_from_area) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// Remove_from_area(shapenum, framenum, [x,y]from, [x,y]to).
 	int shnum = parms[0].get_int_value(), frnum = parms[1].get_int_value();
 	int fromx = parms[2].get_elem(0).get_int_value(),
@@ -3149,7 +3142,7 @@ USECODE_INTRINSIC(remove_from_area) {
 }
 
 USECODE_INTRINSIC(set_light) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// set_light(npc, onoff)
 	Game_object *light = get_item(parms[0]);
 	if (!light)
@@ -3168,7 +3161,7 @@ USECODE_INTRINSIC(set_light) {
 }
 
 USECODE_INTRINSIC(set_time_palette) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms, parms);
+	ignore_unused_variable_warning(num_parms, parms);
 	// set_time_palette()
 	gclock->reset();
 	gclock->set_palette();
@@ -3176,7 +3169,7 @@ USECODE_INTRINSIC(set_time_palette) {
 }
 
 USECODE_INTRINSIC(ambient_light) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// ambient_light(onoff)
 	// E.g., the cutscene with Batlin and Cantra.
 	gwin->toggle_ambient_light(parms[0].get_int_value() != 0);
@@ -3185,7 +3178,7 @@ USECODE_INTRINSIC(ambient_light) {
 }
 
 USECODE_INTRINSIC(infravision) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// infravision(npc, onoff)
 	Actor *npc = as_actor(get_item(parms[0]));
 	if (npc && npc->is_in_party()) {
@@ -3197,7 +3190,7 @@ USECODE_INTRINSIC(infravision) {
 
 // parms[0] = quality of key to be added
 USECODE_INTRINSIC(add_to_keyring) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	getKeyring()->addkey(parms[0].get_int_value());
 
 	return no_ret;
@@ -3207,7 +3200,7 @@ USECODE_INTRINSIC(add_to_keyring) {
 // returns true if key is on keyring
 
 USECODE_INTRINSIC(is_on_keyring) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	if (getKeyring()->checkkey(parms[0].get_int_value()))
 		return Usecode_value(true);
 	else
@@ -3216,13 +3209,13 @@ USECODE_INTRINSIC(is_on_keyring) {
 
 // parms[0] = quality of key to be removed
 USECODE_INTRINSIC(remove_from_keyring) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	bool ret = getKeyring()->removekey(parms[0].get_int_value());
 	return Usecode_value(ret);
 }
 
 USECODE_INTRINSIC(save_pos) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// save_pos(item).
 	Game_object *item = get_item(parms[0]);
 	if (item) {
@@ -3233,7 +3226,6 @@ USECODE_INTRINSIC(save_pos) {
 }
 
 USECODE_INTRINSIC(teleport_to_saved_pos) {
-	ignore_unused_variable_warning(event, intrinsic);
 	// teleport_to_saved_pos(actor).  Only supported for Avatar for now.
 	Actor *npc = as_actor(get_item(parms[0]));
 	if (npc == gwin->get_main_actor()) {
@@ -3248,7 +3240,7 @@ USECODE_INTRINSIC(teleport_to_saved_pos) {
 }
 
 USECODE_INTRINSIC(get_item_weight) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	Game_object *obj = get_item(parms[0]);
 	if (!obj)
 		return Usecode_value(0);
@@ -3257,7 +3249,7 @@ USECODE_INTRINSIC(get_item_weight) {
 }
 
 USECODE_INTRINSIC(get_skin_colour) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms, parms);
+	ignore_unused_variable_warning(num_parms, parms);
 	// Gets skin colour of avatar. 0 (wh), 1 (br) or 2 (bl)
 	Main_actor *av = gwin->get_main_actor();
 	return Usecode_value(av->get_skin_color());
@@ -3269,7 +3261,7 @@ USECODE_INTRINSIC(get_skin_colour) {
  *  Added for Exult.
  */
 USECODE_INTRINSIC(printf) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	Usecode_value ret("");
 	const char *fmt = parms[0].get_elem0().get_str_value();
 	int count;
@@ -3304,7 +3296,6 @@ USECODE_INTRINSIC(printf) {
 }
 
 USECODE_INTRINSIC(begin_casting_mode) {
-	ignore_unused_variable_warning(event, intrinsic);
 	Actor *npc = as_actor(get_item(parms[0]));
 	if (npc) {
 		// Have custom casting frames been specified?
@@ -3316,7 +3307,7 @@ USECODE_INTRINSIC(begin_casting_mode) {
 }
 
 USECODE_INTRINSIC(get_usecode_fun) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	Game_object *obj = get_item(parms[0]);
 	if (!obj)
 		return Usecode_value(0);
@@ -3324,7 +3315,7 @@ USECODE_INTRINSIC(get_usecode_fun) {
 }
 
 USECODE_INTRINSIC(set_usecode_fun) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	Actor *npc = as_actor(get_item(parms[0]));
 	if (!npc)
 		return (no_ret);
@@ -3338,7 +3329,7 @@ USECODE_INTRINSIC(set_usecode_fun) {
 }
 
 USECODE_INTRINSIC(get_map_num) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	Game_object *obj = get_item(parms[0]);
 	if (!obj)
 		return Usecode_value(-1);
@@ -3346,7 +3337,7 @@ USECODE_INTRINSIC(get_map_num) {
 }
 
 USECODE_INTRINSIC(is_dest_reachable) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	Usecode_value ret(0);
 	Actor *npc = as_actor(get_item(parms[0]));
 	if (!npc || parms[1].get_array_size() < 2)
@@ -3360,7 +3351,7 @@ USECODE_INTRINSIC(is_dest_reachable) {
 }
 
 USECODE_INTRINSIC(can_avatar_reach_pos) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	Usecode_value ret(0);
 	if (parms[0].get_array_size() < 2)
 		return ret;
@@ -3373,7 +3364,6 @@ USECODE_INTRINSIC(can_avatar_reach_pos) {
 }
 
 USECODE_INTRINSIC(create_barge_object) {
-	ignore_unused_variable_warning(event, intrinsic);
 	// create_barge_object (width, height, dir(0-7)).   Stores it in 'last_created'.
 	if (num_parms < 2)
 		return Usecode_value(0);
@@ -3391,7 +3381,7 @@ USECODE_INTRINSIC(create_barge_object) {
 }
 
 USECODE_INTRINSIC(in_usecode_path) {
-	ignore_unused_variable_warning(event, intrinsic, num_parms);
+	ignore_unused_variable_warning(num_parms);
 	// in_usecode_path (npc).   Returns true if actor is in a usecode path.
 
 	Actor *npc = as_actor(get_item(parms[0]));

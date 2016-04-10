@@ -1545,7 +1545,7 @@ static void Unhandled(
 
 Usecode_value no_ret;
 
-Usecode_value Usecode_internal::Execute_Intrinsic(UsecodeIntrinsicFn func, const char *name, int event, int intrinsic, int num_parms, Usecode_value parms[12]) {
+Usecode_value Usecode_internal::Execute_Intrinsic(UsecodeIntrinsicFn func, const char *name, int intrinsic, int num_parms, Usecode_value parms[12]) {
 #ifdef XWIN
 #if 0 && USECODE_DEBUGGER
 	if (usecode_debugging) {
@@ -1557,21 +1557,21 @@ Usecode_value Usecode_internal::Execute_Intrinsic(UsecodeIntrinsicFn func, const
 #endif
 #endif
 #ifndef DEBUG
-	ignore_unused_variable_warning(name);
+	ignore_unused_variable_warning(name, intrinsic);
 #else
 	if (intrinsic_trace) {
 		Usecode_Trace(name, intrinsic, num_parms, parms);
 		cout.flush();
-		Usecode_value u = ((*this).*func)(event, intrinsic, num_parms, parms);
+		Usecode_value u = ((*this).*func)(num_parms, parms);
 		Usecode_TraceReturn(u);
 		return (u);
 	}
 #endif
-	return ((*this).*func)(event, intrinsic, num_parms, parms);
+	return ((*this).*func)(num_parms, parms);
 }
 
 
-typedef Usecode_value(Usecode_internal::*UsecodeIntrinsicFn)(int event, int intrinsic, int num_parms, Usecode_value parms[12]);
+typedef Usecode_value(Usecode_internal::*UsecodeIntrinsicFn)(int num_parms, Usecode_value parms[12]);
 
 // missing from mingw32 header files, so included manually
 #ifndef __STRING
@@ -1603,7 +1603,6 @@ int max_bundled_intrinsics = 0x3ff; // Index of the last intrinsic in this table
  */
 
 Usecode_value Usecode_internal::call_intrinsic(
-    int event,          // Event type.
     int intrinsic,          // The ID.
     int num_parms           // # parms on stack.
 ) {
@@ -1621,7 +1620,7 @@ Usecode_value Usecode_internal::call_intrinsic(
 			table_entry = intrinsic_table + intrinsic;
 		UsecodeIntrinsicFn func = (*table_entry).func;
 		const char *name = (*table_entry).name;
-		return Execute_Intrinsic(func, name, event, intrinsic,
+		return Execute_Intrinsic(func, name, intrinsic,
 		                         num_parms, parms);
 	}
 	return(no_ret);
@@ -2542,8 +2541,7 @@ int Usecode_internal::run() {
 			case UC_CALLIS: {    // CALLIS.
 				offset = Read2(frame->ip);
 				sval = *(frame->ip)++;  // # of parameters.
-				Usecode_value ival = call_intrinsic(frame->eventid,
-				                                    offset, sval);
+				Usecode_value ival = call_intrinsic(offset, sval);
 				push(ival);
 				frame_changed = true;
 				break;
@@ -2551,7 +2549,7 @@ int Usecode_internal::run() {
 			case UC_CALLI:       // CALLI.
 				offset = Read2(frame->ip);
 				sval = *(frame->ip)++; // # of parameters.
-				call_intrinsic(frame->eventid, offset, sval);
+				call_intrinsic(offset, sval);
 				frame_changed = true;
 				break;
 			case UC_PUSHITEMREF:      // PUSH ITEMREF.
