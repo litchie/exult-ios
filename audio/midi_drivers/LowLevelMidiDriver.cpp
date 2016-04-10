@@ -1015,6 +1015,7 @@ void LowLevelMidiDriver::sequenceSendEvent(uint16 sequence_id, uint32 message)
 
 void LowLevelMidiDriver::sequenceSendSysEx(uint16 sequence_id, uint8 status, const uint8 *msg, uint16 length)
 {
+	ignore_unused_variable_warning(sequence_id);
 	// Ignore Metadata
 	if (status == 0xFF)
 		return;
@@ -1085,6 +1086,7 @@ void LowLevelMidiDriver::sequenceSendSysEx(uint16 sequence_id, uint8 status, con
 
 uint32 LowLevelMidiDriver::getTickCount(uint16 sequence_id)
 {
+	ignore_unused_variable_warning(sequence_id);
 	return xmidi_clock;
 }
 

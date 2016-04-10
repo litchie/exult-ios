@@ -20,6 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define _JAWBONE_H_
 
 #include "contain.h"
+#include "ignore_unused_variable_warning.h"
 
 class Jawbone_object : public Container_game_object {
 	friend class Jawbone_gump;
@@ -43,6 +44,7 @@ public:
 	// Under attack. -> do nothing
 	virtual Game_object *attacked(Game_object *attacker, int weapon_shape = -1,
 	                              int ammo_shape = -1, bool explosion = false) {
+		ignore_unused_variable_warning(attacker, weapon_shape, ammo_shape, explosion);
 		return this;
 	}
 

@@ -100,6 +100,8 @@ void Uc_assignment_statement::gen(
     Basic_block *start,         // Block used for 'continue' statements.
     Basic_block *exit           // Block used for 'break' statements.
 ) {
+	ignore_unused_variable_warning(fun, blocks, end, labels, start, exit);
+	ignore_unused_variable_warning(fun, blocks, end, labels, start, exit);
 	value->gen_value(curr);     // Get value on stack.
 	target->gen_assign(curr);
 }
@@ -195,6 +197,7 @@ void Uc_breakable_statement::gen(
     Basic_block *start,         // Block used for 'continue' statements.
     Basic_block *exit           // Block used for 'break' statements.
 ) {
+	ignore_unused_variable_warning(start, exit);
 	if (!stmt)  // Optimize whole statement away.
 		return;
 	Basic_block *past_block = new Basic_block();
@@ -225,6 +228,7 @@ void Uc_while_statement::gen(
     Basic_block *start,         // Block used for 'continue' statements.
     Basic_block *exit           // Block used for 'break' statements.
 ) {
+	ignore_unused_variable_warning(start, exit);
 	if (!stmt)  // Optimize whole loop away.
 		return;
 	// The start of a loop is a jump target and needs
@@ -280,6 +284,7 @@ void Uc_dowhile_statement::gen(
     Basic_block *start,         // Block used for 'continue' statements.
     Basic_block *exit           // Block used for 'break' statements.
 ) {
+	ignore_unused_variable_warning(start, exit);
 	if (!stmt)  // Optimize whole loop away.
 		return;
 	// The start of a loop is a jump target and needs
@@ -328,6 +333,7 @@ void Uc_infinite_loop_statement::gen(
     Basic_block *start,         // Block used for 'continue' statements.
     Basic_block *exit           // Block used for 'break' statements.
 ) {
+	ignore_unused_variable_warning(start, exit);
 	if (!stmt)  // Optimize whole loop away.
 		return;
 	// The start of a loop is a jump target and needs
@@ -389,6 +395,7 @@ void Uc_arrayloop_statement::gen(
     Basic_block *start,         // Block used for 'continue' statements.
     Basic_block *exit           // Block used for 'break' statements.
 ) {
+	ignore_unused_variable_warning(start, exit);
 	if (!stmt)
 		return;         // Nothing useful to do.
 	// Start of loop.
@@ -446,6 +453,7 @@ void Uc_return_statement::gen(
     Basic_block *start,         // Block used for 'continue' statements.
     Basic_block *exit           // Block used for 'break' statements.
 ) {
+	ignore_unused_variable_warning(fun, labels, start, exit);
 	if (expr) {         // Returning something?
 		int ival;
 		if (expr->eval_const(ival) && !ival)
@@ -475,6 +483,7 @@ void Uc_break_statement::gen(
     Basic_block *start,         // Block used for 'continue' statements.
     Basic_block *exit           // Block used for 'break' statements.
 ) {
+	ignore_unused_variable_warning(fun, end, labels, start);
 	curr->set_targets(UC_JMP, exit);
 	curr = new Basic_block();
 	blocks.push_back(curr);
@@ -490,6 +499,7 @@ void Uc_continue_statement::gen(
     Basic_block *start,         // Block used for 'continue' statements.
     Basic_block *exit           // Block used for 'break' statements.
 ) {
+	ignore_unused_variable_warning(fun, end, labels, exit);
 	curr->set_targets(UC_JMP, start);
 	curr = new Basic_block();
 	blocks.push_back(curr);
@@ -505,6 +515,7 @@ void Uc_label_statement::gen(
     Basic_block *start,         // Block used for 'continue' statements.
     Basic_block *exit           // Block used for 'break' statements.
 ) {
+	ignore_unused_variable_warning(fun, end, start, exit);
 	map<string, Basic_block *>::iterator it = labels.find(label);
 	// Should never fail, but...
 	assert(it != labels.end());
@@ -525,6 +536,7 @@ void Uc_goto_statement::gen(
     Basic_block *start,         // Block used for 'continue' statements.
     Basic_block *exit           // Block used for 'break' statements.
 ) {
+	ignore_unused_variable_warning(fun, end, start, exit);
 	map<string, Basic_block *>::iterator it = labels.find(label);
 	if (it != labels.end()) {
 		Basic_block *l = it->second;
@@ -676,6 +688,7 @@ void Uc_converse_statement::gen(
     Basic_block *start,         // Block used for 'continue' statements.
     Basic_block *exit           // Block used for 'break' statements.
 ) {
+	ignore_unused_variable_warning(start, exit);
 	if (cases.empty())  // Nothing to do; optimize whole block away.
 		return;
 	if (nest++ > 0 || nestconv)         // Not the outermost?
@@ -741,6 +754,7 @@ int Uc_switch_expression_case_statement::gen_check(
     map<string, Basic_block *> &labels, // Label map for goto statements.
     Basic_block *case_block     // Pointer to the case statements.
 ) {
+	ignore_unused_variable_warning(fun, end, labels);
 	check->gen_value(curr);
 	WriteOp(curr, UC_CMPNE);
 	Basic_block *block = new Basic_block();
@@ -815,6 +829,7 @@ void Uc_switch_statement::gen(
     Basic_block *start,         // Block used for 'continue' statements.
     Basic_block *exit           // Block used for 'break' statements.
 ) {
+	ignore_unused_variable_warning(exit);
 	Uc_var_expression *var = new Uc_var_expression(cond->need_var(curr, fun));
 	vector<Basic_block *> case_blocks;
 	Basic_block *def_case = 0;
@@ -869,6 +884,7 @@ void Uc_message_statement::gen(
     Basic_block *start,         // Block used for 'continue' statements.
     Basic_block *exit           // Block used for 'break' statements.
 ) {
+	ignore_unused_variable_warning(blocks, end, labels, start, exit);
 	if (!msgs)
 		return;
 	const std::vector<Uc_expression *> &exprs = msgs->get_exprs();
@@ -946,6 +962,7 @@ void Uc_call_statement::gen(
     Basic_block *start,         // Block used for 'continue' statements.
     Basic_block *exit           // Block used for 'break' statements.
 ) {
+	ignore_unused_variable_warning(fun, blocks, end, labels, start, exit);
 	function_call->gen_value(curr); // (We set 'no_return'.)
 }
 
@@ -962,6 +979,7 @@ void Uc_abort_statement::gen(
     Basic_block *start,         // Block used for 'continue' statements.
     Basic_block *exit           // Block used for 'break' statements.
 ) {
+	ignore_unused_variable_warning(fun, labels, start, exit);
 	WriteOp(curr, UC_ABRT);
 	curr->set_targets(UC_INVALID, end);
 	curr = new Basic_block();
@@ -981,6 +999,7 @@ void Uc_delete_statement::gen(
     Basic_block *start,         // Block used for 'continue' statements.
     Basic_block *exit           // Block used for 'break' statements.
 ) {
+	ignore_unused_variable_warning(fun, blocks, end, labels, start, exit);
 	if (!expr)
 		return;
 	expr->gen_value(curr);

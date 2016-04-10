@@ -36,6 +36,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ucfun.h"
 #include "ucclass.h"
 #include "basic_block.h"
+#include "ignore_unused_variable_warning.h"
 
 using std::strcmp;
 
@@ -52,6 +53,7 @@ bool Uc_function_symbol::new_auto_num = false;
 int Uc_symbol::gen_assign(
     Basic_block *out
 ) {
+	ignore_unused_variable_warning(out);
 	return 0;
 }
 
@@ -64,6 +66,7 @@ int Uc_symbol::gen_assign(
 int Uc_symbol::gen_value(
     Basic_block *out
 ) {
+	ignore_unused_variable_warning(out);
 	return 0;
 }
 
@@ -82,6 +85,7 @@ int Uc_symbol::gen_call(
     bool retvalue,          // True if a function.
     Uc_class *scope_vtbl    // For method calls using a different scope.
 ) {
+	ignore_unused_variable_warning(out, fun, orig, itemref, parms, retvalue, scope_vtbl);
 	return 0;
 }
 
@@ -352,6 +356,7 @@ int Uc_intrinsic_symbol::gen_call(
     bool retvalue,          // True if a function.
     Uc_class *scope_vtbl    // For method calls using a different scope.
 ) {
+	ignore_unused_variable_warning(fun, orig, scope_vtbl);
 	int parmcnt = parms->gen_values(out);   // Want to push parm. values.
 	if (itemref) {          // Happens with 'method' call.
 		itemref->gen_value(out);

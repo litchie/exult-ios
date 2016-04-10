@@ -35,6 +35,7 @@
 #include "effects.h"
 #include "ucmachine.h"
 #include "actors.h"
+#include "ignore_unused_variable_warning.h"
 
 #ifndef UNDER_EMBEDDED_CE
 using std::rand;
@@ -57,6 +58,7 @@ public:
 	// Move to new abs. location.
 	virtual void move(int newtx, int newty, int newlift, int newmap = -1);
 	virtual void lay_down(bool die) {
+		ignore_unused_variable_warning(die);
 		remove_this(1);         // Remove (but don't delete this).
 		set_invalid();
 	}
@@ -389,6 +391,7 @@ bool Monster_actor::add(
     //   cause obj to be deleted.
     bool noset      // True to prevent actors from setting sched. weapon.
 ) {
+	ignore_unused_variable_warning(dont_check);
 	// Try to add to 'readied' spot.
 	if (Npc_actor::add(obj, true, combine, noset))
 		return (true);      // Successful.
@@ -550,6 +553,7 @@ int Slime_actor::step(
     int frame,          // New frame # (ignored).
     bool force
 ) {
+	ignore_unused_variable_warning(frame);
 	// Save old pos.
 	Tile_coord oldpos = get_tile();
 	int ret = Monster_actor::step(t, -1, force);

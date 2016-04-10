@@ -24,6 +24,7 @@
 #include "ibuf8.h"
 #include "vgafile.h"
 #include "exceptions.h"
+#include "ignore_unused_variable_warning.h"
 
 #ifndef UNDER_EMBEDDED_CE
 using std::cout;
@@ -248,6 +249,7 @@ int Font::paint_text(
     int xoff, int yoff,     // Upper-left corner of where to start.
     unsigned char *trans
 ) {
+	ignore_unused_variable_warning(win);
 	int x = xoff;
 	int chr;
 	yoff += get_text_baseline();
@@ -277,6 +279,7 @@ int Font::paint_text(
     int textlen,            // Length of text.
     int xoff, int yoff      // Upper-left corner of where to start.
 ) {
+	ignore_unused_variable_warning(win);
 	int x = xoff;
 	yoff += get_text_baseline();
 	if (font_shapes)
@@ -434,6 +437,7 @@ int Font::paint_text_fixedwidth(
     int xoff, int yoff,     // Upper-left corner of where to start.
     int width           // Width of each character
 ) {
+	ignore_unused_variable_warning(win);
 	int x = xoff;
 	int w;
 	int chr;
@@ -463,6 +467,7 @@ int Font::paint_text_fixedwidth(
     int xoff, int yoff,     // Upper-left corner of where to start.
     int width           // Width of each character
 ) {
+	ignore_unused_variable_warning(win);
 	int w;
 	int x = xoff;
 	yoff += get_text_baseline();

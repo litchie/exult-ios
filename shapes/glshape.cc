@@ -31,6 +31,7 @@
 #include "utils.h"
 #include "exult_constants.h"
 #include "ibuf8.h"
+#include "ignore_unused_variable_warning.h"
 
 GL_manager *GL_manager::instance = 0;
 
@@ -487,6 +488,7 @@ void GL_manager::paint_transformed(
 	const unsigned char transform_alpha = 64;
 	Paint_trans<Xform_palette &, &Shape_frame::paint_rle_transformed> f(xform);
 #else
+	ignore_unused_variable_warning(xform);
 	const unsigned char transform_alpha = 96;
 	Paint f(0, 0);
 #endif

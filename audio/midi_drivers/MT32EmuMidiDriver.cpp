@@ -18,6 +18,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "pent_include.h"
 #include "MT32EmuMidiDriver.h"
+#include "ignore_unused_variable_warning.h"
 
 #ifdef USE_MT32EMU_MIDI
 
@@ -42,6 +43,7 @@ using namespace Pentagram;
 
 static void nullprintDebug(void *userData, const char *fmt, va_list list)
 {
+	ignore_unused_variable_warning(userData, fmt, list);
 }
 
 
@@ -65,6 +67,7 @@ static File *openFileProc
 	File::OpenMode mode
 	)
 	{
+	ignore_unused_variable_warning(userData);
 	ANSIFile *file = new ANSIFile();
 	std::string basedir;
 	if (mode == File::OpenMode_read)

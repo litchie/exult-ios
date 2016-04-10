@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "exult_constants.h"
 #include "npcdollinf.h"
+#include "ignore_unused_variable_warning.h"
 using std::istream;
 
 bool Paperdoll_npc::read(
@@ -32,6 +33,7 @@ bool Paperdoll_npc::read(
     int version,        // Data file version.
     Exult_Game game     // Loading BG file.
 ) {
+	ignore_unused_variable_warning(version, game);
 	int sexflag = ReadInt(in);
 	if (sexflag == -0xff) { // means delete entry.
 		set_invalid(true);

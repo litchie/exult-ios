@@ -40,6 +40,7 @@ using std::cout;
 #include "useval.h"
 #include "game.h"
 #include "stackframe.h"
+#include "ignore_unused_variable_warning.h"
 
 int Usecode_internal::get_opcode_length(int opcode) {
 	if (opcode >= 0 &&
@@ -65,6 +66,7 @@ void Usecode_internal::uc_trace_disasm(Usecode_value *locals, int num_locals,
                                        std::vector<Usecode_value> &locstatics,
                                        uint8 *data, uint8 *externals,
                                        uint8 *code, uint8 *ip) {
+	ignore_unused_variable_warning(num_locals);
 	int func_ip = static_cast<int>(ip - code);
 	int opcode = *ip++;
 	uint8 *param_ip = ip;

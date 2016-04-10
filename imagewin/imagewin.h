@@ -35,6 +35,7 @@ Boston, MA  02111-1307, USA.
 
 #include "SDL_video.h"
 #include "sdl-compat.h"
+#include "ignore_unused_variable_warning.h"
 
 struct SDL_Surface;
 struct SDL_RWops;
@@ -424,11 +425,13 @@ public:
 	void toggle_fullscreen();
 	// Set palette.
 	virtual void set_palette(unsigned char *rgbs, int maxval,
-	                         int brightness = 100)
-	{  }
+	                         int brightness = 100) {
+		ignore_unused_variable_warning(rgbs, maxval, brightness);
+	}
 	// Rotate palette colors.
-	virtual void rotate_colors(int first, int num, int upd)
-	{  }
+	virtual void rotate_colors(int first, int num, int upd) {
+		ignore_unused_variable_warning(first, num, upd);
+	}
 	/*
 	*   16-bit color methods.
 	*/

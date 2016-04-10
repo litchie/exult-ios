@@ -65,6 +65,7 @@ exult_SOURCES =	\
 	gamewin.cc	\
 	gamewin.h	\
 	hash_utils.h	\
+	ignore_unused_variable_warning.h	\
 	istring.cc	\
 	istring.h	\
 	keys.cc		\

@@ -37,6 +37,7 @@
 #include "vgafile.h"
 #include "pngio.h"
 #include "ibuf8.h"
+#include "ignore_unused_variable_warning.h"
 
 using namespace std;
 
@@ -166,6 +167,7 @@ struct Render_frame {
 	    int w, int h,
 	    int xo, int yo
 	) {
+		ignore_unused_variable_warning(w, h);
 		frame->paint(&img, xo + frame->get_xleft(), yo + frame->get_yabove());
 	}
 };
@@ -181,6 +183,7 @@ struct Render_tiles {
 	    int w, int h,
 	    int xo, int yo
 	) {
+		ignore_unused_variable_warning(h);
 		int nframes = shape->get_num_frames();
 		int dim0_cnt = w / 8;
 		for (int f = 0; f < nframes; f++) {

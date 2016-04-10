@@ -51,6 +51,7 @@
 #include "exceptions.h"
 #include "ready.h"
 #include "data_utils.h"
+#include "ignore_unused_variable_warning.h"
 
 using std::ifstream;
 using std::ios;
@@ -71,6 +72,7 @@ static bool U7open2(
     const char *fname,      // File name.
     bool editing
 ) {
+	ignore_unused_variable_warning(editing);
 	if (pname) {
 		U7open(in, pname);
 		return true;
@@ -97,6 +99,7 @@ extern int get_skinvar(std::string key);
 class Paperdoll_npc_ID_reader {
 public:
 	int operator()(std::istream &in, int index, int version, bool binary) {
+		ignore_unused_variable_warning(index, version, binary);
 		if (in.peek() == '%') {
 			std::string key = ReadStr(in);
 			// We need these for Exult, but not for ES.
@@ -115,6 +118,7 @@ public:
 class Body_ID_reader {
 public:
 	int operator()(std::istream &in, int index, int version, bool binary) {
+		ignore_unused_variable_warning(binary);
 		return version == 1 ? index : ReadInt(in);
 	}
 };
@@ -124,6 +128,7 @@ class Gump_reader_functor {
 public:
 	bool operator()(std::istream &in, int version, bool patch,
 	                Exult_Game game, Shape_info &info) {
+		ignore_unused_variable_warning(patch, game);
 		info.gump_shape = Read2(in);
 		if (version >= 2)
 			info.gump_font = Read2(in);
@@ -186,6 +191,7 @@ class Paperdoll_npc_functor {
 public:
 	void operator()(std::istream &in, int version, bool patch,
 	                Exult_Game game, Shape_info &info) {
+		ignore_unused_variable_warning(patch, game);
 		if (version < 3)
 			// We need this for backward compatibility.
 			// We use the setter methods so that the info

@@ -43,6 +43,7 @@
 #include "gamemgr/modmgr.h"
 #include "gumps/Gamemenu_gump.h"
 #include "shapeid.h"
+#include "ignore_unused_variable_warning.h"
 
 static bool get_play_intro(void);
 static void set_play_intro(bool);
@@ -76,6 +77,7 @@ static inline bool handle_menu_click(
 }
 
 int maximum_size(Font *font, const char *options[], int num_choices, int centerx) {
+	ignore_unused_variable_warning(centerx);
 	int max_width = 0, width;
 	for (int i = 0; i < num_choices; i++) {
 		width = font->get_text_width(options[i]);
@@ -649,22 +651,24 @@ BaseGameInfo *ExultMenu::run() {
 	return sel_game;
 }
 
-bool get_play_intro(void) {
+bool get_play_intro() {
 	std::string yn;
 	config->value("config/gameplay/skip_splash", yn, "no");
 	return(yn == "no");
 }
 
 void set_play_intro(bool play) {
+	ignore_unused_variable_warning(play);
 	config->set("config/gameplay/skip_splash", play ? "no" : "yes", true);
 }
 
-bool get_play_1st_scene(void) {
+bool get_play_1st_scene() {
 	std::string yn;
 	config->value("config/gameplay/skip_intro", yn, "no");
 	return(yn == "no");
 }
 
 void set_play_1st_scene(bool play) {
+	ignore_unused_variable_warning(play);
 	config->set("config/gameplay/skip_intro", play ? "no" : "yes", true);
 }

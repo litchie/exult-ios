@@ -48,6 +48,7 @@
 #include "frflags.h"
 #include "find_nearby.h"
 #include "usefuns.h"
+#include "ignore_unused_variable_warning.h"
 
 #ifndef ALPHA_LINUX_CXX
 #  include <cstring>
@@ -169,6 +170,7 @@ Tile_coord Game_object::get_center_tile(
 Tile_coord Game_object::get_missile_tile(
     int dir
 ) const {
+	ignore_unused_variable_warning(dir);
 	if (!chunk) {
 #if DEBUG
 		cout << "Asking missile tile for obj. " << get_shapenum()
@@ -425,6 +427,7 @@ int Game_object::get_weapon_ammo(
 }
 
 int Game_object::get_effective_obj_hp(int weapon_shape) const {
+	ignore_unused_variable_warning(weapon_shape);
 	int hps = get_obj_hp();
 	if (!hps) {
 		Shape_info &inf = get_info();
@@ -1194,6 +1197,7 @@ bool Game_object::add(
     //   cause obj to be deleted.
     bool noset      // True to prevent actors from setting sched. weapon.
 ) {
+	ignore_unused_variable_warning(dont_check, noset);
 	return combine ? drop(obj) != 0 : false;
 }
 
@@ -1439,6 +1443,7 @@ int Game_object::apply_damage(
     int bias,       // Different combat difficulty.
     int *exp
 ) {
+	ignore_unused_variable_warning(bias);
 	if (exp)
 		exp = 0;
 	int damage = 0;

@@ -36,6 +36,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "npcdollinf.h"
 #include "objdollinf.h"
 #include "weaponinf.h"
+#include "ignore_unused_variable_warning.h"
 
 #ifndef ALPHA_LINUX_CXX
 #  include <cstdio>
@@ -185,6 +186,7 @@ Paperdoll_gump::Paperdoll_gump(
     int initx, int inity,       // Coords. on screen.
     int shnum           // Shape #.
 ) : Gump(cont, initx, inity, 123, SF_PAPERDOL_VGA) {
+	ignore_unused_variable_warning(shnum);
 	set_object_area(Rectangle(26, 0, 104, 140), 6, 145);
 
 	// Create Heart button
@@ -287,6 +289,7 @@ int Paperdoll_gump::add(
     bool combine            // True to try to combine obj.  MAY
     //   cause obj to be deleted.
 ) {
+	ignore_unused_variable_warning(sx, sy);
 	do {
 		Game_object *cont = find_object(mx, my);
 
@@ -983,6 +986,7 @@ bool Paperdoll_gump::check_shape(
 }
 
 Container_game_object *Paperdoll_gump::find_actor(int mx, int my) {
+	ignore_unused_variable_warning(mx, my);
 	return container;
 }
 

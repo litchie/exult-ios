@@ -26,6 +26,7 @@
 #include "utils.h"      // This is only included for Log2...
 #include "flags.h"
 #include "ready.h"
+#include "ignore_unused_variable_warning.h"
 
 class Image_window;
 class Game_window;
@@ -419,8 +420,9 @@ public:
 	{  }
 	// Update schedule for new 3-hour time.
 	virtual void update_schedule(int hour3, int delay = -1,
-	                             Tile_coord *pos = 0)
-	{  }
+	                             Tile_coord *pos = 0) {
+		ignore_unused_variable_warning(hour3, delay, pos);
+	}
 	// Render.
 	virtual void paint();
 	// Run usecode function.
@@ -645,7 +647,9 @@ public:
 	void read(DataSource *nfile, int num, bool has_usecode,
 	          bool &fix_unused);
 	// Don't write out to IREG file.
-	virtual void write_ireg(DataSource *out) {  }
+	virtual void write_ireg(DataSource *out) {
+		ignore_unused_variable_warning(out);
+	}
 	virtual int get_ireg_size() {
 		return 0;
 	}
@@ -668,14 +672,25 @@ public:
 	}
 
 	// Set schedule list.
-	virtual void set_schedules(Schedule_change *list, int cnt) { }
-	virtual void set_schedule_time_type(int time, int type) { }
-	virtual void set_schedule_time_location(int time, int x, int y) { }
-	virtual void remove_schedule(int time) { }
+	virtual void set_schedules(Schedule_change *list, int cnt) {
+		ignore_unused_variable_warning(list, cnt);
+	}
+	virtual void set_schedule_time_type(int time, int type) {
+		ignore_unused_variable_warning(time, type);
+	}
+	virtual void set_schedule_time_location(int time, int x, int y) {
+		ignore_unused_variable_warning(time, x, y);
+	}
+	virtual void remove_schedule(int time) {
+		ignore_unused_variable_warning(time);
+	}
 	virtual void get_schedules(Schedule_change *&list, int &cnt) {
 		list = NULL, cnt = 0;
 	}
-	virtual int find_schedule_at_time(int hour3) { return -1; }
+	virtual int find_schedule_at_time(int hour3) {
+		ignore_unused_variable_warning(hour3);
+		return -1;
+	}
 
 	void show_inventory();
 	int inventory_shapenum();
@@ -804,6 +819,7 @@ public:
 	// Under attack.
 	virtual Game_object *attacked(Game_object *attacker, int weapon_shape = 0,
 	                              int ammo_shape = 0, bool explosion = false) {
+		ignore_unused_variable_warning(attacker, weapon_shape, ammo_shape, explosion);
 		return this;    // Not affected.
 	}
 	virtual void write_ireg(DataSource *out);

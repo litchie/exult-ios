@@ -71,7 +71,7 @@ void speedtest() {
 }
 #endif
 
-int main(int argc, char *argv[]) {
+int main() {
 	istringstream iss(ss_data);
 
 	uint8 outread1 = Read1(iss);

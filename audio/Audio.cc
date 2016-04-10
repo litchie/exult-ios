@@ -17,6 +17,7 @@
 */
 
 #include "pent_include.h"
+#include "ignore_unused_variable_warning.h"
 
 #include <SDL_audio.h>
 #include <SDL_timer.h>
@@ -379,6 +380,7 @@ bool Audio::have_midi_sfx(std::string *out)
 #ifdef ENABLE_MIDISFX
 	return can_sfx(SFX_MIDIFILE, out);
 #else
+	ignore_unused_variable_warning(out);
 	return false;
 #endif
 	}
@@ -485,6 +487,7 @@ void	Audio::copy_and_play(const uint8 *sound_data,uint32 len, bool wait)
 
 void	Audio::play(uint8 *sound_data,uint32 len, bool wait)
 {
+	ignore_unused_variable_warning(wait);
 	if (!audio_enabled || !speech_enabled || !len) return;
 
 	AudioSample *audio_sample = AudioSample::createAudioSample(sound_data,len);

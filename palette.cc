@@ -30,6 +30,7 @@
 #include "fnames.h"
 #include "gamewin.h"
 #include "exceptions.h"
+#include "ignore_unused_variable_warning.h"
 
 #include "SDL_timer.h"
 
@@ -319,6 +320,7 @@ static inline void glfade(
     int brightness
 ) {
 #if 1
+	ignore_unused_variable_warning(cycles);
 	win->set_palette(fadein ? pal1 : pal2, max_val, brightness);
 	win->show();
 #else

@@ -19,6 +19,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef AUDIOSAMPLE_H_INCLUDED
 #define AUDIOSAMPLE_H_INCLUDED
 
+#include "ignore_unused_variable_warning.h"
+
 class IDataSource;
 
 namespace Pentagram {
@@ -54,7 +56,9 @@ public:
 	virtual void initDecompressor(void *DecompData) const = 0;
 	virtual uint32 decompressFrame(void *DecompData, void *samples) const = 0;
 	virtual void rewind(void *DecompData) const = 0;
-	virtual void freeDecompressor(void *DecompData) const { };
+	virtual void freeDecompressor(void *DecompData) const {
+		ignore_unused_variable_warning(DecompData);
+	}
 
 	void			IncRef() { refcount++; }
 	void			Release() {

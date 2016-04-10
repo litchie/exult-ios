@@ -42,6 +42,7 @@
 #include "data/exult_si_flx.h"
 #include "miscinf.h"
 #include "gump_utils.h"
+#include "ignore_unused_variable_warning.h"
 
 #ifndef UNDER_EMBEDDED_CE
 using std::cout;
@@ -946,6 +947,7 @@ public:
 };
 
 bool ExCineVoc::play_it(Image_window *win, uint32 t) {
+	ignore_unused_variable_warning(win, t);
 	size_t  size;
 	U7multiobject voc(file, patch, index);
 	uint8 *buffer = reinterpret_cast<uint8 *>(voc.retrieve(size));
@@ -997,6 +999,7 @@ struct ExSubEvent {
 // Serpent Isle Endgame
 //
 void SI_Game::end_game(bool success) {
+	ignore_unused_variable_warning(success);
 	Audio *audio = Audio::get_ptr();
 	if (audio) {
 		audio->stop_music();

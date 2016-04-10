@@ -19,6 +19,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef MIDIDRIVER_H_INCLUDED
 #define MIDIDRIVER_H_INCLUDED
 
+#include "ignore_unused_variable_warning.h"
+
 class XMidiEventList;
 class IDataSource;
 
@@ -104,7 +106,10 @@ public:
 
 	//! Get the callback data for a specified sequence
 	//! \param seq_num The Sequence to get callback data from
-	virtual uint32		getSequenceCallbackData(int seq_num) { return 0; }
+	virtual uint32		getSequenceCallbackData(int seq_num) {
+		ignore_unused_variable_warning(seq_num);
+		return 0;
+	}
 
 	//! Is this a Software Synth/Sample producer
 	virtual bool		isSampleProducer() { return false; }
@@ -112,7 +117,9 @@ public:
 	//! Produce Samples when doing Software Synthesizing
 	//! \param samples The buffer to fill with samples
 	//! \param bytes The number of bytes of music to produce
-	virtual void		produceSamples(sint16 *samples, uint32 bytes) { }
+	virtual void		produceSamples(sint16 *samples, uint32 bytes) {
+		ignore_unused_variable_warning(samples, bytes);
+	}
 
 	//! Is this a FM Synth and should use the Adlib Tracks?
 	virtual bool		isFMSynth() { return false; }
@@ -124,7 +131,9 @@ public:
 	virtual bool		noTimbreSupport() { return false; }
 
 	//! Load the Timbre Library
-	virtual void		loadTimbreLibrary(IDataSource*, TimbreLibraryType type) { };
+	virtual void		loadTimbreLibrary(IDataSource*, TimbreLibraryType type) {
+		ignore_unused_variable_warning(type);
+	};
 
 	//! Destructor
 	virtual ~MidiDriver() { };

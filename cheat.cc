@@ -48,6 +48,7 @@
 #ifdef USE_EXULTSTUDIO  /* Only needed for exult studio. */
 #include "server.h"
 #include "servemsg.h"
+#include "ignore_unused_variable_warning.h"
 
 #ifdef WIN32
 #ifndef WIN32_LEAN_AND_MEAN
@@ -245,6 +246,7 @@ void Cheat::clear_chunksel(void) {
 }
 
 void Cheat::add_chunksel(Map_chunk *chunk, bool extend) {
+	ignore_unused_variable_warning(extend);
 	chunk->set_selected(true);
 	int cx = chunk->get_cx(), cy = chunk->get_cy();
 	if (cx < chunksel_left)

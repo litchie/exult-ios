@@ -46,6 +46,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "weaponinf.h"
 #include "ready.h"
 #include "data_utils.h"
+#include "ignore_unused_variable_warning.h"
 
 #include "utils.h"
 #include <vector>
@@ -230,6 +231,7 @@ Animation_info *Shape_info::get_animation_info_safe(
     int shnum,
     int nframes
 ) {
+	ignore_unused_variable_warning(shnum);
 	if (!aniinf)
 		aniinf = Animation_info::create_from_tfa(0, nframes);
 	return aniinf;

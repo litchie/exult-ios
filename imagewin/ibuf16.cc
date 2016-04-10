@@ -24,6 +24,7 @@
 #endif
 
 #include "ibuf16.h"
+#include "ignore_unused_variable_warning.h"
 #ifndef ALPHA_LINUX_CXX
 #  include <cstring>
 #  include <cstdlib>
@@ -266,6 +267,7 @@ void Image_buffer16::rotate_colors(
     int num,            // # in range.
     int upd             // 1 to update hardware now.
 ) {
+	ignore_unused_variable_warning(upd);
 	int cnt = abs(num);
 	unsigned short *start = palette + first, *finish = start + cnt;
 	if (num > 0) {

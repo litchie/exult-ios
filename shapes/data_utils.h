@@ -33,6 +33,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "databuf.h"
 #include "msgfile.h"
 #include "fnames.h"
+#include "ignore_unused_variable_warning.h"
 using std::istream;
 using std::ifstream;
 using std::istringstream;
@@ -224,8 +225,9 @@ class Base_reader {
 protected:
 	bool haveversion;
 	virtual void read_data(std::istream &in, size_t index, int version,
-	                       bool patch, Exult_Game game, bool binary)
-	{  }
+	                       bool patch, Exult_Game game, bool binary) {
+		ignore_unused_variable_warning(in, index, version, patch, game, binary);
+	}
 	// Binary data file.
 	void read_binary_internal(std::istream &in, bool patch, Exult_Game game) {
 		int vers = 0;
@@ -288,6 +290,7 @@ public:
 class ID_reader_functor {
 public:
 	int operator()(std::istream &in, int index, int version, bool binary) {
+		ignore_unused_variable_warning(index, version);
 		return binary ? Read2(in) : ReadInt(in);
 	}
 };
@@ -300,6 +303,7 @@ class Null_functor {
 public:
 	void operator()(std::istream &in, int version, bool patch,
 	                Exult_Game game, Info &info) {
+		ignore_unused_variable_warning(in, info, version, patch, game);
 	}
 };
 
@@ -308,6 +312,7 @@ class Patch_flags_functor {
 public:
 	void operator()(std::istream &in, int version, bool patch,
 	                Exult_Game game, Info &info) {
+		ignore_unused_variable_warning(in, version, game);
 		if (patch)
 			info.frompatch_flags |= flag;
 	}
@@ -371,6 +376,7 @@ class Text_reader_functor {
 public:
 	bool operator()(std::istream &in, int version, bool patch,
 	                Exult_Game game, Info &info) {
+		ignore_unused_variable_warning(version, patch, game);
 		info.*data = ReadInt(in);
 		return true;
 	}
@@ -381,6 +387,7 @@ class Text_pair_reader_functor {
 public:
 	bool operator()(std::istream &in, int version, bool patch,
 	                Exult_Game game, Info &info) {
+		ignore_unused_variable_warning(version, patch, game);
 		info.*data1 = ReadInt(in, -1);
 		info.*data2 = ReadInt(in, -1);
 		return true;
@@ -392,6 +399,7 @@ class Bit_text_reader_functor {
 public:
 	bool operator()(std::istream &in, int version, bool patch,
 	                Exult_Game game, Info &info) {
+		ignore_unused_variable_warning(version, patch, game);
 		// For backwards compatibility.
 		bool biton = ReadInt(in, 1) != 0;
 		if (biton)
@@ -407,6 +415,7 @@ class Bit_field_text_reader_functor {
 public:
 	bool operator()(std::istream &in, int version, bool patch,
 	                Exult_Game game, Info &info) {
+		ignore_unused_variable_warning(version, patch, game);
 		int size = 8 * sizeof(T); // Bit count.
 		int bit = 0;
 		T flags = 0;
@@ -427,6 +436,7 @@ class Binary_reader_functor {
 public:
 	bool operator()(std::istream &in, int version, bool patch,
 	                Exult_Game game, Info &info) {
+		ignore_unused_variable_warning(version, patch, game);
 		in.read(reinterpret_cast<char *>(&(info.*data)), sizeof(T));
 		if (pad)    // Skip some bytes.
 			in.ignore(pad);
@@ -571,8 +581,9 @@ protected:
 	virtual int check_write() {
 		return 0;
 	}
-	virtual void write_data(std::ostream &out, Exult_Game game)
-	{  }
+	virtual void write_data(std::ostream &out, Exult_Game game) {
+		ignore_unused_variable_warning(out, game);
+	}
 public:
 	Base_writer(const char *s, int v = -1)
 		:   name(s), version(v), cnt(-1)
@@ -690,6 +701,7 @@ class Text_writer_functor {
 	Flag_check_functor<flag, Info> check;
 public:
 	void operator()(std::ostream &out, int index, Exult_Game game, Info &info) {
+		ignore_unused_variable_warning(game);
 		out << ":";
 		WriteIndex(out, index);
 		WriteInt(out, info.*data, true);
@@ -704,6 +716,7 @@ class Text_pair_writer_functor {
 	Flag_check_functor<flag, Info> check;
 public:
 	void operator()(std::ostream &out, int index, Exult_Game game, Info &info) {
+		ignore_unused_variable_warning(game);
 		out << ":";
 		WriteIndex(out, index);
 		WriteInt(out, info.*data1);
@@ -719,6 +732,7 @@ class Bit_text_writer_functor {
 	Flag_check_functor<flag, Info> check;
 public:
 	void operator()(std::ostream &out, int index, Exult_Game game, Info &info) {
+		ignore_unused_variable_warning(game);
 		bool val = ((info.*data) & (static_cast<T>(1) << bit));
 		out << ":";
 		WriteIndex(out, index);
@@ -734,6 +748,7 @@ class Bit_field_text_writer_functor {
 	Flag_check_functor<flag, Info> check;
 public:
 	void operator()(std::ostream &out, int index, Exult_Game game, Info &info) {
+		ignore_unused_variable_warning(game);
 		out << ":";
 		WriteIndex(out, index);
 		int size = 8 * sizeof(T) - 1; // Bit count.
@@ -771,6 +786,7 @@ class Binary_pair_writer_functor {
 	Flag_check_functor<flag, Info> check;
 public:
 	void operator()(std::ostream &out, int index, Exult_Game game, Info &info) {
+		ignore_unused_variable_warning(game);
 		Write2(out, index);
 		out.write(reinterpret_cast<char *>(&(info.*data1)), sizeof(T1));
 		out.write(reinterpret_cast<char *>(&(info.*data2)), sizeof(T2));

@@ -20,6 +20,8 @@
 #ifndef INCL_SCALE_INTERLACE_H
 #define INCL_SCALE_INTERLACE_H  1
 
+#include "ignore_unused_variable_warning.h"
+
 /**
  ** Note: This file should only be included by source files that use the
  ** templates below; the templates will only be instantiated when they
@@ -42,6 +44,7 @@ void Scale_interlace(
     const Manip_pixels &manip,  // Manipulator methods.
     const int factor        // Scale factor
 ) {
+	ignore_unused_variable_warning(sheight);
 	// Source buffer pointers
 	Source_pixel *from = source + srcy * sline_pixels + srcx;
 	Source_pixel *limit_x = from + srcw;

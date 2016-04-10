@@ -25,6 +25,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef INCL_ORDINFO
 #define INCL_ORDINFO    1
 
+#include "ignore_unused_variable_warning.h"
+
 /*
  *  Information about an object used during render-order comparison (lt()):
  */
@@ -70,6 +72,7 @@ public:
 	Ordering_info(Game_window *gwin, Game_object *obj, Rectangle &a)
 		: area(a),
 		  info(obj->get_info()) {
+		ignore_unused_variable_warning(gwin);
 		init(obj);
 	}
 };

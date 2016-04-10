@@ -32,6 +32,7 @@
 #include "tqueue.h"
 #include "tiles.h"
 #include "objlist.h"
+#include "ignore_unused_variable_warning.h"
 
 class Actor;
 class Map_chunk;
@@ -288,8 +289,9 @@ public:
 	virtual Container_game_object *get_owner() const {
 		return 0;
 	}
-	virtual void set_owner(Container_game_object *o)
-	{  }
+	virtual void set_owner(Container_game_object *o) {
+		ignore_unused_variable_warning(o);
+	}
 	static int get_weight(int shnum, int quant = 1);
 	virtual int get_weight();
 	virtual int get_max_weight();   // Get max. weight allowed.
@@ -297,13 +299,21 @@ public:
 	// Drop another onto this.
 	virtual int drop(Game_object *obj);
 	// Set/clear/get actor flag.
-	virtual void set_flag(int flag) {  }
-	virtual void clear_flag(int flag) { }
+	virtual void set_flag(int flag) {
+		ignore_unused_variable_warning(flag);
+	}
+	virtual void clear_flag(int flag) {
+		ignore_unused_variable_warning(flag);
+	}
 	virtual int get_flag(int flag) const  {
+		ignore_unused_variable_warning(flag);
 		return 0;
 	}
-	virtual void set_flag_recursively(int flag) { }
+	virtual void set_flag_recursively(int flag) {
+		ignore_unused_variable_warning(flag);
+	}
 	virtual int get_type_flag(int flag) const {
+		ignore_unused_variable_warning(flag);
 		return 0;
 	}
 
@@ -328,15 +338,19 @@ public:
 	virtual int is_egg() const { // An egg?
 		return 0;
 	}
-	virtual void read_attributes(unsigned char *buf, int len) {  }
+	virtual void read_attributes(unsigned char *buf, int len) {
+		ignore_unused_variable_warning(buf, len);
+	}
 	// Count contained objs.
 	virtual int count_objects(int shapenum, int qual = c_any_qual,
 	                          int framenum = c_any_framenum) {
+		ignore_unused_variable_warning(shapenum, qual, framenum);
 		return 0;
 	}
 	// Get contained objs.
 	virtual int get_objects(Game_object_vector &vec, int shapenum, int qual,
 	                        int framenum) {
+		ignore_unused_variable_warning(vec, shapenum, qual, framenum);
 		return 0;
 	}
 	// Add an object.
@@ -345,21 +359,26 @@ public:
 	// Add to NPC 'ready' spot.
 	virtual int add_readied(Game_object *obj, int index,
 	                        int dont_check = 0, int force_pos = 0, bool noset = false) {
+		ignore_unused_variable_warning(index, force_pos);
 		return add(obj, dont_check != 0, false, noset);
 	}
 	virtual int add_quantity(int delta, int shapenum, int qual = c_any_qual,
 	                         int framenum = c_any_framenum, bool dontcreate = false, bool temporary = false) {
+		ignore_unused_variable_warning(shapenum, qual, framenum, dontcreate, temporary);
 		return delta;
 	}
 	virtual int create_quantity(int delta, int shapenum, int qual,
 	                            int framenum, bool temporary = false) {
+		ignore_unused_variable_warning(shapenum, qual, framenum, temporary);
 		return delta;
 	}
 	virtual int remove_quantity(int delta, int shapenum, int qual,
 	                            int framenum) {
+		ignore_unused_variable_warning(shapenum, qual, framenum);
 		return delta;
 	}
 	virtual Game_object *find_item(int shapenum, int qual, int framenum) {
+		ignore_unused_variable_warning(shapenum, qual, framenum);
 		return 0;
 	}
 	// Get coord. where this was placed.
@@ -368,12 +387,14 @@ public:
 	}
 	// Move out of the way.
 	virtual int move_aside(Actor *for_actor, int dir) {
+		ignore_unused_variable_warning(for_actor, dir);
 		return 0;    // For now.
 	}
 	// Get frame if rotated clockwise.
 	virtual int get_rotated_frame(int quads);
 	// Step onto an (adjacent) tile.
 	virtual int step(Tile_coord t, int frame, bool force = false) {
+		ignore_unused_variable_warning(t, frame, force);
 		return 0;
 	}
 	virtual int is_monster() {
@@ -381,6 +402,7 @@ public:
 	}
 	virtual Game_object *find_weapon_ammo(int weapon, int needed = 1,
 	                                      bool recursive = false) {
+		ignore_unused_variable_warning(weapon, needed, recursive);
 		return 0;
 	}
 	virtual int get_effective_range(const Weapon_info *winf = 0, int reach = -1);
@@ -388,6 +410,7 @@ public:
 	                    Game_object **ammo = 0, bool recursive = false);
 	void play_hit_sfx(int weapon, bool ranged);
 	virtual bool try_to_hit(Game_object *attacker, int attval) {
+		ignore_unused_variable_warning(attacker, attval);
 		return true;
 	}
 	// Under attack.
@@ -401,15 +424,17 @@ public:
 	virtual int reduce_health(int delta, int damage_type, Game_object *attacker = 0,
 	                          int *exp = 0);
 	// Write out to IREG file.
-	virtual void write_ireg(DataSource *out)
-	{  }
+	virtual void write_ireg(DataSource *out) {
+		ignore_unused_variable_warning(out);
+	}
 	// Get size of IREG. Returns -1 if can't write to buffer
 	virtual int get_ireg_size() {
 		return 0;
 	}
 	// Write out IFIX, CHUNKS.
-	virtual void write_ifix(DataSource *ifix, bool v2)
-	{  }
+	virtual void write_ifix(DataSource *ifix, bool v2) {
+		ignore_unused_variable_warning(ifix, v2);
+	}
 	virtual void elements_read()    // Called when all member items read.
 	{  }
 	virtual int get_live_npc_num() const {

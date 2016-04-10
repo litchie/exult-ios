@@ -38,6 +38,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "objbrowse.h"
 #include "shapefile.h"
 #include "shapevga.h"
+#include "ignore_unused_variable_warning.h"
 
 using std::vector;
 using std::ios;
@@ -420,12 +421,14 @@ static int Get_tree_row(
 C_EXPORT void
 on_groups_add_clicked(GtkToggleButton *button,
                       gpointer     user_data) {
+	ignore_unused_variable_warning(button, user_data);
 	ExultStudio::get_instance()->add_group();
 }
 
 C_EXPORT void
 on_groups_del_clicked(GtkToggleButton *button,
                       gpointer     user_data) {
+	ignore_unused_variable_warning(button, user_data);
 	ExultStudio::get_instance()->del_group();
 }
 
@@ -433,6 +436,7 @@ C_EXPORT gboolean
 on_groups_new_name_key_press(GtkEntry   *entry,
                              GdkEventKey    *event,
                              gpointer    user_data) {
+	ignore_unused_variable_warning(entry, user_data);
 	if (event->keyval == GDK_Return) {
 		ExultStudio::get_instance()->add_group();
 		return TRUE;
@@ -443,6 +447,7 @@ on_groups_new_name_key_press(GtkEntry   *entry,
 C_EXPORT void
 on_open_builtin_group_clicked(GtkButton       *button,
                               gpointer         user_data) {
+	ignore_unused_variable_warning(button, user_data);
 	ExultStudio::get_instance()->open_builtin_group_window();
 }
 
@@ -451,6 +456,7 @@ on_open_builtin_group_clicked(GtkButton       *button,
  */
 C_EXPORT void
 on_group_list_cursor_changed(GtkTreeView    *tview) {
+	ignore_unused_variable_warning(tview);
 	ExultStudio::get_instance()->setup_group_controls();
 }
 
@@ -459,6 +465,7 @@ on_group_list_row_inserted(GtkTreeModel *model,
                            GtkTreePath *path,
                            GtkTreeIter *iter,
                            gpointer user_data) {
+	ignore_unused_variable_warning(user_data);
 	ExultStudio::get_instance()->groups_changed(model, path, iter);
 }
 
@@ -467,6 +474,7 @@ on_group_list_row_changed(GtkTreeModel *model,
                           GtkTreePath *path,
                           GtkTreeIter *iter,
                           gpointer user_data) {
+	ignore_unused_variable_warning(user_data);
 	ExultStudio::get_instance()->groups_changed(model, path, iter, true);
 }
 
@@ -474,6 +482,7 @@ void
 on_group_list_row_deleted(GtkTreeModel *model,
                           GtkTreePath *path,
                           gpointer user_data) {
+	ignore_unused_variable_warning(user_data);
 	ExultStudio::get_instance()->groups_changed(model, path, 0);
 }
 
@@ -482,6 +491,7 @@ on_group_list_row_activated(GtkTreeView    *treeview,
                             GtkTreePath    *path,
                             GtkTreeViewColumn *column,
                             gpointer    user_data) {
+	ignore_unused_variable_warning(treeview, path, column, user_data);
 	ExultStudio::get_instance()->open_group_window();
 }
 
@@ -700,12 +710,14 @@ C_EXPORT gboolean on_group_window_delete_event(
     GdkEvent *event,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(event, user_data);
 	ExultStudio::get_instance()->close_group_window(widget);
 	return TRUE;
 }
 C_EXPORT void
 on_group_up_clicked(GtkToggleButton *button,
                     gpointer     user_data) {
+	ignore_unused_variable_warning(user_data);
 	Object_browser *chooser = (Object_browser *)gtk_object_get_data(
 	                              GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(button))),
 	                              "browser");
@@ -719,6 +731,7 @@ on_group_up_clicked(GtkToggleButton *button,
 C_EXPORT void
 on_group_down_clicked(GtkToggleButton *button,
                       gpointer     user_data) {
+	ignore_unused_variable_warning(user_data);
 	Object_browser *chooser = (Object_browser *)gtk_object_get_data(
 	                              GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(button))),
 	                              "browser");
@@ -732,6 +745,7 @@ on_group_down_clicked(GtkToggleButton *button,
 C_EXPORT void
 on_group_shape_remove_clicked(GtkToggleButton *button,
                               gpointer     user_data) {
+	ignore_unused_variable_warning(user_data);
 	Object_browser *chooser = (Object_browser *)gtk_object_get_data(
 	                              GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(button))),
 	                              "browser");

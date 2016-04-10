@@ -28,6 +28,7 @@ class XMidiSequence;
 #include <queue>
 #include <SDL.h>
 #include <SDL_thread.h>
+#include "ignore_unused_variable_warning.h"
 
 //! Specifies the max number of simultaneous playing sequences supported 
 //! \note Only 2 simultaneous playing sequences required for Ultima 8
@@ -92,13 +93,17 @@ protected:
 	// differences is because the midi specifications can have SysEx messages that does 
 	// start with 0xF0 and don't end with 0xF7. Chances are though they will never be
 	// encountered.
-	virtual void		send_sysex(uint8 status, const uint8 *msg, uint16 length) { };
+	virtual void		send_sysex(uint8 status, const uint8 *msg, uint16 length) {
+		ignore_unused_variable_warning(status, msg, length);
+	};
 
 	//! Increate the Thread Priority of the Play (current) thread
 	virtual void		increaseThreadPriority() { };
 
 	//! Allows LowLevelMidiDrivers to produce samples
-	virtual void		lowLevelProduceSamples(sint16 *samples, uint32 num_samples) { };
+	virtual void		lowLevelProduceSamples(sint16 *samples, uint32 num_samples) {
+		ignore_unused_variable_warning(samples, num_samples);
+	};
 
 	//! Yield execution of the current thread
 	virtual void		yield() { SDL_Delay(1); }

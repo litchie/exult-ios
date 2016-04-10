@@ -30,6 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ucbrowse.h"
 #include "ucsymtbl.h"
 #include "utils.h"
+#include "ignore_unused_variable_warning.h"
 
 using std::ifstream;
 
@@ -67,6 +68,7 @@ C_EXPORT void on_usecodes_ok_clicked(
     GtkButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	Usecode_browser *ucb = (Usecode_browser *) gtk_object_get_user_data(
 	                           GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(btn))));
 	ucb->okay();
@@ -81,6 +83,7 @@ C_EXPORT void on_usecodes_treeview_row_activated(
     GtkTreeViewColumn *column,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(path, column, user_data);
 	Usecode_browser *ucb = (Usecode_browser *) gtk_object_get_user_data(
 	                           GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(treeview))));
 	ucb->okay();
@@ -93,6 +96,7 @@ C_EXPORT void on_usecodes_cancel_clicked(
     GtkButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	Usecode_browser *ucb = (Usecode_browser *) gtk_object_get_user_data(
 	                           GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(btn))));
 	ucb->cancel();
@@ -106,6 +110,7 @@ C_EXPORT gboolean on_usecodes_dialog_delete_event(
     GdkEvent *event,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(event, user_data);
 	Usecode_browser *ucb = (Usecode_browser *)
 	                       gtk_object_get_user_data(GTK_OBJECT(widget));
 
@@ -120,6 +125,7 @@ C_EXPORT void on_view_uc_classes_toggled(
     GtkToggleButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	Usecode_browser *ucb = (Usecode_browser *) gtk_object_get_user_data(
 	                           GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(btn))));
 	ucb->setup_list();
@@ -128,6 +134,7 @@ C_EXPORT void on_view_uc_functions_toggled(
     GtkToggleButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	Usecode_browser *ucb = (Usecode_browser *) gtk_object_get_user_data(
 	                           GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(btn))));
 	ucb->setup_list();
@@ -136,6 +143,7 @@ C_EXPORT void on_view_uc_shapes_toggled(
     GtkToggleButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	Usecode_browser *ucb = (Usecode_browser *) gtk_object_get_user_data(
 	                           GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(btn))));
 	ucb->setup_list();
@@ -145,6 +153,7 @@ C_EXPORT void on_view_uc_objects_toggled(
     GtkToggleButton *btn,
     gpointer user_data
 ) {
+	ignore_unused_variable_warning(user_data);
 	Usecode_browser *ucb = (Usecode_browser *) gtk_object_get_user_data(
 	                           GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(btn))));
 	ucb->setup_list();

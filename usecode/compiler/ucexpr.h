@@ -29,6 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string>
 #include "ucloc.h"
 #include "opcodes.h"
+#include "ignore_unused_variable_warning.h"
 
 using std::vector;
 
@@ -82,10 +83,12 @@ public:
 		return 0;
 	}
 	virtual int is_object_function(bool error = true) const {
+		ignore_unused_variable_warning(error);
 		return -1;
 	}
-	virtual void set_is_obj_fun(int s)
-	{   }
+	virtual void set_is_obj_fun(int s) {
+		ignore_unused_variable_warning(s);
+	}
 };
 
 /*

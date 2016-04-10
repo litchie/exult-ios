@@ -50,6 +50,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "shapefile.h"
 #include "pngio.h"
 #include "fontgen.h"
+#include "ignore_unused_variable_warning.h"
 
 using std::cout;
 using std::cerr;
@@ -280,6 +281,7 @@ static gint Configure_chooser(
     GdkEventConfigure *event,
     gpointer data           // ->Npc_chooser
 ) {
+	ignore_unused_variable_warning(widget);
 	Npc_chooser *chooser = (Npc_chooser *) data;
 	return chooser->configure(event);
 }
@@ -310,6 +312,7 @@ gint Npc_chooser::expose(
     GdkEventExpose *event,
     gpointer data           // ->Npc_chooser.
 ) {
+	ignore_unused_variable_warning(widget);
 	Npc_chooser *chooser = (Npc_chooser *) data;
 	chooser->show(event->area.x, event->area.y, event->area.width,
 	              event->area.height);
@@ -365,6 +368,7 @@ gint Npc_chooser::drag_motion(
     GdkEventMotion *event,
     gpointer data           // ->Npc_chooser.
 ) {
+	ignore_unused_variable_warning(widget);
 	Npc_chooser *chooser = (Npc_chooser *) data;
 	if (!chooser->dragging && chooser->selected >= 0)
 		chooser->start_drag(U7_TARGET_NPCID_NAME,
@@ -447,6 +451,7 @@ static gint Mouse_release(
     GdkEventButton *event,
     gpointer data           // ->Npc_chooser.
 ) {
+	ignore_unused_variable_warning(widget, event);
 	Npc_chooser *chooser = (Npc_chooser *) data;
 	chooser->mouse_up();
 	return true;
@@ -459,6 +464,7 @@ C_EXPORT gboolean
 on_npc_draw_key_press(GtkEntry   *entry,
                       GdkEventKey    *event,
                       gpointer    user_data) {
+	ignore_unused_variable_warning(entry, event);
 	Npc_chooser *chooser = (Npc_chooser *) user_data;
 #if 0
 	switch (event->keyval) {
@@ -522,6 +528,7 @@ void Npc_chooser::drag_data_get(
     guint time,
     gpointer data           // ->Npc_chooser.
 ) {
+	ignore_unused_variable_warning(widget, context, time);
 	cout << "In DRAG_DATA_GET" << endl;
 	Npc_chooser *chooser = (Npc_chooser *) data;
 	if (chooser->selected < 0 || info != U7_TARGET_NPCID)
@@ -552,6 +559,7 @@ gint Npc_chooser::selection_clear(
     GdkEventSelection *event,
     gpointer data           // ->Npc_chooser.
 ) {
+	ignore_unused_variable_warning(widget, event, data);
 //	Npc_chooser *chooser = (Npc_chooser *) data;
 	cout << "SELECTION_CLEAR" << endl;
 	return TRUE;
@@ -566,6 +574,7 @@ gint Npc_chooser::drag_begin(
     GdkDragContext *context,
     gpointer data           // ->Npc_chooser.
 ) {
+	ignore_unused_variable_warning(widget);
 	cout << "In DRAG_BEGIN" << endl;
 	Npc_chooser *chooser = (Npc_chooser *) data;
 	if (chooser->selected < 0)
@@ -594,6 +603,7 @@ void Npc_chooser::drag_data_received(
     guint time,
     gpointer udata          // Should point to Shape_draw.
 ) {
+	ignore_unused_variable_warning(widget, context, x, y, info, time);
 	Npc_chooser *chooser = (Npc_chooser *) udata;
 	cout << "Npc drag_data_received" << endl;
 	if (seldata->type == gdk_atom_intern(U7_TARGET_NPCID_NAME, 0) &&
@@ -784,6 +794,7 @@ void Npc_chooser::search(
 void Npc_chooser::locate(
     bool upwards
 ) {
+	ignore_unused_variable_warning(upwards);
 	if (selected < 0)
 		return;         // Shouldn't happen.
 	int npcnum = info[selected].npcnum;
@@ -807,6 +818,7 @@ void on_npc_popup_edit_activate(
     GtkMenuItem *item,
     gpointer udata
 ) {
+	ignore_unused_variable_warning(item);
 	((Npc_chooser *) udata)->edit_npc();
 }
 

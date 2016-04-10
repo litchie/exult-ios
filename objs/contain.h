@@ -23,6 +23,7 @@
 #define INCL_CONTAIN    1
 
 #include "iregobjs.h"
+#include "ignore_unused_variable_warning.h"
 
 /*
  *  A container object:
@@ -67,14 +68,17 @@ public:
 	virtual void change_member_shape(Game_object *obj, int newshape);
 	// Find object's spot.
 	virtual int find_readied(Game_object *obj) {
+		ignore_unused_variable_warning(obj);
 		return -1;
 	}
 	virtual Game_object *get_readied(int index) const {
+		ignore_unused_variable_warning(index);
 		return 0;
 	}
 	virtual void call_readied_usecode(int index,
-	                                  Game_object *obj, int eventid)
-	{  }
+	                                  Game_object *obj, int eventid) {
+		ignore_unused_variable_warning(index, obj, eventid);
+	}
 	// Add/remove quantities of objs.
 	virtual int add_quantity(int delta, int shapenum,
 	                         int qual = c_any_qual,

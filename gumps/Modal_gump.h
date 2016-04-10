@@ -21,6 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "Gump.h"
 #include "SDL_events.h"
+#include "ignore_unused_variable_warning.h"
 
 /*
  *  A modal gump object represents a 'dialog' that grabs the mouse until
@@ -53,12 +54,15 @@ public:
 	virtual bool mouse_up(int mx, int my, int button) = 0;
 	virtual void mousewheel_down() { }
 	virtual void mousewheel_up() { }
-	virtual void mouse_drag(int mx, int my)
-	{  }
-	virtual void key_down(int chr) // Key pressed
-	{  }
-	virtual void text_input(int chr, int unicode) // Character typed (unicode)
-	{ }
+	virtual void mouse_drag(int mx, int my) {
+		ignore_unused_variable_warning(mx, my);
+	}
+	virtual void key_down(int chr) { // Key pressed
+		ignore_unused_variable_warning(chr);
+	}
+	virtual void text_input(int chr, int unicode) { // Character typed (unicode)
+		ignore_unused_variable_warning(chr, unicode);
+	}
 	virtual void text_input(const char *text) // complete string input
 	{ }
 	virtual bool is_modal() const {

@@ -41,6 +41,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "cheat.h"
 #include "exult.h"
 #include "shapeinf.h"
+#include "ignore_unused_variable_warning.h"
 
 #ifdef USE_EXULTSTUDIO
 #include "server.h"
@@ -115,6 +116,7 @@ inline Tile_coord Rotate90r(
     int xtiles, int ytiles,     // Object dimensions.
     Tile_coord const &c         // Rotate around this.
 ) {
+	ignore_unused_variable_warning(gwin, xtiles);
 	// Rotate hot spot.
 	Tile_coord r = Rotate90r(obj->get_tile(), c);
 	// New hotspot is what used to be the
@@ -135,6 +137,7 @@ inline Tile_coord Rotate90l(
     int xtiles, int ytiles,     // Object dimensions.
     Tile_coord const &c         // Rotate around this.
 ) {
+	ignore_unused_variable_warning(gwin, ytiles);
 	// Rotate hot spot.
 	Tile_coord r = Rotate90l(obj->get_tile(), c);
 	// New hot-spot is old lower-left.
@@ -154,6 +157,7 @@ inline Tile_coord Rotate180(
     int xtiles, int ytiles,     // Object dimensions.
     Tile_coord const &c         // Rotate around this.
 ) {
+	ignore_unused_variable_warning(gwin);
 	// Rotate hot spot.
 	Tile_coord r = Rotate180(obj->get_tile(), c);
 	// New hotspot is what used to be the
@@ -661,6 +665,7 @@ bool Barge_object::add(
     //   cause obj to be deleted.
     bool noset      // True to prevent actors from setting sched. weapon.
 ) {
+	ignore_unused_variable_warning(dont_check, combine, noset);
 	objects.push_back(obj);     // Add to list.
 	return (false);         // We want it added to the chunk.
 }
@@ -688,6 +693,7 @@ bool Barge_object::contains(
 int Barge_object::drop(
     Game_object *obj
 ) {
+	ignore_unused_variable_warning(obj);
 	return 0;           //++++++Later.
 }
 
@@ -831,6 +837,7 @@ int Barge_object::step(
     int frame,              // Frame (ignored).
     bool force              // Forces the step to happen.
 ) {
+	ignore_unused_variable_warning(frame);
 	if (!gathered)          // Happens in SI with turtle.
 		gather();
 	Tile_coord cur = get_tile();

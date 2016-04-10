@@ -35,6 +35,7 @@
 #include "dir.h"
 #include "schedule.h"
 #include "exult.h"
+#include "ignore_unused_variable_warning.h"
 
 using std::cout;
 using std::endl;
@@ -299,6 +300,7 @@ void Party_manager::move_followers(
     int vindex,         // Index within 'valid'.
     int dir             // Direction (0-7) he stepped in.
 ) {
+	ignore_unused_variable_warning(vindex);
 	int id = npc->get_party_id();   // (-1 if Avatar).
 	Tile_coord pos = npc->get_tile();
 	int lnum = followers[1 + id][0], rnum = followers[1 + id][1];
@@ -331,6 +333,7 @@ inline Tile_coord Get_step_tile(
     Tile_coord const &dest,     // Desired dest.
     int dir             // Dir. party is moving (0-7).
 ) {
+	ignore_unused_variable_warning(dir);
 	int dx = dest.tx - pos.tx, dy = dest.ty - pos.ty;
 	if (dx < -1)
 		dx = -1;        // Limit to 1 tile.

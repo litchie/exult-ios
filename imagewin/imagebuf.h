@@ -26,6 +26,7 @@ Boston, MA  02111-1307, USA.
 #ifndef INCL_IMAGEBUF
 #define INCL_IMAGEBUF   1
 
+#include "ignore_unused_variable_warning.h"
 
 // Table for translating palette vals.:
 //typedef unsigned char *Xform_palette; // Should be 256-bytes.
@@ -151,20 +152,24 @@ public:
 	 *  16-bit color methods.  Default is to ignore them.
 	 */
 	// Fill with given pixel.
-	virtual void fill16(unsigned short pix)
-	{  }
+	virtual void fill16(unsigned short pix) {
+		ignore_unused_variable_warning(pix);
+	}
 	// Fill rect. wth pixel.
 	virtual void fill16(unsigned short pix, int srcw, int srch,
-	                    int destx, int desty)
-	{  }
+	                    int destx, int desty) {
+		ignore_unused_variable_warning(pix, srcw, srch, destx, desty);
+	}
 	// Copy rectangle into here.
 	virtual void copy16(unsigned short *src_pixels,
-	                    int srcw, int srch, int destx, int desty)
-	{  }
+	                    int srcw, int srch, int destx, int desty) {
+		ignore_unused_variable_warning(src_pixels, srcw, srch, destx, desty);
+	}
 	// Copy rect. with transp. color.
 	virtual void copy_transparent16(unsigned char *src_pixels, int srcw,
-	                                int srch, int destx, int desty)
-	{  }
+	                                int srch, int destx, int desty) {
+		ignore_unused_variable_warning(src_pixels, srcw, srch, destx, desty);
+	}
 	/*
 	 *  8-bit color methods:
 	 */

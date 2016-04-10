@@ -23,6 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "jawbone.h"
 #include "objiter.h"
 #include "exult.h"
+#include "ignore_unused_variable_warning.h"
 
 // Add an object.
 bool Jawbone_object::add(
@@ -32,6 +33,7 @@ bool Jawbone_object::add(
     //   cause obj to be deleted.
     bool noset      // True to prevent actors from setting sched. weapon.
 ) {
+	ignore_unused_variable_warning(noset);
 	if (!Container_game_object::add(obj, dont_check, combine))
 		return false; // Can't be added to.
 

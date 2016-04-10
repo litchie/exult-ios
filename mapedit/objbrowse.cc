@@ -9,6 +9,8 @@
 #include "shapefile.h"
 #include "studio.h"
 #include "exceptions.h"
+#include "ignore_unused_variable_warning.h"
+
 
 using EStudio::Add_menu_item;
 using EStudio::Create_arrow_button;
@@ -165,6 +167,7 @@ void Object_browser::on_browser_file_save(
     GtkMenuItem *item,
     gpointer udata
 ) {
+	ignore_unused_variable_warning(item);
 	Object_browser *chooser = (Object_browser *) udata;
 	if (!chooser->file_info)
 		return;         // Nothing to write to.
@@ -183,6 +186,7 @@ void Object_browser::on_browser_file_revert(
     GtkMenuItem *item,
     gpointer udata
 ) {
+	ignore_unused_variable_warning(item);
 	Object_browser *chooser = (Object_browser *) udata;
 	if (!chooser->file_info)
 		return;         // No file?
@@ -230,6 +234,7 @@ GtkWidget *Object_browser::create_popup(
 static void
 on_find_down(GtkButton       *button,
              gpointer         user_data) {
+	ignore_unused_variable_warning(button);
 	Object_browser *chooser = (Object_browser *) user_data;
 	chooser->search(gtk_entry_get_text(
 	                    GTK_ENTRY(chooser->get_find_text())), 1);
@@ -237,6 +242,7 @@ on_find_down(GtkButton       *button,
 static void
 on_find_up(GtkButton       *button,
            gpointer         user_data) {
+	ignore_unused_variable_warning(button);
 	Object_browser *chooser = (Object_browser *) user_data;
 	chooser->search(gtk_entry_get_text(
 	                    GTK_ENTRY(chooser->get_find_text())), -1);
@@ -245,6 +251,7 @@ static gboolean
 on_find_key(GtkEntry   *entry,
             GdkEventKey    *event,
             gpointer    user_data) {
+	ignore_unused_variable_warning(entry);
 	if (event->keyval == GDK_Return) {
 		Object_browser *chooser = (Object_browser *) user_data;
 		chooser->search(gtk_entry_get_text(
@@ -257,12 +264,14 @@ on_find_key(GtkEntry   *entry,
 static void
 on_loc_down(GtkButton       *button,
             gpointer         user_data) {
+	ignore_unused_variable_warning(button);
 	Object_browser *chooser = (Object_browser *) user_data;
 	chooser->locate(false);
 }
 static void
 on_loc_up(GtkButton       *button,
           gpointer         user_data) {
+	ignore_unused_variable_warning(button);
 	Object_browser *chooser = (Object_browser *) user_data;
 	chooser->locate(true);
 }
@@ -270,12 +279,14 @@ on_loc_up(GtkButton       *button,
 static void
 on_move_down(GtkButton       *button,
              gpointer         user_data) {
+	ignore_unused_variable_warning(button);
 	Object_browser *chooser = (Object_browser *) user_data;
 	chooser->move(false);
 }
 static void
 on_move_up(GtkButton       *button,
            gpointer         user_data) {
+	ignore_unused_variable_warning(button);
 	Object_browser *chooser = (Object_browser *) user_data;
 	chooser->move(true);
 }

@@ -38,6 +38,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "servewin32.h"
 #endif
 
+#include "ignore_unused_variable_warning.h"
+
 using std::cout;
 using std::cerr;
 using std::endl;
@@ -127,6 +129,7 @@ int Receive_data(
 
 
 bool wait_for_response(int socket, int ms) {
+	ignore_unused_variable_warning(socket, ms);
 #if defined(WIN32) && defined(USE_EXULTSTUDIO)
 	/*
 	int ticks = GetTickCount();

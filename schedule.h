@@ -25,6 +25,7 @@
 #include "singles.h"
 #include "objclient.h"
 #include <vector>
+#include "ignore_unused_variable_warning.h"
 
 #ifdef WIN32
 #include <windows.h>
@@ -98,21 +99,25 @@ public:
 	//   with its last task.
 	virtual void im_dormant();  // Npc calls this when it goes from
 	//  being active to dormant.
-	virtual void ending(int newtype)// Switching to another schedule.
-	{  }
-	virtual void set_weapon(bool removed = false)   // Set weapon info.
-	{  }
+	virtual void ending(int newtype) { // Switching to another schedule.
+		ignore_unused_variable_warning(newtype);
+	}
+	virtual void set_weapon(bool removed = false) { // Set weapon info.
+		ignore_unused_variable_warning(removed);
+	}
 	// Set where to sleep.
-	virtual void set_bed(Game_object *b)
-	{  }
+	virtual void set_bed(Game_object *b) {
+		ignore_unused_variable_warning(b);
+	}
 	// For Usecode intrinsic.
 	virtual int get_actual_type(Actor *npc) const;
 	// Look for foes.
 	bool seek_foes();
 	/* For Object_client: +++++ Override in sub-classes. */
 	// Notify that schedule's obj. has been moved or deleted.
-	virtual void notify_object_gone(Game_object *obj)
-	{  }
+	virtual void notify_object_gone(Game_object *obj) {
+		ignore_unused_variable_warning(obj);
+	}
 	bool try_proximity_usecode(int odds);
 };
 
@@ -136,15 +141,19 @@ public:
 		run(im_dormant_id);
 	}
 	virtual void ending(int newtype) {
+		ignore_unused_variable_warning(newtype);
 		run(ending_id);
 	}
 	virtual void set_weapon(bool removed = false) {
+		ignore_unused_variable_warning(removed);
 		run(set_weapon_id);
 	}
 	virtual void set_bed(Game_object *b) {
+		ignore_unused_variable_warning(b);
 		run(set_bed_id);
 	}
 	virtual void notify_object_gone(Game_object *obj) {
+		ignore_unused_variable_warning(obj);
 		run(notify_object_gone_id);
 	}
 };

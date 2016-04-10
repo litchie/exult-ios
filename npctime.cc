@@ -30,6 +30,7 @@
 #include "items.h"
 #include "schedule.h"
 #include "game.h"
+#include "ignore_unused_variable_warning.h"
 
 #ifndef UNDER_EMBEDDED_CE
 using std::rand;
@@ -304,6 +305,7 @@ void Npc_hunger_timer::handle_event(
     unsigned long curtime,
     long udata
 ) {
+	ignore_unused_variable_warning(udata);
 	Actor *npc = list->npc;
 	int food = npc->get_property(static_cast<int>(Actor::food_level));
 	// No longer a party member?
@@ -356,6 +358,7 @@ void Npc_poison_timer::handle_event(
     unsigned long curtime,
     long udata
 ) {
+	ignore_unused_variable_warning(udata);
 	Actor *npc = list->npc;
 	if (curtime >= end_time ||  // Long enough?  Or cured?
 	        npc->get_flag(Obj_flags::poisoned) == 0 ||
@@ -381,6 +384,7 @@ void Npc_sleep_timer::handle_event(
     unsigned long curtime,
     long udata
 ) {
+	ignore_unused_variable_warning(udata);
 	Actor *npc = list->npc;
 	if (npc->get_property(static_cast<int>(Actor::health)) <= 0) {
 		if (npc->is_in_party() || gmap->is_chunk_read(npc->get_cx(), npc->get_cy())) {
@@ -448,6 +452,7 @@ void Npc_invisibility_timer::handle_event(
     unsigned long curtime,
     long udata
 ) {
+	ignore_unused_variable_warning(udata);
 	Actor *npc = list->npc;
 	if (Wearing_ring(npc, 296, 0)) { // (Works for SI and BG.)
 		// Wearing invisibility ring.
@@ -474,6 +479,7 @@ void Npc_protection_timer::handle_event(
     unsigned long curtime,
     long udata
 ) {
+	ignore_unused_variable_warning(udata);
 	Actor *npc = list->npc;
 	if (Wearing_ring(npc, 297, 0)) { // ++++SI has an Amulet.
 		// Wearing protection ring.
@@ -500,6 +506,7 @@ void Npc_flag_timer::handle_event(
     unsigned long curtime,
     long udata
 ) {
+	ignore_unused_variable_warning(udata);
 	Actor *npc = list->npc;
 	if (curtime >= end_time ||  // Long enough?  Or cleared.
 	        npc->get_flag(flag) == 0) {

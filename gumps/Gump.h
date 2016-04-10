@@ -23,6 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "exceptions.h"
 #include "rect.h"
 #include "shapeid.h"
+#include "ignore_unused_variable_warning.h"
 
 class Checkmark_button;
 class Container_game_object;
@@ -64,6 +65,7 @@ public:
 	Gump(Container_game_object *cont, int initx, int inity, Gump *from);
 	virtual ~Gump();
 	virtual Gump *clone(Container_game_object *obj, int initx, int inity) {
+		ignore_unused_variable_warning(obj, initx, inity);
 		return 0;
 	}
 	int get_x() {       // Get coords.
@@ -81,6 +83,7 @@ public:
 		return container;
 	}
 	virtual Container_game_object *find_actor(int mx, int my) {
+		ignore_unused_variable_warning(mx, my);
 		return 0;
 	}
 	bool can_handle_kbd() const {
@@ -132,6 +135,7 @@ public:
 	virtual bool has_point(int x, int y);
 	virtual Rectangle get_rect();
 	virtual bool handle_kbd_event(void *ev) {
+		ignore_unused_variable_warning(ev);
 		return false;
 	}
 };
@@ -159,8 +163,9 @@ public:
 	// This one is for cloning.
 	Container_gump(Container_game_object *cont, int initx, int inity,
 	               Gump *from)
-		: Gump(cont, initx, inity, this)
-	{  }
+		: Gump(cont, initx, inity, this) {
+		ignore_unused_variable_warning(from);
+	}
 	virtual ~Container_gump() {  }
 	virtual Gump *clone(Container_game_object *cont, int initx, int inity) {
 		return new Container_gump(cont, initx, inity, this);

@@ -33,6 +33,7 @@
 #include "gamewin.h"
 #include "ucmachine.h"
 #include "actors.h"
+#include "ignore_unused_variable_warning.h"
 
 #include <fstream>
 #include <map>
@@ -105,6 +106,7 @@ public:
 	{  }
 	virtual void parse_entry(int index, char *eptr,
 	                         bool for_patch, int version) {
+		ignore_unused_variable_warning(index, for_patch, version);
 		int key = ReadInt(eptr, 0);
 		int data = ReadInt(eptr);
 		(*table)[key] = data;
@@ -119,6 +121,7 @@ public:
 	{  }
 	virtual void parse_entry(int index, char *eptr,
 	                         bool for_patch, int version) {
+		ignore_unused_variable_warning(index, for_patch, version);
 		int key = ReadInt(eptr, 0);
 		(*table)[key] = true;
 	}
@@ -135,6 +138,7 @@ public:
 	{  }
 	virtual void parse_entry(int index, char *eptr,
 	                         bool for_patch, int version) {
+		ignore_unused_variable_warning(index, for_patch, version);
 		pair<int, int> data;
 		data.second = ReadInt(eptr, 0); // The real shape.
 		for (vector<pair<int, int> >::iterator it = table->begin();
@@ -163,6 +167,7 @@ public:
 	{  }
 	virtual void parse_entry(int index, char *eptr,
 	                         bool for_patch, int version) {
+		ignore_unused_variable_warning(index, for_patch, version);
 		pair<int, int> data;
 		data.first = ReadInt(eptr, 0);  // The spot.
 		eptr++;
@@ -198,6 +203,7 @@ public:
 	{  }
 	virtual void parse_entry(int index, char *eptr,
 	                         bool for_patch, int version) {
+		ignore_unused_variable_warning(index, for_patch, version);
 		bool fmale = ReadInt(eptr, 0) != 0;
 		Base_Avatar_info entry;
 		entry.shape_num = ReadInt(eptr);
@@ -215,6 +221,7 @@ public:
 	{  }
 	virtual void parse_entry(int index, char *eptr,
 	                         bool for_patch, int version) {
+		ignore_unused_variable_warning(index, for_patch, version);
 		table->default_skin = ReadInt(eptr, 0);
 		table->default_female = ReadInt(eptr) != 0;
 	}
@@ -241,6 +248,7 @@ public:
 	}
 	virtual void parse_entry(int index, char *eptr,
 	                         bool for_patch, int version) {
+		ignore_unused_variable_warning(index);
 		Skin_data entry;
 		entry.skin_id = ReadInt(eptr, 0);
 		if (entry.skin_id > last_skin)
@@ -282,6 +290,7 @@ public:
 	{  }
 	virtual void parse_entry(int index, char *eptr,
 	                         bool for_patch, int version) {
+		ignore_unused_variable_warning(index, for_patch, version);
 		Usecode_function_data entry;
 		int type = ReadInt(eptr);
 		if (*eptr == ':') {
@@ -301,6 +310,7 @@ void Paperdoll_source_parser::parse_entry(
     bool for_patch,
     int version
 ) {
+	ignore_unused_variable_warning(index, version);
 	if (!erased_for_patch && for_patch)
 		table->clear();
 	string line(eptr);

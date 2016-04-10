@@ -23,7 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gamewin.h"
 #include "Gump_button.h"
 #include "Gump.h"
-
+#include "ignore_unused_variable_warning.h"
 
 /*
  *  Redisplay as 'pushed'.
@@ -62,6 +62,7 @@ void Gump_button::unpush(
 void Gump_button::double_clicked(
     int x, int y
 ) {
+	ignore_unused_variable_warning(x, y);
 }
 
 /*

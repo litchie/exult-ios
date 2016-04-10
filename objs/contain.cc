@@ -39,6 +39,7 @@
 #include "weaponinf.h"
 #include "frflags.h"
 #include "exult.h"
+#include "ignore_unused_variable_warning.h"
 
 #ifdef USE_EXULTSTUDIO
 #include "server.h"
@@ -110,6 +111,7 @@ bool Container_game_object::add(
     //   cause obj to be deleted.
     bool noset      // True to prevent actors from setting sched. weapon.
 ) {
+	ignore_unused_variable_warning(noset);
 	// Prevent dragging the avatar into a container.
 	// Casting to void* to avoid including actors.h.
 	if (obj == static_cast<void *>(gwin->get_main_actor()))
@@ -390,6 +392,7 @@ Game_object *Container_game_object::find_item(
 bool Container_game_object::show_gump(
     int event
 ) {
+	ignore_unused_variable_warning(event);
 	Shape_info &inf = get_info();
 	int gump;
 	if (cheat.in_map_editor())
@@ -734,6 +737,7 @@ Game_object *Container_game_object::find_weapon_ammo(
     int needed,
     bool recursive
 ) {
+	ignore_unused_variable_warning(recursive);
 	if (weapon < 0 || !Can_be_added(this, weapon))
 		return 0;
 	Weapon_info *winf = ShapeID::get_info(weapon).get_weapon_info();

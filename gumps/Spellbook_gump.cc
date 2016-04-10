@@ -31,6 +31,7 @@
 #include "spellbook.h"
 #include "game.h"
 #include "Gump_manager.h"
+#include "ignore_unused_variable_warning.h"
 
 #ifndef ALPHA_LINUX_CXX
 #  include <cstdio>
@@ -95,7 +96,9 @@ public:
 	virtual bool push(int button) {
 		return button == 1;
 	}
-	virtual void unpush(int button) {}
+	virtual void unpush(int button) {
+		ignore_unused_variable_warning(button);
+	}
 };
 
 /*
@@ -124,7 +127,9 @@ public:
 	virtual bool push(int button) {
 		return button == 1;
 	}
-	virtual void unpush(int button) { }
+	virtual void unpush(int button) {
+		ignore_unused_variable_warning(button);
+	}
 };
 
 /*
@@ -183,7 +188,9 @@ public:
 	virtual bool push(int button) {
 		return button == 1;
 	}
-	virtual void unpush(int button) { }
+	virtual void unpush(int button) {
+		ignore_unused_variable_warning(button);
+	}
 };
 
 /*
@@ -205,6 +212,7 @@ bool Spell_button::activate(
 void Spell_button::double_clicked(
     int x, int y
 ) {
+	ignore_unused_variable_warning(x, y);
 	reinterpret_cast<Spelltype_gump *>(parent)->do_spell(spell);
 }
 

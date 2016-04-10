@@ -28,6 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <fstream>
 #include <string>
 #include <vector>
+#include "ignore_unused_variable_warning.h"
 
 class Vga_file;
 class Shape_group_file;
@@ -72,6 +73,7 @@ public:
 	// Call this to create group browser.
 	virtual Object_browser *create_browser(Shape_file_info *vgafile,
 	                                       unsigned char *palbuf, Shape_group *g) {
+		ignore_unused_variable_warning(vgafile, palbuf, g);
 		return 0;
 	}
 	// Call for main browser.

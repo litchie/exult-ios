@@ -42,6 +42,7 @@
 #include "databuf.h"
 #include "shapeinf.h"
 #include "weaponinf.h"
+#include "ignore_unused_variable_warning.h"
 
 #ifdef USE_EXULTSTUDIO
 #include "server.h"
@@ -152,6 +153,7 @@ public:
 		  score(d1 & 0xff), continuous(((d1 >> 8) & 1) != 0)
 	{  }
 	virtual void hatch_now(Game_object *obj, bool must) {
+		ignore_unused_variable_warning(obj, must);
 #ifdef DEBUG
 		cout << "Audio parameters might be: " << (data1 & 0xff) <<
 		     " and " << ((data1 >> 8) & 0x01) << endl;
@@ -168,6 +170,7 @@ public:
 		: Jukebox_egg(shnum, frnum, tx, ty, tz, itype, prob, d1)
 	{  }
 	virtual void hatch_now(Game_object *obj, bool must) {
+		ignore_unused_variable_warning(obj, must);
 		Audio::get_ptr()->play_sound_effect(score, this, AUDIO_MAX_VOLUME,
 		                                    continuous);
 	}
@@ -183,6 +186,7 @@ public:
 		  speechnum(d1)
 	{  }
 	virtual void hatch_now(Game_object *obj, bool must) {
+		ignore_unused_variable_warning(obj, must);
 		ucmachine->do_speech(data1 & 0xff);
 	}
 };
@@ -192,6 +196,7 @@ class Monster_egg : public Egg_object {
 	unsigned char mframe;
 	unsigned char sched, align, cnt;
 	void create_monster(Monster_info *inf) {
+		ignore_unused_variable_warning(inf);
 		Tile_coord dest = Map_chunk::find_spot(
 		                      get_tile(), 5, mshape, 0, 1);
 		if (dest.tx != -1) {
@@ -218,6 +223,7 @@ public:
 		}
 	}
 	virtual void hatch_now(Game_object *obj, bool must) {
+		ignore_unused_variable_warning(obj, must);
 		Shape_info &inf = ShapeID::get_info(mshape);
 		Monster_info *minf = inf.is_npc() ?
 		                     inf.get_monster_info_safe() : 0;
@@ -266,6 +272,7 @@ public:
 		return fun_name.c_str();
 	}
 	virtual void hatch_now(Game_object *obj, bool must) {
+		ignore_unused_variable_warning(obj);
 		if (!fun && !fun_name.empty())
 			fun = ucmachine->find_function(fun_name.c_str());
 		if (must)       // From script?  Do immediately.
@@ -325,6 +332,7 @@ public:
 		Egg_object::set(crit, dist);
 	}
 	virtual void hatch_now(Game_object *obj, bool must) {
+		ignore_unused_variable_warning(obj, must);
 		Shape_info &info = ShapeID::get_info(weapon);
 		Weapon_info *winf = info.get_weapon_info();
 		int proj;
@@ -360,6 +368,7 @@ public:
 		destz = d3 & 0xff;
 	}
 	virtual void hatch_now(Game_object *obj, bool must) {
+		ignore_unused_variable_warning(must);
 		Tile_coord pos(-1, -1, -1); // Get position to jump to.
 		int eggnum = 255;
 		if (mapnum == -1)
@@ -395,6 +404,7 @@ public:
 			len = 120;  // How about a couple game hours?
 	}
 	virtual void hatch_now(Game_object *obj, bool must) {
+		ignore_unused_variable_warning(obj, must);
 		set_weather(weather, len, this);
 	}
 };
@@ -409,6 +419,7 @@ public:
 		  dist(d1 & 0xff)
 	{  }
 	virtual void hatch_now(Game_object *obj, bool must) {
+		ignore_unused_variable_warning(must);
 		Egg_vector eggs;
 		find_nearby_eggs(eggs, 275, dist);
 		find_nearby_eggs(eggs, 200, dist);
@@ -1336,6 +1347,7 @@ void Mirror_object::activate(int event) {
 }
 
 void Mirror_object::hatch(Game_object *obj, bool must) {
+	ignore_unused_variable_warning(obj, must);
 	// These are broken, so dont touch
 	if ((get_framenum() % 3) == 2)  return;
 
@@ -1367,6 +1379,7 @@ void Mirror_object::hatch(Game_object *obj, bool must) {
 
 // Can it be activated?
 int Mirror_object::is_active(Game_object *obj, int tx, int ty, int tz, int from_tx, int from_ty) {
+	ignore_unused_variable_warning(obj, tx, ty, tz, from_tx, from_ty);
 	// These are broken, so dont touch
 	int frnum = get_framenum();
 	if (frnum % 3 == 2)  return 0;

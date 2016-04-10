@@ -30,6 +30,7 @@
 #include "gamemap.h"
 #include "actors.h"
 #include "schedule.h"
+#include "ignore_unused_variable_warning.h"
 
 /*
  *  Create for given NPC.
@@ -336,6 +337,7 @@ int Offscreen_pathfinder_client::at_goal(
     Tile_coord const &tile,
     Tile_coord const &goal
 ) {
+	ignore_unused_variable_warning(goal);
 	return !screen.has_world_point(tile.tx - tile.tz / 2, tile.ty - tile.tz / 2); //&&
 	// Z-coord shouldn't matter.
 //		(goal.tz == -1 || tile.tz == goal.tz);
@@ -478,6 +480,7 @@ int Fast_pathfinder_client::get_step_cost(
     Tile_coord &to          // The tile we're going to.  The 'tz'
     //   field may be modified.
 ) {
+	ignore_unused_variable_warning(from);
 	Game_window *gwin = Game_window::get_instance();
 	int cx = to.tx / c_tiles_per_chunk, cy = to.ty / c_tiles_per_chunk;
 	Map_chunk *olist = gwin->get_map()->get_chunk(cx, cy);
@@ -550,6 +553,7 @@ int Fast_pathfinder_client::is_grabable_internal(
     Block const &tovol,
     Fast_pathfinder_client &client
 ) {
+	ignore_unused_variable_warning(ct);
 	Game_map *gmap = Game_window::get_instance()->get_map();
 
 	Block fromvol = from->get_block();

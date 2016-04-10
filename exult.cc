@@ -103,6 +103,7 @@
 #include "VideoOptions_gump.h"
 #include "Gump_button.h"
 #include "ShortcutBar_gump.h"
+#include "ignore_unused_variable_warning.h"
 using namespace Pentagram;
 
 #ifdef UNDER_CE
@@ -258,6 +259,7 @@ static int left_down_x = 0, left_down_y = 0;
 #include <sys/wait.h>
 #include <signal.h>
 void sigchld_handler(int sig) {
+	ignore_unused_variable_warning(sig);
 	waitpid(-1, 0, WNOHANG);
 }
 
@@ -2688,6 +2690,7 @@ static void Drop_dragged_shape(
     int x, int y,           // Mouse coords. within window.
     void *data          // Passed data, unused by exult
 ) {
+	ignore_unused_variable_warning(data);
 	if (!cheat.in_map_editor()) // Get into editing mode.
 		cheat.toggle_map_editor();
 	cheat.clear_selected();     // Remove old selected.
@@ -2732,6 +2735,7 @@ static void Drop_dragged_chunk(
     int x, int y,           // Mouse coords. within window.
     void *data          // Passed data, unused by exult
 ) {
+	ignore_unused_variable_warning(data);
 	if (!cheat.in_map_editor()) // Get into editing mode.
 		cheat.toggle_map_editor();
 	gwin->get_win()->screen_to_game(x, y, false, x, y);
@@ -2754,6 +2758,7 @@ static void Drop_dragged_npc(
     int x, int y,           // Mouse coords. within window.
     void *data          // Passed data, unused by exult
 ) {
+	ignore_unused_variable_warning(data);
 	if (!cheat.in_map_editor()) // Get into editing mode.
 		cheat.toggle_map_editor();
 	gwin->get_win()->screen_to_game(x, y, false, x, y);
@@ -2782,6 +2787,7 @@ void Drop_dragged_combo(
     int x, int y,           // Mouse coords. within window.
     void *data          // Passed data, unused by exult
 ) {
+	ignore_unused_variable_warning(data);
 	if (!cheat.in_map_editor()) // Get into editing mode.
 		cheat.toggle_map_editor();
 	cheat.clear_selected();     // Remove old selected.

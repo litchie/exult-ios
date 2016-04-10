@@ -22,6 +22,7 @@
 #define _UCDEBUGGING_H
 
 #include <list>
+#include "ignore_unused_variable_warning.h"
 
 class Stack_frame;
 
@@ -62,10 +63,13 @@ public:
 		return BP_anywhere;
 	}
 	virtual bool check(Stack_frame *frame) const {
+		ignore_unused_variable_warning(frame);
 		return true;
 	}
 
-	virtual void serialize(int fd) const { } // +++++ implement this?
+	virtual void serialize(int fd) const {
+		ignore_unused_variable_warning(fd);
+	} // +++++ implement this?
 };
 
 class LocationBreakpoint : public Breakpoint {
@@ -96,7 +100,9 @@ public:
 	}
 	virtual bool check(Stack_frame *frame) const;
 
-	virtual void serialize(int fd) const { } // +++++ implement this?
+	virtual void serialize(int fd) const {
+		ignore_unused_variable_warning(fd);
+	} // +++++ implement this?
 
 private:
 
@@ -114,7 +120,9 @@ public:
 	}
 	virtual bool check(Stack_frame *frame) const;
 
-	virtual void serialize(int fd) const { } // +++++ implement this?
+	virtual void serialize(int fd) const {
+		ignore_unused_variable_warning(fd);
+	} // +++++ implement this?
 
 private:
 	int call_chain;

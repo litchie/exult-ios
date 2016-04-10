@@ -23,6 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gump_types.h"
 #include "shapeid.h"
 #include "rect.h"
+#include "ignore_unused_variable_warning.h"
 
 class Gump;
 class Game_window;
@@ -46,12 +47,14 @@ public:
 		: ShapeID(shnum, 0, shfile), parent(par), x(px), y(py)
 	{  }
 	virtual Gump_widget *clone(Gump *par) {
+		ignore_unused_variable_warning(par);
 		return 0;
 	}
 	virtual ~Gump_widget() {  }
 	// Is a given point on the widget?
 	virtual int on_widget(int mx, int my);
 	virtual int on_button(int mx, int my) {
+		ignore_unused_variable_warning(mx, my);
 		return 0;
 	}
 	virtual void paint();

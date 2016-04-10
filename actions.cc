@@ -38,6 +38,7 @@
 #include "cheat.h"
 #include "party.h"
 #include "monstinf.h"
+#include "ignore_unused_variable_warning.h"
 
 using std::cout;
 using std::endl;
@@ -138,6 +139,7 @@ Actor_action *Actor_action::create_action_sequence(
 int Null_action::handle_event(
     Actor *actor
 ) {
+	ignore_unused_variable_warning(actor);
 	return 0;
 }
 
@@ -689,6 +691,7 @@ int Move_actor_action::handle_event(
 int Activate_actor_action::handle_event(
     Actor *actor
 ) {
+	ignore_unused_variable_warning(actor);
 	obj->activate();
 	return 0;           // That's all.
 }
@@ -702,6 +705,7 @@ int Activate_actor_action::handle_event(
 int Usecode_actor_action::handle_event(
     Actor *actor
 ) {
+	ignore_unused_variable_warning(actor);
 	Game_window *gwin = Game_window::get_instance();
 	gwin->get_usecode()->call_usecode(fun, item,
 	                                  static_cast<Usecode_machine::Usecode_events>(eventid));
@@ -839,6 +843,7 @@ Object_animate_actor_action::Object_animate_actor_action(
 int Object_animate_actor_action::handle_event(
     Actor *actor
 ) {
+	ignore_unused_variable_warning(actor);
 	if (!cycles) return 0;
 	int frnum = (obj->get_framenum() + 1) % nframes;
 	if (!frnum)         // New cycle?
@@ -957,6 +962,7 @@ Change_actor_action::Change_actor_action(
 int Change_actor_action::handle_event(
     Actor *actor
 ) {
+	ignore_unused_variable_warning(actor);
 	Game_window *gwin = Game_window::get_instance();
 	gwin->add_dirty(obj);
 	obj->set_shape(shnum, frnum);

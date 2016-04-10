@@ -37,6 +37,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ucloc.h"
 #include "ucloc.h"
 #include "basic_block.h"
+#include "ignore_unused_variable_warning.h"
 
 /*
  *  Default.  Just push the one value.
@@ -58,6 +59,7 @@ int Uc_expression::gen_values(
 void Uc_expression::gen_assign(
     Basic_block *out
 ) {
+	ignore_unused_variable_warning(out);
 	error("Can't assign to this expression");
 }
 
@@ -458,6 +460,7 @@ bool Uc_unary_expression::eval_const(
 void Uc_response_expression::gen_value(
     Basic_block *out
 ) {
+	ignore_unused_variable_warning(out);
 	error("Must use UcResponse in 'if (UcResponse == ...)'");
 }
 

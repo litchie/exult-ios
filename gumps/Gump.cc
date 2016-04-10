@@ -29,6 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "objiter.h"
 #include "Gump_manager.h"
 #include "cheat.h"
+#include "ignore_unused_variable_warning.h"
 
 /*
  *  Create a gump.
@@ -228,6 +229,7 @@ int Gump::add(
     bool combine            // True to try to combine obj.  MAY
     //   cause obj to be deleted.
 ) {
+	ignore_unused_variable_warning(combine);
 	if (!container || (!cheat.in_hack_mover() &&
 	                   !dont_check && !container->has_room(obj)))
 		return (0);     // Full.

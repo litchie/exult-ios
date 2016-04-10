@@ -22,6 +22,7 @@
 #define FIND_NEARBY_H
 
 #include "citerate.h"
+#include "ignore_unused_variable_warning.h"
 
 /*
  *  Check an object in find_nearby() against the mask.
@@ -33,6 +34,7 @@ static int Check_mask(
     Game_object *obj,
     int mask
 ) {
+	ignore_unused_variable_warning(gwin);
 	Shape_info &info = obj->get_info();
 	if ((mask & (4 | 8)) && // Both seem to be all NPC's.
 	        !info.is_npc())

@@ -44,6 +44,7 @@
 #include "party.h"
 #include "miscinf.h"
 #include "gump_utils.h"
+#include "ignore_unused_variable_warning.h"
 #include "Gump_manager.h"
 
 const char *CheatScreen::schedules[33] = {
@@ -1301,6 +1302,7 @@ void CheatScreen::NPCDisplay(Actor *actor, int &num) {
 }
 
 void CheatScreen::NPCMenu(Actor *actor, int &num) {
+	ignore_unused_variable_warning(num);
 	// Left Column
 
 #if 0
@@ -1492,6 +1494,7 @@ void CheatScreen::NPCActivate(char *input, int &command, Cheat_Prompt &mode, Act
 
 // Checks the input
 bool CheatScreen::NPCCheck(char *input, int &command, Cheat_Prompt &mode, bool &activate, Actor *actor, int &num) {
+	ignore_unused_variable_warning(num);
 	switch (command) {
 		// Simple commands
 	case 'a':   // Attack mode
@@ -2736,6 +2739,7 @@ void CheatScreen::StatActivate(char *input, int &command, Cheat_Prompt &mode, Ac
 
 // Checks the input
 bool CheatScreen::StatCheck(char *input, int &command, Cheat_Prompt &mode, bool &activate, Actor *actor) {
+	ignore_unused_variable_warning(activate, actor);
 	switch (command) {
 		// Everyone
 	case 'h':   // Hit Points
@@ -3204,6 +3208,7 @@ void CheatScreen::TeleportActivate(char *input, int &command, Cheat_Prompt &mode
 
 // Checks the input
 bool CheatScreen::TeleportCheck(char *input, int &command, Cheat_Prompt &mode, bool &activate) {
+	ignore_unused_variable_warning(activate);
 	switch (command) {
 		// Simple commands
 	case 'g':   // geographic
