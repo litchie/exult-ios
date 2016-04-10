@@ -227,7 +227,7 @@ static void Set_schedule_line(
 	GtkLabel *label = GTK_LABEL(glade_xml_get_widget(app_xml, lname));
 	g_free(lname);
 	// User data = schedule #.
-	gtk_object_set_user_data(GTK_OBJECT(label), (gpointer) type);
+	gtk_object_set_user_data(GTK_OBJECT(label), reinterpret_cast<gpointer>(ptrdiff_t(type)));
 	gtk_label_set_text(label,
 	                   type >= 0 && type < 32 ? sched_names[type] : "-----");
 	// Set location.
@@ -767,7 +767,7 @@ void ExultStudio::set_npc_face(
 	if (shape < 0)
 		shape = 1;      // Default to 1st after Avatar.
 	GtkWidget *widget = glade_xml_get_widget(app_xml, "npc_face_frame");
-	gtk_object_set_user_data(GTK_OBJECT(widget), (gpointer) shape);
+	gtk_object_set_user_data(GTK_OBJECT(widget), reinterpret_cast<gpointer>(ptrdiff_t(shape)));
 	char *label = g_strdup_printf("Face #%d", shape);
 	gtk_frame_set_label(GTK_FRAME(widget), label);
 	g_free(label);
@@ -791,7 +791,7 @@ void ExultStudio::schedule_btn_clicked(
 	GtkLabel *label = (GtkLabel *) gtk_object_get_user_data(
 	                      GTK_OBJECT(schedwin));
 	// User data = schedule #.
-	gtk_object_set_user_data(GTK_OBJECT(label), (gpointer) num);
+	gtk_object_set_user_data(GTK_OBJECT(label), reinterpret_cast<gpointer>(ptrdiff_t(num)));
 	gtk_label_set_text(label, num >= 0 && num < 32
 	                   ? sched_names[num] : "-----");
 	cout << "Chose schedule " << num << endl;

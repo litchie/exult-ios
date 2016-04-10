@@ -1,4 +1,6 @@
 2016-04-09	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* mapedit/*: Getting rid of -Wint-to-pointer-cast warnings by constructing
+	  ptrdiff_t before castng (with reinterpret_cast) to pointer.
 	* effects.cc: Fixing bug found due to the -Wunused-parameter purge: retpath
 	  was incorrectly ignored in one Projectile_effect constructor.
 	* imagewin/ibuf16.h: Fixing bug found due to the -Wunused-parameter purge:

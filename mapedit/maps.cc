@@ -210,10 +210,10 @@ void ExultStudio::setup_maps_list(
 	while ((num = Find_next_map(num + 1, 10)) != -1) {
 		char name[40];
 		sprintf(name, "Map #%02x", num);
+		gpointer ptrnum = reinterpret_cast<gpointer>(ptrdiff_t(num));
 		GtkWidget *item =
-		    Add_menu_item(maps, name, GTK_SIGNAL_FUNC(on_map_activate),
-		                  (gpointer) num, group);
-		gtk_object_set_user_data(GTK_OBJECT(item), (gpointer) num);
+		    Add_menu_item(maps, name, GTK_SIGNAL_FUNC(on_map_activate), ptrnum, group);
+		gtk_object_set_user_data(GTK_OBJECT(item), ptrnum);
 		if (curmap == num)
 			gtk_check_menu_item_set_active(
 			    GTK_CHECK_MENU_ITEM(item), TRUE);
