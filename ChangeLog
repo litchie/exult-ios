@@ -1,3 +1,12 @@
+2016-04-10	Malignant Manor <malignantmanor@users.sourceforge.net>
+	* keyactions.cc: Fix double feeding in ActionUseFood. Add
+	  ActionUseHealingItems (use_healing_items key binding) that will use
+	  healing potions and bandages.
+	* gumps/ShortcutBar_gump.* : Refactor code, fix some warnings, and
+	  initialize some variables. Have disk button close gumps. Double clicking
+	  food icon will call ActionUseHealingItems. is_party_item is no longer a
+	  class function
+
 2016-04-09	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* mapedit/Makefile.am: Corrected Gimp plugin deletion when $(EXEEXT) is not
 	  empty in automake.

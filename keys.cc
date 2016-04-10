@@ -142,7 +142,7 @@ const struct Action {
 		"FACE_STATS",
 		ActionFaceStats, 0, "Change Face Stats State", Action::normal_keys, NONE, false, true, true, false
 	},
-
+	{ "USE_HEALING_ITEMS", ActionUseHealingItems, 0, "Use bandages or healing potions", Action::normal_keys, NONE, false, false, false, false },
 	{
 		"SHOW_SI_INTRO",
 		ActionSIIntro, 0, "Show Alternate SI intro", Action::cheat_keys, SERPENT_ISLE, false, true, true, false

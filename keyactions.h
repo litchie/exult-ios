@@ -55,6 +55,7 @@ void ActionTryKeys(int const *params);
 void ActionStats(int const *params);
 void ActionCombatStats(int const *params);
 void ActionFaceStats(int const *params);
+void ActionUseHealingItems(int const *params);
 
 void ActionSIIntro(int const *params);
 void ActionEndgame(int const *params);
