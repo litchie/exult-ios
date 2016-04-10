@@ -131,7 +131,7 @@ public:
 	virtual void fill_translucent8(unsigned char val, int srcw, int srch,
 	                               int destx, int desty, Xform_palette &xform) {
 		ignore_unused_variable_warning(xform);
-		fill8(val, srcw, srcw, destx, desty);
+		fill8(val, srcw, srch, destx, desty);
 	}
 	// Copy rect. with transp. color.
 	virtual void copy_transparent8(unsigned char *src_pixels, int srcw,
