@@ -30,10 +30,20 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Windrag.h"
 #endif
 
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wold-style-cast"
+#pragma GCC diagnostic ignored "-Wcast-qual"
+#endif  // __GNUC__
 #include <gtk/gtk.h>
 #ifdef XWIN
 #include <gdk/gdkx.h>
 #endif
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif  // __GNUC__
+#include "gtk_redefines.h"
+
 #include <glib.h>
 #include "chunklst.h"
 #include "vgafile.h"
@@ -301,7 +311,7 @@ gint Chunk_chooser::configure(
     gpointer data           // ->Chunk_chooser
 ) {
 	ignore_unused_variable_warning(widget);
-	Chunk_chooser *chooser = (Chunk_chooser *) data;
+	Chunk_chooser *chooser = reinterpret_cast<Chunk_chooser *>(data);
 	chooser->Shape_draw::configure();
 	chooser->render();
 	// Set new scroll amounts.
@@ -332,7 +342,7 @@ gint Chunk_chooser::expose(
     gpointer data           // ->Chunk_chooser.
 ) {
 	ignore_unused_variable_warning(widget);
-	Chunk_chooser *chooser = (Chunk_chooser *) data;
+	Chunk_chooser *chooser = reinterpret_cast<Chunk_chooser *>(data);
 	chooser->show(event->area.x, event->area.y, event->area.width,
 	              event->area.height);
 	return (TRUE);
@@ -389,10 +399,10 @@ gint Chunk_chooser::drag_motion(
     gpointer data           // ->Shape_chooser.
 ) {
 	ignore_unused_variable_warning(widget);
-	Chunk_chooser *chooser = (Chunk_chooser *) data;
+	Chunk_chooser *chooser = reinterpret_cast<Chunk_chooser *>(data);
 	if (!chooser->dragging && chooser->selected >= 0)
 		chooser->start_drag(U7_TARGET_CHUNKID_NAME,
-		                    U7_TARGET_CHUNKID, (GdkEvent *) event);
+		                    U7_TARGET_CHUNKID, reinterpret_cast<GdkEvent *>(event));
 	return true;
 }
 #endif
@@ -403,7 +413,7 @@ gint Chunk_chooser::mouse_press(
     gpointer data           // ->Chunk_chooser.
 ) {
 	ignore_unused_variable_warning(widget);
-	Chunk_chooser *chooser = (Chunk_chooser *) data;
+	Chunk_chooser *chooser = reinterpret_cast<Chunk_chooser *>(data);
 
 	if (event->button == 4) {
 		chooser->scroll(true);
@@ -417,7 +427,7 @@ gint Chunk_chooser::mouse_press(
 	int i;              // Search through entries.
 	for (i = 0; i < chooser->info_cnt; i++)
 		if (chooser->info[i].box.has_point(
-		            (int) event->x, (int) event->y)) {
+		            static_cast<int>(event->x), static_cast<int>(event->y))) {
 			// Found the box?
 //			if (i == old_selected)
 //				return TRUE;
@@ -457,7 +467,7 @@ static gint Mouse_release(
     gpointer data           // ->Shape_chooser.
 ) {
 	ignore_unused_variable_warning(widget, event);
-	Chunk_chooser *chooser = (Chunk_chooser *) data;
+	Chunk_chooser *chooser = reinterpret_cast<Chunk_chooser *>(data);
 	chooser->mouse_up();
 	return true;
 }
@@ -476,7 +486,7 @@ void Chunk_chooser::drag_data_get(
 ) {
 	ignore_unused_variable_warning(widget, context, time);
 	cout << "In DRAG_DATA_GET" << endl;
-	Chunk_chooser *chooser = (Chunk_chooser *) data;
+	Chunk_chooser *chooser = reinterpret_cast<Chunk_chooser *>(data);
 	if (chooser->selected < 0 || info != U7_TARGET_CHUNKID)
 		return;         // Not sure about this.
 	guchar buf[30];
@@ -522,7 +532,7 @@ gint Chunk_chooser::drag_begin(
 ) {
 	ignore_unused_variable_warning(widget, context);
 	cout << "In DRAG_BEGIN" << endl;
-	Chunk_chooser *chooser = (Chunk_chooser *) data;
+	Chunk_chooser *chooser = reinterpret_cast<Chunk_chooser *>(data);
 	if (chooser->selected < 0)
 		return FALSE;       // ++++Display a halt bitmap.
 #if 0
@@ -583,7 +593,7 @@ void Chunk_chooser::drag_data_received(
     gpointer udata          // Should point to Shape_draw.
 ) {
 	ignore_unused_variable_warning(widget, context, x, y, info, time);
-	Chunk_chooser *chooser = (Chunk_chooser *) udata;
+	Chunk_chooser *chooser = reinterpret_cast<Chunk_chooser *>(udata);
 	cout << "Chunk drag_data_received" << endl;
 	if (seldata->type == gdk_atom_intern(U7_TARGET_CHUNKID_NAME, 0) &&
 	        seldata->format == 8 && seldata->length > 0) {
@@ -611,7 +621,7 @@ void Chunk_chooser::enable_drop(
 	tents[0].flags = 0;
 	tents[0].info = U7_TARGET_CHUNKID;
 	gtk_drag_dest_set(draw, GTK_DEST_DEFAULT_ALL, tents, 1,
-	                  (GdkDragAction)(GDK_ACTION_COPY | GDK_ACTION_MOVE));
+	                  static_cast<GdkDragAction>(GDK_ACTION_COPY | GDK_ACTION_MOVE));
 
 	gtk_signal_connect(GTK_OBJECT(draw), "drag_data_received",
 	                   GTK_SIGNAL_FUNC(drag_data_received), this);
@@ -647,7 +657,7 @@ void Chunk_chooser::scroll(
 		delta = -delta;
 	adj->value += delta;
 	gtk_signal_emit_by_name(GTK_OBJECT(adj), "changed");
-	scroll((gint) adj->value);
+	scroll(static_cast<gint>(adj->value));
 }
 
 /*
@@ -658,9 +668,9 @@ void Chunk_chooser::scrolled(
     GtkAdjustment *adj,     // The adjustment.
     gpointer data           // ->Chunk_chooser.
 ) {
-	Chunk_chooser *chooser = (Chunk_chooser *) data;
+	Chunk_chooser *chooser = reinterpret_cast<Chunk_chooser *>(data);
 	cout << "Scrolled to " << adj->value << '\n';
-	gint newindex = (gint) adj->value;
+	gint newindex = static_cast<gint>(adj->value);
 	chooser->scroll(newindex);
 }
 
@@ -698,7 +708,7 @@ static void on_insert_empty(
     gpointer udata
 ) {
 	ignore_unused_variable_warning(item);
-	Chunk_chooser *chooser = (Chunk_chooser *) udata;
+	Chunk_chooser *chooser = reinterpret_cast<Chunk_chooser *>(udata);
 	chooser->insert(false);
 }
 
@@ -707,7 +717,7 @@ static void on_insert_dup(
     gpointer udata
 ) {
 	ignore_unused_variable_warning(item);
-	Chunk_chooser *chooser = (Chunk_chooser *) udata;
+	Chunk_chooser *chooser = reinterpret_cast<Chunk_chooser *>(udata);
 	chooser->insert(true);
 }
 static void on_delete(
@@ -715,7 +725,7 @@ static void on_delete(
     gpointer udata
 ) {
 	ignore_unused_variable_warning(item);
-	Chunk_chooser *chooser = (Chunk_chooser *) udata;
+	Chunk_chooser *chooser = reinterpret_cast<Chunk_chooser *>(udata);
 	chooser->del();
 }
 
@@ -771,7 +781,7 @@ Chunk_chooser::Chunk_chooser(
 		chunksz = c_tiles_per_chunk * c_tiles_per_chunk * 3;
 	}
 	chunkfile.seekg(0, std::ios::end);  // Figure total #chunks.
-	num_chunks = ((int)chunkfile.tellg() - headersz) / chunksz;
+	num_chunks = (static_cast<int>(chunkfile.tellg()) - headersz) / chunksz;
 	chunklist.resize(num_chunks);   // Init. list of ->'s to chunks.
 	// Put things in a vert. box.
 	GtkWidget *vbox = gtk_vbox_new(FALSE, 0);
@@ -877,7 +887,7 @@ bool Chunk_chooser::server_response(
     unsigned char *data,
     int datalen
 ) {
-	switch ((Exult_server::Msg_type) id) {
+	switch (static_cast<Exult_server::Msg_type>(id)) {
 	case Exult_server::locate_terrain:
 		locate_response(data, datalen);
 		return true;
@@ -992,8 +1002,8 @@ void Chunk_chooser::locate_response(
 		to_del = -1;
 		return;         // Not the current selection.
 	}
-	short cx = (short) Read2(ptr);  // Get chunk found.
-	short cy = (short) Read2(ptr);
+	short cx = static_cast<short>(Read2(ptr));  // Get chunk found.
+	short cy = static_cast<short>(Read2(ptr));
 	ptr++;              // Skip upwards flag.
 	if (!*ptr) {
 		if (to_del >= 0 && to_del == tnum) {
@@ -1055,7 +1065,7 @@ void Chunk_chooser::insert_response(
 ) {
 	ignore_unused_variable_warning(datalen);
 	unsigned char *ptr = data;
-	int tnum = (short) Read2(ptr);
+	int tnum = static_cast<short>(Read2(ptr));
 	bool dup = *ptr++ ? true : false;
 	if (!*ptr)
 		EStudio::Alert("Terrain insert failed.");
@@ -1086,7 +1096,7 @@ void Chunk_chooser::delete_response(
 ) {
 	ignore_unused_variable_warning(datalen);
 	unsigned char *ptr = data;
-	int tnum = (short) Read2(ptr);
+	int tnum = static_cast<short>(Read2(ptr));
 	if (!*ptr)
 		EStudio::Alert("Terrain delete failed.");
 	else {
@@ -1131,7 +1141,7 @@ void Chunk_chooser::swap_response(
 ) {
 	ignore_unused_variable_warning(datalen);
 	unsigned char *ptr = data;
-	int tnum = (short) Read2(ptr);
+	int tnum = static_cast<short>(Read2(ptr));
 	if (!*ptr)
 		cout << "Terrain insert failed." << endl;
 	else if (tnum >= 0 && tnum < num_chunks - 1) {

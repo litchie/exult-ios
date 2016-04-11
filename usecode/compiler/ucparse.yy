@@ -100,6 +100,12 @@ struct Member_selector
 		{  }
 	};
 
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wold-style-cast"
+#pragma GCC diagnostic ignored "-Wcast-qual"
+#endif  // __GNUC__
+
 %}
 
 %union
@@ -2207,6 +2213,10 @@ defined_struct:
 	;
 
 %%
+
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif  // __GNUC__
 
 /*
  *	Create an array with an integer as the first element.

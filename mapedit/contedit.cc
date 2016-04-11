@@ -184,7 +184,7 @@ static void cont_shape_dropped(
 ) {
 	if (file == U7_SHAPE_SHAPES &&
 	        shape >= c_first_obj_shape && shape < c_max_shapes)
-		((ExultStudio *) udata)->set_cont_shape(shape, frame);
+		reinterpret_cast<ExultStudio *>(udata)->set_cont_shape(shape, frame);
 }
 
 #ifdef WIN32
@@ -268,7 +268,7 @@ int ExultStudio::init_cont_window(
 		return 0;
 	}
 	// Store address with window.
-	gtk_object_set_user_data(GTK_OBJECT(contwin), (gpointer) addr);
+	gtk_object_set_user_data(GTK_OBJECT(contwin), reinterpret_cast<gpointer>(addr));
 	// Store name. (Not allowed to change.)
 	set_entry("cont_name", name.c_str(), false);
 	// Shape/frame, quality.
@@ -335,7 +335,7 @@ void ExultStudio::rotate_cont(
 	int frnum = get_num_entry("cont_frame");
 	if (shnum <= 0)
 		return;
-	Shapes_vga_file *shfile = (Shapes_vga_file *) vgafile->get_ifile();
+	Shapes_vga_file *shfile = static_cast<Shapes_vga_file *>(vgafile->get_ifile());
 	// Make sure data's been read in.
 	shfile->read_info(game_type, true);
 	Shape_info &info = shfile->get_info(shnum);

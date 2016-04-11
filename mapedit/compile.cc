@@ -131,7 +131,7 @@ void ExultStudio::compile(
 	argv[3] = source.c_str();   // What to compile.
 	// ++++++Which game type (SI/BG)?
 	argv[4] = 0;            // NULL.
-	if (!compile_box->exec("ucc", (char **) argv))
+	if (!compile_box->exec("ucc", const_cast<char **>(argv)))
 		EStudio::Alert("Error executing usecode compiler ('ucc')");
 }
 

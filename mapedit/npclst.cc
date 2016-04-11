@@ -31,11 +31,21 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <windows.h>
 #endif
 
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wold-style-cast"
+#pragma GCC diagnostic ignored "-Wcast-qual"
+#endif  // __GNUC__
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 #ifdef XWIN
 #include <gdk/gdkx.h>
 #endif
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif  // __GNUC__
+#include "gtk_redefines.h"
+
 #include <glib.h>
 #include <stdlib.h>
 #include <sys/stat.h>
@@ -162,7 +172,7 @@ void Npc_chooser::setup_shapes_info(
 ) {
 	vector<Estudio_npc> &npcs = get_npcs();
 	if (npcs.empty())       // No NPC's?  Try to get them.
-		((Npcs_file_info *) file_info)->setup();
+		reinterpret_cast<Npcs_file_info *>(file_info)->setup();
 	// Get drawing area dimensions.
 	gint winw = draw->allocation.width;
 	int x = 0;
@@ -282,7 +292,7 @@ static gint Configure_chooser(
     gpointer data           // ->Npc_chooser
 ) {
 	ignore_unused_variable_warning(widget);
-	Npc_chooser *chooser = (Npc_chooser *) data;
+	Npc_chooser *chooser = reinterpret_cast<Npc_chooser *>(data);
 	return chooser->configure(event);
 }
 gint Npc_chooser::configure(
@@ -313,7 +323,7 @@ gint Npc_chooser::expose(
     gpointer data           // ->Npc_chooser.
 ) {
 	ignore_unused_variable_warning(widget);
-	Npc_chooser *chooser = (Npc_chooser *) data;
+	Npc_chooser *chooser = reinterpret_cast<Npc_chooser *>(data);
 	chooser->show(event->area.x, event->area.y, event->area.width,
 	              event->area.height);
 	return (TRUE);
@@ -369,10 +379,10 @@ gint Npc_chooser::drag_motion(
     gpointer data           // ->Npc_chooser.
 ) {
 	ignore_unused_variable_warning(widget);
-	Npc_chooser *chooser = (Npc_chooser *) data;
+	Npc_chooser *chooser = reinterpret_cast<Npc_chooser *>(data);
 	if (!chooser->dragging && chooser->selected >= 0)
 		chooser->start_drag(U7_TARGET_NPCID_NAME,
-		                    U7_TARGET_NPCID, (GdkEvent *) event);
+		                    U7_TARGET_NPCID, reinterpret_cast<GdkEvent *>(event));
 	return true;
 }
 #endif
@@ -397,7 +407,7 @@ gint Npc_chooser::mouse_press(
 	int old_selected = selected, new_selected = -1;
 	int i;              // Search through entries.
 	int infosz = info.size();
-	int absx = (int) event->x, absy = (int) event->y + voffset;
+	int absx = static_cast<int>(event->x), absy = static_cast<int>(event->y) + voffset;
 	for (i = rows[row0].index0; i < infosz; i++) {
 		if (info[i].box.has_point(absx, absy)) {
 			// Found the box?
@@ -426,7 +436,7 @@ gint Npc_chooser::mouse_press(
 		unselect(true);     // No selection.
 	else if (selected == old_selected && old_selected >= 0) {
 		// Same square.  Check for dbl-click.
-		if (((GdkEvent *) event)->type == GDK_2BUTTON_PRESS)
+		if (reinterpret_cast<GdkEvent *>(event)->type == GDK_2BUTTON_PRESS)
 			edit_npc();
 	}
 	if (event->button == 3)
@@ -443,7 +453,7 @@ static gint Mouse_press(
     GdkEventButton *event,
     gpointer data           // ->Npc_chooser.
 ) {
-	Npc_chooser *chooser = (Npc_chooser *) data;
+	Npc_chooser *chooser = reinterpret_cast<Npc_chooser *>(data);
 	return chooser->mouse_press(widget, event);
 }
 static gint Mouse_release(
@@ -452,7 +462,7 @@ static gint Mouse_release(
     gpointer data           // ->Npc_chooser.
 ) {
 	ignore_unused_variable_warning(widget, event);
-	Npc_chooser *chooser = (Npc_chooser *) data;
+	Npc_chooser *chooser = reinterpret_cast<Npc_chooser *>(data);
 	chooser->mouse_up();
 	return true;
 }
@@ -465,7 +475,7 @@ on_npc_draw_key_press(GtkEntry   *entry,
                       GdkEventKey    *event,
                       gpointer    user_data) {
 	ignore_unused_variable_warning(entry, event);
-	Npc_chooser *chooser = (Npc_chooser *) user_data;
+	Npc_chooser *chooser = reinterpret_cast<Npc_chooser *>(user_data);
 #if 0
 	switch (event->keyval) {
 	case GDK_Delete:
@@ -511,7 +521,7 @@ void Npc_chooser::edit_npc(
 void Npc_chooser::update_npc(
     int num
 ) {
-	((Npcs_file_info *) file_info)->read_npc(num);
+	reinterpret_cast<Npcs_file_info *>(file_info)->read_npc(num);
 	render();
 	update_statusbar();
 }
@@ -530,7 +540,7 @@ void Npc_chooser::drag_data_get(
 ) {
 	ignore_unused_variable_warning(widget, context, time);
 	cout << "In DRAG_DATA_GET" << endl;
-	Npc_chooser *chooser = (Npc_chooser *) data;
+	Npc_chooser *chooser = reinterpret_cast<Npc_chooser *>(data);
 	if (chooser->selected < 0 || info != U7_TARGET_NPCID)
 		return;         // Not sure about this.
 	guchar buf[30];
@@ -560,7 +570,7 @@ gint Npc_chooser::selection_clear(
     gpointer data           // ->Npc_chooser.
 ) {
 	ignore_unused_variable_warning(widget, event, data);
-//	Npc_chooser *chooser = (Npc_chooser *) data;
+//	Npc_chooser *chooser = reinterpret_cast<Npc_chooser *>(data);
 	cout << "SELECTION_CLEAR" << endl;
 	return TRUE;
 }
@@ -576,7 +586,7 @@ gint Npc_chooser::drag_begin(
 ) {
 	ignore_unused_variable_warning(widget);
 	cout << "In DRAG_BEGIN" << endl;
-	Npc_chooser *chooser = (Npc_chooser *) data;
+	Npc_chooser *chooser = reinterpret_cast<Npc_chooser *>(data);
 	if (chooser->selected < 0)
 		return FALSE;       // ++++Display a halt bitmap.
 	// Get ->npc.
@@ -604,7 +614,7 @@ void Npc_chooser::drag_data_received(
     gpointer udata          // Should point to Shape_draw.
 ) {
 	ignore_unused_variable_warning(widget, context, x, y, info, time);
-	Npc_chooser *chooser = (Npc_chooser *) udata;
+	Npc_chooser *chooser = reinterpret_cast<Npc_chooser *>(udata);
 	cout << "Npc drag_data_received" << endl;
 	if (seldata->type == gdk_atom_intern(U7_TARGET_NPCID_NAME, 0) &&
 	        seldata->format == 8 && seldata->length > 0) {
@@ -632,7 +642,7 @@ void Npc_chooser::enable_drop(
 	tents[0].flags = 0;
 	tents[0].info = U7_TARGET_NPCID;
 	gtk_drag_dest_set(draw, GTK_DEST_DEFAULT_ALL, tents, 1,
-	                  (GdkDragAction)(GDK_ACTION_COPY | GDK_ACTION_MOVE));
+	                  static_cast<GdkDragAction>(GDK_ACTION_COPY | GDK_ACTION_MOVE));
 
 	gtk_signal_connect(GTK_OBJECT(draw), "drag_data_received",
 	                   GTK_SIGNAL_FUNC(drag_data_received), this);
@@ -731,9 +741,9 @@ void Npc_chooser::vscrolled(    // For vertical scrollbar.
     GtkAdjustment *adj,     // The adjustment.
     gpointer data           // ->Npc_chooser.
 ) {
-	Npc_chooser *chooser = (Npc_chooser *) data;
+	Npc_chooser *chooser = reinterpret_cast<Npc_chooser *>(data);
 	cout << "Scrolled to " << adj->value << '\n';
-	gint newindex = (gint) adj->value;
+	gint newindex = static_cast<gint>(adj->value);
 	chooser->scroll_vertical(newindex);
 }
 
@@ -752,7 +762,7 @@ int Npc_chooser::get_count(
 
 vector<Estudio_npc> &Npc_chooser::get_npcs(
 ) {
-	return ((Npcs_file_info *) file_info)->get_npcs();
+	return reinterpret_cast<Npcs_file_info *>(file_info)->get_npcs();
 }
 
 /*
@@ -772,7 +782,7 @@ void Npc_chooser::search(
 	int start = selected >= 0 ? selected : rows[row0].index0;
 	int i;
 	start += dir;
-	int stop = dir == -1 ? -1 : (int) info.size();
+	int stop = dir == -1 ? -1 : static_cast<int>(info.size());
 	for (i = start; i != stop; i += dir) {
 		int npcnum = info[i].npcnum;
 		const char *nm = npcnum < npcs.size() ?
@@ -819,7 +829,7 @@ void on_npc_popup_edit_activate(
     gpointer udata
 ) {
 	ignore_unused_variable_warning(item);
-	((Npc_chooser *) udata)->edit_npc();
+	reinterpret_cast<Npc_chooser *>(udata)->edit_npc();
 }
 
 /*

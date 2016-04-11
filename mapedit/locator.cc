@@ -64,8 +64,8 @@ C_EXPORT void on_loc_close_clicked(
     gpointer user_data
 ) {
 	ignore_unused_variable_warning(user_data);
-	Locator *loc = (Locator *) gtk_object_get_user_data(
-	                   GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(btn))));
+	Locator *loc = reinterpret_cast<Locator *>(gtk_object_get_user_data(
+	                   GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(btn)))));
 	loc->show(false);
 }
 
@@ -93,8 +93,8 @@ C_EXPORT gint on_loc_draw_configure_event(
     gpointer data           // ->Shape_chooser
 ) {
 	ignore_unused_variable_warning(event, data);
-	Locator *loc = (Locator *) gtk_object_get_user_data(
-	                   GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(widget))));
+	Locator *loc = reinterpret_cast<Locator *>(gtk_object_get_user_data(
+	                   GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(widget)))));
 	loc->configure(widget);
 	return TRUE;
 }
@@ -107,8 +107,8 @@ C_EXPORT gint on_loc_draw_expose_event(
     gpointer data           // ->Shape_chooser.
 ) {
 	ignore_unused_variable_warning(data);
-	Locator *loc = (Locator *) gtk_object_get_user_data(
-	                   GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(widget))));
+	Locator *loc = reinterpret_cast<Locator *>(gtk_object_get_user_data(
+	                   GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(widget)))));
 	loc->render(&event->area);
 	return TRUE;
 }
@@ -121,8 +121,8 @@ C_EXPORT gint on_loc_draw_button_press_event(
     gpointer data           // ->Chunk_chooser.
 ) {
 	ignore_unused_variable_warning(data);
-	Locator *loc = (Locator *) gtk_object_get_user_data(
-	                   GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(widget))));
+	Locator *loc = reinterpret_cast<Locator *>(gtk_object_get_user_data(
+	                   GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(widget)))));
 	return loc->mouse_press(event);
 }
 
@@ -132,8 +132,8 @@ C_EXPORT gint on_loc_draw_button_release_event(
     gpointer data           // ->Chunk_chooser.
 ) {
 	ignore_unused_variable_warning(data);
-	Locator *loc = (Locator *) gtk_object_get_user_data(
-	                   GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(widget))));
+	Locator *loc = reinterpret_cast<Locator *>(gtk_object_get_user_data(
+	                   GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(widget)))));
 	return loc->mouse_release(event);
 }
 
@@ -143,8 +143,8 @@ C_EXPORT gint on_loc_draw_motion_notify_event(
     gpointer data           // ->Chunk_chooser.
 ) {
 	ignore_unused_variable_warning(data);
-	Locator *loc = (Locator *) gtk_object_get_user_data(
-	                   GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(widget))));
+	Locator *loc = reinterpret_cast<Locator *>(gtk_object_get_user_data(
+	                   GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(widget)))));
 	return loc->mouse_motion(event);
 }
 
@@ -339,9 +339,9 @@ void Locator::vscrolled(        // For vertical scrollbar.
     GtkAdjustment *adj,     // The adjustment.
     gpointer data           // ->Shape_chooser.
 ) {
-	Locator *loc = (Locator *) data;
+	Locator *loc = reinterpret_cast<Locator *>(data);
 	int oldty = loc->ty;
-	loc->ty = ((gint) adj->value) * c_tiles_per_chunk;
+	loc->ty = static_cast<gint>(adj->value) * c_tiles_per_chunk;
 	if (loc->ty != oldty)       // (Already equal if this event came
 		//   from Exult msg.).
 	{
@@ -353,9 +353,9 @@ void Locator::hscrolled(        // For horizontal scrollbar.
     GtkAdjustment *adj,     // The adjustment.
     gpointer data           // ->Locator.
 ) {
-	Locator *loc = (Locator *) data;
+	Locator *loc = reinterpret_cast<Locator *>(data);
 	int oldtx = loc->tx;
-	loc->tx = ((gint) adj->value) * c_tiles_per_chunk;
+	loc->tx = static_cast<gint>(adj->value) * c_tiles_per_chunk;
 	if (loc->tx != oldtx)       // (Already equal if this event came
 		//   from Exult msg.).
 	{
@@ -407,7 +407,7 @@ void Locator::query_location(
 gint Locator::delayed_send_location(
     gpointer data           // ->locator.
 ) {
-	Locator *loc = (Locator *) data;
+	Locator *loc = reinterpret_cast<Locator *>(data);
 	loc->send_location();
 	loc->send_location_timer = -1;
 	return 0;           // Cancels timer.
@@ -475,9 +475,9 @@ gint Locator::mouse_press(
 	if (event->button != 1)
 		return FALSE;       // Handling left-click.
 	// Get mouse position, draw dims.
-	int mx = (int) event->x, my = (int) event->y;
+	int mx = static_cast<int>(event->x), my = static_cast<int>(event->y);
 	// Double-click?
-	if (((GdkEvent *) event)->type == GDK_2BUTTON_PRESS) {
+	if (reinterpret_cast<GdkEvent *>(event)->type == GDK_2BUTTON_PRESS) {
 		goto_mouse(mx, my);
 		return TRUE;
 	}
@@ -516,9 +516,9 @@ gint Locator::mouse_motion(
 	if (event->is_hint)
 		gdk_window_get_pointer(event->window, &mx, &my, &state);
 	else {
-		mx = (int) event->x;
-		my = (int) event->y;
-		state = (GdkModifierType) event->state;
+		mx = static_cast<int>(event->x);
+		my = static_cast<int>(event->y);
+		state = static_cast<GdkModifierType>(event->state);
 	}
 	if (!dragging || !(state & GDK_BUTTON1_MASK))
 		return FALSE;       // Not dragging with left button.

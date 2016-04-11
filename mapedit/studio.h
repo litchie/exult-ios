@@ -20,8 +20,18 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #define STUDIO_H
 
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wold-style-cast"
+#pragma GCC diagnostic ignored "-Wcast-qual"
+#endif  // __GNUC__
 #include <gtk/gtk.h>
 #include <glade/glade.h>
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif  // __GNUC__
+#include "gtk_redefines.h"
+
 #include <vector>
 #include <map>
 #include <string>

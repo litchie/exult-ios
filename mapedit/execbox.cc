@@ -95,7 +95,7 @@ static void Read_from_child(
     GdkInputCondition condition
 ) {
 	ignore_unused_variable_warning(condition);
-	Exec_process *ex = (Exec_process *) data;
+	Exec_process *ex = reinterpret_cast<Exec_process *>(data);
 	ex->read_from_child(id);
 }
 void Exec_process::read_from_child(
@@ -271,7 +271,7 @@ static void Exec_callback(
     int exit_code,          // Exit code if datalen = 0.
     void *user_data         // ->Exex_box
 ) {
-	Exec_box *box = (Exec_box *) user_data;
+	Exec_box *box = reinterpret_cast<Exec_box *>(user_data);
 	box->read_from_child(data, datalen, exit_code);
 }
 void Exec_box::read_from_child(

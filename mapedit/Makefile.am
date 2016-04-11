@@ -54,7 +54,8 @@ exult_studio_SOURCES = \
 	shapelst.cc \
 	shapelst.h \
 	ucbrowse.cc \
-	ucbrowse.h
+	ucbrowse.h \
+	gtk_redefines.h
 
 
 noinst_PROGRAMS = $(GIMP_PLUGINS)

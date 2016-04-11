@@ -156,7 +156,7 @@ static void Egg_monster_dropped(
     void *udata
 ) {
 	if (file == U7_SHAPE_SHAPES && shape >= 150 && shape < 0xffff)
-		((ExultStudio *) udata)->set_egg_monster(shape, frame);
+		reinterpret_cast<ExultStudio *>(udata)->set_egg_monster(shape, frame);
 }
 
 #ifdef WIN32
@@ -260,7 +260,7 @@ int ExultStudio::init_egg_window(
 		return 0;
 	}
 	// Store address with window.
-	gtk_object_set_user_data(GTK_OBJECT(eggwin), (gpointer) addr);
+	gtk_object_set_user_data(GTK_OBJECT(eggwin), reinterpret_cast<gpointer>(addr));
 	GtkWidget *notebook = glade_xml_get_widget(app_xml, "notebook1");
 	if (notebook)           // 1st is monster (1).
 		gtk_notebook_set_page(GTK_NOTEBOOK(notebook), type - 1);

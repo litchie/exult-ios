@@ -24,10 +24,21 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <sys/types.h>
 #endif
 #include <dirent.h>
+
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wold-style-cast"
+#pragma GCC diagnostic ignored "-Wcast-qual"
+#endif  // __GNUC__
 #include <gtk/gtk.h>
 #ifdef XWIN
 #include <gdk/gdkx.h>
 #endif
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif  // __GNUC__
+#include "gtk_redefines.h"
+
 #include <glib.h>
 #include <unistd.h>
 #include <errno.h>
@@ -838,7 +849,7 @@ void on_choose_new_game_dir(
     const char *dir,
     gpointer udata          // ->studio.
 ) {
-	((ExultStudio *) udata)->create_new_game(dir);
+	(reinterpret_cast<ExultStudio *>(udata))->create_new_game(dir);
 }
 void ExultStudio::create_new_game(
     const char *dir         // Directory for new game.
@@ -1261,10 +1272,10 @@ void ExultStudio::set_game_path(string gamename, string modname) {
 	vector<GtkWindow *>::const_iterator it;
 	for (it = group_windows.begin(); it != group_windows.end(); ++it) {
 		GtkWidget *grpwin = GTK_WIDGET(*it);
-		GladeXML *xml = (GladeXML *) gtk_object_get_data(GTK_OBJECT(grpwin),
-		                "xml");
-		Object_browser *chooser = (Object_browser *) gtk_object_get_data(
-		                              GTK_OBJECT(grpwin), "browser");
+		GladeXML *xml = reinterpret_cast<GladeXML *>(gtk_object_get_data(GTK_OBJECT(grpwin),
+		                "xml"));
+		Object_browser *chooser = reinterpret_cast<Object_browser *>(gtk_object_get_data(
+		                              GTK_OBJECT(grpwin), "browser"));
 		delete chooser;
 		gtk_widget_destroy(grpwin);
 		g_object_unref(G_OBJECT(xml));
@@ -1558,7 +1569,7 @@ void ExultStudio::write_shape_info(
 ) {
 	if ((force || shape_info_modified) && vgafile) {
 		Shapes_vga_file *svga =
-		    (Shapes_vga_file *) vgafile->get_ifile();
+		    static_cast<Shapes_vga_file *>(vgafile->get_ifile());
 		// Make sure data's been read in.
 		svga->read_info(game_type, true);
 		svga->write_info(game_type);
@@ -1742,8 +1753,8 @@ void ExultStudio::new_shape_file(
 ) {
 	GtkFileSelection *fsel = Create_file_selection(
 	                             single ? "Write new .shp file" : "Write new .vga file",
-	                             (File_sel_okay_fun) create_shape_file,
-	                             (gpointer) single);
+	                             reinterpret_cast<File_sel_okay_fun>(create_shape_file),
+	                             reinterpret_cast<gpointer>(single));
 //	This doesn't work very well in GTK 1.2.  Try again later.
 //	gtk_file_selection_complete(fsel, single ? "*.shp" : "*.vga");
 	if (is_system_path_defined("<PATCH>")) {
@@ -1762,7 +1773,7 @@ void ExultStudio::create_shape_file(
     char *pathname,         // Full path.
     gpointer udata          // 1 if NOT a FLEX file.
 ) {
-	bool oneshape = (bool) udata;
+	bool oneshape = reinterpret_cast<uintptr>(udata) != 0;
 	Shape *shape = 0;
 	if (oneshape) {         // Single-shape?
 		// Create one here.
@@ -1959,7 +1970,7 @@ int ExultStudio::get_num_entry(
 	if (!*txt)
 		return if_empty;
 	if (txt[0] == '0' && txt[1] == 'x')
-		return (int) strtoul(txt + 2, 0, 16);   // Hex.
+		return static_cast<int>(strtoul(txt + 2, 0, 16));   // Hex.
 	else
 		return atoi(txt);
 }
@@ -2305,9 +2316,9 @@ void ExultStudio::background_color_okay(
 	gdouble rgb[3];
 	gtk_color_selection_get_color(
 	    GTK_COLOR_SELECTION(colorsel->colorsel), rgb);
-	unsigned char r = (unsigned char)(rgb[0] * 256),
-	              g = (unsigned char)(rgb[1] * 256),
-	              b = (unsigned char)(rgb[2] * 256);
+	unsigned char r = static_cast<unsigned char>(rgb[0] * 256),
+	              g = static_cast<unsigned char>(rgb[1] * 256),
+	              b = static_cast<unsigned char>(rgb[2] * 256);
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->background_color = (r << 16) + (g << 8) + b;
 	// Show new color.
@@ -2412,8 +2423,8 @@ void ExultStudio::save_preferences(
 	config->set("config/estudio/default_game", default_game, true);
 	GtkWidget *backgrnd = glade_xml_get_widget(app_xml,
 	                      "prefs_background");
-	background_color = (uintptr) gtk_object_get_user_data(
-	                       GTK_OBJECT(backgrnd));
+	background_color = reinterpret_cast<uintptr>(gtk_object_get_user_data(
+	                       GTK_OBJECT(backgrnd)));
 	config->set("config/estudio/background_color", background_color, true);
 	// Set background color.
 	palbuf[3 * 255] = (background_color >> 18) & 0x3f;
@@ -2438,7 +2449,7 @@ void ExultStudio::run() {
 static gint Reconnect(
     gpointer data           // ->ExultStudio.
 ) {
-	ExultStudio *studio = (ExultStudio *) data;
+	ExultStudio *studio = reinterpret_cast<ExultStudio *>(data);
 	if (studio->connect_to_server())
 		return 0;       // Cancel timer.  We succeeded.
 	else
@@ -2474,14 +2485,14 @@ static void Read_from_server(
     GdkInputCondition condition
 ) {
 	ignore_unused_variable_warning(socket, condition);
-	ExultStudio *studio = (ExultStudio *) data;
+	ExultStudio *studio = reinterpret_cast<ExultStudio *>(data);
 	studio->read_from_server();
 }
 #else
 static gint Read_from_server(
     gpointer data           // ->ExultStudio.
 ) {
-	ExultStudio *studio = (ExultStudio *) data;
+	ExultStudio *studio = reinterpret_cast<ExultStudio *>(data);
 	studio->read_from_server();
 	return TRUE;
 }
@@ -2530,7 +2541,7 @@ void ExultStudio::read_from_server(
 		return;
 	}
 	cout << "Read " << datalen << " bytes from server" << endl;
-	cout << "ID = " << (int) id << endl;
+	cout << "ID = " << static_cast<int>(id) << endl;
 	switch (id) {
 	case Exult_server::obj:
 		open_obj_window(data, datalen);
@@ -2560,7 +2571,7 @@ void ExultStudio::read_from_server(
 			waiting_for_server = 0;
 			waiting_client = 0;
 		} else if (browser)
-			browser->server_response((int) id, data, datalen);
+			browser->server_response(static_cast<int>(id), data, datalen);
 		break;
 	case Exult_server::info:
 		info_received(data, datalen);
@@ -2616,7 +2627,7 @@ bool ExultStudio::connect_to_server(
 		return false;
 	}
 	server_socket = server_input_tag = -1;
-	struct sockaddr_un addr;
+	sockaddr_un addr;
 	addr.sun_family = AF_UNIX;
 	addr.sun_path[0] = 0;
 	strcpy(addr.sun_path, get_system_path(EXULT_SERVER).c_str());
@@ -2630,7 +2641,7 @@ bool ExultStudio::connect_to_server(
 //				fcntl(server_socket, F_GETFL) | O_NONBLOCK);
 	cout << "Trying to connect to server at '" << addr.sun_path << "'"
 	     << endl;
-	if (connect(server_socket, (struct sockaddr *) &addr,
+	if (connect(server_socket, reinterpret_cast<sockaddr *>(&addr),
 	            sizeof(addr.sun_family) + strlen(addr.sun_path) + 1) == -1) {
 		perror("Socket connect");
 		close(server_socket);
@@ -2736,8 +2747,8 @@ int ExultStudio::find_palette_color(int r, int g, int b) {
 BaseGameInfo *ExultStudio::get_game() const {
 	ModManager *basegame = gamemanager->get_game(curr_game);
 	assert(basegame);
-	BaseGameInfo *gameinfo = curr_mod > -1 ?
-	                         (BaseGameInfo *)basegame->get_mod(curr_mod) : basegame;
+	BaseGameInfo *gameinfo = curr_mod > -1 ? basegame->get_mod(curr_mod)
+	                                       : static_cast<BaseGameInfo *>(basegame);
 	assert(gameinfo);
 	return gameinfo;
 }

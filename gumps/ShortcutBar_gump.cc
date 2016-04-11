@@ -381,7 +381,7 @@ static Uint32 didMouseUp(Uint32 interval, void *param)
 	userevent.type = SDL_USEREVENT;
 	userevent.code = SHORTCUT_BAR_USER_EVENT;
 	userevent.data1 = param;
-	userevent.data2 = (void*)DID_MOUSE_UP;
+	userevent.data2 = reinterpret_cast<void*>(DID_MOUSE_UP);
 
 	SDL_Event event;
 	event.type = SDL_USEREVENT;
@@ -395,7 +395,7 @@ static Uint32 didMouseUp(Uint32 interval, void *param)
  */
 void ShortcutBar_gump::onUserEvent(SDL_Event *event)
 {
-	switch ((uintptr)(event->user.data2)) {
+	switch (reinterpret_cast<uintptr>(event->user.data2)) {
 		case DID_MOUSE_UP:
 			if (lastClickedButton >= 0 && lastClickedButton < numButtons) {
 				onItemClicked(lastClickedButton, false);

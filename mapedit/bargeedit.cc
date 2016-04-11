@@ -145,7 +145,7 @@ int ExultStudio::init_barge_window(
 		return 0;
 	}
 	// Store address with window.
-	gtk_object_set_user_data(GTK_OBJECT(bargewin), (gpointer) addr);
+	gtk_object_set_user_data(GTK_OBJECT(bargewin), reinterpret_cast<gpointer>(addr));
 	set_spin("barge_xtiles", xtiles);
 	set_spin("barge_ytiles", ytiles);
 	set_optmenu("barge_dir", dir);

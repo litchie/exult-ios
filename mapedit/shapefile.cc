@@ -99,7 +99,7 @@ Object_browser *Image_file_info::create_browser(
 		chooser->set_framenum0('A');
 	if (this == vgafile) {      // Main 'shapes.vga' file?
 		chooser->set_shapes_file(
-		    (Shapes_vga_file *) vgafile->get_ifile());
+		    static_cast<Shapes_vga_file *>(vgafile->get_ifile()));
 	}
 	return chooser;
 }
@@ -252,7 +252,7 @@ bool Npcs_file_info::read_npc(int num) {
 	npcs[num].shapenum = Read2(newptr); // -1 if unused.
 	if (npcs[num].shapenum >= 0) {
 		npcs[num].unused = (*newptr++ != 0);
-		utf8Str utf8name((char *) newptr);
+		utf8Str utf8name(reinterpret_cast<char *>(newptr));
 		npcs[num].name = utf8name;
 	} else {
 		npcs[num].unused = true;
@@ -303,7 +303,7 @@ void Npcs_file_info::setup(
 		npcs[i].shapenum = Read2(newptr);   // -1 if unused.
 		if (npcs[i].shapenum >= 0) {
 			npcs[i].unused = (*newptr++ != 0);
-			utf8Str utf8name((char *) newptr);
+			utf8Str utf8name(reinterpret_cast<char *>(newptr));
 			npcs[i].name = utf8name;
 		} else {
 			npcs[i].unused = true;

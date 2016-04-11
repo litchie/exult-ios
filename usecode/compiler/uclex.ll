@@ -1,9 +1,20 @@
+%top {
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wold-style-cast"
+#endif  // __GNUC__
+}
+
 %{
 /**
  **	Uclex.ll - Usecode lexical scanner.
  **
  **	Written: 12/30/2000 - JSF
  **/
+
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif  // __GNUC__
 
 /*
 Copyright (C) 2000 The Exult Team
@@ -232,6 +243,11 @@ char *Handle_string
 	}
 
 extern "C" int yywrap() { return 1; }		/* Stop at EOF. */
+
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wold-style-cast"
+#endif  // __GNUC__
 
 %}
 
@@ -462,6 +478,10 @@ sonic_damage	return SONIC_DAMAGE;
 			}
 
 %%
+
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif  // __GNUC__
 
 /*
  *	Start/end 'script' mode.

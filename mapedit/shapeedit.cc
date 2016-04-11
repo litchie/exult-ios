@@ -232,7 +232,7 @@ C_EXPORT gboolean on_equip_draw_expose_event(
 ) {
 	ignore_unused_variable_warning(widget);
 	ExultStudio::get_instance()->show_equip_shape(
-	    (Equip_row_widgets *) data,
+	    reinterpret_cast<Equip_row_widgets *>(data),
 	    event->area.x, event->area.y, event->area.width,
 	    event->area.height);
 	return (TRUE);
@@ -245,7 +245,7 @@ C_EXPORT gboolean on_equip_shape_changed(
     gpointer data           // ->row info.
 ) {
 	ignore_unused_variable_warning(widget);
-	Equip_row_widgets *eq = (Equip_row_widgets *) data;
+	Equip_row_widgets *eq = reinterpret_cast<Equip_row_widgets *>(data);
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->show_equip_shape(eq);
 	int shape = gtk_spin_button_get_value_as_int(
@@ -266,7 +266,7 @@ static void Equip_shape_dropped(
     void *udata         // ->row.
 ) {
 	ignore_unused_variable_warning(frame);
-	Equip_row_widgets *eq = (Equip_row_widgets *) udata;
+	Equip_row_widgets *eq = reinterpret_cast<Equip_row_widgets *>(udata);
 	if (file == U7_SHAPE_SHAPES && shape >= 0 && shape < c_max_shapes) {
 		// Set shape #.
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(eq->shape), shape);
@@ -289,34 +289,34 @@ static void Setup_equip(
 	GtkWidget *label = gtk_label_new("Shape");
 	gtk_widget_show(label);
 	gtk_table_attach(table, label, 0, 3, 0, 1,
-	                 (GtkAttachOptions)(0),
-	                 (GtkAttachOptions)(0), 0, 0);
+	                 static_cast<GtkAttachOptions>(0),
+	                 static_cast<GtkAttachOptions>(0), 0, 0);
 	label = gtk_label_new("Chance (%)");
 	gtk_widget_show(label);
 	gtk_table_attach(table, label, 4, 5, 0, 1,
-	                 (GtkAttachOptions)(0),
-	                 (GtkAttachOptions)(0), 0, 0);
+	                 static_cast<GtkAttachOptions>(0),
+	                 static_cast<GtkAttachOptions>(0), 0, 0);
 	label = gtk_label_new("Count");
 	gtk_widget_show(label);
 	gtk_table_attach(table, label, 6, 7, 0, 1,
-	                 (GtkAttachOptions)(0),
-	                 (GtkAttachOptions)(0), 0, 0);
+	                 static_cast<GtkAttachOptions>(0),
+	                 static_cast<GtkAttachOptions>(0), 0, 0);
 	// Separators:
 	GtkWidget *vsep = gtk_vseparator_new();
 	gtk_widget_show(vsep);
 	gtk_table_attach(table, vsep, 3, 4, 0, 12,
-	                 (GtkAttachOptions)(0),
-	                 (GtkAttachOptions)(GTK_FILL), 2, 0);
+	                 static_cast<GtkAttachOptions>(0),
+	                 static_cast<GtkAttachOptions>(GTK_FILL), 2, 0);
 	vsep = gtk_vseparator_new();
 	gtk_widget_show(vsep);
 	gtk_table_attach(table, vsep, 5, 6, 0, 12,
-	                 (GtkAttachOptions)(0),
-	                 (GtkAttachOptions)(GTK_FILL), 2, 0);
+	                 static_cast<GtkAttachOptions>(0),
+	                 static_cast<GtkAttachOptions>(GTK_FILL), 2, 0);
 	GtkWidget *hsep = gtk_hseparator_new();
 	gtk_widget_show(hsep);
 	gtk_table_attach(table, hsep, 0, 7, 1, 2,
-	                 (GtkAttachOptions)(GTK_EXPAND | GTK_FILL),
-	                 (GtkAttachOptions)(GTK_EXPAND | GTK_FILL), 0, 0);
+	                 static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL),
+	                 static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL), 0, 0);
 
 	// Create the rows.
 	for (int row = 0; row < 10; row++) {
@@ -324,8 +324,8 @@ static void Setup_equip(
 		GtkWidget *frame = gtk_frame_new(NULL);
 		gtk_widget_show(frame);
 		gtk_table_attach(table, frame, 0, 1, row + 2, row + 3,
-		                 (GtkAttachOptions)(GTK_FILL),
-		                 (GtkAttachOptions)(GTK_FILL), 3, 0);
+		                 static_cast<GtkAttachOptions>(GTK_FILL),
+		                 static_cast<GtkAttachOptions>(GTK_FILL), 3, 0);
 		gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_IN);
 
 		GtkWidget *drawingarea = gtk_drawing_area_new();
@@ -348,8 +348,8 @@ static void Setup_equip(
 		rows[row].shape = spin;
 		gtk_widget_show(spin);
 		gtk_table_attach(table, spin, 1, 2, row + 2, row + 3,
-		                 (GtkAttachOptions)(GTK_FILL),
-		                 (GtkAttachOptions)(0), 0, 0);
+		                 static_cast<GtkAttachOptions>(GTK_FILL),
+		                 static_cast<GtkAttachOptions>(0), 0, 0);
 		gtk_signal_connect(GTK_OBJECT(spin), "changed",
 		                   GTK_SIGNAL_FUNC(on_equip_shape_changed),
 		                   &rows[row]);
@@ -358,8 +358,8 @@ static void Setup_equip(
 		rows[row].name = label;
 		gtk_widget_show(label);
 		gtk_table_attach(table, label, 2, 3, row + 2, row + 3,
-		                 (GtkAttachOptions)(0),
-		                 (GtkAttachOptions)(0), 0, 0);
+		                 static_cast<GtkAttachOptions>(0),
+		                 static_cast<GtkAttachOptions>(0), 0, 0);
 		gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
 		gtk_misc_set_alignment(GTK_MISC(label), 6.70552e-08, 0.5);
 		// Chance:
@@ -368,16 +368,16 @@ static void Setup_equip(
 		rows[row].chance = spin;
 		gtk_widget_show(spin);
 		gtk_table_attach(table, spin, 4, 5, row + 2, row + 3,
-		                 (GtkAttachOptions)(GTK_FILL),
-		                 (GtkAttachOptions)(0), 0, 0);
+		                 static_cast<GtkAttachOptions>(GTK_FILL),
+		                 static_cast<GtkAttachOptions>(0), 0, 0);
 		// Count:
 		spin = gtk_spin_button_new(GTK_ADJUSTMENT(
 		                               gtk_adjustment_new(1, 0, 100, 1, 10, 10)), 1, 0);
 		rows[row].count = spin;
 		gtk_widget_show(spin);
 		gtk_table_attach(table, spin, 6, 7, row + 2, row + 3,
-		                 (GtkAttachOptions)(GTK_FILL),
-		                 (GtkAttachOptions)(0), 0, 0);
+		                 static_cast<GtkAttachOptions>(GTK_FILL),
+		                 static_cast<GtkAttachOptions>  (0), 0, 0);
 	}
 }
 
@@ -723,13 +723,13 @@ C_EXPORT gboolean on_shinfo_animation_type_changed(
 	GtkWidget *menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(widget));
 	GtkWidget *active = gtk_menu_get_active(GTK_MENU(menu));
 	int sel = g_list_index(GTK_MENU_SHELL(menu)->children, active);
-	bool on = sel != (int)Animation_info::FA_HOURLY;
+	bool on = sel != static_cast<int>(Animation_info::FA_HOURLY);
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->set_sensitive("shinfo_animation_ticks", on);
 	studio->set_sensitive("shinfo_animation_sfxsynch", on);
 	bool sfxon = !studio->get_toggle("shinfo_animation_sfxsynch");
 	studio->set_sensitive("shinfo_animation_sfxdelay", on && sfxon);
-	on = (sel == (int)Animation_info::FA_LOOPING);
+	on = (sel == static_cast<int>(Animation_info::FA_LOOPING));
 	bool freezeon = studio->get_optmenu("shinfo_animation_freezefirst") == 2;
 	studio->set_sensitive("shinfo_animation_freezefirst", on);
 	studio->set_sensitive("shinfo_animation_freezechance", on && freezeon);
@@ -1145,9 +1145,9 @@ static inline void Get_hp_fields(
 	bool anyfr = studio->get_toggle("shinfo_effhps_frame_type");
 	bool anyq = studio->get_toggle("shinfo_effhps_qual_type");
 	bool nohps = studio->get_toggle("shinfo_effhps_hp_type");
-	frnum = anyfr ? (unsigned int)(-1) :
+	frnum = anyfr ? ~0u :
 	        studio->get_spin("shinfo_effhps_frame_num");
-	qual = anyq ? (unsigned int)(-1) :
+	qual = anyq ? ~0u :
 	       studio->get_spin("shinfo_effhps_qual_num");
 	if (hps)
 		*hps = nohps ? 0 : studio->get_spin("shinfo_effhps_hp_val");
@@ -1199,9 +1199,9 @@ C_EXPORT void on_shinfo_effhps_update_clicked(
 			gtk_tree_store_insert_after(store, &newiter, NULL, iter);
 		else
 			gtk_tree_store_insert_before(store, &newiter, NULL, iter);
-		gtk_tree_store_set(store, &newiter, HP_FRAME_COLUMN, (int)newfrnum,
-		                   HP_QUALITY_COLUMN, (int)newqual,
-		                   HP_HIT_POINTS, (int)newhps,
+		gtk_tree_store_set(store, &newiter, HP_FRAME_COLUMN, static_cast<int>(newfrnum),
+		                   HP_QUALITY_COLUMN, static_cast<int>(newqual),
+		                   HP_HIT_POINTS, static_cast<int>(newhps),
 		                   HP_FROM_PATCH, 1, HP_MODIFIED, 1, -1);
 	} else {
 		unsigned int hps;
@@ -1306,7 +1306,7 @@ static inline void Get_warmth_fields(
     unsigned int *warm = 0
 ) {
 	bool anyfr = studio->get_toggle("shinfo_warmth_frame_type");
-	frnum = anyfr ? (unsigned int)(-1) :
+	frnum = anyfr ? ~0u :
 	        studio->get_spin("shinfo_warmth_frame_num");
 	if (warm)
 		*warm = studio->get_spin("shinfo_warmth_val");
@@ -1346,8 +1346,8 @@ C_EXPORT void on_shinfo_warmth_update_clicked(
 			gtk_tree_store_insert_after(store, &newiter, NULL, iter);
 		else
 			gtk_tree_store_insert_before(store, &newiter, NULL, iter);
-		gtk_tree_store_set(store, &newiter, WARM_FRAME_COLUMN, (int)newfrnum,
-		                   WARM_VALUE_COLUMN, (int)newwarm, WARM_FROM_PATCH, 1,
+		gtk_tree_store_set(store, &newiter, WARM_FRAME_COLUMN, static_cast<int>(newfrnum),
+		                   WARM_VALUE_COLUMN, static_cast<int>(newwarm), WARM_FROM_PATCH, 1,
 		                   WARM_MODIFIED, 1, -1);
 	} else {
 		unsigned int warm;
@@ -1415,7 +1415,7 @@ static inline void Get_cntrules_fields(
     bool *accept = 0
 ) {
 	bool anysh = studio->get_toggle("shinfo_cntrules_shape_type");
-	shnum = anysh ? (unsigned int)(-1) :
+	shnum = anysh ? ~0u :
 	        studio->get_spin("shinfo_cntrules_shape_num");
 	if (accept)
 		*accept = studio->get_toggle("shinfo_cntrules_accept");
@@ -1456,8 +1456,8 @@ C_EXPORT void on_shinfo_cntrules_update_clicked(
 			gtk_tree_store_insert_after(store, &newiter, NULL, iter);
 		else
 			gtk_tree_store_insert_before(store, &newiter, NULL, iter);
-		gtk_tree_store_set(store, &newiter, CNT_SHAPE_COLUMN, (int)newshnum,
-		                   CNT_ACCEPT_COLUMN, (int)newaccept, CNT_FROM_PATCH, 1,
+		gtk_tree_store_set(store, &newiter, CNT_SHAPE_COLUMN, static_cast<int>(newshnum),
+		                   CNT_ACCEPT_COLUMN, static_cast<int>(newaccept), CNT_FROM_PATCH, 1,
 		                   CNT_MODIFIED, 1, -1);
 	} else {
 		unsigned int accept;
@@ -1526,10 +1526,10 @@ static inline void Get_frameflags_fields(
     unsigned int *flags = 0
 ) {
 	bool anyfr = studio->get_toggle("shinfo_frameflags_frame_type");
-	frnum = anyfr ? (unsigned int)(-1) :
+	frnum = anyfr ? ~0u :
 	        studio->get_spin("shinfo_frameflags_frame_num");
 	bool anyq = studio->get_toggle("shinfo_frameflags_qual_type");
-	qual = anyq ? (unsigned int)(-1) :
+	qual = anyq ? ~0u :
 	       studio->get_spin("shinfo_frameflags_qual_num");
 	if (flags) {
 		static const char *frflags[] = {
@@ -1608,9 +1608,9 @@ C_EXPORT void on_shinfo_frameflags_update_clicked(
 		else
 			gtk_tree_store_insert_before(store, &newiter, NULL, iter);
 		gtk_tree_store_set(store, &newiter,
-		                   FRFLAG_FRAME_COLUMN, (int)newfrnum,
-		                   FRFLAG_QUAL_COLUMN, (int)newqual,
-		                   FRFLAG_FLAGS_COLUMN, (int)newflags, FRFLAG_FROM_PATCH, 1,
+		                   FRFLAG_FRAME_COLUMN, static_cast<int>(newfrnum),
+		                   FRFLAG_QUAL_COLUMN, static_cast<int>(newqual),
+		                   FRFLAG_FLAGS_COLUMN, static_cast<int>(newflags), FRFLAG_FROM_PATCH, 1,
 		                   FRFLAG_MODIFIED, 1, -1);
 	} else {
 		unsigned int flags;
@@ -1681,10 +1681,10 @@ static inline void Get_frameusecode_fields(
     const char **ucfun = 0
 ) {
 	bool anyfr = studio->get_toggle("shinfo_frameusecode_frame_type");
-	frnum = anyfr ? (unsigned int)(-1) :
+	frnum = anyfr ? ~0u :
 	        studio->get_spin("shinfo_frameusecode_frame_num");
 	bool anyq = studio->get_toggle("shinfo_frameusecode_qual_type");
-	qual = anyq ? (unsigned int)(-1) :
+	qual = anyq ? ~0u :
 	       studio->get_spin("shinfo_frameusecode_qual_num");
 	if (ucfun)
 		*ucfun = studio->get_text_entry("shinfo_frameusecode_ucfun");
@@ -1730,8 +1730,8 @@ C_EXPORT void on_shinfo_frameusecode_update_clicked(
 		else
 			gtk_tree_store_insert_before(store, &newiter, NULL, iter);
 		gtk_tree_store_set(store, &newiter,
-		                   FRUC_FRAME_COLUMN, (int)newfrnum,
-		                   FRUC_QUAL_COLUMN, (int)newqual,
+		                   FRUC_FRAME_COLUMN, static_cast<int>(newfrnum),
+		                   FRUC_QUAL_COLUMN, static_cast<int>(newqual),
 		                   FRUC_USEFUN_COLUMN, newucfun, FRUC_FROM_PATCH, 1,
 		                   FRUC_MODIFIED, 1, -1);
 	} else {
@@ -1821,10 +1821,10 @@ static inline void Get_framenames_fields(
     const char **othermsg = 0
 ) {
 	bool anyfr = studio->get_toggle("shinfo_framenames_frame_type");
-	frnum = anyfr ? (unsigned int)(-1) :
+	frnum = anyfr ? ~0u :
 	        studio->get_spin("shinfo_framenames_frame_num");
 	bool anyq = studio->get_toggle("shinfo_framenames_qual_type");
-	qual = anyq ? (unsigned int)(-1) :
+	qual = anyq ? ~0u :
 	       studio->get_spin("shinfo_framenames_qual_num");
 	if (type) {
 		switch (studio->get_optmenu("shinfo_framenames_name_type")) {
@@ -1929,8 +1929,8 @@ C_EXPORT void on_shinfo_framenames_update_clicked(
 			gtk_tree_store_insert_after(store, &newiter, NULL, iter);
 		else
 			gtk_tree_store_insert_before(store, &newiter, NULL, iter);
-		gtk_tree_store_set(store, &newiter, FNAME_FRAME, (int)newfrnum,
-		                   FNAME_QUALITY, (int)newqual, FNAME_MSGTYPE, newtype,
+		gtk_tree_store_set(store, &newiter, FNAME_FRAME, static_cast<int>(newfrnum),
+		                   FNAME_QUALITY, static_cast<int>(newqual), FNAME_MSGTYPE, newtype,
 		                   FNAME_MSGSTR, newstr, FNAME_OTHERTYPE, newothertype,
 		                   FNAME_OTHERMSG, newothermsg,
 		                   FNAME_FROM_PATCH, 1, FNAME_MODIFIED, 1, -1);
@@ -1942,8 +1942,8 @@ C_EXPORT void on_shinfo_framenames_update_clicked(
 		                   FNAME_OTHERMSG, &othermsg, -1);
 		if (type != newtype || othertype != newothertype
 		        || !strcmp(str, newstr) || !strcmp(othermsg, newothermsg))
-			gtk_tree_store_set(store, iter, FNAME_FRAME, (int)newfrnum,
-			                   FNAME_QUALITY, (int)newqual, FNAME_MSGTYPE, newtype,
+			gtk_tree_store_set(store, iter, FNAME_FRAME, static_cast<int>(newfrnum),
+			                   FNAME_QUALITY, static_cast<int>(newqual), FNAME_MSGTYPE, newtype,
 			                   FNAME_MSGSTR, newstr, FNAME_OTHERTYPE, newothertype,
 			                   FNAME_OTHERMSG, newothermsg,
 			                   FNAME_MODIFIED, 1, -1);
@@ -2033,7 +2033,7 @@ static inline void Get_objpaperdoll_fields(
 	spot = spot == 18 ? 102 : spot;
 
 	bool anyfr = studio->get_toggle("shinfo_objpaperdoll_wframe_type");
-	frnum = anyfr ? (unsigned int)(-1) :
+	frnum = anyfr ? ~0u :
 	        studio->get_spin("shinfo_objpaperdoll_wframe");
 	if (shape)
 		*shape = studio->get_spin("shinfo_objpaperdoll_shape");
@@ -2191,7 +2191,7 @@ C_EXPORT void on_shinfo_objpaperdoll_update_clicked(
 		else
 			gtk_tree_store_insert_before(store, &newiter, NULL, iter);
 		gtk_tree_store_set(store, &newiter,
-		                   DOLL_WORLD_FRAME, (int)newfrnum, DOLL_SPOT, newspot,
+		                   DOLL_WORLD_FRAME, static_cast<int>(newfrnum), DOLL_SPOT, newspot,
 		                   DOLL_TRANSLUCENT, newtrans, DOLL_GENDER_BASED, newgender,
 		                   DOLL_SPOT_TYPE, newtype, DOLL_SHAPE, newshape,
 		                   DOLL_FRAME_0, newframe0, DOLL_FRAME_1, newframe1,
@@ -2567,8 +2567,8 @@ static void Explosion_shape_dropped(
 void ExultStudio::set_shape_notebook_frame(
     int frnum           // Frame # to set.
 ) {
-	Shape_file_info *file_info = (Shape_file_info *)
-	                             gtk_object_get_data(GTK_OBJECT(shapewin), "file_info");
+	Shape_file_info *file_info = reinterpret_cast<Shape_file_info *>(
+	                             gtk_object_get_data(GTK_OBJECT(shapewin), "file_info"));
 	int shnum = get_num_entry("shinfo_shape");
 	Vga_file *ifile = file_info->get_ifile();
 	Shape_frame *shape = ifile->get_shape(shnum, frnum);
@@ -2577,8 +2577,8 @@ void ExultStudio::set_shape_notebook_frame(
 	set_spin("shinfo_originy", shape->get_ybelow(), -shape->get_height(),
 	         shape->get_height());
 
-	Shape_info *info = (Shape_info *)
-	                   gtk_object_get_user_data(GTK_OBJECT(shapewin));
+	Shape_info *info = reinterpret_cast<Shape_info *>(
+	                   gtk_object_get_user_data(GTK_OBJECT(shapewin)));
 	if (!info)
 		return;
 	set_spin("shinfo_xtiles", info->get_3d_xtiles(frnum));
@@ -2673,7 +2673,7 @@ void ExultStudio::init_shape_notebook(
 	                        9, 10, 11, 12, 0
 	                       };
 	const int numclasses = sizeof(classes) / sizeof(classes[0]);
-	int shclass = (unsigned int) info.get_shape_class();
+	int shclass = static_cast<int>(info.get_shape_class());
 	set_optmenu("shinfo_shape_class", shclass < numclasses ?
 	            classes[shclass] : 0);
 	set_shape_notebook_frame(frnum);
@@ -2986,7 +2986,7 @@ void ExultStudio::init_shape_notebook(
 	if (aniinf) {
 		Animation_info::AniType type = aniinf->get_type();
 		bool on = (type != Animation_info::FA_NON_LOOPING);
-		set_optmenu("shinfo_animation_type", (int)type);
+		set_optmenu("shinfo_animation_type", static_cast<int>(type));
 		Vga_file *ifile = curfile->get_ifile();
 		int nframes = ifile->get_num_frames(shnum);
 		int count = aniinf->get_frame_count();
@@ -3451,8 +3451,8 @@ public:
 		msgid = type < 0 ? -1 : Find_name_id(str);
 		otherid = type <= 0 ? -1 :
 		          (othertype < 0 ? othertype : Find_name_id(othermsg));
-		Frame_name_info nminf((int)frnum, (int)qual, type, msgid, otherid,
-		                      patch, modded);
+		Frame_name_info nminf(static_cast<int>(frnum), static_cast<int>(qual),
+		                      type, msgid, otherid, patch, modded);
 		info.add_frame_name_info(nminf);
 	}
 };
@@ -3512,8 +3512,8 @@ void ExultStudio::save_shape_notebook(
     int frnum           // Frame #.
 ) {
 	static int classes[] = {0, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14};
-	info.set_shape_class((Shape_info::Shape_class)
-	                     classes[get_optmenu("shinfo_shape_class")]);
+	info.set_shape_class(static_cast<Shape_info::Shape_class>(
+	                     classes[get_optmenu("shinfo_shape_class")]));
 	info.set_3d(get_spin("shinfo_xtiles"), get_spin("shinfo_ytiles"),
 	            get_spin("shinfo_ztiles"));
 	int spot = get_optmenu("shinfo_ready_spot");
@@ -3823,7 +3823,7 @@ void ExultStudio::save_shape_notebook(
 	else {
 		Animation_info *aniinf = info.set_animation_info(true);
 		Animation_info::AniType type =
-		    (Animation_info::AniType)get_optmenu("shinfo_animation_type");
+		    static_cast<Animation_info::AniType>(get_optmenu("shinfo_animation_type"));
 		aniinf->set_type(type);
 		int count = get_spin("shinfo_animation_frcount");
 		Vga_file *ifile = curfile->get_ifile();
@@ -4276,10 +4276,10 @@ void ExultStudio::save_shape_window(
 ) {
 	int shnum = get_num_entry("shinfo_shape");
 	int frnum = get_num_entry("shinfo_frame");
-	Shape_info *info = (Shape_info *)
-	                   gtk_object_get_user_data(GTK_OBJECT(shapewin));
-	Shape_file_info *file_info = (Shape_file_info *)
-	                             gtk_object_get_data(GTK_OBJECT(shapewin), "file_info");
+	Shape_info *info = reinterpret_cast<Shape_info *>(
+	                   gtk_object_get_user_data(GTK_OBJECT(shapewin)));
+	Shape_file_info *file_info = reinterpret_cast<Shape_file_info *>(
+	                             gtk_object_get_data(GTK_OBJECT(shapewin), "file_info"));
 	Vga_file *ifile = file_info->get_ifile();
 	if (info) {         // If 'shapes.vga', get name.
 		codepageStr locnm(get_text_entry("shinfo_name"));

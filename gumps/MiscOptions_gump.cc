@@ -271,9 +271,9 @@ void MiscOptions_gump::save_settings() {
 	config->set("config/shortcutbar/use_outline_color", sc_outline_txt[sc_outline], false);
 	config->set("config/shortcutbar/hide_missing_items", sb_hide_missing ? "yes" : "no", false);
 
-	gwin->set_outline_color((Pixel_colors)(sc_outline));
+	gwin->set_outline_color(static_cast<Pixel_colors>(sc_outline));
 	gwin->set_sb_hide_missing_items(sb_hide_missing);
-	gwin->set_shortcutbar((uint8)sc_enabled);
+	gwin->set_shortcutbar(static_cast<uint8>(sc_enabled));
 	if(g_shortcutBar)
 		g_shortcutBar->set_changed();
 
