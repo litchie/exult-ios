@@ -242,8 +242,6 @@ char *Handle_string
 	return str;
 	}
 
-extern "C" int yywrap() { return 1; }		/* Stop at EOF. */
-
 #ifdef __GNUC__
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wold-style-cast"
@@ -518,3 +516,5 @@ void end_fun_id()
 	{
 	yy_pop_state();
 	}
+
+extern "C" int yywrap() { return 1; }		/* Stop at EOF. */
