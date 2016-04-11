@@ -45,8 +45,8 @@ typedef enum {
 	SB_ITEM_FEED
 } ShortcutBarButtonItemType;
 
-	Game_object *is_party_item(int shnum, int frnum = c_any_framenum,
-	                   int qual = c_any_qual);
+Game_object *is_party_item(int shnum, int frnum = c_any_framenum,
+                   int qual = c_any_qual);
 
 struct ShortcutBarButtonItem {
 	const char *name;

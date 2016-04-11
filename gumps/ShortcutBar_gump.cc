@@ -65,7 +65,7 @@ Game_object *is_party_item(
 	return NULL;
 }
 
-void ShortcutBar_gump::check_for_updates(int shnum){
+void ShortcutBar_gump::check_for_updates(int shnum) {
 	if(shnum == 761 || (GAME_SI && (shnum == 485 || shnum == 555))) //spellbook, keyring, jawbone
 		has_changed = true;
 }
@@ -83,8 +83,7 @@ void ShortcutBar_gump::update_gump() {
  * To align button shapes vertically, we need to micro-manage the shapeOffsetY
  * values to shift shapes up or down.
  */
-void ShortcutBar_gump::createButtons()
-{
+void ShortcutBar_gump::createButtons() {
 	startx = gwin->get_win()->get_start_x();
 	resx = gwin->get_win()->get_full_width();
 	gamex = gwin->get_game_width();
@@ -254,8 +253,7 @@ void ShortcutBar_gump::createButtons()
 	}
 }
 
-void ShortcutBar_gump::deleteButtons()
-{
+void ShortcutBar_gump::deleteButtons() {
 	for (int i = 0; i < numButtons; i++) {
 		delete buttonItems[i].shapeId;
 		delete buttonItems[i].rect;
@@ -276,9 +274,11 @@ void ShortcutBar_gump::deleteButtons()
  * This gump is persistent, not draggable.
  * There must be only one shortcut bar in the game.
  */
-ShortcutBar_gump::ShortcutBar_gump(int placex, int placey)
-:	Gump(0, placex, placey,/*shape number=*/ EXULT_FLX_TRANSPARENTMENU_SHP, SF_EXULT_FLX)
-{
+ShortcutBar_gump::ShortcutBar_gump
+(
+    int placex,
+    int placey
+) : Gump(0, placex, placey, EXULT_FLX_TRANSPARENTMENU_SHP, SF_EXULT_FLX) {
 	/*static bool init = false;
 	assert(init == 0); // Protect against re-entry
 	init = true;*/
@@ -294,14 +294,12 @@ ShortcutBar_gump::ShortcutBar_gump(int placex, int placey)
 	has_changed = true;
 }
 
-ShortcutBar_gump::~ShortcutBar_gump()
-{
+ShortcutBar_gump::~ShortcutBar_gump() {
 	deleteButtons();
 	gwin->set_all_dirty();
 }
 
-void ShortcutBar_gump::paint()
-{
+void ShortcutBar_gump::paint() {
 	Game_window *gwin = Game_window::get_instance();
 	Shape_manager *sman = Shape_manager::get_instance();
 
@@ -319,8 +317,7 @@ void ShortcutBar_gump::paint()
 	gwin->set_painted();
 }
 
-int ShortcutBar_gump::handle_event(SDL_Event *event)
-{
+int ShortcutBar_gump::handle_event(SDL_Event *event) {
 	Game_window *gwin = Game_window::get_instance();
 	// When the Save/Load menu is open, don't handle events
 	if (gumpman->modal_gump_mode() || gwin->get_usecode()->in_usecode() || g_waiting_for_click)
@@ -351,8 +348,7 @@ int ShortcutBar_gump::handle_event(SDL_Event *event)
 	return 0;
 }
 
-void ShortcutBar_gump::mouse_down(SDL_Event *event, int mx, int my)
-{
+void ShortcutBar_gump::mouse_down(SDL_Event *event, int mx, int my) {
 	ignore_unused_variable_warning(event);
 	int i;
 	for (i = 0; i < numButtons; i++) {
@@ -374,8 +370,7 @@ void ShortcutBar_gump::mouse_down(SDL_Event *event, int mx, int my)
  * Just push an event to main thread so that our global shortcut bar instance
  * can catch it.
  */
-static Uint32 didMouseUp(Uint32 interval, void *param)
-{
+static Uint32 didMouseUp(Uint32 interval, void *param) {
 	ignore_unused_variable_warning(interval);
 	SDL_UserEvent userevent;
 	userevent.type = SDL_USEREVENT;
@@ -393,8 +388,7 @@ static Uint32 didMouseUp(Uint32 interval, void *param)
 /*
  * Runs on main thread.
  */
-void ShortcutBar_gump::onUserEvent(SDL_Event *event)
-{
+void ShortcutBar_gump::onUserEvent(SDL_Event *event) {
 	switch (reinterpret_cast<uintptr>(event->user.data2)) {
 		case DID_MOUSE_UP:
 			if (lastClickedButton >= 0 && lastClickedButton < numButtons) {
@@ -411,8 +405,7 @@ void ShortcutBar_gump::onUserEvent(SDL_Event *event)
 	}
 }
 
-void ShortcutBar_gump::mouse_up(SDL_Event *event, int mx, int my)
-{
+void ShortcutBar_gump::mouse_up(SDL_Event *event, int mx, int my) {
 	ignore_unused_variable_warning(event);
 	int i;
 	
@@ -457,8 +450,7 @@ void ShortcutBar_gump::mouse_up(SDL_Event *event, int mx, int my)
 	}
 }
 
-void ShortcutBar_gump::onItemClicked(int index, bool doubleClicked)
-{
+void ShortcutBar_gump::onItemClicked(int index, bool doubleClicked) {
 	printf("Item %s is %sclicked\n", buttonItems[index].name, doubleClicked? "double " : "");
 
 	switch (buttonItems[index].type) {
@@ -503,7 +495,7 @@ void ShortcutBar_gump::onItemClicked(int index, bool doubleClicked)
 			ActionCombat(NULL);
 			break;
 		} case SB_ITEM_TARGET: {
-			if (doubleClicked && cheat()){
+			if (doubleClicked && cheat()) {
 				int x, y;
 				if (!Get_click(x, y, Mouse::redx))
 					return;
