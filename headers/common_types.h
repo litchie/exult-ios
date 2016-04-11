@@ -77,10 +77,10 @@ typedef unsigned long long uintptr;
 #endif /* !EX_TYPE_INT32 */
 
 #ifndef EX_TYPE_INT64
-#  if (SIZEOF_LONG_LONG == 8)
-#    define EX_TYPE_INT64 long long
-#  elif (SIZEOF_LONG == 8)
+#  if (SIZEOF_LONG == 8)
 #    define EX_TYPE_INT64 long
+#  elif (SIZEOF_LONG_LONG == 8)
+#    define EX_TYPE_INT64 long long
 #  else
 #    error "Please make sure a 64 bit type is provided by common_types.h"
 #  endif
