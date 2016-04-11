@@ -394,7 +394,7 @@ void ShortcutBar_gump::onUserEvent(SDL_Event *event) {
 			if (lastClickedButton >= 0 && lastClickedButton < numButtons) {
 				onItemClicked(lastClickedButton, false);
 				lastClickedButton = -1;
-				if (timerId > 0) {
+				if (timerId) {
 					SDL_RemoveTimer(timerId);
 					timerId = 0;
 				}
@@ -419,7 +419,7 @@ void ShortcutBar_gump::mouse_up(SDL_Event *event, int mx, int my) {
 		 * Button i is hit.
 		 * Cancel the previous mouse up timer
 		 */
-		if (timerId > 0) {
+		if (timerId) {
 			SDL_RemoveTimer(timerId);
 			timerId = 0;
 		}
