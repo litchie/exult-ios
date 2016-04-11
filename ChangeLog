@@ -1,4 +1,6 @@
 2016-04-11	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* cheat_screen.cc, shapes/shapeinf.h: Eliminating (spurious) warnings from
+	  -Wuninitialized by explicitly initializing the variables.
 	* m4/ax_cxx_compile_stdcxx_11.m4, imagewin/imagewin.*: Fixing issues when
 	  compiling C++11 with clang on an Apple OS (basically, Apple does not ship
 	  a libstdc++ supporting C++11).

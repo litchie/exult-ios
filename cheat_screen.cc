@@ -844,7 +844,7 @@ CheatScreen::Cheat_Prompt CheatScreen::TimeSetLoop() {
 	int command;
 	bool activate = false;
 
-	int day, hour;
+	int day = 0, hour = 0;
 
 	while (1) {
 		gwin->clear_screen();

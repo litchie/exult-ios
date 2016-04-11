@@ -811,9 +811,10 @@ public:
 	}
 	// Sets x to 255 if there is no weapon offset
 	void get_weapon_offset(int frame, unsigned char &x, unsigned char &y) {
-		if (!weapon_offsets)
+		if (!weapon_offsets) {
 			x = 255;
-		else {
+			y = 255;
+		} else {
 			// x could be 255 (see read_info())
 			x = weapon_offsets[frame * 2];
 			y = weapon_offsets[frame * 2 + 1];
