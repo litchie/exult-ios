@@ -46,8 +46,8 @@ class Shape_entry {
 public:
 	Shape_entry() {  }
 	void set(int shnum, int frnum, int rx, int ry, int rw, int rh) {
-		shapenum = (short) shnum;
-		framenum = (short) frnum;
+		shapenum = static_cast<short>(shnum);
+		framenum = static_cast<short>(frnum);
 		box = Rectangle(rx, ry, rw, rh);
 	}
 };

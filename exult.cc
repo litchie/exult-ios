@@ -193,8 +193,21 @@ int num_res = sizeof(res_list) / sizeof(struct resolution);
 int current_res = 0;
 
 #ifdef XWIN
+#  ifdef __GNUC__
+#  pragma GCC diagnostic push
+#  pragma GCC diagnostic ignored "-Wold-style-cast"
+#  endif  // __GNUC__
+
 int xfd = 0;            // X connection #.
+static inline int WrappedConnectionNumber(Display *display) {
+	return ConnectionNumber(display);
+}
 static class Xdnd *xdnd = 0;
+
+#  ifdef __GNUC__
+#  pragma GCC diagnostic pop
+#  endif  // __GNUC__
+
 #elif defined(WIN32)
 static HWND hgwin;
 static class Windnd *windnd = 0;
@@ -1065,7 +1078,7 @@ static void Init(
 #else
 	SDL_GetWMInfo(&info);
 #endif
-	xfd = ConnectionNumber(info.info.x11.display);
+	xfd = WrappedConnectionNumber(info.info.x11.display);
 	Server_init();          // Initialize server (for map-editor).
 #if SDL_VERSION_ATLEAST(2, 0, 0)
 	xdnd = new Xdnd(info.info.x11.display, info.info.x11.window,

@@ -60,8 +60,8 @@ Shape_group::Shape_group(
 		return;
 	// Add shapes for builtin group.
 	ExultStudio *es = ExultStudio::get_instance();
-	Shapes_vga_file *vgafile = (Shapes_vga_file *)
-	                           es->get_vgafile()->get_ifile();
+	Shapes_vga_file *vgafile = static_cast<Shapes_vga_file *>(
+	                           es->get_vgafile()->get_ifile());
 	// Read info. the first time.
 	vgafile->read_info(es->get_game_type(), true);
 	int i, cnt = vgafile->get_num_shapes();
@@ -232,10 +232,10 @@ Shape_group_file::Shape_group_file(
 			std::size_t len;
 			char *buf = flex->retrieve(i, len);
 			char *gname = buf;  // Starts with name.
-			unsigned char *ptr = (unsigned char *)
-			                     gname + strlen(gname) + 1;
+			unsigned char *ptr = reinterpret_cast<unsigned char *>(
+			                     gname) + strlen(gname) + 1;
 			size_t sz = Read2(ptr); // Get # entries.
-			assert((len - ((char *) ptr - buf)) / 2 == sz);
+			assert((len - (reinterpret_cast<char *>(ptr) - buf)) / 2 == sz);
 			Shape_group *grp = new Shape_group(gname, this);
 			grp->reserve(sz);
 			for (size_t j = 0; j < sz; j++)
@@ -375,7 +375,7 @@ void Shape_group_file::write(
 		// Name, #entries, entries(2-bytes).
 		long len = strlen(nm) + 1 + 2 + 2 * sz;
 		unsigned char *buf = new unsigned char[len];
-		strcpy((char *) buf, nm);
+		strcpy(reinterpret_cast<char *>(buf), nm);
 		unsigned char *ptr = buf + strlen(nm) + 1;
 		Write2(ptr, sz);    // # entries.
 		for (vector<int>::iterator it = grp->begin();
@@ -539,23 +539,23 @@ void ExultStudio::setup_groups(
 		                          GTK_SIGNAL_FUNC(on_group_list_row_inserted), this);
 		// Store signal id with model.
 		g_object_set_data(G_OBJECT(model), "row-inserted",
-		                  (gpointer) addsig);
+		                  reinterpret_cast<gpointer>(addsig));
 		delsig = g_signal_connect(G_OBJECT(model), "row-deleted",
 		                          GTK_SIGNAL_FUNC(on_group_list_row_deleted), this);
 		g_object_set_data(G_OBJECT(model), "row-deleted",
-		                  (gpointer) delsig);
+		                  reinterpret_cast<gpointer>(delsig));
 		chgsig = g_signal_connect(G_OBJECT(model), "row-changed",
 		                          GTK_SIGNAL_FUNC(on_group_list_row_changed), this);
 		g_object_set_data(G_OBJECT(model), "row-changed",
-		                  (gpointer) delsig);
+		                  reinterpret_cast<gpointer>(delsig));
 	} else {
 		model = GTK_TREE_STORE(oldmod);
-		addsig = (gulong) g_object_get_data(G_OBJECT(model),
-		                                    "row-inserted");
-		delsig = (gulong) g_object_get_data(G_OBJECT(model),
-		                                    "row-deleted");
-		chgsig = (gulong) g_object_get_data(G_OBJECT(model),
-		                                    "row-changed");
+		addsig = reinterpret_cast<gulong>(g_object_get_data(G_OBJECT(model),
+		                                    "row-inserted"));
+		delsig = reinterpret_cast<gulong>(g_object_get_data(G_OBJECT(model),
+		                                    "row-deleted"));
+		chgsig = reinterpret_cast<gulong>(g_object_get_data(G_OBJECT(model),
+		                                    "row-changed"));
 	}
 	// Block this signal during creation.
 	g_signal_handler_block(model, addsig);
@@ -661,8 +661,8 @@ void ExultStudio::del_group(
 	vector<GtkWindow *> toclose;
 	vector<GtkWindow *>::const_iterator it;
 	for (it = group_windows.begin(); it != group_windows.end(); ++it) {
-		Object_browser *chooser = (Object_browser *)
-		                          gtk_object_get_data(GTK_OBJECT(*it), "browser");
+		Object_browser *chooser = reinterpret_cast<Object_browser *>(
+		                          gtk_object_get_data(GTK_OBJECT(*it), "browser"));
 		if (chooser->get_group() == grp)
 			// A match?
 			toclose.push_back(*it);
@@ -691,7 +691,7 @@ void ExultStudio::groups_changed(
 		void *grpaddr = 0;
 		gtk_tree_model_get(model, loc, GRP_GROUP_COLUMN, &grpaddr,
 		                   -1);
-		Shape_group *grp = (Shape_group *) grpaddr;
+		Shape_group *grp = reinterpret_cast<Shape_group *>(grpaddr);
 		if (value)      // Changed?
 			groups->set(grp, row);
 		else
@@ -846,10 +846,10 @@ void ExultStudio::close_group_window(
 			break;
 		}
 	}
-	GladeXML *xml = (GladeXML *) gtk_object_get_data(GTK_OBJECT(grpwin),
-	                "xml");
-	Object_browser *chooser = (Object_browser *) gtk_object_get_data(
-	                              GTK_OBJECT(grpwin), "browser");
+	GladeXML *xml = reinterpret_cast<GladeXML *>(gtk_object_get_data(GTK_OBJECT(grpwin),
+	                "xml"));
+	Object_browser *chooser = reinterpret_cast<Object_browser *>(gtk_object_get_data(
+	                              GTK_OBJECT(grpwin), "browser"));
 	delete chooser;
 	gtk_widget_destroy(grpwin);
 	g_object_unref(G_OBJECT(xml));
@@ -899,8 +899,8 @@ void ExultStudio::update_group_windows(
 ) {
 	for (vector<GtkWindow *>::const_iterator it = group_windows.begin();
 	        it != group_windows.end(); ++it) {
-		Object_browser *chooser = (Object_browser *)
-		                          gtk_object_get_data(GTK_OBJECT(*it), "browser");
+		Object_browser *chooser = reinterpret_cast<Object_browser *>(
+		                          gtk_object_get_data(GTK_OBJECT(*it), "browser"));
 		if (!grp || chooser->get_group() == grp) {
 			// A match?
 			chooser->setup_info();

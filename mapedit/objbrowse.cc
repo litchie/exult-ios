@@ -74,9 +74,9 @@ void Object_browser::on_browser_group_add(
     GtkMenuItem *item,
     gpointer udata
 ) {
-	Object_browser *chooser = (Object_browser *) udata;
-	Shape_group *grp = (Shape_group *) gtk_object_get_user_data(
-	                       GTK_OBJECT(item));
+	Object_browser *chooser = reinterpret_cast<Object_browser *>(udata);
+	Shape_group *grp = reinterpret_cast<Shape_group *>(gtk_object_get_user_data(
+	                       GTK_OBJECT(item)));
 	int id = chooser->get_selected_id();
 	if (id >= 0) {          // Selected shape?
 		grp->add(id);       // Add & redisplay open windows.
@@ -128,8 +128,8 @@ void File_selector_ok(
 	GtkFileSelection *fsel = GTK_FILE_SELECTION(gtk_widget_get_toplevel(
 	                             GTK_WIDGET(btn)));
 	const char *fname = gtk_file_selection_get_filename(fsel);
-	File_sel_okay_fun fun = (File_sel_okay_fun)
-	                        gtk_object_get_user_data(GTK_OBJECT(fsel));
+	File_sel_okay_fun fun = reinterpret_cast<File_sel_okay_fun>(
+	                        gtk_object_get_user_data(GTK_OBJECT(fsel)));
 	if (fname && *fname && fun)
 		(*fun)(fname, user_data);
 }
@@ -146,7 +146,7 @@ GtkFileSelection *Create_file_selection(
 	GtkFileSelection *fsel = GTK_FILE_SELECTION(gtk_file_selection_new(
 	                             title));
 	gtk_window_set_modal(GTK_WINDOW(fsel), true);
-	gtk_object_set_user_data(GTK_OBJECT(fsel), (void *)ok_handler);
+	gtk_object_set_user_data(GTK_OBJECT(fsel), reinterpret_cast<void *>(ok_handler));
 	gtk_signal_connect(GTK_OBJECT(fsel->ok_button), "clicked",
 	                   GTK_SIGNAL_FUNC(File_selector_ok), user_data);
 	// Destroy when done.
@@ -168,7 +168,7 @@ void Object_browser::on_browser_file_save(
     gpointer udata
 ) {
 	ignore_unused_variable_warning(item);
-	Object_browser *chooser = (Object_browser *) udata;
+	Object_browser *chooser = reinterpret_cast<Object_browser *>(udata);
 	if (!chooser->file_info)
 		return;         // Nothing to write to.
 	try {
@@ -187,7 +187,7 @@ void Object_browser::on_browser_file_revert(
     gpointer udata
 ) {
 	ignore_unused_variable_warning(item);
-	Object_browser *chooser = (Object_browser *) udata;
+	Object_browser *chooser = reinterpret_cast<Object_browser *>(udata);
 	if (!chooser->file_info)
 		return;         // No file?
 	char *msg = g_strdup_printf("Okay to throw away any changes to '%s'?",
@@ -235,7 +235,7 @@ static void
 on_find_down(GtkButton       *button,
              gpointer         user_data) {
 	ignore_unused_variable_warning(button);
-	Object_browser *chooser = (Object_browser *) user_data;
+	Object_browser *chooser = reinterpret_cast<Object_browser *>(user_data);
 	chooser->search(gtk_entry_get_text(
 	                    GTK_ENTRY(chooser->get_find_text())), 1);
 }
@@ -243,7 +243,7 @@ static void
 on_find_up(GtkButton       *button,
            gpointer         user_data) {
 	ignore_unused_variable_warning(button);
-	Object_browser *chooser = (Object_browser *) user_data;
+	Object_browser *chooser = reinterpret_cast<Object_browser *>(user_data);
 	chooser->search(gtk_entry_get_text(
 	                    GTK_ENTRY(chooser->get_find_text())), -1);
 }
@@ -253,7 +253,7 @@ on_find_key(GtkEntry   *entry,
             gpointer    user_data) {
 	ignore_unused_variable_warning(entry);
 	if (event->keyval == GDK_Return) {
-		Object_browser *chooser = (Object_browser *) user_data;
+		Object_browser *chooser = reinterpret_cast<Object_browser *>(user_data);
 		chooser->search(gtk_entry_get_text(
 		                    GTK_ENTRY(chooser->get_find_text())), 1);
 		return TRUE;
@@ -265,14 +265,14 @@ static void
 on_loc_down(GtkButton       *button,
             gpointer         user_data) {
 	ignore_unused_variable_warning(button);
-	Object_browser *chooser = (Object_browser *) user_data;
+	Object_browser *chooser = reinterpret_cast<Object_browser *>(user_data);
 	chooser->locate(false);
 }
 static void
 on_loc_up(GtkButton       *button,
           gpointer         user_data) {
 	ignore_unused_variable_warning(button);
-	Object_browser *chooser = (Object_browser *) user_data;
+	Object_browser *chooser = reinterpret_cast<Object_browser *>(user_data);
 	chooser->locate(true);
 }
 
@@ -280,14 +280,14 @@ static void
 on_move_down(GtkButton       *button,
              gpointer         user_data) {
 	ignore_unused_variable_warning(button);
-	Object_browser *chooser = (Object_browser *) user_data;
+	Object_browser *chooser = reinterpret_cast<Object_browser *>(user_data);
 	chooser->move(false);
 }
 static void
 on_move_up(GtkButton       *button,
            gpointer         user_data) {
 	ignore_unused_variable_warning(button);
-	Object_browser *chooser = (Object_browser *) user_data;
+	Object_browser *chooser = reinterpret_cast<Object_browser *>(user_data);
 	chooser->move(true);
 }
 
@@ -312,7 +312,7 @@ GtkWidget *Object_browser::create_controls(
 	/*
 	 *  The 'Find' controls.
 	 */
-	if (controls & (int) find_controls) {
+	if (controls & static_cast<int>(find_controls)) {
 		GtkWidget *frame = gtk_frame_new("Find");
 		gtk_widget_show(frame);
 		gtk_box_pack_start(GTK_BOX(tophbox), frame, FALSE, FALSE, 2);
@@ -346,7 +346,7 @@ GtkWidget *Object_browser::create_controls(
 	/*
 	 *  The 'Locate' controls.
 	 */
-	if (controls & (int) locate_controls) {
+	if (controls & static_cast<int>(locate_controls)) {
 		GtkWidget *frame = gtk_frame_new("Locate");
 		gtk_widget_show(frame);
 		gtk_box_pack_start(GTK_BOX(tophbox), frame, FALSE, FALSE, 2);
@@ -363,7 +363,7 @@ GtkWidget *Object_browser::create_controls(
 		loc_up = Create_arrow_button(GTK_ARROW_UP,
 		                             GTK_SIGNAL_FUNC(on_loc_up), this);
 		gtk_box_pack_start(GTK_BOX(bbox), loc_up, TRUE, TRUE, 2);
-		if (controls & (int) locate_frame) {
+		if (controls & static_cast<int>(locate_frame)) {
 			GtkWidget *lbl = gtk_label_new(" F:");
 			gtk_misc_set_alignment(GTK_MISC(lbl), 0.9, 0.5);
 			gtk_box_pack_start(GTK_BOX(lbox), lbl, TRUE, TRUE, 0);
@@ -376,7 +376,7 @@ GtkWidget *Object_browser::create_controls(
 			gtk_box_pack_start(GTK_BOX(lbox), loc_f, TRUE, TRUE, 4);
 			gtk_widget_set_size_request(loc_f, 64, -1);
 		}
-		if (controls & (int) locate_quality) {
+		if (controls & static_cast<int>(locate_quality)) {
 			GtkWidget *lbl = gtk_label_new(" Q:");
 			gtk_misc_set_alignment(GTK_MISC(lbl), 0.9, 0.5);
 			gtk_box_pack_start(GTK_BOX(lbox), lbl, TRUE, TRUE, 0);
@@ -393,7 +393,7 @@ GtkWidget *Object_browser::create_controls(
 	/*
 	 *  The 'Move' controls.
 	 */
-	if (controls & (int) move_controls) {
+	if (controls & static_cast<int>(move_controls)) {
 		GtkWidget *frame = gtk_frame_new("Move");
 		gtk_widget_show(frame);
 		gtk_box_pack_start(GTK_BOX(tophbox), frame, FALSE, FALSE, 2);

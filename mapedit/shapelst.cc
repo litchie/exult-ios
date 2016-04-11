@@ -32,11 +32,22 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include <iostream>
+
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wold-style-cast"
+#pragma GCC diagnostic ignored "-Wcast-qual"
+#endif  // __GNUC__
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 #ifdef XWIN
 #include <gdk/gdkx.h>
 #endif
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif  // __GNUC__
+#include "gtk_redefines.h"
+
 #include <glib.h>
 #include <stdlib.h>
 #include <sys/stat.h>
@@ -108,7 +119,7 @@ static void Shape_dropped_here(
     int frame,
     void *udata
 ) {
-	((Shape_chooser *) udata)->shape_dropped_here(file, shape, frame);
+	reinterpret_cast<Shape_chooser *>(udata)->shape_dropped_here(file, shape, frame);
 }
 
 /*
@@ -470,7 +481,7 @@ static gint Configure_chooser(
     gpointer data           // ->Shape_chooser
 ) {
 	ignore_unused_variable_warning(widget);
-	Shape_chooser *chooser = (Shape_chooser *) data;
+	Shape_chooser *chooser = reinterpret_cast<Shape_chooser *>(data);
 	return chooser->configure(event);
 }
 gint Shape_chooser::configure(
@@ -503,7 +514,7 @@ gint Shape_chooser::expose(
     gpointer data           // ->Shape_chooser.
 ) {
 	ignore_unused_variable_warning(widget);
-	Shape_chooser *chooser = (Shape_chooser *) data;
+	Shape_chooser *chooser = reinterpret_cast<Shape_chooser *>(data);
 	chooser->show(event->area.x, event->area.y, event->area.width,
 	              event->area.height);
 	return (TRUE);
@@ -559,10 +570,10 @@ gint Shape_chooser::drag_motion(
     gpointer data           // ->Shape_chooser.
 ) {
 	ignore_unused_variable_warning(widget);
-	Shape_chooser *chooser = (Shape_chooser *) data;
+	Shape_chooser *chooser = reinterpret_cast<Shape_chooser *>(data);
 	if (!chooser->dragging && chooser->selected >= 0)
 		chooser->start_drag(U7_TARGET_SHAPEID_NAME,
-		                    U7_TARGET_SHAPEID, (GdkEvent *) event);
+		                    U7_TARGET_SHAPEID, reinterpret_cast<GdkEvent *>(event));
 	return true;
 }
 #endif
@@ -587,7 +598,7 @@ gint Shape_chooser::mouse_press(
 	int old_selected = selected, new_selected = -1;
 	int i;              // Search through entries.
 	int infosz = info.size();
-	int absx = (int) event->x + hoffset, absy = (int) event->y + voffset;
+	int absx = static_cast<int>(event->x) + hoffset, absy = static_cast<int>(event->y) + voffset;
 	for (i = rows[row0].index0; i < infosz; i++) {
 		if (info[i].box.distance(absx, absy) <= 2) {
 			// Found the box?
@@ -616,7 +627,7 @@ gint Shape_chooser::mouse_press(
 		unselect(true);     // No selection.
 	else if (selected == old_selected && old_selected >= 0) {
 		// Same square.  Check for dbl-click.
-		if (((GdkEvent *) event)->type == GDK_2BUTTON_PRESS)
+		if (reinterpret_cast<GdkEvent *>(event)->type == GDK_2BUTTON_PRESS)
 			edit_shape_info();
 	}
 	if (event->button == 3)
@@ -633,7 +644,7 @@ static gint Mouse_press(
     GdkEventButton *event,
     gpointer data           // ->Shape_chooser.
 ) {
-	Shape_chooser *chooser = (Shape_chooser *) data;
+	Shape_chooser *chooser = reinterpret_cast<Shape_chooser *>(data);
 	return chooser->mouse_press(widget, event);
 }
 static gint Mouse_release(
@@ -642,7 +653,7 @@ static gint Mouse_release(
     gpointer data           // ->Shape_chooser.
 ) {
 	ignore_unused_variable_warning(widget, event);
-	Shape_chooser *chooser = (Shape_chooser *) data;
+	Shape_chooser *chooser = reinterpret_cast<Shape_chooser *>(data);
 	chooser->mouse_up();
 	return true;
 }
@@ -655,7 +666,7 @@ on_draw_key_press(GtkEntry   *entry,
                   GdkEventKey    *event,
                   gpointer    user_data) {
 	ignore_unused_variable_warning(entry);
-	Shape_chooser *chooser = (Shape_chooser *) user_data;
+	Shape_chooser *chooser = reinterpret_cast<Shape_chooser *>(user_data);
 	switch (event->keyval) {
 	case GDK_Delete:
 		chooser->del_frame();
@@ -1182,7 +1193,7 @@ void Shape_chooser::export_frame(
     char *fname,
     gpointer user_data
 ) {
-	Shape_chooser *ed = (Shape_chooser *) user_data;
+	Shape_chooser *ed = reinterpret_cast<Shape_chooser *>(user_data);
 	if (U7exists(fname)) {
 		char *msg = g_strdup_printf(
 		                "'%s' already exists.  Overwrite?", fname);
@@ -1204,7 +1215,7 @@ void Shape_chooser::import_frame(
     char *fname,
     gpointer user_data
 ) {
-	Shape_chooser *ed = (Shape_chooser *) user_data;
+	Shape_chooser *ed = reinterpret_cast<Shape_chooser *>(user_data);
 	if (ed->selected < 0)
 		return;         // Shouldn't happen.
 	int shnum = ed->info[ed->selected].shapenum,
@@ -1248,7 +1259,7 @@ void Shape_chooser::export_all_frames(
     char *fname,
     gpointer user_data
 ) {
-	Shape_chooser *ed = (Shape_chooser *) user_data;
+	Shape_chooser *ed = reinterpret_cast<Shape_chooser *>(user_data);
 	int shnum = ed->info[ed->selected].shapenum;
 	ed->export_all_pngs(fname, shnum);
 }
@@ -1257,7 +1268,7 @@ void Shape_chooser::export_shape(
     char *fname,
     gpointer user_data
 ) {
-	Shape_chooser *ed = (Shape_chooser *) user_data;
+	Shape_chooser *ed = reinterpret_cast<Shape_chooser *>(user_data);
 	int shnum = ed->info[ed->selected].shapenum;
 	Shape *shp = ed->ifile->extract_shape(shnum);
 	Image_file_info::write_file(fname, &shp, 1, true);
@@ -1318,7 +1329,7 @@ void Shape_chooser::import_all_frames(
     char *fname,
     gpointer user_data
 ) {
-	Shape_chooser *ed = (Shape_chooser *) user_data;
+	Shape_chooser *ed = reinterpret_cast<Shape_chooser *>(user_data);
 	if (ed->selected < 0)
 		return;         // Shouldn't happen.
 	int shnum = ed->info[ed->selected].shapenum;
@@ -1334,7 +1345,7 @@ void Shape_chooser::import_shape(
     gpointer user_data
 ) {
 	if (U7exists(fname)) {
-		Shape_chooser *ed = (Shape_chooser *) user_data;
+		Shape_chooser *ed = reinterpret_cast<Shape_chooser *>(user_data);
 		if (ed->selected < 0)
 			return;         // Shouldn't happen.
 		ifstream file;
@@ -1695,7 +1706,7 @@ void Shape_chooser::drag_data_get(
 ) {
 	ignore_unused_variable_warning(widget, context, time);
 	cout << "In DRAG_DATA_GET" << endl;
-	Shape_chooser *chooser = (Shape_chooser *) data;
+	Shape_chooser *chooser = reinterpret_cast<Shape_chooser *>(data);
 	if (chooser->selected < 0 || info != U7_TARGET_SHAPEID)
 		return;         // Not sure about this.
 	guchar buf[30];
@@ -1731,7 +1742,7 @@ gint Shape_chooser::selection_clear(
     gpointer data           // ->Shape_chooser.
 ) {
 	ignore_unused_variable_warning(widget, event, data);
-//	Shape_chooser *chooser = (Shape_chooser *) data;
+//	Shape_chooser *chooser = reinterpret_cast<Shape_chooser *>(data);
 	cout << "SELECTION_CLEAR" << endl;
 	return TRUE;
 }
@@ -1747,7 +1758,7 @@ gint Shape_chooser::drag_begin(
 ) {
 	ignore_unused_variable_warning(widget);
 	cout << "In DRAG_BEGIN" << endl;
-	Shape_chooser *chooser = (Shape_chooser *) data;
+	Shape_chooser *chooser = reinterpret_cast<Shape_chooser *>(data);
 	if (chooser->selected < 0)
 		return FALSE;       // ++++Display a halt bitmap.
 	// Get ->shape.
@@ -1870,17 +1881,17 @@ void Shape_chooser::vscrolled(      // For vertical scrollbar.
     GtkAdjustment *adj,     // The adjustment.
     gpointer data           // ->Shape_chooser.
 ) {
-	Shape_chooser *chooser = (Shape_chooser *) data;
+	Shape_chooser *chooser = reinterpret_cast<Shape_chooser *>(data);
 	cout << "Scrolled to " << adj->value << '\n';
-	gint newindex = (gint) adj->value;
+	gint newindex = static_cast<gint>(adj->value);
 	chooser->scroll_vertical(newindex);
 }
 void Shape_chooser::hscrolled(      // For horizontal scrollbar.
     GtkAdjustment *adj,     // The adjustment.
     gpointer data           // ->Shape_chooser.
 ) {
-	Shape_chooser *chooser = (Shape_chooser *) data;
-	chooser->hoffset = (gint) adj->value;
+	Shape_chooser *chooser = reinterpret_cast<Shape_chooser *>(data);
+	chooser->hoffset = static_cast<gint>(adj->value);
 	chooser->render();
 	chooser->show();
 }
@@ -1893,8 +1904,8 @@ void Shape_chooser::frame_changed(
     GtkAdjustment *adj,     // The adjustment.
     gpointer data           // ->Shape_chooser.
 ) {
-	Shape_chooser *chooser = (Shape_chooser *) data;
-	gint newframe = (gint) adj->value;
+	Shape_chooser *chooser = reinterpret_cast<Shape_chooser *>(data);
+	gint newframe = static_cast<gint>(adj->value);
 	if (chooser->selected >= 0) {
 		Shape_entry &shinfo = chooser->info[chooser->selected];
 		int nframes = chooser->ifile->get_num_frames(shinfo.shapenum);
@@ -1917,7 +1928,7 @@ void Shape_chooser::all_frames_toggled(
     GtkToggleButton *btn,
     gpointer data
 ) {
-	Shape_chooser *chooser = (Shape_chooser *) data;
+	Shape_chooser *chooser = reinterpret_cast<Shape_chooser *>(data);
 	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	chooser->frames_mode = on;
 	if (on)             // Frame => show horiz. scrollbar.
@@ -1944,7 +1955,7 @@ void Shape_chooser::on_shapes_popup_info_activate(
     gpointer udata
 ) {
 	ignore_unused_variable_warning(item);
-	((Shape_chooser *) udata)->edit_shape_info();
+	reinterpret_cast<Shape_chooser *>(udata)->edit_shape_info();
 }
 
 void Shape_chooser::on_shapes_popup_edit_activate(
@@ -1952,7 +1963,7 @@ void Shape_chooser::on_shapes_popup_edit_activate(
     gpointer udata
 ) {
 	ignore_unused_variable_warning(item);
-	((Shape_chooser *) udata)->edit_shape();
+	reinterpret_cast<Shape_chooser *>(udata)->edit_shape();
 }
 
 void Shape_chooser::on_shapes_popup_edtiles_activate(
@@ -1960,7 +1971,7 @@ void Shape_chooser::on_shapes_popup_edtiles_activate(
     gpointer udata
 ) {
 	ignore_unused_variable_warning(item);
-	Shape_chooser *ch = (Shape_chooser *) udata;
+	Shape_chooser *ch = reinterpret_cast<Shape_chooser *>(udata);
 	if (ch->selected < 0)
 		return;         // Shouldn't happen.
 	ExultStudio *studio = ExultStudio::get_instance();
@@ -1988,7 +1999,7 @@ static void on_shapes_popup_import(
 	ignore_unused_variable_warning(item);
 	GtkFileSelection *fsel = Create_file_selection(
 	                             "Import frame from a .png file",
-	                             (File_sel_okay_fun) Shape_chooser::import_frame,
+	                             reinterpret_cast<File_sel_okay_fun>(Shape_chooser::import_frame),
 	                             udata);
 	if (is_system_path_defined("<PATCH>")) {
 		// Default to a writable location.
@@ -2004,7 +2015,7 @@ static void on_shapes_popup_export(
 	ignore_unused_variable_warning(item);
 	GtkFileSelection *fsel = Create_file_selection(
 	                             "Export frame to a .png file",
-	                             (File_sel_okay_fun) Shape_chooser::export_frame,
+	                             reinterpret_cast<File_sel_okay_fun>(Shape_chooser::export_frame),
 	                             udata);
 	if (is_system_path_defined("<PATCH>")) {
 		// Default to a writable location.
@@ -2020,7 +2031,7 @@ static void on_shapes_popup_export_all(
 	ignore_unused_variable_warning(item);
 	GtkFileSelection *fsel = Create_file_selection(
 	                             "Choose the base .png file name for all frames",
-	                             (File_sel_okay_fun) Shape_chooser::export_all_frames,
+	                             reinterpret_cast<File_sel_okay_fun>(Shape_chooser::export_all_frames),
 	                             udata);
 	if (is_system_path_defined("<PATCH>")) {
 		// Default to a writable location.
@@ -2036,7 +2047,7 @@ static void on_shapes_popup_import_all(
 	ignore_unused_variable_warning(item);
 	GtkFileSelection *fsel = Create_file_selection(
 	                             "Choose the one of the .png sprites to import",
-	                             (File_sel_okay_fun) Shape_chooser::import_all_frames,
+	                             reinterpret_cast<File_sel_okay_fun>(Shape_chooser::import_all_frames),
 	                             udata);
 	if (is_system_path_defined("<PATCH>")) {
 		// Default to a writable location.
@@ -2052,7 +2063,7 @@ static void on_shapes_popup_export_shape(
 	ignore_unused_variable_warning(item);
 	GtkFileSelection *fsel = Create_file_selection(
 	                             "Choose the shp file name",
-	                             (File_sel_okay_fun) Shape_chooser::export_shape,
+	                             reinterpret_cast<File_sel_okay_fun>(Shape_chooser::export_shape),
 	                             udata);
 	if (is_system_path_defined("<PATCH>")) {
 		// Default to a writable location.
@@ -2068,7 +2079,7 @@ static void on_shapes_popup_import_shape(
 	ignore_unused_variable_warning(item);
 	GtkFileSelection *fsel = Create_file_selection(
 	                             "Choose the shp file to import",
-	                             (File_sel_okay_fun) Shape_chooser::import_shape,
+	                             reinterpret_cast<File_sel_okay_fun>(Shape_chooser::import_shape),
 	                             udata);
 	if (is_system_path_defined("<PATCH>")) {
 		// Default to a writable location.
@@ -2082,14 +2093,14 @@ static void on_shapes_popup_new_frame(
     gpointer udata
 ) {
 	ignore_unused_variable_warning(item);
-	((Shape_chooser *) udata)->new_frame();
+	reinterpret_cast<Shape_chooser *>(udata)->new_frame();
 }
 static void on_shapes_popup_new_shape(
     GtkMenuItem *item,
     gpointer udata
 ) {
 	ignore_unused_variable_warning(item);
-	((Shape_chooser *) udata)->new_shape();
+	reinterpret_cast<Shape_chooser *>(udata)->new_shape();
 }
 
 /*
@@ -2161,7 +2172,7 @@ void Shape_chooser::search(
 	int start = selected >= 0 ? selected : rows[row0].index0;
 	int i;
 	start += dir;
-	int stop = dir == -1 ? -1 : (int) info.size();
+	int stop = dir == -1 ? -1 : static_cast<int>(info.size());
 	codepageStr srch(search);
 	for (i = start; i != stop; i += dir) {
 		int shnum = info[i].shapenum;

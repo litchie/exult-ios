@@ -185,8 +185,8 @@ void Shape_draw::configure(
 		gdk_rgb_gc_set_foreground(drawgc, (255 << 16) + (255 << 8));
 		iwin = new Image_buffer8(
 		    draw->allocation.width, draw->allocation.height);
-	} else if ((int)iwin->get_width() != draw->allocation.width ||
-	           (int)iwin->get_height() != draw->allocation.height) {
+	} else if (static_cast<int>(iwin->get_width() ) != draw->allocation.width ||
+	           static_cast<int>(iwin->get_height()) != draw->allocation.height) {
 		delete iwin;
 		iwin = new Image_buffer8(
 		    draw->allocation.width, draw->allocation.height);
@@ -208,7 +208,7 @@ void Shape_draw::drag_data_received(
     gpointer udata          // Should point to Shape_draw.
 ) {
 	ignore_unused_variable_warning(widget, context, x, y, info, time);
-	Shape_draw *draw = (Shape_draw *) udata;
+	Shape_draw *draw = reinterpret_cast<Shape_draw *>(udata);
 	cout << "drag_data_received" << endl;
 	if (draw->drop_callback &&
 	        seldata->type == gdk_atom_intern(U7_TARGET_SHAPEID_NAME, 0) &&
@@ -237,7 +237,7 @@ void Shape_draw::enable_drop(
 	tents[0].flags = 0;
 	tents[0].info = U7_TARGET_SHAPEID;
 	gtk_drag_dest_set(draw, GTK_DEST_DEFAULT_ALL, tents, 1,
-	                  (GdkDragAction)(GDK_ACTION_COPY | GDK_ACTION_MOVE));
+	                  static_cast<GdkDragAction>(GDK_ACTION_COPY | GDK_ACTION_MOVE));
 
 	gtk_signal_connect(GTK_OBJECT(draw), "drag_data_received",
 	                   GTK_SIGNAL_FUNC(drag_data_received), this);
@@ -307,7 +307,7 @@ void Shape_draw::start_drag(
 	GtkTargetList *tlist = gtk_target_list_new(&tents[0], 1);
 	// ??+++ Do we need to free tlist?
 	gtk_drag_begin(draw, tlist,
-	               (GdkDragAction)(GDK_ACTION_COPY | GDK_ACTION_MOVE),
+	               static_cast<GdkDragAction>(GDK_ACTION_COPY | GDK_ACTION_MOVE),
 	               1, event);
 }
 

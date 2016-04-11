@@ -1,4 +1,8 @@
 2016-04-10	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* *.*: Eliminating -Wold-style-cast and -Wcast-qual warnings everywhere but
+	  in audio code. Warnings in system headers were supressed with #pragma in
+	  GCC, as were warnings in Bison- and Flex-generated code. In a major hack,
+	  several GTK macros were redefined to supress warnings in ES code.
 	* keyactions.cc: Adding whitespace to account for C++11 literal suffixes.
 	* *.*: Deprecating exult_types.h in favor of common_types.h. Fixing several
 	  cases where Exult used longs instead of pointer-sized integers to convert

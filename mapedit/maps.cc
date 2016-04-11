@@ -26,7 +26,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include <config.h>
 #endif
 
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wold-style-cast"
+#pragma GCC diagnostic ignored "-Wcast-qual"
+#endif  // __GNUC__
 #include <gtk/gtkradiomenuitem.h>
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif  // __GNUC__
+#include "gtk_redefines.h"
+
 #include "studio.h"
 #include "servemsg.h"
 #include "exult_constants.h"
@@ -63,7 +73,7 @@ static void on_map_activate(
 	ignore_unused_variable_warning(item);
 	unsigned char data[50];
 	unsigned char *ptr = &data[0];
-	Write2(ptr, (uintptr) udata);
+	Write2(ptr, reinterpret_cast<uintptr>(udata));
 	ExultStudio::get_instance()->send_to_server(Exult_server::goto_map,
 	        &data[0], ptr - data);
 }
@@ -192,7 +202,7 @@ void ExultStudio::setup_maps_list(
 			group = gtk_radio_menu_item_get_group(
 			            GTK_RADIO_MENU_ITEM(item));
 			gtk_object_set_user_data(GTK_OBJECT(item),
-			                         (gpointer) 0);
+			                         reinterpret_cast<gpointer>(0));
 			if (curmap == 0)
 				gtk_check_menu_item_set_active(
 				    GTK_CHECK_MENU_ITEM(item), TRUE);
@@ -200,8 +210,8 @@ void ExultStudio::setup_maps_list(
 		}
 		if (gtk_check_menu_item_get_active(
 		            GTK_CHECK_MENU_ITEM(item)))
-			curmap = (sintptr) gtk_object_get_user_data(
-			             GTK_OBJECT(item));
+			curmap = reinterpret_cast<sintptr>(gtk_object_get_user_data(
+			             GTK_OBJECT(item)));
 		GList *prev = g_list_previous(each);
 		gtk_container_remove(GTK_CONTAINER(maps), GTK_WIDGET(item));
 		each = prev;

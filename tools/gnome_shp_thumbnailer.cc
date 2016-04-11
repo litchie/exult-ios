@@ -27,7 +27,16 @@
 #  include <config.h>
 #endif
 
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wold-style-cast"
+#pragma GCC diagnostic ignored "-Wcast-qual"
+#endif  // __GNUC__
 #include <gdk-pixbuf/gdk-pixbuf.h>
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif  // __GNUC__
+
 #include <libgnomeui/libgnomeui.h>
 #include <iostream>
 #include <cstdlib>

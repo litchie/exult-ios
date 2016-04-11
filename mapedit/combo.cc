@@ -67,7 +67,7 @@ void ExultStudio::open_combo_window(
 		EStudio::Alert("'shapes.vga' file isn't present");
 		return;
 	}
-	Shapes_vga_file *svga = (Shapes_vga_file *) vgafile->get_ifile();
+	Shapes_vga_file *svga = static_cast<Shapes_vga_file *>(vgafile->get_ifile());
 	delete combowin;        // Delete old (svga may have changed).
 	combowin = new Combo_editor(svga, palbuf);
 	combowin->show(true);
@@ -457,7 +457,7 @@ unsigned char *Combo::write(
 	Serial_out out(ptr);
 	out << name;
 	out << hot_index << starttx << startty;
-	out << (short) members.size();  // # members to follow.
+	out << static_cast<short>(members.size());  // # members to follow.
 	for (std::vector<Combo_member *>::const_iterator it = members.begin();
 	        it != members.end(); ++it) {
 		Combo_member *m = *it;
@@ -632,7 +632,7 @@ gint Combo_editor::mouse_press(
 	if (event->button != 1)
 		return FALSE;       // Handling left-click.
 	// Get mouse position, draw dims.
-	int mx = (int) event->x, my = (int) event->y;
+	int mx = static_cast<int>(event->x), my = static_cast<int>(event->y);
 	selected = combo->find(mx, my); // Find it (or -1 if not found).
 	set_controls();
 	render();
@@ -742,7 +742,7 @@ void Combo_editor::save(
 	unsigned char *newbuf = combo->write(len);
 	// Update or append file data.
 	flex_info->set(file_index == -1 ? flex_info->size() : file_index,
-	               (char *) newbuf, len);
+	               reinterpret_cast<char *>(newbuf), len);
 	Combo_chooser *browser = dynamic_cast<Combo_chooser *>(
 	                             studio->get_browser());
 	if (browser)            // Browser open?
@@ -835,14 +835,14 @@ void Combo_chooser::load(
 	Shape_file_info *svga_info =
 	    ExultStudio::get_instance()->get_vgafile();
 	Shapes_vga_file *svga = svga_info ?
-	                        (Shapes_vga_file *) svga_info->get_ifile() : 0;
+	                        static_cast<Shapes_vga_file *>(svga_info->get_ifile()) : 0;
 	combos.resize(num_combos);  // Set size of list.
 	if (!svga)
 		num_combos = 0;
 	// Read them all in.
 	for (int i = 0; i < num_combos; i++) {
 		size_t len;
-		unsigned char *buf = (unsigned char *) flex_info->get(i, len);
+		unsigned char *buf = reinterpret_cast<unsigned char *>(flex_info->get(i, len));
 		Combo *combo = new Combo(svga);
 		combo->read(buf, len);
 		combos[i] = combo;  // Store in list.
@@ -929,7 +929,7 @@ void Combo_chooser::scroll(
 		delta = -delta;
 	adj->value += delta;
 	gtk_signal_emit_by_name(GTK_OBJECT(adj), "changed");
-	scroll((gint) adj->value);
+	scroll(static_cast<gint>(adj->value));
 }
 
 /*
@@ -946,7 +946,7 @@ void Combo_chooser::drag_data_get(
 ) {
 	ignore_unused_variable_warning(widget, context, time);
 	cout << "In DRAG_DATA_GET" << endl;
-	Combo_chooser *chooser = (Combo_chooser *) data;
+	Combo_chooser *chooser = reinterpret_cast<Combo_chooser *>(data);
 	if (chooser->selected < 0 || info != U7_TARGET_COMBOID)
 		return;         // Not sure about this.
 	// Get combo #.
@@ -1014,7 +1014,7 @@ gint Combo_chooser::drag_begin(
 ) {
 	ignore_unused_variable_warning(widget);
 	cout << "In DRAG_BEGIN" << endl;
-	Combo_chooser *chooser = (Combo_chooser *) data;
+	Combo_chooser *chooser = reinterpret_cast<Combo_chooser *>(data);
 	if (chooser->selected < 0)
 		return FALSE;       // ++++Display a halt bitmap.
 	// Get ->combo.
@@ -1037,8 +1037,8 @@ void Combo_chooser::scrolled(
     GtkAdjustment *adj,     // The adjustment.
     gpointer data           // ->Combo_chooser.
 ) {
-	Combo_chooser *chooser = (Combo_chooser *) data;
-	gint newindex = (gint) adj->value;
+	Combo_chooser *chooser = reinterpret_cast<Combo_chooser *>(data);
+	gint newindex = static_cast<gint>(adj->value);
 	chooser->scroll(newindex);
 }
 
@@ -1053,7 +1053,7 @@ on_combo_key_press(GtkEntry   *entry,
                    GdkEventKey    *event,
                    gpointer    user_data) {
 	ignore_unused_variable_warning(entry);
-	Combo_chooser *chooser = (Combo_chooser *) user_data;
+	Combo_chooser *chooser = reinterpret_cast<Combo_chooser *>(user_data);
 	switch (event->keyval) {
 	case GDK_Delete:
 		chooser->remove();
@@ -1287,7 +1287,7 @@ gint Combo_chooser::configure(
     gpointer data           // ->Combo_chooser
 ) {
 	ignore_unused_variable_warning(widget);
-	Combo_chooser *chooser = (Combo_chooser *) data;
+	Combo_chooser *chooser = reinterpret_cast<Combo_chooser *>(data);
 	chooser->Shape_draw::configure();
 	chooser->render();
 	// Set new scroll amounts.
@@ -1318,7 +1318,7 @@ gint Combo_chooser::expose(
     gpointer data           // ->Combo_chooser.
 ) {
 	ignore_unused_variable_warning(widget);
-	Combo_chooser *chooser = (Combo_chooser *) data;
+	Combo_chooser *chooser = reinterpret_cast<Combo_chooser *>(data);
 	chooser->show(event->area.x, event->area.y, event->area.width,
 	              event->area.height);
 	return (TRUE);
@@ -1374,10 +1374,10 @@ gint Combo_chooser::drag_motion(
     gpointer data           // ->Shape_chooser.
 ) {
 	ignore_unused_variable_warning(widget);
-	Combo_chooser *chooser = (Combo_chooser *) data;
+	Combo_chooser *chooser = reinterpret_cast<Combo_chooser *>(data);
 	if (!chooser->dragging && chooser->selected >= 0)
 		chooser->start_drag(U7_TARGET_COMBOID_NAME,
-		                    U7_TARGET_COMBOID, (GdkEvent *) event);
+		                    U7_TARGET_COMBOID, reinterpret_cast<GdkEvent *>(event));
 	return true;
 }
 #endif
@@ -1392,7 +1392,7 @@ gint Combo_chooser::mouse_press(
     gpointer data           // ->Combo_chooser.
 ) {
 	gtk_widget_grab_focus(widget);  // Enables keystrokes.
-	Combo_chooser *chooser = (Combo_chooser *) data;
+	Combo_chooser *chooser = reinterpret_cast<Combo_chooser *>(data);
 
 	if (event->button == 4) {
 		chooser->scroll(true);
@@ -1406,7 +1406,7 @@ gint Combo_chooser::mouse_press(
 	int i;              // Search through entries.
 	for (i = 0; i < chooser->info_cnt; i++)
 		if (chooser->info[i].box.has_point(
-		            (int) event->x, (int) event->y)) {
+		            static_cast<int>(event->x), static_cast<int>(event->y))) {
 			// Found the box?
 			// Indicate we can drag.
 #ifdef WIN32
@@ -1429,7 +1429,7 @@ gint Combo_chooser::mouse_press(
 		chooser->unselect(true);    // Nothing under mouse.
 	else if (chooser->selected == old_selected && old_selected >= 0) {
 		// Same square.  Check for dbl-click.
-		if (((GdkEvent *) event)->type == GDK_2BUTTON_PRESS)
+		if (reinterpret_cast<GdkEvent *>(event)->type == GDK_2BUTTON_PRESS)
 			chooser->edit();
 	}
 	if (event->button == 3)
@@ -1447,7 +1447,7 @@ static gint Mouse_release(
     gpointer data           // ->Shape_chooser.
 ) {
 	ignore_unused_variable_warning(widget, event);
-	Combo_chooser *chooser = (Combo_chooser *) data;
+	Combo_chooser *chooser = reinterpret_cast<Combo_chooser *>(data);
 	chooser->mouse_up();
 	return true;
 }
