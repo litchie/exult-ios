@@ -2294,9 +2294,9 @@ Shape_chooser::Shape_chooser(
 ) : Object_browser(g, fi),
 	Shape_draw(i, palbuf, gtk_drawing_area_new()),
 	shapes_file(0), framenum0(0),
-	info(0), row0(0), rows(0),
-	row0_voffset(0), total_height(0), status_id(-1),
-	sel_changed(0), frames_mode(false), hoffset(0), voffset(0) {
+	info(0), rows(0), row0(0),
+	row0_voffset(0), total_height(0),
+	frames_mode(false), hoffset(0), voffset(0), status_id(-1), sel_changed(0) {
 	rows.reserve(40);
 	// Put things in a vert. box.
 	GtkWidget *vbox = gtk_vbox_new(FALSE, 0);

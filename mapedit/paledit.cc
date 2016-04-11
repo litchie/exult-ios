@@ -435,7 +435,7 @@ gint Palette_edit::drag_begin(
     GdkDragContext *context,
     gpointer data           // ->Palette_edit.
 ) {
-	ignore_unused_variable_warning(widget, context);
+	ignore_unused_variable_warning(widget, context, data);
 	cout << "In DRAG_BEGIN" << endl;
 	//Palette_edit *paled = reinterpret_cast<Palette_edit *>(data);
 	// Maybe someday.
@@ -750,7 +750,7 @@ Palette_edit::Palette_edit(
     Flex_file_info *flinfo      // Flex-file info.
 ) : Object_browser(0, flinfo),
 	flex_info(flinfo), image(0), width(0), height(0),
-	colorsel(0), cur_pal(0) {
+	cur_pal(0), colorsel(0) {
 	load();             // Load from file.
 	setup();
 }
