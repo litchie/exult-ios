@@ -63,17 +63,6 @@ m4_define([_AX_CXX_COMPILE_STDCXX_11_testbody], [[
     auto l = [](){};
 ]])
 
-m4_define([_AX_CXX_DETECT_CLANG_ON_APPLE_testbody], [[
-  int main()
-  {
-    #if defined(__clang__) && defined(__APPLE__)
-      return 0;
-    #else
-      return 1;
-    #endif
-  }
-]])
-
 AC_DEFUN([AX_CXX_COMPILE_STDCXX_11], [dnl
   m4_if([$1], [], [],
         [$1], [ext], [],
@@ -89,8 +78,15 @@ AC_DEFUN([AX_CXX_COMPILE_STDCXX_11], [dnl
   AC_CACHE_CHECK(whether we are using clang on Apple OS,
     ax_cv_cxx_using_clang_on_apple,
     [
-      AC_TRY_RUN(
-        [_AX_CXX_DETECT_CLANG_ON_APPLE_testbody],
+      AC_TRY_RUN([
+          int main()
+          {
+            #if defined(__clang__) && defined(__APPLE__)
+            return 0;
+            #endif
+            return 1;
+          }
+        ],
         [ax_cv_cxx_using_clang_on_apple=yes],
         [ax_cv_cxx_using_clang_on_apple=no]
       )
