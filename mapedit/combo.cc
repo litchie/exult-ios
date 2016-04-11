@@ -1501,7 +1501,7 @@ void Combo_chooser::search(
 	start += dir;
 	int stop = dir == -1 ? -1 : total;
 	for (i = start; i != stop; i += dir) {
-		int num = group ? (*group)[i] : i;
+		//int num = group ? (*group)[i] : i;
 		const char *nm = combos[i]->name.c_str();
 		if (nm && search_name(nm, srch))
 			break;      // Found it.

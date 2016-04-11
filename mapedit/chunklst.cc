@@ -735,7 +735,6 @@ static void on_delete(
 
 GtkWidget *Chunk_chooser::create_popup(
 ) {
-	ExultStudio *studio = ExultStudio::get_instance();
 	Object_browser::create_popup(); // Create popup with groups, files.
 	if (group != 0)         // Filtering?  Skip the rest.
 		return popup;

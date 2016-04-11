@@ -109,12 +109,11 @@ void Npc_chooser::render(
 ) {
 	vector<Estudio_npc> &npcs = get_npcs();
 	// Get drawing area dimensions.
-	gint winw = draw->allocation.width, winh = draw->allocation.height;
+	gint winh = draw->allocation.height;
 	// Clear window first.
 	iwin->fill8(255);       // Set to background_color.
 	int curr_y = -row0_voffset;
-	int total_cnt = get_count();
-	int index;          // This is shapenum if there's no
+	//int total_cnt = get_count();
 	//   filter (group).
 	for (int rownum = row0; curr_y  < winh && rownum < rows.size();
 	        ++rownum) {
@@ -179,7 +178,6 @@ void Npc_chooser::setup_shapes_info(
 	int curr_y = 0;
 	int row_h = 0;
 	int total_cnt = get_count(), num_shapes = ifile->get_num_shapes();
-	int index;          // This is shapenum if there's no
 	//   filter (group).
 	rows.resize(1);         // Start 1st row.
 	rows[0].index0 = 0;
@@ -474,8 +472,8 @@ C_EXPORT gboolean
 on_npc_draw_key_press(GtkEntry   *entry,
                       GdkEventKey    *event,
                       gpointer    user_data) {
-	ignore_unused_variable_warning(entry, event);
-	Npc_chooser *chooser = reinterpret_cast<Npc_chooser *>(user_data);
+	ignore_unused_variable_warning(entry, event, user_data);
+	//Npc_chooser *chooser = reinterpret_cast<Npc_chooser *>(user_data);
 #if 0
 	switch (event->keyval) {
 	case GDK_Delete:
@@ -497,7 +495,7 @@ void Npc_chooser::edit_npc(
 ) {
 	ExultStudio *studio = ExultStudio::get_instance();
 	int npcnum = info[selected].npcnum;
-	Estudio_npc &npc = get_npcs()[npcnum];
+	//Estudio_npc &npc = get_npcs()[npcnum];
 	unsigned char buf[Exult_server::maxlength], *ptr;
 	ptr = &buf[0];
 	Write2(ptr, npcnum);
@@ -777,7 +775,6 @@ void Npc_chooser::search(
 	if (!total)
 		return;         // Empty.
 	vector<Estudio_npc> &npcs = get_npcs();
-	ExultStudio *studio = ExultStudio::get_instance();
 	// Start with selection, or top.
 	int start = selected >= 0 ? selected : rows[row0].index0;
 	int i;
@@ -838,7 +835,6 @@ void on_npc_popup_edit_activate(
 
 GtkWidget *Npc_chooser::create_popup(
 ) {
-	ExultStudio *studio = ExultStudio::get_instance();
 	// Create popup with groups, but not files.
 	Object_browser::create_popup(false);
 	if (selected >= 0) {    // Add editing choices.

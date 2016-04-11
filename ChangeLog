@@ -1,3 +1,6 @@
+2016-04-11	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* *.*: Eliminating -Wunused-variable warnings in Linux.
+
 2016-04-10	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* *.*: Eliminating -Wold-style-cast and -Wcast-qual warnings everywhere but
 	  in audio code. Warnings in system headers were supressed with #pragma in
