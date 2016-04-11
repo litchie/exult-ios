@@ -97,8 +97,8 @@ public:
 	};
 
 	struct Resolution {
-		uint32 width;
-		uint32 height;
+		sint32 width;
+		sint32 height;
 		bool palette;
 		bool rgb16;
 		bool rgb32;
