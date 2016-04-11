@@ -1,4 +1,6 @@
 2016-04-11	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* headers/common_types.h: Prevent redefinition of some types if they already
+	  exist. Also, try long long for 64-bit types first.
 	* gumps/ShortcutBar_gump.cc: Checking pointers if they are null, instead of
 	  greater than zero.
 	* cheat_screen.cc, shapes/shapeinf.h: Eliminating (spurious) warnings from

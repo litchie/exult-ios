@@ -77,10 +77,10 @@ typedef unsigned long long uintptr;
 #endif /* !EX_TYPE_INT32 */
 
 #ifndef EX_TYPE_INT64
-#  if (SIZEOF_LONG == 8)
-#    define EX_TYPE_INT64 long
-#  elif (SIZEOF_LONG_LONG == 8)
+#  if (SIZEOF_LONG_LONG == 8)
 #    define EX_TYPE_INT64 long long
+#  elif (SIZEOF_LONG == 8)
+#    define EX_TYPE_INT64 long
 #  else
 #    error "Please make sure a 64 bit type is provided by common_types.h"
 #  endif
@@ -101,13 +101,17 @@ typedef unsigned long long uintptr;
 typedef unsigned EX_TYPE_INT8   uint8;
 typedef unsigned EX_TYPE_INT16  uint16;
 typedef unsigned EX_TYPE_INT32  uint32;
+#if !defined(uint64)
 typedef unsigned EX_TYPE_INT64  uint64;
+#endif
 typedef unsigned EX_TYPE_INTPTR uintptr;
 
 typedef signed EX_TYPE_INT8     sint8;
 typedef signed EX_TYPE_INT16    sint16;
 typedef signed EX_TYPE_INT32    sint32;
+#if !defined(sint64)
 typedef signed EX_TYPE_INT64    sint64;
+#endif
 typedef signed EX_TYPE_INTPTR   sintptr;
 
 #endif //BeOS
