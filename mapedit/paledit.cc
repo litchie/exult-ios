@@ -389,10 +389,10 @@ void Palette_edit::drag_data_get(
     guint time,
     gpointer data           // ->Palette_edit.
 ) {
-	ignore_unused_variable_warning(widget, context, seldata, info, time);
+	ignore_unused_variable_warning(widget, context, seldata, info, time, data);
 	cout << "In DRAG_DATA_GET" << endl;
-	Palette_edit *paled = reinterpret_cast<Palette_edit *>(data);
 #if 0
+	Palette_edit *paled = reinterpret_cast<Palette_edit *>(data);
 	if (paled->selected < 0 || info != U7_TARGET_SHAPEID)
 		return;         // Not sure about this.
 	guchar buf[30];
@@ -437,7 +437,7 @@ gint Palette_edit::drag_begin(
 ) {
 	ignore_unused_variable_warning(widget, context);
 	cout << "In DRAG_BEGIN" << endl;
-	Palette_edit *paled = reinterpret_cast<Palette_edit *>(data);
+	//Palette_edit *paled = reinterpret_cast<Palette_edit *>(data);
 	// Maybe someday.
 	return TRUE;
 }

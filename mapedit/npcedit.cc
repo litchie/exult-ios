@@ -440,10 +440,9 @@ void ExultStudio::init_new_npc(
 	unsigned char data[Exult_server::maxlength];
 	Exult_server::Msg_type id;
 	Exult_server::wait_for_response(server_socket, 100);
-	int len = Exult_server::Receive_data(server_socket,
-	                                     id, data, sizeof(data));
+	Exult_server::Receive_data(server_socket, id, data, sizeof(data));
 	unsigned char *ptr = &data[0];
-	int npcs = Read2(ptr);
+	Read2(ptr);	// Snip number of NPCs
 	int first_unused = Read2(ptr);
 	npc_num = first_unused;
 	set_entry("npc_num_entry", npc_num, true, false);

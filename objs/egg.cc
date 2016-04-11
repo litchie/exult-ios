@@ -1222,7 +1222,6 @@ bool Field_object::field_effect(
 	if (!actor)
 		return false;
 	bool del = false;       // Only delete poison, sleep fields.
-	int shape = get_shapenum();
 	int frame = get_framenum();
 	switch (type) {
 	case poison_field:

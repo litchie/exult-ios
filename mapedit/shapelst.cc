@@ -186,12 +186,11 @@ const int border = 4;           // Border at bottom, sides.
 void Shape_chooser::render(
 ) {
 	// Get drawing area dimensions.
-	gint winw = draw->allocation.width, winh = draw->allocation.height;
+	gint winh = draw->allocation.height;
 	// Clear window first.
 	iwin->fill8(255);       // Set to background_color.
 	int curr_y = -row0_voffset;
-	int total_cnt = get_count();
-	int index;          // This is shapenum if there's no
+	//int total_cnt = get_count();
 	//   filter (group).
 	for (int rownum = row0; curr_y  < winh && rownum < rows.size();
 	        ++rownum) {
@@ -297,7 +296,6 @@ void Shape_chooser::setup_shapes_info(
 	int curr_y = 0;
 	int row_h = 0;
 	int total_cnt = get_count();
-	int index;          // This is shapenum if there's no
 	//   filter (group).
 	rows.resize(1);         // Start 1st row.
 	rows[0].index0 = 0;
@@ -340,10 +338,8 @@ void Shape_chooser::setup_shapes_info(
 void Shape_chooser::setup_frames_info(
 ) {
 	// Get drawing area dimensions.
-	gint winw = draw->allocation.width, winh = draw->allocation.height;
 	int curr_y = 0, maxw = 0;
 	int total_cnt = get_count();
-	int index;          // This is shapenum if there's no
 	//   filter (group).
 	for (int index = index0; index < total_cnt; index++) {
 		int shapenum = group ? (*group)[index] : index;
@@ -689,7 +685,6 @@ const unsigned char transp = 255;
 time_t Shape_chooser::export_png(
     const char *fname       // File to write out.
 ) {
-	ExultStudio *studio = ExultStudio::get_instance();
 	int shnum = info[selected].shapenum,
 	    frnum = info[selected].framenum;
 	Shape_frame *frame = ifile->get_shape(shnum, frnum);
@@ -1080,7 +1075,6 @@ static void Import_png_tiles(
     int tiles,          // #tiles per row/col.
     bool bycols         // Write tiles columns-first.
 ) {
-	ExultStudio *studio = ExultStudio::get_instance();
 	Vga_file *ifile = finfo->get_ifile();
 	if (!ifile)
 		return;         // Shouldn't happen.
@@ -1539,8 +1533,7 @@ void Shape_chooser::new_shape(
 	gtk_window_set_modal(GTK_WINDOW(win), true);
 	gtk_object_set_user_data(GTK_OBJECT(win), this);
 	// Get current selection.
-	int shnum = selected >= 0 ? info[selected].shapenum : 0,
-	    frnum = selected >= 0 ? info[selected].framenum : 0;
+	int shnum = selected >= 0 ? info[selected].shapenum : 0;
 	GtkWidget *spin = glade_xml_get_widget(xml, "new_shape_num");
 	GtkAdjustment *adj = gtk_spin_button_get_adjustment(
 	                         GTK_SPIN_BUTTON(spin));
