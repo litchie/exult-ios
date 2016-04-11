@@ -1,5 +1,7 @@
 2016-04-11	Marzo Sette Torres Junior <marzojr@yahoo.com>
-	* *.*: Eliminating -Wunused-variable warnings in Linux.
+	* m4/ax_cxx_compile_stdcxx_11.m4, imagewin/imagewin.*: Fixing issues when
+	  compiling C++11 with clang on an Apple OS (basically, Apple does not ship
+	  a libstdc++ supporting C++11).
 
 2016-04-10	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* *.*: Eliminating -Wold-style-cast and -Wcast-qual warnings everywhere but

@@ -63,6 +63,17 @@ m4_define([_AX_CXX_COMPILE_STDCXX_11_testbody], [[
     auto l = [](){};
 ]])
 
+m4_define([_AX_CXX_DETECT_CLANG_ON_APPLE_testbody], [[
+  int main()
+  {
+    #if defined(__clang__) && defined(__APPLE__)
+      return 0;
+    #else
+      return 1;
+    #endif
+  }
+]])
+
 AC_DEFUN([AX_CXX_COMPILE_STDCXX_11], [dnl
   m4_if([$1], [], [],
         [$1], [ext], [],
@@ -74,6 +85,22 @@ AC_DEFUN([AX_CXX_COMPILE_STDCXX_11], [dnl
         [m4_fatal([invalid second argument `$2' to AX_CXX_COMPILE_STDCXX_11])])
   AC_LANG_PUSH([C++])dnl
   ac_success=no
+
+  AC_CACHE_CHECK(whether we are using clang on Apple OS,
+    ax_cv_cxx_using_clang_on_apple,
+    [
+      AC_TRY_RUN(
+        [_AX_CXX_DETECT_CLANG_ON_APPLE_testbody],
+        [ax_cv_cxx_using_clang_on_apple=yes],
+        [ax_cv_cxx_using_clang_on_apple=no]
+      )
+    ]
+  )
+  if test "$ax_cv_cxx_using_clang_on_apple" = "yes"; then
+    ax_cv_cxx_stdlib="-stdlib=libc++"
+  else
+    ax_cv_cxx_stdlib=""
+  fi
   AC_CACHE_CHECK(whether $CXX supports C++11 features by default,
   ax_cv_cxx_compile_cxx11,
   [AC_COMPILE_IFELSE([AC_LANG_SOURCE([_AX_CXX_COMPILE_STDCXX_11_testbody])],
@@ -90,13 +117,13 @@ AC_DEFUN([AX_CXX_COMPILE_STDCXX_11], [dnl
       AC_CACHE_CHECK(whether $CXX supports C++11 features with $switch,
                      $cachevar,
         [ac_save_CXXFLAGS="$CXXFLAGS"
-         CXXFLAGS="$CXXFLAGS $switch"
+         CXXFLAGS="$CXXFLAGS $switch $ax_cv_cxx_stdlib"
          AC_COMPILE_IFELSE([AC_LANG_SOURCE([_AX_CXX_COMPILE_STDCXX_11_testbody])],
           [eval $cachevar=yes],
           [eval $cachevar=no])
          CXXFLAGS="$ac_save_CXXFLAGS"])
       if eval test x\$$cachevar = xyes; then
-        CXXFLAGS="$CXXFLAGS $switch"
+        CXXFLAGS="$CXXFLAGS $switch $ax_cv_cxx_stdlib"
         ac_success=yes
         break
       fi
@@ -110,13 +137,13 @@ AC_DEFUN([AX_CXX_COMPILE_STDCXX_11], [dnl
       AC_CACHE_CHECK(whether $CXX supports C++11 features with $switch,
                      $cachevar,
         [ac_save_CXXFLAGS="$CXXFLAGS"
-         CXXFLAGS="$CXXFLAGS $switch"
+         CXXFLAGS="$CXXFLAGS $switch $ax_cv_cxx_stdlib"
          AC_COMPILE_IFELSE([AC_LANG_SOURCE([_AX_CXX_COMPILE_STDCXX_11_testbody])],
           [eval $cachevar=yes],
           [eval $cachevar=no])
          CXXFLAGS="$ac_save_CXXFLAGS"])
       if eval test x\$$cachevar = xyes; then
-        CXXFLAGS="$CXXFLAGS $switch"
+        CXXFLAGS="$CXXFLAGS $switch $ax_cv_cxx_stdlib"
         ac_success=yes
         break
       fi
