@@ -211,8 +211,6 @@ void getVersionInfo(std::ostream &out) {
 		ver = "Linux";
 	}
 	out << ver;
-#elif (defined(BEOS))
-	out << "BeOS";
 #elif (defined(__sun__) || defined(__sun))
 	out << "Solaris";
 #elif (defined(WIN32))

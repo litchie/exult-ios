@@ -471,7 +471,7 @@ Note: yes means enabled, no means disabled
       <driver>
       default
 				**choose your music driver between default, MT32Emu, Fluidsynth, FMOPL, 
-				TiMidity, Windows, Amiga, Be_midi, Forked, KMIDI, alsa, CoreAudio, 
+				TiMidity, Windows, Amiga, Forked, KMIDI, alsa, CoreAudio, 
 				CoreMidi, UnixSeqDevice. 
 				See 3.1. for details.
       </driver>
@@ -975,7 +975,6 @@ The MIDI driver can be changed to:
 * MT32Emu Roland MT32 emulation requires either the ROM set "MT32_CONTROL.ROM" and "MT32_PCM.ROM" or the ROM set "CM32L_CONTROL.ROM" and "CM32L_PCM.ROM" in the Exult data folder. If both sets are present the CM32L ROM set will be used.
 * Windows When you are using Windows and for some reason the Default driver doesn't work.
 * Amiga Uses the Amiga MIDI driver on the Amiga system.
-* Be_midi For use on BeOS.
 * CoreAudio uses XMIDI on Mac OS X. You can use a different soundfont than OS X' default by pointing <config><audio><midi><coreaudio_soundfont> to it in exult.cfg.
 * CoreMIDI on Mac OS X this MIDI driver allows using a real MIDI device like a Roland MT32 or software MIDI devices like Munt MT-32 Emulator. If you have more than one MIDI device you can choose the the device by setting the device ID in exult.cfg <config><audio><midi><coremidi_device> - see 3.5..
 * alsa uses ALSA on Linux systems. If your ALSA port is not on 65:0 you need to change <config><audio><midi><alsa_port> in the exult.cfg.

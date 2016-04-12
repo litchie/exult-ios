@@ -148,7 +148,6 @@ EXTRA_DIST = 	\
 	FAQ \
 	README.win32 \
 	README.axp \
-	README.BeOS \
 	README.MacOS \
 	README.MacOSX \
 	README.AmigaOS \
@@ -168,7 +167,6 @@ EXTRA_DIST = 	\
 	win32/exultico.rc \
 	win32/exultstudio.ico \
 	win32/exultstudioico.rc \
-	beos/exult.rsrc \
 	mac/exult_icon.rsrc.bin \
 	mac/ExultMac.mcp.xml.sit \
 	mac/exult_version.rsrc.bin \
