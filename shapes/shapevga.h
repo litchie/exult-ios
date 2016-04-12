@@ -26,9 +26,6 @@
 #include <map>
 #include <fstream>
 #include <iostream>
-#ifdef MACOS
-#include <cassert>
-#endif
 // #include "autoarray.h"   +++++GOING AWAY.
 #include "fnames.h"
 #include "imagebuf.h"

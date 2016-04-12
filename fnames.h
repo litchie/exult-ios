@@ -33,7 +33,7 @@
 #endif
 #endif
 
-#if (defined(MACOS) || defined(MACOSX) || defined(__IPHONEOS__)) && !defined(EXULT_DATADIR)
+#if (defined(MACOSX) || defined(__IPHONEOS__)) && !defined(EXULT_DATADIR)
 #define EXULT_DATADIR   "data"
 #endif
 

@@ -474,8 +474,8 @@ KeyMap::const_iterator KeyBinder::TranslateEvent(SDL_Event const &ev) const {
 		key.mod = static_cast<SDLMod>(key.mod | KMOD_SHIFT);
 	if (ev.key.keysym.mod & KMOD_CTRL)
 		key.mod = static_cast<SDLMod>(key.mod | KMOD_CTRL);
-#if defined(MACOS) || defined(MACOSX)
-	// map Meta to Alt on MacOS
+#ifdef MACOSX
+	// map Meta to Alt on OS X
 	if (ev.key.keysym.mod & KMOD_META)
 		key.mod = (SDLMod)(key.mod | KMOD_ALT);
 #else
@@ -778,7 +778,7 @@ void KeyBinder::ParseLine(char *line) {
 		desc = "";
 		if (k.mod & KMOD_CTRL)
 			desc += "Ctrl-";
-#if defined(MACOS) || defined(MACOSX)
+#ifdef MACOSX
 		if (k.mod & KMOD_ALT)
 			desc += "Cmd-";
 #else

@@ -44,10 +44,6 @@ using std::hash_map;
 #    include <hash_map>
 #    define unordered_map hash_map
 #  endif
-#  ifdef MACOS
-using Metrowerks::hash_map;
-#    define unordered_map hash_map
-#  endif
 #endif
 
 #ifdef DONT_HAVE_HASH_SET
@@ -70,10 +66,6 @@ using std::hash_set;
 #  else//elif defined(HAVE_HASH_SET)
 #    include <hash_set>
 #    define unordered_set hash_set
-#  endif
-#  ifdef MACOS
-using Metrowerks::hash_set;
-#define unordered_set hash_set
 #  endif
 #endif
 

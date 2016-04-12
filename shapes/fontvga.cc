@@ -10,9 +10,6 @@
 
 #include <fstream>
 #include <iostream>
-#ifdef MACOS
-#  include <cassert>
-#endif
 #include "fontvga.h"
 #include "fnames.h"
 #ifndef ALPHA_LINUX_CXX

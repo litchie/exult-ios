@@ -36,11 +36,6 @@ using namespace std;
 #  define DEF_MEM_LEVEL  MAX_MEM_LEVEL
 #endif
 
-/* Added by Max Horn - work around a work around in zlib 1.1.3 on MacOS */
-#if defined(MACOS) || defined(TARGET_OS_MAC)
-typedef unsigned char  Byte;  /* 8 bits */
-#endif
-
 #ifndef VERSIONMADEBY
 # define VERSIONMADEBY   (0x0) /* platform depedent */
 #endif

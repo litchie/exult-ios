@@ -4695,10 +4695,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\README.MacOS"
-				>
-			</File>
-			<File
 				RelativePath="..\README.win32"
 				>
 			</File>

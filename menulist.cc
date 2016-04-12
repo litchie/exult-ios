@@ -375,7 +375,7 @@ int MenuList::handle_events(Game_window *gwin, Mouse *mouse) {
 				case SDLK_q:
 				case SDLK_x:
 					if (event.key.keysym.mod & KMOD_ALT
-#if defined(MACOS) || defined(MACOSX)
+#ifdef MACOSX
 					        || event.key.keysym.mod & KMOD_META
 #endif
 					   ) {

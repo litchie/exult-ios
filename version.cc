@@ -255,8 +255,6 @@ void getVersionInfo(std::ostream &out) {
 	out << "Mac OS X";
 #elif (defined(__IPHONEOS__))
 	out << "iOS";
-#elif (defined(MACOS))
-	out << "MacOS";
 #elif (defined(__MORPHOS__))
 	out << "MorphOS";
 #elif (defined(AMIGA))
