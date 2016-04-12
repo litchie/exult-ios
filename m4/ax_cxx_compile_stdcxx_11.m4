@@ -89,6 +89,7 @@ AC_DEFUN([AX_CXX_COMPILE_STDCXX_11], [dnl
             }
           ],
           [ax_cv_cxx_using_clang_on_apple=yes],
+          [ax_cv_cxx_using_clang_on_apple=no],
           [ax_cv_cxx_using_clang_on_apple=no]
         )
       ]
