@@ -1,4 +1,6 @@
 2016-04-11	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* configure.ac, headers/common_types.h: Trying a better way of setting the
+	  integreal types.
 	* headers/common_types.h: Fixing compilation by partially reverting commit
 	  92dd8740ce6223eea1a6aa55a3533b43f961dde7.
 	* mapedit/{npclst,paledit,shapelst}.cc: Eliminating -Wreorder warnings.

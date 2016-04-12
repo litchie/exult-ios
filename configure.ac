@@ -219,7 +219,13 @@ AC_TRY_RUN([
 
 
 # ---------------------------------------------------------------------
-# Check sizes of integer types.
+# Checks for integer types with specific sizes.
+# ---------------------------------------------------------------------
+AC_CHECK_TYPES([int8_t, int16_t, int32_t, int64_t, intptr_t])
+AC_CHECK_TYPES([uint8_t, uint16_t, uint32_t, uint64_t, uintptr_t])
+
+# ---------------------------------------------------------------------
+# Check sizes of integer types, in case the above fail.
 # ---------------------------------------------------------------------
 AC_CHECK_SIZEOF(short)
 AC_CHECK_SIZEOF(int)

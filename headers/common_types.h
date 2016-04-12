@@ -50,6 +50,12 @@ typedef unsigned long long uintptr;
 // {s,u}int{8,16,32,ptr}
 //
 
+#if HAVE_STDINT_H
+#  include <stdint.h>
+#endif
+
+// Note: u?int{8,16,32,64,ptr}_t types from <stdint.h> are mandatory in C99, but
+// not in C++. So try to infer integral types anyway.
 #ifndef EX_TYPE_INT8
 #  define EX_TYPE_INT8 char /* guaranteed by ISO */
 #endif
@@ -98,21 +104,65 @@ typedef unsigned long long uintptr;
 #  endif
 #endif /* !EX_TYPE_INTPTR */
 
+#ifdef HAVE_UINT8_T
+typedef uint8_t  uint8;
+#else
 typedef unsigned EX_TYPE_INT8   uint8;
+#endif
+
+#ifdef HAVE_UINT16_T
+typedef uint16_t uint16;
+#else
 typedef unsigned EX_TYPE_INT16  uint16;
+#endif
+
+#ifdef HAVE_UINT32_T
+typedef uint32_t uint32;
+#else
 typedef unsigned EX_TYPE_INT32  uint32;
-#if !defined(uint64)
+#endif
+
+#ifdef HAVE_UINT64_T
+typedef uint64_t uint64;
+#else
 typedef unsigned EX_TYPE_INT64  uint64;
 #endif
-typedef unsigned EX_TYPE_INTPTR uintptr;
 
-typedef signed EX_TYPE_INT8     sint8;
-typedef signed EX_TYPE_INT16    sint16;
-typedef signed EX_TYPE_INT32    sint32;
-#if !defined(sint64)
-typedef signed EX_TYPE_INT64    sint64;
+#ifdef HAVE_UINTPTR_T
+typedef uintptr_t uintptr;
+#else
+typedef unsigned EX_TYPE_INTPTR uintptr;
 #endif
-typedef signed EX_TYPE_INTPTR   sintptr;
+
+#ifdef HAVE_INT8_T
+typedef int8_t  sint8;
+#else
+typedef signed EX_TYPE_INT8   sint8;
+#endif
+
+#ifdef HAVE_INT16_T
+typedef int16_t sint16;
+#else
+typedef signed EX_TYPE_INT16  sint16;
+#endif
+
+#ifdef HAVE_INT32_T
+typedef int32_t sint32;
+#else
+typedef signed EX_TYPE_INT32  sint32;
+#endif
+
+#ifdef HAVE_INT64_T
+typedef int64_t sint64;
+#else
+typedef signed EX_TYPE_INT64  sint64;
+#endif
+
+#ifdef HAVE_INTPTR_T
+typedef intptr_t sintptr;
+#else
+typedef signed EX_TYPE_INTPTR sintptr;
+#endif
 
 #endif //BeOS
 
