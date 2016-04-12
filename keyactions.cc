@@ -246,18 +246,6 @@ void ActionRepaint(int const *params) {
 	Game_window::get_instance()->paint();
 }
 
-//  { ActionResIncrease, 0, "Increase resolution", cheat_keys, NONE },
-void ActionResIncrease(int const *params) {
-	ignore_unused_variable_warning(params);
-	increase_resolution();
-}
-
-//  { ActionResDecrease, 0, "Decrease resolution", cheat_keys, NONE },
-void ActionResDecrease(int const *params) {
-	ignore_unused_variable_warning(params);
-	decrease_resolution();
-}
-
 //  { ActionBrighter, 0, "Increase brightness", normal_keys, NONE },
 void ActionBrighter(int const *params) {
 	ignore_unused_variable_warning(params);

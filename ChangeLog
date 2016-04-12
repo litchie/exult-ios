@@ -3,6 +3,9 @@
 	  target_mode_teleport key binding and comment which key bindings the
 	  ShortcutBar_gump would use if rewritten.
 	* cheats.cc: Don't set enabled twice.
+	* defaultkeys.txt, exult.*, keyactions.*, keys.cc: Remove
+	  increase_resolution, decrease_resolution, and associated key bindings.
+	  They have been broken for a long time and are not likely to ever be fixed.
 
 2016-04-12	Dominik Reichardt <dominus@users.sourceforge.net>
 	* *.*: Removed lingering MACOS defines. Fingolfin removed support seven years 
