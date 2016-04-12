@@ -33,7 +33,7 @@
 #endif
 #endif
 
-#if (defined(MACOS) || defined(MACOSX)) && !defined(EXULT_DATADIR)
+#if defined(MACOSX) && !defined(EXULT_DATADIR)
 #define EXULT_DATADIR   "data"
 #endif
 

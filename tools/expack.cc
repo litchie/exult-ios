@@ -199,42 +199,7 @@ void getline(ifstream &file, char *buf, int size) {
 }
 
 
-#ifdef MACOS
-
-int mac_main(int argc, char **argv);
-
-int main() {
-	const   int mac_argc = 3;
-	char    *mac_argv[mac_argc] = {
-		"expack",
-		"-i",
-		"flx.in"
-	};
-
-	mac_main(mac_argc, mac_argv);
-
-	char    *mac_argv2[mac_argc] = {
-		"expack",
-		"-i",
-		"bg/flx.in"
-	};
-
-	mac_main(mac_argc, mac_argv2);
-
-	char    *mac_argv3[mac_argc] = {
-		"expack",
-		"-i",
-		"si/flx.in"
-	};
-
-	mac_main(mac_argc, mac_argv3);
-}
-
-
-int mac_main(int argc, char **argv)
-#else
 int main(int argc, char **argv)
-#endif
 {
 	Arch_mode mode = NOMODE;
 	char fname[1024];

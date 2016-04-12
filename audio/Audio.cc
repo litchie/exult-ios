@@ -54,13 +54,8 @@
 #ifndef UNDER_CE
 #include <fcntl.h>
 #include <unistd.h>
-#endif
-
-#if defined(MACOS)
-#  include <stat.h>
-#elif !defined(UNDER_CE)
-#  include <sys/stat.h>
-#  include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #endif
 
 //#include <crtdbg.h>

@@ -1,3 +1,7 @@
+2016-04-12	Dominik Reichardt <dominus@users.sourceforge.net>
+	* *.*: Removed lingering MACOS defines. Fingolfin removed support seven years 
+	  ago in 2b2abd1.
+
 2016-04-12	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* m4/ax_cxx_compile_stdcxx_11.m4: Making cross-compile work with clang.
 	* *.*: Getting rid of BeOS port.

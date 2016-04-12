@@ -31,10 +31,8 @@
 #include <fstream>
 #include <map>
 #include <list>
-#ifdef MACOS
-#   include <stat.h>
-#elif !defined(UNDER_CE)
-#   include <sys/stat.h>
+#ifndef UNDER_CE
+#include <sys/stat.h>
 #endif
 #include <unistd.h>
 
@@ -284,36 +282,6 @@ static void switch_slashes(
 		if (*X == '/')
 			*X = '\\';
 	}
-#elif defined(MACOS)
-	// We use a component-wise algorithm (suggested by Yorick)
-	// Basically, split the path along the "/" seperators
-	// If a component is empty or '.', remove it. If it's '..', replace it
-	// with the empty string. convert all / to :
-	string::size_type   begIdx, endIdx;;
-	string  component;
-	string  new_name;
-
-	if (name.at(0) != '/')
-		new_name = ":";
-
-	begIdx = name.find_first_not_of('/');
-	while (begIdx != string::npos) {
-		endIdx = name.find_first_of('/', begIdx);
-		if (endIdx == string::npos)
-			component = name.substr(begIdx);
-		else
-			component = name.substr(begIdx, endIdx - begIdx);
-		if (component == "..")
-			new_name += ":";
-		else if (!component.empty() && component != ".") {
-			new_name += component;
-			if (endIdx != string::npos)
-				new_name += ":";
-		}
-		begIdx = name.find_first_not_of('/', endIdx);
-	}
-
-	name = new_name;
 #else
 	ignore_unused_variable_warning(name);
 	// do nothing

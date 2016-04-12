@@ -38,8 +38,6 @@
 
 #if defined(XWIN)
 #include <sys/stat.h>
-#elif defined(MACOS)
-#include <stat.h>
 #endif
 
 #include <sstream>
