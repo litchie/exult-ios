@@ -735,7 +735,7 @@ static void on_delete(
 
 GtkWidget *Chunk_chooser::create_popup(
 ) {
-	Object_browser::create_popup(); // Create popup with groups, files.
+	create_popup_internal(true); // Create popup with groups, files.
 	if (group != 0)         // Filtering?  Skip the rest.
 		return popup;
 	GtkWidget *mitem = Add_menu_item(popup, "New...");

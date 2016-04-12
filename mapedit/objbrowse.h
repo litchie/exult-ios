@@ -103,8 +103,14 @@ public:
 	void add_group_submenu(GtkWidget *popup);
 	static void on_browser_file_save(GtkMenuItem *item, gpointer udata);
 	static void on_browser_file_revert(GtkMenuItem *item, gpointer udata);
-	virtual GtkWidget *create_popup(bool files = true);// Popup menu.
+	virtual GtkWidget *create_popup() {
+		return create_popup_internal(true);
+	}
 
+protected:
+	GtkWidget *create_popup_internal(bool files);// Popup menu.
+
+public:
 	enum {              // Create controls at bottom.
 	    // OR together what you want.
 	    find_controls = 1,
