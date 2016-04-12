@@ -2341,14 +2341,6 @@
 								>
 							</File>
 							<File
-								RelativePath="..\audio\midi_drivers\be_midi.cc"
-								>
-							</File>
-							<File
-								RelativePath="..\audio\midi_drivers\be_midi.h"
-								>
-							</File>
-							<File
 								RelativePath="..\audio\midi_drivers\forked_player.cc"
 								>
 							</File>
@@ -4700,10 +4692,6 @@
 			</File>
 			<File
 				RelativePath="..\README.axp"
-				>
-			</File>
-			<File
-				RelativePath="..\README.BeOS"
 				>
 			</File>
 			<File

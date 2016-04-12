@@ -96,12 +96,6 @@ case "$host_os" in
 			AC_MSG_RESULT([X11 (GNU/Linux)])
 		fi
 		;;
-	beos*)
-		WINDOWING_SYSTEM="-DBEOS"
-		AC_MSG_RESULT([BeOS])
-		SYSLIBS="-lbe -lmidi"
-		enable_timidity="no"
-		;;
 	mingw32* )
 		WINDOWING_SYSTEM="-DWIN32"
 		AC_MSG_RESULT([Win32 (mingw32)])

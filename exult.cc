@@ -292,15 +292,6 @@ int main(
     char *argv[]
 ) {
 
-#ifdef BEOS
-	// get exult path
-	int counti;
-	char datapath[256];
-	for (counti = strlen(argv[0]) ; argv[0][counti] != '/' ; counti--);
-	strncpy(datapath, argv[0], counti);
-	chdir(datapath);
-#endif
-
 #if (defined(XWIN) && HAVE_SIGNAL_H && HAVE_SYS_WAIT_H)
 	signal(SIGCHLD, sigchld_handler);
 #endif

@@ -25,27 +25,6 @@
 
 #include <string>
 
-#ifdef BEOS
-// BeOS headers already define these types
-#include <be/support/SupportDefs.h>
-typedef int8 sint8;
-typedef int16 sint16;
-typedef int32 sint32;
-typedef int64 sint64;
-#  if (SIZEOF_INT == SIZEOF_INTP)
-typedef sint32 sintptr;
-typedef uint32 uintptr;
-#  elif (SIZEOF_LONG == SIZEOF_INTP)
-typedef   signed long sintptr;
-typedef unsigned long uintptr;
-#  elif (SIZEOF_LONG_LONG == SIZEOF_INTP)
-typedef   signed long long sintptr;
-typedef unsigned long long uintptr;
-#  else
-#    error "Size of pointer type not equal to int, long or long long"
-#  endif
-
-#else
 //
 // {s,u}int{8,16,32,ptr}
 //
@@ -164,8 +143,6 @@ typedef intptr_t sintptr;
 typedef signed EX_TYPE_INTPTR sintptr;
 #endif
 
-#endif //BeOS
-
 /*
  * Empty string
  */
@@ -188,5 +165,5 @@ extern const std::string c_empty_string;
 #define FORGET_ARRAY(x) do { delete [] x; x = 0; } while(0)
 
 
-#endif
+#endif // COMMON_TYPES_H
 

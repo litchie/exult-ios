@@ -20,8 +20,6 @@ libmididrv_la_SOURCES =	\
 	ALSAMidiDriver.h	\
 	amiga_midi.cc		\
 	amiga_midi.h		\
-	be_midi.cc		\
-	be_midi.h		\
 	CoreAudioMidiDriver.cpp	\
 	CoreAudioMidiDriver.h	\
 	CoreMidiDriver.cpp \

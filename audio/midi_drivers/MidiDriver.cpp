@@ -35,7 +35,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "MT32EmuMidiDriver.h"
 #include "mixer_midiout.h"
 #include "amiga_midi.h"
-#include "be_midi.h"
 #include "forked_player.h"
 #include "KMIDI.h"
 #endif
@@ -93,9 +92,6 @@ static void InitMidiDriverVector()
 #endif
 #ifdef USE_FORKED_PLAYER_MIDI
 	midi_drivers.push_back(forked_player::getDesc());
-#endif
-#ifdef USE_BEOS_MIDI
-	midi_drivers.push_back(Be_midi::getDesc());
 #endif
 #ifdef USE_AMIGA_MIDI
 	midi_drivers.push_back(AmigaMIDI::getDesc());

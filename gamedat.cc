@@ -36,7 +36,7 @@
 #  include <ctime>
 #endif
 
-#if (defined(XWIN) || defined(BEOS))
+#if defined(XWIN)
 #include <sys/stat.h>
 #elif defined(MACOS)
 #include <stat.h>

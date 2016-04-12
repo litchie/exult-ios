@@ -43,7 +43,7 @@ using std::strlen;
 #include "utils.h"
 #include "listfiles.h"
 
-#if defined(MACOS) || defined(BEOS)
+#if defined(MACOS)
 
 /*
  *  Match a string with a given pattern (DOS like syntax, using * and ?)
@@ -271,50 +271,6 @@ int U7ListFiles(const std::string &pathMask, FileList &files) {
 	}
 
 	return err;
-}
-
-#elif defined(BEOS)
-
-#include <be/storage/Directory.h>
-#include <be/storage/Entry.h>
-
-int U7ListFiles(const std::string &pathMask, FileList &files) {
-	char filename[255];
-	string path(get_system_path(pathMask));
-	string mask;
-	string::size_type pos;
-
-	pos = path.rfind('/');
-	if (pos == string::npos) {
-		mask = path;
-		path = "";
-	} else {
-		mask = path.substr(pos + 1);
-		path = path.substr(0, pos);
-	}
-
-	BDirectory dir(path.c_str());
-
-	if (dir.InitCheck() != B_OK)
-		return -1;
-
-	do {
-		BEntry entry;
-		if (dir.GetNextEntry(&entry, true) == B_ENTRY_NOT_FOUND)
-			break; // done
-
-		// is it a regular file? (symlinks have already been traversed)
-		if (!entry.IsFile())
-			continue;
-
-		entry.GetName(filename);
-		if (MatchString(filename, mask)) {
-			cout << "Filename: " << filename << endl;
-			files.push_back(filename);
-		}
-	} while (true);
-
-	return 0;
 }
 
 #elif defined(__MORPHOS__) || defined(AMIGA)

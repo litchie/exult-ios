@@ -233,7 +233,7 @@ string get_system_path(const string &path) {
 
 void to_uppercase(string &str) {
 	for (string::iterator X = str.begin(); X != str.end(); ++X) {
-#if (defined(BEOS) || defined(OPENBSD) || defined(CYGWIN) || defined(__MORPHOS__))
+#if (defined(OPENBSD) || defined(CYGWIN) || defined(__MORPHOS__))
 		if ((*X >= 'a') && (*X <= 'z')) *X -= 32;
 #else
 		*X = static_cast<char>(std::toupper(*X));
@@ -265,7 +265,7 @@ static bool base_to_uppercase(string &str, int count) {
 		if (todo <= 0)
 			break;
 
-#if (defined(BEOS) || defined(OPENBSD) || defined(CYGWIN) || defined(__MORPHOS__))
+#if (defined(OPENBSD) || defined(CYGWIN) || defined(__MORPHOS__))
 		if ((*X >= 'a') && (*X <= 'z')) *X -= 32;
 #else
 		*X = static_cast<char>(std::toupper(*X));
@@ -536,7 +536,7 @@ int U7mkdir(
     int mode
 ) {
 	string name = get_system_path(dirname);
-#if (defined(MACOSX) || defined(BEOS) || (__IPHONEOS__))
+#if (defined(MACOSX) || (__IPHONEOS__))
 	// remove any trailing slashes
 	string::size_type pos = name.find_last_not_of('/');
 	if (pos != string::npos)
