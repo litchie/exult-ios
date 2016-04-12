@@ -1,4 +1,5 @@
 2016-04-12	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* m4/ax_cxx_compile_stdcxx_11.m4: Fixing cross-compilation (PPC).
 	* server/objserial.h: Fixing compilation on iOS. Hopefully does not cause
 	  issues in MinGW...
 	* mapedit/*: Eliminating -Woverloaded-virtual warnings by making explicit

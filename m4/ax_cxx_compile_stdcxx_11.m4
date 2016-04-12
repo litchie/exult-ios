@@ -75,23 +75,27 @@ AC_DEFUN([AX_CXX_COMPILE_STDCXX_11], [dnl
   AC_LANG_PUSH([C++])dnl
   ac_success=no
 
-  AC_CACHE_CHECK(whether we are using clang on Apple OS,
-    ax_cv_cxx_using_clang_on_apple,
-    [
-      AC_TRY_RUN([
-          int main()
-          {
-            #if defined(__clang__) && defined(__APPLE__)
-            return 0;
-            #endif
-            return 1;
-          }
-        ],
-        [ax_cv_cxx_using_clang_on_apple=yes],
-        [ax_cv_cxx_using_clang_on_apple=no]
-      )
-    ]
-  )
+  if `$CXX -v 2>&1 | grep 'clang' >/dev/null 2>&1` ; then
+    AC_CACHE_CHECK(whether we are using clang on Apple OS,
+      ax_cv_cxx_using_clang_on_apple,
+      [
+        AC_TRY_RUN([
+            int main()
+            {
+              #if defined(__clang__) && defined(__APPLE__)
+              return 0;
+              #endif
+              return 1;
+            }
+          ],
+          [ax_cv_cxx_using_clang_on_apple=yes],
+          [ax_cv_cxx_using_clang_on_apple=no]
+        )
+      ]
+    )
+  else
+    ax_cv_cxx_using_clang_on_apple=no
+  fi
   if test "$ax_cv_cxx_using_clang_on_apple" = "yes"; then
     ax_cv_cxx_stdlib="-stdlib=libc++"
   else
