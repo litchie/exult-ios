@@ -1,4 +1,6 @@
 2016-04-12	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* server/objserial.h: Fixing compilation on iOS. Hopefully does not cause
+	  issues in MinGW...
 	* mapedit/*: Eliminating -Woverloaded-virtual warnings by making explicit
 	  what is actually going on.
 	* mapedit/*: Eliminating some -Wold-style-cast warnings that somehow escaped

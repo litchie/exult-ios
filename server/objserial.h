@@ -34,35 +34,8 @@ class Serial_out {
 public:
 	Serial_out(unsigned char *&b) : buf(b)
 	{  }
-	Serial_out &operator<<(sint8 c) {
-		*buf++ = static_cast<uint8>(c);
-		return *this;
-	}
-	Serial_out &operator<<(uint8 c) {
-		*buf++ = c;
-		return *this;
-	}
-	Serial_out &operator<<(sint16 v) {
-		Write2(buf, static_cast<uint16>(v));
-		return *this;
-	}
-	Serial_out &operator<<(uint16 v) {
-		Write2(buf, v);
-		return *this;
-	}
-	Serial_out &operator<<(sint32 v) {
-		Write4(buf, static_cast<uint32>(v));
-		return *this;
-	}
-	Serial_out &operator<<(uint32 v) {
-		Write4(buf, v);
-		return *this;
-	}
-	Serial_out &operator<<(sint64 v) {
-		WriteN(buf, static_cast<uint64>(v));
-		return *this;
-	}
-	Serial_out &operator<<(uint64 v) {
+	template <typename T>
+	Serial_out &operator<<(T v) {
 		WriteN(buf, v);
 		return *this;
 	}
@@ -81,36 +54,9 @@ class Serial_in {
 public:
 	Serial_in(unsigned char *&b) : buf(b)
 	{  }
-	Serial_in &operator<<(sint8 &c) {
-		c = static_cast<sint8>(*buf++);
-		return *this;
-	}
-	Serial_in &operator<<(uint8 &c) {
-		c = *buf++;
-		return *this;
-	}
-	Serial_in &operator<<(sint16 &v) {
-		v = static_cast<sint16>(Read2(buf));
-		return *this;
-	}
-	Serial_in &operator<<(uint16 &v) {
-		v = Read2(buf);
-		return *this;
-	}
-	Serial_in &operator<<(sint32 &v) {
-		v = static_cast<sint32>(Read4(buf));
-		return *this;
-	}
-	Serial_in &operator<<(uint32 &v) {
-		v = Read4(buf);
-		return *this;
-	}
-	Serial_in &operator<<(sint64 &v) {
-		v = static_cast<sint64>(ReadN<uint64>(buf));
-		return *this;
-	}
-	Serial_in &operator<<(uint64 &v) {
-		v = ReadN<uint64>(buf);
+	template <typename T>
+	Serial_in &operator<<(T &v) {
+		v = ReadN<T>(buf);
 		return *this;
 	}
 	Serial_in &operator<<(bool &v) {
