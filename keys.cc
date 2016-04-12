@@ -108,14 +108,6 @@ const struct Action {
 #endif
 
 	{
-		"RESOLUTION_INCREASE",
-		ActionResIncrease, 0, "Increase resolution", Action::cheat_keys, NONE, true, true, true, false
-	},
-	{
-		"RESOLUTION_DECREASE",
-		ActionResDecrease, 0, "Decrease resolution", Action::cheat_keys, NONE, true, true, true, false
-	},
-	{
 		"BRIGHTER",
 		ActionBrighter, 0, "Increase brightness", Action::normal_keys, NONE, true, true, true, false
 	},

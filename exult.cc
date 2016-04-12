@@ -2238,24 +2238,6 @@ void set_resolution(int new_res, bool save) {
 	}
 }
 
-void increase_resolution() {
-	if (!cheat()) return;
-
-	current_res++;
-	if (current_res >= num_res)
-		current_res = 0;
-	set_resolution(current_res, false);
-}
-
-void decrease_resolution() {
-	if (!cheat()) return;
-
-	current_res--;
-	if (current_res < 0)
-		current_res = num_res - 1;
-	set_resolution(current_res, false);
-}
-
 void make_screenshot(bool silent) {
 	// TODO: Maybe use <SAVEGAME>/exult%03i.pcx instead.
 	// Or maybe some form or "My Pictures" on Windows.
