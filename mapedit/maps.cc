@@ -82,7 +82,7 @@ C_EXPORT void on_main_map_activate(
     gpointer udata
 ) {
 	ignore_unused_variable_warning(udata);
-	on_map_activate(item, (gpointer) 0);
+	on_map_activate(item, static_cast<gpointer>(0));
 }
 
 /*

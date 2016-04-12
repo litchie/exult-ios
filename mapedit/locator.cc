@@ -78,8 +78,8 @@ C_EXPORT gboolean on_loc_window_delete_event(
     gpointer user_data
 ) {
 	ignore_unused_variable_warning(event, user_data);
-	Locator *loc = (Locator *)
-	               gtk_object_get_user_data(GTK_OBJECT(widget));
+	Locator *loc = reinterpret_cast<Locator *>(
+	               gtk_object_get_user_data(GTK_OBJECT(widget)));
 	loc->show(false);
 	return TRUE;
 }

@@ -1430,8 +1430,8 @@ on_new_shape_okay_clicked(GtkButton       *button,
                           gpointer         user_data) {
 	ignore_unused_variable_warning(user_data);
 	GtkWidget *win = gtk_widget_get_toplevel(GTK_WIDGET(button));
-	Shape_chooser *chooser = (Shape_chooser *)
-	                         gtk_object_get_user_data(GTK_OBJECT(win));
+	Shape_chooser *chooser = reinterpret_cast<Shape_chooser *>(
+	                         gtk_object_get_user_data(GTK_OBJECT(win)));
 	chooser->create_new_shape();
 	gtk_widget_hide(win);
 }
@@ -1443,8 +1443,8 @@ C_EXPORT void on_new_shape_font_toggled(
 	ignore_unused_variable_warning(user_data);
 	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	GtkWidget *win = gtk_widget_get_toplevel(GTK_WIDGET(btn));
-	Shape_chooser *chooser = (Shape_chooser *)
-	                         gtk_object_get_user_data(GTK_OBJECT(win));
+	Shape_chooser *chooser = reinterpret_cast<Shape_chooser *>(
+	                         gtk_object_get_user_data(GTK_OBJECT(win)));
 	chooser->from_font_toggled(on);
 }
 C_EXPORT gboolean on_new_shape_font_color_draw_expose_event(
@@ -1455,11 +1455,11 @@ C_EXPORT gboolean on_new_shape_font_color_draw_expose_event(
 	ignore_unused_variable_warning(data);
 	ExultStudio *studio = ExultStudio::get_instance();
 	int index = studio->get_spin("new_shape_font_color");
-	Shape_chooser *ed = (Shape_chooser *)
-	                    gtk_object_get_user_data(GTK_OBJECT(widget));
+	Shape_chooser *ed = reinterpret_cast<Shape_chooser *>(
+	                    gtk_object_get_user_data(GTK_OBJECT(widget)));
 	guint32 color = ed->get_color(index);
-	GdkGC *gc = (GdkGC *)
-	            gtk_object_get_data(GTK_OBJECT(widget), "color_gc");
+	GdkGC *gc = reinterpret_cast<GdkGC *>(
+	            gtk_object_get_data(GTK_OBJECT(widget), "color_gc"));
 	if (!gc) {
 		gc = gdk_gc_new(widget->window);
 		gtk_object_set_data(GTK_OBJECT(widget), "color_gc", gc);

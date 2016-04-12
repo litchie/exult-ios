@@ -111,8 +111,8 @@ C_EXPORT gint on_combo_draw_expose_event(
     gpointer data           // ->Shape_chooser.
 ) {
 	ignore_unused_variable_warning(data);
-	Combo_editor *combo = (Combo_editor *) gtk_object_get_user_data(
-	                          GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(widget))));
+	Combo_editor *combo = reinterpret_cast<Combo_editor *>(gtk_object_get_user_data(
+	                          GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(widget)))));
 	combo->render(&event->area);
 	return TRUE;
 }
@@ -121,8 +121,8 @@ C_EXPORT void
 on_combo_remove_clicked(GtkButton       *button,
                         gpointer         user_data) {
 	ignore_unused_variable_warning(user_data);
-	Combo_editor *combo = (Combo_editor *) gtk_object_get_user_data(
-	                          GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(button))));
+	Combo_editor *combo = reinterpret_cast<Combo_editor *>(gtk_object_get_user_data(
+	                          GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(button)))));
 	combo->remove();
 }
 
@@ -130,8 +130,8 @@ C_EXPORT void
 on_combo_apply_clicked(GtkButton       *button,
                        gpointer         user_data) {
 	ignore_unused_variable_warning(user_data);
-	Combo_editor *combo = (Combo_editor *) gtk_object_get_user_data(
-	                          GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(button))));
+	Combo_editor *combo = reinterpret_cast<Combo_editor *>(gtk_object_get_user_data(
+	                          GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(button)))));
 	combo->save();
 }
 
@@ -140,8 +140,8 @@ on_combo_ok_clicked(GtkButton       *button,
                     gpointer         user_data) {
 	ignore_unused_variable_warning(user_data);
 	GtkWidget *win = gtk_widget_get_toplevel(GTK_WIDGET(button));
-	Combo_editor *combo = (Combo_editor *) gtk_object_get_user_data(
-	                          GTK_OBJECT(win));
+	Combo_editor *combo = reinterpret_cast<Combo_editor *>(gtk_object_get_user_data(
+	                          GTK_OBJECT(win)));
 	combo->save();
 	gtk_widget_hide(win);
 }
@@ -150,8 +150,8 @@ C_EXPORT void
 on_combo_locx_changed(GtkSpinButton *button,
                       gpointer     user_data) {
 	ignore_unused_variable_warning(user_data);
-	Combo_editor *combo = (Combo_editor *) gtk_object_get_user_data(
-	                          GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(button))));
+	Combo_editor *combo = reinterpret_cast<Combo_editor *>(gtk_object_get_user_data(
+	                          GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(button)))));
 	combo->set_position();
 }
 
@@ -159,8 +159,8 @@ C_EXPORT void
 on_combo_locy_changed(GtkSpinButton *button,
                       gpointer     user_data) {
 	ignore_unused_variable_warning(user_data);
-	Combo_editor *combo = (Combo_editor *) gtk_object_get_user_data(
-	                          GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(button))));
+	Combo_editor *combo = reinterpret_cast<Combo_editor *>(gtk_object_get_user_data(
+	                          GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(button)))));
 	combo->set_position();
 }
 
@@ -168,8 +168,8 @@ C_EXPORT void
 on_combo_locz_changed(GtkSpinButton *button,
                       gpointer     user_data) {
 	ignore_unused_variable_warning(user_data);
-	Combo_editor *combo = (Combo_editor *) gtk_object_get_user_data(
-	                          GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(button))));
+	Combo_editor *combo = reinterpret_cast<Combo_editor *>(gtk_object_get_user_data(
+	                          GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(button)))));
 	combo->set_position();
 }
 
@@ -177,8 +177,8 @@ C_EXPORT void
 on_combo_order_changed(GtkSpinButton *button,
                        gpointer     user_data) {
 	ignore_unused_variable_warning(user_data);
-	Combo_editor *combo = (Combo_editor *) gtk_object_get_user_data(
-	                          GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(button))));
+	Combo_editor *combo = reinterpret_cast<Combo_editor *>(gtk_object_get_user_data(
+	                          GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(button)))));
 	combo->set_order();
 }
 
@@ -191,8 +191,8 @@ C_EXPORT gint on_combo_draw_button_press_event(
     gpointer data           // ->Combo_chooser.
 ) {
 	ignore_unused_variable_warning(data);
-	Combo_editor *combo = (Combo_editor *) gtk_object_get_user_data(
-	                          GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(widget))));
+	Combo_editor *combo = reinterpret_cast<Combo_editor *>(gtk_object_get_user_data(
+	                          GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(widget)))));
 	return combo->mouse_press(event);
 }
 
@@ -998,7 +998,7 @@ gint Combo_chooser::selection_clear(
     gpointer data           // ->Combo_chooser.
 ) {
 	ignore_unused_variable_warning(widget, event, data);
-//	Combo_chooser *chooser = (Combo_chooser *) data;
+//	Combo_chooser *chooser = reinterpret_cast<Combo_chooser *>(data);
 	cout << "SELECTION_CLEAR" << endl;
 	return TRUE;
 }
