@@ -93,6 +93,7 @@ void ActionHackMover(int const *params);
 void ActionMapTeleport(int const *params);
 void ActionWriteMiniMap(int const *params);
 void ActionTeleport(int const *params);
+void ActionTeleportTargetMode(int const *params);
 void ActionNextMapTeleport(int const *params);
 void ActionTime(int const *params);
 void ActionWizard(int const *params);

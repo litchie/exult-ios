@@ -90,10 +90,8 @@ void ShortcutBar_gump::createButtons() {
 	starty = gwin->get_win()->get_start_y();
 	resy = gwin->get_win()->get_full_height();
 	gamey = gwin->get_game_height();
-	for(int i = 0; i < MAX_SHORTCUT_BAR_ITEMS; ++i) {
-		buttonItems[i].pushed = false;
+	for(int i = 0; i < MAX_SHORTCUT_BAR_ITEMS; ++i)
 		buttonItems[i].translucent = false;
-	}
 	int x = (gamex - 320)/2;
 	int y = starty + 20;
 
@@ -288,7 +286,8 @@ ShortcutBar_gump::ShortcutBar_gump
 	height = 25;
 	locx = placex;
 	locy = placey;
-
+	for(int i = 0; i < MAX_SHORTCUT_BAR_ITEMS; ++i)
+		buttonItems[i].pushed = false;
 	createButtons();
 	gumpman->add_gump(this);
 	has_changed = true;
@@ -456,67 +455,64 @@ void ShortcutBar_gump::onItemClicked(int index, bool doubleClicked) {
 	switch (buttonItems[index].type) {
 		case SB_ITEM_DISK: {
 			if (doubleClicked)
-				ActionFileGump(NULL);
+				ActionFileGump(NULL); // save_restore
 			else
-				ActionCloseOrMenu(NULL);
+				ActionCloseOrMenu(NULL); // close_or_menu
 			break;
 		} case SB_ITEM_BACKPACK: {
 			const int j = -1;
-			ActionInventory(const_cast<int*>(&j));
+			ActionInventory(const_cast<int*>(&j)); // inventory
 			break;
 		} case SB_ITEM_SPELLBOOK: {
-			gwin->activate_item(761);
+			gwin->activate_item(761); // useitem 761
 			break;
 		} case SB_ITEM_NOTEBOOK: {
 			if (doubleClicked && cheat())
-				cheat.cheat_screen();
-			else
-				ActionNotebook(NULL);
+				cheat.cheat_screen(); // cheat_screen
+			else if (!doubleClicked)
+				ActionNotebook(NULL); // notebook
 			break;
 		} case SB_ITEM_KEY: {
 			if (doubleClicked) // Lockpicks
-				gwin->activate_item(627);
+				gwin->activate_item(627); // useitem 627
 			else
-				ActionTryKeys(NULL);
+				ActionTryKeys(NULL); // try_keys
 			break;
 		} case SB_ITEM_KEYRING: {
 			if (doubleClicked) // Lockpicks
-				gwin->activate_item(627);
+				gwin->activate_item(627); // useitem 627
 			else
-				gwin->activate_item(485);
+				gwin->activate_item(485); // useitem 485
 			break;
 		} case SB_ITEM_MAP: {
 			if (doubleClicked && cheat())
-				cheat.map_teleport();
+				cheat.map_teleport(); // map_teleport
 			else if (!doubleClicked)
-				gwin->activate_item(178);
+				gwin->activate_item(178); // useitem 178
 			break;
 		} case SB_ITEM_TOGGLE_COMBAT: {
-			ActionCombat(NULL);
+			ActionCombat(NULL); // toggle_combat
 			break;
 		} case SB_ITEM_TARGET: {
 			if (doubleClicked && cheat()) {
-				int x, y;
-				if (!Get_click(x, y, Mouse::redx))
-					return;
-				cheat.cursor_teleport();
+				ActionTeleportTargetMode(NULL); // target_mode_teleport
 			} else if (!doubleClicked) {
-				ActionTarget(NULL);
+				ActionTarget(NULL); // target_mode
 			}
 			break;
 		} case SB_ITEM_JAWBONE: {
-			gwin->activate_item(555);
+			gwin->activate_item(555); // useitem 555 #SI only
 			break;
 		} case SB_ITEM_FEED: {
 			if(doubleClicked) {
-				ActionUseHealingItems(NULL);
+				ActionUseHealingItems(NULL); // use_healing_items
 			} else if (GAME_SI) {
 				int params[2];
 				params[0] = 1557;
 				params[1] = 0;
-				ActionCallUsecode(params);
+				ActionCallUsecode(params); // call_usecode 1557 0
 			} else {
-				ActionUseFood(NULL);
+				ActionUseFood(NULL); // usefood
 			}
 			break;
 		} default: {
