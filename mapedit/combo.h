@@ -102,7 +102,10 @@ public:
 	Combo_editor(Shapes_vga_file *svga, unsigned char *palbuf);
 	~Combo_editor();
 	void show(bool tf);     // Show/hide.
-	void render(GdkRectangle *area = 0);
+	void render_area(GdkRectangle *area);
+	virtual void render() {
+		render_area(0);
+	}
 	void set_controls();        // Set controls to selected entry.
 	// Handle mouse.
 	gint mouse_press(GdkEventButton *event);

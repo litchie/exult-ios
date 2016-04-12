@@ -207,7 +207,7 @@ void Object_browser::on_browser_file_revert(
  *  Set up popup menu for shape browser.
  */
 
-GtkWidget *Object_browser::create_popup(
+GtkWidget *Object_browser::create_popup_internal(
     bool files          // Include 'files'.
 ) {
 	if (popup)          // Clean out old.

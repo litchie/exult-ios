@@ -113,7 +113,7 @@ C_EXPORT gint on_combo_draw_expose_event(
 	ignore_unused_variable_warning(data);
 	Combo_editor *combo = reinterpret_cast<Combo_editor *>(gtk_object_get_user_data(
 	                          GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(widget)))));
-	combo->render(&event->area);
+	combo->render_area(&event->area);
 	return TRUE;
 }
 
@@ -568,7 +568,7 @@ void Combo_editor::show(
  *  Display.
  */
 
-void Combo_editor::render(
+void Combo_editor::render_area(
     GdkRectangle *area      // 0 for whole draw area.
 ) {
 	Shape_draw::configure();    // Setup the first time.

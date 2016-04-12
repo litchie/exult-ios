@@ -2227,7 +2227,7 @@ void Shape_chooser::locate(
 GtkWidget *Shape_chooser::create_popup(
 ) {
 	ExultStudio *studio = ExultStudio::get_instance();
-	Object_browser::create_popup(); // Create popup with groups, files.
+	create_popup_internal(true); // Create popup with groups, files.
 	if (selected >= 0) {    // Add editing choices.
 		Add_menu_item(popup, "Info...",
 		              GTK_SIGNAL_FUNC(on_shapes_popup_info_activate), this);

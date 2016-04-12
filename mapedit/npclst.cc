@@ -836,7 +836,7 @@ void on_npc_popup_edit_activate(
 GtkWidget *Npc_chooser::create_popup(
 ) {
 	// Create popup with groups, but not files.
-	Object_browser::create_popup(false);
+	create_popup_internal(false);
 	if (selected >= 0) {    // Add editing choices.
 		Add_menu_item(popup, "Edit...",
 		              GTK_SIGNAL_FUNC(on_npc_popup_edit_activate),
