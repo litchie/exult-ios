@@ -207,6 +207,10 @@ const struct Action {
 		ActionTeleport, 0, "Teleport to cursor", Action::cheat_keys, NONE, false, true, true, false
 	},
 	{
+		"TARGET_MODE_TELEPORT",
+		ActionTeleportTargetMode, 0, "Bring up cursor to teleport", Action::cheat_keys, NONE, false, true, true, false
+	},
+	{
 		"NEXT_MAP_TELEPORT",
 		ActionNextMapTeleport, 0, "Teleport to next map", Action::cheat_keys, NONE, false, true, true, false
 	},

@@ -793,6 +793,14 @@ void ActionTeleport(int const *params) {
 	cheat.cursor_teleport();
 }
 
+void ActionTeleportTargetMode(int const *params) {
+	ignore_unused_variable_warning(params);
+	int x, y;
+	if (!Get_click(x, y, Mouse::redx))
+		return;
+	cheat.cursor_teleport();
+}
+
 //  { ActionNextMapTeleport, 0, "Teleport to next map", cheat_keys, NONE },
 void ActionNextMapTeleport(int const *params) {
 	ignore_unused_variable_warning(params);

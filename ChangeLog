@@ -1,3 +1,9 @@
+2016-04-12	Malignant Manor <malignantmanor@users.sourceforge.net>
+	* keys.cc, keyactions.*, gumps/ShortcutBar_gump.cc : Add
+	  target_mode_teleport key binding and comment which key bindings the
+	  ShortcutBar_gump would use if rewritten.
+	* cheats.cc: Don't set enabled twice.
+
 2016-04-12	Dominik Reichardt <dominus@users.sourceforge.net>
 	* *.*: Removed lingering MACOS defines. Fingolfin removed support seven years 
 	  ago in 2b2abd1.
