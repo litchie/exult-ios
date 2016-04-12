@@ -594,7 +594,7 @@ void ExultStudio::setup_group_controls(
 	                         glade_xml_get_widget(app_xml, "group_list"));
 	GtkTreeSelection *list = gtk_tree_view_get_selection(tview);
 	if (list) {
-//		int row = (int) list->data;
+//		int row = static_cast<int>(list->data);
 //		set_sensitive("groups_open", true);
 		set_sensitive("groups_del", true);
 //		set_sensitive("groups_up_arrow", row > 0);
@@ -718,9 +718,9 @@ C_EXPORT void
 on_group_up_clicked(GtkToggleButton *button,
                     gpointer     user_data) {
 	ignore_unused_variable_warning(user_data);
-	Object_browser *chooser = (Object_browser *)gtk_object_get_data(
+	Object_browser *chooser = reinterpret_cast<Object_browser *>(gtk_object_get_data(
 	                              GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(button))),
-	                              "browser");
+	                              "browser"));
 	Shape_group *grp = chooser->get_group();
 	int i = chooser->get_selected();
 	if (grp && i > 0) {     // Moving item up.
@@ -732,9 +732,9 @@ C_EXPORT void
 on_group_down_clicked(GtkToggleButton *button,
                       gpointer     user_data) {
 	ignore_unused_variable_warning(user_data);
-	Object_browser *chooser = (Object_browser *)gtk_object_get_data(
+	Object_browser *chooser = reinterpret_cast<Object_browser *>(gtk_object_get_data(
 	                              GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(button))),
-	                              "browser");
+	                              "browser"));
 	Shape_group *grp = chooser->get_group();
 	int i = chooser->get_selected();
 	if (grp && i < grp->size() - 1) { // Moving down.
@@ -746,9 +746,9 @@ C_EXPORT void
 on_group_shape_remove_clicked(GtkToggleButton *button,
                               gpointer     user_data) {
 	ignore_unused_variable_warning(user_data);
-	Object_browser *chooser = (Object_browser *)gtk_object_get_data(
+	Object_browser *chooser = reinterpret_cast<Object_browser *>(gtk_object_get_data(
 	                              GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(button))),
-	                              "browser");
+	                              "browser"));
 	Shape_group *grp = chooser->get_group();
 	int i = chooser->get_selected();
 	if (grp && i >= 0) {

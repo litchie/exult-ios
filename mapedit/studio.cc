@@ -2353,9 +2353,9 @@ on_prefs_background_choose_clicked(GtkButton *button,
 	// Get color.
 	guint32 c = ExultStudio::get_instance()->get_background_color();
 	gdouble rgb[3];
-	rgb[0] = ((double)((c >> 16) & 0xff)) / 256;
-	rgb[1] = ((double)((c >> 8) & 0xff)) / 256;
-	rgb[2] = ((double)((c >> 0) & 0xff)) / 256;
+	rgb[0] = ((c >> 16) & 0xff) / 256.0;
+	rgb[1] = ((c >> 8) & 0xff) / 256.0;
+	rgb[2] = ((c >> 0) & 0xff) / 256.0;
 	gtk_color_selection_set_color(GTK_COLOR_SELECTION(colorsel->colorsel),
 	                              rgb);
 	gtk_widget_show(GTK_WIDGET(colorsel));
@@ -2367,9 +2367,9 @@ C_EXPORT gboolean on_prefs_background_expose_event(
     gpointer data
 ) {
 	ignore_unused_variable_warning(data);
-	guint32 color = (uintptr) gtk_object_get_user_data(GTK_OBJECT(widget));
-	GdkGC *gc = (GdkGC *)
-	            gtk_object_get_data(GTK_OBJECT(widget), "color_gc");
+	guint32 color = static_cast<guint32>(reinterpret_cast<uintptr>(gtk_object_get_user_data(GTK_OBJECT(widget))));
+	GdkGC *gc = reinterpret_cast<GdkGC *>(
+	            gtk_object_get_data(GTK_OBJECT(widget), "color_gc"));
 	if (!gc) {
 		gc = gdk_gc_new(widget->window);
 		gtk_object_set_data(GTK_OBJECT(widget), "color_gc", gc);
@@ -2940,7 +2940,7 @@ void ExultStudio::set_game_information(
 		     << "\". Error information:" << endl    \
 		     << "\tbytes_read: " << bytes_read  \
 		     << "\tbytes_written: " << bytes_written    \
-		     << "\tlast_read: " << (unsigned)(str[bytes_read])  \
+		     << "\tlast_read: " << static_cast<unsigned>(str[bytes_read])  \
 		     << "\tcode: " << error->code << endl   \
 		     << "\tmessage: \"" << error->message << "\"" << endl); \
 		g_error_free(error);    \

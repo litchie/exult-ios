@@ -1,3 +1,7 @@
+2016-04-12	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* mapedit/*: Eliminating some -Wold-style-cast warnings that somehow escaped
+	  the purge.
+
 2016-04-11	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* configure.ac, headers/common_types.h: Trying a better way of setting the
 	  integreal types.

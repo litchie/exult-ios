@@ -516,7 +516,7 @@ gint Chunk_chooser::selection_clear(
     gpointer data           // ->Chunk_chooser.
 ) {
 	ignore_unused_variable_warning(widget, event, data);
-//	Chunk_chooser *chooser = (Chunk_chooser *) data;
+//	Chunk_chooser *chooser = reinterpret_cast<Chunk_chooser *>(data);
 	cout << "SELECTION_CLEAR" << endl;
 	return TRUE;
 }
