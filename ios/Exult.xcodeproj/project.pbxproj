@@ -23,7 +23,6 @@
 		E700DBC21A6E2CE7006C8BE4 /* Midi.cc in Sources */ = {isa = PBXBuildFile; fileRef = E700DB0E1A6E2CE7006C8BE4 /* Midi.cc */; };
 		E700DBD81A6E2CE7006C8BE4 /* ALSAMidiDriver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E700DB271A6E2CE7006C8BE4 /* ALSAMidiDriver.cpp */; };
 		E700DBD91A6E2CE7006C8BE4 /* amiga_midi.cc in Sources */ = {isa = PBXBuildFile; fileRef = E700DB291A6E2CE7006C8BE4 /* amiga_midi.cc */; };
-		E700DBDA1A6E2CE7006C8BE4 /* be_midi.cc in Sources */ = {isa = PBXBuildFile; fileRef = E700DB2B1A6E2CE7006C8BE4 /* be_midi.cc */; };
 		E700DBDB1A6E2CE7006C8BE4 /* CoreAudioMidiDriver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E700DB2D1A6E2CE7006C8BE4 /* CoreAudioMidiDriver.cpp */; };
 		E700DBDC1A6E2CE7006C8BE4 /* CoreMidiDriver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E700DB2F1A6E2CE7006C8BE4 /* CoreMidiDriver.cpp */; };
 		E700DBDD1A6E2CE7006C8BE4 /* FileMidiDriver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E700DB311A6E2CE7006C8BE4 /* FileMidiDriver.cpp */; };
@@ -339,6 +338,7 @@
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		28FD14FF0DC6FC520079059D /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		28FD15070DC6FC5B0079059D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		8AB0AE1B1CBEF522001DBB16 /* ignore_unused_variable_warning.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ignore_unused_variable_warning.h; sourceTree = "<group>"; };
 		8AB53D8A1C9CA0A90084C69D /* ShortcutBar_gump.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ShortcutBar_gump.cc; path = ../gumps/ShortcutBar_gump.cc; sourceTree = "<group>"; };
 		8AB53D8B1C9CA0A90084C69D /* ShortcutBar_gump.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShortcutBar_gump.h; path = ../gumps/ShortcutBar_gump.h; sourceTree = "<group>"; };
 		8AC797C51C8D0E4F001AF014 /* unzip.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = unzip.cc; sourceTree = "<group>"; };
@@ -363,8 +363,6 @@
 		E700DB281A6E2CE7006C8BE4 /* ALSAMidiDriver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALSAMidiDriver.h; sourceTree = "<group>"; };
 		E700DB291A6E2CE7006C8BE4 /* amiga_midi.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = amiga_midi.cc; sourceTree = "<group>"; };
 		E700DB2A1A6E2CE7006C8BE4 /* amiga_midi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = amiga_midi.h; sourceTree = "<group>"; };
-		E700DB2B1A6E2CE7006C8BE4 /* be_midi.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = be_midi.cc; sourceTree = "<group>"; };
-		E700DB2C1A6E2CE7006C8BE4 /* be_midi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = be_midi.h; sourceTree = "<group>"; };
 		E700DB2D1A6E2CE7006C8BE4 /* CoreAudioMidiDriver.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CoreAudioMidiDriver.cpp; sourceTree = "<group>"; };
 		E700DB2E1A6E2CE7006C8BE4 /* CoreAudioMidiDriver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreAudioMidiDriver.h; sourceTree = "<group>"; };
 		E700DB2F1A6E2CE7006C8BE4 /* CoreMidiDriver.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CoreMidiDriver.cpp; sourceTree = "<group>"; };
@@ -467,7 +465,6 @@
 		E700DC361A6E30A7006C8BE4 /* actorio.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = actorio.cc; path = ../actorio.cc; sourceTree = "<group>"; };
 		E700DC371A6E30A7006C8BE4 /* actors.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = actors.cc; path = ../actors.cc; sourceTree = "<group>"; };
 		E700DC381A6E30A7006C8BE4 /* actors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = actors.h; path = ../actors.h; sourceTree = "<group>"; };
-		E700DC391A6E30A7006C8BE4 /* alpha_kludges.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = alpha_kludges.h; path = ../alpha_kludges.h; sourceTree = "<group>"; };
 		E700DC3A1A6E30A7006C8BE4 /* args.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = args.cc; path = ../args.cc; sourceTree = "<group>"; };
 		E700DC3B1A6E30A7006C8BE4 /* args.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = args.h; path = ../args.h; sourceTree = "<group>"; };
 		E700DC3C1A6E30A7006C8BE4 /* browser.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = browser.cc; path = ../browser.cc; sourceTree = "<group>"; };
@@ -488,7 +485,6 @@
 		E700DC4B1A6E30A7006C8BE4 /* effects.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = effects.cc; path = ../effects.cc; sourceTree = "<group>"; };
 		E700DC4C1A6E30A7006C8BE4 /* effects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = effects.h; path = ../effects.h; sourceTree = "<group>"; };
 		E700DC4D1A6E30A7006C8BE4 /* exult_constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = exult_constants.h; path = ../exult_constants.h; sourceTree = "<group>"; };
-		E700DC4E1A6E30A7006C8BE4 /* exult_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = exult_types.h; path = ../exult_types.h; sourceTree = "<group>"; };
 		E700DC4F1A6E30A7006C8BE4 /* exult.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = exult.cc; path = ../exult.cc; sourceTree = "<group>"; };
 		E700DC501A6E30A7006C8BE4 /* exult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = exult.h; path = ../exult.h; sourceTree = "<group>"; };
 		E700DC511A6E30A7006C8BE4 /* exulticon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = exulticon.h; path = ../exulticon.h; sourceTree = "<group>"; };
@@ -1041,8 +1037,6 @@
 				E700DB281A6E2CE7006C8BE4 /* ALSAMidiDriver.h */,
 				E700DB291A6E2CE7006C8BE4 /* amiga_midi.cc */,
 				E700DB2A1A6E2CE7006C8BE4 /* amiga_midi.h */,
-				E700DB2B1A6E2CE7006C8BE4 /* be_midi.cc */,
-				E700DB2C1A6E2CE7006C8BE4 /* be_midi.h */,
 				E700DB2D1A6E2CE7006C8BE4 /* CoreAudioMidiDriver.cpp */,
 				E700DB2E1A6E2CE7006C8BE4 /* CoreAudioMidiDriver.h */,
 				E700DB2F1A6E2CE7006C8BE4 /* CoreMidiDriver.cpp */,
@@ -1148,6 +1142,7 @@
 		E700DC2D1A6E2DBC006C8BE4 /* headers */ = {
 			isa = PBXGroup;
 			children = (
+				8AB0AE1B1CBEF522001DBB16 /* ignore_unused_variable_warning.h */,
 				E700DC2E1A6E2DBC006C8BE4 /* common_types.h */,
 				E700DC2F1A6E2DBC006C8BE4 /* exceptions.h */,
 				E700DC301A6E2DBC006C8BE4 /* gamma.h */,
@@ -1165,7 +1160,6 @@
 				E700DC361A6E30A7006C8BE4 /* actorio.cc */,
 				E700DC371A6E30A7006C8BE4 /* actors.cc */,
 				E700DC381A6E30A7006C8BE4 /* actors.h */,
-				E700DC391A6E30A7006C8BE4 /* alpha_kludges.h */,
 				E700DC3A1A6E30A7006C8BE4 /* args.cc */,
 				E700DC3B1A6E30A7006C8BE4 /* args.h */,
 				E700DC3C1A6E30A7006C8BE4 /* browser.cc */,
@@ -1186,7 +1180,6 @@
 				E700DC4B1A6E30A7006C8BE4 /* effects.cc */,
 				E700DC4C1A6E30A7006C8BE4 /* effects.h */,
 				E700DC4D1A6E30A7006C8BE4 /* exult_constants.h */,
-				E700DC4E1A6E30A7006C8BE4 /* exult_types.h */,
 				E700DC4F1A6E30A7006C8BE4 /* exult.cc */,
 				E700DC501A6E30A7006C8BE4 /* exult.h */,
 				E700DC511A6E30A7006C8BE4 /* exulticon.h */,
@@ -2184,7 +2177,6 @@
 				E700DC0F1A6E2CE7006C8BE4 /* timidity_common.cpp in Sources */,
 				E700DF4E1A6E34C6006C8BE4 /* ucinternal.cc in Sources */,
 				E700DC1D1A6E2CE7006C8BE4 /* WindowsMidiDriver.cpp in Sources */,
-				E700DBDA1A6E2CE7006C8BE4 /* be_midi.cc in Sources */,
 				E700DE291A6E344D006C8BE4 /* PointScaler.cpp in Sources */,
 				E700DE981A6E3497006C8BE4 /* Slider_gump.cc in Sources */,
 				E700DBE81A6E2CE7006C8BE4 /* mixer_midiout.cc in Sources */,
