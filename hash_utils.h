@@ -26,7 +26,7 @@
 #ifdef DONT_HAVE_HASH_MAP
 #  include <map>
 #else
-#  if __cplusplus >= 201103L
+#  if HAVE_UNORDERED_MAP
 #    include <unordered_map>
 using std::unordered_map;
 #  elif defined(HAVE_TR1_UNORDERED_MAP) && defined(__GNUC__) && (__GNUC__ >= 4) && ( __GNUC_MINOR__ >= 3)
@@ -49,7 +49,7 @@ using std::hash_map;
 #ifdef DONT_HAVE_HASH_SET
 #  include <set>
 #else
-#  if __cplusplus >= 201103L
+#  if HAVE_UNORDERED_SET
 #    include <unordered_set>
 using std::unordered_set;
 #  elif defined(HAVE_TR1_UNORDERED_SET) && defined(__GNUC__) && (__GNUC__ >= 4) && ( __GNUC_MINOR__ >= 3)
