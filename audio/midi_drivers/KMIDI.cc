@@ -21,10 +21,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #ifdef USE_LIBK_MIDI
 
-#ifndef ALPHA_LINUX_CXX
-#  include <unistd.h>
-#  include <csignal>
-#endif
+#include <unistd.h>
+#include <csignal>
 #include "fnames.h"
 
 #include "Configuration.h"

@@ -20,10 +20,7 @@
 #  include <config.h>
 #endif
 
-#ifndef ALPHA_LINUX_CXX
-#  include <iostream>
-#endif
-
+#include <iostream>
 #include <cstdlib>
 #include "args.h"
 

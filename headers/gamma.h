@@ -22,9 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef INCL_GAMMA
 #define INCL_GAMMA  1
 
-#ifndef ALPHA_LINUX_CXX
-#  include <cmath>
-#endif
+#include <cmath>
 
 #ifndef UNDER_EMBEDDED_CE
 using std::pow;

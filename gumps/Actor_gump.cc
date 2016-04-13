@@ -26,9 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "misc_buttons.h"
 #include "ignore_unused_variable_warning.h"
 
-#ifndef ALPHA_LINUX_CXX
-#  include <cstdio>
-#endif
+#include <cstdio>
 
 using std::size_t;
 

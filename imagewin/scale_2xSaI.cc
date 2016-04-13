@@ -22,11 +22,10 @@
 #endif
 
 #include "imagewin.h"
-#ifndef ALPHA_LINUX_CXX
-#  include <cstring>
-#endif
-#include "common_types.h"
 
+#include <cstring>
+
+#include "common_types.h"
 #include "manip.h"
 #include "scale_2xSaI.h"
 

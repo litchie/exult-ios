@@ -58,10 +58,6 @@ AC_CONFIG_HEADER([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 
 AH_BOTTOM([
-#ifdef ALPHA_LINUX_CXX
-#include "alpha_kludges.h"
-#endif
- 
 #define USE_FMOPL_MIDI
 ])
 
@@ -195,22 +191,6 @@ AC_SUBST(LIBTOOL_DEPS)
 
 AC_LANG([C++])
 
-AC_DEFUN([AC_CHECK_ALPHA_LINUX_CXX],
-[
-AC_MSG_CHECKING([for Alpha/Linux with DEC CXX])
-AC_TRY_RUN([
-	int main(int argc, char **argv)
-	{
-		#if defined (__DECCXX) && defined(__linux__) && defined(__alpha__)
-		return 0;
-		#endif
-		return 1;
-	}], [
-		AC_MSG_RESULT([yes])
-		AC_DEFINE(ALPHA_LINUX_CXX, 1, [Using Alpha Linux with cxx])
-	], AC_MSG_RESULT([no]), AC_MSG_RESULT([cross compiling- assuming \"no\"]))
-])
-
 # Check against Apple's non-C++11-compliant stdlibc++
 if test "$HAVE_CXX11" = "1"; then
 	if `$CXX -v 2>&1 | grep 'clang' >/dev/null 2>&1` ; then
@@ -264,7 +244,6 @@ AC_CHECK_HEADERS(limits.h sys/time.h unistd.h)
 AC_CHECK_HEADERS(sys/types.h sys/socket.h netdb.h)
 AC_CHECK_HEADERS(sys/wait.h signal.h)
 AC_CHECK_HEADERS(png.h, AM_CONDITIONAL(HAVE_PNG,true), AM_CONDITIONAL(HAVE_PNG, false))
-AC_CHECK_ALPHA_LINUX_CXX
 AC_CHECK_HEADERS(sstream)
 
 if test "$HAVE_CXX11" = "1"; then

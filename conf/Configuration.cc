@@ -25,10 +25,8 @@
 #include "exceptions.h"
 #include "utils.h"
 
-#ifndef ALPHA_LINUX_CXX
-#  include <cassert>
-#  include <cstdio>
-#endif
+#include <cassert>
+#include <cstdio>
 #include <stdio.h>
 #include <iostream>
 #include <cstdlib>

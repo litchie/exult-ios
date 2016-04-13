@@ -23,13 +23,10 @@
 #  include <config.h>
 #endif
 
-#ifndef ALPHA_LINUX_CXX
-#  include <cstdio>         /* Debugging.           */
-#  include <fstream>
-#  include <cstring>
-#  include <cstdlib>
-#endif
-
+#include <cstdio>         /* Debugging.           */
+#include <fstream>
+#include <cstring>
+#include <cstdlib>
 #include <iomanip>
 
 #ifdef XWIN

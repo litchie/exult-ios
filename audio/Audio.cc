@@ -41,21 +41,18 @@
 #include "gamewin.h"
 #include "actors.h"
 
-#if !defined(ALPHA_LINUX_CXX)
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <iostream>
+#include <climits>
+
 #ifndef UNDER_CE
 #  include <csignal>
-#endif
-#  include <cstdio>
-#  include <cstdlib>
-#  include <cstring>
-#  include <iostream>
-#  include <climits>
-#endif
-#ifndef UNDER_CE
-#include <fcntl.h>
-#include <unistd.h>
-#include <sys/stat.h>
-#include <sys/types.h>
+#  include <fcntl.h>
+#  include <unistd.h>
+#  include <sys/stat.h>
+#  include <sys/types.h>
 #endif
 
 //#include <crtdbg.h>

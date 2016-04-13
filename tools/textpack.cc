@@ -26,12 +26,10 @@
 #  include <config.h>
 #endif
 
-#ifndef ALPHA_LINUX_CXX
-#  include <unistd.h>
-#  include <fstream>
-#  include <cstdio>
-#  include <cstdlib>
-#endif
+#include <unistd.h>
+#include <fstream>
+#include <cstdio>
+#include <cstdlib>
 #include <iostream>
 #include <vector>
 #include "Flex.h"

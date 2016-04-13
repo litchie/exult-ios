@@ -50,10 +50,8 @@
 #include "usefuns.h"
 #include "ignore_unused_variable_warning.h"
 
-#ifndef ALPHA_LINUX_CXX
-#  include <cstring>
-#  include <cstdio>
-#endif
+#include <cstring>
+#include <cstdio>
 #include <algorithm>       // STL function things
 
 #ifdef USE_EXULTSTUDIO

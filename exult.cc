@@ -26,10 +26,8 @@
 #  include <config.h>
 #endif
 
-#ifndef ALPHA_LINUX_CXX
-#  include <cstdlib>
-#  include <cctype>
-#endif
+#include <cstdlib>
+#include <cctype>
 
 #include "sdl-compat.h"
 #include <SDL.h>

@@ -339,9 +339,6 @@
  *
  * Small values favor memcpy, large values favor inline code.
  */
-#if defined(__alpha__) || defined(__alpha)
-#  define breakeven_point   2   /* AXP (DEC Alpha)     - gcc or cc or egcs */
-#endif
 #if defined(__i386__)  || defined(__i386)
 #  define breakeven_point  12   /* Intel Pentium/Linux - gcc 2.96 */
 #endif

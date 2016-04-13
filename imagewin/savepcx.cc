@@ -30,9 +30,7 @@ It has been partly rewritten to use an SDL surface as input.
 #  include <config.h>
 #endif
 
-#ifndef ALPHA_LINUX_CXX
-#  include <cstdlib>
-#endif
+#include <cstdlib>
 
 #include "SDL_video.h"
 #include "SDL_endian.h"

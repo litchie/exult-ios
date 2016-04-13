@@ -22,9 +22,7 @@
 #  include <config.h>
 #endif
 
-#ifndef ALPHA_LINUX_CXX
-#  include <cstring>
-#endif
+#include <cstring>
 #include "gamewin.h"
 #include "chunks.h"
 #include "gamemap.h"

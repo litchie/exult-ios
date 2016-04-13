@@ -25,11 +25,8 @@
 
 #include "ibuf16.h"
 #include "ignore_unused_variable_warning.h"
-#ifndef ALPHA_LINUX_CXX
-#  include <cstring>
-#  include <cstdlib>
-#endif
-
+#include <cstring>
+#include <cstdlib>
 #include <algorithm>
 using std::rotate;
 

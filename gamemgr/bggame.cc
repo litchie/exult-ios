@@ -51,10 +51,8 @@
 #include "imagewin/imagewin.h"
 #include "imagewin/ArbScaler.h"
 
-#ifndef ALPHA_LINUX_CXX
-#  include <cctype>
-#  include <cstring>
-#endif
+#include <cctype>
+#include <cstring>
 
 #ifndef UNDER_EMBEDDED_CE
 using std::abs;

@@ -28,9 +28,7 @@
 #  undef declare
 #endif
 
-#ifndef ALPHA_LINUX_CXX
-#  include <string>
-#endif
+#include <string>
 #include <vector>
 
 class   Args {

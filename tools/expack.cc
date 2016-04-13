@@ -20,13 +20,11 @@
 #  include <config.h>
 #endif
 
-#ifndef ALPHA_LINUX_CXX
-#  include <unistd.h>
-#  include <fstream>
-#  include <cstdio>
-#  include <cstdlib>
-#  include <cstring>
-#endif
+#include <unistd.h>
+#include <fstream>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #include <iostream>
 #include <iomanip>
 #include <vector>

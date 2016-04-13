@@ -22,9 +22,9 @@
 #endif
 
 #include "imagewin.h"
-#ifndef ALPHA_LINUX_CXX
-#  include <cstring>
-#endif
+
+#include <cstring>
+
 #include "common_types.h"
 #include "manip.h"
 #include "scale_interlace.h"

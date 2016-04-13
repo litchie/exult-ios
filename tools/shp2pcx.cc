@@ -25,12 +25,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <cassert>
 #include <iostream>
-
-#ifndef ALPHA_LINUX_CXX
-#  include <cstdio>
-#  include <cstring>
-#  include <string>
-#endif
+#include <cstdio>
+#include <cstring>
+#include <string>
 
 #include "common_types.h"
 

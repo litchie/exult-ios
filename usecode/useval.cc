@@ -23,15 +23,12 @@
 #  include <config.h>
 #endif
 
-#ifndef ALPHA_LINUX_CXX
-#  include <fstream>
-#  include <cstring>
-#  include <iomanip>
-#  include <iostream>
-#  include <cstdlib>
-#  include <cstdio>
-#endif
-
+#include <fstream>
+#include <cstring>
+#include <iomanip>
+#include <iostream>
+#include <cstdlib>
+#include <cstdio>
 #include <functional>
 #include <limits>
 #include "useval.h"

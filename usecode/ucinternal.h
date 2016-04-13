@@ -25,9 +25,7 @@
 #ifndef _UCINTERNAL_H
 #define _UCINTERNAL_H
 
-#ifndef ALPHA_LINUX_CXX
-#  include <iosfwd>
-#endif
+#include <iosfwd>
 
 #include "common_types.h"
 

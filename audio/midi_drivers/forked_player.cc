@@ -21,9 +21,7 @@
 
 #ifdef USE_FORKED_PLAYER_MIDI
 
-#ifndef ALPHA_LINUX_CXX
-#  include <csignal>
-#endif
+#include <csignal>
 #include <unistd.h>
 
 #include "Configuration.h"

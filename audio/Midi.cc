@@ -19,12 +19,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Includes Pentagram headers so we must include pent_include.h 
 #include "pent_include.h"
 
-#ifndef ALPHA_LINUX_CXX
 #ifndef UNDER_CE
 #  include <csignal>
 #endif
-#  include <iostream>
-#endif
+#include <iostream>
 #include <unistd.h>
 #include <fstream>
 #include <climits>
