@@ -1,3 +1,9 @@
+2016-04-14	Dominik Reichardt <dominus@users.sourceforge.net>
+	* configure.ac: The check for clang_on_apple was adding -stdlib=libc++ 
+	  which is only available on OS X 10.7 and newer.
+	* README, docs/ReadMe.html, docs/xml/docs.xml: Documentation updated with 
+	  recent changes concerning Shortcutbar, BeOS and Zaurus
+
 2016-04-12	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* exult.cc, exultmenu.cc, usecode/compiler/uclex.ll: Eliminating all
 	  -Wunused-function and -pedantic warnings.
