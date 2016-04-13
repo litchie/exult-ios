@@ -249,6 +249,9 @@ char *Handle_string
 
 %}
 
+%option nounput
+%option noyy_top_state
+
 %option stack
 %x comment
 %s fun_id

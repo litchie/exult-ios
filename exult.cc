@@ -155,7 +155,7 @@ KeyboardButton_gump *gkeybb;
 SDL_Joystick *sdl_joy;
 #endif
 bool g_waiting_for_click = false;
-ShortcutBar_gump *g_shortcutBar = NULL;;
+ShortcutBar_gump *g_shortcutBar = NULL;
 
 #if 0 && USECODE_DEBUGGER
 bool    usecode_debugging = false;  // Do we enable the usecode debugger?
@@ -218,7 +218,6 @@ static void Init();
 static int Play();
 static int Get_click(int &x, int &y, char *chr, bool drag_ok, Paintable *p, bool rotate_colors = false);
 static int find_resolution(int w, int h, int s);
-static void set_resolution(int new_res, bool save);
 #ifdef USE_EXULTSTUDIO
 static void Move_dragged_shape(int shape, int frame, int x, int y,
                                int prevx, int prevy, bool show);
@@ -2197,43 +2196,6 @@ int find_resolution(int w, int h, int s) {
 			res = i;
 	}
 	return res;
-}
-
-
-void set_resolution(int new_res, bool save) {
-	if (new_res >= 0 && new_res < num_res) {
-		int scaler = gwin->get_win()->get_scaler();
-		current_res = new_res;
-		bool fullscreen = gwin->get_win()->is_fullscreen();
-		bool share_settings;
-		config->value("config/video/share_video_settings", share_settings, true);
-		const string &vidStr = (fullscreen || share_settings) ?
-		                       "config/video" : "config/video/window";
-		int gw, gh;
-		config->value(vidStr + "/game/width", gw, res_list[current_res].x);
-		config->value(vidStr + "/game/height", gh, res_list[current_res].y);
-
-		gwin->resized(res_list[current_res].x,
-		              res_list[current_res].y,
-		              fullscreen,
-		              gw, gh,
-		              res_list[current_res].scale, scaler,
-		              gwin->get_win()->get_fill_mode(),
-		              gwin->get_win()->get_fill_scaler());
-		if (save) {
-			char val[20];
-			snprintf(val, 20, "%d", res_list[current_res].x);
-			config->set(vidStr + "/display/width", val, false);
-			snprintf(val, 20, "%d", res_list[current_res].y);
-			config->set(vidStr + "/display/height", val, false);
-			snprintf(val, 20, "%d", res_list[current_res].scale);
-			config->set(vidStr + "/scale", val, false);
-			// Scaler
-			if (scaler > Image_window::NoScaler && scaler < Image_window::NumScalers)
-				config->set(vidStr + "/scale_method", Image_window::get_name_for_scaler(scaler), false);
-			config->write_back();
-		}
-	}
 }
 
 void make_screenshot(bool silent) {
