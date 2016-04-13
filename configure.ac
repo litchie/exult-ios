@@ -211,6 +211,34 @@ AC_TRY_RUN([
 	], AC_MSG_RESULT([no]), AC_MSG_RESULT([cross compiling- assuming \"no\"]))
 ])
 
+# Check against Apple's non-C++11-compliant stdlibc++
+if test "$HAVE_CXX11" = "1"; then
+	if `$CXX -v 2>&1 | grep 'clang' >/dev/null 2>&1` ; then
+		# Compiling with clang; is this an Apple OS?
+		AC_CACHE_CHECK(whether we are using clang for C++11 on an Apple OS,
+			ax_cv_cxx_using_clang_on_apple,
+			[
+				AC_TRY_RUN([
+					int main()
+					{
+						#if defined(__clang__) && defined(__APPLE__)
+						return 0;
+						#endif
+						return 1;
+					}
+				],
+					[ax_cv_cxx_using_clang_on_apple=yes],
+					[ax_cv_cxx_using_clang_on_apple=no],
+					[ax_cv_cxx_using_clang_on_apple="cross compiling- assuming \"no\""]
+				)
+			]
+		)
+		if test "$ax_cv_cxx_using_clang_on_apple" = "yes"; then
+			CXXFLAGS="$CXXFLAGS -stdlib=libc++"
+			CXXCPP="$CXXCPP -stdlib=libc++"
+		fi
+	fi
+fi
 
 # ---------------------------------------------------------------------
 # Checks for integer types with specific sizes.
@@ -239,7 +267,10 @@ AC_CHECK_HEADERS(png.h, AM_CONDITIONAL(HAVE_PNG,true), AM_CONDITIONAL(HAVE_PNG, 
 AC_CHECK_ALPHA_LINUX_CXX
 AC_CHECK_HEADERS(sstream)
 
-if test "$HAVE_CXX11" = "0"; then
+if test "$HAVE_CXX11" = "1"; then
+	AC_CHECK_HEADERS(unordered_map, [], AC_DEFINE(DONT_HAVE_HASH_MAP, 1, [Doesn't have hash map]))
+	AC_CHECK_HEADERS(unordered_set, [], AC_DEFINE(DONT_HAVE_HASH_SET, 1, [Doesn't have hash set]))
+else
 	AC_CHECK_HEADERS(tr1/unordered_map ext/hash_map hash_map, [], AC_DEFINE(DONT_HAVE_HASH_MAP, 1, [Doesn't have hash map]))
 	AC_CHECK_HEADERS(tr1/unordered_set ext/hash_set hash_set, [], AC_DEFINE(DONT_HAVE_HASH_SET, 1, [Doesn't have hash set]))
 fi

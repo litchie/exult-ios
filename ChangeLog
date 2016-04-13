@@ -1,4 +1,7 @@
 2016-04-12	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* configure.ac, hash_utils.h: Fixing unordered_{map,set} detection. Moved
+	  clang-on-Apple detection to main configure.ac.
+	* m4/ax_cxx_compile_stdcxx*.m4: Updating to newest version.
 	* *.*: Eliminating most -Wuseless-cast warnings.
 
 2016-04-12	Malignant Manor <malignantmanor@users.sourceforge.net>
