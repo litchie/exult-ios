@@ -1,4 +1,5 @@
 2016-04-12	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* *.*: Getting rid of Zaurus support.
 	* *.*: Getting rid of ALPHA_LINUX_CXX flag.
 	* configure.ac, hash_utils.h: Fixing unordered_{map,set} detection. Moved
 	  clang-on-Apple detection to main configure.ac.

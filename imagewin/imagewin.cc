@@ -554,11 +554,6 @@ void Image_window::create_surface(
 			fill_scaler = point;
 	}
 
-#if defined(__zaurus__)
-	fullscreen = false; // Zaurus would crash in fullscreen mode
-	scale = 1;
-#endif
-
 	get_draw_dims(w, h, scale, fill_mode, game_width, game_height, inter_width, inter_height);
 
 	if ((game_width != inter_width || game_height != inter_height ||

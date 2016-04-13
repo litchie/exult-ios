@@ -249,7 +249,7 @@ static bool Gen_font_shape_win32(
 }
 
 #endif
-#if defined(HAVE_FREETYPE2) && !defined(__zaurus__)
+#if defined(HAVE_FREETYPE2)
 
 #include <ft2build.h>
 #include FT_FREETYPE_H

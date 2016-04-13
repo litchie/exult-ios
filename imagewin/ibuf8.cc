@@ -202,7 +202,7 @@ void Image_buffer8::copy8(
 	if (!clip(srcx, srcy, srcw, srch, destx, desty))
 		return;
 
-#if !(defined(__sparc__) || defined(__zaurus__) || defined(UNDER_CE))
+#if !(defined(__sparc__) || defined(UNDER_CE))
 	uint32 *to = reinterpret_cast<uint32 *>(bits + desty * line_width + destx);
 	uint32 *from = reinterpret_cast<uint32 *>(src_pixels + srcy * src_width + srcx);
 	int to_next = line_width - srcw;// # pixels to next line.

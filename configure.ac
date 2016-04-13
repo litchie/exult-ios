@@ -79,18 +79,7 @@ AC_MSG_CHECKING([windowing system])
 case "$host_os" in
 	linux*)
 		WINDOWING_SYSTEM="-DXWIN"
-		if test "$host_vendor" = "embeddix"; then
-			AC_MSG_RESULT([Qtopia (Sharp Zaurus)])
-			CXXFLAGS="$CXXFLAGS -fsigned-char -DDISABLE_X11 -DQWS -D__zaurus__ -DUSE_FMOPL_MIDI"
-			enable_timidity="no"
-			enable_exult_studio_support="no"
-			enable_exult_studio="no"
-			enable_gimp_plugin="no"
-			enable_debug="no"
-			enable_data="yes"
-		else
-			AC_MSG_RESULT([X11 (GNU/Linux)])
-		fi
+		AC_MSG_RESULT([X11 (GNU/Linux)])
 		;;
 	mingw32* )
 		WINDOWING_SYSTEM="-DWIN32"
