@@ -180,35 +180,6 @@ AC_SUBST(LIBTOOL_DEPS)
 
 AC_LANG([C++])
 
-# Check against Apple's non-C++11-compliant stdlibc++
-if test "$HAVE_CXX11" = "1"; then
-	if `$CXX -v 2>&1 | grep 'clang' >/dev/null 2>&1` ; then
-		# Compiling with clang; is this an Apple OS?
-		AC_CACHE_CHECK(whether we are using clang for C++11 on an Apple OS,
-			ax_cv_cxx_using_clang_on_apple,
-			[
-				AC_TRY_RUN([
-					int main()
-					{
-						#if defined(__clang__) && defined(__APPLE__)
-						return 0;
-						#endif
-						return 1;
-					}
-				],
-					[ax_cv_cxx_using_clang_on_apple=yes],
-					[ax_cv_cxx_using_clang_on_apple=no],
-					[ax_cv_cxx_using_clang_on_apple="cross compiling- assuming \"no\""]
-				)
-			]
-		)
-		if test "$ax_cv_cxx_using_clang_on_apple" = "yes"; then
-			CXXFLAGS="$CXXFLAGS -stdlib=libc++"
-			CXXCPP="$CXXCPP -stdlib=libc++"
-		fi
-	fi
-fi
-
 # ---------------------------------------------------------------------
 # Checks for integer types with specific sizes.
 # ---------------------------------------------------------------------
