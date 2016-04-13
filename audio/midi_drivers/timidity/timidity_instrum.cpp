@@ -100,7 +100,7 @@ static sint32 convert_envelope_rate(uint8 rate)
 
 	r=3-((rate>>6) & 0x3);
 	r*=3;
-	r = static_cast<sint32>(rate & 0x3f) << r; /* 6.9 fixed point */
+	r = (rate & 0x3f) << r; /* 6.9 fixed point */
 
 	/* 15.15 fixed point. */
 	return (((r * 44100) / play_mode->rate) * control_ratio) 
@@ -457,7 +457,7 @@ static Instrument *load_instrument(char *name, int percussion,
 		if (sp->modes & MODES_UNSIGNED) /* convert to signed data */
 		{
 			sint32 i=sp->data_length/2;
-			sint16 *tmp=reinterpret_cast<sint16 *>(sp->data);
+			sint16 *tmp = sp->data;
 			while (i--)
 				*tmp++ ^= 0x8000;
 		}
@@ -470,7 +470,7 @@ static Instrument *load_instrument(char *name, int percussion,
 			 whole sample. We do the same because the GUS does not SUCK. */
 
 			ctl->cmsg(CMSG_WARNING, VERB_NORMAL, "Reverse loop in %s", name);
-			reverse_data(reinterpret_cast<sint16 *>(sp->data), 0, sp->data_length/2);
+			reverse_data(sp->data, 0, sp->data_length/2);
 
 			t=sp->loop_start;
 			sp->loop_start=sp->data_length - sp->loop_end;
@@ -495,7 +495,7 @@ static Instrument *load_instrument(char *name, int percussion,
 			 balanced with it. Still, this should be a runtime option. */
 			sint32 i=sp->data_length/2;
 			sint16 maxamp=0,a;
-			sint16 *tmp=reinterpret_cast<sint16 *>(sp->data);
+			sint16 *tmp = sp->data;
 			while (i--)
 			{
 				a=*tmp++;

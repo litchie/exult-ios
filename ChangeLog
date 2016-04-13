@@ -1,3 +1,6 @@
+2016-04-12	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* *.*: Eliminating most -Wuseless-cast warnings.
+
 2016-04-12	Malignant Manor <malignantmanor@users.sourceforge.net>
 	* keys.cc, keyactions.*, gumps/ShortcutBar_gump.cc : Add
 	  target_mode_teleport key binding and comment which key bindings the

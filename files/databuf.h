@@ -219,45 +219,45 @@ public:
 
 	virtual uint32 peek() {
 		unsigned char b0;
-		b0 = static_cast<unsigned char>(*buf_ptr);
+		b0 = *buf_ptr;
 		return (b0);
 	};
 
 	virtual uint32 read1() {
 		unsigned char b0;
-		b0 = static_cast<unsigned char>(*buf_ptr++);
+		b0 = *buf_ptr++;
 		return (b0);
 	};
 
 	virtual uint16 read2() {
 		unsigned char b0, b1;
-		b0 = static_cast<unsigned char>(*buf_ptr++);
-		b1 = static_cast<unsigned char>(*buf_ptr++);
+		b0 = *buf_ptr++;
+		b1 = *buf_ptr++;
 		return static_cast<uint16>(b0 | (b1 << 8));
 	};
 
 	virtual uint16 read2high() {
 		unsigned char b0, b1;
-		b1 = static_cast<unsigned char>(*buf_ptr++);
-		b0 = static_cast<unsigned char>(*buf_ptr++);
+		b1 = *buf_ptr++;
+		b0 = *buf_ptr++;
 		return static_cast<uint16>(b0 | (b1 << 8));
 	};
 
 	virtual uint32 read4() {
 		unsigned char b0, b1, b2, b3;
-		b0 = static_cast<unsigned char>(*buf_ptr++);
-		b1 = static_cast<unsigned char>(*buf_ptr++);
-		b2 = static_cast<unsigned char>(*buf_ptr++);
-		b3 = static_cast<unsigned char>(*buf_ptr++);
+		b0 = *buf_ptr++;
+		b1 = *buf_ptr++;
+		b2 = *buf_ptr++;
+		b3 = *buf_ptr++;
 		return (b0 | (b1 << 8) | (b2 << 16) | (b3 << 24));
 	};
 
 	virtual uint32 read4high() {
 		unsigned char b0, b1, b2, b3;
-		b3 = static_cast<unsigned char>(*buf_ptr++);
-		b2 = static_cast<unsigned char>(*buf_ptr++);
-		b1 = static_cast<unsigned char>(*buf_ptr++);
-		b0 = static_cast<unsigned char>(*buf_ptr++);
+		b3 = *buf_ptr++;
+		b2 = *buf_ptr++;
+		b1 = *buf_ptr++;
+		b0 = *buf_ptr++;
 		return (b0 | (b1 << 8) | (b2 << 16) | (b3 << 24));
 	};
 

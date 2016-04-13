@@ -357,7 +357,7 @@ int Usecode_value::add_values(
 void Usecode_value::print(
     ostream &out, bool shortformat
 ) {
-	switch (static_cast<Val_type>(type)) {
+	switch (type) {
 	case int_type:
 		out << hex << setfill('0') << setw(4);
 		out << (value.intval & 0xffff);
@@ -536,7 +536,7 @@ bool Usecode_value::save(
     DataSource *out
 ) {
 	out->write1(static_cast<int>(type));
-	switch (static_cast<Val_type>(type)) {
+	switch (type) {
 	case int_type:
 		out->write4(value.intval);
 		break;

@@ -595,8 +595,7 @@ MidiEvent *read_midi_file(FILE *mfp, sint32 *count, sint32 *sp)
 	if (divisions_tmp<0)
 	{
 		/* SMPTE time -- totally untested. Got a MIDI file that uses this? */
-		divisions=
-			static_cast<sint32>(-(divisions_tmp/256)) * static_cast<sint32>(divisions_tmp & 0xFF);
+		divisions = -(divisions_tmp/256) * (divisions_tmp & 0xFF);
 	}
 	else divisions=static_cast<sint32>(divisions_tmp);
 
