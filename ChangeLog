@@ -8,6 +8,8 @@
 	  recent changes concerning Shortcutbar, BeOS and Zaurus
 
 2016-04-12	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* configure.ac, usecode/compiler/uclex.ll: Supressing -Wuseless-cast from
+	  flex-generated code and enabling it with --enable-paranoid-warnings.
 	* exult.cc, exultmenu.cc, usecode/compiler/uclex.ll: Eliminating all
 	  -Wunused-function and -pedantic warnings.
 	* *.*: Getting rid of Zaurus support.
