@@ -83,9 +83,8 @@ void Image_buffer8::get(
 	//   convoluted use of clip().)
 	if (!clip(destx, desty, srcw, srch, srcx, srcy))
 		return;
-	unsigned char *to = reinterpret_cast<unsigned char *>(dest->bits) +
-	                    desty * dest->line_width + destx;
-	unsigned char *from = reinterpret_cast<unsigned char *>(bits) + srcy * line_width + srcx;
+	unsigned char *to = dest->bits + desty * dest->line_width + destx;
+	unsigned char *from = bits + srcy * line_width + srcx;
 	// Figure # pixels to next line.
 	int to_next = dest->line_width - srcw;
 	int from_next = line_width - srcw;
@@ -105,8 +104,7 @@ void Image_buffer8::put(
     Image_buffer *src,      // Copy from here.
     int destx, int desty        // Copy to here.
 ) {
-	Image_buffer8::copy8(reinterpret_cast<unsigned char *>(src->bits),
-	                     src->get_width(), src->get_height(), destx, desty);
+	Image_buffer8::copy8(src->bits, src->get_width(), src->get_height(), destx, desty);
 }
 
 /*
@@ -159,8 +157,7 @@ void Image_buffer8::fill8(
 	// Constrain to window's space.
 	if (!clip(srcx, srcy, srcw, srch, destx, desty))
 		return;
-	unsigned char *pixels = reinterpret_cast<unsigned char *>(bits) +
-	                        desty * line_width + destx;
+	unsigned char *pixels = bits + desty * line_width + destx;
 	int to_next = line_width - srcw;// # pixels to next line.
 	while (srch--) {        // Do each line.
 		for (int cnt = srcw; cnt; cnt--)
@@ -182,8 +179,7 @@ void Image_buffer8::fill_line8(
 	// Constrain to window's space.
 	if (!clip_x(srcx, srcw, destx, desty))
 		return;
-	unsigned char *pixels = reinterpret_cast<unsigned char *>(bits) +
-	                        desty * line_width + destx;
+	unsigned char *pixels = bits + desty * line_width + destx;
 	std::memset(pixels, pix, srcw);
 }
 
@@ -282,8 +278,7 @@ void Image_buffer8::copy_line_translucent8(
 	// Constrain to window's space.
 	if (!clip_x(srcx, srcw, destx, desty))
 		return;
-	unsigned char *to = reinterpret_cast<unsigned char *>(bits) +
-	                    desty * line_width + destx;
+	unsigned char *to = bits + desty * line_width + destx;
 	unsigned char *from = src_pixels + srcx;
 	for (int i = srcw; i; i--) {
 		// Get char., and transform.
@@ -310,8 +305,7 @@ void Image_buffer8::fill_line_translucent8(
 	// Constrain to window's space.
 	if (!clip_x(srcx, srcw, destx, desty))
 		return;
-	unsigned char *pixels = reinterpret_cast<unsigned char *>(bits) +
-	                        desty * line_width + destx;
+	unsigned char *pixels = bits + desty * line_width + destx;
 	while (srcw--) {
 		*pixels = xform[*pixels];
 		pixels++;
@@ -332,8 +326,7 @@ void Image_buffer8::fill_translucent8(
 	// Constrain to window's space.
 	if (!clip(srcx, srcy, srcw, srch, destx, desty))
 		return;
-	unsigned char *pixels = reinterpret_cast<unsigned char *>(bits) +
-	                        desty * line_width + destx;
+	unsigned char *pixels = bits + desty * line_width + destx;
 	int to_next = line_width - srcw;// # pixels to next line.
 	while (srch--) {        // Do each line.
 		for (int cnt = srcw; cnt; cnt--, pixels++)

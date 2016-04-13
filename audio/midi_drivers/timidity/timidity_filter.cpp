@@ -75,8 +75,7 @@ static void kaiser(float *w,int n,float beta)
 	for (i =0; i<n ; i++) 
 	{
 		xi = static_cast<float>(i + 0.5);
-		w[i] = ino(static_cast<float>(beta * sqrt(static_cast<double>(1. - 4 * xi * xi / xind))))
-			/ ino(static_cast<float>(beta));
+		w[i] = ino(static_cast<float>(beta * sqrt(1. - 4 * xi * xi / xind))) / ino(beta);
 	}
 }
 
@@ -97,7 +96,7 @@ static void designfir(float *g , float fc)
 	}
 
 	att = 40.; /* attenuation  in  db */
-	beta = static_cast<float>(exp(log(static_cast<double>(0.58417) * (att - 20.96)) * 0.4) + 0.07886 
+	beta = static_cast<float>(exp(log(0.58417 * (att - 20.96)) * 0.4) + 0.07886 
 	                          * (att - 20.96));
 	kaiser( w, ORDER2, beta);
 

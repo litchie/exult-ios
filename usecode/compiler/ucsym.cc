@@ -547,9 +547,10 @@ int Uc_function_symbol::gen_call(
 	unsigned long parmcnt = aparms->gen_values(out);   // Want to push parm. values.
 	parmcnt += (method_num >= 0);       // Count 'this'.
 	if (parmcnt != parms.size()) {
+		unsigned long protoparmcnt = parms.size();
 		sprintf(buf,
 		        "# parms. passed (%lu) doesn't match '%s' count (%lu)",
-		        parmcnt, get_name(), static_cast<unsigned long>(parms.size()));
+		        parmcnt, get_name(), protoparmcnt);
 		Uc_location::yyerror(buf);
 	}
 	// See if expecting a return value from a function that has none.

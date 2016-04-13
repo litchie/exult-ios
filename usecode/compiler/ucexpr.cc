@@ -752,10 +752,10 @@ void Uc_call_expression::check_params() {
 	unsigned long parmscnt = callparms.size() + ignore_this;
 	if (parmscnt != protoparms.size()) {
 		char buf[150];
+		unsigned long protoparmcnt = protoparms.size() - ignore_this;
 		sprintf(buf,
 		        "# parms. passed (%lu) doesn't match '%s' count (%lu)",
-		        parmscnt - ignore_this, sym->get_name(),
-		        static_cast<unsigned long>(protoparms.size() - ignore_this));
+		        parmscnt - ignore_this, sym->get_name(), protoparmcnt);
 		Uc_location::yyerror(buf);
 		return;
 	}

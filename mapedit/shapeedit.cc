@@ -66,6 +66,12 @@ using   std::endl;
 using   std::string;
 using   std::map;
 
+inline GtkAttachOptions operator|(GtkAttachOptions op1, GtkAttachOptions op2) {
+	return static_cast<GtkAttachOptions>(static_cast<int>(op1) | static_cast<int>(op2));
+}
+
+const GtkAttachOptions GTK_NONE = static_cast<GtkAttachOptions>(0);
+
 // HP Info columns
 enum {
     HP_FRAME_COLUMN = 0,
@@ -289,34 +295,29 @@ static void Setup_equip(
 	GtkWidget *label = gtk_label_new("Shape");
 	gtk_widget_show(label);
 	gtk_table_attach(table, label, 0, 3, 0, 1,
-	                 static_cast<GtkAttachOptions>(0),
-	                 static_cast<GtkAttachOptions>(0), 0, 0);
+	                 GTK_NONE, GTK_NONE, 0, 0);
 	label = gtk_label_new("Chance (%)");
 	gtk_widget_show(label);
 	gtk_table_attach(table, label, 4, 5, 0, 1,
-	                 static_cast<GtkAttachOptions>(0),
-	                 static_cast<GtkAttachOptions>(0), 0, 0);
+	                 GTK_NONE, GTK_NONE, 0, 0);
 	label = gtk_label_new("Count");
 	gtk_widget_show(label);
 	gtk_table_attach(table, label, 6, 7, 0, 1,
-	                 static_cast<GtkAttachOptions>(0),
-	                 static_cast<GtkAttachOptions>(0), 0, 0);
+	                 GTK_NONE, GTK_NONE, 0, 0);
 	// Separators:
 	GtkWidget *vsep = gtk_vseparator_new();
 	gtk_widget_show(vsep);
 	gtk_table_attach(table, vsep, 3, 4, 0, 12,
-	                 static_cast<GtkAttachOptions>(0),
-	                 static_cast<GtkAttachOptions>(GTK_FILL), 2, 0);
+	                 GTK_NONE, GTK_FILL, 2, 0);
 	vsep = gtk_vseparator_new();
 	gtk_widget_show(vsep);
 	gtk_table_attach(table, vsep, 5, 6, 0, 12,
-	                 static_cast<GtkAttachOptions>(0),
-	                 static_cast<GtkAttachOptions>(GTK_FILL), 2, 0);
+	                 GTK_NONE, GTK_FILL, 2, 0);
 	GtkWidget *hsep = gtk_hseparator_new();
 	gtk_widget_show(hsep);
 	gtk_table_attach(table, hsep, 0, 7, 1, 2,
-	                 static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL),
-	                 static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL), 0, 0);
+	                 GTK_EXPAND | GTK_FILL,
+	                 GTK_EXPAND | GTK_FILL, 0, 0);
 
 	// Create the rows.
 	for (int row = 0; row < 10; row++) {
@@ -324,8 +325,8 @@ static void Setup_equip(
 		GtkWidget *frame = gtk_frame_new(NULL);
 		gtk_widget_show(frame);
 		gtk_table_attach(table, frame, 0, 1, row + 2, row + 3,
-		                 static_cast<GtkAttachOptions>(GTK_FILL),
-		                 static_cast<GtkAttachOptions>(GTK_FILL), 3, 0);
+		                 GTK_FILL,
+		                 GTK_FILL, 3, 0);
 		gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_IN);
 
 		GtkWidget *drawingarea = gtk_drawing_area_new();
@@ -348,8 +349,7 @@ static void Setup_equip(
 		rows[row].shape = spin;
 		gtk_widget_show(spin);
 		gtk_table_attach(table, spin, 1, 2, row + 2, row + 3,
-		                 static_cast<GtkAttachOptions>(GTK_FILL),
-		                 static_cast<GtkAttachOptions>(0), 0, 0);
+		                 GTK_FILL, GTK_NONE, 0, 0);
 		gtk_signal_connect(GTK_OBJECT(spin), "changed",
 		                   GTK_SIGNAL_FUNC(on_equip_shape_changed),
 		                   &rows[row]);
@@ -358,8 +358,7 @@ static void Setup_equip(
 		rows[row].name = label;
 		gtk_widget_show(label);
 		gtk_table_attach(table, label, 2, 3, row + 2, row + 3,
-		                 static_cast<GtkAttachOptions>(0),
-		                 static_cast<GtkAttachOptions>(0), 0, 0);
+		                 GTK_NONE, GTK_NONE, 0, 0);
 		gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
 		gtk_misc_set_alignment(GTK_MISC(label), 6.70552e-08, 0.5);
 		// Chance:
@@ -368,16 +367,14 @@ static void Setup_equip(
 		rows[row].chance = spin;
 		gtk_widget_show(spin);
 		gtk_table_attach(table, spin, 4, 5, row + 2, row + 3,
-		                 static_cast<GtkAttachOptions>(GTK_FILL),
-		                 static_cast<GtkAttachOptions>(0), 0, 0);
+		                 GTK_FILL, GTK_NONE, 0, 0);
 		// Count:
 		spin = gtk_spin_button_new(GTK_ADJUSTMENT(
 		                               gtk_adjustment_new(1, 0, 100, 1, 10, 10)), 1, 0);
 		rows[row].count = spin;
 		gtk_widget_show(spin);
 		gtk_table_attach(table, spin, 6, 7, row + 2, row + 3,
-		                 static_cast<GtkAttachOptions>(GTK_FILL),
-		                 static_cast<GtkAttachOptions>  (0), 0, 0);
+		                 GTK_FILL, GTK_NONE, 0, 0);
 	}
 }
 

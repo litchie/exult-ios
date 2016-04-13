@@ -2229,8 +2229,7 @@ GtkWidget *Add_menu_item(
 	if (!label)         // Want separator?
 		gtk_widget_set_sensitive(mitem, FALSE);
 	if (func)           // Function?
-		gtk_signal_connect(GTK_OBJECT(mitem), "activate",
-		                   GTK_SIGNAL_FUNC(func), func_data);
+		gtk_signal_connect(GTK_OBJECT(mitem), "activate", func, func_data);
 	return mitem;
 }
 

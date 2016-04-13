@@ -276,7 +276,7 @@ Image_window::ScalerVector::~ScalerVector() {
 Image_window::ScalerType Image_window::get_scaler_for_name(const char *scaler) {
 	for (int s = 0; s < NumScalers; s++) {
 		if (!Pentagram::strcasecmp(scaler, Scalers[s].name))
-			return static_cast<ScalerType>(s);
+			return s;
 	}
 
 	return NoScaler;

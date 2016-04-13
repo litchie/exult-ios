@@ -689,7 +689,7 @@ void pre_resample(Sample * sp)
 {
 	double a, xdiff;
 	sint32 incr, ofs, newlen, count;
-	sint16 *newdata, *dest, *src = reinterpret_cast<sint16 *>(sp->data);
+	sint16 *newdata, *dest, *src = sp->data;
 	sint16 v1, v2, v3, v4, *vptr;
 	static const char note_name[12][3] =
 	{
@@ -741,7 +741,7 @@ void pre_resample(Sample * sp)
 	sp->loop_start = static_cast<sint32>(sp->loop_start / a);
 	sp->loop_end = static_cast<sint32>(sp->loop_end / a);
 	free(sp->data);
-	sp->data = reinterpret_cast<sample_t *>(newdata);
+	sp->data = newdata;
 	sp->sample_rate = 0;
 }
 

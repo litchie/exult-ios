@@ -45,7 +45,7 @@ inline uint8 Read1(std::istream &in) {
 }
 
 inline uint8 Read1(uint8  *&in) {
-	return static_cast<uint8>(*in++);
+	return *in++;
 }
 
 /*

@@ -406,10 +406,10 @@ void Frame_flags_info::write(
 	int size = 8 * sizeof(m_flags) - 1; // Bit count.
 	int bit = 0;
 	while (bit < size) {
-		out << static_cast<bool>((flags & (1 << bit)) != 0) << '/';
+		out << ((flags & (1 << bit)) != 0) << '/';
 		bit++;
 	}
-	out << static_cast<bool>((flags & (1 << size)) != 0) << endl;
+	out << ((flags & (1 << size)) != 0) << endl;
 }
 
 void Frame_usecode_info::write(

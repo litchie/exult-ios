@@ -224,7 +224,7 @@ int FMOplMidiDriver::open()
 		myinsbank[i][INDEX_PERC] = 0x80;
 
 		// Setup square root table here
-		lucas_fm_vol_table[i] = static_cast<int>(static_cast<double>(std::sqrt(static_cast<double>(my_midi_fm_vol_table[i])) * 11));	/* TO CHANGE !!! */
+		lucas_fm_vol_table[i] = static_cast<int>(std::sqrt(static_cast<double>(my_midi_fm_vol_table[i])) * 11);	/* TO CHANGE !!! */
 
 		// Clear the xmidibanks
 		xmidibanks[i] = 0;

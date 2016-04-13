@@ -647,7 +647,7 @@ static int OPLOpenTable( void )
 	for (i=0; i<VIB_ENT; i++)
 	{
 		/* 100cent = 1seminote = 6% ?? */
-		pom = static_cast<double>(VIB_RATE*0.06*std::sin(2*PI*i/VIB_ENT)); /* +-100sect step */
+		pom = VIB_RATE * 0.06 * std::sin(2*PI*i/VIB_ENT); /* +-100sect step */
 		VIB_TABLE[i]         = static_cast<int>(VIB_RATE + (pom*0.07)); /* +- 7cent */
 		VIB_TABLE[VIB_ENT+i] = static_cast<int>(VIB_RATE + (pom*0.14)); /* +-14cent */
 	}
@@ -751,14 +751,14 @@ void OPLWriteReg(FM_OPL *OPL, int r, int v)
 				/* timer 2 */
 				if(OPL->st[1] != st2)
 				{
-					double interval = st2 ? static_cast<double>(OPL->T[1]*OPL->TimerBase) : 0.0;
+					double interval = st2 ? (OPL->T[1]*OPL->TimerBase) : 0.0;
 					OPL->st[1] = st2;
 					if (OPL->TimerHandler) (OPL->TimerHandler)(OPL->TimerParam+1,interval);
 				}
 				/* timer 1 */
 				if(OPL->st[0] != st1)
 				{
-					double interval = st1 ? static_cast<double>(OPL->T[0]*OPL->TimerBase) : 0.0;
+					double interval = st1 ? (OPL->T[0]*OPL->TimerBase) : 0.0;
 					OPL->st[0] = st1;
 					if (OPL->TimerHandler) (OPL->TimerHandler)(OPL->TimerParam+0,interval);
 				}
