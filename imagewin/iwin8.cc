@@ -28,9 +28,8 @@ Boston, MA  02111-1307, USA.
 #  include <config.h>
 #endif
 
-#ifndef ALPHA_LINUX_CXX
-#  include <cstring>
-#endif
+#include <cstring>
+
 #include "SDL_video.h"
 #include "sdl-compat.h"
 #include "iwin8.h"

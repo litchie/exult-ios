@@ -20,9 +20,8 @@
 #  include <config.h>
 #endif
 
-#ifndef ALPHA_LINUX_CXX
-#  include <cstring>
-#endif
+#include <cstring>
+
 #include "files/U7file.h"
 #include "palette.h"
 #include "ibuf8.h"

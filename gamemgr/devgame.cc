@@ -20,10 +20,7 @@
 #  include <config.h>
 #endif
 
-#ifndef ALPHA_LINUX_CXX
-#  include <cctype>
-#endif
-
+#include <cctype>
 #include <cstdlib>
 
 #include "SDL_events.h"

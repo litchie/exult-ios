@@ -24,11 +24,9 @@
 #endif
 
 #include "ibuf8.h"
-#ifndef ALPHA_LINUX_CXX
-#  include <string>
-#  include <iostream>
-#endif
 
+#include <string>
+#include <iostream>
 #include <cstring>
 #include <cstdlib>
 

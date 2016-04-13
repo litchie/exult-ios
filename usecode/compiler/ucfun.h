@@ -31,9 +31,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class Uc_location;
 class Uc_statement;
-#ifndef ALPHA_LINUX_CXX
-#  include <iosfwd>
-#endif
+
+#include <iosfwd>
 
 /*
  *  This represents a usecode function:

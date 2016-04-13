@@ -2743,10 +2743,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\alpha_kludges.h"
-						>
-					</File>
-					<File
 						RelativePath="..\args.h"
 						>
 					</File>
@@ -4688,10 +4684,6 @@
 			</File>
 			<File
 				RelativePath="..\README.1ST"
-				>
-			</File>
-			<File
-				RelativePath="..\README.axp"
 				>
 			</File>
 			<File

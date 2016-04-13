@@ -39,9 +39,7 @@ class Uc_var_symbol;
 class Uc_del_expression;
 class Basic_block;
 
-#ifndef ALPHA_LINUX_CXX
-#  include <iosfwd>
-#endif
+#include <iosfwd>
 
 /*
  *  A statement:

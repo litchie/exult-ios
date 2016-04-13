@@ -26,12 +26,10 @@
 #  include <config.h>
 #endif
 
-#ifndef ALPHA_LINUX_CXX
-#  include <cstdlib>
-#  include <cstring>
-#  include <cstdarg>
-#  include <cstdio>
-#endif
+#include <cstdlib>
+#include <cstring>
+#include <cstdarg>
+#include <cstdio>
 
 #include "gamemap.h"
 #include "objs.h"

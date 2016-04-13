@@ -26,7 +26,6 @@ exult_SOURCES =	\
 	actorio.cc	\
 	actors.cc	\
 	actors.h	\
-	alpha_kludges.h	\
 	args.cc		\
 	args.h		\
 	browser.cc	\
@@ -138,16 +137,12 @@ exult_LDADD = \
 
 exult_DEPENDENCIES = $(ICON_FILE) $(EXULTLIBS)
 
-noinst_HEADERS = \
-	alpha_kludges.h
-
 EXTRA_DIST = 	\
 	autogen.sh \
 	README.1ST \
 	README \
 	FAQ \
 	README.win32 \
-	README.axp \
 	README.MacOSX \
 	README.AmigaOS \
 	README.MorphOS \

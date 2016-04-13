@@ -30,9 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <unistd.h>
 #include <iostream>         /* For debugging msgs. */
 #include "servemsg.h"
-#ifndef ALPHA_LINUX_CXX
-#  include <cstring>
-#endif
+#include <cstring>
 
 #ifdef WIN32
 #include "servewin32.h"

@@ -28,13 +28,11 @@
 #endif
 #endif
 
-#ifndef ALPHA_LINUX_CXX
-#  include <fstream>
-#  include <cstdio>
-#  include <cstdlib>
-#  include <cstring>
-#  include <ctime>
-#endif
+#include <fstream>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 
 #if defined(XWIN)
 #include <sys/stat.h>

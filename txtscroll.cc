@@ -20,10 +20,8 @@
 #  include <config.h>
 #endif
 
-#ifndef ALPHA_LINUX_CXX
-#  include <cstring>
-#  include <cstdlib>
-#endif
+#include <cstring>
+#include <cstdlib>
 
 #include "sdl-compat.h"
 #include "common_types.h"

@@ -23,11 +23,9 @@
 #  include <config.h>
 #endif
 
-#ifndef ALPHA_LINUX_CXX
-#  include <iostream>           /* Debugging. */
-#  include <cstdlib>
-#  include <cstring>
-#endif
+#include <iostream>           /* Debugging. */
+#include <cstdlib>
+#include <cstring>
 #include <algorithm>        /* swap. */
 #include <set>
 #include <map>

@@ -20,9 +20,7 @@
 #  include <config.h>
 #endif
 
-#ifndef ALPHA_LINUX_CXX
-#  include <cassert>
-#endif
+#include <cassert>
 #include "common_types.h"
 #include "XMLEntity.h"
 #include <iostream>

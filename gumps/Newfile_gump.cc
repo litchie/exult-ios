@@ -20,10 +20,8 @@
 #  include <config.h>
 #endif
 
-#ifndef ALPHA_LINUX_CXX
-#  include <cstring>
-#  include <ctime>
-#endif
+#include <cstring>
+#include <ctime>
 
 #include "exult_flx.h"
 

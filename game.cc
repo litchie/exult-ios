@@ -21,11 +21,9 @@
 #  include <config.h>
 #endif
 
-#ifndef ALPHA_LINUX_CXX
-#  include <cstdlib>
-#  include <cstring>
-#  include <unistd.h>
-#endif
+#include <cstdlib>
+#include <cstring>
+#include <unistd.h>
 #include "sdl-compat.h"
 #include "menulist.h"
 #include "Audio.h"

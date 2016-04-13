@@ -22,9 +22,8 @@
 #  include <config.h>
 #endif
 
-#ifndef ALPHA_LINUX_CXX
-#  include <cstdlib>
-#endif
+#include <cstdlib>
+
 #include "npcnear.h"
 #include "chunks.h"
 #include "gamewin.h"

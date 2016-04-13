@@ -22,9 +22,7 @@
 #ifndef UCMACHINE_H
 #define UCMACHINE_H
 
-#ifndef ALPHA_LINUX_CXX
-#  include <iosfwd>
-#endif
+#include <iosfwd>
 
 class Game_window;
 class Usecode_machine;

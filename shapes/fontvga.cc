@@ -12,9 +12,9 @@
 #include <iostream>
 #include "fontvga.h"
 #include "fnames.h"
-#ifndef ALPHA_LINUX_CXX
-#  include <cctype>
-#endif
+
+#include <cctype>
+
 #include "utils.h"
 #include "Flex.h"
 

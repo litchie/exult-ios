@@ -20,9 +20,7 @@
 #  include <config.h>
 #endif
 
-#ifndef ALPHA_LINUX_CXX
-#  include <cstring>
-#endif
+#include <cstring>
 
 #include "SDL_events.h"
 

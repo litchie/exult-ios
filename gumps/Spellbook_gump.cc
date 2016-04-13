@@ -33,11 +33,7 @@
 #include "Gump_manager.h"
 #include "ignore_unused_variable_warning.h"
 
-#ifndef ALPHA_LINUX_CXX
-#  include <cstdio>
-#endif
-
-
+#include <cstdio>
 
 const int REAGENTS = 842;       // Shape #.
 

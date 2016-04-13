@@ -28,9 +28,7 @@
 #include "game.h"
 #include "cheat_screen.h"
 #include "font.h"
-#ifndef ALPHA_LINUX_CXX
-#  include "cstring"
-#endif
+#include "cstring"
 #include "actors.h"
 #include "cheat.h"
 #include "exult.h"
