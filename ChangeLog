@@ -1,4 +1,6 @@
 2016-04-12	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* exult.cc, exultmenu.cc, usecode/compiler/uclex.ll: Eliminating all
+	  -Wunused-function and -pedantic warnings.
 	* *.*: Getting rid of Zaurus support.
 	* *.*: Getting rid of ALPHA_LINUX_CXX flag.
 	* configure.ac, hash_utils.h: Fixing unordered_{map,set} detection. Moved

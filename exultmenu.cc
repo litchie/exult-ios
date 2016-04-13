@@ -45,10 +45,12 @@
 #include "shapeid.h"
 #include "ignore_unused_variable_warning.h"
 
+#if 0
 static bool get_play_intro(void);
 static void set_play_intro(bool);
 static bool get_play_1st_scene(void);
 static void set_play_1st_scene(bool);
+#endif
 
 #define MAX_GAMES 100
 
@@ -651,6 +653,7 @@ BaseGameInfo *ExultMenu::run() {
 	return sel_game;
 }
 
+#if 0
 bool get_play_intro() {
 	std::string yn;
 	config->value("config/gameplay/skip_splash", yn, "no");
@@ -672,3 +675,4 @@ void set_play_1st_scene(bool play) {
 	ignore_unused_variable_warning(play);
 	config->set("config/gameplay/skip_intro", play ? "no" : "yes", true);
 }
+#endif
