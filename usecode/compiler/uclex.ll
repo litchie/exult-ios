@@ -245,6 +245,7 @@ char *Handle_string
 #ifdef __GNUC__
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wold-style-cast"
+#pragma GCC diagnostic ignored "-Wuseless-cast"
 #endif  // __GNUC__
 
 %}
