@@ -1,3 +1,41 @@
+2016-03-23	Malignant Manor <malignantmanor@users.sourceforge.net>
+	* cheat_screen.cc: Allow editing of any npc's magic and mana values.
+	* actors.cc, gamewin.cc, party.cc, gumps/Face_stats.*: Don't actively check
+	  if Face_stats needs buttons updated. Update Face_stats when magic changes
+	  to and from 0.
+
+2016-03-22	Malignant Manor <malignantmanor@users.sourceforge.net>
+	* cheat_screen.*: Allow canceling of stat changing. Show magic points and
+	  mana when Avatar has 0 mp.
+
+2016-03-21	Malignant Manor <malignantmanor@users.sourceforge.net>
+	* usecode/ucinternal.cc: Revert change as it causes issues.
+
+2016-03-20	Malignant Manor <malignantmanor@users.sourceforge.net>
+	* exult.*, gumps/ShortcutBar_gump.cc: don't have ShortcutBar_gump intercept
+	  clicks when in usecode or when waiting for a click.
+	* ShortcutBar_gump.cc: Stop double food use in BG.
+	* gamewin.cc: Use close_gump instead of remove_gump. Fix copy/paste error.
+	* mapedit/u7shp.c, tools/rip.cc, tools/shp2pcx.cc, usecode/ucinternal.cc:
+	  Fix leaks
+	* imagewin/ibuf16.cc: Fix mismatching allocation and deallocation
+
+2016-03-17	Malignant Manor <malignantmanor@users.sourceforge.net>
+	* gamewin.cc: Fix use_shortcutbar not changing when switching between yes
+	  and translucent
+	* files/databuf.h, files/U7obj.h, mapedit/studio.cc: Add std:: in front of
+	  ptrdiff_t required for some compilers to compile.
+
+2016-03-16	Malignant Manor <malignantmanor@users.sourceforge.net>
+	* party.cc: Update ShortcutBar_gump when adding/removing party members.
+	* data/miscoptions.shp, gumps/MiscOptions_gump.*, gamewin.*, data/flx.in,
+	  data/Makefile.am, Makefile.common: AddShortcutBar_gump cfg options to the
+	  menu.
+	* msvcstuff/Exult.vcproj, msvc9/Exult.vcproj: update for ShortcutBar_gump
+
+2016-03-15	Malignant Manor <malignantmanor@users.sourceforge.net>
+	* Add ShortcutBar_gump from https://github.com/litchie/exult-ios fork.
+
 2016-03-14	Dominik Reichardt <dominus@users.sourceforge.net>
 	* Various files and documentation changed from SVN to Git.
 
