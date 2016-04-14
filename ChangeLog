@@ -1,3 +1,10 @@
+2016-04-14	Dominik Reichardt <dominus@users.sourceforge.net>
+	* *.*: Removed support for using Autotools to build iOS. Better use the 
+	  Exult fork at https://github.com/litchie/exult-ios which provides an 
+	  Xcode project file to build and run Exult on iOS devices.
+	  This also means we no longer have to have special cases for the never 
+	  released SDL 1.3 development branch.
+
 2016-04-12	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* *.*: Adding 'source' config option to both mod cfgs and game config. Its
 	  value is the path to usecode.uc that Exult Studio will use when it tries

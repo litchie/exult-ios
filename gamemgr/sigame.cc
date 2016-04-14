@@ -1412,7 +1412,7 @@ bool SI_Game::new_game(Vga_file &shapes) {
 			
 #else // __IPHONEOS__
 			Uint16 keysym_unicode = 0;
-#if (SDL_VER_1_3) || SDL_VERSION_ATLEAST(2, 0, 0)
+#if SDL_VERSION_ATLEAST(2, 0, 0)
 			bool isTextInput = false;
 			if (event.type == SDL_TEXTINPUT) {
 				isTextInput = true;
@@ -1480,7 +1480,7 @@ bool SI_Game::new_game(Vga_file &shapes) {
 						npc_name[strlen(npc_name) - 1] = 0;
 					break;
 				default: {
-#if (SDL_VER_1_3) || SDL_VERSION_ATLEAST(2, 0, 0)
+#if SDL_VERSION_ATLEAST(2, 0, 0)
                                         if ((isTextInput && selected == 0) || (!isTextInput && keysym_unicode > (int)'~' && selected == 0))
 #else
 					if (selected == 0) // on the text input field?
