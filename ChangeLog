@@ -12,6 +12,8 @@
 	  dir to ucc. Also made usecode print an error if the destination cannot be
 	  opened (for example, due to being in a read-only location).
 	  making use of dup2 (when available) for safety.
+	* mapedit/execbox.cc: Eliminating all 3 -Wunused-result warnings. Also,
+	  making use of dup2 (when available) for safety.
 	* *.*: Eliminating all -Wsign-compare warnings not in audio code.
 	* files/zip/*.{cc,h}: Starting to make a proper C++ libminizip.
 
