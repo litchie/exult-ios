@@ -67,6 +67,11 @@ void BaseGameInfo::setup_game_paths() {
 	else
 		clear_system_path("<PATCH>");
 
+	if (is_system_path_defined("<" + mod_path_tag + "_SOURCE>"))
+		clone_system_path("<SOURCE>", "<" + mod_path_tag + "_SOURCE>");
+	else
+		clear_system_path("<SOURCE>");
+
 	if (type != EXULT_MENU_GAME) {
 		U7mkdir("<SAVEGAME>", 0755);    // make sure savegame directory exists
 		U7mkdir("<GAMEDAT>", 0755);     // make sure gamedat directory exists
@@ -102,7 +107,7 @@ ModInfo::ModInfo(
 	configfile = cfg;
 	Configuration modconfig(configfile, "modinfo");
 
-	string config_path, default_dir, modversion, savedir, patchdir, gamedatdir;
+	string config_path, default_dir, modversion, savedir, patchdir, sourcedir, gamedatdir;
 
 	config_path = "mod_info/mod_title";
 	default_dir = mod;
@@ -172,10 +177,15 @@ ModInfo::ModInfo(
 	config_path = "mod_info/patch";
 	default_dir = data_directory + "/patch";
 	modconfig.value(config_path, patchdir, default_dir.c_str());
-	// Path 'macros' for relative paths:
 	ReplaceMacro(patchdir, mods_macro, mods_dir);
 	ReplaceMacro(patchdir, mod_path_macro, data_directory);
 	add_system_path("<" + system_path_tag + "_PATCH>", get_system_path(patchdir));
+	// Where usecode source is found; defaults to same as patch.
+	config_path = "mod_info/source";
+	modconfig.value(config_path, sourcedir, default_dir.c_str());
+	ReplaceMacro(sourcedir, mods_macro, mods_dir);
+	ReplaceMacro(sourcedir, mod_path_macro, data_directory);
+	add_system_path("<" + system_path_tag + "_SOURCE>", get_system_path(sourcedir));
 
 	U7mkdir(mods_save_dir.c_str(), 0755);
 	U7mkdir(savedata_directory.c_str(), 0755);
@@ -202,11 +212,13 @@ ModInfo::ModInfo(
 	cout << "path prefix of " << cfgname << " mod " << mod_title
 	     << " is: " << system_path_tag << endl;
 	cout << "setting " << cfgname
-	     << " game directories to: " << get_system_path(gamedatdir) << endl;
+	     << " gamedat directory to: " << get_system_path(gamedatdir) << endl;
 	cout << "setting " << cfgname
-	     << " game directories to: " << get_system_path(savedir) << endl;
+	     << " savegame directory to: " << get_system_path(savedir) << endl;
 	cout << "setting " << cfgname
-	     << " game directories to: " << get_system_path(patchdir) << endl;
+	     << " patch directory to: " << get_system_path(patchdir) << endl;
+	cout << "setting " << cfgname
+	     << " source directory to: " << get_system_path(sourcedir) << endl;
 #endif
 }
 
@@ -398,7 +410,7 @@ ModManager::ModManager(const string &name, const string &menu, bool needtitle,
 	add_system_path("<" + path_prefix + "_STATIC>", static_dir);
 
 	{
-		string patch_dir, mods_dir, default_dir, config_path;
+		string src_dir, patch_dir, mods_dir, default_dir, config_path;
 
 		// <mods> setting: default is "$game_path/mods".
 		config_path = base_cfg_path + "/mods";
@@ -411,6 +423,11 @@ ModManager::ModManager(const string &name, const string &menu, bool needtitle,
 		default_dir = game_path + "/patch";
 		config->value(config_path.c_str(), patch_dir, default_dir.c_str());
 		add_system_path("<" + path_prefix + "_PATCH>", patch_dir);
+
+		// <source> setting: default is "$game_path/patch".
+		config_path = base_cfg_path + "/source";
+		config->value(config_path.c_str(), patch_dir, default_dir.c_str());
+		add_system_path("<" + path_prefix + "_SOURCE>", src_dir);
 #ifdef DEBUG_PATHS
 		if (!silent) {
 			cout << "path prefix of " << cfgname
@@ -421,6 +438,8 @@ ModManager::ModManager(const string &name, const string &menu, bool needtitle,
 			     << " patch directory to: " << patch_dir << endl;
 			cout << "setting " << cfgname
 			     << " modifications directory to: " << mods_dir << endl;
+			cout << "setting " << cfgname
+			     << " source directory to: " << src_dir << endl;
 		}
 #endif
 	}

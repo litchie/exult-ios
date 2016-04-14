@@ -118,6 +118,10 @@ int main(
 		return errs;
 	// Open output.
 	std::ofstream out(outname, ios::binary | ios::out);
+	if (!out.good()) {
+		std::cout << "Could not open output file '" << outname << "'!" << std::endl;
+		return 1;
+	}
 	Write4(out, UCSYMTBL_MAGIC0);   // Start with symbol table.
 	Write4(out, UCSYMTBL_MAGIC1);
 	std::vector<Uc_design_unit *>::iterator it;
