@@ -1,4 +1,6 @@
 2016-04-12	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* mapedit/execbox.cc: Eliminating all 3 -Wunused-result warnings. Also,
+	  making use of dup2 (when available) for safety.
 	* *.*: Eliminating all -Wsign-compare warnings not in audio code.
 	* files/zip/*.{cc,h}: Starting to make a proper C++ libminizip.
 

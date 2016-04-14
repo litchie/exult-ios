@@ -139,6 +139,21 @@ static void Close_pipes(
 	Close_pipe(p2);
 }
 
+static inline bool dup_wrapper(int pipe[2], int fd, bool for_read) {
+#ifdef HAVE_DUP2
+	// Atomic close+dup
+	if (dup2(pipe[for_read ? 0 : 1], fd) != fd) {
+#else
+	// May be subject to race conditions between close and dup
+	close(fd);
+	if (dup(pipe[for_read ? 0 : 1]) != fd) {
+#endif
+		return true;
+	}
+	Close_pipe(pipe); // Done with these.
+	return false;
+}
+
 /*
  *  Execute a new process.
  *
@@ -171,15 +186,12 @@ bool Exec_process::exec(
 		return false;
 	}
 	if (child_pid == 0) {   // Are we the child?
-		close(0);       // Want to read from the pipe.
-		dup(stdin_pipe[0]);
-		Close_pipe(stdin_pipe); // Done with these.
-		close(1);       // Write to stdout through pipe.
-		dup(stdout_pipe[1]);
-		Close_pipe(stdout_pipe);
-		close(2);       // Write to stderr through pipe.
-		dup(stderr_pipe[1]);
-		Close_pipe(stderr_pipe);
+		if (dup_wrapper(stdin_pipe , 0, true ) ||
+		    dup_wrapper(stdout_pipe, 1, false) ||
+		    dup_wrapper(stderr_pipe, 2, false)) {
+			Close_pipes(stdin_pipe, stdout_pipe, stderr_pipe);
+			return false;
+		}
 		execvp(file, argv); // Become the new command.
 		exit(-1);       // Gets here if exec failed.
 	}
