@@ -2129,7 +2129,7 @@ void Game_window::find_nearby_objects(Game_object_map_xy *mobjxy, int x, int y, 
 
 				ret = mobjxy->insert(std::pair<Game_object *, int *>(iobj, arrXY));
 				if (ret.second == false)
-					delete arrXY;
+					delete [] arrXY;
 			}
 		}
 	}
