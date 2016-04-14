@@ -1,5 +1,6 @@
 2016-04-12	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* *.*: Eliminating all -Wsign-compare warnings not in audio code.
+	* files/zip/*.{cc,h}: Starting to make a proper C++ libminizip.
 
 2016-04-14	Dominik Reichardt <dominus@users.sourceforge.net>
 	* configure.ac: The check for clang_on_apple was adding -stdlib=libc++ 
