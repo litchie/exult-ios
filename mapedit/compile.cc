@@ -70,8 +70,12 @@ void Ucc_done(
 ) {
 	ignore_unused_variable_warning(user_data);
 	if (exit_code == 0) {   // Success?
+		// TODO: Handle failure to write usecode file (e.g., due to a read-only
+		// destination).
 		ExultStudio::get_instance()->reload_usecode();
 		box->add_message("Reloaded usecode\n");
+	} else {
+		box->add_message("Compilation failed\n");
 	}
 }
 
@@ -111,11 +115,11 @@ void ExultStudio::close_compile_window(
 void ExultStudio::compile(
     bool if_needed          // Means check timestamps.
 ) {
-	// Get source (fixed, for now).
-	string source("<PATCH>/usecode.uc");
-	source = get_system_path(source);
-	string obj("<PATCH>/usecode");
-	obj = get_system_path(obj);
+	// Get source (specified in mod's cfg on mod_info/source).
+	string srcdir(get_system_path("<SOURCE>"));
+	string source(srcdir + "/usecode.uc");
+	string incdir("-I" + srcdir);
+	string obj = get_system_path("<PATCH>/usecode");
 	if (!U7exists(source)) {
 		if (!if_needed)
 			EStudio::Alert("Source '%s' doesn't exist",
@@ -129,8 +133,8 @@ void ExultStudio::compile(
 	argv[1] = "-o";         // Specify output.
 	argv[2] = obj.c_str();
 	argv[3] = source.c_str();   // What to compile.
-	// ++++++Which game type (SI/BG)?
-	argv[4] = 0;            // NULL.
+	argv[4] = incdir.c_str();   // Include dir
+	argv[5] = 0;            // NULL.
 	if (!compile_box->exec("ucc", const_cast<char **>(argv)))
 		EStudio::Alert("Error executing usecode compiler ('ucc')");
 }
