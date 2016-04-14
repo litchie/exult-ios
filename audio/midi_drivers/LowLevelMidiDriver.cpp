@@ -1342,7 +1342,7 @@ void LowLevelMidiDriver::loadTimbreLibrary(IDataSource *ds, TimbreLibraryType ty
 		{87, {0x04, 0x64, 0x08, 0x01}}
 	};
 
-	for (int ii = 0; ii < sizeof(default_rhythms)/sizeof(default_rhythms[0]); ii++) {
+	for (unsigned ii = 0; ii < sizeof(default_rhythms)/sizeof(default_rhythms[0]); ii++) {
 		loadRhythm(default_rhythms[ii].rhythm, default_rhythms[ii].note);
 	}
 

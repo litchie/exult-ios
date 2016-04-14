@@ -827,10 +827,10 @@ void Combo_chooser::unselect(
 
 void Combo_chooser::load(
 ) {
-	int cnt = combos.size();
-	for (int i = 0; i < cnt; i++)   // Delete all the combos.
+	unsigned cnt = combos.size();
+	for (unsigned i = 0; i < cnt; i++)   // Delete all the combos.
 		delete combos[i];
-	int num_combos = flex_info->size();
+	unsigned num_combos = flex_info->size();
 	// We need 'shapes.vga'.
 	Shape_file_info *svga_info =
 	    ExultStudio::get_instance()->get_vgafile();
@@ -840,7 +840,7 @@ void Combo_chooser::load(
 	if (!svga)
 		num_combos = 0;
 	// Read them all in.
-	for (int i = 0; i < num_combos; i++) {
+	for (unsigned i = 0; i < num_combos; i++) {
 		size_t len;
 		unsigned char *buf = reinterpret_cast<unsigned char *>(flex_info->get(i, len));
 		Combo *combo = new Combo(svga);

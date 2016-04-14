@@ -71,7 +71,7 @@ public:
 	Combo(const Combo &c2);     // Copy.
 	~Combo();
 	Combo_member *get(int i) {
-		return i >= 0 && i < members.size() ? members[i] : 0;
+		return i >= 0 && static_cast<unsigned>(i) < members.size() ? members[i] : 0;
 	}
 	// Add a new object.
 	void add(int tx, int ty, int tz, int shnum, int frnum, bool toggle);

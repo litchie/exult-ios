@@ -127,12 +127,12 @@ void Palette_edit::load(
 	for (vector<GdkRgbCmap *>::iterator it = palettes.begin();
 	        it != palettes.end(); ++it)
 		gdk_rgb_cmap_free(*it);
-	int cnt = flex_info->size();
+	unsigned cnt = flex_info->size();
 	palettes.resize(cnt);       // Set size of list.
 	if (!cnt)           // No palettes?
 		new_palette();      // Create 1 blank palette.
 	else {
-		for (int pnum = 0; pnum < cnt; pnum++) {
+		for (unsigned pnum = 0; pnum < cnt; pnum++) {
 			size_t len;
 			unsigned char *buf = reinterpret_cast<unsigned char *>(
 			                     flex_info->get(pnum, len));
@@ -637,7 +637,7 @@ void Palette_edit::enable_controls(
 		gtk_widget_set_sensitive(remove_btn, false);
 	} else {
 		gtk_widget_set_sensitive(down_btn,
-		                         cur_pal < palettes.size() - 1);
+		                         static_cast<unsigned>(cur_pal) < palettes.size() - 1);
 		gtk_widget_set_sensitive(up_btn, cur_pal > 0);
 		gtk_widget_set_sensitive(remove_btn, palettes.size() > 1);
 	}
@@ -813,7 +813,7 @@ void Palette_edit::move_palette(
 			flex_info->swap(cur_pal);// Update flex-file list.
 		}
 	} else {
-		if (cur_pal < palettes.size() - 1) {
+		if (static_cast<unsigned>(cur_pal) < palettes.size() - 1) {
 			tmp = palettes[cur_pal + 1];
 			palettes[cur_pal + 1] = palettes[cur_pal];
 			palettes[cur_pal] = tmp;
@@ -867,7 +867,7 @@ void Palette_edit::remove_palette(
 	palettes.erase(palettes.begin() + cur_pal);
 	flex_info->remove(cur_pal);
 	flex_info->set_modified();
-	if (cur_pal >= palettes.size())
+	if (static_cast<unsigned>(cur_pal) >= palettes.size())
 		cur_pal = palettes.size() - 1;
 	Update_range_upper(palnum_adj, palettes.size() - 1);
 	// This will update the display:

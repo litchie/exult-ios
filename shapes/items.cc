@@ -79,7 +79,7 @@ static inline void add_text_internal(vector<char *> &src, unsigned num, char con
  *  Get how many item names there are.
  */
 
-unsigned get_num_item_names() {
+int get_num_item_names() {
 	return item_names.size();
 }
 
@@ -101,7 +101,7 @@ void Set_item_name(unsigned num, char const *name) {
  *  Get how many text messages there are.
  */
 
-unsigned get_num_text_msgs() {
+int get_num_text_msgs() {
 	return text_msgs.size();
 }
 
@@ -123,7 +123,7 @@ void Set_text_msg(unsigned num, char const *msg) {
  *  Get how many misc names there are.
  */
 
-unsigned get_num_misc_names() {
+int get_num_misc_names() {
 	return misc_names.size();
 }
 
@@ -157,11 +157,11 @@ static void Setup_item_names(
 	vector<char *> msglist;
 	int first_msg;          // First in exultmsg.txt.  Should
 	//   follow those in text.flx.
-	unsigned total_msgs = 0;
-	unsigned num_item_names = 0, num_text_msgs = 0, num_misc_names = 0;
+	int total_msgs = 0;
+	int num_item_names = 0, num_text_msgs = 0, num_misc_names = 0;
 
 	items.seekg(0x54);
-	unsigned flxcnt = Read4(items);
+	int flxcnt = Read4(items);
 	first_msg = num_item_names = flxcnt;
 	if (flxcnt > 0x400) {
 		num_item_names = 0x400;
@@ -169,7 +169,7 @@ static void Setup_item_names(
 		if (flxcnt > 0x500) {
 			num_text_msgs = 0x100;
 			num_misc_names = flxcnt - 0x500;
-			unsigned last_name = si ? 0x686 : 0x600; // Discard all starting from this.
+			int last_name = si ? 0x686 : 0x600; // Discard all starting from this.
 			if (flxcnt > last_name) {
 				num_misc_names = last_name - 0x500;
 				flxcnt = last_name;
@@ -198,7 +198,7 @@ static void Setup_item_names(
 	bool doremap = si && !expansion;
 	if (doremap)
 		flxcnt -= 11;   // Just to be safe.
-	unsigned i;
+	int i;
 	for (i = 0; i < flxcnt; i++) {
 		items.seekg(0x80 + i * 8);
 		int itemoffs = Read4(items);

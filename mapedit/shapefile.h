@@ -166,7 +166,7 @@ public:
 		return npcs;
 	}
 	void setup();
-	bool read_npc(int num);
+	bool read_npc(unsigned num);
 };
 
 /*
@@ -183,15 +183,15 @@ public:
 	Flex_file_info(const char *bnm, const char *pnm,
 	               Flex *fl, Shape_group_file *g);
 	// Create for single-palette.
-	Flex_file_info(const char *bnm, const char *pnm, int size);
-	int size() {        // Get # flex entries.
+	Flex_file_info(const char *bnm, const char *pnm, unsigned size);
+	unsigned size() {        // Get # flex entries.
 		return entries.size();
 	}
-	char *get(int i, size_t &len);  // Get i'th entry.
+	char *get(unsigned i, size_t &len);  // Get i'th entry.
 	// Set i'th entry.
-	void set(int i, char *newentry, int entlen);
-	void swap(int i);       // Swap entries i, i+1.
-	void remove(int i);     // Remove i'th entry.
+	void set(unsigned i, char *newentry, int entlen);
+	void swap(unsigned i);       // Swap entries i, i+1.
+	void remove(unsigned i);     // Remove i'th entry.
 	virtual ~Flex_file_info();
 	virtual Object_browser *create_browser(Shape_file_info *vgafile,
 	                                       unsigned char *palbuf, Shape_group *g = 0);
@@ -217,7 +217,7 @@ public:
 	// Create, or return existing one.
 	Shape_file_info *create(const char *basename);
 	Shape_file_info *get_npc_browser();
-	int size() {
+	unsigned size() {
 		return files.size();
 	}
 	Shape_file_info *operator[](int i) {

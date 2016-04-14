@@ -230,7 +230,7 @@ Object_browser *Npcs_file_info::create_browser(
 /*
  *  Read in an NPC from Exult.
  */
-bool Npcs_file_info::read_npc(int num) {
+bool Npcs_file_info::read_npc(unsigned num) {
 	if (num > npcs.size())
 		npcs.resize(num + 1);
 	ExultStudio *studio = ExultStudio::get_instance();
@@ -334,7 +334,7 @@ Flex_file_info::Flex_file_info(
 Flex_file_info::Flex_file_info(
     const char *bnm,        // Basename,
     const char *pnm,        // Full pathname,
-    int size            // File size.
+    unsigned size           // File size.
 ) : Shape_file_info(bnm, pnm, 0), flex(0), write_flat(true) {
 	entries.resize(size > 0);
 	lengths.resize(entries.size());
@@ -364,10 +364,10 @@ Flex_file_info::~Flex_file_info(
  */
 
 char *Flex_file_info::get(
-    int i,
+    unsigned i,
     size_t &len
 ) {
-	if (i >= 0 && i < entries.size()) {
+	if (i < entries.size()) {
 		if (!entries[i]) {  // Read it if necessary.
 			entries[i] = flex->retrieve(i, len);
 			lengths[i] = len;
@@ -383,11 +383,11 @@ char *Flex_file_info::get(
  */
 
 void Flex_file_info::set(
-    int i,
+    unsigned i,
     char *newentry,         // Allocated data that we'll own.
     int entlen          // Length.
 ) {
-	if (i < 0 || i > entries.size())
+	if (i > entries.size())
 		return;
 	if (i == entries.size()) {  // Appending?
 		entries.push_back(newentry);
@@ -404,9 +404,9 @@ void Flex_file_info::set(
  */
 
 void Flex_file_info::swap(
-    int i
+    unsigned i
 ) {
-	assert(i >= 0 && i < entries.size() - 1);
+	assert(i < entries.size() - 1);
 	char *tmpent = entries[i];
 	int tmplen = lengths[i];
 	entries[i] = entries[i + 1];
@@ -420,9 +420,9 @@ void Flex_file_info::swap(
  */
 
 void Flex_file_info::remove(
-    int i
+    unsigned i
 ) {
-	assert(i >= 0 && i < entries.size());
+	assert(i < entries.size());
 	delete entries[i];      // Free memory.
 	entries.erase(entries.begin() + i);
 	lengths.erase(lengths.begin() + i);
