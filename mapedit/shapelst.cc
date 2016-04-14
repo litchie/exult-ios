@@ -192,12 +192,11 @@ void Shape_chooser::render(
 	int curr_y = -row0_voffset;
 	//int total_cnt = get_count();
 	//   filter (group).
-	for (int rownum = row0; curr_y  < winh && rownum < rows.size();
+	for (unsigned rownum = row0; curr_y  < winh && rownum < rows.size();
 	        ++rownum) {
 		Shape_row &row = rows[rownum];
-		int cols = get_num_cols(rownum);
-		assert(cols >= 0);
-		for (int index = row.index0; cols; --cols, ++index) {
+		unsigned cols = get_num_cols(rownum);
+		for (unsigned index = row.index0; cols; --cols, ++index) {
 			int shapenum = info[index].shapenum;
 			int framenum = info[index].framenum;
 			Shape_frame *shape = ifile->get_shape(shapenum,
@@ -260,7 +259,7 @@ static int Get_x_offset(
 void Shape_chooser::setup_info(
     bool savepos            // Try to keep current position.
 ) {
-	int oldind = rows[row0].index0;
+	unsigned oldind = rows[row0].index0;
 	info.resize(0);
 	rows.resize(0);
 	row0 = row0_voffset = 0;
@@ -339,9 +338,9 @@ void Shape_chooser::setup_frames_info(
 ) {
 	// Get drawing area dimensions.
 	int curr_y = 0, maxw = 0;
-	int total_cnt = get_count();
+	unsigned total_cnt = get_count();
 	//   filter (group).
-	for (int index = index0; index < total_cnt; index++) {
+	for (unsigned index = index0; index < total_cnt; index++) {
 		int shapenum = group ? (*group)[index] : index;
 		// Get all frames.
 		Shape *shape = ifile->extract_shape(shapenum);
@@ -409,19 +408,19 @@ void Shape_chooser::scroll_to_frame(
  */
 
 void Shape_chooser::goto_index(
-    int index           // Desired index in 'info'.
+    unsigned index           // Desired index in 'info'.
 ) {
-	if (index < 0 || index >= info.size())
+	if (index >= info.size())
 		return;         // Illegal index or empty chooser.
 	Shape_entry &inf = info[index]; // Already in view?
-	int midx = inf.box.x + inf.box.w / 2;
-	int midy = inf.box.y + inf.box.h / 2;
+	unsigned midx = inf.box.x + inf.box.w / 2;
+	unsigned midy = inf.box.y + inf.box.h / 2;
 	Rectangle winrect(hoffset, voffset, config_width, config_height);
 	if (winrect.has_point(midx, midy))
 		return;
-	int start = 0, count = rows.size();
+	unsigned start = 0, count = rows.size();
 	while (count > 1) {     // Binary search.
-		int mid = start + count / 2;
+		unsigned mid = start + count / 2;
 		if (index < rows[mid].index0)
 			count = mid - start;
 		else {
@@ -445,15 +444,15 @@ int Shape_chooser::find_shape(
     int shnum
 ) {
 	if (group) {        // They're not ordered.
-		int cnt = info.size();
-		for (int i = 0; i < cnt; ++i)
+		unsigned cnt = info.size();
+		for (unsigned i = 0; i < cnt; ++i)
 			if (info[i].shapenum == shnum)
 				return i;
 		return -1;
 	}
-	int start = 0, count = info.size();
+	unsigned start = 0, count = info.size();
 	while (count > 1) {     // Binary search.
-		int mid = start + count / 2;
+		unsigned mid = start + count / 2;
 		if (shnum < info[mid].shapenum)
 			count = mid - start;
 		else {
@@ -592,8 +591,8 @@ gint Shape_chooser::mouse_press(
 		return(TRUE);
 	}
 	int old_selected = selected, new_selected = -1;
-	int i;              // Search through entries.
-	int infosz = info.size();
+	unsigned i;              // Search through entries.
+	unsigned infosz = info.size();
 	int absx = static_cast<int>(event->x) + hoffset, absy = static_cast<int>(event->y) + voffset;
 	for (i = rows[row0].index0; i < infosz; i++) {
 		if (info[i].box.distance(absx, absy) <= 2) {
@@ -1769,7 +1768,7 @@ gint Shape_chooser::drag_begin(
  */
 
 void Shape_chooser::scroll_row_vertical(
-    int newrow          // Abs. index of row to show.
+    unsigned newrow          // Abs. index of row to show.
 ) {
 	if (newrow >= rows.size())
 		return;
@@ -1813,7 +1812,7 @@ void Shape_chooser::scroll_vertical(
 			delta += row0_voffset;
 			row0_voffset = 0;
 		} else {
-			if (row0 <= 0)
+			if (row0 == 0)
 				break;
 			--row0;
 			row0_voffset = 0;
@@ -1930,7 +1929,7 @@ void Shape_chooser::all_frames_toggled(
 		gtk_widget_hide(chooser->hscroll);
 	// The old index is no longer valid, so we need to remember the shape.
 	int indx = chooser->selected >= 0 ? chooser->selected
-	           : chooser->rows[chooser->row0].index0;
+	           : static_cast<int>(chooser->rows[chooser->row0].index0);
 	int shnum = chooser->info[indx].shapenum;
 	chooser->selected = -1;
 	chooser->setup_info();
@@ -2162,7 +2161,7 @@ void Shape_chooser::search(
 	ExultStudio *studio = ExultStudio::get_instance();
 	shapes_file->read_info(studio->get_game_type(), true);
 	// Start with selection, or top.
-	int start = selected >= 0 ? selected : rows[row0].index0;
+	int start = selected >= 0 ? selected : static_cast<int>(rows[row0].index0);
 	int i;
 	start += dir;
 	int stop = dir == -1 ? -1 : static_cast<int>(info.size());

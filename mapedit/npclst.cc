@@ -115,12 +115,11 @@ void Npc_chooser::render(
 	int curr_y = -row0_voffset;
 	//int total_cnt = get_count();
 	//   filter (group).
-	for (int rownum = row0; curr_y  < winh && rownum < rows.size();
+	for (unsigned rownum = row0; curr_y  < winh && rownum < rows.size();
 	        ++rownum) {
 		Npc_row &row = rows[rownum];
-		int cols = get_num_cols(rownum);
-		assert(cols >= 0);
-		for (int index = row.index0; cols; --cols, ++index) {
+		unsigned cols = get_num_cols(rownum);
+		for (unsigned index = row.index0; cols; --cols, ++index) {
 			int npcnum = info[index].npcnum;
 			int shapenum = npcs[npcnum].shapenum;
 			Shape_frame *shape = ifile->get_shape(shapenum, 0);
@@ -147,7 +146,7 @@ void Npc_chooser::render(
 void Npc_chooser::setup_info(
     bool savepos            // Try to keep current position.
 ) {
-	int oldind = rows[row0].index0;
+	unsigned oldind = rows[row0].index0;
 	info.resize(0);
 	rows.resize(0);
 	row0 = row0_voffset = 0;
@@ -222,9 +221,9 @@ void Npc_chooser::setup_shapes_info(
  */
 
 void Npc_chooser::goto_index(
-    int index           // Desired index in 'info'.
+    unsigned index           // Desired index in 'info'.
 ) {
-	if (index < 0 || index >= info.size())
+	if (index >= info.size())
 		return;         // Illegal index or empty chooser.
 	Npc_entry &inf = info[index];   // Already in view?
 	int midx = inf.box.x + inf.box.w / 2;
@@ -232,9 +231,9 @@ void Npc_chooser::goto_index(
 	Rectangle winrect(0, voffset, config_width, config_height);
 	if (winrect.has_point(midx, midy))
 		return;
-	int start = 0, count = rows.size();
+	unsigned start = 0, count = rows.size();
 	while (count > 1) {     // Binary search.
-		int mid = start + count / 2;
+		unsigned mid = start + count / 2;
 		if (index < rows[mid].index0)
 			count = mid - start;
 		else {
@@ -264,9 +263,9 @@ int Npc_chooser::find_npc(
 				return i;
 		return -1;
 	}
-	int start = 0, count = info.size();
+	unsigned start = 0, count = info.size();
 	while (count > 1) {     // Binary search.
-		int mid = start + count / 2;
+		unsigned mid = start + count / 2;
 		if (npcnum < info[mid].npcnum)
 			count = mid - start;
 		else {
@@ -403,8 +402,8 @@ gint Npc_chooser::mouse_press(
 		return(TRUE);
 	}
 	int old_selected = selected, new_selected = -1;
-	int i;              // Search through entries.
-	int infosz = info.size();
+	unsigned i;              // Search through entries.
+	unsigned infosz = info.size();
 	int absx = static_cast<int>(event->x), absy = static_cast<int>(event->y) + voffset;
 	for (i = rows[row0].index0; i < infosz; i++) {
 		if (info[i].box.has_point(absx, absy)) {
@@ -652,7 +651,7 @@ void Npc_chooser::enable_drop(
  */
 
 void Npc_chooser::scroll_row_vertical(
-    int newrow          // Abs. index of row to show.
+    unsigned newrow          // Abs. index of row to show.
 ) {
 	if (newrow >= rows.size())
 		return;
@@ -776,12 +775,12 @@ void Npc_chooser::search(
 		return;         // Empty.
 	vector<Estudio_npc> &npcs = get_npcs();
 	// Start with selection, or top.
-	int start = selected >= 0 ? selected : rows[row0].index0;
+	int start = selected >= 0 ? selected : static_cast<int>(rows[row0].index0);
 	int i;
 	start += dir;
 	int stop = dir == -1 ? -1 : static_cast<int>(info.size());
 	for (i = start; i != stop; i += dir) {
-		int npcnum = info[i].npcnum;
+		unsigned npcnum = info[i].npcnum;
 		const char *nm = npcnum < npcs.size() ?
 		                 npcs[npcnum].name.c_str() : 0;
 		if (nm && search_name(nm, srch))

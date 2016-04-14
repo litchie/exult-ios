@@ -29,17 +29,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include  <iosfwd>
 
 // The game items' names.
-unsigned get_num_item_names();
+int get_num_item_names();
 char const *get_item_name(unsigned num);
 void Set_item_name(unsigned num, char const *name);
 
 // Msgs. (0x400 - ).
-unsigned get_num_text_msgs();
+int get_num_text_msgs();
 char const *get_text_msg(unsigned num);
 void Set_text_msg(unsigned num, char const *msg);
 
 // Frames, etc (0x500 - 0x5ff/0x685 (BG/SI)).
-unsigned get_num_misc_names();
+int get_num_misc_names();
 char const *get_misc_name(unsigned num);
 void Set_misc_name(unsigned num, char const *name);
 

@@ -58,8 +58,8 @@ public:
 class Shape_row {
 	friend class Shape_chooser;
 	short height;           // In pixels.
-	long y;             // Absolute y-coord. in pixels.
-	int index0;         // Index of 1st Shape_entry in row.
+	long y;                 // Absolute y-coord. in pixels.
+	unsigned index0;        // Index of 1st Shape_entry in row.
 public:
 	Shape_row() : height(0)
 	{  }
@@ -77,7 +77,7 @@ class Shape_chooser: public Object_browser, public Shape_draw {
 	int framenum0;          // Default frame # to display.
 	std::vector<Shape_entry> info;  // Pos. of each shape/frame.
 	std::vector<Shape_row> rows;
-	int row0;           // Row # at top of window.
+	unsigned row0;          // Row # at top of window.
 	int row0_voffset;       // Vert. pos. (in pixels) of top row.
 	long total_height;      // In pixels, for all rows.
 	int last_shape;         // Last shape visible in window.
@@ -108,11 +108,11 @@ class Shape_chooser: public Object_browser, public Shape_draw {
 	void setup_frames_info();
 	void scroll_to_frame();     // Scroll so sel. frame is visible.
 	int find_shape(int shnum);  // Find index for given shape.
-	void goto_index(int index); // Get desired index in view.
+	void goto_index(unsigned index); // Get desired index in view.
 	virtual int get_selected_id() {
 		return selected < 0 ? -1 : info[selected].shapenum;
 	}
-	void scroll_row_vertical(int newrow);
+	void scroll_row_vertical(unsigned newrow);
 	void scroll_vertical(int newindex); // Scroll.
 	void setup_vscrollbar();    // Set new scroll amounts.
 	void setup_hscrollbar(int newmax);
@@ -150,7 +150,7 @@ public:
 		return (1);
 	}
 #endif
-	int get_num_cols(int rownum) {
+	unsigned get_num_cols(unsigned rownum) {
 		return ((rownum < rows.size() - 1) ? rows[rownum + 1].index0
 		        : info.size()) - rows[rownum].index0;
 	}

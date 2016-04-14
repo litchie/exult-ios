@@ -59,8 +59,8 @@ public:
 class Npc_row {
 	friend class Npc_chooser;
 	short height;           // In pixels.
-	long y;             // Absolute y-coord. in pixels.
-	int index0;         // Index of 1st Npc_entry in row.
+	long y;                 // Absolute y-coord. in pixels.
+	unsigned index0;        // Index of 1st Npc_entry in row.
 public:
 	Npc_row() : height(0)
 	{  }
@@ -74,7 +74,7 @@ class Npc_chooser: public Object_browser, public Shape_draw {
 	guint sbar_sel;         // Status bar context for selection.
 	std::vector<Npc_entry> info;    // Pos. of each shape/frame.
 	std::vector<Npc_row> rows;
-	int row0;           // Row # at top of window.
+	unsigned row0;          // Row # at top of window.
 	int row0_voffset;       // Vert. pos. (in pixels) of top row.
 	long total_height;      // In pixels, for all rows.
 	int last_npc;           // Last shape visible in window.
@@ -97,11 +97,11 @@ class Npc_chooser: public Object_browser, public Shape_draw {
 	virtual void setup_info(bool savepos = true);
 	void setup_shapes_info();
 	int find_npc(int npcnum);   // Find index for given NPC.
-	void goto_index(int index); // Get desired index in view.
+	void goto_index(unsigned index); // Get desired index in view.
 	virtual int get_selected_id() {
 		return selected;
 	}
-	void scroll_row_vertical(int newrow);
+	void scroll_row_vertical(unsigned newrow);
 	void scroll_vertical(int newindex); // Scroll.
 	void setup_vscrollbar();    // Set new scroll amounts.
 	virtual GtkWidget *create_popup();  // Popup menu.
@@ -123,7 +123,7 @@ public:
 	void set_selected_callback(void (*fun)()) {
 		sel_changed = fun;
 	}
-	int get_num_cols(int rownum) {
+	unsigned get_num_cols(unsigned rownum) {
 		return ((rownum < rows.size() - 1) ? rows[rownum + 1].index0
 		        : info.size()) - rows[rownum].index0;
 	}

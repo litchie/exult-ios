@@ -1,3 +1,6 @@
+2016-04-12	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* *.*: Eliminating all -Wsign-compare warnings not in audio code.
+
 2016-04-14	Dominik Reichardt <dominus@users.sourceforge.net>
 	* configure.ac: The check for clang_on_apple was adding -stdlib=libc++ 
 	  which is only available on OS X 10.7 and newer.
