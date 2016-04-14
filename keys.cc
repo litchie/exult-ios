@@ -385,7 +385,7 @@ void KeyBinder::AddKeyBinding(SDLKey key, int mod, const Action *action,
 	SDL_keysym k;
 	ActionType a;
 
-#if defined(SDL_VER_1_3) || SDL_VERSION_ATLEAST(2, 0, 0)
+#if SDL_VERSION_ATLEAST(2, 0, 0)
 	k.scancode = static_cast<SDL_Scancode>(0);
 #else
 	k.scancode = 0;

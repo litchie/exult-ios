@@ -1923,10 +1923,8 @@ static int Get_click(
 				case SDLK_RGUI:
 				case SDLK_LGUI:
 #else
-   #ifndef SDL_VER_1_3
 				case SDLK_RMETA:
 				case SDLK_LMETA:
-   #endif
 				case SDLK_RSUPER:
 				case SDLK_LSUPER:
 #endif

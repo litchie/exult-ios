@@ -522,13 +522,10 @@ int Gump_manager::handle_modal_gump_event(
 	case SDL_QUIT:
 		if (okay_to_quit())
 			return (0);
-#if (SDL_VER_1_3) || SDL_VERSION_ATLEAST(2, 0, 0)
+#if SDL_VERSION_ATLEAST(2, 0, 0)
 	case SDL_TEXTINPUT:
 		event.key.keysym.sym = SDLK_UNKNOWN;
 		keysym_unicode = event.text.text[0];
-   #if !(SDL_VERSION_ATLEAST(2, 0, 0))
-		event.key.keysym.unicode = event.text.text[0];
-   #endif
 #endif
 	case SDL_KEYDOWN: {
 		if (event.key.keysym.sym == SDLK_ESCAPE)
@@ -545,12 +542,9 @@ int Gump_manager::handle_modal_gump_event(
 		gump->key_down((event.key.keysym.mod & KMOD_SHIFT)
 		               ? toupper(chr) : chr, event);
 #else
-   #if (SDL_VER_1_3) || SDL_VERSION_ATLEAST(2, 0, 0)
+   #if SDL_VERSION_ATLEAST(2, 0, 0)
 		if (event.key.keysym.sym != 0 && event.key.keysym.sym > (int)'~') {
 			keysym_unicode = event.key.keysym.sym;
-      #if !(SDL_VERSION_ATLEAST(2, 0, 0))
-			event.key.keysym.unicode = keysym_unicode;
-      #endif
 		}
    #else
 		keysym_unicode = event.key.keysym.unicode;

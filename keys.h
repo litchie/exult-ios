@@ -20,10 +20,6 @@
 #define KEYS_H
 
 #include "sdl-compat.h"
-#ifdef SDL_VER_1_3
-#include "SDL_stdinc.h"
-#include "SDL_scancode.h"
-#endif
 
 #include "SDL_events.h"
 #include "game.h"
