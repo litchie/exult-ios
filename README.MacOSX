@@ -68,6 +68,7 @@ a released version, you also need to install these packages with Fink:
 Or these with MacPorts:
   automake
   libtool
+  pkgconfig
   
 (for the experts: old versions of the automake package should also work,
 e.g. you could also use automake1.10 or automake1.9).
