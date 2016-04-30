@@ -67,8 +67,7 @@ using namespace std;
 #define SEEK_SET    0
 #endif
 
-const char zip_copyright[] =
-    " zip 0.15 Copyright 1998 Gilles Vollant ";
+//const char zip_copyright[] = " zip 0.15 Copyright 1998 Gilles Vollant ";
 
 
 #define SIZEDATA_INDATABLOCK (4096-(4*4))

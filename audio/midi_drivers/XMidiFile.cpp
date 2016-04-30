@@ -373,7 +373,7 @@ const char XMidiFile::gmasmt32[128] =
 // MT32 SysEx
 //
 static const uint32 sysex_data_start = 7;		// Data starts at byte 7
-static const uint32 sysex_max_data_size = 256;
+//static const uint32 sysex_max_data_size = 256;
 
 
 //
@@ -384,7 +384,7 @@ static const uint32 rhythm_base = 0x030110;	// Note, these are 7 bit!
 static const uint32 rhythm_mem_size = 4;
 
 static const uint32 rhythm_first_note = 24;
-static const uint32 rhythm_num_notes = 64;
+//static const uint32 rhythm_num_notes = 64;
 
 // Memory offset based on index in the table
 static inline uint32 rhythm_mem_offset(uint32 index_num) { 
@@ -446,7 +446,7 @@ static const PatchMemData patch_template = {
 // System Area Consts
 //
 static const uint32 system_base = 0x100000;	// Note, these are 7 bit!
-static const uint32 system_mem_size = 0x17;	// Display is 20 ASCII characters (32-127)
+//static const uint32 system_mem_size = 0x17;	// Display is 20 ASCII characters (32-127)
 #include <cstddef>
 #ifndef offsetof	// Broken <cstddef>? Just in case...
 #   define offsetof(type, field) reinterpret_cast<uintptr>(&(static_cast<type *>(0)->field))

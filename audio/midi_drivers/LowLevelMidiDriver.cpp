@@ -58,7 +58,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // MT32 SysEx
 //
 static const uint32 sysex_data_start = 7;		// Data starts at byte 7
-static const uint32 sysex_max_data_size = 256;
+//static const uint32 sysex_max_data_size = 256;
 
 
 //
@@ -69,7 +69,7 @@ static const uint32 rhythm_base = 0x030110;	// Note, these are 7 bit!
 static const uint32 rhythm_mem_size = 4;
 
 static const uint32 rhythm_first_note = 24;
-static const uint32 rhythm_num_notes = 64;
+//static const uint32 rhythm_num_notes = 64;
 
 // Memory offset based on index in the table
 static inline uint32 rhythm_mem_offset(uint32 index_num) { 
@@ -97,7 +97,7 @@ static inline uint32 timbre_mem_offset(uint32 timbre_num) { return timbre_num * 
 //
 static const uint32 patch_temp_base = 0x030000;
 static const uint32 patch_temp_size = 16;
-static inline uint32 patch_temp_offset(uint32 patch_num) { return patch_num * 16; }
+static inline uint32 patch_temp_offset(uint32 patch_num) { return patch_num * patch_temp_size; }
 
 
 //
