@@ -638,7 +638,7 @@ int Usecode_internal::get_face_shape(
 	npc = as_actor(get_item(arg1));
 	int shape = -1;
 	if (arg1.is_int()) {
-		shape = abs(arg1.get_int_value());
+		shape = std::abs(arg1.get_int_value());
 		if (shape == 356)   // Avatar.
 			shape = 0;
 	} else if (npc)
