@@ -54,7 +54,7 @@ extern "C" {
 #include "zlib.h"
 #endif
 
-class unz_s;
+struct unz_s;
 typedef unz_s *unzFile;
 
 #define UNZ_OK                                  (0)

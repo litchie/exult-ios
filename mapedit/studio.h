@@ -44,7 +44,7 @@ using std::map;
 
 class Shape_info;
 class Shapes_vga_file;
-class Equip_row_widgets;
+struct Equip_row_widgets;
 class Shape_file_set;
 class Shape_file_info;
 class Shape_group_file;

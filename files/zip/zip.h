@@ -58,7 +58,7 @@ extern "C" {
 #include "zlib.h"
 #endif
 
-class zip_internal;
+struct zip_internal;
 typedef zip_internal *zipFile;
 
 #define ZIP_OK                                  (0)
