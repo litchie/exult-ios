@@ -99,14 +99,14 @@ struct RGBColor {
 	}
 	// See http://www.compuphase.com/cmetric.htm
 	int dist(RGBColor<Manip_pixels, tol> const &other) const {
-		return abs(dr - other.dr) +
-		       abs(dg - other.dg) +
-		       abs(db - other.db);
+		return abs(static_cast<int>(dr - other.dr)) +
+		       abs(static_cast<int>(dg - other.dg)) +
+		       abs(static_cast<int>(db - other.db));
 	}
 	bool equals(RGBColor<Manip_pixels, tol> const &other) const {
-		return abs(dr - other.dr) <= (tol *  9)
-		       && abs(dg - other.dg) <= (tol * 16)
-		       && abs(db - other.db) <= (tol *  4);
+		return abs(static_cast<int>(dr - other.dr)) <= (tol *  9)
+		       && abs(static_cast<int>(dg - other.dg)) <= (tol * 16)
+		       && abs(static_cast<int>(db - other.db)) <= (tol *  4);
 	}
 	template <unsigned int N, unsigned int M>
 	inline void blend(RGBColor<Manip_pixels, tol> const &other) {
