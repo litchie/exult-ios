@@ -1,4 +1,7 @@
 2016-04-29	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* imagewin/*, usecode/compiler/uclex.ll: Eliminating all of clang's
+	  -Wdeprecated-register ("exactly as meaningful as whitespace" according to
+	  http://www.drdobbs.com/184403859).
 	* imagewin/scale_xbr.h, usecode/ucinternal.cc: Eliminating all of clang's
 	  -Wabsolute-value (unsigned - unsigned is unsigned).
 	* audio/midi_drivers/XMidiFile.cpp, gameclk.cc: Eliminated all of clang's

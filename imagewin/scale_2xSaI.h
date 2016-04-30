@@ -229,7 +229,7 @@ void Scale_2xSaI(
 					//product2 = colorA;
 					manip.copy(product2, colorA);
 				} else {
-					register int r = 0;
+					int r = 0;
 					//product1 = INTERPOLATE(colorA, colorC);
 					product1 = Interpolate_2xSaI< Source_pixel,  Dest_pixel,  Manip_pixels>(colorA, colorC, manip);
 					//product = INTERPOLATE(colorA, colorB);
@@ -403,7 +403,7 @@ void Scale_Super2xSaI(
 				manip.copy(product2b, color5);
 				product1b = product2b;
 			} else if (color5 == color3 && color2 == color6) {
-				register int r = 0;
+				int r = 0;
 
 				//r += GetResult (color6, color5, color1, colorA1);
 				//r += GetResult (color6, color5, color4, colorB1);
@@ -657,7 +657,7 @@ void Scale_SuperEagle(
 				}
 
 			} else if (color5 == color3 && color2 == color6) {
-				register int r = 0;
+				int r = 0;
 
 				//r += GetResult (color6, color5, color1, colorA1);
 				//r += GetResult (color6, color5, color4, colorB1);
