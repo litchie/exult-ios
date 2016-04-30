@@ -1088,6 +1088,10 @@ USECODE_INTRINSIC(remove_npc) {
 		modified_map = true;
 		// Don't want him/her coming back!
 		npc->set_schedule_type(Schedule::wait);
+		// Fixes #1892 SI: sacrificed Dupre back in party
+		// Might be able to always clear ident, but this is safer
+		if (npc->get_ident() == Schedule::follow_avatar)
+			npc->set_ident(0);
 		gwin->add_dirty(npc);
 		npc->remove_this(1);    // Remove, but don't delete.
 	}
