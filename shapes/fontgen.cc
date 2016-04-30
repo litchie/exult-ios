@@ -252,7 +252,15 @@ static bool Gen_font_shape_win32(
 #if defined(HAVE_FREETYPE2)
 
 #include <ft2build.h>
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wold-style-cast"
+#pragma GCC diagnostic ignored "-Wcast-qual"
+#endif  // __GNUC__
 #include FT_FREETYPE_H
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif  // __GNUC__
 
 /*
  *  Fill a shape with each frame containing the glyph for its ASCII
