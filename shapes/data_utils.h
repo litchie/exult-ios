@@ -357,6 +357,7 @@ protected:
 	Transform postread;
 	virtual void read_data(std::istream &in, size_t index, int version,
 	                       bool patch, Exult_Game game, bool binary) {
+		ignore_unused_variable_warning(index, binary);
 		reader(in, version, patch, game, info);
 		postread(in, version, patch, game, info);
 	}
@@ -450,6 +451,7 @@ class Binary_pair_reader_functor {
 public:
 	bool operator()(std::istream &in, int version, bool patch,
 	                Exult_Game game, Info &info) {
+		ignore_unused_variable_warning(version, patch, game);
 		in.read(reinterpret_cast<char *>(&(info.*data1)), sizeof(T1));
 		in.read(reinterpret_cast<char *>(&(info.*data2)), sizeof(T2));
 		if (pad)    // Skip some bytes.
@@ -770,6 +772,7 @@ class Binary_writer_functor {
 	Flag_check_functor<flag, Info> check;
 public:
 	void operator()(std::ostream &out, int index, Exult_Game game, Info &info) {
+		ignore_unused_variable_warning(game);
 		Write2(out, index);
 		out.write(reinterpret_cast<char *>(&(info.*data)), sizeof(T));
 		for (int i = 0; i < pad; i++)
