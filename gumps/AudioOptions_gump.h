@@ -65,12 +65,16 @@ private:
 	int midi_looping;
 	int sfx_enabled;
 	int sfx_package;
+#ifdef ENABLE_MIDISFX
 	int sfx_conversion;
+#endif
 	int speech_enabled;
 
 	// Auxiliary variables for digital SFX packages:
 	int nsfxopts, nsfxpacks;
+#ifdef ENABLE_MIDISFX
 	int midi_state;
+#endif
 	bool have_config_pack, have_roland_pack, have_blaster_pack,
 	     have_midi_pack, have_custom_pack;
 	std::string sfx_custompack;

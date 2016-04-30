@@ -237,20 +237,6 @@ public:
 };
 
 /*
- *  Compare user conversation response to a given string (or list of
- *  strings.
- */
-class Uc_response_expression : public Uc_expression {
-	Uc_expression *operand;
-public:
-	Uc_response_expression(Uc_expression *r)
-		: operand(r)
-	{  }
-	// Gen. code to put result on stack.
-	virtual void gen_value(Basic_block *out);
-};
-
-/*
  *  Integer value.
  */
 class Uc_int_expression : public Uc_expression {

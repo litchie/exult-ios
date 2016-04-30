@@ -1,4 +1,6 @@
 2016-04-29	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* *.*: Eliminating all of clang's -Wunused-private-field. Removed obsolete
+	  Uc_response_expression class from UCC.
 	* usecode/compiler/uclex.ll: Eliminating -Wunknown-pragmas in clang (it does
 	  not have -Wuseless-cast); eliminating -Wunneeded-internal-declaration from
 	  clang due to flex' internal yyinput declaration.

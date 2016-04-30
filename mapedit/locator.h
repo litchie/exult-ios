@@ -33,7 +33,7 @@ class Locator {
 	GtkWidget *draw;        // GTK draw area to display.
 	GdkGC *drawgc;          // For drawing in 'draw'.
 	GtkAdjustment *hadj, *vadj; // For horiz., vert. scales.
-	int tx, ty, txs, tys, scale;    // Current Exult win. info. in tiles.
+	int tx, ty, txs, tys/*, scale*/;    // Current Exult win. info. in tiles.
 	GdkRectangle viewbox;       // Where view box was last drawn.
 	bool dragging;          // True if dragging view box.
 	int drag_relx, drag_rely;   // Mouse pos. rel to view box.

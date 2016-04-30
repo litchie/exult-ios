@@ -206,7 +206,7 @@ Flex_writer::Flex_writer(
     const char *title,          ///< Flex title.
     size_t cnt,             ///< Number of entries we'll write.
     Flex::Flex_vers vers    ///< Version of flex file.
-) : out(&o), dout(0), count(cnt), index(0) {
+) : out(&o), dout(0), count(cnt) {
 	// Write out header.
 	StreamDataSource ds(out);
 	Flex::write_header(&ds, title, count, vers);
@@ -223,7 +223,7 @@ Flex_writer::Flex_writer(
     const char *title,          ///< Flex title.
     size_t cnt,             ///< Number of entries we'll write.
     Flex::Flex_vers vers    ///< Version of flex file.
-) : out(0), dout(o), count(cnt), index(0) {
+) : out(0), dout(o), count(cnt) {
 	// Write out header.
 	Flex::write_header(dout, title, count, vers);
 	// Create table.
