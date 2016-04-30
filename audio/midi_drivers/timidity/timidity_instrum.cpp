@@ -445,7 +445,7 @@ static Instrument *load_instrument(char *name, int percussion,
 			/* convert to machine byte order */
 		{
 			sint32 i=sp->data_length/2;
-			sint16 *tmp=(sint16 *)sp->data,s;
+			sint16 *tmp=reinterpret_cast<sint16 *>(sp->data),s;
 			while (i--)
 			{ 
 				s=LE_SHORT(*tmp);
