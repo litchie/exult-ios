@@ -1,4 +1,7 @@
 2016-04-29	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* usecode/compiler/uclex.ll: Eliminating -Wunknown-pragmas in clang (it does
+	  not have -Wuseless-cast); eliminating -Wunneeded-internal-declaration from
+	  clang due to flex' internal yyinput declaration.
 	* imagewin/*, usecode/compiler/uclex.ll: Eliminating all of clang's
 	  -Wdeprecated-register ("exactly as meaningful as whitespace" according to
 	  http://www.drdobbs.com/184403859).
