@@ -1,4 +1,6 @@
 2016-04-29	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* mapedit/shapelst.cc, shapes/fontgen.cc: Eliminated -Wold-style-cast which
+	  were found by clang.
 	* files/zip/*.h,mapedit/studio.h: Fixing clang's -Wmismatched-tags warnings.
 	* shapes/data_utils.h: Fixed left-over -Wunused-parameter warnings (found by
 	  clang).

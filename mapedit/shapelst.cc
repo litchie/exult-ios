@@ -2103,8 +2103,8 @@ on_export_tiles_okay_clicked(GtkButton       *button,
                              gpointer         user_data) {
 	ignore_unused_variable_warning(user_data);
 	GtkWidget *win = gtk_widget_get_toplevel(GTK_WIDGET(button));
-	Shape_chooser *chooser = (Shape_chooser *)
-	                         gtk_object_get_user_data(GTK_OBJECT(win));
+	Shape_chooser *chooser = static_cast<Shape_chooser *>(
+	                         gtk_object_get_user_data(GTK_OBJECT(win)));
 	ExultStudio *studio = ExultStudio::get_instance();
 	int tiles = studio->get_spin("export_tiles_count");
 	bool bycol = studio->get_toggle("tiled_by_columns");
