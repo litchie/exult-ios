@@ -393,7 +393,7 @@ static inline uint32 rhythm_mem_offset(uint32 index_num) {
 
 // Memory offset based on note key num
 static inline uint32 rhythm_mem_offset_note(uint32 rhythm_note_num) { 
-	return (rhythm_note_num-rhythm_first_note) * 4; 
+	return rhythm_mem_offset(rhythm_note_num-rhythm_first_note); 
 }
 
 struct RhythmSetupData {

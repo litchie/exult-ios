@@ -29,17 +29,21 @@
 #include "cheat.h"
 #include "game.h"
 
+#if 0
 static inline bool is_light_palette(int pal) {
 	return (pal == PALETTE_SINGLE_LIGHT || pal == PALETTE_MANY_LIGHTS);
 }
+#endif
 
 static inline bool is_dark_palette(int pal) {
 	return (pal == PALETTE_DUSK || pal == PALETTE_NIGHT);
 }
 
+#if 0
 static inline bool is_weather_palette(int pal) {
 	return (pal == PALETTE_OVERCAST || pal == PALETTE_FOG);
 }
+#endif
 
 static inline bool is_day_palette(int pal) {
 	return (pal == PALETTE_DAWN || pal == PALETTE_DAY);
