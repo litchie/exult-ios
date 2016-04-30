@@ -454,17 +454,6 @@ bool Uc_unary_expression::eval_const(
 }
 
 /*
- *  Can't use this expression just anywhere.
- */
-
-void Uc_response_expression::gen_value(
-    Basic_block *out
-) {
-	ignore_unused_variable_warning(out);
-	error("Must use UcResponse in 'if (UcResponse == ...)'");
-}
-
-/*
  *  Generate code to evaluate expression and leave result on stack.
  */
 

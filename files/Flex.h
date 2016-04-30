@@ -109,7 +109,6 @@ class Flex_writer {
 	long cur_start;         // Start of cur. entry being written.
 	uint8 *table;           // Table of offsets & lengths.
 	uint8 *tptr;            // ->into table.
-	int index;          // Current index.
 public:
 	Flex_writer(std::ofstream &o, const char *title, size_t cnt,
 	            Flex::Flex_vers vers = Flex::orig);

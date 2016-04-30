@@ -125,14 +125,13 @@ public:
  *  Schedule is implemented as Usecode functions.
  */
 class Scripted_schedule : public Schedule {
-	int type;           // Sched. type (so we can get name).
 	Usecode_value *inst;        // Usecode schedule instance.
 	// Usecode function #'s:
 	int now_what_id, im_dormant_id, ending_id, set_weapon_id, set_bed_id,
 	    notify_object_gone_id;
 	void run(int id);
 public:
-	Scripted_schedule(Actor *n, int ty);
+	Scripted_schedule(Actor *n, int type);
 	virtual ~Scripted_schedule();
 	virtual void now_what() {
 		run(now_what_id);
@@ -255,7 +254,6 @@ class Patrol_schedule : public Schedule {
 	vector<Game_object *> paths; // Each 'path' object.
 	int pathnum;            // # of next we're heading towards.
 	int dir;                // 1 or -1;
-	int failures;           // # of failures to find marker.
 	int state;              // The patrol state.
 	Tile_coord center;      // For 'loiter' and 'pace' path eggs.
 	char whichdir;          // For 'pace' path eggs.

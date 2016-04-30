@@ -177,13 +177,11 @@ public:
 };
 
 class Voice_egg : public Egg_object {
-	unsigned short speechnum;
 public:
 	Voice_egg(int shnum, int frnum, unsigned int tx, unsigned int ty,
 	          unsigned int tz, unsigned short itype,
 	          unsigned char prob, uint16 d1)
-		: Egg_object(shnum, frnum, tx, ty, tz, itype, prob, d1, 0),
-		  speechnum(d1)
+		: Egg_object(shnum, frnum, tx, ty, tz, itype, prob, d1, 0)
 	{  }
 	virtual void hatch_now(Game_object *obj, bool must) {
 		ignore_unused_variable_warning(obj, must);

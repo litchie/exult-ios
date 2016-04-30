@@ -334,9 +334,9 @@ static int find_method(Usecode_class_symbol *cls, const char *meth, bool noerr) 
 
 Scripted_schedule::Scripted_schedule(
     Actor *n,
-    int ty
-) : Schedule(n), type(ty) {
-	char *nm = Schedule_change::get_script_name(ty);
+    int type
+) : Schedule(n) {
+	char *nm = Schedule_change::get_script_name(type);
 	Usecode_class_symbol *cls = ucmachine->get_class(nm);
 	if (!cls) {
 		cerr << "Could not find scripted schedule '" << nm <<
@@ -924,7 +924,7 @@ void Preach_schedule::now_what(
 
 Patrol_schedule::Patrol_schedule(
     Actor *n
-) : Schedule(n), pathnum(-1), dir(1), failures(0), state(-1),
+) : Schedule(n), pathnum(-1), dir(1), state(-1),
 	center(0, 0, 0), whichdir(0), phase(1), pace_count(0), hammer(0),
 	book(0), seek_combat(false), forever(false) {
 	if (num_path_eggs < 0) {
