@@ -1,4 +1,6 @@
 2016-04-29	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* audio/midi_drivers/XMidiFile.cpp, gameclk.cc: Eliminated all of clang's
+	  -Wunused-function.
 	* audio/midi_drivers/*.cpp, files/zip/zip.cc: Eliminated all of clang's
 	  -Wunused-const-variables.
 	* mapedit/shapelst.cc, shapes/fontgen.cc: Eliminated -Wold-style-cast which
