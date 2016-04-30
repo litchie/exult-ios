@@ -354,7 +354,7 @@ void Image_buffer8::copy_transparent8(
 	int from_next = src_width - srcw;
 	while (srch--) {        // Do each line.
 		for (int cnt = srcw; cnt; cnt--, to++) {
-			register int chr = *from++;
+			int chr = *from++;
 			if (chr)
 				*to = chr;
 		}
