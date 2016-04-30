@@ -1,5 +1,10 @@
+2016-04-29	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* shapes/data_utils.h: Fixed left-over -Wunused-parameter warnings (found by
+	  clang).
+
 2016-04-30	Phillip T. George <github@me.phillipgeorge.com>
 	* Fixed #1892 SI: sacrificed Dupre back in party
+
 2016-04-14	Dominik Reichardt <dominus@users.sourceforge.net>
 	* *.*: Removed support for using Autotools to build iOS. Better use the 
 	  Exult fork at https://github.com/litchie/exult-ios which provides an 
