@@ -359,7 +359,7 @@ ModManager::ModManager(const string &name, const string &menu, bool needtitle,
 		if (!silent)
 			cout << "found game with identity '" << static_identity << "'" << endl;
 	} else { // New game still under development.
-		static_identity = "DEVEL GAME";
+		static_identity = newstrdup("DEVEL GAME");
 		if (!silent)
 			cout << "but it wasn't there." << endl;
 	}

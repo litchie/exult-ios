@@ -1317,7 +1317,7 @@ const char *Game_window::get_game_identity_zip(
 	// Find IDENTITY, ignoring case.
 	if (unzLocateFile(unzipfile, "identity", 2) != UNZ_OK) {
 		unzClose(unzipfile);
-		return "*";     // Old game.  Return wildcard.
+		return newstrdup("*");     // Old game.  Return wildcard.
 	}
 	// Open the file in the zip
 	if (unzOpenCurrentFile(unzipfile) != UNZ_OK) {
