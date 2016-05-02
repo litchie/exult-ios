@@ -1,3 +1,7 @@
+2016-05-02	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* *.*: Fixing memory leaks found by clang's static analyzer. The remaining
+	  "leaks" it finds are not actual leaks.
+
 2016-04-30	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* audio/midi_drivers/timidity/timidity_instrum.cpp: Eliminated one case of
 	  -Wold-style-cast found by clang static analyzer.

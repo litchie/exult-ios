@@ -627,6 +627,7 @@ Shape_file_info *Shape_file_set::create(
 		U7open(in, fullname);
 		in.seekg(0, std::ios::end); // Figure size.
 		int sz = in.tellg();
+		delete groups;
 		return append(new Flex_file_info(basename, fullname, sz));
 	} else {            // Not handled above?
 		// Get image file for this path.
@@ -634,6 +635,8 @@ Shape_file_info *Shape_file_set::create(
 		if (ifile->is_good())
 			return append(new Image_file_info(basename, fullname,
 			                                  ifile, groups));
+		else
+			delete groups;
 		delete ifile;
 	}
 	cerr << "Error opening image file '" << basename << "'.\n";

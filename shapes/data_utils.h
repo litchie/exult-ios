@@ -549,8 +549,11 @@ static void Read_text_data_file(
 			                 static_strings, sections, numsections);
 			in.close();
 		} catch (std::exception &e) {
-			if (!editing)
+			if (!editing) {
+				for (int i = 0; i < numsections; i++)
+					delete parsers[i];
 				throw e;
+			}
 			static_strings.resize(numsections);
 		}
 	}
@@ -872,8 +875,12 @@ static void Write_text_data_file(
 	int cnt = 0;
 	for (int i = 0; i < numsections; i++)
 		cnt += writers[i]->check();
-	if (!cnt)   // Nothing to do.
+	if (!cnt) {
+		// Nothing to do but delete the writers.
+		for (int i = 0; i < numsections; i++)
+			delete writers[i];
 		return;
+	}
 	std::ofstream out;
 	char buf[50];
 	snprintf(buf, 50, "<PATCH>/%s.txt", fname);

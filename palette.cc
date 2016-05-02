@@ -495,7 +495,7 @@ void Palette::create_palette_map(Palette *to, unsigned char *&buf) {
  */
 
 Palette *Palette::create_intermediate(Palette *to, int nsteps, int pos) {
-	unsigned char *palnew = new unsigned char[768];
+	unsigned char palnew[768];
 	if (fades_enabled) {
 		for (int c = 0; c < 768; c++)
 			palnew[c] = ((to->pal1[c] - pal1[c]) * pos) / nsteps + pal1[c];

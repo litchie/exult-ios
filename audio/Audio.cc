@@ -470,47 +470,52 @@ Audio::~Audio()
 	self = 0;
 }
 
-void	Audio::copy_and_play(const uint8 *sound_data,uint32 len, bool wait)
+void Audio::copy_and_play(const uint8 *sound_data, uint32 len, bool wait)
 {
 	uint8 *new_sound_data = new uint8[len];
-	std::memcpy(new_sound_data,sound_data,len);
-	play(new_sound_data ,len,wait);
+	std::memcpy(new_sound_data, sound_data, len);
+	play(new_sound_data, len, wait);
 }
 
-void	Audio::play(uint8 *sound_data,uint32 len, bool wait)
+void Audio::play(uint8 *sound_data, uint32 len, bool wait)
 {
 	ignore_unused_variable_warning(wait);
-	if (!audio_enabled || !speech_enabled || !len) return;
+	if (!audio_enabled || !speech_enabled || !len) {
+		delete [] sound_data;
+		return;
+	}
 
-	AudioSample *audio_sample = AudioSample::createAudioSample(sound_data,len);
+	AudioSample *audio_sample = AudioSample::createAudioSample(sound_data, len);
 
-	if (audio_sample)
-	{
+	if (audio_sample) {
 		mixer->playSample(audio_sample,0,128);
 		audio_sample->Release();
 	}
 
 }
 
-void	Audio::cancel_streams(void)
+void Audio::cancel_streams(void)
 {
-	if (!audio_enabled) return;
+	if (!audio_enabled)
+		return;
 
 	//Mix_HaltChannel(-1);
 	mixer->reset();
 
 }
 
-void	Audio::pause_audio(void)
+void Audio::pause_audio(void)
 {
-	if (!audio_enabled) return;
+	if (!audio_enabled)
+		return;
 
 	mixer->setPausedAll(true);
 }
 
 void 	Audio::resume_audio(void)
 {
-	if (!audio_enabled) return;
+	if (!audio_enabled)
+		return;
 
 	mixer->setPausedAll(false);
 }
@@ -525,8 +530,7 @@ void Audio::playfile(const char *fname, const char *fpatch, bool wait)
 
 	size_t len;
 	uint8 *buf = reinterpret_cast<uint8*>(sample.retrieve(len));
-	if (!buf || len == 0)
-	{
+	if (!buf || len == 0) {
 		// Failed to find file in patch or static dirs.
 		CERR("Audio::playfile: Error reading file '" << fname << "'");
 		delete [] buf;
