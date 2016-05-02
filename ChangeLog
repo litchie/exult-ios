@@ -1,4 +1,6 @@
 2016-05-02	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* gumps/Face_stats.{cc,h}: Some reformatting. Made Face_stats into a proper
+	  singleton-pattern class.
 	* *.*: Fixing memory leaks found by clang's static analyzer. The remaining
 	  "leaks" it finds are not actual leaks.
 
