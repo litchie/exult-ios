@@ -855,15 +855,19 @@ bool MyMidiPlayer::ogg_play_track(std::string filename, int num, bool repeat)
 	cout << "OGG audio: Music track " << ogg_name << endl;
 #endif
 
-	std::ifstream *stream;
+	std::ifstream *stream = 0;
 	try {
 		stream = new std::ifstream(ogg_name.c_str(), std::ios::in | std::ios::binary);
 	}
 	catch (std::exception &) {
+		delete stream;
 		return false;
 	}
 
-	if (!stream->good()) return false;
+	if (!stream->good()) {
+		delete stream;
+		return false;
+	}
 
 	IDataSource *ds = new IFileDataSource(stream);
 
