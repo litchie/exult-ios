@@ -200,8 +200,10 @@ int Portrait_button::on_button(int x, int y) {
 
 void Portrait_button::update_widget() {
 	Face_button::update_widget();
-	if (hp) hp->update_widget();
-	if (mana) mana->update_widget();
+	if (hp)
+		hp->update_widget();
+	if (mana)
+		mana->update_widget();
 
 	if (hit != actor->was_hit() ||
 	        pois != actor->get_flag(Obj_flags::poisoned) ||
@@ -255,13 +257,16 @@ void Portrait_button::paint() {
 		}
 	}
 
-	if (hp) hp->paint();
-	if (mana) mana->paint();
+	if (hp)
+		hp->paint();
+	if (mana)
+		mana->paint();
 }
 
 Rectangle Portrait_button::get_rect() {
 	Rectangle rect = Face_button::get_rect();
-	if (hit || pois || prot || para || charm || curse) rect.enlarge(2);
+	if (hit || pois || prot || para || charm || curse)
+		rect.enlarge(2);
 
 	if (hp) {
 		Rectangle r = hp->get_rect();
@@ -280,8 +285,6 @@ Rectangle Portrait_button::get_rect() {
  */
 
 Face_stats::Face_stats() : Gump(0, 0, 0, 0, SF_GUMPS_VGA) {
-	if (self) throw exult_exception("Only 1 Set of Party Portraits Allowed!");
-
 	for (int i = 1; i < 8; i++) {
 		npc_nums[i] = -1;
 		party[i] = 0;
@@ -289,8 +292,6 @@ Face_stats::Face_stats() : Gump(0, 0, 0, 0, SF_GUMPS_VGA) {
 
 
 	create_buttons();
-
-	self = this;
 }
 
 Face_stats::~Face_stats() {
@@ -325,8 +326,8 @@ Gump_button *Face_stats::on_button(int mx, int my) {
 
 // add dirty region, if dirty
 void Face_stats::update_gump() {
-		for (int i = 0; i < 8; i++)
-			if (party[i]) party[i]->update_widget();
+	for (int i = 0; i < 8; i++)
+		if (party[i]) party[i]->update_widget();
 }
 
 // Delete all the buttons
@@ -373,8 +374,10 @@ void Face_stats::create_buttons() {
 			++num_to_paint;
 	}
 
-	if (mode == 0) pos = 0;
-	else if (mode == 1) pos = (resx - (num_to_paint + 1) * PORTRAIT_WIDTH) / 2;
+	if (mode == 0)
+		pos = 0;
+	else if (mode == 1)
+		pos = (resx - (num_to_paint + 1) * PORTRAIT_WIDTH) / 2;
 	else if (mode == 2) {
 		pos = resx - PORTRAIT_WIDTH;
 		width = - PORTRAIT_WIDTH;
@@ -411,9 +414,9 @@ void Face_stats::create_buttons() {
 }
 
 bool Face_stats::has_point(int x, int y) {
-
 	for (int i = 0; i < 8; i++)
-		if (party[i] && party[i]->on_button(x, y)) return true;
+		if (party[i] && party[i]->on_button(x, y))
+			return true;
 
 	return false;
 }
@@ -434,21 +437,19 @@ int Face_stats::add(
     bool combine            // True to try to combine obj.  MAY
     //   cause obj to be deleted.
 ) {
-	if (sx < 0 && sy < 0 && my < 0 && mx < 0) return 0;
-
+	if (sx < 0 && sy < 0 && my < 0 && mx < 0)
+		return 0;
 
 	for (int i = 0; i < 8; i++)
 		if (party[i] && party[i]->on_button(mx, my))
-			return party[i]->get_actor()->add(obj, dont_check,
-			                                  combine);
+			return party[i]->get_actor()->add(obj, dont_check, combine);
 
 	return (0);
 }
 
 Container_game_object *Face_stats::find_actor(int mx, int my) {
-
 	for (int i = 0; i < 8; i++) if (party[i] && party[i]->on_button(mx, my))
-			return party[i]->get_actor();
+		return party[i]->get_actor();
 
 	return 0;
 }
@@ -461,26 +462,28 @@ Face_stats *Face_stats::self = 0;
 // Creates if doesn't already exist
 void Face_stats::CreateGump() {
 	if (!self) {
-		new Face_stats();
+		self = new Face_stats();
 		gumpman->add_gump(self);
 	}
 }
 
 // Removes is exists
 void Face_stats::RemoveGump() {
-	if (self) gumpman->close_gump(self);
-	//delete self;
+	if (self)
+		gumpman->close_gump(self);
 }
 
 // Increments the state of the gump
 void Face_stats::AdvanceState() {
-	if (!self) CreateGump();
+	if (!self)
+		CreateGump();
 	else {
 		RemoveGump();
 
 		mode++;
 		mode %= PORTRAIT_NUM_MODES;
-		if (mode) CreateGump();
+		if (mode)
+			CreateGump();
 	}
 }
 
@@ -495,10 +498,7 @@ void Face_stats::UpdateButtons() {
 }
 
 void Face_stats::save_config(Configuration *config) {
-	if (self)
-		config->set("config/gameplay/facestats", mode, true);
-	else
-		config->set("config/gameplay/facestats", -1, true);
+	config->set("config/gameplay/facestats", self ? mode : -1, true);
 }
 
 void Face_stats::load_config(Configuration *config) {
