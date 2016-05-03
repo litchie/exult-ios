@@ -259,6 +259,8 @@ void Chunk_terrain::free_rendered_flats(
 #ifdef HAVE_OPENGL
 	if (rotation && glflats && !glflats->has_palette_rotation())
 		return;
+#else
+	ignore_unused_variable_warning(rotation);
 #endif
 	delete rendered_flats;
 	rendered_flats = 0;

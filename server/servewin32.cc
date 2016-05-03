@@ -30,6 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "servemsg.h"
 #include "servewin32.h"
 #include "utils.h"
+#include "ignore_unused_variable_warning.h"
 
 using std::cout;
 using std::cerr;
@@ -96,10 +97,12 @@ bool OpenPortFile(const char *path, bool writing) {
 
 // Hack functions
 int write(int file, const void *v, unsigned int len) {
+	ignore_unused_variable_warning(file);
 	return send(gDataSocket, reinterpret_cast<const char *>(v), len, 0);
 }
 
 int read(int file, void *v, unsigned int len) {
+	ignore_unused_variable_warning(file);
 	if (len == 0) return 0;
 	return recv(gDataSocket, reinterpret_cast<char *>(v), len, 0);;
 	/*
@@ -114,6 +117,7 @@ int read(int file, void *v, unsigned int len) {
 }
 
 int close(int file) {
+	ignore_unused_variable_warning(file);
 	return 0;
 }
 
@@ -172,6 +176,7 @@ void setup_connect() {
 }
 
 bool try_connect_to_client(const char *path) {
+	ignore_unused_variable_warning(path);
 	// returns size of data waiting, -1 if disconnected
 	fd_set rfds;
 	FD_ZERO(&rfds);

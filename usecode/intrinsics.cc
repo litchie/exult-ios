@@ -1492,6 +1492,8 @@ public:
 		// Get coords. for centered view.
 		x = (scale * gwin->get_win()->get_full_width() - w) / 2;
 		y = (scale * gwin->get_win()->get_full_height() - h) / 2;
+#else
+	ignore_unused_variable_warning(alpha, scale);
 #endif
 	}
 	virtual ~Paint_rgba_centered() {

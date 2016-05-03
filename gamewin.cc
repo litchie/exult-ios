@@ -301,6 +301,8 @@ void Set_renderer(
 			glman->resized(win->get_full_width(), win->get_full_height(),
 			               win->get_scale_factor());
 	}
+#else
+	ignore_unused_variable_warning(pal, resize);
 #endif
 	// Tell shapes how to render.
 	Shape_frame::set_to_render(win->get_ib8(), glman);
@@ -366,6 +368,8 @@ bool Set_glpalette(Palette *pal, bool rotation) {
 		GL_manager::get_instance()->set_palette(pal, rotation);
 		return true;
 	}
+#else
+	ignore_unused_variable_warning(pal, rotation);
 #endif
 	return false;
 }

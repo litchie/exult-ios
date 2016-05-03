@@ -13,6 +13,7 @@
 
 #include "windrag.h"
 #include "u7drag.h"
+#include "ignore_unused_variable_warning.h"
 
 static UINT CF_EXULT = RegisterClipboardFormat("ExultData");
 
@@ -97,6 +98,7 @@ Windnd::DragEnter(IDataObject *pDataObject,
                   DWORD grfKeyState,
                   POINTL pt,
                   DWORD *pdwEffect) {
+	ignore_unused_variable_warning(grfKeyState, pt);
 	if (!is_valid(pDataObject)) {
 		*pdwEffect = DROPEFFECT_NONE;
 	} else {
@@ -151,6 +153,7 @@ STDMETHODIMP
 Windnd::DragOver(DWORD grfKeyState,
                  POINTL pt,
                  DWORD *pdwEffect) {
+	ignore_unused_variable_warning(grfKeyState);
 	*pdwEffect = DROPEFFECT_COPY;
 	// Todo
 
@@ -209,6 +212,7 @@ Windnd::Drop(IDataObject *pDataObject,
              DWORD grfKeyState,
              POINTL pt,
              DWORD *pdwEffect) {
+	ignore_unused_variable_warning(grfKeyState);
 	*pdwEffect = DROPEFFECT_COPY;
 
 	// retrieve the dragged data
@@ -301,6 +305,8 @@ Windropsource::Windropsource(HBITMAP pdrag_bitmap, int x0, int y0)
 	if (FAILED(drag_shape)) {
 		g_warning("Create Window FAILED !");
 	}
+#else
+	ignore_unused_variable_warning(x0, y0);
 #endif
 }
 
@@ -362,6 +368,7 @@ STDMETHODIMP
 Windropsource::GiveFeedback(
     DWORD dwEffect
 ) {
+	ignore_unused_variable_warning(dwEffect);
 	return DRAGDROP_S_USEDEFAULTCURSORS;
 }
 
@@ -443,6 +450,7 @@ Winstudioobj::GetDataHere(
     FORMATETC *pFormatetc,
     STGMEDIUM *pmedium
 ) {
+	ignore_unused_variable_warning(pFormatetc, pmedium);
 	return DATA_E_FORMATETC;
 }
 
@@ -464,6 +472,7 @@ Winstudioobj::GetCanonicalFormatEtc(
     FORMATETC *pFormatetcIn,
     FORMATETC *pFormatetcOut
 ) {
+	ignore_unused_variable_warning(pFormatetcIn);
 	pFormatetcOut->ptd = NULL;
 	return E_NOTIMPL;
 }
@@ -474,6 +483,7 @@ Winstudioobj::SetData(
     STGMEDIUM *pmedium,
     BOOL fRelease
 ) {
+	ignore_unused_variable_warning(pFormatetc, pmedium, fRelease);
 	return E_NOTIMPL;
 }
 
@@ -483,21 +493,23 @@ Winstudioobj::EnumFormatEtc(
     IEnumFORMATETC **ppenumFormatetc
 ) {
 	SCODE sc = S_OK;
-	FORMATETC fmtetc;
-
-	fmtetc.cfFormat = CF_EXULT;
-	fmtetc.dwAspect = DVASPECT_CONTENT;
-	fmtetc.tymed = TYMED_HGLOBAL;
-	fmtetc.ptd = NULL;
-	fmtetc.lindex = -1;
 
 	if (dwDirection == DATADIR_GET) {
 		std::cout << "EnumFmt" << std::endl;
+		ignore_unused_variable_warning(*ppenumFormatetc);
 		// I was too lazy to implement still another OLE2 interface just for something
 		//  we don't even use. This function is supposed to be called by a drop target
 		//  to find out if it can accept the provided data type. I suppose with
 		//  E_NOTIMPL, other drop targets don't care about Exult data.
-		/**ppenumFormatetc = OleStdEnumFmtEtc_Create(1, &fmtetc);
+		/*
+		FORMATETC fmtetc;
+		fmtetc.cfFormat = CF_EXULT;
+		fmtetc.dwAspect = DVASPECT_CONTENT;
+		fmtetc.tymed = TYMED_HGLOBAL;
+		fmtetc.ptd = NULL;
+		fmtetc.lindex = -1;
+
+		*ppenumFormatetc = OleStdEnumFmtEtc_Create(1, &fmtetc);
 		if (*ppenumFormatetc == NULL)
 		sc = E_OUTOFMEMORY;*/
 		sc = E_NOTIMPL;
@@ -524,6 +536,7 @@ Winstudioobj::DAdvise(
     IAdviseSink *pAdvSink,
     DWORD *pdwConnection
 ) {
+	ignore_unused_variable_warning(pFormatetc, advf, pAdvSink, pdwConnection);
 	return OLE_E_ADVISENOTSUPPORTED;
 }
 
@@ -531,6 +544,7 @@ STDMETHODIMP
 Winstudioobj::DUnadvise(
     DWORD dwConnection
 ) {
+	ignore_unused_variable_warning(dwConnection);
 	return OLE_E_ADVISENOTSUPPORTED;
 }
 
@@ -538,6 +552,7 @@ STDMETHODIMP
 Winstudioobj::EnumDAdvise(
     IEnumSTATDATA **ppenumAdvise
 ) {
+	ignore_unused_variable_warning(*ppenumAdvise);
 	return OLE_E_ADVISENOTSUPPORTED;
 }
 

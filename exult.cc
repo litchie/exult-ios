@@ -533,6 +533,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	cleanup_output("std");
 
 	GlobalFree(reinterpret_cast<HGLOBAL>(argv));
+	ignore_unused_variable_warning(hInstance, hPrevInstance, lpCmdLine, nShowCmd);
 
 	return  res;
 }
