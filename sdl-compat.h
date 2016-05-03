@@ -16,7 +16,7 @@
 #define SDL_UpdateRect(a,b,c,d,e) UpdateRect(a,b,c,d,e) // Should only be called from Image_window
 #define SDL_SETCOLORS(a,b,c,d) SDL_SetPaletteColors(a->format->palette,b,c,d)
 #define SDL_BYTEORDERH "SDL_endian.h"
-#define SDL_EnableUNICODE(a) 0 // Doesn't need to be ran anymore with SDL 2
+#define SDL_EnableUNICODE(a) do {} while(0) // Doesn't need to be ran anymore with SDL 2
 #define SDL_SETEVENTFILTER(a) SDL_SetEventFilter(a,0);
 #define SDLMod SDL_Keymod
 #define SDL_keysym SDL_Keysym

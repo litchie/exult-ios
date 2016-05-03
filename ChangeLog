@@ -1,3 +1,6 @@
+2016-05-03	Malignant Manor <malignantmanor@users.sourceforge.net>
+	* Fix various unused warning specific to SDL2, !HAVE_OPENGL, and Windows
+
 2016-05-02	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* actors.h, audio/midi_drivers/XMidiSequence.cpp, gumps/Gump.cc: Fixing a
 	  handful of dead assignments found by clang's static analyzer.

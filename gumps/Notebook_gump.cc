@@ -639,7 +639,7 @@ bool Notebook_gump::handle_kbd_event(
 	SDL_Event &ev = *reinterpret_cast<SDL_Event *>(vev);
 	int chr = ev.key.keysym.sym;
 #if SDL_VERSION_ATLEAST(2, 0, 0)
-	int unicode = 0; // Unicode is way different in SDL2
+	//int unicode = 0; // Unicode is way different in SDL2
 #else	
 	int unicode = ev.key.keysym.unicode;
 #endif

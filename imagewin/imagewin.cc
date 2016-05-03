@@ -380,11 +380,6 @@ void Image_window::static_init() {
 
 	/* Get available fullscreen/hardware modes */
 	for (size_t i = 0; i < sizeof(bpps) / sizeof(bpps[0]); i++) {
-		SDL_PixelFormat *pformat = 0;
-		if (bpps[i]) {
-			format.BitsPerPixel = bpps[i];
-			pformat = &format;
-		}
 #if SDL_VERSION_ATLEAST(2, 0, 0)
 		for (int j = 0; j < SDL_GetNumDisplayModes(0); j++) {
 			SDL_DisplayMode dispmode;
@@ -398,6 +393,11 @@ void Image_window::static_init() {
 			}
 		}	
 #else
+		SDL_PixelFormat *pformat = 0;
+		if (bpps[i]) {
+			format.BitsPerPixel = bpps[i];
+			pformat = &format;
+		}
 		SDL_Rect **modes = SDL_ListModes(pformat, SDL_FULLSCREEN | SDL_SWSURFACE | ((bpps[i] == 8) ? SDL_HWPALETTE : 0));
 
 		// No mode for this bpp
@@ -1337,12 +1337,14 @@ void Image_window::UpdateRect(SDL_Surface *surf, int x, int y, int w, int h)
 	// Seem to get flicker like crazy or some other ill effect no matter
 	// what I try. -Lanica 08/28/2013
 	SDL_UpdateTexture(screen_texture, NULL, surf->pixels, surf->pitch);
-	SDL_Rect destRect = {x, y, w, h};
+	ignore_unused_variable_warning(x, y, w, h);
+	//SDL_Rect destRect = {x, y, w, h};
 	SDL_RenderCopy(screen_renderer, screen_texture, NULL, NULL);
 	SDL_RenderPresent(screen_renderer);
 }
 int Image_window::VideoModeOK(int width, int height, int bpp, Uint32 flags)
 {
+	ignore_unused_variable_warning(bpp, flags);
 	int nbpp;
 	Uint32 Rmask, Gmask, Bmask, Amask;
  	for (int j = 0; j < SDL_GetNumDisplayModes(0); j++)

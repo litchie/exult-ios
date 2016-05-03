@@ -473,6 +473,8 @@ static Shape_frame *create_exultlogo(int logox, int logoy, Vga_file &exult_flx, 
 		delete buf;
 		return exultlogo;
 	}
+#else
+	ignore_unused_variable_warning(logox, logoy, exult_flx, font);
 #endif
 	return 0;
 }

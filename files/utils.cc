@@ -511,8 +511,10 @@ int U7mkdir(
 	int nLen = std::strlen(n) + 1;
 	LPTSTR lpszT = (LPTSTR) alloca(nLen * 2);
 	MultiByteToWideChar(CP_ACP, 0, n, -1, lpszT, nLen);
+	ignore_unused_variable_warning(mode);
 	return CreateDirectory(lpszT, NULL);
 #elif defined(WIN32)
+	ignore_unused_variable_warning(mode);
 	return mkdir(name.c_str());
 #else
 	return mkdir(name.c_str(), mode); // Create dir. if not already there.
