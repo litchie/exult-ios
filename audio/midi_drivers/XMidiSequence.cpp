@@ -445,7 +445,6 @@ void XMidiSequence::applyShadow(int i)
 void XMidiSequence::setVolume(int new_volume)
 {
 	vol_multi = new_volume;
-	new_volume = -1;
 
 	// Only update used channels
 	for (int i = 0; i < 16; i++) if (evntlist->chan_mask & (1 << i)) {

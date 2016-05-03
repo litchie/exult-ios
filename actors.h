@@ -300,7 +300,7 @@ public:
 		if (funid < 0) {
 			usecode_assigned = false;
 			usecode_name.clear();
-			funid = -1;
+			usecode = -1;
 			return;
 		}
 		if (nm)
