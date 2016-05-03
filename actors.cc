@@ -1049,9 +1049,8 @@ int Actor::get_attack_frames(
     int dir,            // 0-7 (as in dir.h).
     signed char *frames         // Frames stored here.
 ) const {
-	signed char baseframes[4];
-	const signed char *which = baseframes;
-	int cnt = 4;
+	const signed char *which;
+	int cnt = 0;
 	if (is_slime())
 		return 0;
 	else if (get_info().has_strange_movement()) {

@@ -221,8 +221,11 @@ bool Exec_process::exec(
 bool Exec_process::check_child(
     int &exit_code          // Exit code returned.
 ) {
-	if (child_pid < 0)
-		return false;       // No child.
+	if (child_pid < 0) {
+		// No child.
+		exit_code = -1;
+		return false;
+	}
 	int status;
 	// Don't wait.
 	int ret = waitpid(child_pid, &status, WNOHANG);
