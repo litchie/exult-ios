@@ -1,4 +1,6 @@
 2016-05-02	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* actors.h, audio/midi_drivers/XMidiSequence.cpp, gumps/Gump.cc: Fixing a
+	  handful of dead assignments found by clang's static analyzer.
 	* actors.cc, exult.cc, mapedit/execbox.cc: Fixing uninitialized argument
 	  warnings from clang's static analyzer.
 	* gamedat.cc, gamemgr/modmgr.cc: Fixing delete of static data, found with

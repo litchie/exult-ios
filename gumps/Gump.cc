@@ -164,7 +164,6 @@ Game_object *Gump::find_object(
 			if (s->has_point(mx - ox, my - oy))
 				list[cnt++] = obj;
 		}
-		obj = obj->get_next();
 	}
 	// ++++++Return top item.
 	return (cnt ? list[cnt - 1] : 0);
