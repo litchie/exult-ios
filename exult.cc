@@ -2336,8 +2336,8 @@ void setup_video(bool fullscreen, int setup_video_type, int resx, int resy,
 		set_config = true;
 	bool share_settings;
 	config->value("config/video/share_video_settings", share_settings, true);
-	const string &vidStr = (fullscreen || share_settings) ?
-	                       "config/video" : "config/video/window";
+	const string vidStr((fullscreen || share_settings) ?
+	                       "config/video" : "config/video/window");
 	if (read_config) {
 #ifdef DEBUG
 		cout << "Reading video menu adjustable configuration options" << endl;
