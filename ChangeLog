@@ -1,5 +1,6 @@
 2016-05-04	Malignant Manor <malignantmanor@users.sourceforge.net>
-	* exult.cc: fix comparison between signed and unsigned integer.
+	* exult.cc: fix comparison between signed and unsigned integer. Fix unused
+	  function warnings.
 	* imagewin/imagewin.cc: Remove SDL 1.2 code from SDL 2 build.
 	* mapedit/*, shapes/fontgen.cc: remove Windows unused parameter warnings.
 

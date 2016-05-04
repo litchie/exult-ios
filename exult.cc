@@ -125,7 +125,7 @@ using std::string;
 using std::vector;
 #endif
 
-#if defined(WIN32) || (defined(MACOSX) && defined(USE_EXULTSTUDIO))
+#if SDL_VERSION_ATLEAST(2, 0, 0) && (defined(WIN32) || (defined(MACOSX) && defined(USE_EXULTSTUDIO)))
 
 static int SDLCALL SDL_putenv(const char *_var) {
     char *ptr = NULL;
