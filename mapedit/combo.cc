@@ -1336,6 +1336,7 @@ gint Combo_chooser::win32_drag_motion(
     GdkEventMotion *event,
     gpointer data           // ->Combo_chooser.
 ) {
+	ignore_unused_variable_warning(widget, event);
 	if (win32_button) {
 		win32_button = false;
 

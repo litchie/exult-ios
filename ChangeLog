@@ -1,3 +1,8 @@
+2016-05-04	Malignant Manor <malignantmanor@users.sourceforge.net>
+	* exult.cc: fix comparison between signed and unsigned integer.
+	* imagewin/imagewin.cc: Remove SDL 1.2 code from SDL 2 build.
+	* mapedit/*, shapes/fontgen.cc: remove Windows unused parameter warnings.
+
 2016-05-03	Malignant Manor <malignantmanor@users.sourceforge.net>
 	* Fix various unused warning specific to SDL2, !HAVE_OPENGL, and Windows
 

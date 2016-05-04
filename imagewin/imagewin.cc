@@ -359,6 +359,8 @@ void Image_window::static_init() {
 	   cout << "Error: Couldn't get desktop display depth!" << std::endl;
         }
 #else
+	SDL_PixelFormat format;
+	std::memset(&format, 0, sizeof(format));
 	desktop_depth = SDL_GetVideoInfo()->vfmt->BitsPerPixel;
 #endif
 
@@ -371,10 +373,6 @@ void Image_window::static_init() {
 	if (windowed_16) cout << ' ' << 16 << ' ' << "bpp ok";
 	if (windowed_32) cout << ' ' << 32 << ' ' << "bpp ok";
 	cout << std::endl;
-
-
-	SDL_PixelFormat format;
-	std::memset(&format, 0, sizeof(format));
 
 	int bpps[] = { 0, 8, 16, 32 };
 

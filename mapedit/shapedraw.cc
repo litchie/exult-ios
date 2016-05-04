@@ -241,6 +241,8 @@ void Shape_draw::enable_drop(
 
 	gtk_signal_connect(GTK_OBJECT(draw), "drag_data_received",
 	                   GTK_SIGNAL_FUNC(drag_data_received), this);
+#else
+	ignore_unused_variable_warning(callback, udata);
 #endif
 }
 

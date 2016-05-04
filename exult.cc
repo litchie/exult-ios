@@ -125,6 +125,28 @@ using std::string;
 using std::vector;
 #endif
 
+#if defined(WIN32) || (defined(MACOSX) && defined(USE_EXULTSTUDIO))
+
+static int SDLCALL SDL_putenv(const char *_var) {
+    char *ptr = NULL;
+    char *var = SDL_strdup(_var);
+    if (var == NULL) {
+        return -1;  /* we don't set errno. */
+    }
+
+    ptr = SDL_strchr(var, '=');
+    if (ptr == NULL) {
+        SDL_free(var);
+        return -1;
+    }
+
+    *ptr = '\0';  /* split the string into name and value. */
+    SDL_setenv(var, ptr + 1, 1);
+    SDL_free(var);
+    return 0;
+}
+#endif
+
 Configuration *config = 0;
 KeyBinder *keybinder = 0;
 GameManager *gamemanager = 0;
@@ -801,9 +823,9 @@ static void SetIcon() {
 				0, 0, 0, 0);
 	if (iconsurface == NULL)
 		cout << "Error creating icon surface: " << SDL_GetError() << std::endl;
-	for (int y = 0; y < ExultIcon::height; y++)
+	for (int y = 0; y < static_cast<int>(ExultIcon::height); ++y)
 	{
-		for (int x = 0; x < ExultIcon::width; x++)
+		for (int x = 0; x < static_cast<int>(ExultIcon::width); ++x)
 		{
 			int idx = ExultIcon::header_data[(y*ExultIcon::height)+x];
 			Uint32 pix = SDL_MapRGB(iconsurface->format,

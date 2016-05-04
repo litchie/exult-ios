@@ -162,6 +162,7 @@ static void Egg_monster_dropped(
 #ifdef WIN32
 
 static void Drop_dragged_shape(int shape, int frame, int x, int y, void *data) {
+	ignore_unused_variable_warning(x, y);
 	if (shape < 150)
 		return;
 	cout << "Dropped a shape: " << shape << "," << frame << " " << data << endl;

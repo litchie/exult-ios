@@ -339,6 +339,7 @@ gint Npc_chooser::win32_drag_motion(
     GdkEventMotion *event,
     gpointer data           // ->Npc_chooser.
 ) {
+	ignore_unused_variable_warning(widget, event);
 	if (win32_button) {
 		win32_button = false;
 
