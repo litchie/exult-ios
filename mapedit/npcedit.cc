@@ -287,6 +287,7 @@ static bool Get_schedule_line(
 #ifdef WIN32
 
 static void Drop_dragged_shape(int shape, int frame, int x, int y, void *data) {
+	ignore_unused_variable_warning(x, y);
 	if (shape < 150)
 		return;
 	cout << "Dropped a shape: " << shape << "," << frame << " " << data << endl;
@@ -296,7 +297,7 @@ static void Drop_dragged_shape(int shape, int frame, int x, int y, void *data) {
 
 static void Drop_dragged_face(int shape, int frame, int x, int y, void *data) {
 	cout << "Dropped a face: " << shape << "," << frame << " " << data << endl;
-
+	ignore_unused_variable_warning(x, y);
 	Npc_face_dropped(U7_SHAPE_FACES, shape, frame, data);
 }
 

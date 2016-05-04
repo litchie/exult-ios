@@ -83,6 +83,7 @@ static bool Gen_font_shape_win32(
     unsigned char bg,       // Background color index.
     int shadow          // Shadow color, or -1
 ) {
+	ignore_unused_variable_warning(font, pixels_ht);
 	MAT2 matrix;
 	memset(&matrix, 0, sizeof(matrix));
 	matrix.eM11.value = 1;
@@ -170,6 +171,7 @@ int CALLBACK EnumFontFamProc(
     DWORD FontType,        // type of font
     LPARAM lParam          // application-defined data
 ) {
+	ignore_unused_variable_warning(lpntm, FontType);
 	//MessageBox(NULL,(const char*)lpelf->elfFullName,"lpelf->elfFullName",MB_OK);
 	//MessageBox(NULL,(const char*)lpelf->elfStyle,"lpelf->elfStyle",MB_OK);
 

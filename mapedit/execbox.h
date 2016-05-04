@@ -74,6 +74,7 @@ public:
 };
 
 #else
+#include "ignore_unused_variable_warning.h"
 
 class Exec_process {
 public:
@@ -82,12 +83,16 @@ public:
 	Exec_process() {}
 	~Exec_process() {}
 	void kill_child() {}
-	void read_from_child(int id) {}
+	void read_from_child(int id) {
+		ignore_unused_variable_warning(id);
+	}
 	bool exec(const char *file, char *argv[], Reader_fun rfun,
 	          void *udata) {
+		ignore_unused_variable_warning(file, argv, rfun, udata);
 		return false;
 	}
 	bool check_child(int &exit_code) {
+		ignore_unused_variable_warning(exit_code);
 		return false;
 	}
 };

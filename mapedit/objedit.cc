@@ -169,7 +169,7 @@ static void Obj_shape_dropped(
 
 static void Drop_dragged_shape(int shape, int frame, int x, int y, void *data) {
 	cout << "Dropped a shape: " << shape << "," << frame << " " << data << endl;
-
+	ignore_unused_variable_warning(x, y);
 	Obj_shape_dropped(U7_SHAPE_SHAPES, shape, frame, data);
 }
 
