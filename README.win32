@@ -53,12 +53,11 @@ http://sourceforge.net/projects/mingw/files/MinGW/Base/gcc/Version4/gcc-4.6.2-1/
 http://sourceforge.net/projects/mingw/files/MinGW/Base/gmp/gmp-5.0.1-1/gmp-5.0.1-1-mingw32-dev.tar.lzma/download
 http://sourceforge.net/projects/mingw/files/MinGW/Base/gmp/gmp-5.0.1-1/libgmp-5.0.1-1-mingw32-dll-10.tar.lzma/download
 http://sourceforge.net/projects/mingw/files/MinGW/Base/gcc/Version4/gcc-4.6.2-1/libgomp-4.6.2-1-mingw32-dll-1.tar.lzma/download
-http://sourceforge.net/projects/mingw/files/MinGW/Base/gcc/Version4/gcc-4.6.2-1/libgomp-4.6.2-1-mingw32-dll-1.tar.lzma/download
 http://sourceforge.net/projects/mingw/files/MinGW/Base/gettext/gettext-0.17-1/libintl-0.17-1-mingw32-dll-8.tar.lzma/download
 http://sourceforge.net/projects/mingw/files/MinGW/Base/libiconv/libiconv-1.13.1-1/libiconv-1.13.1-1-mingw32-dev.tar.lzma/download
 http://sourceforge.net/projects/mingw/files/MinGW/Base/libiconv/libiconv-1.13.1-1/libiconv-1.13.1-1-mingw32-dll-2.tar.lzma/download
-http://sourceforge.net/projects/mingw/files/MinGW/Base/mingw-rt/mingwrt-3.18/mingwrt-3.18-mingw32-dev.tar.gz/download mingw-runtime
-http://sourceforge.net/projects/mingw/files/MinGW/Base/mingw-rt/mingwrt-3.18/mingwrt-3.18-mingw32-dll.tar.gz/download mingw-runtime
+https://sourceforge.net/projects/mingw/files/MinGW/Base/mingwrt/mingwrt-3.20/mingwrt-3.20-mingw32-dev.tar.gz/download
+https://sourceforge.net/projects/mingw/files/MinGW/Base/mingwrt/mingwrt-3.20/mingwrt-3.20-mingw32-dll.tar.gz/download
 http://sourceforge.net/projects/mingw/files/MinGW/Base/mpc/mpc-0.8.1-1/mpc-0.8.1-1-mingw32-dev.tar.lzma/download
 http://sourceforge.net/projects/mingw/files/MinGW/Base/mpc/mpc-0.8.1-1/libmpc-0.8.1-1-mingw32-dll-2.tar.lzma/download
 http://sourceforge.net/projects/mingw/files/MinGW/Base/mpfr/mpfr-2.4.1-1/mpfr-2.4.1-1-mingw32-dev.tar.lzma/download
