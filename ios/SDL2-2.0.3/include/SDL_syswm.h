@@ -155,6 +155,7 @@ struct SDL_SysWMmsg
 #if defined(SDL_VIDEO_DRIVER_UIKIT)
         struct
         {
+            int dummy;
             /* No UIKit window events yet */
         } uikit;
 #endif
