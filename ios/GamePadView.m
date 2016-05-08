@@ -239,12 +239,13 @@ if ((x) > 1.0) { \
 	if (title) {
 		float fontSize = MIN(14, rect.size.height/4);
 		UIFont *fnt = [UIFont systemFontOfSize:fontSize];
-		CGSize size = [title sizeWithFont:fnt];
+		CGSize size = [title sizeWithAttributes:@{NSFontAttributeName:fnt}];
 		CGRect rc = CGRectMake((rect.size.width-size.width)/2, 
 					(rect.size.height-size.height)/2,
 					size.width, size.height);
 		[color setFill];
-		[title drawInRect:rc withFont:fnt];
+		[title drawInRect:rc withAttributes:@{NSFontAttributeName:fnt, 
+                                              NSForegroundColorAttributeName: color}];
 	}
 }
 
