@@ -1306,7 +1306,9 @@ bool SI_Game::new_game(Vga_file &shapes) {
 	npc_name[0] = 0;
 
 	int selected = 0;
+#ifndef __IPHONEOS__
 	int num_choices = 4;
+#endif
 	SDL_Event event;
 	bool editing = true;
 	bool redraw = true;

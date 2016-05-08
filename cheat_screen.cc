@@ -1571,7 +1571,9 @@ bool CheatScreen::NPCCheck(char *input, int &command, Cheat_Prompt &mode, bool &
 //
 
 void CheatScreen::FlagLoop(Actor *actor) {
-	int num = actor->get_npc_num();
+#ifndef __IPHONEOS__
+    int num = actor->get_npc_num();
+#endif
 	bool looping = true;
 
 	// This is for the prompt message
@@ -2552,7 +2554,9 @@ bool CheatScreen::BusinessCheck(char *input, int &command, Cheat_Prompt &mode, b
 //
 
 void CheatScreen::StatLoop(Actor *actor) {
-	int num = actor->get_npc_num();
+#ifndef __IPHONEOS__
+    int num = actor->get_npc_num();
+#endif
 	bool looping = true;
 
 	// This is for the prompt message
@@ -2776,7 +2780,9 @@ bool CheatScreen::StatCheck(char *input, int &command, Cheat_Prompt &mode, bool 
 //
 
 CheatScreen::Cheat_Prompt CheatScreen::AdvancedFlagLoop(int num, Actor *actor) {
-	int npc_num = actor->get_npc_num();
+#ifndef __IPHONEOS__
+    int npc_num = actor->get_npc_num();
+#endif
 	bool looping = true;
 
 	// This is for the prompt message
