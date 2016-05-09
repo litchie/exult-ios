@@ -99,7 +99,7 @@
 /* #undef HAVE_OPENGL */
 
 /* Define to 1 if you have the <png.h> header file. */
-#define HAVE_PNG_H 1
+/*#define HAVE_PNG_H 1*/
 
 /* Define to 1 if you have the `pow' function. */
 #define HAVE_POW 1
