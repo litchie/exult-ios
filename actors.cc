@@ -3373,8 +3373,9 @@ void Actor::remove(
 	//   but it needs to be done before
 	//   removal too.
 	// Definitely DO NOT call if dead!
-	if (!is_dead() && !ucmachine->in_usecode_for(
-	            obj, Usecode_machine::unreadied))
+	if (!is_dead()
+		&& !ucmachine->in_usecode_for(obj, Usecode_machine::unreadied)
+		&& !(GAME_SI && ucmachine->in_usecode_for(gwin->get_main_actor(), Usecode_machine::died))) // Fix for #1887 - Hang when leaving SI dream world 
 		call_readied_usecode(index, obj, Usecode_machine::unreadied);
 	Container_game_object::remove(obj);
 	if (index >= 0) {

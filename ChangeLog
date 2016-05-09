@@ -1,3 +1,6 @@
+2016-04-30	Phillip T. George <github@me.phillipgeorge.com>
+	* Fixed #1887 Hang when leaving SI dream world 
+
 2016-05-04	Malignant Manor <malignantmanor@users.sourceforge.net>
 	* exult.cc: fix comparison between signed and unsigned integer. Fix unused
 	  function warnings.
