@@ -231,7 +231,7 @@ void Read_a_schedule(
 	if (npc)            // Store in NPC.
 		npc->set_schedules(schedules, cnt);
 	else
-		delete schedules;
+		delete [] schedules;
 }
 
 /*
