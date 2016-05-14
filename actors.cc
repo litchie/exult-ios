@@ -4130,6 +4130,8 @@ void Actor::die(
 		// Remove NPC from map to prevent the body
 		// from colliding with it.
 		Game_object::remove_this(1);
+		int old_body_frame = body->get_framenum();	// Fix for #1925
+		body->set_frame(frnum);			// Fix for #1925
 		Shape_info &binf = body->get_info();
 		int dx = binf.get_3d_xtiles(frnum) - info.get_3d_xtiles(get_framenum()),
 		    dy = binf.get_3d_ytiles(frnum) - info.get_3d_ytiles(get_framenum());
@@ -4152,6 +4154,7 @@ void Actor::die(
 		// Add NPC back.
 		Game_object::move(pos);
 		body->move(bp);
+		body->set_frame(old_body_frame); // Fix for #1925
 	} else
 		body = 0;
 	Game_object *item;      // Move/remove all the items.
