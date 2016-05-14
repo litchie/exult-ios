@@ -139,6 +139,9 @@ void Conversation::init_faces() {
 		if (face_info[i])
 			delete face_info[i];
 		face_info[i] = 0;
+#ifdef __IPHONEOS__
+		touchui->showGameControls();
+#endif
 	}
 	num_faces = 0;
 	last_face_shown = -1;
@@ -245,6 +248,9 @@ void Conversation::show_face(int shape, int frame, int slot) {
 	}
 	gwin->get_win()->set_clip(0, 0, screenw, screenh);
 	paint_faces();          // Paint all faces.
+#ifdef __IPHONEOS__
+	touchui->hideGameControls();
+#endif
 	gwin->get_win()->clear_clip();
 }
 
