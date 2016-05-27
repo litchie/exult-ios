@@ -141,6 +141,7 @@ bool Dragging_info::start(
 		if (!cheat.in_hack_mover() && !obj->is_dragable() &&
 		        !obj->get_owner()) {
 			Mouse::mouse->flash_shape(Mouse::tooheavy);
+			Audio::get_ptr()->play_sound_effect(Audio::game_sfx(76));
 			obj = 0;
 			gump = 0;
 			okay = false;
@@ -305,6 +306,7 @@ static bool Check_weight(
 	int wt = owner->get_weight() + to_drop->get_weight();
 	if (wt / 10 > owner->get_max_weight()) {
 		Mouse::mouse->flash_shape(Mouse::tooheavy);
+		Audio::get_ptr()->play_sound_effect(Audio::game_sfx(76));
 		return false;
 	}
 	return true;
