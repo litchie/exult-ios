@@ -1,3 +1,8 @@
+2016-06-12	Dominik Reichardt <dominus@users.sourceforge.net>
+	* drag.cc: sound for "too heavy" message - patch by Alagner
+	* data/flx.in: there is some yet unidentified problem when mtgm.mid is not at 
+	  index #26.
+
 2016-05-13	Phillip T. George <github@me.phillipgeorge.com>
 	* Fixed #1925 SI: slain banes hide under carpet (body placement broken) 
 
