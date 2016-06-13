@@ -1,3 +1,6 @@
+2016-06-13	Malignant Manor <malignantmanor@users.sourceforge.net>
+	* actors.cc: fix #1947 Frost Serpents Shout During MageBane Attack
+
 2016-06-12	Dominik Reichardt <dominus@users.sourceforge.net>
 	* drag.cc: sound for "too heavy" message - patch by Alagner
 	* data/flx.in: there is some yet unidentified problem when mtgm.mid is not at 
