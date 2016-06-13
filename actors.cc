@@ -3917,9 +3917,10 @@ int Actor::figure_hit_points(
 					// to prevent monsters from teleporting or
 					// doing other such things.
 					set_flag(Obj_flags::no_spell_casting);
-					eman->remove_text_effect(this);
-					say(first_magebane_struck, last_magebane_struck);
-
+					if(can_speak()) {
+						eman->remove_text_effect(this);
+						say(first_magebane_struck, last_magebane_struck);
+					}
 					// Tell schedule we need a new weapon.
 					if (schedule && spots[lhand] == 0)
 						schedule->set_weapon();
