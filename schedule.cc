@@ -635,9 +635,9 @@ void Pace_schedule::pace(
 						return;
 					}
 				}
-				blocked.tx = -1;
-				changedir = true;
 			}
+			blocked.tx = -1;
+			changedir = true;
 		}
 
 		if (changedir)
