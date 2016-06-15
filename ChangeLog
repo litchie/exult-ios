@@ -1,3 +1,6 @@
+2016-06-15	Malignant Manor <malignantmanor@users.sourceforge.net>
+	* schedule.cc: fix #1950 Paces stuck in Fawn and Rotolunia's Manor
+
 2016-06-13	Malignant Manor <malignantmanor@users.sourceforge.net>
 	* actors.cc: fix #1947 Frost Serpents Shout During MageBane Attack
 
