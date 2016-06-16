@@ -185,21 +185,18 @@ void open_usecode_file(UCData &uc, const Configuration &config) {
 	const string mucc_sic("SERPENT");
 	const string mucc_u8l("pagan");
 	const string mucc_u8c("PAGAN");
-
 	string path, ucspecial, mucc_l, mucc_c;
 
 	if (uc.options.game_bg() || uc.options.game_fov()) {
 		if (gamemanager) {
 			if (uc.options.game_bg() && gamemanager->is_bg_installed()) {
 				path = "<BLACKGATE_STATIC>";
-				if (uc.options.verbose)
-					cout << "Configuring for bg." << endl;
 			} else if (gamemanager->is_fov_installed()) {
 				path = "<FORGEOFVIRTUE_STATIC>";
-				if (!uc.options.game_fov())
+				if (!uc.options.game_fov()) {
 					cout << "Failed to locate bg usecode file but found fov." << endl;
-				if (uc.options.verbose)
-					cout << "Configuring for fov." << endl;
+					uc.options._game = uc.options.GAME_FOV;
+				}
 			} else {
 				cout << "Failed to locate " << (uc.options.game_bg() ? "bg or fov": "fov") << " usecode file. Exiting." << endl;
 				exit(1);
@@ -207,31 +204,26 @@ void open_usecode_file(UCData &uc, const Configuration &config) {
 			mucc_sl = "";
 			mucc_sc = "";
 		} else {
-			if (uc.options.game_bg()) {
-				if (uc.options.verbose)
-					cout << "Configuring for bg." << endl;
+			if (uc.options.game_bg())
 				path = bgpath;
-			} else {
-				if (uc.options.verbose)
-					cout << "Configuring for fov." << endl;
+			else 
 				path = fovpath;
-			}
 			mucc_l  = mucc_bgl;
 			mucc_c  = mucc_bgc;
 		}
 		ucspecial = "usecode.bg";
+		if (uc.options.verbose)
+			cout << "Configuring for " << (uc.options.game_bg() ? "bg." : "fov.") << endl;
 	} else if (uc.options.game_si() || uc.options.game_ss()) {
 		if (gamemanager) {
 			if (uc.options.game_si() && gamemanager->is_si_installed()) {
 				path = "<SERPENTISLE_STATIC>";
-				if (uc.options.verbose)
-					cout << "Configuring for si." << endl;
 			} else if (gamemanager->is_ss_installed()) {
 				path = "<SILVERSEED_STATIC>";
-				if(!uc.options.game_ss())
+				if(!uc.options.game_ss()) {
 					cout << "Failed to locate si usecode file but found ss." << endl;
-				if (uc.options.verbose)
-					cout << "Configuring for ss." << endl;
+					uc.options._game = uc.options.GAME_SS;
+				}
 			} else {
 				cout << "Failed to locate " << (uc.options.game_si() ? "si or ss": "ss") << " usecode file. Exiting." << endl;
 				exit(1);
@@ -239,19 +231,16 @@ void open_usecode_file(UCData &uc, const Configuration &config) {
 			mucc_sl = "";
 			mucc_sc = "";
 		} else {
-			if (uc.options.game_si()) {
-				if (uc.options.verbose)
-					cout << "Configuring for si." << endl;
+			if (uc.options.game_si())
 				path = sipath;
-			} else {
-				if (uc.options.verbose)
-					cout << "Configuring for ss." << endl;
+			else
 				path = sspath;
-			}
 			mucc_l  = mucc_sil;
 			mucc_c  = mucc_sic;
 		}
 		ucspecial = "usecode.si";
+		if (uc.options.verbose)
+			cout << "Configuring for " << (uc.options.game_si() ? "si." : "ss.") << endl;
 	} else if (uc.options.game_u8()) {
 		if (uc.options.verbose) cout << "Configuring for u8." << endl;
 		path      = u8path;
@@ -370,29 +359,3 @@ void usage() {
 	     ;
 	exit(1);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
