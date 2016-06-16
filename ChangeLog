@@ -1,3 +1,6 @@
+2016-06-16	Malignant Manor <malignantmanor@users.sourceforge.net>
+	* usecode/ucxt/src/ucxt.cc: Refactor and add fallback when using -bg or -si
+
 2016-06-15	Malignant Manor <malignantmanor@users.sourceforge.net>
 	* schedule.cc: fix #1950 Paces stuck in Fawn and Rotolunia's Manor
 
