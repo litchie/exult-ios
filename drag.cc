@@ -348,6 +348,12 @@ bool Dragging_info::drop_on_gump(
 	Game_object *owner_obj = on_gump->get_owner();
 	if (owner_obj) owner_obj = owner_obj->get_outermost();
 	Main_actor *main_actor = gwin->get_main_actor();
+	// always red X and ding when putting into itself
+	if (owner_obj == obj) {
+		Mouse::mouse->flash_shape(Mouse::redx);
+		Audio::get_ptr()->play_sound_effect(Audio::game_sfx(76));
+		return false;
+	}
 	// Check the range
 	if (owner_obj && !cheat.in_hack_mover() &&
 	        !Fast_pathfinder_client::is_grabable(main_actor, owner_obj)) {
