@@ -891,9 +891,9 @@ void Uc_function::set_intrinsics(
 	intrinsics.resize(cnt);
 	for (int i = 0; i < cnt; i++) {
 		char *nm = const_cast<char *>(table[i]);
-		if (!memcmp(nm, "UI_get_usecode_fun", sizeof("UI_get_usecode_fun")))
+		if (!strncmp(nm, "UI_get_usecode_fun", sizeof("UI_get_usecode_fun")))
 			get_usecode_fun = i;
-		else if (!memcmp(nm, "UI_get_item_shape", sizeof("UI_get_item_shape")))
+		else if (!strncmp(nm, "UI_get_item_shape", sizeof("UI_get_item_shape")))
 			get_item_shape = i;
 		Uc_intrinsic_symbol *sym = new Uc_intrinsic_symbol(nm, i);
 		intrinsics[i] = sym;    // Store in indexed list.
