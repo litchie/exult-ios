@@ -2416,7 +2416,7 @@ bool Sit_schedule::set_action(
 	if (!chairobj) {        // Find chair if not given.
 		static int chairshapes[] = {873, 292};
 		actor->find_closest(chairs, chairshapes,
-		                    sizeof(chairs) / sizeof(chairs[0]));
+		                    sizeof(chairshapes) / sizeof(chairshapes[0]));
 		for (Game_object_vector::const_iterator it = chairs.begin();
 		        it != chairs.end(); ++it)
 			if (!Sit_actor_action::is_occupied((*it), actor)) {
@@ -2602,8 +2602,9 @@ void Desk_schedule::now_what(
 		}
 		desk = npc->find_closest(desks, 2);
 		if (desk) {
-			static int chairs[2] = {873, 292};
-			chair = desk->find_closest(chairs, 2);
+			static int chairs[] = {873, 292};
+			chair = desk->find_closest(chairs, 
+				sizeof(chairs) / sizeof(chairs[0]));
 		}
 		if (!chair) {   // Failed.
 			// Try again in a few seconds.
