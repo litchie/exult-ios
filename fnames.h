@@ -180,6 +180,7 @@
 #endif
 
 #define AUTONOTES   "autonotes.txt"
+#define PATCH_AUTONOTES "<PATCH>/autonotes.txt"
 
 #define PATCH_KEYS  "<PATCH>/patchkeys.txt"
 
