@@ -1,3 +1,7 @@
+2016-06-22	Dominik Reichardt <dominus@users.sourceforge.net>
+	* fnames.h, gumps/Notebook_gump.cc: an autonotes.txt file in a patch or mod 
+	  will override the default and if one is set in the config.
+
 2016-06-16	Malignant Manor <malignantmanor@users.sourceforge.net>
 	* usecode/ucxt/src/ucxt.cc: Refactor and add fallback when using -bg or -si
 
