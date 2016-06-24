@@ -254,14 +254,14 @@ void Iolo object#(0x403) ()
 			case "join" (remove):
 				if (gflags[BEGAN_KNIGHTS_TEST] && (!gflags[SLAIN_WOLF]))
 				{
-					if (npcNearbyAndVisible(SCHMED))
+					if (npcNearbyAndVisible(SHMED))
 					{
 						say("@But ", avatar_title,
 							", the Guardian of the Test is standing right here. If thou desirest to cheat, thou shouldst at least do so covertly...@");
-						SCHMED->show_npc_face1(0);
+						SHMED->show_npc_face1(0);
 						say("@No cheating, stranger!@");
 						UI_remove_npc_face1();
-						delayedBark(SCHMED, "@No cheating!@", 2);
+						delayedBark(SHMED, "@No cheating!@", 2);
 					}
 					else
 						say("@I cannot join thee, friend. Even if thou wouldst cheat at the Test, I cannot aid thee in so doing. I am thy true friend.@");
