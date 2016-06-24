@@ -42,7 +42,7 @@ enum party_members
 	BOYDON = -34, // Created at Mad Mage Isle, remains until he dies
 
 	// Temporary NPCs:
-	// Both Joins in Temple of Tolerance, both die soon after:
+	// Both join in Temple of Tolerance, both die soon after:
 	MORTEGRO = -26,
 	SETHYS = -152,
 
@@ -61,45 +61,45 @@ enum party_members
 // Moonshade residents
 enum moonshade_npcs
 {
-	ANDRIO = -4,
-	SERV_01 = -5,
-	SERV_02 = -6,
-	SERV_03 = -7,
-	SERV_04 = -8,
-	SERV_05 = -9,
-	SERV_06 = -10,
-	SERV_07 = -11,
-	SERV_08 = -12,
-	BUCIA = -13,
+	ANDRIO = -4, // Mageling
+	SERV_01 = -5, // Melino and Columna's automaton
+	SERV_02 = -6, // Gustacio's
+	SERV_03 = -7, // Torrissio's
+	SERV_04 = -8, // Ducio's baker
+	SERV_05 = -9, // Ducio's blacksmith
+	SERV_06 = -10, // MageLord's
+	SERV_07 = -11, // Rotoluncia's
+	SERV_08 = -12, // Flindo's
+	BUCIA = -13, // Shopkeeper
 	COLUMNA = -14,
 	DUCIO = -15,
 	EDRIN = -16,
 	FEDABIBLIO = -17,
 	FILBERCIO = -18,
-	FRELI = -19,
+	FRELI = -19, // Child
 	FRIGIDAZZI = -20,
-	GOBLIN_MESSENGER = -21,
+	GOBLIN_MESSENGER = -21, // Frigidazzi's servant
 	GUSTACIO = -22,
-	JULIA = -23,
+	JULIA = -23, // Commanders of the Rangers
 	MELINO = -24,
 	AUTO_MESSENGER = -25,
 	// MORTEGRO = -26, // Defined above
-	MOSH = -27,
+	MOSH = -27, // Rat woman
 	// PETRA = -28, // Defined above
 	POTHOS = -29,
-	ROCCO = -30,
+	ROCCO = -30, // Innkeeper
 	ROTOLUNCIA = -31,
 	TOPO = -32,
 	TORRISSIO = -33,
-	SERV09 = -191,
-	SERV10 = -192,
-	SERV11 = -193,
-	SERV12 = -194,
-	MUSIC01 = -198,
-	MUSIC02 = -199,
-	MUSIC03 = -200,
-	SERV_SEW = -206,
-	AUTOGUARD = -216
+	SERV09 = -191, // Stefano's
+	SERV10 = -192, // Mortegro's
+	SERV11 = -193, // Seminarium's
+	SERV12 = -194,  // Pothos' downstairs automaton
+	MUSIC01 = -198, // Blue Boar musician
+	MUSIC02 = -199, // Blue Boar musician
+	MUSIC03 = -200, // Blue Boar musician
+	SERV_SEW = -206, // Ducio's seamster
+	AUTOGUARD = -216 // Pothos' patrolling automaton
 };
 
 // Mad Mage Isle residents
@@ -118,58 +118,58 @@ enum sleepingbull_npcs
 	BYRIN = -39,
 	HAWK = -40,
 	DEVRA = -41,
-	FLINDO = -42,
+	FLINDO = -42, // Visiting from Moonshade
 	KANE = -43,
 	// SELINA = -44, // Defined as one of Batlin's goons, below
 	// WILFRED = -45, // Defined above
-	ENSORCIO = -81
+	ENSORCIO = -81 // Exile from Moonshade
 };
 
 // Fawn residents, including the Fellowship members
 enum fawn_npcs
 {
-	ALYSSAND = -46,
-	DELIN = -47,
-	DELPHYNIA = -48,
-	GARTH = -49,
-	JOTH = -50,
-	VOLDIN = -51,
-	JENDON = -52,
-	JORVIN = -53,
-	KYLISTA = -54,
-	YELINDA = -55,
-	LEON = -56,
-	KALEN = -57,
-	OLON = -58,
-	RUGGS = -59,
-	SCOTS = -60,
-	ZULITH = -61,
-	BUSTER = -260 // Dog
+	ALYSSAND = -46, // Fawn shopkeeper / seamstress
+	DELIN = -47, // Fawn shopkeeper
+	DELPHYNIA = -48, // Fawn horticulturalist
+	GARTH = -49, // Fawn great captain
+	JOTH = -50, // Fawn great captain
+	VOLDIN = -51, // Fawn great captain
+	JENDON = -52, // Fawn innkeeper
+	JORVIN = -53, // Fawn security
+	KYLISTA = -54, // Fawn priestess
+	YELINDA = -55, // Fawn leader
+	LEON = -56, // Fellowship leader
+	KALEN = -57, // Fellowship pirate
+	OLON = -58, // Fawn sailor
+	RUGGS = -59, // Fellowship
+	SCOTS = -60, // Fellowship mapmaker
+	ZULITH = -61, // Fawn chancellor
+	BUSTER = -260 // Fawn dog
 };
 
 // Monitor residents
 enum monitor_npcs
 {
-	ANDRAL = -62,
-	CALADIN = -63,
-	CANTRA = -64,
-	CELLIA = -65,
+	ANDRAL = -62, // Sculptor, Leopard
+	CALADIN = -63, // Leader of the Bears
+	CANTRA = -64, // Child, not yet a knight
+	CELLIA = -65, // Furrier, Wolf
 	G_SIMON = -66, // Simon the Goblin
-	HARNNA = -67,
-	KRAYG = -68,
-	MARSTEN = -69,
-	LUCILLA = -70,
-	LUTHER = -71,
-	LYDIA = -72,
-	RENFRY = -73,
-	SHAZZANA = -74,
-	SCHMED = -75, // Technically from Monitor, although very far from home...
-	SIMON = -76, // Simon in disguise
-	SPEKTOR = -77,
-	STANDARR = -78,
-	TEMPLAR = -79,
-	FLICKEN = -80, // Monitor's west gate guard
-	BRENDANN = -150,
+	HARNNA = -67, // Farmer and Healer, Leopard
+	KRAYG = -68, // Provisioner, Wolf
+	MARSTEN = -69, // Leader of the Leopards
+	LUCILLA = -70, // Waitress, Wolf
+	LUTHER = -71, // Braggart, Bear
+	LYDIA = -72, // Tattoos, Bear
+	RENFRY = -73, // Crematorium, Wolf
+	SHAZZANA = -74, // Trainer, Leopard
+	SHMED = -75, // Knight's Test, Wolf
+	SIMON = -76, // Simon in disguise, Bear
+	SPEKTOR = -77, // Treasurer, Leopard
+	STANDARR = -78, // Blacksmith, Leopard
+	TEMPLAR = -79, // Goblin expert, Bear
+	FLICKEN = -80, // West gate guard, Bear
+	BRENDANN = -150, // Leader of the Wolves
 	SMUDGE = -261 // Cat
 };
 
@@ -244,7 +244,7 @@ enum goblin_camp
 	GOBL18 = -118,
 	GOBLIN_KING = -265,
 	CHUCK = -274,
-	JOHNSON = -285
+	JOHNSON = -285 //Captive pikeman
 };
 
 // Bull Tower residents, the five goblins you must kill to free the tower
@@ -303,7 +303,7 @@ enum gwanni_npcs
 	BWUNDIAI = -144,
 	MWAERNO = -145,
 	MYAURI = -146,
-	NEYOBI = -147,
+	NEYOBI = -147, //Gwani child
 	YENANI = -148,
 	GILWOYAI = -153,
 	KAPYUNDI = -154
@@ -327,9 +327,9 @@ enum northernforest_npcs
 	HURD = -157,
 	IVOR = -158,
 	MORGHRIM = -159,
-	HOUND_OS_DOSKAR = -269,
+	HOUND_OF_DOSKAR = -269,
 	HAZARD = -275,
-	SONAR = -276 // Wolf
+	SONAR = -276 // Wolf known as Windrunner
 };
 
 // Freedom residents
