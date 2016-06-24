@@ -92,7 +92,7 @@ void Iolo object#(0x403) ()
 						nohalt;
 						call ioloShape;
 					}
-					IOLO->set_schedule_type(WAIT);
+					IOLO->set_schedule_type(PATROL); //Resumes after talking
 				}
 			}
 			else
