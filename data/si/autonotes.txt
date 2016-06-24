@@ -122,7 +122,7 @@
 0x3B:KNOW_TEST_SECRETS 
 0x3C:KNOWS_MARSTEN_GIVES_PERMISSION 
 0x2F:LORD_MARSTEN_GAVE_PERMISSION 
-0x80:ASKED_SCHMED_ABOUT_TEST 
+0x80:ASKED_SHMED_ABOUT_TEST 
 0x82:BEGAN_KNIGHTS_TEST 
 0x4A:SLAIN_WOLF 
 0x7D:GAVE_WOLF_TO_CELIA 
@@ -655,7 +655,7 @@
 #0x97:AskedTooMuch? "Set by 9AE after requesting some information. Checked by Harnna."
 #0xBD:FreeIolo? "Set by Marsten when explaining who Iolo is."
 #0xC2:Poisoned2? "Set if some flag is 0x1f. Can only request healing if Poisoned is also set."
-#0xC5:SchmedAttacks? "if not set, he first confesses; then he attacks the party; when he dies, he confesses if $4a/CompletedTestOfKnighthood is set and $c5 is set"
+#0xC5:ShmedAttacks? "if not set, he first confesses; then he attacks the party; when he dies, he confesses if $4a/CompletedTestOfKnighthood is set and $c5 is set"
 #0xC9:PikemanDied? (or player died?) "Pikeman with id 0x0E died" # ? in pikeman, if npc num is 0xe, and event is 0x7 and flag is false,# npc flag 1d is cleared # health is reduced ? #flag is set to true
 #0xCE:UsedFluxAnalyser? "Set by 0x1c8. You've upgraded the Demon Sword with this."
 #0xD0: ? vanquish
