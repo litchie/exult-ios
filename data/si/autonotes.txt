@@ -1,4 +1,4 @@
-# List of flags, found by Marzo, SB-X and Malignant Maynor
+# List of flags, found by Marzo, SB-X, Malignant Manor and Knight Captain
 # lists ALL known flags, regardless of whether they make sense in the autonotes
 
 
@@ -56,6 +56,7 @@
 
 0xBE:CREAMATED_PIKEMAN
 
+0x97:Asked_Harnna_Too_Much "Set by 9AE after requesting some information. Checked by Harnna."
 
 # Xenka_subplot
 
@@ -92,6 +93,7 @@
 0xA6:ASKED_KRAYG_ABOUT_RUINS 
 0xB8:TRIED_SIMONS_ALE 
 0x44:GOBLIN_SIMON_DEAD 
+0x5F:Got_Clue_Brown_Bottle "Appears to be set by Harnna and Lucilla, maybe others.”
 0x45:HaveBrownBottleAndClue
 0xC0:KNOWS_GOBLINS_HIDEOUT 
 0x2C:HAVE_HELM_OF_MONITOR 
@@ -204,6 +206,8 @@
 0xF3:EDRIN_DREAMS_OF_SIRANUSH 
 0x213:EDRIN_KNOWS_SIRANUSH_IS_REAL 
 
+0x11E:Showed_Stockings_to_Melino “Take thyself from my sight and never return!”
+0x103:Asked_Bucia_Too_Much "If you ask too many questions she will have to go back to work."
 
 # The quotes are from http:# www.it-he.org
 # Bane_flags
@@ -300,23 +304,23 @@
 0xA3:ASK_RENFRY_ABOUT_HAND 
 
 # Flags for the teleport storm items:
-0x27A:STORM_PINECONE 
-0x283:STORM_BLUE_EGG 
-0x28B:STORM_RUDDY_ROCK 
-0x27D:STORM_LAB_APPARATUS 
-0x27E:STORM_PUMICE 
-0x284:STORM_GOBLIN_BRUSH 
-0x27F:STORM_WEDDING_RING 
-0x27B:STORM_STOCKINGS 
-0x288:STORM_BEAR_SKULL 
-0x28A:STORM_MONITOR_SHIELD 
-0x285:STORM_ICEWINE 
-0x27C:STORM_URN 
-0x281:STORM_SLIPPERS 
-0x287:STORM_FILARI 
-0x289:STORM_SEVERED_HAND 
-0x280:STORM_FUR_CAP 
-0x282:STORM_BREAST_PLATE 
+0x27A:STORM_PINECONE "Pinecone is on list of strange objects"
+0x283:STORM_BLUE_EGG "Blue egg is on list of strange objects"
+0x28B:STORM_RUDDY_ROCK "Stoneheart is on list of strange objects"
+0x27D:STORM_LAB_APPARATUS "Strange apparatus is on list of strange objects"
+0x27E:STORM_PUMICE "Pumice is on list of strange objects (as a rock)"
+0x284:STORM_GOBLIN_BRUSH "A crude brush is on list of strange objects"
+0x27F:STORM_WEDDING_RING "A finely crafted ring is on list of strange objects"
+0x27B:STORM_STOCKINGS "Stockings are on list of strange objects"
+0x288:STORM_BEAR_SKULL "Animal skull is on list of strange objects"
+0x28A:STORM_MONITOR_SHIELD "Monitorian shield is on list of strange objects"
+0x285:STORM_ICEWINE "Ice wine is on list of strange objects"
+0x27C:STORM_URN "Urn is on list of strange objects (as a vase)"
+0x281:STORM_SLIPPERS "Slippers is on list of strange objects"
+0x287:STORM_FILARI "Filari is on list of strange objects (as strange baubles)"
+0x289:STORM_SEVERED_HAND "Bloody hand is on list of strange objects"
+0x280:STORM_FUR_CAP "Woman's fur cap is on list of strange objects"
+0x282:STORM_BREAST_PLATE "Enameled breastplate is on list of strange objects"
 
 # Flags identifying the teleport storm items:
 0x28C:KNOWS_PINECONE_OWNER 
@@ -350,6 +354,8 @@
 0x34B:GAVE_FURCAP_BACK (New flag in SI Fixes Mod to fix bug with fur cap) 
 
 # Fawn
+0x14F:WelcomeToFawn "Spoke to the Lady of Fawn about why you're there."
+0x172:FawnConspiracyExposed
 0x150:OfferedToDeliverDelphyniaLetter "Gave Delphynia a letter from Ruggs, and agreed to deliver one from her back to him."
 0x151:GotMapFromScots "Got a free map from the geographer Scots."
 0x152:OfferedToDeliverRuggsLetter "Agreed to deliver a letter from Ruggs to Delphynia."
@@ -389,11 +395,13 @@
 
 
 # Silver Seed
-0x2fb:Have amulet of balance
+#0x2fb:Have_Amulet_of_Balance
+0x2fb:Karnax gave you the Amulet of Balance, which was uncovered near their Serpent Gate.
 0x2ee:Used Amulet of Balance for the first time
 0x2f4:Surok says he is busy
 0x300:Have keyring
-0x30d:Talked to Isstanar (First conversation)
+#0x30D:Met_Isstanar (Flag is required because he is a shape not an NPC)
+0x30D:You met Isstanar, the leader of Serpent’s Fang.
 0x2CD:Placed lodestone of hate
 0x2CE:Placed lodestone of happiness
 0x2CF:Placed lodestone of despair
@@ -402,13 +410,49 @@
 0x2F6:Purple orb burned out
 0x2F7:Blue orb burned out
 0x2F8:Yellow orb burned out
-0x2FC:Picked up Silver Seed
-0x2FD:Planted Silver Seed (Karnax recognizes it is planted)
-0x2FE:Cask is pulled out in Serpent's Fang basement
-0x313:Planted Silver Seed (Recognized as Champion of Balance)
-0x30E:SSHaveMazeOrb "Got orb from Yurel"
-
-
+#0x2FC:Have_Silver_Seed
+0x2FC:You have picked up the Silver Seed from beneath Serpent’s Fang.
+#0x2FD:Karnax_witnessed_Seed_Planting
+0x2FD:Karnax witnessed you planting the Silver Seed.
+#0x2FE:Cask_has_Moved
+0x2FE:The cask is pulled out in Serpent's Fang basement, exposing stairs below.
+#0x313:Planted_Silver_Seed
+0x313:You have planted the Silver Seed and the Silver Tree stands tall. You are now fully recognized as the Champion of Balance by the people of Serpent’s Fang.
+#0x30E:Have_Purple_Orb
+0x30E:Yurel gave you the purple orb he brought into the maze.
+#0x2FA:Know_Yurel_Loves_Cheese
+0x2FA:Cheese Yurel will trade you the ball he stole from the pedestal for some cheese.
+#0x2FF:Rope_on_Well
+0x2FF:You have attached the rope found in the Abandoned Outpost to the well, allowing you to climb down.
+#0x300:Have_Keyring
+0x300:Isstanar has given you the magic keyring, which allows you to try every key you have at once.
+0x302:Wearing_Gauntlets_of_Quickness “Set when putting on the Gauntlets, unset when unequipped.”
+0x303:Holding_Erinons_Axe “Set when equipped with the Axe, unset when unequipped.”
+0x304:Experience_from_Axe “Set when you first equip the Axe and gain 500 experience points. If set, re-equipping does not gain 500 more.”
+0x315:Experience_from_Ring “Set when you first equip the Ring of Reagents and gain 500 experience points. If set, re-equipping does not gain 500 more.”
+#0x305:Was_Asked_Liars_Riddle
+0x305:Draxinar’s first riddle: How many of these mystics were liars?
+#0x306:Was_Asked_Earrings_Riddle
+0x306:Draxinar’s second riddle: How many unseen earrings needed to insure a matched pair?
+#0x307:Was_Asked_Longtooth_Riddle
+0x307:Draxinar’s third riddle: How many creatures has Longtooth stumped with his riddles?
+#0x308:Was_Asked_Cloth_Riddle
+0x308:Draxinar’s fourth riddle: How many pieces of cloth to make five dresses with the same pattern?
+#0x309:Solved_Liars_Riddle
+0x309:You correctly answered Draxinar’s first riddle.
+#0x30A:Solved_Earrings_Riddle
+0x30A:ou correctly answered Draxinar’s second riddle.
+#0x30B:Solved_Longtooth_Riddle
+0x30B:You correctly answered Draxinar’s third riddle.
+#0x30C:Solved_Cloth_Riddle
+0x30C:You correctly answered Draxinar’s last riddle.
+#0x30F:Met_Rieya
+0x30F:You met Rieya outside of the Abandoned Outpost.
+#0x310:Met_Drusilla
+0x310:You met Drusilla outside of Issik’s Maze.
+#0x311:Met_Solaria
+0x311:You met Solaria outside of Aram-Dol’s Lair, northeast of Serpent’s Fang.
+	
 
 #others
 
@@ -647,12 +691,10 @@
 #0x2C2: ? labeled as Flicken opens gate but is set on the opening scene with karnax and thoxa
 #0x2C7:? Something to do with the Test of Virtue?
 #0x2D9:HaveMirrorOfTruth? (check e5)
-#0x2FA:? AskYurelAboutCheese "Can ask to offer cheese to Yurel"
 #0x3E:? "used in many places"
 #0x46: ? related to Helm of Monitor/Globins
 #0x5C:IdentifiedAleOfSimon?
 #0x8B:? "Set by 0x207, cleared by Cantra."
-#0x97:AskedTooMuch? "Set by 9AE after requesting some information. Checked by Harnna."
 #0xBD:FreeIolo? "Set by Marsten when explaining who Iolo is."
 #0xC2:Poisoned2? "Set if some flag is 0x1f. Can only request healing if Poisoned is also set."
 #0xC5:ShmedAttacks? "if not set, he first confesses; then he attacks the party; when he dies, he confesses if $4a/CompletedTestOfKnighthood is set and $c5 is set"
@@ -661,9 +703,6 @@
 #0xD0: ? vanquish
 #0xD1: ? vanquish
 #0xD2: ? vanquish
-0x14F:WelcomeToFawn? "Spoke to the Lady of Fawn about why you're there."
-0x172:FawnConspiracyExposed?
-
 
 
 # Never Set
@@ -680,3 +719,5 @@
 0x7C:ReturnedFishnetStockings? "Sometimes used with 7b or 19e, by Bucia, Alyssand, Jendon, and Harnna. Never set."
 0xCC:PomdirgunIsDead "You killed the goblin king. Never set."
 0xD6: ? added with other flags in 8ff, never set
+0x301:(not in Usecode)
+0x312:(not-in-usecode)
