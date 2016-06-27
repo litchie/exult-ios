@@ -1,3 +1,7 @@
+2016-05-10	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	Fixed bug #1958 "Studio: Selecting mod of a game type doesn't work if there
+	are two same game".
+
 2016-06-22	Dominik Reichardt <dominus@users.sourceforge.net>
 	* fnames.h, gumps/Notebook_gump.cc: an autonotes.txt file in a patch or mod 
 	  will override the default and if one is set in the config.

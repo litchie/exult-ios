@@ -549,7 +549,8 @@ void ModManager::get_game_paths(const string &game_path) {
 	U7mkdir(gamedat_dir.c_str(), 0755);
 
 #ifdef DEBUG_PATHS
-	        << " gamedat directory to: " << gamedat_dir << endl;
+	cout << "setting " << cfgname
+	     << " gamedat directory to: " << gamedat_dir << endl;
 	cout << "setting " << cfgname
 	     << " savegame directory to: " << savegame_dir << endl;
 #endif
@@ -563,31 +564,26 @@ GameManager::GameManager(bool silent) {
 	// Search for games defined in exult.cfg:
 	string config_path("config/disk/game"), game_title;
 	std::vector<string> gamestrs = config->listkeys(config_path, false);
+	std::vector<string> checkgames;
+	checkgames.reserve(checkgames.size()+4);	// +4 in case the four below are not in the cfg.
+	// The original games plus expansions.
+	checkgames.push_back(CFG_BG_NAME);
+	checkgames.push_back(CFG_FOV_NAME);
+	checkgames.push_back(CFG_SI_NAME);
+	checkgames.push_back(CFG_SS_NAME);
 
-	bool nobg = true, nosi = true, nofov = true, noss = true;
 	for (std::vector<string>::iterator it = gamestrs.begin();
 	        it != gamestrs.end(); ++it) {
-		if (*it == CFG_BG_NAME)
-			nobg = false;
-		else if (*it == CFG_FOV_NAME)
-			nofov = false;
-		else if (*it == CFG_SI_NAME)
-			nosi = false;
-		else if (*it == CFG_SS_NAME)
-			noss = false;
+		if (*it != CFG_BG_NAME && *it != CFG_FOV_NAME &&
+		    *it != CFG_SI_NAME && *it != CFG_SS_NAME)
+			checkgames.push_back(*it);
 	}
 
-	// The original games plus expansions.
-	if (nobg) gamestrs.push_back(CFG_BG_NAME);
-	if (nofov) gamestrs.push_back(CFG_FOV_NAME);
-	if (nosi) gamestrs.push_back(CFG_SI_NAME);
-	if (noss) gamestrs.push_back(CFG_SS_NAME);
-
-	games.reserve(gamestrs.size());
+	games.reserve(checkgames.size());
 	int bgind = -1, fovind = -1, siind = -1, ssind = -1;
 
-	for (std::vector<string>::iterator it = gamestrs.begin();
-	        it != gamestrs.end(); ++it) {
+	for (std::vector<string>::iterator it = checkgames.begin();
+	        it != checkgames.end(); ++it) {
 		string gameentry = *it;
 		// Load the paths for all games found:
 		string base_title = gameentry, new_title;
@@ -601,14 +597,16 @@ GameManager::GameManager(bool silent) {
 		if (!game.being_edited() && !game.is_there())
 			continue;
 		if (game.get_game_type() == BLACK_GATE) {
-			if (game.have_expansion())
-				fovind = games.size();
-			else
+			if (game.have_expansion()) {
+				if (fovind == -1)
+					fovind = games.size();
+			} else if (bgind == -1)
 				bgind = games.size();
 		} else if (game.get_game_type() == SERPENT_ISLE) {
-			if (game.have_expansion())
-				ssind = games.size();
-			else
+			if (game.have_expansion()) {
+				if (ssind == -1)
+					ssind = games.size();
+			} else if (siind == -1)
 				siind = games.size();
 		}
 
