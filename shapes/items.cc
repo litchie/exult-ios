@@ -28,14 +28,20 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // #include <iomanip>           /* Debugging */
 #include <fstream>
+#include <sstream>
 #include <vector>
 #include "items.h"
 #include "utils.h"
 #include "msgfile.h"
 #include "fnames.h"
+#include "exult_flx.h"
+#include "data_utils.h"
 
+using std::istream;
+using std::ostream;
 using std::ifstream;
 using std::ofstream;
+using std::stringstream;
 using std::cerr;
 using std::endl;
 using std::vector;
@@ -149,8 +155,8 @@ void Set_misc_name(unsigned num, char const *name) {
  */
 
 static void Setup_item_names(
-    ifstream &items,
-    ifstream &msgs,
+    istream &items,
+    istream &msgs,
     bool si,
     bool expansion
 ) {
@@ -231,8 +237,8 @@ static void Setup_item_names(
  */
 
 static void Setup_text(
-    ifstream &txtfile,       // All text.
-    ifstream &exultmsg
+    istream &txtfile,       // All text.
+    istream &exultmsg
 ) {
 	// Start by reading from exultmsg
 	vector<char *> msglist;
@@ -260,30 +266,42 @@ void Setup_text(bool si, bool expansion) {
 	bool is_patch = is_system_path_defined("<PATCH>");
 	// Always read from exultmsg.txt
 	// TODO: allow multilingual exultmsg.txt files.
-	ifstream exultmsg;
-	const char *msgs = BUNDLE_CHECK(BUNDLE_EXULTMSG, EXULTMSG);
-	if (is_patch && U7exists(PATCH_EXULTMSG))
-		U7open(exultmsg, PATCH_EXULTMSG, true);
-	else
-		U7open(exultmsg, msgs, true);
+	istream *exultmsg;
+	if (is_patch && U7exists(PATCH_EXULTMSG)) {
+		ifstream *exultmsgfile = new ifstream();
+		exultmsg = exultmsgfile;
+		U7open(*exultmsgfile, PATCH_EXULTMSG, true);
+	} else {
+		stringstream *exultmsgbuf = new stringstream();
+		exultmsg = exultmsgbuf;
+		const char *msgs = BUNDLE_CHECK(BUNDLE_EXULT_FLX, EXULT_FLX);
+		U7object txtobj(msgs, EXULT_FLX_EXULTMSG_TXT);
+		size_t len;
+		const char *txt = txtobj.retrieve(len);
+		if (txt && len > 0) {
+			exultmsgbuf->str(string(txt, len));
+			delete [] txt;
+		}
+	}
 
 	// Exult new-style messages?
 	if (is_patch && U7exists(PATCH_TEXTMSGS)) {
 		ifstream txtfile;
 		U7open(txtfile, PATCH_TEXTMSGS, true);
-		Setup_text(txtfile, exultmsg);
+		Setup_text(txtfile, *exultmsg);
 	} else if (U7exists(TEXTMSGS)) {
 		ifstream txtfile;
 		U7open(txtfile, TEXTMSGS, true);
-		Setup_text(txtfile, exultmsg);
+		Setup_text(txtfile, *exultmsg);
 	} else {
 		ifstream textflx;
 		if (is_patch && U7exists(PATCH_TEXT))
 			U7open(textflx, PATCH_TEXT);
 		else
 			U7open(textflx, TEXT_FLX);
-		Setup_item_names(textflx, exultmsg, si, expansion);
+		Setup_item_names(textflx, *exultmsg, si, expansion);
 	}
+	delete exultmsg;
 }
 
 /*

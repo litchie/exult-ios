@@ -264,7 +264,6 @@ install: $(EXEC)
 	cp data/exult.flx $(U7PATH)/data
 	cp data/exult_bg.flx $(U7PATH)/data
 	cp data/exult_si.flx $(U7PATH)/data
-	cp data/exultmsg.txt $(U7PATH)/data
 	cp SDL/lib/$(SDL_DLL_NAME) $(U7PATH)
 
 debug: $(EXEC)
@@ -274,7 +273,6 @@ debug: $(EXEC)
 	cp data/exult.flx $(U7PATH)/data
 	cp data/exult_bg.flx $(U7PATH)/data
 	cp data/exult_si.flx $(U7PATH)/data
-	cp data/exultmsg.txt $(U7PATH)/data
 	cp SDL/lib/$(SDL_DLL_NAME) $(U7PATH)
 
 dist:   $(EXEC) exconfig.dll
@@ -285,7 +283,6 @@ dist:   $(EXEC) exconfig.dll
 	cp data/exult.flx $(U7PATH)/Exult/Data
 	cp data/exult_bg.flx $(U7PATH)/Exult/Data
 	cp data/exult_si.flx $(U7PATH)/Exult/Data
-	cp data/exultmsg.txt $(U7PATH)/Exult/Data
 	cp AUTHORS $(U7PATH)/Exult/AUTHORS.txt
 	cp ChangeLog $(U7PATH)/Exult/ChangeLog.txt
 	cp COPYING $(U7PATH)/Exult/COPYING.txt

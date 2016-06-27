@@ -39,7 +39,12 @@ EXULT_FLX_OBJECTS = \
 	sb_maps.shp \
 	sb_notebook.shp \
 	sb_backpack.shp \
-	transparentmenu.shp
+	transparentmenu.shp \
+	exultmsg.txt \
+	exultmsg_de.txt \
+	exultmsg_es.txt \
+	exultmsg_fr.txt
+	
 
 EXULT_BG_FLX_OBJECTS = \
 	bg/flx.in \
