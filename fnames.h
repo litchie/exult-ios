@@ -66,8 +66,6 @@
 #define PATCH_U7MAP "<PATCH>/u7map"
 #define TEXT_FLX    "<STATIC>/text.flx"
 #define PATCH_TEXT  "<PATCH>/text.flx"
-#define EXULTMSG    "<DATA>/exultmsg.txt"
-#define BUNDLE_EXULTMSG "<BUNDLE>/exultmsg.txt"
 #define PATCH_EXULTMSG "<PATCH>/exultmsg.txt"
 #define U7IFIX      "<STATIC>/u7ifix"
 #define PATCH_U7IFIX    "<PATCH>/u7ifix"

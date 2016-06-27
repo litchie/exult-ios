@@ -62,7 +62,6 @@ Source: Exult\images\exult_logo.gif; DestDir: {app}\images; Flags: ignoreversion
 Source: Exult\Data\exult.flx; DestDir: {app}\data; Flags: ignoreversion; Components: Exult
 Source: Exult\Data\exult_bg.flx; DestDir: {app}\data; Flags: ignoreversion; Components: Exult
 Source: Exult\Data\exult_si.flx; DestDir: {app}\data; Flags: ignoreversion; Components: Exult
-Source: Exult\Data\exultmsg.txt; DestDir: {app}\data; Flags: ignoreversion; Components: Exult
 
 Source: exconfig.dll; Flags: dontcopy
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
