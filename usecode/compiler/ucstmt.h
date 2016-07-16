@@ -112,6 +112,30 @@ public:
 };
 
 /*
+ *  A try/catch statement:
+ */
+class Uc_trycatch_statement : public Uc_statement {
+	Uc_var_symbol *catch_var;
+	Uc_statement *try_stmt, *catch_stmt;
+public:
+	Uc_trycatch_statement(Uc_statement *t)
+		: catch_var(0), try_stmt(t), catch_stmt(0)
+	{  }
+	void set_catch_variable(Uc_var_symbol *v) {
+		catch_var = v;
+	}
+	void set_catch_statement(Uc_statement *s) {
+		catch_stmt = s;
+	}
+	~Uc_trycatch_statement();
+	// Generate code.
+	virtual void gen(Uc_function *fun, std::vector<Basic_block *> &blocks,
+	                 Basic_block *&curr, Basic_block *end,
+	                 std::map<std::string, Basic_block *> &labels,
+	                 Basic_block *start = 0, Basic_block *exit = 0);
+};
+
+/*
  *  A generic breakable statement:
  */
 class Uc_breakable_statement : public Uc_statement {
@@ -458,9 +482,11 @@ public:
  *  Statement that represents an abort opcode.
  */
 class Uc_abort_statement : public Uc_statement {
+	Uc_expression *expr;
 public:
-	Uc_abort_statement()
+	Uc_abort_statement(Uc_expression *e = 0) : expr(e)
 	{  }
+	~Uc_abort_statement();
 	// Generate code.
 	virtual void gen(Uc_function *fun, std::vector<Basic_block *> &blocks,
 	                 Basic_block *&curr, Basic_block *end,

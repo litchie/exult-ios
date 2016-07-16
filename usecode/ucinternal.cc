@@ -137,7 +137,12 @@ void Usecode_internal::stack_trace(ostream &out) {
 	std::deque<Stack_frame *>::iterator iter = call_stack.begin();
 
 	do {
-		out << *(*iter) << endl;
+		out << *(*iter);
+		std::map<Stack_frame *, uint8 *>::iterator it = except_stack.find(*iter);
+		if (it != except_stack.end()) {
+			out << ", active catch at 0x" << std::setw(8) << std::setfill('0') << it->second;
+		}
+		out << endl;
 		if ((*iter)->call_depth == 0)
 			break;
 		++iter;
@@ -296,6 +301,13 @@ void Usecode_internal::previous_stack_frame() {
 	// restore stack pointer
 	sp = frame->save_sp;
 
+	// Get rid of exception handler for the current function (say, due to return
+	// in a try block).
+	std::map<Stack_frame *, uint8 *>::iterator it = except_stack.find(frame);
+	if (it != except_stack.end()) {
+		except_stack.erase(it);
+	}
+
 	if (frame->call_depth == 0) {
 		// this was the function called from 'the outside'
 		// push a marker (NULL) for the interpreter onto the call stack,
@@ -388,7 +400,7 @@ void Usecode_internal::return_from_procedure() {
 #endif
 }
 
-void Usecode_internal::abort_function() {
+void Usecode_internal::abort_function(Usecode_value &retval) {
 #ifdef DEBUG
 	int functionid = call_stack.front()->function->id;
 
@@ -397,9 +409,28 @@ void Usecode_internal::abort_function() {
 	     << endl;
 #endif
 
-	// clear the entire call stack up to the entry point
-	while (call_stack.front() != 0)
+	// clear the entire call stack up to either a catch or the entry point
+	while (call_stack.front() != 0) {
 		previous_stack_frame();
+		Stack_frame *frame = call_stack.front();
+		std::map<Stack_frame *, uint8 *>::iterator it = except_stack.find(frame);
+		if (it != except_stack.end()) {
+			uint8 *target = it->second;
+#ifdef DEBUG
+			int functionid = frame->function->id;
+
+			cout << "Abort caught in usecode " << hex << setw(4)
+				 << setfill('0') << functionid << " at location "
+				 << setw(8) << setfill('0') << target << dec << setfill(' ')
+				 << endl;
+#endif
+			except_stack.erase(it);
+			frame->ip = target;
+			// push the return value
+			push(retval);
+			break;
+		}
+	}
 }
 
 /*
@@ -1889,7 +1920,8 @@ int Usecode_internal::run() {
 				     << frame->function->id << dec << setfill(' ')
 				     << " ! Aborting." << endl;
 
-				abort_function();
+				Usecode_value msg("Out of bounds usecode execution!");
+				abort_function(msg);
 				frame_changed = true;
 				continue;
 			}
@@ -2551,13 +2583,39 @@ int Usecode_internal::run() {
 			case UC_PUSHITEMREF:      // PUSH ITEMREF.
 				pushref(frame->caller_item);
 				break;
-			case UC_ABRT:      // ABRT.
+			case UC_ABRT: {    // ABRT.
 				show_pending_text();
 
-				abort_function();
+				Usecode_value msg("abort executed");
+				abort_function(msg);
 				frame_changed = true;
 				aborted = true;
 				break;
+			}
+			case UC_THROW: {    // THROW.
+				show_pending_text();
+
+				Usecode_value r = pop();
+				abort_function(r);
+				frame_changed = true;
+				aborted = true;
+				break;
+			}
+			case UC_TRYSTART:
+			case UC_TRYSTART32:
+				if (opcode < UC_EXTOPCODE)
+					offset = Read2s(frame->ip);
+				else
+					offset = Read4s(frame->ip);
+				except_stack[frame] = frame->ip + offset;
+				break;
+			case UC_TRYEND: {
+				std::map<Stack_frame *, uint8 *>::iterator it = except_stack.find(frame);
+				if (it != except_stack.end()) {
+					except_stack.erase(it);
+				}
+				break;
+			}
 			case UC_CONVERSELOC:      // end conversation
 				found_answer = true;
 				break;

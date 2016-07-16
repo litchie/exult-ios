@@ -317,7 +317,10 @@ event		return EVENT;
 gflags		return FLAG;
 item		return ITEM;
 goto		return GOTO;
+try			return TRY;
+catch		return CATCH;
 abort		return ABORT;
+throw		return THROW;
 ".original"	return ORIGINAL;
 <fun_id>{
 "shape#"	return SHAPENUM;

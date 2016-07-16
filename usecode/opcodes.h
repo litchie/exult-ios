@@ -52,6 +52,7 @@ enum UsecodeOps {
 	UC_CALLI = 0x39,
 	UC_PUSHITEMREF = 0x3e,
 	UC_ABRT = 0x3f,
+	UC_THROW = 0xbf,         // Like abrt, but accepts an expression to be sent up.
 	UC_CONVERSELOC = 0x40,   // CONVERSE jmps here.
 	UC_PUSHF = 0x42,         // PUSH global flag.
 	UC_POPF = 0x43,          // POP global flag.
@@ -81,6 +82,8 @@ enum UsecodeOps {
 	UC_POPARRTHV = 0x5e,     // Pop this->var array elem.
 	UC_LOOPTOPTHV = 0x5f,    // Loop with this->var array.
 	UC_PUSHCHOICE = 0x60,    // Pushes last selected user choice.
+	UC_TRYSTART = 0x61,      // TRY/CATCH block start.
+	UC_TRYEND = 0x62,        // TRY/CATCH block end.
 	UC_PUSHFVAR = 0xc2,      // PUSH global flag using stack value.
 	UC_POPFVAR = 0xc3,       // POP global flag using stack value.
 	UC_CALLINDEX_OLD = 0xd3, // Call indirect; UCC never emits this.
@@ -101,7 +104,8 @@ enum UsecodeOps {
 	UC_CALLE32 = 0xc7,
 	UC_DBGFUNC32 = 0xcd,     // 32-bit version of SI debug opcode; UCC never emits this.
 	UC_LOOPTOPS32 = 0xdc,    // 32-bit loop with static array.
-	UC_LOOPTOPTHV32 = 0xdf   // 32-bit loop with this->var array.
+	UC_LOOPTOPTHV32 = 0xdf,  // 32-bit loop with this->var array.
+	UC_TRYSTART32 = 0xe1,    // TRY/CATCH block, 32-bit version.
 };
 
 inline UsecodeOps &operator|=(UsecodeOps &lhs, int rhs) {

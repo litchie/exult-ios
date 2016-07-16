@@ -136,9 +136,9 @@ struct Member_selector
 %token IF ELSE RETURN DO WHILE FOR UCC_IN WITH TO EXTERN BREAK GOTO CASE
 %token VAR VOID ALIAS STRUCT UCC_CHAR UCC_INT UCC_LONG UCC_CONST STRING ENUM
 %token CONVERSE NESTED SAY MESSAGE RESPONSE EVENT FLAG ITEM UCTRUE UCFALSE REMOVE
-%token ADD HIDE SCRIPT AFTER TICKS STATIC_ ORIGINAL SHAPENUM OBJECTNUM ABORT
+%token ADD HIDE SCRIPT AFTER TICKS STATIC_ ORIGINAL SHAPENUM OBJECTNUM
 %token CLASS NEW DELETE RUNSCRIPT UCC_INSERT SWITCH DEFAULT
-%token ADD_EQ SUB_EQ MUL_EQ DIV_EQ MOD_EQ CHOICE
+%token ADD_EQ SUB_EQ MUL_EQ DIV_EQ MOD_EQ CHOICE TRY CATCH ABORT THROW
 
 /*
  *	Script keywords:
@@ -201,7 +201,7 @@ struct Member_selector
 %type <varvec> param_list opt_param_list
 %type <stmt> statement assignment_statement if_statement while_statement
 %type <stmt> statement_block return_statement function_call_statement
-%type <stmt> special_method_call_statement
+%type <stmt> special_method_call_statement trycatch_statement trystart_statement
 %type <stmt> array_loop_statement var_decl var_decl_list stmt_declaration
 %type <stmt> class_decl class_decl_list struct_decl_list struct_decl
 %type <stmt> break_statement converse_statement
@@ -495,6 +495,7 @@ statement:
 	stmt_declaration
 	| assignment_statement
 	| if_statement
+	| trycatch_statement
 	| while_statement
 	| array_loop_statement
 	| function_call_statement
@@ -513,10 +514,17 @@ statement:
 	| MESSAGE '(' opt_nonclass_expr_list ')' ';'
 		{ $$ = new Uc_message_statement($3); }
 	| answer_statement
-	| ABORT ';'
+	| throwabort_statement ';'
 		{ $$ = new Uc_abort_statement(); }
+	| throwabort_statement expression ';'
+		{ $$ = new Uc_abort_statement($2); }
 	| ';'				/* Null statement */
 		{ $$ = 0; }
+	;
+
+throwabort_statement:
+	ABORT
+	| THROW
 	;
 
 alias_tok:
@@ -1011,6 +1019,33 @@ if_statement:
 			}
 		else
 			$$ = new Uc_if_statement($3, $5, $7);
+		}
+	;
+
+trycatch_statement:
+	trystart_statement '{' statement_list '}'
+		{
+		Uc_trycatch_statement *stmt = dynamic_cast<Uc_trycatch_statement*>($1);
+		if (!stmt) {
+			yyerror("try/catch statement is not a try/catch statement");
+		}
+		stmt->set_catch_statement($3);
+		$$ = stmt;
+		}
+	;
+
+trystart_statement:
+	TRY '{' statement_list '}' CATCH '(' ')'
+		{
+		cur_fun->push_scope();
+		$$ = new Uc_trycatch_statement($3);
+		}
+	| TRY '{' statement_list '}' CATCH '(' IDENTIFIER ')'
+		{
+		cur_fun->push_scope();
+		Uc_trycatch_statement *stmt = new Uc_trycatch_statement($3);
+		stmt->set_catch_variable(cur_fun->add_symbol($7));
+		$$ = stmt;
 		}
 	;
 

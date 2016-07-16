@@ -74,6 +74,7 @@ class Usecode_internal : public Usecode_machine {
 	vector<Usecode_value> statics;  // Global persistent vars.
 	Usecode_symbol_table *symtbl;   // (optional) symbol table.
 	std::deque<Stack_frame *> call_stack; // the call stack
+	std::map<Stack_frame *, uint8 *> except_stack; // the exception handling stack
 	Stack_frame *frame;     // One intrinsic uses this for now...
 	bool modified_map;      // We add/deleted/moved an object.
 	std::map<int, uint32> timers;   // Each has time in hours when set.
@@ -418,7 +419,7 @@ class Usecode_internal : public Usecode_machine {
 	void previous_stack_frame();
 	void return_from_function(Usecode_value &retval);
 	void return_from_procedure();
-	void abort_function();
+	void abort_function(Usecode_value &retval);
 	int run();
 
 	// debugging functions

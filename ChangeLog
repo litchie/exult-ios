@@ -1,3 +1,34 @@
+2016-07-16	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Implemented feature #181 "Allow catching aborts".
+	  Syntax changes for UCC:
+	  Added "throw" command, an alias to "abort" which should be used whenever
+	  it makes sense. Both forms accept an optional parameter which is passed 
+	  to the handler; if no parameter is specified, Exult will send the text
+	  "abort executed" for compatibility with the original games. Examples:
+	  	abort;                   // same as abort "abort executed";
+	  	throw;                   // same as abort;
+	  	throw 1+1;
+	  	abort "Error message";
+	  	throw varname;           // varname must be a variable or function
+	  	throw UI_get_random(18);
+	  	abort [1, 2, 3];
+
+	  To handle (catch) an abort/throw, use the following syntax:
+	  	try {
+	  		// code that can generate an abort/throw
+	  	} catch (optvarname) {
+	  		// code that handles the abort/throw
+	  	}
+	  	// Code that gets executed afterwards
+
+	  optvarname is an optional variable name. If present, a variable will be
+	  created with this name which will receive the abort/throw's parameter;
+	  otherwise, that parameter will be discarded.
+
+	  Note: any class variables declared and constructed in the "try" block may
+	  leak if you don't delete it before the abort/throw happens. I have made no
+	  effort to handle this case.
+
 2016-06-27	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed bug #1958 "Studio: Selecting mod of a game type doesn't work if there
 	  are two same game".

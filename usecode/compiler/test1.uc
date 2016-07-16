@@ -149,3 +149,63 @@ var adder (a, b)
 	return a + b;
 	}
 */
+
+enum party_members
+{
+	PARTY		= -357,	//Used by several intrinsics (e.g. UI_count_objects) that would otherwise take a single NPC
+						//Not supported by several other intrinsics that you'd really like it to (e.g. UI_get_cont_items)
+	AVATAR		= -356,
+	IOLO		= -1,
+	SPARK		= -2,
+	SHAMINO		= -3,
+	DUPRE		= -4,
+	JAANA		= -5,
+	SENTRI		= -7,
+	JULIA		= -8,
+	KATRINA		= -9,
+	TSERAMED	= -10
+};
+
+var throw_abrt_test(var flag) {
+	if (flag == 0) {
+		abort;
+	} else if (flag == 1) {
+		try {
+			throw_abrt_test(0);
+		} catch (errmsg) {
+			AVATAR.say(errmsg);
+			throw flag;
+		}
+	} else {
+		throw flag;
+	}
+	return 1;
+}
+
+void try_catch_test()
+{
+	if (event == DOUBLECLICK)
+	{
+		try {
+			throw_abrt_test(0);
+		} catch () {
+			DUPRE.say("Aha!");
+		}
+		try {
+			throw_abrt_test(0);
+		} catch (errmsg) {
+			IOLO.say(errmsg);
+		}
+		try {
+			throw_abrt_test(1);
+		} catch (errmsg) {
+			SHAMINO.say(errmsg);
+		}
+		try {
+			throw_abrt_test("Test");
+		} catch (errmsg) {
+			SPARK.say(errmsg);
+		}
+		throw_abrt_test("Game over");
+	}
+}
