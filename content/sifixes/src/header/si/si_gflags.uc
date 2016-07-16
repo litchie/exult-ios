@@ -141,11 +141,12 @@ enum Monitor_traitor_subplot
 	HAVE_SPEKTOR_KEY = 0xC1,
 	FOUND_CANTRAS_FATHER = 0xC6,
 	TOLD_HARNNA_FOUND_SCROLL = 0xC7,
-	POMDIRGUN_IS_DEAD = 0xCC
-	// If set, changes or adds conversation with Harnna, Shazzana, Standarr, Templar, Brendann, Caladin,
+	// If 0xCC is set, changes or adds conversation with Harnna, Shazzana, Standarr, Templar, Brendann, Caladin,
 	// and also looks to add a bark about it to Brendann. No one outside of Monitor checks this,
 	// so the dialog in Fawn won’t change. Similar to the original Origin bug with Harnna and the Strange Coins,
 	// if Flag 204 is set you can repeatedly ask Standarr about Pomdirgun, the option does not get removed.
+	POMDIRGUN_IS_DEAD = 0xCC
+
 };
 
 enum Kidnapping_of_Cantra_subplot
@@ -341,7 +342,7 @@ enum Teleport_storm_objects
 	ASK_SIMON_ABOUT_STRANGEWINE = 0xA1,
 	ASK_SPEKTOR_ABOUT_STRANGECOINS = 0xA2,
 	ASK_RENFRY_ABOUT_HAND = 0xA3,
-	
+
 	// Flags for the teleport storm items:
 	STORM_PINECONE = 0x27A,
 	STORM_BLUE_EGG = 0x283,

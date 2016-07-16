@@ -24,13 +24,13 @@
  *  2016-07-11 Written by Knight Captain
  */
 
-void Delin object#(0x42F) () // NPC 47
+void Delin object#(0x42F) ()
 {
-	if (event == STARTED_TALKING) // DoubleClick would also work here.
+	if (event == STARTED_TALKING)
 	{
-		if (gflags[ASKED_JENDON_DAEMON_ARTIFACTS]) // 344
+		if (gflags[ASKED_JENDON_DAEMON_ARTIFACTS])
 		{
-			gflags[ASK_DELIN_ABOUT_BATLIN] = true; // 342
+			gflags[ASK_DELIN_ABOUT_BATLIN] = true;
 		}
 	}
 	Delin.original();
