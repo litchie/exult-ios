@@ -96,7 +96,7 @@ version: 0.15.12
 	- If you prefer 24-hour time, you can have it. Just ask Shamino about 'time'
 	  to switch formats.
 	- After being cured of insanity, the Companions will thank you for it. They
-	  will also join *before* Xenka is summoned. 
+	  will also join *before* Xenka is summoned.
 	- Basement of Temple of Tolerance was mistakenly identified as being "Temple
 	  of Logic" by the "Locate" spell.
 	- Gwenno can now receive the White Diamond Necklace from Iolo;
@@ -182,7 +182,7 @@ version 0.15.12 - 2016-07-15
 	- The equipment scroll has been respaced and reordered to reflect the
 	  order the companions rejoin the party. Avatar, Shamino, Dupre, Iolo.
 	- Delin can be asked about Batlin after you ask Jendon about daemon artifacts.
-	- Edrin's response about his dreams and Siranush will change if you have 
+	- Edrin's response about his dreams and Siranush will change if you have
 	  completed the Dream Realm.
 	- Neyobi the Gwani child now has a schedule once cured and woken up by double
 	  clicking on her. She will now accompany her mother and Baiyanda around.
@@ -190,7 +190,7 @@ version 0.15.12 - 2016-07-15
 	- Reading the evidence against Marsten will allow you to accuse him.
 	- Reading the same scroll will also set a flag if Pomdirgun is dead, which
 	  will change 6 conversations in Monitor.
-	- Iolo will return to pacing his cell after you talk with him in Monitor's jail.  
+	- Iolo will return to pacing his cell after you talk with him in Monitor's jail.
 version: 0.15.11
 	- Fixed spell incantation runes in spellbook and spell scrolls.
 version: 0.15.10

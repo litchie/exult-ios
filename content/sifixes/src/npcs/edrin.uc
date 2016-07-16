@@ -17,14 +17,14 @@
  *  2016-07-12 Written by Knight Captain
  */
 
-void Edrin object#(0x410) () // NPC 16
+void Edrin object#(0x410) ()
 {
-	if (event == STARTED_TALKING) // DoubleClick would also work here.
+	if (event == STARTED_TALKING)
 	{
-		if (gflags[DREAM_REALM_COMPLETE]) // 731 Dream_Realm_Complete is not defined in si_flags.uc yet.
-			{
-			gflags[EDRIN_KNOWS_SIRANUSH_IS_REAL] = true; // 531, 0x213 is only checked by Edrin.
-			}
+		if (gflags[DREAM_REALM_COMPLETE])
+		{
+			gflags[EDRIN_KNOWS_SIRANUSH_IS_REAL] = true;
+		}
 	}
 	Edrin.original();
 }
