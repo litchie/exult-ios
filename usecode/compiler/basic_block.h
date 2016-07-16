@@ -73,9 +73,11 @@ public:
 		case UC_CONVERSE:
 		case UC_JMP:
 		case UC_JNE:
+		case UC_TRYSTART:
 		case UC_CONVERSE32:
 		case UC_JMP32:
 		case UC_JNE32:
+		case UC_TRYSTART32:
 			is_jump = true;
 			break;
 		case UC_CALLINDEX:
@@ -181,7 +183,7 @@ public:
 		       || opcode == UC_RETV || opcode == UC_RETZ;
 	}
 	bool is_abort() const {
-		return opcode == UC_ABRT;
+		return opcode == UC_ABRT || opcode == UC_THROW;
 	}
 };
 
@@ -226,7 +228,8 @@ protected:
 	Opcode *jmp_op; // 0 for no instruction (fall-through) to taken
 	// block; otherwise, one of:
 	//  conditional jumps:
-	//      UC_JNE, UC_CMPS, UC_CONVERSE, UC_LOOPTOP, UC_LOOPTOPS, UC_LOOPTOPTHV
+	//      UC_JNE, UC_CMPS, UC_CONVERSE, UC_LOOPTOP, UC_LOOPTOPS, UC_LOOPTOPTHV,
+	//      UC_TRYSTART
 	//  unconditional jumps:
 	//      UC_JMP
 	// or the 32-bit versions of these instructions.

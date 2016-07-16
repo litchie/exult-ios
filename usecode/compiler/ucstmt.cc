@@ -176,6 +176,67 @@ Uc_if_statement::~Uc_if_statement(
 }
 
 /*
+ *  Generate code.
+ */
+
+void Uc_trycatch_statement::gen(
+    Uc_function *fun,
+    vector<Basic_block *> &blocks,      // What we are producing.
+    Basic_block *&curr,         // Active block; will usually be *changed*.
+    Basic_block *end,           // Fictitious exit block for function.
+    map<string, Basic_block *> &labels, // Label map for goto statements.
+    Basic_block *start,         // Block used for 'continue' statements.
+    Basic_block *exit           // Block used for 'break' statements.
+) {
+	static int cnt = 0;
+	if (!try_stmt) // Optimize whole block away.
+		return;
+	// The basic block for the try code.
+	Basic_block *try_block = new Basic_block();
+	// The basic block for the catch code.
+	Basic_block *catch_block = new Basic_block();
+	// The basic block after the try/catch blocks.
+	Basic_block *past_trycatch = new Basic_block();
+	// Gen start opcode for try block.
+	curr->set_targets(UC_TRYSTART, try_block, catch_block);
+	// Generate code for try block
+	blocks.push_back(try_block);
+	try_stmt->gen(fun, blocks, try_block, end, labels, start, exit);
+	WriteOp(try_block, UC_TRYEND);
+	// JMP past CATCH code.
+	try_block->set_targets(UC_JMP, past_trycatch);
+	// Generate a temp variable for error if needed
+	if (!catch_var) {
+		char buf[50];
+		sprintf(buf, "_tmperror_%d", cnt++);
+		// Create a 'tmp' variable.
+		catch_var = fun->add_symbol(buf);
+		assert(catch_var != 0);
+	}
+	// Generate error variable assignment (push is handled by abort/throw)
+	blocks.push_back(catch_block);
+	catch_var->gen_assign(catch_block);
+	// Do we have anything else to generate on catch block?
+	if (catch_stmt) {
+		// Generate catch code.
+		catch_stmt->gen(fun, blocks, catch_block, end, labels, start, exit);
+		catch_block->set_taken(past_trycatch);
+	}
+	blocks.push_back(curr = past_trycatch);
+}
+
+/*
+ *  Delete.
+ */
+
+Uc_trycatch_statement::~Uc_trycatch_statement(
+) {
+	delete catch_var;
+	delete try_stmt;
+	delete catch_stmt;
+}
+
+/*
  *  Delete.
  */
 
@@ -980,10 +1041,24 @@ void Uc_abort_statement::gen(
     Basic_block *exit           // Block used for 'break' statements.
 ) {
 	ignore_unused_variable_warning(fun, labels, start, exit);
-	WriteOp(curr, UC_ABRT);
+	if (expr) {
+		expr->gen_value(curr);
+		WriteOp(curr, UC_THROW);
+	} else {
+		WriteOp(curr, UC_ABRT);
+	}
 	curr->set_targets(UC_INVALID, end);
 	curr = new Basic_block();
 	blocks.push_back(curr);
+}
+
+/*
+ *  Delete.
+ */
+
+Uc_abort_statement::~Uc_abort_statement(
+) {
+	delete expr;
 }
 
 /*
