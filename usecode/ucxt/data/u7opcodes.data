@@ -649,8 +649,10 @@ called) onto the stack.
 		<num_push> 0 </>
 		<abort/>
 		<!--
+Stores the text "abort executed" in the return register.
 Shows any text in the string register, and exits the function immediatly.
-ABRT also exits all calling functions, effectively stopping the usecode interpreter.
+ABRT also exits all calling functions, effectively stopping the usecode interpreter,
+unless caught in a try/catch block.
 		-->
 	</>
 	<0x40>
@@ -1044,6 +1046,43 @@ TODO: To be done...
 Pushes the element {short} to the stack as a signed 16bit integer.
 		-->
 	</>
+	<0x61>
+		<name> UC_TRYSTART </>
+		<asm_nmo> `starttry\t%1` </>
+		<asm_comment> `` </>
+		<ucs_nmo> `try catch label%f*_%1` </>
+		<num_bytes> 2 </>
+		<param_types> {offset} </>
+		<num_pop> 0 </>
+		<num_push> 0 </>
+		<!--
+Prepares to catch abort/throw on given label instead of exiting usecode machine.
+		-->
+	</>
+	<0x62>
+		<name> UC_TRYEND </>
+		<asm_nmo> `endtry` </>
+		<asm_comment> `` </>
+		<ucs_nmo> `endtry()` </>
+		<num_bytes> 0 </>
+		<param_types> {} </>
+		<num_pop> 0 </>
+		<num_push> 0 </>
+		<!--
+Prepares to catch abort/throw on given label instead of exiting usecode machine.
+		-->
+	</>
+	<0x06>
+		<name> UC_JMP </>
+		<asm_nmo> `jmp\t%1` </>
+		<asm_comment> `` </>
+		<ucs_nmo> `goto label%f*_%1` </>
+		<num_bytes> 2 </>
+		<param_types> {offset} </>
+		<num_pop> 0 </>
+		<num_push> 0 </>
+		<!-- Jumps to the relative {offset} provided. -->
+	</>
 	<0x82>
 		<name> UC_LOOPTOP32 </>
 		<asm_nmo> `loop32\t[%1], [%2], [%3], [%4], %5` </>
@@ -1170,6 +1209,23 @@ Calls the function specified by the 32-bit parameter.
 		<num_push> 0 </>
 		<!-- The 32bit version of 0x31 - UC_CONVSMTH -->
 	</>
+	<0xBF>
+		<name> UC_THROW </>
+		<asm_nmo> `throw` </>
+		<asm_comment> `` </>
+		<ucs_nmo> `throw %p1` </>
+		<num_bytes> 0 </>
+		<param_types> {} </>
+		<num_pop> 1 </>
+		<num_push> 0 </>
+		<return/>
+		<!--
+Pops the top most element off the stack, stores it in the return register.
+Then shows any text in the string register, and exits the function immediatly.
+ABRT also exits all calling functions, effectively stopping the usecode interpreter,
+unless caught in a try/catch block.
+		-->
+	</>
 	<0xC2>
 		<name> UC_PUSHFVAR </>
 		<asm_nmo> `pushfvar` </>
@@ -1263,6 +1319,17 @@ Calls function pushed onto the stack.
 		<num_push> 0 </>
 		<loop/>
 		<!-- The 32bit version of 0x5F - UC_LOOPTOPTHV -->
+	</>
+	<0xE1>
+		<name> UC_TRYSTART32 </>
+		<asm_nmo> `starttry32\t%1` </>
+		<asm_comment> `` </>
+		<ucs_nmo> `try catch label%f*_%n1` </>
+		<num_bytes> 4 </>
+		<param_types> {offset32} </>
+		<num_pop> 0 </>
+		<num_push> 0 </>
+		<!-- The 32bit version of 0x61 - UC_TRYSTART -->
 	</>
 	<0x101>
 		<name> LABEL </>
