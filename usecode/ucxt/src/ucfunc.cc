@@ -488,8 +488,11 @@ vector<UCc *> UCFunc::parse_ucs_pass2a(vector<pair<UCc *, bool> >::reverse_itera
 				}
 			}
 			if ((opsneeded != 0) && (current->second == false)) {
+				if (opcode_table_data[current->first->_id].flag_not_param) {
+					continue;
+				}
 				// if it's a 'push' opcode and we need items to return that we've popped off the stack...
-				if (opcode_table_data[current->first->_id].num_push != 0) {
+				else if (opcode_table_data[current->first->_id].num_push != 0) {
 #ifdef DEBUG_PARSE2
 					output_asm_opcode(tab_indent(4, cout << "P-"), *this, funcmap, opcode_table_data, intrinsics, *(current->first));
 #endif

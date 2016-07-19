@@ -79,7 +79,8 @@ public:
 		flag_indent_dec(false), flag_indent_tmpinc(false),
 		flag_indent_tmpdec(false), flag_debug(false), flag_nosemicolon(false),
 		flag_abort(false), flag_staticref(false), flag_loop(false),
-		flag_new_effect(false), flag_method_effect(false), flag_function_effect(false)
+		flag_new_effect(false), flag_method_effect(false), flag_function_effect(false),
+		flag_not_param(false)
 	{};
 	UCOpcodeData(unsigned int op, const Configuration::KeyTypeList &ktl)
 		: opcode(op), num_bytes(0), num_pop(0),
@@ -88,7 +89,8 @@ public:
 		  flag_indent_dec(false), flag_indent_tmpinc(false),
 		  flag_indent_tmpdec(false), flag_debug(false) ,flag_nosemicolon(false),
 		  flag_abort(false), flag_staticref(false), flag_loop(false),
-		  flag_new_effect(false), flag_method_effect(false), flag_function_effect(false) {
+		  flag_new_effect(false), flag_method_effect(false), flag_function_effect(false),
+		  flag_not_param(false) {
 		for (Configuration::KeyTypeList::const_iterator k = ktl.begin(); k != ktl.end(); ++k) {
 			switch (k->first[0]) {
 			case 'a':
@@ -122,6 +124,7 @@ public:
 				else if (k->first == "num_push")       num_push = static_cast<unsigned int>(strtol(k->second.c_str(), 0, 0));
 				else if (k->first == "nosemicolon/")   flag_nosemicolon = true;
 				else if (k->first == "new_effect/")    flag_new_effect = true;
+				else if (k->first == "not_param/")     flag_not_param = true;
 				break;
 			case 'p':
 				if (k->first == "param_types")         param_types = qnd_ocsplit(k->second);
@@ -173,6 +176,7 @@ public:
 		o << "flag_new_effect: " << flag_new_effect << std::endl;
 		o << "flag_method_effect: " << flag_method_effect << std::endl;
 		o << "flag_function_effect: " << flag_function_effect << std::endl;
+		o << "flag_not_param: " << flag_not_param << std::endl;
 	};
 
 	unsigned int   opcode;
@@ -199,6 +203,7 @@ public:
 	bool           flag_new_effect;
 	bool           flag_method_effect;
 	bool           flag_function_effect;
+	bool           flag_not_param;
 
 	std::vector<std::string> param_types;
 	// values caluclated from param_types
