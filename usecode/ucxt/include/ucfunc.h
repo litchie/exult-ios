@@ -30,9 +30,11 @@
 class UCFuncSet {
 public:
 	UCFuncSet(unsigned int new_funcid, unsigned int new_num_args, bool new_return_var, bool new_aborts,
-	          bool new_class_fun, const std::string &new_funcname, Usecode_symbol::Symbol_kind new_kind)
+	          bool new_class_fun, const std::string &new_funcname, Usecode_symbol::Symbol_kind new_kind,
+	          std::map<unsigned int, std::string>& new_varmap)
 		: funcid(new_funcid), num_args(new_num_args), return_var(new_return_var), aborts(new_aborts),
-		  class_fun(new_class_fun), funcname(new_funcname), kind(new_kind) {};
+		  class_fun(new_class_fun), funcname(new_funcname), kind(new_kind),
+		  varmap(new_varmap) {};
 	~UCFuncSet() {};
 
 	unsigned int funcid;      // the id of the function
@@ -42,6 +44,7 @@ public:
 	bool         class_fun;   // true if this is a class member function
 	std::string  funcname;    // the name of the function, if it has one
 	Usecode_symbol::Symbol_kind kind;   // Type of function.
+	std::map<unsigned int, std::string>& varmap;	// Variable names
 };
 
 typedef std::map<unsigned int, UCFuncSet> FuncMap;
@@ -248,6 +251,7 @@ public:
 	unsigned int   _datasize;    // the size of the data block
 
 	std::map<unsigned int, std::string, std::less<unsigned int> > _data;
+	std::map<unsigned int, std::string> _varmap;
 	// contains the entire data segment in offset from start of segment, and string data pairs
 
 	std::streampos _codeoffset; // the offset to the start of the code segment

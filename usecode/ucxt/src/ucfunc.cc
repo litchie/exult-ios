@@ -30,6 +30,7 @@
 #endif
 #include <algorithm>
 #include <iomanip>
+#include <cctype>
 #include "files/utils.h"
 #include "usecode/ucsymtbl.h"
 #include "headers/ignore_unused_variable_warning.h"
@@ -153,9 +154,17 @@ bool UCFunc::output_ucs(ostream &o, const FuncMap &funcmap, const map<unsigned i
 	output_ucs_funcname(tab_indent(indent, o), funcmap, _funcid, _num_args, symtbl) << endl;
 	// start of func
 	tab_indent(indent++, o) << '{' << endl;
+	std::map<unsigned int, std::string>::iterator it;
 
-	for (unsigned int i = _num_args; i < _num_args + _num_locals; i++)
-		tab_indent(indent, o) << VARNAME << ' ' << VARPREFIX << std::setw(4) << i << ';' << endl;
+	for (unsigned int i = _num_args; i < _num_args + _num_locals; i++) {
+		tab_indent(indent, o) << VARNAME << ' ';
+		it = _varmap.find(i);
+		if (it != _varmap.end())
+			o << it->second;
+		else
+			o << VARPREFIX << std::setw(4) << i;
+		o << ';' << endl;
+	}
 
 	for (int i = 0; i < _num_statics; i++)
 		tab_indent(indent, o) << STATICNAME << ' ' << STATICPREFIX << std::setw(4) << i << ';' << endl;
@@ -202,9 +211,17 @@ ostream &UCFunc::output_ucs_funcname(ostream &o, const FuncMap &funcmap,
 		o << ")";
 	// output ObCurly braces
 	o << " (";
+	std::map<unsigned int, std::string>::iterator it;
 
-	for (unsigned int i = (fmp->second.class_fun ? 1 : 0); i < numargs; i++)
-		o << VARNAME << ' ' << VARPREFIX << std::setw(4) << i << ((i == numargs - 1) ? "" : ", ");
+	for (unsigned int i = (fmp->second.class_fun ? 1 : 0); i < numargs; i++) {
+		o << VARNAME << ' ';
+		it = fmp->second.varmap.find(numargs - i - 1);
+		if (it != fmp->second.varmap.end())
+			o << it->second;
+		else
+			o << VARPREFIX << std::setw(4) << i;
+		o << ((i == numargs - 1) ? "" : ", ");
+	}
 
 	o << ")";
 
@@ -1058,9 +1075,14 @@ string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmst
 					unsigned int paramval = params[t - 1];
 					if (paramval < ucf._num_args)
 						paramval = ucf._num_args - paramval - 1;
-					if (paramval || !ucf._cls)
-						str << UCFunc::VARPREFIX << std::setw(4) << paramval;
-					else
+					if (paramval || !ucf._cls) {
+						std::map<unsigned int, std::string>::iterator it;
+						it = ucf._varmap.find(params[t - 1]);
+						if (it != ucf._varmap.end())
+							str << it->second;
+						else
+							str << UCFunc::VARPREFIX << std::setw(4) << paramval;
+					} else
 						str << UCFunc::THISVAR;
 				}
 				break;
@@ -1275,8 +1297,29 @@ void readbin_U7UCFunc(
 				assert(ucop._params_parsed.size() >= 2);
 				ucf.debugging_offset = ucop._params_parsed[1];
 				// Don't override name from symbol table
-				if (!ucf._sym)
-					ucf.funcname = ucf._data.find(0x0000)->second;
+				if (!ucf._sym) {
+					std::stringstream str;
+					str << ucf._data.find(ucop._params_parsed[0])->second << "_";
+					str << std::setfill('0') << std::setbase(16);
+					str.setf(ios::uppercase);
+					str << std::setw(4) << ucf._funcid;
+					ucf.funcname = str.str();
+					std::map<unsigned int, std::string,
+					         std::less<unsigned int> >::iterator it;
+					it = ucf._data.find(ucf.debugging_offset);
+					for (unsigned int i = 0;
+					     i < ucf._num_args + ucf._num_locals && it != ucf._data.end();
+					     ++it, i++) {
+						std::string varname = it->second;
+						if (varname.size()) {
+							if (std::isdigit(varname[0]))
+								varname = UCFunc::VARPREFIX + varname;
+							else if (varname == "item")
+								varname = "_item";
+							ucf._varmap[i] = varname;
+						}
+					}
+				}
 			}
 
 			/* if we're am opcode accessing statics, make sure to update the
