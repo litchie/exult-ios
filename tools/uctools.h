@@ -160,7 +160,9 @@ static opcode_desc opcode_table[] = {
 	{ "setclsvararrayelem", 2, op_immed, 2, 0 },    // 5e
 	{ "clsvarloop", 10, op_sloop, 0, 0 },    // 5f
 	{ "push\tchoice", 0, 0, 0, 1 },                   // 60
-	{ NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },   // 61-63
+	{ "starttry", 2, op_relative_jump, 0, 0 },              // 61
+	{ "endtry", 0, 0, 0, 0 },              // 62
+	{ NULL, 0, 0, 0, 0 },   // 63
 	{ NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },   // 64-67
 	{ NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },   // 68-6b
 	{ NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },   { NULL, 0, 0, 0, 0 },   // 6c-6f
@@ -231,7 +233,7 @@ static opcode_desc opcode_table[] = {
 	{ NULL, 0, 0, 0, 0 },                       // bc
 	{ NULL, 0, 0, 0, 0 },                       // bd
 	{ NULL, 0, 0, 0, 0 },               // be
-	{ NULL, 0, 0, 0, 0 },                   // bf
+	{ "throw", 0, 0, 1, 0 },                 // bf
 	{ NULL, 0, 0, 0, 0 },                   // c0
 	{ NULL, 0, 0, 0, 0 },                       // c1
 	{ "pushfvar", 0, 0, 1, 1 },                 // c2
@@ -263,7 +265,9 @@ static opcode_desc opcode_table[] = {
 	{ "staticloop32", 12, op_sloop32, 0, 0 },       // dc
 	{ NULL, 0, 0, 0, 0 },                       // dd
 	{ NULL, 0, 0, 0, 0 },                   // de
-	{ "clsvarloop32", 12, op_sloop32, 0, 0 }       // df
+	{ "clsvarloop32", 12, op_sloop32, 0, 0 },      // df
+	{ NULL, 0, 0, 0, 0 },               // e0
+	{ "starttry32", 4, op_relative_jump32, 0, 0 }              // e1
 
 };
 
