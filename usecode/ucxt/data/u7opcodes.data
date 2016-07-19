@@ -34,6 +34,8 @@
 #       new_effect: If present, marks this as being a class allocating opcode.
 #       method_effect: If present, causes the number of elements indicated by
 #               the corresponding method to be popped. 
+#       not_param: If present, prevents the opcode from counting as a parameter
+#               for other opcodes.
 # The following self-closing tags are only for the usecode script output, and
 # while recognized by UCXT, have no effect on output.
 #       indent_inc: If present, output the opcode then increment the indentation
@@ -775,6 +777,7 @@ Appends second param. to the list in first param.
 		<param_types> {short} </>
 		<num_pop> 0 </>
 		<num_push> 0 </>
+		<not_param/>
 		<!--
 Debug opcode -- currently only found in the .es version of SI
 		-->
@@ -789,6 +792,7 @@ Debug opcode -- currently only found in the .es version of SI
 		<num_pop> 0 </>
 		<num_push> 0 </>
 		<debug/>
+		<not_param/>
 		<!--
 Debug opcode -- currently only found in the .es version of SI
 		-->
@@ -1219,6 +1223,7 @@ inside Func0261, "item" would be the avatar.
 		<num_pop> 0 </>
 		<num_push> 0 </>
 		<debug/>
+		<not_param/>
 		<!-- Debug opcode, 32-bit version -->
 	</>
 	<0xD4>
