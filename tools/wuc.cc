@@ -172,7 +172,7 @@ int main(int argc,char *argv[]) {
 	/*  printf("Wody's Usecode Compiler v0.009\nCopyright (c) 1999 Wody "
 	    "Dragon (a.k.a. Wouter Dijkslag)\n");*/
 	if (argc < 3) {
-		printf("syntax: %s [-s] infile outfile\n", argv[0]);
+		printf("syntax: %s [-s|-b] infile outfile\n", argv[0]);
 		exit(0);
 	}
 	// Serpent Isle?
@@ -180,7 +180,12 @@ int main(int argc,char *argv[]) {
 		findex++;
 		func_table = si_intrinsic_table;
 		funsize = si_intrinsic_size;
+	} else if (strcmp(argv[1], "-b") == 0) {
+		findex++;
+		func_table = sibeta_intrinsic_table;
+		funsize = sibeta_intrinsic_size;
 	}
+
 
 	lindex = 0;
 	for (pass = 0; pass < 2; pass++) {

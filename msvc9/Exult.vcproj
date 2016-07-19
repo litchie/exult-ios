@@ -3947,6 +3947,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\usecode\sibetaintrinsics.h"
+						>
+					</File>
+					<File
 						RelativePath="..\usecode\ucinternal.h"
 						>
 					</File>

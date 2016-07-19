@@ -148,6 +148,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/shp2pcx
 %{_datadir}/exult/u7bgintrinsics.data
 %{_datadir}/exult/u7siintrinsics.data
+%{_datadir}/exult/u7sibetaintrinsics.data
 %{_datadir}/exult/u7misc.data
 %{_datadir}/exult/u7opcodes.data
 

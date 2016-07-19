@@ -177,8 +177,12 @@ void Usecode_internal::uc_trace_disasm(Usecode_value *locals, int num_locals,
 			func = Read2(ip);
 			immed = *ip++;
 			const char **func_table = bg_intrinsic_table;
-			if (Game::get_game_type() == SERPENT_ISLE)
-				func_table = si_intrinsic_table;
+			if (Game::get_game_type() == SERPENT_ISLE) {
+				if (Game::is_si_beta())
+					func_table = sibeta_intrinsic_table;
+				else
+					func_table = si_intrinsic_table;
+			}
 			std::printf("\t_%s@%d\t; %04X", func_table[func], immed, func);
 		}
 		break;

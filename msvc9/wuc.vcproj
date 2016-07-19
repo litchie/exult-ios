@@ -1993,6 +1993,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\usecode\sibetaintrinsics.h"
+				>
+			</File>
+			<File
 				RelativePath="..\tools\uctools.h"
 				>
 			</File>

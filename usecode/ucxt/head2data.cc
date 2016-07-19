@@ -87,19 +87,43 @@ void si_out(const string &fname) {
 	o.close();
 }
 
+void sibeta_out(const string &fname) {
+	ofstream o;
+	o.open(fname.c_str());
+
+	if (o.fail()) {
+		cerr << "error: could not open `" << fname << "` for writing" << endl;
+		exit(1);
+	}
+
+	o << setfill('0') << setbase(16);
+	o.setf(ios::uppercase);
+
+#define USECODE_INTRINSIC_PTR(NAME) std::string(__STRING(NAME))
+	std::string sibut[] = {
+#include "sibetaintrinsics.h"
+	};
+#undef USECODE_INTRINSIC_PTR
+
+	gen_intrinsic_table(o, sibut);
+
+	o.close();
+}
+
 int main(int argc, char **argv) {
-	if (argc != 3) {
+	if (argc != 4) {
 		cout << "usage:" << endl
-		     << "\thead2data <bg outputfile> <si outputfile>" << endl
+		     << "\thead2data <bg outputfile> <si outputfile> <si beta outputfile>" << endl
 		     << endl
 		     << "\tWhere the output files are the relative pathnames to the datafiles" << endl
 		     << "\tto be output." << endl
-		     << "\teg. head2data data/u7bgintrinsics.data data/u7siintrinsics.data" << endl;
+		     << "\teg. head2data data/u7bgintrinsics.data data/u7siintrinsics.data data/u7sibetaintrinsics.data" << endl;
 		return 1;
 	}
 
 	bg_out(string(argv[1]));
 	si_out(string(argv[2]));
+	sibeta_out(string(argv[3]));
 
 	return 0;
 }

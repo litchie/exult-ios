@@ -134,7 +134,7 @@ private:
 	GtkNotebook     *mainnotebook;
 	// Which game type:
 	Exult_Game game_type;
-	bool expansion;
+	bool expansion, sibeta;
 	int curr_game;  // Which game is loaded
 	int curr_mod;   // Which mod is loaded, or -1 for none
 	std::string game_encoding;  // Character set for current game/mod.
@@ -365,6 +365,9 @@ public:
 	}
 	bool has_expansion() const {
 		return expansion;
+	}
+	 bool is_si_beta() {
+		return sibeta;
 	}
 	void set_shapeinfo_modified() {
 		shape_info_modified = true;

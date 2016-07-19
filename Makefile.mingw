@@ -329,6 +329,7 @@ toolsinstall: tools
 	cp data/bginclude.uc $(U7PATH)/data
 	cp data/u7bgintrinsics.data $(U7PATH)/data
 	cp data/u7siintrinsics.data $(U7PATH)/data
+	cp data/u7sibetaintrinsics.data $(U7PATH)/data
 	cp libsmooth_randomize$(LIBEXT) $(U7PATH)/tools
 	cp libsmooth_smooth$(LIBEXT) $(U7PATH)/tools
 	cp libsmooth_stream$(LIBEXT) $(U7PATH)/tools
@@ -359,6 +360,7 @@ toolsdist: tools
 	cp data/bginclude.uc $(U7PATH)/Tools/data
 	cp data/u7bgintrinsics.data $(U7PATH)/Tools/data
 	cp data/u7siintrinsics.data $(U7PATH)/Tools/data
+	cp data/u7sibetaintrinsics.data $(U7PATH)/Tools/data
 	cp libsmooth_randomize$(LIBEXT) $(U7PATH)/Tools/tools
 	cp libsmooth_smooth$(LIBEXT) $(U7PATH)/Tools/tools
 	cp libsmooth_stream$(LIBEXT) $(U7PATH)/Tools/tools

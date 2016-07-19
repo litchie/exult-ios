@@ -45,12 +45,13 @@ struct str_int_pair {
 #define GAME_SI (Game::get_game_type() == SERPENT_ISLE)
 #define GAME_FOV (Game::get_game_type()==BLACK_GATE && Game::has_expansion())
 #define GAME_SS (Game::get_game_type()==SERPENT_ISLE && Game::has_expansion())
+#define GAME_SIB (Game::get_game_type()==SERPENT_ISLE && Game::is_si_beta())
 
 class Game : public Game_singletons {
 private:
 	static bool new_game_flag;
 	static Exult_Game game_type;
-	static bool expansion;
+	static bool expansion, sibeta;
 #ifndef DONT_HAVE_HASH_MAP
 	typedef unordered_map<const char *, int, hashstr, eqstr> shapes_map;
 	typedef unordered_map<const char *, str_int_pair, hashstr, eqstr> rsc_map;
@@ -96,6 +97,9 @@ public:
 	}
 	static bool has_expansion() {
 		return expansion;
+	}
+	static bool is_si_beta() {
+		return sibeta;
 	}
 
 	static const char *get_avname();

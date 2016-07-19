@@ -266,6 +266,7 @@ static bool run_bg = false;     // skip menu and run bg
 static bool run_si = false;     // skip menu and run si
 static bool run_fov = false;        // skip menu and run fov
 static bool run_ss = false;     // skip menu and run ss
+static bool run_sib = false;        // skip menu and run sib
 static string arg_gamename = "default"; // cmdline arguments
 static string arg_modname = "default";  // cmdline arguments
 static string arg_configfile = "";
@@ -330,6 +331,7 @@ int main(
 	parameters.declare("--si", &run_si, true);
 	parameters.declare("--fov", &run_fov, true);
 	parameters.declare("--ss", &run_ss, true);
+	parameters.declare("--sib", &run_sib, true);
 	parameters.declare("--nomenu", &arg_nomenu, true);
 	parameters.declare("-v", &showversion, true);
 	parameters.declare("--version", &showversion, true);
@@ -358,7 +360,7 @@ int main(
 
 	if (needhelp) {
 		cerr << "Usage: exult [--help|-h] [-v|--version] [-c configfile]" << endl
-		     << "             [--bg|--fov|--si|--ss|--game <game>] [--mod <mod>]" << endl
+		     << "             [--bg|--fov|--si|--ss|--sib|--game <game>] [--mod <mod>]" << endl
 		     << "             [--nomenu] [--buildmap 0|1|2] [--mapnum <num>]" << endl
 		     << "             [--nocrc] [--edit] [--write-xml] [--reset-video]" << endl
 		     << "--help\t\tShow this information" << endl
@@ -368,14 +370,15 @@ int main(
 		     << "--fov\t\tSkip menu and run Black Gate with Forge of Virtue expansion" << endl
 		     << "--si\t\tSkip menu and run Serpent Isle (prefers original game)" << endl
 		     << "--ss\t\tSkip menu and run Serpent Isle with Silver Seed expansion" << endl
+		     << "--sib\t\tSkip menu and run Serpent Isle Beta" << endl
 		     << "--nomenu\tSkip BG/SI game menu" << endl
 		     << "--game <game>\tRun original game" << endl
-		     << "--mod <mod>\tMust be used together with '--bg', '--fov', '--si', '--ss' or" << endl
+		     << "--mod <mod>\tMust be used together with '--bg', '--fov', '--si', '--ss', '--sib' or" << endl
 		     << "\t\t'--game <game>'; runs the specified game using the mod with" << endl
 		     << "\t\ttitle equal to '<mod>'" << endl
 		     << "--buildmap <N>\tCreate a fullsize map of the game world in u7map??.pcx" << endl
 		     << "\t\t(N=0: all roofs, 1: no level 2 roofs, 2: no roofs)" << endl
-		     << "\t\tOnly valid if used together with '--bg', '--fov', '--si', '--ss'" << endl
+		     << "\t\tOnly valid if used together with '--bg', '--fov', '--si', '--ss', '--sib'" << endl
 		     << "\t\tor '--game <game>'; you may optionally specify a mod with" << endl
 		     << "\t\t'--mod <mod>' (WARNING: requires big amounts of RAM, HD" << endl
 		     << "\t\tspace and time!)" << endl
@@ -395,13 +398,14 @@ int main(
 	                     + static_cast<unsigned>(run_si)
 	                     + static_cast<unsigned>(run_fov)
 	                     + static_cast<unsigned>(run_ss)
+	                     + static_cast<unsigned>(run_sib)
 	                     + static_cast<unsigned>(arg_gamename != "default");
 	if (gameparam > 1) {
-		cerr << "Error: You may only specify one of --bg, --fov, --si, --ss or --game!" <<
+		cerr << "Error: You may only specify one of --bg, --fov, --si, --ss, --sib or --game!" <<
 		     endl;
 		exit(1);
 	} else if (arg_buildmap >= 0 && gameparam == 0) {
-		cerr << "Error: --buildmap requires one of --bg, --fov, --si, --ss or --game!" <<
+		cerr << "Error: --buildmap requires one of --bg, --fov, --si, --ss, --sib or --game!" <<
 		     endl;
 		exit(1);
 	}
@@ -1001,6 +1005,10 @@ static void Init(
 			basegame = gamemanager->get_ss();
 			arg_gamename = CFG_SS_NAME;
 			run_ss = false;
+		} else if (run_sib) {
+			basegame = gamemanager->get_sib();
+			arg_gamename = CFG_SIB_NAME;
+			run_sib = false;
 		}
 		BaseGameInfo *newgame = 0;
 		if (basegame || arg_gamename != "default") {

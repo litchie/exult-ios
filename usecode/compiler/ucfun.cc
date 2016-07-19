@@ -857,6 +857,10 @@ const char *si_intrinsic_table[] = {
 #include "../siintrinsics.h"
 };
 
+const char *sibeta_intrinsic_table[] = {
+#include "../sibetaintrinsics.h"
+};
+
 /*
  *  Add one of the intrinsic tables to the 'intrinsics' scope.
  */
@@ -867,7 +871,7 @@ void Uc_function::set_intrinsics(
 	const char **table;
 	if (intrinsic_type == unset) {
 		Uc_location::yywarning(
-		    "Use '#game \"[blackgate|serpentisle]\" to specify "
+		    "Use '#game \"[blackgate|serpentisle|serpentbeta]\" to specify "
 		    "intrinsics to use (default = blackgate).");
 		intrinsic_type = bg;
 	}
@@ -878,9 +882,16 @@ void Uc_function::set_intrinsics(
 		remove_answer = 6;
 		push_answers = 7;
 		pop_answers = 8;
-	} else {
+	} else if (intrinsic_type == si) {
 		table = si_intrinsic_table;
 		cnt = sizeof(si_intrinsic_table) / sizeof(si_intrinsic_table[0]);
+		add_answer = 0xc;
+		remove_answer = 0xd;
+		push_answers = 0xe;
+		pop_answers = 0xf;
+	} else {
+		table = sibeta_intrinsic_table;
+		cnt = sizeof(sibeta_intrinsic_table) / sizeof(sibeta_intrinsic_table[0]);
 		add_answer = 0xc;
 		remove_answer = 0xd;
 		push_answers = 0xe;

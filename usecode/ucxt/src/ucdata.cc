@@ -60,6 +60,7 @@ void UCData::parse_params(const unsigned int argc, char **argv) {
 		else if (strcmp(argv[i], "-bg") == 0) options._game = UCOptions::GAME_BG;
 		else if (strcmp(argv[i], "-ss") == 0) options._game = UCOptions::GAME_SS;
 		else if (strcmp(argv[i], "-fov") == 0) options._game = UCOptions::GAME_FOV;
+		else if (strcmp(argv[i], "-sib") == 0) options._game = UCOptions::GAME_SIB;
 		else if (strcmp(argv[i], "-u8") == 0) options._game = UCOptions::GAME_U8;
 
 		else if (strcmp(argv[i], "-a") == 0) options.mode_all = true;
@@ -210,7 +211,7 @@ void UCData::disassamble(ostream &o) {
     with 'variables' in the opcodes.txt file, that signify if it's a pop/push and a flag */
 void UCData::dump_flags(ostream &o) {
 	if (!options.game_u7()) {
-		o << "This option only works for U7:BG, U7:FoV, U7:SI and U7:SS" << endl;
+		o << "This option only works for U7:BG, U7:FoV, U7:SI Beta, U7:SI and U7:SS" << endl;
 		return;
 	}
 	load_funcs(o);
@@ -396,7 +397,7 @@ void UCData::analyse_classes() {
 
 void UCData::output_extern_header(ostream &o) {
 	if (!options.game_u7()) {
-		o << "This option only works for U7:BG, U7:FoV, U7:SI and U7:SS" << endl;
+		o << "This option only works for U7:BG, U7:FoV, U7:SI beta, U7:SI and U7:SS" << endl;
 		return;
 	}
 	load_funcs(o);

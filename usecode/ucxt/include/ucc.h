@@ -75,8 +75,11 @@ public:
 	bool game_ss()      const {
 		return _game == GAME_SS;
 	};
+	bool game_sib()      const {
+		return _game == GAME_SIB;
+	};
 	bool game_u7()      const {
-		return game_bg() || game_si() || game_fov() || game_ss();
+		return game_bg() || game_si() || game_fov() || game_ss() || game_sib();
 	};
 	bool game_u8()      const {
 		return _game == GAME_U8;
@@ -106,7 +109,7 @@ public:
 
 	//private:
 	unsigned int _game;
-	enum { GAME_BG = 1, GAME_FOV = 2, GAME_SI = 3, GAME_SS = 4, GAME_U8 = 5 };
+	enum { GAME_BG = 1, GAME_FOV = 2, GAME_SI = 3, GAME_SS = 4, GAME_SIB = 5, GAME_U8 = 6 };
 };
 
 #endif

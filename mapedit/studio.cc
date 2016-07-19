@@ -524,7 +524,7 @@ ExultStudio::ExultStudio(int argc, char **argv): glade_path(0), static_path(0),
 	body_draw(0), explosion_draw(0),
 	equipwin(0), locwin(0), combowin(0), compilewin(0), compile_box(0),
 	ucbrowsewin(0), gameinfowin(0),
-	game_type(BLACK_GATE), expansion(false), curr_game(-1), curr_mod(-1),
+	game_type(BLACK_GATE), expansion(false), sibeta(false), curr_game(-1), curr_mod(-1),
 	server_socket(-1), server_input_tag(-1), waiting_for_server(0) {
 	// Initialize the various subsystems
 	self = this;
@@ -1252,6 +1252,7 @@ void ExultStudio::set_game_path(string gamename, string modname) {
 	gameinfo->setup_game_paths();
 	game_type = gameinfo->get_game_type();
 	expansion = gameinfo->have_expansion();
+	sibeta = gameinfo->is_si_beta();
 	if (static_path)
 		g_free(static_path);
 	// Set up path to static.

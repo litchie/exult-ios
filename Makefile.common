@@ -420,7 +420,7 @@ BG_MR_FACES = $(EXULT_BG_MR_FACES_VGA)
 
 all: $(EXEC)
 
-ucinternal.o : ucinternal.cc ucinternal.h bgintrinsics.h siintrinsics.h opcodes.h usefuns.h
+ucinternal.o : ucinternal.cc ucinternal.h bgintrinsics.h siintrinsics.h sibetaintrinsics.h opcodes.h usefuns.h
 
 # Generated flex dependencies...
 
@@ -547,7 +547,7 @@ u7voice2syx$(EXEEXT) : tools/u7voice2syx.o $(FILE_OBJS)
 	$(CXX) $(LDFLAGS) -o $(@) tools/u7voice2syx.o $(FILE_OBJS)
 
 
-wuc$(EXEEXT) : tools/wuc.o tools/uctools.h usecode/bgintrinsics.h usecode/siintrinsics.h
+wuc$(EXEEXT) : tools/wuc.o tools/uctools.h usecode/bgintrinsics.h usecode/siintrinsics.h usecode/sibetaintrinsics.h
 	$(CXX) $(LDFLAGS) -o $(@) tools/wuc.o
 
 UCC_OBJS=\
@@ -562,7 +562,7 @@ UCC_OBJS=\
 	usecode/compiler/ucsym.o \
 	usecode/compiler/ucclass.o
 
-ucc$(EXEEXT) : $(UCC_OBJS) files/utils.h usecode/bgintrinsics.h usecode/siintrinsics.h usecode/opcodes.h usecode/ucsymtbl.h
+ucc$(EXEEXT) : $(UCC_OBJS) files/utils.h usecode/bgintrinsics.h usecode/siintrinsics.h usecode/sibetaintrinsics.h usecode/opcodes.h usecode/ucsymtbl.h
 	$(CXX) $(LDFLAGS) -o $(@) $(UCC_OBJS) -liberty
 
 ucparse.cc: usecode/compiler/ucparse.yy
@@ -592,13 +592,13 @@ CONFREGRESS_OBJS=$(CONF_OBJS) conf/xmain.o files/utils.o
 confregress$(EXEEXT)  : $(CONFREGRESS_OBJS)
 	$(CXX) $(LDFLAGS) -o $(@) $(CONFREGRESS_OBJS)
 
-head2data.o : usecode/ucxt/head2data.cc usecode/bgintrinsics.h usecode/siintrinsics.h
+head2data.o : usecode/ucxt/head2data.cc usecode/bgintrinsics.h usecode/siintrinsics.h usecode/sibetaintrinsics.h
 
-head2data$(EXEEXT) : usecode/ucxt/head2data.o $(FILE_OBJS) usecode/bgintrinsics.h usecode/siintrinsics.h
+head2data$(EXEEXT) : usecode/ucxt/head2data.o $(FILE_OBJS) usecode/bgintrinsics.h usecode/siintrinsics.h usecode/sibetaintrinsics.h
 	$(CXX) $(LDFLAGS) -o $(@) usecode/ucxt/head2data.o $(FILE_OBJS)
 
 head2data.test: 
-	head2data data/u7bgintrinsics.data data/u7siintrinsics.data
+	head2data data/u7bgintrinsics.data data/u7siintrinsics.data data/u7sibetaintrinsics.data
 
 clean:
 	rm -f $(OBJS) tools/expack.o $(EXEC) expack$(EXEEXT) tools/ipack.o ipack$(EXEEXT) data/exult.flx data/exult_flx.h data/exult_bg.flx data/exult_bg_flx.h data/exult_si.flx data/exult_si_flx.h data/bg/bg_paperdol.vga data/bg/bg_mr_faces.vga data/bg/bg_paperdol_vga.h data/bg/bg_mr_faces_vga.h
@@ -625,4 +625,4 @@ toolsclean:
 	rm -f $(UCXT_OBJS) ucxt$(EXEEXT)
 	rm -f $(UCC_OBJS) ucc$(EXEEXT) ucparse.cc ucparse.h uclex.cc
 	rm -f $(CONFREGRESS_OBJS) confregress$(EXEEXT)
-	rm -f usecode/ucxt/head2data.o head2data$(EXEEXT) data/u7bgintrinsics.data data/u7siintrinsics.data
+	rm -f usecode/ucxt/head2data.o head2data$(EXEEXT) data/u7bgintrinsics.data data/u7siintrinsics.data data/u7sibetaintrinsics.data

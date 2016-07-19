@@ -169,9 +169,11 @@ static void Set_game
 		Uc_function::set_intrinsic_type(Uc_function::bg);
 	else if (strcmp(name, "serpentisle") == 0)
 		Uc_function::set_intrinsic_type(Uc_function::si);
+	else if (strcmp(name, "serpentbeta") == 0)
+		Uc_function::set_intrinsic_type(Uc_function::sib);
 	else
 		Uc_location::yyerror(
-			"Specify \"blackgate\" or \"serpentisle\" "
+			"Specify \"blackgate\", \"serpentisle\" or \"serpentbeta\" "
 				"with #game.");
 	}
 

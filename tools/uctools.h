@@ -289,6 +289,11 @@ const char *si_intrinsic_table[] = {
 };
 const int si_intrinsic_size = sizeof(si_intrinsic_table) / sizeof(char *);
 
+const char *sibeta_intrinsic_table[] = {
+#include "sibetaintrinsics.h"
+};
+const int sibeta_intrinsic_size = sizeof(sibeta_intrinsic_table) / sizeof(char *);
+
 
 
 #if 0

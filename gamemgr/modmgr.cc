@@ -36,6 +36,7 @@
 #include "Configuration.h"
 #include "Flex.h"
 #include "databuf.h"
+#include "crc.h"
 
 using std::ifstream;
 using std::cout;
@@ -95,6 +96,7 @@ ModInfo::ModInfo(
     const string &mod,
     const string &path,
     bool exp,
+    bool sib,
     bool ed,
     const string &cfg
 ) {
@@ -103,6 +105,7 @@ ModInfo::ModInfo(
 	mod_title = mod;
 	path_prefix = path;
 	expansion = exp;
+	sibeta = sib;
 	editing = ed;
 	configfile = cfg;
 	Configuration modconfig(configfile, "modinfo");
@@ -371,29 +374,42 @@ ModManager::ModManager(const string &name, const string &menu, bool needtitle,
 		if (needtitle)
 			new_title = CFG_BG_TITLE;
 		expansion = false;
+		sibeta = false;
 	} else if (!strcmp(static_identity, "FORGE")) {
 		type = BLACK_GATE;
 		path_prefix = to_uppercase(CFG_FOV_NAME);
 		if (needtitle)
 			new_title = CFG_FOV_TITLE;
 		expansion = true;
+		sibeta = false;
 	} else if (!strcmp(static_identity, "SERPENT ISLE")) {
 		type = SERPENT_ISLE;
-		path_prefix = to_uppercase(CFG_SI_NAME);
-		if (needtitle)
-			new_title = CFG_SI_TITLE;
 		expansion = false;
+		uint32 crc = crc32_syspath((static_dir + "/mainshp.flx").c_str());
+		if (crc == 0xdbdc2676) {
+			path_prefix = to_uppercase(CFG_SIB_NAME);
+			if (needtitle)
+				new_title = CFG_SIB_TITLE;
+			sibeta = true;
+		} else {
+			path_prefix = to_uppercase(CFG_SI_NAME);
+			if (needtitle)
+				new_title = CFG_SI_TITLE;
+			sibeta = false;
+		}
 	} else if (!strcmp(static_identity, "SILVER SEED")) {
 		type = SERPENT_ISLE;
 		path_prefix = to_uppercase(CFG_SS_NAME);
 		if (needtitle)
 			new_title = CFG_SS_TITLE;
 		expansion = true;
+		sibeta = false;
 	} else {
 		type = EXULT_DEVEL_GAME;
 		path_prefix = "DEVEL" + to_uppercase(name);
 		new_title = menu;   // To be safe.
 		expansion = false;
+		sibeta = false;
 	}
 
 	// If the "default" path selected above is already taken, then use a unique
@@ -469,7 +485,7 @@ void ModManager::gather_mods() {
 			string modtitle = filenames[i].substr(ptroff,
 			                                      filenames[i].size() - ptroff - 4);
 			modlist.push_back(ModInfo(type, cfgname,
-			                          modtitle, path_prefix, expansion,
+			                          modtitle, path_prefix, expansion, sibeta,
 			                          editing, filenames[i]));
 		}
 	}
@@ -492,7 +508,7 @@ int ModManager::find_mod_index(const string &name) {
 
 void ModManager::add_mod(const string &mod, const string &modconfig) {
 	modlist.push_back(ModInfo(type, cfgname, mod, path_prefix,
-	                          expansion, editing, modconfig));
+	                          expansion, sibeta, editing, modconfig));
 	store_system_paths();
 }
 
@@ -560,28 +576,30 @@ void ModManager::get_game_paths(const string &game_path) {
 // GameManager: class that manages the installed games
 GameManager::GameManager(bool silent) {
 	games.clear();
-	bg = fov = si = ss = 0;
+	bg = fov = si = ss = sib = 0;
 
 	// Search for games defined in exult.cfg:
 	string config_path("config/disk/game"), game_title;
 	std::vector<string> gamestrs = config->listkeys(config_path, false);
 	std::vector<string> checkgames;
-	checkgames.reserve(checkgames.size()+4);	// +4 in case the four below are not in the cfg.
+	checkgames.reserve(checkgames.size()+5);	// +5 in case the four below are not in the cfg.
 	// The original games plus expansions.
 	checkgames.push_back(CFG_BG_NAME);
 	checkgames.push_back(CFG_FOV_NAME);
 	checkgames.push_back(CFG_SI_NAME);
 	checkgames.push_back(CFG_SS_NAME);
+	checkgames.push_back(CFG_SIB_NAME);
 
 	for (std::vector<string>::iterator it = gamestrs.begin();
 	        it != gamestrs.end(); ++it) {
 		if (*it != CFG_BG_NAME && *it != CFG_FOV_NAME &&
-		    *it != CFG_SI_NAME && *it != CFG_SS_NAME)
+		    *it != CFG_SI_NAME && *it != CFG_SS_NAME &&
+		    *it != CFG_SIB_NAME)
 			checkgames.push_back(*it);
 	}
 
 	games.reserve(checkgames.size());
-	int bgind = -1, fovind = -1, siind = -1, ssind = -1;
+	int bgind = -1, fovind = -1, siind = -1, ssind = -1, sibind = -1;
 
 	for (std::vector<string>::iterator it = checkgames.begin();
 	        it != checkgames.end(); ++it) {
@@ -604,7 +622,10 @@ GameManager::GameManager(bool silent) {
 			} else if (bgind == -1)
 				bgind = games.size();
 		} else if (game.get_game_type() == SERPENT_ISLE) {
-			if (game.have_expansion()) {
+			if (game.is_si_beta()) {
+				if (sibind == -1)
+					sibind = games.size();
+			} else if (game.have_expansion()) {
 				if (ssind == -1)
 					ssind = games.size();
 			} else if (siind == -1)
@@ -622,6 +643,8 @@ GameManager::GameManager(bool silent) {
 		si = &(games[siind]);
 	if (ssind >= 0)
 		ss = &(games[ssind]);
+	if (sibind >= 0)
+		sib = &(games[sibind]);
 
 	// Sane defaults.
 	add_system_path("<ULTIMA7_STATIC>", ".");
@@ -630,6 +653,7 @@ GameManager::GameManager(bool silent) {
 	print_found(fov, "exult_bg.flx", "Forge of Virtue", CFG_FOV_NAME, "ULTIMA7", silent);
 	print_found(si, "exult_si.flx", "Serpent Isle", CFG_SI_NAME, "SERPENT", silent);
 	print_found(ss, "exult_si.flx", "Silver Seed", CFG_SS_NAME, "SERPENT", silent);
+	print_found(sib, "exult_si.flx", "Serpent Isle Beta", CFG_SIB_NAME, "SERPENT", silent);
 	store_system_paths();
 }
 
