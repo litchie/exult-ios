@@ -184,7 +184,8 @@ void open_usecode_file(UCData &uc, const Configuration &config) {
 	string path, ucspecial, mucc_l, mucc_c;
 
 	if (uc.options.game_bg() || uc.options.game_fov()
-	    || uc.options.game_si() || uc.options.game_ss()) {
+	    || uc.options.game_si() || uc.options.game_ss()
+	    || uc.options.game_sib()) {
 		string game;
 		if (gamemanager) {
 			ModManager *basegame = 0;
@@ -210,6 +211,9 @@ void open_usecode_file(UCData &uc, const Configuration &config) {
 			} else if (uc.options.game_ss()) {
 				basegame = gamemanager->get_ss();
 				game = "SS";
+			} else if (uc.options.game_sib()) {
+				basegame = gamemanager->get_sib();
+				game = "SI Beta";
 			}
 			if (!basegame) {
 				cout << "Failed to locate " << game << " usecode file. Exiting." << endl;
@@ -226,7 +230,9 @@ void open_usecode_file(UCData &uc, const Configuration &config) {
 		} else {
 			mucc_l  = mucc_sil;
 			mucc_c  = mucc_sic;
-			game = uc.options.game_si() ? "SI" : "SS";
+			game = uc.options.game_si() ? "SI"
+			                            : uc.options.game_sib() ? "SI Beta"
+			                                                    : "SS";
 		}
 		if (uc.options.game_bg() || uc.options.game_fov())
 			ucspecial = "usecode.bg";
@@ -339,6 +345,7 @@ void usage() {
 	     << "\t\t-fov\t- select the forge of virtue usecode file" << endl
 	     << "\t\t-si\t- select the serpent isle usecode file" << endl
 	     << "\t\t-ss\t- select the silver seed usecode file" << endl
+	     << "\t\t-sib\t- select the serpent isle beta usecode file" << endl
 	     << "\t\t-u8\t- select the ultima 8/pagan usecode file (experimental)" << endl
 	     << "\tOutput Format Flags (only one of these):" << endl
 	     << "\t\t-fl\t- output using brief \"list\" format" << endl

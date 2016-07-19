@@ -63,7 +63,8 @@ public:
 	enum Intrinsic_type {
 	    unset,
 	    bg,         // Black gate.
-	    si          // Serpent isle.
+	    si,         // Serpent isle.
+	    sib         // Serpent Isle Beta.
 	};
 private:
 	static Intrinsic_type intrinsic_type;

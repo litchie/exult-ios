@@ -11,6 +11,7 @@ noinst_LTLIBRARIES = libusecode.la
 libusecode_la_SOURCES = \
 	bgintrinsics.h	\
 	siintrinsics.h	\
+	sibetaintrinsics.h	\
 	intrinsics.cc	\
 	ucinternal.cc	\
 	ucinternal.h	\

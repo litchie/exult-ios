@@ -1623,6 +1623,13 @@ struct Usecode_internal::IntrinsicTableEntry
 #include "siintrinsics.h"
 };
 
+// Serpent Isle Beta Intrinsic Function Tablee
+// It's different to the Black Gate and Seroent Isle one.
+struct Usecode_internal::IntrinsicTableEntry
+		Usecode_internal::serpentbeta_table[] = {
+#include "sibetaintrinsics.h"
+};
+
 
 int max_bundled_intrinsics = 0x3ff; // Index of the last intrinsic in this table
 /*
@@ -1641,9 +1648,12 @@ Usecode_value Usecode_internal::call_intrinsic(
 	if (intrinsic <= max_bundled_intrinsics) {
 		struct Usecode_internal::IntrinsicTableEntry *table_entry;
 
-		if (Game::get_game_type() == SERPENT_ISLE)
-			table_entry = serpent_table + intrinsic;
-		else
+		if (Game::get_game_type() == SERPENT_ISLE) {
+			if (Game::is_si_beta())
+				table_entry = serpentbeta_table + intrinsic;
+			else
+				table_entry = serpent_table + intrinsic;
+		} else
 			table_entry = intrinsic_table + intrinsic;
 		UsecodeIntrinsicFn func = (*table_entry).func;
 		const char *name = (*table_entry).name;
@@ -3130,7 +3140,7 @@ bool Usecode_internal::in_usecode_for(
 void Usecode_internal::write(
 ) {
 	// Assume new games will have keyring.
-	if (Game::get_game_type() != BLACK_GATE)
+	if (Game::get_game_type() != BLACK_GATE && !Game::is_si_beta())
 		keyring->write();   // write keyring data
 
 	ofstream out;
@@ -3208,7 +3218,7 @@ void Usecode_internal::write(
 
 void Usecode_internal::read(
 ) {
-	if (Game::get_game_type() != BLACK_GATE)
+	if (Game::get_game_type() != BLACK_GATE && !Game::is_si_beta())
 		keyring->read();    // read keyring data
 
 

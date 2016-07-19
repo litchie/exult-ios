@@ -257,3 +257,45 @@ with
 
 With this, the function calls make sense without any further changes.
 
+(SI BETA) Stack underflows
+==========================
+
+In the leaked beta version of SI, there are four cases of stack underflows.
+They are caused by the same reason as above: incorrect order of externs, and
+two functions are afflicted by them: 0x4BE and .
+
+Usecode function 04BE (SI Beta): in the function header:
+
+replace
+	.externsize  0007H
+	  .extern    07D1H
+	  .extern    0964H
+	  .extern    07D2H
+	  .extern    093AH
+	  .extern    0939H
+	  .extern    0974H
+	  .extern    0990H
+with
+	.externsize  0007H
+	  .extern    07D1H
+	  .extern    0964H
+	  .extern    07D2H
+	  .extern    093AH
+	  .extern    0974H
+	  .extern    0939H
+	  .extern    0990H
+
+Usecode function 08FC (SI Beta): in the function header:
+
+replace
+	.externsize  0002H
+	  .extern    0939H
+	  .extern    0974H
+with
+	.externsize  0002H
+	  .extern    0974H
+	  .extern    0939H
+
+With this, the function calls make sense without any further changes.
+
+

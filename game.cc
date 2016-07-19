@@ -63,6 +63,7 @@ bool Game::editing_flag = false;
 Game *game = 0;
 Exult_Game Game::game_type = NONE;
 bool Game::expansion = false;
+bool Game::sibeta = false;
 
 static char av_name[17] = "";
 static int av_sex = -1;
@@ -108,6 +109,7 @@ Game *Game::create_game(BaseGameInfo *mygame) {
 	modtitle = mygame->get_mod_title();
 	game_type = mygame->get_game_type();
 	expansion = mygame->have_expansion();
+	sibeta = mygame->is_si_beta();
 	editing_flag = mygame->being_edited();
 
 	// Need to do this here. Maybe force on for EXULT_DEVEL_GAME too?

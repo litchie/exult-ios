@@ -38,24 +38,25 @@ protected:
 	string mod_title;   // Internal mod name, the mod's title
 	string menustring;  // Text displayed in mods menu
 	bool expansion;     // For FoV/SS ONLY.
+	bool sibeta;        // For beta version of SI.
 	bool found;         // If the game/mod is found.
 	bool editing;       // Game is being edited and may have missing files.
 	string codepage;    // Game/mod codepage (mainly for ES).
 public:
 	BaseGameInfo() : type(NONE), cfgname(""), path_prefix(""), mod_title(""),
-		menustring(""), expansion(false), found(false), editing(false),
+		menustring(""), expansion(false), sibeta(false), found(false), editing(false),
 		codepage("CP437")
 	{  }
 	BaseGameInfo(const Exult_Game ty, const char *cf, const char *mt,
-	             const char *pt, const char *ms, bool exp, bool f, bool ed,
+	             const char *pt, const char *ms, bool exp, bool sib, bool f, bool ed,
 	             const char *cp)
 		: type(ty), cfgname(cf), path_prefix(pt), mod_title(mt), menustring(ms),
-		  expansion(exp), found(f), editing(ed), codepage(cp)
+		  expansion(exp), sibeta(sib), found(f), editing(ed), codepage(cp)
 	{  }
 	BaseGameInfo(const BaseGameInfo &other)
 		: type(other.type), cfgname(other.cfgname),
 		  path_prefix(other.path_prefix), mod_title(other.mod_title),
-		  menustring(other.menustring), expansion(other.expansion),
+		  menustring(other.menustring), expansion(other.expansion), sibeta(other.sibeta),
 		  found(other.found), editing(other.editing), codepage(other.codepage)
 	{  }
 	virtual ~BaseGameInfo() {  }
@@ -82,6 +83,9 @@ public:
 	bool have_expansion() const {
 		return expansion;
 	}
+	bool is_si_beta() const {
+		return sibeta;
+	}
 	bool is_there() const {
 		return found;
 	}
@@ -107,6 +111,9 @@ public:
 	void set_expansion(bool tf) {
 		expansion = tf;
 	}
+	void set_si_beta(bool tf) {
+		sibeta = tf;
+	}
 	void set_found(bool tf) {
 		found = tf;
 	}
@@ -128,11 +135,11 @@ protected:
 	string configfile;
 public:
 	ModInfo(Exult_Game game, const string &name, const string &mod,
-	        const string &path, bool exp, bool ed, const string &cfg);
+	        const string &path, bool exp, bool sib, bool ed, const string &cfg);
 	ModInfo(const ModInfo &other)
 		: BaseGameInfo(other.type, other.cfgname.c_str(),
 		               other.mod_title.c_str(), other.path_prefix.c_str(),
-		               other.menustring.c_str(), other.expansion, other.found,
+		               other.menustring.c_str(), other.expansion, other.sibeta, other.found,
 		               other.editing, other.codepage.c_str()),
 		compatible(other.compatible), configfile(other.configfile)
 	{  }
@@ -159,7 +166,7 @@ public:
 	ModManager(const ModManager &other)
 		: BaseGameInfo(other.type, other.cfgname.c_str(),
 		               other.mod_title.c_str(), other.path_prefix.c_str(),
-		               other.menustring.c_str(), other.expansion, other.found,
+		               other.menustring.c_str(), other.expansion, other.sibeta, other.found,
 		               other.editing, other.codepage.c_str()) {
 		for (std::vector<ModInfo>::const_iterator it = other.modlist.begin();
 		        it != other.modlist.end(); ++it)
@@ -204,6 +211,7 @@ protected:
 	ModManager *fov;
 	ModManager *si;
 	ModManager *ss;
+	ModManager *sib;
 	std::vector<ModManager> games;
 	void print_found(ModManager *game, const char *flex,
 	                 const char *title, const char *cfgname, const char *basepath,
@@ -237,6 +245,9 @@ public:
 	bool is_ss_installed() const {
 		return ss != 0;
 	};
+	bool is_sib_installed() const {
+		return sib != 0;
+	};
 	ModManager *find_game(const string &name);
 	ModManager *get_bg() {
 		return bg ? bg : fov;
@@ -249,6 +260,9 @@ public:
 	}
 	ModManager *get_ss() {
 		return ss;
+	}
+	ModManager *get_sib() {
+		return sib;
 	}
 	int find_game_index(const string &name);
 	void add_game(const string &name, const string &menu);

@@ -69,6 +69,9 @@ private:
 	std::string si_intrinsics_data;
 	std::string si_intrinsics_root;
 
+	std::string sibeta_intrinsics_data;
+	std::string sibeta_intrinsics_root;
+
 };
 
 class UCOpcodeData {

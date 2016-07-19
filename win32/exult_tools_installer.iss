@@ -27,6 +27,7 @@ Source: Tools\data\u7bgintrinsics.data; DestDir: {app}\data\; Flags: ignoreversi
 Source: Tools\data\u7misc.data; DestDir: {app}\data\; Flags: ignoreversion
 Source: Tools\data\u7opcodes.data; DestDir: {app}\data\; Flags: ignoreversion
 Source: Tools\data\u7siintrinsics.data; DestDir: {app}\data\; Flags: ignoreversion
+Source: Tools\data\u7sibetaintrinsics.data; DestDir: {app}\data\; Flags: ignoreversion
 Source: Tools\tools\cmanip.exe; DestDir: {app}\tools\; Flags: ignoreversion
 Source: Tools\tools\expack.exe; DestDir: {app}\tools\; Flags: ignoreversion
 Source: Tools\tools\expack.txt; DestDir: {app}\tools\; Flags: ignoreversion

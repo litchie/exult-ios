@@ -80,6 +80,9 @@ void ucxtInit::init(const Configuration &config, const UCOptions &options) {
 	si_intrinsics_data = "u7siintrinsics.data";
 	si_intrinsics_root = "intrinsics";
 
+	sibeta_intrinsics_data = "u7sibetaintrinsics.data";
+	sibeta_intrinsics_root = "intrinsics";
+
 	if (options.verbose) cout << "Initing misc..." << endl;
 	misc();
 
@@ -91,6 +94,8 @@ void ucxtInit::init(const Configuration &config, const UCOptions &options) {
 		intrinsics(bg_intrinsics_data, bg_intrinsics_root);
 	else if (options.game_si() || options.game_ss())
 		intrinsics(si_intrinsics_data, si_intrinsics_root);
+	else if (options.game_sib())
+		intrinsics(sibeta_intrinsics_data, sibeta_intrinsics_root);
 }
 
 string ucxtInit::get_datadir(const Configuration &config, const UCOptions &options) {
