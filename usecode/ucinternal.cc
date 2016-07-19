@@ -3208,7 +3208,7 @@ void Usecode_internal::write(
 
 void Usecode_internal::read(
 ) {
-	if (Game::get_game_type() == SERPENT_ISLE)
+	if (Game::get_game_type() != BLACK_GATE)
 		keyring->read();    // read keyring data
 
 
