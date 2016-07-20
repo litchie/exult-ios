@@ -99,7 +99,7 @@ void Scroll shape#(0x31D) ()
 				say("A finely crafted ring, of silver, of a size to fit a small woman or a child.");
 		}
 
-		if (gflags[STORM_FUR_CAP]
+		if (gflags[STORM_FUR_CAP])
 		{
 			if (gflags[KNOWS_FURCAP_OWNER] || gflags[GAVE_FURCAP_BACK])
 				say("The elegant fur cap which Filbercio the MageLord purchased for his favorite, the sorceress Frigidazzi.");
