@@ -673,7 +673,7 @@ it means 'end conversation'.
 		<name> UC_PUSHF </>
 		<asm_nmo> `pushf\tflag:[%1]` </>
 		<asm_comment> `\t\t\t;` </>
-		<ucs_nmo> `gflags[0x%1]` </>
+		<ucs_nmo> `gflags[%g1]` </>
 		<num_bytes> 2 </>
 		<param_types> {flag} </>
 		<num_pop> 0 </>
@@ -684,7 +684,7 @@ it means 'end conversation'.
 		<name> UC_POPF </>
 		<asm_nmo> `popf\tflag:[%1]` </>
 		<asm_comment> `\t\t;` </>
-		<ucs_nmo> `gflags[0x%1] = %p1` </>
+		<ucs_nmo> `gflags[%g1] = %p1` </>
 		<num_bytes> 2 </>
 		<param_types> {flag} </>
 		<num_pop> 1 </>

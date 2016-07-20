@@ -38,6 +38,7 @@ public:
 
 	void parse_params(const unsigned int argc, char **argv);
 	void open_usecode(const std::string &filename);
+	void load_globals(std::ostream &o);
 	void load_funcs(std::ostream &o);
 	void analyse_classes();
 
@@ -80,6 +81,7 @@ private:
 
 	std::string _output_redirect;
 	std::string _input_usecode_file;
+	std::string _global_flags_file;
 
 	unsigned int _funcid;
 

@@ -61,9 +61,7 @@ const std::string c_empty_string; // Ob for exult_constants.h
 void usage();
 void open_usecode_file(UCData &uc, const Configuration &config);
 
-UCData uc;
 Configuration *config = new Configuration();
-
 using std::setw;
 using std::cerr;
 using std::cout;
@@ -77,6 +75,7 @@ int main(int argc, char **argv) {
 	cout.setf(ios::uppercase);
 
 	// get the parameters
+	UCData uc;
 	uc.parse_params(argc, argv);
 	if (uc.options.verbose) cout << "Parameters parsed..." << endl;
 
@@ -334,6 +333,7 @@ void usage() {
 	     << "\t\t-v \t- turns on verbose output mode" << endl
 	     << "\t\t-ofile\t- output to the specified file" << endl
 	     << "\t\t-ifile\t- load the usecode file specified by the filename" << endl
+	     << "\t\t-gfile\t- load global flag names from specified file" << endl
 	     << "\t\t-ro\t- output the raw opcodes in addition to the -f format" << endl
 	     << "\t\t-ac\t- output automatically generated comments" << endl
 	     << "\t\t-uc\t- output automatically generated 'useless' comments" << endl
