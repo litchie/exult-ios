@@ -81,6 +81,7 @@ const string UCFunc::STATICNAME = "static var";
 const string UCFunc::NORETURN = "void";
 const string UCFunc::SHAPENUM = "shape#(";
 const string UCFunc::OBJECTNUM = "object#(";
+std::map<unsigned int, std::string> UCFunc::FlagMap;
 
 int UCFunc::num_global_statics = 0;
 
@@ -1099,6 +1100,23 @@ string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmst
 				Usecode_class_symbol *cls = symtbl->get_class(clsid);
 				assert(cls);
 				str << cls->get_name();
+				break;
+			}
+			case 'g': {
+				// Global flag reference
+				i++;
+				c = asmstr[i];
+				unsigned int t = charnum2uint(c);
+				assert(t != 0);
+				assert(params.size() >= t);
+				std::map<unsigned int, std::string>::iterator it;
+				it = UCFunc::FlagMap.find(params[t - 1]);
+				if (it != UCFunc::FlagMap.end()) {
+					str << it->second;
+				} else {
+					str << "0x";
+					print_number<16, 4>(c, str, params);
+				}
 				break;
 			}
 			default:

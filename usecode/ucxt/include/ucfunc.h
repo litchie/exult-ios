@@ -250,7 +250,7 @@ public:
 
 	unsigned int   _datasize;    // the size of the data block
 
-	std::map<unsigned int, std::string, std::less<unsigned int> > _data;
+	std::map<unsigned int, std::string> _data;
 	std::map<unsigned int, std::string> _varmap;
 	// contains the entire data segment in offset from start of segment, and string data pairs
 
@@ -292,6 +292,7 @@ public:
 	static const std::string NORETURN;
 	static const std::string SHAPENUM;
 	static const std::string OBJECTNUM;
+	static std::map<unsigned int, std::string> FlagMap;
 };
 
 void readbin_U7UCFunc(std::ifstream &f, UCFunc &ucf, const UCOptions &options,

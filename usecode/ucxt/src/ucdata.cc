@@ -25,7 +25,9 @@
 #include <iomanip>
 #include <cstring>
 #include <cstdlib>
+#include <set>
 #include <vector>
+#include <sstream>
 #include <stdexcept>
 #include "ucdata.h"
 #include "ops.h"
@@ -103,6 +105,9 @@ void UCData::parse_params(const unsigned int argc, char **argv) {
 		} else if ((string(argv[i]).size() > 2) && string(argv[i]).substr(0, 2) == "-i") {
 			_input_usecode_file = string(argv[i]).substr(2, string(argv[i]).size() - 2);
 			if (options.verbose) cout << "Inputting from file: " << _input_usecode_file << endl;
+		} else if ((string(argv[i]).size() > 2) && string(argv[i]).substr(0, 2) == "-g") {
+			_global_flags_file = string(argv[i]).substr(2, string(argv[i]).size() - 2);
+			if (options.verbose) cout << "Reading flag names from file: " << _global_flags_file << endl;
 		} else {
 			cout << "unsupported parameter " << argv[i] << " detected. countinuing." << endl;
 		}
@@ -117,6 +122,7 @@ void UCData::open_usecode(const string &filename) {
 }
 
 void UCData::disassamble(ostream &o) {
+	load_globals(o);
 	load_funcs(o);
 	analyse_classes();
 
@@ -292,6 +298,46 @@ void UCData::file_open(const string &filename) {
 #ifdef LOAD_SPEED_TEST
 #include "tools/dbgutils.h"
 #endif
+
+void UCData::load_globals(ostream &o) {
+	if (_global_flags_file.empty())
+		return;
+	try {
+		std::ifstream gflags;
+		U7open(gflags, _global_flags_file.c_str(), false);
+		std::map<unsigned int, std::string>& FlagMap = UCFunc::FlagMap;
+		std::set<std::string> flags;
+		unsigned int ii = 0;
+		o << "enum GlobalFlags {" << endl;
+		std::string flagname;
+		std::getline(gflags, flagname, '\0');
+		bool first = true;
+		while (gflags.good()) {
+			if (flagname.size()) {
+				if (flagname[0] == '$')
+					flagname.erase(0, 1);
+				if (flags.find(flagname) != flags.end()) {
+					std::stringstream snum;
+					snum << ii;
+					flagname += snum.str();
+				}
+				FlagMap[ii] = flagname;
+				if (!first)
+					o << ',' << endl;
+				else
+					first = false;
+				o << '\t' << flagname << " = 0x" << setbase(16) << setfill('0')
+				  << setw(4) << ii;
+			}
+			ii++;
+			std::getline(gflags, flagname, '\0');
+		};
+		o << endl << "};" << endl << endl;
+	} catch (const std::exception &err) {
+		cout << "error. failed to open " << _global_flags_file << ". exiting." << endl;
+		exit(1);
+	}
+}
 
 void UCData::load_funcs(ostream &o) {
 	if (options.game_u7() && Usecode_symbol_table::has_symbol_table(_file)) {
