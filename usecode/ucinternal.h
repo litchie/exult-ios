@@ -382,6 +382,9 @@ class Usecode_internal : public Usecode_machine {
 	USECODE_INTRINSIC_DECL(get_item_weight);
 	USECODE_INTRINSIC_DECL(get_skin_colour);
 	USECODE_INTRINSIC_DECL(printf);
+	// SI Beta:
+	USECODE_INTRINSIC_DECL(sib_path_run_usecode);
+	USECODE_INTRINSIC_DECL(sib_is_dest_reachable);
 	// Exult only:
 	USECODE_INTRINSIC_DECL(begin_casting_mode);
 	USECODE_INTRINSIC_DECL(get_usecode_fun);

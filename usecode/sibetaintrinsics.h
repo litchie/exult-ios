@@ -168,9 +168,9 @@ USECODE_INTRINSIC_PTR(get_random),          // 0
                       USECODE_INTRINSIC_PTR(attack_avatar),           // 0x91
                       USECODE_INTRINSIC_PTR(UNKNOWN),             // 0x92 ++++Stop_attacking_avatar()??
                       USECODE_INTRINSIC_PTR(path_run_usecode),        // 0x93 - Known
-                      USECODE_INTRINSIC_PTR(UNKNOWN),             // 0x94 UNUSED
+                      USECODE_INTRINSIC_PTR(sib_path_run_usecode),    // 0x94
                       USECODE_INTRINSIC_PTR(can_avatar_reach_pos),    // 0x95
-                      USECODE_INTRINSIC_PTR(UNKNOWN),             // 0x96 UNUSED
+                      USECODE_INTRINSIC_PTR(sib_is_dest_reachable),   // 0x96
                       USECODE_INTRINSIC_PTR(close_gumps), // Guess    // 0x97
                       USECODE_INTRINSIC_PTR(item_say),            // 0x98
                       USECODE_INTRINSIC_PTR(close_gump),          // 0x99

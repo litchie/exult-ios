@@ -2811,13 +2811,20 @@ USECODE_INTRINSIC(end_conversation) {
 
 USECODE_INTRINSIC(si_path_run_usecode) {
 	ignore_unused_variable_warning(num_parms);
-	// exec(npc, loc(x,y,z)?, eventid, itemref, usecode#, ??true/false).
+	// exec(npc, loc(x,y,z), eventid, itemref, usecode#, flag_always).
 	// Schedule Npc to walk to loc and then execute usecode.
-	// Guessing:
 	int always = parms[5].get_int_value();
 	path_run_usecode(parms[0], parms[1], parms[4], parms[3], parms[2], 1,
 	                 always != 0);
 	return no_ret;
+}
+
+USECODE_INTRINSIC(sib_path_run_usecode) {
+	ignore_unused_variable_warning(num_parms);
+	// exec(npc, loc(x,y,z), usecode#, itemref, eventid).
+	// Schedule Npc to walk to loc and then execute usecode.
+	return Usecode_value(path_run_usecode(parms[0], parms[1], parms[2],
+	                                      parms[3], parms[4], 0, false));
 }
 
 USECODE_INTRINSIC(error_message) {
@@ -3375,6 +3382,22 @@ USECODE_INTRINSIC(is_dest_reachable) {
 	                             parms[1].get_elem(1).get_int_value(),
 	                             parms[1].get_array_size() == 2 ? 0 :
 	                             parms[1].get_elem(2).get_int_value());
+	ret = Usecode_value(is_dest_reachable(npc, dest));
+	return ret;
+}
+
+USECODE_INTRINSIC(sib_is_dest_reachable) {
+	// Note: this function did  not work in SI Beta. This implementation is
+	// based on what usecode expects.
+	ignore_unused_variable_warning(num_parms);
+	Usecode_value ret(0);
+	Actor *npc = as_actor(get_item(parms[1]));
+	if (!npc || parms[0].get_array_size() < 2)
+		return ret;
+	Tile_coord dest = Tile_coord(parms[0].get_elem(0).get_int_value(),
+	                             parms[0].get_elem(1).get_int_value(),
+	                             parms[0].get_array_size() == 2 ? 0 :
+	                             parms[0].get_elem(2).get_int_value());
 	ret = Usecode_value(is_dest_reachable(npc, dest));
 	return ret;
 }
