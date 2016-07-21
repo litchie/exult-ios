@@ -407,6 +407,7 @@ ModManager::ModManager(const string &name, const string &menu, bool needtitle,
 
 	menustring = needtitle ? new_title : menu;
 	// NOW we can store the path.
+	add_system_path("<" + path_prefix + "_PATH>", game_path);
 	add_system_path("<" + path_prefix + "_STATIC>", static_dir);
 
 	{
@@ -424,7 +425,7 @@ ModManager::ModManager(const string &name, const string &menu, bool needtitle,
 		config->value(config_path.c_str(), patch_dir, default_dir.c_str());
 		add_system_path("<" + path_prefix + "_PATCH>", patch_dir);
 
-		// <source> setting: default is "$game_path/patch".
+		// <source> setting: default is "$game_path/source".
 		config_path = base_cfg_path + "/source";
 		config->value(config_path.c_str(), patch_dir, default_dir.c_str());
 		add_system_path("<" + path_prefix + "_SOURCE>", src_dir);

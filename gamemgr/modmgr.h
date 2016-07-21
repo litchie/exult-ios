@@ -239,16 +239,16 @@ public:
 	};
 	ModManager *find_game(const string &name);
 	ModManager *get_bg() {
-		return bg ? bg : fov ? fov : 0;
+		return bg ? bg : fov;
 	}
 	ModManager *get_fov() {
-		return fov ? fov : 0;
+		return fov;
 	}
 	ModManager *get_si() {
-		return si ? si : ss ? ss : 0;
+		return si ? si : ss;
 	}
 	ModManager *get_ss() {
-		return ss ? ss : 0;
+		return ss;
 	}
 	int find_game_index(const string &name);
 	void add_game(const string &name, const string &menu);
