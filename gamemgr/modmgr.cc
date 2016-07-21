@@ -653,7 +653,6 @@ GameManager::GameManager(bool silent) {
 	print_found(fov, "exult_bg.flx", "Forge of Virtue", CFG_FOV_NAME, "ULTIMA7", silent);
 	print_found(si, "exult_si.flx", "Serpent Isle", CFG_SI_NAME, "SERPENT", silent);
 	print_found(ss, "exult_si.flx", "Silver Seed", CFG_SS_NAME, "SERPENT", silent);
-	print_found(sib, "exult_si.flx", "Serpent Isle Beta", CFG_SIB_NAME, "SERPENT", silent);
 	store_system_paths();
 }
 

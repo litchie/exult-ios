@@ -198,6 +198,26 @@ void Shape_manager::load(
 	}
 
 	files[SF_SPRITES_VGA].load(SPRITES_VGA, PATCH_SPRITES);
+	if (GAME_SIB) {
+		// Lets try to import shape 0 of sprites.vga from BG or SI.
+		pair<string, int> sourcebg(string("<ULTIMA7_STATIC>/sprites.vga"), -1);
+		pair<string, int> sourcesi(string("<SERPENT_STATIC>/sprites.vga"), -1);
+
+		vector<pair<int, int> > imports;
+		imports.push_back(pair<int, int>(0, 0));
+		if (U7exists(sourcesi.first.c_str()))
+			files[SF_SPRITES_VGA].import_shapes(sourcesi, imports);
+		else if (U7exists(sourcebg.first.c_str()))
+			files[SF_SPRITES_VGA].import_shapes(sourcebg, imports);
+		else {
+				// Create lots of pixel frames.
+			Shape *shp = files[SF_SPRITES_VGA].new_shape(0);
+			unsigned char whitepix = 118;
+			for (int ii = 0; ii < 28; ii++) {
+				shp->add_frame(new Shape_frame(&whitepix, 1, 1, 0, 0, false), ii);
+			}
+		}
+	}
 
 	vector<pair<string, int> > source;
 	source.push_back(pair<string, int>(FACES_VGA, -1));
