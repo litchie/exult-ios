@@ -30,6 +30,18 @@ using std::ofstream;
 #endif
 #endif
 
+void gen_intrinsic_table(ofstream& o, std::string const table[100]) {
+	o << "<intrinsics>" << endl;
+	for (unsigned int i = 0; i < 0x100; i++) {
+		o << "\t<0x" << setw(2) << i << "> " << table[i];
+		if (table[i] == "UNKNOWN") {
+			o << '_' << setw(2) << i;
+		}
+		o << " </>" << endl;
+	}
+	o << "</>" << endl;
+}
+
 void bg_out(const string &fname) {
 	ofstream o;
 	o.open(fname.c_str());
@@ -48,11 +60,7 @@ void bg_out(const string &fname) {
 	};
 #undef USECODE_INTRINSIC_PTR
 
-	o << "<intrinsics>" << endl;
-	for (unsigned int i = 0; i < 0x100; i++)
-		o << "\t<0x" << setw(2) << i << "> " << bgut[i] << " </>" << endl;
-	o << "</>" << endl;
-
+	gen_intrinsic_table(o, bgut);
 	o.close();
 }
 
@@ -74,10 +82,7 @@ void si_out(const string &fname) {
 	};
 #undef USECODE_INTRINSIC_PTR
 
-	o << "<intrinsics>" << endl;
-	for (unsigned int i = 0; i < 0x100; i++)
-		o << "\t<0x" << setw(2) << i << "> " << siut[i] << " </>" << endl;
-	o << "</>" << endl;
+	gen_intrinsic_table(o, siut);
 
 	o.close();
 }
