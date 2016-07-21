@@ -1276,7 +1276,7 @@ Usecode_value Usecode_internal::add_party_items(
 		if (quantity < prev)    // Added to this NPC.
 			result.concat(party.get_elem(i));
 	}
-	if (GAME_BG)            // Black gate?  Just return result.
+	if (GAME_BG || GAME_SIB)    // Black gate or Beta SI?  Just return result.
 		return result;
 	int todo = quantity;        // SI:  Put remaining on the ground.
 	if (framenum == c_any_framenum)
@@ -1331,7 +1331,12 @@ Usecode_value Usecode_internal::add_cont_items(
 		quality = 0;
 
 	Game_object *obj = get_item(container);
-	if (obj) return Usecode_value(obj->add_quantity(quantity, shapenum, quality, framenum, false, temp));
+	if (obj) {
+		// This fixes teleport storm in SI Beta.
+		int numleft = obj->add_quantity(quantity, shapenum, quality, framenum, false, temp);
+		if (GAME_SIB) return Usecode_value(quantity - numleft);
+		else return Usecode_value(numleft);
+	}
 	return Usecode_value(0);
 }
 
