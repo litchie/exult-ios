@@ -2365,6 +2365,13 @@ USECODE_INTRINSIC(call_guards) {
 	return no_ret;
 }
 
+USECODE_INTRINSIC(stop_arresting) {
+	ignore_unused_variable_warning(num_parms, parms);
+	// Seems to be what it does.
+	gwin->stop_arresting();
+	return no_ret;
+}
+
 USECODE_INTRINSIC(attack_avatar) {
 	ignore_unused_variable_warning(num_parms, parms);
 	// Attack thieving Avatar.

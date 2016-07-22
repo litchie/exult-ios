@@ -361,6 +361,7 @@ class Usecode_internal : public Usecode_machine {
 	USECODE_INTRINSIC_DECL(reset_conv_face);
 	USECODE_INTRINSIC_DECL(init_conversation);
 	USECODE_INTRINSIC_DECL(end_conversation);
+	USECODE_INTRINSIC_DECL(stop_arresting);
 	USECODE_INTRINSIC_DECL(set_new_schedules);
 	USECODE_INTRINSIC_DECL(revert_schedule);
 	USECODE_INTRINSIC_DECL(run_schedule);

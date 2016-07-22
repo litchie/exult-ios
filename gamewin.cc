@@ -2760,6 +2760,32 @@ void Game_window::call_guards(
 }
 
 /*
+ *  Makes guards stop trying to arrest the avatar. Based on what it seems to
+ *  do in SI, as well as what usecode seems to want to do.
+ */
+
+void Game_window::stop_arresting(
+) {
+	if (armageddon || in_dungeon)
+		return;
+	int gshape = get_guard_shape();
+	if (gshape < 0) { // No one to calm down.
+		return;
+	}
+
+	Actor_vector npcs;      // See if someone is nearby.
+	main_actor->find_nearby_actors(npcs, gshape, 20, 0x28);
+	for (Actor_vector::const_iterator it = npcs.begin(); it != npcs.end(); ++it) {
+		Actor *npc = *it;
+		if (!npc->is_in_party() && npc->get_schedule_type() == Schedule::arrest_avatar) {
+			npc->set_schedule_type(Schedule::wander);
+			// Prevent guard from becoming hostile.
+			npc->set_alignment(Actor::neutral);
+		}
+	}
+}
+
+/*
  *  Have nearby residents attack the Avatar.
  */
 
