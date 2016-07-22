@@ -30,8 +30,8 @@ USECODE_INTRINSIC_PTR(get_random),          // 0
                       USECODE_INTRINSIC_PTR(remove_npc_face0),    // 7
                       USECODE_INTRINSIC_PTR(remove_npc_face1),        // 8
                       USECODE_INTRINSIC_PTR(set_conversation_slot),       // 9
-                      USECODE_INTRINSIC_PTR(change_npc_face0),    // UNUSED   // 0xa
-                      USECODE_INTRINSIC_PTR(change_npc_face1),    // UNUSED   // 0xb
+                      USECODE_INTRINSIC_PTR(change_npc_face0),                // 0xa - UNUSED
+                      USECODE_INTRINSIC_PTR(change_npc_face1),                // 0xb - UNUSED
                       USECODE_INTRINSIC_PTR(add_answer),          // 0xc
                       USECODE_INTRINSIC_PTR(remove_answer),           // 0xd
                       USECODE_INTRINSIC_PTR(push_answers),            // 0xe
@@ -64,33 +64,33 @@ USECODE_INTRINSIC_PTR(get_random),          // 0
                       USECODE_INTRINSIC_PTR(set_npc_prop),            // 0x29
                       USECODE_INTRINSIC_PTR(get_avatar_ref),          // 0x2a
                       USECODE_INTRINSIC_PTR(get_party_list),          // 0x2b
-                      USECODE_INTRINSIC_PTR(create_new_object),       // 0x2c - Known
+                      USECODE_INTRINSIC_PTR(create_new_object),       // 0x2c
                       USECODE_INTRINSIC_PTR(create_new_object2),      // 0x2d
                       USECODE_INTRINSIC_PTR(set_last_created),        // 0x2e
-                      USECODE_INTRINSIC_PTR(update_last_created),     // 0x2f - Known
+                      USECODE_INTRINSIC_PTR(update_last_created),     // 0x2f
                       USECODE_INTRINSIC_PTR(get_npc_name),            // 0x30
                       USECODE_INTRINSIC_PTR(count_objects),           // 0x31
                       USECODE_INTRINSIC_PTR(find_object),         // 0x32
-                      USECODE_INTRINSIC_PTR(get_cont_items),          // 0x33 - Appears correct
+                      USECODE_INTRINSIC_PTR(get_cont_items),          // 0x33
                       USECODE_INTRINSIC_PTR(remove_party_items),      // 0x34
                       USECODE_INTRINSIC_PTR(add_party_items),         // 0x35
                       USECODE_INTRINSIC_PTR(add_cont_items),          // 0x36
-                      USECODE_INTRINSIC_PTR(remove_cont_items),       // 0x37 - SI Only ???
+                      USECODE_INTRINSIC_PTR(remove_cont_items),       // 0x37
                       USECODE_INTRINSIC_PTR(get_music_track),     // 0x38
-                      USECODE_INTRINSIC_PTR(play_music),          // 0x39 - Known
+                      USECODE_INTRINSIC_PTR(play_music),          // 0x39
                       USECODE_INTRINSIC_PTR(npc_nearby),          // 0x3a
                       USECODE_INTRINSIC_PTR(npc_nearby2),         // 0x3b Guess.
                       USECODE_INTRINSIC_PTR(find_nearby_avatar),      // 0x3c
-                      USECODE_INTRINSIC_PTR(is_npc),              // 0x3d - Known
+                      USECODE_INTRINSIC_PTR(is_npc),              // 0x3d
                       USECODE_INTRINSIC_PTR(display_runes),           // 0x3e
                       USECODE_INTRINSIC_PTR(click_on_item),           // 0x3f
-                      USECODE_INTRINSIC_PTR(error_message),           // 0x40 - Error Message
-                      USECODE_INTRINSIC_PTR(find_nearby),         // 0x41 - Known
+                      USECODE_INTRINSIC_PTR(error_message),           // 0x40
+                      USECODE_INTRINSIC_PTR(find_nearby),         // 0x41
                       USECODE_INTRINSIC_PTR(give_last_created),       // 0x42
                       USECODE_INTRINSIC_PTR(is_dead),             // 0x43
-                      USECODE_INTRINSIC_PTR(game_hour),           // 0x44 - Correct
-                      USECODE_INTRINSIC_PTR(game_minute),         // 0x45 - Correct
-                      USECODE_INTRINSIC_PTR(get_npc_number),          // 0x46 - Guess
+                      USECODE_INTRINSIC_PTR(game_hour),           // 0x44
+                      USECODE_INTRINSIC_PTR(game_minute),         // 0x45
+                      USECODE_INTRINSIC_PTR(get_npc_number),          // 0x46
                       USECODE_INTRINSIC_PTR(part_of_day),         // 0x47
                       USECODE_INTRINSIC_PTR(get_alignment),           // 0x48
                       USECODE_INTRINSIC_PTR(set_alignment),           // 0x49
@@ -103,7 +103,7 @@ USECODE_INTRINSIC_PTR(get_random),          // 0
                       USECODE_INTRINSIC_PTR(set_lift),            // 0x50
                       USECODE_INTRINSIC_PTR(get_weather),         // 0x51
                       USECODE_INTRINSIC_PTR(set_weather),         // 0x52
-                      USECODE_INTRINSIC_PTR(sit_down),            // 0x53 - Known (is it???)
+                      USECODE_INTRINSIC_PTR(sit_down),            // 0x53
                       USECODE_INTRINSIC_PTR(summon),              // 0x54
                       USECODE_INTRINSIC_PTR(si_display_map),          // 0x55
                       USECODE_INTRINSIC_PTR(kill_npc),            // 0x56
@@ -113,25 +113,25 @@ USECODE_INTRINSIC_PTR(get_random),          // 0
                       USECODE_INTRINSIC_PTR(set_oppressor),           // 0x5a
                       USECODE_INTRINSIC_PTR(get_oppressor),           // 0x5b
                       USECODE_INTRINSIC_PTR(get_weapon),          // 0x5c
-                      USECODE_INTRINSIC_PTR(set_opponent),    // Guess    // 0x5d
-                      USECODE_INTRINSIC_PTR(clone),               // 0x5e UNUSED
-                      USECODE_INTRINSIC_PTR(UNKNOWN),             // 0x5f UNUSED
-                      USECODE_INTRINSIC_PTR(display_area),                // 0x60 UNUSED
-                      USECODE_INTRINSIC_PTR(wizard_eye),              // 0x61 UNUSED
-                      USECODE_INTRINSIC_PTR(resurrect),   // Guess    // 0x62
+                      USECODE_INTRINSIC_PTR(set_opponent),                // 0x5d
+                      USECODE_INTRINSIC_PTR(clone),               // 0x5e
+                      USECODE_INTRINSIC_PTR(UNKNOWN),             // 0x5f
+                      USECODE_INTRINSIC_PTR(display_area),                // 0x60 - UNUSED
+                      USECODE_INTRINSIC_PTR(wizard_eye),              // 0x61 - UNUSED
+                      USECODE_INTRINSIC_PTR(resurrect),               // 0x62
                       USECODE_INTRINSIC_PTR(resurrect_npc),           // 0x63
                       USECODE_INTRINSIC_PTR(get_body_npc),            // 0x64
                       USECODE_INTRINSIC_PTR(add_spell),           // 0x65
                       USECODE_INTRINSIC_PTR(remove_all_spells),   // 0x66
                       USECODE_INTRINSIC_PTR(sprite_effect),           // 0x67
                       USECODE_INTRINSIC_PTR(attack_object),               // 0x68
-                      USECODE_INTRINSIC_PTR(book_mode),           // 0x69 - Known
+                      USECODE_INTRINSIC_PTR(book_mode),           // 0x69
                       USECODE_INTRINSIC_PTR(stop_time),               // 0x6a
                       USECODE_INTRINSIC_PTR(cause_light),         // 0x6b
                       USECODE_INTRINSIC_PTR(get_barge),           // 0x6c
                       USECODE_INTRINSIC_PTR(earthquake),          // 0x6d
-                      USECODE_INTRINSIC_PTR(is_pc_female),            // 0x6e - Known
-                      USECODE_INTRINSIC_PTR(armageddon),              // 0x6f UNUSED
+                      USECODE_INTRINSIC_PTR(is_pc_female),            // 0x6e
+                      USECODE_INTRINSIC_PTR(armageddon),              // 0x6f - UNUSED
                       USECODE_INTRINSIC_PTR(halt_scheduled),          // 0x70
                       USECODE_INTRINSIC_PTR(lightning),               // 0x71
                       USECODE_INTRINSIC_PTR(get_array_size),          // 0x72
@@ -139,27 +139,27 @@ USECODE_INTRINSIC_PTR(get_random),          // 0
                       USECODE_INTRINSIC_PTR(recall_virtue_stone),       // 0x74
                       USECODE_INTRINSIC_PTR(apply_damage),            // 0x75
                       USECODE_INTRINSIC_PTR(is_pc_inside),            // 0x76
-                      USECODE_INTRINSIC_PTR(UNKNOWN),             // 0x77 UNUSED
-                      USECODE_INTRINSIC_PTR(UNKNOWN),             // 0x78 UNUSED
+                      USECODE_INTRINSIC_PTR(UNKNOWN),             // 0x77 - UNUSED
+                      USECODE_INTRINSIC_PTR(UNKNOWN),             // 0x78 - UNUSED
                       USECODE_INTRINSIC_PTR(get_timer),           // 0x79
                       USECODE_INTRINSIC_PTR(set_timer),           // 0x7a
                       USECODE_INTRINSIC_PTR(wearing_fellowship),      // 0x7b
                       USECODE_INTRINSIC_PTR(mouse_exists),            // 0x7c
                       USECODE_INTRINSIC_PTR(get_speech_track),        // 0x7d
                       USECODE_INTRINSIC_PTR(flash_mouse),         // 0x7e
-                      USECODE_INTRINSIC_PTR(get_item_frame_rot),      // 0x7f Guess
-                      USECODE_INTRINSIC_PTR(set_item_frame_rot),      // 0x80 Guess
-                      USECODE_INTRINSIC_PTR(on_barge),            // 0x81 Guess
+                      USECODE_INTRINSIC_PTR(get_item_frame_rot),      // 0x7f
+                      USECODE_INTRINSIC_PTR(set_item_frame_rot),      // 0x80
+                      USECODE_INTRINSIC_PTR(on_barge),            // 0x81
                       USECODE_INTRINSIC_PTR(get_container),           // 0x82
-                      USECODE_INTRINSIC_PTR(remove_item),         // 0x83 - Known
-                      USECODE_INTRINSIC_PTR(init_conversation),       // 0x84 Guess
-                      USECODE_INTRINSIC_PTR(end_conversation),        // 0x85 Guess
-                      USECODE_INTRINSIC_PTR(reduce_health),           // 0x86 Guess
+                      USECODE_INTRINSIC_PTR(remove_item),         // 0x83
+                      USECODE_INTRINSIC_PTR(init_conversation),       // 0x84
+                      USECODE_INTRINSIC_PTR(end_conversation),        // 0x85
+                      USECODE_INTRINSIC_PTR(reduce_health),           // 0x86
                       USECODE_INTRINSIC_PTR(is_readied),          // 0x87
                       USECODE_INTRINSIC_PTR(restart_game),            // 0x88
                       USECODE_INTRINSIC_PTR(start_speech),            // 0x89
                       USECODE_INTRINSIC_PTR(run_endgame),         // 0x8a
-                      USECODE_INTRINSIC_PTR(fire_projectile),     // 0x8b - known
+                      USECODE_INTRINSIC_PTR(fire_projectile),     // 0x8b
                       USECODE_INTRINSIC_PTR(nap_time),            // 0x8c
                       USECODE_INTRINSIC_PTR(advance_time),            // 0x8d
                       USECODE_INTRINSIC_PTR(in_usecode),          // 0x8e
@@ -167,24 +167,24 @@ USECODE_INTRINSIC_PTR(get_random),          // 0
                       USECODE_INTRINSIC_PTR(obj_sprite_effect),       // 0x90
                       USECODE_INTRINSIC_PTR(attack_avatar),           // 0x91
                       USECODE_INTRINSIC_PTR(UNKNOWN),             // 0x92 ++++Stop_attacking_avatar()??
-                      USECODE_INTRINSIC_PTR(path_run_usecode),        // 0x93 - Known
+                      USECODE_INTRINSIC_PTR(path_run_usecode),        // 0x93
                       USECODE_INTRINSIC_PTR(sib_path_run_usecode),    // 0x94
                       USECODE_INTRINSIC_PTR(can_avatar_reach_pos),    // 0x95
                       USECODE_INTRINSIC_PTR(sib_is_dest_reachable),   // 0x96
-                      USECODE_INTRINSIC_PTR(close_gumps), // Guess    // 0x97
-                      USECODE_INTRINSIC_PTR(item_say),            // 0x98
+                      USECODE_INTRINSIC_PTR(close_gumps),             // 0x97
+                      USECODE_INTRINSIC_PTR(item_say),            // 0x98 - item_say in gump
                       USECODE_INTRINSIC_PTR(close_gump),          // 0x99
-                      USECODE_INTRINSIC_PTR(in_gump_mode),    // Guess    // 0x9a
+                      USECODE_INTRINSIC_PTR(in_gump_mode),                // 0x9a
                       USECODE_INTRINSIC_PTR(set_light),           // 0x9b
-                      USECODE_INTRINSIC_PTR(UNKNOWN),             // 0x9c UNUSED
+                      USECODE_INTRINSIC_PTR(UNKNOWN),             // 0x9c - UNUSED
                       USECODE_INTRINSIC_PTR(set_time_palette),    // 0x9d
                       USECODE_INTRINSIC_PTR(ambient_light),       // 0x9e
                       USECODE_INTRINSIC_PTR(is_not_blocked),          // 0x9f
-                      USECODE_INTRINSIC_PTR(play_sound_effect2),      // 0xA0 - Known
+                      USECODE_INTRINSIC_PTR(play_sound_effect2),      // 0xA0
                       USECODE_INTRINSIC_PTR(direction_from),          // 0xa1
-                      USECODE_INTRINSIC_PTR(get_item_flag),           // 0xA2 - Known
-                      USECODE_INTRINSIC_PTR(set_item_flag),           // 0xA3 - Known
-                      USECODE_INTRINSIC_PTR(clear_item_flag),         // 0xA4 - Known
+                      USECODE_INTRINSIC_PTR(get_item_flag),           // 0xA2
+                      USECODE_INTRINSIC_PTR(set_item_flag),           // 0xA3
+                      USECODE_INTRINSIC_PTR(clear_item_flag),         // 0xA4
                       USECODE_INTRINSIC_PTR(get_skin_colour),         // 0xa5
                       USECODE_INTRINSIC_PTR(set_path_failure),        // 0xa6
                       USECODE_INTRINSIC_PTR(fade_palette),            // 0xa7
@@ -193,31 +193,33 @@ USECODE_INTRINSIC_PTR(get_random),          // 0
                       USECODE_INTRINSIC_PTR(get_party_list2),         // 0xa9
                       USECODE_INTRINSIC_PTR(in_combat),           // 0xaa
                       USECODE_INTRINSIC_PTR(is_water),            // 0xab
-                      USECODE_INTRINSIC_PTR(UNKNOWN),             // 0xac UNUSED ++++ reset_conv_face???
+                      USECODE_INTRINSIC_PTR(reset_conv_face),     // 0xac - UNUSED
                       USECODE_INTRINSIC_PTR(set_camera),          // 0xad
-                      USECODE_INTRINSIC_PTR(get_dead_party),          // 0xae UNUSED
-                      USECODE_INTRINSIC_PTR(view_tile),               // 0xaf UNUSED
+                      USECODE_INTRINSIC_PTR(get_dead_party),          // 0xae - UNUSED
+                      USECODE_INTRINSIC_PTR(view_tile),               // 0xaf - UNUSED
                       USECODE_INTRINSIC_PTR(telekenesis),         // 0xb0
-                      USECODE_INTRINSIC_PTR(a_or_an),             // 0xb1 Return correct article for argument ('a' or 'an')
-                      USECODE_INTRINSIC_PTR(set_polymorph),       // 0xb2 Set Polymorph
-                      USECODE_INTRINSIC_PTR(revert_schedule),     // 0xb3 Reverts to static schedule
-                      USECODE_INTRINSIC_PTR(modify_schedule),         // 0xb4 Updates the schedule at a specific time
-                      USECODE_INTRINSIC_PTR(set_new_schedules),       // 0xb5 Set New Schedules
-                      USECODE_INTRINSIC_PTR(run_schedule),            // 0xb6 Run the scheduled activity
+                      USECODE_INTRINSIC_PTR(a_or_an),             // 0xb1
+                      USECODE_INTRINSIC_PTR(set_polymorph),       // 0xb2
+                      USECODE_INTRINSIC_PTR(revert_schedule),     // 0xb3
+                      USECODE_INTRINSIC_PTR(modify_schedule),         // 0xb4
+                      USECODE_INTRINSIC_PTR(set_new_schedules),       // 0xb5
+                      USECODE_INTRINSIC_PTR(run_schedule),            // 0xb6
                       USECODE_INTRINSIC_PTR(get_temperature),         // 0xb7
-                      USECODE_INTRINSIC_PTR(get_temperature_zone),    // 0xb8 UNUSED
+                      USECODE_INTRINSIC_PTR(get_temperature_zone),    // 0xb8 - UNUSED
                       USECODE_INTRINSIC_PTR(set_temperature),         // 0xb9
-                      USECODE_INTRINSIC_PTR(get_npc_warmth),          // 0xba UNUSED
-                      USECODE_INTRINSIC_PTR(get_npc_id),          // 0xbb - Known
-                      USECODE_INTRINSIC_PTR(set_npc_id),          // 0xbc - Known
-                      USECODE_INTRINSIC_PTR(get_readied), // Guess    // 0xbd
+                      USECODE_INTRINSIC_PTR(get_npc_warmth),          // 0xba - UNUSED
+                      USECODE_INTRINSIC_PTR(get_npc_id),          // 0xbb
+                      USECODE_INTRINSIC_PTR(set_npc_id),          // 0xbc
+                      USECODE_INTRINSIC_PTR(get_readied),             // 0xbd
                       USECODE_INTRINSIC_PTR(approach_avatar),         // 0xbe
                       USECODE_INTRINSIC_PTR(set_barge_dir),           // 0xbf
                       USECODE_INTRINSIC_PTR(si_path_run_usecode),     // 0xc0
+                      // These are SS-only, but we won't bother with the distinction.
                       USECODE_INTRINSIC_PTR(is_on_keyring),       // 0xc1 (Exult)
                       USECODE_INTRINSIC_PTR(add_to_keyring),      // 0xc2 (Exult)
                       USECODE_INTRINSIC_PTR(remove_from_area),        // 0xc3 (Exult)
                       USECODE_INTRINSIC_PTR(infravision),         // 0xc4 (Exult)
+                      // These are Exult-specific.
                       USECODE_INTRINSIC_PTR(set_intercept_item),      // 0xc5 (Exult)
                       USECODE_INTRINSIC_PTR(printf),              // 0xc6 (Exult)
                       USECODE_INTRINSIC_PTR(remove_from_keyring),     // 0xc7 (Exult)
