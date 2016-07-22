@@ -2788,6 +2788,14 @@ USECODE_INTRINSIC(change_npc_face1) {
 	return no_ret;
 }
 
+USECODE_INTRINSIC(reset_conv_face) {
+	// Seems to be right.
+	ignore_unused_variable_warning(num_parms, parms);
+	show_pending_text();
+	conv->change_face_frame(0, 0);
+	return no_ret;
+}
+
 USECODE_INTRINSIC(set_conversation_slot) {
 	ignore_unused_variable_warning(num_parms);
 	// set_conversation_slot(0 or 1) - Choose which face is talking.
