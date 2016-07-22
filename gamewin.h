@@ -454,6 +454,7 @@ public:
 	void theft();           // Handle thievery.
 	static int get_guard_shape();
 	void call_guards(Actor *witness = 0, bool theft = false);
+	void stop_arresting();
 	void attack_avatar(int num_guards = 0, int align = 0);
 	bool is_hostile_nearby(); // detects if hostiles are nearby for movement speed
 	bool failed_copy_protection();

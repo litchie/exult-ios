@@ -168,7 +168,7 @@ USECODE_INTRINSIC_PTR(get_random),          // 0
                       USECODE_INTRINSIC_PTR(call_guards),             // 0x90
                       USECODE_INTRINSIC_PTR(obj_sprite_effect),       // 0x91
                       USECODE_INTRINSIC_PTR(attack_avatar),           // 0x92
-                      USECODE_INTRINSIC_PTR(UNKNOWN),             // 0x93 ++++Stop_attacking_avatar()??
+                      USECODE_INTRINSIC_PTR(stop_arresting),             // 0x93
                       USECODE_INTRINSIC_PTR(path_run_usecode),        // 0x94
                       USECODE_INTRINSIC_PTR(UNKNOWN),             // 0x95 - UNUSED - seems like it could be sib_path_run_usecode, but does nothing
                       USECODE_INTRINSIC_PTR(can_avatar_reach_pos),    // 0x96
