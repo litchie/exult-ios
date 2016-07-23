@@ -1315,7 +1315,7 @@ void ExultStudio::set_game_path(string gamename, string modname) {
 	fontfile = open_shape_file("fonts.vga");
 	gumpfile = open_shape_file("gumps.vga");
 	spritefile = open_shape_file("sprites.vga");
-	Setup_text(game_type == SERPENT_ISLE, expansion);   // Read in shape names.
+	Setup_text(game_type == SERPENT_ISLE, expansion, sibeta);   // Read in shape names.
 	misc_name_map.clear();
 	for (int i = 0; i < get_num_misc_names(); i++)
 		if (get_misc_name(i) != 0)

@@ -48,7 +48,7 @@ bool Notebook_gump::initialized = false;    // Set when read in.
 bool Notebook_gump::initialized_auto_text = false;
 Notebook_gump *Notebook_gump::instance = 0;
 vector<Notebook_top> Notebook_gump::page_info;
-vector<char *> Notebook_gump::auto_text;
+vector<string> Notebook_gump::auto_text;
 
 /*
  *  Defines in 'gumps.vga':
@@ -68,16 +68,13 @@ const int lpagex = 36, rpagex = 174;    // X-coord. of text area of page.
 class One_note {
 	int day, hour, minute;      // Game time when note was written.
 	int tx, ty;         // Tile coord. where written.
-	char *text;         // Text, 0-delimited.
-	int textlen;            // Length, not counting ending NULL.
-	int textmax;            // Max. space.
+	string text;         // Text, 0-delimited.
 	int gflag;          // >=0 if created automatically when
 	//   the global flag was set.
 	bool is_new;            // Newly created at cur. time/place.
 public:
 	friend class Notebook_gump;
-	One_note() : day(0), hour(0), minute(0), tx(0), ty(0),
-		text(0), textlen(0), textmax(0), gflag(-1)
+	One_note() : day(0), hour(0), minute(0), tx(0), ty(0), gflag(-1)
 	{  }
 	void set_time(int d, int h, int m) {
 		day = d;
@@ -88,89 +85,36 @@ public:
 		tx = x;
 		ty = y;
 	}
-	void set_text(char *txt);
+	void set_text(const string &txt) {
+		text = txt;
+	}
 	void set_gflag(int gf) {
 		gflag = gf;
 	}
-	void set(int d, int h, int m, int x, int y, char *txt = 0, int gf = -1) {
+	void set(int d, int h, int m, int x, int y, const string &txt, int gf = -1) {
 		set_time(d, h, m);
 		set_loc(x, y);
 		set_text(txt);
 		gflag = gf;
 	}
-	One_note(int d, int h, int m, int x, int y, char *txt = 0, int gf = -1)
-		: text(0) {
+	One_note(int d, int h, int m, int x, int y, const string &txt = 0, int gf = -1) {
 		set(d, h, m, x, y, txt, gf);
 	}
-	~One_note() {
-		delete [] text;
+	// Insert text.
+	void insert(int chr, int offset) {
+		text.insert(offset, 1, chr);
 	}
-	void insert(int chr, int offset);   // Insert text.
-	bool del(int offset);           // Delete text.
+	// Delete text.
+	bool del(int offset) {
+		if (offset < 0 || static_cast<size_t>(offset) >= text.length()) {
+			return false;
+		} else {
+			text.erase(offset, 1);
+			return true;
+		}
+	}
 	void write(ostream &out);       // Write out as XML.
 };
-
-/*
- *  Setup one note (from already-allocated text).
- */
-
-void One_note::set_text(
-    char *txt
-) {
-	delete [] text;
-	text = txt;
-	if (text) {
-		textlen = strlen(text);
-		textmax = textlen + 1;
-	} else {
-		textlen = 0;
-		textmax = 16;
-		text = new char[textmax];
-		text[0] = 0;
-	}
-}
-
-/*
- *  Insert one character.
- */
-
-void One_note::insert(
-    int chr,
-    int offset
-) {
-	if (textlen + 1 >= textmax) {
-		// Need more space.
-		textmax = textmax ? (textmax + textmax / 4 + 1) : 16;
-		char *newtext = new char[textmax];
-		memcpy(newtext, text, offset);
-		newtext[offset] = chr;
-		memcpy(newtext + offset + 1, text + offset,
-		       textlen + 1 - offset);
-		delete [] text;
-		text = newtext;
-	} else {
-		memmove(text + offset + 1, text + offset,
-		        textlen + 1 - offset);
-		text[offset] = chr;
-	}
-	++textlen;
-}
-
-/*
- *  Delete one character.
- *
- *  Output: true if successful.
- */
-
-bool One_note::del(
-    int offset          // Delete to right of this.
-) {
-	if (offset >= textlen || offset < 0)
-		return false;
-	memmove(text + offset, text + offset + 1, textlen - offset);
-	--textlen;
-	return true;
-}
 
 /*
  *  Write out as XML.
@@ -187,8 +131,7 @@ void One_note::write(
 		out << "<gflag> " << gflag << " </gflag>" << endl;
 	out << "<text>" << endl;
 	// Encode entities (prevents crashes on load with ampersands).
-	string txtenc = encode_entity(text);
-	out.write(txtenc.c_str(), txtenc.size());
+	out << encode_entity(text);
 	out << endl << "</text>" << endl;
 	out << "</note>" << endl;
 }
@@ -252,11 +195,11 @@ void Notebook_gump::initialize(
 #if 0
 	// ++++TESTING:
 	notes.push_back(new One_note(1, 1, 10, 10, 10,
-	                             newstrdup("Note  #1\nHello")));
-	notes.push_back(new One_note(2, 2, 20, 20, 20, newstrdup(
-	                                 "Note  #2\nworld.\n\nHow are you?")));
-	notes.push_back(new One_note(3, 3, 30, 30, 30, newstrdup(
-	                                 "Note #3")));
+	                             "Note  #1\nHello"));
+	notes.push_back(new One_note(2, 2, 20, 20, 20,
+	                                 "Note  #2\nworld.\n\nHow are you?"));
+	notes.push_back(new One_note(3, 3, 30, 30, 30,
+	                                 "Note #3"));
 #endif
 }
 
@@ -281,7 +224,7 @@ void Notebook_gump::clear(
  */
 
 void Notebook_gump::add_new(
-    char *text,
+    const string &text,
     int gflag
 ) {
 	Game_clock *clk = gwin->get_clock();
@@ -325,7 +268,7 @@ EXULT_FLX_NOTEBOOK_SHP, SF_EXULT_FLX), curnote(0),
 	leftpage = new Notebook_page_button(this, lpagex, lrpagey, 0);
 	rightpage = new Notebook_page_button(this, rpagex, lrpagey, 1);
 #endif
-	add_new();          // Add new note to end.
+	add_new("");          // Add new note to end.
 }
 
 Notebook_gump *Notebook_gump::create(
@@ -349,7 +292,7 @@ Notebook_gump::~Notebook_gump(
 	if (notes.size()) {
 		// Check for empty 'new' note.
 		One_note *note = notes.back();
-		if (note->is_new && !note->textlen) {
+		if (note->is_new && !note->text.length()) {
 			notes.pop_back();
 			delete note;
 		} else
@@ -414,7 +357,7 @@ bool Notebook_gump::paint_page(
 							   box.w, 1, x + box.x, y + box.y - 3);
 #endif
 	}
-	char *str = note->text + offset;
+	const char *str = note->text.c_str() + offset;
 	cursor.offset -= offset;
 	int endoff = sman->paint_text_box(font, str, x + box.x,
 #ifdef __IPHONEOS__
@@ -426,7 +369,7 @@ bool Notebook_gump::paint_page(
 	cursor.offset += offset;
 	if (endoff > 0) {       // All painted?
 		// Value returned is height.
-		str = note->text + note->textlen;
+		str = note->text.c_str() + note->text.length();
 	} else              // Out of room.
 		str += -endoff;
 	if (find_cursor && cursor.x >= 0) {
@@ -435,7 +378,7 @@ bool Notebook_gump::paint_page(
 		                       sman->get_text_height(font), cursor.x - 1, cursor.y - 1);
 		curpage = pagenum;
 	}
-	offset = str - note->text;  // Return offset past end.
+	offset = str - note->text.c_str();  // Return offset past end.
 	// Watch for exactly filling page.
 	return (endoff > 0 && endoff < box.h);
 }
@@ -489,7 +432,7 @@ Gump_button *Notebook_gump::on_button(
 	int offset = page_info[topleft].offset;
 	Rectangle box = Get_text_area(false, offset == 0);  // Left page.
 	One_note *note = notes[notenum];
-	int coff = sman->find_cursor(font, note->text + offset, x + box.x,
+	int coff = sman->find_cursor(font, note->text.c_str() + offset, x + box.x,
 	                             y + box.y, box.w, box.h, mx, my, vlead);
 	if (coff >= 0) {        // Found it?
 		curpage = topleft;
@@ -499,7 +442,7 @@ Gump_button *Notebook_gump::on_button(
 		updnx = cursor.x - x - lpagex;
 	} else {
 		offset += -coff;        // New offset.
-		if (offset >= note->textlen) {
+		if (offset >= static_cast<int>(note->text.length())) {
 			if (notenum == static_cast<int>(notes.size()) - 1)
 				return 0;   // No more.
 			note = notes[++notenum];
@@ -508,7 +451,7 @@ Gump_button *Notebook_gump::on_button(
 		box = Get_text_area(true, offset == 0); // Right page.
 		box.shift(x, y);        // Window area.
 		coff = box.has_point(mx, my) ?
-		       sman->find_cursor(font, note->text + offset, box.x,
+		       sman->find_cursor(font, note->text.c_str() + offset, box.x,
 		                         box.y, box.w, box.h, mx, my, vlead)
 		       : -1;
 		if (coff >= 0) {        // Found it?
@@ -581,7 +524,7 @@ void Notebook_gump::prev_page(
 	--curpage;
 	curnote = page_info[curpage].notenum;
 	if (!pinfo.offset)      // Going to new note?
-		cursor.offset = notes[curnote]->textlen;
+		cursor.offset = notes[curnote]->text.length();
 	else
 		cursor.offset = pinfo.offset - 1;
 }
@@ -637,7 +580,7 @@ void Notebook_gump::down_arrow(
 	int mx = box.x + updnx + 1, my = cursor.y + ht + ht / 2;
 	int notenum = page_info[curpage].notenum;
 	One_note *note = notes[notenum];
-	int coff = sman->find_cursor(font, note->text + offset, box.x,
+	int coff = sman->find_cursor(font, note->text.c_str() + offset, box.x,
 	                             box.y, box.w, box.h, mx, my, vlead);
 	if (coff >= 0) {        // Found it?
 		cursor.offset = offset + coff;
@@ -660,7 +603,7 @@ void Notebook_gump::up_arrow(
 		if (pinfo.notenum == notenum)   // Same note?
 			cursor.offset = offset - 1;
 		else
-			cursor.offset = notes[notenum]->textlen;
+			cursor.offset = notes[notenum]->text.length();
 		paint();
 		offset = pinfo2.offset;
 		cursor.y += ht / 2;     // Past bottom line.
@@ -669,7 +612,7 @@ void Notebook_gump::up_arrow(
 	box.shift(x, y);        // Window coords.
 	int mx = box.x + updnx + 1, my = cursor.y - ht / 2;
 	One_note *note = notes[notenum];
-	int coff = sman->find_cursor(font, note->text + offset, box.x,
+	int coff = sman->find_cursor(font, note->text.c_str() + offset, box.x,
 	                             box.y, box.w, box.h, mx, my, vlead);
 	if (coff >= 0) {        // Found it?
 		cursor.offset = offset + coff;
@@ -729,7 +672,7 @@ bool Notebook_gump::handle_kbd_event(
 		}
 		break;
 	case SDLK_RIGHT:
-		if (cursor.offset < note->textlen) {
+		if (cursor.offset < static_cast<int>(note->text.length())) {
 			++cursor.offset;
 			paint();
 			if (need_next_page()) {
@@ -791,7 +734,7 @@ bool Notebook_gump::handle_kbd_event(
 
 void Notebook_gump::add_gflag_text(
     int gflag,
-    char *text
+    const string &text
 ) {
 	if (!initialized)
 		initialize();
@@ -801,7 +744,7 @@ void Notebook_gump::add_gflag_text(
 		if ((*it)->gflag == gflag)
 			return;
 	if (gwin->get_allow_autonotes())
-		add_new(newstrdup(text), gflag);
+		add_new(text, gflag);
 }
 
 /*
@@ -817,7 +760,7 @@ void Notebook_gump::write(
 	if (initialized) {
 		for (vector<One_note *>::iterator it = notes.begin();
 		        it != notes.end(); ++it)
-			if ((*it)->textlen || !(*it)->is_new)
+			if ((*it)->text.length() || !(*it)->is_new)
 				(*it)->write(out);
 	}
 	out << "</notebook>" << endl;
@@ -865,8 +808,7 @@ void Notebook_gump::read(
 				note->set_loc(x, y);
 		} else if (notend.first == "note/text") {
 			if (note)
-				note->set_text(
-				    newstrdup(notend.second.c_str()));
+				note->set_text(notend.second);
 		} else if (notend.first == "note/gflag") {
 			int gf;
 			sscanf(notend.second.c_str(), "%d", &gf);

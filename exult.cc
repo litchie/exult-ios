@@ -1052,7 +1052,7 @@ static void Init(
 			midi = audio->get_midi();
 		}
 
-		Setup_text(GAME_SI, Game::has_expansion());
+		Setup_text(GAME_SI, Game::has_expansion(), GAME_SIB);
 
 		// Skip splash screen?
 		bool skip_splash;

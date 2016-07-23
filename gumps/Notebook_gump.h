@@ -21,8 +21,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "Gump.h"
 #include "font.h"
+#include <string>
 #include <vector>
 
+using std::string;
 using std::vector;
 
 class One_note;
@@ -50,7 +52,7 @@ class Notebook_gump : public Gump {
 	static Notebook_gump *instance;
 	static bool initialized;
 	static bool initialized_auto_text;
-	static vector<char *> auto_text;// Auto-text for global flags.
+	static vector<string> auto_text;// Auto-text for global flags.
 	int curnote;            // Current note # being edited.
 	int curpage;            // Current page # (from 0).
 	Cursor_info cursor;     // Cursor loc. within current note.
@@ -58,7 +60,7 @@ class Notebook_gump : public Gump {
 	// Page turners:
 	Gump_button *leftpage, *rightpage;
 	// Add new note.
-	static void add_new(char *text = 0, int gflag = -1);
+	static void add_new(const std::string &text, int gflag = -1);
 	bool paint_page(Rectangle const &box, One_note *note, int &offset,
 	                int pagenum);
 	bool need_next_page() const {
@@ -85,11 +87,11 @@ public:
 	virtual Gump_button *on_button(int mx, int my);
 	virtual void paint();       // Paint it and its contents.
 	virtual bool handle_kbd_event(void *ev);
-	static void add_gflag_text(int gflag, char *text);
+	static void add_gflag_text(int gflag, const string &text);
 	static void add_gflag_text(int gflag) {
 		if (!initialized_auto_text)
 			read_auto_text();
-		if (gflag < static_cast<int>(auto_text.size()) && auto_text[gflag])
+		if (gflag < static_cast<int>(auto_text.size()) && auto_text[gflag].size())
 			add_gflag_text(gflag, auto_text[gflag]);
 	}
 	virtual bool is_draggable() const {

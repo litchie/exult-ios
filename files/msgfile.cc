@@ -23,6 +23,8 @@
  */
 
 #include <iostream>
+#include <sstream>
+#include <string>
 #include <vector>
 #include <ctype.h>
 #include <iomanip>
@@ -30,12 +32,14 @@
 #include "utils.h"
 #include "databuf.h"
 
+using std::stringstream;
 using std::istream;
 using std::ostream;
 using std::cerr;
 using std::endl;
 using std::hex;
 using std::vector;
+using std::string;
 
 /*
  *  Read in text, where each line is of the form "nnn:sssss", where nnn is
@@ -53,54 +57,53 @@ using std::vector;
  *      error.
  */
 
-int Read_text_msg_file(DataSource *in, vector<char *> &strings,
+int Read_text_msg_file(DataSource *in, vector<string> &strings,
                        const char *section) {
 	strings.resize(0);      // Initialize.
 	strings.reserve(1000);
-	const char *buf;
 	int linenum = 0;
 #define NONEFOUND 0xffffffff
 	unsigned long first = NONEFOUND;// Index of first one found.
 	long next_index = 0;// For auto-indexing of lines
+	static const string sectionStart("%%section");
+	static const string sectionEnd("%%endsection");
 	while (!in->eof()) {
 		++linenum;
-		std::string s;
-		in->readline(s);
-		if (s.empty())
+		std::string line;
+		in->readline(line);
+		if (line.empty())
 			continue;   // Empty line.
-		buf = s.c_str();
 
-		const char *ptr = &buf[0];
 		if (section) {
-			if (buf[0] != '%' ||
-			        strncmp(ptr + 1, "%section", 8) != 0)
+			if (line.compare(0, sectionStart.length(), sectionStart))
 				continue;
-			for (ptr = &buf[9]; isspace(*ptr); ++ptr)
-				;
-			if (strncmp(ptr, section, strlen(ptr)) == 0) {
+			const string sectionName(line.substr(line.find_first_not_of(" \t\b", sectionStart.length())));
+			if (sectionName == section) {
 				// Found the section.
 				section = 0;
 				continue;
 			}
 			cerr << "Line #" << linenum <<
-			     " has the wrong section name: " << newstrdup(ptr) << " != " << section << endl;
+			     " has the wrong section name: " << sectionName << " != " << section << endl;
 			return -1;
 		}
-		if (buf[0] == '%' && strncmp(ptr + 1, "%endsection", 11) == 0)
+		if (!line.compare(0, sectionEnd.length(), sectionEnd))
 			break;
-		char *endptr;
-		unsigned long index;
 
-		if (buf[0] == ':') {
+		unsigned long index;
+		string lineVal;
+		if (line[0] == ':') {
 			// Auto-index lines missing an index.
 			index = next_index++;
-			endptr = const_cast<char *>(&buf[0]);
+			lineVal = line.substr(1);
+		} else if (line[0] == '#') {
+			continue;
 		} else {
+			char *endptr = &line[0];
+			const char *ptr = endptr;
 			// Get line# in decimal, hex, or oct.
 			index = strtol(ptr, &endptr, 0);
 			if (endptr == ptr) { // No #?
-				if (*ptr == '#')
-					continue;
 				cerr << "Line " << linenum <<
 				     " doesn't start with a number" << endl;
 				return -1;
@@ -110,10 +113,11 @@ int Read_text_msg_file(DataSource *in, vector<char *> &strings,
 				     ".  Ignoring line" << endl;
 				continue;
 			}
+			lineVal = line.substr(endptr - ptr + 1);
 		}
 		if (index >= strings.size())
 			strings.resize(index + 1);
-		strings[index] = newstrdup(endptr + 1);
+		strings[index] = lineVal;
 		if (index < first)
 			first = index;
 	}
@@ -127,23 +131,18 @@ int Read_text_msg_file(DataSource *in, vector<char *> &strings,
  */
 
 bool Search_text_msg_section(DataSource *in, const char *section) {
-	const char *buf;
+	static const string sectionStart("%%section");
 	while (!in->eof()) {
-		std::string s;
+		std::string line;
 		size_t pos = in->getPos();
-		in->readline(s);
-		if (s.empty())
+		in->readline(line);
+		if (line.empty())
 			continue;   // Empty line.
-		buf = s.c_str();
 
-		const char *ptr = &buf[0];
-
-		if (buf[0] != '%' ||
-		        strncmp(ptr + 1, "%section", 8) != 0)
+		if (line.compare(0, sectionStart.length(), sectionStart))
 			continue;
-		for (ptr = &buf[9]; isspace(*ptr); ++ptr)
-			;
-		if (strncmp(ptr, section, strlen(ptr)) == 0) {
+		const string sectionName(line.substr(line.find_first_not_of(" \t\b", sectionStart.length())));
+		if (sectionName == section) {
 			// Found the section.
 			// Seek to just before it.
 			in->seek(pos);
@@ -159,7 +158,7 @@ bool Search_text_msg_section(DataSource *in, const char *section) {
 
 int Read_text_msg_file(
     istream &in,
-    vector<char *> &strings,    // Strings returned here, each
+    vector<string> &strings,    // Strings returned here, each
     //   allocated on heap.
     const char *section         // Section name, or NULL.  If given
     //   the section must be next infile.
@@ -168,44 +167,21 @@ int Read_text_msg_file(
 	return Read_text_msg_file(&ds, strings, section);
 }
 
-/*
- *  Same as above, but store in given list, and set given count.
- */
-
-int Read_text_msg_file(
-    istream &in,
-    char ** &strings,       // Strings returned here, each
-    //   allocated on heap.
-    int &count,
-    const char *section
-) {
-	StreamDataSource ds(&in);
-	vector<char *> txtlist;
-	int first = Read_text_msg_file(&ds, txtlist, section);
-	count = static_cast<int>(txtlist.size());
-	strings = new char *[count];
-	for (int i = 0; i < count; ++i)
-		strings[i] = txtlist[i];
-	return first;
-}
-
 int Read_text_msg_file_sections(
     DataSource *in,
-    vector<vector<char *> > &strings,   // Strings returned here
+    vector<vector<string> > &strings,   // Strings returned here
     const char *sections[],         // Section names
     int numsections
 ) {
 	strings.resize(numsections);
 	int version = 1;
 
-	vector<char *> versioninfo;
+	vector<string> versioninfo;
 	// Read version.
 	const char *versionstr = "version";
 	if (Search_text_msg_section(in, versionstr) &&
 	        Read_text_msg_file(in, versioninfo, versionstr) != -1) {
-		version = static_cast<int>(strtol(versioninfo[0], 0, 0));
-		for (size_t j = 0; j < versioninfo.size(); j++)
-			delete[] versioninfo[j];
+		version = static_cast<int>(strtol(versioninfo[0].c_str(), 0, 0));
 	}
 
 	for (int i = 0; i < numsections; i++) {
@@ -221,7 +197,7 @@ int Read_text_msg_file_sections(
 
 int Read_text_msg_file_sections(
     istream &in,
-    vector<vector<char *> > &strings,   // Strings returned here
+    vector<vector<string> > &strings,   // Strings returned here
     const char *sections[],         // Section names
     int numsections
 ) {
@@ -237,28 +213,11 @@ int Read_text_msg_file_sections(
 void Write_msg_file_section(
     ostream &out,
     const char *section,
-    char **items,
-    int num_items
-) {
-	out << "%%section " << section << endl;
-	for (int i = 0; i < num_items; ++i)
-		if (items[i])
-			out << hex << "0x" << i << ':' << items[i] << endl;
-	out << "%%endsection " << section << endl;
-}
-
-/*
- *  Write one section.
- */
-
-void Write_msg_file_section(
-    ostream &out,
-    const char *section,
-    vector<char *> &items
+    vector<string> &items
 ) {
 	out << "%%section " << section << endl;
 	for (unsigned i = 0; i < items.size(); ++i)
-		if (items[i])
+		if (items[i].size())
 			out << hex << "0x" << i << ':' << items[i] << endl;
 	out << "%%endsection " << section << endl;
 }
