@@ -441,6 +441,11 @@ UI_remove_npc_face1()                                                [SI, Exult]
 
     Removes whatever face is being shown in slot 1.
 
+UI_init_reset_conv_face()
+
+    Changes the active conversation slot to the top slot and sets its current
+    frame to 0.
+
 UI_set_conversation_slot(int slot)                                   [SI, Exult]
 npc->set_conversation_slot()
 
@@ -2522,13 +2527,18 @@ bool npc->approach_avatar(int unk1, int unk2)
   Return:
     false if the NPC is dead or cannot reach the avatar, true otherwise.
 
-UI_call_guards()                                                            [BG]
+UI_call_guards()
 
     Causes guard to come and attack a thieving avatar.
 
 UI_attack_avatar()
 
     Causes everyone nearby to attack thieving avatar.
+
+UI_stop_arresting()
+
+    Any guards approaching the avatar to arrest will stop what they are doing
+    and will start to wander instead.
 
 UI_save_pos(object obj)                                              [SI, Exult]
 obj->save_pos()
