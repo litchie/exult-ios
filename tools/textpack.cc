@@ -31,6 +31,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>
+#include <string>
 #include <vector>
 #include "Flex.h"
 #include "utils.h"
@@ -49,6 +50,7 @@ using std::istream;
 using std::ostream;
 using std::size_t;
 using std::strlen;
+using std::string;
 using std::vector;
 
 /*
@@ -57,17 +59,17 @@ using std::vector;
 
 static void Read_flex(
     const char *filename,       // File to read.
-    vector<char *> &strings     // Strings are stored here.
+    vector<string> &strings     // Strings are stored here.
 ) {
 	FlexFile in(filename);      // May throw exception.
 	int cnt = in.number_of_objects();
 	strings.resize(cnt);
 	for (int i = 0; i < cnt; i++) {
 		size_t len;
-		strings[i] = in.retrieve(i, len);
-		if (!len) {     // Empty?
-			delete strings[i];
-			strings[i] = 0;
+		const char *ptr = in.retrieve(i, len);
+		if (len) {     // Not empty?
+			strings[i] = ptr;
+			delete [] ptr;
 		}
 	}
 }
@@ -79,15 +81,15 @@ static void Read_flex(
 static void Write_flex(
     const char *filename,       // File to write.
     const char *title,          // For the header.
-    vector<char *> &strings     // Okay if some are null.
+    vector<string> &strings     // Okay if some are null.
 ) {
 	ofstream out;
 	U7open(out, filename);      // May throw exception.
 	Flex_writer writer(out, title, strings.size());
-	for (vector<char *>::const_iterator it = strings.begin();
+	for (vector<string>::const_iterator it = strings.begin();
 	        it != strings.end(); ++it) {
-		const char *str = *it;
-		if (str)
+		const string &str = *it;
+		if (str.size())
 			out << str;
 		out.put(0); // 0-delimit.
 		writer.mark_section_done();
@@ -105,15 +107,15 @@ static void Write_flex(
 
 static void Write_text(
     ostream &out,
-    vector<char *> &strings     // Strings to write.
+    vector<string> &strings     // Strings to write.
 ) {
 	out << "# Written by Exult Textpack tool" << endl;
 	int cnt = strings.size();
 	for (int i = 0; i < cnt; i++) {
-		char *text = strings[i];
-		if (!text)
+		string &text = strings[i];
+		if (text.empty())
 			continue;
-		if (strlen(text) + 1 > 1024) {
+		if (text.size() + 1 > 1024) {
 			cerr << "Text in entry " << i << " is too long"
 			     << endl;
 			exit(1);
@@ -144,7 +146,7 @@ int main(
 	if (argc < 3 || argv[1][0] != '-')
 		Usage();        // (Exits.)
 	char *flexname = argv[2];
-	vector<char *> strings;     // Text stored here.
+	vector<string> strings;     // Text stored here.
 	switch (argv[1][1]) {   // Which function?
 	case 'c':           // Create Flex.
 		if (argc >= 4) {    // Text filename given?
@@ -189,9 +191,5 @@ int main(
 	default:
 		Usage();
 	}
-	// Clean up allocated strings.
-	for (vector<char *>::iterator it = strings.begin();
-	        it != strings.end(); ++it)
-		delete *it;
 	return 0;
 }

@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <sstream>
 #include <map>
+#include <string>
 #include <vector>
 #include <algorithm>
 #include "exult_constants.h"
@@ -243,14 +244,12 @@ public:
 	{  }
 	virtual ~Base_reader() {  }
 	// Text data file.
-	void parse(std::vector<char *> strings, int version, bool patch, Exult_Game game) {
+	void parse(std::vector<std::string> &strings, int version, bool patch, Exult_Game game) {
 		for (size_t j = 0; j < strings.size(); j++) {
-			char *ptr = strings[j];
-			if (!ptr)
-				continue;
-			std::istringstream strin(std::string(ptr), std::ios::in);
-			read_data(strin, j, version, patch, game, false);
-			delete[] strings[j];
+			if (strings[j].size()) {
+				std::istringstream strin(strings[j], std::ios::in);
+				read_data(strin, j, version, patch, game, false);
+			}
 		}
 		strings.clear();
 	}
@@ -520,8 +519,8 @@ static void Read_text_data_file(
 ) {
 	int static_version = 1;
 	int patch_version = 1;
-	std::vector<std::vector<char *> > static_strings;
-	std::vector<std::vector<char *> > patch_strings;
+	std::vector<std::vector<std::string> > static_strings;
+	std::vector<std::vector<std::string> > patch_strings;
 	char buf[50];
 	if (game == BLACK_GATE || game == SERPENT_ISLE) {
 		/*  ++++ Not because of ES.
@@ -569,7 +568,6 @@ static void Read_text_data_file(
 	for (int i = 0; i < numsections; i++) {
 		parsers[i]->parse(static_strings[i], static_version, false, game);
 		parsers[i]->parse(patch_strings[i], patch_version, true, game);
-		delete parsers[i];
 	}
 	static_strings.clear();
 	patch_strings.clear();

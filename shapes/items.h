@@ -43,7 +43,7 @@ int get_num_misc_names();
 char const *get_misc_name(unsigned num);
 void Set_misc_name(unsigned num, char const *name);
 
-void Setup_text(bool si, bool expansion);
+void Setup_text(bool si, bool expansion, bool sibeta);
 void Free_text();
 void Write_text_file();
 

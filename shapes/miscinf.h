@@ -61,7 +61,7 @@ class Shapeinfo_entry_parser;
  *  A class to get the extra information for a given shape.
  */
 class Shapeinfo_lookup {
-	typedef std::vector<char *> Readstrings;
+	typedef std::vector<std::string> Readstrings;
 	static Skin_data *ScrollSkins(int skin, bool sex, bool sishapes, bool ignoresex, bool prev, bool sel);
 public:
 	static void reset();

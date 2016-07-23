@@ -35,10 +35,12 @@
 #include "actors.h"
 #include "ignore_unused_variable_warning.h"
 
+#include <sstream>
 #include <fstream>
 #include <map>
 #include <vector>
 #include <iostream>
+#include <iomanip>
 #include <string>
 
 using std::vector;
@@ -47,6 +49,8 @@ using std::map;
 using std::multimap;
 using std::pair;
 using std::string;
+using std::stringstream;
+using std::skipws;
 
 using namespace std;
 
@@ -79,22 +83,29 @@ int get_skinvar(std::string key) {
 class Shapeinfo_entry_parser {
 public:
 	virtual ~Shapeinfo_entry_parser() { }
-	virtual void parse_entry(int index, char *eptr,
+	virtual void parse_entry(int index, istream &src,
 	                         bool for_patch, int version) = 0;
-	int ReadInt(char *&eptr, int off = 1) {
-		int ret = strtol(eptr + off, &eptr, 0);
-		while (isspace(*eptr))
-			eptr++;
+	int ReadInt(istream &src, int off = 1) {
+		src.ignore(off);
+		int ret;
+		if (src.peek() == '0') {
+			src.ignore(1);
+			char chr = src.peek();
+			if (chr == 'x' || chr == 'X') {
+				src.ignore(1);
+				src >> hex;
+			} else {
+				src.unget();
+			}
+		}
+		src >> ret >> skipws >> dec;
 		return ret;
 	}
-	string ReadStr(char *&eptr, int off = 1) {
-		eptr += off;
-		char *pos = strchr(eptr, '/');
-		char buf[50];
-		strncpy(buf, eptr, pos - eptr);
-		buf[pos - eptr] = 0;
-		eptr = pos;
-		return string(buf);
+	string ReadStr(istream &src, int off = 1) {
+		src.ignore(off);
+		string ret;
+		getline(src, ret, '/');
+		return ret;
 	}
 };
 
@@ -104,11 +115,11 @@ public:
 	Int_pair_parser(map<int, int> *tbl)
 		: table(tbl)
 	{  }
-	virtual void parse_entry(int index, char *eptr,
+	virtual void parse_entry(int index, istream &src,
 	                         bool for_patch, int version) {
 		ignore_unused_variable_warning(index, for_patch, version);
-		int key = ReadInt(eptr, 0);
-		int data = ReadInt(eptr);
+		int key = ReadInt(src, 0);
+		int data = ReadInt(src);
 		(*table)[key] = data;
 	}
 };
@@ -119,10 +130,10 @@ public:
 	Bool_parser(map<int, bool> *tbl)
 		: table(tbl)
 	{  }
-	virtual void parse_entry(int index, char *eptr,
+	virtual void parse_entry(int index, istream &src,
 	                         bool for_patch, int version) {
 		ignore_unused_variable_warning(index, for_patch, version);
-		int key = ReadInt(eptr, 0);
+		int key = ReadInt(src, 0);
 		(*table)[key] = true;
 	}
 };
@@ -136,23 +147,24 @@ public:
 	(vector<pair<int, int> > *tbl, map<string, int> *sh)
 		: table(tbl), shapevars(sh), shape(c_max_shapes)
 	{  }
-	virtual void parse_entry(int index, char *eptr,
+	virtual void parse_entry(int index, istream &src,
 	                         bool for_patch, int version) {
 		ignore_unused_variable_warning(index, for_patch, version);
 		pair<int, int> data;
-		data.second = ReadInt(eptr, 0); // The real shape.
+		data.second = ReadInt(src, 0); // The real shape.
 		for (vector<pair<int, int> >::iterator it = table->begin();
 		        it != table->end(); ++it)
 			if ((*it).second == data.second)
 				return;     // Do nothing for repeated entries.
-		eptr++;
-		if (*eptr == '%') {
+		src.ignore(1);
+		if (src.peek() == '%') {
 			data.first = shape;     // The assigned shape.
-			string key(eptr);
+			string key;
+			src >> key;
 			(*shapevars)[key] = shape;
 			shape++;    // Leave it ready for the next shape.
 		} else
-			data.first = ReadInt(eptr, 0);
+			data.first = ReadInt(src, 0);
 		table->push_back(data);
 	}
 };
@@ -165,21 +177,22 @@ public:
 	(vector<pair<int, int> > *tbl, map<string, int> *sh)
 		: table(tbl), shapevars(sh)
 	{  }
-	virtual void parse_entry(int index, char *eptr,
+	virtual void parse_entry(int index, istream &src,
 	                         bool for_patch, int version) {
 		ignore_unused_variable_warning(index, for_patch, version);
 		pair<int, int> data;
-		data.first = ReadInt(eptr, 0);  // The spot.
-		eptr++;
-		if (*eptr == '%') {
-			string key(eptr);
+		data.first = ReadInt(src, 0);  // The spot.
+		src.ignore(1);
+		if (src.peek() == '%') {
+			string key;
+			src >> key;
 			map<string, int>::iterator it = shapevars->find(key);
 			if (it != shapevars->end())
 				data.second = (*it).second; // The shape #.
 			else
 				return; // Invalid reference; bail out.
 		} else
-			data.second = ReadInt(eptr, 0);
+			data.second = ReadInt(src, 0);
 		table->push_back(data);
 	}
 };
@@ -191,7 +204,7 @@ public:
 	Paperdoll_source_parser(vector<pair<string, int> > *tbl)
 		: table(tbl), erased_for_patch(false)
 	{  }
-	virtual void parse_entry(int index, char *eptr,
+	virtual void parse_entry(int index, istream &src,
 	                         bool for_patch, int version);
 };
 
@@ -201,14 +214,14 @@ public:
 	Def_av_shape_parser(map<bool, Base_Avatar_info> *tbl)
 		: table(tbl)
 	{  }
-	virtual void parse_entry(int index, char *eptr,
+	virtual void parse_entry(int index, istream &src,
 	                         bool for_patch, int version) {
 		ignore_unused_variable_warning(index, for_patch, version);
-		bool fmale = ReadInt(eptr, 0) != 0;
+		bool fmale = ReadInt(src, 0) != 0;
 		Base_Avatar_info entry;
-		entry.shape_num = ReadInt(eptr);
-		entry.face_shape = ReadInt(eptr);
-		entry.face_frame = ReadInt(eptr);
+		entry.shape_num = ReadInt(src);
+		entry.face_shape = ReadInt(src);
+		entry.face_frame = ReadInt(src);
 		(*table)[fmale] = entry;
 	}
 };
@@ -219,11 +232,11 @@ public:
 	Base_av_race_parser(Avatar_default_skin *tbl)
 		: table(tbl)
 	{  }
-	virtual void parse_entry(int index, char *eptr,
+	virtual void parse_entry(int index, istream &src,
 	                         bool for_patch, int version) {
 		ignore_unused_variable_warning(index, for_patch, version);
-		table->default_skin = ReadInt(eptr, 0);
-		table->default_female = ReadInt(eptr) != 0;
+		table->default_skin = ReadInt(src, 0);
+		table->default_female = ReadInt(src) != 0;
 	}
 };
 
@@ -234,35 +247,35 @@ public:
 	Multiracial_parser(vector<Skin_data> *tbl, map<string, int> *sh)
 		: table(tbl), shapevars(sh)
 	{  }
-	int ReadVar(char *&eptr) {
-		eptr++;
-		if (*eptr == '%') {
-			string key = ReadStr(eptr, 0);
+	int ReadVar(istream &src) {
+		src.ignore(1);
+		if (src.peek() == '%') {
+			string key = ReadStr(src, 0);
 			map<string, int>::iterator it = shapevars->find(key);
 			if (it != shapevars->end())
 				return (*it).second;    // The var value.
 			else
 				return -1;  // Invalid reference; bail out.
 		} else
-			return ReadInt(eptr, 0);
+			return ReadInt(src, 0);
 	}
-	virtual void parse_entry(int index, char *eptr,
+	virtual void parse_entry(int index, istream &src,
 	                         bool for_patch, int version) {
 		ignore_unused_variable_warning(index);
 		Skin_data entry;
-		entry.skin_id = ReadInt(eptr, 0);
+		entry.skin_id = ReadInt(src, 0);
 		if (entry.skin_id > last_skin)
 			last_skin = entry.skin_id;
-		entry.is_female = ReadInt(eptr) != 0;
-		if ((entry.shape_num = ReadVar(eptr)) < 0)
+		entry.is_female = ReadInt(src) != 0;
+		if ((entry.shape_num = ReadVar(src)) < 0)
 			return;
-		if ((entry.naked_shape = ReadVar(eptr)) < 0)
+		if ((entry.naked_shape = ReadVar(src)) < 0)
 			return;
-		entry.face_shape = ReadInt(eptr);
-		entry.face_frame = ReadInt(eptr);
-		entry.alter_face_shape = ReadInt(eptr);
-		entry.alter_face_frame = ReadInt(eptr);
-		entry.copy_info = !(version == 2 && *eptr != 0 && ReadInt(eptr) == 0);
+		entry.face_shape = ReadInt(src);
+		entry.face_frame = ReadInt(src);
+		entry.alter_face_shape = ReadInt(src);
+		entry.alter_face_frame = ReadInt(src);
+		entry.copy_info = !(version == 2 && !src.eof() && ReadInt(src) == 0);
 		if (for_patch && !table->empty()) {
 			unsigned int i;
 			int found = -1;
@@ -288,17 +301,17 @@ public:
 	Avatar_usecode_parser(map<int, Usecode_function_data> *tbl)
 		: table(tbl), usecode(Game_window::get_instance()->get_usecode())
 	{  }
-	virtual void parse_entry(int index, char *eptr,
+	virtual void parse_entry(int index, istream &src,
 	                         bool for_patch, int version) {
 		ignore_unused_variable_warning(index, for_patch, version);
 		Usecode_function_data entry;
-		int type = ReadInt(eptr);
-		if (*eptr == ':') {
-			string name = ReadStr(eptr);
+		int type = ReadInt(src);
+		if (src.peek() == ':') {
+			string name = ReadStr(src);
 			entry.fun_id = usecode->find_function(name.c_str(), true);
 		} else
-			entry.fun_id = ReadInt(eptr);
-		entry.event_id = ReadInt(eptr);
+			entry.fun_id = ReadInt(src);
+		entry.event_id = ReadInt(src);
 		(*table)[type] = entry;
 	}
 };
@@ -306,14 +319,15 @@ public:
 
 void Paperdoll_source_parser::parse_entry(
     int index,
-    char *eptr,
+    istream &src,
     bool for_patch,
     int version
 ) {
 	ignore_unused_variable_warning(index, version);
 	if (!erased_for_patch && for_patch)
 		table->clear();
-	string line(eptr);
+	string line;
+	src >> line;
 	if (line == "static" ||
 	        (GAME_BG && line == "bg") ||
 	        (GAME_SI && line == "si"))
@@ -382,11 +396,10 @@ void Shapeinfo_lookup::Read_data_file(
 	for (unsigned int i = 0; i < static_strings.size(); i++) {
 		Readstrings &section = static_strings[i];
 		for (unsigned int j = 0; j < section.size(); j++) {
-			char *ptr = section[j];
-			if (!ptr)
-				continue;
-			parsers[i]->parse_entry(j, ptr, false, static_version);
-			delete[] section[j];
+			if (section[j].size()) {
+				stringstream src(section[j]);
+				parsers[i]->parse_entry(j, src, false, static_version);
+			}
 		}
 		section.clear();
 	}
@@ -394,11 +407,10 @@ void Shapeinfo_lookup::Read_data_file(
 	for (unsigned int i = 0; i < patch_strings.size(); i++) {
 		Readstrings &section = patch_strings[i];
 		for (unsigned int j = 0; j < section.size(); j++) {
-			char *ptr = section[j];
-			if (!ptr)
-				continue;
-			parsers[i]->parse_entry(j, ptr, true, patch_version);
-			delete[] section[j];
+			if (section[j].size()) {
+				stringstream src(section[j]);
+				parsers[i]->parse_entry(j, src, true, patch_version);
+			}
 		}
 		section.clear();
 	}

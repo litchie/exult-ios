@@ -29,6 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // #include <iomanip>           /* Debugging */
 #include <fstream>
 #include <sstream>
+#include <string>
 #include <vector>
 #include "items.h"
 #include "utils.h"
@@ -44,41 +45,70 @@ using std::ofstream;
 using std::stringstream;
 using std::cerr;
 using std::endl;
+using std::string;
 using std::vector;
 
-vector<char *> item_names;          // Names of U7 items.
-vector<char *> text_msgs;           // Msgs. (0x400 - in text.flx).
-vector<char *> misc_names;          // Frames, etc (0x500 - 0x5ff/0x685 (BG/SI) in text.flx).
+vector<string> item_names;          // Names of U7 items.
+vector<string> text_msgs;           // Msgs. (0x400 - in text.flx).
+vector<string> misc_names;          // Frames, etc (0x500 - 0x5ff/0x685 (BG/SI) in text.flx).
 
-static inline int remap_index(bool remap, int index) {
+static inline int remap_index(bool remap, int index, bool sibeta) {
 	if (!remap)
 		return index;
-	if (index >= 0x0fa)
-		return index + 11;
-	else if (index >= 0x0b2)
-		return index + 10;
-	else if (index >= 0x0af)
-		return index + 9;
-	else if (index >= 0x094)
-		return index + 8;
-	else if (index >= 0x08b)
-		return index + 7;
-	else if (index >= 0x07f)
-		return index + 2;
-	else
-		return index;
+	if (sibeta) {
+		// Account for differences between SI Beta and SI Final when remapping
+		// to SS indices.
+		if (index >= 0x146)
+			return index + 17;
+		else if (index >= 0x135)
+			return index + 16;
+		else if (index >= 0x0f6)
+			return index + 15;
+		else if (index >= 0x0ea)
+			return index + 14;
+		else if (index >= 0x0e5)
+			return index + 13;
+		else if (index >= 0x0b1)
+			return index + 11;
+		else if (index >= 0x0ae)
+			return index + 10;
+		else if (index >= 0x0a2)
+			return index + 9;
+		else if (index >= 0x094)
+			return index + 8;
+		else if (index >= 0x08b)
+			return index + 7;
+		else if (index >= 0x07f)
+			return index + 2;
+		else
+			return index;
+	} else {
+		if (index >= 0x0fa)
+			return index + 11;
+		else if (index >= 0x0b2)
+			return index + 10;
+		else if (index >= 0x0af)
+			return index + 9;
+		else if (index >= 0x094)
+			return index + 8;
+		else if (index >= 0x08b)
+			return index + 7;
+		else if (index >= 0x07f)
+			return index + 2;
+		else
+			return index;
+	}
 }
 
-static inline char const *get_text_internal(vector<char *> const &src, unsigned num) {
-	return src[num];
+static inline char const *get_text_internal(vector<string> const &src, unsigned num) {
+	return src[num].c_str();
 }
 
-static inline void add_text_internal(vector<char *> &src, unsigned num, char const *name) {
+static inline void add_text_internal(vector<string> &src, unsigned num, char const *name) {
 	if (num >= src.size()) {
 		src.resize(num + 1);
 	}
-	delete[] src[num];
-	src[num] = newstrdup(name);
+	src[num] = name;
 }
 
 /*
@@ -158,9 +188,10 @@ static void Setup_item_names(
     istream &items,
     istream &msgs,
     bool si,
-    bool expansion
+    bool expansion,
+    bool sibeta
 ) {
-	vector<char *> msglist;
+	vector<string> msglist;
 	int first_msg;          // First in exultmsg.txt.  Should
 	//   follow those in text.flx.
 	int total_msgs = 0;
@@ -175,7 +206,11 @@ static void Setup_item_names(
 		if (flxcnt > 0x500) {
 			num_text_msgs = 0x100;
 			num_misc_names = flxcnt - 0x500;
-			int last_name = si ? 0x686 : 0x600; // Discard all starting from this.
+			int last_name; // Discard all starting from this.
+			if (si)
+				last_name = 0x686;
+			else
+				last_name = 0x600;
 			if (flxcnt > last_name) {
 				num_misc_names = last_name - 0x500;
 				flxcnt = last_name;
@@ -201,9 +236,9 @@ static void Setup_item_names(
 	text_msgs.resize(total_msgs);
 	misc_names.resize(num_misc_names);
 	// Hack alert: move SI misc_names around to match those of SS.
-	bool doremap = si && !expansion;
+	bool doremap = si && (!expansion || sibeta);
 	if (doremap)
-		flxcnt -= 11;   // Just to be safe.
+		flxcnt -= 17;   // Just to be safe.
 	int i;
 	for (i = 0; i < flxcnt; i++) {
 		items.seekg(0x80 + i * 8);
@@ -212,12 +247,20 @@ static void Setup_item_names(
 			continue;
 		int itemlen = Read4(items);
 		items.seekg(itemoffs);
-		char  *&loc = i < num_item_names ? item_names[i]
-		              : (i - num_item_names < num_text_msgs)
-		              ? text_msgs[i - num_item_names]
-		              : misc_names[remap_index(doremap, i - num_item_names - num_text_msgs)];
-		loc = new char[itemlen];
-		items.read(loc, itemlen);
+		char *newitem = new char[itemlen];
+		items.read(newitem, itemlen);
+		if (i < num_item_names)
+			item_names[i] = newitem;
+		else if (i - num_item_names < num_text_msgs) {
+			if (sibeta && (i - num_item_names) >= 0xd2)
+				text_msgs[i - num_item_names + 1] = newitem;
+			else
+				text_msgs[i - num_item_names] = newitem;
+		} else
+			misc_names[remap_index(doremap,
+			                       i - num_item_names - num_text_msgs,
+			                       sibeta)] = newitem;
+		delete [] newitem;
 #if 0
 		cout << dec << i << " 0x" << hex << i << dec
 		     << "\t" << item_names[i] << endl;
@@ -241,7 +284,7 @@ static void Setup_text(
     istream &exultmsg
 ) {
 	// Start by reading from exultmsg
-	vector<char *> msglist;
+	vector<string> msglist;
 	int first_msg;
 	first_msg = Read_text_msg_file(exultmsg, msglist);
 	unsigned total_msgs = static_cast<int>(msglist.size() - 0x400);
@@ -261,7 +304,7 @@ static void Setup_text(
  *  Setup item names and text messages.
  */
 
-void Setup_text(bool si, bool expansion) {
+void Setup_text(bool si, bool expansion, bool sibeta) {
 	Free_text();
 	bool is_patch = is_system_path_defined("<PATCH>");
 	// Always read from exultmsg.txt
@@ -299,7 +342,7 @@ void Setup_text(bool si, bool expansion) {
 			U7open(textflx, PATCH_TEXT);
 		else
 			U7open(textflx, TEXT_FLX);
-		Setup_item_names(textflx, *exultmsg, si, expansion);
+		Setup_item_names(textflx, *exultmsg, si, expansion, sibeta);
 	}
 	delete exultmsg;
 }
@@ -309,10 +352,8 @@ void Setup_text(bool si, bool expansion) {
  */
 
 static void Free_text_list(
-    vector<char *> &items
+    vector<string> &items
 ) {
-	for (unsigned i = 0; i < items.size(); ++i)
-		delete [] items[i];
 	items.clear();
 }
 
