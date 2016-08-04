@@ -1,5 +1,5 @@
-You can obtain a full build of the BG Keyring mod at the author's website:
-http://seventowers.thefeudallands.ca/
+You can obtain a full build of the BG Keyring mod on Exult's website:
+http://exult.sourceforge.net/download.php
 
 To build it yourself, there are 4 different methods:
 
@@ -21,7 +21,7 @@ To build it yourself, there are 4 different methods:
 
 4)	The manual way: You will need UCC and ExPack to do it. You can do it in any
 	order you want, but you have to:
-	(a)	Change to the "content/sifixes/src" directory;
+	(a)	Change to the "content/bgkeyring/src" directory;
 	(b) run "expack -i *.in";
 	(c) run "ucc -o ../data/usecode usecode.uc".
 
