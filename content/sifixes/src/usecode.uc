@@ -59,6 +59,8 @@
 #include "misc/resurrect.uc"
 // Fixes a few wrongly identified locations
 #include "misc/location_ids.uc"
+// Fixes the broken native gwaniCloakCheck
+#include "misc/gwani_cloak_check.uc"
 
 // Inn keys are now deleted/doors locked
 #include "misc/inn_keys.uc"
@@ -100,6 +102,10 @@
 #include "npcs/kylista.uc"
 // Fixes setting the Met flag so his name appears on single-click
 #include "npcs/myauri.uc"
+// Fixes the gwaniCloakCheck and endless Talk activity, and sets the Met flag
+#include "npcs/bwundiai.uc"
+// Fixes the gwaniCloakCheck and improves the party's reply if only he notices
+#include "npcs/mwaerno.uc"
 
 // For curing Cantra, from exult/content/si; modified to allow companions
 // to thank you (and rejoin) after you cure them but before Xenka returns
