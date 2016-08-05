@@ -297,7 +297,7 @@ enum Find_Gwenno_subplot
 	ASKED_SPEKTOR_ABOUT_GWENNO = 0xA7,
 	FREED_GWENNOS_BODY = 0x25F,
 	TALKED_TO_GWANI_ABOUT_GWENNO = 0x262,
-	BAYANDA_GAVE_BUCKET = 0x264,
+	BAIYANDA_GAVE_BUCKET = 0x264,
 	// Iolo and Gwenno are alive, sane and talked to each other:
 	IOLO_GWENNO_REUNITED = 0x275
 };

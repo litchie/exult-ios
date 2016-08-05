@@ -32,7 +32,7 @@ enum egg_shapes
 {
 	SHAPE_EGG = 275,
 	SHAPE_USECODE_CONTAINER = 486,
-	SHAPE_PATH_EGG = 607	
+	SHAPE_PATH_EGG = 607
 };
 
 // Animals from Earth
@@ -274,7 +274,7 @@ enum movable_item_shapes
 	SHAPE_BURNER = 307,
 	SHAPE_SERPENT_RUNE = 330,				// Includes Virtue Stones
 	SHAPE_LIGHT_SOURCE = 336,				// Candles
-	SHAPE_LIT_LIGHT_SOURCE = 338,		
+	SHAPE_LIT_LIGHT_SOURCE = 338,
 	SHAPE_POTION = 340,
 	SHAPE_FOOD = 377,
 	SHAPE_FOOD_ON_TRAY = 404,				// Includes wolf meat and berry
@@ -287,7 +287,6 @@ enum movable_item_shapes
 	SHAPE_GWANI_AMULET = 479,				// Includes claw from Knight's Test
 	SHAPE_KEY_RING = 485,
 	SHAPE_MAGIC_HARP = 506,
-	SHAPE_BODY_SKELETON = 507,				// Includes Gwani bodies
 	SHAPE_BROKEN_DISH = 546,
 	SHAPE_SCEPTRE = 548,
 	SHAPE_SERPENT_JAWBONE = 555,
@@ -362,6 +361,7 @@ enum dead_body_shapes
 	SHAPE_BODY_402 = 402,					// 31 frames with SS
 	SHAPE_BODY_414 = 414,					// Dead 3 companions
 	SHAPE_BODIES_2 = 414,					// From original si_shapes.uc
+	SHAPE_BODY_SKELETON = 507,				// Includes Gwani bodies
 	SHAPE_BODY_762 = 762,					// Mostly animals and monsters
 	SHAPE_BODY_778 = 778,					// Larger monsters, dragons
 	SHAPE_BODY_892 = 892					// With glowing cat
@@ -567,10 +567,7 @@ enum npc_shapes
 	SHAPE_OPHIDIAN_SOLDIER = 947,
 	SHAPE_CATMAN = 957,
 	SHAPE_FEMALE_AVATAR = 989,				// Avatar from BG per prior notes
-	SHAPE_FEMALE_MAGE_IN_BLUE_GREEN = 1015,	// Elissa
-	
-	SHAPE_KNIGHT_OF_MONITOR = 1038,			// Caladin custom artwork
-	SHAPE_PIKEMAN_DARK = 1048				// Johnson custom artwork
+	SHAPE_FEMALE_MAGE_IN_BLUE_GREEN = 1015	// Elissa
 
 	// NPCs with unique appearances
 	// These are the "old" avatar shapes:
