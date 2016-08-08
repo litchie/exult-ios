@@ -198,9 +198,10 @@ void firesnakeExplode ()
 void dropAllItems (var npc, var pos)
 {
 	// Here, we drop only objects directly held by the character:
-	var spots = [OFF_HAND, WEAPON_HAND, CLOAK, NECK, HEAD, GLOVES,
-	             RIGHT_FINGER, LEFT_FINGER, EARRINGS, QUIVER, BELT,
-	             TORSO, FEET, LEGS, BACKPACK, BACK_SHIELD, BACK_SPOT];
+	var spots = [SI_OFF_HAND, SI_WEAPON_HAND, SI_CLOAK, SI_AMULET, SI_HEAD,
+	             SI_GLOVES, SI_RIGHT_RING, SI_LEFT_RING, SI_EARS, SI_QUIVER,
+	             SI_BELT, SI_TORSO, SI_FEET, SI_LEGS, SI_BACKPACK,
+	             SI_BACK_SHIELD, SI_BACK_2H];
 
 	for (spot in spots)
 	{
