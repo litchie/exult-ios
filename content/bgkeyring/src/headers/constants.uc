@@ -27,37 +27,60 @@
  *	Last modified: 2006-02-27
  */
 
-//Event types, compiled with help from Marzo
-//The global <event> variable is set with one of these values to describe how the current function was called: whether by the player clicking on the object, or by a scripted event, or by egg trigger conditions, or just the item being onscreen, etc.
-//Functions check the value of <event> in order to provide different responses to different events.
-//Functions can also set <event> to an arbitrary value, in order to mimic a real event or just as a 'pseudo-argument' to functions called with the likes of UI_path_run_usecode.
+/*
+ *	Event types, compiled with help from Marzo
+ *	The global <event> variable is set with one of these values to describe
+ *	how the current function was called: whether by the player clicking on the
+ *	object, or by a scripted event, or by egg trigger conditions, or just the
+ *	item being onscreen, etc.
+ *	Functions check the value of <event> in order to provide different responses
+ *	to different events.
+ *	Functions can also set <event> to an arbitrary value, in order to mimic a
+ *	real event or just as a 'pseudo-argument' to functions called with the
+ *	likes of UI_path_run_usecode.
+ */
+
 enum events
 {
-	PROXIMITY		= 0,	//Object is on-screen or nearby
-							//This is called repeatedly, with a random delay between each call
-	DOUBLECLICK		= 1,	//Object is double-clicked on
-	SCRIPTED		= 2,	//Function is called from inside a sript{} block (very common)
-	EGG				= 3,	//Object is an egg that just hatched (triggered by egg activation conditions)
-	WEAPON			= 4,	//Object was wielded and 'swung' in combat
-							//This is mainly used with 'weapon-like' objects - e.g. smokebombs and fishing rods - that have more advanced 'attack' behaviour.
+	PROXIMITY		= 0,	// Object is on-screen or nearby
+							// This is called repeatedly, with a random delay
+							// between each call
+	DOUBLECLICK		= 1,	// Object is double-clicked on
+	SCRIPTED		= 2,	// Function is called from inside a script{} block
+							// (very common)
+	EGG				= 3,	// Object is an egg that just hatched (triggered by
+							// egg activation conditions)
+	WEAPON			= 4,	// Object was wielded and 'swung' in combat
+							// This is mainly used with 'weapon-like' objects
+							// - e.g. smokebombs and fishing rods - that have more
+							// advanced 'attack' behaviour.
 
-	READIED			= 5,	//Object was worn or readied in inventory - used by items like the Ring of Invisibility
-	UNREADIED		= 6,	//Object was taken off or put away in inventory
+	READIED			= 5,	// Object was worn or readied in inventory - used by
+							// items like the Ring of Invisibility
+	UNREADIED		= 6,	// Object was taken off or put away in inventory
 
-	DEATH			= 7,	//NPC has just been killed (SI-only)
-	STARTED_TALKING	= 9,	//NPC starts conversation with you (has TALK schedule and has reached the Avatar)
-							//This is SI-only - BG uses event 1 for this, both for conversations triggered by doubleclick and by the TALK schedule
+	DEATH			= 7,	// NPC has just been killed (SI-only)
+	STARTED_TALKING	= 9,	// NPC starts conversation with you (has TALK
+							// schedule and has reached the Avatar)
+							// This is SI-only - BG uses event 1 for this,
+							// both for conversations triggered by doubleclick
+							// and by the TALK schedule
 
-	//The following events are set manually in usecode, which means they're arbitrary programmer conventions rather than recognised game states.
-	PATH_SUCCESS	= 10,	//Set with calls to UI_path_run_usecode, to indicate a successful pathfind to the target object
-	PATH_FAILURE	= 11	//Set with calls to UI_set_path_failure, to indicate an interrupted pathfind (e.g. when the player moves the Avatar manually)
-	//In particular, I switched to SI values for these events because si_tournament flag
-	//also works in BG now
+	//The following events are arbitrary programmer conventions:
+	PATH_SUCCESS	= 10,	// Set with calls to UI_path_run_usecode, to indicate
+							// a successful pathfind to the target object
+	PATH_FAILURE	= 11	// Set with calls to UI_set_path_failure, to indicate
+							// an interrupted pathfind (e.g. when the player
+							// moves the Avatar manually)
 };
 
-
-//Coordinate axes - use when referencing X,Y,Z coordinate arrays, e.g. from UI_get_object_position
-//Note that the coordinates returned by UI_click_on_item are 1 array-index higher, because index 1 of the returned array is the actual item clicked on. You can resolve this to a regular X,Y,Z coordinates array by using array = removeFromArray(array, array[1]); (see also bg_externals.uc)
+/*
+ *	Coordinate axes - use when referencing X,Y,Z coordinate arrays.
+ *	Note that the coordinates returned by UI_click_on_item are 1 array-index
+ *	higher, because index 1 of the returned array is the actual item clicked on.
+ *	You can resolve this to a regular X,Y,Z coordinates array by using
+ *	array = removeFromArray(array, array[1]); (see also bg_externals.uc)
+ */
 enum axes
 {
 	X = 1,	//horizontal axis (numbered from west to east)
@@ -65,9 +88,12 @@ enum axes
 	Z = 3	//lift axis (numbered from ground to sky)
 };
 
-
-//Cardinal directions: returned by UI_get_direction. Use with face or step statements in script{} blocks.
-//e.g: script item { step NORTH; step NORTH; face SOUTH; } //take two steps north, then turn to face south
+/*
+ *	Cardinal directions: returned by UI_get_direction. Use with face or step
+ *	statements in script{} blocks. e.g:
+ *	script item { step NORTH; step NORTH; face SOUTH; }
+ *	takes two steps north, then turn to face south
+ */
 enum directions
 {
 	NORTH		= 0,
@@ -80,20 +106,29 @@ enum directions
 	NORTHWEST	= 7
 };
 
-//parts of the day (3-hour intervals). Returned by UI_part_of_day. This is usually only used by conversation scripts, as a way of narrowing down schedule-related behaviour.
+/*
+ *	parts of the day (3-hour intervals). Returned by UI_part_of_day. This is
+ *	usually only used by conversation scripts, as a way of narrowing down
+ *	schedule-related behaviour.
+ */
 enum day_periods
 {
-	MIDNIGHT		= 0,	//0-2
-	EARLY			= 1,	//3-5	(dim palette)
-	DAWN			= 2,	//6-8	(day palette)
-	MORNING			= 3,	//9-11
-	NOON			= 4,	//12-14
-	AFTERNOON		= 5,	//15-17
-	EVENING			= 6,	//18-20 (dim palette)
-	NIGHT			= 7		//21-23 (night palette)
+	// The period is equal to one-third of the current game hour.
+	MIDNIGHT		= 0,	// 0-2
+	EARLY			= 1,	// 3-5
+	DAWN			= 2,	// 6-8
+	MORNING			= 3,	// 9-11
+	NOON			= 4,	// 12-14
+	AFTERNOON		= 5,	// 15-17
+	EVENING			= 6,	// 18-20
+	NIGHT			= 7		// 21-23
 };
 
-//Wildcards, used for specifying "any acceptable value for this parameter" to a measuring function. These are commonly used with object-related intrinsics like UI_get_cont_items, UI_count_objects, UI_remove_party_items etc.
+/*
+ *	Wildcards, used for specifying "any acceptable value for this parameter"
+ *	to a measuring function. These are commonly used with object-related
+ *	intrinsics like UI_get_cont_items, UI_count_objects, UI_remove_party_items.
+ */
 enum wildcards
 {
 	SHAPE_ANY	= -359,
@@ -101,7 +136,7 @@ enum wildcards
 	FRAME_ANY	= -359
 };
 
-//tick multipliers, for use with UI_advance_time or script statements
+// tick multipliers, for use with UI_advance_time or script statements
 enum times
 {
 	MINUTE	= 25,
@@ -109,14 +144,19 @@ enum times
 };
 const long DAY		= 36000;
 /*
-Examples:
-	UI_advance_time(30 * MINUTE);	//advance time by 30 game minutes
-	UI_advance_time(2 * HOUR);		//advance time by two game hours
-	script after MINUTE ticks	{ ... }	//schedule this script block to execute after one game minute
-*/
+ *	Examples:
+ *	UI_advance_time(30 * MINUTE); // advance time by 30 game minutes
+ *	UI_advance_time(2 * HOUR); // advance time by two game hours
+ *	script after MINUTE ticks	{ ... } // schedule this script block to execute
+ *	                       // after one game minute
+ */
 
-//Item/NPC flags, stolen from the Exult LB-joins-party patch with some comments added
-//These can be retrieved and set using UI_get_item_flag(itemref, flag), UI_set_item_flag(itemref, flag) and UI_clear_item_flag(itemref, flag).
+/*
+ *	Item/NPC flags, stolen from the Exult LB-joins-party patch with some 
+ *	comments added.
+ *	These can be retrieved and set using UI_get_item_flag(itemref, flag),
+ *	UI_set_item_flag(itemref, flag) and UI_clear_item_flag(itemref, flag).
+*/
 enum item_flags
 {
 	INVISIBLE			= 0,
@@ -129,84 +169,117 @@ enum item_flags
 	PARALYSED			= 7,		//British spelling
 	POISONED			= 8,
 	PROTECTION			= 9,
-	ON_MOVING_BARGE		= 10,		// ??Guessing.
-	OKAY_TO_TAKE		= 11,		// The item does not belong to anyone, and won't trigger stealing behaviour if you take it.
+	ON_MOVING_BARGE		= 10,
+	OKAY_TO_TAKE		= 11,		// The item does not belong to anyone, and won't
+									// trigger stealing behaviour if you take it.
 	MIGHT				= 12,		// Double strength, dext, intel.
 	IMMUNITIES			= 13,		// Lots of imunities; can be gotten only.
 	CANT_DIE			= 14,		// Test flag in monster_info.
-	DANCING				= 15,		// ??Not sure.
-	//DONT_MOVE			= 16,		// SI: user can't move.
-	DONT_RENDER			= 16,		// BG: completely invisible.
-	SI_ON_MOVING_BARGE	= 17,		// SI's version of 10?
-	TEMPORARY			= 18,		// Is temporary - this means that the item will be deleted once the party gets beyond a certain range from it (outside the superchunk?)
-	SAILOR				= 20,		// The barge's 'captain'.
+	DANCING				= 15,		// Set by "Dance" spell in BG.
+	DONT_MOVE			= 16,		// SI-only. NPC can't move; "cutscene" mode.
+	DONT_RENDER			= 16,		// BG-only. Like DONT_MOVE, but avatar also
+									// completely invisible.
+	TEMPORARY			= 18,		// Is temporary - this means that the item will
+									// be deleted once the party gets beyond a certain
+									// range from it (outside the superchunk?)
+	SAILOR				= 20,		// The barge's 'captain'. When getting the flag,
+									// you will actually get the current captain.
 	OKAY_TO_LAND		= 21,		// Used for flying-carpet.
-	BG_DONT_MOVE		= 22,		// BG version of SI's DONT_MOVE
-	IN_DUNGEON			= 23,		// Pretty sure. if set, you won't be accused of stealing food.
-	CONFUSED			= 25,		// ??Guessing.
-	IN_MOTION			= 26,		// ??Guessing (cart, boat)??
-	MET					= 28,		// Has the npc been met before - originally this was SI-only, but Exult implements it for BG too.
-									// This determines conversation behaviour, and whether the NPC's real name or shape name is displayed when they are single-clicked on.
-									// BG originally used global flags for this, which amounts to an extra 250-odd flags. What a waste of time.
+	BG_DONT_MOVE		= 22,		// BG-only. NPC can't move; "cutscene" mode.
+	SI_DONT_RENDER		= 22,		// SI-only. Like DONT_MOVE, but avatar also
+									// completely invisible.
+	IN_DUNGEON			= 23,		// If set, you won't be accused of stealing.
+	CONFUSED			= 25,
+	IN_MOTION			= 26,		// Object is a barge object moving, or on a barge
+									// object that is moving. Set in usecode, and mostly
+									// used for the SI 'NPC' ships such as the turtle.
+	MET					= 28,		// Has the npc been met before - originally this
+									// was SI-only, but Exult implements it for BG
+									// too. This determines conversation behaviour,
+									// and whether the NPC's real name or shape name
+									// is displayed when they are single-clicked on.
+									// BG originally used global flags for this, which
+									// amounts to an extra 250-odd flags.
 	SI_TOURNAMENT		= 29,		// Call usecode (eventid = 7) on death
-	SI_ZOMBIE			= 30,		// Used for sick Neyobi, insane party members/Cantra.
+	SI_ZOMBIE			= 30,		// Used for sick Neyobi, Cantra, post-Bane companions.
 
-	//Flags > 31 appear to be SI flags only
 	NO_SPELL_CASTING	= 31,
-	POLYMORPH	= 32,		// SI.  pretty sure about this.
-	TATTOOED	= 33,		// guess (SI).
-	READ		= 34,		// guess (SI).
-	PETRA		= 35,		// guess
-	FREEZE		= 37,		// SI.  pretty sure.
-	NAKED		= 38 		// Exult. Makes the avatar naked given its skin.
-							// Other NPCs should use set_polymorph instead.
+	POLYMORPH			= 32,		// Do not set this flag directly; use the
+									// UI_set_polymorph intrinsic instead.
+	TATTOOED			= 33,
+	READ				= 34,		// Can read non-Latin alphabet scrolls, books, signs.
+	ISPETRA				= 35,
+	FREEZE				= 37,
+	NAKED				= 38 		// Exult. Makes the avatar naked given its skin.
+									// Other NPCs should use set_polymorph instead.
 };
 
-//Business activities (taken from the cheat screen)
+// Business activities (taken from the cheat screen)
 enum schedules
 {
-	IN_COMBAT		= 0,	//renamed to not conflict with COMBAT, the NPC stat property.
-	PACE_HORIZONTAL	= 1,	//Walk horizontally until you hit a wall, then turn around. (Patrolling on the cheap.)
-	PACE_VERTICAL	= 2,	//Same as above, but vertically.
-	TALK			= 3,	//NPC runs to the Avatar to talk to them. When they get within a certain distance of where the Avatar was when this schedule was set, a doubleclick event is triggered on the NPC. At this point the schedule must be changed.
+	IN_COMBAT		= 0,	// renamed to not conflict with COMBAT, the NPC
+							// stat property.
+	PACE_HORIZONTAL	= 1,	// Walk horizontally until you hit a wall, then
+							// turn around. (Patrolling on the cheap.)
+	PACE_VERTICAL	= 2,	// Same as above, but vertically.
+	TALK			= 3,	// NPC runs to the Avatar to talk to them. When
+							// they get within a certain distance of where the
+							// Avatar was when this schedule was set, a
+							// DOUBLECLICK event is triggered on the NPC.
+							// At this point the schedule must be changed.
 	DANCE			= 4,
 	EAT				= 5,
-	FARM			= 6,	//Waves farm implements around.
-	TEND_SHOP		= 7,	//This is really just a more specific version of LOITER, used for narrowing down schedule barks.
-							//See BAKE, SEW and BLACKSMITH for more specific examples of shop behaviour.
+	FARM			= 6,	// Waves farm implements around.
+	TEND_SHOP		= 7,	// This is really just a more specific version of
+							// LOITER, used for narrowing down schedule barks.
+							// See BAKE, SEW and BLACKSMITH for more specific
+							// examples of shop behaviour.
 	MINE			= 8,
 	MINER			= 8,
 	HOUND			= 9,
-	STANDTHERE		= 10,	//renamed to not conflict with STAND, the NPC animation frame
-	LOITER			= 11,	//Hangs around a certain point, within 10 units or so
-	WANDER			= 12,	//Roams nearby a certain point (as much as a 320x200 screen away)
+	STANDTHERE		= 10,	// renamed to not conflict with STAND, the NPC
+							// animation frame
+	LOITER			= 11,	// Hangs around a certain point, within 10 units
+							// or so
+	WANDER			= 12,	// Roams nearby a certain point (as much as a
+							// 320x200 screen away)
 	BLACKSMITH		= 13,
 	SLEEP			= 14,
-	WAIT			= 15,	//Similar to STAND, except that they will never leave the WAIT schedule until it is manually changed:
-							//their preset schedule list is overridden.
+	WAIT			= 15,	// Similar to STAND, except that they will never
+							// leave the WAIT schedule until it is manually
+							// changed: their preset schedule list is ignored.
 	MAJOR_SIT		= 16,
 	GRAZE			= 17,
 	BAKE			= 18,
 	SEW				= 19,
-	SHY				= 20,	//Tries to keep out of the Avatar's way - will half-heartedly flee until out of a certain range.
+	SHY				= 20,	// Tries to keep out of the Avatar's way - will
+							// half-heartedly flee until out of a certain range.
 	LAB				= 21,
-	THIEF			= 22,	//??
+	THIEF			= 22,	// Approaches the party and will take gold from the Avatar's
+							// backpack, then will bark "Greetings!" in SI.
 	WAITER			= 23,
-	SPECIAL			= 24,	//??
-	KID_GAMES		= 25,	//Tag! Thou art it! And so forth.
+	SPECIAL			= 24,	// ??
+	KID_GAMES		= 25,	// Tag! Thou art it! And so forth.
 	TAG				= 25,
-	EAT_AT_INN		= 26,	//same as Eat, only with different barks.
+	EAT_AT_INN		= 26,	// same as Eat, only with different barks.
 	DUEL			= 27,
 	SPAR			= 27,
-	PREACH			= 28,
-	PATROL			= 29,	//This tells the AI to follow a particular set of patrol waypoints
+	PREACH			= 28,	// Broken in SI, Leon resets to Loiter after trying it.
+	PATROL			= 29,	// This tells the AI to follow a particular set of
+							// patrol waypoints, defined by path eggs.
 	DESK_WORK		= 30,
-	FOLLOW_AVATAR	= 31	//That most noble of pursuits. Like WAIT, this completely overrides the NPC's schedule list.
+	FOLLOW_AVATAR	= 31	// That most noble of pursuits. Like WAIT, this
+							// completely overrides the NPC's schedule list.
 };
 
-//NPC animation frames. Use these with UI_set_item_frame or (preferably) in script blocks, with 'actor frame'.
-//e.g.: script AVATAR { actor frame STAND; actor frame USE; actor frame SWING_1; actor_frame STAND; }
-//Important note: use 'actor frame' with NPCs instead of 'frame', as 'actor frame' takes the NPC's current facing into account.
+/*
+ *	NPC animation frames. Use these with UI_set_item_frame or (preferably) in
+ *	script blocks, with 'actor frame'.
+ *	e.g.: script AVATAR { actor frame STAND; actor frame USE; actor frame
+ *	SWING_1; actor_frame STAND; }
+ *	Important note: use 'actor frame' with NPCs instead of 'frame', as 'actor
+ *	frame' takes the NPC's current facing into account.
+ */
 enum npc_frames
 {
 	STAND		= 0,
@@ -231,7 +304,8 @@ enum npc_frames
 	CAST_2		= 15	//both arms stretched out (casting motion)
 };
 
-//North/South/East/West frame offsets for the NPC frames. Only really necessary if you're using UI_set_item_frame or 'frame'
+// North/South/East/West frame offsets for the NPC frames. Only really necessary
+// if you're using UI_set_item_frame or 'frame'
 enum frame_offsets
 {
 	NORTH_FRAMESET	= 0,
@@ -244,55 +318,63 @@ enum frame_offsets
 // These are the same whether paperdolls are on or off.
 enum inv_slots_bg
 {
-	BG_BACK        =  0,
-	BG_BACKPACK    =  0,
-	BG_WEAPON_HAND =  1,
-	BG_BOTH_HANDS  =  1,
-	BG_OFF_HAND    =  2,
-	BG_SHIELD_HAND =  2,
-	BG_BELT        =  3,
-	BG_NECK        =  4,
-	BG_CLOAK       =  4,
-	BG_TORSO       =  5,
-	BG_LEFT_RING   =  6,
-	BG_RIGHT_RING  =  7,
-	BG_GLOVES      =  6,
-	BG_QUIVER      =  8,
-	BG_HEAD        =  9,
-	BG_LEGS        = 10,
-	BG_FEET        = 11,
-	BG_USECODE     = 12
+	BG_BACKPACK		=  0,
+	BG_WEAPON_HAND	=  1,
+	BG_BOTH_HANDS	=  1,
+	BG_SHIELD_HAND	=  2,
+	BG_OFF_HAND		=  2,
+	BG_BELT			=  3,
+	BG_TORSO		=  5,
+	BG_LEFT_RING	=  6,
+	BG_RIGHT_RING	=  7,
+	BG_QUIVER		=  8,
+	BG_HEAD			=  9,
+	BG_LEGS			= 10,
+	BG_FEET			= 11,
+	BG_USECODE		= 12,
+	BG_CLOAK		= 13,	// Exult-only
+	BG_GLOVES		= 14,	// Exult-only
+	BG_EARS			= 16,	// Exult-only
+	BG_BACK_SHIELD	= 17,	// Exult-only
+	BG_BACK_2H		= 19,	// Exult-only
+	BG_AMULET		= 22	// Exult-only
 };
 
 // Ready slots for Serpent Isle: use with <UI_is_readied> or <UI_get_readied>.
 // These are the same whether paperdolls are on or off.
 enum inv_slots_si
 {
-	SI_SHIELD_HAND =  0,
-	SI_OFF_HAND    =  0,
-	SI_WEAPON_HAND =  1,
-	SI_BOTH_HANDS  =  1,
-	SI_CLOAK       =  2,
-	SI_AMULET      =  3,
-	SI_HEAD        =  4,
-	SI_GLOVES      =  5,
-	SI_USECODE     =  6,
-	SI_RIGHT_RING  =  7,
-	SI_LEFT_RING   =  8,
-	SI_EARS        =  9,
-	SI_QUIVER      = 10,
-	SI_BELT        = 11,
-	SI_TORSO       = 12,
-	SI_FEET        = 13,
-	SI_LEGS        = 14,
-	SI_BACKPACK    = 15,
-	SI_BACK_SHIELD = 16,
-	SI_BACK_2H     = 17
+	SI_SHIELD_HAND	=  0,
+	SI_OFF_HAND		=  0,
+	SI_WEAPON_HAND	=  1,
+	SI_BOTH_HANDS	=  1,
+	SI_CLOAK		=  2,
+	SI_AMULET		=  3,
+	SI_HEAD			=  4,
+	SI_GLOVES		=  5,
+	SI_USECODE		=  6,
+	SI_RIGHT_RING	=  7,
+	SI_LEFT_RING	=  8,
+	SI_EARS			=  9,
+	SI_QUIVER		= 10,
+	SI_BELT			= 11,
+	SI_TORSO		= 12,
+	SI_FEET			= 13,
+	SI_LEGS			= 14,
+	SI_BACKPACK		= 15,
+	SI_BACK_SHIELD	= 16,
+	SI_BACK_2H		= 17
 };
 
-//NPC properties (mostly ability scores)
-//These can be retrieved and set using UI_get_npc_property(npc, property) and UI_set_npc_property(npc, property, value) respectively.
-//Note however that UI_set_npc_property will actually *add* the value to the original property, not set it to that value. Which means you will need to calculate a relative positive/negative adjustment to set it to a target value.
+/*
+ *	NPC properties (mostly ability scores)
+ *	These can be retrieved and set using UI_get_npc_property(npc, property) and
+ *	UI_set_npc_property(npc, property, value) respectively.
+ *	Note however that UI_set_npc_property will actually *add* the value to the
+ *	original property, not set it to that value. Which means you will need to
+ *	calculate a relative positive/negative adjustment to set it to a target
+ *	value.
+ */
 enum npc_properties
 {
 	STRENGTH		= 0,
@@ -304,10 +386,15 @@ enum npc_properties
 	MAX_MANA		= 6,
 	TRAINING		= 7,
 	EXPERIENCE		= 8,
-	FOODLEVEL		= 9
+	FOODLEVEL		= 9,
+	SEX_FLAG		= 10,	// 1 (nonzero) if female, 0 if male.
+	MISSILE_WEAPON	= 11	// Cannot be set; returns 1 if wearing a missile
+							// or (good) thrown weapon, 0 otherwise.
 };
 
-//NPC attack behaviours. Retrieve and set using UI_set_attack_mode(npc, mode) and UI_get_attack_mode(npc).
+
+// NPC attack behaviours. Retrieve and set using UI_set_attack_mode(npc, mode)
+// and UI_get_attack_mode(npc).
 enum npc_attack_modes
 {
 	NEAREST		= 0,
@@ -322,7 +409,11 @@ enum npc_attack_modes
 	MANUAL		= 9
 };
 
-//Failure cursor constants for use with UI_flash_mouse. Note that these do not correspond to frame numbers in pointers.uc, but to some internal mapping. (the "BLOCKED" cursor seems to be unavailable through this method.)
+/*
+ *	Failure cursor constants for use with UI_flash_mouse. Note that these do not
+ *	correspond to frame numbers in pointers.uc, but to some internal mapping.
+ *	(the "BLOCKED" cursor seems to be unavailable through this method.)
+ */
 enum cursors
 {
 	CURSOR_X			= 1,	//Default "no you can't do that" X cursor
@@ -332,11 +423,23 @@ enum cursors
 	CURSOR_WONT_FIT		= 5
 };
 
+enum egg_states
+{
+	CACHED_IN = 0,			// Activated when chunk read in?
+	PARTY_NEAR = 1,
+	AVATAR_NEAR = 2,		// Avatar steps into area.
+	AVATAR_FAR = 3,			// Avatar steps outside area.
+	AVATAR_FOOTPAD = 4,		// Avatar must step on it.
+	PARTY_FOOTPAD = 5,
+	SOMETHING_ON = 6,		// Something placed on/near it.
+	EXTERNAL_CRITERIA = 7	// Appears on Isle of Avatar.  Guessing
+};
+
 //NPC atitudes toward the avatar
 enum alignments
 {
-	GOOD			= 0,
-	NEUTRAL			= 1,
+	NEUTRAL			= 0,
+	GOOD			= 1,
 	EVIL			= 2,
 	CHAOTIC			= 3
 };

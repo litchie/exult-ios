@@ -2055,7 +2055,7 @@ int npc->get_alignment()
     Returns a number describing the NPC's attitude towards the avatar. Can be
     one of the following values:
 
-        GOOD       = 0    NEUTRAL    = 1    EVIL    = 2
+        NEUTRAL    = 0    GOOD    = 1    EVIL    = 2
         CHAOTIC    = 3    
 
 UI_set_alignment(actor npc, int align)
@@ -2201,26 +2201,31 @@ npc->is_readied(int spot, int shape, int frame)
     In BG, the 'spot' parameter is limited to the 0-12 range. It can take any of
     the following values:
     
-      BG_BACK        =  0    Containers worn on the back, such as backpacks
       BG_BACKPACK    =  0    Containers worn on the back, such as backpacks
       BG_WEAPON_HAND =  1    Item wielded in weapon hand
       BG_BOTH_HANDS  =  1    Item wielded with both hands
-      BG_OFF_HAND    =  2    Item wielded in off-hand
       BG_SHIELD_HAND =  2    Off-hand is also called the shield hand
+      BG_OFF_HAND    =  2    Item wielded in off-hand
       BG_BELT        =  3    Items worn around the waist such as belts, girdles
-      BG_NECK        =  4    Item worn around the neck
-      BG_CLOAK       =  4    Cloaks happen to be worn around the neck
       BG_TORSO       =  5    Worn on the torso, such as armor
       BG_LEFT_RING   =  6    Item worn on left finger (ring)
       BG_RIGHT_RING  =  7    Item worn on right finger (ring)
-      BG_GLOVES      =  6    Gloves technically take up the right finger spot.
       BG_QUIVER      =  8    Arrows held in quiver
       BG_HEAD        =  9    Items worn on the head such as headbands, helms,
                              etc
       BG_LEGS        = 10    Worn on legs, such as greaves
       BG_FEET        = 11    Worn on feet, such as boots
-      BG_USECODE     = 12    Usecode container, used for containing eggs
-                             'carried' by player.
+      BG_USECODE     = 12    Exult-only. Usecode container, used for containing
+                             eggs 'carried' by player.
+      BG_CLOAK       = 13    Exult-only. Items worn around the neck and back
+                             such as cloaks and capes.
+      BG_GLOVES      = 14    Exult-only. Items worn on both hands, such as
+                             gloves.
+      BG_EARS        = 16    Exult-only. Earrings, such as the serpent earrings
+      BG_BACK_SHIELD = 17    Exult-only. Shield slung across the back
+      BG_BACK_2H     = 19    Exult-only. Weapon slung across the back
+      BG_AMULET      = 22    Exult-only. Items worn on the neck such as a
+                             collar.
     
     **** END BG SPECIFIC ****
 
