@@ -70,6 +70,10 @@
 #include "misc/egg_bane_holocaust.uc"
 // Prevents player from taking companions to dream world
 #include "misc/egg_gorlab_swamp_sleep.uc"
+// Prevents an Order automaton from joining the Gwani attack in Skullcrusher
+#include "misc/egg_gwani_attack.uc"
+// Gives the automatons in Skullcrusher normal schedules
+#include "misc/egg_skullcrusher_automatons.uc"
 
 // Dupre now refuses to leave in Spinebreaker mountains
 #include "npcs/dupre.uc"
@@ -106,6 +110,8 @@
 #include "npcs/bwundiai.uc"
 // Fixes the gwaniCloakCheck and improves the party's reply if only he notices
 #include "npcs/mwaerno.uc"
+// Brings the automatons in Skullcrusher to life
+#include "npcs/skullcrusher_automatons.uc"
 
 // For curing Cantra, from exult/content/si; modified to allow companions
 // to thank you (and rejoin) after you cure them but before Xenka returns
@@ -133,4 +139,3 @@
 #include "cutscenes/monitor_banquet.uc"
 // Absolutely force companions to be there and force-kills them after
 #include "cutscenes/wall_of_lights.uc"
-
