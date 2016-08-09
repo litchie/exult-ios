@@ -26,7 +26,7 @@
  *	2016-08-08 Submitted by Knight Captain
  */
 
-void SetSkullcrusherAutomaton () (var npc, var name, var sched, var loc)
+void SetSkullcrusherAutomaton (var npc, var name, var sched, var loc)
 {
 	npc->set_npc_name(name);
 	npc->set_schedule_type(sched);
