@@ -458,6 +458,8 @@ gamemgr/bggame.o : gamemgr/bggame.cc $(EXULT_BG_FLX)
 
 gamemgr/sigame.o : gamemgr/sigame.cc $(EXULT_SI_FLX)
 
+shapes/items.o : shapes/items.cc $(EXULT_BG_FLX) $(EXULT_SI_FLX)
+
 shapes/shapevga.o : shapes/shapevga.cc $(EXULT_BG_FLX) $(EXULT_SI_FLX)
 
 usecode/conversation.o : shapes/shapevga.cc $(EXULT_BG_FLX)
