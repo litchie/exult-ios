@@ -19,12 +19,8 @@
 
 void Edrin object#(0x410) ()
 {
-	if (event == STARTED_TALKING)
-	{
-		if (gflags[DREAM_REALM_COMPLETE])
-		{
-			gflags[EDRIN_KNOWS_SIRANUSH_IS_REAL] = true;
-		}
-	}
+	if (event == STARTED_TALKING && gflags[DREAM_REALM_COMPLETE])
+		gflags[EDRIN_KNOWS_SIRANUSH_IS_REAL] = true;
+
 	Edrin.original();
 }

@@ -32,7 +32,6 @@ void SetSkullcrusherAutomaton (var npc, var name, var sched, var loc)
 	npc->set_schedule_type(sched);
 	npc->set_new_schedules(DAWN, sched, loc);
 	npc->move_object(loc, 1);
-
 }
 
 void SkullcrusherAutomatons object#(0x6B9) ()
@@ -50,10 +49,12 @@ void SkullcrusherAutomatons object#(0x6B9) ()
 			SetSkullcrusherAutomaton(GUARD20, "North Door Guard", STANDTHERE, [1217, 0887]);
 			// East Big Doors Guard, northern one
 			SetSkullcrusherAutomaton(GUARD19, "East Door Guard N", STANDTHERE, [1418, 1045]);
-			script GUARD19 {nohalt; face WEST;}
+			script GUARD19
+			{	nohalt;					face WEST;}
 			// East Big Doors Guard, southern one
 			SetSkullcrusherAutomaton(GUARD18, "East Door Guard S", STANDTHERE, [1418, 1048]);
-			script GUARD18 {nohalt; face WEST;}
+			script GUARD18
+			{	nohalt;					face WEST;}
 
 			// Set the flag so this does not run again. At least one of the eggs is an
 			// auto-reset egg, meaning it would keep retrying these changes when hatched.
@@ -102,7 +103,8 @@ void SkullcrusherAutomatons object#(0x6B9) ()
 			else
 			{
 				// Set so if he returns from his HOUND he doesn't stand in the wrong direction.
-				script npc {nohalt; face SOUTH;}
+				script npc
+				{	nohalt;				face SOUTH;}
 			}
 		}
 
@@ -111,7 +113,9 @@ void SkullcrusherAutomatons object#(0x6B9) ()
 		if (npcNearbyAndVisible(npc) && !npc->get_item_flag(SI_ZOMBIE))
 		{
 			// Make him step towards you, he does not have a conversation.
-			script npc {nohalt; step WEST; wait 1; step WEST;}
+			script npc
+			{	nohalt;					step WEST;
+				wait 1;					step WEST;}
 		}
 
 		// East Big Doors Guard, Southern one.
@@ -119,7 +123,9 @@ void SkullcrusherAutomatons object#(0x6B9) ()
 		if (npcNearbyAndVisible(npc) && !npc->get_item_flag(SI_ZOMBIE))
 		{
 			// Make him step towards you.
-			script npc {nohalt; step WEST; wait 1; step WEST;}
+			script npc
+			{	nohalt;					step WEST;
+				wait 1;					step WEST;}
 			// Bark per existing Origin Usecode.
 			delayedBark(npc, "@Intruder!@", 1);
 			// Set his next activity to Talk. His conversation triggers GUARD19 to attack too.

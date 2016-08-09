@@ -21,20 +21,13 @@
  
 void Kylista object#(0x436) ()
 {
-	if (event == STARTED_TALKING)
+	// If Kylista does not have the breastplate.
+	if (event == STARTED_TALKING && !KYLISTA->get_cont_items(SHAPE_BREAST_PLATE, QUALITY_ANY, FRAME_ANY))
 	{
-		// If Kylista does not have the breastplate.
-		if (!KYLISTA->get_cont_items(SHAPE_BREAST_PLATE, QUALITY_ANY, FRAME_ANY))
-		{
-			// And no one is currently on trial OR Kylista has not been arrested after the trial.
-			if ((!(gflags[DUPRE_ACCUSED] || gflags[IOLO_ACCUSED] || gflags[SHAMINO_ACCUSED])) || ((gflags[AUDIENCE_WITH_YELINDA] && gflags[FAWN_TRIAL_DONE] && gflags[ORACLE_SET_TO_INNOCENT])))
-				{
-				if (gflags[KNOWS_BREAST_PLATE_OWNER]) // If we know she's the rightful owner
-					{
-					gflags[KNOWS_BREAST_PLATE_OWNER] = false; // We clear the flag so we can ask her about it.
-					}
-				}
-			}
+		// And no one is currently on trial OR Kylista has not been arrested after the trial.
+		if (!(gflags[DUPRE_ACCUSED] || gflags[IOLO_ACCUSED] || gflags[SHAMINO_ACCUSED]) || (gflags[AUDIENCE_WITH_YELINDA] && gflags[FAWN_TRIAL_DONE] && gflags[ORACLE_SET_TO_INNOCENT]))
+			gflags[KNOWS_BREAST_PLATE_OWNER] = false; // We clear the flag so we can ask her about it.
 	}
+
 	Kylista.original();
 }

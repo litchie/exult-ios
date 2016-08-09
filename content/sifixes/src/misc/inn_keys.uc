@@ -61,9 +61,7 @@ void eggLockInnDoors object#(0xCB0) ()
 
 	var avpos = AVATAR->get_object_position();
 	if (avpos[Z] >= 4)
-	{
 		abort;
-	}
 
 	var inn_keepers = [SIMON,
 					   JENDON, JENDON, JENDON,
