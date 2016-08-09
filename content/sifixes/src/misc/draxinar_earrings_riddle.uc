@@ -34,7 +34,5 @@ void DraxinarEarringsRiddle 0x822 ()
 		gflags[SOLVED_EARRINGS_RIDDLE] = true;
 	}
 	else // Any other answer
-	{
 		say("@I'm sorry, but that is not the correct answer.@");
-	}
 }

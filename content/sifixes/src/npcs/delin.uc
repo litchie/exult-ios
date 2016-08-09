@@ -26,12 +26,8 @@
 
 void Delin object#(0x42F) ()
 {
-	if (event == STARTED_TALKING)
-	{
-		if (gflags[ASKED_JENDON_DAEMON_ARTIFACTS])
-		{
-			gflags[ASK_DELIN_ABOUT_BATLIN] = true;
-		}
-	}
+	if (event == STARTED_TALKING && gflags[ASKED_JENDON_DAEMON_ARTIFACTS])
+		gflags[ASK_DELIN_ABOUT_BATLIN] = true;
+
 	Delin.original();
 }

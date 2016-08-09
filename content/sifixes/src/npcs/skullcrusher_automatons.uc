@@ -31,7 +31,7 @@ void Guard17 object#(0x4be) () // Entrance Guard
 	if (event == STARTED_TALKING)
 	{
 		script GUARD17 after 1 ticks
-		{nohalt; call Guard17;}
+		{	nohalt;					call Guard17;}
 	}
 	Guard17.original();
 }
@@ -44,7 +44,7 @@ void Guard20 object#(0x4bc) () // Serpent Gate Guard
 	if (event == STARTED_TALKING)
 	{
 		script GUARD20 after 3 ticks
-		{nohalt; call Guard20;}
+		{	nohalt;					call Guard20;}
 	}
 	Guard20.original();
 }

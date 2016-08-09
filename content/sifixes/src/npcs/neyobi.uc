@@ -54,11 +54,11 @@ void Neyobi object#(0x493) ()
 					say("@Then thou very smart!@"); // Yes
 				else
 					say("@It mean 'little dew drops' and also mean my name. Neyobi! Me!@"); // No
-   
+
 			case "What art thou doing?" (remove):
 				say("@Early today I play! I like look at clouds! Other day I saw one that look like penguin! Later, mother and Baiyanda teach lessons.@");
 				add(["mother", "Baiyanda", "lessons"]);
- 
+
 			case "mother" (remove):
 				say("@Yenani, silly! She chieftain of our tribe. She tell me one day, after I grow, that what I be.@");
 

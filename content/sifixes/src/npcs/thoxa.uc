@@ -245,10 +245,8 @@ void Thoxa object#(0x4D3) ()
 				UI_play_sound_effect(0x51);
 				remove_npc();
 				abort;
-
 		}
 	}
-
 	else if (event == DEATH)
 		xenkanMonkDies(item);
 }

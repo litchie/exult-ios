@@ -36,11 +36,7 @@ void DraxinarClothRiddle 0x824 ()
 		gflags[SOLVED_CLOTH_RIDDLE] = true;
 	}
 	else if (answer == 14) // The original 'correct' incorrect answer.
-	{
 		say("@'Tis not it, though I thought it was for two decades!@");
-	}
 	else
-	{
 		say("@I'm sorry, but that is not the correct answer.@");
-	}
 }
