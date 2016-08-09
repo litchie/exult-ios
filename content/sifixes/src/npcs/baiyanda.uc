@@ -22,16 +22,16 @@ void Baiyanda object#(0x48F) ()
 	if (event == DOUBLECLICK)
 	{
 		AVATAR->item_say("@Greetings@");
-		delayedBark(BAYANDA, "@We knew thou would come.@", 3);
-		BAYANDA->set_schedule_type(TALK);
+		delayedBark(BAIYANDA, "@We knew thou would come.@", 3);
+		BAIYANDA->set_schedule_type(TALK);
 	}
 	if (event == STARTED_TALKING)
 	{
-		BAYANDA->run_schedule();
-		BAYANDA->clear_item_say();
-		BAYANDA->show_npc_face0(0);
+		BAIYANDA->run_schedule();
+		BAIYANDA->clear_item_say();
+		BAIYANDA->show_npc_face0(0);
 
-		if (BAYANDA->get_item_flag(MET))
+		if (BAIYANDA->get_item_flag(MET))
 			say("@We meet again.@");
 		else
 			say("@Thou art Avatar!@");
@@ -48,7 +48,7 @@ void Baiyanda object#(0x48F) ()
 
 			case "name" (remove):
 				say("@I am Baiyanda, mate of Mwaerno and healer for Gwani people.@");
-				BAYANDA->set_item_flag(MET);
+				BAIYANDA->set_item_flag(MET);
 				add(["Mwaerno", "healer"]);
 
 			case "Mwaerno" (remove):
@@ -157,12 +157,12 @@ void Baiyanda object#(0x48F) ()
 				{
 					say("@Ice Dragon blood maybe only thing powerful enough to cure Neyobi. But it so rare that it very hard to find. Five of our hunters looking for it.@");
 					say("@Gwenno said thou help people in need. Thou must find some Ice Dragon blood for Neyobi! It is the last hope!@");
-					if (!gflags[BAYANDA_GAVE_BUCKET])
+					if (!gflags[BAIYANDA_GAVE_BUCKET])
 					{
 						say("@Here, take bucket of mine. If thou find and slay Ice Dragon, please bring bucket of blood. Take to Yenani, she know what to do with it.@");
 						giveItemsToPartyMember(AVATAR, 1, SHAPE_BUCKET, 0, 0, false, true);
 						say("@Good luck. Neyobi's life depend on it.@");
-						gflags[BAYANDA_GAVE_BUCKET] = true;
+						gflags[BAIYANDA_GAVE_BUCKET] = true;
 					}
 					else
 						say("@Give Yenani bucket of Ice Dragon blood. She know what to do with it.@");
@@ -188,7 +188,7 @@ void Baiyanda object#(0x48F) ()
 				UI_remove_npc_face0();
 				UI_remove_npc_face1();
 				delayedBark(AVATAR, "@I thank thee.@", 0);
-				delayedBark(BAYANDA, "@Very good.@", 3);
+				delayedBark(BAIYANDA, "@Very good.@", 3);
 				break;
 
 		}
