@@ -183,6 +183,7 @@ MAPEDIT_OBJS=\
 	usecode/ucsymtbl.o
 
 ES_FILES_OBJS=\
+	files/crc.o \
 	files/Flat.o \
 	files/Flex.o \
 	files/IFF.o \
