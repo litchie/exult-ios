@@ -105,6 +105,7 @@ public:
 		src.ignore(off);
 		string ret;
 		getline(src, ret, '/');
+		src.unget();
 		return ret;
 	}
 };
