@@ -330,6 +330,7 @@
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		28FD14FF0DC6FC520079059D /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		28FD15070DC6FC5B0079059D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		8A0C19E11D6D9F1800B9105A /* sibetaintrinsics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sibetaintrinsics.h; sourceTree = "<group>"; };
 		8AB0AE1B1CBEF522001DBB16 /* ignore_unused_variable_warning.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ignore_unused_variable_warning.h; sourceTree = "<group>"; };
 		8AB53D8A1C9CA0A90084C69D /* ShortcutBar_gump.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ShortcutBar_gump.cc; path = ../gumps/ShortcutBar_gump.cc; sourceTree = "<group>"; };
 		8AB53D8B1C9CA0A90084C69D /* ShortcutBar_gump.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShortcutBar_gump.h; path = ../gumps/ShortcutBar_gump.h; sourceTree = "<group>"; };
@@ -1527,6 +1528,7 @@
 		E700DE9F1A6E34C6006C8BE4 /* usecode */ = {
 			isa = PBXGroup;
 			children = (
+				8A0C19E11D6D9F1800B9105A /* sibetaintrinsics.h */,
 				E700DEAF1A6E34C6006C8BE4 /* bgintrinsics.h */,
 				E700DED01A6E34C6006C8BE4 /* conversation.cc */,
 				E700DED11A6E34C6006C8BE4 /* conversation.h */,

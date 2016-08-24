@@ -16,7 +16,7 @@
 #define	EXULT_SI_FLX_CONTAINER_DAT		8
 #define	EXULT_SI_FLX_AUTONOTES_TXT		9
 
-#define	EXULT_SI_FLX_CRC32	0x2aa8ef3eU
+#define	EXULT_SI_FLX_CRC32	0x79c3cb4cU
 
 #endif
 
