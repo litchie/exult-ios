@@ -2169,11 +2169,9 @@ void Game_window::show_items(
 		obj = find_object(x, y);
 	}
 #ifdef __IPHONEOS__
-	string yn;
-	config->value("config/iphoneos/item_menu", yn, "yes");
 	Game_object_map_xy mobjxy;
 	find_nearby_objects(&mobjxy, x, y, gump);
-	if ((mobjxy.size() > 0) && (yn == "yes")) {
+	if ((mobjxy.size() > 0) && (item_menu)) {
 		// Make sure menu is visible on the screen
 		int w = Game_window::get_instance()->get_width();
 		int h = Game_window::get_instance()->get_height();
