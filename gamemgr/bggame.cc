@@ -1947,15 +1947,15 @@ bool BG_Game::new_game(Vga_file &shapes) {
 			 * Also there is no direction keys on native iPhone keyboard.
 			 */
 			if (event.type == SDL_MOUSEBUTTONDOWN || event.type == SDL_MOUSEBUTTONUP) {
-				SDL_Rect rectName   = {   9, 134, 130,  16 };
-				SDL_Rect rectSex    = {   9, 153, 130,  16 };
-				SDL_Rect rectOnward = {   9, 197, 130,  16 };
-				SDL_Rect rectReturn = { 167, 197, 130,  16 };
+				SDL_Rect rectName   = { topx + 10,    menuy + 10, 130,  16 };
+				SDL_Rect rectSex    = { topx + 10,    menuy + 25, 130,  16 };
+				SDL_Rect rectOnward = { topx + 10,    topy + 180, 130,  16 };
+				SDL_Rect rectReturn = { centerx + 10, topy + 180, 130,  16 };
 				SDL_Point point;
-				int scale = gwin->get_fastmouse() ? 1 : gwin->get_win()->get_scale_factor();
-				point.x = event.button.x / scale;
-				point.y = event.button.y / scale;
+				gwin->get_win()->screen_to_game(event.button.x, event.button.y, gwin->get_fastmouse(), point.x, point.y);
+#if DEBUG
 				std::cout << "x: " << point.x << " y:" << point.y << std::endl;
+#endif
 				if (SDL_EnclosePoints(&point, 1, &rectName, NULL)) {
 					if (event.type == SDL_MOUSEBUTTONDOWN) {
 						selected = 0;
