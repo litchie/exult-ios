@@ -332,6 +332,10 @@ void Conversation::remove_slot_face(
 			if (face_info[j])
 				break;
 		last_face_shown = j;
+#ifdef __IPHONEOS__	
+		if (num_faces == 0)
+			touchui->showGameControls();
+#endif
 	}
 }
 
