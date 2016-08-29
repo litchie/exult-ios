@@ -1691,6 +1691,13 @@ void Usecode_internal::click_to_continue(
 void Usecode_internal::set_book(
     Text_gump *b            // Book/scroll.
 ) {
+#ifdef __IPHONEOS__
+	Gump_manager *gumpman = gwin->get_gump_man();
+	if ((book && !b) && !gumpman->gump_mode())
+		touchui->showGameControls();
+	else if (!book && b)
+		touchui->hideGameControls();
+#endif
 	delete book;
 	book = b;
 }
