@@ -775,18 +775,18 @@ int exult_main(const char *runpath) {
 #endif
 
 #ifdef __IPHONEOS__
-	touchui->showGameControls();
+	touchui->showButtonControls();
+	Usecode_machine *usecode = Game_window::get_instance()->get_usecode();
+	if (!usecode->get_global_flag(Usecode_machine::did_first_scene))
+		touchui->hideGameControls();
+	else
+		touchui->showGameControls();
 #endif
 
 	int result = Play();        // start game
 
 #ifdef UNDER_CE
 	GXCloseInput();
-#endif
-
-#ifdef __IPHONEOS__
-	touchui->hideGameControls();
-	touchui->hideButtonControls();
 #endif
 
 #ifdef USE_EXULTSTUDIO
