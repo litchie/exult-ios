@@ -710,6 +710,10 @@ bool Newfile_gump::mouse_down(
 
 	if (hit == -1) return true;
 
+#ifdef __IPHONEOS__
+	last_selected = selected;
+#endif
+
 	if (hit + list_position >= num_games || hit + list_position < -2 || selected == hit + list_position) return true;
 
 #ifdef DEBUG
@@ -800,7 +804,7 @@ bool Newfile_gump::mouse_up(
 	}
 	
 #ifdef __IPHONEOS__
-	if (selected == -2 || selected >= 0) {
+	if (selected == -2 || (selected >= 0 && selected == last_selected)) {
 		touchui->promptForName(newname);
 	}
 #endif

@@ -162,6 +162,9 @@ protected:
 	const char *filename;       // Filename of the savegame, if exists
 
 	int list_position;      // The position in the savegame list (top game)
+#ifdef __IPHONEOS__
+	int last_selected;      // keeping track of the selected line for iOS
+#endif
 	int selected;       // The savegame that has been selected (num in list)
 	int cursor;         // The position of the cursor
 	int slide_start;        // Pixel (v) where a slide started
