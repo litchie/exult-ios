@@ -279,6 +279,7 @@ Notebook_gump *Notebook_gump::create(
 		instance = new Notebook_gump;
 #ifdef __IPHONEOS__
 		touchui->hideGameControls();
+		 SDL_StartTextInput();
 #endif
 	}
 	return instance;
@@ -306,6 +307,8 @@ Notebook_gump::~Notebook_gump(
 	Gump_manager *gumpman = gwin->get_gump_man();
 	if (!gumpman->gump_mode())
 		touchui->showGameControls();
+	if (SDL_IsTextInputActive())
+		SDL_StopTextInput();
 #endif
 }
 
@@ -440,6 +443,9 @@ Gump_button *Notebook_gump::on_button(
 		cursor.offset = offset + coff;
 		paint();
 		updnx = cursor.x - x - lpagex;
+#ifdef __IPHONEOS__
+		SDL_StartTextInput();
+#endif
 	} else {
 		offset += -coff;        // New offset.
 		if (offset >= static_cast<int>(note->text.length())) {
@@ -460,6 +466,9 @@ Gump_button *Notebook_gump::on_button(
 			cursor.offset = offset + coff;
 			paint();
 			updnx = cursor.x - x - rpagex;
+#ifdef __IPHONEOS__
+			SDL_StartTextInput();
+#endif
 		}
 	}
 	return 0;
@@ -652,6 +661,10 @@ bool Notebook_gump::handle_kbd_event(
 			next_page();
 			paint();
 		}
+#ifdef __IPHONEOS__
+		//hack to reinable the iOS keyboard. It wants to hide after Return is hit
+		SDL_StartTextInput();
+#endif
 		break;
 	case SDLK_BACKSPACE:
 		if (note->del(cursor.offset - 1)) {
