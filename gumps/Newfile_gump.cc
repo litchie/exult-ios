@@ -750,7 +750,11 @@ bool Newfile_gump::mouse_down(
 		details = games[selected].details;
 		party = games[selected].party;
 		strcpy(newname, games[selected].savename);
+#ifdef __IPHONEOS__
 		cursor = (int)strlen(newname);
+#else
+		cursor = strlen(newname);
+#endif
 		is_readable = want_load = games[selected].readable;
 		filename = games[selected].filename;
 	}
@@ -866,6 +870,7 @@ void Newfile_gump::mouse_drag(
 	}
 }
 
+#ifdef __IPHONEOS__
 void Newfile_gump::text_input(const char *text)
 {
 	if (cursor == -1 || strlen(text) >= MAX_SAVEGAME_NAME_LEN - 1)
@@ -898,6 +903,7 @@ void Newfile_gump::text_input(const char *text)
 	gwin->set_painted();
 	
 }
+#endif
 
 /*
  *  Handle character that was typed.

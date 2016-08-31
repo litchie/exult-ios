@@ -204,7 +204,9 @@ public:
 	virtual bool mouse_up(int mx, int my, int button);
 	virtual void mouse_drag(int mx, int my);
 	virtual void text_input(int chr, int unicode); // Character typed.
+#ifdef __IPHONEOS__
 	virtual void text_input(const char *text); // Character typed.
+#endif
 
 	virtual void mousewheel_up();
 	virtual void mousewheel_down();

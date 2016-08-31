@@ -651,7 +651,9 @@ int exult_main(const char *runpath) {
 	add_system_path("<MODS>", "mods");
 
 	std::cout << "Exult path settings:" << std::endl;
+#ifdef __IPHONEOS__
 	std::cout << "Bundle        : " << get_system_path("<BUNDLE>") << std::endl;
+#endif
 	std::cout << "Data          : " << get_system_path("<DATA>") << std::endl;
 	std::cout << "Digital music : " << get_system_path("<MUSIC>") << std::endl;
 	std::cout << std::endl;
