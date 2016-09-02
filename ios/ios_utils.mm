@@ -146,7 +146,12 @@ extern "C" int SDL_SendKeyboardKey(Uint8 state, SDL_Scancode scancode);
 		];
 		dpad.keyInput = self;
 	}
+	UIWindow *window = [[[UIApplication sharedApplication] delegate] window];
+	UIViewController *controller = window.rootViewController;
 
+	dpad.frame = [self calcRectForDPad];
+	[controller.view addSubview:dpad];
+	
 	dpad.alpha = 1;
 }
 
@@ -163,8 +168,6 @@ extern "C" int SDL_SendKeyboardKey(Uint8 state, SDL_Scancode scancode);
 
 	UIWindow *window = [[[UIApplication sharedApplication] delegate] window];
 	UIViewController *controller = window.rootViewController;
-	dpad.frame = [self calcRectForDPad];
-	[controller.view addSubview:dpad];
 
 	CGRect rcScreen = controller.view.bounds;
 	CGSize sizeButton = CGSizeMake(60,30);

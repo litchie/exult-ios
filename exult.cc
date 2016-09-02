@@ -779,7 +779,7 @@ int exult_main(const char *runpath) {
 #ifdef __IPHONEOS__
 	touchui->showButtonControls();
 	Usecode_machine *usecode = Game_window::get_instance()->get_usecode();
-	if (!usecode->get_global_flag(Usecode_machine::did_first_scene))
+	if (!usecode->get_global_flag(Usecode_machine::did_first_scene) && GAME_BG)
 		touchui->hideGameControls();
 	else
 		touchui->showGameControls();
