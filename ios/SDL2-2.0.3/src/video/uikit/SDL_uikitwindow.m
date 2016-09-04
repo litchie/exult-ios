@@ -196,8 +196,8 @@ UIKit_CreateWindow(_THIS, SDL_Window *window)
     /* !!! FIXME: can we have a smaller view? */
     UIWindow *uiwindow = [UIWindow alloc];
     uiwindow = [uiwindow initWithFrame:[data->uiscreen bounds]];
-	[[[UIApplication sharedApplication] delegate] setWindow:uiwindow];
-    
+    // !!! FIXME: this needs to be in Exult code
+    [[[UIApplication sharedApplication] delegate] setWindow:uiwindow];
     /* put the window on an external display if appropriate. This implicitly
      * does [uiwindow setframe:[uiscreen bounds]], so don't do it on the
      * main display, where we land by default, as that would eat the

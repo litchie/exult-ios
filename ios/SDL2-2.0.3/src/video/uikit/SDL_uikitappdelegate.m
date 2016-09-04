@@ -161,7 +161,6 @@ SDL_IdleTimerDisabledChanged(void *userdata, const char *name, const char *oldVa
 
 
 @implementation SDLUIKitDelegate
-@synthesize window;
 
 /* convenience method */
 + (id) sharedAppDelegate
