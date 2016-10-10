@@ -494,6 +494,9 @@ Game_window::Game_window(
 	}
 	config->set("config/iphoneos/dpad_location", str, false);
 	config->value("config/shortcutbar/use_shortcutbar", str, "translucent");
+	config->value("config/iphoneos/touch_pathfind", str, "yes");
+	touch_pathfind = str == "yes";
+	config->set("config/iphoneos/touch_pathfind", touch_pathfind ? "yes" : "no", false);
 #else
 	config->value("config/shortcutbar/use_shortcutbar", str, "no");
 #endif
@@ -1919,10 +1922,19 @@ void Game_window::start_actor_along_path(
 	int liftpixels = 4 * lift;  // Figure abs. tile.
 	Tile_coord dest(get_scrolltx() + (winx + liftpixels) / c_tilesize,
 	                get_scrollty() + (winy + liftpixels) / c_tilesize, lift);
-	if (!main_actor->walk_path_to_tile(dest, speed))
+	if (!main_actor->walk_path_to_tile(dest, speed)) {
 		cout << "Couldn't find path for Avatar." << endl;
-	else
+#ifdef __IPHONEOS__
+		if (touch_pathfind)
+			Mouse::mouse->flash_shape(Mouse::blocked);
+#endif
+	} else {
+#ifdef __IPHONEOS__	
+		if (touch_pathfind)	
+			get_effects()->add_effect(new Sprites_effect(18, dest, 0, 0, 0, 0));
+#endif
 		main_actor->get_followers();
+	}
 }
 
 /*

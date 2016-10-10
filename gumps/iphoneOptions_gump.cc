@@ -109,6 +109,8 @@ void iphoneOptions_gump::toggle(Gump_button *btn, int state) {
 		item_menu = state;
 	else if (btn == buttons[id_dpad_location])
 		dpad_location = state;
+	else if (btn == buttons[id_touch_pathfind])
+		touch_pathfind = state;
 }
 
 void iphoneOptions_gump::build_buttons() {
@@ -135,6 +137,8 @@ void iphoneOptions_gump::build_buttons() {
 	buttons[id_dpad_location] = new iphoneTextToggle(this, dpad_text, colx[4], rowy[1],
 		59, dpad_location, num_dpad_texts);
 
+	buttons[id_touch_pathfind] = new iphoneEnabledToggle(this, colx[4], rowy[2],
+		59, touch_pathfind);
 	// Ok
 	buttons[id_ok] = new iphoneOptions_button(this, oktext, colx[0], rowy[12]);
 	// Cancel
@@ -145,6 +149,7 @@ void iphoneOptions_gump::load_settings() {
 	//string yn;
 	item_menu = gwin->get_item_menu();
 	dpad_location = gwin->get_dpad_location();
+	touch_pathfind = gwin->get_touch_pathfind();
 }
 
 iphoneOptions_gump::iphoneOptions_gump()
@@ -172,6 +177,10 @@ void iphoneOptions_gump::save_settings() {
 	gwin->set_dpad_location(dpad_location);
 	config->set("config/iphoneos/dpad_location", dpad_texts[dpad_location], false);
 
+	gwin->set_touch_pathfind(touch_pathfind != 0);
+	config->set("config/iphoneos/touch_pathfind",
+	            touch_pathfind ? "yes" : "no", false);
+
 	config->write_back();
 
 	touchui->onDpadLocationChanged();
@@ -186,6 +195,7 @@ void iphoneOptions_gump::paint() {
 	Image_window8 *iwin = gwin->get_win();
 	font->paint_text(iwin->get_ib8(), "Item helper menu:", x + colx[0], y + rowy[0] + 1);
 	font->paint_text(iwin->get_ib8(), "D-Pad screen location:", x + colx[0], y + rowy[1] + 1);
+	font->paint_text(iwin->get_ib8(), "Long touch pathfind:", x + colx[0], y + rowy[2] + 1);
 
 	gwin->set_painted();
 }

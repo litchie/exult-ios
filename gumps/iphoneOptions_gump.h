@@ -32,6 +32,7 @@ class iphoneOptions_gump : public Modal_gump {
 private:
 	bool item_menu;
 	int dpad_location;
+	bool touch_pathfind;
 
 	enum button_ids {
 	    id_first = 0,
@@ -39,6 +40,7 @@ private:
 	    id_cancel,
 	    id_item_menu,
 	    id_dpad_location,
+		id_touch_pathfind,
 	    id_count
 	};
 	Gump_button *buttons[id_count];

@@ -47,6 +47,10 @@ extern int Get_click(
     bool rotate_colors = false      // If the palette colors should rotate.
 );
 
+#ifdef __IPHONEOS__
+static int last_b1down_click;
+#endif
+
 /*
  *  Make a screenshot of the current screen display
  */

@@ -147,6 +147,7 @@ class Game_window {
 	//iphoneOS Options
 	bool item_menu;
 	int dpad_location;
+	bool touch_pathfind;
 #endif
 	// Private methods:
 	void set_scrolls(Tile_coord cent);
@@ -330,6 +331,12 @@ public:
 	}
 	inline int get_dpad_location() {
 		return dpad_location;
+	}
+	bool get_touch_pathfind() const {
+		return touch_pathfind;
+	}
+	void set_touch_pathfind(bool s) {
+		touch_pathfind = s;
 	}
 #endif
 	/*
