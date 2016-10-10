@@ -255,9 +255,11 @@ MiscOptions_gump::~MiscOptions_gump() {
 }
 
 void MiscOptions_gump::save_settings() {
+#ifndef __IPHONEOS__
 	config->set("config/gameplay/scroll_with_mouse",
 	            scroll_mouse ? "yes" : "no", false);
 	gwin->set_mouse_with_scroll(scroll_mouse);
+#endif
 	config->set("config/gameplay/skip_intro",
 	            usecode_intro ? "yes" : "no", false);
 	config->set("config/gameplay/skip_splash",

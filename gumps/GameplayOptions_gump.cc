@@ -205,21 +205,24 @@ void GameplayOptions_gump::build_buttons() {
 	                                   Game::get_game_type() == EXULT_DEVEL_GAME))
 		buttons[id_paperdolls] = new GameplayEnabledToggle(this, colx[3], rowy[12], 59,
 		        paperdolls);
+#ifndef __IPHONEOS__
 	buttons[id_fastmouse] = new GameplayEnabledToggle(this, colx[3], rowy[3],
 	        59, fastmouse);
-#ifdef UNDER_CE
+/*#ifdef UNDER_CE
 	buttons[id_dpadopt] = new GameplayTextToggle(this, dpadtext, colx[3] - 21, rowy[4],
 	        80, dpadopt, 4);
-#else
+#else*/
 	buttons[id_mouse3rd] = new GameplayEnabledToggle(this, colx[3], rowy[4],
 	        59, mouse3rd);
 #endif
 	buttons[id_doubleclick] = new GameplayEnabledToggle(this, colx[3], rowy[5],
 	        59, doubleclick);
+#ifndef __IPHONEOS__
 	buttons[id_rightclick_close] = new GameplayEnabledToggle(this, colx[3], rowy[6],
 	        59, rightclick_close);
 	buttons[id_right_pathfind] = new GameplayTextToggle(this, pathfind_text, colx[3], rowy[7],
 	        59, right_pathfind, num_pathfind_texts);
+#endif
 	buttons[id_gumps_pause] = new GameplayEnabledToggle(this, colx[3], rowy[8],
 	        59, gumps_pause);
 	buttons[id_cheats] = new GameplayEnabledToggle(this, colx[3], rowy[9],
@@ -361,15 +364,18 @@ void GameplayOptions_gump::paint() {
 	font->paint_text(iwin->get_ib8(), "Text Background:", x + colx[0], y + rowy[1] + 1);
 	if (buttons[id_paperdolls])
 		font->paint_text(iwin->get_ib8(), "Paperdolls:", x + colx[0], y + rowy[12] + 1);
+#ifndef __IPHONEOS__
 	font->paint_text(iwin->get_ib8(), "Fullscreen Fast Mouse:", x + colx[0], y + rowy[3] + 1);
-#ifdef UNDER_CE
+/*#ifdef UNDER_CE
 	font->paint_text(iwin->get_ib8(), "D-Pad:", x + colx[0], y + rowy[4] + 1);
-#else
+#else*/
 	font->paint_text(iwin->get_ib8(), "Use Middle Mouse Button:", x + colx[0], y + rowy[4] + 1);
 #endif
 	font->paint_text(iwin->get_ib8(), "Doubleclick closes Gumps:", x + colx[0], y + rowy[5] + 1);
+#ifndef __IPHONEOS__
 	font->paint_text(iwin->get_ib8(), "Right click closes Gumps:", x + colx[0], y + rowy[6] + 1);
 	font->paint_text(iwin->get_ib8(), "Right click Pathfinds:", x + colx[0], y + rowy[7] + 1);
+#endif
 	font->paint_text(iwin->get_ib8(), "Gumps pause game:", x + colx[0], y + rowy[8] + 1);
 	font->paint_text(iwin->get_ib8(), "Cheats:", x + colx[0], y + rowy[9] + 1);
 	font->paint_text(iwin->get_ib8(), "Speed:", x + colx[0], y + rowy[10] + 1);
