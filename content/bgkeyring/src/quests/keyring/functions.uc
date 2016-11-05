@@ -36,7 +36,7 @@ void monsterStats (var monster, var stats)
 	}
 }
 
-void monsterEquipment (var monster, var arms, var arms_quality, var pouch_content, var pouch_frames, var pouch_quantities, var pouch_qualities)
+void monsterEquipment (var monster, var contshape, var arms, var arms_quality, var pouch_content, var pouch_frames, var pouch_quantities, var pouch_qualities)
 {
 	var bag;
 	var new_obj;
@@ -56,7 +56,7 @@ void monsterEquipment (var monster, var arms, var arms_quality, var pouch_conten
 	}
 	
 	//Create a backpack:
-	bag = UI_create_new_object(SHAPE_BACKPACK);
+	bag = UI_create_new_object(contshape);
 	//Give to monster:
 	monster->give_last_created();
 	//Reset counter:
@@ -99,7 +99,7 @@ var monsterCreate (var shapenum, var npcid, var pos, var facedir, var stats, var
 	//Set the monster's attributes:
 	monsterStats(monster, stats);
 	//Give him some equipment:
-	monsterEquipment(monster, arms, arms_quality, pouch_content, pouch_frames, pouch_quantities, pouch_qualities);
+	monsterEquipment(monster, SHAPE_BACKPACK, arms, arms_quality, pouch_content, pouch_frames, pouch_quantities, pouch_qualities);
 	//Set NPC ID to requested value:
 	monster->set_npc_id(npcid);
 	if (npcid == ID_MAGE_OR_GOON)
