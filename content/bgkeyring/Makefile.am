@@ -156,7 +156,8 @@ GUMPS_VGA_OBJECTS = \
 	src/graphics/gumps/Raven_Female_Gump.shp	\
 	src/graphics/gumps/Raven_Male_Gump.shp	\
 	src/graphics/gumps/Redhead_Female_Gump.shp	\
-	src/graphics/gumps/Redhead_Male_Gump.shp	
+	src/graphics/gumps/Redhead_Male_Gump.shp	\
+	src/graphics/gumps/Portable_Hole.shp	
 
 MAINSHP_FLX_OBJECTS = \
 	src/graphics/mainshp.in	\
@@ -244,7 +245,9 @@ SHAPES_VGA_OBJECTS = \
 	src/graphics/shapes/Stained_Glass_Horizontal.shp	\
 	src/graphics/shapes/Stained_Glass_Vertical.shp	\
 	src/graphics/shapes/Stairs_Down.shp	\
-	src/graphics/shapes/Sword_Blank.shp	
+	src/graphics/shapes/Sword_Blank.shp	\
+	src/graphics/shapes/Portable_Hole.shp	
+
 
 bgkeyringdir = $(datadir)/exult/forgeofvirtue/mods
 
@@ -261,6 +264,7 @@ bgkeyringdata_DATA = \
 	data/paperdol.vga	\
 	data/shapes.vga	\
 	data/armor.dat	\
+	data/occlude.dat	\
 	data/avatar_data.txt	\
 	data/bodies.txt	\
 	data/combos.flx	\

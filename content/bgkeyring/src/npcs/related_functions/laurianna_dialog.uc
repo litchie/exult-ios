@@ -824,6 +824,7 @@ void lauriannaYewDialog ()
 		var pouch_qualities = [0, 0, 0, 0,
 							   0, 0, 0, 0];
 		monsterEquipment(item,
+						 SHAPE_PORTABLE_HOLE,
 						 [SHAPE_LIGHTNING_WAND, leather_armor],
 						 [100, 0, 0, 0, 0, 0, 0],
 						 pouch_content, pouch_frames, pouch_quantities, pouch_qualities);

@@ -1,8 +1,7 @@
-Exult 1.4.05cvs text message file.  Written by ExultStudio.
+Exult 1.5.0git text message file.  Written by ExultStudio.
 %%section shapes
 0x0:carpet
 0x1:sidewalk
-0x2:
 0x3:lightning
 0x4:grass
 0x5:cavefloor
@@ -19,18 +18,14 @@ Exult 1.4.05cvs text message file.  Written by ExultStudio.
 0x10:rut
 0x11:planking
 0x12:tile
-0x13:
-0x14:
 0x15:stone floor
 0x16:swamp
 0x17:dirt
 0x18:cobblestone
 0x19:rut
-0x1a:
 0x1b:carpet
 0x1c:sandy grass
 0x1d:muddy bank
-0x1e:
 0x1f:grass
 0x20:grass
 0x21:grass
@@ -64,8 +59,6 @@ Exult 1.4.05cvs text message file.  Written by ExultStudio.
 0x3d:cavefloor
 0x3e:cavefloor
 0x3f:cavefloor
-0x40:
-0x41:
 0x42:grass
 0x43:muck
 0x44:enchant missiles
@@ -83,7 +76,6 @@ Exult 1.4.05cvs text message file.  Written by ExultStudio.
 0x50:charm
 0x51:flamestrike
 0x52:delayed explosion
-0x53:
 0x54:ford
 0x55:muddy bank
 0x56:muddy bank
@@ -110,7 +102,6 @@ Exult 1.4.05cvs text message file.  Written by ExultStudio.
 0x6b:muddy bank
 0x6c:muddy bank
 0x6d:muddy bank
-0x6e:
 0x6f:sandy ground
 0x70:ford
 0x71:swamp
@@ -161,8 +152,6 @@ Exult 1.4.05cvs text message file.  Written by ExultStudio.
 0x9e:stand
 0x9f:pocketwatch
 0xa0:greer plant
-0xa1:
-0xa2:
 0xa3:rock outcropping
 0xa4:slate roof
 0xa5:slate roof
@@ -397,8 +386,6 @@ Exult 1.4.05cvs text message file.  Written by ExultStudio.
 0x18a:guard
 0x18b:mountain
 0x18c:mountain
-0x18d:
-0x18e:
 0x18f:energy mist
 0x190:body
 0x191:pirate
@@ -676,7 +663,6 @@ Exult 1.4.05cvs text message file.  Written by ExultStudio.
 0x2a1:plant
 0x2a2:silverleaf tree
 0x2a3:desk item
-0x2a4:
 0x2a5:sack of wheat
 0x2a6:curtain
 0x2a7:drawers
@@ -731,7 +717,6 @@ Exult 1.4.05cvs text message file.  Written by ExultStudio.
 0x2d8:Caddellite chunks
 0x2d9:crystal ball
 0x2da:baby
-0x2db:
 0x2dc:window
 0x2dd:carpet
 0x2de:guillotine
@@ -793,7 +778,6 @@ Exult 1.4.05cvs text message file.  Written by ExultStudio.
 0x316:invisibility dust
 0x317:ship
 0x318:Magician's Wand
-0x319:
 0x31a:water
 0x31b:mantle
 0x31c:draft horse
@@ -874,7 +858,6 @@ Exult 1.4.05cvs text message file.  Written by ExultStudio.
 0x367:wall
 0x368:stove
 0x369:chair
-0x36a:
 0x36b:surf
 0x36c:metal wall
 0x36d:Rune
@@ -1056,6 +1039,7 @@ Exult 1.4.05cvs text message file.  Written by ExultStudio.
 0x469:flying carpet
 0x46a:flying carpet
 0x46b:flying carpet
+0x46c:Portable Hole
 %%endsection shapes
 %%section msgs
 0x0:"Step aside!"

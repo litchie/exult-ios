@@ -1,4 +1,4 @@
-#	Exult 1.5.0svn text message file.	Written by ExultStudio.
+#	Exult 1.5.0git text message file.	Written by ExultStudio.
 %%section version
 :3
 %%endsection
@@ -48,4 +48,6 @@
 :1128/-1/1/10/0/0/403/2
 :1130/-1/1/1/0/0/408/0
 :1130/-1/1/12/0/0/408/1
+:1132/-1/0/1/0/0/-1/0
+:1132/-1/0/2/0/0/-1/0
 %%endsection
