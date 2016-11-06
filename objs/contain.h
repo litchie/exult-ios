@@ -33,10 +33,7 @@ class Container_game_object : public Ireg_game_object {
 	char resistance;    // Resistance to attack.
 protected:
 	Object_list objects;        // ->first object.
-	int get_max_volume() const { // Max. we'll hold.  (Guessing).
-		int v = get_volume();
-		return v;
-	}
+	int get_max_volume() const;
 public:
 	Container_game_object(int shapenum, int framenum, unsigned int tilex,
 	                      unsigned int tiley, unsigned int lft,

@@ -209,7 +209,8 @@ void Shapes_vga_file::Read_Shapeinf_text_data_file(
 	                          "effective_hps", "lightweight_object", "warmth_data",
 	                          "quantity_frames", "locked_containers", "content_rules",
 	                          "volatile_explosive", "framenames", "altready", "barge_type",
-	                          "frame_powers", "is_jawbone", "is_mirror", "field_type",
+	                          "frame_powers", "is_jawbone", "is_mirror", "on_fire",
+	                          "extradimensional_storage", "field_type",
 	                          "frame_usecode"
 	                         };
 	Base_reader *readers[] = {
@@ -305,6 +306,16 @@ void Shapes_vga_file::Read_Shapeinf_text_data_file(
 		Bit_text_reader_functor < unsigned short, Shape_info,
 		&Shape_info::shape_flags, Shape_info::mirror > ,
 		Patch_flags_functor<mirror_flag, Shape_info> > (info),
+		// Objects on fire.
+		new Functor_multidata_reader < Shape_info,
+		Bit_text_reader_functor < unsigned short, Shape_info,
+		&Shape_info::shape_flags, Shape_info::on_fire > ,
+		Patch_flags_functor<on_fire_flag, Shape_info> > (info),
+		// Containers with unlimited storage.
+		new Functor_multidata_reader < Shape_info,
+		Bit_text_reader_functor < unsigned short, Shape_info,
+		&Shape_info::shape_flags, Shape_info::extradimensional_storage > ,
+		Patch_flags_functor<extradimensional_storage_flag, Shape_info> > (info),
 		// For field types.
 		new Functor_multidata_reader < Shape_info,
 		Text_reader_functor < char, Shape_info,

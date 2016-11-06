@@ -2712,7 +2712,9 @@ void ExultStudio::init_shape_notebook(
 		"shinfo_shape_flag4",
 		"shinfo_shape_flag5",
 		"shinfo_shape_flag6",
-		"shinfo_shape_flag7"
+		"shinfo_shape_flag7",
+		"shinfo_shape_flag8",
+		"shinfo_shape_flag9"
 	};
 	set_bit_toggles(&shpflags[0],
 	                sizeof(shpflags) / sizeof(shpflags[0]), info.get_shape_flags());
@@ -3560,7 +3562,9 @@ void ExultStudio::save_shape_notebook(
 		"shinfo_shape_flag4",
 		"shinfo_shape_flag5",
 		"shinfo_shape_flag6",
-		"shinfo_shape_flag7"
+		"shinfo_shape_flag7",
+		"shinfo_shape_flag8",
+		"shinfo_shape_flag9"
 	};
 	info.set_shape_flags(get_bit_toggles(&shpflags[0],
 	                                     sizeof(shpflags) / sizeof(shpflags[0])));
