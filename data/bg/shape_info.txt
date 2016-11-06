@@ -913,7 +913,7 @@
 %%endsection
 
 %%section is_mirror
-#	If the container is a mirror.
+#	If the object is a mirror.
 #
 #	Format
 #		:shapenum/flag
@@ -923,6 +923,44 @@
 #
 :268/1
 :848/1
+%%endsection
+
+%%section on_fire
+#	If the object is on fire, and can't be placed inside
+#	a container.
+#
+#	Format
+#		:shapenum/flag
+#
+#	flag: If nonzero, the object is on fire.
+#
+#
+
+:179/1
+:198/1
+:338/1
+:435/1
+:440/1
+:442/1
+:526/1
+:534/1
+:701/1
+:739/1
+:825/1
+:895/1
+:1053/1
+:1079/1
+%%endsection
+
+%%section extradimensional_storage
+#	If the container has unlimited internal space.
+#
+#	Format
+#		:shapenum/flag
+#
+#	flag: If nonzero, the container has unlimited internal space.
+#
+#
 %%endsection
 
 %%section field_type

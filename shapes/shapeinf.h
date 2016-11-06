@@ -117,7 +117,9 @@ enum Data_flag_bits {
     tf_locked_flag,
     tf_is_volatile_flag,
     tf_jawbone_flag,
-    tf_mirror_flag
+    tf_mirror_flag,
+	tf_on_fire_flag,
+	tf_extradimensional_storage_flag
 };
 enum Data_flag_names {
     ready_type_flag      = (1U << tf_ready_type_flag),
@@ -135,7 +137,9 @@ enum Data_flag_names {
     locked_flag          = (1U << tf_locked_flag),
     is_volatile_flag     = (1U << tf_is_volatile_flag),
     jawbone_flag         = (1U << tf_jawbone_flag),
-    mirror_flag          = (1U << tf_mirror_flag)
+    mirror_flag          = (1U << tf_mirror_flag),
+	on_fire_flag         = (1U << tf_on_fire_flag),
+	extradimensional_storage_flag = (1U << tf_extradimensional_storage_flag)
 };
 
 /*
@@ -144,11 +148,11 @@ enum Data_flag_names {
 class Shape_info {
 protected:
 	// For some non-class data (see Data_flag_names enum).
-	unsigned short modified_flags;
-	unsigned short frompatch_flags;
+	unsigned int modified_flags;
+	unsigned int frompatch_flags;
 	// For class data (to indicate an invalid entry should
 	// be written by ES).
-	unsigned short have_static_flags;
+	unsigned int have_static_flags;
 	unsigned char tfa[3];       // From "tfa.dat".+++++Keep for
 	//   debugging, for now.
 	// 3D dimensions in tiles:
@@ -217,7 +221,9 @@ public:
 	    locked,
 	    is_volatile,
 	    jawbone,
-	    mirror
+	    mirror,
+		on_fire,
+		extradimensional_storage
 	};
 	enum Mountain_tops {
 	    not_mountain_top = 0,
@@ -576,6 +582,12 @@ public:
 	}
 	bool is_mirror() const {
 		return get_shape_flag(mirror);
+	}
+	bool is_on_fire() const {
+		return get_shape_flag(on_fire);
+	}
+	bool has_extradimensional_storage() const {
+		return get_shape_flag(extradimensional_storage);
 	}
 
 	unsigned char get_actor_flags() const {

@@ -62,10 +62,17 @@ static inline bool Can_be_added(
     int shapenum,
     bool allow_locked = false
 ) {
-	Shape_info &info = cont->get_info();
+	Shape_info &continfo = cont->get_info();
+	Shape_info &add_info = ShapeID::get_info(shapenum);
 	return !(cont->get_shapenum() == shapenum   // Shape can't be inside itself.
-	         || (!allow_locked && info.is_container_locked())   // Locked container.
-	         || !info.is_shape_accepted(shapenum));  // Shape can't be inside.
+	         || (!allow_locked && continfo.is_container_locked())   // Locked container.
+	         || !continfo.is_shape_accepted(shapenum)  // Shape can't be inside.
+	         || add_info.is_on_fire());	// Object is on fire, and can't be inside others
+}
+
+// Max. we'll hold.  (Guessing).
+int Container_game_object::get_max_volume() const {
+	return get_info().has_extradimensional_storage() ? 0 : get_volume();
 }
 
 /*
@@ -121,6 +128,9 @@ bool Container_game_object::add(
 	        || info.is_container_locked())) // Locked container.
 		return false;
 	if (!info.is_shape_accepted(obj->get_shapenum()))   // Shape can't be inside.
+		return false;
+	Shape_info &add_info = obj->get_info();
+	if (!dont_check && add_info.is_on_fire())
 		return false;
 
 	// Always check this. ALWAYS!
@@ -509,6 +519,10 @@ void Container_game_object::update_from_studio(
 int Container_game_object::get_weight(
 ) {
 	int wt = Ireg_game_object::get_weight();
+	Shape_info &info = get_info();
+	if (info.has_extradimensional_storage()) {
+		return wt;
+	}
 	Game_object *obj;
 	Object_iterator next(objects);
 	while ((obj = next.get_next()) != 0)

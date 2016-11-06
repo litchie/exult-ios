@@ -1176,7 +1176,15 @@ int Game_object::get_max_weight(
 ) {
 	// Looking outwards for NPC.
 	Container_game_object *own = get_owner();
-	return own ? own->get_max_weight() : 0;
+	if (!own) {
+		return 0;
+	}
+	Shape_info &info = own->get_info();
+	if (!info.has_extradimensional_storage()) {
+		return own->get_max_weight();
+	}
+
+	return 0;
 }
 
 /*

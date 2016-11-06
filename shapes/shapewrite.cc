@@ -178,6 +178,18 @@ void Shapes_vga_file::Write_Shapeinf_text_data_file(Exult_Game game) {
 		Shape_info, &Shape_info::shape_flags,
 		Shape_info::mirror > > (
 		    "is_mirror", info, num_shapes),
+		// Objects on fire.
+		new Functor_multidata_writer < Shape_info,
+		Bit_text_writer_functor < on_fire_flag, unsigned short,
+		Shape_info, &Shape_info::shape_flags,
+		Shape_info::on_fire > > (
+		    "on_fire", info, num_shapes),
+		// Containers with unlimited storage.
+		new Functor_multidata_writer < Shape_info,
+		Bit_text_writer_functor < extradimensional_storage_flag, unsigned short,
+		Shape_info, &Shape_info::shape_flags,
+		Shape_info::extradimensional_storage > > (
+		    "extradimensional_storage", info, num_shapes),
 		// For field types.
 		new Functor_multidata_writer < Shape_info,
 		Text_writer_functor < field_type_flag, char, Shape_info,
@@ -188,7 +200,7 @@ void Shapes_vga_file::Write_Shapeinf_text_data_file(Exult_Game game) {
 		&Shape_info::frucinf > > ("frame_usecode", info, num_shapes)
 	};
 	int numsections = sizeof(writers) / sizeof(writers[0]);
-	Write_text_data_file("shape_info", writers, numsections, 6, game);
+	Write_text_data_file("shape_info", writers, numsections, 7, game);
 }
 
 void Shapes_vga_file::Write_Bodies_text_data_file(Exult_Game game) {

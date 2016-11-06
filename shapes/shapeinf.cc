@@ -58,7 +58,7 @@ using std::cerr;
 using std::endl;
 
 Shape_info::Shape_info()
-	: modified_flags(0), frompatch_flags(0), have_static_flags(0),
+	: modified_flags(), frompatch_flags(), have_static_flags(),
 	  weight(0), volume(0), weapon_offsets(0), armor(0), weapon(0), ammo(0),
 	  monstinf(0), sfxinf(0), aniinf(0), explosion(0), body(0), npcpaperdoll(0),
 	  gump_shape(-1), gump_font(-1), monster_food(-1), shape_flags(0),
