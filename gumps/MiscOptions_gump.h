@@ -47,7 +47,9 @@ private:
 	    id_first = 0,
 	    id_ok = id_first,
 	    id_cancel,
+#ifndef __IPHONEOS__
 	    id_scroll_mouse,
+#endif
 	    id_menu_intro,
 	    id_usecode_intro,
 	    id_alternate_drop,

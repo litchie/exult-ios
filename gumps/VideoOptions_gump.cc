@@ -347,14 +347,18 @@ VideoOptions_gump::VideoOptions_gump() : Modal_gump(0, EXULT_FLX_VIDEOOPTIONS_SH
 	std::string *enabledtext = new std::string[2];
 	enabledtext[0] = "Disabled";
 	enabledtext[1] = "Enabled";
+#ifndef __IPHONEOS__
 	buttons[id_fullscreen] = new VideoTextToggle(this, enabledtext, colx[2], rowy[0], 74,
 	        fullscreen, 2);
+#endif
 	config->value("config/video/share_video_settings", share_settings, false);
 	std::string *yesNO = new std::string[2];
 	yesNO[0] = "No";
 	yesNO[1] = "Yes";
+#ifndef __IPHONEOS__
 	buttons[id_share_settings] = new VideoTextToggle(this, yesNO , colx[5], rowy[11], 40,
 	        share_settings, 2);
+#endif
 	o_share_settings = share_settings;
 
 	buttons[id_apply] = new VideoOptions_button(this, applytext, colx[4], rowy[12], 59);
@@ -430,17 +434,23 @@ void VideoOptions_gump::paint() {
 
 	Font *font = fontManager.get_font("SMALL_BLACK_FONT");
 	Image_window8 *iwin = gwin->get_win();
+#ifndef __IPHONEOS__
 	font->paint_text(iwin->get_ib8(), "Full Screen:", x + colx[0], y + rowy[0] + 1);
 	if (fullscreen) font->paint_text(iwin->get_ib8(), "Display Mode:", x + colx[0], y + rowy[1] + 1);
 	else font->paint_text(iwin->get_ib8(), "Window Size:", x + colx[0], y + rowy[1] + 1);
+#else
+	font->paint_text(iwin->get_ib8(), "Resolution:", x + colx[0], y + rowy[1] + 1);
+#endif
 	font->paint_text(iwin->get_ib8(), "Scaler:", x + colx[0], y + rowy[3] + 1);
 	if (buttons[id_scaling]) font->paint_text(iwin->get_ib8(), "Scaling:", x + colx[0], y + rowy[4] + 1);
 	font->paint_text(iwin->get_ib8(), "Game Area:", x + colx[0], y + rowy[6] + 1);
 	font->paint_text(iwin->get_ib8(), "Fill Quality:", x + colx[0], y + rowy[7] + 1);
 	font->paint_text(iwin->get_ib8(), "Fill Mode:", x + colx[0], y + rowy[8] + 1);
 	if (buttons[id_has_ac]) font->paint_text(iwin->get_ib8(), "AR Correction:", x + colx[0], y + rowy[9] + 1);
+#ifndef __IPHONEOS__
 	font->paint_text(iwin->get_ib8(), "Same settings for window", x + colx[0], y + rowy[10] + 1);
 	font->paint_text(iwin->get_ib8(), "    and fullscreen:", x + colx[0], y + rowy[11] + 1);
+#endif
 	gwin->set_painted();
 }
 

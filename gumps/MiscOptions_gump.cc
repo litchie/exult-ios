@@ -101,9 +101,13 @@ void MiscOptions_gump::cancel() {
 }
 
 void MiscOptions_gump::toggle(Gump_button *btn, int state) {
+#ifndef __IPHONEOS__
 	if (btn == buttons[id_scroll_mouse])
 		scroll_mouse = state;
-	else if (btn == buttons[id_menu_intro])
+	else 
+#else
+	     if (btn == buttons[id_menu_intro])
+#endif
 		menu_intro = state;
 	else if (btn == buttons[id_usecode_intro])
 		usecode_intro = state;
@@ -174,9 +178,13 @@ void MiscOptions_gump::build_buttons() {
 	int y_index = 0;
 	int small_size = 44;
 	int large_size = 85;
+#ifndef __IPHONEOS__
 	buttons[id_scroll_mouse] = new MiscTextToggle(this, yesNo1, colx[5], rowy[y_index],
 	        small_size, scroll_mouse, 2);
 	buttons[id_menu_intro] = new MiscTextToggle(this, yesNo2, colx[5], rowy[++y_index],
+#else
+	buttons[id_menu_intro] = new MiscTextToggle(this, yesNo2, colx[5], rowy[y_index+=1],
+#endif
 	        small_size, menu_intro, 2);
 	buttons[id_usecode_intro] = new MiscTextToggle(this, yesNo3, colx[5], rowy[++y_index],
 	        small_size, usecode_intro, 2);
@@ -310,7 +318,9 @@ void MiscOptions_gump::paint() {
 	Font *font = fontManager.get_font("SMALL_BLACK_FONT");
 	Image_window8 *iwin = gwin->get_win();
 	int y_index = 0;
+#ifndef __IPHONEOS__
 	font->paint_text(iwin->get_ib8(), "Scroll game view with mouse:", x + colx[0], y + rowy[y_index] + 1);
+#endif
 	font->paint_text(iwin->get_ib8(), "Skip intro:", x + colx[0], y + rowy[++y_index] + 1);
 	font->paint_text(iwin->get_ib8(), "Skip scripted first scene:", x + colx[0], y + rowy[++y_index] + 1);
 	font->paint_text(iwin->get_ib8(), "Alternate drag'n'drop:", x + colx[0], y + rowy[++y_index] + 1);
