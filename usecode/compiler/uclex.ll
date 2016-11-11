@@ -255,7 +255,6 @@ char *Handle_string
 #pragma GCC diagnostic ignored "-Wunneeded-internal-declaration"
 #endif
 #endif  // __GNUC__
-#define register
 
 %}
 
