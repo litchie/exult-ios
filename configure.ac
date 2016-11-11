@@ -653,6 +653,15 @@ AC_SUBST([ICONDIR])
 
 
 # ---------------------------------------------------------------------
+# Workaround for 'ar' warning in libtool
+# ---------------------------------------------------------------------
+
+if test "x$AR_FLAGS" = "xcru" ; then
+	AR_FLAGS="cr"
+fi
+
+
+# ---------------------------------------------------------------------
 # Debugging options
 # ---------------------------------------------------------------------
 
@@ -949,6 +958,7 @@ AC_SUBST(DEBUG_FLAGS)
 AC_SUBST(ZLIB_LIBS)
 AC_SUBST(OPENGL_LIBS)
 AC_SUBST(WARNINGS)
+AC_SUBST(AR_FLAGS)
 
 AC_OUTPUT([
 exult.spec
