@@ -728,13 +728,15 @@ CHK_WARN="-Wall -Wextra -pedantic -Wcast-qual -Wwrite-strings -Wredundant-decls 
 CHK_WARN="$CHK_WARN -Wctor-dtor-privacy -Wnon-virtual-dtor -Wold-style-cast -Woverloaded-virtual -Wuseless-cast"
 CHK_WARN="$CHK_WARN -Wno-format-nonliteral -Wformat-security -Wshift-negative-value -Wshift-overflow -Wtrigraphs"
 CHK_WARN="$CHK_WARN -Wuninitialized -fstrict-aliasing -Wduplicated-cond -Wplacement-new -Wcast-align"
-CHK_WARN="$CHK_WARN -Wlogical-op -Wlogical-not-parentheses -Wunused-const-variable -Wunused-const-variables"
+CHK_WARN="$CHK_WARN -Wlogical-op -Wlogical-not-parentheses -Wunused-const-variable -Wpointer-sign"
 #CHK_WARN="$CHK_WARN -Wundef -Wpadded -Wshadow -Wconditionally-supported"
-CHK_WARN="$CHK_WARN -Wc++11-compat -Wc++14-compat -Wc++1z-compat -Wdeprecated-register"
+CHK_WARN="$CHK_WARN -Wc++11-compat -Wc++14-compat -Wc++1z-compat"
 # GCC attributes
 #CHK_WARN="$CHK_WARN -Wsuggest-attribute=pure -Wsuggest-attribute=const -Wsuggest-attribute=noreturn -Wsuggest-attribute=format"
 # C++11 and newer
 #CHK_WARN="$CHK_WARN -Wsuggest-final-types -Wsuggest-final-methods -Wsuggest-override -Wzero-as-null-pointer-constant"
+# Clang warnings
+CHK_WARN="$CHK_WARN -Wunused-const-variables -Wabsolute-value -Wdeprecated-register -Wmismatched-tags -Wunused-private-field"
 # Warnings give errors
 AC_ARG_ENABLE(warning-errors, AS_HELP_STRING([--enable-warning-errors], [Turn all warnings into errors @<:@default no@:>@]),,enable_warning_errors=no)
 if test x$enable_warning_errors= xyes; then
