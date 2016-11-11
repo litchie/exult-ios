@@ -118,7 +118,7 @@ AM_PROG_LEX
 AC_PROG_YACC
 AM_CONDITIONAL(LEXYACC, test -n "$YACC")
 
-AC_ARG_WITH(cxx, AS_HELP_STRING([--with-cxx=COMMAND], [Explicitly specify the C++ compiler to use]), CXX="")
+AC_ARG_WITH(cxx, AS_HELP_STRING([--with-cxx=COMMAND], [Explicitly specify the C++ compiler to use]),[CXX="$withval"],[CXX=""])
 
 if test -z "$CXX"; then
 	AC_PROG_CXX
