@@ -126,7 +126,7 @@ else
 	AC_PROG_CXX([$CXX])
 fi
 
-AX_CXX_COMPILE_STDCXX_11(,[optional])
+AX_CXX_COMPILE_STDCXX_11([noext],[optional])
 
 AM_DISABLE_SHARED
 
