@@ -671,7 +671,7 @@ AC_MSG_CHECKING([whether to enable debugging mode])
 if test x$enable_debug = xyes; then
 	AC_MSG_RESULT(yes)
 	AC_DEFINE(DEBUG, 1, [Enable debug mode])
-	DEBUG_FLAGS="-g"
+	DEBUG_FLAGS="-g -O"
 else
 	AC_MSG_RESULT(no)
 	DEBUG_FLAGS="-O2"
@@ -694,9 +694,7 @@ AC_MSG_CHECKING([whether to enable unoptimized debugging mode with GDB symbols])
 if test x$enable_heavy_gdb_debug = xyes; then
 	AC_MSG_RESULT(yes)
 	AC_DEFINE(DEBUG, 1, [Enable unoptimized debug mode plus GDB symbols])
-	DEBUG_FLAGS="-g3"
-	CXXFLAGS="-O0"
-	CFLAGS="-O0"
+	DEBUG_FLAGS="-g3 -O"
 else
 	AC_MSG_RESULT(no)
 fi
@@ -726,50 +724,47 @@ fi
 # Warning level
 # ---------------------------------------------------------------------
 
-# determine warning level
-AC_MSG_CHECKING([warning level])
-WARNING_LEVEL="normal"
-
-AC_ARG_ENABLE(warnings, AS_HELP_STRING([--enable-warnings], [Enable all warnings @<:@default no@:>@]),,enable_warnings=no)
-# more warnings
-AC_ARG_ENABLE(paranoid-warnings, AS_HELP_STRING([--enable-paranoid-warnings], [Enable paranoid warnings @<:@default no@:>@]),,enable_paranoid_warnings=no)
-if test x$enable_paranoid_warnings = xyes; then
-#	WARNINGS="-O -Wall -Wextra -Wcast-qual -Wwrite-strings -Wconversion -Wredundant-decls -Winline -Wdisabled-optimization -fcheck-new -Wctor-dtor-privacy -Wnon-virtual-dtor -Wold-style-cast -Woverloaded-virtual"
-	WARNINGS="-O -Wall -Wextra -Wcast-qual -Wwrite-strings -Wredundant-decls -Wdisabled-optimization -fcheck-new -Wctor-dtor-privacy -Wnon-virtual-dtor -Wold-style-cast -Woverloaded-virtual -Wuseless-cast"
-#	DEBUG_FLAGS="$DEBUG_FLAGS -Wall -O -Wunused -Wuninitialized -Woverloaded-virtual -Wpointer-arith -Wcast-qual -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes -Winline"
-	DEBUG_FLAGS="$DEBUG_FLAGS $WARNINGS"
-	WARNING_LEVEL="paranoid"
-elif test x$enable_warnings = xyes; then
- 	DEBUG_FLAGS="$DEBUG_FLAGS -O -Wall -Wextra -Wunused -Wuninitialized -Woverloaded-virtual -Wpointer-arith -Wcast-qual -Wwrite-strings"
-	WARNING_LEVEL="all"
+CHK_WARN="-Wall -Wextra -pedantic -Wcast-qual -Wwrite-strings -Wredundant-decls -Wdisabled-optimization -fcheck-new"
+CHK_WARN="$CHK_WARN -Wctor-dtor-privacy -Wnon-virtual-dtor -Wold-style-cast -Woverloaded-virtual -Wuseless-cast"
+CHK_WARN="$CHK_WARN -Wno-format-nonliteral -Wformat-security -Wshift-negative-value -Wshift-overflow -Wtrigraphs"
+CHK_WARN="$CHK_WARN -Wuninitialized -fstrict-aliasing -Wduplicated-cond -Wplacement-new -Wcast-align"
+CHK_WARN="$CHK_WARN -Wlogical-op -Wlogical-not-parentheses -Wunused-const-variable -Wunused-const-variables"
+#CHK_WARN="$CHK_WARN -Wundef -Wpadded -Wshadow -Wconditionally-supported"
+CHK_WARN="$CHK_WARN -Wc++11-compat -Wc++14-compat -Wc++1z-compat"
+# GCC attributes
+#CHK_WARN="$CHK_WARN -Wsuggest-attribute=pure -Wsuggest-attribute=const -Wsuggest-attribute=noreturn -Wsuggest-attribute=format"
+# C++11 and newer
+#CHK_WARN="$CHK_WARN -Wsuggest-final-types -Wsuggest-final-methods -Wsuggest-override -Wzero-as-null-pointer-constant"
+# Warnings give errors
+AC_ARG_ENABLE(warning-errors, AS_HELP_STRING([--enable-warning-errors], [Turn all warnings into errors @<:@default no@:>@]),,enable_warning_errors=no)
+if test x$enable_warning_errors= xyes; then
+	CHK_WARN="-Werror $CHK_WARN"
 fi
 
-# yet more warnings
-AC_ARG_ENABLE(pedantic-warnings, AS_HELP_STRING([--enable-pedantic-warnings], [Enable pedantic warnings @<:@default no@:>@]),,enable_pedantic_warnings=no)
-if test x$enable_pedantic_warnings = xyes; then
-	WARNINGS="$WARNINGS -pedantic"
-	DEBUG_FLAGS="$DEBUG_FLAGS -pedantic"
-	if test x$enable_warnings = xyes -o x$enable_paranoid_warnings = xyes; then
-		WARNING_LEVEL="$WARNING_LEVEL, pedantic"
-	else
-		WARNING_LEVEL="pedantic"
-	fi
+# Pedantic warnings give errors
+AC_ARG_ENABLE(pedantic-errors, AS_HELP_STRING([--enable-pedantic-errors], [Turn all pedantic warnings into errors @<:@default no@:>@]),,enable_pedantic_errors=no)
+if test x$enable_pedantic_errors = xyes; then
+	CHK_WARN="-pedantic-errors $CHK_WARN"
 fi
-
-# Output result
-AC_MSG_RESULT($WARNING_LEVEL)
-
 
 # Ignore long-long warnings (for SDL header files...)
-AC_ARG_ENABLE(long-long-warnings, AS_HELP_STRING([--enable-long-long-warnings], [Enable long long warnings- needed for Compaq's cxx with GNU ld @<:@default no@:>@]),
-	,enable_long_long_warnings=no)
+AC_ARG_ENABLE(long-long-warnings, AS_HELP_STRING([--enable-long-long-warnings], [Enable long long warnings (for Compaq cxx with GNU ld) @<:@default no@:>@]),,enable_long_long_warnings=no)
 AC_MSG_CHECKING([if we should disable long-long warnings])
 if test x$enable_long_long_warnings = xyes; then
 	AC_MSG_RESULT(no)
 else
 	AC_MSG_RESULT(yes)
-	DEBUG_FLAGS="$DEBUG_FLAGS -Wno-long-long"
+	CHK_WARN="$CHK_WARN -Wno-long-long"
 fi
+
+WARNINGS=""
+for cxx_flag in $CHK_WARN
+do
+	AX_CHECK_COMPILE_FLAG([$cxx_flag], [WARNINGS="$WARNINGS $cxx_flag"], [], [$DEBUG_FLAGS -Werror])
+done
+
+DEBUG_FLAGS="$DEBUG_FLAGS $WARNINGS"
+
 
 # --------------------
 # External features
