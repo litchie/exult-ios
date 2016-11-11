@@ -445,7 +445,11 @@ static Instrument *load_instrument(char *name, int percussion,
 			/* convert to machine byte order */
 		{
 			sint32 i=sp->data_length/2;
-			sint16 *tmp=reinterpret_cast<sint16 *>(sp->data),s;
+#ifdef LOOKUP_HACK
+			sint16 *tmp=reinterpret_cast<sint16 *>(sp->data), s;
+#else
+			sample_t *tmp=sp->data, s;
+#endif
 			while (i--)
 			{ 
 				s=LE_SHORT(*tmp);
