@@ -105,7 +105,7 @@ enum UsecodeOps {
 	UC_DBGFUNC32 = 0xcd,     // 32-bit version of SI debug opcode; UCC never emits this.
 	UC_LOOPTOPS32 = 0xdc,    // 32-bit loop with static array.
 	UC_LOOPTOPTHV32 = 0xdf,  // 32-bit loop with this->var array.
-	UC_TRYSTART32 = 0xe1,    // TRY/CATCH block, 32-bit version.
+	UC_TRYSTART32 = 0xe1     // TRY/CATCH block, 32-bit version.
 };
 
 inline UsecodeOps &operator|=(UsecodeOps &lhs, int rhs) {
