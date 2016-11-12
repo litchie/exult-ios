@@ -975,6 +975,7 @@ content/bgkeyring/Makefile
 content/bg/Makefile
 content/islefaq/Makefile
 files/Makefile
+files/sha1/Makefile
 files/zip/Makefile
 gamemgr/Makefile
 gumps/Makefile

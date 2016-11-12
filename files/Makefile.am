@@ -1,7 +1,7 @@
 AM_CPPFLAGS = -I$(srcdir)/.. -I$(srcdir)/../headers $(SDL_CFLAGS) $(INCDIRS) $(WINDOWING_SYSTEM) \
 		$(DEBUG_FLAGS) $(CPPFLAGS) -DEXULT_DATADIR=\"$(EXULT_DATADIR)\"
 
-SUBDIRS = zip
+SUBDIRS = sha1 zip
 
 noinst_LTLIBRARIES = libu7file.la
 
