@@ -18,7 +18,9 @@
 #ifndef MT32EMU_GLOBALS_H
 #define MT32EMU_GLOBALS_H
 
-#include "config.h"
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
 /* Support for compiling shared library. */
 #ifdef MT32EMU_SHARED
