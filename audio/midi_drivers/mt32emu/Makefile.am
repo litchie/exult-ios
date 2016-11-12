@@ -51,8 +51,6 @@ libmt32emu_la_SOURCES =	\
 	Poly.h \
 	ROMInfo.cpp \
 	ROMInfo.h \
-	sha1.cpp \
-	sha1.h \
 	Structures.h \
 	Synth.cpp \
 	Synth.h \
@@ -66,4 +64,4 @@ libmt32emu_la_SOURCES =	\
 	TVP.h \
 	Types.h
 
-CLEANFILES = *~ sha1/*~
+CLEANFILES = *~

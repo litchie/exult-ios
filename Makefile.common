@@ -66,6 +66,7 @@ TIMIDITY_OBJS=\
 	audio/midi_drivers/timidity/timidity_tables.o
 
 MT32EMU_OBJS=\
+	files/sha1/sha1.o \
 	audio/midi_drivers/mt32emu/Analog.o \
 	audio/midi_drivers/mt32emu/BReverbModel.o \
 	audio/midi_drivers/mt32emu/File.o \
@@ -78,7 +79,6 @@ MT32EMU_OBJS=\
 	audio/midi_drivers/mt32emu/PartialManager.o \
 	audio/midi_drivers/mt32emu/Poly.o \
 	audio/midi_drivers/mt32emu/ROMInfo.o \
-	audio/midi_drivers/mt32emu/sha1.o \
 	audio/midi_drivers/mt32emu/Synth.o \
 	audio/midi_drivers/mt32emu/Tables.o \
 	audio/midi_drivers/mt32emu/TVA.o \

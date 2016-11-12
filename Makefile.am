@@ -127,6 +127,7 @@ EXULTLIBS = \
 	objs/libobjs.la \
 	gumps/libgumps.la \
 	files/libu7file.la \
+	files/sha1/libsha1.la \
 	files/zip/libminizip.la \
 	gamemgr/libgamemgr.la
 
