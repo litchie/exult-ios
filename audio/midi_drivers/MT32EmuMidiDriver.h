@@ -25,7 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "mt32emu/mt32emu.h"
 
-namespace Pentagram { class Synth; }
+namespace MT32Emu { class Synth; }
 
 class MT32EmuMidiDriver : public LowLevelMidiDriver
 {
@@ -34,7 +34,7 @@ class MT32EmuMidiDriver : public LowLevelMidiDriver
 		return new MT32EmuMidiDriver();
 	}
 
-	Pentagram::Synth	*mt32;
+	MT32Emu::Synth	*mt32;
 
 public:
 	static const MidiDriverDesc* getDesc() { return &desc; }

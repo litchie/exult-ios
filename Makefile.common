@@ -66,14 +66,24 @@ TIMIDITY_OBJS=\
 	audio/midi_drivers/timidity/timidity_tables.o
 
 MT32EMU_OBJS=\
-	audio/midi_drivers/mt32emu/freeverb.o \
-	audio/midi_drivers/mt32emu/i386.o \
-	audio/midi_drivers/mt32emu/mt32_file.o \
-	audio/midi_drivers/mt32emu/part.o \
-	audio/midi_drivers/mt32emu/partial.o \
-	audio/midi_drivers/mt32emu/partialManager.o \
-	audio/midi_drivers/mt32emu/synth.o \
-	audio/midi_drivers/mt32emu/tables.o
+	audio/midi_drivers/mt32emu/Analog.o \
+	audio/midi_drivers/mt32emu/BReverbModel.o \
+	audio/midi_drivers/mt32emu/File.o \
+	audio/midi_drivers/mt32emu/FileStream.o \
+	audio/midi_drivers/mt32emu/LA32Ramp.o \
+	audio/midi_drivers/mt32emu/LA32WaveGenerator.o \
+	audio/midi_drivers/mt32emu/MidiStreamParser.o \
+	audio/midi_drivers/mt32emu/Part.o \
+	audio/midi_drivers/mt32emu/Partial.o \
+	audio/midi_drivers/mt32emu/PartialManager.o \
+	audio/midi_drivers/mt32emu/Poly.o \
+	audio/midi_drivers/mt32emu/ROMInfo.o \
+	audio/midi_drivers/mt32emu/sha1.o \
+	audio/midi_drivers/mt32emu/Synth.o \
+	audio/midi_drivers/mt32emu/Tables.o \
+	audio/midi_drivers/mt32emu/TVA.o \
+	audio/midi_drivers/mt32emu/TVF.o \
+	audio/midi_drivers/mt32emu/TVP.o
 
 # Note we now always compile all midi drivers
 MIDI_DRV_OBJS=\

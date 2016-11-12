@@ -1,70 +1,83 @@
-/* Copyright (c) 2003-2005 Various contributors
+/* Copyright (C) 2003, 2004, 2005, 2006, 2008, 2009 Dean Beeler, Jerome Fisher
+ * Copyright (C) 2011-2016 Dean Beeler, Jerome Fisher, Sergey V. Mikayev
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to
- * deal in the Software without restriction, including without limitation the
- * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU Lesser General Public License as published by
+ *  the Free Software Foundation, either version 2.1 of the License, or
+ *  (at your option) any later version.
  *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU Lesser General Public License for more details.
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
- * IN THE SOFTWARE.
+ *  You should have received a copy of the GNU Lesser General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #ifndef MT32EMU_MT32EMU_H
 #define MT32EMU_MT32EMU_H
 
-// Debugging
-// Show the instruments played
-#define MT32EMU_MONITOR_INSTRUMENTS 1
-// Shows number of partials MT-32 is playing, and on which parts
-#define MT32EMU_MONITOR_PARTIALS 0
-// Determines how the waveform cache file is handled (must be regenerated after sampling rate change)
-#define MT32EMU_WAVECACHEMODE 0 // Load existing cache if possible, otherwise generate and save cache
-//#define MT32EMU_WAVECACHEMODE 1 // Load existing cache if possible, otherwise generage but don't save cache
-//#define MT32EMU_WAVECACHEMODE 2 // Ignore existing cache, generate and save cache
-//#define MT32EMU_WAVECACHEMODE 3 // Ignore existing cache, generate but don't save cache
+#include "config.h"
 
-// Configuration
-// The maximum number of partials playing simultaneously
-#define MT32EMU_MAX_PARTIALS 32
-// The maximum number of notes playing simultaneously per part.
-// No point making it more than MT32EMU_MAX_PARTIALS, since each note needs at least one partial.
-#define MT32EMU_MAX_POLY 32
-// This calculates the exact frequencies of notes as they are played, instead of offsetting from pre-cached semitones. Potentially very slow.
-#define MT32EMU_ACCURATENOTES 0
+/* API Configuration */
 
-#if (defined (_MSC_VER) && defined(_M_IX86))
-#define MT32EMU_HAVE_X86
-#elif  defined(__GNUC__)
-#if __GNUC__ >= 3 && defined(__i386__)
-#define MT32EMU_HAVE_X86
+/* 0: Use full-featured C++ API. Well suitable when the library is to be linked statically.
+ *    When the library is shared, ABI compatibility may be an issue. Therefore, it should
+ *    only be used within a project comprising of several modules to share the library code.
+ * 1: Use C-compatible API. Make the library looks as a regular C library with well-defined ABI.
+ *    This is also crucial when the library is to be linked with modules in a different
+ *    language, either statically or dynamically.
+ * 2: Use plugin-like API via C-interface wrapped in a C++ class. This is mainly intended
+ *    for a shared library being dynamically loaded in run-time. To get access to all the library
+ *    services, a client application only needs to bind with a single factory function.
+ * 3: Use optimised C++ API compatible with the plugin API (type 2). The facade class also wraps
+ *    the C functions but they are invoked directly. This enables the compiler to generate better
+ *    code for the library when linked statically yet being consistent with the plugin-like API.
+ */
+
+#ifdef MT32EMU_API_TYPE
+#if MT32EMU_API_TYPE == 0 && (MT32EMU_EXPORTS_TYPE == 1 || MT32EMU_EXPORTS_TYPE == 2)
+#error Incompatible setting MT32EMU_API_TYPE=0
+#elif MT32EMU_API_TYPE == 1 && (MT32EMU_EXPORTS_TYPE == 0 || MT32EMU_EXPORTS_TYPE == 2)
+#error Incompatible setting MT32EMU_API_TYPE=1
+#elif MT32EMU_API_TYPE == 2 && (MT32EMU_EXPORTS_TYPE == 0)
+#error Incompatible setting MT32EMU_API_TYPE=2
+#elif MT32EMU_API_TYPE == 3 && (MT32EMU_EXPORTS_TYPE == 0)
+#error Incompatible setting MT32EMU_API_TYPE=3
 #endif
-#endif
-
-#ifdef MT32EMU_HAVE_X86
-#define MT32EMU_USE_MMX 1
+#else /* #ifdef MT32EMU_API_TYPE */
+#if 0 < MT32EMU_EXPORTS_TYPE && MT32EMU_EXPORTS_TYPE < 3
+#define MT32EMU_API_TYPE MT32EMU_EXPORTS_TYPE
 #else
-#define MT32EMU_USE_MMX 0
+#define MT32EMU_API_TYPE 0
 #endif
+#endif /* #ifdef MT32EMU_API_TYPE */
 
-#include "freeverb.h"
+/* MT32EMU_SHARED should be defined when building shared library, especially for Windows platforms. */
+/*
+#define MT32EMU_SHARED
+*/
 
-#include "structures.h"
-#include "i386.h"
-#include "mt32_file.h"
-#include "tables.h"
-#include "partial.h"
-#include "partialManager.h"
-#include "part.h"
-#include "synth.h"
+#include "globals.h"
 
-#endif
+#if !defined(__cplusplus) || MT32EMU_API_TYPE == 1
+
+#include "c_interface/c_interface.h"
+
+#elif MT32EMU_API_TYPE == 2 || MT32EMU_API_TYPE == 3
+
+#include "c_interface/cpp_interface.h"
+
+#else /* #if !defined(__cplusplus) || MT32EMU_API_TYPE == 1 */
+
+#include "Types.h"
+#include "File.h"
+#include "FileStream.h"
+#include "ROMInfo.h"
+#include "Synth.h"
+#include "MidiStreamParser.h"
+
+#endif /* #if !defined(__cplusplus) || MT32EMU_API_TYPE == 1 */
+
+#endif /* #ifndef MT32EMU_MT32EMU_H */
