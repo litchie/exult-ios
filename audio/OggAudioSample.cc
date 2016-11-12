@@ -105,12 +105,12 @@ void OggAudioSample::initDecompressor(void *DecompData) const
 {
 	OggDecompData *decomp = reinterpret_cast<OggDecompData *>(DecompData);
 
-	if (locked) 
+	if (locked)
 		throw exult_exception("Attempted to play OggAudioSample on more than one channel at the same time.");
 
 	if (this->oggdata)
 	{
-		*const_cast<bool*>(&locked) = true;		
+		*const_cast<bool*>(&locked) = true;
 		decomp->datasource = this->oggdata;
 	}
 	else
@@ -118,10 +118,10 @@ void OggAudioSample::initDecompressor(void *DecompData) const
 		decomp->datasource = new BufferDataSource(buffer,buffer_size);
 	}
 
-	oggdata->seek(0);
+	decomp->datasource->seek(0);
 	ov_open_callbacks(static_cast<void*>(decomp->datasource),&decomp->ov,NULL,0,callbacks);
 	decomp->bitstream = 0;
-	
+
 	vorbis_info *info = ov_info(&decomp->ov,-1);
 	*const_cast<uint32*>(&sample_rate) = decomp->last_rate = info->rate;
 	*const_cast<bool*>(&stereo) = decomp->last_stereo = info->channels == 2;
@@ -142,7 +142,7 @@ void OggAudioSample::freeDecompressor(void *DecompData) const
 	decomp->freed = true;
 	ov_clear(&decomp->ov);
 
-	if (this->oggdata) *const_cast<bool*>(&locked) = false;		
+	if (this->oggdata) *const_cast<bool*>(&locked) = false;
 	else delete decomp->datasource;
 
 	decomp->datasource = 0;
@@ -155,7 +155,7 @@ uint32 OggAudioSample::decompressFrame(void *DecompData, void *samples) const
 	vorbis_info *info = ov_info(&decomp->ov,-1);
 
 	if (info == 0) return 0;
-	
+
 	*const_cast<uint32*>(&sample_rate) = decomp->last_rate;
 	*const_cast<bool*>(&stereo) = decomp->last_stereo;
 	decomp->last_rate = info->rate;
