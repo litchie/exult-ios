@@ -642,7 +642,7 @@ int If_else_path_actor_action::handle_event(
 		// Didn't get there.
 		if (failure) {
 			failed = true;
-#if DEBUG
+#ifdef DEBUG
 			cout << "Executing 'failure' path usecode" << endl;
 #endif
 			delay = failure->handle_event_safely(actor, del);

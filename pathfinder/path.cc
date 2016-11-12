@@ -133,7 +133,7 @@ public:
 		}
 		return result;
 	}
-#if VERIFYCHAIN
+#ifdef VERIFYCHAIN
 	// Returns 0 if bad chain.
 	int verify_chain(Search_node *last, int removed = 0) {
 		if (!last)
@@ -165,14 +165,14 @@ public:
 			last = this;
 			priority_next = this;
 		}
-#if VERIFYCHAIN
+#ifdef VERIFYCHAIN
 		if (!verify_chain(last))
 			cout << "Bad chain after adding." << endl;
 #endif
 	}
 	// Remove this from its chain.
 	void remove_from_chain(Search_node *&last) {
-#if VERIFYCHAIN
+#ifdef VERIFYCHAIN
 		if (!verify_chain(last))
 			cout << "Bad chain before removing." << endl;
 #endif
@@ -195,7 +195,7 @@ public:
 			}
 		}
 		priority_next = 0;  // No longer in 'open'.
-#if VERIFYCHAIN
+#ifdef VERIFYCHAIN
 		if (!verify_chain(last, 1))
 			cout << "Bad chain after removing." << endl;
 #endif

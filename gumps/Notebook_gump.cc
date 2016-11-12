@@ -583,7 +583,7 @@ bool Notebook_gump::handle_kbd_event(
 	int chr = ev.key.keysym.sym;
 #if SDL_VERSION_ATLEAST(2, 0, 0)
 	//int unicode = 0; // Unicode is way different in SDL2
-#else	
+#else
 	int unicode = ev.key.keysym.unicode;
 #endif
 
@@ -674,7 +674,7 @@ bool Notebook_gump::handle_kbd_event(
 		break;
 	}
 	updnx = cursor.x - x - ((curpage % 2) ? rpagex : lpagex);
-#if DEBUG
+#ifdef DEBUG
 	std::cout << "updnx = " << updnx << std::endl;
 //	std::cout << "Notebook chr: " << chr << std::endl;
 #endif
@@ -732,7 +732,7 @@ void Notebook_gump::read(
 	conf.read_abs_config_file(NOTEBOOKXML, root);
 	string identstr;
 	// not spamming the terminal with all the notes in normal play
-#if DEBUG
+#ifdef DEBUG
 	conf.dump(cout, identstr);
 #endif
 	Configuration::KeyTypeList note_nds;

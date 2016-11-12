@@ -131,7 +131,7 @@ int Game_object::get_map_num() const { // Get map number this is in.
 Tile_coord Game_object::get_tile(
 ) const {
 	if (!chunk) {
-#if DEBUG
+#ifdef DEBUG
 		cout << "Asking tile for obj. " << get_shapenum()
 		     << " not on map" << endl;
 #endif
@@ -149,7 +149,7 @@ Tile_coord Game_object::get_tile(
 Tile_coord Game_object::get_center_tile(
 ) const {
 	if (!chunk) {
-#if DEBUG
+#ifdef DEBUG
 		cout << "Asking center tile for obj. " << get_shapenum()
 		     << " not on map" << endl;
 #endif
@@ -170,7 +170,7 @@ Tile_coord Game_object::get_missile_tile(
 ) const {
 	ignore_unused_variable_warning(dir);
 	if (!chunk) {
-#if DEBUG
+#ifdef DEBUG
 		cout << "Asking missile tile for obj. " << get_shapenum()
 		     << " not on map" << endl;
 #endif

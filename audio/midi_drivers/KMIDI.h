@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define _MIDI_driver_KMIDI_h_
 
 #ifdef XWIN
-#if HAVE_LIBKMIDI
+#ifdef HAVE_LIBKMIDI
 #define USE_LIBK_MIDI
 
 #include <vector>
