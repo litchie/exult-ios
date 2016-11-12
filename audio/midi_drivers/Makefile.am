@@ -1,15 +1,17 @@
-AM_CPPFLAGS = -I$(srcdir)/../../headers -I$(srcdir)/../../conf -I$(srcdir)/../.. \
-		-I$(srcdir)/.. -I$(srcdir)/../../files -I$(srcdir)/../../imagewin \
-		-I../../conf -I../../files -I../../objs -I$(srcdir)/../../shapes \
-		$(SDL_CFLAGS) $(KMID_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) \
-		$(DEBUG_FLAGS) $(CPPFLAGS)
-
 if BUILD_MT32EMU
+MT32EMUFLAGS=-DMT32EMU_EXPORTS_TYPE=0 -DMT32EMU_API_TYPE=0
 MT32EMUDIR=mt32emu
 MT32EMUDRV=	\
 	MT32EmuMidiDriver.cpp	\
 	MT32EmuMidiDriver.h
 endif
+
+AM_CPPFLAGS = -I$(srcdir)/../../headers -I$(srcdir)/../../conf -I$(srcdir)/../.. \
+		-I$(srcdir)/.. -I$(srcdir)/../../files -I$(srcdir)/../../imagewin \
+		-I../../conf -I../../files -I../../objs -I$(srcdir)/../../shapes \
+		$(SDL_CFLAGS) $(KMID_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) \
+		$(MT32EMUFLAGS) \
+		$(DEBUG_FLAGS) $(CPPFLAGS)
 
 SUBDIRS = timidity $(MT32EMUDIR)
 
