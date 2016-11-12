@@ -182,7 +182,7 @@ void Background_noise::handle_event(
 	MyMidiPlayer *player = Audio::get_ptr()->get_midi();
 	// Lets allow this for Digital Muisc and MT32Emu only,
 	// for MT32/FakeMT32 conversion as well.
-	// if (player) { 
+	// if (player) {
 	//if (player && player->get_ogg_enabled()){
 	if (player && (player->get_ogg_enabled() || player->is_mt32())) {
 		delay = 1000;   //Quickly get back to this function check
@@ -1237,7 +1237,7 @@ Rectangle Game_window::get_shape_rect(Game_object *obj) {
 	Shape_frame *s = obj->get_shape();
 	if (!s) {
 		// This is probably fatal.
-#if DEBUG
+#ifdef DEBUG
 		std::cerr << "DEATH! get_shape() returned a NULL pointer: " << __FILE__ << ":" << __LINE__ << std::endl;
 		std::cerr << "Betcha it's a little doggie." << std::endl;
 #endif

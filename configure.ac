@@ -729,7 +729,8 @@ CHK_WARN="$CHK_WARN -Wctor-dtor-privacy -Wnon-virtual-dtor -Wold-style-cast -Wov
 CHK_WARN="$CHK_WARN -Wno-format-nonliteral -Wformat-security -Wshift-negative-value -Wshift-overflow -Wtrigraphs"
 CHK_WARN="$CHK_WARN -Wuninitialized -fstrict-aliasing -Wduplicated-cond -Wplacement-new -Wcast-align"
 CHK_WARN="$CHK_WARN -Wlogical-op -Wlogical-not-parentheses -Wunused-const-variable -Wpointer-sign"
-#CHK_WARN="$CHK_WARN -Wundef -Wpadded -Wshadow -Wconditionally-supported"
+CHK_WARN="$CHK_WARN -Wundef"
+#CHK_WARN="$CHK_WARN -Wpadded -Wshadow -Wconditionally-supported"
 CHK_WARN="$CHK_WARN -Wc++11-compat -Wc++14-compat -Wc++1z-compat"
 # GCC attributes
 #CHK_WARN="$CHK_WARN -Wsuggest-attribute=pure -Wsuggest-attribute=const -Wsuggest-attribute=noreturn -Wsuggest-attribute=format"

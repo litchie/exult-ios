@@ -72,15 +72,15 @@ void FileMidiDriver::destroyMidiDriver()
 	initialized = false;
 }
 
-int FileMidiDriver::maxSequences() 
-{ 
-	return 1; 
+int FileMidiDriver::maxSequences()
+{
+	return 1;
 }
 
 void FileMidiDriver::setGlobalVolume(int vol)
 {
 	global_volume = vol;
-	set_volume((seq_volume*global_volume)/255);	
+	set_volume((seq_volume*global_volume)/255);
 }
 
 void FileMidiDriver::finishSequence(int seq_num)
@@ -115,7 +115,7 @@ void	FileMidiDriver::startSequence(int seq_num, XMidiEventList *list, bool repea
 	list->write(file);
 	delete file;
 
-#if DEBUG
+#ifdef DEBUG
 	perr << "Starting midi sequence with FileMidiDriver" << endl;
 #endif
 	seq_volume = vol;
@@ -137,7 +137,7 @@ void FileMidiDriver::setSequenceVolume(int seq_num, int vol)
 	if (seq_num != 0) return;
 
 	seq_volume = vol;
-	set_volume((seq_volume*global_volume)/255);	
+	set_volume((seq_volume*global_volume)/255);
 }
 
 void FileMidiDriver::setSequenceSpeed(int seq_num, int speed)

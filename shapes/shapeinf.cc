@@ -437,7 +437,7 @@ Paperdoll_item *Shape_info::get_item_paperdoll(int frame, int spot) {
 bool Shape_info::is_shape_accepted(int shape) {
 	Content_rules *inf = Search_vector_data_single_wildcard(cntrules,
 	                     shape, &Content_rules::shape);
-#if DEBUG
+#ifdef DEBUG
 	if (inf && !inf->accept)
 		cerr << "Shape '" << shape << "' was REJECTED" << endl;
 #endif
