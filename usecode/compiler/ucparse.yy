@@ -54,7 +54,7 @@ extern void start_loop(), end_loop();
 extern void start_breakable(), end_breakable();
 extern void start_fun_id(), end_fun_id();
 static Uc_array_expression *Create_array(int, Uc_expression *);
-static Uc_array_expression *Create_array(int, Uc_expression *, 
+static Uc_array_expression *Create_array(int, Uc_expression *,
 							Uc_expression *);
 static Uc_class *Find_class(const char *nm);
 static bool Class_unexpected_error(Uc_expression *expr);
@@ -208,7 +208,7 @@ struct Member_selector
 %type <stmt> converse_case switch_case script_statement switch_statement
 %type <stmt> label_statement goto_statement answer_statement
 %type <stmt> delete_statement continue_statement response_case
-%type <block> statement_list 
+%type <block> statement_list
 %type <arrayloop> start_array_loop
 %type <exprlist> opt_expression_list expression_list script_command_list
 %type <exprlist> opt_nonclass_expr_list nonclass_expr_list appended_element_list
@@ -237,7 +237,7 @@ global_decl:
 	;
 
 class_definition:
-	CLASS IDENTIFIER opt_inheritance 
+	CLASS IDENTIFIER opt_inheritance
 		{ $3 ? cur_class = new Uc_class($2, $3)
 		     : cur_class = new Uc_class($2); }
 		'{' class_item_list '}'
@@ -290,11 +290,11 @@ method:
 		{
 		$3->insert($3->begin(),		// So it's local[0].
 			new Uc_class_inst_symbol("this", cur_class, 0));
-		Uc_function_symbol *funsym = 
+		Uc_function_symbol *funsym =
 			Uc_function_symbol::create($1, -1, *$3, false,
 					cur_class->get_scope(), Uc_function_symbol::utility_fun);
 		delete $3;		// A copy was made.
-		
+
 		// Set return type.
 		if (has_ret)
 			funsym->set_ret_type(true);
@@ -316,7 +316,7 @@ method:
 	;
 
 struct_definition:
-	STRUCT IDENTIFIER 
+	STRUCT IDENTIFIER
 		{ cur_struct = new Uc_struct_symbol($2); }
 		'{' struct_item_list '}'
 		{
@@ -477,7 +477,7 @@ statement_block:
 	;
 
 statement_block_start:
-	'{' 
+	'{'
 		{ cur_fun->push_scope(); }
 	;
 
@@ -485,7 +485,7 @@ statement_list:
 	statement_list statement
 		{
 		if ($2)
-			$$->add($2); 
+			$$->add($2);
 		}
 	|				/* Empty. */
 		{ $$ = new Uc_block_statement(); }
@@ -646,7 +646,7 @@ const_int_decl_list:
 	;
 
 const_int:
-	IDENTIFIER '=' nonclass_expr	
+	IDENTIFIER '=' nonclass_expr
 		{
 		int val;		// Get constant.
 		if ($3->eval_const(val))
@@ -891,7 +891,7 @@ string_decl_list:
 	;
 
 string_decl:
-	IDENTIFIER '=' STRING_LITERAL 
+	IDENTIFIER '=' STRING_LITERAL
 		{
 		cur_fun->add_string_symbol($1, $3);
 		}
@@ -934,7 +934,7 @@ assignment_statement:
 	| nonclass_expr assignment_operator nonclass_expr ';'
 		{
 		$1->set_is_obj_fun(-1);
-		$$ = new Uc_assignment_statement($1, 
+		$$ = new Uc_assignment_statement($1,
 				new Uc_binary_expression(static_cast<UsecodeOps>($2), $1, $3));
 		}
 	| nonclass_expr UCC_INSERT appended_element_list ';'
@@ -1028,8 +1028,9 @@ trycatch_statement:
 		Uc_trycatch_statement *stmt = dynamic_cast<Uc_trycatch_statement*>($1);
 		if (!stmt) {
 			yyerror("try/catch statement is not a try/catch statement");
+		} else {
+			stmt->set_catch_statement($3);
 		}
-		stmt->set_catch_statement($3);
 		$$ = stmt;
 		}
 	;
@@ -1100,7 +1101,7 @@ array_loop_statement:
 		cur_fun->pop_scope();
 		end_loop();
 		}
-	| start_array_loop WITH IDENTIFIER 
+	| start_array_loop WITH IDENTIFIER
 		{ $1->set_index(cur_fun->add_symbol($3)); }
 					')' { start_loop(); } statement
 		{
@@ -1110,9 +1111,9 @@ array_loop_statement:
 		cur_fun->pop_scope();
 		end_loop();
 		}
-	| start_array_loop WITH IDENTIFIER 
+	| start_array_loop WITH IDENTIFIER
 		{ $1->set_index(cur_fun->add_symbol($3)); }
-				TO IDENTIFIER 
+				TO IDENTIFIER
 		{ $1->set_array_size(cur_fun->add_symbol($6)); }
 						')' { start_loop(); } statement
 		{
@@ -1159,7 +1160,7 @@ special_method_call_statement:
 					/* Set up 'show' call.		*/
 		stmts->add(new Uc_call_statement(
 			new Uc_call_expression(Uc_function::get_show_face(),
-			new Uc_array_expression($1, new Uc_int_expression(0)), 
+			new Uc_array_expression($1, new Uc_int_expression(0)),
 								cur_fun)));
 		stmts->add(new Uc_say_statement($5));
 		$$ = stmts;
@@ -1269,7 +1270,7 @@ converse_statement:
 		--converse;
 		$$ = new Uc_converse_statement(0, $3, false);
 		}
-	
+
 	| start_conv opt_nest '(' expression ')' '{' converse_case_list '}'
 		{
 		end_loop();
@@ -1406,7 +1407,7 @@ switch_case:
 	;
 
 script_statement:			/* Yes, this could be an intrinsic. */
-	SCRIPT { start_script(); } item opt_script_delay script_command 
+	SCRIPT { start_script(); } item opt_script_delay script_command
 		{
 		Uc_array_expression *parms = new Uc_array_expression();
 		parms->add($3);		// Itemref.
@@ -1415,7 +1416,7 @@ script_statement:			/* Yes, this could be an intrinsic. */
 			parms->add($4);
 					// Get the script intrinsic.
 		Uc_symbol *sym = Uc_function::get_intrinsic($4 ? 2 : 1);
-		Uc_call_expression *fcall = 
+		Uc_call_expression *fcall =
 				new Uc_call_expression(sym, parms, cur_fun);
 		$$ = new Uc_call_statement(fcall);
 		end_script();
@@ -2064,7 +2065,7 @@ function_call:
 			}
 		else
 			{
-			$$ = new Uc_call_expression(Uc_function::get_intrinsic(num), 
+			$$ = new Uc_call_expression(Uc_function::get_intrinsic(num),
 						$8, cur_fun);
 			$$->set_itemref($1);
 			$$->check_params();
@@ -2080,7 +2081,7 @@ function_call:
 			}
 		else
 			{
-			$$ = new Uc_call_expression(Uc_function::get_intrinsic(num), 
+			$$ = new Uc_call_expression(Uc_function::get_intrinsic(num),
 						$6, cur_fun);
 			$$->check_params();
 			}
@@ -2145,7 +2146,7 @@ int_literal:				/* A const. integer value.	*/
 		{ $$ = new Uc_int_expression($2, static_cast<UsecodeOps>($1)); }
 	| declared_sym
 		{
-		Uc_const_int_symbol *sym = 
+		Uc_const_int_symbol *sym =
 				dynamic_cast<Uc_const_int_symbol *>($1);
 		if (!sym)
 			{
@@ -2340,7 +2341,7 @@ static Uc_call_expression *cls_method_call
 	Uc_array_expression *parms
 	)
 	{
-	if (!curcls && !(ths && ths->is_class()))
+	if (!curcls)
 		{
 		char buf[150];
 		sprintf(buf, "'%s' requires a class object", nm);
@@ -2439,7 +2440,7 @@ static Uc_call_expression *cls_function_call
 		sym = curcls->get_scope()->search(nm);
 	else if (ths && ths->is_class())
 		sym = ths->get_cls()->get_scope()->search(nm);
-	
+
 	// Search for defined functions.
 	if (!sym)
 		{
@@ -2451,7 +2452,7 @@ static Uc_call_expression *cls_function_call
 		}
 
 	// Check for intrinsic name.
-	if (!sym)		
+	if (!sym)
 		{
 		string iname = string("UI_") + nm;
 		sym = cur_fun->search_up(iname.c_str());
