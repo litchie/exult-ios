@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2001  Ludvig Strigeus
  * Copyright (C) 2001/2002 The ScummVM project
  * Copyright (C) 2002 The Exult Team
@@ -36,7 +36,7 @@
 
 #include <cmath>
 
-const MidiDriver::MidiDriverDesc FMOplMidiDriver::desc = 
+const MidiDriver::MidiDriverDesc FMOplMidiDriver::desc =
 		MidiDriver::MidiDriverDesc ("FMOpl", createInstance);
 
 //#define LUCAS_MODE
@@ -44,7 +44,7 @@ const MidiDriver::MidiDriverDesc FMOplMidiDriver::desc =
 // We fudge with the velocity. If it's 16, it complies to AIL 2.0 Specs
 #define VEL_FUDGE 2
 
-/* This is the internal emulated MIDI driver using the included OPL2 sound chip 
+/* This is the internal emulated MIDI driver using the included OPL2 sound chip
  * FM instrument definitions below borrowed from the Allegro library by
  * Phil Hassey, <philhassey@hotmail.com> (www.imitationpickles.org)
  */
@@ -199,8 +199,8 @@ const int FMOplMidiDriver::my_midi_fm_vol_table[128] = {
 /* lucas move volume table */
 int FMOplMidiDriver::lucas_fm_vol_table[128];
 
-const unsigned char FMOplMidiDriver::adlib_opadd[9] = { 
-	0x00, 0x01, 0x02, 0x08, 0x09, 0x0A, 0x10, 0x11, 0x12 
+const unsigned char FMOplMidiDriver::adlib_opadd[9] = {
+	0x00, 0x01, 0x02, 0x08, 0x09, 0x0A, 0x10, 0x11, 0x12
 };
 
 //
@@ -250,7 +250,7 @@ int FMOplMidiDriver::open()
 
 #ifndef PENTAGRAM_IN_EXULT
 	IDataSource *timbres = GameData::get_instance()->getMusic()->getAdlibTimbres();
-	if (timbres) 
+	if (timbres)
 	{
 		loadXMIDITimbres(timbres);
 	}
@@ -262,7 +262,7 @@ int FMOplMidiDriver::open()
 	delete timbres;
 #endif
 
-	opl = FMOpl_Pentagram::OPLCreate(OPL_TYPE_YM3812, 3579545, sample_rate);
+	opl = FMOpl_Pentagram::makeAdLibOPL(sample_rate);
 
 	return 0;
 }
@@ -372,7 +372,7 @@ void FMOplMidiDriver::send(uint32 b)
 
 				// Send the instrument adlib
 				if ((ch[channel].inum >= 0) && (ch[channel].inum < 128)) {
-					if (channel == 9 && xmidibanks[127]) 
+					if (channel == 9 && xmidibanks[127])
 						midi_fm_instrument(on, xmidibanks[127]->insbank[note]);
 					else
 						midi_fm_instrument(on, ch[channel].ins);
@@ -380,7 +380,7 @@ void FMOplMidiDriver::send(uint32 b)
 
 				// Calculate the adlib volume
 				nv = midi_calc_volume(channel, vel);
-				
+
 				// Send note on
 				midi_fm_playnote(on, note + ch[channel].nshift, nv * 2, ch[channel].pitchbend);
 
@@ -452,7 +452,7 @@ void FMOplMidiDriver::send(uint32 b)
 				//			"MIDI sub-command 0xB0 (Control Change) case %02X (Chorus Depth) not handled in MIDIEMU driver.",
 				//			ctrl);
 				break;
-			// 
+			//
 			// XMIDI
 			//
 			case XMIDI_CONTROLLER_CHAN_LOCK:
@@ -509,7 +509,7 @@ void FMOplMidiDriver::send(uint32 b)
 
 			unsigned char *ins = 0;
 			int b = -1;
-			
+
 			// Search for xmidi ins.
 			if (ch[channel].xmidi) for (b = ch[channel].xmidi_bank; b>=0; b--) {
 				xmidibank *bank = xmidibanks[b];
@@ -533,7 +533,7 @@ void FMOplMidiDriver::send(uint32 b)
 		//debug(1, "MIDI command 0xD0 (Channel Touch) not handled in MIDIEMU driver.");
 		break;
 
-	case 0xe0:{	
+	case 0xe0:{
 		//break;						/* pitch wheel */
 			int pitchbend = ((b >> 8) & 0x7F) | (((b >> 16) & 0x7F) << 7);
 			ch[channel].pitchbend = pitchbend;
@@ -561,7 +561,7 @@ void FMOplMidiDriver::midi_write_adlib(unsigned int reg, unsigned char val)
 
 /*
 
-typedef struct 
+typedef struct
 {
    unsigned char mod_avekm;		// 0	(20)
    unsigned char mod_ksl_tl;	// 1	(40)
@@ -579,7 +579,7 @@ typedef struct
 }
 AD_instrument;
 
-case 0x20:	 am,vib,ksr,eg type,mul 
+case 0x20:	 am,vib,ksr,eg type,mul
 
 */
 
@@ -648,8 +648,8 @@ void FMOplMidiDriver::midi_fm_volume(int voice, int volume)
 }
 
 const int FMOplMidiDriver::fnums[12] =
-	{	0x16b, 0x181, 0x198, 0x1b0, 
-		0x1ca, 0x1e5, 0x202, 0x220, 
+	{	0x16b, 0x181, 0x198, 0x1b0,
+		0x1ca, 0x1e5, 0x202, 0x220,
 		0x241, 0x263, 0x287, 0x2ae };
 
 /* These tables 'borrowed' from Timidity tables.c
@@ -811,9 +811,9 @@ void FMOplMidiDriver::loadTimbreLibrary(IDataSource *ds, TimbreLibraryType type)
 
 	for (i = 0; i < 16; i++) ch[i].xmidi = false;
 
-	if (type == TIMBRE_LIBRARY_XMIDI_AD) 
+	if (type == TIMBRE_LIBRARY_XMIDI_AD)
 		loadXMIDITimbres(ds);
-	else if (type == TIMBRE_LIBRARY_U7VOICE_AD) 
+	else if (type == TIMBRE_LIBRARY_U7VOICE_AD)
 		loadU7VoiceTimbres(ds);
 }
 
@@ -911,27 +911,27 @@ void FMOplMidiDriver::loadU7VoiceTimbres(IDataSource *ds)
 		unsigned char mod_ad;				// 2: 	(60)
 		unsigned char mod_sr;				// 3: 	(80)
 		unsigned char mod_ws;				// 4: 	(E0)
-		
+
 		unsigned char car_avekm;			// 5: 	amp, sussnd				(22)
 		unsigned char car_ksl_tl;			// 6: 	outlev, keyscale		(43)
 		unsigned char car_ad;				// 7: 	Attack Delay		AR	(63)
 		unsigned char car_sr;				// 8: 	SustainLev Release	DR	(83)
 		unsigned char car_ws;				// 9: 	Waveform				(E3)
-		
+
 		unsigned char fb_c;					// 10:	Feedback/Connection
-		
+
 		// NOT IMPLEMENTED from here on!
-		
-		unsigned char perc_voice;			// 11	Percussion voice number !! 
+
+		unsigned char perc_voice;			// 11	Percussion voice number !!
 											// (0=melodic, 6=bass drum, etc.)
-		
-		unsigned char car_vel_sense;		// 12:  carrier velocity sensitivity					
-		unsigned char mod_vel_sense;		// 13:  modulator velocity sensitivity					
-		unsigned char bend_sense;			// 14:  pitch bend sensitivity							
-		unsigned char wheel_sense;			// 15:  modulation wheel sensitivity                
-		unsigned char lfo_speed;			// 16:  lfo speed                                   
-		unsigned char lfo_depth;			// 17:  lfo depth                                   
-		
+
+		unsigned char car_vel_sense;		// 12:  carrier velocity sensitivity
+		unsigned char mod_vel_sense;		// 13:  modulator velocity sensitivity
+		unsigned char bend_sense;			// 14:  pitch bend sensitivity
+		unsigned char wheel_sense;			// 15:  modulation wheel sensitivity
+		unsigned char lfo_speed;			// 16:  lfo speed
+		unsigned char lfo_depth;			// 17:  lfo depth
+
 		unsigned short pe_start_level;		// 18-19:  pitch envelope start level
 		unsigned short pe_attack_rate1;		// 20-21:  pitch envelope attack rate 1
 		unsigned short pe_attack_level1;	// 22-23:  pitch envelope attack level 1
@@ -941,15 +941,15 @@ void FMOplMidiDriver::loadU7VoiceTimbres(IDataSource *ds)
 		unsigned short pe_sustain_level;	// 30-31:  pitch envelope sustain level
 		unsigned short pe_release_rate;		// 32-33:  pitch envelope release rate
 		unsigned short pe_end_level;		// 34-35:  pitch envelope end level
-		
+
 		unsigned char deturn;				// 36:  detune
 		unsigned char transpose;			// 37:  transpose
 		unsigned char next_partial;			// 38:  next partial number (+1; 0=no more partials)
 		unsigned char key_follow;			// 39:  key follow
 		unsigned char reserved[7];			// 40-46:  reserved
-		
+
 		unsigned char prog_num;				// 47:  program change number
-		
+
 		void read(IDataSource *ds) {
 			mod_avekm = ds->read1();
 			mod_ksl_tl = ds->read1();
@@ -962,18 +962,18 @@ void FMOplMidiDriver::loadU7VoiceTimbres(IDataSource *ds)
 			car_sr = ds->read1();
 			car_ws = ds->read1();
 			fb_c = ds->read1();
-		
+
 			// NOT IMPLEMENTED from here on!
-		
+
 			perc_voice = ds->read1();
-		
+
 			car_vel_sense = ds->read1();
 			mod_vel_sense = ds->read1();
 			bend_sense = ds->read1();
 			wheel_sense = ds->read1();
 			lfo_speed = ds->read1();
 			lfo_depth = ds->read1();
-		
+
 			pe_start_level = ds->read2();
 			pe_attack_rate1 = ds->read2();
 			pe_attack_level1 = ds->read2();
@@ -983,13 +983,13 @@ void FMOplMidiDriver::loadU7VoiceTimbres(IDataSource *ds)
 			pe_sustain_level = ds->read2();
 			pe_release_rate = ds->read2();
 			pe_end_level = ds->read2();
-		
+
 			deturn = ds->read1();
 			transpose = ds->read1();
 			next_partial = ds->read1();
 			key_follow = ds->read1();
 			ds->read(reinterpret_cast<char *>(reserved), 7);
-		
+
 			prog_num = ds->read1();
 		}
 	} u7voice_ins;

@@ -1,24 +1,26 @@
 /*
  * Copyright (C) 1999/2000 Tatsuyuki Satoh
- * Copyright (C) 2001/2002 The ScummVM project
+ * Copyright (C) 2001-2016 The ScummVM project
  * Copyright (C) 2003 The Pentagram Team
+ * Copyright (C) 2002/2016 The Exult Team
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  * LGPL licensed version of MAMEs fmopl (V0.37a modified) by
  * Tatsuyuki Satoh. Included from LGPL'ed AdPlug.
+ *
  */
 
 #ifndef FMOPL_H
@@ -27,6 +29,16 @@
 #ifdef USE_FMOPL_MIDI
 
 namespace FMOpl_Pentagram {
+
+enum {
+	FMOPL_ENV_BITS_HQ = 16,
+	FMOPL_ENV_BITS_MQ = 8,
+	FMOPL_ENV_BITS_LQ = 8,
+	FMOPL_EG_ENT_HQ = 4096,
+	FMOPL_EG_ENT_MQ = 1024,
+	FMOPL_EG_ENT_LQ = 128
+};
+
 
 typedef void (*OPL_TIMERHANDLER)(int channel,double interval_Sec);
 typedef void (*OPL_IRQHANDLER)(int param,int irq);
@@ -71,7 +83,7 @@ typedef struct fm_opl_slot {
 	uint32 mul;	/* multiple        :ML_TABLE[ML]		*/
 	uint32 Cnt;	/* frequency count						*/
 	uint32 Incr;	/* frequency step						*/
-	
+
 	/* envelope generator state */
 	uint8 eg_typ;/* envelope type flag					*/
 	uint8 evm;	/* envelope phase						*/
@@ -129,10 +141,10 @@ typedef struct fm_opl_f {
 
 	/* Rythm sention */
 	uint8 rythm;		/* Rythm mode , key flag */
-	
+
 	/* time tables */
-	int AR_TABLE[75];	/* atttack rate tables				*/
-	int DR_TABLE[75];	/* decay rate tables				*/
+	int AR_TABLE[76];	/* atttack rate tables				*/
+	int DR_TABLE[76];	/* decay rate tables				*/
 	uint32 FN_TABLE[1024];/* fnumber -> increment counter		*/
 
 	/* LFO */
@@ -176,18 +188,23 @@ typedef struct fm_opl_f {
 #define OPL_REG_FB_C		0xC0
 
 
+void OPLBuildTables(uint32 ENV_BITS_PARAM, uint32 EG_ENT_PARAM);
+
 FM_OPL *OPLCreate(int type, int clock, int rate);
 void OPLDestroy(FM_OPL *OPL);
-void OPLSetTimerHandler(FM_OPL *OPL,OPL_TIMERHANDLER TimerHandler,int channelOffset);
-void OPLSetIRQHandler(FM_OPL *OPL,OPL_IRQHANDLER IRQHandler,int param);
-void OPLSetUpdateHandler(FM_OPL *OPL,OPL_UPDATEHANDLER UpdateHandler,int param);
+void OPLSetTimerHandler(FM_OPL *OPL, OPL_TIMERHANDLER TimerHandler, int channelOffset);
+void OPLSetIRQHandler(FM_OPL *OPL, OPL_IRQHANDLER IRQHandler, int param);
+void OPLSetUpdateHandler(FM_OPL *OPL, OPL_UPDATEHANDLER UpdateHandler, int param);
 
 void OPLResetChip(FM_OPL *OPL);
-int OPLWrite(FM_OPL *OPL,int a,int v);
-unsigned char OPLRead(FM_OPL *OPL,int a);
-int OPLTimerOver(FM_OPL *OPL,int c);
+int OPLWrite(FM_OPL *OPL, int a, int v);
+unsigned char OPLRead(FM_OPL *OPL, int a);
+int OPLTimerOver(FM_OPL *OPL, int c);
 void OPLWriteReg(FM_OPL *OPL, int r, int v);
 void OPLSetPan(FM_OPL *OPL,int c, int pan);
+
+// Factory method
+FM_OPL *makeAdLibOPL(int rate);
 
 void YM3812UpdateOne_Mono(FM_OPL *OPL, sint16 *buffer, int length);
 void YM3812UpdateOne_Stereo(FM_OPL *OPL, sint16 *buffer, int length);
