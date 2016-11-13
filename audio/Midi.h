@@ -83,6 +83,7 @@ public:
 	void			produceSamples(sint16 *stream, uint32 bytes);
 	void			load_timbres();
 	bool			is_mt32(); // Check for true mt32, mt32emu or fakemt32
+	bool			is_adlib(); // Check for adlib
 
 private:
 

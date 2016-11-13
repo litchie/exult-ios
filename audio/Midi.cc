@@ -668,6 +668,11 @@ bool MyMidiPlayer::is_mt32()
 		!midi_driver->isFMSynth();
 }
 
+bool MyMidiPlayer::is_adlib()
+{
+	return midi_driver && (midi_driver->isFMSynth());
+}
+
 MyMidiPlayer::MyMidiPlayer()	: repeating(false),current_track(-1),
 				  midi_driver_name("default"), midi_driver(0), initialized(false),
 				  timbre_lib(TIMBRE_LIB_GM), timbre_lib_filename(),
