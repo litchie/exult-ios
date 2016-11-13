@@ -363,14 +363,8 @@ void MyMidiPlayer::load_timbres()
 	// General Midi Mode - MT32
 	else if (timbre_lib == TIMBRE_LIB_GM) {
 		type = MidiDriver::TIMBRE_LIBRARY_XMIDI_FILE;
+		filename = BUNDLE_CHECK(BUNDLE_EXULT_FLX, EXULT_FLX);
 		index = EXULT_FLX_MTGM_MID;
-		filename = EXULT_FLX;
-#if defined(MACOSX) || defined(__IPHONEOS__)
-		// Check in the app bundle:
-		if (is_system_path_defined("<BUNDLE>") && U7exists(BUNDLE_EXULT_FLX)) {
-			filename = BUNDLE_EXULT_FLX;
-		}
-#endif
 	}
 	// U7VOICE
 	else if (u7voice) {
