@@ -60,7 +60,6 @@ static bool openROMFile(
 ) {
 	std::string basedir;
 	if (!writable) {
-		{
 #if defined(MACOSX) || defined(__IPHONEOS__)
 		// May be in bundle.
 		if (is_system_path_defined("<BUNDLE>")) {
