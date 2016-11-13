@@ -20,7 +20,7 @@
 #include "internals.h"
 
 #include "File.h"
-#include "sha1/sha1.h"
+#include "files/sha1/sha1.h"
 
 namespace MT32Emu {
 
