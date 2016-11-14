@@ -243,7 +243,7 @@ Notebook_gump::Notebook_gump(
 	if (page_info.empty())
 		page_info.push_back(Notebook_top(0, 0));
 	// Where to paint page marks:
-	const int lpagex = 35, rpagex = 300, lrpagey = 12;
+	const int lpagex = 35, rpagex = 298, lrpagey = 12;
 	leftpage = new Notebook_page_button(this, lpagex, lrpagey, 0);
 	rightpage = new Notebook_page_button(this, rpagex, lrpagey, 1);
 	add_new("");          // Add new note to end.
