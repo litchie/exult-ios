@@ -260,7 +260,7 @@ EXULT_FLX_NOTEBOOK_SHP, SF_EXULT_FLX), curnote(0),
 	if (page_info.empty())
 		page_info.push_back(Notebook_top(0, 0));
 	// Where to paint page marks:
-	const int lpagex = 35, rpagex = 300, lrpagey = 12;
+	const int lpagex = 35, rpagex = 298, lrpagey = 12;
 #ifdef __IPHONEOS__
 	leftpage = new Notebook_page_button(this, lpagex + 1, lrpagey - 3, 0);
 	rightpage = new Notebook_page_button(this, rpagex +1 , lrpagey -3, 1);
