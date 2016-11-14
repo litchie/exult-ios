@@ -253,7 +253,7 @@ Spellbook_gump::Spellbook_gump(
 	set_object_area(Rectangle(36, 28, 102, 66), 7, 54);
 
 	// Where to paint page marks:
-	const int lpagex = 38, rpagex = 142, lrpagey = 25;
+	const int lpagex = 43, rpagex = 137, lrpagey = 25;
 	// Get book's top owner.
 	book_owner = book->get_outermost();
 	set_avail();            // Figure spell counts.
