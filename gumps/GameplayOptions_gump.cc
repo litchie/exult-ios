@@ -61,8 +61,10 @@ static string framestring(int fr) {
 	return buf;
 }
 
+#ifndef __IPHONEOS__
 static const char *pathfind_texts[3] = {"no", "single", "double"};
 static int num_pathfind_texts = 3;
+#endif
 
 class GameplayOptions_button : public Text_button {
 public:
@@ -338,8 +340,10 @@ void GameplayOptions_gump::save_settings() {
 		            paperdolls ? "yes" : "no", false);
 	}
 
+#ifndef __IPHONEOS__
 	gwin->set_allow_right_pathfind(right_pathfind);
 	config->set("config/gameplay/allow_right_pathfind", pathfind_texts[right_pathfind], false);
+#endif
 
 	gumpman->set_gumps_dont_pause_game(!gumps_pause);
 	config->set("config/gameplay/gumps_dont_pause_game", gumps_pause ? "no" : "yes", false);
