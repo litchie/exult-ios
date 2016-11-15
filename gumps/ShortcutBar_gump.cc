@@ -114,7 +114,7 @@ void ShortcutBar_gump::createButtons() {
 
 	// map
 	if(trlucent) {
-		if (GAME_SI) 
+		if (GAME_SI)
 			buttonItems[2].shapeId = new ShapeID(EXULT_FLX_SB_MAPS_SHP, 1, SF_EXULT_FLX);
 		else
 			buttonItems[2].shapeId = new ShapeID(EXULT_FLX_SB_MAPS_SHP, 0, SF_EXULT_FLX);
@@ -175,10 +175,10 @@ void ShortcutBar_gump::createButtons() {
 		buttonItems[5].type = SB_ITEM_KEYRING;
 		buttonItems[5].shapeOffsetY = -2;
 	} else {
-	if(trlucent)
-		buttonItems[5].shapeId = new ShapeID(EXULT_FLX_SB_KEY_SHP, 0, SF_EXULT_FLX);
-	else
-		buttonItems[5].shapeId = new ShapeID(641, 28, SF_SHAPES_VGA);
+		if(trlucent)
+			buttonItems[5].shapeId = new ShapeID(EXULT_FLX_SB_KEY_SHP, 0, SF_EXULT_FLX);
+		else
+			buttonItems[5].shapeId = new ShapeID(641, 28, SF_SHAPES_VGA);
 		buttonItems[5].name = "key";
 		buttonItems[5].type = SB_ITEM_KEY;
 		buttonItems[5].shapeOffsetY = -1;
@@ -238,7 +238,7 @@ void ShortcutBar_gump::createButtons() {
 
 	for (int i = 0; i < numButtons; i++, x += barItemWidth) {
 		Shape_frame*frame = buttonItems[i].shapeId->get_shape();
-		
+
 		int left = (barItemWidth-frame->get_width())/2;
 		int top = (height-frame->get_height())/2;
 		buttonItems[i].shapeOffsetX += frame->get_xleft() + left;
@@ -407,7 +407,7 @@ void ShortcutBar_gump::onUserEvent(SDL_Event *event) {
 void ShortcutBar_gump::mouse_up(SDL_Event *event, int mx, int my) {
 	ignore_unused_variable_warning(event);
 	int i;
-	
+
 	for (i = 0; i < numButtons; i++) {
 		if (buttonItems[i].rect->has_point(mx, my))
 			break;
