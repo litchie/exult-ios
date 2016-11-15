@@ -162,9 +162,13 @@ bool Bookmark_button::activate(
 	if (button != 1) return false;
 	Spellbook_gump *sgump = reinterpret_cast<Spellbook_gump *>(parent);
 	int bmpage = sgump->book->bookmark / 8; // Bookmark's page.
+	int delta = sign(bmpage - sgump->page);
 	// On a different, valid page?
-	if (bmpage >= 0 && bmpage != sgump->page)
+	if (bmpage >= 0 && bmpage != sgump->page) {
+		while (bmpage != sgump->page) // turn all pages between current and Bookmark's page.
+			sgump->change_page(delta);
 		sgump->change_page(bmpage - sgump->page);
+	}
 	return true;
 }
 
