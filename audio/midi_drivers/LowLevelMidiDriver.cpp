@@ -1691,13 +1691,17 @@ void LowLevelMidiDriver::setPatchBank(int bank, int patch)
 	mt32_patch_bank_sel[patch] = bank;
 
 	// Upload the patch
+#ifdef DEBUG
 	pout << "LLMD: Uploading Patch for " << bank << ":" << patch << " using timbre " << static_cast<int>(p.timbre_bank) << ":" << static_cast<int>(p.timbre_num) << std::endl;
+#endif
 	sendMT32SystemMessage(patch_base,patch_mem_offset(patch),patch_mem_size, &p );
 }
 
 void LowLevelMidiDriver::loadRhythm(const MT32Rhythm &rhythm, int note)
 {
+#ifdef DEBUG
 	pout << "LLMD: Uploading Rhythm for note " << note << std::endl;
+#endif
 	sendMT32SystemMessage(rhythm_base, rhythm_mem_offset_note(note), rhythm_mem_size, &rhythm);
 }
 
@@ -1725,7 +1729,9 @@ void LowLevelMidiDriver::loadRhythmTemp(int temp)
 		mt32_rhythm_bank[temp]->timbre = mt32_timbre_banks[2][timbre]->index;
 	}
 
+#ifdef DEBUG
 	pout << "LLMD: Uploading Rhythm Temp " << temp << " using timbre " << static_cast<int>(mt32_rhythm_bank[temp]->timbre) << std::endl;
+#endif
 	sendMT32SystemMessage(rhythm_base,rhythm_mem_offset(temp),rhythm_mem_size, mt32_rhythm_bank[temp] );
 
 	delete mt32_rhythm_bank[temp];
@@ -1798,7 +1804,9 @@ void LowLevelMidiDriver::uploadTimbre(int bank, int patch)
 	char name[11] = {0};
 	std::memcpy (name,mt32_timbre_banks[bank][patch]->timbre,10);
 
+#ifdef DEBUG
 	pout << "LLMD: Uploading Custom Timbre `"<< name << "` from " << bank << ":" << patch << " into 2:" << lru_index << std::endl;
+#endif
 	sendMT32SystemMessage(timbre_base, timbre_mem_offset(lru_index), timbre_mem_size, mt32_timbre_banks[bank][patch]->timbre);
 }
 
