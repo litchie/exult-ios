@@ -24,6 +24,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class Spellbook_object;
 class Bookmark_button;
 
+template <typename T> 
+int sign(T val) {
+	return (T(0) < val) - (val < T(0));
+}
+
 /*
  *  Abstract base class for spellbook, spell-scrolls:
  */
