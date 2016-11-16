@@ -660,6 +660,14 @@ if test "x$AR_FLAGS" = "xcru" ; then
 	AR_FLAGS="cr"
 fi
 
+# ---------------------------------------------------------------------
+# Optimization options
+# ---------------------------------------------------------------------
+
+# link-time optimization
+GB_ENABLE_LTO
+CXXFLAGS="$CXXFLAGS $LTO_CFLAGS"
+
 
 # ---------------------------------------------------------------------
 # Debugging options
