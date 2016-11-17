@@ -225,6 +225,16 @@ SI_Game::SI_Game() {
 		// Dough on Moonshade display table
 		mp->add(new Map_patch_remove(Object_spec(
 		                                 Tile_coord(2369, 1896, 2), 863, 17, 0)));
+		// Skullcrusher Mountains
+		//    music instruments in wall
+		mp->add(new Map_patch_remove(Object_spec(
+		                                 Tile_coord(35, 1942, 0), 690, 0, 0)));
+		mp->add(new Map_patch_remove(Object_spec(
+		                                 Tile_coord(35, 1954, 0), 692, 0, 0)));
+		// FIXME: eggs shouldn't spawn inside of walls
+		//    egg spawning spiders in wall
+		mp->add(new Map_patch_remove(Object_spec(
+		                                 Tile_coord(60, 1937, 0), 275, 0, 0)));
 	}
 
 }
