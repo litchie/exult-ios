@@ -1,3 +1,17 @@
+2016-11-17	Dominik Reichardt <dominus@users.sourceforge.net>
+	* gamemgr/bggame.cc: added map_patches to BG to fix ugly shortcomings of Exult:
+	  - In Iolo's hut all sawdust is at z=2 which wreaks havoc with multiple 
+	    drawing order in the hut. The original handled this somehow. Perhaps by 
+		dropping this to the floor or using the z-buffer for something else in 
+		some cases.
+	  - Shape 874 should have some transparency in relation to the shapes it covers.
+	    It gets used for the towers in Despise and Shame to cover the stairway holes.
+		Incidently without the shape it looks much better than the original.
+	* gamemgr/sigame.cc: added map_patches to delete the music instruments in the 
+	  Skullcrusher mountain walls and the egg that spawns Spiders in the wall 
+	  (bug #1740). Spawning monsters in walls is another shortcoming of Exult.
+
+
 2016-07-16	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Implemented feature #181 "Allow catching aborts".
 	  Syntax changes for UCC:

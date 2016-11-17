@@ -47,6 +47,7 @@
 #include "miscinf.h"
 #include "gump_utils.h"
 #include "AudioMixer.h"
+#include "mappatch.h"
 
 #include "imagewin/imagewin.h"
 #include "imagewin/ArbScaler.h"
@@ -237,6 +238,88 @@ BG_Game::BG_Game()
 	fontManager.add_font("SMALL_BLACK_FONT", FONTS_VGA, PATCH_FONTS, 2, 0);
 	fontManager.add_font("TINY_BLACK_FONT", FONTS_VGA, PATCH_FONTS, 4, 0);
 	fontManager.add_font("GUARDIAN_FONT", MAINSHP_FLX, PATCH_MAINSHP, 3, -2);
+	Map_patch_collection *mp = gwin->get_map_patches();
+			// Sawdust in Iolo's hut is at lift 2, should be 0
+			// FIXME - the original had some way to deal with this
+			mp->add(new Map_patch_modify(Object_spec(
+			                                 Tile_coord(481, 599, 2), 224, 7, 0),
+			                             Object_spec(
+			                                 Tile_coord(480, 598, 0), 224, 7, 0)));
+			mp->add(new Map_patch_modify(Object_spec(
+			                                 Tile_coord(482, 601, 2), 224, 7, 0),
+			                             Object_spec(
+			                                 Tile_coord(481, 600, 0), 224, 7, 0)));
+			mp->add(new Map_patch_modify(Object_spec(
+			                                 Tile_coord(482, 600, 2), 224, 7, 0),
+			                             Object_spec(
+			                                 Tile_coord(481, 599, 0), 224, 7, 0)));
+			mp->add(new Map_patch_modify(Object_spec(
+			                                 Tile_coord(481, 602, 2), 224, 7, 0),
+			                             Object_spec(
+			                                 Tile_coord(480, 601, 0), 224, 7, 0)));
+			mp->add(new Map_patch_modify(Object_spec(
+			                                 Tile_coord(479, 599, 2), 224, 7, 0),
+			                             Object_spec(
+			                                 Tile_coord(478, 598, 0), 224, 7, 0)));
+			mp->add(new Map_patch_modify(Object_spec(
+			                                 Tile_coord(477, 597, 2), 224, 7, 0),
+			                             Object_spec(
+			                                 Tile_coord(476, 596, 0), 224, 7, 0)));
+			mp->add(new Map_patch_modify(Object_spec(
+			                                 Tile_coord(476, 597, 2), 224, 7, 0),
+			                             Object_spec(
+			                                 Tile_coord(475, 596, 0), 224, 7, 0)));
+			mp->add(new Map_patch_modify(Object_spec(
+			                                 Tile_coord(472, 595, 2), 224, 7, 0),
+			                             Object_spec(
+			                                 Tile_coord(471, 594, 0), 224, 7, 0)));
+			mp->add(new Map_patch_modify(Object_spec(
+			                                 Tile_coord(473, 598, 2), 224, 7, 0),
+			                             Object_spec(
+			                                 Tile_coord(472, 597, 0), 224, 7, 0)));
+			mp->add(new Map_patch_modify(Object_spec(
+			                                 Tile_coord(472, 600, 2), 224, 7, 0),
+			                             Object_spec(
+			                                 Tile_coord(471, 599, 0), 224, 7, 0)));
+			mp->add(new Map_patch_modify(Object_spec(
+			                                 Tile_coord(470, 597, 2), 224, 7, 0),
+			                             Object_spec(
+			                                 Tile_coord(469, 596, 0), 224, 7, 0)));
+			mp->add(new Map_patch_modify(Object_spec(
+			                                 Tile_coord(469, 597, 2), 224, 7, 0),
+			                             Object_spec(
+			                                 Tile_coord(468, 596, 0), 224, 7, 0)));
+			mp->add(new Map_patch_modify(Object_spec(
+			                                 Tile_coord(467, 599, 2), 224, 7, 0),
+			                             Object_spec(
+			                                 Tile_coord(466, 598, 0), 224, 7, 0)));
+			mp->add(new Map_patch_modify(Object_spec(
+			                                 Tile_coord(468, 600, 2), 224, 7, 0),
+			                             Object_spec(
+			                                 Tile_coord(467, 599, 0), 224, 7, 0)));
+			mp->add(new Map_patch_modify(Object_spec(
+			                                 Tile_coord(467, 601, 2), 224, 7, 0),
+			                             Object_spec(
+			                                 Tile_coord(466, 600, 0), 224, 7, 0)));
+			// FIXME shape 874 should have some transparency in relation to shapes it covers
+			//       hole in Despise's rebel base to invisible stairway
+			mp->add(new Map_patch_remove(Object_spec(
+		                                     Tile_coord(681, 1192, 5), 874, 0, 0)));
+			mp->add(new Map_patch_remove(Object_spec(
+		                                     Tile_coord(682, 1192, 5), 874, 0, 0)));
+			mp->add(new Map_patch_remove(Object_spec(
+		                                     Tile_coord(681, 1195, 5), 874, 0, 0)));
+			mp->add(new Map_patch_remove(Object_spec(
+		                                     Tile_coord(682, 1195, 5), 874, 0, 0)));
+			//       stairways hole in Shame's 2nd floor
+			mp->add(new Map_patch_remove(Object_spec(
+		                                     Tile_coord(807, 951, 5), 874, 0, 0)));
+			mp->add(new Map_patch_remove(Object_spec(
+		                                     Tile_coord(811, 951, 5), 874, 0, 0)));
+			mp->add(new Map_patch_remove(Object_spec(
+		                                     Tile_coord(807, 955, 5), 874, 0, 0)));
+			mp->add(new Map_patch_remove(Object_spec(
+		                                     Tile_coord(811, 955, 5), 874, 0, 0)));
 }
 
 BG_Game::~BG_Game() {
