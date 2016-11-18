@@ -301,7 +301,9 @@ BG_Game::BG_Game()
 			                                 Tile_coord(467, 601, 2), 224, 7, 0),
 			                             Object_spec(
 			                                 Tile_coord(466, 600, 0), 224, 7, 0)));
-			// FIXME shape 874 should have some transparency in relation to shapes it covers
+			// pure BG shape 874 only has an empty frame. For FoV's Test of Truth
+			// it was changed for creating a dungeon chasm while obviously forgetting
+			// that frame #0 was used in two occassions:
 			//       hole in Despise's rebel base to invisible stairway
 			mp->add(new Map_patch_remove(Object_spec(
 		                                     Tile_coord(681, 1192, 5), 874, 0, 0)));
