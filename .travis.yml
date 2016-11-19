@@ -21,11 +21,13 @@ env:
     - secure: "l8bkMxAIg9/95ZQh+Rq5V+1LInw55vlKaZIEgpqZ5nKDkcVVt4U0zGRCQKuUVZzV/TOt5ClOqxnZDgvQCpPtcyMriuBXTAeS/cP7zaTP10wkrq2saSfaLsJwiRIjnNeDtoIJQM8c/II5Vu7rqA9R1t1ejG9gcdHakH9tJnVU4N+ys9qvgIExJKhjSamuZdpoMuvXENE4arKyghhy+ZR+cJEzYkS3CcEQ894nBabdDyFlu+FLLDAwCF1apv/6dzMYRWwogFlkvjZ81G4joYUrQMozaGd+MRJ0kDgPnDEJFsqF/GC7sRZbp9Kvws4ZXdw15+e0u3jcfZgcDuXVuM+TaLGXMAWm9kuz3xj6DHDUYU7Epeg1I4riT9c/PEtYyLsE0wSD3z36erN2dlMxRuaR7awFBLlL63LERWCFES2n4Ulap2mTaJjRjjEJwQ8vB4W7B3SuOyCYJq3X64p44bD3m4fWPcAqCv1DN295JR9+nSRcMsPySkKbgSFtUPoJfayK27GEnF9YAuqcpgf+cbZNxsjcfYzhPD7GcLhyi1gS3+e5eq98EvF+uPA1HTYlhkS0jWypo1XDnFOjYJ59v+rNwpCvnAsSH0rKnks1wfsVytTD2KUb09HqRNdh3Gklr3AVWHSi6ru2MRk6IKt2IQl988SMj/bx1h5qtP8fOB1iKg4="
 
 before_install:
-  - echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
+  # Exit immediately if the branch is the "coverity_scan" branch and the job number is not 1
+  - test "$TRAVIS_BRANCH" != "coverity_scan" -o "${TRAVIS_JOB_NUMBER##*.}" = "1" || exit 0
   - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo apt-get -qq update; fi
+  - if [ "$TRAVIS_BRANCH" = "coverity_scan" ]; then echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca- ; fi
 
 install:
-  - if [ "$TRAVIS_OS_NAME" = "osx"   ]; then source .travis/install-osx.sh; fi
+  - if [ "$TRAVIS_OS_NAME" = "osx" -a "$TRAVIS_BRANCH" != "coverity_scan" ]; then source .travis/install-osx.sh; fi
 
 addons:
   apt:
@@ -65,7 +67,7 @@ addons:
     build_command:   "make"
     branch_pattern: coverity_scan
 
-script: if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then .travis/script.sh; fi
+script: if [ "$TRAVIS_BRANCH" != "coverity_scan" ]; then .travis/script.sh; fi
 
 notifications:
   email: false
