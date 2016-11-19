@@ -60,7 +60,7 @@ script: .travis/script.sh
 
 notifications:
     email: false
-    irc: ircs://chat.freenode.net:6697/#exult
-        on_success: change
-        on_failure: always
+    irc: "chat.freenode.net:6697/#exult"
+    on_success: change
+    on_failure: always
 
