@@ -691,7 +691,11 @@ AC_MSG_CHECKING([whether to do an optimized debug build])
 if test x$enable_optimized_debug = xyes; then
 	AC_MSG_RESULT(yes)
 	AC_DEFINE(DEBUG, 1, [Enable debug mode])
-	DEBUG_FLAGS="-g -O2 -fno-default-inline -fno-inline"
+	DEBUG_FLAGS="-g -O2"
+	for cxx_flag in -fno-default-inline -fno-inline
+	do
+		AX_CHECK_COMPILE_FLAG([$cxx_flag], [DEBUG_FLAGS="$DEBUG_FLAGS $cxx_flag"], [], [$DEBUG_FLAGS -Werror])
+	done
 else
 	AC_MSG_RESULT(no)
 fi
