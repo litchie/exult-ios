@@ -15,10 +15,10 @@ env:
   matrix:
     - DEBUG_OPT=""
     - DEBUG_OPT="--enable-optimized-debug"
-    global:
-      # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
-      #   via the "travis encrypt" command using the project repo's public key
-      - secure: "l8bkMxAIg9/95ZQh+Rq5V+1LInw55vlKaZIEgpqZ5nKDkcVVt4U0zGRCQKuUVZzV/TOt5ClOqxnZDgvQCpPtcyMriuBXTAeS/cP7zaTP10wkrq2saSfaLsJwiRIjnNeDtoIJQM8c/II5Vu7rqA9R1t1ejG9gcdHakH9tJnVU4N+ys9qvgIExJKhjSamuZdpoMuvXENE4arKyghhy+ZR+cJEzYkS3CcEQ894nBabdDyFlu+FLLDAwCF1apv/6dzMYRWwogFlkvjZ81G4joYUrQMozaGd+MRJ0kDgPnDEJFsqF/GC7sRZbp9Kvws4ZXdw15+e0u3jcfZgcDuXVuM+TaLGXMAWm9kuz3xj6DHDUYU7Epeg1I4riT9c/PEtYyLsE0wSD3z36erN2dlMxRuaR7awFBLlL63LERWCFES2n4Ulap2mTaJjRjjEJwQ8vB4W7B3SuOyCYJq3X64p44bD3m4fWPcAqCv1DN295JR9+nSRcMsPySkKbgSFtUPoJfayK27GEnF9YAuqcpgf+cbZNxsjcfYzhPD7GcLhyi1gS3+e5eq98EvF+uPA1HTYlhkS0jWypo1XDnFOjYJ59v+rNwpCvnAsSH0rKnks1wfsVytTD2KUb09HqRNdh3Gklr3AVWHSi6ru2MRk6IKt2IQl988SMj/bx1h5qtP8fOB1iKg4="
+  global:
+    # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+    #   via the "travis encrypt" command using the project repo's public key
+    - secure: "l8bkMxAIg9/95ZQh+Rq5V+1LInw55vlKaZIEgpqZ5nKDkcVVt4U0zGRCQKuUVZzV/TOt5ClOqxnZDgvQCpPtcyMriuBXTAeS/cP7zaTP10wkrq2saSfaLsJwiRIjnNeDtoIJQM8c/II5Vu7rqA9R1t1ejG9gcdHakH9tJnVU4N+ys9qvgIExJKhjSamuZdpoMuvXENE4arKyghhy+ZR+cJEzYkS3CcEQ894nBabdDyFlu+FLLDAwCF1apv/6dzMYRWwogFlkvjZ81G4joYUrQMozaGd+MRJ0kDgPnDEJFsqF/GC7sRZbp9Kvws4ZXdw15+e0u3jcfZgcDuXVuM+TaLGXMAWm9kuz3xj6DHDUYU7Epeg1I4riT9c/PEtYyLsE0wSD3z36erN2dlMxRuaR7awFBLlL63LERWCFES2n4Ulap2mTaJjRjjEJwQ8vB4W7B3SuOyCYJq3X64p44bD3m4fWPcAqCv1DN295JR9+nSRcMsPySkKbgSFtUPoJfayK27GEnF9YAuqcpgf+cbZNxsjcfYzhPD7GcLhyi1gS3+e5eq98EvF+uPA1HTYlhkS0jWypo1XDnFOjYJ59v+rNwpCvnAsSH0rKnks1wfsVytTD2KUb09HqRNdh3Gklr3AVWHSi6ru2MRk6IKt2IQl988SMj/bx1h5qtP8fOB1iKg4="
 
 before_install:
   - echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
