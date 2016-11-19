@@ -38,7 +38,7 @@ addons:
       - libasound2-dev
       - libfluidsynth-dev
       - libsdl-ttf2.0-dev
-      - libpng
+      - libpng-dev
       - libfreetype6-dev
       - libglade2-dev
       - libgtk2.0-dev
@@ -59,6 +59,8 @@ addons:
 script: .travis/script.sh
 
 notifications:
-  email: false
-  irc: ircs://chat.freenode.net:6697/#exult
+    email: false
+    irc: ircs://chat.freenode.net:6697/#exult
+        on_success: change
+        on_failure: always
 
