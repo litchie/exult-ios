@@ -11,11 +11,11 @@ sudo installer -pkg $MACPORTS_PATH -target / || exit 2
 export PATH=$MACPORTS_PREFIX/bin:$PATH
 
 # Just to be sure
-sudo port -v selfupdate
-sudo port upgrade outdated
+sudo port -q selfupdate | cat
+sudo port -q upgrade outdated | cat
 
 # Install actual dependencies
-sudo port install -q automake libtool pkgconfig libvorbis libpng zlib libglade2
-sudo port install -q libsdl +x11
-sudo port install -q libsdl2 +x11
+sudo port -q install automake libtool pkgconfig libvorbis libpng zlib libglade2 | cat
+sudo port -q install libsdl +x11 | cat
+sudo port -q install libsdl2 +x11 | cat
 
