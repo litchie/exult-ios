@@ -4,9 +4,11 @@ chmod a+x ./autogen.sh
 if [ "$TRAVIS_OS_NAME" = "linux" ]; then
 	export LIBOPTS=""
 	export EXTRA_TOOLS="--enable-gimp-plugin --enable-gnome-shp-thumbnailer --enable-compiler --enable-mods"
+	export NPROC=`nproc`
 else
 	export LIBOPTS="--enable-static-libraries --disable-alsa --disable-fluidsynth --disable-timidity-midi --with-macosx-static-lib-path=/opt/local/lib"
 	export EXTRA_TOOLS=""
+	export NPROC=`sysctl -n hw.ncpu`
 	export SDK=' -w -mmacosx-version-min=10.7 '
 	export MACOSX_DEPLOYMENT_TARGET=10.7
 	export CPPFLAGS='-I/opt/local/include '$SDK
@@ -23,5 +25,5 @@ fi
                             --enable-exult-studio --enable-exult-studio-support	\
                             --enable-mt32emu --enable-zip-support	\
                             --enable-shared --enable-opengl --enable-midi-sfx	\
-                            $EXTRA_TOOLS && make
+                            $EXTRA_TOOLS && make -j $NPROC
 
