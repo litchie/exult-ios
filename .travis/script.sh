@@ -3,7 +3,7 @@ chmod a+x ./autogen.sh
 
 if [ "$TRAVIS_OS_NAME" = "linux" ]; then
 	export LIBOPTS=""
-	export EXTRA_TOOLS="--enable-gimp-plugin --enable-gnome-shp-thumbnailer --enable-compiler --enable-mods"
+	export EXTRA_TOOLS="--enable-gimp-plugin --enable-gnome-shp-thumbnailer --enable-compiler --enable-mods --with-usecode-debugger=yes"
 	export NPROC=`nproc`
 else
 	export LIBOPTS="--enable-static-libraries --disable-alsa --disable-fluidsynth --disable-timidity-midi --with-macosx-static-lib-path=/opt/local/lib"

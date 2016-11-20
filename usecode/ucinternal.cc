@@ -109,7 +109,7 @@ using std::ostream;
 extern bool intrinsic_trace;
 extern int usecode_trace;
 
-#if 0 && USECODE_DEBUGGER
+#if USECODE_DEBUGGER
 
 extern bool usecode_debugging;
 std::vector<int> intrinsic_breakpoints;
@@ -1579,7 +1579,7 @@ Usecode_value no_ret;
 
 Usecode_value Usecode_internal::Execute_Intrinsic(UsecodeIntrinsicFn func, const char *name, int intrinsic, int num_parms, Usecode_value parms[12]) {
 #ifdef XWIN
-#if 0 && USECODE_DEBUGGER
+#if USECODE_DEBUGGER
 	if (usecode_debugging) {
 		// Examine the list of intrinsics for function breakpoints.
 		if (std::find(intrinsic_breakpoints.begin(), intrinsic_breakpoints.end(), intrinsic) != intrinsic_breakpoints.end()) {
@@ -1971,7 +1971,7 @@ int Usecode_internal::run() {
 				cout << "On breakpoint" << endl;
 
 				// signal remote client that we hit a breakpoint
-				unsigned char c = (unsigned char)Exult_server::dbg_on_breakpoint;
+				unsigned char c = static_cast<unsigned char>(Exult_server::dbg_on_breakpoint);
 				if (client_socket >= 0)
 					Exult_server::Send_data(client_socket,
 					                        Exult_server::usecode_debugging,
@@ -1982,14 +1982,14 @@ int Usecode_internal::run() {
 #endif
 
 
-#if 0
+#ifdef USECODE_CONSOLE_DEBUGGER
 				// little console mode "debugger" (if you can call it that...)
 				bool done = false;
 				while (!done) {
 					char userinput;
 					cout << "s=step into, o=step over, f=finish, c=continue, "
 					     << "b=stacktrace: ";
-					cin >> userinput;
+					std::cin >> userinput;
 
 					if (userinput == 's') {
 						breakpoints.add(new AnywhereBreakpoint());
@@ -2018,7 +2018,7 @@ int Usecode_internal::run() {
 #endif
 
 
-				c = (unsigned char)Exult_server::dbg_continuing;
+				c = static_cast<unsigned char>(Exult_server::dbg_continuing);
 				if (client_socket >= 0)
 					Exult_server::Send_data(client_socket,
 					                        Exult_server::usecode_debugging,
@@ -3344,7 +3344,7 @@ int Usecode_internal::get_callstack_size() const {
 }
 
 Stack_frame *Usecode_internal::get_stackframe(int i) {
-	if (i >= 0 && i < call_stack.size())
+	if (i >= 0 && static_cast<unsigned>(i) < call_stack.size())
 		return call_stack[i];
 	else
 		return 0;
@@ -3353,7 +3353,7 @@ Stack_frame *Usecode_internal::get_stackframe(int i) {
 
 // return current size of the stack
 int Usecode_internal::get_stack_size() const {
-	return (int)(sp - stack);
+	return static_cast<int>(sp - stack);
 }
 
 // get an(y) element from the stack. (depth == 0 is top element)

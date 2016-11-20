@@ -779,16 +779,6 @@ else
 	AC_MSG_RESULT(no)
 fi
 
-# Usecode debugger
-#AC_ARG_ENABLE(usecode-debugger, AS_HELP_STRING([--enable-usecode-debugger], [Support for usecode debugging @<:@default no@:>@]),,enable_usecode_debugger=no)
-#AC_MSG_CHECKING([whether to enable the usecode debugger])
-#if test x$enable_usecode_debugger = xyes; then
-#	AC_MSG_RESULT(yes)
-#	AC_DEFINE(USECODE_DEBUGGER, 1, [Enable Usecode debugging])
-#else
-#	AC_MSG_RESULT(no)
-#fi
-
 
 # ---------------------------------------------------------------------
 # Warning level
@@ -919,6 +909,30 @@ if test x$enable_exult_studio = xyes; then
 	AM_CONDITIONAL(BUILD_STUDIO, true)
 else
 	AM_CONDITIONAL(BUILD_STUDIO, false)
+	AC_MSG_RESULT(no)
+fi
+
+# Usecode debugger
+AC_ARG_WITH([usecode-debugger],
+            AS_HELP_STRING([--with-usecode-debugger=no|console|yes],
+                           [Experimental and buggy support for usecode debugging @<:@default no@:>@]),
+            [enable_usecode_debugger="$withval"], [enable_usecode_debugger="no"])
+AC_MSG_CHECKING([whether to enable the usecode debugger])
+if test x$enable_usecode_debugger = xconsole -o x$enable_usecode_debugger = xyes; then
+	AC_MSG_RESULT(yes)
+	if test x$enable_usecode_debugger = xconsole; then
+		AC_DEFINE(USECODE_CONSOLE_DEBUGGER, 1, [Enable Usecode debugging on console])
+	elif test x$enable_exult_studio != xyes; then
+		echo "But we are not building Exult Studio."
+		echo "Try again, either with --enable-exult-studio, or without the usecode debugger"
+		exit 1
+	elif test x$enable_exult_studio_support != xyes; then
+		echo "But we are not building Exult with Exult Studio support."
+		echo "Try again, either with --enable-exult-studio-support, or without the usecode debugger"
+		exit 1
+	fi
+	AC_DEFINE(USECODE_DEBUGGER, 1, [Enable Usecode debugging])
+else
 	AC_MSG_RESULT(no)
 fi
 
