@@ -34,13 +34,13 @@ Don't forget to activate the cross-compiling environment before any cross-compil
 ./configure should be passed in the following manner:
 
 NOTE: updated the 2003/07/29
-NM=arm-linux-nm LD=arm-linux-ld CC=arm-linux-gcc CXX=arm-linux-g++ RANLIB=arm-linux-ranlib AR=arm-linux-ar CPPFLAGS=-I/opt/Qtopia/sharp/include/ LDFLAGS=-L/opt/Qtopia/sharp/lib/ ./configure -host=arm-embeddix-linux-gnu --disable-exult-studio-support --disable-debug --disable-exult-studio --disable-gimp-plugin --disable-tools --disable-compiler --enable-data --disable-timidity --disable-kmid --prefix=/opt/Qtopia
+NM=arm-linux-nm LD=arm-linux-ld CC=arm-linux-gcc CXX=arm-linux-g++ RANLIB=arm-linux-ranlib AR=arm-linux-ar CPPFLAGS=-I/opt/Qtopia/sharp/include/ LDFLAGS=-L/opt/Qtopia/sharp/lib/ ./configure -host=arm-embeddix-linux-gnu --disable-exult-studio-support --with-debug=no --disable-exult-studio --disable-gimp-plugin --disable-tools --disable-compiler --enable-data --disable-timidity --disable-kmid --prefix=/opt/Qtopia
 
 NOTE: updated the 2003/02/05
-NM=arm-linux-nm LD=arm-linux-ld CC=arm-linux-gcc CXX=arm-linux-g++ RANLIB=arm-linux-ranlib AR=arm-linux-ar ./configure arm-embeddix-linux-gnu --disable-exult-studio-support --disable-debug --disable-exult-studio --disable-gimp-plugin --disable-tools --disable-compiler --enable-data --disable-timidity --disable-kmid
+NM=arm-linux-nm LD=arm-linux-ld CC=arm-linux-gcc CXX=arm-linux-g++ RANLIB=arm-linux-ranlib AR=arm-linux-ar ./configure arm-embeddix-linux-gnu --disable-exult-studio-support --with-debug=no --disable-exult-studio --disable-gimp-plugin --disable-tools --disable-compiler --enable-data --disable-timidity --disable-kmid
 (it's all on one line)
 
-[and no more NM=arm-linux-nm LD=arm-linux-ld CC=arm-linux-gcc CXX=arm-linux-g++ RANLIB=arm-linux-ranlib AR=arm-linux-ar ./configure --prefix=/opt/QtPalmtop  --disable-tools  --enable-debug arm-zaurus-linux-gnu]
+[and no more NM=arm-linux-nm LD=arm-linux-ld CC=arm-linux-gcc CXX=arm-linux-g++ RANLIB=arm-linux-ranlib AR=arm-linux-ar ./configure --prefix=/opt/QtPalmtop  --disable-tools  --with-optimization=none --with-debug=full arm-zaurus-linux-gnu]
 
 Exult uses some tools for its compilation. Of course, those tools get compiled by the ARM cross compiler so it won't work on your platform. Make sure you put a hand on "expack" (compiled for your platform) before any work.
 

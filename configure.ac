@@ -808,6 +808,12 @@ CHK_WARN="$CHK_WARN -Wc++11-compat -Wc++14-compat -Wc++1z-compat"
 #CHK_WARN="$CHK_WARN -Wsuggest-final-types -Wsuggest-final-methods -Wsuggest-override -Wzero-as-null-pointer-constant"
 # Clang warnings
 CHK_WARN="$CHK_WARN -Wunused-const-variables -Wabsolute-value -Wdeprecated-register -Wmismatched-tags -Wunused-private-field"
+
+# Eliminate some spurious warnings due to low optimization level.
+if test x$opt_level = xnone -o x$opt_level = xdebug; then
+	CHK_WARN="$CHK_WARN -Wno-maybe-uninitialized"
+fi
+
 # Warnings give errors
 AC_ARG_ENABLE(warning-errors, AS_HELP_STRING([--enable-warning-errors], [Turn all warnings into errors @<:@default no@:>@]),,enable_warning_errors=no)
 if test x$enable_warning_errors = xyes; then
