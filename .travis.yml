@@ -13,8 +13,8 @@ compiler:
 
 env:
   matrix:
+    - DEBUG_OPT="--with-debug=messages"
     - DEBUG_OPT=""
-    - DEBUG_OPT="--enable-optimized-debug"
   global:
     # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
     #   via the "travis encrypt" command using the project repo's public key
@@ -63,7 +63,7 @@ addons:
       name: "exult/exult"
       description: "Exult is an open source engine for Ultima 7 and Serpent Isle."
     notification_email: marzojr@gmail.com
-    build_command_prepend: "./autogen.sh && ./configure --enable-optimized-debug --disable-oggtest --disable-vorbistest --enable-exult-studio --enable-exult-studio-support --enable-mt32emu --enable-zip-support --enable-shared --enable-opengl --enable-midi-sfx --enable-gimp-plugin --enable-gnome-shp-thumbnailer --enable-compiler --enable-mods"
+    build_command_prepend: "./autogen.sh && ./configure --with-debug=messages --disable-oggtest --disable-vorbistest --enable-exult-studio --enable-exult-studio-support --enable-mt32emu --enable-zip-support --enable-shared --enable-opengl --enable-midi-sfx --enable-gimp-plugin --enable-gnome-shp-thumbnailer --enable-compiler --enable-mods"
     build_command:   "make"
     branch_pattern: coverity_scan
 
