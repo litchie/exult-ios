@@ -24,8 +24,10 @@
 
 #if (defined(USE_EXULTSTUDIO) && defined(USECODE_DEBUGGER))
 
+#include <algorithm>
 #include <iostream>
 #include <iomanip>
+#include <sstream>
 
 #include "servemsg.h"
 #include "server.h"
@@ -39,6 +41,9 @@
 #include "ucserial.h"
 #include "useval.h"
 #include "ucfunction.h"
+
+using std::stringstream;
+using std::ios;
 
 // message handler that only handles debugging messages.
 void Handle_client_debug_message(int &fd) {
@@ -59,13 +64,14 @@ void Handle_client_debug_message(int &fd) {
 }
 
 void Handle_debug_message(unsigned char *data, int datalen) {
+	ignore_unused_variable_warning(datalen);
 	Usecode_machine *ucm = Game_window::get_instance()->get_usecode();
 	Usecode_internal *uci = dynamic_cast<Usecode_internal *>(ucm);
 
 	if (uci == 0)
 		return; // huh?
 
-	Exult_server::Debug_msg_type id = (Exult_server::Debug_msg_type)data[0];
+	Exult_server::Debug_msg_type id = static_cast<Exult_server::Debug_msg_type>(data[0]);
 
 	unsigned char *ptr = data;
 
@@ -90,7 +96,7 @@ void Handle_debug_message(unsigned char *data, int datalen) {
 			break;
 		case Exult_server::dbg_get_callstack: {
 			unsigned char d[3];
-			d[0] = (unsigned char)Exult_server::dbg_callstack;
+			d[0] = static_cast<unsigned char>(Exult_server::dbg_callstack);
 			unsigned char *ptr = &d[1];
 			int callstacksize = uci->get_callstack_size();
 			Write2(ptr, callstacksize);
@@ -101,11 +107,11 @@ void Handle_debug_message(unsigned char *data, int datalen) {
 				Stack_frame *frame = uci->get_stackframe(i);
 				Stack_frame_out(client_socket,
 				                frame->function->id,
-				                (int)(frame->ip - frame->code),
+				                static_cast<int>(frame->ip - frame->code),
 				                frame->call_chain,
 				                frame->call_depth,
 				                frame->eventid,
-				                (long)frame->caller_item,
+				                reinterpret_cast<uintptr>(frame->caller_item),
 				                frame->num_args,
 				                frame->num_vars,
 				                frame->locals);
@@ -113,33 +119,34 @@ void Handle_debug_message(unsigned char *data, int datalen) {
 			break;
 		}
 		case Exult_server::dbg_get_stack: {
-			Usecode_value zeroval((int)0);
-			unsigned char data[Exult_server::maxlength];
-			unsigned char *ptr = &data[0];
-			*ptr++ = (unsigned char)Exult_server::dbg_stack;
+			Usecode_value zeroval(0);
+			stringstream dataio(ios::in|ios::out|ios::binary);
+			std::ostream *dataout = &dataio;
+			StreamDataSource ds(dataout);
+			ds.write1(static_cast<unsigned char>(Exult_server::dbg_stack));
 			int stacksize = uci->get_stack_size();
-			Write2(ptr, stacksize);
-			int remaining = Exult_server::maxlength - 3;
+			ds.write2(stacksize);
 			for (int i = 0; i < stacksize; i++) {
 				Usecode_value *val = uci->peek_stack(i);
-				int vallen = -1;
-				if (val) {
-					vallen = val->save(ptr, remaining);
-				}
-				if (vallen == -1) {
-					if (remaining >= 5)
-						vallen = zeroval.save(ptr, remaining);
-					std::cerr << "Error: stack larger than max. message!"
+				if (val && !val->save(&ds)) {
+					std::cerr << "Error: Could not save usecode value to message!"
 					          << std::endl;
 				}
-				if (vallen != -1) {
-					remaining -= vallen;
-					ptr += vallen;
+				if (ds.getSize() >= Exult_server::maxlength) {
+					break;
 				}
 			}
+			if (ds.getSize() > Exult_server::maxlength) {
+				std::cerr << "Error: stack larger than max. message!"
+				          << std::endl;
+			}
+			std::string data(dataio.str());
+			unsigned char *dptr = reinterpret_cast<unsigned char *>(&data[0]);
+			int datalen = std::min(static_cast<int>(data.size()),
+			                       Exult_server::maxlength);
 			Exult_server::Send_data(client_socket,
 			                        Exult_server::usecode_debugging,
-			                        data, Exult_server::maxlength - remaining);
+			                        dptr, datalen);
 			break;
 		}
 		default:
@@ -155,9 +162,9 @@ void Handle_debug_message(unsigned char *data, int datalen) {
 	case Exult_server::dbg_get_status: {
 		unsigned char c;
 		if (uci->is_on_breakpoint()) {
-			c = (unsigned char)Exult_server::dbg_on_breakpoint;
+			c = static_cast<unsigned char>(Exult_server::dbg_on_breakpoint);
 		} else {
-			c = (unsigned char)Exult_server::dbg_continuing;
+			c = static_cast<unsigned char>(Exult_server::dbg_continuing);
 		}
 		Exult_server::Send_data(client_socket,
 		                        Exult_server::usecode_debugging,
@@ -177,7 +184,7 @@ void Handle_debug_message(unsigned char *data, int datalen) {
 
 		int breakpoint_id = uci->set_location_breakpoint(funcid, ip);
 		unsigned char d[13];
-		d[0] = (unsigned char)(Exult_server::dbg_set_location_bp);
+		d[0] = static_cast<unsigned char>(Exult_server::dbg_set_location_bp);
 		unsigned char *dptr = &d[1];
 		Write4(dptr, funcid);
 		Write4(dptr, ip);
