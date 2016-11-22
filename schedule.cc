@@ -2819,7 +2819,7 @@ void Perimeter::get(
 		return;
 	}
 	i -= perim.w - 1;
-	{
+	if (i < perim.h - 1) {
 		ptile = Tile_coord(perim.x, perim.y + perim.h - 1 - i, 0);
 		atile = ptile + Tile_coord(1, !i ? -1 : 0, 0);
 		return;
