@@ -2442,7 +2442,7 @@ bool Sit_schedule::set_action(
 
 Desk_schedule::Desk_schedule(
     Actor *n
-) : Schedule(n), chair(0), desk(0), table(0), desk_item(0), 
+) : Schedule(n), chair(0), desk(0), table(0), desk_item(0),
   				 items_in_hand(0), state(desk_setup) {
 }
 
@@ -2603,7 +2603,7 @@ void Desk_schedule::now_what(
 		desk = npc->find_closest(desks, 2);
 		if (desk) {
 			static int chairs[] = {873, 292};
-			chair = desk->find_closest(chairs, 
+			chair = desk->find_closest(chairs,
 				sizeof(chairs) / sizeof(chairs[0]));
 		}
 		if (!chair) {   // Failed.
@@ -2614,7 +2614,7 @@ void Desk_schedule::now_what(
 		add_client(chair);
 		state = sit_at_desk;
 		}
-		/* FALL THROUGH */		
+		/* FALL THROUGH */
 	case sit_at_desk: {
 		int frnum = npc->get_framenum();
 		// Not sitting?
@@ -2664,7 +2664,7 @@ void Desk_schedule::now_what(
 		    state = sit_at_desk;		// Back to desk.
 		} else if (rand() % 4) {		// Put down an item.
 		    Game_object_vector items;
-		    int nitems = npc->get_objects(items, 675, 
+		    int nitems = npc->get_objects(items, 675,
 					   	 					c_any_qual, c_any_framenum);
 			items_in_hand = nitems;		// Save value.
 			if (nitems) {
@@ -2680,7 +2680,7 @@ void Desk_schedule::now_what(
 			          		  		  : foot.y + foot.h - 1;
 				Shape_info &info = table->get_info();
 				spot.tz = table->get_lift() + info.get_3d_height();
-				Tile_coord pos = Map_chunk::find_spot(spot, 1, 
+				Tile_coord pos = Map_chunk::find_spot(spot, 1,
 						   to_drop->get_shapenum(), to_drop->get_framenum());
 			    if (pos.tx != -1 && pos.tz == spot.tz &&
 				    	   foot.has_world_point(pos.tx, pos.ty)) {
@@ -4106,13 +4106,12 @@ void Bake_schedule::now_what() {
 			break;
 		}
 		clearing = true;
-		for (size_t i = 0; i < food.size(); i++) {
+		if (food.size()) {
 			delay = 500;
 			state = remove_food;
-			break;
-		}
-		if (!food.size())
+		} else {
 			state = display_wares;
+		}
 		break;
 	}
 	case remove_food: { // Delete food on display table one by one with a slight delay
