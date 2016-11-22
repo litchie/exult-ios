@@ -2230,21 +2230,19 @@ void Game_window::show_items(
 	} else if (obj) {
 		// Show name.
 		std::string namestr = Get_object_name(obj);
-		const char *objname = namestr.c_str();
 		if (Game_window::get_instance()->failed_copy_protection() &&
 		        (npc == main_actor || !npc)) {  // Avatar and items
-			char oink[6];
-			snprintf(oink, 6, "Oink!");
-			objname = &oink[0];
+			namestr = "Oink!";
 		}
 		// Combat and an NPC?
 		if (in_combat() && Combat::mode != Combat::original && npc) {
 			char buf[128];
-			sprintf(buf, "%s (%d)", objname,
+			snprintf(buf, sizeof(buf)-1, " (%d)",
 			        npc->get_property(Actor::health));
-			objname = &buf[0];
+			buf[sizeof(buf)-1] = 0;
+			namestr += buf;
 		}
-		effects->add_text(objname, obj);
+		effects->add_text(namestr.c_str(), obj);
 	} else if (cheat.in_map_editor() && skip_lift > 0) {
 		// Show flat, but not when editing ter.
 		ShapeID id = get_flat(x, y);
