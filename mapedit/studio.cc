@@ -1790,7 +1790,7 @@ void ExultStudio::create_shape_file(
 		else
 			Image_file_info::write_file(pathname, 0, 0, false);
 	} catch (const exult_exception &e) {
-		EStudio::Alert(e.what());
+		EStudio::Alert("%s", e.what());
 	}
 	delete shape;
 	ExultStudio *studio = ExultStudio::get_instance();
@@ -2272,7 +2272,7 @@ bool Copy_file(
 	try {
 		U7copy(src, dest);
 	} catch (exult_exception &e) {
-		EStudio::Alert(e.what());
+		EStudio::Alert("%s", e.what());
 		return false;
 	}
 	return true;
