@@ -2203,6 +2203,7 @@ void Alert(
 	std::va_list args;
 	va_start(args, msg);
 	char *fullmsg = g_strdup_vprintf(msg, args);
+	va_end(args);
 	Prompt(fullmsg, "Okay");
 	g_free(fullmsg);
 }
