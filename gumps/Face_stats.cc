@@ -270,11 +270,11 @@ Rectangle Portrait_button::get_rect() {
 
 	if (hp) {
 		Rectangle r = hp->get_rect();
-		rect.add(r);
+		rect = rect.add(r);
 	}
 	if (mana) {
 		Rectangle r = mana->get_rect();
-		rect.add(r);
+		rect = rect.add(r);
 	}
 
 	return rect;
@@ -409,7 +409,7 @@ void Face_stats::create_buttons() {
 	for (i = 0; i < 8; i++)
 		if (party[i]) {
 			Rectangle r = party[i]->get_rect();
-			region.add(r);
+			region = region.add(r);
 		}
 }
 
