@@ -42,6 +42,7 @@
 #include "Flex.h"
 #include "Gump.h"
 #include "Gump_manager.h"
+#include "ShortcutBar_gump.h"
 #include "actions.h"
 #include "monsters.h"
 #include "animate.h"
@@ -849,7 +850,7 @@ void Game_window::toggle_combat(
 		}
 	} else              // Ending combat.
 		Combat::resume();   // Make sure not still paused.
-	if(g_shortcutBar)
+	if (g_shortcutBar)
 		g_shortcutBar->set_changed();
 }
 

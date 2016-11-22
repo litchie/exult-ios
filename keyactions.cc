@@ -46,6 +46,7 @@
 #include "effects.h"
 #include "palette.h"
 #include "Yesno_gump.h"
+#include "ShortcutBar_gump.h"
 #include "ignore_unused_variable_warning.h"
 
 #ifdef UNDER_CE
