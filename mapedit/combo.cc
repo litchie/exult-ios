@@ -98,7 +98,7 @@ void ExultStudio::save_combos(
 		if (combos)
 			combos->flush();
 	} catch (const exult_exception &e) {
-		EStudio::Alert(e.what());
+		EStudio::Alert("%s", e.what());
 	}
 }
 

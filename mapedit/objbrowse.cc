@@ -174,7 +174,7 @@ void Object_browser::on_browser_file_save(
 	try {
 		chooser->file_info->flush();
 	} catch (const exult_exception &e) {
-		EStudio::Alert(e.what());
+		EStudio::Alert("%s", e.what());
 	}
 }
 

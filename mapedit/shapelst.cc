@@ -784,7 +784,7 @@ time_t Shape_chooser::export_tiled_png(
 			char buf[250];
 			snprintf(buf, sizeof(buf), "Can only tile %dx%d flat shapes",
 			         c_tilesize, c_tilesize);
-			Alert(buf);
+			Alert("%s", buf);
 			return 0;
 		}
 		int x, y;
