@@ -35,6 +35,7 @@
 #include "dir.h"
 #include "schedule.h"
 #include "exult.h"
+#include "ShortcutBar_gump.h"
 #include "ignore_unused_variable_warning.h"
 
 using std::cout;

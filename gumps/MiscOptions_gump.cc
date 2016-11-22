@@ -39,6 +39,7 @@
 #include "font.h"
 #include "gamewin.h"
 #include "Notebook_gump.h"
+#include "ShortcutBar_gump.h"
 using std::string;
 
 static const int rowy[] = { 4, 16, 28, 40, 52, 64, 76, 88, 100, 112, 124, 136, 148, 160, 172 };

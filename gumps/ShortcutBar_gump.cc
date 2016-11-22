@@ -20,6 +20,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include <config.h>
 #endif
 
+#include "ShortcutBar_gump.h"
+
 #include "SDL_events.h"
 
 #include "fnames.h"
@@ -440,7 +442,7 @@ void ShortcutBar_gump::mouse_up(SDL_Event *event, int mx, int my) {
 #if SDL_VERSION_ATLEAST(2,0,2)
 		if (event->button.clicks >= 2) {
 #else
-		if(0) { // FIXME add a way to doubleclick
+		if (0) { // FIXME add a way to doubleclick
 #endif
 			onItemClicked(i, true);
 		} else {

@@ -39,6 +39,7 @@
 #include "weaponinf.h"
 #include "frflags.h"
 #include "exult.h"
+#include "ShortcutBar_gump.h"
 #include "ignore_unused_variable_warning.h"
 
 #ifdef USE_EXULTSTUDIO
