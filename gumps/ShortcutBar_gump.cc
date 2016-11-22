@@ -318,6 +318,37 @@ void ShortcutBar_gump::paint() {
 	gwin->set_painted();
 }
 
+int ShortcutBar_gump::handle_event(SDL_Event *event) {
+	Game_window *gwin = Game_window::get_instance();
+	// When the Save/Load menu is open, don't handle events
+	if (gumpman->modal_gump_mode() || gwin->get_usecode()->in_usecode() || g_waiting_for_click)
+		return 0;
+
+	for (int i = 0; i < numButtons; i++) {
+		if (event->type == SDL_MOUSEBUTTONDOWN || event->type == SDL_MOUSEBUTTONUP) {
+			int x, y;
+			gwin->get_win()->screen_to_game(event->button.x, event->button.y, gwin->get_fastmouse(), x, y);
+
+#if 0
+			std::cout << "clicks:" << (int)event->button.clicks << ", x,y: "
+				<< x << "," << y << " locx,locy: " << locx << "," << locy
+				<< " widthXheight: " << width << "X" << height << std::endl;
+#endif
+
+			if (x >= startx && x <= (locx + width) && y >= starty && y <= (starty + height)) {
+				if (event->type == SDL_MOUSEBUTTONDOWN) {
+					mouse_down(event, x, buttonItems[i].rect->y);
+				} else if (event->type == SDL_MOUSEBUTTONUP) {
+					mouse_up(event, x, buttonItems[i].rect->y);
+				}
+				return 1;
+			}
+		}
+		return 0;
+	}
+	return 0;
+}
+
 void ShortcutBar_gump::mouse_down(SDL_Event *event, int mx, int my) {
 	ignore_unused_variable_warning(event);
 	int i;
