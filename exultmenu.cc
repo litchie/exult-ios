@@ -148,8 +148,8 @@ void ExultMenu::calc_win() {
 
 void ExultMenu::setup() {
 	ModManager *mm = gamemanager->get_bg();
-	if (!mm) gamemanager->get_si();
-	if (!mm) gamemanager->get_game(0);
+	if (!mm) mm = gamemanager->get_si();
+	if (!mm) mm = gamemanager->get_game(0);
 	if (!mm) {
 		std::cerr << "No games found. Unable to show gumps in Exult menu." << std::endl;
 		return;
