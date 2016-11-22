@@ -2186,8 +2186,9 @@ void Game_window::show_items(
 	        (npc->get_npc_num() > 0 || npc == main_actor)) {
 		char str[64];
 		std::string namestr = Get_object_name(obj);
-		snprintf(str, 64, "(%i) %s", npc->get_npc_num(),
+		snprintf(str, sizeof(str)-1, "(%i) %s", npc->get_npc_num(),
 		         namestr.c_str());
+		str[sizeof(str)-1] = 0;
 		effects->add_text(str, obj);
 	} else if (obj) {
 		// Show name.
@@ -2208,9 +2209,10 @@ void Game_window::show_items(
 	} else if (cheat.in_map_editor() && skip_lift > 0) {
 		// Show flat, but not when editing ter.
 		ShapeID id = get_flat(x, y);
-		char str[12];
-		snprintf(str, 12, "Flat %d:%d", id.get_shapenum(),
-		         id.get_framenum());
+		char str[13];
+		snprintf(str, sizeof(str)-1, "Flat %d:%d",
+		         id.get_shapenum(), id.get_framenum());
+		str[sizeof(str)-1] = 0;
 		effects->add_text(str, x, y);
 	}
 	// If it's an actor and we want to grab the actor, grab it.
