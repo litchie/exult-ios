@@ -65,7 +65,6 @@ class ShortcutBar_gump: public Gump {
 public:
 	ShortcutBar_gump(int placex = 0, int placey = 0);
 	~ShortcutBar_gump();
-	int handle_event(SDL_Event *event);
 	void paint();
 
 	// Don't close on end_gump_mode
