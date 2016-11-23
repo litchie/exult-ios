@@ -68,7 +68,7 @@ Game_object *is_party_item(
 }
 
 void ShortcutBar_gump::check_for_updates(int shnum) {
-	if(shnum == 761 || (GAME_SI && (shnum == 485 || shnum == 555))) //spellbook, keyring, jawbone
+	if (shnum == 761 || (GAME_SI && (shnum == 485 || shnum == 555))) //spellbook, keyring, jawbone
 		has_changed = true;
 }
 
@@ -92,10 +92,9 @@ void ShortcutBar_gump::createButtons() {
 	starty = gwin->get_win()->get_start_y();
 	resy = gwin->get_win()->get_full_height();
 	gamey = gwin->get_game_height();
-	for(int i = 0; i < MAX_SHORTCUT_BAR_ITEMS; ++i)
+	for (int i = 0; i < MAX_SHORTCUT_BAR_ITEMS; ++i)
 		buttonItems[i].translucent = false;
 	int x = (gamex - 320)/2;
-	int y = starty + 20;
 
 	memset(buttonItems, 0, sizeof(buttonItems));
 	bool trlucent = gwin->get_shortcutbar_type() == 1 && starty >= 0;
@@ -103,7 +102,6 @@ void ShortcutBar_gump::createButtons() {
 	buttonItems[0].shapeId = new ShapeID(EXULT_FLX_SB_DISK_SHP, trlucent ? 1 : 0, SF_EXULT_FLX);
 	buttonItems[0].name = "disk";
 	buttonItems[0].type = SB_ITEM_DISK;
-	buttonItems[0].shapeOffsetY = -4;
 
 	// peace/combat
 	if (gwin->in_combat())
@@ -112,7 +110,6 @@ void ShortcutBar_gump::createButtons() {
 		buttonItems[1].shapeId = new ShapeID(EXULT_FLX_SB_COMBAT_SHP, trlucent ? 1 : 0, SF_EXULT_FLX);
 	buttonItems[1].name = "toggle combat";
 	buttonItems[1].type = SB_ITEM_TOGGLE_COMBAT;
-	buttonItems[1].shapeOffsetY = 5;
 
 	// map
 	if(trlucent) {
@@ -125,7 +122,6 @@ void ShortcutBar_gump::createButtons() {
 	}
 	buttonItems[2].name = "map";
 	buttonItems[2].type = SB_ITEM_MAP;
-	buttonItems[2].shapeOffsetY = -1;
 
 	// spellbook
 	if (GAME_SI) {
@@ -139,7 +135,7 @@ void ShortcutBar_gump::createButtons() {
 				buttonItems[3].shapeId = new ShapeID(EXULT_FLX_TRANSPARENTMENU_SHP, 0, SF_EXULT_FLX);
 			} else {
 				buttonItems[3].shapeId = new ShapeID(EXULT_FLX_SB_SPELLBOOK_SHP, 3, SF_EXULT_FLX);
-				buttonItems[3].translucent = 1;
+				buttonItems[3].translucent = true;
 			}
 		}
 	} else {
@@ -153,13 +149,12 @@ void ShortcutBar_gump::createButtons() {
 				buttonItems[3].shapeId = new ShapeID(EXULT_FLX_TRANSPARENTMENU_SHP, 0, SF_EXULT_FLX);
 			} else {
 				buttonItems[3].shapeId = new ShapeID(EXULT_FLX_SB_SPELLBOOK_SHP, 1, SF_EXULT_FLX);
-				buttonItems[3].translucent = 1;
+				buttonItems[3].translucent = true;
 			}
 		}
 	}
 	buttonItems[3].name = "spellbook";
 	buttonItems[3].type = SB_ITEM_SPELLBOOK;
-	buttonItems[3].shapeOffsetY = -4;
 
 	// backpack
 	if(trlucent)
@@ -168,14 +163,12 @@ void ShortcutBar_gump::createButtons() {
 		buttonItems[4].shapeId = new ShapeID(801, 0, SF_SHAPES_VGA);
 	buttonItems[4].name = "backpack";
 	buttonItems[4].type = SB_ITEM_BACKPACK;
-	buttonItems[4].shapeOffsetY = -2;
 
 	// key/keyring
 	if (GAME_SI && is_party_item(485)) {
 		buttonItems[5].shapeId = new ShapeID(EXULT_FLX_SB_KEYRING_SHP, trlucent ? 1 : 0, SF_EXULT_FLX);
 		buttonItems[5].name = "keyring";
 		buttonItems[5].type = SB_ITEM_KEYRING;
-		buttonItems[5].shapeOffsetY = -2;
 	} else {
 		if(trlucent)
 			buttonItems[5].shapeId = new ShapeID(EXULT_FLX_SB_KEY_SHP, 0, SF_EXULT_FLX);
@@ -183,7 +176,6 @@ void ShortcutBar_gump::createButtons() {
 			buttonItems[5].shapeId = new ShapeID(641, 28, SF_SHAPES_VGA);
 		buttonItems[5].name = "key";
 		buttonItems[5].type = SB_ITEM_KEY;
-		buttonItems[5].shapeOffsetY = -1;
 	}
 
 	// notebook
@@ -193,13 +185,11 @@ void ShortcutBar_gump::createButtons() {
 		buttonItems[6].shapeId = new ShapeID(642, 7, SF_SHAPES_VGA);
 	buttonItems[6].name = "notebook";
 	buttonItems[6].type = SB_ITEM_NOTEBOOK;
-	buttonItems[6].shapeOffsetY = -3;
 
 	// target
 	buttonItems[7].shapeId = new ShapeID(EXULT_FLX_SB_TARGET_SHP, trlucent ? 1 : 0, SF_EXULT_FLX);
 	buttonItems[7].name = "target";
 	buttonItems[7].type = SB_ITEM_TARGET;
-	buttonItems[7].shapeOffsetY = -8;
 
 	// feed
 	if(trlucent)
@@ -210,7 +200,6 @@ void ShortcutBar_gump::createButtons() {
 		buttonItems[8].shapeId = new ShapeID(28, 3, SF_GUMPS_VGA);
 	buttonItems[8].name = "feed";
 	buttonItems[8].type = SB_ITEM_FEED;
-	buttonItems[8].shapeOffsetY = -1;
 
 	// jawbone
 	if (GAME_SI) {
@@ -225,12 +214,11 @@ void ShortcutBar_gump::createButtons() {
 				buttonItems[9].shapeId = new ShapeID(EXULT_FLX_TRANSPARENTMENU_SHP, 0, SF_EXULT_FLX);
 			} else {
 				buttonItems[9].shapeId = new ShapeID(EXULT_FLX_SB_JAWBONE_SHP, 1, SF_EXULT_FLX);
-				buttonItems[9].translucent = 1;
+				buttonItems[9].translucent = true;
 			}
 		}
 		buttonItems[9].name = "jawbone";
 		buttonItems[9].type = SB_ITEM_JAWBONE;
-		buttonItems[9].shapeOffsetY = -1;
 
 		numButtons = 10;
 	} else
@@ -239,26 +227,23 @@ void ShortcutBar_gump::createButtons() {
 	int barItemWidth = (320/numButtons);
 
 	for (int i = 0; i < numButtons; i++, x += barItemWidth) {
-		Shape_frame*frame = buttonItems[i].shapeId->get_shape();
-
-		int left = (barItemWidth-frame->get_width())/2;
-		int top = (height-frame->get_height())/2;
-		buttonItems[i].shapeOffsetX += frame->get_xleft() + left;
-		buttonItems[i].shapeOffsetY += -5 + top;
-		buttonItems[i].rect = new Rectangle(x, y, barItemWidth, height);
+		Shape_frame *frame = buttonItems[i].shapeId->get_shape();
+		int dX = frame->get_xleft() + (barItemWidth-frame->get_width()) / 2;
+		int dY = frame->get_yabove() + (height - frame->get_height()) / 2;
+		buttonItems[i].mx = x + dX;
+		buttonItems[i].my = starty + dY;
+		buttonItems[i].rect = Rectangle(x, starty, barItemWidth, height);
 		// this is safe to do since it only effects certain palette colors
 		// which will be color cycling otherwise
 		if (trlucent)
-			buttonItems[i].translucent = 1;
+			buttonItems[i].translucent = true;
 	}
 }
 
 void ShortcutBar_gump::deleteButtons() {
 	for (int i = 0; i < numButtons; i++) {
 		delete buttonItems[i].shapeId;
-		delete buttonItems[i].rect;
 		buttonItems[i].shapeId = NULL;
-		buttonItems[i].rect = NULL;
 	}
 	startx = 0;
 	resx = 0;
@@ -307,12 +292,14 @@ void ShortcutBar_gump::paint() {
 	Gump::paint();
 
 	for (int i = 0; i < numButtons; i++) {
-		int x = locx + buttonItems[i].rect->x + buttonItems[i].shapeOffsetX;
-		int y = locy + buttonItems[i].rect->y + buttonItems[i].shapeOffsetY;
-		sman->paint_shape(x, y, buttonItems[i].shapeId->get_shape(), buttonItems[i].translucent);
+		ShortcutBarButtonItem& item = buttonItems[i];
+		int x = locx + item.mx;
+		int y = locy + item.my;
+		sman->paint_shape(x, y, item.shapeId->get_shape(), item.translucent);
 		// when the bar is on the game screen it may need an outline
 		if (gwin->get_outline_color() < NPIXCOLORS && starty >= 0)
-			sman->paint_outline(x, y, buttonItems[i].shapeId->get_shape(), gwin->get_outline_color());
+			sman->paint_outline(x, y, item.shapeId->get_shape(),
+			                    gwin->get_outline_color());
 	}
 
 	gwin->set_painted();
@@ -329,44 +316,36 @@ int ShortcutBar_gump::handle_event(SDL_Event *event) {
 		)
 		return 0;
 
-	for (int i = 0; i < numButtons; i++) {
-		if (event->type == SDL_MOUSEBUTTONDOWN || event->type == SDL_MOUSEBUTTONUP) {
-			int x, y;
-			gwin->get_win()->screen_to_game(event->button.x, event->button.y, gwin->get_fastmouse(), x, y);
+	if (event->type == SDL_MOUSEBUTTONDOWN || event->type == SDL_MOUSEBUTTONUP) {
+		int x, y;
+		gwin->get_win()->screen_to_game(event->button.x, event->button.y,
+		                                gwin->get_fastmouse(), x, y);
 
 #if 0
-			std::cout << "clicks:" << (int)event->button.clicks << ", x,y: "
-				<< x << "," << y << " locx,locy: " << locx << "," << locy
-				<< " widthXheight: " << width << "X" << height << std::endl;
+		std::cout << "clicks:" << static_cast<int>(event->button.clicks) << ", x,y: "
+			<< x << "," << y << " locx,locy: " << locx << "," << locy
+			<< " widthXheight: " << width << "X" << height << std::endl;
 #endif
 
-			if (x >= startx && x <= (locx + width) && y >= starty && y <= (starty + height)) {
-				if (event->type == SDL_MOUSEBUTTONDOWN) {
-					mouse_down(event, x, buttonItems[i].rect->y);
-				} else if (event->type == SDL_MOUSEBUTTONUP) {
-					mouse_up(event, x, buttonItems[i].rect->y);
-				}
-				return 1;
+		if (x >= startx && x <= (locx + width) && y >= starty && y <= (starty + height)) {
+			if (event->type == SDL_MOUSEBUTTONDOWN) {
+				mouse_down(event, x, y);
+			} else if (event->type == SDL_MOUSEBUTTONUP) {
+				mouse_up(event, x, y);
 			}
+			return 1;
 		}
-		return 0;
 	}
 	return 0;
 }
 
 void ShortcutBar_gump::mouse_down(SDL_Event *event, int mx, int my) {
 	ignore_unused_variable_warning(event);
-	int i;
-	for (i = 0; i < numButtons; i++) {
-		if (buttonItems[i].rect->has_point(mx, my))
-			break;
+	for (int i = 0; i < numButtons; i++) {
+		if (buttonItems[i].rect.has_point(mx, my)) {
+			buttonItems[i].pushed = true;
+		}
 	}
-	if (i == numButtons)
-		return;
-
-	ShortcutBarButtonItem *item = buttonItems + i;
-	item->pushed = true;
-
 }
 
 #define DID_MOUSE_UP 1
@@ -416,7 +395,7 @@ void ShortcutBar_gump::mouse_up(SDL_Event *event, int mx, int my) {
 	int i;
 
 	for (i = 0; i < numButtons; i++) {
-		if (buttonItems[i].rect->has_point(mx, my))
+		if (buttonItems[i].rect.has_point(mx, my))
 			break;
 	}
 

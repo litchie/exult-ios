@@ -44,6 +44,7 @@
 #include "Yesno_gump.h"
 #include "gump_utils.h"
 #include "Slider_gump.h"
+#include "ShortcutBar_gump.h"
 
 #ifdef __IPHONEOS__
 #   include "touchui.h"
