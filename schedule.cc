@@ -1161,8 +1161,10 @@ void Patrol_schedule::now_what(
 			case 14:    // Check area.
 				// Foce check for lamps, etc.
 				street_maintenance_time = 0;
-				if (try_street_maintenance())
+				if (try_street_maintenance()) {
+					delete scr;
 					return;     // We no longer exist.
+				}
 				delay += 2;
 				(*scr) << Ucscript::delay_ticks << 2;
 				break;
@@ -4084,7 +4086,8 @@ void Bake_schedule::now_what() {
 			dough_in_oven = 0;
 			state = get_dough;
 		} else {
-			Actor_action *pact = Path_walking_actor_action::create_path(
+			delete pact;
+			pact = Path_walking_actor_action::create_path(
 			                         npcpos, displaytable->get_tile(), cost);
 			npc->set_action(new Sequence_actor_action(pact,
 			                new Face_pos_actor_action(displaytable->get_tile(), 250)));
@@ -4580,6 +4583,9 @@ void Forge_schedule::now_what(
 			a[6] = 0;
 			npc->set_action(new Sequence_actor_action(a));
 		} else {
+			// Don't leak the paths
+			delete pact;
+			delete pact2;
 			// no path found, just pick up sword blank
 			npc->set_action(new Sequence_actor_action(
 			                    new Pickup_actor_action(blank, 250),
