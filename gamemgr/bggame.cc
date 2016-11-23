@@ -461,7 +461,7 @@ void BG_Game::scene_lord_british() {
 }
 
 
-#define BUTTERFLY_FRAME_DURATION    23 // - used to be 16.. too fast. 
+#define BUTTERFLY_FRAME_DURATION    23 // - used to be 16.. too fast.
 
 #define BUTTERFLY_SUB_FRAMES    3
 
@@ -1009,7 +1009,7 @@ void BG_Game::scene_guardian() {
 				DRAW_SPEECH();
 			}
 
-			if (time >= text_times[text_index] && text_index < text_num_frames) {
+			if (text_index < text_num_frames && time >= text_times[text_index]) {
 				text_index++;
 				ADVANCE_TEXT_POINTER();
 				DRAW_SPEECH();
