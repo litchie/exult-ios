@@ -206,10 +206,16 @@ void Effects_manager::remove_all_effects(
 ) {
 	if (!effects && !texts)
 		return;
-	while (effects)
+	while (effects) {
+		Special_effect *next = effects->next;
 		remove_effect(effects);
-	while (texts)
+		effects = next;
+	}
+	while (texts) {
+		Text_effect *next = texts->next;
 		remove_text_effect(texts);
+		texts = next;
+	}
 	if (repaint)
 		gwin->paint();      // Just paint whole screen.
 }
@@ -220,8 +226,11 @@ void Effects_manager::remove_all_effects(
 
 void Effects_manager::remove_text_effects(
 ) {
-	while (texts)
+	while (texts) {
+		Text_effect *next = texts->next;
 		remove_text_effect(texts);
+		texts = next;
+	}
 	gwin->set_all_dirty();
 }
 
@@ -241,7 +250,7 @@ void Effects_manager::remove_weather_effects(
 		Special_effect *next = each->next;
 		// See if we're far enough away.
 		if (each->is_weather() && (!dist ||
-		                           reinterpret_cast<Weather_effect *>(each)->out_of_range(apos, dist)))
+		                           static_cast<Weather_effect *>(each)->out_of_range(apos, dist)))
 			remove_effect(each);
 		each = next;
 	}
@@ -276,7 +285,7 @@ int Effects_manager::get_weather(
 	while (each) {
 		Special_effect *next = each->next;
 		if (each->is_weather()) {
-			Weather_effect *weather = reinterpret_cast<Weather_effect *>(each);
+			Weather_effect *weather = static_cast<Weather_effect *>(each);
 			if (weather->get_num() >= 0)
 				return weather->get_num();
 		}
