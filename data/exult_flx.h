@@ -50,7 +50,7 @@
 #define	EXULT_FLX_EXULTMSG_ES_TXT		42
 #define	EXULT_FLX_EXULTMSG_FR_TXT		43
 
-#define	EXULT_FLX_CRC32	0xbc1d8cdbU
+#define	EXULT_FLX_CRC32	0x8df438bU
 
 #endif
 
