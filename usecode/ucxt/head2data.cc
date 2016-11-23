@@ -30,9 +30,9 @@ using std::ofstream;
 #endif
 #endif
 
-void gen_intrinsic_table(ofstream& o, std::string const table[100]) {
+void gen_intrinsic_table(ofstream& o, std::string const table[], unsigned int len) {
 	o << "<intrinsics>" << endl;
-	for (unsigned int i = 0; i < 0x100; i++) {
+	for (unsigned int i = 0; i < len; i++) {
 		o << "\t<0x" << setw(2) << i << "> " << table[i];
 		if (table[i] == "UNKNOWN") {
 			o << '_' << setw(2) << i;
@@ -60,7 +60,7 @@ void bg_out(const string &fname) {
 	};
 #undef USECODE_INTRINSIC_PTR
 
-	gen_intrinsic_table(o, bgut);
+	gen_intrinsic_table(o, bgut, sizeof(bgut) / sizeof(bgut[0]));
 	o.close();
 }
 
@@ -82,7 +82,7 @@ void si_out(const string &fname) {
 	};
 #undef USECODE_INTRINSIC_PTR
 
-	gen_intrinsic_table(o, siut);
+	gen_intrinsic_table(o, siut, sizeof(siut) / sizeof(siut[0]));
 
 	o.close();
 }
@@ -105,7 +105,7 @@ void sibeta_out(const string &fname) {
 	};
 #undef USECODE_INTRINSIC_PTR
 
-	gen_intrinsic_table(o, sibut);
+	gen_intrinsic_table(o, sibut, sizeof(sibut) / sizeof(sibut[0]));
 
 	o.close();
 }
