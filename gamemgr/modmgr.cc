@@ -418,9 +418,6 @@ ModManager::ModManager(const string &name, const string &menu, bool needtitle,
 		path_prefix = to_uppercase(name);
 	}
 
-	if (found)
-		delete[] static_identity;
-
 	menustring = needtitle ? new_title : menu;
 	// NOW we can store the path.
 	add_system_path("<" + path_prefix + "_PATH>", game_path);
@@ -463,6 +460,7 @@ ModManager::ModManager(const string &name, const string &menu, bool needtitle,
 
 	get_game_paths(game_path);
 	gather_mods();
+	delete[] static_identity;
 }
 
 void ModManager::gather_mods() {

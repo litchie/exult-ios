@@ -17,8 +17,8 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-   instrum.c 
-   
+   instrum.c
+
    Code to load and unload GUS-compatible instrument patches.
 
 */
@@ -46,10 +46,10 @@
 namespace NS_TIMIDITY {
 #endif
 
-/* Some functions get aggravated if not even the standard banks are 
+/* Some functions get aggravated if not even the standard banks are
  available. */
 static ToneBank standard_tonebank, standard_drumset;
-ToneBank 
+ToneBank
 	*tonebank[128]={&standard_tonebank},
 *drumset[128]={&standard_drumset};
 
@@ -103,7 +103,7 @@ static sint32 convert_envelope_rate(uint8 rate)
 	r = (rate & 0x3f) << r; /* 6.9 fixed point */
 
 	/* 15.15 fixed point. */
-	return (((r * 44100) / play_mode->rate) * control_ratio) 
+	return (((r * 44100) / play_mode->rate) * control_ratio)
 		<< ((fast_decay) ? 10 : 9);
 }
 
@@ -152,7 +152,7 @@ static sint32 convert_vibrato_rate(uint8 rate)
 {
 	/* Return a suitable vibrato_control_ratio value */
 	return
-		(VIBRATO_RATE_TUNING * play_mode->rate) / 
+		(VIBRATO_RATE_TUNING * play_mode->rate) /
 		(rate * 2 * VIBRATO_SAMPLE_INCREMENTS);
 }
 
@@ -170,9 +170,9 @@ static void reverse_data(sint16 *sp, sint32 ls, sint32 le)
 	}
 }
 
-/* 
+/*
  If panning or note_to_use != -1, it will be used for all samples,
- instead of the sample-specific values in the instrument file. 
+ instead of the sample-specific values in the instrument file.
 
  For note_to_use, any value <0 or >127 will be forced to 0.
 
@@ -222,8 +222,9 @@ static Instrument *load_instrument(char *name, int percussion,
 
 	if (noluck)
 	{
-		ctl->cmsg(CMSG_ERROR, VERB_NORMAL, 
+		ctl->cmsg(CMSG_ERROR, VERB_NORMAL,
 		          "Instrument `%s' can't be found.", name);
+		close_file(fp);
 		return 0;
 	}
 
@@ -238,21 +239,24 @@ static Instrument *load_instrument(char *name, int percussion,
 		 differences are */
 	{
 		ctl->cmsg(CMSG_ERROR, VERB_NORMAL, "%s: not an instrument", name);
+		close_file(fp);
 		return 0;
 	}
 
-	if (tmp[82] != 1 && tmp[82] != 0) /* instruments. To some patch makers, 
+	if (tmp[82] != 1 && tmp[82] != 0) /* instruments. To some patch makers,
 		 0 means 1 */
 	{
-		ctl->cmsg(CMSG_ERROR, VERB_NORMAL, 
+		ctl->cmsg(CMSG_ERROR, VERB_NORMAL,
 		          "Can't handle patches with %d instruments", tmp[82]);
+		close_file(fp);
 		return 0;
 	}
 
 	if (tmp[151] != 1 && tmp[151] != 0) /* layers. What's a layer? */
 	{
-		ctl->cmsg(CMSG_ERROR, VERB_NORMAL, 
+		ctl->cmsg(CMSG_ERROR, VERB_NORMAL,
 		          "Can't handle instruments with %d layers", tmp[151]);
+		close_file(fp);
 		return 0;
 	}
 
@@ -287,6 +291,7 @@ static Instrument *load_instrument(char *name, int percussion,
 				free(ip->sample[j].data);
 			free(ip->sample);
 			free(ip);
+			close_file(fp);
 			return 0;
 		}
 
@@ -309,7 +314,7 @@ static Instrument *load_instrument(char *name, int percussion,
 			sp->panning=static_cast<uint8>(panning & 0x7F);
 
 		/* envelope, tremolo, and vibrato */
-		if (18 != fread(tmp, 1, 18, fp)) goto fail; 
+		if (18 != fread(tmp, 1, 18, fp)) goto fail;
 
 		if (!tmp[13] || !tmp[14])
 		{
@@ -362,16 +367,16 @@ static Instrument *load_instrument(char *name, int percussion,
 		 all looped patches probably breaks something else. We do it
 		 anyway. */
 
-		if (sp->modes & MODES_LOOPING) 
+		if (sp->modes & MODES_LOOPING)
 			sp->modes |= MODES_SUSTAIN;
 
 		/* Strip any loops and envelopes we're permitted to */
-		if ((strip_loop==1) && 
-		    (sp->modes & (MODES_SUSTAIN | MODES_LOOPING | 
+		if ((strip_loop==1) &&
+		    (sp->modes & (MODES_SUSTAIN | MODES_LOOPING |
 		                  MODES_PINGPONG | MODES_REVERSE)))
 		{
 			ctl->cmsg(CMSG_INFO, VERB_DEBUG, " - Removing loop and/or sustain");
-			sp->modes &=~(MODES_SUSTAIN | MODES_LOOPING | 
+			sp->modes &=~(MODES_SUSTAIN | MODES_LOOPING |
 			              MODES_PINGPONG | MODES_REVERSE);
 		}
 
@@ -389,15 +394,15 @@ static Instrument *load_instrument(char *name, int percussion,
 				/* No loop? Then what's there to sustain? No envelope needed
 				 either... */
 				sp->modes &= ~(MODES_SUSTAIN|MODES_ENVELOPE);
-				ctl->cmsg(CMSG_INFO, VERB_DEBUG, 
+				ctl->cmsg(CMSG_INFO, VERB_DEBUG,
 				          " - No loop, removing sustain and envelope");
 			}
-			else if (!memcmp(tmp, "??????", 6) || tmp[11] >= 100) 
+			else if (!memcmp(tmp, "??????", 6) || tmp[11] >= 100)
 			{
 				/* Envelope rates all maxed out? Envelope end at a high "offset"?
 				 That's a weird envelope. Take it out. */
 				sp->modes &= ~MODES_ENVELOPE;
-				ctl->cmsg(CMSG_INFO, VERB_DEBUG, 
+				ctl->cmsg(CMSG_INFO, VERB_DEBUG,
 				          " - Weirdness, removing envelope");
 			}
 			else if (!(sp->modes & MODES_SUSTAIN))
@@ -407,7 +412,7 @@ static Instrument *load_instrument(char *name, int percussion,
 				 envelope either... at least the Gravis ones. They're mostly
 				 drums.  I think. */
 				sp->modes &= ~MODES_ENVELOPE;
-				ctl->cmsg(CMSG_INFO, VERB_DEBUG, 
+				ctl->cmsg(CMSG_INFO, VERB_DEBUG,
 				          " - No sustain, removing envelope");
 			}
 		}
@@ -416,7 +421,7 @@ static Instrument *load_instrument(char *name, int percussion,
 		{
 			sp->envelope_rate[j]=
 				convert_envelope_rate(tmp[j]);
-			sp->envelope_offset[j]= 
+			sp->envelope_offset[j]=
 				convert_envelope_offset(tmp[6+j]);
 		}
 
@@ -451,7 +456,7 @@ static Instrument *load_instrument(char *name, int percussion,
 			sample_t *tmp=sp->data, s;
 #endif
 			while (i--)
-			{ 
+			{
 				s=LE_SHORT(*tmp);
 				*tmp++=s;
 			}
@@ -571,7 +576,7 @@ static int fill_bank(int dr, int b)
 	ToneBank *bank=((dr) ? drumset[b] : tonebank[b]);
 	if (!bank)
 	{
-		ctl->cmsg(CMSG_ERROR, VERB_NORMAL, 
+		ctl->cmsg(CMSG_ERROR, VERB_NORMAL,
 		          "Huh. Tried to load instruments in non-existent %s %d",
 		          (dr) ? "drumset" : "tone bank", b);
 		return 0;
@@ -584,7 +589,7 @@ static int fill_bank(int dr, int b)
 			{
 				ctl->cmsg(CMSG_WARNING, (b!=0) ? VERB_VERBOSE : VERB_NORMAL,
 				          "No instrument mapped to %s %d, program %d%s",
-				          (dr)? "drum set" : "tone bank", b, i, 
+				          (dr)? "drum set" : "tone bank", b, i,
 				          (b!=0) ? "" : " - this instrument will not be heard");
 				if (b!=0)
 				{
@@ -607,22 +612,22 @@ static int fill_bank(int dr, int b)
 				errors++;
 			}
 			else if (!(bank->tone[i].instrument=
-			           load_instrument(bank->tone[i].name, 
+			           load_instrument(bank->tone[i].name,
 			                           (dr) ? 1 : 0,
 			                           bank->tone[i].pan,
 			                           bank->tone[i].amp,
-			                           (bank->tone[i].note!=-1) ? 
+			                           (bank->tone[i].note!=-1) ?
 			                           bank->tone[i].note :
 				                           ((dr) ? i : -1),
 				                           (bank->tone[i].strip_loop!=-1) ?
 			                           bank->tone[i].strip_loop :
 				                           ((dr) ? 1 : -1),
-				                           (bank->tone[i].strip_envelope != -1) ? 
+				                           (bank->tone[i].strip_envelope != -1) ?
 			                           bank->tone[i].strip_envelope :
 				                           ((dr) ? 1 : -1),
 				                           bank->tone[i].strip_tail )))
 			{
-				ctl->cmsg(CMSG_ERROR, VERB_NORMAL, 
+				ctl->cmsg(CMSG_ERROR, VERB_NORMAL,
 				          "Couldn't load instrument %s (%s %d, program %d)",
 				          bank->tone[i].name,
 				          (dr)? "drum set" : "tone bank", b, i);

@@ -1246,6 +1246,7 @@ void Shape_chooser::export_all_pngs(
 			yoff = -frame->get_ybelow();
 		}
 		export_png(fullname, img, xoff, yoff);
+		delete [] fullname;
 	}
 }
 
@@ -1317,6 +1318,7 @@ void Shape_chooser::import_all_pngs(
 	show();
 	file_info->set_modified();
 	studio->update_group_windows(0);
+	delete [] fullname;
 }
 
 void Shape_chooser::import_all_frames(
