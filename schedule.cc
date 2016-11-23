@@ -1784,7 +1784,7 @@ void Miner_schedule::now_what(
 		static int oreshapes[] = {915, 916};
 		Game_object_vector ores;
 		npc->find_closest(ores, oreshapes,
-		                  sizeof(ores) / sizeof(ores[0]));
+		                  sizeof(oreshapes) / sizeof(oreshapes[0]));
 		int from, to, cnt = ores.size();
 		// Filter out frame #3 (dust).
 		for (from = to = 0; from < cnt; ++from)
