@@ -31,7 +31,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 /* -------------------------------------------- */
 
-typedef enum {
+enum ShortcutBarButtonItemType {
 	SB_ITEM_DISK,
 	SB_ITEM_TOGGLE_COMBAT,
 	SB_ITEM_MAP,
@@ -43,7 +43,7 @@ typedef enum {
 	SB_ITEM_TARGET,
 	SB_ITEM_JAWBONE,
 	SB_ITEM_FEED
-} ShortcutBarButtonItemType;
+};
 
 Game_object *is_party_item(int shnum, int frnum = c_any_framenum,
                    int qual = c_any_qual);
@@ -52,9 +52,8 @@ struct ShortcutBarButtonItem {
 	const char *name;
 	ShortcutBarButtonItemType type;
 	ShapeID *shapeId;
-	Rectangle *rect; /* coordinate values related to shortcut bar */
-	int shapeOffsetX;
-	int shapeOffsetY;
+	Rectangle rect; // Shortcut bar button click area
+	int mx, my;		// Coordinates where shape is to be drawn
 	bool pushed;
 	bool translucent;
 };
@@ -110,9 +109,5 @@ private:
 	int width;
 	int height;
 };
-
-class Gump_button;
-typedef std::vector<Gump_button *> Gump_button_vector;
-typedef std::map<Game_object *, int *> Game_object_map_xy;
 
 #endif
