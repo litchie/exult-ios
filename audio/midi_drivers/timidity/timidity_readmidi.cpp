@@ -135,7 +135,7 @@ static MidiEventList *read_midi_event(void)
 		at+=getvl();
 		if (fread(&me,1,1,fp)!=1)
 		{
-			ctl->cmsg(CMSG_ERROR, VERB_NORMAL, "%s: read_midi_event: %s", 
+			ctl->cmsg(CMSG_ERROR, VERB_NORMAL, "%s: read_midi_event: %s",
 			          current_filename, strerror(errno));
 			return 0;
 		}
@@ -165,17 +165,17 @@ static MidiEventList *read_midi_event(void)
 						return MAGIC_EOT;
 
 					case 0x51: /* Tempo */
-						err = fread(&a,1,1,fp); 
+						err = fread(&a,1,1,fp);
 						assert (err == 1);
-						err = fread(&b,1,1,fp); 
+						err = fread(&b,1,1,fp);
 						assert (err == 1);
 						err = fread(&c,1,1,fp);
 						assert (err == 1);
 						MIDIEVENT(at, ME_TEMPO, c, a, b);
 
 					default:
-						ctl->cmsg(CMSG_INFO, VERB_DEBUG, 
-							      "(Meta event type 0x%02x, length %ld)", type, len);
+						ctl->cmsg(CMSG_INFO, VERB_DEBUG,
+							      "(Meta event type 0x%02x, length %d)", type, len);
 						skip(fp, len);
 						break;
 				}
@@ -234,9 +234,9 @@ static MidiEventList *read_midi_event(void)
 							 continuous controller. This will cause lots of
 							 warnings about undefined tone banks. */
 							case 0: control=ME_TONE_BANK; break;
-							case 32: 
+							case 32:
 								if (b!=0)
-									ctl->cmsg(CMSG_INFO, VERB_DEBUG, 
+									ctl->cmsg(CMSG_INFO, VERB_DEBUG,
 										      "(Strange: tone bank change 0x20%02x)", b);
 								else
 									control=ME_TONE_BANK;
@@ -250,10 +250,9 @@ static MidiEventList *read_midi_event(void)
 							case 6:
 								if (nrpn)
 								{
-									ctl->cmsg(CMSG_INFO, VERB_DEBUG, 
-											  "(Data entry (MSB) for NRPN %02x,%02x: %ld)",
-											  rpn_msb[lastchan], rpn_lsb[lastchan],
-											  b);
+									ctl->cmsg(CMSG_INFO, VERB_DEBUG,
+											  "(Data entry (MSB) for NRPN %02x,%02x: %d)",
+											  rpn_msb[lastchan], rpn_lsb[lastchan], b);
 									break;
 								}
 
@@ -268,22 +267,21 @@ static MidiEventList *read_midi_event(void)
 										MIDIEVENT(at, ME_PITCH_SENS, lastchan, 2, 0);
 
 									default:
-										ctl->cmsg(CMSG_INFO, VERB_DEBUG, 
-												  "(Data entry (MSB) for RPN %02x,%02x: %ld)",
-												  rpn_msb[lastchan], rpn_lsb[lastchan],
-												  b);
+										ctl->cmsg(CMSG_INFO, VERB_DEBUG,
+												  "(Data entry (MSB) for RPN %02x,%02x: %d)",
+												  rpn_msb[lastchan], rpn_lsb[lastchan], b);
 										break;
 								}
 								break;
 
 							default:
-								ctl->cmsg(CMSG_INFO, VERB_DEBUG, 
+								ctl->cmsg(CMSG_INFO, VERB_DEBUG,
 									      "(Control %d: %d)", a, b);
 								break;
 						}
 						if (control != 255)
-						{ 
-							MIDIEVENT(at, control, lastchan, b, 0); 
+						{
+							MIDIEVENT(at, control, lastchan, b, 0);
 						}
 					}
 					break;
@@ -301,8 +299,8 @@ static MidiEventList *read_midi_event(void)
 					b &= 0x7F;
 					MIDIEVENT(at, ME_PITCHWHEEL, lastchan, a, b);
 
-				default: 
-					ctl->cmsg(CMSG_ERROR, VERB_NORMAL, 
+				default:
+					ctl->cmsg(CMSG_ERROR, VERB_NORMAL,
 					          "*** Can't happen: status 0x%02X, channel 0x%02X",
 					          laststatus, lastchan);
 					break;
@@ -401,7 +399,7 @@ static MidiEvent *groom_list(sint32 divisions,sint32 *eventsp,sint32 *samplesp)
 	sint32 i, our_event_count, tempo, skip_this_event, new_value;
 	sint32 sample_cum, samples_to_do, at, st, dt, counting_time;
 
-	int current_bank[16], current_set[16], current_program[16]; 
+	int current_bank[16], current_set[16], current_program[16];
 	/* Or should each bank have its own current program? */
 
 	for (i=0; i<16; i++)
@@ -454,7 +452,7 @@ static MidiEvent *groom_list(sint32 divisions,sint32 *eventsp,sint32 *samplesp)
 					}
 					if (current_set[meep->event.channel] != new_value)
 						current_set[meep->event.channel]=new_value;
-					else 
+					else
 						skip_this_event=1;
 				}
 				else
@@ -501,7 +499,7 @@ static MidiEvent *groom_list(sint32 divisions,sint32 *eventsp,sint32 *samplesp)
 				}
 				if (tonebank[meep->event.a]) /* Is this a defined tone bank? */
 					new_value=meep->event.a;
-				else 
+				else
 				{
 					ctl->cmsg(CMSG_WARNING, VERB_VERBOSE,
 						      "Tone bank %d is undefined", meep->event.a);
@@ -566,11 +564,11 @@ MidiEvent *read_midi_file(FILE *mfp, sint32 *count, sint32 *sp)
 	{
 		if (ferror(fp))
 		{
-			ctl->cmsg(CMSG_ERROR, VERB_NORMAL, "%s: %s", current_filename, 
+			ctl->cmsg(CMSG_ERROR, VERB_NORMAL, "%s: %s", current_filename,
 			          strerror(errno));
 		}
 		else
-			ctl->cmsg(CMSG_ERROR, VERB_NORMAL, 
+			ctl->cmsg(CMSG_ERROR, VERB_NORMAL,
 			          "%s: Not a MIDI file!", current_filename);
 		return 0;
 	}
@@ -601,18 +599,18 @@ MidiEvent *read_midi_file(FILE *mfp, sint32 *count, sint32 *sp)
 
 	if (len > 6)
 	{
-		ctl->cmsg(CMSG_WARNING, VERB_NORMAL, 
-		          "%s: MIDI file header size %ld bytes", 
+		ctl->cmsg(CMSG_WARNING, VERB_NORMAL,
+		          "%s: MIDI file header size %d bytes",
 		          current_filename, len);
 		skip(fp, len-6); /* skip the excess */
 	}
 	if (format<0 || format >2)
 	{
-		ctl->cmsg(CMSG_ERROR, VERB_NORMAL, 
+		ctl->cmsg(CMSG_ERROR, VERB_NORMAL,
 		          "%s: Unknown MIDI file format %d", current_filename, format);
 		return 0;
 	}
-	ctl->cmsg(CMSG_INFO, VERB_VERBOSE, 
+	ctl->cmsg(CMSG_INFO, VERB_VERBOSE,
 	          "Format: %d  Tracks: %d  Divisions: %d", format, tracks, divisions);
 
 	/* Put a do-nothing event first in the list for easier processing */

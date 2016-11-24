@@ -68,6 +68,14 @@ namespace NS_TIMIDITY {
 #define VERB_DEBUG	3
 #define VERB_DEBUG_SILLY	4
 
+#ifndef ATTR_PRINTF
+#ifdef __GNUC__
+#define ATTR_PRINTF(x,y) __attribute__((format(printf, (x), (y))))
+#else
+#define ATTR_PRINTF(x,y)
+#endif
+#endif
+
 struct ControlMode {
 	const char *id_name, id_character;
 	int verbosity, trace_playing, opened;
@@ -76,7 +84,7 @@ struct ControlMode {
 	void (*pass_playing_list)(int number_of_files, char *list_of_files[]);
 	void (*close)(void);
 	int (*read)(sint32 *valp);
-	int (*cmsg)(int type, int verbosity_level, const char *fmt, ...);
+	int (*cmsg)(int type, int verbosity_level, const char *fmt, ...) ATTR_PRINTF(3,4);
 
 	void (*refresh)(void);
 	void (*reset)(void);
@@ -94,7 +102,7 @@ struct ControlMode {
 	void (*pitch_bend)(int channel, int val);
 };
 
-extern ControlMode *ctl_list[], *ctl; 
+extern ControlMode *ctl_list[], *ctl;
 extern char timidity_error[];
 
 #ifdef NS_TIMIDITY

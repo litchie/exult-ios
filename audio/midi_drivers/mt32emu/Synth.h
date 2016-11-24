@@ -26,6 +26,14 @@
 #include "Types.h"
 #include "Enumerations.h"
 
+#ifndef ATTR_PRINTF
+#ifdef __GNUC__
+#define ATTR_PRINTF(x,y) __attribute__((format(printf, (x), (y))))
+#else
+#define ATTR_PRINTF(x,y)
+#endif
+#endif
+
 namespace MT32Emu {
 
 class Analog;
@@ -222,7 +230,7 @@ private:
 	void printPartialUsage(Bit32u sampleOffset = 0);
 
 	void newTimbreSet(Bit8u partNum, Bit8u timbreGroup, Bit8u timbreNumber, const char patchName[]);
-	void printDebug(const char *fmt, ...);
+	void printDebug(const char *fmt, ...) ATTR_PRINTF(2,3);
 
 	// partNum should be 0..7 for Part 1..8, or 8 for Rhythm
 	const Part *getPart(Bit8u partNum) const;
