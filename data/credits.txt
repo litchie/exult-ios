@@ -112,6 +112,10 @@
 \CLip-syncing in the BG intro.
 
 
+\CChaoji "Litchie" Li
+\CTremendous work on the iOS port
+
+
 
 \COTHER CONTRIBUTORS
 
