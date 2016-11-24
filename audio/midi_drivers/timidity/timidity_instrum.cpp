@@ -224,7 +224,6 @@ static Instrument *load_instrument(char *name, int percussion,
 	{
 		ctl->cmsg(CMSG_ERROR, VERB_NORMAL,
 		          "Instrument `%s' can't be found.", name);
-		close_file(fp);
 		return 0;
 	}
 
