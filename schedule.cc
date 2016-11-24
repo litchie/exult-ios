@@ -4416,6 +4416,9 @@ void Forge_schedule::now_what(
 			                pact2,
 			                new Pickup_actor_action(blank, bpos, 250)));
 		} else {
+			// Don't leak the paths
+			delete pact;
+			delete pact2;
 			npc->set_action(new Sequence_actor_action(
 			                    new Pickup_actor_action(blank, 250),
 			                    new Pickup_actor_action(blank, bpos, 250)));
