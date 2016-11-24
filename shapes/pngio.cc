@@ -59,6 +59,7 @@ int Import_png8(
     int &pal_size           // # entries in palette returned.
 ) {
 	pixels = 0;         // In case we fail.
+	palette = 0;        // In case we fail.
 	// Open file.
 	FILE *fp = fopen(pngname, "rb");
 	if (!fp)
