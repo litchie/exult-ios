@@ -297,9 +297,6 @@
    `char[]'. */
 #define YYTEXT_POINTER 1
 
-/* Using iPhone */
-#define __IPHONEOS__  1
-
 /* Define to empty if `const' does not conform to ANSI C. */
 /* #undef const */
 
