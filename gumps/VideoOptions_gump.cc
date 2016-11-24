@@ -391,7 +391,7 @@ void VideoOptions_gump::save_settings() {
 	set_pos();
 	gwin->set_all_dirty();
 
-	if (!Countdown_gump::ask("Settings applied.\nKeep? %i...", 20)) {
+	if (!Countdown_gump::ask("Settings applied.\nKeep?", 20)) {
 		resx = o_resolution >> 16;
 		resy = o_resolution & 0xFFFF;
 		gw = game_resolutions[o_game_resolution] >> 16;

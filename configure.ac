@@ -786,7 +786,7 @@ fi
 
 CHK_WARN="-Wall -Wextra -pedantic -Wcast-qual -Wwrite-strings -Wredundant-decls -Wdisabled-optimization -fcheck-new"
 CHK_WARN="$CHK_WARN -Wctor-dtor-privacy -Wnon-virtual-dtor -Wold-style-cast -Woverloaded-virtual -Wuseless-cast"
-CHK_WARN="$CHK_WARN -Wno-format-nonliteral -Wformat-security -Wshift-negative-value -Wshift-overflow -Wtrigraphs"
+CHK_WARN="$CHK_WARN -Wformat-nonliteral -Wformat-security -Wshift-negative-value -Wshift-overflow -Wtrigraphs"
 CHK_WARN="$CHK_WARN -Wuninitialized -fstrict-aliasing -Wduplicated-cond -Wplacement-new -Wcast-align"
 CHK_WARN="$CHK_WARN -Wlogical-op -Wlogical-not-parentheses -Wpointer-sign"
 CHK_WARN="$CHK_WARN -Wundef"
