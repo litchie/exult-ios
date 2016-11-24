@@ -266,9 +266,9 @@ void ActionFullscreen(int const *params) {
 	setup_video(!gwin->get_win()->is_fullscreen(), TOGGLE_FULLSCREEN);
 	const char *msg;
 	if (gwin->get_win()->is_fullscreen())
-		msg = "Fullscreen applied.\nKeep? %i...";
+		msg = "Fullscreen applied.\nKeep?";
 	else
-		msg = "Windowed mode.\nKeep? %i...";
+		msg = "Windowed mode.\nKeep?";
 	if (Countdown_gump::ask(msg, 20))
 		config->set("config/video/fullscreen",
 		            gwin->get_win()->is_fullscreen() ? "yes" : "no",

@@ -2261,17 +2261,16 @@ int find_resolution(int w, int h, int s) {
 void make_screenshot(bool silent) {
 	// TODO: Maybe use <SAVEGAME>/exult%03i.pcx instead.
 	// Or maybe some form or "My Pictures" on Windows.
-	string homepath = get_system_path("<HOME>") + "/exult%03i.pcx";
-	char *fn = new char[homepath.size() + 10];
-	int i;
-	FILE *f;
+	string homepath = get_system_path("<HOME>");
+	size_t strsize = homepath.size() + 20;
+	char *fn = new char[strsize];
 	bool namefound = false;
 	Effects_manager *eman = gwin->get_effects();
 
 	// look for the next available exult???.pcx file
-	for (i = 0; i < 1000 && !namefound; i++) {
-		snprintf(fn, homepath.size() + 10, homepath.c_str(), i);
-		f = fopen(fn, "rb");
+	for (int i = 0; i < 1000 && !namefound; i++) {
+		snprintf(fn, strsize, "%s/exult%03i.pcx", homepath.c_str(), i);
+		FILE *f = fopen(fn, "rb");
 		if (f) {
 			fclose(f);
 		} else {
