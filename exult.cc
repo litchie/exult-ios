@@ -181,7 +181,7 @@ TouchUI *touchui;
 bool g_waiting_for_click = false;
 ShortcutBar_gump *g_shortcutBar = NULL;
 
-#if USECODE_DEBUGGER
+#ifdef USECODE_DEBUGGER
 bool    usecode_debugging = false;  // Do we enable the usecode debugger?
 extern void initialise_usecode_debugger(void);
 #endif
@@ -730,7 +730,7 @@ int exult_main(const char *runpath) {
 	config->value("config/disk/save_compression_level", save_compression, 1);
 	if (save_compression < 0 || save_compression > 2) save_compression = 1;
 	config->set("config/disk/save_compression_level", save_compression, false);
-#if USECODE_DEBUGGER
+#ifdef USECODE_DEBUGGER
 	// Enable usecode debugger
 	config->value("config/debug/debugger/enable", usecode_debugging);
 	initialise_usecode_debugger();
