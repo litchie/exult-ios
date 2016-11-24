@@ -1303,7 +1303,7 @@ void ExultStudio::set_game_path(string gamename, string modname) {
 		if (palbuf) // Just in case.
 			delete [] palbuf;
 		palbuf = new unsigned char[3 * 256]; // How about all white?
-		memset(palbuf, (63 << 16) | (63 << 8) | 63, 3 * 256);
+		memset(palbuf, 63, 3 * 256);
 	}
 	// Set background color.
 	palbuf[3 * 255] = (background_color >> 18) & 0x3f;
