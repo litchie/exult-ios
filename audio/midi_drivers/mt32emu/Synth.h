@@ -95,7 +95,7 @@ public:
 	virtual ~ReportHandler() {}
 
 	// Callback for debug messages, in vprintf() format
-	virtual void printDebug(const char *fmt, va_list list);
+	virtual void printDebug(const char *fmt, va_list list) ATTR_PRINTF(2,0);
 	// Callbacks for reporting errors
 	virtual void onErrorControlROM() {}
 	virtual void onErrorPCMROM() {}
