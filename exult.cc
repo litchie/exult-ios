@@ -220,7 +220,9 @@ int xfd = 0;            // X connection #.
 static inline int WrappedConnectionNumber(Display *display) {
 	return ConnectionNumber(display);
 }
+#ifdef USE_EXULTSTUDIO
 static class Xdnd *xdnd = 0;
+#endif
 
 #  ifdef __GNUC__
 #  pragma GCC diagnostic pop

@@ -2311,6 +2311,8 @@ void Actor::update_from_studio(
 	if (npc_num == 0 || npc->get_flag(Obj_flags::in_party))
 		npc->set_alignment(good);
 	cout << "Npc updated" << endl;
+#else
+	ignore_unused_variable_warning(data, datalen);
 #endif
 }
 

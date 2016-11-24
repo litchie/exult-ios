@@ -822,6 +822,8 @@ void Barge_object::update_from_studio(
 		barge->set_shape(shape);
 	gwin->add_dirty(barge);
 	cout << "Barge updated" << endl;
+#else
+	ignore_unused_variable_warning(data, datalen);
 #endif
 }
 

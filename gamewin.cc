@@ -1060,6 +1060,8 @@ inline void Send_location(
 		Exult_server::Send_data(client_socket, Exult_server::view_pos,
 		                        &data[0], ptr - data);
 	}
+#else
+	ignore_unused_variable_warning(gwin);
 #endif
 }
 

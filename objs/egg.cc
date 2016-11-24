@@ -995,6 +995,8 @@ void Egg_object::update_from_studio(
 	echunk->remove_egg(egg);    // Got to add it back.
 	echunk->add_egg(egg);
 	cout << "Egg updated" << endl;
+#else
+	ignore_unused_variable_warning(data, datalen);
 #endif
 }
 

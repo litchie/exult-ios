@@ -510,6 +510,8 @@ void Container_game_object::update_from_studio(
 			obj->move(tx, ty, tz);
 	}
 	cout << "Object updated" << endl;
+#else
+	ignore_unused_variable_warning(data, datalen);
 #endif
 }
 

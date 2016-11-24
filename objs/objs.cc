@@ -1095,6 +1095,8 @@ void Game_object::update_from_studio(
 		// Don't skip this even if coords. are the same, since
 		//   it will mark the chunk as modified.
 		obj->move(tx, ty, tz);
+#else
+	ignore_unused_variable_warning(data, datalen);
 #endif
 }
 
