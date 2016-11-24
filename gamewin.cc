@@ -2304,11 +2304,13 @@ void Game_window::show_items(
 
 #ifdef CHUNK_OBJ_DUMP
 		Map_chunk *chunk = map->get_chunk_safely(x / c_tiles_per_chunk, y / c_tiles_per_chunk);
-		Object_iterator it(chunk->get_objects());
-		Game_object *each;
-		cout << "Chunk Contents: " << endl;
-		while ((each = it.get_next()) != 0)
-			cout << "    " << each->get_name() << ":" << each->get_shapenum() << ":" << each->get_framenum() << endl;
+		if (chunk) {
+			Object_iterator it(chunk->get_objects());
+			Game_object *each;
+			cout << "Chunk Contents: " << endl;
+			while ((each = it.get_next()) != 0)
+				cout << "    " << each->get_name() << ":" << each->get_shapenum() << ":" << each->get_framenum() << endl;
+		}
 #endif
 		if (id.is_invalid())
 			return;
