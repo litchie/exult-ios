@@ -1281,6 +1281,7 @@ void Shape_chooser::import_all_pngs(
 	sprintf(fullname, "%s%02d.png", fname, 0);
 	if (!U7exists(fullname)) {
 		std::cerr << "Invalid base file name for import of all frames!" << std::endl;
+		delete [] fullname;
 		return;
 	}
 	int i = 0;
@@ -1295,8 +1296,10 @@ void Shape_chooser::import_all_pngs(
 		unsigned char *pixels, *oldpal;
 		// Import, with 255 = transp. index.
 		if (!Import_png8(fullname, 255, w, h, rowsize, xoff, yoff,
-		                 pixels, oldpal, palsize))
+		                 pixels, oldpal, palsize)) {
+			delete [] fullname;
 			return;         // Just return if error, for now.
+		}
 		// Convert to game palette.
 		Convert_indexed_image(pixels, h * rowsize, oldpal, palsize, pal);
 		delete [] oldpal;
@@ -1310,8 +1313,6 @@ void Shape_chooser::import_all_pngs(
 		delete [] pixels;
 
 		i++;
-		delete [] fullname;
-		fullname = new char[strlen(fname) + 30];
 		sprintf(fullname, "%s%02d.png", fname, i);
 	}
 	render();
