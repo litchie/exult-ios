@@ -718,7 +718,7 @@ void Game_window::set_map(
 ) {
 	map = get_map(num);
 	if (!map)
-		abort("Map #d doesn't exist", num);
+		abort("Map %d doesn't exist", num);
 	Game_singletons::gmap = map;
 }
 

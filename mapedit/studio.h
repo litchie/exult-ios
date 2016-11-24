@@ -39,6 +39,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "servemsg.h"
 #include "exult_constants.h"
 
+#ifndef ATTR_PRINTF
+#ifdef __GNUC__
+#define ATTR_PRINTF(x,y) __attribute__((format(printf, (x), (y))))
+#else
+#define ATTR_PRINTF(x,y)
+#endif
+#endif
+
 using std::string;
 using std::map;
 
@@ -388,11 +396,6 @@ public:
 namespace EStudio {
 int Prompt(const char *msg, const char *choice0,
            const char *choice1 = 0, const char *choice2 = 0);
-#ifdef __GNUC__
-#define ATTR_PRINTF(x,y) __attribute__((format(printf, (x), (y))))
-#else
-#define ATTR_PRINTF(x,y)
-#endif
 void Alert(const char *msg, ...) ATTR_PRINTF(1, 2);
 GtkWidget *Add_menu_item(GtkWidget *menu, const char *label = 0,
                          GtkSignalFunc func = 0, gpointer func_data = 0, GSList *group = 0);

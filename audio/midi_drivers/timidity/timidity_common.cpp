@@ -62,7 +62,7 @@ static PathList *pathlist=&defaultpathlist; /* This is a linked list */
 static PathList *pathlist=0;
 #endif
 
-/*	Try to open a file for reading. If the filename ends in one of the 
+/*	Try to open a file for reading. If the filename ends in one of the
  defined compressor extensions, pipe the file through the decompressor */
 static FILE *try_to_open(char *name, int decompress, int noise_mode)
 {
@@ -80,7 +80,7 @@ static FILE *try_to_open(char *name, int decompress, int noise_mode)
 		int l,el;
 		static char *decompressor_list[] = DECOMPRESSOR_LIST, **dec;
 		char tmp[1024], tmp2[1024], *cp, *cp2;
-		/* Check if it's a compressed file */ 
+		/* Check if it's a compressed file */
 		l=strlen(name);
 		for (dec=decompressor_list; *dec; dec+=2)
 		{
@@ -147,7 +147,7 @@ FILE *open_file(const char *name, int decompress, int noise_mode)
 #ifdef ENOENT
 	if (noise_mode && (errno != ENOENT))
 	{
-		ctl->cmsg(CMSG_ERROR, VERB_NORMAL, "%s: %s", 
+		ctl->cmsg(CMSG_ERROR, VERB_NORMAL, "%s: %s",
 		          current_filename, strerror(errno));
 		return 0;
 	}
@@ -179,7 +179,7 @@ FILE *open_file(const char *name, int decompress, int noise_mode)
 #ifdef ENOENT
 			if (noise_mode && (errno != ENOENT))
 			{
-				ctl->cmsg(CMSG_ERROR, VERB_NORMAL, "%s: %s", 
+				ctl->cmsg(CMSG_ERROR, VERB_NORMAL, "%s: %s",
 					      current_filename, strerror(errno));
 				return 0;
 			}
@@ -228,14 +228,15 @@ void *safe_malloc(size_t count)
 	void *p;
 	if (count > (1<<21))
 	{
-		ctl->cmsg(CMSG_FATAL, VERB_NORMAL, 
-		          "Strange, I feel like allocating %d bytes. This must be a bug.",
-		          count);
+		ctl->cmsg(CMSG_FATAL, VERB_NORMAL,
+		          "Strange, I feel like allocating %u bytes. This must be a bug.",
+		          static_cast<unsigned>(count));
 	}
 	else if ((p=malloc(count)))
 		return p;
 	else
-		ctl->cmsg(CMSG_FATAL, VERB_NORMAL, "Sorry. Couldn't malloc %d bytes.", count);
+		ctl->cmsg(CMSG_FATAL, VERB_NORMAL, "Sorry. Couldn't malloc %u bytes.",
+		          static_cast<unsigned>(count));
 
 	ctl->close();
 	exit(10);

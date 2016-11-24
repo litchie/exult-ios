@@ -30,9 +30,17 @@
 #include "shapeinf.h"
 #include "frnameinf.h"
 
+#ifndef ATTR_PRINTF
+#ifdef __GNUC__
+#define ATTR_PRINTF(x,y) __attribute__((format(printf, (x), (y))))
+#else
+#define ATTR_PRINTF(x,y)
+#endif
+#endif
+
 using std::string;
 #ifndef HAVE_SNPRINTF
-extern int snprintf(char *, size_t, const char *, /*args*/ ...);
+extern int snprintf(char *, size_t, const char *, /*args*/ ...) ATTR_PRINTF(3,4);
 namespace std {
 using ::snprintf;
 }

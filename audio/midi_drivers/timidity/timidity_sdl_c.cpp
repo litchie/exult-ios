@@ -1,4 +1,4 @@
-/* 
+/*
 
     TiMidity -- Experimental MIDI to WAVE converter
     Copyright (C) 1995 Tuukka Toivonen <toivonen@clinet.fi>
@@ -41,6 +41,14 @@
 namespace NS_TIMIDITY {
 #endif
 
+#ifndef ATTR_PRINTF
+#ifdef __GNUC__
+#define ATTR_PRINTF(x,y) __attribute__((format(printf, (x), (y))))
+#else
+#define ATTR_PRINTF(x,y)
+#endif
+#endif
+
 static void ctl_refresh(void);
 static void ctl_total_time(int tt);
 static void ctl_master_volume(int mv);
@@ -57,21 +65,21 @@ static void ctl_reset(void);
 static int ctl_open(int using_stdin, int using_stdout);
 static void ctl_close(void);
 static int ctl_read(sint32 *valp);
-static int cmsg(int type, int verbosity_level, const char *fmt, ...);
+static int cmsg(int type, int verbosity_level, const char *fmt, ...) ATTR_PRINTF(3,4);
 
 /**********************************/
 /* export the interface functions */
 
 #define ctl sdl_control_mode
 
-ControlMode ctl= 
+ControlMode ctl=
 {
 	"SDL interface", 's',
 	OF_NORMAL,0,0,
 	ctl_open,NULL, ctl_close, ctl_read, cmsg,
-	ctl_refresh, ctl_reset, ctl_file_name, ctl_total_time, ctl_current_time, 
-	ctl_note, 
-	ctl_master_volume, ctl_program, ctl_volume, 
+	ctl_refresh, ctl_reset, ctl_file_name, ctl_total_time, ctl_current_time,
+	ctl_note,
+	ctl_master_volume, ctl_program, ctl_volume,
 	ctl_expression, ctl_panning, ctl_sustain, ctl_pitch_bend
 };
 
@@ -83,7 +91,7 @@ static int ctl_open(int using_stdin, int using_stdout)
 }
 
 static void ctl_close(void)
-{ 
+{
 	ctl.opened=0;
 }
 

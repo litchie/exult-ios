@@ -44,6 +44,14 @@
 #include "objs/objs.h"
 #endif
 
+#ifndef ATTR_PRINTF
+#ifdef __GNUC__
+#define ATTR_PRINTF(x,y) __attribute__((format(printf, (x), (y))))
+#else
+#define ATTR_PRINTF(x,y)
+#endif
+#endif
+
 class Actor;
 class Barge_object;
 class Map_chunk;
@@ -183,7 +191,7 @@ public:
 	static Game_window *get_instance() {
 		return game_window;
 	}
-	void abort(const char *msg, ...);   // Fatal error.
+	void abort(const char *msg, ...) ATTR_PRINTF(2,3);   // Fatal error.
 	/*
 	 *  Display:
 	 */
