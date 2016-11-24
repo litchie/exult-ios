@@ -458,8 +458,11 @@ static gint32 load_image(gchar *filename) {
 			frame->height = 8;
 			frame->leftX = 0;
 			frame->leftY = 0;
-			frame->pixels = (char *)g_malloc(64);
-			fread(frame->pixels, 1, 64, fp);
+			frame->pixels = g_new(guchar, 64);
+			if (fread(frame->pixels, 1, 64, fp) != 64) {
+				// Silently fail
+				memset(frame->pixels, 0, 64);
+			};
 		}
 	} else {
 		image_type = GIMP_INDEXEDA_IMAGE;
@@ -498,7 +501,7 @@ static gint32 load_image(gchar *filename) {
 			frame->height = frame->leftY + frame->rightY + 1;
 			/*          if(frame->height>max_height)
 			            max_height = frame->height;*/
-			pixptr = frame->pixels = g_new0(char, frame->width * frame->height * 2);
+			pixptr = frame->pixels = g_new0(guchar, frame->width * frame->height * 2);
 			eod = frame->pixels + frame->width * frame->height * 2;
 			while ((slice = read2(fp)) != 0) {
 				slice_type = slice & 0x1;
@@ -731,7 +734,7 @@ static gint32 save_image(gchar  *filename,
 
 	shape.num_frames = nlayers;
 	hdr_size = (nlayers + 1) * 4;
-	shape.frames = (struct u7frame *)malloc(sizeof(struct u7frame) * shape.num_frames);
+	shape.frames = g_new(struct u7frame, shape.num_frames);
 
 	for (k = 0; k < nlayers; k++) {
 		frame = &shape.frames[k];
@@ -743,9 +746,9 @@ static gint32 save_image(gchar  *filename,
 		frame->leftY = hoty - offsetY;
 		frame->rightX = frame->width - frame->leftX - 1;
 		frame->rightY = frame->height - frame->leftY - 1;
-		pix = (gchar *)malloc(frame->width * frame->height * 2);
+		pix = g_new(guchar, frame->width * frame->height * 2);
 		pixptr = pix;
-		out = (gchar *)malloc(frame->width * frame->height * 8);
+		out = g_new(guchar, frame->width * frame->height * 8);
 		outptr = out;
 		gimp_pixel_rgn_init(&pixel_rgn, drawable, 0, 0,
 		                    drawable->width, drawable->height, FALSE, FALSE);
@@ -796,17 +799,17 @@ static gint32 save_image(gchar  *filename,
 		}
 		outptr = out2(outptr, 0);           // End with 0 length.
 		frame->datalen = outptr - out;
-		frame->pixels = (gchar *) malloc(frame->datalen);
+		frame->pixels = g_new(guchar, frame->datalen);
 		memcpy(frame->pixels, out, frame->datalen);
-		free(out);
-		free(pix);
+		g_free(out);
+		g_free(pix);
 		gimp_drawable_detach(drawable);
 	}
 
 	fp = fopen(filename, "wb");
 	if (!fp) {
 		g_message("SHP: can't create \"%s\"\n", filename);
-		free(shape.frames);
+		g_free(shape.frames);
 		return -1;
 	}
 
@@ -834,9 +837,9 @@ static gint32 save_image(gchar  *filename,
 	fclose(fp);
 
 	for (i = 0; i < shape.num_frames; i++) {
-		free(shape.frames[i].pixels);
+		g_free(shape.frames[i].pixels);
 	}
-	free(shape.frames);
+	g_free(shape.frames);
 
 	return 0;
 }
