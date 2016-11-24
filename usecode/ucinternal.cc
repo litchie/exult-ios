@@ -109,7 +109,7 @@ using std::ostream;
 extern bool intrinsic_trace;
 extern int usecode_trace;
 
-#if USECODE_DEBUGGER
+#ifdef USECODE_DEBUGGER
 
 extern bool usecode_debugging;
 std::vector<int> intrinsic_breakpoints;
@@ -1579,7 +1579,7 @@ Usecode_value no_ret;
 
 Usecode_value Usecode_internal::Execute_Intrinsic(UsecodeIntrinsicFn func, const char *name, int intrinsic, int num_parms, Usecode_value parms[12]) {
 #ifdef XWIN
-#if USECODE_DEBUGGER
+#ifdef USECODE_DEBUGGER
 	if (usecode_debugging) {
 		// Examine the list of intrinsics for function breakpoints.
 		if (std::find(intrinsic_breakpoints.begin(), intrinsic_breakpoints.end(), intrinsic) != intrinsic_breakpoints.end()) {
