@@ -4,6 +4,16 @@
 #include <cstring>
 using namespace std;
 
+#ifndef ATTR_NORET
+#ifdef __GNUC__
+#define ATTR_NORET __attribute__((noreturn))
+#else
+#define ATTR_NORET
+#endif
+#endif
+
+void rebuild(void) ATTR_NORET;
+
 void rebuild(void) {
 	unsigned int c;
 	char s[10];
