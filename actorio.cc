@@ -184,7 +184,7 @@ void Actor::read(
 		} else
 			set_skin_color(-1);
 
-		if ((strength_val << 7) & 1) set_flag(Obj_flags::freeze);
+		if ((strength_val >> 7) & 1) set_flag(Obj_flags::freeze);
 	}
 
 	if (is_dying() &&       // Now we know health, strength.
@@ -208,7 +208,7 @@ void Actor::read(
 	// Combat skill (0-6), Petra (7)
 	int combat_val = nfile->read1();
 	set_property(static_cast<int>(Actor::combat), combat_val & 0x7F);
-	if ((combat_val << 7) & 1) set_flag(Obj_flags::petra);
+	if ((combat_val >> 7) & 1) set_flag(Obj_flags::petra);
 
 	schedule_type = nfile->read1();
 	int amode = nfile->read1(); // Default attack mode
