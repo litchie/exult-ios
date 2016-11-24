@@ -3020,6 +3020,7 @@ USECODE_INTRINSIC(add_removed_npc) {
 		tx = (sx + i) % c_tiles_per_chunk;
 
 		Map_chunk *clist = gmap->get_chunk_safely(cx, cy);
+		if (!clist) continue;
 		clist->setup_cache();
 		if (!clist->is_blocked(height, 0, tx, ty, nlift, actor->get_type_flags(), 1)) {
 			Tile_coord cur(tx + cx * c_tiles_per_chunk, ty + cy * c_tiles_per_chunk, nlift);
@@ -3039,6 +3040,7 @@ USECODE_INTRINSIC(add_removed_npc) {
 		ty = (sy + i) % c_tiles_per_chunk;
 
 		Map_chunk *clist = gmap->get_chunk_safely(cx, cy);
+		if (!clist) continue;
 		clist->setup_cache();
 		if (!clist->is_blocked(height, 0, tx, ty, nlift, actor->get_type_flags(), 1)) {
 			Tile_coord cur(tx + cx * c_tiles_per_chunk, ty + cy * c_tiles_per_chunk, nlift);
@@ -3058,6 +3060,7 @@ USECODE_INTRINSIC(add_removed_npc) {
 		tx = (ex - i) % c_tiles_per_chunk;
 
 		Map_chunk *clist = gmap->get_chunk_safely(cx, cy);
+		if (!clist) continue;
 		clist->setup_cache();
 		if (!clist->is_blocked(height, 0, tx, ty, nlift, actor->get_type_flags(), 1)) {
 			Tile_coord cur(tx + cx * c_tiles_per_chunk, ty + cy * c_tiles_per_chunk, nlift);
@@ -3077,6 +3080,7 @@ USECODE_INTRINSIC(add_removed_npc) {
 		ty = (ey - i) % c_tiles_per_chunk;
 
 		Map_chunk *clist = gmap->get_chunk_safely(cx, cy);
+		if (!clist) continue;
 		clist->setup_cache();
 		if (!clist->is_blocked(height, 0, tx, ty, nlift, actor->get_type_flags(), 1)) {
 			Tile_coord cur(tx + cx * c_tiles_per_chunk, ty + cy * c_tiles_per_chunk, nlift);

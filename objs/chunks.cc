@@ -1102,6 +1102,8 @@ inline bool Check_spot(
 	Game_map *gmap = Game_window::get_instance()->get_map();
 	int cx = tx / c_tiles_per_chunk, cy = ty / c_tiles_per_chunk;
 	Map_chunk *chunk = gmap->get_chunk_safely(cx, cy);
+	if (!chunk)
+		return false;
 	return (where == Map_chunk::inside) ==
 	       (chunk->is_roof(tx % c_tiles_per_chunk,
 	                       ty % c_tiles_per_chunk, tz) < 31);
