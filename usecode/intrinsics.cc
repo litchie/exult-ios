@@ -2552,6 +2552,7 @@ USECODE_INTRINSIC(set_item_flag) {
 		break;
 	case 0x14:          // The sailor (Ferryman).
 		sailor = obj;
+		break;
 	default:
 		obj->set_flag(flag);
 		if (Is_moving_barge_flag(flag)) {
