@@ -329,6 +329,7 @@ void FMOplMidiDriver::send(uint32 b)
 	case 0x80:									/*note off */
 			// Quick hack, but we should never use it. since note offs will never be sent
 			b &= 0xFFFF;
+			// FALL THROUGH
 	case 0x90:{									/*note on */
 			unsigned char note = static_cast<unsigned char>((b >> 8) & 0x7F);
 			unsigned char vel = static_cast<unsigned char>((b >> 16) & 0x7F);
