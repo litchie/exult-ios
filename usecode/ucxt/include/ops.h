@@ -118,8 +118,10 @@ public:
 				break;
 			case 'l':
 				if (k->first == "loop/")               flag_loop = true;
+				break;
 			case 'm':
 				if (k->first == "method_effect/")      flag_method_effect = true;
+				break;
 			case 'n':
 				if (k->first == "name")                name = strip_backticks(k->second);
 				else if (k->first == "num_bytes")      num_bytes = static_cast<unsigned int>(strtol(k->second.c_str(), 0, 0));
