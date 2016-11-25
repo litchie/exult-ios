@@ -1288,8 +1288,10 @@ void Shape_chooser::import_all_pngs(
 	unsigned char pal[3 * 256]; // Get current palette.
 	Get_rgb_palette(palette, pal);
 	Shape *shape = ifile->extract_shape(shnum);
-	if (!shape)
+	if (!shape) {
+		delete [] fullname;
 		return;
+	}
 	ExultStudio *studio = ExultStudio::get_instance();
 	while (U7exists(fullname)) {
 		int w, h, rowsize, xoff, yoff, palsize;
