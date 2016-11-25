@@ -2517,7 +2517,7 @@ bool Actor::can_act_charmed() {
  */
 
 void Actor::set_charmed_combat() {
-	if (Combat::charmed_more_difficult && 
+	if (Combat::charmed_more_difficult &&
 	    (is_in_party() || this == gwin->get_main_actor()) &&
 	    get_effective_alignment() != good) {
 		set_schedule_type(Schedule::combat);
@@ -2996,11 +2996,13 @@ int Actor::get_effective_prop(
 		if (get_flag(Obj_flags::paralyzed) || get_flag(Obj_flags::asleep) ||
 		        is_knocked_out())
 			return prop == Actor::dexterity ? 0 : 1;
+		// FALL THROUGH
 	case Actor::intelligence:
 		if (is_dead())
 			return prop == Actor::dexterity ? 0 : 1;
 		else if (get_flag(Obj_flags::charmed) || get_flag(Obj_flags::asleep))
 			val--;
+		// FALL THROUGH
 	case Actor::strength:
 		if (get_flag(Obj_flags::might))
 			val += (val < 15 ? val : 15);   // Add up to 15.
@@ -3377,7 +3379,7 @@ void Actor::remove(
 	// Definitely DO NOT call if dead!
 	if (!is_dead()
 		&& !ucmachine->in_usecode_for(obj, Usecode_machine::unreadied)
-		&& !(GAME_SI && ucmachine->in_usecode_for(gwin->get_main_actor(), Usecode_machine::died))) // Fix for #1887 - Hang when leaving SI dream world 
+		&& !(GAME_SI && ucmachine->in_usecode_for(gwin->get_main_actor(), Usecode_machine::died))) // Fix for #1887 - Hang when leaving SI dream world
 		call_readied_usecode(index, obj, Usecode_machine::unreadied);
 	Container_game_object::remove(obj);
 	if (index >= 0) {
