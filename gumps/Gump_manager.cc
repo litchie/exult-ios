@@ -528,12 +528,16 @@ int Gump_manager::handle_modal_gump_event(
 	case SDL_QUIT:
 		if (okay_to_quit())
 			return (0);
+		break;
+	case SDL_KEYDOWN:
 #if SDL_VERSION_ATLEAST(2, 0, 0)
 	case SDL_TEXTINPUT:
-		event.key.keysym.sym = SDLK_UNKNOWN;
-		keysym_unicode = event.text.text[0];
+		if (event.type == SDL_TEXTINPUT) {
+			event.key.keysym.sym = SDLK_UNKNOWN;
+			keysym_unicode = event.text.text[0];
+		}
 #endif
-	case SDL_KEYDOWN: {
+	{
 		if (event.key.keysym.sym == SDLK_ESCAPE)
 			return (0);
 		if ((event.key.keysym.sym == SDLK_s) &&
@@ -543,21 +547,15 @@ int Gump_manager::handle_modal_gump_event(
 			return 1;
 		}
 
-#if 0
-		int chr = event.key.keysym.sym;
-		gump->key_down((event.key.keysym.mod & KMOD_SHIFT)
-		               ? toupper(chr) : chr, event);
-#else
-   #if SDL_VERSION_ATLEAST(2, 0, 0)
+#if SDL_VERSION_ATLEAST(2, 0, 0)
 		if (event.key.keysym.sym != 0 && event.key.keysym.sym > (int)'~') {
 			keysym_unicode = event.key.keysym.sym;
 		}
-   #else
+#else
 		keysym_unicode = event.key.keysym.unicode;
-   #endif
+#endif
 		gump->key_down(event.key.keysym.sym);
 		gump->text_input(event.key.keysym.sym, keysym_unicode);
-#endif
 
 		break;
 	}
