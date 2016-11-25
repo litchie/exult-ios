@@ -579,6 +579,7 @@ int Usecode_script::exec(
 			int track = val.get_int_value();
 			if (track >= 0)
 				Audio::get_ptr()->start_speech(track);
+			break;
 		}
 		case sfx: {     // Play sound effect!
 			Usecode_value &val = code->get_elem(++i);
