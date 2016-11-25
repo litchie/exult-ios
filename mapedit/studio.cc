@@ -1805,7 +1805,8 @@ bool ExultStudio::get_toggle(
     const char *name
 ) {
 	GtkWidget *btn = glade_xml_get_widget(app_xml, name);
-	return btn ? gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn)) : -1;
+	assert(btn);
+	return gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 }
 
 /*
@@ -1860,8 +1861,7 @@ int ExultStudio::get_optmenu(
     const char *name
 ) {
 	GtkWidget *btn = glade_xml_get_widget(app_xml, name);
-	if (!btn)
-		return -1;
+	assert(btn);
 	GtkWidget *menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(btn));
 	GtkWidget *active = gtk_menu_get_active(GTK_MENU(menu));
 	return g_list_index(GTK_MENU_SHELL(menu)->children, active);
@@ -1891,8 +1891,8 @@ int ExultStudio::get_spin(
     const char *name
 ) {
 	GtkWidget *btn = glade_xml_get_widget(app_xml, name);
-	return btn ? gtk_spin_button_get_value_as_int(
-	           GTK_SPIN_BUTTON(btn)) : -1;
+	assert(btn);
+	return gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(btn));
 }
 
 /*
@@ -1957,12 +1957,12 @@ int ExultStudio::get_num_entry(
 	GtkWidget *field = glade_xml_get_widget(app_xml, name);
 	return get_num_entry(field, 0);
 }
+
 int ExultStudio::get_num_entry(
     GtkWidget *field,
     int if_empty
 ) {
-	if (!field)
-		return -1;
+	assert(field);
 	const gchar *txt = gtk_entry_get_text(GTK_ENTRY(field));
 	if (!txt)
 		return -1;
