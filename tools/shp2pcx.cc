@@ -56,7 +56,7 @@ using std::strlen;
 using std::memset;
 using std::memcpy;
 
-typedef struct PCX_Header {
+struct PCX_Header {
 	uint8 manufacturer;
 	uint8 version;
 	uint8 compression;
@@ -71,7 +71,7 @@ typedef struct PCX_Header {
 	sint16 bytesperline;
 	sint16 color;
 	uint8 filler[58];
-} PCX_Header;
+};
 
 struct u7frame {
 	sint16 leftX;
@@ -376,6 +376,7 @@ void save_image(uint8 *pixels, uint8 *palette, int width, int height, char *file
 		return;
 	}
 
+	memset(static_cast<void *>(&header), 0, sizeof(PCX_Header));
 	pitch = width;
 
 	header.manufacturer = 0x0a;
