@@ -1450,7 +1450,7 @@ bool SI_Game::new_game(Vga_file &shapes) {
 					break;
 				default: {
 #if SDL_VERSION_ATLEAST(2, 0, 0)
-                                        if ((isTextInput && selected == 0) || (!isTextInput && keysym_unicode > (int)'~' && selected == 0))
+					if ((isTextInput && selected == 0) || (!isTextInput && keysym_unicode > (int)'~' && selected == 0))
 #else
 					if (selected == 0) // on the text input field?
 #endif
@@ -1458,10 +1458,10 @@ bool SI_Game::new_game(Vga_file &shapes) {
 						int len = strlen(npc_name);
 						char chr = 0;
 #if !(SDL_VERSION_ATLEAST(2, 0, 0))
-                                                keysym_unicode = event.key.keysym.unicode;
+						keysym_unicode = event.key.keysym.unicode;
 #endif
-                                                if ((keysym_unicode & 0xFF80) == 0)
-                                                       chr = keysym_unicode & 0x7F;
+						if ((keysym_unicode & 0xFF80) == 0)
+							chr = keysym_unicode & 0x7F;
 
 						if (chr >= ' ' && len < max_len) {
 							npc_name[len] = chr;
