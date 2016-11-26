@@ -91,7 +91,7 @@ public:
 	}
 	void set_usecode(int ui, const char *nm) {
 		if (usecode != ui ||
-		        (!nm && usecode_name.length()) || usecode_name != nm) {
+		        (!nm && usecode_name.length()) || (nm && usecode_name != nm)) {
 			set_modified(true);
 			usecode = ui;
 			if (nm)
