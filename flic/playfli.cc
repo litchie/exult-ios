@@ -104,7 +104,7 @@ int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned l
 	int yoffset = (win->get_game_height() - fli_height) / 2;
 	bool dont_show = false;
 
-	if (!fli_buf && win) fli_buf = win->create_buffer(fli_width, fli_height);
+	if (!fli_buf) fli_buf = win->create_buffer(fli_width, fli_height);
 
 	// Set up last frame
 	if (first_frame == last_frame) dont_show = true;
@@ -187,15 +187,13 @@ int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned l
 							size_count = -size_count;
 							uint8 data = fli_data->read1();
 							memset(pixbuf, data, size_count);
-							if (fli_buf)
-								fli_buf->copy8(pixbuf, size_count, 1,
+							fli_buf->copy8(pixbuf, size_count, 1,
 								               pixpos, skip_lines + line);
 							pixpos += size_count;
 
 						} else {
 							fli_data->read(pixbuf, size_count);
-							if (fli_buf)
-								fli_buf->copy8(pixbuf, size_count, 1,
+							fli_buf->copy8(pixbuf, size_count, 1,
 								               pixpos, skip_lines + line);
 							pixpos += size_count;
 						}
@@ -225,7 +223,7 @@ int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned l
 							pixpos -= size_count;
 						}
 					}
-					if (fli_buf) fli_buf->copy8(pixbuf, fli_width, 1, 0, line);
+					fli_buf->copy8(pixbuf, fli_width, 1, 0, line);
 				}
 			}
 			break;
@@ -251,13 +249,13 @@ int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned l
 		// Speed related frame skipping detection
 		int skip_frame = Game_window::get_instance()->get_frame_skipping() && SDL_GetTicks() >= ticks;
 
-		if (win && fli_buf) win->put(fli_buf, xoffset, yoffset);
+		win->put(fli_buf, xoffset, yoffset);
 
 		if (ticks > SDL_GetTicks()) SDL_Delay(ticks - SDL_GetTicks());
 
 		ticks += fli_speed * 10;
 
-		if (win && !dont_show && !skip_frame) {
+		if (!dont_show && !skip_frame) {
 #ifdef HAVE_OPENGL
 			if (GL_manager::get_instance()) {
 				Shape_frame frame(win->get_ibuf()->get_bits(), win->get_game_width(),
@@ -278,7 +276,7 @@ void playfli::put_buffer(Image_window *win) {
 	int xoffset = (win->get_game_width() - fli_width) / 2;
 	int yoffset = (win->get_game_height() - fli_height) / 2;
 
-	if (win && fli_buf) win->put(fli_buf, xoffset, yoffset);
+	win->put(fli_buf, xoffset, yoffset);
 }
 
 playfli::~playfli() {
