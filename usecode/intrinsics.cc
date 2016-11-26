@@ -3342,6 +3342,7 @@ USECODE_INTRINSIC(printf) {
 				else
 					p.print(cout);
 				spec += 2;
+				i++;
 			} else {
 				cout << '%';
 				spec++;
@@ -3443,7 +3444,7 @@ USECODE_INTRINSIC(create_barge_object) {
 
 	Barge_object *b = new Barge_object(961, 0, 0, 0, 0,
 	                                   parms[0].get_int_value(), parms[1].get_int_value(),
-	                                   num_parms >= 2 ? ((parms[2].get_int_value() >> 1) & 3) : 0);
+	                                   num_parms >= 3 ? ((parms[2].get_int_value() >> 1) & 3) : 0);
 
 	b->set_invalid();       // Not in world yet.
 	b->set_flag(Obj_flags::okay_to_take);
