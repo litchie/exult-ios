@@ -25,6 +25,9 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <vector>
+
+using std::vector;
 
 #include "SDL.h"
 #include "timidity.h"
@@ -56,14 +59,16 @@ int AUDIO_BUFFER_SIZE;
 sample_t *resample_buffer=0;
 sint32 *common_buffer=0;
 
-#define MAXWORDS 10
+#define MAXWORDS 10u
 
 static int read_config_file(const char *name)
 {
 	FILE *fp;
-	char tmp[1024], *w[MAXWORDS], *cp;
+	char tmp[1024];
+	vector<char*> w;
+	w.reserve(MAXWORDS);
 	ToneBank *bank=0;
-	int i, j, k, line=0, words;
+	int line=0;
 	static int rcf_count=0;
 
 	if (rcf_count>50)
@@ -79,32 +84,33 @@ static int read_config_file(const char *name)
 	while (fgets(tmp, sizeof(tmp), fp))
 	{
 		line++;
-		w[words=0]=strtok(tmp, " \t\r\n\240");
+		w.clear();
+		w.push_back(strtok(tmp, " \t\r\n\240"));
 		if (!w[0] || (*w[0]=='#')) continue;
-		while (w[words] && (words < MAXWORDS))
-			w[++words]=strtok(0," \t\r\n\240");
+		while (w.back() && w.size() < MAXWORDS)
+			w.push_back(strtok(0," \t\r\n\240"));
 		if (!strcmp(w[0], "dir"))
 		{
-			if (words < 2)
+			if (w.size() < 2)
 			{
 				ctl->cmsg(CMSG_ERROR, VERB_NORMAL,
 				          "%s: line %d: No directory given\n", name, line);
 				close_file(fp);
 				return -2;
 			}
-			for (i=1; i<words; i++)
+			for (unsigned i=1; i<w.size(); i++)
 				add_to_pathlist(w[i]);
 		}
 		else if (!strcmp(w[0], "source"))
 		{
-			if (words < 2)
+			if (w.size() < 2)
 			{
 				ctl->cmsg(CMSG_ERROR, VERB_NORMAL,
 				          "%s: line %d: No file name given\n", name, line);
 				close_file(fp);
 				return -2;
 			}
-			for (i=1; i<words; i++)
+			for (unsigned i=1; i<w.size(); i++)
 			{
 				rcf_count++;
 				read_config_file(w[i]);
@@ -113,7 +119,7 @@ static int read_config_file(const char *name)
 		}
 		else if (!strcmp(w[0], "default"))
 		{
-			if (words != 2)
+			if (w.size() != 2)
 			{
 				ctl->cmsg(CMSG_ERROR, VERB_NORMAL,
 				          "%s: line %d: Must specify exactly one patch name\n",
@@ -126,7 +132,7 @@ static int read_config_file(const char *name)
 		}
 		else if (!strcmp(w[0], "drumset"))
 		{
-			if (words < 2)
+			if (w.size() < 2)
 			{
 				ctl->cmsg(CMSG_ERROR, VERB_NORMAL,
 				          "%s: line %d: No drum set number given\n",
@@ -134,7 +140,7 @@ static int read_config_file(const char *name)
 				close_file(fp);
 				return -2;
 			}
-			i=atoi(w[1]);
+			int i=atoi(w[1]);
 			if (i<0 || i>127)
 			{
 				ctl->cmsg(CMSG_ERROR, VERB_NORMAL,
@@ -152,7 +158,7 @@ static int read_config_file(const char *name)
 		}
 		else if (!strcmp(w[0], "bank"))
 		{
-			if (words < 2)
+			if (w.size() < 2)
 			{
 				ctl->cmsg(CMSG_ERROR, VERB_NORMAL,
 				          "%s: line %d: No bank number given\n",
@@ -160,7 +166,7 @@ static int read_config_file(const char *name)
 				close_file(fp);
 				return -2;
 			}
-			i=atoi(w[1]);
+			int i=atoi(w[1]);
 			if (i<0 || i>127)
 			{
 				ctl->cmsg(CMSG_ERROR, VERB_NORMAL,
@@ -177,14 +183,14 @@ static int read_config_file(const char *name)
 			bank=tonebank[i];
 		}
 		else {
-			if ((words < 2) || (*w[0] < '0' || *w[0] > '9'))
+			if ((w.size() < 2) || (*w[0] < '0' || *w[0] > '9'))
 			{
 				ctl->cmsg(CMSG_ERROR, VERB_NORMAL,
 				          "%s: line %d: syntax error\n", name, line);
 				close_file(fp);
 				return -2;
 			}
-			i=atoi(w[0]);
+			int i=atoi(w[0]);
 			if (i<0 || i>127)
 			{
 				ctl->cmsg(CMSG_ERROR, VERB_NORMAL,
@@ -209,9 +215,10 @@ static int read_config_file(const char *name)
 				bank->tone[i].strip_loop=bank->tone[i].strip_envelope=
 				bank->tone[i].strip_tail=-1;
 
-			for (j=2; j<words; j++)
+			for (unsigned j=2; j<w.size(); j++)
 			{
-				if (!(cp=strchr(w[j], '=')))
+				char *cp = strchr(w[j], '=');
+				if (!cp)
 				{
 					ctl->cmsg(CMSG_ERROR, VERB_NORMAL, "%s: line %d: bad patch option %s\n",
 					          name, line, w[j]);
@@ -221,7 +228,7 @@ static int read_config_file(const char *name)
 				*cp++=0;
 				if (!strcmp(w[j], "amp"))
 				{
-					k=atoi(cp);
+					int k=atoi(cp);
 					if ((k<0 || k>MAX_AMPLIFICATION) || (*cp < '0' || *cp > '9'))
 					{
 						ctl->cmsg(CMSG_ERROR, VERB_NORMAL,
@@ -233,7 +240,7 @@ static int read_config_file(const char *name)
 				}
 				else if (!strcmp(w[j], "note"))
 				{
-					k=atoi(cp);
+					int k=atoi(cp);
 					if ((k<0 || k>127) || (*cp < '0' || *cp > '9'))
 					{
 						ctl->cmsg(CMSG_ERROR, VERB_NORMAL,
@@ -246,6 +253,7 @@ static int read_config_file(const char *name)
 				}
 				else if (!strcmp(w[j], "pan"))
 				{
+					int k;
 					if (!strcmp(cp, "center"))
 						k=64;
 					else if (!strcmp(cp, "left"))
