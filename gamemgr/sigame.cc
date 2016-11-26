@@ -1248,7 +1248,7 @@ void SI_Game::end_game(bool success) {
 
 		bool updated = false;
 
-		if (flic->can_play()) updated = flic->play_it(win, time);
+		if (flic && flic->can_play()) updated = flic->play_it(win, time);
 
 		// Need to go to the next subtitle?
 		if (!speech && showing_subs && cur_sub <= last_sub) {
