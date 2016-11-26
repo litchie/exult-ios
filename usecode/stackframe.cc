@@ -85,7 +85,7 @@ std::ostream &operator<<(std::ostream &out, Stack_frame &frame) {
 	    << std::hex << std::setw(4) << std::setfill('0')
 	    << static_cast<int>(frame.ip - frame.code) << " in 0x"
 	    << std::setw(4) << frame.function->id
-	    << "(obj=" << std::setw(8) << reinterpret_cast<long>(frame.caller_item)
+	    << "(obj=" << std::setw(8) << reinterpret_cast<uintptr>(frame.caller_item)
 	    << ",ev=" << frame.eventid
 	    << std::setfill(' ') << std::dec;
 
