@@ -37,6 +37,7 @@
 #include "ucmachine.h"
 #include "shapeinf.h"
 #include "monstinf.h"
+#include "array_size.h"
 
 using std::ios;
 using std::cout;
@@ -736,7 +737,7 @@ void Actor::write_contents(
     DataSource *out
 ) {
 	if (!objects.is_empty()) {  // Now write out what's inside.
-		const int num_spots = static_cast<int>(sizeof(spots) / sizeof(spots[0]));
+		const int num_spots = static_cast<int>(array_size(spots));
 		int i;
 
 		for (i = 0; i < num_spots; ++i) {

@@ -40,6 +40,7 @@
 #include "party.h"
 #include "Text_button.h"
 #include "miscinf.h"
+#include "array_size.h"
 
 #ifndef UNDER_EMBEDDED_CE
 using std::atoi;
@@ -317,7 +318,7 @@ Newfile_gump::~Newfile_gump(
 ) {
 	gwin->get_tqueue()->resume(SDL_GetTicks());
 	size_t i;
-	for (i = 0; i < sizeof(buttons) / sizeof(buttons[0]); i++)
+	for (i = 0; i < array_size(buttons); i++)
 		delete buttons[i];
 
 	FreeSaveGameDetails();
@@ -638,7 +639,7 @@ bool Newfile_gump::mouse_down(
 
 	pushed = Gump::on_button(mx, my);
 	// Try buttons at bottom.
-	if (!pushed) for (size_t i = 0; i < sizeof(buttons) / sizeof(buttons[0]); i++)
+	if (!pushed) for (size_t i = 0; i < array_size(buttons); i++)
 			if (buttons[i] && buttons[i]->on_button(mx, my)) {
 				pushed = buttons[i];
 				break;

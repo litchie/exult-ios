@@ -54,6 +54,7 @@
 #include "actors.h"
 #include "party.h"
 #include "version.h"
+#include "array_size.h"
 
 #include <cstddef>
 #ifndef offsetof    // Broken <cstddef>? Just in case...
@@ -275,7 +276,7 @@ static const char *bgsavefiles[] = {
 	FLAGINIT,   GWINDAT,
 	GSCHEDULE,  NOTEBOOKXML
 };
-static const int bgnumsavefiles = sizeof(bgsavefiles) / sizeof(bgsavefiles[0]);
+static const int bgnumsavefiles = array_size(bgsavefiles);
 
 static const char *sisavefiles[] = {
 	GSCRNSHOT,  GSAVEINFO,  // MUST BE FIRST!!
@@ -287,7 +288,7 @@ static const char *sisavefiles[] = {
 	GSCHEDULE,  KEYRINGDAT,
 	NOTEBOOKXML
 };
-static const int sinumsavefiles = sizeof(sisavefiles) / sizeof(sisavefiles[0]);
+static const int sinumsavefiles = array_size(sisavefiles);
 
 /*
  *  Save a single file into an IFF repository.
@@ -471,7 +472,7 @@ void Game_window::save_gamedat(
  */
 void Game_window::read_save_names(
 ) {
-	for (unsigned int i = 0; i < sizeof(save_names) / sizeof(save_names[0]); i++) {
+	for (unsigned int i = 0; i < array_size(save_names); i++) {
 		char fname[50];     // Set up name.
 		snprintf(fname, 50, SAVENAME, static_cast<int>(i),
 		         GAME_BG ? "bg" : (GAME_SI ? "si" : "dev"));

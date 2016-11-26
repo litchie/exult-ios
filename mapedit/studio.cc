@@ -78,6 +78,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "databuf.h"
 #include "modmgr.h"
 #include "ignore_unused_variable_warning.h"
+#include "array_size.h"
 
 using std::cerr;
 using std::cout;
@@ -656,7 +657,7 @@ ExultStudio::ExultStudio(int argc, char **argv): glade_path(0), static_path(0),
 	// Init. 'Mode' menu, since Glade
 	//   doesn't seem to do it right.
 	GSList *group = NULL;
-	for (size_t i = 0; i < sizeof(mode_names) / sizeof(mode_names[0]); i++) {
+	for (size_t i = 0; i < array_size(mode_names); i++) {
 		GtkWidget *item = glade_xml_get_widget(app_xml, mode_names[i]);
 		gtk_radio_menu_item_set_group(GTK_RADIO_MENU_ITEM(item),
 		                              group);
@@ -2699,7 +2700,7 @@ void ExultStudio::info_received(
 	set_toggle("play_button", !editing);
 	set_toggle("tile_grid_button", grid);
 	if (edmode >= 0 &&
-	        unsigned(edmode) < sizeof(mode_names) / sizeof(mode_names[0])) {
+	        unsigned(edmode) < array_size(mode_names)) {
 		GtkWidget *mitem = glade_xml_get_widget(app_xml,
 		                                        mode_names[edmode]);
 
@@ -2793,14 +2794,14 @@ static const gchar *encodings [] = {
 };
 
 static inline int Find_Encoding_Index(const char *enc) {
-	for (size_t i = 0; i < sizeof(encodings) / sizeof(encodings[0]); i++)
+	for (size_t i = 0; i < array_size(encodings); i++)
 		if (!strcmp(encodings[i], enc))
 			return i;
 	return -1;  // Not found.
 }
 
 static inline const char *Get_Encoding(int index) {
-	if (index >= 0 && unsigned(index) < sizeof(encodings) / sizeof(encodings[0]))
+	if (index >= 0 && unsigned(index) < array_size(encodings))
 		return encodings[index];
 	else
 		return encodings[0];

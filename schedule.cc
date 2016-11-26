@@ -45,6 +45,7 @@
 #include "combat.h"
 #include "Audio.h"
 #include "ignore_unused_variable_warning.h"
+#include "array_size.h"
 
 #ifndef UNDER_EMBEDDED_CE
 using std::cout;
@@ -243,7 +244,7 @@ int Schedule::try_street_maintenance(
 	// Get to within 1 tile.
 	Game_object *found = 0;     // Find one we can get to.
 	Actor_action *pact;     // Gets ->action to walk there.
-	for (size_t i = 0; !found && i < sizeof(night) / sizeof(night[0]); i++) {
+	for (size_t i = 0; !found && i < array_size(night); i++) {
 		Game_object_vector objs;// Find nearby.
 		int cnt = npc->find_nearby(objs, shapes[i], 20, 0);
 		int j;
@@ -1669,7 +1670,7 @@ void Dance_schedule::now_what(
 	signed char *frames;
 	int nframes;
 	static char base_frames[] = {Actor::standing, Actor::up_frame, Actor::out_frame};
-	static int framecount = sizeof(base_frames) / sizeof(base_frames[0]);
+	static int framecount = array_size(base_frames);
 	int danceroutine = rand() % framecount;
 	int speed = 2 * gwin->get_std_delay();
 	switch (danceroutine) {
@@ -1784,8 +1785,7 @@ void Miner_schedule::now_what(
 	case find_ore: {
 		static int oreshapes[] = {915, 916};
 		Game_object_vector ores;
-		npc->find_closest(ores, oreshapes,
-		                  sizeof(oreshapes) / sizeof(oreshapes[0]));
+		npc->find_closest(ores, oreshapes, array_size(oreshapes));
 		int from, to, cnt = ores.size();
 		// Filter out frame #3 (dust).
 		for (from = to = 0; from < cnt; ++from)
@@ -2418,8 +2418,7 @@ bool Sit_schedule::set_action(
 		*chair_found = 0;   // Init. in case we fail.
 	if (!chairobj) {        // Find chair if not given.
 		static int chairshapes[] = {873, 292};
-		actor->find_closest(chairs, chairshapes,
-		                    sizeof(chairshapes) / sizeof(chairshapes[0]));
+		actor->find_closest(chairs, chairshapes, array_size(chairshapes));
 		for (Game_object_vector::const_iterator it = chairs.begin();
 		        it != chairs.end(); ++it)
 			if (!Sit_actor_action::is_occupied((*it), actor)) {
@@ -2506,7 +2505,7 @@ bool Desk_schedule::walk_to_table() {
 }
 
 static char desk_frames[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 12, 13, 14, 15};
-#define DESK_FRAMES_CNT   	sizeof(desk_frames)/sizeof(desk_frames[0])
+#define DESK_FRAMES_CNT   	array_size(desk_frames)
 static int find_desk_items(Game_object_vector &vec, Actor *npc)
 {
 	npc->find_nearby(vec, 675, 16, 0);
@@ -2606,8 +2605,7 @@ void Desk_schedule::now_what(
 		desk = npc->find_closest(desks, 2);
 		if (desk) {
 			static int chairs[] = {873, 292};
-			chair = desk->find_closest(chairs,
-				sizeof(chairs) / sizeof(chairs[0]));
+			chair = desk->find_closest(chairs, array_size(chairs));
 		}
 		if (!chair) {   // Failed.
 			// Try again in a few seconds.
@@ -2640,7 +2638,7 @@ void Desk_schedule::now_what(
 			frames[3] = npc->get_dir_framenum(Actor::bow_frame);
 			frames[4] = npc->get_dir_framenum(Actor::sit_frame);
 			npc->set_action(new Frames_actor_action(frames,
-		                                sizeof(frames) / sizeof(frames[0])));
+		                                array_size(frames)));
 			npc->start(250, 3000 + rand() % 2000);
 		}
 		break;
@@ -2706,7 +2704,7 @@ void Desk_schedule::now_what(
 		    Actor_action *face = new Face_pos_actor_action(table, 200);;
 			npc->set_action(new Sequence_actor_action(face,
 								new Frames_actor_action(frames,
-		                                sizeof(frames) / sizeof(frames[0]))));
+		                                array_size(frames))));
 		}
 		npc->start(250, 1000 + rand() % 500);
 		break;

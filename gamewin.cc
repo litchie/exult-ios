@@ -87,6 +87,7 @@
 #include "monstinf.h"
 #include "usefuns.h"
 #include "audio/midi_drivers/XMidiFile.h"
+#include "array_size.h"
 
 #ifdef USE_EXULTSTUDIO
 #include "server.h"
@@ -547,7 +548,7 @@ Game_window::~Game_window(
 ) {
 	gump_man->close_all_gumps(true);
 	clear_world(false);         // Delete all objects, chunks.
-	for (size_t i = 0; i < sizeof(save_names) / sizeof(save_names[0]); i++)
+	for (size_t i = 0; i < array_size(save_names); i++)
 		delete [] save_names[i];
 	delete shape_man;
 	delete gump_man;
@@ -2413,7 +2414,7 @@ void Game_window::double_clicked(
 //++++++++++++TESTING
 	static int ncnt = 0;
 	cout << "Showing xform for ncnt = " << ncnt << endl;
-	std::size_t nxforms = sizeof(xforms) / sizeof(xforms[0]);
+	std::size_t nxforms = array_size(xforms);
 	pal->load(PALETTES_FLX, PATCH_PALETTES, 0, XFORMTBL, nxforms - 1 - ncnt);
 	pal->apply(false);
 	ncnt = (ncnt + 1) % nxforms;

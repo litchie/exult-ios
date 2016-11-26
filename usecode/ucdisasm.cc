@@ -41,10 +41,11 @@ using std::cout;
 #include "game.h"
 #include "stackframe.h"
 #include "ignore_unused_variable_warning.h"
+#include "array_size.h"
 
 int Usecode_internal::get_opcode_length(int opcode) {
 	if (opcode >= 0 &&
-	        static_cast<unsigned>(opcode) < (sizeof(opcode_table) / sizeof(opcode_table[0]))) {
+	        static_cast<unsigned>(opcode) < array_size(opcode_table)) {
 
 		return opcode_table[opcode].nbytes + 1;
 	} else {
@@ -72,7 +73,7 @@ void Usecode_internal::uc_trace_disasm(Usecode_value *locals, int num_locals,
 	uint8 *param_ip = ip;
 	_opcode_desc *pdesc = 0;
 
-	if (opcode >= 0 && static_cast<unsigned>(opcode) < (sizeof(opcode_table) / sizeof(opcode_table[0])))
+	if (opcode >= 0 && static_cast<unsigned>(opcode) < array_size(opcode_table))
 		pdesc = &(opcode_table[opcode]);
 	signed short immed;
 	uint16 varref;

@@ -37,6 +37,7 @@
 #include "exult.h"
 #include "ShortcutBar_gump.h"
 #include "ignore_unused_variable_warning.h"
+#include "array_size.h"
 
 using std::cout;
 using std::endl;
@@ -61,7 +62,7 @@ Party_manager::Party_manager(
 bool Party_manager::add_to_party(
     Actor *npc          // (Should not be the Avatar.)
 ) {
-	const int maxparty = sizeof(party) / sizeof(party[0]);
+	const int maxparty = array_size(party);
 	if (!npc || party_count == maxparty || npc->is_in_party())
 		return false;
 	remove_from_dead_party(npc);    // Just to be sure.
@@ -138,7 +139,7 @@ int Party_manager::in_dead_party(
 bool Party_manager::add_to_dead_party(
     Actor *npc          // (Should not be the Avatar.)
 ) {
-	const int maxparty = sizeof(dead_party) / sizeof(dead_party[0]);
+	const int maxparty = array_size(dead_party);
 	if (!npc || dead_party_count == maxparty || in_dead_party(npc) >= 0)
 		return false;
 	dead_party[dead_party_count++] = npc->get_npc_num();
@@ -212,8 +213,7 @@ void Party_manager::link_party(
 		int npc_num = npc->get_npc_num();
 		if (npc->is_dead()) { // Put dead in special list.
 			npc->set_party_id(-1);
-			if (static_cast<unsigned int>(dead_party_count) >=
-			        sizeof(dead_party) / sizeof(dead_party[0]))
+			if (static_cast<unsigned int>(dead_party_count) >= array_size(dead_party))
 				continue;
 			dead_party[dead_party_count++] = npc_num;
 			continue;
@@ -471,7 +471,7 @@ static bool Take_best_step(
     int dir             // Direction we want to go.
 ) {
 	static int deltadir[] = {0, 1, 7, 2, 6, 3, 5};
-	const int cnt = sizeof(deltadir) / sizeof(deltadir[0]);
+	const int cnt = array_size(deltadir);
 
 	int best_cost = max_cost + 8;
 	Tile_coord best(-1, -1, -1);

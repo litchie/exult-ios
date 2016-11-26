@@ -42,6 +42,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "databuf.h"
 #include "convmusic.h"
 #include "utils.h"
+#include "array_size.h"
 
 #include "data/exult_flx.h"
 
@@ -826,7 +827,7 @@ bool MyMidiPlayer::ogg_play_track(std::string filename, int num, bool repeat)
 			ogg_name = "si13.ogg";
 		else if (filename == MAINMUS || filename == MAINMUS_AD)
 			{
-			if (static_cast<unsigned>(num) < sizeof(bgconvmusic)/sizeof(bgconvmusic[0]))
+			if (static_cast<unsigned>(num) < array_size(bgconvmusic))
 				ogg_name = bgconvmusic[num];
 			else
 				{

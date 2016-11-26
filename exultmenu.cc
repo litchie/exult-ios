@@ -44,6 +44,7 @@
 #include "gumps/Gamemenu_gump.h"
 #include "shapeid.h"
 #include "ignore_unused_variable_warning.h"
+#include "array_size.h"
 
 #if 0
 static bool get_play_intro(void);
@@ -97,7 +98,7 @@ void create_scroller_menu(MenuList *menu, Font *fonton, Font *font, int first, i
 		"NEXT",
 		"LAST"
 	};
-	int ncount = sizeof(menuscroller) / sizeof(menuscroller[0]);
+	int ncount = array_size(menuscroller);
 	assert(ncount == 4);
 	int max_width = maximum_size(font, menuscroller, ncount, xpos);
 	xpos = xpos - max_width * 3 / 2;
@@ -321,7 +322,7 @@ MenuList *ExultMenu::create_main_menu(Shape_frame *bg, int first) {
 		"QUOTES",
 		"EXIT"
 	};
-	int num_entries = sizeof(menuchoices) / sizeof(menuchoices[0]);
+	int num_entries = array_size(menuchoices);
 	int max_width = maximum_size(font, menuchoices, num_entries, centerx);
 	xpos = centerx - max_width * (num_entries - 1) / 2;
 	ypos = gwin->get_win()->get_end_y() - 3 * font->get_text_height();
@@ -374,7 +375,7 @@ MenuList *ExultMenu::create_mods_menu(ModManager *selgame, Shape_frame *bg, int 
 	const char *menuchoices[] = {
 		"RETURN TO MAIN MENU"
 	};
-	int num_entries = sizeof(menuchoices) / sizeof(menuchoices[0]);
+	int num_entries = array_size(menuchoices);
 	int max_width = maximum_size(font, menuchoices, num_entries, centerx);
 	xpos = centerx - max_width * (num_entries - 1) / 2;
 	ypos = gwin->get_win()->get_end_y() - 3 * font->get_text_height();

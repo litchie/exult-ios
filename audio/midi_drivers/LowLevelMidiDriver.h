@@ -30,13 +30,13 @@ class XMidiSequence;
 #include <SDL_thread.h>
 #include "ignore_unused_variable_warning.h"
 
-//! Specifies the max number of simultaneous playing sequences supported 
+//! Specifies the max number of simultaneous playing sequences supported
 //! \note Only 2 simultaneous playing sequences required for Ultima 8
 #define LLMD_NUM_SEQ	4
 
 //! An Abstract implementation of MidiDriver for Simple Low Level support of Midi playback
-//! 
-//! \note An implementation of LowLevelMidiDriver needs to implement the open(), close() 
+//!
+//! \note An implementation of LowLevelMidiDriver needs to implement the open(), close()
 //!  and send() functions. Implementing increaseThreadPriority() is optional, however it
 //!  is strongly recommended that it is implemented. If it's not implemented, the main
 //!  Pentagram thread MAY use too much CPU time and cause timing problems.
@@ -87,10 +87,10 @@ protected:
 
 	//! Send a SysEX message to the Midi Device
 	//
-	// Note that this is slightly different to the API used in ScummVM. 
+	// Note that this is slightly different to the API used in ScummVM.
 	// The 0xF0 status isn't assumed, and the final 0xF7 also isn't assumed, and is the
 	// final byte of the msg buffer. length includes the final byte. The reason for the
-	// differences is because the midi specifications can have SysEx messages that does 
+	// differences is because the midi specifications can have SysEx messages that does
 	// start with 0xF0 and don't end with 0xF7. Chances are though they will never be
 	// encountered.
 	virtual void		send_sysex(uint8 status, const uint8 *msg, uint16 length) {
@@ -189,7 +189,7 @@ private:
 	int						next_sysex;						// Time we can next send sysex at (is SDL_GetTick() value)
 
 	// Software Synth only Data
-	uint32					total_seconds;					// xmidi_clock = total_seconds*6000 
+	uint32					total_seconds;					// xmidi_clock = total_seconds*6000
 	uint32					samples_this_second;			//		+ samples_this_second*6000/sample_rate;
 	uint32					samples_per_iteration;
 
@@ -219,6 +219,10 @@ private:
 		uint8		output_level;			// 0-100
 		uint8		panpot;					// 0-14 (L-R)
 		uint8		reverb_switch;			// 0-1 (off,on)
+	};
+	struct MT32RhythmSpec {
+		int note;
+		MT32Rhythm rhythm;
 	};
 
 

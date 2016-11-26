@@ -33,6 +33,7 @@
 #include "Gump_button.h"
 #include "mouse.h"
 #include "Yesno_gump.h"
+#include "array_size.h"
 
 #ifndef UNDER_EMBEDDED_CE
 using std::cout;
@@ -308,7 +309,7 @@ File_gump::File_gump(
 
 	size_t i;
 	int ty = texty;
-	for (i = 0; i < sizeof(names) / sizeof(names[0]); i++, ty += texth) {
+	for (i = 0; i < array_size(names); i++, ty += texth) {
 		names[i] = new Gump_text(this,
 		                         game->get_shape("gumps/fntext"),
 		                         textx, ty, 30, 12, 2);
@@ -336,9 +337,9 @@ File_gump::File_gump(
 File_gump::~File_gump(
 ) {
 	size_t i;
-	for (i = 0; i < sizeof(names) / sizeof(names[0]); i++)
+	for (i = 0; i < array_size(names); i++)
 		delete names[i];
-	for (i = 0; i < sizeof(buttons) / sizeof(buttons[0]); i++)
+	for (i = 0; i < array_size(buttons); i++)
 		delete buttons[i];
 }
 
@@ -351,7 +352,7 @@ File_gump::~File_gump(
 int File_gump::get_save_index(
     Gump_text *txt
 ) {
-	for (size_t i = 0; i < sizeof(names) / sizeof(names[0]); i++)
+	for (size_t i = 0; i < array_size(names); i++)
 		if (names[i] == txt)
 			return (i);
 	return (-1);
@@ -479,10 +480,10 @@ void File_gump::paint(
 	Gump::paint();          // Paint background
 	// Paint text objects.
 	size_t i;
-	for (i = 0; i < sizeof(names) / sizeof(names[0]); i++)
+	for (i = 0; i < array_size(names); i++)
 		if (names[i])
 			names[i]->paint();
-	for (i = 0; i < sizeof(buttons) / sizeof(buttons[0]); i++)
+	for (i = 0; i < array_size(buttons); i++)
 		if (buttons[i])
 			buttons[i]->paint();
 }
@@ -503,7 +504,7 @@ bool File_gump::mouse_down(
 	if (btn)
 		pushed = btn;
 	else                // Try buttons at bottom.
-		for (size_t i = 0; i < sizeof(buttons) / sizeof(buttons[0]); i++)
+		for (size_t i = 0; i < array_size(buttons); i++)
 			if (buttons[i] && buttons[i]->on_button(mx, my)) {
 				pushed = buttons[i];
 				break;
@@ -513,7 +514,7 @@ bool File_gump::mouse_down(
 		return true;
 	}
 	// See if on text field.
-	for (size_t i = 0; i < sizeof(names) / sizeof(names[0]); i++)
+	for (size_t i = 0; i < array_size(names); i++)
 		if (names[i]->on_widget(mx, my)) {
 			pushed_text = names[i];
 			break;

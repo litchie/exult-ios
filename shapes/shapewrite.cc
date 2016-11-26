@@ -50,6 +50,7 @@
 #include "ready.h"
 #include "data_utils.h"
 #include "ignore_unused_variable_warning.h"
+#include "array_size.h"
 
 using std::ifstream;
 using std::ios;
@@ -199,7 +200,7 @@ void Shapes_vga_file::Write_Shapeinf_text_data_file(Exult_Game game) {
 		Vector_writer_functor < Frame_usecode_info, Shape_info,
 		&Shape_info::frucinf > > ("frame_usecode", info, num_shapes)
 	};
-	int numsections = sizeof(writers) / sizeof(writers[0]);
+	int numsections = array_size(writers);
 	Write_text_data_file("shape_info", writers, numsections, 7, game);
 }
 
@@ -214,7 +215,7 @@ void Shapes_vga_file::Write_Bodies_text_data_file(Exult_Game game) {
 		Class_writer_functor < Body_info, Shape_info,
 		&Shape_info::body > > ("bodylist", info, num_shapes)
 	};
-	int numsections = sizeof(writers) / sizeof(writers[0]);
+	int numsections = array_size(writers);
 	Write_text_data_file("bodies", writers, numsections, 2, game);
 }
 
@@ -227,7 +228,7 @@ void Shapes_vga_file::Write_Paperdoll_text_data_file(Exult_Game game) {
 		Vector_writer_functor < Paperdoll_item, Shape_info,
 		&Shape_info::objpaperdoll > > ("items", info, num_shapes)
 	};
-	int numsections = sizeof(writers) / sizeof(writers[0]);
+	int numsections = array_size(writers);
 	Write_text_data_file("paperdol_info", writers, numsections, 3, game);
 }
 

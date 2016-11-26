@@ -34,13 +34,14 @@
 #include <cmath>
 #include <iostream>
 #include "fmopl.h"
+#include "array_size.h"
 
 #ifndef PI
 #define PI 3.14159265358979323846
 #endif
 
 #ifndef ARRAYSIZE
-#define ARRAYSIZE(x) (sizeof(x) / sizeof(x[0]))
+#define ARRAYSIZE(x) (array_size(x))
 #endif
 
 namespace FMOpl_Pentagram {

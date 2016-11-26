@@ -17,6 +17,7 @@
 
 #include "utils.h"
 #include "Flex.h"
+#include "array_size.h"
 
 using std::cout;
 using std::endl;
@@ -53,7 +54,7 @@ static int hlead[] = { -2, -1, 0, -1, 0, 0, -1, -2, -1, -1};
 
 void Fonts_vga_file::init(
 ) {
-	int cnt = sizeof(hlead) / sizeof(hlead[0]);
+	int cnt = array_size(hlead);
 
 	FlexFile sfonts(FONTS_VGA);
 	FlexFile pfonts(PATCH_FONTS);
