@@ -1320,6 +1320,9 @@ void Game_window::init_actors(
 
 }
 
+// In gamemgr/modmgr.cc because it is also needed by ES.
+string get_game_identity(const char *savename, const string &title);
+
 /*
  *  Create initial 'gamedat' directory if needed
  *
@@ -1341,8 +1344,7 @@ bool Game_window::init_gamedat(bool create) {
 		// Editing, and no IDENTITY?
 		if (Game::is_editing() && !U7exists(IDENTITY)) {
 			U7open(out, IDENTITY);
-			std::string gametitlestr = Game::get_gametitle();
-			out << gametitlestr.c_str() << endl;
+			out << Game::get_gametitle() << endl;
 			out.close();
 		}
 
@@ -1366,12 +1368,10 @@ bool Game_window::init_gamedat(bool create) {
 			;
 		*ptr = 0;
 		cout << "Gamedat identity " << gamedat_identity << endl;
-		const char *static_identity = get_game_identity(INITGAME);
-		if (strcmp(static_identity, gamedat_identity)) {
-			delete [] static_identity;
+		string static_identity = get_game_identity(INITGAME, Game::get_gametitle());
+		if (static_identity != gamedat_identity) {
 			return false;
 		}
-		delete [] static_identity;
 		// scroll coords.
 	}
 	read_save_names();      // Read in saved-game names.

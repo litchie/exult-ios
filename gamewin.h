@@ -599,15 +599,12 @@ public:
 	// Save "gamedat".
 	void save_gamedat(const char *fname, const char *savename);
 	void save_gamedat(int num, const char *savename);
-	// Get IDENTITY string.
-	static const char *get_game_identity(const char *savename);
 	bool init_gamedat(bool create); // Initialize gamedat directory
 #ifdef HAVE_ZIP_SUPPORT
 private:
 	bool save_gamedat_zip(const char *fname, const char *savename);
 	bool Restore_level2(void *unzipfile, const char *dirname, int dirlen);
 	bool restore_gamedat_zip(const char *fname);
-	static const char *get_game_identity_zip(const char *savename);
 public:
 #endif
 	/*
