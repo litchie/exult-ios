@@ -211,11 +211,11 @@ exult_si.flx: $(expack) $(EXULT_SI_FLX_OBJECTS)
 exult_iphone.flx: $(expack) $(EXULT_IPHONE_FLX_OBJECTS)
 	$(expack) -i $(srcdir)/iphone/flx.in
 	
-exult_bg_flx.h: exult.flx
+exult_flx.h: exult.flx
 
-data/exult_flx.h: exult_si.flx
+exult_bg_flx.h: exult_bg.flx
 
-data/exult_iphone_flx.h: exult_iphone.flx
+exult_iphone_flx.h: exult_iphone.flx
 
-data/exult_si_flx.h: exult_si.flx
+exult_si_flx.h: exult_si.flx
 
