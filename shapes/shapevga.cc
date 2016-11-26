@@ -52,6 +52,7 @@
 #include "ready.h"
 #include "data_utils.h"
 #include "ignore_unused_variable_warning.h"
+#include "array_size.h"
 
 using std::ifstream;
 using std::ios;
@@ -326,8 +327,8 @@ void Shapes_vga_file::Read_Shapeinf_text_data_file(
 		Vector_reader_functor < Frame_usecode_info, Shape_info,
 		&Shape_info::frucinf > > (info),
 	};
-	int numsections = sizeof(sections) / sizeof(sections[0]);
-	int numreaders = sizeof(readers) / sizeof(readers[0]);
+	int numsections = array_size(sections);
+	int numreaders = array_size(readers);
 	assert(numsections == numreaders);
 	int flxres = game_type == BLACK_GATE ?
 	             EXULT_BG_FLX_SHAPE_INFO_TXT : EXULT_SI_FLX_SHAPE_INFO_TXT;
@@ -351,8 +352,8 @@ void Shapes_vga_file::Read_Bodies_text_data_file(
 		Class_reader_functor < Body_info, Shape_info,
 		&Shape_info::body > > (info)
 	};
-	int numsections = sizeof(sections) / sizeof(sections[0]);
-	int numreaders = sizeof(readers) / sizeof(readers[0]);
+	int numsections = array_size(sections);
+	int numreaders = array_size(readers);
 	assert(numsections == numreaders);
 	int flxres = game_type == BLACK_GATE ?
 	             EXULT_BG_FLX_BODIES_TXT : EXULT_SI_FLX_BODIES_TXT;
@@ -376,8 +377,8 @@ void Shapes_vga_file::Read_Paperdoll_text_data_file(
 		Vector_reader_functor < Paperdoll_item, Shape_info,
 		&Shape_info::objpaperdoll > > (info),
 	};
-	int numsections = sizeof(sections) / sizeof(sections[0]);
-	int numreaders = sizeof(readers) / sizeof(readers[0]);
+	int numsections = array_size(sections);
+	int numreaders = array_size(readers);
 	assert(numsections == numreaders);
 	int flxres = game_type == BLACK_GATE ?
 	             EXULT_BG_FLX_PAPERDOL_INFO_TXT : EXULT_SI_FLX_PAPERDOL_INFO_TXT;

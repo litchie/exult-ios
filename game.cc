@@ -47,6 +47,7 @@
 #include "shapeid.h"
 #include "gamemgr/modmgr.h"
 #include "shapes/miscinf.h"
+#include "array_size.h"
 
 #ifndef UNDER_EMBEDDED_CE
 using std::cout;
@@ -214,7 +215,7 @@ const str_int_pair &Game::get_resource(const char *name) {
 		return resources[name];
 	} else {
 		char buf[250];
-		snprintf(buf, sizeof(buf) / sizeof(buf[0]),
+		snprintf(buf, array_size(buf),
 		         "Game::get_resource: Illegal resource requested: '%s'", name);
 		throw exult_exception(buf);
 	}

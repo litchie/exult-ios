@@ -40,6 +40,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "aniinf.h"
 #include "sfxinf.h"
 #include "AudioMixer.h"
+#include "array_size.h"
 
 #ifndef UNDER_EMBEDDED_CE
 using std::map;
@@ -174,7 +175,7 @@ void Object_sfx::handle_event(
  *  Stop playing the sound effect if needed.
  */
 void Shape_sfx::stop() {
-	for (size_t i = 0; i < sizeof(channel) / sizeof(channel[0]); i++) {
+	for (size_t i = 0; i < array_size(channel); i++) {
 		if (channel[i] >= 0) {
 			Audio::get_ptr()->stop_sound_effect(channel[i]);
 			channel[i] = -1;
@@ -212,7 +213,7 @@ void Shape_sfx::update(
 	AudioMixer *mixer = AudioMixer::get_instance();
 
 	int active[2] = {0, 0};
-	for (size_t i = 0; i < sizeof(channel) / sizeof(channel[0]); i++) {
+	for (size_t i = 0; i < array_size(channel); i++) {
 		if (channel[i] != -1)
 			active[i] = mixer->isPlaying(channel[i]);
 		if (!active[i] && channel[i] != -1) {
@@ -249,7 +250,7 @@ void Shape_sfx::update(
 	if (play && halt)
 		play = false;
 
-	for (size_t i = 0; i < sizeof(channel) / sizeof(channel[0]); i++)
+	for (size_t i = 0; i < array_size(channel); i++)
 		if (play && channel[i] == -1 && sfxnum[i] > -1)     // First time?
 			// Start playing.
 			channel[i] = Audio::get_ptr()->play_sound_effect(sfxnum[i], obj, volume, rep[i]);

@@ -39,6 +39,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ucexpr.h"         /* Needed only for Write2(). */
 #include "ucsymtbl.h"
 #include "basic_block.h"
+#include "array_size.h"
 
 using std::strlen;
 using std::memcpy;
@@ -877,21 +878,21 @@ void Uc_function::set_intrinsics(
 	}
 	if (intrinsic_type == bg) {
 		table = bg_intrinsic_table;
-		cnt = sizeof(bg_intrinsic_table) / sizeof(bg_intrinsic_table[0]);
+		cnt = array_size(bg_intrinsic_table);
 		add_answer = 5;
 		remove_answer = 6;
 		push_answers = 7;
 		pop_answers = 8;
 	} else if (intrinsic_type == si) {
 		table = si_intrinsic_table;
-		cnt = sizeof(si_intrinsic_table) / sizeof(si_intrinsic_table[0]);
+		cnt = array_size(si_intrinsic_table);
 		add_answer = 0xc;
 		remove_answer = 0xd;
 		push_answers = 0xe;
 		pop_answers = 0xf;
 	} else {
 		table = sibeta_intrinsic_table;
-		cnt = sizeof(sibeta_intrinsic_table) / sizeof(sibeta_intrinsic_table[0]);
+		cnt = array_size(sibeta_intrinsic_table);
 		add_answer = 0xc;
 		remove_answer = 0xd;
 		push_answers = 0xe;

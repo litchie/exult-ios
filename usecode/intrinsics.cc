@@ -64,6 +64,7 @@
 #include "combat.h"
 #include "ready.h"
 #include "ignore_unused_variable_warning.h"
+#include "array_size.h"
 
 #ifndef UNDER_EMBEDDED_CE
 using std::cerr;
@@ -78,7 +79,7 @@ extern Usecode_value no_ret;
 static Game_object *sailor = 0;     // The current barge captain.  Maybe
 //   this needs to be saved/restored.
 
-#define PARTY_MAX (sizeof(party)/sizeof(party[0]))
+#define PARTY_MAX (array_size(party))
 
 #define USECODE_INTRINSIC(NAME) Usecode_value   Usecode_internal:: UI_## NAME (int num_parms,Usecode_value parms[12])
 
@@ -1795,7 +1796,7 @@ static inline void Armageddon_death(Actor *npc, bool barks, Rectangle const &scr
 	// Leave a select few alive (like LB, Batlin).
 	if (npc && !npc->is_dead() && !npc->get_info().survives_armageddon()) {
 		const char *text[] = {"Aiiiieee!", "Noooo!", "#!?*#%!"};
-		const int numtext = sizeof(text) / sizeof(text[0]);
+		const int numtext = array_size(text);
 		Tile_coord loc = npc->get_tile();
 		if (barks && screen.has_world_point(loc.tx, loc.ty))
 			npc->say(text[rand() % numtext]);

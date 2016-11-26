@@ -40,6 +40,7 @@
 #include "Text_button.h"
 #include "Enabled_button.h"
 #include "font.h"
+#include "array_size.h"
 
 using std::string;
 
@@ -52,7 +53,7 @@ static const char *canceltext = "CANCEL";
 
 static int framerates[] = { 2, 4, 6, 8, 10, -1 };
 // -1 is placeholder for custom framerate
-static const int num_default_rates = sizeof(framerates) / sizeof(framerates[0]) - 1;
+static const int num_default_rates = array_size(framerates) - 1;
 
 
 static string framestring(int fr) {

@@ -9,6 +9,7 @@
 #include <iomanip>
 #include <vector>
 #include <fstream>
+#include "array_size.h"
 
 using std::cout;
 using std::cerr;
@@ -60,7 +61,7 @@ void bg_out(const string &fname) {
 	};
 #undef USECODE_INTRINSIC_PTR
 
-	gen_intrinsic_table(o, bgut, sizeof(bgut) / sizeof(bgut[0]));
+	gen_intrinsic_table(o, bgut, array_size(bgut));
 	o.close();
 }
 
@@ -82,7 +83,7 @@ void si_out(const string &fname) {
 	};
 #undef USECODE_INTRINSIC_PTR
 
-	gen_intrinsic_table(o, siut, sizeof(siut) / sizeof(siut[0]));
+	gen_intrinsic_table(o, siut, array_size(siut));
 
 	o.close();
 }
@@ -105,7 +106,7 @@ void sibeta_out(const string &fname) {
 	};
 #undef USECODE_INTRINSIC_PTR
 
-	gen_intrinsic_table(o, sibut, sizeof(sibut) / sizeof(sibut[0]));
+	gen_intrinsic_table(o, sibut, array_size(sibut));
 
 	o.close();
 }

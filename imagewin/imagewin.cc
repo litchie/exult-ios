@@ -36,6 +36,7 @@ Boston, MA  02111-1307, USA.
 
 #include "common_types.h"
 #include "utils.h"
+#include "array_size.h"
 
 #include <algorithm>
 
@@ -377,7 +378,7 @@ void Image_window::static_init() {
 	int bpps[] = { 0, 8, 16, 32 };
 
 	/* Get available fullscreen/hardware modes */
-	for (size_t i = 0; i < sizeof(bpps) / sizeof(bpps[0]); i++) {
+	for (size_t i = 0; i < array_size(bpps); i++) {
 #if SDL_VERSION_ATLEAST(2, 0, 0)
 		for (int j = 0; j < SDL_GetNumDisplayModes(0); j++) {
 			SDL_DisplayMode dispmode;

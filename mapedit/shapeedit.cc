@@ -60,6 +60,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ready.h"
 #include "data_utils.h"
 #include "ignore_unused_variable_warning.h"
+#include "array_size.h"
 
 using   std::cout;
 using   std::endl;
@@ -1544,8 +1545,7 @@ static inline void Get_frameflags_fields(
 			"shinfo_frameflags_flag11",
 			"shinfo_frameflags_flag12"
 		};
-		*flags = studio->get_bit_toggles(&frflags[0],
-		                                 sizeof(frflags) / sizeof(frflags[0]));
+		*flags = studio->get_bit_toggles(&frflags[0], array_size(frflags));
 	}
 }
 
@@ -1574,8 +1574,7 @@ static void Set_frameflags_fields(
 		"shinfo_frameflags_flag11",
 		"shinfo_frameflags_flag12"
 	};
-	studio->set_bit_toggles(&frflags[0],
-	                        sizeof(frflags) / sizeof(frflags[0]), flags);
+	studio->set_bit_toggles(&frflags[0], array_size(frflags), flags);
 }
 
 /*
@@ -2669,7 +2668,7 @@ void ExultStudio::init_shape_notebook(
 	static int classes[] = {0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 0,
 	                        9, 10, 11, 12, 0
 	                       };
-	const int numclasses = sizeof(classes) / sizeof(classes[0]);
+	const int numclasses = array_size(classes);
 	int shclass = static_cast<int>(info.get_shape_class());
 	set_optmenu("shinfo_shape_class", shclass < numclasses ?
 	            classes[shclass] : 0);
@@ -2717,7 +2716,7 @@ void ExultStudio::init_shape_notebook(
 		"shinfo_shape_flag9"
 	};
 	set_bit_toggles(&shpflags[0],
-	                sizeof(shpflags) / sizeof(shpflags[0]), info.get_shape_flags());
+	                array_size(shpflags), info.get_shape_flags());
 	// Extras.
 	Weapon_info *winfo = info.get_weapon_info();
 	set_toggle("shinfo_weapon_check", winfo != 0);
@@ -2750,7 +2749,7 @@ void ExultStudio::init_shape_notebook(
 			"shinfo_weapon_pow7"
 		};
 		set_bit_toggles(&powers[0],
-		                sizeof(powers) / sizeof(powers[0]), winfo->get_powers());
+		                array_size(powers), winfo->get_powers());
 		set_toggle("shinfo_weapon_flag0", winfo->lucky());
 		set_toggle("shinfo_weapon_flag1", winfo->explodes());
 		set_toggle("shinfo_weapon_flag2", winfo->no_blocking());
@@ -2785,7 +2784,7 @@ void ExultStudio::init_shape_notebook(
 			"shinfo_ammo_pow7"
 		};
 		set_bit_toggles(&powers[0],
-		                sizeof(powers) / sizeof(powers[0]), ainfo->get_powers());
+		                array_size(powers), ainfo->get_powers());
 		// 'Explode'???
 		set_toggle("shinfo_ammo_flag0", ainfo->lucky());
 		set_toggle("shinfo_ammo_flag1", ainfo->autohits());
@@ -2810,7 +2809,7 @@ void ExultStudio::init_shape_notebook(
 		                             };
 		set_spin("shinfo_armor_value", arinfo->get_prot());
 		set_bit_toggles(&immun[0],
-		                sizeof(immun) / sizeof(immun[0]), arinfo->get_immune());
+		                array_size(immun), arinfo->get_immune());
 	}
 	unsigned char aflags = info.get_actor_flags();
 	set_toggle("shinfo_npcflags_check", aflags != 0);
@@ -2825,7 +2824,7 @@ void ExultStudio::init_shape_notebook(
 		                                "shinfo_actor_flag6",
 		                                "shinfo_actor_flag7"
 		                             };
-		set_bit_toggles(&flags[0], sizeof(flags) / sizeof(flags[0]), aflags);
+		set_bit_toggles(&flags[0], array_size(flags), aflags);
 	}
 	Monster_info *minfo = info.get_monster_info();
 	set_toggle("shinfo_monster_check", minfo != 0);
@@ -2861,10 +2860,10 @@ void ExultStudio::init_shape_notebook(
 		                              "shinfo_monster_immun6",
 		                              "shinfo_monster_immun7"
 		                             };
-		set_bit_toggles(&vuln[0], sizeof(vuln) / sizeof(vuln[0]),
+		set_bit_toggles(&vuln[0], array_size(vuln),
 		                minfo->get_vulnerable());
 		set_bit_toggles(&immun[0],
-		                sizeof(immun) / sizeof(immun[0]), minfo->get_immune());
+		                array_size(immun), minfo->get_immune());
 		set_toggle("shinfo_monster_splits", minfo->splits());
 		set_toggle("shinfo_monster_cant_yell", minfo->cant_yell());
 		set_toggle("shinfo_monster_cant_bleed", minfo->cant_bleed());
@@ -2886,7 +2885,7 @@ void ExultStudio::init_shape_notebook(
 		                              "shinfo_monster_flag7"
 		                             };
 		set_bit_toggles(&flags[0],
-		                sizeof(flags) / sizeof(flags[0]), minfo->get_flags());
+		                array_size(flags), minfo->get_flags());
 	}
 	int gump_shape = info.get_gump_shape();
 	int gump_font = info.get_gump_font();
@@ -2975,7 +2974,7 @@ void ExultStudio::init_shape_notebook(
 		                                  "shinfo_npcpaperdoll_atwohanded",
 		                                  "shinfo_npcpaperdoll_astaff"
 		                                 };
-		for (size_t i = 0; i < sizeof(arm_names) / sizeof(arm_names[0]); i++)
+		for (size_t i = 0; i < array_size(arm_names); i++)
 			set_spin(arm_names[i], npcinf->get_arms_frame(i));
 	}
 
@@ -3567,7 +3566,7 @@ void ExultStudio::save_shape_notebook(
 		"shinfo_shape_flag9"
 	};
 	info.set_shape_flags(get_bit_toggles(&shpflags[0],
-	                                     sizeof(shpflags) / sizeof(shpflags[0])));
+	                                     array_size(shpflags)));
 	// Extras.
 	if (!get_toggle("shinfo_weapon_check"))
 		info.set_weapon_info(false);    // Not a weapon.
@@ -3606,7 +3605,7 @@ void ExultStudio::save_shape_notebook(
 			"shinfo_weapon_pow7"
 		};
 		winfo->set_powers(get_bit_toggles(&powers[0],
-		                                  sizeof(powers) / sizeof(powers[0])));
+		                                  array_size(powers)));
 		winfo->set_lucky(get_toggle("shinfo_weapon_flag0"));
 		winfo->set_explodes(get_toggle("shinfo_weapon_flag1"));
 		winfo->set_no_blocking(get_toggle("shinfo_weapon_flag2"));
@@ -3643,7 +3642,7 @@ void ExultStudio::save_shape_notebook(
 			"shinfo_ammo_pow7"
 		};
 		ainfo->set_powers(get_bit_toggles(&powers[0],
-		                                  sizeof(powers) / sizeof(powers[0])));
+		                                  array_size(powers)));
 		ainfo->set_lucky(get_toggle("shinfo_ammo_flag0"));
 		ainfo->set_autohits(get_toggle("shinfo_ammo_flag1"));
 		ainfo->set_returns(get_toggle("shinfo_ammo_flag2"));
@@ -3672,7 +3671,7 @@ void ExultStudio::save_shape_notebook(
 		                             };
 		arinfo->set_prot(get_spin("shinfo_armor_value"));
 		arinfo->set_immune(get_bit_toggles(&immun[0],
-		                                   sizeof(immun) / sizeof(immun[0])));
+		                                   array_size(immun)));
 	}
 	if (!get_toggle("shinfo_npcflags_check"))
 		info.set_actor_flags(0);
@@ -3687,7 +3686,7 @@ void ExultStudio::save_shape_notebook(
 		                                "shinfo_actor_flag7"
 		                             };
 		info.set_actor_flags(get_bit_toggles(&flags[0],
-		                                     sizeof(flags) / sizeof(flags[0])));
+		                                     array_size(flags)));
 	}
 	if (!get_toggle("shinfo_monster_check"))
 		info.set_monster_info(false);
@@ -3724,9 +3723,9 @@ void ExultStudio::save_shape_notebook(
 		                              "shinfo_monster_immun7"
 		                             };
 		minfo->set_vulnerable(get_bit_toggles(&vuln[0],
-		                                      sizeof(vuln) / sizeof(vuln[0])));
+		                                      array_size(vuln)));
 		minfo->set_immune(get_bit_toggles(&immun[0],
-		                                  sizeof(immun) / sizeof(immun[0])));
+		                                  array_size(immun)));
 		minfo->set_splits(get_toggle("shinfo_monster_splits"));
 		minfo->set_cant_yell(get_toggle("shinfo_monster_cant_yell"));
 		minfo->set_cant_bleed(get_toggle("shinfo_monster_cant_bleed"));
@@ -3748,7 +3747,7 @@ void ExultStudio::save_shape_notebook(
 		                              "shinfo_monster_flag7"
 		                             };
 		minfo->set_flags(get_bit_toggles(&flags[0],
-		                                 sizeof(flags) / sizeof(flags[0])));
+		                                 array_size(flags)));
 		info.set_monster_food(get_spin("shinfo_monster_food"));
 	}
 	if (!get_toggle("shinfo_container_check"))
@@ -3816,7 +3815,7 @@ void ExultStudio::save_shape_notebook(
 		                                  "shinfo_npcpaperdoll_atwohanded",
 		                                  "shinfo_npcpaperdoll_astaff"
 		                                 };
-		for (size_t i = 0; i < sizeof(arm_names) / sizeof(arm_names[0]); i++)
+		for (size_t i = 0; i < array_size(arm_names); i++)
 			npcinf->set_arms_frame(i, get_spin(arm_names[i]));
 	}
 	if (!get_toggle("shinfo_animation_check"))
@@ -4097,7 +4096,7 @@ void ExultStudio::open_shape_window(
 		const char *columns[] = {"Trans", "Gender", "Spot frame", "DShape",
 		                         "DFrame0", "DFrame1", "DFrame2", "DFrame3"
 		                        };
-		for (size_t i = 0; i < sizeof(columns) / sizeof(columns[0]); i++) {
+		for (size_t i = 0; i < array_size(columns); i++) {
 			renderer = gtk_cell_renderer_text_new();
 			col = gtk_tree_view_column_new_with_attributes(
 			          columns[i], renderer, "text", i + DOLL_TRANSLUCENT, NULL);

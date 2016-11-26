@@ -41,6 +41,7 @@
 #include "miscinf.h"
 #include "gump_utils.h"
 #include "ignore_unused_variable_warning.h"
+#include "array_size.h"
 
 #ifndef UNDER_EMBEDDED_CE
 using std::cout;
@@ -1145,7 +1146,7 @@ void SI_Game::end_game(bool success) {
 		ExCineVoc(74750, INTRO_DAT, PATCH_INTRO, 29)
 	};
 
-	int last_voc = sizeof(vocs) / sizeof(vocs[0]) - 1;
+	int last_voc = array_size(vocs) - 1;
 	int cur_voc = -1;
 
 	// Subtitle times
@@ -1161,7 +1162,7 @@ void SI_Game::end_game(bool success) {
 		ExSubEvent(74750, pagan, 3, sifont),	// "Perhaps you would join me in\nanother world alltogether?\nWe do have a score to settle!"
 	};
 
-	int last_sub = sizeof(subs) / sizeof(subs[0]) - 1;
+	int last_sub = array_size(subs) - 1;
 	int cur_sub = -1;
 
 	// Start the music
