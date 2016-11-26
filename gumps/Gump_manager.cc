@@ -273,28 +273,35 @@ void Gump_manager::add_gump(
 	}
 
 	Gump *new_gump = 0;
-	Actor *npc = 0;
-	if (obj)
-		npc = obj->as_actor();
-	if (npc && paperdoll)
-		new_gump = new Paperdoll_gump(npc, x, y, npc->get_npc_num());
-	else if (npc && actorgump)
-		new_gump = new Actor_gump(npc, x, y, shapenum);
-	else if (shapenum == game->get_shape("gumps/statsdisplay"))
-		new_gump = Stats_gump::create(obj, x, y);
-	else if (shapenum == game->get_shape("gumps/spellbook"))
-		new_gump = new Spellbook_gump(static_cast<Spellbook_object *>(obj));
-	else if (Game::get_game_type() == SERPENT_ISLE &&
-	         shapenum >= game->get_shape("gumps/cstats/1") &&
-	         shapenum <= game->get_shape("gumps/cstats/6"))
+	if (obj) {
+		Actor *npc = obj->as_actor();
+		if (npc && paperdoll)
+			new_gump = new Paperdoll_gump(npc, x, y, npc->get_npc_num());
+		else if (npc && actorgump)
+			new_gump = new Actor_gump(npc, x, y, shapenum);
+		else if (shapenum == game->get_shape("gumps/statsdisplay"))
+			new_gump = Stats_gump::create(obj, x, y);
+		else if (shapenum == game->get_shape("gumps/spellbook"))
+			new_gump = new Spellbook_gump(static_cast<Spellbook_object *>(obj));
+		else if (shapenum == game->get_shape("gumps/jawbone"))
+			new_gump = new Jawbone_gump(static_cast<Jawbone_object *>(obj), x, y);
+		else if (shapenum == game->get_shape("gumps/spell_scroll"))
+			new_gump = new Spellscroll_gump(obj);
+		// If we have an object, we can force a container gump.
+		if (!new_gump && obj->as_container())
+			new_gump = new Container_gump(obj->as_container(), x, y, shapenum);
+	} else if (Game::get_game_type() == SERPENT_ISLE &&
+		shapenum >= game->get_shape("gumps/cstats/1") &&
+		shapenum <= game->get_shape("gumps/cstats/6")) {
 		new_gump = new CombatStats_gump(x, y);
-	else if (shapenum == game->get_shape("gumps/jawbone"))
-		new_gump = new Jawbone_gump(static_cast<Jawbone_object *>(obj), x, y);
-	else if (shapenum == game->get_shape("gumps/spell_scroll"))
-		new_gump = new Spellscroll_gump(obj);
+	}
 
-	if (!new_gump)
-		new_gump = new Container_gump(static_cast<Container_game_object *>(obj), x, y, shapenum);
+	if (!new_gump) {
+		// We failed; so bail out (we did nothing but waste time)
+		CERR("Failed to create gump: " << obj << ", " << shapenum
+		     << ", " << actorgump);
+		return;
+	}
 
 	// Paint new one last.
 	add_gump(new_gump);
