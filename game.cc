@@ -119,7 +119,7 @@ Game *Game::create_game(BaseGameInfo *mygame) {
 	sman->set_paperdoll_status(game_type == SERPENT_ISLE || str == "yes");
 	config->set("config/gameplay/bg_paperdolls", str, true);
 	char buf[256];
-	if (mygame && mygame->get_mod_title() != "")
+	if (mygame->get_mod_title() != "")
 		snprintf(buf, 256, " with the '%s' modification.",
 		         mygame->get_mod_title().c_str());
 	else
