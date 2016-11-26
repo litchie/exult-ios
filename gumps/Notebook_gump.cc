@@ -170,7 +170,7 @@ bool Notebook_page_button::activate(
     int button
 ) {
 	if (button != 1) return false;
-	reinterpret_cast<Notebook_gump *>(parent)->change_page(leftright ? 1 : -1);
+	static_cast<Notebook_gump *>(parent)->change_page(leftright ? 1 : -1);
 	return true;
 }
 
@@ -579,7 +579,7 @@ void Notebook_gump::up_arrow(
 bool Notebook_gump::handle_kbd_event(
     void *vev
 ) {
-	SDL_Event &ev = *reinterpret_cast<SDL_Event *>(vev);
+	SDL_Event &ev = *static_cast<SDL_Event *>(vev);
 	int chr = ev.key.keysym.sym;
 #if SDL_VERSION_ATLEAST(2, 0, 0)
 	//int unicode = 0; // Unicode is way different in SDL2

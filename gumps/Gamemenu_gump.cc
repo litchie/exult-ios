@@ -67,19 +67,19 @@ bool Gamemenu_button::activate(int button) {
 	if (button != 1) return false;
 
 	if (text == loadsavetext) {
-		reinterpret_cast<Gamemenu_gump *>(parent)->loadsave();
+		static_cast<Gamemenu_gump *>(parent)->loadsave();
 	} else if (text == videoopttext) {
-		reinterpret_cast<Gamemenu_gump *>(parent)->video_options();
+		static_cast<Gamemenu_gump *>(parent)->video_options();
 	} else if (text == audioopttext) {
-		reinterpret_cast<Gamemenu_gump *>(parent)->audio_options();
+		static_cast<Gamemenu_gump *>(parent)->audio_options();
 	} else if (text == gameopttext) {
-		reinterpret_cast<Gamemenu_gump *>(parent)->gameplay_options();
+		static_cast<Gamemenu_gump *>(parent)->gameplay_options();
 	} else if (text == misctext) {
-		reinterpret_cast<Gamemenu_gump *>(parent)->misc_options();
+		static_cast<Gamemenu_gump *>(parent)->misc_options();
 	} else if (text == quitmenutext) {
-		reinterpret_cast<Gamemenu_gump *>(parent)->quit(true);
+		static_cast<Gamemenu_gump *>(parent)->quit(true);
 	} else if (text == quittext) {
-		reinterpret_cast<Gamemenu_gump *>(parent)->quit(false);
+		static_cast<Gamemenu_gump *>(parent)->quit(false);
 	}
 	return true;
 }

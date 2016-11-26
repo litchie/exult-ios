@@ -67,7 +67,7 @@ bool Yesno_button::activate(
     int button
 ) {
 	if (button != 1) return false;
-	reinterpret_cast<Yesno_gump *>(parent)->set_answer(isyes);
+	static_cast<Yesno_gump *>(parent)->set_answer(isyes);
 	return true;
 }
 

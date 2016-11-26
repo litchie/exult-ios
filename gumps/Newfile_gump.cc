@@ -247,24 +247,24 @@ bool Newfile_button::activate(
 	if (button != 1) return false;
 	int shapenum = get_shapenum();
 	if (shapenum == EXULT_FLX_SAV_DOWNDOWN_SHP)
-		reinterpret_cast<Newfile_gump *>(parent)->scroll_page(1);
+		static_cast<Newfile_gump *>(parent)->scroll_page(1);
 	else if (shapenum == EXULT_FLX_SAV_DOWN_SHP)
-		reinterpret_cast<Newfile_gump *>(parent)->scroll_line(1);
+		static_cast<Newfile_gump *>(parent)->scroll_line(1);
 	else if (shapenum == EXULT_FLX_SAV_UP_SHP)
-		reinterpret_cast<Newfile_gump *>(parent)->scroll_line(-1);
+		static_cast<Newfile_gump *>(parent)->scroll_line(-1);
 	else if (shapenum == EXULT_FLX_SAV_UPUP_SHP)
-		reinterpret_cast<Newfile_gump *>(parent)->scroll_page(-1);
+		static_cast<Newfile_gump *>(parent)->scroll_page(-1);
 	return true;
 }
 
 bool Newfile_Textbutton::activate(int button) {
 	if (button != 1) return false;
 	if (text == loadtext)
-		reinterpret_cast<Newfile_gump *>(parent)->load();
+		static_cast<Newfile_gump *>(parent)->load();
 	else if (text == savetext)
-		reinterpret_cast<Newfile_gump *>(parent)->save();
+		static_cast<Newfile_gump *>(parent)->save();
 	else if (text == deletetext)
-		reinterpret_cast<Newfile_gump *>(parent)->delete_file();
+		static_cast<Newfile_gump *>(parent)->delete_file();
 	else if (text == canceltext)
 		parent->close();
 	return true;

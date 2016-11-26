@@ -77,9 +77,9 @@ public:
 bool GameplayOptions_button::activate(int button) {
 	if (button != 1) return false;
 	if (text == canceltext) {
-		reinterpret_cast<GameplayOptions_gump *>(parent)->cancel();
+		static_cast<GameplayOptions_gump *>(parent)->cancel();
 	} else if (text == oktext) {
-		reinterpret_cast<GameplayOptions_gump *>(parent)->close();
+		static_cast<GameplayOptions_gump *>(parent)->close();
 	}
 	return true;
 }
@@ -93,7 +93,7 @@ public:
 
 	friend class GameplayOptions_gump;
 	virtual void toggle(int state) {
-		reinterpret_cast<GameplayOptions_gump *>(parent)->toggle(this, state);
+		static_cast<GameplayOptions_gump *>(parent)->toggle(this, state);
 	}
 };
 
@@ -106,7 +106,7 @@ public:
 
 	friend class GameplayOptions_gump;
 	virtual void toggle(int state) {
-		reinterpret_cast<GameplayOptions_gump *>(parent)->toggle(this, state);
+		static_cast<GameplayOptions_gump *>(parent)->toggle(this, state);
 	}
 };
 
