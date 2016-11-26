@@ -230,12 +230,19 @@ ModInfo::ModInfo(
 #include "files/zip/zip.h"
 #endif
 
-// Need this for ES.
-static const char *get_game_identity(const char *savename, const string &title) {
+/*
+ *  Return string from IDENTITY in a savegame.
+ *	Also needed by ES.
+ *
+ *  Output: identity if found.
+ *      "" if error (or may throw exception).
+ *      "*" if older savegame.
+ */
+string get_game_identity(const char *savename, const string &title) {
 	char *game_identity = 0;
 	ifstream in_stream;
 	if (!U7exists(savename))
-		return newstrdup(title.c_str());
+		return title;
 	if (!Flex::is_flex(savename))
 #ifdef HAVE_ZIP_SUPPORT
 	{
@@ -244,7 +251,7 @@ static const char *get_game_identity(const char *savename, const string &title) 
 			// Find IDENTITY, ignoring case.
 			if (unzLocateFile(unzipfile, "identity", 2) != UNZ_OK) {
 				unzClose(unzipfile);
-				return newstrdup("*");      // Old game.  Return wildcard.
+				return "*";      // Old game.  Return wildcard.
 			} else {
 				unz_file_info file_info;
 				unzGetCurrentFileInfo(unzipfile, &file_info, NULL,
@@ -299,15 +306,15 @@ static const char *get_game_identity(const char *savename, const string &title) 
 		delete [] finfo;
 	}
 	if (!game_identity)
-		return newstrdup(title.c_str());
+		return title;
 	// Truncate identity
 	char *ptr = game_identity;
 	for (; (*ptr != 0x1a && *ptr != 0x0d); ptr++)
 		;
 	*ptr = 0;
-	ptr = newstrdup(game_identity);
+	string id = game_identity;
 	delete [] game_identity;
-	return ptr;
+	return id;
 }
 
 // ModManager: class that manages a game's modlist and paths
@@ -356,33 +363,33 @@ ModManager::ModManager(const string &name, const string &menu, bool needtitle,
 	string initgam_path(static_dir + "/initgame.dat");
 	found = U7exists(initgam_path);
 
-	const char *static_identity;
+	string static_identity;
 	if (found) {
 		static_identity = get_game_identity(initgam_path.c_str(), cfgname);
 		if (!silent)
 			cout << "found game with identity '" << static_identity << "'" << endl;
 	} else { // New game still under development.
-		static_identity = newstrdup("DEVEL GAME");
+		static_identity = "DEVEL GAME";
 		if (!silent)
 			cout << "but it wasn't there." << endl;
 	}
 
 	string new_title;
-	if (!strcmp(static_identity, "ULTIMA7")) {
+	if (static_identity == "ULTIMA7") {
 		type = BLACK_GATE;
 		path_prefix = to_uppercase(CFG_BG_NAME);
 		if (needtitle)
 			new_title = CFG_BG_TITLE;
 		expansion = false;
 		sibeta = false;
-	} else if (!strcmp(static_identity, "FORGE")) {
+	} else if (static_identity == "FORGE") {
 		type = BLACK_GATE;
 		path_prefix = to_uppercase(CFG_FOV_NAME);
 		if (needtitle)
 			new_title = CFG_FOV_TITLE;
 		expansion = true;
 		sibeta = false;
-	} else if (!strcmp(static_identity, "SERPENT ISLE")) {
+	} else if (static_identity == "SERPENT ISLE") {
 		type = SERPENT_ISLE;
 		expansion = false;
 		uint32 crc = crc32_syspath((static_dir + "/mainshp.flx").c_str());
@@ -397,7 +404,7 @@ ModManager::ModManager(const string &name, const string &menu, bool needtitle,
 				new_title = CFG_SI_TITLE;
 			sibeta = false;
 		}
-	} else if (!strcmp(static_identity, "SILVER SEED")) {
+	} else if (static_identity == "SILVER SEED") {
 		type = SERPENT_ISLE;
 		path_prefix = to_uppercase(CFG_SS_NAME);
 		if (needtitle)
@@ -460,7 +467,6 @@ ModManager::ModManager(const string &name, const string &menu, bool needtitle,
 
 	get_game_paths(game_path);
 	gather_mods();
-	delete[] static_identity;
 }
 
 void ModManager::gather_mods() {

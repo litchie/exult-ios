@@ -166,6 +166,9 @@ void Game_window::restore_flex_files(
 	delete [] finfo;
 }
 
+// In gamemgr/modmgr.cc because it is also needed by ES.
+string get_game_identity(const char *savename, const string &title);
+
 /*
  *  Write out the gamedat directory from a saved game.
  *
@@ -176,22 +179,17 @@ void Game_window::restore_gamedat(
     const char *fname       // Name of savegame file.
 ) {
 	// Check IDENTITY.
-	const char *id = get_game_identity(fname);
-	const char *static_identity = get_game_identity(INITGAME);
+	string id = get_game_identity(fname, Game::get_gametitle());
+	string static_identity = get_game_identity(INITGAME, Game::get_gametitle());
 	// Note: "*" means an old game.
-	if (!id || (*id != '*' && strcmp(static_identity, id) != 0)) {
+	if (id.empty() || (id[0] != '*' && static_identity != id)) {
 		std::string msg("Wrong identity '");
 		msg += id;
 		msg += "'.  Open anyway?";
-		int ok = Yesno_gump::ask(msg.c_str());
-		if (!ok) {
-			delete [] id;
-			delete [] static_identity;
+		if (!Yesno_gump::ask(msg.c_str())) {
 			return;
 		}
 	}
-	delete [] id;
-	delete [] static_identity;
 	// Check for a ZIP file first
 #ifdef HAVE_ZIP_SUPPORT
 	if (restore_gamedat_zip(fname) != false)
@@ -758,66 +756,6 @@ void Game_window::get_saveinfo(Shape_file *&map, SaveGame_Details *&details, Sav
 	}
 }
 
-/*
- *  Return string from IDENTITY in a savegame.
- *
- *  Output: ->identity if found.
- *      0 if error (or may throw exception).
- *      "*" if older savegame.
- */
-const char *Game_window::get_game_identity(const char *savename) {
-	const char *game_identity = 0;
-#ifdef HAVE_ZIP_SUPPORT
-	game_identity = get_game_identity_zip(savename);
-	if (game_identity)
-		return game_identity;
-#endif
-	ifstream in_stream;
-	try {
-		U7open(in_stream, savename);        // Open file.
-	} catch (const exult_exception &e) {
-		if (Game::is_editing()) {   // Okay if creating a new game.
-			std::string titlestr = Game::get_gametitle();
-			return newstrdup(titlestr.c_str());
-		}
-		throw;
-	}
-	StreamDataSource in(&in_stream);
-
-	in.seek(0x54);          // Get to where file count sits.
-	int numfiles = in.read4();
-	in.seek(0x80);          // Get to file info.
-	// Read pos., length of each file.
-	sint32 *finfo = new sint32[2 * numfiles];
-	int i;
-	for (i = 0; i < numfiles; i++) {
-		finfo[2 * i] = in.read4();  // The position, then the length.
-		finfo[2 * i + 1] = in.read4();
-	}
-	for (i = 0; i < numfiles; i++) { // Now read each file.
-		// Get file length.
-		int len = finfo[2 * i + 1] - 13;
-		if (len <= 0)
-			continue;
-		in.seek(finfo[2 * i]);  // Get to it.
-		char fname[50];     // Set up name.
-		in.read(fname, 13);
-		if (!strcmp("identity", fname)) {
-			char *identity = new char[len];
-			in.read(identity, len);
-			// Truncate identity
-			char *ptr = identity;
-			for (; (*ptr != 0x1a && *ptr != 0x0d && *ptr != 0x0a); ptr++)
-				;
-			*ptr = 0;
-			game_identity = identity;
-			break;
-		}
-	}
-	delete [] finfo;
-	return game_identity;
-}
-
 // Zip file support
 #ifdef HAVE_ZIP_SUPPORT
 
@@ -1293,54 +1231,6 @@ bool Game_window::save_gamedat_zip(
 		throw file_write_exception(fname);
 
 	return true;
-}
-
-/*
- *  Return string from IDENTITY in a savegame.
- *
- *  Output: ->identity string.
- *      0 if error.
- *      "*" if not found.
- */
-const char *Game_window::get_game_identity_zip(
-    const char *savename
-) {
-	// If a flex, so can't read it
-	try {
-		if (Flex::is_flex(savename))
-			return 0;
-	} catch (const file_exception & /*f*/) {
-		return 0;       // Ignore if not found.
-	}
-	unzFile unzipfile = unzOpen(get_system_path(savename).c_str());
-	if (!unzipfile)
-		return 0;
-	// Find IDENTITY, ignoring case.
-	if (unzLocateFile(unzipfile, "identity", 2) != UNZ_OK) {
-		unzClose(unzipfile);
-		return newstrdup("*");     // Old game.  Return wildcard.
-	}
-	// Open the file in the zip
-	if (unzOpenCurrentFile(unzipfile) != UNZ_OK) {
-		unzClose(unzipfile);
-		throw file_read_exception(savename);
-	}
-	// Now read the file.
-	char buf[256];
-	int cnt = unzReadCurrentFile(unzipfile, buf, sizeof(buf) - 1);
-	if (cnt <= 0) {
-		unzCloseCurrentFile(unzipfile);
-		unzClose(unzipfile);
-		throw file_read_exception(savename);
-	}
-	buf[cnt] = 0;           // 0-delimit.
-	unzCloseCurrentFile(unzipfile);
-	unzClose(unzipfile);
-	char *ptr = buf;
-	for (; (*ptr != 0 && *ptr != 0x1a && *ptr != 0x0d && *ptr != 0x0a); ptr++)
-		;
-	*ptr = 0;
-	return newstrdup(buf);
 }
 
 #endif
