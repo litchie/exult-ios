@@ -3240,7 +3240,7 @@ bool Game_window::is_hostile_nearby() {
 		if (!actor->is_dead() && actor->get_schedule() &&
 		        actor->get_effective_alignment() >= Actor::evil &&
 		        ((actor->get_schedule_type() == Schedule::combat &&
-		          dynamic_cast<Combat_schedule *>(actor->get_schedule())->has_started_battle()) ||
+		          static_cast<Combat_schedule *>(actor->get_schedule())->has_started_battle()) ||
 		         actor->get_schedule_type() == Schedule::arrest_avatar)) {
 			/* TODO- I think invisibles still trigger the
 			 * slowdown, verify this. */

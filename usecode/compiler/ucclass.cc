@@ -135,7 +135,7 @@ Uc_var_symbol *Uc_class::add_alias(
 	if (scope.is_dup(nm))
 		return 0;
 	// Create & assign slot.
-	Uc_var_symbol *var = dynamic_cast<Uc_var_symbol *>(v->get_sym());
+	Uc_var_symbol *var = static_cast<Uc_var_symbol *>(v->get_sym());
 	Uc_alias_symbol *alias = new Uc_struct_alias_symbol(nm, var, struc);
 	scope.add(alias);
 	return alias;

@@ -712,7 +712,7 @@ Uc_converse_statement::Uc_converse_statement(
 	for (vector<Uc_statement *>::const_iterator it = cases.begin();
 	        it != cases.end(); ++it) {
 		Uc_converse_case_statement *stmt =
-		    dynamic_cast<Uc_converse_case_statement *>(*it);
+		    static_cast<Uc_converse_case_statement *>(*it);
 		if (stmt->is_default()) {
 			if (has_default) {
 				char buf[255];
@@ -776,7 +776,7 @@ void Uc_converse_statement::gen(
 	for (std::vector<Uc_statement *>::const_iterator it = cases.begin();
 	        it != cases.end(); ++it) {
 		Uc_converse_case_statement *stmt =
-		    dynamic_cast<Uc_converse_case_statement *>(*it);
+		    static_cast<Uc_converse_case_statement *>(*it);
 		if (stmt->is_default())
 			def = stmt;
 		else
@@ -865,7 +865,7 @@ Uc_switch_statement::Uc_switch_statement(
 	for (vector<Uc_statement *>::const_iterator it = cases.begin();
 	        it != cases.end(); ++it) {
 		Uc_switch_case_statement *stmt =
-		    dynamic_cast<Uc_switch_case_statement *>(*it);
+		    static_cast<Uc_switch_case_statement *>(*it);
 		if (stmt->is_default()) {
 			if (has_default) {
 				char buf[255];
@@ -920,7 +920,7 @@ void Uc_switch_statement::gen(
 		curr->set_targets(UC_JMP, past_switch);
 	for (size_t i = 0; i < cases.size(); i++) {
 		Uc_switch_case_statement *stmt =
-		    dynamic_cast<Uc_switch_case_statement *>(cases[i]);
+		    static_cast<Uc_switch_case_statement *>(cases[i]);
 		Basic_block *block = case_blocks[i];
 		// Link cases (for fall-through).
 		if (i > 0)

@@ -200,7 +200,7 @@ Uc_var_symbol *Uc_function::add_alias(
 	if (cur_scope->is_dup(nm))
 		return 0;
 	// Create & assign slot.
-	Uc_var_symbol *var = dynamic_cast<Uc_var_symbol *>(v->get_sym());
+	Uc_var_symbol *var = static_cast<Uc_var_symbol *>(v->get_sym());
 	Uc_alias_symbol *alias = new Uc_struct_alias_symbol(nm, var, struc);
 	cur_scope->add(alias);
 	return alias;
@@ -220,7 +220,7 @@ Uc_var_symbol *Uc_function::add_alias(
 	if (cur_scope->is_dup(nm))
 		return 0;
 	// Create & assign slot.
-	Uc_var_symbol *var = dynamic_cast<Uc_var_symbol *>(v->get_sym());
+	Uc_var_symbol *var = static_cast<Uc_var_symbol *>(v->get_sym());
 	Uc_alias_symbol *alias = new Uc_class_alias_symbol(nm, var, c);
 	cur_scope->add(alias);
 	return alias;

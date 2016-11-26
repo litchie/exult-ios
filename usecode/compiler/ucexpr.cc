@@ -755,17 +755,15 @@ void Uc_call_expression::check_params() {
 		    dynamic_cast<Uc_class_inst_symbol *>(var);
 		char buf[180];
 		if (expr->is_class()) {
-			Uc_class_expression *cexp =
-			    dynamic_cast<Uc_class_expression *>(expr);
 			if (!cls) {
 				sprintf(buf,
 				        "Error in parm. #%lu: cannot convert class to non-class", i + 1);
 				Uc_location::yyerror(buf);
-			} else if (!cexp->get_cls()->is_class_compatible(
+			} else if (!expr->get_cls()->is_class_compatible(
 			               cls->get_cls()->get_name())) {
 				sprintf(buf,
 				        "Error in parm. #%lu: class '%s' cannot be converted into class '%s'",
-				        i + 1, cexp->get_cls()->get_name(),
+				        i + 1, expr->get_cls()->get_name(),
 				        cls->get_cls()->get_name());
 				Uc_location::yyerror(buf);
 			}
