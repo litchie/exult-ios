@@ -1806,11 +1806,7 @@ void BG_Game::end_game(bool success) {
 		// Fade out for 1 sec (50 cycles)
 		pal->fade(50, 0, 0);
 
-		if (wait_delay(10)) {
-			do_break = true;
-			break;
-		}
-		if (do_break) break;
+		if (wait_delay(10)) break;
 
 		// Text Screen 2
 
