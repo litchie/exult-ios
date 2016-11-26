@@ -323,7 +323,7 @@ static int read_track(int append)
 	char tmp[4];
 
 	meep=evlist;
-	if (append && meep)
+	if (append)
 	{
 		/* find the last event in the list */
 		for (; meep->next; meep=meep->next)
