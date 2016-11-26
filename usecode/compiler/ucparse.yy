@@ -726,7 +726,7 @@ class_decl:
 		}
 	| IDENTIFIER '=' class_expr
 		{
-		if (Nonclass_unexpected_error($3))
+		if (!$3 || Nonclass_unexpected_error($3))
 			$$ = 0;
 		else
 			{
@@ -806,6 +806,7 @@ class_expr:
 			sprintf(buf, "'%s' not declared", $1);
 			yyerror(buf);
 			cur_fun->add_symbol($1);
+			$$ = 0;
 			}
 		else if (sym->get_sym_type() != Uc_symbol::Class)
 			{
