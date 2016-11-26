@@ -105,7 +105,7 @@ bool Page_button::activate(
     int button
 ) {
 	if (button != 1) return false;
-	reinterpret_cast<Spellbook_gump *>(parent)->change_page(leftright ? 1 : -1);
+	static_cast<Spellbook_gump *>(parent)->change_page(leftright ? 1 : -1);
 	return true;
 }
 
@@ -134,7 +134,7 @@ public:
 
 void Bookmark_button::set(
 ) {
-	Spellbook_gump *sgump = reinterpret_cast<Spellbook_gump *>(parent);
+	Spellbook_gump *sgump = static_cast<Spellbook_gump *>(parent);
 	Rectangle &object_area = sgump->object_area;
 	int spwidth = sgump->spwidth;   // Spell width.
 	Spellbook_object *book = sgump->book;
@@ -160,7 +160,7 @@ bool Bookmark_button::activate(
     int button
 ) {
 	if (button != 1) return false;
-	Spellbook_gump *sgump = reinterpret_cast<Spellbook_gump *>(parent);
+	Spellbook_gump *sgump = static_cast<Spellbook_gump *>(parent);
 	int bmpage = sgump->book->bookmark / 8; // Bookmark's page.
 	int delta = sign(bmpage - sgump->page);
 	// On a different, valid page?
@@ -201,7 +201,7 @@ bool Spell_button::activate(
     int button
 ) {
 	if (button != 1) return false;
-	reinterpret_cast<Spelltype_gump *>(parent)->select_spell(spell);
+	static_cast<Spelltype_gump *>(parent)->select_spell(spell);
 	return true;
 }
 
@@ -213,7 +213,7 @@ void Spell_button::double_clicked(
     int x, int y
 ) {
 	ignore_unused_variable_warning(x, y);
-	reinterpret_cast<Spelltype_gump *>(parent)->do_spell(spell);
+	static_cast<Spelltype_gump *>(parent)->do_spell(spell);
 }
 
 /*

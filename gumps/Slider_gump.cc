@@ -67,9 +67,9 @@ bool Slider_button::activate(
 ) {
 	if (button != 1) return false;
 	if (is_left)
-		reinterpret_cast<Slider_gump *>(parent)->clicked_left_arrow();
+		static_cast<Slider_gump *>(parent)->clicked_left_arrow();
 	else
-		reinterpret_cast<Slider_gump *>(parent)->clicked_right_arrow();
+		static_cast<Slider_gump *>(parent)->clicked_right_arrow();
 	return true;
 }
 

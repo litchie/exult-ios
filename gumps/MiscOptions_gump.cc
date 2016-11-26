@@ -58,9 +58,9 @@ public:
 		if (button != 1) return false;
 
 		if (text == canceltext) {
-			reinterpret_cast<MiscOptions_gump *>(parent)->cancel();
+			static_cast<MiscOptions_gump *>(parent)->cancel();
 		} else if (text == oktext) {
-			reinterpret_cast<MiscOptions_gump *>(parent)->close();
+			static_cast<MiscOptions_gump *>(parent)->close();
 		}
 		return true;
 	}
@@ -75,7 +75,7 @@ public:
 
 	friend class MiscOptions_gump;
 	virtual void toggle(int state) {
-		reinterpret_cast<MiscOptions_gump *>(parent)->toggle(this, state);
+		static_cast<MiscOptions_gump *>(parent)->toggle(this, state);
 	}
 };
 
@@ -88,7 +88,7 @@ public:
 
 	friend class MiscOptions_gump;
 	virtual void toggle(int state) {
-		reinterpret_cast<MiscOptions_gump *>(parent)->toggle(this, state);
+		static_cast<MiscOptions_gump *>(parent)->toggle(this, state);
 	}
 };
 
