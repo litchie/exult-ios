@@ -724,6 +724,9 @@ void    MyMidiPlayer::start_sound_effect(int num)
 	// No driver
 	if (!midi_driver && !init_device(true)) return;
 
+	// midi_driver can be null here if ogg is enabled but midi failed
+	if (!midi_driver) return;
+
 	// Only support SFX on devices with 2 or more sequences
 	if (midi_driver->maxSequences() < 2) return;
 
