@@ -403,7 +403,7 @@ static void Paint_image(
 	unsigned char *pixels = buf8.rgba(pal, transp, rot,
 	                                  first_rot, last_rot, alpha);
 	gl_paint_rgba_bitmap(pixels, px, py, w, h, scale);
-	delete pixels;
+	delete [] pixels;
 }
 
 /*
