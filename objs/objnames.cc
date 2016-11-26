@@ -187,7 +187,7 @@ string Game_object::get_name(
 		} else {
 			msg = get_misc_name(msgid);
 			other = (othermsg >= 0 && othermsg < get_num_misc_names()) ?
-			        get_misc_name(othermsg) : shpname;
+			        get_misc_name(othermsg) : (shpname ? shpname : "");
 		}
 		if (defname) {
 			if (othermsg >= 0 && othermsg < get_num_misc_names())
