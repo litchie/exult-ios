@@ -3947,21 +3947,20 @@ void ExultStudio::open_shape_window(
 	body_draw = 0;
 	delete explosion_draw;
 	explosion_draw = 0;
+	// Note: ifile and vgafile can't possibly be null if we are here.
 	Vga_file *ifile = file_info->get_ifile();
-	if (ifile && palbuf) {
+	if (palbuf) {
 		shape_draw = new Shape_draw(ifile, palbuf,
 		                            glade_xml_get_widget(app_xml, "shinfo_draw"));
 //		shape_draw->enable_drop(Shape_shape_dropped, this);
+		body_draw = new Shape_draw(vgafile->get_ifile(), palbuf,
+		                           glade_xml_get_widget(app_xml, "shinfo_body_draw"));
+		body_draw->enable_drop(Body_shape_dropped, this);
 	}
 	if (gumpfile && palbuf) {
 		gump_draw = new Shape_draw(gumpfile->get_ifile(), palbuf,
 		                           glade_xml_get_widget(app_xml, "shinfo_gump_draw"));
 		gump_draw->enable_drop(Gump_shape_dropped, this);
-	}
-	if (vgafile && palbuf) {
-		body_draw = new Shape_draw(vgafile->get_ifile(), palbuf,
-		                           glade_xml_get_widget(app_xml, "shinfo_body_draw"));
-		body_draw->enable_drop(Body_shape_dropped, this);
 	}
 	if (spritefile && palbuf) {
 		explosion_draw = new Shape_draw(spritefile->get_ifile(), palbuf,
