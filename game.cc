@@ -355,13 +355,10 @@ bool Game::show_menu(bool skip) {
 			play = true;
 			break;
 		case 1: // New Game
-			if (!created) {
-				if (new_game(menushapes))
-					exitmenu = true;
-				else
-					break;
-			} else
+			if (new_game(menushapes))
 				exitmenu = true;
+			else
+				break;
 			fadeout = false;
 			play = true;
 			break;
