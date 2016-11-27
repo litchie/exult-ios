@@ -34,9 +34,9 @@ const uint8		XMidiSequence::ChannelShadow::fine_value = centre_value & 127;
 const uint8		XMidiSequence::ChannelShadow::coarse_value = centre_value >> 7;
 const uint16	XMidiSequence::ChannelShadow::combined_value = (coarse_value << 8) | fine_value;
 
-XMidiSequence::XMidiSequence(XMidiSequenceHandler *Handler, uint16 seq_id, XMidiEventList *events, 
+XMidiSequence::XMidiSequence(XMidiSequenceHandler *Handler, uint16 seq_id, XMidiEventList *events,
 						bool Repeat, int volume, int branch) :
-	handler(Handler), sequence_id(seq_id), evntlist(events), event(0), 
+	handler(Handler), sequence_id(seq_id), evntlist(events), event(0),
 	repeat(Repeat),  notes_on(), last_tick(0), loop_num(-1), vol_multi(volume),
 	paused(false), speed(100)
 {
@@ -76,7 +76,7 @@ XMidiSequence::~XMidiSequence()
 	while (XMidiEvent *note = notes_on.Pop())
 		handler->sequenceSendEvent(sequence_id, note->status + (note->data[0] << 8));
 
-	for (int i = 0; i < 16; i++) 
+	for (int i = 0; i < 16; i++)
 	{
 		shadows[i].reset();
 		applyShadow(i);
@@ -99,11 +99,11 @@ void XMidiSequence::ChannelShadow::reset()
 	// Modulation Wheel
 	modWheel[0] = coarse_value;
 	modWheel[1] = fine_value;
-	
+
 	// Foot pedal
 	footpedal[0] = 0;
 	footpedal[1] = 0;
-	
+
 	// Volume
 	volumes[0] = coarse_value;
 	volumes[1] = fine_value;
@@ -129,7 +129,7 @@ void XMidiSequence::ChannelShadow::reset()
 	// Chorus
 	chorus = 0;
 
-	// Xmidi Bank 
+	// Xmidi Bank
 	xbank = 0;
 }
 
@@ -150,7 +150,7 @@ int XMidiSequence::playEvent()
 		else return -1;
 	}
 
-	// Effectively paused, so indicate it 
+	// Effectively paused, so indicate it
 	if (speed <= 0 || paused) return 1;
 
 	// Play all waiting notes;
@@ -174,7 +174,10 @@ int XMidiSequence::playEvent()
 		// XMidi For Loop
 	if ((event->status >> 4) == MIDI_STATUS_CONTROLLER && event->data[0] == XMIDI_CONTROLLER_FOR_LOOP)
 	{
-		if (loop_num < XMIDI_MAX_FOR_LOOP_COUNT) loop_num++;
+		if (loop_num < XMIDI_MAX_FOR_LOOP_COUNT - 1)
+			loop_num++;
+		else
+			CERR("XMIDI: Exceeding maximum loop count");
 
 		loop_count[loop_num] = event->data[1];
 		loop_event[loop_num] = event;
@@ -215,7 +218,7 @@ int XMidiSequence::playEvent()
 		// SysEx gets sent immediately
 	else if (event->status != 0xFF)
 	{
-		handler->sequenceSendSysEx(sequence_id, event->status, 
+		handler->sequenceSendSysEx(sequence_id, event->status,
 				event->ex.sysex_data.buffer, event->ex.sysex_data.len);
 	}
 
@@ -261,7 +264,7 @@ int XMidiSequence::playEvent()
 	diff = aim - getTime ();
 
 	if (diff < 0) return 0; // Next event is ready now!
-	return 1; 
+	return 1;
 }
 
 sint32 XMidiSequence::timeTillNext()
@@ -272,7 +275,7 @@ sint32 XMidiSequence::timeTillNext()
 	XMidiEvent *note;
 	if ((note = notes_on.GetNotes())) {
 		sint32 diff = note->ex.note_on.note_time - getRealTime();
-		if (diff < sixthoToNext) sixthoToNext = diff; 
+		if (diff < sixthoToNext) sixthoToNext = diff;
 	}
 
 	// Time till the next event, if we are playing
@@ -293,7 +296,7 @@ void XMidiSequence::updateShadowForEvent(XMidiEvent *event)
 	uint32 data = event->data[0] | (event->data[1] << 8);
 
 	// Shouldn't be required. XMidi should automatically detect all anyway
-	//evntlist->chan_mask |= 1 << chan; 
+	//evntlist->chan_mask |= 1 << chan;
 
 	// Update the shadows here
 
@@ -363,7 +366,7 @@ void XMidiSequence::sendEvent()
 	uint32 data = event->data[0] | (event->data[1] << 8);
 
 	// Shouldn't be required. XMidi should automatically detect all anyway
-	//evntlist->chan_mask |= 1 << chan; 
+	//evntlist->chan_mask |= 1 << chan;
 
 	// Update the shadows here
 	updateShadowForEvent(event);
@@ -392,7 +395,7 @@ void XMidiSequence::sendEvent()
 			notes_on.Push (event, ((event->ex.note_on.duration-1)*5000/speed) + getStart());
 		}
 		// Only send IF the channel has been marked enabled
-		else 
+		else
 			handler->sequenceSendEvent(sequence_id, event->status | (data<<8));
 	}
 }
@@ -405,13 +408,13 @@ void XMidiSequence::applyShadow(int i)
 {
 	// Pitch Wheel
 	handler->sequenceSendEvent(sequence_id, i | (MIDI_STATUS_PITCH_WHEEL << 4) | (shadows[i].pitchWheel << 8));
-	
+
 	// Modulation Wheel
 	SendController(1,modWheel);
-	
+
 	// Footpedal
 	SendController(4,footpedal);
-	
+
 	// Volume
 	handler->sequenceSendEvent(sequence_id, i | (MIDI_STATUS_CONTROLLER << 4) | (7 << 8) | (((shadows[i].volumes[0]*vol_multi)/0xFF) << 16));
 	handler->sequenceSendEvent(sequence_id, i | (MIDI_STATUS_CONTROLLER << 4) | (39 << 8) | (shadows[i].volumes[1] << 16));
@@ -462,11 +465,11 @@ void XMidiSequence::loseChannel(int i)
 	XMidiEvent* note = notes_on.GetNotes();
 	while (note)
 	{
-		if ((note->status&0xF) == i) 
+		if ((note->status&0xF) == i)
 			handler->sequenceSendEvent(sequence_id, note->status + (note->data[0] << 8));
 		note = note->ex.note_on.next_note;
 	}
-	
+
 }
 
 void XMidiSequence::gainChannel(int i)
@@ -477,7 +480,7 @@ void XMidiSequence::gainChannel(int i)
 	XMidiEvent* note = notes_on.GetNotes();
 	while (note)
 	{
-		if ((note->status&0xF) == i) 
+		if ((note->status&0xF) == i)
 			handler->sequenceSendEvent(sequence_id, note->status | (note->data[0] << 8) | (note->ex.note_on.actualvel << 16));
 		note = note->ex.note_on.next_note;
 	}
@@ -485,15 +488,15 @@ void XMidiSequence::gainChannel(int i)
 
 void XMidiSequence::pause()
 {
-	paused = true; 
+	paused = true;
 	for (int i = 0; i < 16; i++)
 		if (evntlist->chan_mask & (1 << i))
 			loseChannel(i);
 }
 
 void XMidiSequence::unpause()
-{ 
-	paused = false; 
+{
+	paused = false;
 	for (int i = 0; i < 16; i++)
 		if (evntlist->chan_mask & (1 << i))
 			applyShadow(i);
@@ -507,7 +510,7 @@ int XMidiSequence::countNotesOn(int chan)
 	XMidiEvent* note = notes_on.GetNotes();
 	while (note)
 	{
-		if ((note->status&0xF) == chan) 
+		if ((note->status&0xF) == chan)
 			ret++;
 		note = note->ex.note_on.next_note;
 	}
