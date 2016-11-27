@@ -48,7 +48,7 @@ using std::endl;
 int XMidiEventList::write (ODataSource *dest)
 {
 	int len = 0;
-	
+
 	if (!events)
 	{
 		perr << "No midi data loaded." << endl;
@@ -62,18 +62,18 @@ int XMidiEventList::write (ODataSource *dest)
 		len = convertListToMTrk (NULL);
 		return 14 + len;
 	}
-		
+
 	dest->write1 ('M');
 	dest->write1 ('T');
 	dest->write1 ('h');
 	dest->write1 ('d');
-	
+
 	dest->write4high (6);
 
 	dest->write2high (0);
 	dest->write2high (1);
 	dest->write2high (60);	// The PPQN
-		
+
 	len = convertListToMTrk (dest);
 
 	return len + 14;
@@ -101,7 +101,7 @@ int XMidiEventList::putVLQ(ODataSource *dest, uint32 value)
 		dest->write1(buffer & 0xFF);
 		buffer >>= 8;
 	}
-	
+
 	return i;
 }
 
@@ -148,9 +148,9 @@ uint32 XMidiEventList::convertListToMTrk (ODataSource *dest)
 			if (dest) dest->write1(event->status);
 			i++;
 		}
-		
+
 		last_status = event->status;
-		
+
 		switch (event->status >> 4)
 		{
 			// 2 bytes data
@@ -163,7 +163,7 @@ uint32 XMidiEventList::convertListToMTrk (ODataSource *dest)
 			}
 			i += 2;
 			break;
-			
+
 
 			// 1 bytes data
 			// Program Change and Channel Pressure
@@ -171,7 +171,7 @@ uint32 XMidiEventList::convertListToMTrk (ODataSource *dest)
 			if (dest) dest->write1(event->data[0]);
 			i++;
 			break;
-			
+
 
 			// Variable length
 			// SysEx
@@ -181,20 +181,20 @@ uint32 XMidiEventList::convertListToMTrk (ODataSource *dest)
 				if (dest) dest->write1(event->data[0]);
 				i++;
 			}
-	
+
 			i += putVLQ (dest, event->ex.sysex_data.len);
-			
+
 			if (event->ex.sysex_data.len)
 			{
 				for (j = 0; j < event->ex.sysex_data.len; j++)
 				{
-					if (dest) dest->write1(event->ex.sysex_data.buffer[j]); 
+					if (dest) dest->write1(event->ex.sysex_data.buffer[j]);
 					i++;
 				}
 			}
 
 			break;
-			
+
 
 			// Never occur
 			default:
@@ -222,7 +222,7 @@ uint32 XMidiEventList::convertListToMTrk (ODataSource *dest)
 	return i;
 }
 
-void XMidiEventList::decerementCounter()
+void XMidiEventList::decrementCounter()
 {
 	if (--counter < 0) {
 		events->FreeThis();
