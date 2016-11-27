@@ -388,7 +388,7 @@ static void Handle_client_message(
 		int qual = Read2s(ptr);
 		bool up = *ptr++ ? true : false;
 		bool okay = gwin->locate_shape(shnum, up, frnum, qual);
-		ptr = &data[4];     // Send back reply.
+		ptr = &data[6];     // Send back reply.
 		ptr++;          // Skip 'up' flag.
 		*ptr++ = okay ? 1 : 0;
 		Exult_server::Send_data(client_socket,
