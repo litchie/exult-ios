@@ -83,7 +83,7 @@ XMidiSequence::~XMidiSequence()
 	}
 
 	// 'Release' it
-	evntlist->decerementCounter();
+	evntlist->decrementCounter();
 }
 
 void XMidiSequence::ChannelShadow::reset()

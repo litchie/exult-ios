@@ -279,7 +279,7 @@ void LowLevelMidiDriver::startSequence(int seq_num, XMidiEventList *eventlist, b
 		else uploading_timbres = false;
 	}
 
-	eventlist->incerementCounter();
+	eventlist->incrementCounter();
 
 	if (precacheTimbresOnPlay)
 	{
