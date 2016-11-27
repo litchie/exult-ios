@@ -717,7 +717,7 @@ class_decl_list:
 class_decl:
 	IDENTIFIER
 		{
-		if (cur_fun)
+		if (class_type && cur_fun)
 			cur_fun->add_symbol($1, class_type);
 		else
 			// Unsupported for now
@@ -726,7 +726,7 @@ class_decl:
 		}
 	| IDENTIFIER '=' class_expr
 		{
-		if (!$3 || Nonclass_unexpected_error($3))
+		if (!class_type || !$3 || Nonclass_unexpected_error($3))
 			$$ = 0;
 		else
 			{
@@ -2014,7 +2014,10 @@ primary:
 new_expr:
 	NEW defined_class '(' opt_nonclass_expr_list ')'
 		{
-		$$ = new Uc_new_expression(new Uc_class_inst_symbol("", $2, 0), $4);
+		if ($2)
+			$$ = new Uc_new_expression(new Uc_class_inst_symbol("", $2, 0), $4);
+		else
+			$$ = new Uc_int_expression(0);
 		}
 	;
 
