@@ -50,7 +50,6 @@ using std::strlen;
 using std::toupper;
 #endif
 #ifdef __IPHONEOS__
-#include "data/exult_iphone_flx.h"
 #include "exult.h"
 #include "iphone_gumps.h"
 #endif

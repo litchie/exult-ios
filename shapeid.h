@@ -44,9 +44,6 @@ enum ShapeFile {
 #ifdef UNDER_CE
     SF_POCKETPC_FLX,
 #endif
-#ifdef __IPHONEOS__
-    SF_IPHONE_FLX,
-#endif
     SF_OTHER,       // Other unknown FLX
     SF_COUNT        // # of preceding entries.
 };

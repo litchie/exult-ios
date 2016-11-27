@@ -76,10 +76,6 @@ EXULT_SI_FLX_OBJECTS = \
 	si/container.dat \
 	si/autonotes.txt
 
-EXULT_IPHONE_FLX_OBJECTS = \
-	iphone/flx.in \
-	iphone/keyboardbutton.shp
-
 EXULT_BG_PAPERDOL_VGA_OBJECTS = \
 	bg/amulets.shp \
 	bg/bgfiredoom.shp \

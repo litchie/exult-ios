@@ -67,7 +67,6 @@ using std::toupper;
 #include "exult_pocketpc_flx.h"
 #endif
 #ifdef __IPHONEOS__
-#include "data/exult_iphone_flx.h"
 #include "iphone_gumps.h"
 #endif
 

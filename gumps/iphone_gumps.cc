@@ -29,7 +29,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "fnames.h"
 #include "iphone_gumps.h"
 #include "exult.h"
-#include "exult_iphone_flx.h"
 #include "keyactions.h"
 #include "gamewin.h"
 #include "shapeid.h"

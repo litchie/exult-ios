@@ -864,7 +864,6 @@
 		E700DF1E1A6E34C6006C8BE4 /* useval.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = useval.h; sourceTree = "<group>"; };
 		E700DF761A6E3621006C8BE4 /* exult_bg_flx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = exult_bg_flx.h; path = ../data/exult_bg_flx.h; sourceTree = "<group>"; };
 		E700DF771A6E3621006C8BE4 /* exult_flx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = exult_flx.h; path = ../data/exult_flx.h; sourceTree = "<group>"; };
-		E700DF781A6E3621006C8BE4 /* exult_iphone_flx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = exult_iphone_flx.h; path = ../data/exult_iphone_flx.h; sourceTree = "<group>"; };
 		E700DF791A6E3621006C8BE4 /* exult_si_flx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = exult_si_flx.h; path = ../data/exult_si_flx.h; sourceTree = "<group>"; };
 		E700DF811A6E364E006C8BE4 /* Configuration.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Configuration.cc; sourceTree = "<group>"; };
 		E700DF821A6E364E006C8BE4 /* Configuration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Configuration.h; sourceTree = "<group>"; };
@@ -1700,7 +1699,6 @@
 			children = (
 				E700DF761A6E3621006C8BE4 /* exult_bg_flx.h */,
 				E700DF771A6E3621006C8BE4 /* exult_flx.h */,
-				E700DF781A6E3621006C8BE4 /* exult_iphone_flx.h */,
 				E700DF791A6E3621006C8BE4 /* exult_si_flx.h */,
 			);
 			name = data;
