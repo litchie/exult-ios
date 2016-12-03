@@ -69,6 +69,7 @@
 #include "databuf.h"
 #include "usefuns.h"
 #include "opcodes.h"
+#include "ios_state.hpp"
 
 #if (defined(USE_EXULTSTUDIO) && defined(USECODE_DEBUGGER))
 #include "server.h"
@@ -136,11 +137,14 @@ void Usecode_internal::stack_trace(ostream &out) {
 
 	std::deque<Stack_frame *>::iterator iter = call_stack.begin();
 
+	boost::io::ios_flags_saver flags(out);
+	boost::io::ios_fill_saver fill(out);
+	out << std::hex << std::setfill('0');
 	do {
 		out << *(*iter);
 		std::map<Stack_frame *, uint8 *>::iterator it = except_stack.find(*iter);
 		if (it != except_stack.end()) {
-			out << ", active catch at 0x" << std::setw(8) << std::setfill('0') << it->second;
+			out << ", active catch at 0x" << std::setw(8) << it->second;
 		}
 		out << endl;
 		if ((*iter)->call_depth == 0)
@@ -1548,6 +1552,8 @@ static void Usecode_Trace(
     int num_parms,
     Usecode_value parms[12]
 ) {
+	boost::io::ios_flags_saver flags(cout);
+	boost::io::ios_fill_saver fill(cout);
 	cout << hex << "    [0x" << setfill('0') << setw(2)
 	     << intrinsic << "]: " << name << "(";
 	for (int i = 0; i < num_parms; i++) {
@@ -1556,7 +1562,6 @@ static void Usecode_Trace(
 			cout << ", ";
 	}
 	cout << ") = ";
-	cout << dec;
 }
 
 static  void    Usecode_TraceReturn(Usecode_value &v) {

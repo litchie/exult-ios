@@ -34,6 +34,7 @@
 #include "files/utils.h"
 #include "usecode/ucsymtbl.h"
 #include "headers/ignore_unused_variable_warning.h"
+#include "headers/ios_state.hpp"
 
 #include "ops.h"
 
@@ -122,6 +123,8 @@ ostream &tab_indent(const unsigned int indent, ostream &o) {
 
 /* Outputs the short function data 'list' format, returns true upon success */
 bool UCFunc::output_list(ostream &o, unsigned int funcno, const UCOptions &options) {
+	boost::io::ios_flags_saver flags(o);
+	boost::io::ios_fill_saver fill(o);
 	o << "#" << std::setbase(10) << std::setw(4) << funcno << std::setbase(16) << ": "
 	  << (return_var ? '&' : ' ')
 	  << std::setw(4) << _funcid    << "H  "
@@ -450,7 +453,7 @@ vector<UCc *> UCFunc::parse_ucs_pass2a(vector<pair<UCc *, bool> >::reverse_itera
 #ifdef DEBUG_PARSE2a
 						cout << num_args << endl;
 #endif
-						
+
 					} else if (opcode_table_data[current->first->_id].flag_function_effect) {
 						assert(current->first->_params_parsed.size() >= 1);
 						FuncMap::const_iterator fmp = funcmap.find(current->first->_params_parsed[0]);

@@ -33,6 +33,7 @@
 #include "ops.h"
 #include "files/utils.h"
 #include "usecode/ucsymtbl.h"
+#include "headers/ios_state.hpp"
 
 using std::cout;
 using std::setw;
@@ -122,6 +123,8 @@ void UCData::open_usecode(const string &filename) {
 }
 
 void UCData::disassamble(ostream &o) {
+	boost::io::ios_flags_saver flags(o);
+	boost::io::ios_fill_saver fill(o);
 	load_globals(o);
 	load_funcs(o);
 	analyse_classes();
@@ -144,7 +147,7 @@ void UCData::disassamble(ostream &o) {
 			o << UCFunc::STATICNAME << ' ' << UCFunc::GLOBALSTATICPREFIX << std::setw(4) << i << ';' << endl;
 		o << endl;
 	}
-	
+
 	Usecode_class_symbol *cls = 0;
 	bool _foundfunc = false; //did we find and print the function?
 	for (unsigned int i = 0; i < _funcs.size(); i++) {
@@ -205,7 +208,7 @@ void UCData::disassamble(ostream &o) {
 		o << "Functions: " << _funcs.size() << endl;
 
 	if (options.output_list)
-		o << endl << "Functions: " << setbase(10) << _funcs.size() << setbase(16) << endl;
+		o << endl << "Functions: " << setbase(10) << _funcs.size() << endl;
 
 	if (options.output_trans_table)
 		o << "</>" << endl;
@@ -312,6 +315,9 @@ void UCData::load_globals(ostream &o) {
 		std::string flagname;
 		std::getline(gflags, flagname, '\0');
 		bool first = true;
+		boost::io::ios_flags_saver oflags(o);
+		boost::io::ios_fill_saver fill(o);
+		o << setbase(16) << setfill('0');
 		while (gflags.good()) {
 			if (flagname.size()) {
 				if (flagname[0] == '$')
@@ -326,8 +332,7 @@ void UCData::load_globals(ostream &o) {
 					o << ',' << endl;
 				else
 					first = false;
-				o << '\t' << flagname << " = 0x" << setbase(16) << setfill('0')
-				  << setw(4) << ii;
+				o << '\t' << flagname << " = 0x" << setw(4) << ii;
 			}
 			ii++;
 			std::getline(gflags, flagname, '\0');
@@ -346,7 +351,7 @@ void UCData::load_funcs(ostream &o) {
 		_symtbl = new Usecode_symbol_table();
 		_symtbl->read(_file);
 	}
-	
+
 	if (options.verbose) o << "Loading functions..." << endl;
 
 #ifdef LOAD_SPEED_TEST
@@ -391,7 +396,7 @@ void UCData::load_funcs(ostream &o) {
 
 	for (vector<UCFunc *>::iterator i = _funcs.begin(); i != _funcs.end(); ++i) {
 		int funcid = (*i)->_funcid;
-		Usecode_symbol::Symbol_kind kind; 
+		Usecode_symbol::Symbol_kind kind;
 		if ((*i)->_sym)
 			kind = (*i)->_sym->get_kind();
 		else if (funcid < 0x400)

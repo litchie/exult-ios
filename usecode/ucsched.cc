@@ -34,6 +34,7 @@
 #include "ucscriptop.h"
 #include "databuf.h"
 #include "effects.h"
+#include "headers/ios_state.hpp"
 
 #include <iostream>
 #include <iomanip>
@@ -642,9 +643,11 @@ int Usecode_script::exec(
 				step(usecode, opcode & 7, 0);
 				do_another = true;  // Guessing.
 			} else {
+				boost::io::ios_flags_saver flags(cout);
+				boost::io::ios_fill_saver fill(cout);
 				cout << "Und sched. opcode " << hex
 				     << "0x" << setfill('0') << setw(2)
-				     << opcode << std::dec << endl;
+				     << opcode << endl;
 			}
 			break;
 		}
@@ -757,6 +760,8 @@ Usecode_script *Usecode_script::restore(
 void Usecode_script::print(
     std::ostream &out
 ) const {
+	boost::io::ios_flags_saver flags(out);
+	boost::io::ios_fill_saver fill(out);
 	out << hex << "Obj = 0x" << setfill('0') << setw(2)
 	    << static_cast<void *>(obj) << ": " "(";
 	for (int i = 0; i < cnt; i++) {
@@ -765,5 +770,4 @@ void Usecode_script::print(
 		code->get_elem(i).print(out);
 	}
 	out << ") = ";
-	out << std::dec;
 }

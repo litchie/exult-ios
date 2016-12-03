@@ -31,6 +31,7 @@
 #include <cstdlib>
 #include "utils.h"
 #include "databuf.h"
+#include "ios_state.hpp"
 
 using std::stringstream;
 using std::istream;
@@ -215,9 +216,10 @@ void Write_msg_file_section(
     const char *section,
     vector<string> &items
 ) {
-	out << "%%section " << section << endl;
+	boost::io::ios_flags_saver flags(out);
+	out << "%%section " << section << hex << endl;
 	for (unsigned i = 0; i < items.size(); ++i)
 		if (items[i].size())
-			out << hex << "0x" << i << ':' << items[i] << endl;
+			out << "0x" << i << ':' << items[i] << endl;
 	out << "%%endsection " << section << endl;
 }
