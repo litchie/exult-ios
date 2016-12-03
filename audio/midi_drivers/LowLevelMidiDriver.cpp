@@ -1242,7 +1242,7 @@ int LowLevelMidiDriver::unlockAndUnprotectChannel(uint16 sequence_id)
 		int phys = chan_map[sequence_id][c];
 
 		// Doesn't need anything done to it
-		if (phys != -3) continue;
+		if (phys >= 0 && chan_locks[phys] == sequence_id) continue;
 
 		// We are protecting
 		if (phys == -3)
