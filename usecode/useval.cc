@@ -37,6 +37,7 @@
 #include "gamewin.h"
 #include "ucmachine.h"
 #include "databuf.h"
+#include "ios_state.hpp"
 
 #ifndef UNDER_EMBEDDED_CE
 using std::cout;
@@ -354,16 +355,16 @@ int Usecode_value::add_values(
 void Usecode_value::print(
     ostream &out, bool shortformat
 ) {
+	boost::io::ios_flags_saver flags(out);
+	boost::io::ios_fill_saver fill(out);
 	switch (type) {
 	case int_type:
 		out << hex << setfill('0') << setw(4);
 		out << (value.intval & 0xffff);
-		out << dec;
 		break;
 	case pointer_type:
 		out << hex << setfill('0') << setw(8);
 		out << reinterpret_cast<uintptr>(value.ptr);
-		out << dec;
 		break;
 	case string_type:
 		out << '"' << value.str << '"';

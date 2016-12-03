@@ -57,6 +57,7 @@
 #include "weaponinf.h"
 #include <fstream>
 #include <sstream>
+#include "ios_state.hpp"
 
 #ifndef UNDER_EMBEDDED_CE
 using std::cerr;
@@ -1095,13 +1096,16 @@ void Game_map::read_ireg_objects(
 		} else {
 			// Just to shut up spurious warnings by compilers and static
 			// analyzers.
+			boost::io::ios_flags_saver flags(cerr);
+			boost::io::ios_fill_saver fill(cerr);
 			std::cerr << "Error: Invalid IREG entry on chunk (" << scx << ", "
 			          << scy << "): extended = " << extended << ", entlen = "
 			          << entlen << ", shnum = " << shnum << ", frnum = "
 			          << frnum << std::endl;
 			std::cerr << "Entry data:" << std::hex;
+			std::cerr << std::setfill('0');
 			for (int i = 0; i < entlen; i++)
-				std::cerr << " " << std::setfill('0') << std::setw(2)
+				std::cerr << " " << std::setw(2)
 				          << static_cast<int>(entry[i]);
 			std::cerr << std::endl;
 			continue;
