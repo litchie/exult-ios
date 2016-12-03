@@ -22,13 +22,12 @@
 
 #include <unistd.h>
 #include <fstream>
-#include <cstdio>
 #include <cstdlib>
-#include <cstring>
 #include <iostream>
 #include <iomanip>
 #include <vector>
 #include <string>
+#include <limits>
 #include "U7fileman.h"
 #include "U7file.h"
 #include "U7obj.h"
@@ -43,13 +42,9 @@ using std::cerr;
 using std::cout;
 using std::endl;
 using std::exit;
-using std::FILE;
 using std::ifstream;
 using std::ofstream;
 using std::size_t;
-using std::strrchr;
-using std::strncpy;
-using std::strlen;
 using std::vector;
 using std::string;
 
@@ -60,8 +55,8 @@ enum Arch_mode { NOMODE, LIST, EXTRACT, CREATE, ADD, RESPONSE };
  *  Parse a number, and quit with an error msg. if not found.
  */
 
-bool is_text_file(const char *fname) {
-	size_t len = strlen(fname);
+bool is_text_file(const string &fname) {
+	size_t len = fname.size();
 
 	// only if the filename is greater than 4 chars
 	if (len > 4 && fname[len - 4] == '.' &&
@@ -74,8 +69,8 @@ bool is_text_file(const char *fname) {
 	return false;
 }
 
-bool is_null_entry(const char *fname) {
-	size_t len = strlen(fname);
+bool is_null_entry(const string &fname) {
+	size_t len = fname.size();
 
 	if (len >= 4 && fname[len - 4] == 'N' && fname[len - 3] == 'U' &&
 	        fname[len - 2] == 'L' && fname[len - 1] == 'L')
@@ -94,23 +89,25 @@ void set_mode(Arch_mode &mode, Arch_mode new_mode) {
 }
 
 // Converts all .'s to _'s
-void make_header_name(char *filename) {
-	size_t i = strlen(filename);
+void make_header_name(string &filename) {
+	size_t i = filename.size();
 
-	while (i--) if (filename[i] == '.') filename[i] = '_';
-		else if (filename[i] == '/' || filename[i] == '\\' || filename[i] == ':') break;
+	while (i--)
+		if (filename[i] == '.')
+			filename[i] = '_';
+		else if (filename[i] == '/' || filename[i] == '\\' || filename[i] == ':')
+			break;
 }
 
 // Makes a name uppercase
-void make_uppercase(char *name) {
-	size_t i = strlen(name);
-
-	while (i--) if (name[i] >= 'a' && name[i] <= 'z') name[i] -= ('a' - 'A');
+void make_uppercase(string &name) {
+	for (size_t ii = 0; ii < name.size(); ii++)
+		name[ii] = std::toupper(name[ii]);
 }
 
 // strips a path from a filename
-void strip_path(char *filename) {
-	int i = static_cast<int>(strlen(filename));
+void strip_path(string &filename) {
+	int i = static_cast<int>(filename.size());
 
 	while (i--) {
 		if (filename[i] == '\\' || filename[i] == '/' || filename[i] == ':')
@@ -119,78 +116,57 @@ void strip_path(char *filename) {
 
 	// Has a path
 	if (i >= 0) {
-		int j = 0;
-
-		for (i++, j = 0; filename[j + i]; j++)
-			filename[j] = filename[j + i];
-
-		filename[j] = 0;
+		filename = filename.substr(i + 1);
 	}
 }
 
-long get_file_size(const char *fname) {
+long get_file_size(string &fname) {
 	if (is_null_entry(fname))
 		return 0; // an empty entry
 
-	const char *mode = "rb";
-	bool text = is_text_file(fname);
-	if (text)
-		mode = "r";
-
-	FILE *fp;
 	try {
-		fp = U7open(fname, mode);
-	} catch (const file_open_exception &e) {
-		cerr << e.what() << endl;
-		exit(1);
+		ifstream fin;
+		U7open(fin, fname.c_str(), is_text_file(fname));
+		// Lets avoid undefined behavior. See
+		// http://cpp.indi.frih.net/blog/2014/09/how-to-read-an-entire-file-into-memory-in-cpp/
+		fin.ignore(std::numeric_limits<std::streamsize>::max());
+		return fin.gcount();
+	} catch (const std::exception &err) {
+		cerr << err.what() << endl;
+		return 0;
 	}
-
-	long len = 0;
-	if (!text) {
-		fseek(fp, 0, SEEK_END);
-		len = ftell(fp);
-	} else while (fgetc(fp) != EOF)
-			len++;
-
-	fclose(fp);
-	return len;
 }
 
 bool Write_Object(U7object &obj, const char *fname) {
-	FILE *fp = U7open(fname, "wb");
-
-	char    *n;
-	size_t  l;
-
 	try {
-		n = obj.retrieve(l);
+		ofstream out;
+		U7open(out, fname, false);
+		size_t l;
+		char *n = obj.retrieve(l);
+		if (!n) {
+			return false;
+		}
+		out.write(n, l);
+		delete [] n;
 	} catch (const std::exception &err) {
-		std::fclose(fp);
-		throw(err);
-	}
-	if (!n) {
-		std::fclose(fp);
+		cerr << err.what() << endl;
 		return false;
 	}
-	std::fwrite(n, l, 1, fp); // &&&& Should check return value
-	std::fclose(fp);
-	delete [] n;
 	return true;
 }
 
 
 // This getline() accepts any kind of endline on any platform
 // (So it will accept windows linefeeds in linux, and vice versa)
-void getline(ifstream &file, char *buf, int size) {
-	int i = 0;
+void getline(ifstream &file, string &buf) {
+	buf.clear();
 	char c;
 	file.get(c);
 
-	while (i < size - 1 && (c >= ' ' || c == '\t') && file.good()) {
-		buf[i++] = c;
+	while ((c >= ' ' || c == '\t') && file.good()) {
+		buf += c;
 		file.get(c);
 	}
-	buf[i] = '\0'; // terminator
 
 	while (!(file.peek() >= ' ' || file.peek() == '\t') && file.good())
 		file.get(c);
@@ -200,71 +176,68 @@ void getline(ifstream &file, char *buf, int size) {
 int main(int argc, char **argv)
 {
 	Arch_mode mode = NOMODE;
-	char fname[1024];
-	char hname[1024];
-	char hprefix[1024];
+	string fname;
+	string hname;
+	string hprefix;
 	char ext[] = "u7o";
 	int index;
 	vector<string>  file_names;
 	file_names.reserve(1200);
-	hname[0] = 0;
 
 	if (argc > 2) {
-		strncpy(fname, argv[2], sizeof(fname));
-		if ((argv[1][0] == '-') && (strlen(argv[1]) == 2)) {
-			switch (argv[1][1]) {
+		fname = argv[2];
+		string type(argv[1]);
+		if (type.size() == 2 && type[0] == '-') {
+			switch (type[1]) {
 			case 'i': {
-				char temp[1024];
-				char path_prefix[1024];
+				string path_prefix;
 
 				ifstream respfile;
-				char *slash = strrchr(fname, '/');
-				if (slash) {
-					size_t len = slash - fname + 1;
-					strncpy(path_prefix, fname, len);
-					path_prefix[len] = 0;
-				} else
-					path_prefix[0] = 0;
-
+				size_t slash = fname.rfind('/');
+				if (slash != string::npos) {
+					path_prefix = fname.substr(0, slash + 1);
+				}
 				set_mode(mode, RESPONSE);
 				try {
-					U7open(respfile, fname, true);
+					U7open(respfile, fname.c_str(), true);
 				} catch (const file_open_exception &e) {
 					cerr << e.what() << endl;
 					exit(1);
 				}
 
 				// Read the output file name
-				getline(respfile, temp, sizeof(temp));
-				snprintf(fname, sizeof(fname), "%s%s", path_prefix, temp);
+				string temp;
+				getline(respfile, temp);
+				fname = path_prefix + temp;
 
 				// Header file name
-				strncpy(hprefix, temp, sizeof(hprefix));
+				hprefix = temp;
 				make_header_name(hprefix);
-				snprintf(hname, sizeof(hname), "%s%s.h", path_prefix, hprefix);
+				hname = path_prefix + hprefix + ".h";
 				strip_path(hprefix);
 				make_uppercase(hprefix);
 
 				unsigned int shnum = 0;
 				int linenum = 2;
 				while (respfile.good()) {
-					getline(respfile, temp, sizeof(temp));
-					if (strlen(temp) > 0) {
-						char *ptr = temp;
+					getline(respfile, temp);
+					if (temp.size() > 0) {
+						const char *ptr = temp.c_str();
 						if (*ptr == ':') {
 							ptr++;
 							// Shape # specified.
-							long num = strtol(ptr, &ptr, 0);
-							if (ptr == temp + 1) {
+							char *eptr;
+							long num = strtol(ptr, &eptr, 0);
+							if (eptr == ptr) {
 								cerr << "Line " << linenum << ": shapenumber not found. The correct format of a line with specified shape is ':shapenum:filename'." << endl;
 								exit(1);
 							}
 							shnum = static_cast<unsigned int>(num);
+							ptr = eptr;
 							assert(*ptr == ':');
 							ptr++;
 						}
-						char temp2[1024];
-						snprintf(temp2, sizeof(temp2), "%s%s", path_prefix, ptr);
+						string temp2 = path_prefix + ptr;
 						if (shnum >= file_names.size())
 							file_names.resize(shnum + 1);
 						file_names[shnum] = temp2;
@@ -303,7 +276,7 @@ int main(int argc, char **argv)
 		if (argc != 3)
 			break;
 		U7FileManager *fm = U7FileManager::get_ptr();
-		U7file *f = fm->get_file_object(fname);
+		U7file *f = fm->get_file_object(File_spec(fname));
 		size_t count = f->number_of_objects();
 		cout << "Archive: " << fname << endl;
 		cout << "Type: " << f->get_archive_type() << endl;
@@ -321,7 +294,7 @@ int main(int argc, char **argv)
 	break;
 	case EXTRACT: {
 		if (argc == 4) {
-			U7object f(fname, atoi(argv[3]));
+			U7object f(File_spec(fname), atoi(argv[3]));
 			unsigned long nobjs = f.number_of_objects();
 			unsigned long n = strtoul(argv[3], 0, 0);
 			if (n >= nobjs) {
@@ -336,10 +309,10 @@ int main(int argc, char **argv)
 			Write_Object(f, outfile);   // may throw!
 		} else {
 			U7FileManager *fm = U7FileManager::get_ptr();
-			U7file *f = fm->get_file_object(fname);
+			U7file *f = fm->get_file_object(File_spec(fname));
 			int count = static_cast<int>(f->number_of_objects());
 			for (index = 0; index < count; index++) {
-				U7object o(fname, index);
+				U7object o(File_spec(fname), index);
 				char outfile[32];
 				snprintf(outfile, 32, "%05d.%s", index, ext);
 				Write_Object(o, outfile);
@@ -351,20 +324,22 @@ int main(int argc, char **argv)
 	case CREATE: {
 		ofstream flex;
 		try {
-			U7open(flex, fname);
+			U7open(flex, fname.c_str());
 		} catch (const file_open_exception &e) {
 			cerr << e.what() << endl;
 			exit(1);
 		}
 
 		ofstream header;
-		if (!hname[0]) {    // Need header name.
-			strncpy(hprefix, fname, sizeof(hprefix));
+		if (hname.empty()) {    // Need header name.
+			hprefix = fname;
 			make_header_name(hprefix);
-			snprintf(hname, sizeof(hname), "%s.h", hprefix);
+			hname = hprefix + ".h";
+			strip_path(hprefix);
+			make_uppercase(hprefix);
 		}
 		try {
-			U7open(header, hname, true);
+			U7open(header, hname.c_str(), true);
 		} catch (const file_open_exception &e) {
 			cerr << e.what() << endl;
 			exit(1);
@@ -374,7 +349,9 @@ int main(int argc, char **argv)
 		Flex_writer writer(flex, "Exult Archive", file_names.size());
 
 		// The beginning of the header
-		header << "// Header for \"" << fname << "\" Created by expack" << std::endl << std::endl;
+		string temp = fname;
+		strip_path(temp);
+		header << "// Header for \"" << temp << "\" Created by expack" << std::endl << std::endl;
 		header << "// DO NOT MODIFY" << std::endl << std::endl;
 		header << "#ifndef " << hprefix << "_INCLUDED" << std::endl;
 		header << "#define " << hprefix << "_INCLUDED" << std::endl << std::endl;
@@ -383,11 +360,11 @@ int main(int argc, char **argv)
 		{
 			for (unsigned int i = 0; i < file_names.size(); i++) {
 				if (file_names[i].size()) {
-					size_t fsize = get_file_size(file_names[i].c_str());
+					size_t fsize = get_file_size(file_names[i]);
 					if (fsize) {
 						ifstream infile;
 						try {
-							U7open(infile, file_names[i].c_str(), is_text_file(file_names[i].c_str()));
+							U7open(infile, file_names[i].c_str(), is_text_file(file_names[i]));
 						} catch (const file_open_exception &e) {
 							cerr << e.what() << endl;
 							exit(1);
@@ -399,8 +376,7 @@ int main(int argc, char **argv)
 						delete [] buf;
 						infile.close();
 
-						char hline[1024];
-						strncpy(hline, file_names[i].c_str(), sizeof(hline));
+						string hline = file_names[i];
 						strip_path(hline);
 						make_header_name(hline);
 						make_uppercase(hline);
@@ -413,7 +389,7 @@ int main(int argc, char **argv)
 		if (!writer.close())
 			cerr << "Error writing " << fname << endl;
 
-		uint32 crc32val = crc32_syspath(fname);
+		uint32 crc32val = crc32_syspath(fname.c_str());
 		header << std::endl << "#define\t" << hprefix << "_CRC32\t0x";
 		header << std::hex << crc32val << std::dec << "U" << std::endl;
 
