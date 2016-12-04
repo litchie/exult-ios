@@ -234,6 +234,7 @@ static int read_config_file(const char *name)
 						ctl->cmsg(CMSG_ERROR, VERB_NORMAL,
 						          "%s: line %d: amplification must be between "
 						          "0 and %d\n", name, line, MAX_AMPLIFICATION);
+						close_file(fp);
 						return -2;
 					}
 					bank->tone[i].amp=k;
