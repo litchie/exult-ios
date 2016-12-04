@@ -51,7 +51,7 @@ public:
 	virtual void write4(uint32) = 0;
 	virtual void write4high(uint32) = 0;
 	virtual void write(const void *, size_t) = 0;
-	virtual void write(std::string) = 0;
+	virtual void write(const std::string &) = 0;
 
 	virtual void seek(size_t) = 0;
 	virtual void skip(std::streamoff) = 0;
@@ -147,8 +147,8 @@ public:
 		out->write(reinterpret_cast<const char *>(b), len);
 	};
 
-	virtual void write(std::string s) {
-		out->write(s.c_str(), s.size());
+	virtual void write(const std::string &s) {
+		out->write(&s[0], s.size());
 	};
 
 	virtual void seek(size_t pos) {
@@ -311,8 +311,8 @@ public:
 		buf_ptr += len;
 	};
 
-	virtual void write(std::string s) {
-		write(s.c_str(), s.size());
+	virtual void write(const std::string &s) {
+		write(&s[0], s.size());
 	};
 
 	virtual void seek(size_t pos) {
