@@ -1,3 +1,8 @@
+2016-12-16	Dominik Reichardt <dominus@users.sourceforge.net>
+	* exult.cc: the file numbering of the --buildmap option is now in sync with the
+	  U7IFIXnn and U7IREGnn (thanks Wjp). This way you can quickly match them, for 
+	  example with the charts at http://exult.sourceforge.net/studio.php#ifix_iregs.
+
 2016-11-17	Dominik Reichardt <dominus@users.sourceforge.net>
 	* gamemgr/bggame.cc: added map_patches to BG to fix ugly shortcomings of Exult:
 	  - In Iolo's hut all sawdust is at z=2 which wreaks havoc with multiple 

@@ -2334,7 +2334,7 @@ void BuildGameMap(BaseGameInfo *game, int mapnum) {
 			for (int y = 0; y < c_num_chunks / c_chunks_per_schunk; y++) {
 				gwin->paint_map_at_tile(0, 0, w, h, x * c_tiles_per_schunk, y * c_tiles_per_schunk, maplift);
 				char fn[15];
-				snprintf(fn, 15, "u7map%x%x.pcx", x, y);
+				snprintf(fn, 15, "u7map%02x.pcx", (12*y)+x);
 				SDL_RWops *dst = SDL_RWFromFile(fn, "wb");
 				cerr << x << "," << y << ": ";
 				gwin->get_win()->screenshot(dst);
