@@ -2894,7 +2894,7 @@ void Game_window::setup_game(
 	usecode->read();        // Read the usecode flags
 	CYCLE_RED_PLASMA();
 
-	if (Game::get_game_type() == BLACK_GATE) {
+	if (Game::get_game_type() == BLACK_GATE && !map_editing) {
 		string yn;      // Override from config. file.
 		// Skip intro. scene?
 		config->value("config/gameplay/skip_intro", yn, "no");
