@@ -469,8 +469,10 @@ void Cheat::levelup_party(void) const {
 void Cheat::fake_time_period(void) const {
 	if (!enabled) return;
 
-	gwin->get_clock()->fake_next_period();
-	eman->center_text("Game clock incremented");
+	if (!map_editor) {
+		gwin->get_clock()->fake_next_period();
+		eman->center_text("Game clock incremented");
+	}
 }
 
 void Cheat::dec_skip_lift(void) const {
