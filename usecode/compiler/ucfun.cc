@@ -395,7 +395,7 @@ int Uc_function::add_string(
 		memcpy(new_text_data, text_data, text_data_size);
 	// Append new.
 	memcpy(new_text_data + text_data_size, text, textlen);
-	delete text_data;
+	delete [] text_data;
 	text_data = new_text_data;
 	text_data_size += textlen;
 	text_map[text] = offset;    // Store map entry.
