@@ -50,37 +50,36 @@ MacPorts (http://www.macports.org/).
 
 Install these packages with Fink:
   sdl
+  sdl2
   libvorbis0
 
 Or if you use MacPorts install
   libsdl
+  libsdl2
   libvorbis
-  zlib
 
 Installing these packages with either Fink or MacPorts will actually
 install many other packages required by these packages.
   
 If you are compiling the source code from Git, as opposed to the source of
 a released version, you also need to install these packages with Fink:
-  automake1.11
+  automake1.15
   libtool2
-  
-Or these with MacPorts:
-  automake
-  libtool
-  pkgconfig
-  
-(for the experts: old versions of the automake package should also work,
-e.g. you could also use automake1.10 or automake1.9).
+
+(MacPorts is good, all relevant dependencies were pulled in by installing libsdl )
 
 Open terminal and enter the following to allow the compile to find all the 
 headers.
+
 If you use Fink:
   export CFLAGS=-I/sw/include
   export CXXFLAGS=$CFLAGS
+  export CPPFLAGS=$CFLAGS
+
 If you use MacPorts:
   export CFLAGS=-I/opt/local/include
   export CXXFLAGS=$CFLAGS
+  export CPPFLAGS=$CFLAGS
 
 Now you are ready to compile Exult. If you are compiling from Git, the
 first thing you have to run is this:
@@ -97,20 +96,32 @@ command:
 
 Be warned, the binary created this way is not static linked, that means 
 if you copy it to another machine it will most likely NOT work. So you 
-can only use it on your own computer.
+can only use it on your own computer (see the instructions further down 
+for a static build)
 
 
 How to compile Exult Studio on Mac OS X
 ---------------------------------------
 
-If you want to compile Exult Studio, you have to install this package
-(same for Fink and MacPorts):
+
+If you want to compile Exult Studio, you have to install these packages:
+
+If you use Fink
   libglade2
 
-This might actually cause many other packages required by libglade2 to
+If you use MacPorts (SDL needs to be installed with the x11 dependency for Exult Studio)
+  libsdl +x11
+  libsdl2 +x11
+  libglade2
+
+This will cause many other packages required by libglade2 to
 be installed. 
 
-After that, you have to re-run configure and make:
+Then you need to install Xquartz from https://www.xquartz.org (because currently drag'n'drop 
+between Exult Studio and Exult requires the X.org X Windows System (x11)).
+
+After that, you have to re-run configure and make (remember to do the export commands 
+to find the headers):
   ./configure --enable-exult-studio --enable-macosx-studio-support
   make
 
@@ -132,6 +143,8 @@ on File->Connect.
 /path_to_the_Exult_source_code/mapedit/) to your Exult data folder which is by 
 default in /Library/Application Support/Exult/data.
 
+NOTE that SDL2 version <= 2.0.5 doesn't work correctly with XQuartz, this is fixed in 
+SDL2 development sources.
 
 How to compile a static version of Exult on Mac OS X
 ----------------------------------------------------
