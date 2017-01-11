@@ -15,4 +15,4 @@ sudo port -q selfupdate | cat
 sudo port -q upgrade outdated | cat
 
 # Install actual dependencies
-sudo port -q install libsdl +x11 libsdl2 +x11 libvorbis libglade2
+sudo port -q install libsdl +x11 libsdl2 +x11 libvorbis libglade2 | cat
