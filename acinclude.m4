@@ -32,7 +32,7 @@ AC_DEFUN([EXULT_CHECK_SDL],[
     exult_sdl_progs=sdl2-config
   else
     dnl NB: This line implies we prefer SDL 1.2 to SDL 2.0
-    exult_sdl_progs="sdl-config sdl2-config"
+    exult_sdl_progs="sdl2-config sdl-config"
   fi
   AC_PATH_PROGS(SDL_CONFIG, $exult_sdl_progs, no, [$exult_extra_path:$PATH])
   if test "$SDL_CONFIG" = "no" ; then
