@@ -247,6 +247,18 @@ void ActionRepaint(int const *params) {
 	Game_window::get_instance()->paint();
 }
 
+//  { ActionScalevalIncrease, 0, "Increase scaleval", cheat_keys, NONE },
+void ActionScalevalIncrease(int const *params) {
+	ignore_unused_variable_warning(params);
+	increase_scaleval();
+}
+
+//  { ActionScalevalDecrease, 0, "Decrease scaleval", cheat_keys, NONE },
+void ActionScalevalDecrease(int const *params) {
+	ignore_unused_variable_warning(params);
+	decrease_scaleval();
+}
+
 //  { ActionBrighter, 0, "Increase brightness", normal_keys, NONE },
 void ActionBrighter(int const *params) {
 	ignore_unused_variable_warning(params);

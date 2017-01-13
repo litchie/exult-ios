@@ -66,6 +66,8 @@ extern void Wait_for_arrival(
 );
 
 extern void change_gamma(bool down);
+extern void increase_scaleval();
+extern void decrease_scaleval();
 extern void setup_video(bool fullscreen, int setup_video_type,
                         int resx = 0, int resy = 0, int gw = 0,
                         int gh = 0, int scaleval = 0, int scaler = 0,

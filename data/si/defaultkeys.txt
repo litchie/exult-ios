@@ -1,7 +1,7 @@
 # default key bindings
 
-KP+		brighter
-KP- 		darker
+Alt-KP+		brighter
+Alt-KP- 	darker
 Esc		close_or_menu
 
 right		walk_east	# Run east
@@ -38,6 +38,8 @@ Alt-up		scroll_up
 Alt-down	scroll_down
 home		center_screen
 
+KP+		scaleval_increase
+KP- 	scaleval_decrease
 Del		delete_selected
 Ctrl-right	move_selected	 1  0  0
 Ctrl-left	move_selected	-1  0  0

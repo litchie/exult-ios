@@ -1,3 +1,10 @@
+2017-1-13	Dominik Reichardt <dominus@users.sourceforge.net>
+	* Implemented a "zoom" feature for map-editing. When in map-edit-mode, not  in
+	  fullscreen and using scaler point, Exult will switch between scalevalues 1-8 via 
+	  the +/- keys. It will not check whether the new game window is sane but also 
+	  won't save the scalevalue to exult.cfg.
+	  You can now change brightness (gamma values) with Alt +/- (used to be on +/-)
+
 2016-12-16	Dominik Reichardt <dominus@users.sourceforge.net>
 	* exult.cc: the file numbering of the --buildmap option is now in sync with the
 	  U7IFIXnn and U7IREGnn (thanks Wjp). This way you can quickly match them, for 
