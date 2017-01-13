@@ -38,6 +38,8 @@ void ActionKeyboardMode(int const *params);
 
 void ActionScreenshot(int const *params);
 void ActionRepaint(int const *params);
+void ActionScalevalIncrease(int const *params);
+void ActionScalevalDecrease(int const *params);
 void ActionBrighter(int const *params);
 void ActionDarker(int const *params);
 void ActionFullscreen(int const *params);

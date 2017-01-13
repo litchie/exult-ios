@@ -211,6 +211,7 @@ struct resolution {
 };
 int num_res = sizeof(res_list) / sizeof(struct resolution);
 int current_res = 0;
+int current_scaleval = 1;
 
 #ifdef XWIN
 #  ifdef __GNUC__
@@ -244,6 +245,7 @@ static void Init();
 static int Play();
 static int Get_click(int &x, int &y, char *chr, bool drag_ok, Paintable *p, bool rotate_colors = false);
 static int find_resolution(int w, int h, int s);
+static void set_scaleval(int new_scaleval);
 #ifdef USE_EXULTSTUDIO
 static void Move_dragged_shape(int shape, int frame, int x, int y,
                                int prevx, int prevy, bool show);
@@ -2259,6 +2261,48 @@ int find_resolution(int w, int h, int s) {
 	return res;
 }
 
+void increase_scaleval() {
+	if (!cheat()) return;
+
+	current_scaleval++;
+	if (current_scaleval >= 9)
+		current_scaleval = 1;
+	set_scaleval(current_scaleval);
+}
+
+void decrease_scaleval() {
+	if (!cheat()) return;
+
+	current_scaleval--;
+	if (current_scaleval < 1)
+		current_scaleval = 8;
+	set_scaleval(current_scaleval);
+}
+
+void set_scaleval(int new_scaleval) {
+	int scaler = gwin->get_win()->get_scaler();
+	bool fullscreen = gwin->get_win()->is_fullscreen();
+	if (new_scaleval >= 1 && !fullscreen && scaler == Image_window::point && cheat.in_map_editor()) {
+		current_scaleval = new_scaleval;
+		bool share_settings;
+		config->value("config/video/share_video_settings", share_settings, true);
+		const string &vidStr = (fullscreen || share_settings) ?
+		                       "config/video" : "config/video/window";
+		int resx, resy;
+		config->value(vidStr + "/display/width", resx);
+		config->value(vidStr + "/display/height", resy);
+
+		// for Studio zooming we set game area to auto, fill quality to point, 
+		// fill mode to fill and increase/decrease the scale value
+		gwin->resized(resx,
+		              resy,
+		              fullscreen,
+		              0, 0,
+		              current_scaleval, scaler,
+		              Image_window::Fill,
+		              Image_window::point);
+	}
+}
 
 void make_screenshot(bool silent) {
 	// TODO: Maybe use <SAVEGAME>/exult%03i.pcx instead.

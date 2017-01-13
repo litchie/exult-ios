@@ -108,6 +108,14 @@ const struct Action {
 #endif
 
 	{
+		"SCALEVAL_INCREASE",
+		ActionScalevalIncrease, 0, "Increase scaleval", Action::mapedit_keys, NONE, true, true, true, false
+	},
+	{
+		"SCALEVAL_DECREASE",
+		ActionScalevalDecrease, 0, "Decrease scaleval", Action::mapedit_keys, NONE, true, true, true, false
+	},
+	{
 		"BRIGHTER",
 		ActionBrighter, 0, "Increase brightness", Action::normal_keys, NONE, true, true, true, false
 	},
