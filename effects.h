@@ -260,9 +260,7 @@ public:
 class Fog_effect : public Weather_effect {
 	bool start;
 public:
-	Fog_effect(int duration, int delay = 0, Game_object *egg = 0)
-		: Weather_effect(duration, delay, 4, egg), start(true)
-	{  }
+	Fog_effect(int duration, int delay = 0, Game_object *egg = 0);
 	virtual ~Fog_effect();
 	// Execute when due.
 	virtual void handle_event(unsigned long curtime, uintptr udata);
