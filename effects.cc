@@ -1149,20 +1149,6 @@ int Weather_effect::out_of_range(
 	return eggloc.distance(avpos) >= dist;
 }
 
-Fog_effect::~Fog_effect() {
-	gclock->set_fog(false);
-}
-
-void Fog_effect::handle_event(unsigned long curtime, uintptr udata) {
-	ignore_unused_variable_warning(curtime);
-	if (start) {
-		start = false;
-		// Nothing more to do but end.
-		gwin->get_tqueue()->add(stop_time, this, udata);
-		gclock->set_fog(true);
-	} else              // Must be time to stop.
-		eman->remove_effect(this);
-}
 
 /*
  *  A generic raindrop/snowflake/magic sparkle particle:
@@ -1499,6 +1485,36 @@ void Sparkle_effect::handle_event(
 		start = false;
 		// Nothing more to do but end.
 		gwin->get_tqueue()->add(stop_time, this, udata);
+	} else              // Must be time to stop.
+		eman->remove_effect(this);
+}
+
+/**
+ *  Fog.
+ */
+
+Fog_effect::~Fog_effect() {
+	gclock->set_fog(false);
+}
+
+Fog_effect::Fog_effect(
+    int duration,           // In game minutes.
+    int delay,          // In msecs.
+    Game_object *egg        // Egg that caused it, or null.
+) : Weather_effect(duration, delay, 4, egg), start(true) {
+		// SI adds sparkle/raindrops to the fog palaette shift
+		// let's do that for all games
+		int rain_delay = 250 + rand() % 1000;
+		eman->add_effect(new Rain_effect<Sparkle>(duration, rain_delay, MAXDROPS/2));
+}
+
+void Fog_effect::handle_event(unsigned long curtime, uintptr udata) {
+	ignore_unused_variable_warning(curtime);
+	if (start) {
+		start = false;
+		// Nothing more to do but end.
+		gwin->get_tqueue()->add(stop_time, this, udata);
+		gclock->set_fog(true);
 	} else              // Must be time to stop.
 		eman->remove_effect(this);
 }

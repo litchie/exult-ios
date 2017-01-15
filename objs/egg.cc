@@ -1101,8 +1101,7 @@ void Egg_object::set_weather(
 		eman->add_effect(new Sparkle_effect(len, 0, egg));
 		break;
 	case 4:     // Fog.
-		// ++++ Disabling this.
-		//eman->add_effect(new Fog_effect(len, 0, egg));
+		eman->add_effect(new Fog_effect(len, 0, egg));
 		break;
 	case 5:     // Overcast.
 	case 6:     // Clouds.
