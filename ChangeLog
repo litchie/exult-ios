@@ -1,3 +1,7 @@
+2017-02-05  jeff  <jeff@jeff-HP-Pavilion-dm4-Notebook-PC>
+
+	* Don't allow an object to be placed on a 'solid' tile (ie, ethereal void in SI).
+
 2017-1-13	Dominik Reichardt <dominus@users.sourceforge.net>
 	* Implemented a "zoom" feature for map-editing. When in map-edit-mode, not  in
 	  fullscreen and using scaler point, Exult will switch between scalevalues 1-8 via 
