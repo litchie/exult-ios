@@ -65,8 +65,8 @@ Source: Studio\etc\pango\pango.modules; DestDir: {app}\etc\pango; Flags: ignorev
 [Icons]
 Name: {group}\Exult Studio; Filename: {app}\exult_studio.exe; WorkingDir: {app}
 Name: {group}\{cm:UninstallProgram,Exult Studio}; Filename: {uninstallexe}
-Name: {group}\exult_studio.html; Filename: {app}\exult_studio.html; WorkingDir: {app}; Comment: exult_studio.txt; Flags: createonlyiffileexists
-Name: {group}\exult_studio.txt; Filename: {app}\exult_studio.txt; WorkingDir: {app}; Comment: exult_studio.html; Flags: createonlyiffileexists
+Name: {group}\exult_studio.html; Filename: {app}\exult_studio.html; WorkingDir: {app}; Comment: exult_studio.html; Flags: createonlyiffileexists
+Name: {group}\exult_studio.txt; Filename: {app}\exult_studio.txt; WorkingDir: {app}; Comment: exult_studio.txt; Flags: createonlyiffileexists
 
 [Run]
 Filename: {app}\exult_studio.exe; Description: {cm:LaunchProgram,Exult Studio}; Flags: nowait postinstall skipifsilent
