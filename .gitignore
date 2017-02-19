@@ -115,6 +115,9 @@ stamp.h
 stamp-h1
 version.h
 ylwrap
+log
+log[0-9]*
+TAGS
 
 # Object files
 *.o
