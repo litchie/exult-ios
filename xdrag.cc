@@ -120,10 +120,12 @@ Xdnd::~Xdnd(
 void Xdnd::client_msg(
     XClientMessageEvent &cev    // Message received.
 ) {
+#if 0	/* Too much verbage! */
 	cout << "Xwin client msg. received." << endl;
 	char *nm = XGetAtomName(display, cev.message_type);
 	if (nm)
 		cout << "Type = " << nm << endl;
+#endif
 	XEvent xev;         // Return event.
 	xev.xclient.type = ClientMessage;
 	Window drag_win = cev.data.l[0];// Where drag comes from.
