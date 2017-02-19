@@ -710,13 +710,19 @@ void Eat_at_inn_schedule::im_dormant() {
 
 void Eat_at_inn_schedule::now_what(
 ) {
-	int frnum = npc->get_framenum();
-	if ((frnum & 0xf) != Actor::sit_frame) {
+	int frnum = npc->get_framenum() & 0xf;
+	if (!sitting_at_chair || frnum != Actor::sit_frame) {
 		// First have to sit down.
-		if (!Sit_schedule::set_action(npc))
-			// Try again in a while.
-			npc->start(250, 5000);
-		return;
+		static int chairs[2] = {873, 292};
+	    // Already good?
+		if (frnum == Actor::sit_frame && npc->find_closest(chairs, 2, 1)) {
+		    sitting_at_chair = true;
+		} else {
+		    if (!Sit_schedule::set_action(npc))
+			    // Try again in a while.
+			    npc->start(250, 5000);
+		    return;
+		}
 	}
 	Game_object_vector foods;           // Food nearby?
 	int cnt = npc->find_nearby(foods, 377, 2, 0);

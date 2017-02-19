@@ -218,8 +218,9 @@ public:
  *  A schedule for eating at an inn.
  */
 class Eat_at_inn_schedule : public Schedule {
+    bool sitting_at_chair;
 public:
-	Eat_at_inn_schedule(Actor *n) : Schedule(n)
+	Eat_at_inn_schedule(Actor *n) : Schedule(n), sitting_at_chair(false)
 	{  }
 	virtual void now_what();    // Now what should NPC do?
 	virtual void ending(int newtype); // Switching to another schedule
