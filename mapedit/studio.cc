@@ -1356,14 +1356,12 @@ void add_to_tree(GtkTreeStore *model, const char *folderName,
 		}
 
 		string spath("<STATIC>"), ppath("<PATCH>");
-		spath = get_system_path(spath);
-		ppath = get_system_path(ppath);
 		const char *ext = strstr(pattern, "*");
 		if (!ext)
 			ext = pattern;
 		else
 			ext++;
-		DIR *dir = opendir(ppath.c_str());// Get names from 'patch' first.
+		DIR *dir = U7opendir(ppath.c_str());// Get names from 'patch' first.
 		if (dir) {
 			while ((entry = readdir(dir))) {
 				char *fname = entry->d_name;
@@ -1380,7 +1378,7 @@ void add_to_tree(GtkTreeStore *model, const char *folderName,
 			}
 			closedir(dir);
 		}
-		dir = opendir(spath.c_str());   // Now go through 'static'.
+		dir = U7opendir(spath.c_str());   // Now go through 'static'.
 		if (dir) {
 			while ((entry = readdir(dir))) {
 				char *fname = entry->d_name;

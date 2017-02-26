@@ -403,6 +403,21 @@ std::FILE *U7open(
 	return 0;
 }
 
+DIR *U7opendir(
+    const char *fname			// May be converted to upper-case.
+) {
+    DIR *dir;
+	string name = get_system_path(fname);
+	int uppercasecount = 0;
+
+	do {
+		dir = opendir(name.c_str()); // Try to open
+		if (dir)
+			return dir; // found it!
+	} while (base_to_uppercase(name, ++uppercasecount));
+	return 0;
+}
+
 /*
  *  Remove a file taking care of paths etc.
  *
