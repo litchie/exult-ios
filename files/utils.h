@@ -28,6 +28,7 @@
 #include <cstdio>
 #include <stdio.h>
 #include <iosfwd>
+#include <dirent.h>
 
 #include "common_types.h"
 #include "rect.h"
@@ -561,6 +562,9 @@ bool U7open_static(
     std::ifstream &in,      // Input stream to open.
     const char *fname,      // May be converted to upper-case.
     bool is_text            // Should file be opened in text mode
+);
+DIR *U7opendir(
+    const char *fname			// May be converted to upper-case.
 );
 void U7remove(
     const char *fname
