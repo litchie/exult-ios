@@ -3287,7 +3287,8 @@ Game_object *Waiter_schedule::find_serving_spot(
 			// Passes test.
 			Shape_info &info = table->get_info();
 			spot.tz = table->get_lift() + info.get_3d_height();
-			plate = gmap->create_ireg_object(717, 0);
+			// Small plates:  frames 4, 5.  Seems random.
+			plate = gmap->create_ireg_object(717, 4 + rand()%2);
 			plate->move(spot);
 			spot.tz++;  // Food goes above plate.
 			return plate;
