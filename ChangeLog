@@ -1,3 +1,7 @@
+2017-03-01  jeff  <jeff@jeff-HP-Pavilion-dm4-Notebook-PC>
+
+	* Enhancing 'waiter' schedule:  Get correct 'prep' table, take several orders before serving, wait at counter after serving.
+
 2017-02-05  jeff  <jeff@jeff-HP-Pavilion-dm4-Notebook-PC>
 
 	* Don't allow an object to be placed on a 'solid' tile (ie, ethereal void in SI).
