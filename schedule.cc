@@ -3254,13 +3254,16 @@ Game_object *Waiter_schedule::find_serving_spot(
 	Game_object_vector plates;  // First look for a nearby plate.
 	Game_object *plate = 0;
 	Game_object_vector::const_iterator it;
-	int cnt = npc->find_nearby(plates, 717, 1, 0);
+	(void) customer->find_nearby(plates, 717, 1, 0);
+#if 0 /* Causes customer to not get served if their neighbor has. */
 	if (!cnt)
-		cnt = npc->find_nearby(plates, 717, 2, 0);
-	int floor = npc->get_lift() / 5; // Make sure it's on same floor.
+		cnt = customer->find_nearby(plates, 717, 2, 0);
+#endif
+	int floor = customer->get_lift() / 5; // Make sure it's on same floor.
 	for (it = plates.begin(); it != plates.end(); ++it) {
 		plate = *it;
-		if (plate->get_lift() / 5 == floor) {
+		int platez = plate->get_lift();
+		if (platez / 5 == floor && platez%5 != 0) {
 			spot = plate->get_tile();
 			spot.tz++;  // Just above plate.
 			return plate;
@@ -3344,7 +3347,7 @@ void Waiter_schedule::now_what(
 	case get_order: {
 		Game_object_vector foods;
 		// Close enough to customer?
-		if (customer->find_nearby(foods, 377, 2, 0) > 0) {
+		if (customer->find_nearby(foods, 377, 1, 0) > 0) {
 			if (rand() % 4)
 				npc->say(first_waiter_banter,
 				         last_waiter_banter);
