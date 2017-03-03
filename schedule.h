@@ -533,7 +533,7 @@ class Waiter_schedule : public Schedule {
 		wait_at_counter
 	} state;
 	bool find_customer();
-	void find_tables(int shapenum);
+	void find_tables(int shapenum, int dist);
 	bool walk_to_customer(int min_delay = 0);
 	bool walk_to_prep_or_counter(bool counter);
     Game_object *create_customer_plate();
