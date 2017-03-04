@@ -62,7 +62,8 @@ int Patrol_schedule::num_path_eggs = -1;
  */
 Schedule::Schedule(
     Actor *n
-) : npc(n), blocked(-1, -1, -1), street_maintenance_failures(0),
+) : npc(n), blocked(-1, -1, -1), start_pos(n->get_tile()), 
+    street_maintenance_failures(0),
 	street_maintenance_time(0) {
 	prev_type = npc ? npc->get_schedule_type() : -1;
 }
@@ -374,7 +375,8 @@ Street_maintenance_schedule::Street_maintenance_schedule(
     Actor_action *p,
     Game_object *o
 ) : Schedule(n), obj(o), shapenum(o->get_shapenum()),
-	framenum(o->get_framenum()), paction(p), oldloc(n->get_tile()) {
+	framenum(o->get_framenum()), paction(p), 
+	oldloc(n->get_schedule()->get_start_pos()) {
 }
 
 /*

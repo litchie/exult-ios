@@ -47,6 +47,7 @@ class Schedule : public Game_singletons, public Object_client {
 protected:
 	Actor *npc;         // Who this controls.
 	Tile_coord blocked;     // Tile where actor was blocked.
+	Tile_coord start_pos;	// When schedule created.
 	short prev_type;        // Actor's previous schedule.
 	int street_maintenance_failures;// # times failed to find path.
 	long street_maintenance_time;   // Time (msecs) when last tried.
@@ -60,6 +61,9 @@ public:
 	}
 	void set_blocked(Tile_coord const &b) {
 		blocked = b;
+	}
+	Tile_coord get_start_pos() const {
+	    return start_pos;
 	}
 	enum Schedule_types {
 	    combat = 0, horiz_pace = 1,
