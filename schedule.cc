@@ -3179,7 +3179,7 @@ bool Waiter_schedule::walk_to_prep_or_counter(
     bool counter
 ) {
     vector <Game_object *> &tables = counter ? counters : prep_tables;
-	if (tables.size()) {   // Walk to a 'prep' table.
+	while (tables.size()) {   // Walk to a 'prep' table.
 	    int index = rand() % tables.size();
 		prep_table = tables[index];
 		add_client(prep_table);
@@ -3231,10 +3231,10 @@ bool Waiter_schedule::walk_to_customer(
 
 void Waiter_schedule::find_tables(
     int shapenum,
-	int dist
+	int dist,
+	bool is_prep
 ) {
 	Game_object_vector vec;
-	bool is_prep = (shapenum == 333 || shapenum == 1018 || shapenum == 1003);
 	npc->find_nearby(vec, shapenum, dist, 0);
 	int floor = npc->get_lift() / 5; // Make sure it's on same floor.
 	for (Game_object_vector::const_iterator it = vec.begin(); it != vec.end();
@@ -3253,6 +3253,24 @@ void Waiter_schedule::find_tables(
 		} else
 			eating_tables.push_back(table);
 		add_client(table);
+	}
+}
+
+void Waiter_schedule::find_prep_tables()
+{
+    static int shapes[] = {333, 1018, 1003,		// Tables.
+		   	   			   664, 872,  			// Stoves
+						   995};				// Cauldron
+	const int nshapes = sizeof(shapes)/sizeof(shapes[0]);
+	for (int i = 0; i < nshapes; ++i)
+	    find_tables(shapes[i], 26, true);
+	if (prep_tables.empty()) {		// Look farther.
+	    for (int i = 0; i < nshapes; ++i)
+	        find_tables(shapes[i], 36, true);
+	}
+	if (prep_tables.empty()) {
+	    for (int i = 0; i < nshapes; ++i)
+	        find_tables(shapes[i], 50, true);
 	}
 }
 
@@ -3387,21 +3405,9 @@ void Waiter_schedule::now_what(
 		find_tables(971, 24);
 		find_tables(633, 24);
 		find_tables(847, 24);
-		find_tables(1003, 24);
-		find_tables(1018, 24);
 		find_tables(890, 24);
 		find_tables(964, 24);
-		find_tables(333, 24);
-		if (prep_tables.empty()) {		// Look farther.
-		    find_tables(333, 36);
-			find_tables(1018, 36);
-			find_tables(1003, 36);
-		}
-		if (prep_tables.empty()) {
-		    find_tables(333, 50);
-			find_tables(1018, 50);
-			find_tables(1003, 50);
-		}
+		find_prep_tables();
 		state = get_customer;
 		/* FALL THROUGH */
 	case get_customer:
@@ -3456,6 +3462,11 @@ void Waiter_schedule::now_what(
 	case prep_food:
 		if (prep_table && npc->distance(prep_table) <= 3) {
 		    Prep_animation(npc, prep_table);
+		}
+		if (rand()%4 && prep_tables.size() > 1) {
+		    // A little more cooking.
+			walk_to_prep_or_counter(false);
+			break;
 		}
 		Ready_food(npc);
 		state = bring_food;
