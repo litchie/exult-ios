@@ -1589,10 +1589,7 @@ Game_object *Game_map::locate_shape(
 		}
 		Map_chunk *chunk = get_chunk(cx, cy);
 		// Make sure objs. are read.
-		int sx = cx / c_chunks_per_schunk, sy = cy / c_chunks_per_schunk;
-		int schunk = sy * c_num_schunks + sx;
-		if (!schunk_read[schunk])
-			get_superchunk_objects(schunk);
+		ensure_chunk_read(cx, cy);
 		if (upwards) {
 			Recursive_object_iterator_backwards next(
 			    chunk->get_objects());
