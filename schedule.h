@@ -126,6 +126,24 @@ public:
 };
 
 /*
+ *	A schedule that creates objects that need to be cleaned up after.
+ */
+class Schedule_with_objects : public Schedule {
+	vector<Game_object *> created;	// Items we created.
+protected:
+	void cleanup();				// Remove items we created.
+public:
+	Schedule_with_objects(Actor *n) : Schedule(n) {
+	}
+	~Schedule_with_objects();
+	virtual void notify_object_gone(Game_object *obj);
+	void add_object(Game_object *obj) {
+	    created.push_back(obj);
+		add_client(obj);
+	}
+};
+
+/*
  *  Schedule is implemented as Usecode functions.
  */
 class Scripted_schedule : public Schedule {
@@ -439,12 +457,11 @@ public:
 /*
  *  Desk work - Just sit in front of desk.
  */
-class Desk_schedule : public Schedule {
+class Desk_schedule : public Schedule_with_objects {
 	Game_object *chair;     // What to sit in.
 	Game_object *desk, *table, *desk_item;
 	vector<Game_object *> tables;	// Other tables to work at.
 	int items_in_hand; 	  	// # NPC's desk items.
-	vector<Game_object *> created;	// Items we created.
 	enum {
 	    desk_setup,
 	    sit_at_desk,
@@ -455,10 +472,8 @@ class Desk_schedule : public Schedule {
 	void find_tables(int shapenum);
 	bool walk_to_table();
 	bool walk_to_desk_item();
-	void cleanup();				// Remove items we created.
 public:
 	Desk_schedule(Actor *n);
-	~Desk_schedule();
 	virtual void now_what();    // Now what should NPC do?
 	virtual void ending(int newtype);// Switching to another schedule.
 	virtual void notify_object_gone(Game_object *obj);
@@ -516,7 +531,7 @@ public:
 /*
  *  Wait tables.
  */
-class Waiter_schedule : public Schedule {
+class Waiter_schedule : public Schedule_with_objects {
 	Tile_coord startpos;        // Starting position.
 	Actor *customer;        // Current customer.
 	Game_object *prep_table;    // Table we're working at.
@@ -540,7 +555,13 @@ class Waiter_schedule : public Schedule {
 	void find_tables(int shapenum, int dist, bool is_prep = false);
 	void find_prep_tables();
 	bool walk_to_customer(int min_delay = 0);
-	bool walk_to_prep_or_counter(bool counter);
+	bool walk_to_work_spot(bool counter);
+	bool walk_to_prep() {
+	    return walk_to_work_spot(false);
+	}
+	bool walk_to_counter() {
+	    return walk_to_work_spot(true);
+	}
     Game_object *create_customer_plate();
 	Game_object *find_serving_spot(Tile_coord &spot);
 public:

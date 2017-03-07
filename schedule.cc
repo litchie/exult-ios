@@ -305,6 +305,38 @@ bool Schedule::try_proximity_usecode(int odds) {
 }
 
 /*
+ *  Remove desk items NPC is holding (that we created).
+ */
+
+void Schedule_with_objects::cleanup()
+{
+	while (!created.empty()) {
+        Game_object *item = created.back();
+		created.pop_back();
+		if (item->get_owner() == npc)
+		    item->remove_this();
+	}
+}
+
+Schedule_with_objects::~Schedule_with_objects()
+{
+    cleanup();
+}
+
+/*
+ *  Notify that an object is no longer present.
+ */
+void Schedule_with_objects::notify_object_gone(Game_object *obj) {
+	vector<Game_object *>::iterator it;
+	for (it = created.begin(); it != created.end(); ++it) {
+		if (*it == obj) {
+		    created.erase(it);
+			break;
+		}
+	}
+}
+
+/*
  *  Run usecode function.
  */
 
@@ -2452,27 +2484,8 @@ bool Sit_schedule::set_action(
 
 Desk_schedule::Desk_schedule(
     Actor *n
-) : Schedule(n), chair(0), desk(0), table(0), desk_item(0),
+) : Schedule_with_objects(n), chair(0), desk(0), table(0), desk_item(0),
   				 items_in_hand(0), state(desk_setup) {
-}
-
-Desk_schedule::~Desk_schedule()
-{
-    cleanup();
-}
-
-/*
- *  Remove desk items NPC is holding (that we created).
- */
-
-void Desk_schedule::cleanup()
-{
-	while (!created.empty()) {
-        Game_object *item = created.back();
-		created.pop_back();
-		if (item->get_owner() == npc)
-		    item->remove_this();
-	}
 }
 
 /*
@@ -2607,7 +2620,7 @@ void Desk_schedule::now_what(
 				int frame = Desk_item_frame();
 				Game_object *item = new Ireg_game_object(675, frame, 0, 0, 0);
 				npc->add(item, true);
-				created.push_back(item);
+				add_object(item);
 			}
 		}
 		desk = npc->find_closest(desks, 2);
@@ -2759,12 +2772,7 @@ void Desk_schedule::notify_object_gone(Game_object *obj) {
 			break;
 		}
 	}
-	for (it = created.begin(); it != created.end(); ++it) {
-		if (*it == obj) {
-		    created.erase(it);
-			break;
-		}
-	}
+	Schedule_with_objects::notify_object_gone(obj);
 }
 
 /*
@@ -3141,7 +3149,8 @@ void Thief_schedule::now_what(
 
 Waiter_schedule::Waiter_schedule(
     Actor *n
-) : Schedule(n), startpos(n->get_tile()), customer(0), prep_table(0),
+) : Schedule_with_objects(n), startpos(n->get_tile()), customer(0), 
+    prep_table(0),
 	state(waiter_setup) {
 }
 
@@ -3175,7 +3184,7 @@ bool Waiter_schedule::find_customer(
  *  Walk to prep. table.
  *  Output: false if failed.
  */
-bool Waiter_schedule::walk_to_prep_or_counter(
+bool Waiter_schedule::walk_to_work_spot(
     bool counter
 ) {
     vector <Game_object *> &tables = counter ? counters : prep_tables;
@@ -3373,6 +3382,11 @@ static void Prep_animation(Actor *npc, Game_object *table)
 	}
 	(*scr) << (Ucscript::npc_frame + Actor::standing);
 	scr->start();   // Start next tick.
+	int shapenum = table->get_shapenum();
+	// Cauldron or stove?  Animate a little.
+	if (shapenum == 995 || shapenum == 664 || shapenum == 872) {
+	    table->change_frame(rand() % table->get_num_frames());
+	}
 }
 
 /*
@@ -3412,7 +3426,7 @@ void Waiter_schedule::now_what(
 		/* FALL THROUGH */
 	case get_customer:
 		if (!find_customer()) {
-			walk_to_prep_or_counter(false);
+			walk_to_prep();
 			state = prep_food;
 		} else if (walk_to_customer())
 			state = get_order;
@@ -3439,7 +3453,7 @@ void Waiter_schedule::now_what(
 	case took_order:
 		// Get up to 4 orders before serving them.
 		if (customers_ordered.size() >= 4 || customers.empty()) {
-		    walk_to_prep_or_counter(false);
+		    walk_to_prep();
 		    state = prep_food;
 		} else {
 		    state = get_customer;
@@ -3465,7 +3479,7 @@ void Waiter_schedule::now_what(
 		}
 		if (rand()%4 && prep_tables.size() > 1) {
 		    // A little more cooking.
-			walk_to_prep_or_counter(false);
+			walk_to_prep();
 			break;
 		}
 		Ready_food(npc);
@@ -3477,7 +3491,7 @@ void Waiter_schedule::now_what(
 				gwin->get_usecode()->call_usecode(
 				    npc->get_usecode(), npc,
 				    Usecode_machine::npc_proximity);
-	        if (walk_to_prep_or_counter(true))
+	        if (walk_to_counter())
 		        state = wait_at_counter;
 			else
 			    state = get_customer;
@@ -3578,6 +3592,7 @@ void Waiter_schedule::notify_object_gone(Game_object *obj) {
 			break;
 		}
 	}
+    Schedule_with_objects::notify_object_gone(obj);
 }
 
 /*
