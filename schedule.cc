@@ -327,6 +327,8 @@ Schedule_with_objects::~Schedule_with_objects()
  *  Notify that an object is no longer present.
  */
 void Schedule_with_objects::notify_object_gone(Game_object *obj) {
+	if (obj == current_item)
+	    current_item = 0;
 	vector<Game_object *>::iterator it;
 	for (it = created.begin(); it != created.end(); ++it) {
 		if (*it == obj) {
@@ -334,6 +336,29 @@ void Schedule_with_objects::notify_object_gone(Game_object *obj) {
 			break;
 		}
 	}
+}
+
+/*
+ *  Walk to an item.
+ *  Output: false if failed.
+ */
+bool Schedule_with_objects::walk_to_random_item() {
+	Game_object_vector vec;
+	current_item = 0;
+	int nitems = find_items(vec);
+	if (nitems) {
+	    current_item = vec[rand() % nitems];
+		add_client(current_item);
+		Tile_coord spot = current_item->get_tile();
+		int floor = npc->get_lift() / 5;
+		spot.tz = floor*5;
+		Tile_coord pos = Map_chunk::find_spot(spot, 1, npc);
+		if (pos.tx != -1 &&
+		        npc->walk_path_to_tile(pos, gwin->get_std_delay(),
+		                               1000 + rand() % 1000))
+			return true;
+	}
+	return false;
 }
 
 /*
@@ -2484,7 +2509,7 @@ bool Sit_schedule::set_action(
 
 Desk_schedule::Desk_schedule(
     Actor *n
-) : Schedule_with_objects(n), chair(0), desk(0), table(0), desk_item(0),
+) : Schedule_with_objects(n), chair(0), desk(0), table(0),
   				 items_in_hand(0), state(desk_setup) {
 }
 
@@ -2527,7 +2552,7 @@ bool Desk_schedule::walk_to_table() {
 
 static char desk_frames[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 12, 13, 14, 15};
 #define DESK_FRAMES_CNT   	array_size(desk_frames)
-static int find_desk_items(Game_object_vector &vec, Actor *npc)
+int Desk_schedule::find_items(Game_object_vector &vec)
 {
 	npc->find_nearby(vec, 675, 16, 0);
 	int floor = npc->get_lift() / 5; // Make sure it's on same floor.
@@ -2540,29 +2565,6 @@ static int find_desk_items(Game_object_vector &vec, Actor *npc)
 			++it;
 	}
 	return vec.size();
-}
-
-/*
- *  Walk to desk item.
- *  Output: false if failed.
- */
-bool Desk_schedule::walk_to_desk_item() {
-	Game_object_vector vec;
-	desk_item = 0;
-	int nitems = find_desk_items(vec, npc);
-	if (nitems) {
-	    desk_item = vec[rand() % nitems];
-		add_client(desk_item);
-		Tile_coord spot = desk_item->get_tile();
-		int floor = npc->get_lift() / 5;
-		spot.tz = floor*5;
-		Tile_coord pos = Map_chunk::find_spot(spot, 1, npc);
-		if (pos.tx != -1 &&
-		        npc->walk_path_to_tile(pos, gwin->get_std_delay(),
-		                               1000 + rand() % 1000))
-			return true;
-	}
-	return false;
 }
 
 // Pick a 'reasonable' desk item frame to create.
@@ -2612,7 +2614,7 @@ void Desk_schedule::now_what(
 		// Create desk items if needed.
 		items_in_hand = npc->count_objects(675);
 		Game_object_vector vec;
-		int nearby = find_desk_items(vec, npc);
+		int nearby = Desk_schedule::find_items(vec);
 		int nitems = (7 + rand()%5) - items_in_hand - nearby;
 		if (nitems > 0) {
 			items_in_hand += nitems;
@@ -2649,7 +2651,7 @@ void Desk_schedule::now_what(
 			    npc->start(250, 0);
 		} else if (rand() % (2 + items_in_hand) && walk_to_table()) {
 		    state = work_at_table;
-		} else if (rand() % 2 && walk_to_desk_item()) {
+		} else if (rand() % 2 && walk_to_random_item()) {
 		    state = get_desk_item;
 		} else {            // Stand up a second.
 		    signed char frames[5];
@@ -2665,15 +2667,15 @@ void Desk_schedule::now_what(
 		break;
 		}
 	case get_desk_item:
-		if (desk_item && npc->distance(desk_item) <= 3) {
-		    npc->set_action(new Pickup_actor_action(desk_item, 250));
+		if (current_item && npc->distance(current_item) <= 3) {
+		    npc->set_action(new Pickup_actor_action(current_item, 250));
 			state = picked_up_item;
 		} else
 		    state = sit_at_desk;
 		npc->start(250, 500 + rand()%1000);
 		break;
 	case picked_up_item:
-		desk_item = 0;
+		current_item = 0;
 		if (rand() % 2 && walk_to_table()) {
 		    state = work_at_table;
 			break;
@@ -2762,8 +2764,6 @@ void Desk_schedule::notify_object_gone(Game_object *obj) {
 	    desk = 0;
 	} else if (obj == table) {
 	    table = 0;
-	} else if (obj == desk_item) {
-	    desk_item = 0;
 	}
 	vector<Game_object *>::iterator it;
 	for (it = tables.begin(); it != tables.end(); ++it) {
@@ -3152,6 +3152,24 @@ Waiter_schedule::Waiter_schedule(
 ) : Schedule_with_objects(n), startpos(n->get_tile()), customer(0), 
     prep_table(0),
 	state(waiter_setup) {
+}
+
+int Waiter_schedule::find_items(Game_object_vector &vec)
+{
+	// Bottle, cup, pot
+    static int shapes[] = {616, 628, 944};
+	const int nshapes = sizeof(shapes)/sizeof(shapes[0]);
+	for (int i = 0; i < nshapes; ++i)
+	    npc->find_nearby(vec, shapes[i], 16, 0);
+	int floor = npc->get_lift() / 5; // Make sure it's on same floor.
+	for (Game_object_vector::iterator it = vec.begin(); it != vec.end();) {
+		Game_object *item = *it;
+		if (item->get_lift() / 5 != floor)
+			it = vec.erase(it);
+		else
+			++it;
+	}
+	return vec.size();
 }
 
 /*
