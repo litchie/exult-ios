@@ -345,7 +345,7 @@ void Schedule_with_objects::notify_object_gone(Game_object *obj) {
 bool Schedule_with_objects::walk_to_random_item() {
 	Game_object_vector vec;
 	current_item = 0;
-	int nitems = find_items(vec);
+	int nitems = find_items(vec, 16);
 	if (nitems) {
 	    current_item = vec[rand() % nitems];
 		add_client(current_item);
@@ -359,6 +359,35 @@ bool Schedule_with_objects::walk_to_random_item() {
 			return true;
 	}
 	return false;
+}
+
+/* 
+ *  Drop an item on a table.
+ */
+bool Schedule_with_objects::drop_item(Game_object *to_drop, Game_object *table)
+{
+    Tile_coord spot = npc->get_tile();
+    Rectangle foot = table->get_footprint();
+	// East/West of table?
+	if (spot.ty >= foot.y && spot.ty < foot.y + foot.h)
+	    spot.tx = spot.tx <= foot.x ? foot.x
+          		  		  : foot.x + foot.w - 1;
+	else            // North/south.
+	    spot.ty = spot.ty <= foot.y ? foot.y
+          		  		  : foot.y + foot.h - 1;
+	Shape_info &info = table->get_info();
+	spot.tz = table->get_lift() + info.get_3d_height();
+	Tile_coord pos = Map_chunk::find_spot(spot, 1,
+			   to_drop->get_shapenum(), to_drop->get_framenum());
+    if (pos.tx != -1 && pos.tz == spot.tz &&
+	    	   foot.has_world_point(pos.tx, pos.ty)) {
+	    // Passes test.
+		npc->set_action(new Pickup_actor_action(
+			to_drop, pos, 250, false));
+		--items_in_hand;
+		return true;
+	} else
+	    return false;
 }
 
 /*
@@ -2509,8 +2538,7 @@ bool Sit_schedule::set_action(
 
 Desk_schedule::Desk_schedule(
     Actor *n
-) : Schedule_with_objects(n), chair(0), desk(0), table(0),
-  				 items_in_hand(0), state(desk_setup) {
+) : Schedule_with_objects(n), chair(0), desk(0), table(0), state(desk_setup) {
 }
 
 /*
@@ -2552,9 +2580,9 @@ bool Desk_schedule::walk_to_table() {
 
 static char desk_frames[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 12, 13, 14, 15};
 #define DESK_FRAMES_CNT   	array_size(desk_frames)
-int Desk_schedule::find_items(Game_object_vector &vec)
+int Desk_schedule::find_items(Game_object_vector &vec, int dist)
 {
-	npc->find_nearby(vec, 675, 16, 0);
+	npc->find_nearby(vec, 675, dist, 0);
 	int floor = npc->get_lift() / 5; // Make sure it's on same floor.
 	for (Game_object_vector::iterator it = vec.begin(); it != vec.end();) {
 		Game_object *item = *it;
@@ -2614,7 +2642,7 @@ void Desk_schedule::now_what(
 		// Create desk items if needed.
 		items_in_hand = npc->count_objects(675);
 		Game_object_vector vec;
-		int nearby = Desk_schedule::find_items(vec);
+		int nearby = Desk_schedule::find_items(vec, 16);
 		int nitems = (7 + rand()%5) - items_in_hand - nearby;
 		if (nitems > 0) {
 			items_in_hand += nitems;
@@ -2692,26 +2720,8 @@ void Desk_schedule::now_what(
 					   	 					c_any_qual, c_any_framenum);
 			items_in_hand = nitems;		// Save value.
 			if (nitems) {
-			    Tile_coord spot = npc->get_tile();
-			    Rectangle foot = table->get_footprint();
 				Game_object *to_drop = items[rand()%nitems];
-				// East/West of table?
-				if (spot.ty >= foot.y && spot.ty < foot.y + foot.h)
-				    spot.tx = spot.tx <= foot.x ? foot.x
-			          		  		  : foot.x + foot.w - 1;
-				else            // North/south.
-				    spot.ty = spot.ty <= foot.y ? foot.y
-			          		  		  : foot.y + foot.h - 1;
-				Shape_info &info = table->get_info();
-				spot.tz = table->get_lift() + info.get_3d_height();
-				Tile_coord pos = Map_chunk::find_spot(spot, 1,
-						   to_drop->get_shapenum(), to_drop->get_framenum());
-			    if (pos.tx != -1 && pos.tz == spot.tz &&
-				    	   foot.has_world_point(pos.tx, pos.ty)) {
-				    // Passes test.
-					npc->set_action(new Pickup_actor_action(
-						to_drop, pos, 250, false));
-					--items_in_hand;
+				if (drop_item(to_drop, table)) {
 					if (rand() % 2)
 					    state = sit_at_desk;
 				}
@@ -3154,13 +3164,13 @@ Waiter_schedule::Waiter_schedule(
 	state(waiter_setup) {
 }
 
-int Waiter_schedule::find_items(Game_object_vector &vec)
+static int waiter_shapes[] = {616, 628, 944};
+const int waiter_nshapes = sizeof(waiter_shapes)/sizeof(waiter_shapes[0]);
+int Waiter_schedule::find_items(Game_object_vector &vec, int dist)
 {
 	// Bottle, cup, pot
-    static int shapes[] = {616, 628, 944};
-	const int nshapes = sizeof(shapes)/sizeof(shapes[0]);
-	for (int i = 0; i < nshapes; ++i)
-	    npc->find_nearby(vec, shapes[i], 16, 0);
+	for (int i = 0; i < waiter_nshapes; ++i)
+	    npc->find_nearby(vec, waiter_shapes[i], dist, 0);
 	int floor = npc->get_lift() / 5; // Make sure it's on same floor.
 	for (Game_object_vector::iterator it = vec.begin(); it != vec.end();) {
 		Game_object *item = *it;
@@ -3170,6 +3180,24 @@ int Waiter_schedule::find_items(Game_object_vector &vec)
 			++it;
 	}
 	return vec.size();
+}
+
+static int Count_waiter_objects(Actor *npc)
+{
+    int cnt = 0;
+	for (int i = 0; i < waiter_nshapes; ++i)
+	    cnt += npc->count_objects(waiter_shapes[i]);
+    return cnt;
+}
+
+static int Get_waiter_objects(Actor *npc, Game_object_vector& items)
+{
+    int cnt = 0;
+	for (int i = 0; i < waiter_nshapes; ++i) {
+	    cnt += npc->get_objects(items, waiter_shapes[i],
+					   	 					c_any_qual, c_any_framenum);
+	}
+	return cnt;
 }
 
 /*
@@ -3301,6 +3329,17 @@ void Waiter_schedule::find_prep_tables()
 	}
 }
 
+static Game_object *Find_customer_table(Actor *customer, 
+	   			   							  Game_object_vector& tables) 
+{
+    Game_object_vector::const_iterator it;
+	for (it = tables.begin(); it != tables.end(); ++it) {
+	    if (customer->distance(*it) < 3)
+		    return *it;
+    }
+	return 0;
+}
+
 static Game_object *Find_customer_plate(Actor *customer)
 {
 	Game_object_vector plates;  // First look for a nearby plate.
@@ -3358,12 +3397,18 @@ Game_object *Waiter_schedule::create_customer_plate(
 
 static void Ready_food(Actor *npc)
 {
-	if (!npc->get_readied(lhand)) {
-		// Acquire some food.
-		int nfoods = ShapeID(377, 0).get_num_frames();
-		int frame = rand() % nfoods;
-		npc->add_readied(new Ireg_game_object(377, frame, 0, 0, 0), lhand);
+    Game_object *obj = npc->get_readied(lhand);
+	if (obj) {							// Already something there?
+	    if (obj->get_shapenum() == 377)
+		    return;						// Food, so done.
+		npc->remove(obj);				// Make space.
 	}
+	// Acquire some food.
+	int nfoods = ShapeID(377, 0).get_num_frames();
+	int frame = rand() % nfoods;
+	npc->add_readied(new Ireg_game_object(377, frame, 0, 0, 0), lhand);
+	if (obj)
+	    npc->add(obj, true);			// Add back what was there before.
 }
 
 /*
@@ -3434,6 +3479,7 @@ void Waiter_schedule::now_what(
 	}
 	switch (state) {
 	case waiter_setup:
+		items_in_hand = Count_waiter_objects(npc);
 		find_tables(971, 24);
 		find_tables(633, 24);
 		find_tables(847, 24);
@@ -3525,6 +3571,10 @@ void Waiter_schedule::now_what(
 		}
 		break;
     case wait_at_counter: {
+		if (items_in_hand < 4 && rand() % 2 && walk_to_random_item()) {
+		    state = get_waiter_item;
+			break;
+		}
 	    if (prep_table) {
 		    npc->change_frame(npc->get_dir_framenum(
 			                      npc->get_facing_direction(prep_table),
@@ -3538,7 +3588,23 @@ void Waiter_schedule::now_what(
 	    npc->start(gwin->get_std_delay(), 2000 + rand() % 4000);
 	    break;
 	}
-	case serve_food:
+	case get_waiter_item:
+		if (current_item && npc->distance(current_item) <= 3) {
+		    npc->set_action(new Pickup_actor_action(current_item, 250));
+			state = picked_up_item;
+		    npc->start(250, 500 + rand()%1000);
+			++items_in_hand;
+			break;
+		}
+		/* FALL THROUGH */
+	case picked_up_item:
+		current_item = 0;
+		if (walk_to_counter()) {
+		    state = wait_at_counter;
+		} else
+			state = get_customer;
+		break;
+	case serve_food: {
 		food = npc->get_readied(lhand);
 		Tile_coord spot;
 		if (food && food->get_shapenum() == 377 &&
@@ -3559,10 +3625,38 @@ void Waiter_schedule::now_what(
 			       << (Ucscript::npc_frame + Actor::standing);
 			scr->start();   // Start next tick.
 		}
-		state = bring_food;	// On to the next.
+		state = served_food;
+		npc->start(250, 1000 + rand() % 1000);
+		break;
+	}
+    case served_food:
+		// Randomly drop or pick up an item.
+		if (rand() % 2) {
+	        if (customer && items_in_hand > 0) {
+		        Game_object_vector items;
+			    int nitems = Get_waiter_objects(npc, items);
+			    items_in_hand = nitems;		// Save value.
+			    if (nitems) {
+			        Game_object *table = Find_customer_table(customer,
+														eating_tables);
+				    Game_object *to_drop = items[rand()%nitems];
+				    if (table)
+			            (void) drop_item(to_drop, table);
+			    }
+		    }
+		} else if (items_in_hand < 4) {
+		    Game_object_vector items;	// Look near by to pick up an item.
+		    int cnt = Waiter_schedule::find_items(items, 4);
+			if (cnt) {
+		        npc->set_action(
+						new Pickup_actor_action(items[rand()%cnt], 250));
+			    ++items_in_hand;
+			}
+		}
 		customer = 0;       // Done with this one.
-		npc->start(250, 1000 + rand() % 2000);
-		return;
+	    state = bring_food;		// On to the next.
+        npc->start(gwin->get_std_delay(), 1000 + rand() % 1000);
+		break;
 	}
 }
 

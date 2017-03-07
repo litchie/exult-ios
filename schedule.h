@@ -132,9 +132,11 @@ class Schedule_with_objects : public Schedule {
 	vector<Game_object *> created;	// Items we created.
 protected:
     Game_object *current_item;		// One we're using/walking to.
+	int items_in_hand; 	  	// # NPC's desk items.
 	void cleanup();				// Remove items we created.
 public:
-	Schedule_with_objects(Actor *n) : Schedule(n), current_item(0) {
+	Schedule_with_objects(Actor *n) : Schedule(n), current_item(0),
+									items_in_hand(0) {
 	}
 	~Schedule_with_objects();
 	virtual void notify_object_gone(Game_object *obj);
@@ -143,8 +145,9 @@ public:
 		add_client(obj);
 	}
 	// Find desk or waiter items.
-	virtual int find_items(Game_object_vector& vec) = 0;
+	virtual int find_items(Game_object_vector& vec, int dist) = 0;
 	bool walk_to_random_item();
+	bool drop_item(Game_object *to_drop, Game_object *table);
 };
 
 /*
@@ -465,7 +468,6 @@ class Desk_schedule : public Schedule_with_objects {
 	Game_object *chair;     // What to sit in.
 	Game_object *desk, *table;
 	vector<Game_object *> tables;	// Other tables to work at.
-	int items_in_hand; 	  	// # NPC's desk items.
 	enum {
 	    desk_setup,
 	    sit_at_desk,
@@ -473,7 +475,7 @@ class Desk_schedule : public Schedule_with_objects {
 		picked_up_item,
 		work_at_table
 	} state;
-	virtual int find_items(Game_object_vector& vec);
+	virtual int find_items(Game_object_vector& vec, int dist);
 	void find_tables(int shapenum);
 	bool walk_to_table();
 public:
@@ -553,9 +555,12 @@ class Waiter_schedule : public Schedule_with_objects {
 	    prep_food,
 		bring_food,
 	    serve_food,
-		wait_at_counter
+		served_food,
+		wait_at_counter,
+		get_waiter_item,
+		picked_up_item
 	} state;
-	virtual int find_items(Game_object_vector& vec);
+	virtual int find_items(Game_object_vector& vec, int dist);
 	bool find_customer();
 	void find_tables(int shapenum, int dist, bool is_prep = false);
 	void find_prep_tables();
