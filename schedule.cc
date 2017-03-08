@@ -342,10 +342,10 @@ void Schedule_with_objects::notify_object_gone(Game_object *obj) {
  *  Walk to an item.
  *  Output: false if failed.
  */
-bool Schedule_with_objects::walk_to_random_item() {
+bool Schedule_with_objects::walk_to_random_item(int dist) {
 	Game_object_vector vec;
 	current_item = 0;
-	int nitems = find_items(vec, 16);
+	int nitems = find_items(vec, dist);
 	if (nitems) {
 	    current_item = vec[rand() % nitems];
 		add_client(current_item);
@@ -2716,11 +2716,10 @@ void Desk_schedule::now_what(
 		    state = sit_at_desk;		// Back to desk.
 		} else if (rand() % 4) {		// Put down an item.
 		    Game_object_vector items;
-		    int nitems = npc->get_objects(items, 675,
+		    items_in_hand = npc->get_objects(items, 675,
 					   	 					c_any_qual, c_any_framenum);
-			items_in_hand = nitems;		// Save value.
-			if (nitems) {
-				Game_object *to_drop = items[rand()%nitems];
+			if (items_in_hand) {
+				Game_object *to_drop = items[rand()%items_in_hand];
 				if (drop_item(to_drop, table)) {
 					if (rand() % 2)
 					    state = sit_at_desk;
@@ -3160,7 +3159,7 @@ void Thief_schedule::now_what(
 Waiter_schedule::Waiter_schedule(
     Actor *n
 ) : Schedule_with_objects(n), startpos(n->get_tile()), customer(0), 
-    prep_table(0),
+    prep_table(0), cooking(false),
 	state(waiter_setup) {
 }
 
@@ -3168,9 +3167,15 @@ static int waiter_shapes[] = {616, 628, 944};
 const int waiter_nshapes = sizeof(waiter_shapes)/sizeof(waiter_shapes[0]);
 int Waiter_schedule::find_items(Game_object_vector &vec, int dist)
 {
-	// Bottle, cup, pot
-	for (int i = 0; i < waiter_nshapes; ++i)
-	    npc->find_nearby(vec, waiter_shapes[i], dist, 0);
+	if (cooking) {			  		// Find food, pot.
+	    npc->find_nearby(vec, 377, dist, 0);
+		npc->find_nearby(vec, 944, dist, 0);
+	}
+    if (!cooking || !vec.size()) {
+	    // Bottle, cup, pot
+	    for (int i = 0; i < waiter_nshapes; ++i)
+	        npc->find_nearby(vec, waiter_shapes[i], dist, 0);
+	}
 	int floor = npc->get_lift() / 5; // Make sure it's on same floor.
 	for (Game_object_vector::iterator it = vec.begin(); it != vec.end();) {
 		Game_object *item = *it;
@@ -3190,12 +3195,19 @@ static int Count_waiter_objects(Actor *npc)
     return cnt;
 }
 
-static int Get_waiter_objects(Actor *npc, Game_object_vector& items)
+static int Get_waiter_objects(Actor *npc, Game_object_vector& items, 
+	   	   								  bool cooking = false)
 {
     int cnt = 0;
-	for (int i = 0; i < waiter_nshapes; ++i) {
-	    cnt += npc->get_objects(items, waiter_shapes[i],
+	if (cooking) {			  		// Find food, pot.
+	    cnt += npc->get_objects(items, 377, c_any_qual, c_any_framenum);
+		cnt += npc->get_objects(items, 944, c_any_qual, c_any_framenum);
+	}
+    if (!cooking || !cnt) {
+	    for (int i = 0; i < waiter_nshapes; ++i) {
+	        cnt += npc->get_objects(items, waiter_shapes[i],
 					   	 					c_any_qual, c_any_framenum);
+        }
 	}
 	return cnt;
 }
@@ -3406,7 +3418,9 @@ static void Ready_food(Actor *npc)
 	// Acquire some food.
 	int nfoods = ShapeID(377, 0).get_num_frames();
 	int frame = rand() % nfoods;
-	npc->add_readied(new Ireg_game_object(377, frame, 0, 0, 0), lhand);
+	Game_object *food = new Ireg_game_object(377, frame, 0, 0, 0);
+	food->clear_flag(Obj_flags::okay_to_take);
+	npc->add_readied(food, lhand);
 	if (obj)
 	    npc->add(obj, true);			// Add back what was there before.
 }
@@ -3447,7 +3461,10 @@ static void Prep_animation(Actor *npc, Game_object *table)
 	scr->start();   // Start next tick.
 	int shapenum = table->get_shapenum();
 	// Cauldron or stove?  Animate a little.
-	if (shapenum == 995 || shapenum == 664 || shapenum == 872) {
+	if (shapenum == 995) {
+	    // Don't use last cauldron frame.
+	    table->change_frame(rand() % (table->get_num_frames() - 1));
+	} else if (shapenum == 664 || shapenum == 872) {
 	    table->change_frame(rand() % table->get_num_frames());
 	}
 }
@@ -3538,15 +3555,35 @@ void Waiter_schedule::now_what(
         break;
     }
 	case prep_food:
-		if (prep_table && npc->distance(prep_table) <= 3) {
-		    Prep_animation(npc, prep_table);
+		if (cooking && items_in_hand < 4 && 
+		   			rand()%2 == 0 && walk_to_random_item(4)) {
+		    state = get_waiter_item;
+			break;
 		}
-		if (rand()%4 && prep_tables.size() > 1) {
+        Ready_food(npc);					// So we can drop it.
+		if ((!cooking || rand()%3) && 
+		    		  prep_table && npc->distance(prep_table) <= 3) {
+		    Game_object *to_drop = 0;
+	        if (rand()%3) {
+		        Game_object_vector items;
+			    items_in_hand = Get_waiter_objects(npc, items, true);
+				to_drop = items_in_hand ? items[rand()%items_in_hand] : 0;
+			} 
+			cooking = true;
+			if (to_drop)
+	            (void) drop_item(to_drop, prep_table);
+			else
+		        Prep_animation(npc, prep_table);
+			npc->start(gwin->get_std_delay(), 500 + rand() % 500);
+			break;
+		}
+		if (rand()%2 && prep_tables.size() > 1) {
 		    // A little more cooking.
 			walk_to_prep();
 			break;
 		}
 		Ready_food(npc);
+		cooking = false;
 		state = bring_food;
 		/* FALL THROUGH. */
     case bring_food:
@@ -3571,7 +3608,7 @@ void Waiter_schedule::now_what(
 		}
 		break;
     case wait_at_counter: {
-		if (items_in_hand < 4 && rand() % 2 && walk_to_random_item()) {
+		if (items_in_hand < 3 && rand() % 2 && walk_to_random_item(12)) {
 		    state = get_waiter_item;
 			break;
 		}
@@ -3581,7 +3618,7 @@ void Waiter_schedule::now_what(
 			                      Actor::standing));
             if (rand()%2)
 	            Prep_animation(npc, prep_table);
-		    if (rand()%5 == 1)
+		    if (rand()%3 == 1)
 		        state = get_customer;
 		} else
 		    state = get_customer;
@@ -3599,7 +3636,10 @@ void Waiter_schedule::now_what(
 		/* FALL THROUGH */
 	case picked_up_item:
 		current_item = 0;
-		if (walk_to_counter()) {
+		if (cooking) {
+		    walk_to_prep();
+			state = prep_food;
+		} else if (walk_to_counter()) {
 		    state = wait_at_counter;
 		} else
 			state = get_customer;
@@ -3634,12 +3674,11 @@ void Waiter_schedule::now_what(
 		if (rand() % 2) {
 	        if (customer && items_in_hand > 0) {
 		        Game_object_vector items;
-			    int nitems = Get_waiter_objects(npc, items);
-			    items_in_hand = nitems;		// Save value.
-			    if (nitems) {
+			    items_in_hand = Get_waiter_objects(npc, items);
+			    if (items_in_hand) {
 			        Game_object *table = Find_customer_table(customer,
 														eating_tables);
-				    Game_object *to_drop = items[rand()%nitems];
+				    Game_object *to_drop = items[rand()%items_in_hand];
 				    if (table)
 			            (void) drop_item(to_drop, table);
 			    }
