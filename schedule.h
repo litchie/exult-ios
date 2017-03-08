@@ -146,7 +146,7 @@ public:
 	}
 	// Find desk or waiter items.
 	virtual int find_items(Game_object_vector& vec, int dist) = 0;
-	bool walk_to_random_item();
+	bool walk_to_random_item(int dist = 16);
 	bool drop_item(Game_object *to_drop, Game_object *table);
 };
 
@@ -541,6 +541,7 @@ class Waiter_schedule : public Schedule_with_objects {
 	Tile_coord startpos;        // Starting position.
 	Actor *customer;        // Current customer.
 	Game_object *prep_table;    // Table we're working at.
+	bool cooking;
 	vector<Actor *> customers;  // List of customers.
 	vector<Actor *> customers_ordered;  // Taken orders from these.
 	vector<Game_object *> prep_tables; // Prep. tables.
