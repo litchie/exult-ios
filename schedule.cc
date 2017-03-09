@@ -3409,17 +3409,24 @@ Game_object *Waiter_schedule::create_customer_plate(
 
 static void Ready_food(Actor *npc)
 {
-    Game_object *obj = npc->get_readied(lhand);
+    Game_object *food, *obj = npc->get_readied(lhand);
 	if (obj) {							// Already something there?
 	    if (obj->get_shapenum() == 377)
 		    return;						// Food, so done.
 		npc->remove(obj);				// Make space.
 	}
-	// Acquire some food.
-	int nfoods = ShapeID(377, 0).get_num_frames();
-	int frame = rand() % nfoods;
-	Game_object *food = new Ireg_game_object(377, frame, 0, 0, 0);
-	food->clear_flag(Obj_flags::okay_to_take);
+	Game_object_vector items;
+    if (npc->get_objects(items, 377, c_any_qual, c_any_framenum)) {
+	    // Already have one, so just move it.
+		food = items[0];
+		npc->remove(food);
+	} else {
+	    // Acquire some food.
+	    int nfoods = ShapeID(377, 0).get_num_frames();
+	    int frame = rand() % nfoods;
+	    food = new Ireg_game_object(377, frame, 0, 0, 0);
+	    food->clear_flag(Obj_flags::okay_to_take);
+	}
 	npc->add_readied(food, lhand);
 	if (obj)
 	    npc->add(obj, true);			// Add back what was there before.
