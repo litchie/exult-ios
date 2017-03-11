@@ -855,8 +855,9 @@ int Object_animate_actor_action::handle_event(
 /**
  *  Pick up/put down an object.
  */
-Pickup_actor_action::Pickup_actor_action(Game_object *o, int spd)
-	: obj(o), pickup(1), speed(spd), cnt(0),
+Pickup_actor_action::Pickup_actor_action(Game_object *o, int spd,
+													bool del)
+	: obj(o), pickup(1), speed(spd), cnt(0), to_del(del),
 	  objpos(obj->get_tile()), dir(0) {
 }
 // To put down an object:
@@ -894,8 +895,12 @@ int Pickup_actor_action::handle_event(
 				break;
 			}
 			gwin->add_dirty(obj);
-			obj->remove_this(1);
-			actor->add(obj, true);
+			if (to_del) {
+			    obj->remove_this();		// Delete it.
+			} else {
+			    obj->remove_this(1);
+			    actor->add(obj, true);
+			}
 		} else {
 			obj->remove_this(1);
 			obj->move(objpos);

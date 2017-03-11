@@ -547,6 +547,7 @@ class Waiter_schedule : public Schedule_with_objects {
 	vector<Game_object *> prep_tables; // Prep. tables.
 	vector<Game_object *> counters;    // Places to hang out.
 	vector<Game_object *> eating_tables; // Tables with chairs around them.
+	vector<Game_object *> unattended_plates;
 	enum {
 	    waiter_setup,
 	    get_customer,
@@ -559,9 +560,12 @@ class Waiter_schedule : public Schedule_with_objects {
 		served_food,
 		wait_at_counter,
 		get_waiter_item,
-		picked_up_item
+		picked_up_item,
+		walk_to_cleanup_food,
+		cleanup_food
 	} state;
 	virtual int find_items(Game_object_vector& vec, int dist);
+	bool find_unattended_plate();
 	bool find_customer();
 	void find_tables(int shapenum, int dist, bool is_prep = false);
 	void find_prep_tables();

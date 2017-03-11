@@ -323,19 +323,18 @@ Schedule_with_objects::~Schedule_with_objects()
     cleanup();
 }
 
+static void Remove_vec_obj(Game_object_vector& vec, Game_object *obj)
+{
+   vec.erase(std::remove(vec.begin(), vec.end(), obj), vec.end());
+}
+
 /*
  *  Notify that an object is no longer present.
  */
 void Schedule_with_objects::notify_object_gone(Game_object *obj) {
 	if (obj == current_item)
 	    current_item = 0;
-	vector<Game_object *>::iterator it;
-	for (it = created.begin(); it != created.end(); ++it) {
-		if (*it == obj) {
-		    created.erase(it);
-			break;
-		}
-	}
+    Remove_vec_obj(created, obj);
 }
 
 /*
@@ -2774,13 +2773,7 @@ void Desk_schedule::notify_object_gone(Game_object *obj) {
 	} else if (obj == table) {
 	    table = 0;
 	}
-	vector<Game_object *>::iterator it;
-	for (it = tables.begin(); it != tables.end(); ++it) {
-		if (*it == obj) {
-		    tables.erase(it);
-			break;
-		}
-	}
+	Remove_vec_obj(tables, obj);
 	Schedule_with_objects::notify_object_gone(obj);
 }
 
@@ -3039,13 +3032,7 @@ void Lab_schedule::notify_object_gone(Game_object *obj) {
 		cauldron = 0;
 		state = start;
 	} else {
-		for (vector<Game_object *>::iterator it = tables.begin();
-		        it != tables.end(); ++it) {
-			if (*it == obj) {
-				tables.erase(it);
-				break;
-			}
-		}
+	    Remove_vec_obj(tables, obj);
 	}
 }
 
@@ -3210,6 +3197,33 @@ static int Get_waiter_objects(Actor *npc, Game_object_vector& items,
         }
 	}
 	return cnt;
+}
+
+/*
+ *	Fill in 'plates' list with ones we may have created, ordered by closest
+ *  first.  Return true if not empty.
+ */
+bool Waiter_schedule::find_unattended_plate()
+{
+    if (unattended_plates.empty()) {
+        static int shapes[] = {717};
+		const int shapecnt = sizeof(shapes)/sizeof(shapes[0]);
+    	(void) npc->find_closest(unattended_plates, shapes, shapecnt, 32);
+	    int floor = npc->get_lift() / 5; // Make sure it's on same floor.
+
+	    for (Game_object_vector::iterator it = unattended_plates.begin();
+										     it != unattended_plates.end(); ) {
+			Actor_vector custs;
+            Game_object *plate = *it;
+			if (plate->get_lift() / 5 != floor || 
+		   		!plate->get_flag(Obj_flags::is_temporary) ||
+				plate->find_nearby_actors(custs, c_any_shapenum, 2))
+                it = unattended_plates.erase(it);
+		    else
+		        ++it;
+	    }
+	}
+	return !unattended_plates.empty();
 }
 
 /*
@@ -3400,6 +3414,7 @@ Game_object *Waiter_schedule::create_customer_plate(
 			spot.tz = table->get_lift() + info.get_3d_height();
 			// Small plates:  frames 4, 5.  Seems random.
 			Game_object *plate = gmap->create_ireg_object(717, 4 + rand()%2);
+			plate->set_flag(Obj_flags::is_temporary);
 			plate->move(spot);
 			return plate;
 		}
@@ -3425,6 +3440,7 @@ static void Ready_food(Actor *npc)
 	    int nfoods = ShapeID(377, 0).get_num_frames();
 	    int frame = rand() % nfoods;
 	    food = new Ireg_game_object(377, frame, 0, 0, 0);
+		food->set_flag(Obj_flags::is_temporary);
 	    food->clear_flag(Obj_flags::okay_to_take);
 	}
 	npc->add_readied(food, lhand);
@@ -3484,7 +3500,7 @@ void Waiter_schedule::now_what(
 ) {
 	Game_object *food;
 
-	if (state == get_customer &&
+	if (state == wait_at_counter &&
 	        rand() % 4 == 0)        // Check for lamps, etc.
 		if (try_street_maintenance())
 			return;     // We no longer exist.
@@ -3584,7 +3600,7 @@ void Waiter_schedule::now_what(
 			npc->start(gwin->get_std_delay(), 500 + rand() % 500);
 			break;
 		}
-		if (rand()%2 && prep_tables.size() > 1) {
+		if (rand()%3 == 1 && prep_tables.size() > 1) {
 		    // A little more cooking.
 			walk_to_prep();
 			break;
@@ -3615,11 +3631,13 @@ void Waiter_schedule::now_what(
 		}
 		break;
     case wait_at_counter: {
-		if (items_in_hand < 3 && rand() % 2 && walk_to_random_item(12)) {
+		/* Check for customers who have left: */
+		if (rand()%2 && find_unattended_plate()) {
+		    state = walk_to_cleanup_food;
+		} else if (items_in_hand < 3 && rand() % 2 && walk_to_random_item(12)) {
 		    state = get_waiter_item;
 			break;
-		}
-	    if (prep_table) {
+	    } else if (prep_table) {
 		    npc->change_frame(npc->get_dir_framenum(
 			                      npc->get_facing_direction(prep_table),
 			                      Actor::standing));
@@ -3629,7 +3647,7 @@ void Waiter_schedule::now_what(
 		        state = get_customer;
 		} else
 		    state = get_customer;
-	    npc->start(gwin->get_std_delay(), 2000 + rand() % 4000);
+	    npc->start(gwin->get_std_delay(), 2000 + rand() % 2000);
 	    break;
 	}
 	case get_waiter_item:
@@ -3703,6 +3721,40 @@ void Waiter_schedule::now_what(
 	    state = bring_food;		// On to the next.
         npc->start(gwin->get_std_delay(), 1000 + rand() % 1000);
 		break;
+    case walk_to_cleanup_food:
+	    if (!unattended_plates.empty()) {
+		    // Closest.
+		    Game_object *plate = unattended_plates.front();
+			if (npc->walk_path_to_tile(plate->get_tile(),
+			        gwin->get_std_delay(), 500 + rand() % 1000, 2)) {
+				state = cleanup_food;
+				break;
+			} else {
+			    unattended_plates.erase(unattended_plates.begin());
+				npc->start(gwin->get_std_delay(), 0);
+			}
+		} else {
+		    state = walk_to_counter() ? wait_at_counter : get_customer;
+		}
+		break;
+	case cleanup_food:
+	    if (!unattended_plates.empty()) {
+		    Game_object *plate = unattended_plates.front();
+			unattended_plates.erase(unattended_plates.begin());
+			// Delete after picking up.
+			Actor_action *act = new Pickup_actor_action(plate, 250, true);
+			Game_object *food = plate->find_closest(377, 2);
+			if (food) {
+			    act = new Sequence_actor_action(act, 
+					  	  new Pickup_actor_action(food, 250, true));
+			}
+			npc->set_action(act);
+			state = walk_to_cleanup_food;
+		    npc->start(gwin->get_std_delay(), 500 + rand()%1000);
+		} else {
+		    state = walk_to_counter() ? wait_at_counter : get_customer;
+		}
+		break;
 	}
 }
 
@@ -3731,25 +3783,10 @@ void Waiter_schedule::notify_object_gone(Game_object *obj) {
 	if (obj == prep_table) {
 		prep_table = 0;
 	}
-	vector<Game_object *>::iterator it;
-	for (it = prep_tables.begin(); it != prep_tables.end(); ++it) {
-		if (*it == obj) {
-			prep_tables.erase(it);
-			break;
-		}
-	}
-	for (it = counters.begin(); it != counters.end(); ++it) {
-		if (*it == obj) {
-			counters.erase(it);
-			break;
-		}
-	}
-	for (it = eating_tables.begin(); it != eating_tables.end(); ++it) {
-		if (*it == obj) {
-			eating_tables.erase(it);
-			break;
-		}
-	}
+	Remove_vec_obj(prep_tables, obj);
+	Remove_vec_obj(counters, obj);
+	Remove_vec_obj(eating_tables, obj);
+	Remove_vec_obj(unattended_plates, obj);
     Schedule_with_objects::notify_object_gone(obj);
 }
 
