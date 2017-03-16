@@ -120,10 +120,10 @@ public:
 		                   cx / c_chunks_per_schunk];
 	}
 	void ensure_chunk_read(int cx, int cy) {
-        if (cx < c_num_chunks && cy < c_num_chunks) {
-		    int sc = 12 * (cy/c_chunks_per_schunk) + cx/c_chunks_per_schunk;
+		if (cx < c_num_chunks && cy < c_num_chunks) {
+			int sc = 12 * (cy/c_chunks_per_schunk) + cx/c_chunks_per_schunk;
 			if (!schunk_read[sc])
-			    get_superchunk_objects(sc);
+				get_superchunk_objects(sc);
 		}
 	}
 	void set_ifix_modified(int cx, int cy) {
