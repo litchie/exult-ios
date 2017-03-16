@@ -2567,7 +2567,11 @@ bool Desk_schedule::walk_to_table() {
 	if (tables.size()) {
 		table = tables[rand() % tables.size()];
 		add_client(table);
-		Tile_coord pos = Map_chunk::find_spot(table->get_tile(), 1, npc);
+//		Tile_coord pos = Map_chunk::find_spot(table->get_tile(), 1, npc);
+		// This will find a random spot around the table:
+		Tile_coord pos = Map_chunk::find_spot(table->get_tile(), 1, 
+				   npc->get_shapenum(), npc->get_framenum());
+
 		if (pos.tx != -1 &&
 		        npc->walk_path_to_tile(pos, gwin->get_std_delay(),
 		                               1000 + rand() % 1000))
@@ -2718,7 +2722,7 @@ void Desk_schedule::now_what(
 	case work_at_table:
 	    // Turn to face it.
 	    npc->change_frame(npc->get_dir_framenum(
-				    npc->get_direction(table), Actor::standing));
+				    npc->get_facing_direction(table), Actor::standing));
 		if (rand() % 3 == 0) {
 		    state = sit_at_desk;		// Back to desk.
 		} else if (items_in_hand && rand() % 6) {		// Put down an item.
@@ -2734,7 +2738,7 @@ void Desk_schedule::now_what(
 			} else
 			   state = sit_at_desk;
 		} else {
-		    int dir = npc->get_direction(table);
+		    int dir = npc->get_facing_direction(table);
 		    signed char frames[3];
 			frames[0] = npc->get_dir_framenum(dir, Actor::standing);
 			frames[1] = npc->get_dir_framenum(dir, (rand()%2)
