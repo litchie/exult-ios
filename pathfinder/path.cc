@@ -325,9 +325,11 @@ public:
 		int total_cost = nd->get_total_cost();
 		Search_node *last = total_cost < static_cast<int>(open.size()) ?
 		                    open[total_cost] : 0;
-		nd->remove_from_chain(last);
-		// Store updated 'last'.
-		add_open(total_cost, last);
+		if (last) {
+			nd->remove_from_chain(last);
+			// Store updated 'last'.
+			add_open(total_cost, last);
+		}
 		if (!last) {    // Last in chain?
 			if (total_cost == best) {
 				int cnt = open.size();
