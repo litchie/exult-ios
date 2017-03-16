@@ -402,7 +402,7 @@ std::FILE *U7open(
 DIR *U7opendir(
     const char *fname			// May be converted to upper-case.
 ) {
-    DIR *dir;
+	DIR *dir;
 	string name = get_system_path(fname);
 	int uppercasecount = 0;
 
