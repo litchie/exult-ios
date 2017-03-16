@@ -23,6 +23,7 @@
 #define SDLKey SDL_Keycode
 // Keys that have changed a bit
 #define SDLK_KP0 SDLK_KP_0
+#define SDLK_KP1 SDLK_KP_1
 #define SDLK_KP9 SDLK_KP_9
 #define SDLK_NUMLOCK SDLK_NUMLOCKCLEAR
 #define SDLK_SCROLLOCK SDLK_SCROLLLOCK
