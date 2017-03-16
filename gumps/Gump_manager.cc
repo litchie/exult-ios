@@ -552,7 +552,7 @@ int Gump_manager::handle_modal_gump_event(
 		}
 
 #if SDL_VERSION_ATLEAST(2, 0, 0)
-		if (event.key.keysym.sym != 0 && event.key.keysym.sym > (int)'~') {
+		if (event.key.keysym.sym != 0 && event.key.keysym.sym > +'~') {
 			keysym_unicode = event.key.keysym.sym;
 		}
 #else

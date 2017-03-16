@@ -1451,7 +1451,7 @@ bool SI_Game::new_game(Vga_file &shapes) {
 					break;
 				default: {
 #if SDL_VERSION_ATLEAST(2, 0, 0)
-					if ((isTextInput && selected == 0) || (!isTextInput && keysym_unicode > (int)'~' && selected == 0))
+					if ((isTextInput && selected == 0) || (!isTextInput && keysym_unicode > +'~' && selected == 0))
 #else
 					if (selected == 0) // on the text input field?
 #endif
