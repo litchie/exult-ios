@@ -2720,15 +2720,9 @@ void Desk_schedule::now_what(
 		npc->start(250, 1000 + rand() % 500);
 		break;
 	case work_at_table:
-<<<<<<< HEAD
 	    // Turn to face it.
 	    npc->change_frame(npc->get_dir_framenum(
 				    npc->get_facing_direction(table), Actor::standing));
-=======
-		// Turn to face it.
-		npc->change_frame(npc->get_dir_framenum(
-				    npc->get_direction(table), Actor::standing));
->>>>>>> cdfc920042693ab6dd27ef832b634c31556d4b86
 		if (rand() % 3 == 0) {
 			state = sit_at_desk;		// Back to desk.
 		} else if (items_in_hand && rand() % 6) {		// Put down an item.
@@ -2744,13 +2738,8 @@ void Desk_schedule::now_what(
 			} else
 				state = sit_at_desk;
 		} else {
-<<<<<<< HEAD
 		    int dir = npc->get_facing_direction(table);
 		    signed char frames[3];
-=======
-			int dir = npc->get_direction(table);
-			signed char frames[3];
->>>>>>> cdfc920042693ab6dd27ef832b634c31556d4b86
 			frames[0] = npc->get_dir_framenum(dir, Actor::standing);
 			frames[1] = npc->get_dir_framenum(dir, (rand()%2)
 					  ? Actor::reach1_frame : Actor::reach2_frame);
