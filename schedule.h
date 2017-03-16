@@ -63,7 +63,7 @@ public:
 		blocked = b;
 	}
 	Tile_coord get_start_pos() const {
-	    return start_pos;
+		return start_pos;
 	}
 	enum Schedule_types {
 	    combat = 0, horiz_pace = 1,
@@ -131,7 +131,7 @@ public:
 class Schedule_with_objects : public Schedule {
 	vector<Game_object *> created;	// Items we created.
 protected:
-    Game_object *current_item;		// One we're using/walking to.
+	Game_object *current_item;		// One we're using/walking to.
 	int items_in_hand; 	  	// # NPC's desk items.
 	void cleanup();				// Remove items we created.
 public:
@@ -141,7 +141,7 @@ public:
 	~Schedule_with_objects();
 	virtual void notify_object_gone(Game_object *obj);
 	void add_object(Game_object *obj) {
-	    created.push_back(obj);
+		created.push_back(obj);
 		add_client(obj);
 	}
 	// Find desk or waiter items.
@@ -247,7 +247,7 @@ public:
  *  A schedule for eating at an inn.
  */
 class Eat_at_inn_schedule : public Schedule {
-    bool sitting_at_chair;
+	bool sitting_at_chair;
 public:
 	Eat_at_inn_schedule(Actor *n) : Schedule(n), sitting_at_chair(false)
 	{  }
@@ -471,9 +471,9 @@ class Desk_schedule : public Schedule_with_objects {
 	enum {
 	    desk_setup,
 	    sit_at_desk,
-		get_desk_item,
-		picked_up_item,
-		work_at_table
+	    get_desk_item,
+	    picked_up_item,
+	    work_at_table
 	} state;
 	virtual int find_items(Game_object_vector& vec, int dist);
 	void find_tables(int shapenum);
@@ -552,17 +552,17 @@ class Waiter_schedule : public Schedule_with_objects {
 	    waiter_setup,
 	    get_customer,
 	    get_order,
-		took_order,
-		give_plate,
+	    took_order,
+	    give_plate,
 	    prep_food,
-		bring_food,
+	    bring_food,
 	    serve_food,
-		served_food,
-		wait_at_counter,
-		get_waiter_item,
-		picked_up_item,
-		walk_to_cleanup_food,
-		cleanup_food
+	    served_food,
+	    wait_at_counter,
+	    get_waiter_item,
+	    picked_up_item,
+	    walk_to_cleanup_food,
+	    cleanup_food
 	} state;
 	virtual int find_items(Game_object_vector& vec, int dist);
 	bool find_unattended_plate();
@@ -572,12 +572,12 @@ class Waiter_schedule : public Schedule_with_objects {
 	bool walk_to_customer(int min_delay = 0);
 	bool walk_to_work_spot(bool counter);
 	bool walk_to_prep() {
-	    return walk_to_work_spot(false);
+		return walk_to_work_spot(false);
 	}
 	bool walk_to_counter() {
-	    return walk_to_work_spot(true);
+		return walk_to_work_spot(true);
 	}
-    Game_object *create_customer_plate();
+	Game_object *create_customer_plate();
 	Game_object *find_serving_spot(Tile_coord &spot);
 public:
 	Waiter_schedule(Actor *n);

@@ -896,10 +896,10 @@ int Pickup_actor_action::handle_event(
 			}
 			gwin->add_dirty(obj);
 			if (to_del) {
-			    obj->remove_this();		// Delete it.
+				obj->remove_this();		// Delete it.
 			} else {
-			    obj->remove_this(1);
-			    actor->add(obj, true);
+				obj->remove_this(1);
+				actor->add(obj, true);
 			}
 		} else {
 			obj->remove_this(1);
