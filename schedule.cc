@@ -2637,6 +2637,8 @@ void Desk_schedule::now_what(
 		    find_tables(890);
 			find_tables(633);
 			find_tables(1000);
+			find_tables(283);			// Desks too.
+			find_tables(407);
 		}
 		// Create desk items if needed.
 		items_in_hand = npc->count_objects(675);
@@ -2676,7 +2678,7 @@ void Desk_schedule::now_what(
 				npc->start(200, 5000);  // Failed?  Try again later.
 			} else
 			    npc->start(250, 0);
-		} else if (rand() % (2 + items_in_hand) && walk_to_table()) {
+		} else if (rand() % (1 + items_in_hand) && walk_to_table()) {
 		    state = work_at_table;
 		} else if (rand() % 2 && walk_to_random_item()) {
 		    state = get_desk_item;
@@ -2695,6 +2697,9 @@ void Desk_schedule::now_what(
 		}
 	case get_desk_item:
 		if (current_item && npc->distance(current_item) <= 3) {
+		    // Turn to face it.
+		    npc->change_frame(npc->get_dir_framenum(
+				    npc->get_direction(current_item), Actor::standing));
 		    npc->set_action(new Pickup_actor_action(current_item, 250));
 			state = picked_up_item;
 		} else
@@ -2711,9 +2716,12 @@ void Desk_schedule::now_what(
 		npc->start(250, 1000 + rand() % 500);
 		break;
 	case work_at_table:
+	    // Turn to face it.
+	    npc->change_frame(npc->get_dir_framenum(
+				    npc->get_direction(table), Actor::standing));
 		if (rand() % 3 == 0) {
 		    state = sit_at_desk;		// Back to desk.
-		} else if (rand() % 4) {		// Put down an item.
+		} else if (items_in_hand && rand() % 6) {		// Put down an item.
 		    Game_object_vector items;
 		    items_in_hand = npc->get_objects(items, 675,
 					   	 					c_any_qual, c_any_framenum);
