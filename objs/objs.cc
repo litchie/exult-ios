@@ -1648,6 +1648,14 @@ Game_object *Game_object::attacked(
 }
 
 /*
+ *  Can't set usecode.
+ */
+bool Game_object::set_usecode(int, const char *) {
+    return false;
+}
+
+
+/*
  *  Move to a new absolute location.  This should work even if the old
  *  location is invalid (chunk = 0).
  */
