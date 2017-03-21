@@ -3374,15 +3374,12 @@ USECODE_INTRINSIC(get_usecode_fun) {
 
 USECODE_INTRINSIC(set_usecode_fun) {
 	ignore_unused_variable_warning(num_parms);
-	Actor *npc = as_actor(get_item(parms[0]));
-	if (!npc)
+	Game_object *obj = get_item(parms[0]);
+	if (!obj)
 		return (no_ret);
 	int usefun = parms[1].get_int_value();
 	Usecode_symbol *ucsym = symtbl ? (*symtbl)[usefun] : 0;
-	if (!ucsym)
-		npc->set_usecode(usefun);
-	else
-		npc->set_usecode(usefun, ucsym->get_name());
+	obj->set_usecode(usefun, ucsym ? ucsym->get_name() : 0);
 	return (no_ret);
 }
 

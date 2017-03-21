@@ -445,7 +445,8 @@ public:
 
 	// Return's the object's usecode for the shape number
 	virtual int get_usecode() const;
-
+	// Default:  Can't set it.
+	virtual bool set_usecode(int funid, const char *nm = 0);
 };
 
 /*

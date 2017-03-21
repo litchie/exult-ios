@@ -269,6 +269,14 @@ public:
 	virtual const char *get_str1() {
 		return fun_name.c_str();
 	}
+	virtual int get_usecode() const {
+	    return fun;
+	}
+	virtual bool set_usecode(int funid, const char *nm = 0) {
+	    fun = funid;
+		fun_name = nm;
+		return true;
+	}
 	virtual void hatch_now(Game_object *obj, bool must) {
 		ignore_unused_variable_warning(obj);
 		if (!fun && !fun_name.empty())
