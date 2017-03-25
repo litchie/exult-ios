@@ -1164,6 +1164,11 @@ Ireg_game_object *Game_map::create_ireg_object(
 		return new Spellbook_object(
 		           shnum, frnum, tilex, tiley, lift,
 		           &circles[0], 0);
+	} else if (info.get_shape_class() == Shape_info::barge) {
+		return new Barge_object(
+				    shnum, frnum, tilex, tiley, lift,
+					// FOR NOW: 8x16 tiles, North.
+				    8, 16, 0);
 	} else if (info.get_shape_class() == Shape_info::container) {
 		if (info.is_jawbone())
 			return new Jawbone_object(shnum, frnum, tilex, tiley,
