@@ -1824,35 +1824,6 @@ void Tool_schedule::get_tool(
 }
 
 /*
- *  Schedule change for tool-user (currently only farming).
- */
-
-void Tool_schedule::now_what(
-) {
-	if (!tool)          // First time?
-		get_tool();
-
-	if (rand() % 4 == 0) {  // 1/4 time, walk somewhere.
-		Loiter_schedule::now_what();
-		return;
-	}
-	if (npc->can_speak() && rand() % 10 == 0) {
-		Schedule_types ty = static_cast<Schedule_types>(npc->get_schedule_type());
-		if (ty == Schedule::farm) {
-			if (rand() % 2)
-				npc->say(first_farmer, last_farmer);
-			else
-				npc->say(first_farmer2, last_farmer2);
-		}
-	}
-	signed char frames[12];     // Use tool.
-	int cnt = npc->get_attack_frames(toolshape, false, rand() % 8, frames);
-	if (cnt)
-		npc->set_action(new Frames_actor_action(frames, cnt));
-	npc->start();           // Get back into time queue.
-}
-
-/*
  *  End of mining/farming:
  */
 
@@ -1863,6 +1834,96 @@ void Tool_schedule::ending(
 		tool->remove_this();    // Should safely remove from NPC.
 		tool = 0;
 	}
+}
+
+/*
+ *  Schedule change for tool-user (currently only farming).
+ */
+
+void Farmer_schedule::now_what(
+) {
+    int delay = 0;
+	if (!tool)          // First time?
+		get_tool();
+	switch (state) {
+	case find_crop: {
+		static int cropshapes[] = {423};
+		Game_object_vector crops;
+		crop = 0;
+	    if (npc->can_speak() && rand() % 5 == 0)
+			npc->say(first_farmer2, last_farmer2);
+		npc->find_closest(crops, cropshapes, array_size(cropshapes));
+		// Filter out frame #3 (already cut).
+		for (Game_object_vector::const_iterator it = crops.begin();
+		        								it != crops.end(); ++it) {
+		    if ((*it)->get_framenum()%4 != 3) {
+			    crop = *it;
+				if (rand()%3 == 0)		// A little randomness.
+				    break;
+			}
+		}
+		if (crop) {
+			Actor_pathfinder_client cost(npc, 2);
+			Actor_action *pact =
+			    Path_walking_actor_action::create_path(
+			        npc->get_tile(), crop->get_tile(), cost);
+			if (pact) {
+				state = attack_crop;
+				npc->set_action(new Sequence_actor_action(pact,
+				                new Face_pos_actor_action(crop, 200)));
+				break;
+			} else
+			    crop = 0;
+		}
+		state = wander;
+		delay = 1000 + rand() % 1000; // Try again later.
+		break;
+	}
+	case attack_crop: {
+		if (crop->is_pos_invalid() || npc->distance(crop) > 2) {
+			state = find_crop;
+			break;
+		}
+		signed char frames[20];     // Use tool.
+		int dir = npc->get_direction(crop);
+		int cnt = npc->get_attack_frames(toolshape, false, dir,
+		                                 frames);
+		if (cnt) {
+			frames[cnt++] = npc->get_dir_framenum(
+			                    dir, Actor::standing);
+			npc->set_action(new Frames_actor_action(frames, cnt));
+			state = crop_attacked;
+		} else
+			state = wander;
+		break;
+	}
+	case crop_attacked:
+		if (crop->is_pos_invalid()) {
+			state = find_crop;
+			break;
+		}
+	    if (npc->can_speak() && rand() % 8 == 0)
+			npc->say(first_farmer, last_farmer);
+		if (rand() % 4 == 0) {      // Cut down crop.
+			int frnum = crop->get_framenum();
+			// Frame 3 in each group of 4 is 'cut'.
+			crop->change_frame(frnum | 3);
+			crop = 0;
+		    // Wander now and then.
+		    state = (rand()%4 == 0) ? wander : find_crop;
+		    delay = 500 + rand() % 2000;
+		} else {
+		    state = attack_crop;
+			delay = 250;
+		}
+		break;
+	case wander:
+		Loiter_schedule::now_what();
+		if (rand() % 2 == 0)
+			state = find_crop;
+		return;
+	}
+	npc->start(gwin->get_std_delay(), delay);
 }
 
 /*
