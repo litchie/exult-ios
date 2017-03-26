@@ -1732,7 +1732,7 @@ void Actor::set_schedule_type(
 			schedule = new Dance_schedule(this);
 			break;
 		case Schedule::farm:    // Use a scythe.
-			schedule = new Tool_schedule(this, 618);
+			schedule = new Farmer_schedule(this);
 			break;
 		case Schedule::tend_shop:// For now.
 			empty_hands();

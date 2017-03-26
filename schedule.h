@@ -382,8 +382,26 @@ public:
 	Tool_schedule(Actor *n, int shnum) : Loiter_schedule(n, 12),
 		toolshape(shnum), tool(0)
 	{  }
-	virtual void now_what();    // Now what should NPC do?
+	virtual void now_what() = 0;    // Now what should NPC do?
 	virtual void ending(int newtype);// Switching to another schedule.
+};
+
+/*
+ *  Farmer.
+ */
+class Farmer_schedule : public Tool_schedule {
+	Game_object *crop;
+	enum {
+	    find_crop,
+	    attack_crop,
+	    crop_attacked,
+	    wander
+	} state;
+public:
+	Farmer_schedule(Actor *n) : Tool_schedule(n, 618),
+		crop(0), state(find_crop)
+	{  }
+	virtual void now_what();    // Now what should NPC do?
 };
 
 /*
