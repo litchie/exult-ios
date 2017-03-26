@@ -391,7 +391,9 @@ public:
  */
 class Farmer_schedule : public Tool_schedule {
 	Game_object *crop;
+	int grow_cnt;
 	enum {
+	    start,
 	    find_crop,
 	    attack_crop,
 	    crop_attacked,
@@ -399,7 +401,7 @@ class Farmer_schedule : public Tool_schedule {
 	} state;
 public:
 	Farmer_schedule(Actor *n) : Tool_schedule(n, 618),
-		crop(0), state(find_crop)
+		crop(0), grow_cnt(0), state(start)
 	{  }
 	virtual void now_what();    // Now what should NPC do?
 };
