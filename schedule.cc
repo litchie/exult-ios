@@ -1844,14 +1844,14 @@ static void Grow_crops(Actor *npc)
 	// Grow the farther ones.
 	int cnt = crops.size();
 	for (Game_object_vector::const_iterator it = crops.begin() + cnt/2;
-	        								it != crops.end(); ++it) {
+	                                        it != crops.end(); ++it) {
 		if (rand()%4)
-		    continue;
-	    Game_object *c = *it;
+			continue;
+		Game_object *c = *it;
 		int frnum = c->get_framenum();
 		int growth = ((frnum&3) + 1) & 3;		
 		if (growth != 3)
-		    c->change_frame((frnum & ~3) | growth);
+			c->change_frame((frnum & ~3) | growth);
 	}
 }
 
@@ -1861,7 +1861,7 @@ static void Grow_crops(Actor *npc)
 
 void Farmer_schedule::now_what(
 ) {
-    int delay = 0;
+	int delay = 0;
 	if (!tool)          // First time?
 		get_tool();
 	switch (state) {
@@ -1874,16 +1874,16 @@ void Farmer_schedule::now_what(
 	case find_crop: {
 		Game_object_vector crops;
 		crop = 0;
-	    if (npc->can_speak() && rand() % 5 == 0)
+		if (npc->can_speak() && rand() % 5 == 0)
 			npc->say(first_farmer2, last_farmer2);
 		npc->find_closest(crops, cropshapes, array_size(cropshapes));
 		// Filter out frame #3 (already cut).
 		for (Game_object_vector::const_iterator it = crops.begin();
-		        								it != crops.end(); ++it) {
-		    if ((*it)->get_framenum()%4 != 3) {
-			    crop = *it;
+		                                        it != crops.end(); ++it) {
+			if ((*it)->get_framenum()%4 != 3) {
+				crop = *it;
 				if (rand()%3 == 0)		// A little randomness.
-				    break;
+					break;
 			}
 		}
 		if (crop) {
@@ -1897,7 +1897,7 @@ void Farmer_schedule::now_what(
 				                new Face_pos_actor_action(crop, 200)));
 				break;
 			} else
-			    crop = 0;
+				crop = 0;
 		}
 		state = wander;
 		delay = 1000 + rand() % 1000; // Try again later.
@@ -1926,22 +1926,22 @@ void Farmer_schedule::now_what(
 			state = find_crop;
 			break;
 		}
-	    if (npc->can_speak() && rand() % 8 == 0)
+		if (npc->can_speak() && rand() % 8 == 0)
 			npc->say(first_farmer, last_farmer);
 		if (rand() % 3 == 0) {      // Cut down crop.
 			int frnum = crop->get_framenum();
 			// Frame 3 in each group of 4 is 'cut'.
 			crop->change_frame(frnum | 3);
 			crop = 0;
-		    // Wander now and then.
-		    state = (rand()%4 == 0) ? wander : find_crop;
+			// Wander now and then.
+			state = (rand()%4 == 0) ? wander : find_crop;
 			if (grow_cnt < 4 && rand()%2) {
-			    Grow_crops(npc);
+				Grow_crops(npc);
 				++grow_cnt;
 			}
-		    delay = 500 + rand() % 2000;
+			delay = 500 + rand() % 2000;
 		} else {
-		    state = attack_crop;
+			state = attack_crop;
 			delay = 250;
 		}
 		break;
@@ -2809,9 +2809,9 @@ void Desk_schedule::now_what(
 		npc->start(250, 1000 + rand() % 500);
 		break;
 	case work_at_table:
-	    // Turn to face it.
-	    npc->change_frame(npc->get_dir_framenum(
-				    npc->get_facing_direction(table), Actor::standing));
+		// Turn to face it.
+		npc->change_frame(npc->get_dir_framenum(
+		           npc->get_facing_direction(table), Actor::standing));
 		if (rand() % 3 == 0) {
 			state = sit_at_desk;		// Back to desk.
 		} else if (items_in_hand && rand() % 6) {		// Put down an item.
@@ -2827,15 +2827,15 @@ void Desk_schedule::now_what(
 			} else
 				state = sit_at_desk;
 		} else {
-		    int dir = npc->get_facing_direction(table);
-		    signed char frames[3];
+			int dir = npc->get_facing_direction(table);
+			signed char frames[3];
 			frames[0] = npc->get_dir_framenum(dir, Actor::standing);
 			frames[1] = npc->get_dir_framenum(dir, (rand()%2)
 					  ? Actor::reach1_frame : Actor::reach2_frame);
 			frames[2] = npc->get_dir_framenum(dir, Actor::standing);
 			Actor_action *face = new Face_pos_actor_action(table, 200);;
 			npc->set_action(new Sequence_actor_action(face,
-								new Frames_actor_action(frames,
+			                    new Frames_actor_action(frames,
 			                            array_size(frames))));
 		}
 		npc->start(250, 1000 + rand() % 500);
