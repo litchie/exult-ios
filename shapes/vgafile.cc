@@ -1210,7 +1210,7 @@ DataSource *Vga_file::U7load(
 		}
 	} else {
 		// It is a resource.
-		U7object vgaobj(File_spec(resource.first), resource.second);
+		U7object vgaobj(resource.first, resource.second);
 		std::size_t len;
 		char *buf = vgaobj.retrieve(len);
 		if (!buf || !len) {

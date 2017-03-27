@@ -128,12 +128,12 @@ bool Table::is_table(DataSource *in) {
  *  @return Whether or not the file is a table file. Returns false if
  *  the file does not exist.
  */
-bool Table::is_table(const char *fname) {
+bool Table::is_table(const std::string& fname) {
 	if (!U7exists(fname))
 		return false;
 
 	std::ifstream in;
-	U7open(in, fname);
+	U7open(in, fname.c_str());
 	StreamDataSource ds(&in);
 
 	if (in.good())

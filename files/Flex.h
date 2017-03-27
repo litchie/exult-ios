@@ -88,7 +88,7 @@ public:
 	                         Flex_vers vers = orig);
 
 	static bool is_flex(DataSource *in);
-	static bool is_flex(const char *fname);
+	static bool is_flex(const std::string& fname);
 private:
 	/// No default constructor.
 	Flex();

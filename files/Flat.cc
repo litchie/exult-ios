@@ -66,6 +66,6 @@ bool Flat::is_flat(DataSource *in) {
  *  @param fname    File name we wish to investigate.
  *  @return If the file exists, true; false otherwise.
  */
-bool Flat::is_flat(const char *fname) {
-	return U7exists(fname);
+bool Flat::is_flat(const std::string& fname) {
+	return U7exists(fname.c_str());
 }

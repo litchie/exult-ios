@@ -54,7 +54,7 @@ public:
 	};
 
 	static bool is_flat(DataSource *in);
-	static bool is_flat(const char *fname);
+	static bool is_flat(const std::string& fname);
 };
 
 typedef U7DataFile<Flat> FlatFile;

@@ -25,10 +25,7 @@
 
 #include <string>
 #include <vector>
-#include <cstring>
-#include <cstddef>
 #include "common_types.h"
-#include "utils.h"
 
 /**
  *  This structure condenses a file name and an object number in
@@ -36,58 +33,36 @@
  */
 struct File_spec {
 	/// This is a file name, always.
-	const char *name;
+	std::string name;
 	/// If -1, this indicates that we are reading from the file itself.
 	/// If >= 0, this means we want to read from the object with the
 	/// given index inside the file.
 	int index;
-	bool ownstr;
 	File_spec()
-		: name(""), index(-1), ownstr(false)
+		: name(), index(-1)
 	{  }
 	/// Constructs a File_spec from a c-string.
-	/// Note that it performs implicit conversion from the c-string.
-	File_spec(const char *n)
-		: name(n), index(-1), ownstr(false)
-	{  }
-	File_spec(const char *n, int i)
-		: name(n), index(i), ownstr(false)
+	File_spec(const char *n, int i = -1)
+		: name(n), index(i)
 	{  }
 	/// Constructs a File_spec from a string.
-	/// Note that it does NOT perform implicit conversions from std::string,
-	/// and that it owns a copy of the string.
-	explicit File_spec(std::string n)
-		: index(-1), ownstr(true) {
-		name = newstrdup(n.c_str());
-	}
-	explicit File_spec(std::string n, int i)
-		: index(i), ownstr(true) {
-		name = newstrdup(n.c_str());
-	}
+	File_spec(const std::string& n, int i = -1)
+		: name(n), index(i)
+	{  }
 	File_spec(const File_spec &other)
-		: index(other.index), ownstr(other.ownstr) {
-		if (ownstr)
-			name = newstrdup(other.name);
-		else
-			name = other.name;
-	}
-	~File_spec() {
-		if (ownstr) delete [] name;
-	}
+		: name(other.name), index(other.index)
+	{  }
+	~File_spec()
+	{  }
 	File_spec &operator=(const File_spec &other) {
 		if (this != &other) {
+			name = other.name;
 			index = other.index;
-			ownstr = other.ownstr;
-			if (ownstr)
-				name = newstrdup(other.name);
-			else
-				name = other.name;
 		}
 		return *this;
 	}
 	bool operator<(const File_spec &other) const {
-		//int cmp = name.compare(other.name);
-		int cmp = std::strcmp(name, other.name);
+		int cmp = name.compare(other.name);
 		return cmp < 0 || (cmp == 0 && index < other.index);
 	}
 };

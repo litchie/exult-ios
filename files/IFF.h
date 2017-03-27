@@ -83,7 +83,7 @@ public:
 	};
 
 	static bool is_iff(DataSource *in);
-	static bool is_iff(const char *fname);
+	static bool is_iff(const std::string& fname);
 private:
 	/// No default constructor
 	IFF();

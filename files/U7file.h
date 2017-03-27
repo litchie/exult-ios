@@ -89,10 +89,10 @@ public:
 	/// opens the file if it exists. It also creates and initializes
 	/// the data source, or sets it to null if the file is not there.
 	/// @param spec Name of file to open. Ignores the index portion.
-	U7DataFile(const char *name)
-		: T(name) {
+	U7DataFile(const File_spec &spec)
+		: T(spec) {
 		if (U7exists(this->identifier.name)) {
-			U7open(this->_file, this->identifier.name);
+			U7open(this->_file, this->identifier.name.c_str());
 			this->data = new StreamDataSource(&(this->_file));
 			this->index_file();
 		} else
