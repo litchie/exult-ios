@@ -889,7 +889,7 @@ public:
 void ExCineFlic::load_flic() {
 	free_flic();
 
-	if (file) COUT("Loading " << file << ":" << index);
+	COUT("Loading " << file << ":" << index);
 
 	if (patch)
 		flic_obj = new U7multiobject(file, patch, index);
@@ -903,7 +903,7 @@ void ExCineFlic::load_flic() {
 }
 
 void ExCineFlic::free_flic() {
-	if (file) COUT("Freeing " << file << ":" << index);
+	COUT("Freeing " << file << ":" << index);
 
 	FORGET_OBJECT(player);
 	FORGET_ARRAY(buffer);
