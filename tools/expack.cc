@@ -276,7 +276,7 @@ int main(int argc, char **argv)
 		if (argc != 3)
 			break;
 		U7FileManager *fm = U7FileManager::get_ptr();
-		U7file *f = fm->get_file_object(File_spec(fname));
+		U7file *f = fm->get_file_object(fname);
 		size_t count = f->number_of_objects();
 		cout << "Archive: " << fname << endl;
 		cout << "Type: " << f->get_archive_type() << endl;
@@ -294,7 +294,7 @@ int main(int argc, char **argv)
 	break;
 	case EXTRACT: {
 		if (argc == 4) {
-			U7object f(File_spec(fname), atoi(argv[3]));
+			U7object f(fname, atoi(argv[3]));
 			unsigned long nobjs = f.number_of_objects();
 			unsigned long n = strtoul(argv[3], 0, 0);
 			if (n >= nobjs) {
@@ -309,10 +309,10 @@ int main(int argc, char **argv)
 			Write_Object(f, outfile);   // may throw!
 		} else {
 			U7FileManager *fm = U7FileManager::get_ptr();
-			U7file *f = fm->get_file_object(File_spec(fname));
+			U7file *f = fm->get_file_object(fname);
 			int count = static_cast<int>(f->number_of_objects());
 			for (index = 0; index < count; index++) {
-				U7object o(File_spec(fname), index);
+				U7object o(fname, index);
 				char outfile[32];
 				snprintf(outfile, 32, "%05d.%s", index, ext);
 				Write_Object(o, outfile);

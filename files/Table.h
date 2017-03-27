@@ -64,7 +64,7 @@ public:
 	};
 
 	static bool is_table(DataSource *in);
-	static bool is_table(const char *fname);
+	static bool is_table(const std::string& fname);
 private:
 	/// No default constructor.
 	Table();
