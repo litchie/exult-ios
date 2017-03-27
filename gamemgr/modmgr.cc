@@ -272,7 +272,7 @@ string get_game_identity(const char *savename, const string &title) {
 		}
 	}
 #else
-		return newstrdup(title.c_str());
+		return title.c_str();
 #endif
 	else {
 		U7open(in_stream, savename);        // Open file.
