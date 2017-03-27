@@ -1651,7 +1651,7 @@ Game_object *Game_object::attacked(
  *  Can't set usecode.
  */
 bool Game_object::set_usecode(int, const char *) {
-    return false;
+	return false;
 }
 
 
