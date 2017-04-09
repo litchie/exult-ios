@@ -558,6 +558,58 @@ inline Game_object *Combat_schedule::find_foe(
 }
 
 /*
+ *  Back off if we're closer than our weapon's range.
+ */
+
+void Combat_schedule::back_off(
+	Actor *npc,
+    Game_object *attacker
+) {
+	int points, weapon_shape;
+	Game_object *weapon;
+	Weapon_info *winf = npc->get_weapon(points, weapon_shape, weapon);
+	int weapon_dist = winf ? winf->get_range() : 3;
+	int attacker_dist = npc->distance(attacker);
+	Game_object *opponent = npc->get_target();
+	if (opponent == attacker && weapon_dist <= attacker_dist)
+	    return;	 			 			// Stay within our weapon's range.
+	Tile_coord npc_tile = npc->get_tile(), attacker_tile = attacker->get_tile();
+	int dx = npc_tile.tx - attacker_tile.ty,
+	    dy = npc_tile.ty - attacker_tile.ty;
+	dx = dx < 0 ? -1 : dx > 0 ? 1 : 0;
+	dy = dy < 0 ? -1 : dy > 0 ? 1 : 0;
+    Tile_coord spots[3];
+	if (dx) {
+	    if (dy) {
+	        spots[0] = npc_tile + Tile_coord(dx, 0, 0);
+		    spots[1] = npc_tile + Tile_coord(dx, dy, 0);
+			spots[2] = npc_tile + Tile_coord(0, dy, 0);
+		} else {
+	        spots[0] = npc_tile + Tile_coord(dx, 0, 0);
+		    spots[1] = npc_tile + Tile_coord(dx, -1, 0);
+			spots[2] = npc_tile + Tile_coord(dx, 1, 0);
+		}
+    } else {							// dx == 0;
+	    spots[0] = npc_tile + Tile_coord(0, dy, 0);
+		spots[1] = npc_tile + Tile_coord(-1, dy, 0);
+		spots[2] = npc_tile + Tile_coord(1, dy, 0);
+    }
+	int ind = rand()%3;
+	if (npc->is_blocked(spots[ind])) {
+	    ind = (ind + 1)%3;
+		if (npc->is_blocked(spots[ind])) {
+		    ind = (ind + 1)%3;
+			if (npc->is_blocked(spots[ind]))
+			   return;
+		}
+    }
+	npc->move(spots[ind]);
+    int dir = npc->get_facing_direction(attacker);
+	npc->change_frame(npc->get_dir_framenum(dir, Actor::standing));
+	cout << "***" << npc->get_name() << " is backing off" << endl;
+}
+
+/*
  *  Handle the 'approach' state.
  */
 
@@ -568,6 +620,10 @@ void Combat_schedule::approach_foe(
 ) {
 	int points;
 	Weapon_info *winf = npc->get_weapon(points, weapon_shape, weapon);
+	/* +++++++TODO:  Don't set dist to 1!  'for_projectile' is set if we
+	   didn't have a clear line to the target.  So try stepping aside, or
+	   perhaps 1 tile closer.
+	 */
 	int dist = for_projectile ? 1 : winf ? winf->get_range() : 3;
 	Game_object *opponent = npc->get_target();
 	// Find opponent.
@@ -1022,6 +1078,8 @@ bool Combat_schedule::attack_target(
 		} else
 			target->attacked(attacker, weapon,
 			                 ammo ? ammo->get_shapenum() : -1, false);
+            if (trg)
+			    back_off(trg, attacker);
 		return true;
 	}
 	return false;

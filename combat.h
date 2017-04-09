@@ -77,6 +77,8 @@ protected:
 	std::list<Actor *>::iterator find_protected_attacker();
 	Game_object *find_foe(int mode);// Find a new opponent.
 	Game_object *find_foe();
+	// Back off when being attacked.
+    static void back_off(Actor *npc, Game_object *attacker);
 	void approach_foe(bool for_projectile = false);     // Approach foe.
 	void start_strike();
 	void run_away();
