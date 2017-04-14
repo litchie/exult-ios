@@ -80,6 +80,7 @@ protected:
 	// Back off when being attacked.
     static void back_off(Actor *npc, Game_object *attacker);
 	void approach_foe(bool for_projectile = false);     // Approach foe.
+	void wander_for_attack();
 	void start_strike();
 	void run_away();
 	Spellbook_object *readied_spellbook();
