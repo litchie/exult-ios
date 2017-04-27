@@ -131,7 +131,7 @@ bool Container_game_object::add(
 	if (!info.is_shape_accepted(obj->get_shapenum()))   // Shape can't be inside.
 		return false;
 	Shape_info &add_info = obj->get_info();
-	if (!dont_check && add_info.is_on_fire())
+	if (!dont_check && !cheat.in_map_editor() && !cheat.in_hack_mover() && add_info.is_on_fire())
 		return false;
 
 	// Always check this. ALWAYS!
