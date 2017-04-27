@@ -1256,7 +1256,8 @@ void Patrol_schedule::now_what(
 				// Foce check for lamps, etc.
 				street_maintenance_time = 0;
 				if (try_street_maintenance()) {
-					delete scr;
+					// TODO: fix bug 2016
+					//delete scr;
 					return;     // We no longer exist.
 				}
 				delay += 2;
