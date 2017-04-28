@@ -1,7 +1,7 @@
 #ifndef TOUCHUI_H
 #define TOUCHUI_H
 
-#include <sdl.h>
+#include <SDL.h>
 
 class TouchUI {
 public:

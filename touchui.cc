@@ -1,6 +1,6 @@
 #include "touchui.h"
 #include <cstring>
-#include <sdl.h>
+#include <SDL.h>
 
 int TouchUI::eventType = -1;
 

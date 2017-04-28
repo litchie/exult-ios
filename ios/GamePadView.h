@@ -1,7 +1,7 @@
 #import <UIKit/UIKit.h>
 
 
-#include <sdl.h>
+#include <SDL.h>
 
 @protocol KeyInputDelegate
 
