@@ -1,7 +1,6 @@
 /* Copyright (C) 2010, 2011  Chaoji Li */
 
 #import "GamePadView.h"
-#include <SDL.h>
 
 
 #define CENTER_OF_RECT(r) CGPointMake(r.size.width/2,r.size.height/2)
