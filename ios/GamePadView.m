@@ -97,10 +97,14 @@ if ((x) > 1.0) { \
 {
 	if (dir != currentDirection) {
 		int chg = currentDirection ^ dir;
-		if (chg & 1) [self sendKey:SDL_SCANCODE_RIGHT pressed:dir & 1];
-		if (chg & 2) [self sendKey:SDL_SCANCODE_UP    pressed:dir & 2];
-		if (chg & 4) [self sendKey:SDL_SCANCODE_LEFT  pressed:dir & 4];
-		if (chg & 8) [self sendKey:SDL_SCANCODE_DOWN  pressed:dir & 8];
+		if (chg & 1)                 [self sendKey:SDL_SCANCODE_RIGHT pressed:dir & 1];
+		if (chg & 2)                 [self sendKey:SDL_SCANCODE_UP    pressed:dir & 2];
+		if (chg & 4)                 [self sendKey:SDL_SCANCODE_LEFT  pressed:dir & 4];
+		if (chg & 8)                 [self sendKey:SDL_SCANCODE_DOWN  pressed:dir & 8];
+		if ((chg & 2) && (chg & 1))  [self sendKey:SDL_SCANCODE_KP_9  pressed:dir & 3]; //RightUp
+		if ((chg & 8) && (chg & 1))  [self sendKey:SDL_SCANCODE_KP_3  pressed:dir & 9]; //RightDown
+		if ((chg & 2) && (chg & 4))  [self sendKey:SDL_SCANCODE_KP_7  pressed:dir & 6]; //LeftUp
+		if ((chg & 4) && (chg & 8))  [self sendKey:SDL_SCANCODE_KP_1  pressed:dir & 12]; //LeftDown
 		currentDirection = dir;        
 		[self setNeedsDisplay];
 	}
