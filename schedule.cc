@@ -252,12 +252,17 @@ int Schedule::try_street_maintenance(
 		for (j = 0; j < cnt; j++) {
 			Game_object *obj = objs[j];
 			int shnum = obj->get_shapenum();
-			if (!bg &&  // Serpent isle?  Shutters?
-			        (shnum == 290 || shnum == 291))
-				// Want closed during day.
-				if ((shapes == day) !=
-				        (obj->get_framenum() <= 3))
+			if (!bg) {					// Serpent isle?  
+			    int frnum = obj->get_framenum();
+			    if ((shnum == 290 || shnum == 291) &&  // Shutters?
+				    // Want closed during day.
+				        (shapes == day) != (frnum <= 3))
 					continue;
+				// Serpent lamp posts can't toggle.
+				if ((shnum == 526 || shnum == 889) &&
+				    (frnum == 0 || frnum == 1 || frnum == 4 || frnum == 5))
+				    continue;
+			}
 			Approach_object_pathfinder_client cost(npc, obj, 1);
 			if ((pact = Path_walking_actor_action::create_path(
 			                npcpos, obj->get_tile(), cost)) != 0) {
