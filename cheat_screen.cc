@@ -111,11 +111,11 @@ const char *CheatScreen::flag_names[64] = {
 	0,          // 0x18
 	"confused",     // 0x19
 	"in_motion",        // 0x1A
-	"no_spell_casting",         // 0x1B
+	0,         // 0x1B
 	"met",          // 0x1C
 	"tournament",   // 0x1D
 	"si_zombie",    // 0x1E
-	0,          // 0x1F
+	"no_spell_casting",  // 0x1F
 
 	"polymorph",    // 0x20
 	"tattooed",     // 0x21
