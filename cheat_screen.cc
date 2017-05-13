@@ -104,7 +104,7 @@ const char *CheatScreen::flag_names[64] = {
 	"si_on_moving_barge",   // 0x11
 	"is_temporary",     // 0x12
 	0,          // 0x13
-	0,          // 0x14
+	"sailor",          // 0x14
 	"okay_to_land",     // 0x15
 	"dont_render/bg_dont_move", // 0x16
 	"in_dungeon",   // 0x17
@@ -122,7 +122,7 @@ const char *CheatScreen::flag_names[64] = {
 	"tattooed",     // 0x21
 	"read",         // 0x22
 	"petra",        // 0x23
-	0,          // 0x24
+	"si_lizard_king",  // 0x24
 	"freeze",       // 0x25
 	"naked",    // 0x26
 	0,          // 0x27
