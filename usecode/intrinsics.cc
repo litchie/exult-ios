@@ -109,7 +109,7 @@ USECODE_INTRINSIC(execute_usecode_array) {
 	ignore_unused_variable_warning(num_parms);
 	COUT("Executing intrinsic 1");
 	// Start on next tick.
-	create_script(parms[0], parms[1], 1);
+	create_script(parms[0], parms[1], gwin->get_std_delay());
 
 	Usecode_value u(1);
 	return(u);
