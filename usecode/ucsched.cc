@@ -47,6 +47,8 @@ using std::setw;
 
 using namespace Ucscript;
 
+extern bool intrinsic_trace;
+
 int Usecode_script::count = 0;
 Usecode_script *Usecode_script::first = 0;
 
@@ -287,6 +289,12 @@ void Usecode_script::handle_event(
 	if (act && act->get_casting_mode() == Actor::init_casting)
 		act->display_casting_frames();
 	Usecode_internal *usecode = reinterpret_cast<Usecode_internal *>(udata);
+#ifdef DEBUG
+    if (intrinsic_trace)
+        cout << "Executing script (" << i << ":" << cnt << ") for " 
+			 		  << obj << ", time: " <<
+				 		  	   	   curtime << endl;
+#endif
 	int delay = exec(usecode, false);
 	if (i < cnt) {          // More to do?
 		usecode->gwin->get_tqueue()->add(curtime + delay, this, udata);
@@ -300,6 +308,10 @@ void Usecode_script::handle_event(
 #endif
 	if (act && act->get_casting_mode() == Actor::show_casting_frames)
 		act->end_casting_mode(delay);
+#ifdef DEBUG
+    if (intrinsic_trace)
+	    cout << "Ending script for " << obj << endl;
+#endif
 	delete this;            // Hope this is safe.
 }
 
