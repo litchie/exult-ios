@@ -37,6 +37,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "fnames.h"
 #include "exult_flx.h"
 #include "data_utils.h"
+#include "Configuration.h"
+#include "game.h"
 
 using std::istream;
 using std::ostream;
@@ -307,18 +309,36 @@ static void Setup_text(
 void Setup_text(bool si, bool expansion, bool sibeta) {
 	Free_text();
 	bool is_patch = is_system_path_defined("<PATCH>");
+	//allow multilingual exultmsg.txt files.
+	std::string d, languageval;
+	d = "config/disk/game/" + Game::get_gametitle() + "/language";
+	int exultmsg_lang;
+	config->value(d.c_str(), languageval, "(default)");
+	if (languageval == "(default)" || languageval == "en") {
+		exultmsg_lang = EXULT_FLX_EXULTMSG_TXT;
+		config->set(d.c_str(), languageval, true);
+	} else if (languageval == "de") {
+		exultmsg_lang = EXULT_FLX_EXULTMSG_DE_TXT;
+		std::cout << "Using German exultmsg.txt" << endl;
+	} else if (languageval == "es") {
+		exultmsg_lang = EXULT_FLX_EXULTMSG_ES_TXT;
+		std::cout << "Using Spanish exultmsg.txt" << endl;
+	} else if (languageval == "fr") {
+		exultmsg_lang = EXULT_FLX_EXULTMSG_FR_TXT;
+		std::cout << "Using French exultmsg.txt" << endl;
+	}
 	// Always read from exultmsg.txt
-	// TODO: allow multilingual exultmsg.txt files.
 	istream *exultmsg;
 	if (is_patch && U7exists(PATCH_EXULTMSG)) {
 		ifstream *exultmsgfile = new ifstream();
 		exultmsg = exultmsgfile;
 		U7open(*exultmsgfile, PATCH_EXULTMSG, true);
+		std::cout << "Using patched exultmsg.txt" << endl;
 	} else {
 		stringstream *exultmsgbuf = new stringstream();
 		exultmsg = exultmsgbuf;
 		const char *msgs = BUNDLE_CHECK(BUNDLE_EXULT_FLX, EXULT_FLX);
-		U7object txtobj(msgs, EXULT_FLX_EXULTMSG_TXT);
+		U7object txtobj(msgs, exultmsg_lang);
 		size_t len;
 		const char *txt = txtobj.retrieve(len);
 		if (txt && len > 0) {

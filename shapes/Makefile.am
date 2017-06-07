@@ -1,6 +1,6 @@
 AM_CPPFLAGS = -I$(srcdir)/../headers -I$(srcdir)/.. -I$(srcdir)/../files \
 	-I$(srcdir)/../imagewin -I$(srcdir)/../audio -I$(srcdir)/../shapes/shapeinf \
-	-I$(srcdir)/../data -I$(srcdir)/../usecode -I$(srcdir)/../objs \
+	-I$(srcdir)/../data -I$(srcdir)/../usecode -I$(srcdir)/../objs -I$(srcdir)/../conf \
 	$(SDL_CFLAGS) $(FREETYPE2_INCLUDES) \
 	$(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS)
 
