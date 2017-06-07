@@ -133,36 +133,37 @@ const int first_catchup = 0x10d, last_catchup = 0x10f;
 const int end_of_ultima7 = 0x113, end_of_britannia = 0x114;
 const int you_cannot_do_that = 0x115, damn_avatar = 0x116;
 const int blackgate_destroyed = 0x117, guardian_has_stopped = 0x118;
-const int txt_screen0 = 0x119; //to 0x11E
-const int txt_screen1 = 0x11F; //to 0x128
-const int txt_screen2 = 0x129; //to 0x12E
-const int txt_screen3 = 0x12F; //to 0x134
-const int txt_screen4 = 0x135; //to 0x138
-const int lord_castle = 0x139, dick_castle = 0x13A;
-const int bg_fellow = 0x13B; //to 0x13D
-const int my_leige = 0x13E, yo_homes = 0x13F;
-const int all_we0 = 0x140; //to 0x141
-const int and_a0 = 0x142; //to 0x143
-const int indeed = 0x144; //to 0x145
-const int iree = 0x146;
-const int stand_back = 0x147;
-const int jump_back = 0x148;
-const int batlin = 0x149; //to 0x14A
-const int you_shall = 0x14B; //to 0x14C
-const int there_i = 0x14D; //to 0x14E
-const int batlin2 = 0x14F; //to 0x150
-const int you_must = 0x151; //to 0x152
-const int soon_i = 0x153; //to 0x154
-const int tis_my = 0x155;
-const int balance = 0x158; //to 0x159
-const int si_earth = 0x15A; //to 0x15B
-const int dupre = 0x15C; //to 0x15D
-const int goodbye = 0x15E; //to 0x15F
-const int well_well = 0x160; //to 0x161
-const int balance2 = 0x162; //to 0x164
-const int poised = 0x165; //to 0x167
-const int brit_earth = 0x168; //to 0x169
-const int pagan = 0x16A; //to 0x16C
+const int txt_screen0 = 0x119; //to 0x120
+const int txt_screen1 = 0x121; //to 0x12B
+const int txt_screen2 = 0x12C; //to 0x134
+const int txt_screen3 = 0x135; //to 0x13C
+const int txt_screen4 = 0x13D; //to 0x141
+const int congrats = 0x142; //to 0x14A
+const int lord_castle = 0x14B, dick_castle = 0x14C;
+const int bg_fellow = 0x14D; //to 0x14F
+const int my_leige = 0x150, yo_homes = 0x151;
+const int all_we0 = 0x152; //to 0x153
+const int and_a0 = 0x154; //to 0x155
+const int indeed = 0x156; //to 0x157
+const int iree = 0x158;
+const int stand_back = 0x159;
+const int jump_back = 0x15A;
+const int batlin = 0x15B; //to 0x15C
+const int you_shall = 0x15D; //to 0x15E
+const int there_i = 0x15F; //to 0x160
+const int batlin2 = 0x161; //to 0x162
+const int you_must = 0x163; //to 0x164
+const int soon_i = 0x165; //to 0x166
+const int tis_my = 0x167; //to 0x169
+const int balance = 0x16A; //to 0x16B
+const int si_earth = 0x16C; //to 0x16D
+const int dupre = 0x16E; //to 0x16F
+const int goodbye = 0x170; //to 0x171
+const int well_well = 0x172; //to 0x173
+const int balance2 = 0x174; //to 0x176
+const int poised = 0x177; //to 0x179
+const int brit_earth = 0x17A; //to 0x17B
+const int pagan = 0x17C; //to 0x17E
 
 //	Misc. text (frames, etc.) start at 0x500 in text.flx.
 const int misc_name0 = 0x500;

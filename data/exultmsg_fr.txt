@@ -34,35 +34,52 @@
 0x51C:alors que je suis libre
 0x51D:de pntrer dans d'autres mondes!
 0x51E:Hmmm...
-#0x???:Peut-tre que ta chtive Terre sera
-#0x???:ma PROCHAINE cible!
+0x51F:Peut-tre que ta chtive Terre sera
+0x520:ma PROCHAINE cible!
 # End2
-0x51F:Dans les mois qui ont suivi la bataille
-0x520:corse de la Porte Noire, Britannia
-0x521:est sur la longue route
-0x522:du rtablissement de
-0x523:ses divers maux.
-0x524:A ton retour sur Britain,
-0x525:Lord British dcrta que
-0x526:La Confrrie serait proscrite,
-0x527:et que toutes les cellules seraient
-0x528:rapidement dtruites.
+0x521:Dans les mois qui ont suivi la bataille
+0x522:corse de la Porte Noire, Britannia
+0x523:est sur la longue route
+0x524:du rtablissement de
+0x525:ses divers maux.
+0x526:A ton retour sur Britain,
+0x527:Lord British dcrta que
+0x528:La Confrrie serait proscrite,
+0x529:et que toutes les cellules seraient
+0x52A:rapidement dtruites.
+0x52B:
 # End3
-0x529:La frustration que tu ressens pour
-0x52A:avoir t en rade sur Britannia est
-0x52B:quelque peu allge par la satisfaction
-0x52C:d'avoir rsolu les horribles meurtres
-0x52D:commis par La Confrrie et mme veng
-0x52E:la mort du pre de Spark.
+0x52C:La frustration que tu ressens pour
+0x52D:avoir t en rade sur Britannia est
+0x52E:quelque peu allge par la satisfaction
+0x52F:d'avoir rsolu les horribles meurtres
+0x530:commis par La Confrrie et mme veng
+0x531:la mort du pre de Spark.
+0x532:
+0x533:
+0x534:
 # End4
-0x52F:Bien que tu sois, pour l'instant,
-0x530:impuissant devant l' ultime
-0x531:menace du Gardien, une
-0x532:autre pense te tracasse...
-0x533:Qu'est-il advenu du diabolique Batlin,
-0x534:qui est parvenu  s' chapper?
+0x535:Bien que tu sois, pour l'instant,
+0x536:impuissant devant l' ultime
+0x537:menace du Gardien, une
+0x538:autre pense te tracasse...
+0x539:Qu'est-il advenu du diabolique Batlin,
+0x53A:qui est parvenu  s' chapper?
+0x53B:
+0x53C:
 # End5
-0x535:Mais cecy est une autre histoire...
-0x536:qui t' amnera
-0x537:dans un endroit qui s' appelle
-0x538:L' Isle Serpent...
+0x53D:Mais cecy est une autre histoire...
+0x53E:qui t' amnera
+0x53F:dans un endroit qui s' appelle
+0x540:L' Isle Serpent...
+0x541:
+#Congratulations
+0x542:Flicitations!
+0x543:Tu as accompli Ultima VII en
+0x544:%d anne s ,  %d mois  , &  %d jour s .
+0x545:S'il te plat crit  Lord British,
+0x546:Origin Systems Inc.,
+0x547:pour lui communiquer ta
+0x548:russite!
+0x549:
+0x54A:

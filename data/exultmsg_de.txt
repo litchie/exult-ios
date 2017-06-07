@@ -34,41 +34,52 @@
 0x51C:verlassen. Ich hingegen kann jede
 0x51D:Welt betreten! Hmmm...
 0x51E:vielleicht mache ich deine armselige
-#0x???:Erde zu meinem NCHSTEN Ziel!
+0x51F:Erde zu meinem NCHSTEN Ziel!
+0x520:
 # End2
-0x51F:Es wird Monate dauern, bis Britannia
-0x520:sich von dieser entscheidenden
-0x521:Schlacht um die Schwarze Pforte
-0x522:und von den Intrigen des Wchters
-0x523:erholen wird. Doch das
-0x524:Gute hat das Bse besiegt!
-0x525:Als Du nach Britain zurckkehrst,
-0x526:verkndet Lord British, da die
-0x527:Gemeinschaft ihrer Macht enthoben
-0x528:und alle ihre Niederlassungen in
-#0x???:Britannia zerstrt werden sollten.
+0x521:Es wird Monate dauern, bis Britannia
+0x522:sich von dieser entscheidenden
+0x523:Schlacht um die Schwarze Pforte
+0x524:und von den Intrigen des Wchters
+0x525:erholen wird. Doch das
+0x526:Gute hat das Bse besiegt!
+0x527:Als Du nach Britain zurckkehrst,
+0x528:verkndet Lord British, da die
+0x529:Gemeinschaft ihrer Macht enthoben
+0x52A:und alle ihre Niederlassungen in
+0x52B:Britannia zerstrt werden sollten.
 # End3
-0x529:Deine Frustration, Britannia nicht
-0x52A:verlassen zu knnen, wird von der
-0x52B:Genugtuung des Sieges und der
-0x52C:Befriedigung, die entsetzlichen
-0x52D:Morde aufgeklrt zu haben,
-0x52E:bertroffen. Selbst der Mord an
-#0x???:Sparks Vater ist durch die
-#0x???:Beseitigung der heuchlerischen
-#0x???:Gemeinschaft gercht.
+0x52C:Deine Frustration, Britannia nicht
+0x52D:verlassen zu knnen, wird von der
+0x52E:Genugtuung des Sieges und der
+0x52F:Befriedigung, die entsetzlichen
+0x530:Morde aufgeklrt zu haben,
+0x531:bertroffen. Selbst der Mord an
+0x532:Sparks Vater ist durch die
+0x533:Beseitigung der heuchlerischen
+0x534:Gemeinschaft gercht.
 # End4
-0x52F:Zudem es dir momentan nicht mglich
-0x530:ist, etwas gegen die Drohung des
-0x531:Wchters auszurichten, beunruhigt
-0x532:dich auch noch ein anderer Gedanke...
-0x533:Was ist aus dem Satan Batlin
-0x534:geworden, dem es auf irgendeine
-#0x???:Weise gelang, seiner Strafe durch
-#0x???:Flucht zu entgehen?
+0x535:Zudem es dir momentan nicht mglich
+0x536:ist, etwas gegen die Drohung des
+0x537:Wchters auszurichten, beunruhigt
+0x538:dich auch noch ein anderer Gedanke...
+0x539:Was ist aus dem Satan Batlin
+0x53A:geworden, dem es auf irgendeine
+0x53B:Weise gelang, seiner Strafe durch
+0x53C:Flucht zu entgehen?
 # End5
-0x535:Doch davon erzhlt eine andere
-0x536:Geschichte... Eine Geschichte,
-0x537:die dich zu Serpent Isle, einem
-0x538:Ort namens Schlangeninsel,
-#0x???:fhren wird ...
+0x53D:Doch davon erzhlt eine andere
+0x53E:Geschichte... Eine Geschichte,
+0x53F:die dich zu Serpent Isle, einem
+0x540:Ort namens Schlangeninsel,
+0x541:fhren wird ...
+#Congratulations
+0x542:Herzlichen Glckwunsch! Sie haben
+0x543:Ultima VII gemeistert! Sie brauchten
+0x544:%d Jahr e ,  %d Monat e , und  %d Tag e .
+0x545:Bitte schreiben Sie Lord British und
+0x546:erzhlen Sie ihm und Origin Systems
+0x547:Inc., von Ihrer groartigen und
+0x548:bewundernswerten Leistung! Wir
+0x549:wrden uns ber Post aus
+0x54A:Deutschland freuen!

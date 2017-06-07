@@ -1745,7 +1745,7 @@ void BG_Game::end_game(bool success) {
 		for (i = next + 28000; i > next;) {
 			for (j = 0; j < static_cast<unsigned>(finfo.frames); j++) {
 				next = fli3.play(win, j, j, next);
-				for (m = 0; m < 6; m++)
+				for (m = 0; m < 8; m++)
 					endfont3->center_text(ibuf, centerx, starty + endfont3->get_text_height()*m, get_text_msg(txt_screen0 + m));
 				non_gl_blit();
 				if (wait_delay(10, 0, 1)) {
@@ -1785,10 +1785,12 @@ void BG_Game::end_game(bool success) {
 
 		// Paint backgound black
 		win->fill8(0);
+		
+		//Because of the German version we have to fit 11 lines of height 20 into a screen of 200 pixels
+		//so starty has needs to be a tiny bit in the negative but not -10
+		starty = (gwin->get_height() - normal->get_text_height() * 11) / 2.5;
 
-		starty = (gwin->get_height() - normal->get_text_height() * 10) / 2;
-
-		for (i = 0; i < 10; i++) {
+		for (i = 0; i < 11; i++) {
 			message = get_text_msg(txt_screen1 + i);
 			normal->draw_text(ibuf, centerx - normal->get_text_width(message) / 2, starty + normal->get_text_height()*i, message);
 		}
@@ -1813,9 +1815,9 @@ void BG_Game::end_game(bool success) {
 		// Paint backgound black
 		win->fill8(0);
 
-		starty = (gwin->get_height() - normal->get_text_height() * 6) / 2;
+		starty = (gwin->get_height() - normal->get_text_height() * 9) / 2;
 
-		for (i = 0; i < 6; i++) {
+		for (i = 0; i < 9; i++) {
 			message = get_text_msg(txt_screen2 + i);
 			normal->draw_text(ibuf, centerx - normal->get_text_width(message) / 2, starty + normal->get_text_height()*i, message);
 		}
@@ -1840,9 +1842,9 @@ void BG_Game::end_game(bool success) {
 		// Paint backgound black
 		win->fill8(0);
 
-		starty = (gwin->get_height() - normal->get_text_height() * 6) / 2;
+		starty = (gwin->get_height() - normal->get_text_height() * 8) / 2;
 
-		for (i = 0; i < 6; i++) {
+		for (i = 0; i < 8; i++) {
 			message = get_text_msg(txt_screen3 + i);
 			normal->draw_text(ibuf, centerx - normal->get_text_width(message) / 2, starty + normal->get_text_height()*i, message);
 		}
@@ -1867,9 +1869,9 @@ void BG_Game::end_game(bool success) {
 		// Paint backgound black
 		win->fill8(0);
 
-		starty = (gwin->get_height() - normal->get_text_height() * 4) / 2;
+		starty = (gwin->get_height() - normal->get_text_height() * 5) / 2;
 
-		for (i = 0; i < 4; i++) {
+		for (i = 0; i < 5; i++) {
 			message = get_text_msg(txt_screen4 + i);
 			normal->draw_text(ibuf, centerx - normal->get_text_width(message) / 2, starty + normal->get_text_height()*i, message);
 		}
@@ -1886,6 +1888,41 @@ void BG_Game::end_game(bool success) {
 
 		// Fade out for 1 sec (50 cycles)
 		pal->fade(50, 0, 0);
+#if 0
+		//TODO: only when finishing a game and not when viewed from menu
+		if (when not in menu) {
+			if (wait_delay(10)) break;
+		
+			// Congratulations
+
+			// Paint backgound black
+			win->fill8(0);
+
+			starty = (gwin->get_height() - normal->get_text_height() * 6) / 2;
+
+			//TODO: figure out the time it took to complete the game
+			// in exultmsg.txt it is "%d year s ,  %d month s , &  %d day s"
+			// only showing years or months if there were any
+			for (i = 0; i < 9; i++) {
+				message = get_text_msg(congrats + i);
+				normal->draw_text(ibuf, centerx - normal->get_text_width(message) / 2, starty + normal->get_text_height()*i, message);
+			}
+
+			// Fade in for 1 sec (50 cycles)
+			pal->fade(50, 1, 0);
+
+			// Display text for 20 seonds (only 8 at the moment)
+			for (i = 0; i < 80; i++) if (wait_delay(100)) {
+					do_break = true;
+					break;
+				}
+			if (do_break) break;
+
+			// Fade out for 1 sec (50 cycles)
+			pal->fade(50, 0, 0);
+		}
+#endif
+
 	} while (0);
 
 	if (midi) {
