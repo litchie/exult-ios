@@ -34,87 +34,106 @@
 0x51C:libre de ir a otros mundos.
 0x51D:Puede que tu Tierra sea mi
 0x51E:DESTINO!
+0x51F:
+0x520:
 # End2
-0x51F:En los meses siguientes a la titanica
-0x520:batalla de la Puerta Negra,Britania
-0x521:emprendio el largo camino de la
-0x522:recuperacion.
-0x523: 
-0x524:Tras tu regreso a Britain,
-0x525:Lord British decreto que
-0x526:la Hermandad era ilegal,
-0x527:y las sucursales fueron
-0x528:destruidas.
+0x521:En los meses siguientes a la titanica
+0x522:batalla de la Puerta Negra,Britania
+0x523:emprendio el largo camino de la
+0x524:recuperacion.
+0x525: 
+0x526:Tras tu regreso a Britain,
+0x527:Lord British decreto que
+0x528:la Hermandad era ilegal,
+0x529:y las sucursales fueron
+0x52A:destruidas.
+0x52B:
 # End3
-0x529:La frustracion de no poder abandonar
-0x52A:Britania esta compensada por la
-0x52B:alegria de haber desenmascarado a la
-0x52C:Hermandad y vengado el asesinato del
-0x52D:padre de Spark.
-0x52E:
-# End4
-0x52F:Aunque nada puedes hacer sobre la
-0x530:amenaza final del Guardian,
-0x531:hay algo que te preguntas:
-0x532:Donde habra ido Batlin y que
-0x533:estara haciendo?
+0x52C:La frustracion de no poder abandonar
+0x52D:Britania esta compensada por la
+0x52E:alegria de haber desenmascarado a la
+0x52F:Hermandad y vengado el asesinato del
+0x530:padre de Spark.
+0x531:
+0x532:
+0x533:
 0x534:
+# End4
+0x535:Aunque nada puedes hacer sobre la
+0x536:amenaza final del Guardian,
+0x537:hay algo que te preguntas:
+0x538:Donde habra ido Batlin y que
+0x539:estara haciendo?
+0x53A:
+0x53B:
+0x53C:
 # End5
-0x535:Esa es otra historia...
-0x536:una que te llevara a
-0x537:la ISLA DE LA
-0x538:SERPIENTE
+0x53D:Esa es otra historia...
+0x53E:una que te llevara a
+0x53F:la ISLA DE LA
+0x540:SERPIENTE
+0x541:
+#Congratulations
+0x542:Felicidades!
+0x543:Has completado Ultima VII en
+0x544:%d agno s ,  %d mes   s , &  %d dia s .
+0x545:Felicidades!
+0x546:
+0x547:
+0x548:
+0x549:
+0x54A:
 #SI intro
-0x539:Reino de Lord British
-0x53A:Sitio de Dick British
-0x53B:Dieciocho meses tras la destruccion
-0x53C:de la Puerta Negra y la
-0x53D:proscripcion de la Hermandad
-0x53E:Mi rey
-0x53F:Hey, patron
-0x540:Entre las cosas de Batlin
-0x541:encontramos este pergamino y un mapa
-0x542:para ir a un lugar llamado
-0x543:Isla de la Serpiente.
-0x544:Veamos.
-0x545:Colocalo en la mesa.
-0x546:Ahhh. Sueltalo ahi!
-0x547:Cuidado!
-0x548:Oe, para atras!
-0x549:Batlin!  Si el Avatar logra 
-0x54A:destruir la Puerta Negra,
-0x54B:ve junto con la humana llamada
-0x54C:Gweeno a la Isla de la Serpiente
-0x54D:Alli conoceras mi nuevo plan
-0x54E:en contra de Britania
-0x54F:Batlin! Debes saber que mi cara
-0x550:es bastante parecida a un titere!
-0x551:Debes ir a la Isla de la Serpiente
-0x552:para aprender la cura secreta del Acne
-0x553:Pronto yo y mi horda de titeres
-0x554:destruiremos Britania!
-0x555:Confirma mi temor!
-0x556:Debo enviar al Avatar hacia
-0x557:los pilares de la Serpiente...
+0x54B:Reino de Lord British
+0x54C:Sitio de Dick British
+0x54D:Dieciocho meses tras la destruccion
+0x54E:de la Puerta Negra y la
+0x54F:proscripcion de la Hermandad
+0x550:Mi rey
+0x551:Hey, patron
+0x552:Entre las cosas de Batlin
+0x553:encontramos este pergamino y un mapa
+0x554:para ir a un lugar llamado
+0x555:Isla de la Serpiente.
+0x556:Veamos.
+0x557:Colocalo en la mesa.
+0x558:Ahhh. Sueltalo ahi!
+0x559:Cuidado!
+0x55A:Oe, para atras!
+0x55B:Batlin!  Si el Avatar logra 
+0x55C:destruir la Puerta Negra,
+0x55D:ve junto con la humana llamada
+0x55E:Gweeno a la Isla de la Serpiente
+0x55F:Alli conoceras mi nuevo plan
+0x560:en contra de Britania
+0x561:Batlin! Debes saber que mi cara
+0x562:es bastante parecida a un titere!
+0x563:Debes ir a la Isla de la Serpiente
+0x564:para aprender la cura secreta del Acne
+0x565:Pronto yo y mi horda de titeres
+0x566:destruiremos Britania!
+0x567:Confirma mi temor!
+0x568:Debo enviar al Avatar hacia
+0x569:los pilares de la Serpiente...
 #SI end
-0x558:El equilibrio
-0x559:ha sido restaurado.
-0x55A:La Isla de la Serpiente, Britania,
-0x55B:y el universo entero estan a salvo.
-0x55C:No te preocupes por tu amigo Dupre
-0x55D:Se ha unido a mi y es feliz.
-0x55E:Adios, Avatar.
-0x55F:Y gracias.
-0x560:Bien bien bien, Avatar.  Una
-0x561:vez mas has estropeado mis planes.
-0x562:Al restaurar el Equilibrio
-0x563:has salvado a tu maldito
-0x564:universo del Caos.
-0x565:Pero has quedado atrapado
-0x566:aqui, fuera del Tiempo.
-0x567:A donde iras ahora?
-0x568:Acaso a la Tierra?
-0x569:Britania?
-0x56A:O Puede que nos reunamos tu
-0x56B:y yo en algun otro lugar.
-0x56C:Tenemos cuentas pendientes!
+0x56A:El equilibrio
+0x56B:ha sido restaurado.
+0x56C:La Isla de la Serpiente, Britania,
+0x56D:y el universo entero estan a salvo.
+0x56E:No te preocupes por tu amigo Dupre
+0x56F:Se ha unido a mi y es feliz.
+0x570:Adios, Avatar.
+0x571:Y gracias.
+0x572:Bien bien bien, Avatar.  Una
+0x573:vez mas has estropeado mis planes.
+0x574:Al restaurar el Equilibrio
+0x575:has salvado a tu maldito
+0x576:universo del Caos.
+0x577:Pero has quedado atrapado
+0x578:aqui, fuera del Tiempo.
+0x579:A donde iras ahora?
+0x57A:Acaso a la Tierra?
+0x57B:Britania?
+0x57C:O Puede que nos reunamos tu
+0x57D:y yo en algun otro lugar.
+0x57E:Tenemos cuentas pendientes!
