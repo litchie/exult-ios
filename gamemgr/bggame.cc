@@ -1536,6 +1536,9 @@ void BG_Game::end_game(bool success) {
 		if (midi) midi->set_timbre_lib(MyMidiPlayer::TIMBRE_LIB_ENDGAME);
 	}
 
+	bool speech = Audio::get_ptr()->is_audio_enabled() &&
+	              Audio::get_ptr()->is_speech_enabled();
+
 	// Fli Buffers
 	size_t  flisize;
 	char    *fli_b[3];
@@ -1596,7 +1599,7 @@ void BG_Game::end_game(bool success) {
 		}
 		if (do_break) break;
 
-		if (audio) speech1.play_it();
+		if (speech) speech1.play_it();
 		Font *endfont2 = fontManager.get_font("END2_FONT");
 		Font *endfont3 = fontManager.get_font("END3_FONT");
 		Font *normal = fontManager.get_font("NORMAL_FONT");
@@ -1608,7 +1611,8 @@ void BG_Game::end_game(bool success) {
 		disable_direct_gl_render();
 		for (i = 150; i < 204; i++) {
 			next = fli1.play(win, i, i, next);
-			endfont2->draw_text(ibuf, width, height, message);
+			if (!speech)
+				endfont2->draw_text(ibuf, width, height, message);
 			non_gl_blit();
 			if (wait_delay(0, 0, 1)) {
 				do_break = true;
@@ -1622,14 +1626,15 @@ void BG_Game::end_game(bool success) {
 
 		// Set speech
 
-		if (audio) speech2.play_it();
+		if (speech) speech2.play_it();
 
 		message = get_text_msg(damn_avatar);
 		width = (gwin->get_width() - endfont2->get_text_width(message)) / 2;
 
 		for (i = 0; i < 100; i++) {
 			next = fli2.play(win, i, i, next);
-			endfont2->draw_text(ibuf, width, height, message);
+			if (!speech)
+				endfont2->draw_text(ibuf, width, height, message);
 			non_gl_blit();
 			if (wait_delay(0, 0, 1)) {
 				do_break = true;
@@ -1734,7 +1739,7 @@ void BG_Game::end_game(bool success) {
 		}
 		if (do_break) break;
 
-		if (audio) speech3.play_it();
+		if (speech) speech3.play_it();
 
 		playfli::fliinfo finfo;
 		fli3.info(&finfo);
@@ -1746,8 +1751,10 @@ void BG_Game::end_game(bool success) {
 		for (i = next + 28000; i > next;) {
 			for (j = 0; j < static_cast<unsigned>(finfo.frames); j++) {
 				next = fli3.play(win, j, j, next);
-				for (m = 0; m < 8; m++)
-					endfont3->center_text(ibuf, centerx, starty + endfont3->get_text_height()*m, get_text_msg(txt_screen0 + m));
+				if (!speech) {
+					for (m = 0; m < 8; m++)
+						endfont3->center_text(ibuf, centerx, starty + endfont3->get_text_height()*m, get_text_msg(txt_screen0 + m));
+				}
 				non_gl_blit();
 				if (wait_delay(10, 0, 1)) {
 					do_break = true;
