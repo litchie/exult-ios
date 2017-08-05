@@ -964,12 +964,8 @@ static void Init(
 
 		Game::create_game(newgame);
 		Audio *audio = Audio::get_ptr();
-		MyMidiPlayer *midi = 0;
-
-		if (audio) {
-			audio->Init_sfx();
-			midi = audio->get_midi();
-		}
+		audio->Init_sfx();
+		MyMidiPlayer *midi = audio->get_midi();
 
 		Setup_text(GAME_SI, Game::has_expansion(), GAME_SIB);
 
@@ -1001,10 +997,9 @@ static void Init(
 	gamemanager = 0;
 
 	Audio *audio = Audio::get_ptr();
-	if (audio) {
-		MyMidiPlayer *midi = audio->get_midi();
-		if (midi) midi->set_timbre_lib(MyMidiPlayer::TIMBRE_LIB_GAME);
-	}
+	MyMidiPlayer *midi = audio->get_midi();
+	if (midi) midi->set_timbre_lib(MyMidiPlayer::TIMBRE_LIB_GAME);
+
 	gwin->init_files();
 	gwin->read_gwin();
 	gwin->setup_game(arg_edit_mode);    // This will start the scene.
@@ -2170,7 +2165,7 @@ void set_scaleval(int new_scaleval) {
 		config->value(vidStr + "/display/width", resx);
 		config->value(vidStr + "/display/height", resy);
 
-		// for Studio zooming we set game area to auto, fill quality to point, 
+		// for Studio zooming we set game area to auto, fill quality to point,
 		// fill mode to fill and increase/decrease the scale value
 		gwin->resized(resx,
 		              resy,

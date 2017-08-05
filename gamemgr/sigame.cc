@@ -253,11 +253,9 @@ static int get_frame(void) {
 
 void SI_Game::play_intro() {
 	Audio *audio = Audio::get_ptr();
-	if (audio) {
-		audio->stop_music();
-		MyMidiPlayer *midi = audio->get_midi();
-		if (midi) midi->set_timbre_lib(MyMidiPlayer::TIMBRE_LIB_INTRO);
-	}
+	audio->stop_music();
+	MyMidiPlayer *midi = audio->get_midi();
+	if (midi) midi->set_timbre_lib(MyMidiPlayer::TIMBRE_LIB_INTRO);
 
 	int next = 0;
 	size_t  flisize;
@@ -269,8 +267,8 @@ void SI_Game::play_intro() {
 	int     i, j;
 	Font *sifont = fontManager.get_font("SIINTRO_FONT");
 
-	bool speech = Audio::get_ptr()->is_audio_enabled() &&
-	              Audio::get_ptr()->is_speech_enabled();
+	bool speech = audio->is_audio_enabled() &&
+	              audio->is_speech_enabled();
 
 	gwin->clear_screen(true);
 
@@ -313,16 +311,13 @@ void SI_Game::play_intro() {
 		// Castle Outside
 
 		// Start Music
-		Audio *audio = Audio::get_ptr();
-		if (audio) {
-			audio->start_music(R_SINTRO, 0, false);
-		}
+		audio->start_music(R_SINTRO, 0, false);
 
 		// Thunder, note we use the buffer again later so it's not freed here
 		if (speech) {
 			U7multiobject voc_thunder(INTRO_DAT, PATCH_INTRO, 15);
 			buffer = reinterpret_cast<uint8 *>(voc_thunder.retrieve(size));
-			Audio::get_ptr()->copy_and_play(buffer + 8, size - 8, false);
+			audio->copy_and_play(buffer + 8, size - 8, false);
 		}
 
 		U7multiobject flic(INTRO_DAT, PATCH_INTRO, 1);
@@ -377,7 +372,7 @@ void SI_Game::play_intro() {
 
 			// Thunder again, we free the buffer here
 			if (speech && j == 5) {
-				Audio::get_ptr()->copy_and_play(buffer + 8, size - 8, false);
+				audio->copy_and_play(buffer + 8, size - 8, false);
 				FORGET_ARRAY(buffer);
 			}
 
@@ -447,7 +442,7 @@ void SI_Game::play_intro() {
 		if (speech && !jive) {
 			U7multiobject voc_my_leige(INTRO_DAT, PATCH_INTRO, 16);
 			buffer = reinterpret_cast<uint8 *>(voc_my_leige.retrieve(size));
-			Audio::get_ptr()->copy_and_play(buffer + 8, size - 8, false);
+			audio->copy_and_play(buffer + 8, size - 8, false);
 			FORGET_ARRAY(buffer);
 		}
 
@@ -474,7 +469,7 @@ void SI_Game::play_intro() {
 		if (speech && !jive) {
 			U7multiobject voc_all_we(INTRO_DAT, PATCH_INTRO, 17);
 			buffer = reinterpret_cast<uint8 *>(voc_all_we.retrieve(size));
-			Audio::get_ptr()->copy_and_play(buffer + 8, size - 8, false);
+			audio->copy_and_play(buffer + 8, size - 8, false);
 			FORGET_ARRAY(buffer);
 		}
 
@@ -521,7 +516,7 @@ void SI_Game::play_intro() {
 		if (speech && !jive) {
 			U7multiobject voc_indeed(INTRO_DAT, PATCH_INTRO, 18);
 			buffer = reinterpret_cast<uint8 *>(voc_indeed.retrieve(size));
-			Audio::get_ptr()->copy_and_play(buffer + 8, size - 8, false);
+			audio->copy_and_play(buffer + 8, size - 8, false);
 			FORGET_ARRAY(buffer);
 		}
 
@@ -573,7 +568,7 @@ void SI_Game::play_intro() {
 		if (speech && !jive) {
 			U7multiobject voc_stand_back(INTRO_DAT, PATCH_INTRO, 19);
 			buffer = reinterpret_cast<uint8 *>(voc_stand_back.retrieve(size));
-			Audio::get_ptr()->copy_and_play(buffer + 8, size - 8, false);
+			audio->copy_and_play(buffer + 8, size - 8, false);
 			FORGET_ARRAY(buffer);
 		}
 
@@ -601,8 +596,8 @@ void SI_Game::play_intro() {
 		playfli fli4(fli_b + 8, flisize - 8);
 		fli4.info();
 
-		U7multiobject shapes(INTRO_DAT, PATCH_INTRO, 30);
-		shape_buf = shapes.retrieve(shapesize);
+		U7multiobject introshapes(INTRO_DAT, PATCH_INTRO, 30);
+		shape_buf = introshapes.retrieve(shapesize);
 		BufferDataSource gshape_ds(shape_buf + 8, shapesize - 8);
 		Shape_frame *sf;
 
@@ -613,7 +608,7 @@ void SI_Game::play_intro() {
 		if (speech && !jive) {
 			U7multiobject voc_big_g(INTRO_DAT, PATCH_INTRO, 20);
 			buffer = reinterpret_cast<uint8 *>(voc_big_g.retrieve(size));
-			Audio::get_ptr()->copy_and_play(buffer + 8, size - 8, false);
+			audio->copy_and_play(buffer + 8, size - 8, false);
 			FORGET_ARRAY(buffer);
 		}
 
@@ -690,7 +685,7 @@ void SI_Game::play_intro() {
 		if (speech && !jive) {
 			U7multiobject voc_tis_my(INTRO_DAT, PATCH_INTRO, 21);
 			buffer = reinterpret_cast<uint8 *>(voc_tis_my.retrieve(size));
-			Audio::get_ptr()->copy_and_play(buffer + 8, size - 8, false);
+			audio->copy_and_play(buffer + 8, size - 8, false);
 			FORGET_ARRAY(buffer);
 		}
 
@@ -802,7 +797,7 @@ void SI_Game::play_intro() {
 	gwin->clear_screen(true);
 
 	// Stop all audio output
-	Audio::get_ptr()->cancel_streams();
+	audio->cancel_streams();
 }
 
 Shape_frame *SI_Game::get_menu_shape() {
@@ -1011,16 +1006,14 @@ struct ExSubEvent {
 void SI_Game::end_game(bool success) {
 	ignore_unused_variable_warning(success);
 	Audio *audio = Audio::get_ptr();
-	if (audio) {
-		audio->stop_music();
-		MyMidiPlayer *midi = audio->get_midi();
-		if (midi) midi->set_timbre_lib(MyMidiPlayer::TIMBRE_LIB_ENDGAME);
-	}
+	audio->stop_music();
+	MyMidiPlayer *midi = audio->get_midi();
+	if (midi) midi->set_timbre_lib(MyMidiPlayer::TIMBRE_LIB_ENDGAME);
 
 	Font *sifont = fontManager.get_font("SIINTRO_FONT");
 
-	bool speech = Audio::get_ptr()->is_audio_enabled() &&
-	              Audio::get_ptr()->is_speech_enabled();
+	bool speech = audio->is_audio_enabled() &&
+	              audio->is_speech_enabled();
 
 	gwin->clear_screen(true);
 
