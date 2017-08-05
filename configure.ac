@@ -201,11 +201,6 @@ AC_TYPE_SIZE_T
 AC_HEADER_TIME
 AC_STRUCT_TM
 
-dnl If this is a gnu compiler, pass -Wall
-if test "$ac_cv_c_compiler_gnu" = "yes"; then
-	CFLAGS="$CFLAGS -Wall"
-fi
-
 # ---------------------------------------------------------------------
 # Checks for library functions
 # ---------------------------------------------------------------------
