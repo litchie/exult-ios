@@ -435,7 +435,7 @@ void Shapes_vga_file::read_info(
 	if (info_read)
 		return;
 	info_read = true;
-	int i, cnt;
+	int cnt;
 	bool have_patch_path = is_system_path_defined("<PATCH>");
 
 	// ShapeDims
@@ -443,7 +443,7 @@ void Shapes_vga_file::read_info(
 	// Starts at 0x96'th shape.
 	ifstream shpdims;
 	if (U7open2(shpdims, patch_name(PATCH_SHPDIMS), SHPDIMS, editing))
-		for (i = c_first_obj_shape;
+		for (int i = c_first_obj_shape;
 		        i < num_shapes && !shpdims.eof(); i++) {
 			info[i].shpdims[0] = shpdims.get();
 			info[i].shpdims[1] = shpdims.get();
@@ -452,7 +452,7 @@ void Shapes_vga_file::read_info(
 	// WGTVOL
 	ifstream wgtvol;
 	if (U7open2(wgtvol, patch_name(PATCH_WGTVOL), WGTVOL, editing))
-		for (i = 0; i < num_shapes && !wgtvol.eof(); i++) {
+		for (int i = 0; i < num_shapes && !wgtvol.eof(); i++) {
 			info[i].weight = wgtvol.get();
 			info[i].volume = wgtvol.get();
 		}
@@ -460,7 +460,7 @@ void Shapes_vga_file::read_info(
 	// TFA
 	ifstream tfa;
 	if (U7open2(tfa, patch_name(PATCH_TFA), TFA, editing))
-		for (i = 0; i < num_shapes && !tfa.eof(); i++) {
+		for (int i = 0; i < num_shapes && !tfa.eof(); i++) {
 			tfa.read(reinterpret_cast<char *>(&info[i].tfa[0]), 3);
 			info[i].set_tfa_data();
 		}
@@ -495,9 +495,9 @@ void Shapes_vga_file::read_info(
 	unsigned short offsets[c_max_shapes];
 	if (U7open2(wihh, patch_name(PATCH_WIHH), WIHH, editing)) {
 		cnt = num_shapes;
-		for (i = 0; i < cnt; i++)
+		for (int i = 0; i < cnt; i++)
 			offsets[i] = Read2(wihh);
-		for (i = 0; i < cnt; i++)
+		for (int i = 0; i < cnt; i++)
 			// A zero offset means there is no record
 			if (offsets[i] == 0)
 				info[i].weapon_offsets = 0;
@@ -526,7 +526,7 @@ void Shapes_vga_file::read_info(
 		// Ensure sensible defaults.
 		memset(&occbits[0], 0, sizeof(occbits));
 		occ.read(reinterpret_cast<char *>(occbits), sizeof(occbits));
-		for (i = 0; i < occ.gcount(); i++) {
+		for (int i = 0; i < occ.gcount(); i++) {
 			unsigned char bits = occbits[i];
 			int shnum = i * 8;  // Check each bit.
 			for (int b = 0; bits; b++, bits = bits >> 1)
@@ -541,7 +541,7 @@ void Shapes_vga_file::read_info(
 		// Get # entries (with Exult extension).
 		int num_recs = Read_count(mfile);
 		Monster_info::reserve_equip(num_recs);
-		for (i = 0; i < num_recs; i++) {
+		for (int i = 0; i < num_recs; i++) {
 			Equip_record equip;
 			// 10 elements/record.
 			for (int elem = 0; elem < 10; elem++) {

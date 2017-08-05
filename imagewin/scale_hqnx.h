@@ -33,7 +33,6 @@
 /*
  *  Common defines and functions.
  */
-static int   YUV1, YUV2;
 const  int   Ymask = 0x00FF0000;
 const  int   Umask = 0x0000FF00;
 const  int   Vmask = 0x000000FF;
@@ -197,16 +196,13 @@ inline int hqx_init(int *w, int *c, int *yuv, unsigned char *from,
 	int pattern = 0;
 	int flag = 1;
 
-	YUV1 = yuv[5];
+	int YUV1 = yuv[5];
 
 	for (k = 1; k <= 9; k++) {
 		if (k == 5) continue;
 
 		if (w[k] != w[5]) {
-			YUV2 = yuv[k];
-			if ((abs((YUV1 & Ymask) - (YUV2 & Ymask)) > trY) ||
-			        (abs((YUV1 & Umask) - (YUV2 & Umask)) > trU) ||
-			        (abs((YUV1 & Vmask) - (YUV2 & Vmask)) > trV))
+			if (Diff(YUV1, yuv[k]))
 				pattern |= flag;
 		}
 		flag <<= 1;

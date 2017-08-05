@@ -362,11 +362,9 @@ class UserSkipException : public UserBreakException {
 
 void BG_Game::play_intro() {
 	Audio *audio = Audio::get_ptr();
-	if (audio) {
-		audio->stop_music();
-		MyMidiPlayer *midi = audio->get_midi();
-		if (midi) midi->set_timbre_lib(MyMidiPlayer::TIMBRE_LIB_INTRO);
-	}
+	audio->stop_music();
+	MyMidiPlayer *midi = audio->get_midi();
+	if (midi) midi->set_timbre_lib(MyMidiPlayer::TIMBRE_LIB_INTRO);
 
 	gwin->clear_screen(true);
 
@@ -430,7 +428,7 @@ void BG_Game::play_intro() {
 	gwin->clear_screen(true);
 
 	// Stop all audio output
-	Audio::get_ptr()->cancel_streams();
+	audio->cancel_streams();
 }
 
 void BG_Game::scene_lord_british() {
@@ -1488,10 +1486,8 @@ bool ExVoiceBuffer::play_it() {
 }
 
 void BG_Game::end_game(bool success) {
-	unsigned int i, j, next = 0;
+	unsigned int next = 0;
 	int starty;
-	int centerx = gwin->get_width() / 2;
-	int topy = (gwin->get_height() - 200) / 2;
 	Font *font = fontManager.get_font("MENU_FONT");
 
 	if (!success) {
@@ -1523,12 +1519,9 @@ void BG_Game::end_game(bool success) {
 	}
 
 	Audio *audio = Audio::get_ptr();
-	MyMidiPlayer *midi = 0;
-	if (audio) {
-		audio->stop_music();
-		midi = audio->get_midi();
-		if (midi) midi->set_timbre_lib(MyMidiPlayer::TIMBRE_LIB_ENDGAME);
-	}
+	audio->stop_music();
+	MyMidiPlayer *midi = audio->get_midi();
+	if (midi) midi->set_timbre_lib(MyMidiPlayer::TIMBRE_LIB_ENDGAME);
 
 	bool speech = Audio::get_ptr()->is_audio_enabled() &&
 	              Audio::get_ptr()->is_speech_enabled();
@@ -1575,7 +1568,7 @@ void BG_Game::end_game(bool success) {
 	bool do_break = false;
 	do {
 
-		for (i = 0; i < 240; i++) {
+		for (unsigned int i = 0; i < 240; i++) {
 			next = fli1.play(win, 0, 1, next);
 			if (wait_delay(0)) {
 				do_break = true;
@@ -1584,7 +1577,7 @@ void BG_Game::end_game(bool success) {
 		}
 		if (do_break) break;
 
-		for (i = 1; i < 150; i++) {
+		for (unsigned int i = 1; i < 150; i++) {
 			next = fli1.play(win, i, i + 1, next);
 			if (wait_delay(0)) {
 				do_break = true;
@@ -1603,7 +1596,7 @@ void BG_Game::end_game(bool success) {
 		int width = (gwin->get_width() - endfont2->get_text_width(message)) / 2;
 
 		disable_direct_gl_render();
-		for (i = 150; i < 204; i++) {
+		for (unsigned int i = 150; i < 204; i++) {
 			next = fli1.play(win, i, i, next);
 			if (!speech)
 				endfont2->draw_text(ibuf, width, height, message);
@@ -1625,7 +1618,7 @@ void BG_Game::end_game(bool success) {
 		message = get_text_msg(damn_avatar);
 		width = (gwin->get_width() - endfont2->get_text_width(message)) / 2;
 
-		for (i = 0; i < 100; i++) {
+		for (unsigned int i = 0; i < 100; i++) {
 			next = fli2.play(win, i, i, next);
 			if (!speech)
 				endfont2->draw_text(ibuf, width, height, message);
@@ -1639,7 +1632,7 @@ void BG_Game::end_game(bool success) {
 
 		Palette *pal = fli2.get_palette();
 		next = SDL_GetTicks();
-		for (i = 1000 + next; next < i; next += 10) {
+		for (unsigned int i = 1000 + next; next < i; next += 10) {
 			// Speed related frame skipping detection
 			int skip_frame = Game_window::get_instance()->get_frame_skipping() && SDL_GetTicks() >= next;
 			while (SDL_GetTicks() < next)
@@ -1678,10 +1671,12 @@ void BG_Game::end_game(bool success) {
 		pal->fade(50, 1, 0);
 
 		// Display text for 3 seconds
-		for (i = 0; i < 30; i++) if (wait_delay(100)) {
+		for (unsigned int i = 0; i < 30; i++) {
+			if (wait_delay(100)) {
 				do_break = true;
 				break;
 			}
+		}
 		if (do_break) break;
 
 		// Fade out for 1 sec (50 cycles)
@@ -1704,10 +1699,12 @@ void BG_Game::end_game(bool success) {
 		pal->fade(50, 1, 0);
 
 		// Display text for approx 3 seonds
-		for (i = 0; i < 30; i++) if (wait_delay(100)) {
+		for (unsigned int i = 0; i < 30; i++) {
+			if (wait_delay(100)) {
 				do_break = true;
 				break;
 			}
+		}
 		if (do_break) break;
 
 		// Fade out for 1 sec (50 cycles)
@@ -1717,7 +1714,7 @@ void BG_Game::end_game(bool success) {
 		next = fli3.play(win, 0, 0, next);
 		pal = fli3.get_palette();
 		next = SDL_GetTicks();
-		for (i = 1000 + next; next < i; next += 10) {
+		for (unsigned int i = 1000 + next; next < i; next += 10) {
 			// Speed related frame skipping detection
 			int skip_frame = Game_window::get_instance()->get_frame_skipping() && SDL_GetTicks() >= next;
 			while (SDL_GetTicks() < next)
@@ -1742,8 +1739,8 @@ void BG_Game::end_game(bool success) {
 		starty = (gwin->get_height() - endfont3->get_text_height() * 8) / 2;
 
 		next = SDL_GetTicks();
-		for (i = next + 28000; i > next;) {
-			for (j = 0; j < static_cast<unsigned>(finfo.frames); j++) {
+		for (unsigned int i = next + 28000; i > next;) {
+			for (unsigned int j = 0; j < static_cast<unsigned>(finfo.frames); j++) {
 				next = fli3.play(win, j, j, next);
 				if (!speech) {
 					for (m = 0; m < 8; m++)
@@ -1760,7 +1757,7 @@ void BG_Game::end_game(bool success) {
 		enable_direct_gl_render();
 
 		next = SDL_GetTicks();
-		for (i = 1000 + next; next < i; next += 10) {
+		for (unsigned int i = 1000 + next; next < i; next += 10) {
 			// Speed related frame skipping detection
 			int skip_frame = Game_window::get_instance()->get_frame_skipping() && SDL_GetTicks() >= next;
 			while (SDL_GetTicks() < next)
@@ -1792,7 +1789,7 @@ void BG_Game::end_game(bool success) {
 		//so starty has needs to be a tiny bit in the negative but not -10
 		starty = (gwin->get_height() - normal->get_text_height() * 11) / 2.5;
 
-		for (i = 0; i < 11; i++) {
+		for (unsigned int i = 0; i < 11; i++) {
 			message = get_text_msg(txt_screen1 + i);
 			normal->draw_text(ibuf, centerx - normal->get_text_width(message) / 2, starty + normal->get_text_height()*i, message);
 		}
@@ -1801,10 +1798,12 @@ void BG_Game::end_game(bool success) {
 		pal->fade(50, 1, 0);
 
 		// Display text for 20 seconds (only 10 at the moment)
-		for (i = 0; i < 100; i++) if (wait_delay(100)) {
+		for (unsigned int i = 0; i < 100; i++) {
+			if (wait_delay(100)) {
 				do_break = true;
 				break;
 			}
+		}
 		if (do_break) break;
 
 		// Fade out for 1 sec (50 cycles)
@@ -1819,7 +1818,7 @@ void BG_Game::end_game(bool success) {
 
 		starty = (gwin->get_height() - normal->get_text_height() * 9) / 2;
 
-		for (i = 0; i < 9; i++) {
+		for (unsigned int i = 0; i < 9; i++) {
 			message = get_text_msg(txt_screen2 + i);
 			normal->draw_text(ibuf, centerx - normal->get_text_width(message) / 2, starty + normal->get_text_height()*i, message);
 		}
@@ -1828,10 +1827,12 @@ void BG_Game::end_game(bool success) {
 		pal->fade(50, 1, 0);
 
 		// Display text for 20 seonds (only 8 at the moment)
-		for (i = 0; i < 80; i++) if (wait_delay(100)) {
+		for (unsigned int i = 0; i < 80; i++) {
+			if (wait_delay(100)) {
 				do_break = true;
 				break;
 			}
+		}
 		if (do_break) break;
 
 		// Fade out for 1 sec (50 cycles)
@@ -1846,7 +1847,7 @@ void BG_Game::end_game(bool success) {
 
 		starty = (gwin->get_height() - normal->get_text_height() * 8) / 2;
 
-		for (i = 0; i < 8; i++) {
+		for (unsigned int i = 0; i < 8; i++) {
 			message = get_text_msg(txt_screen3 + i);
 			normal->draw_text(ibuf, centerx - normal->get_text_width(message) / 2, starty + normal->get_text_height()*i, message);
 		}
@@ -1855,10 +1856,12 @@ void BG_Game::end_game(bool success) {
 		pal->fade(50, 1, 0);
 
 		// Display text for 20 seonds (only 8 at the moment)
-		for (i = 0; i < 80; i++) if (wait_delay(100)) {
+		for (unsigned int i = 0; i < 80; i++) {
+			if (wait_delay(100)) {
 				do_break = true;
 				break;
 			}
+		}
 		if (do_break) break;
 
 		// Fade out for 1 sec (50 cycles)
@@ -1873,7 +1876,7 @@ void BG_Game::end_game(bool success) {
 
 		starty = (gwin->get_height() - normal->get_text_height() * 5) / 2;
 
-		for (i = 0; i < 5; i++) {
+		for (unsigned int i = 0; i < 5; i++) {
 			message = get_text_msg(txt_screen4 + i);
 			normal->draw_text(ibuf, centerx - normal->get_text_width(message) / 2, starty + normal->get_text_height()*i, message);
 		}
@@ -1882,10 +1885,12 @@ void BG_Game::end_game(bool success) {
 		pal->fade(50, 1, 0);
 
 		// Display text for 10 seonds (only 5 at the moment)
-		for (i = 0; i < 50; i++) if (wait_delay(100)) {
+		for (unsigned int i = 0; i < 50; i++) {
+			if (wait_delay(100)) {
 				do_break = true;
 				break;
 			}
+		}
 		if (do_break) break;
 
 		// Fade out for 1 sec (50 cycles)
@@ -1905,7 +1910,7 @@ void BG_Game::end_game(bool success) {
 			//TODO: figure out the time it took to complete the game
 			// in exultmsg.txt it is "%d year s ,  %d month s , &  %d day s"
 			// only showing years or months if there were any
-			for (i = 0; i < 9; i++) {
+			for (unsigned int i = 0; i < 9; i++) {
 				message = get_text_msg(congrats + i);
 				normal->draw_text(ibuf, centerx - normal->get_text_width(message) / 2, starty + normal->get_text_height()*i, message);
 			}
@@ -1914,10 +1919,12 @@ void BG_Game::end_game(bool success) {
 			pal->fade(50, 1, 0);
 
 			// Display text for 20 seonds (only 8 at the moment)
-			for (i = 0; i < 80; i++) if (wait_delay(100)) {
+			for (unsigned int i = 0; i < 80; i++) {
+				if (wait_delay(100)) {
 					do_break = true;
 					break;
 				}
+			}
 			if (do_break) break;
 
 			// Fade out for 1 sec (50 cycles)

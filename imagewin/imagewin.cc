@@ -350,16 +350,13 @@ void Image_window::static_init() {
 	int bpp;
 	Uint32 Rmask, Gmask, Bmask, Amask;
 	if (SDL_GetDesktopDisplayMode(SDL_COMPAT_DISPLAY_INDEX, &dispmode) == 0
-		&& SDL_PixelFormatEnumToMasks(dispmode.format, &bpp, &Rmask, &Gmask, &Bmask, &Amask) == SDL_TRUE)
-	{
-	   desktop_displaymode = dispmode;
-	   desktop_depth = bpp;
+		&& SDL_PixelFormatEnumToMasks(dispmode.format, &bpp, &Rmask, &Gmask, &Bmask, &Amask) == SDL_TRUE) {
+		desktop_displaymode = dispmode;
+		desktop_depth = bpp;
+	} else {
+		desktop_depth = 0;
+		cout << "Error: Couldn't get desktop display depth!" << std::endl;
 	}
-	else
-	{
-	   desktop_depth = 0;
-	   cout << "Error: Couldn't get desktop display depth!" << std::endl;
-        }
 #else
 	SDL_PixelFormat format;
 	std::memset(&format, 0, sizeof(format));
@@ -386,12 +383,11 @@ void Image_window::static_init() {
 			if (SDL_GetDisplayMode(SDL_COMPAT_DISPLAY_INDEX, j, &dispmode) == 0) {
 				Resolution res = { dispmode.w, dispmode.h, false, false, false};
 				p_resolutions[(res.width << 16) | res.height] = res;
-			
-			}
-			else  {
+
+			} else {
 				cout << " Error getting display mode #" << j << ": " << SDL_GetError() << std::endl;
 			}
-		}	
+		}
 #else
 		SDL_PixelFormat *pformat = 0;
 		if (bpps[i]) {
@@ -594,7 +590,7 @@ void Image_window::create_surface(
 		SDL_SetRenderDrawColor(screen_renderer, SDL2_INITIAL_FILL);
 		SDL_RenderClear(screen_renderer);
 		SDL_RenderPresent(screen_renderer);
-        
+
 		int sbpp;
         	Uint32 sRmask, sGmask, sBmask, sAmask;
 		SDL_PixelFormatEnumToMasks(desktop_displaymode.format, &sbpp, &sRmask, &sGmask, &sBmask, &sAmask);
@@ -705,7 +701,7 @@ bool Image_window::create_scale_surfaces(int w, int h, int bpp) {
 	SDL_SetRenderDrawColor(screen_renderer, SDL2_INITIAL_FILL);
 	SDL_RenderClear(screen_renderer);
 	SDL_RenderPresent(screen_renderer);
-        
+
 	int sbpp;
        	Uint32 sRmask, sGmask, sBmask, sAmask;
 	SDL_PixelFormatEnumToMasks(desktop_displaymode.format, &sbpp, &sRmask, &sGmask, &sBmask, &sAmask);
@@ -1376,8 +1372,8 @@ int Image_window::VideoModeOK(int width, int height, int bpp, Uint32 flags)
 			&& dispmode.h == height)
 		{
 			return nbpp;
-		}	
-	}	
+		}
+	}
 	return 0;
 }
 SDL_DisplayMode Image_window::desktop_displaymode;
