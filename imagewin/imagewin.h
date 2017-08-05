@@ -178,9 +178,9 @@ protected:
 
 #if SDL_VERSION_ATLEAST(2, 0, 0)
 	static SDL_DisplayMode desktop_displaymode;
-	class SDL_Window *screen_window;
-	class SDL_Renderer *screen_renderer;
-	class SDL_Texture *screen_texture;
+	struct SDL_Window *screen_window;
+	struct SDL_Renderer *screen_renderer;
+	struct SDL_Texture *screen_texture;
 	static int VideoModeOK(int width, int height, int bpp, Uint32 flags);
 	void UpdateRect(SDL_Surface *surf, int x, int y, int w, int h);
 #endif
@@ -296,7 +296,7 @@ protected:
 
 public:
 #if SDL_VERSION_ATLEAST(2, 0, 0)
-        inline class SDL_Window *get_screen_window() const {
+        inline struct SDL_Window *get_screen_window() const {
                 return screen_window;
         }
 #endif
