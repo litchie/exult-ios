@@ -1939,8 +1939,7 @@ void BG_Game::end_game(bool success) {
 		midi->set_timbre_lib(MyMidiPlayer::TIMBRE_LIB_GAME);
 	}
 
-	if (audio)
-		audio->stop_music();
+	audio->stop_music();
 
 	gwin->clear_screen(true);
 	FORGET_ARRAY(fli_b[0]);
