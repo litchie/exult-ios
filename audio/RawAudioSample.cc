@@ -44,7 +44,7 @@ RawAudioSample::~RawAudioSample()
 
 void RawAudioSample::initDecompressor(void *DecompData) const
 {
-	RawDecompData *decomp = reinterpret_cast<RawDecompData *>(DecompData);
+	RawDecompData *decomp = static_cast<RawDecompData *>(DecompData);
 	decomp->pos = start_pos;
 }
 
@@ -55,7 +55,7 @@ void RawAudioSample::rewind(void *DecompData) const
 
 uint32 RawAudioSample::decompressFrame(void *DecompData, void *samples) const
 {
-	RawDecompData *decomp = reinterpret_cast<RawDecompData *>(DecompData);
+	RawDecompData *decomp = static_cast<RawDecompData *>(DecompData);
 
 	if (decomp->pos == buffer_size) return 0;
 

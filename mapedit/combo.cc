@@ -111,7 +111,7 @@ C_EXPORT gint on_combo_draw_expose_event(
     gpointer data           // ->Shape_chooser.
 ) {
 	ignore_unused_variable_warning(data);
-	Combo_editor *combo = reinterpret_cast<Combo_editor *>(gtk_object_get_user_data(
+	Combo_editor *combo = static_cast<Combo_editor *>(gtk_object_get_user_data(
 	                          GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(widget)))));
 	combo->render_area(&event->area);
 	return TRUE;
@@ -121,7 +121,7 @@ C_EXPORT void
 on_combo_remove_clicked(GtkButton       *button,
                         gpointer         user_data) {
 	ignore_unused_variable_warning(user_data);
-	Combo_editor *combo = reinterpret_cast<Combo_editor *>(gtk_object_get_user_data(
+	Combo_editor *combo = static_cast<Combo_editor *>(gtk_object_get_user_data(
 	                          GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(button)))));
 	combo->remove();
 }
@@ -130,7 +130,7 @@ C_EXPORT void
 on_combo_apply_clicked(GtkButton       *button,
                        gpointer         user_data) {
 	ignore_unused_variable_warning(user_data);
-	Combo_editor *combo = reinterpret_cast<Combo_editor *>(gtk_object_get_user_data(
+	Combo_editor *combo = static_cast<Combo_editor *>(gtk_object_get_user_data(
 	                          GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(button)))));
 	combo->save();
 }
@@ -140,7 +140,7 @@ on_combo_ok_clicked(GtkButton       *button,
                     gpointer         user_data) {
 	ignore_unused_variable_warning(user_data);
 	GtkWidget *win = gtk_widget_get_toplevel(GTK_WIDGET(button));
-	Combo_editor *combo = reinterpret_cast<Combo_editor *>(gtk_object_get_user_data(
+	Combo_editor *combo = static_cast<Combo_editor *>(gtk_object_get_user_data(
 	                          GTK_OBJECT(win)));
 	combo->save();
 	gtk_widget_hide(win);
@@ -150,7 +150,7 @@ C_EXPORT void
 on_combo_locx_changed(GtkSpinButton *button,
                       gpointer     user_data) {
 	ignore_unused_variable_warning(user_data);
-	Combo_editor *combo = reinterpret_cast<Combo_editor *>(gtk_object_get_user_data(
+	Combo_editor *combo = static_cast<Combo_editor *>(gtk_object_get_user_data(
 	                          GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(button)))));
 	combo->set_position();
 }
@@ -159,7 +159,7 @@ C_EXPORT void
 on_combo_locy_changed(GtkSpinButton *button,
                       gpointer     user_data) {
 	ignore_unused_variable_warning(user_data);
-	Combo_editor *combo = reinterpret_cast<Combo_editor *>(gtk_object_get_user_data(
+	Combo_editor *combo = static_cast<Combo_editor *>(gtk_object_get_user_data(
 	                          GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(button)))));
 	combo->set_position();
 }
@@ -168,7 +168,7 @@ C_EXPORT void
 on_combo_locz_changed(GtkSpinButton *button,
                       gpointer     user_data) {
 	ignore_unused_variable_warning(user_data);
-	Combo_editor *combo = reinterpret_cast<Combo_editor *>(gtk_object_get_user_data(
+	Combo_editor *combo = static_cast<Combo_editor *>(gtk_object_get_user_data(
 	                          GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(button)))));
 	combo->set_position();
 }
@@ -177,7 +177,7 @@ C_EXPORT void
 on_combo_order_changed(GtkSpinButton *button,
                        gpointer     user_data) {
 	ignore_unused_variable_warning(user_data);
-	Combo_editor *combo = reinterpret_cast<Combo_editor *>(gtk_object_get_user_data(
+	Combo_editor *combo = static_cast<Combo_editor *>(gtk_object_get_user_data(
 	                          GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(button)))));
 	combo->set_order();
 }
@@ -191,7 +191,7 @@ C_EXPORT gint on_combo_draw_button_press_event(
     gpointer data           // ->Combo_chooser.
 ) {
 	ignore_unused_variable_warning(data);
-	Combo_editor *combo = reinterpret_cast<Combo_editor *>(gtk_object_get_user_data(
+	Combo_editor *combo = static_cast<Combo_editor *>(gtk_object_get_user_data(
 	                          GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(widget)))));
 	return combo->mouse_press(event);
 }
@@ -946,7 +946,7 @@ void Combo_chooser::drag_data_get(
 ) {
 	ignore_unused_variable_warning(widget, context, time);
 	cout << "In DRAG_DATA_GET" << endl;
-	Combo_chooser *chooser = reinterpret_cast<Combo_chooser *>(data);
+	Combo_chooser *chooser = static_cast<Combo_chooser *>(data);
 	if (chooser->selected < 0 || info != U7_TARGET_COMBOID)
 		return;         // Not sure about this.
 	// Get combo #.
@@ -998,7 +998,7 @@ gint Combo_chooser::selection_clear(
     gpointer data           // ->Combo_chooser.
 ) {
 	ignore_unused_variable_warning(widget, event, data);
-//	Combo_chooser *chooser = reinterpret_cast<Combo_chooser *>(data);
+//	Combo_chooser *chooser = static_cast<Combo_chooser *>(data);
 	cout << "SELECTION_CLEAR" << endl;
 	return TRUE;
 }
@@ -1014,7 +1014,7 @@ gint Combo_chooser::drag_begin(
 ) {
 	ignore_unused_variable_warning(widget);
 	cout << "In DRAG_BEGIN" << endl;
-	Combo_chooser *chooser = reinterpret_cast<Combo_chooser *>(data);
+	Combo_chooser *chooser = static_cast<Combo_chooser *>(data);
 	if (chooser->selected < 0)
 		return FALSE;       // ++++Display a halt bitmap.
 	// Get ->combo.
@@ -1037,7 +1037,7 @@ void Combo_chooser::scrolled(
     GtkAdjustment *adj,     // The adjustment.
     gpointer data           // ->Combo_chooser.
 ) {
-	Combo_chooser *chooser = reinterpret_cast<Combo_chooser *>(data);
+	Combo_chooser *chooser = static_cast<Combo_chooser *>(data);
 	gint newindex = static_cast<gint>(adj->value);
 	chooser->scroll(newindex);
 }
@@ -1053,7 +1053,7 @@ on_combo_key_press(GtkEntry   *entry,
                    GdkEventKey    *event,
                    gpointer    user_data) {
 	ignore_unused_variable_warning(entry);
-	Combo_chooser *chooser = reinterpret_cast<Combo_chooser *>(user_data);
+	Combo_chooser *chooser = static_cast<Combo_chooser *>(user_data);
 	switch (event->keyval) {
 	case GDK_Delete:
 		chooser->remove();
@@ -1287,7 +1287,7 @@ gint Combo_chooser::configure(
     gpointer data           // ->Combo_chooser
 ) {
 	ignore_unused_variable_warning(widget);
-	Combo_chooser *chooser = reinterpret_cast<Combo_chooser *>(data);
+	Combo_chooser *chooser = static_cast<Combo_chooser *>(data);
 	chooser->Shape_draw::configure();
 	chooser->render();
 	// Set new scroll amounts.
@@ -1318,7 +1318,7 @@ gint Combo_chooser::expose(
     gpointer data           // ->Combo_chooser.
 ) {
 	ignore_unused_variable_warning(widget);
-	Combo_chooser *chooser = reinterpret_cast<Combo_chooser *>(data);
+	Combo_chooser *chooser = static_cast<Combo_chooser *>(data);
 	chooser->show(event->area.x, event->area.y, event->area.width,
 	              event->area.height);
 	return (TRUE);
@@ -1375,7 +1375,7 @@ gint Combo_chooser::drag_motion(
     gpointer data           // ->Shape_chooser.
 ) {
 	ignore_unused_variable_warning(widget);
-	Combo_chooser *chooser = reinterpret_cast<Combo_chooser *>(data);
+	Combo_chooser *chooser = static_cast<Combo_chooser *>(data);
 	if (!chooser->dragging && chooser->selected >= 0)
 		chooser->start_drag(U7_TARGET_COMBOID_NAME,
 		                    U7_TARGET_COMBOID, reinterpret_cast<GdkEvent *>(event));
@@ -1393,7 +1393,7 @@ gint Combo_chooser::mouse_press(
     gpointer data           // ->Combo_chooser.
 ) {
 	gtk_widget_grab_focus(widget);  // Enables keystrokes.
-	Combo_chooser *chooser = reinterpret_cast<Combo_chooser *>(data);
+	Combo_chooser *chooser = static_cast<Combo_chooser *>(data);
 
 	if (event->button == 4) {
 		chooser->scroll(true);
@@ -1448,7 +1448,7 @@ static gint Mouse_release(
     gpointer data           // ->Shape_chooser.
 ) {
 	ignore_unused_variable_warning(widget, event);
-	Combo_chooser *chooser = reinterpret_cast<Combo_chooser *>(data);
+	Combo_chooser *chooser = static_cast<Combo_chooser *>(data);
 	chooser->mouse_up();
 	return true;
 }

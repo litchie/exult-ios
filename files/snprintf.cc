@@ -422,7 +422,7 @@ int asprintf(char **ptr, const char *fmt, /*args*/ ...) {
 	str_l = portable_vsnprintf(NULL, static_cast<size_t>(0), fmt, ap);
 	va_end(ap);
 	assert(str_l >= 0);        /* possible integer overflow if str_m > INT_MAX */
-	*ptr = reinterpret_cast<char *>(malloc(str_m = static_cast<size_t>(str_l) + 1));
+	*ptr = static_cast<char *>(malloc(str_m = static_cast<size_t>(str_l) + 1));
 	if (*ptr == NULL) {
 		errno = ENOMEM;
 		str_l = -1;
@@ -450,7 +450,7 @@ int vasprintf(char **ptr, const char *fmt, va_list ap) {
 		va_end(ap2);
 	}
 	assert(str_l >= 0);        /* possible integer overflow if str_m > INT_MAX */
-	*ptr = reinterpret_cast<char *>(malloc(str_m = static_cast<size_t>(str_l) + 1));
+	*ptr = static_cast<char *>(malloc(str_m = static_cast<size_t>(str_l) + 1));
 	if (*ptr == NULL) {
 		errno = ENOMEM;
 		str_l = -1;
@@ -476,7 +476,7 @@ int asnprintf(char **ptr, size_t str_m, const char *fmt, /*args*/ ...) {
 	/* if str_m is 0, no buffer is allocated, just set *ptr to NULL */
 	if (str_m == 0) {  /* not interested in resulting string, just return size */
 	} else {
-		*ptr = reinterpret_cast<char *>(malloc(str_m));
+		*ptr = static_cast<char *>(malloc(str_m));
 		if (*ptr == NULL) {
 			errno = ENOMEM;
 			str_l = -1;
@@ -508,7 +508,7 @@ int vasnprintf(char **ptr, size_t str_m, const char *fmt, va_list ap) {
 	/* if str_m is 0, no buffer is allocated, just set *ptr to NULL */
 	if (str_m == 0) {  /* not interested in resulting string, just return size */
 	} else {
-		*ptr = reinterpret_cast<char *>(malloc(str_m));
+		*ptr = static_cast<char *>(malloc(str_m));
 		if (*ptr == NULL) {
 			errno = ENOMEM;
 			str_l = -1;
@@ -745,7 +745,7 @@ int portable_vsnprintf(char *str, size_t str_m, const char *fmt, va_list ap) {
 					else if (precision == 0) str_arg_l = 0;
 					else {
 						/* memchr on HP does not like n > 2^31  !!! */
-						const char *q = reinterpret_cast<const char *>(memchr(str_arg, '\0',
+						const char *q = static_cast<const char *>(memchr(str_arg, '\0',
 						                                      precision <= 0x7fffffff ? precision : 0x7fffffff));
 						str_arg_l = !q ? precision : (q - str_arg);
 					}

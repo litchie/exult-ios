@@ -156,7 +156,7 @@ static void Egg_monster_dropped(
     void *udata
 ) {
 	if (file == U7_SHAPE_SHAPES && shape >= 150 && shape < 0xffff)
-		reinterpret_cast<ExultStudio *>(udata)->set_egg_monster(shape, frame);
+		static_cast<ExultStudio *>(udata)->set_egg_monster(shape, frame);
 }
 
 #ifdef WIN32

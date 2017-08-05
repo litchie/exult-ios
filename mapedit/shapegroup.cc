@@ -661,7 +661,7 @@ void ExultStudio::del_group(
 	vector<GtkWindow *> toclose;
 	vector<GtkWindow *>::const_iterator it;
 	for (it = group_windows.begin(); it != group_windows.end(); ++it) {
-		Object_browser *chooser = reinterpret_cast<Object_browser *>(
+		Object_browser *chooser = static_cast<Object_browser *>(
 		                          gtk_object_get_data(GTK_OBJECT(*it), "browser"));
 		if (chooser->get_group() == grp)
 			// A match?
@@ -691,7 +691,7 @@ void ExultStudio::groups_changed(
 		void *grpaddr = 0;
 		gtk_tree_model_get(model, loc, GRP_GROUP_COLUMN, &grpaddr,
 		                   -1);
-		Shape_group *grp = reinterpret_cast<Shape_group *>(grpaddr);
+		Shape_group *grp = static_cast<Shape_group *>(grpaddr);
 		if (value)      // Changed?
 			groups->set(grp, row);
 		else
@@ -718,7 +718,7 @@ C_EXPORT void
 on_group_up_clicked(GtkToggleButton *button,
                     gpointer     user_data) {
 	ignore_unused_variable_warning(user_data);
-	Object_browser *chooser = reinterpret_cast<Object_browser *>(gtk_object_get_data(
+	Object_browser *chooser = static_cast<Object_browser *>(gtk_object_get_data(
 	                              GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(button))),
 	                              "browser"));
 	Shape_group *grp = chooser->get_group();
@@ -732,7 +732,7 @@ C_EXPORT void
 on_group_down_clicked(GtkToggleButton *button,
                       gpointer     user_data) {
 	ignore_unused_variable_warning(user_data);
-	Object_browser *chooser = reinterpret_cast<Object_browser *>(gtk_object_get_data(
+	Object_browser *chooser = static_cast<Object_browser *>(gtk_object_get_data(
 	                              GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(button))),
 	                              "browser"));
 	Shape_group *grp = chooser->get_group();
@@ -746,7 +746,7 @@ C_EXPORT void
 on_group_shape_remove_clicked(GtkToggleButton *button,
                               gpointer     user_data) {
 	ignore_unused_variable_warning(user_data);
-	Object_browser *chooser = reinterpret_cast<Object_browser *>(gtk_object_get_data(
+	Object_browser *chooser = static_cast<Object_browser *>(gtk_object_get_data(
 	                              GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(button))),
 	                              "browser"));
 	Shape_group *grp = chooser->get_group();
@@ -846,9 +846,9 @@ void ExultStudio::close_group_window(
 			break;
 		}
 	}
-	GladeXML *xml = reinterpret_cast<GladeXML *>(gtk_object_get_data(GTK_OBJECT(grpwin),
+	GladeXML *xml = static_cast<GladeXML *>(gtk_object_get_data(GTK_OBJECT(grpwin),
 	                "xml"));
-	Object_browser *chooser = reinterpret_cast<Object_browser *>(gtk_object_get_data(
+	Object_browser *chooser = static_cast<Object_browser *>(gtk_object_get_data(
 	                              GTK_OBJECT(grpwin), "browser"));
 	delete chooser;
 	gtk_widget_destroy(grpwin);
@@ -899,7 +899,7 @@ void ExultStudio::update_group_windows(
 ) {
 	for (vector<GtkWindow *>::const_iterator it = group_windows.begin();
 	        it != group_windows.end(); ++it) {
-		Object_browser *chooser = reinterpret_cast<Object_browser *>(
+		Object_browser *chooser = static_cast<Object_browser *>(
 		                          gtk_object_get_data(GTK_OBJECT(*it), "browser"));
 		if (!grp || chooser->get_group() == grp) {
 			// A match?

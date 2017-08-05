@@ -48,9 +48,9 @@ void Image_window::show_scaled8to16_2xBR(
 	Manip8to16 manip(paletted_surface->format->palette->colors,
 	                 inter_surface->format);
 	Scale_xBR<uint16, Manip8to16, Scaler2xBR>
-	(reinterpret_cast<uint8 *>(draw_surface->pixels), x + guard_band, y + guard_band, w, h,
+	(static_cast<uint8 *>(draw_surface->pixels), x + guard_band, y + guard_band, w, h,
 	 ibuf->line_width, ibuf->height + guard_band,
-	 reinterpret_cast<uint16 *>(inter_surface->pixels),
+	 static_cast<uint16 *>(inter_surface->pixels),
 	 inter_surface->pitch /
 	 inter_surface->format->BytesPerPixel,
 	 manip);
@@ -62,9 +62,9 @@ void Image_window::show_scaled8to555_2xBR(
 	Manip8to555 manip(paletted_surface->format->palette->colors,
 	                  inter_surface->format);
 	Scale_xBR<uint16, Manip8to555, Scaler2xBR>
-	(reinterpret_cast<uint8 *>(draw_surface->pixels), x + guard_band, y + guard_band, w, h,
+	(static_cast<uint8 *>(draw_surface->pixels), x + guard_band, y + guard_band, w, h,
 	 ibuf->line_width, ibuf->height + guard_band,
-	 reinterpret_cast<uint16 *>(inter_surface->pixels),
+	 static_cast<uint16 *>(inter_surface->pixels),
 	 inter_surface->pitch /
 	 inter_surface->format->BytesPerPixel,
 	 manip);
@@ -76,9 +76,9 @@ void Image_window::show_scaled8to565_2xBR(
 	Manip8to565 manip(paletted_surface->format->palette->colors,
 	                  inter_surface->format);
 	Scale_xBR<uint16, Manip8to565, Scaler2xBR>
-	(reinterpret_cast<uint8 *>(draw_surface->pixels), x + guard_band, y + guard_band, w, h,
+	(static_cast<uint8 *>(draw_surface->pixels), x + guard_band, y + guard_band, w, h,
 	 ibuf->line_width, ibuf->height + guard_band,
-	 reinterpret_cast<uint16 *>(inter_surface->pixels),
+	 static_cast<uint16 *>(inter_surface->pixels),
 	 inter_surface->pitch /
 	 inter_surface->format->BytesPerPixel,
 	 manip);
@@ -90,9 +90,9 @@ void Image_window::show_scaled8to32_2xBR(
 	Manip8to32 manip(paletted_surface->format->palette->colors,
 	                 inter_surface->format);
 	Scale_xBR<uint32, Manip8to32, Scaler2xBR>
-	(reinterpret_cast<uint8 *>(draw_surface->pixels), x + guard_band, y + guard_band, w, h,
+	(static_cast<uint8 *>(draw_surface->pixels), x + guard_band, y + guard_band, w, h,
 	 ibuf->line_width, ibuf->height + guard_band,
-	 reinterpret_cast<uint32 *>(inter_surface->pixels),
+	 static_cast<uint32 *>(inter_surface->pixels),
 	 inter_surface->pitch /
 	 inter_surface->format->BytesPerPixel,
 	 manip);
@@ -107,9 +107,9 @@ void Image_window::show_scaled8to16_3xBR(
 	Manip8to16 manip(paletted_surface->format->palette->colors,
 	                 inter_surface->format);
 	Scale_xBR<uint16, Manip8to16, Scaler3xBR>
-	(reinterpret_cast<uint8 *>(draw_surface->pixels), x + guard_band, y + guard_band, w, h,
+	(static_cast<uint8 *>(draw_surface->pixels), x + guard_band, y + guard_band, w, h,
 	 ibuf->line_width, ibuf->height + guard_band,
-	 reinterpret_cast<uint16 *>(inter_surface->pixels),
+	 static_cast<uint16 *>(inter_surface->pixels),
 	 inter_surface->pitch /
 	 inter_surface->format->BytesPerPixel,
 	 manip);
@@ -121,9 +121,9 @@ void Image_window::show_scaled8to555_3xBR(
 	Manip8to555 manip(paletted_surface->format->palette->colors,
 	                  inter_surface->format);
 	Scale_xBR<uint16, Manip8to555, Scaler3xBR>
-	(reinterpret_cast<uint8 *>(draw_surface->pixels), x + guard_band, y + guard_band, w, h,
+	(static_cast<uint8 *>(draw_surface->pixels), x + guard_band, y + guard_band, w, h,
 	 ibuf->line_width, ibuf->height + guard_band,
-	 reinterpret_cast<uint16 *>(inter_surface->pixels),
+	 static_cast<uint16 *>(inter_surface->pixels),
 	 inter_surface->pitch /
 	 inter_surface->format->BytesPerPixel,
 	 manip);
@@ -135,9 +135,9 @@ void Image_window::show_scaled8to565_3xBR(
 	Manip8to565 manip(paletted_surface->format->palette->colors,
 	                  inter_surface->format);
 	Scale_xBR<uint16, Manip8to565, Scaler3xBR>
-	(reinterpret_cast<uint8 *>(draw_surface->pixels), x + guard_band, y + guard_band, w, h,
+	(static_cast<uint8 *>(draw_surface->pixels), x + guard_band, y + guard_band, w, h,
 	 ibuf->line_width, ibuf->height + guard_band,
-	 reinterpret_cast<uint16 *>(inter_surface->pixels),
+	 static_cast<uint16 *>(inter_surface->pixels),
 	 inter_surface->pitch /
 	 inter_surface->format->BytesPerPixel,
 	 manip);
@@ -149,9 +149,9 @@ void Image_window::show_scaled8to32_3xBR(
 	Manip8to32 manip(paletted_surface->format->palette->colors,
 	                 inter_surface->format);
 	Scale_xBR<uint32, Manip8to32, Scaler3xBR>
-	(reinterpret_cast<uint8 *>(draw_surface->pixels), x + guard_band, y + guard_band, w, h,
+	(static_cast<uint8 *>(draw_surface->pixels), x + guard_band, y + guard_band, w, h,
 	 ibuf->line_width, ibuf->height + guard_band,
-	 reinterpret_cast<uint32 *>(inter_surface->pixels),
+	 static_cast<uint32 *>(inter_surface->pixels),
 	 inter_surface->pitch /
 	 inter_surface->format->BytesPerPixel,
 	 manip);
@@ -166,9 +166,9 @@ void Image_window::show_scaled8to16_4xBR(
 	Manip8to16 manip(paletted_surface->format->palette->colors,
 	                 inter_surface->format);
 	Scale_xBR<uint16, Manip8to16, Scaler4xBR>
-	(reinterpret_cast<uint8 *>(draw_surface->pixels), x + guard_band, y + guard_band, w, h,
+	(static_cast<uint8 *>(draw_surface->pixels), x + guard_band, y + guard_band, w, h,
 	 ibuf->line_width, ibuf->height + guard_band,
-	 reinterpret_cast<uint16 *>(inter_surface->pixels),
+	 static_cast<uint16 *>(inter_surface->pixels),
 	 inter_surface->pitch /
 	 inter_surface->format->BytesPerPixel,
 	 manip);
@@ -180,9 +180,9 @@ void Image_window::show_scaled8to555_4xBR(
 	Manip8to555 manip(paletted_surface->format->palette->colors,
 	                  inter_surface->format);
 	Scale_xBR<uint16, Manip8to555, Scaler4xBR>
-	(reinterpret_cast<uint8 *>(draw_surface->pixels), x + guard_band, y + guard_band, w, h,
+	(static_cast<uint8 *>(draw_surface->pixels), x + guard_band, y + guard_band, w, h,
 	 ibuf->line_width, ibuf->height + guard_band,
-	 reinterpret_cast<uint16 *>(inter_surface->pixels),
+	 static_cast<uint16 *>(inter_surface->pixels),
 	 inter_surface->pitch /
 	 inter_surface->format->BytesPerPixel,
 	 manip);
@@ -194,9 +194,9 @@ void Image_window::show_scaled8to565_4xBR(
 	Manip8to565 manip(paletted_surface->format->palette->colors,
 	                  inter_surface->format);
 	Scale_xBR<uint16, Manip8to565, Scaler4xBR>
-	(reinterpret_cast<uint8 *>(draw_surface->pixels), x + guard_band, y + guard_band, w, h,
+	(static_cast<uint8 *>(draw_surface->pixels), x + guard_band, y + guard_band, w, h,
 	 ibuf->line_width, ibuf->height + guard_band,
-	 reinterpret_cast<uint16 *>(inter_surface->pixels),
+	 static_cast<uint16 *>(inter_surface->pixels),
 	 inter_surface->pitch /
 	 inter_surface->format->BytesPerPixel,
 	 manip);
@@ -208,9 +208,9 @@ void Image_window::show_scaled8to32_4xBR(
 	Manip8to32 manip(paletted_surface->format->palette->colors,
 	                 inter_surface->format);
 	Scale_xBR<uint32, Manip8to32, Scaler4xBR>
-	(reinterpret_cast<uint8 *>(draw_surface->pixels), x + guard_band, y + guard_band, w, h,
+	(static_cast<uint8 *>(draw_surface->pixels), x + guard_band, y + guard_band, w, h,
 	 ibuf->line_width, ibuf->height + guard_band,
-	 reinterpret_cast<uint32 *>(inter_surface->pixels),
+	 static_cast<uint32 *>(inter_surface->pixels),
 	 inter_surface->pitch /
 	 inter_surface->format->BytesPerPixel,
 	 manip);

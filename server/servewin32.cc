@@ -84,13 +84,13 @@ bool OpenPortFile(const char *path, bool writing) {
 // Hack functions
 int write(int file, const void *v, unsigned int len) {
 	ignore_unused_variable_warning(file);
-	return send(gDataSocket, reinterpret_cast<const char *>(v), len, 0);
+	return send(gDataSocket, static_cast<const char *>(v), len, 0);
 }
 
 int read(int file, void *v, unsigned int len) {
 	ignore_unused_variable_warning(file);
 	if (len == 0) return 0;
-	return recv(gDataSocket, reinterpret_cast<char *>(v), len, 0);;
+	return recv(gDataSocket, static_cast<char *>(v), len, 0);;
 	/*
 	WSABUF buffer;
 	buffer.buf = (char*)v;

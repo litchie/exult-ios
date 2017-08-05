@@ -1088,7 +1088,7 @@ void Timidity_GenerateSamples(void *stream, int samples)
 		do_compute_data(AUDIO_BUFFER_SIZE);
 		samples -= AUDIO_BUFFER_SIZE;
 		s32tobuf(stream, common_buffer, channels*AUDIO_BUFFER_SIZE);
-		stream = AUDIO_BUFFER_SIZE*sample_size + reinterpret_cast<uint8*>(stream);
+		stream = AUDIO_BUFFER_SIZE*sample_size + static_cast<uint8*>(stream);
 		buffer_pointer=common_buffer;
 		buffered_count=0;
 	}

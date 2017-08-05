@@ -58,7 +58,7 @@ using std::rand;
 
 Chunk_cache::Chunk_cache(
 ) : egg_objects(4) {
-	memset(reinterpret_cast<char *>(&eggs[0]), 0, sizeof(eggs));
+	memset(&eggs[0], 0, sizeof(eggs));
 }
 
 /*

@@ -60,7 +60,7 @@ int U7ListFiles(const std::string &mask, FileList &files) {
 #ifdef UNICODE
 	const char *name = path.c_str();
 	nLen = strlen(name) + 1;
-	LPTSTR lpszT2 = reinterpret_cast<LPTSTR>(_alloca(nLen * 2));
+	LPTSTR lpszT2 = static_cast<LPTSTR>(_alloca(nLen * 2));
 	lpszT = lpszT2;
 	MultiByteToWideChar(CP_ACP, 0, name, -1, lpszT2, nLen);
 #else
@@ -121,7 +121,7 @@ int U7ListFiles(const std::string &mask, FileList &files) {
 		);
 #ifdef UNICODE
 		nLen2 = _tcslen(lpMsgBuf) + 1;
-		str = reinterpret_cast<char *>(_alloca(nLen));
+		str = static_cast<char *>(_alloca(nLen));
 		WideCharToMultiByte(CP_ACP, 0, lpMsgBuf, -1, str, nLen2, NULL, NULL);
 #else
 		str = lpMsgBuf;

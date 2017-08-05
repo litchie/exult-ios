@@ -801,14 +801,14 @@ void U7copy(
 		throw(e);
 	}
 	size_t bufsize = 0x8000;
-	unsigned char *buf = new unsigned char[0x8000];
+	char *buf = new char[0x8000];
 	in.seekg(0, ios::end);      // Get filesize.
 	size_t filesize = in.tellg();
 	in.seekg(0, ios::beg);
 	while (filesize > 0) {      // Copy.
 		size_t toread = bufsize < filesize ? bufsize : filesize;
-		in.read(reinterpret_cast<char *>(buf), toread);
-		out.write(reinterpret_cast<char *>(buf), toread);
+		in.read(buf, toread);
+		out.write(buf, toread);
 		filesize -= toread;
 	}
 	out.flush();

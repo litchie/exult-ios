@@ -162,7 +162,7 @@ static void Obj_shape_dropped(
 ) {
 	if (file == U7_SHAPE_SHAPES &&
 	        shape >= c_first_obj_shape && shape < c_max_shapes)
-		reinterpret_cast<ExultStudio *>(udata)->set_obj_shape(shape, frame);
+		static_cast<ExultStudio *>(udata)->set_obj_shape(shape, frame);
 }
 
 #ifdef WIN32

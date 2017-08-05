@@ -40,9 +40,9 @@ void Image_window::show_scaled8to8_2x_noblur(
 	Manip8to8 manip(paletted_surface->format->palette->colors,
 	                paletted_surface->format);
 	Scale2x_noblur<uint8, Manip8to8>
-	(reinterpret_cast<uint8 *>(draw_surface->pixels), x + guard_band, y + guard_band, w, h,
+	(static_cast<uint8 *>(draw_surface->pixels), x + guard_band, y + guard_band, w, h,
 	 ibuf->line_width, ibuf->height + guard_band,
-	 reinterpret_cast<uint8 *>(inter_surface->pixels),
+	 static_cast<uint8 *>(inter_surface->pixels),
 	 inter_surface->pitch,
 	 manip);
 }
@@ -53,9 +53,9 @@ void Image_window::show_scaled8to16_2x_noblur(
 	Manip8to16 manip(paletted_surface->format->palette->colors,
 	                 inter_surface->format);
 	Scale2x_noblur<unsigned char, uint16, Manip8to16>
-	(reinterpret_cast<uint8 *>(draw_surface->pixels), x + guard_band, y + guard_band, w, h,
+	(static_cast<uint8 *>(draw_surface->pixels), x + guard_band, y + guard_band, w, h,
 	 ibuf->line_width, ibuf->height + guard_band,
-	 reinterpret_cast<uint16 *>(inter_surface->pixels),
+	 static_cast<uint16 *>(inter_surface->pixels),
 	 inter_surface->pitch /
 	 inter_surface->format->BytesPerPixel,
 	 manip);
@@ -67,9 +67,9 @@ void Image_window::show_scaled8to555_2x_noblur(
 	Manip8to555 manip(paletted_surface->format->palette->colors,
 	                  inter_surface->format);
 	Scale2x_noblur<unsigned char, uint16, Manip8to555>
-	(reinterpret_cast<uint8 *>(draw_surface->pixels), x + guard_band, y + guard_band, w, h,
+	(static_cast<uint8 *>(draw_surface->pixels), x + guard_band, y + guard_band, w, h,
 	 ibuf->line_width, ibuf->height + guard_band,
-	 reinterpret_cast<uint16 *>(inter_surface->pixels),
+	 static_cast<uint16 *>(inter_surface->pixels),
 	 inter_surface->pitch /
 	 inter_surface->format->BytesPerPixel,
 	 manip);
@@ -81,9 +81,9 @@ void Image_window::show_scaled8to565_2x_noblur(
 	Manip8to565 manip(paletted_surface->format->palette->colors,
 	                  inter_surface->format);
 	Scale2x_noblur<unsigned char, uint16, Manip8to565>
-	(reinterpret_cast<uint8 *>(draw_surface->pixels), x + guard_band, y + guard_band, w, h,
+	(static_cast<uint8 *>(draw_surface->pixels), x + guard_band, y + guard_band, w, h,
 	 ibuf->line_width, ibuf->height + guard_band,
-	 reinterpret_cast<uint16 *>(inter_surface->pixels),
+	 static_cast<uint16 *>(inter_surface->pixels),
 	 inter_surface->pitch /
 	 inter_surface->format->BytesPerPixel,
 	 manip);
@@ -95,9 +95,9 @@ void Image_window::show_scaled8to32_2x_noblur(
 	Manip8to32 manip(paletted_surface->format->palette->colors,
 	                 inter_surface->format);
 	Scale2x_noblur<unsigned char, uint32, Manip8to32>
-	(reinterpret_cast<uint8 *>(draw_surface->pixels), x + guard_band, y + guard_band, w, h,
+	(static_cast<uint8 *>(draw_surface->pixels), x + guard_band, y + guard_band, w, h,
 	 ibuf->line_width, ibuf->height + guard_band,
-	 reinterpret_cast<uint32 *>(inter_surface->pixels),
+	 static_cast<uint32 *>(inter_surface->pixels),
 	 inter_surface->pitch /
 	 inter_surface->format->BytesPerPixel,
 	 manip);

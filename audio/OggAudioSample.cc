@@ -103,7 +103,7 @@ bool OggAudioSample::isThis(IDataSource *oggdata)
 
 void OggAudioSample::initDecompressor(void *DecompData) const
 {
-	OggDecompData *decomp = reinterpret_cast<OggDecompData *>(DecompData);
+	OggDecompData *decomp = static_cast<OggDecompData *>(DecompData);
 
 	if (locked)
 		throw exult_exception("Attempted to play OggAudioSample on more than one channel at the same time.");
@@ -136,7 +136,7 @@ void OggAudioSample::rewind(void *DecompData) const
 
 void OggAudioSample::freeDecompressor(void *DecompData) const
 {
-	OggDecompData *decomp = reinterpret_cast<OggDecompData *>(DecompData);
+	OggDecompData *decomp = static_cast<OggDecompData *>(DecompData);
 	if (decomp->freed)
 		return;
 	decomp->freed = true;
@@ -150,7 +150,7 @@ void OggAudioSample::freeDecompressor(void *DecompData) const
 
 uint32 OggAudioSample::decompressFrame(void *DecompData, void *samples) const
 {
-	OggDecompData *decomp = reinterpret_cast<OggDecompData *>(DecompData);
+	OggDecompData *decomp = static_cast<OggDecompData *>(DecompData);
 
 	vorbis_info *info = ov_info(&decomp->ov,-1);
 
@@ -167,7 +167,7 @@ uint32 OggAudioSample::decompressFrame(void *DecompData, void *samples) const
 	const int bigendianp = 1;
 #endif
 
-	long count = ov_read(&decomp->ov,reinterpret_cast<char*>(samples),frame_size,bigendianp,2,1,&decomp->bitstream);
+	long count = ov_read(&decomp->ov,static_cast<char*>(samples),frame_size,bigendianp,2,1,&decomp->bitstream);
 
 	//if (count == OV_EINVAL || count == 0) {
 	if (count <= 0) return 0;

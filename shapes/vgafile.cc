@@ -795,7 +795,7 @@ inline void Shape::create_frames_list(
 ) {
 	num_frames = frames_size = nframes;
 	frames = new Shape_frame *[frames_size];
-	memset(reinterpret_cast<char *>(frames), 0, frames_size * sizeof(Shape_frame *));
+	memset(frames, 0, frames_size * sizeof(Shape_frame *));
 }
 
 /*
@@ -945,7 +945,7 @@ Shape_frame *Shape::store_frame(
 	}
 	if (!frames) {  // First one?
 		frames = new Shape_frame *[num_frames];
-		memset(reinterpret_cast<char *>(frames), 0, num_frames * sizeof(Shape_frame *));
+		memset(frames, 0, num_frames * sizeof(Shape_frame *));
 	}
 	frames[framenum] = frame;
 	return (frame);

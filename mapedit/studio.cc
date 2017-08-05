@@ -845,7 +845,7 @@ void on_choose_new_game_dir(
     const char *dir,
     gpointer udata          // ->studio.
 ) {
-	(reinterpret_cast<ExultStudio *>(udata))->create_new_game(dir);
+	(static_cast<ExultStudio *>(udata))->create_new_game(dir);
 }
 void ExultStudio::create_new_game(
     const char *dir         // Directory for new game.
@@ -1269,9 +1269,9 @@ void ExultStudio::set_game_path(string gamename, string modname) {
 	vector<GtkWindow *>::const_iterator it;
 	for (it = group_windows.begin(); it != group_windows.end(); ++it) {
 		GtkWidget *grpwin = GTK_WIDGET(*it);
-		GladeXML *xml = reinterpret_cast<GladeXML *>(gtk_object_get_data(GTK_OBJECT(grpwin),
+		GladeXML *xml = static_cast<GladeXML *>(gtk_object_get_data(GTK_OBJECT(grpwin),
 		                "xml"));
-		Object_browser *chooser = reinterpret_cast<Object_browser *>(gtk_object_get_data(
+		Object_browser *chooser = static_cast<Object_browser *>(gtk_object_get_data(
 		                              GTK_OBJECT(grpwin), "browser"));
 		delete chooser;
 		gtk_widget_destroy(grpwin);
@@ -2363,7 +2363,7 @@ C_EXPORT gboolean on_prefs_background_expose_event(
 ) {
 	ignore_unused_variable_warning(data);
 	guint32 color = static_cast<guint32>(reinterpret_cast<uintptr>(gtk_object_get_user_data(GTK_OBJECT(widget))));
-	GdkGC *gc = reinterpret_cast<GdkGC *>(
+	GdkGC *gc = static_cast<GdkGC *>(
 	            gtk_object_get_data(GTK_OBJECT(widget), "color_gc"));
 	if (!gc) {
 		gc = gdk_gc_new(widget->window);
@@ -2444,7 +2444,7 @@ void ExultStudio::run() {
 static gint Reconnect(
     gpointer data           // ->ExultStudio.
 ) {
-	ExultStudio *studio = reinterpret_cast<ExultStudio *>(data);
+	ExultStudio *studio = static_cast<ExultStudio *>(data);
 	if (studio->connect_to_server())
 		return 0;       // Cancel timer.  We succeeded.
 	else
@@ -2480,14 +2480,14 @@ static void Read_from_server(
     GdkInputCondition condition
 ) {
 	ignore_unused_variable_warning(socket, condition);
-	ExultStudio *studio = reinterpret_cast<ExultStudio *>(data);
+	ExultStudio *studio = static_cast<ExultStudio *>(data);
 	studio->read_from_server();
 }
 #else
 static gint Read_from_server(
     gpointer data           // ->ExultStudio.
 ) {
-	ExultStudio *studio = reinterpret_cast<ExultStudio *>(data);
+	ExultStudio *studio = static_cast<ExultStudio *>(data);
 	studio->read_from_server();
 	return TRUE;
 }

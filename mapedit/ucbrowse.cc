@@ -69,7 +69,7 @@ C_EXPORT void on_usecodes_ok_clicked(
     gpointer user_data
 ) {
 	ignore_unused_variable_warning(user_data);
-	Usecode_browser *ucb = reinterpret_cast<Usecode_browser *>(gtk_object_get_user_data(
+	Usecode_browser *ucb = static_cast<Usecode_browser *>(gtk_object_get_user_data(
 	                           GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(btn)))));
 	ucb->okay();
 }
@@ -84,7 +84,7 @@ C_EXPORT void on_usecodes_treeview_row_activated(
     gpointer user_data
 ) {
 	ignore_unused_variable_warning(path, column, user_data);
-	Usecode_browser *ucb = reinterpret_cast<Usecode_browser *>(gtk_object_get_user_data(
+	Usecode_browser *ucb = static_cast<Usecode_browser *>(gtk_object_get_user_data(
 	                           GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(treeview)))));
 	ucb->okay();
 }
@@ -97,7 +97,7 @@ C_EXPORT void on_usecodes_cancel_clicked(
     gpointer user_data
 ) {
 	ignore_unused_variable_warning(user_data);
-	Usecode_browser *ucb = reinterpret_cast<Usecode_browser *>(gtk_object_get_user_data(
+	Usecode_browser *ucb = static_cast<Usecode_browser *>(gtk_object_get_user_data(
 	                           GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(btn)))));
 	ucb->cancel();
 }
@@ -111,7 +111,7 @@ C_EXPORT gboolean on_usecodes_dialog_delete_event(
     gpointer user_data
 ) {
 	ignore_unused_variable_warning(event, user_data);
-	Usecode_browser *ucb = reinterpret_cast<Usecode_browser *>(
+	Usecode_browser *ucb = static_cast<Usecode_browser *>(
 	                       gtk_object_get_user_data(GTK_OBJECT(widget)));
 
 	ucb->cancel();
@@ -126,7 +126,7 @@ C_EXPORT void on_view_uc_classes_toggled(
     gpointer user_data
 ) {
 	ignore_unused_variable_warning(user_data);
-	Usecode_browser *ucb = reinterpret_cast<Usecode_browser *>(gtk_object_get_user_data(
+	Usecode_browser *ucb = static_cast<Usecode_browser *>(gtk_object_get_user_data(
 	                           GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(btn)))));
 	ucb->setup_list();
 }
@@ -135,7 +135,7 @@ C_EXPORT void on_view_uc_functions_toggled(
     gpointer user_data
 ) {
 	ignore_unused_variable_warning(user_data);
-	Usecode_browser *ucb = reinterpret_cast<Usecode_browser *>(gtk_object_get_user_data(
+	Usecode_browser *ucb = static_cast<Usecode_browser *>(gtk_object_get_user_data(
 	                           GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(btn)))));
 	ucb->setup_list();
 }
@@ -144,7 +144,7 @@ C_EXPORT void on_view_uc_shapes_toggled(
     gpointer user_data
 ) {
 	ignore_unused_variable_warning(user_data);
-	Usecode_browser *ucb = reinterpret_cast<Usecode_browser *>(gtk_object_get_user_data(
+	Usecode_browser *ucb = static_cast<Usecode_browser *>(gtk_object_get_user_data(
 	                           GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(btn)))));
 	ucb->setup_list();
 }
@@ -154,7 +154,7 @@ C_EXPORT void on_view_uc_objects_toggled(
     gpointer user_data
 ) {
 	ignore_unused_variable_warning(user_data);
-	Usecode_browser *ucb = reinterpret_cast<Usecode_browser *>(gtk_object_get_user_data(
+	Usecode_browser *ucb = static_cast<Usecode_browser *>(gtk_object_get_user_data(
 	                           GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(btn)))));
 	ucb->setup_list();
 }

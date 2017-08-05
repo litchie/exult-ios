@@ -1358,7 +1358,7 @@ bool Game_map::insert_terrain(
 				}
 			}
 	} else
-		memset(reinterpret_cast<char *>(buf), 0, ntiles * nbytes);
+		memset(buf, 0, ntiles * nbytes);
 	Chunk_terrain *new_terrain = new Chunk_terrain(&buf[0], v2_chunks);
 	// Insert in list.
 	chunk_terrains->insert(chunk_terrains->begin() + tnum + 1, new_terrain);

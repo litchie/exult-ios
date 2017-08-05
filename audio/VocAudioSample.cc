@@ -163,7 +163,7 @@ VocAudioSample::~VocAudioSample()
 
 void VocAudioSample::initDecompressor(void *DecompData) const
 {
-	VocDecompData *decomp = reinterpret_cast<VocDecompData *>(DecompData);
+	VocDecompData *decomp = static_cast<VocDecompData *>(DecompData);
 	decomp->pos = 0x1a;
 	decomp->compression = 0;
 	decomp->adpcm_reference = -1;
@@ -223,7 +223,7 @@ void VocAudioSample::decode_ADPCM_4(uint8* inBuf,
 
 bool VocAudioSample::advanceChunk(void *DecompData) const
 {
-	VocDecompData *decomp = reinterpret_cast<VocDecompData *>(DecompData);
+	VocDecompData *decomp = static_cast<VocDecompData *>(DecompData);
 
 	if (decomp->pos == buffer_size) return false;
 
@@ -291,7 +291,7 @@ bool VocAudioSample::advanceChunk(void *DecompData) const
 
 uint32 VocAudioSample::decompressFrame(void *DecompData, void *samples) const
 {
-	VocDecompData *decomp = reinterpret_cast<VocDecompData *>(DecompData);
+	VocDecompData *decomp = static_cast<VocDecompData *>(DecompData);
 
 	// At end of stream??
 	if (!decomp->chunk_remain && !advanceChunk(decomp)) return 0; 
@@ -324,7 +324,7 @@ uint32 VocAudioSample::decompressFrame(void *DecompData, void *samples) const
 	{
 		bytes_used = num_samples/2;
 		if (decomp->adpcm_reference == -1) bytes_used++;
-		decode_ADPCM_4(buffer+decomp->pos, bytes_used, reinterpret_cast<uint8*>(samples), decomp->adpcm_reference, decomp->adpcm_scale);
+		decode_ADPCM_4(buffer+decomp->pos, bytes_used, static_cast<uint8*>(samples), decomp->adpcm_reference, decomp->adpcm_scale);
 	}
 	else
 	{
