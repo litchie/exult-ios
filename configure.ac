@@ -38,6 +38,9 @@ EXE_TARGET="exult$EXEEXT"
 EXULT_DATADIR="$datadir/exult"
 ARCH=""
 
+# Default C anc C++ compiler set
+cxx_compilers="g++ clang++ c++ gpp aCC CC cxx cc++ cl.exe FCC KCC RCC xlC_r xlC"
+
 # determine windowing system from 'host'
 AC_MSG_CHECKING([windowing system])
 case "$host_os" in
@@ -97,6 +100,8 @@ case "$host_os" in
 		CXXFLAGS="$CXXFLAGS"
 		EXULT_DATADIR="/Library/Application\ Support/Exult/data"
 		ARCH=macosx
+		dnl swap around clang for OSX
+		cxx_compilers="clang++ g++ c++ gpp aCC CC cxx cc++ cl.exe FCC KCC RCC xlC_r xlC"
 		;;
 	*)
 		WINDOWING_SYSTEM="-DXWIN"
@@ -111,16 +116,18 @@ AM_CONDITIONAL(MACOSX, test x$ARCH = xmacosx)
 # ---------------------------------------------------------------------
 
 AC_PROG_AWK
-AC_PROG_CC
-AC_PROG_CPP
 
 AC_ARG_WITH(cxx, AS_HELP_STRING([--with-cxx=COMMAND], [Explicitly specify the C++ compiler to use]),[CXX="$withval"],[CXX=""])
 
-if test -z "$CXX"; then
-	AC_PROG_CXX
-else
-	AC_PROG_CXX([$CXX])
+if test "x$CXX" != "x"; then
+	cxx_compilers="$CXX"
 fi
+
+AC_PROG_CXX([$cxx_compilers])
+
+AC_LANG([C++])
+AX_CXX_COMPILE_STDCXX_11([noext],[optional])
+AC_PROG_CXXCPP
 
 # TODO: Maybe making a function to do these.
 # Lets clean up CFLAGS of -O[0-3gs]? and -g[0-3]?
@@ -139,8 +146,6 @@ for cxxflag in $CXXFLAGS; do
 done
 CXXFLAGS="$NEWCXXFLAGS"
 
-AX_CXX_COMPILE_STDCXX_11([noext],[optional])
-
 AC_PROG_INSTALL
 AM_PROG_LEX
 AC_PROG_YACC
@@ -150,13 +155,6 @@ AM_DISABLE_SHARED
 
 AM_PROG_LIBTOOL
 AC_SUBST(LIBTOOL_DEPS)
-
-
-# ---------------------------------------------------------------------
-# Compilation environment
-# ---------------------------------------------------------------------
-
-AC_LANG([C++])
 
 # ---------------------------------------------------------------------
 # Checks for integer types with specific sizes.
