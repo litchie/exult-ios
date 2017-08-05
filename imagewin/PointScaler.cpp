@@ -32,7 +32,7 @@ public:
 		ignore_unused_variable_warning(clamp_src);
 		// Source buffer pointers
 		int tpitch = tex->pitch / sizeof(uintS);
-		uintS *texel = reinterpret_cast<uintS *>(tex->pixels) + (sy * tpitch + sx);
+		uintS *texel = static_cast<uintS *>(tex->pixels) + (sy * tpitch + sx);
 		uintS *tline_end = texel + sw;
 		uintS *tex_end = texel + sh * tpitch;
 		int tex_diff = tpitch - sw;

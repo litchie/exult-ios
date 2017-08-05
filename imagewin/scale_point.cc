@@ -38,9 +38,9 @@ void Image_window::show_scaled8to8_point(
 	Manip8to8 manip(paletted_surface->format->palette->colors,
 	                paletted_surface->format);
 	Scale_point<unsigned char, uint8, Manip8to8>
-	(reinterpret_cast<uint8 *>(draw_surface->pixels), x, y, w, h,
+	(static_cast<uint8 *>(draw_surface->pixels), x, y, w, h,
 	 ibuf->line_width, ibuf->height + guard_band,
-	 reinterpret_cast<uint8 *>(display_surface->pixels),
+	 static_cast<uint8 *>(display_surface->pixels),
 	 display_surface->pitch,
 	 manip, scale);
 
@@ -53,9 +53,9 @@ void Image_window::show_scaled8to16_point(
 	Manip8to16 manip(paletted_surface->format->palette->colors,
 	                 display_surface->format);
 	Scale_point<unsigned char, uint16, Manip8to16>
-	(reinterpret_cast<uint8 *>(draw_surface->pixels), x, y, w, h,
+	(static_cast<uint8 *>(draw_surface->pixels), x, y, w, h,
 	 ibuf->line_width, ibuf->height + guard_band,
-	 reinterpret_cast<uint16 *>(display_surface->pixels),
+	 static_cast<uint16 *>(display_surface->pixels),
 	 display_surface->pitch /
 	 display_surface->format->BytesPerPixel,
 	 manip, scale);
@@ -68,9 +68,9 @@ void Image_window::show_scaled8to555_point(
 	Manip8to555 manip(paletted_surface->format->palette->colors,
 	                  display_surface->format);
 	Scale_point<unsigned char, uint16, Manip8to555>
-	(reinterpret_cast<uint8 *>(draw_surface->pixels), x, y, w, h,
+	(static_cast<uint8 *>(draw_surface->pixels), x, y, w, h,
 	 ibuf->line_width, ibuf->height + guard_band,
-	 reinterpret_cast<uint16 *>(display_surface->pixels),
+	 static_cast<uint16 *>(display_surface->pixels),
 	 display_surface->pitch /
 	 display_surface->format->BytesPerPixel,
 	 manip, scale);
@@ -83,9 +83,9 @@ void Image_window::show_scaled8to565_point(
 	Manip8to565 manip(paletted_surface->format->palette->colors,
 	                  display_surface->format);
 	Scale_point<unsigned char, uint16, Manip8to565>
-	(reinterpret_cast<uint8 *>(draw_surface->pixels), x, y, w, h,
+	(static_cast<uint8 *>(draw_surface->pixels), x, y, w, h,
 	 ibuf->line_width, ibuf->height + guard_band,
-	 reinterpret_cast<uint16 *>(display_surface->pixels),
+	 static_cast<uint16 *>(display_surface->pixels),
 	 display_surface->pitch /
 	 display_surface->format->BytesPerPixel,
 	 manip, scale);
@@ -98,9 +98,9 @@ void Image_window::show_scaled8to32_point(
 	Manip8to32 manip(paletted_surface->format->palette->colors,
 	                 display_surface->format);
 	Scale_point<unsigned char, uint32, Manip8to32>
-	(reinterpret_cast<uint8 *>(draw_surface->pixels), x, y, w, h,
+	(static_cast<uint8 *>(draw_surface->pixels), x, y, w, h,
 	 ibuf->line_width, ibuf->height + guard_band,
-	 reinterpret_cast<uint32 *>(display_surface->pixels),
+	 static_cast<uint32 *>(display_surface->pixels),
 	 display_surface->pitch /
 	 display_surface->format->BytesPerPixel,
 	 manip, scale);

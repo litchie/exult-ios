@@ -115,7 +115,7 @@ public:
 	};
 
 	void read(void *b, size_t len) {
-		in->read(reinterpret_cast<char *>(b), len);
+		in->read(static_cast<char *>(b), len);
 	};
 
 	virtual void read(std::string& s, size_t len) {
@@ -144,7 +144,7 @@ public:
 	};
 
 	virtual void write(const void *b, size_t len) {
-		out->write(reinterpret_cast<const char *>(b), len);
+		out->write(static_cast<const char *>(b), len);
 	};
 
 	virtual void write(const std::string &s) {
@@ -209,15 +209,15 @@ public:
 	BufferDataSource(const void *data, size_t len) {
 		// data can be NULL if len is also 0
 		assert(data != 0 || len == 0);
-		buf = reinterpret_cast<const unsigned char *>(data);
+		buf = static_cast<const unsigned char *>(data);
 		buf_ptr = const_cast<unsigned char *>(buf);
 		size = len;
 	};
 
-	void load(char *data, size_t len) {
+	void load(void *data, size_t len) {
 		// data can be NULL if len is also 0
 		assert(data != 0 || len == 0);
-		buf = buf_ptr = reinterpret_cast<unsigned char *>(data);
+		buf = buf_ptr = static_cast<unsigned char *>(data);
 		size = len;
 	};
 
@@ -387,8 +387,8 @@ public:
 	inline uint32 pop4() {
 		return read4();
 	}
-	inline void pop(uint8 *out, const uint32 size) {
-		read(reinterpret_cast<char *>(out), size);
+	inline void pop(void *out, const uint32 size) {
+		read(static_cast<char *>(out), size);
 	};
 
 	//
@@ -468,23 +468,20 @@ public:
 	ExultDataSource(const File_spec &fname, int index)
 		: BufferDataSource(0, 0) {
 		U7object obj(fname, index);
-		buf = reinterpret_cast<unsigned char *>(obj.retrieve(size));
-		buf_ptr = const_cast<unsigned char *>(buf);
+		buf = buf_ptr = reinterpret_cast<unsigned char *>(obj.retrieve(size));
 	}
 
 	ExultDataSource(const File_spec &fname0, const File_spec &fname1, int index)
 		: BufferDataSource(0, 0) {
 		U7multiobject obj(fname0, fname1, index);
-		buf = reinterpret_cast<unsigned char *>(obj.retrieve(size));
-		buf_ptr = const_cast<unsigned char *>(buf);
+		buf = buf_ptr = reinterpret_cast<unsigned char *>(obj.retrieve(size));
 	}
 
 	ExultDataSource(const File_spec &fname0, const File_spec &fname1,
 	                const File_spec &fname2, int index)
 		: BufferDataSource(0, 0) {
 		U7multiobject obj(fname0, fname1, fname2, index);
-		buf = reinterpret_cast<unsigned char *>(obj.retrieve(size));
-		buf_ptr = const_cast<unsigned char *>(buf);
+		buf = buf_ptr = reinterpret_cast<unsigned char *>(obj.retrieve(size));
 	}
 
 	~ExultDataSource() {

@@ -1297,7 +1297,7 @@ void Field_object::activate(
 	npcs.push_back(gwin->get_main_actor()); // Include Avatar.
 	Rectangle eggfoot = get_footprint();
 	// Clear flag to check.
-	reinterpret_cast<Field_frame_animator *>(animator)->activated = false;
+	static_cast<Field_frame_animator *>(animator)->activated = false;
 	for (Actor_vector::const_iterator it = npcs.begin();
 	        it != npcs.end(); ++it) {
 		Actor *actor = *it;

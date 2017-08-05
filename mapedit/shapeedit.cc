@@ -239,7 +239,7 @@ C_EXPORT gboolean on_equip_draw_expose_event(
 ) {
 	ignore_unused_variable_warning(widget);
 	ExultStudio::get_instance()->show_equip_shape(
-	    reinterpret_cast<Equip_row_widgets *>(data),
+	    static_cast<Equip_row_widgets *>(data),
 	    event->area.x, event->area.y, event->area.width,
 	    event->area.height);
 	return (TRUE);
@@ -252,7 +252,7 @@ C_EXPORT gboolean on_equip_shape_changed(
     gpointer data           // ->row info.
 ) {
 	ignore_unused_variable_warning(widget);
-	Equip_row_widgets *eq = reinterpret_cast<Equip_row_widgets *>(data);
+	Equip_row_widgets *eq = static_cast<Equip_row_widgets *>(data);
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->show_equip_shape(eq);
 	int shape = gtk_spin_button_get_value_as_int(
@@ -273,7 +273,7 @@ static void Equip_shape_dropped(
     void *udata         // ->row.
 ) {
 	ignore_unused_variable_warning(frame);
-	Equip_row_widgets *eq = reinterpret_cast<Equip_row_widgets *>(udata);
+	Equip_row_widgets *eq = static_cast<Equip_row_widgets *>(udata);
 	if (file == U7_SHAPE_SHAPES && shape >= 0 && shape < c_max_shapes) {
 		// Set shape #.
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(eq->shape), shape);
@@ -2535,7 +2535,7 @@ static void Explosion_shape_dropped(
 void ExultStudio::set_shape_notebook_frame(
     int frnum           // Frame # to set.
 ) {
-	Shape_file_info *file_info = reinterpret_cast<Shape_file_info *>(
+	Shape_file_info *file_info = static_cast<Shape_file_info *>(
 	                             gtk_object_get_data(GTK_OBJECT(shapewin), "file_info"));
 	int shnum = get_num_entry("shinfo_shape");
 	Vga_file *ifile = file_info->get_ifile();
@@ -2545,7 +2545,7 @@ void ExultStudio::set_shape_notebook_frame(
 	set_spin("shinfo_originy", shape->get_ybelow(), -shape->get_height(),
 	         shape->get_height());
 
-	Shape_info *info = reinterpret_cast<Shape_info *>(
+	Shape_info *info = static_cast<Shape_info *>(
 	                   gtk_object_get_user_data(GTK_OBJECT(shapewin)));
 	if (!info)
 		return;
@@ -4247,9 +4247,9 @@ void ExultStudio::save_shape_window(
 ) {
 	int shnum = get_num_entry("shinfo_shape");
 	int frnum = get_num_entry("shinfo_frame");
-	Shape_info *info = reinterpret_cast<Shape_info *>(
+	Shape_info *info = static_cast<Shape_info *>(
 	                   gtk_object_get_user_data(GTK_OBJECT(shapewin)));
-	Shape_file_info *file_info = reinterpret_cast<Shape_file_info *>(
+	Shape_file_info *file_info = static_cast<Shape_file_info *>(
 	                             gtk_object_get_data(GTK_OBJECT(shapewin), "file_info"));
 	Vga_file *ifile = file_info->get_ifile();
 	if (info) {         // If 'shapes.vga', get name.

@@ -146,8 +146,7 @@ void Image_buffer16::copy(
 	unsigned short *from = get_pixels() + yfrom * line_width + srcx;
 	// Go through lines.
 	while (srch--) {
-		memmove(reinterpret_cast<char *>(to),
-		        reinterpret_cast<char *>(from), srcw * 2);
+		memmove(to, from, srcw * 2);
 		to += ynext;
 		from += ynext;
 	}

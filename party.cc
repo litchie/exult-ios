@@ -49,8 +49,8 @@ using std::endl;
 Party_manager::Party_manager(
 ) : party_count(0), dead_party_count(0), validcnt(0) {
 	// Clear party list.
-	std::memset(reinterpret_cast<char *>(&party[0]), 0, sizeof(party));
-	std::memset(reinterpret_cast<char *>(&dead_party[0]), 0, sizeof(dead_party));
+	std::memset(&party[0], 0, sizeof(party));
+	std::memset(&dead_party[0], 0, sizeof(dead_party));
 }
 
 /*

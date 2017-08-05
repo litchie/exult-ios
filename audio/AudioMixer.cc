@@ -50,7 +50,7 @@ num_channels(num_channels_), channels(0), id_counter(0)
 	desired.freq = sample_rate_;
 	desired.channels = stereo_?2:1;
 	desired.callback = sdlAudioCallback;
-	desired.userdata = reinterpret_cast<void*>(this);
+	desired.userdata = this;
 
 	// Set update rate to 20 Hz, or there abouts. This should be more then adequate for everyone
 	desired.samples=1;
@@ -368,7 +368,7 @@ void AudioMixer::get2DPosition(sint32 instance_id, int &distance, int &angle)
 
 void AudioMixer::sdlAudioCallback(void *userdata, Uint8 *stream, int len)
 {
-	AudioMixer *mixer = reinterpret_cast<AudioMixer *>(userdata);
+	AudioMixer *mixer = static_cast<AudioMixer *>(userdata);
 
 	mixer->MixAudio(reinterpret_cast<sint16*>(stream), len);
 }

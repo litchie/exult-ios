@@ -138,7 +138,7 @@ static bool save_image(SDL_Surface *surface, SDL_RWops *dst) {
 
 	width = surface->w;
 	height = surface->h;
-	pixels = reinterpret_cast<Uint8 *>(surface->pixels);
+	pixels = static_cast<Uint8 *>(surface->pixels);
 	pitch = surface->pitch;
 
 	header.manufacturer = 0x0a;

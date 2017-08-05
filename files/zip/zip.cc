@@ -470,9 +470,9 @@ extern int ZEXPORT zipWriteInFileInZip(zipFile file, const voidp buf, unsigned l
 	if (file->in_opened_file_inzip == 0)
 		return ZIP_PARAMERROR;
 
-	file->ci.stream.next_in = reinterpret_cast<Bytef *>(buf);
+	file->ci.stream.next_in = static_cast<Bytef *>(buf);
 	file->ci.stream.avail_in = len;
-	file->ci.crc32 = crc32(file->ci.crc32, reinterpret_cast<Bytef *>(buf), len);
+	file->ci.crc32 = crc32(file->ci.crc32, static_cast<Bytef *>(buf), len);
 
 	while ((err == ZIP_OK) && (file->ci.stream.avail_in > 0)) {
 		if (file->ci.stream.avail_out == 0) {

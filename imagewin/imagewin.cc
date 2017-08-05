@@ -641,7 +641,7 @@ void Image_window::create_surface(
 	// Offset it set to the top left pixel if the game window
 	ibuf->offset_x = (get_full_width() - get_game_width()) / 2;
 	ibuf->offset_y = (get_full_height() - get_game_height()) / 2;
-	ibuf->bits = reinterpret_cast<unsigned char *>(draw_surface->pixels) - get_start_x() - get_start_y() * ibuf->line_width;
+	ibuf->bits = static_cast<unsigned char *>(draw_surface->pixels) - get_start_x() - get_start_y() * ibuf->line_width;
 	// Scaler guardband is in effect
 	if (draw_surface != display_surface && scaler != OpenGL) ibuf->bits += guard_band + ibuf->line_width * guard_band;
 }
@@ -958,7 +958,7 @@ void Image_window::show(
 
 		// Need to apply an offset to compensate for the guard_band
 		if (inter_surface == display_surface)
-			inter_surface->pixels = reinterpret_cast<uint8 *>(inter_surface->pixels) - inter_surface->pitch * guard_band * scale - inter_surface->format->BytesPerPixel * guard_band * scale;
+			inter_surface->pixels = static_cast<uint8 *>(inter_surface->pixels) - inter_surface->pitch * guard_band * scale - inter_surface->format->BytesPerPixel * guard_band * scale;
 
 		if (sel_scaler.arb) {
 			if (!sel_scaler.arb->Scale(draw_surface, x + guard_band, y + guard_band, w, h, inter_surface, scale * (x + guard_band), scale * (y + guard_band), scale * w, scale * h, false))
@@ -986,7 +986,7 @@ void Image_window::show(
 
 		// Undo guard_band offset
 		if (inter_surface == display_surface)
-			inter_surface->pixels = reinterpret_cast<uint8 *>(inter_surface->pixels) + inter_surface->pitch * guard_band * scale + inter_surface->format->BytesPerPixel * guard_band * scale;
+			inter_surface->pixels = static_cast<uint8 *>(inter_surface->pixels) + inter_surface->pitch * guard_band * scale + inter_surface->format->BytesPerPixel * guard_band * scale;
 
 		x *= scale;
 		y *= scale;

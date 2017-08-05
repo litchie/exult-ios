@@ -3029,9 +3029,7 @@ void Game_window::emulate_cache(Map_chunk *olist, Map_chunk *nlist) {
 	    old_maxy = c_num_chunks + oldy + 2;
 	if (nmap == omap) {     // Same map?
 		// Set to 0
-		// No casting _should_ be necessary at this point.
-		// Who needs this?
-		memset(reinterpret_cast<char *>(nearby), 0, sizeof(nearby));
+		memset(nearby, 0, sizeof(nearby));
 		// Figure new range.
 		int new_minx = c_num_chunks + newx - 2,
 		    new_maxx = c_num_chunks + newx + 2;
@@ -3056,7 +3054,7 @@ void Game_window::emulate_cache(Map_chunk *olist, Map_chunk *nlist) {
 			}
 		}
 	} else              // New map, so cache out all of old.
-		memset(reinterpret_cast<char *>(nearby), 0, sizeof(nearby));
+		memset(nearby, 0, sizeof(nearby));
 
 	// Swap out chunks no longer nearby (0).
 	Game_object_vector removes;

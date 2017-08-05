@@ -170,7 +170,7 @@ static void Npc_shape_dropped(
     void *udata
 ) {
 	if (file == U7_SHAPE_SHAPES && shape >= 150 && shape < c_max_shapes)
-		reinterpret_cast<ExultStudio *>(udata)->set_npc_shape(shape, frame);
+		static_cast<ExultStudio *>(udata)->set_npc_shape(shape, frame);
 }
 
 // Schedule names.
@@ -200,7 +200,7 @@ static void Npc_face_dropped(
     void *udata
 ) {
 	if (file == U7_SHAPE_FACES && shape >= 0 && shape < 1024)
-		reinterpret_cast<ExultStudio *>(udata)->set_npc_face(shape, frame);
+		static_cast<ExultStudio *>(udata)->set_npc_face(shape, frame);
 }
 
 // Schedule names.
@@ -235,13 +235,13 @@ static void Set_schedule_line(
 	GtkBox *box = GTK_BOX(glade_xml_get_widget(app_xml, locname));
 	g_free(locname);
 	GList *list = g_list_first(box->children);
-	GtkWidget *spin = reinterpret_cast<GtkBoxChild *>(list->data)->widget;
+	GtkWidget *spin = static_cast<GtkBoxChild *>(list->data)->widget;
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spin), tx);
 	list = g_list_next(list);
-	spin = reinterpret_cast<GtkBoxChild *>(list->data)->widget;
+	spin = static_cast<GtkBoxChild *>(list->data)->widget;
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spin), ty);
 	list = g_list_next(list);
-	spin = reinterpret_cast<GtkBoxChild *>(list->data)->widget;
+	spin = static_cast<GtkBoxChild *>(list->data)->widget;
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spin), tz);
 }
 
@@ -268,13 +268,13 @@ static bool Get_schedule_line(
 	GtkBox *box = GTK_BOX(glade_xml_get_widget(app_xml, locname));
 	g_free(locname);
 	GList *list = g_list_first(box->children);
-	GtkWidget *spin = reinterpret_cast<GtkBoxChild *>(list->data)->widget;
+	GtkWidget *spin = static_cast<GtkBoxChild *>(list->data)->widget;
 	sched.tx = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(spin));
 	list = g_list_next(list);
-	spin = reinterpret_cast<GtkBoxChild *>(list->data)->widget;
+	spin = static_cast<GtkBoxChild *>(list->data)->widget;
 	sched.ty = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(spin));
 	list = g_list_next(list);
-	spin = reinterpret_cast<GtkBoxChild *>(list->data)->widget;
+	spin = static_cast<GtkBoxChild *>(list->data)->widget;
 	sched.tz = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(spin));
 	sched.time = time;
 	return true;
@@ -379,7 +379,7 @@ static bool Get_prop_spin(
     GtkSpinButton  *&spin,      // Spin button returned.
     int &pnum           // Property number (0-11) returned.
 ) {
-	GtkTableChild *ent = reinterpret_cast<GtkTableChild *>(list->data);
+	GtkTableChild *ent = static_cast<GtkTableChild *>(list->data);
 	GtkBin *frame = GTK_BIN(ent->widget);
 	spin = GTK_SPIN_BUTTON(frame->child);
 	assert(spin != 0);
@@ -407,7 +407,7 @@ static bool Get_flag_cbox(
     unsigned long  *&bits,      // ->one of 3 flags above.
     int &fnum           // Flag # (0-31) returned.
 ) {
-	GtkTableChild *ent = reinterpret_cast<GtkTableChild *>(list->data);
+	GtkTableChild *ent = static_cast<GtkTableChild *>(list->data);
 	cbox = GTK_CHECK_BUTTON(ent->widget);
 	assert(cbox != 0);
 	const char *name = glade_get_widget_name(GTK_WIDGET(cbox));
@@ -464,7 +464,7 @@ void ExultStudio::init_new_npc(
 	// Set flag checkboxes.
 	for (GList *list = g_list_first(ftable->children); list;
 	        list = g_list_next(list)) {
-		GtkTableChild *ent = reinterpret_cast<GtkTableChild *>(list->data);
+		GtkTableChild *ent = static_cast<GtkTableChild *>(list->data);
 		GtkCheckButton *cbox = GTK_CHECK_BUTTON(ent->widget);
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(cbox), false);
 	}
@@ -787,8 +787,8 @@ void ExultStudio::schedule_btn_clicked(
 	const char *name = glade_get_widget_name(btn);
 	const char *numptr = name + 5;  // Past "sched".
 	int num = atoi(numptr);
-	GtkWidget *schedwin = reinterpret_cast<GtkWidget *>(data);
-	GtkLabel *label = reinterpret_cast<GtkLabel *>(gtk_object_get_user_data(
+	GtkWidget *schedwin = static_cast<GtkWidget *>(data);
+	GtkLabel *label = static_cast<GtkLabel *>(gtk_object_get_user_data(
 	                      GTK_OBJECT(schedwin)));
 	// User data = schedule #.
 	gtk_object_set_user_data(GTK_OBJECT(label), reinterpret_cast<gpointer>(uintptr(num)));
@@ -854,18 +854,18 @@ static void Game_loc_response(
 	if (id != Exult_server::game_pos)
 		return;
 	// Get box with loc. spin btns.
-	GtkBox *box = reinterpret_cast<GtkBox *>(client);
+	GtkBox *box = static_cast<GtkBox *>(client);
 	int tx = Read2(data);
 	int ty = Read2(data);
 	int tz = Read2(data);
 	GList *list = g_list_first(box->children);
-	GtkWidget *spin = reinterpret_cast<GtkBoxChild *>(list->data)->widget;
+	GtkWidget *spin = static_cast<GtkBoxChild *>(list->data)->widget;
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spin), tx);
 	list = g_list_next(list);
-	spin = reinterpret_cast<GtkBoxChild *>(list->data)->widget;
+	spin = static_cast<GtkBoxChild *>(list->data)->widget;
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spin), ty);
 	list = g_list_next(list);
-	spin = reinterpret_cast<GtkBoxChild *>(list->data)->widget;
+	spin = static_cast<GtkBoxChild *>(list->data)->widget;
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spin), tz);
 }
 

@@ -311,7 +311,7 @@ gint Chunk_chooser::configure(
     gpointer data           // ->Chunk_chooser
 ) {
 	ignore_unused_variable_warning(widget);
-	Chunk_chooser *chooser = reinterpret_cast<Chunk_chooser *>(data);
+	Chunk_chooser *chooser = static_cast<Chunk_chooser *>(data);
 	chooser->Shape_draw::configure();
 	chooser->render();
 	// Set new scroll amounts.
@@ -342,7 +342,7 @@ gint Chunk_chooser::expose(
     gpointer data           // ->Chunk_chooser.
 ) {
 	ignore_unused_variable_warning(widget);
-	Chunk_chooser *chooser = reinterpret_cast<Chunk_chooser *>(data);
+	Chunk_chooser *chooser = static_cast<Chunk_chooser *>(data);
 	chooser->show(event->area.x, event->area.y, event->area.width,
 	              event->area.height);
 	return (TRUE);
@@ -400,7 +400,7 @@ gint Chunk_chooser::drag_motion(
     gpointer data           // ->Shape_chooser.
 ) {
 	ignore_unused_variable_warning(widget);
-	Chunk_chooser *chooser = reinterpret_cast<Chunk_chooser *>(data);
+	Chunk_chooser *chooser = static_cast<Chunk_chooser *>(data);
 	if (!chooser->dragging && chooser->selected >= 0)
 		chooser->start_drag(U7_TARGET_CHUNKID_NAME,
 		                    U7_TARGET_CHUNKID, reinterpret_cast<GdkEvent *>(event));
@@ -414,7 +414,7 @@ gint Chunk_chooser::mouse_press(
     gpointer data           // ->Chunk_chooser.
 ) {
 	ignore_unused_variable_warning(widget);
-	Chunk_chooser *chooser = reinterpret_cast<Chunk_chooser *>(data);
+	Chunk_chooser *chooser = static_cast<Chunk_chooser *>(data);
 
 	if (event->button == 4) {
 		chooser->scroll(true);
@@ -468,7 +468,7 @@ static gint Mouse_release(
     gpointer data           // ->Shape_chooser.
 ) {
 	ignore_unused_variable_warning(widget, event);
-	Chunk_chooser *chooser = reinterpret_cast<Chunk_chooser *>(data);
+	Chunk_chooser *chooser = static_cast<Chunk_chooser *>(data);
 	chooser->mouse_up();
 	return true;
 }
@@ -487,7 +487,7 @@ void Chunk_chooser::drag_data_get(
 ) {
 	ignore_unused_variable_warning(widget, context, time);
 	cout << "In DRAG_DATA_GET" << endl;
-	Chunk_chooser *chooser = reinterpret_cast<Chunk_chooser *>(data);
+	Chunk_chooser *chooser = static_cast<Chunk_chooser *>(data);
 	if (chooser->selected < 0 || info != U7_TARGET_CHUNKID)
 		return;         // Not sure about this.
 	guchar buf[30];
@@ -517,7 +517,7 @@ gint Chunk_chooser::selection_clear(
     gpointer data           // ->Chunk_chooser.
 ) {
 	ignore_unused_variable_warning(widget, event, data);
-//	Chunk_chooser *chooser = reinterpret_cast<Chunk_chooser *>(data);
+//	Chunk_chooser *chooser = static_cast<Chunk_chooser *>(data);
 	cout << "SELECTION_CLEAR" << endl;
 	return TRUE;
 }
@@ -533,7 +533,7 @@ gint Chunk_chooser::drag_begin(
 ) {
 	ignore_unused_variable_warning(widget, context);
 	cout << "In DRAG_BEGIN" << endl;
-	Chunk_chooser *chooser = reinterpret_cast<Chunk_chooser *>(data);
+	Chunk_chooser *chooser = static_cast<Chunk_chooser *>(data);
 	if (chooser->selected < 0)
 		return FALSE;       // ++++Display a halt bitmap.
 #if 0
@@ -594,7 +594,7 @@ void Chunk_chooser::drag_data_received(
     gpointer udata          // Should point to Shape_draw.
 ) {
 	ignore_unused_variable_warning(widget, context, x, y, info, time);
-	Chunk_chooser *chooser = reinterpret_cast<Chunk_chooser *>(udata);
+	Chunk_chooser *chooser = static_cast<Chunk_chooser *>(udata);
 	cout << "Chunk drag_data_received" << endl;
 	if (seldata->type == gdk_atom_intern(U7_TARGET_CHUNKID_NAME, 0) &&
 	        seldata->format == 8 && seldata->length > 0) {
@@ -669,7 +669,7 @@ void Chunk_chooser::scrolled(
     GtkAdjustment *adj,     // The adjustment.
     gpointer data           // ->Chunk_chooser.
 ) {
-	Chunk_chooser *chooser = reinterpret_cast<Chunk_chooser *>(data);
+	Chunk_chooser *chooser = static_cast<Chunk_chooser *>(data);
 	cout << "Scrolled to " << adj->value << '\n';
 	gint newindex = static_cast<gint>(adj->value);
 	chooser->scroll(newindex);
@@ -709,7 +709,7 @@ static void on_insert_empty(
     gpointer udata
 ) {
 	ignore_unused_variable_warning(item);
-	Chunk_chooser *chooser = reinterpret_cast<Chunk_chooser *>(udata);
+	Chunk_chooser *chooser = static_cast<Chunk_chooser *>(udata);
 	chooser->insert(false);
 }
 
@@ -718,7 +718,7 @@ static void on_insert_dup(
     gpointer udata
 ) {
 	ignore_unused_variable_warning(item);
-	Chunk_chooser *chooser = reinterpret_cast<Chunk_chooser *>(udata);
+	Chunk_chooser *chooser = static_cast<Chunk_chooser *>(udata);
 	chooser->insert(true);
 }
 static void on_delete(
@@ -726,7 +726,7 @@ static void on_delete(
     gpointer udata
 ) {
 	ignore_unused_variable_warning(item);
-	Chunk_chooser *chooser = reinterpret_cast<Chunk_chooser *>(udata);
+	Chunk_chooser *chooser = static_cast<Chunk_chooser *>(udata);
 	chooser->del();
 }
 

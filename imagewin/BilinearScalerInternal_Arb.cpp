@@ -28,7 +28,7 @@ bool BilinearScalerInternal_Arb(SDL_Surface *tex, sint32 sx, sint32 sy, sint32 s
                                 uint8 *pixel, sint32 dw, sint32 dh, sint32 pitch, bool clamp_src) {
 	// Source buffer pointers
 	int tpitch = tex->pitch / sizeof(uintS);
-	uintS *texel = reinterpret_cast<uintS *>(tex->pixels) + (sy * tpitch + sx);
+	uintS *texel = static_cast<uintS *>(tex->pixels) + (sy * tpitch + sx);
 	uintS *tline_end = texel + (sw - 1);
 	uintS *tex_end = texel + (sh - 4) * tpitch;
 	int tex_diff = (tpitch * 4) - sw;

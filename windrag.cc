@@ -76,7 +76,7 @@ Windnd::QueryInterface(REFIID iid, void **ppvObject) {
 		*ppvObject = this;
 	if (NULL == *ppvObject)
 		return E_NOINTERFACE;
-	reinterpret_cast<LPUNKNOWN>(*ppvObject)->AddRef();
+	static_cast<LPUNKNOWN>(*ppvObject)->AddRef();
 	return NOERROR;
 }
 
@@ -116,7 +116,7 @@ Windnd::DragEnter(IDataObject *pDataObject,
 
 	STGMEDIUM med;
 	pDataObject->GetData(&fetc, &med);
-	windragdata wdd(reinterpret_cast<unsigned char *>(GlobalLock(med.hGlobal)));
+	windragdata wdd(static_cast<unsigned char *>(GlobalLock(med.hGlobal)));
 	GlobalUnlock(med.hGlobal);
 	ReleaseStgMedium(&med);
 
@@ -225,7 +225,7 @@ Windnd::Drop(IDataObject *pDataObject,
 	STGMEDIUM med;
 
 	pDataObject->GetData(&fetc, &med);
-	windragdata wdd(reinterpret_cast<unsigned char *>(GlobalLock(med.hGlobal)));
+	windragdata wdd(static_cast<unsigned char *>(GlobalLock(med.hGlobal)));
 	GlobalUnlock(med.hGlobal);
 	ReleaseStgMedium(&med);
 
@@ -321,7 +321,7 @@ Windropsource::QueryInterface(REFIID iid, void **ppvObject) {
 		*ppvObject = this;
 	if (NULL == *ppvObject)
 		return E_NOINTERFACE;
-	reinterpret_cast<LPUNKNOWN>(*ppvObject)->AddRef();
+	static_cast<LPUNKNOWN>(*ppvObject)->AddRef();
 	return NOERROR;
 }
 
@@ -391,7 +391,7 @@ Winstudioobj::QueryInterface(REFIID iid, void **ppvObject) {
 		*ppvObject = this;
 	if (NULL == *ppvObject)
 		return E_NOINTERFACE;
-	reinterpret_cast<LPUNKNOWN>(*ppvObject)->AddRef();
+	static_cast<LPUNKNOWN>(*ppvObject)->AddRef();
 	return NOERROR;
 }
 
@@ -432,7 +432,7 @@ Winstudioobj::GetData(
 			return E_OUTOFMEMORY;
 
 		// This provides us with a pointer to the allocated memory
-		ldata = reinterpret_cast<unsigned char *>(GlobalLock(hText));
+		ldata = static_cast<unsigned char *>(GlobalLock(hText));
 		data.serialize(ldata);
 		GlobalUnlock(hText);
 

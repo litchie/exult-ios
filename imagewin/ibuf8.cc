@@ -60,8 +60,7 @@ void Image_buffer8::copy(
 	unsigned char *from = bits + yfrom * line_width + srcx;
 	// Go through lines.
 	while (srch--) {
-		std::memmove(reinterpret_cast<char *>(to),
-		             reinterpret_cast<char *>(from), srcw);
+		std::memmove(to, from, srcw);
 		to += ynext;
 		from += ynext;
 	}
