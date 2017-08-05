@@ -480,15 +480,15 @@ void Game::gl_clear_win() {
 #endif
 }
 
-static inline void Reset_gl_rotates() {
 #ifdef HAVE_OPENGL
+static inline void Reset_gl_rotates() {
 	if (GL_manager::get_instance()) {
 		GL_manager::get_instance()->set_palette_rotation(224, 254);
 		// Want to reset them all.
 		Set_glpalette();
 	}
-#endif
 }
+#endif
 
 // wait ms milliseconds, while cycling colours startcol to startcol+ncol-1
 // return 0 if time passed completly, 1 if user pressed any key or mouse button,
