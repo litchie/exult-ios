@@ -734,7 +734,7 @@ void KeyBinder::ParseLine(char *line) {
 				// No conversion? Try as function name.
 				Usecode_machine *usecode =
 				    Game_window::get_instance()->get_usecode();
-				t = usecode->find_function(t.c_str());
+				p = usecode->find_function(t.c_str());
 			} else if (p < 0) {
 				p = -1;
 			}
