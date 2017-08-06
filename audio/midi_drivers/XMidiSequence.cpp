@@ -401,8 +401,8 @@ void XMidiSequence::sendEvent()
 }
 
 #define SendController(ctrl,name) \
-	handler->sequenceSendEvent(sequence_id, i | (MIDI_STATUS_CONTROLLER << 4) | (ctrl << 8) | (shadows[i].name[0] << 16)); \
-	handler->sequenceSendEvent(sequence_id, i | (MIDI_STATUS_CONTROLLER << 4) | ((ctrl+32) << 8) | (shadows[i].name[1] << 16));
+	handler->sequenceSendEvent(sequence_id, i | (MIDI_STATUS_CONTROLLER << 4) | ((ctrl) << 8) | (shadows[i].name[0] << 16)); \
+	handler->sequenceSendEvent(sequence_id, i | (MIDI_STATUS_CONTROLLER << 4) | (((ctrl)+32) << 8) | (shadows[i].name[1] << 16));
 
 void XMidiSequence::applyShadow(int i)
 {

@@ -474,7 +474,7 @@ void BG_Game::scene_lord_british() {
 		BUTTERFLY_BACKGROUND(); \
 		win->get(backup, topx + (x) - butterfly->get_xleft(),   \
 		         topy + (y) - butterfly->get_yabove());  \
-		sman->paint_shape(topx + x, topy + y, shapes.get_shape(butterfly_shp, frame));  \
+		sman->paint_shape(topx + (x), topy + (y), shapes.get_shape(butterfly_shp, frame));  \
 		win->show();    \
 		WAITDELAY(delay);   \
 		win->put(backup, topx + (x) - butterfly->get_xleft(),   \
