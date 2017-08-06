@@ -233,8 +233,8 @@ static Instrument *load_instrument(char *name, int percussion,
 	 of magic offsets. This could be rewritten... */
 
 	if ((239 != fread(tmp, 1, 239, fp)) ||
-	    (memcmp(tmp, "GF1PATCH110\0ID#000002", 22) &&
-	     memcmp(tmp, "GF1PATCH100\0ID#000002", 22))) /* don't know what the
+	    (memcmp(tmp, "GF1PATCH110\0ID#000002", 22) != 0 &&
+	     memcmp(tmp, "GF1PATCH100\0ID#000002", 22) != 0)) /* don't know what the
 		 differences are */
 	{
 		ctl->cmsg(CMSG_ERROR, VERB_NORMAL, "%s: not an instrument", name);

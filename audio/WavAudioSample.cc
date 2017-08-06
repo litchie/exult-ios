@@ -40,13 +40,13 @@ WavAudioSample::WavAudioSample(uint8* buffer, uint32 size) : RawAudioSample(buff
 	ds.seek(0);
 
 	ds.read(buf,4);
-	if (std::memcmp(buf,"RIFF",4)) return;
+	if (std::memcmp(buf,"RIFF",4) != 0) return;
 
 	uint32 riff_size = ds.read4();
 	if (riff_size != size-8) return;
 
 	ds.read(buf,4);
-	if (std::memcmp(buf,"WAVE",4)) return;
+	if (std::memcmp(buf,"WAVE",4) != 0) return;
 
 	while (ds.getPos() < riff_size+8)
 	{
@@ -116,14 +116,14 @@ bool WavAudioSample::isThis(IDataSource *ds)
 	ds->seek(0);
 
 	ds->read(buf,4);
-	if (std::memcmp(buf,"RIFF",4)) return false;
+	if (std::memcmp(buf,"RIFF",4) != 0) return false;
 
 	uint32 riff_size = ds->read4();
 
 	if (riff_size != ds->getSize()-8) return false;
 
 	ds->read(buf,4);
-	if (std::memcmp(buf,"WAVE",4)) return false;
+	if (std::memcmp(buf,"WAVE",4) != 0) return false;
 
 	uint32 pos_fmt = 0;
 	uint32 size_fmt = 0;

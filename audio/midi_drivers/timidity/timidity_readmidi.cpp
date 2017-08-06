@@ -342,7 +342,7 @@ static int read_track(int append)
 		return -1;
 	}
 	len=BE_LONG(len);
-	if (memcmp(tmp, "MTrk", 4))
+	if (memcmp(tmp, "MTrk", 4) != 0)
 	{
 		ctl->cmsg(CMSG_ERROR, VERB_NORMAL,
 		          "%s: Corrupt MIDI file.", current_filename);
@@ -573,7 +573,7 @@ MidiEvent *read_midi_file(FILE *mfp, sint32 *count, sint32 *sp)
 		return 0;
 	}
 	len=BE_LONG(len);
-	if (memcmp(tmp, "MThd", 4) || len < 6)
+	if (memcmp(tmp, "MThd", 4) != 0 || len < 6)
 	{
 		ctl->cmsg(CMSG_ERROR, VERB_NORMAL,
 		          "%s: Not a MIDI file!", current_filename);
