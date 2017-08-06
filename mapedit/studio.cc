@@ -2832,7 +2832,7 @@ C_EXPORT void on_gameinfo_apply_clicked(
 	BaseGameInfo *gameinfo = studio->get_game();
 	studio->set_encoding(enc);
 	gameinfo->set_codepage(enc);
-	gameinfo->set_menu_string(menustr.c_str());
+	gameinfo->set_menu_string(menustr);
 
 	Configuration *cfg;
 	string root;
