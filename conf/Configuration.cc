@@ -127,7 +127,7 @@ void    Configuration::remove(const string &key, bool write_out) {
 }
 
 bool    Configuration::read_config_string(const string &s) {
-	string  sbuf(s);
+	const string&  sbuf(s);
 	size_t  nn = 0;
 	while (isspace(s[nn])) ++nn;
 
