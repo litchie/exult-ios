@@ -1062,7 +1062,7 @@ C_EXPORT void on_gameselect_gamelist_cursor_changed(
 	for (size_t j = 0; j < mods.size(); j++) {
 		ModInfo &currmod = mods[j];
 		string modname = currmod.get_menu_string();
-		string::size_type t = modname.find("\n", 0);
+		string::size_type t = modname.find('\n', 0);
 		if (t != string::npos)
 			modname.replace(t, 1, " ");
 
@@ -1087,7 +1087,7 @@ void fill_game_tree(GtkTreeView *treeview, int curr_game) {
 	for (size_t j = 0; j < games.size(); j++) {
 		ModManager &currgame = games[j];
 		string gamename = currgame.get_menu_string();
-		string::size_type t = gamename.find("\n", 0);
+		string::size_type t = gamename.find('\n', 0);
 		if (t != string::npos)
 			gamename.replace(t, 1, " ");
 
