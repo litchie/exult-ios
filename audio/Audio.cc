@@ -525,13 +525,13 @@ bool	Audio::playing(void)
 }
 
 
-void	Audio::start_music(int num, bool continuous,std::string flex)
+void	Audio::start_music(int num, bool continuous,const std::string& flex)
 {
 	if(audio_enabled && music_enabled && mixer && mixer->getMidiPlayer())
 		mixer->getMidiPlayer()->start_music(num,continuous && allow_music_looping,flex);
 }
 
-void	Audio::start_music(std::string fname, int num, bool continuous)
+void	Audio::start_music(const std::string& fname, int num, bool continuous)
 {
 	if(audio_enabled && music_enabled && mixer && mixer->getMidiPlayer())
 		mixer->getMidiPlayer()->start_music(fname,num,continuous && allow_music_looping);

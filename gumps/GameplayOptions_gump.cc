@@ -67,7 +67,7 @@ static int num_pathfind_texts = 3;
 
 class GameplayOptions_button : public Text_button {
 public:
-	GameplayOptions_button(Gump *par, string text, int px, int py)
+	GameplayOptions_button(Gump *par, const string& text, int px, int py)
 		: Text_button(par, text, px, py, 59, 11)
 	{ }
 	// What to do when 'clicked':

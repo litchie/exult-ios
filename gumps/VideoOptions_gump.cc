@@ -68,7 +68,7 @@ static string resolutionstring(int w, int h) {
 
 class VideoOptions_button : public Text_button {
 public:
-	VideoOptions_button(Gump *par, string text, int px, int py, int width = 59)
+	VideoOptions_button(Gump *par, const string& text, int px, int py, int width = 59)
 		: Text_button(par, text, px, py, width, 11)
 	{  }
 	// What to do when 'clicked':

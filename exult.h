@@ -61,7 +61,7 @@ extern void make_screenshot(
 
 extern void Wait_for_arrival(
     Actor *actor,           // Whom to wait for.
-    Tile_coord dest,        // Where he's going.
+    const Tile_coord& dest,        // Where he's going.
     long maxticks = 0       // Max. # msecs. to wait, or 0.
 );
 

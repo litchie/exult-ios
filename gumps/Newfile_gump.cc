@@ -138,7 +138,7 @@ public:
 
 class Newfile_Textbutton : public Text_button {
 public:
-	Newfile_Textbutton(Gump *par, string text, int px, int py, int width)
+	Newfile_Textbutton(Gump *par, const string& text, int px, int py, int width)
 		: Text_button(par, text, px, py, width)
 	{ }
 

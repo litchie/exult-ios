@@ -1958,7 +1958,7 @@ int Get_click(
 
 void Wait_for_arrival(
     Actor *actor,           // Whom to wait for.
-    Tile_coord dest,        // Where he's going.
+    const Tile_coord& dest,        // Where he's going.
     long maxticks           // Max. # msecs. to wait, or 0.
 ) {
 	// Mouse scale factor

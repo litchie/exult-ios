@@ -356,7 +356,7 @@ public:
 		return node;
 	}
 	// Find node for given tile.
-	Search_node *find(Tile_coord tile) {
+	Search_node *find(const Tile_coord& tile) {
 		Search_node key(tile);
 #ifndef DONT_HAVE_HASH_SET
 		unordered_set<Search_node *, Hash_node, Equal_nodes>::iterator it =

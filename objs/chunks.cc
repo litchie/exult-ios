@@ -612,7 +612,7 @@ void Chunk_cache::activate_eggs(
  */
 
 Game_object *Chunk_cache::find_door(
-    Tile_coord tile
+    const Tile_coord& tile
 ) {
 	for (std::set<Game_object *>::iterator it = doors.begin();
 	        it != doors.end(); ++it)

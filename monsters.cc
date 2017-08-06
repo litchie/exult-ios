@@ -453,7 +453,7 @@ void Monster_actor::die(
  */
 
 static void Get_slime_neighbors(
-    Tile_coord pos,         // Position to look around.
+    const Tile_coord& pos,         // Position to look around.
     Tile_coord *neighbors       // N,E,S,W tiles returned.
 ) {
 	// Offsets to neighbors 2 tiles away.

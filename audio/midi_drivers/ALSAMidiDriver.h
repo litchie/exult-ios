@@ -53,7 +53,7 @@ protected:
 	int my_client, my_port;
 
 	void send_event(int do_flush);
-	int parse_addr(std::string arg, int *client, int *port);
+	int parse_addr(const std::string& arg, int *client, int *port);
 };
 
 #endif

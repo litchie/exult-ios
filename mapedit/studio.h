@@ -214,7 +214,7 @@ public:
 	void create_new_game(const char *dir);
 	void new_game();
 	Object_browser  *create_browser(const char *fname);
-	void set_game_path(string gamename, string modname = "");
+	void set_game_path(const string& gamename, const string& modname = "");
 	void setup_file_list();
 	void save_all();        // Write out everything.
 	bool need_to_save();        // Anything modified?
