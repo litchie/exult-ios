@@ -127,7 +127,7 @@ MidiDriver *MidiDriver::createInstance(std::string desired_driver,uint32 sample_
 	const char * drv = desired_driver.c_str();
 
 	// Has the config file specified disabled midi?
-	if ( Pentagram::strcasecmp(drv, "disabled"))
+	if ( Pentagram::strcasecmp(drv, "disabled") != 0)
 	{
 		std::vector<const MidiDriver::MidiDriverDesc*>::iterator it;
 

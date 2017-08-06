@@ -1240,7 +1240,7 @@ int XMidiFile::ExtractTracksFromXmi (IDataSource *source)
 			len = source->read4high();
 		}
 
-		if (memcmp(buf,"EVNT",4))
+		if (memcmp(buf,"EVNT",4) != 0)
 		{
 			source->skip ((len+1)&~1);
 			continue;
@@ -1304,7 +1304,7 @@ int XMidiFile::ExtractTracksFromMid (IDataSource *source, const uint32 ppqn, con
 		source->read (buf, 4);
 		len = source->read4high();
 
-		if (memcmp(buf,"MTrk",4))
+		if (memcmp(buf,"MTrk",4) != 0)
 		{
 			source->skip (len);
 			continue;
@@ -1421,7 +1421,7 @@ int XMidiFile::ExtractTracks (IDataSource *source)
 			num_tracks = 1;
 
 		} // Not an XMidiFile that we recognise
-		else if (memcmp (buf, "XDIR", 4))
+		else if (memcmp (buf, "XDIR", 4) != 0)
 		{
 			perr << "Not a recognised XMID" << endl;
 			return 0;
@@ -1442,7 +1442,7 @@ int XMidiFile::ExtractTracks (IDataSource *source)
 				// Add eight bytes
 				i+=8;
 
-				if (memcmp (buf, "INFO", 4))
+				if (memcmp (buf, "INFO", 4) != 0)
 				{
 					// Must allign
 					source->skip((chunk_len+1)&~1);
@@ -1473,7 +1473,7 @@ int XMidiFile::ExtractTracks (IDataSource *source)
 			source->read (buf, 4);
 
 			// Not an XMID
-			if (memcmp (buf, "CAT ", 4))
+			if (memcmp (buf, "CAT ", 4) != 0)
 			{
 				perr << "Not a recognised XMID (" << buf[0] << buf[1] << buf[2] << buf[3] << ") should be (CAT )" << endl;
 				return 0;
@@ -1486,7 +1486,7 @@ int XMidiFile::ExtractTracks (IDataSource *source)
 			source->read (buf, 4);
 
 			// Not an XMID
-			if (memcmp (buf, "XMID", 4))
+			if (memcmp (buf, "XMID", 4) != 0)
 			{
 				perr << "Not a recognised XMID (" << buf[0] << buf[1] << buf[2] << buf[3] << ") should be (XMID)" << endl;
 				return 0;
@@ -1576,7 +1576,7 @@ int XMidiFile::ExtractTracks (IDataSource *source)
 		source->read (buf, 4);
 
 		// Not an RMID
-		if (memcmp (buf, "RMID", 4))
+		if (memcmp (buf, "RMID", 4) != 0)
 		{
 			perr << "Invalid RMID" << endl;
 			return 0;
@@ -1593,7 +1593,7 @@ int XMidiFile::ExtractTracks (IDataSource *source)
 
 			i+=8;
 
-			if (memcmp (buf, "data", 4))
+			if (memcmp (buf, "data", 4) != 0)
 			{
 				// Must allign
 				source->skip ((chunk_len+1)&~1);
