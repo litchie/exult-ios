@@ -57,8 +57,6 @@ using std::ios;
 using std::ofstream;
 using std::ostream;
 using std::endl;
-using std::map;
-using std::vector;
 
 // A custom writer functor.
 class Readytype_writer_functor {

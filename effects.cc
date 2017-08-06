@@ -46,8 +46,6 @@
 #include "AudioMixer.h"
 using namespace Pentagram;
 
-using std::cout;
-using std::endl;
 using std::rand;
 using std::string;
 using std::strlen;

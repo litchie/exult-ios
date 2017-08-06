@@ -61,16 +61,11 @@
 #include "servemsg.h"
 #endif
 
-using std::cerr;
 using std::cout;
 using std::endl;
-using std::memcpy;
-using std::memset;
 using std::rand;
 using std::ostream;
-using std::strchr;
 using std::string;
-using std::set;
 
 /*
  *  Determines the object's usecode function.

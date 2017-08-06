@@ -60,9 +60,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 using std::cout;
 using std::endl;
-using std::strlen;
 using EStudio::Add_menu_item;
-using EStudio::Create_arrow_button;
 
 const int border = 2;           // Border at bottom, sides of each
 //   chunk.

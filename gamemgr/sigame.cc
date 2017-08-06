@@ -47,8 +47,6 @@ using std::cout;
 using std::endl;
 using std::rand;
 using std::strlen;
-using std::toupper;
-
 #ifdef __IPHONEOS__
 #include "data/exult_iphone_flx.h"
 #include "exult.h"

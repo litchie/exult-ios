@@ -41,7 +41,6 @@ using std::cout;
 using std::endl;
 using std::ifstream;
 using std::ios;
-using std::memset;
 using std::ofstream;
 
 /*

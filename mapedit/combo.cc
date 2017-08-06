@@ -40,7 +40,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ignore_unused_variable_warning.h"
 
 using std::cout;
-using std::cin;
 using std::endl;
 
 const int border = 2;           // Border at bottom, sides of each

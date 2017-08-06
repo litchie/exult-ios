@@ -58,22 +58,10 @@
 using std::cerr;
 using std::cout;
 using std::endl;
-using std::exit;
 using std::memcpy;
-using std::memset;
 using std::string;
-using std::strncmp;
-using std::vector;
 using std::ifstream;
 using std::ios;
-
-// These MIGHT be macros!
-#ifndef min
-using std::min;
-#endif
-#ifndef max
-using std::max;
-#endif
 
 using namespace Pentagram;
 

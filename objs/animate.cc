@@ -42,11 +42,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "AudioMixer.h"
 #include "array_size.h"
 
-using std::map;
 using std::ostream;
 using std::rand;
-using std::endl;
-using std::cout;
 
 using namespace Pentagram;
 

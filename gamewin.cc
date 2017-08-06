@@ -100,14 +100,10 @@ using std::endl;
 using std::istream;
 using std::ifstream;
 using std::ios;
-using std::memcpy;
 using std::memset;
 using std::ofstream;
 using std::rand;
-using std::strcmp;
-using std::strcpy;
 using std::string;
-using std::strlen;
 using std::srand;
 using std::vector;
 

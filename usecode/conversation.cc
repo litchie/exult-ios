@@ -31,8 +31,6 @@
 #include "data/exult_bg_flx.h"
 #include "array_size.h"
 
-using std::cout;
-using std::endl;
 using std::size_t;
 using std::strcpy;
 using std::string;

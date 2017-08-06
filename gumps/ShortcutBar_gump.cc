@@ -43,8 +43,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "party.h"
 #include "ignore_unused_variable_warning.h"
 
-using std::cout;
-using std::endl;
 
 /*
  * some buttons should only be there or change appearance

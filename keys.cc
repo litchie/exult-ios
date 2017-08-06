@@ -36,11 +36,9 @@
 #include "utils.h"
 #include "keyactions.h"
 
-using std::pair;
 using std::atoi;
 using std::cerr;
 using std::cout;
-using std::clog;
 using std::endl;
 using std::ifstream;
 using std::isspace;

@@ -37,7 +37,6 @@
 #endif
 
 using std::atoi;
-using std::cerr;
 using std::endl;
 using std::string;
 using std::ostream;
