@@ -188,7 +188,7 @@ static int *ENV_CURVE;
 
 
 /* multiple table */
-#define ML(a) static_cast<uint32>(a * 2)
+#define ML(a) static_cast<uint32>((a) * 2)
 static const uint32 MUL_TABLE[16]= {
 /* 1/2, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14,15 */
 	ML(0.50), ML(1.00), ML(2.00),  ML(3.00), ML(4.00), ML(5.00), ML(6.00), ML(7.00),
@@ -235,8 +235,8 @@ inline int CLIP( int val, int min, int max) {
 
 /* --------------------- rebuild tables ------------------- */
 
-#define SC_KSL(mydb) (static_cast<uint32>(mydb / (EG_STEP / 2)))
-#define SC_SL(db) static_cast<int>(db * ((3 / EG_STEP) * (1 << ENV_BITS))) + EG_DST
+#define SC_KSL(mydb) (static_cast<uint32>((mydb) / (EG_STEP / 2)))
+#define SC_SL(db) (static_cast<int>((db) * ((3 / EG_STEP) * (1 << ENV_BITS))) + EG_DST)
 
 void OPLBuildTables(uint32 ENV_BITS_PARAM, uint32 EG_ENT_PARAM) {
 	ENV_BITS = ENV_BITS_PARAM;
@@ -470,7 +470,7 @@ inline void set_sl_rr(FM_OPL *OPL, int slot, int v) {
 
 /* operator output calcrator */
 
-#define OP_OUT(slot,env,con)   slot->wavetable[((slot->Cnt + con)>>(24-SIN_ENT_SHIFT)) & (SIN_ENT-1)][env]
+#define OP_OUT(slot,env,con)   slot->wavetable[(((slot)->Cnt + (con))>>(24-SIN_ENT_SHIFT)) & (SIN_ENT-1)][env]
 /* ---------- calcrate one of channel ---------- */
 inline void OPL_CALC_CH(OPL_CH *CH) {
 	uint32 env_out;

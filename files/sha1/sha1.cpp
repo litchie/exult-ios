@@ -67,7 +67,7 @@ namespace sha1
 
             #define sha1macro(func,val) \
 			{ \
-                const unsigned int t = rol(a, 5) + (func) + e + val + w[round]; \
+                const unsigned int t = rol(a, 5) + (func) + e + (val) + w[round]; \
 				e = d; \
 				d = c; \
 				c = rol(b, 30); \

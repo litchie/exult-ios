@@ -272,13 +272,13 @@ static Instrument *load_instrument(char *name, int percussion,
 
 #define READ_CHAR(thing) \
 		if (1 != fread(&tmpchar, 1, 1, fp)) goto fail; \
-		thing = tmpchar;
+		(thing) = tmpchar;
 #define READ_SHORT(thing) \
 		if (1 != fread(&tmpshort, 2, 1, fp)) goto fail; \
-		thing = LE_SHORT(tmpshort);
+		(thing) = LE_SHORT(tmpshort);
 #define READ_LONG(thing) \
 		if (1 != fread(&tmplong, 4, 1, fp)) goto fail; \
-		thing = LE_LONG(tmplong);
+		(thing) = LE_LONG(tmplong);
 
 		skip(fp, 7); /* Skip the wave name */
 
