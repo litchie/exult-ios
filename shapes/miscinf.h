@@ -99,7 +99,7 @@ public:
 	static int GetFaceReplacement(int facenum);
 	static Usecode_function_data *GetAvUsecode(int type);
 
-	static int get_skinvar(std::string key);
+	static int get_skinvar(const std::string& key);
 private:
 	static void Read_data_file(const char *fname, const char *sections[],
 	                           Shapeinfo_entry_parser *parsers[], int numsections);

@@ -94,7 +94,7 @@ static bool U7open2(
 
 // Special case ID reader functors.
 
-extern int get_skinvar(std::string key);
+extern int get_skinvar(const std::string& key);
 
 // Multiracial support in Exult.
 class Paperdoll_npc_ID_reader {

@@ -72,7 +72,7 @@ static int last_skin = 0;
 // Exult-dependant stuff to be included in ES. Thus, ES
 // defines a non-operant version of this.
 // Maybe we should do something about this...
-int get_skinvar(std::string key) {
+int get_skinvar(const std::string& key) {
 	return Shapeinfo_lookup::get_skinvar(key);
 }
 
@@ -534,7 +534,7 @@ Base_Avatar_info *Shapeinfo_lookup::GetBaseAvInfo(bool sex) {
 		return NULL;
 }
 
-int Shapeinfo_lookup::get_skinvar(string key) {
+int Shapeinfo_lookup::get_skinvar(const string& key) {
 	if (!skinvars)
 		setup_shape_files();
 	map<string, int>::iterator it = skinvars->find(key);

@@ -157,7 +157,7 @@ Chunk_terrain::~Chunk_terrain(
 
 void Chunk_terrain::set_flat(
     int tilex, int tiley,
-    ShapeID id
+    const ShapeID& id
 ) {
 	if (!undo_shapes) {     // Create backup.
 		undo_shapes = new ShapeID[256];

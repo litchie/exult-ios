@@ -65,7 +65,7 @@ public:
 	void			set_timbre_lib(TimberLibrary lib);
 	TimberLibrary	get_timbre_lib() { return timbre_lib; }
 	
-	void			set_midi_driver(std::string desired_driver, bool use_oggs);
+	void			set_midi_driver(const std::string& desired_driver, bool use_oggs);
 	std::string		get_midi_driver() { return midi_driver_name; }
 	bool			get_ogg_enabled() { return ogg_enabled; }
 
@@ -111,7 +111,7 @@ private:
 	bool			ogg_enabled;
 	sint32			ogg_instance_id;
 
-	bool				ogg_play_track(std::string filename, int num, bool repeat);
+	bool				ogg_play_track(const std::string& filename, int num, bool repeat);
 	bool				ogg_is_playing();
 	void				ogg_stop_track();
 

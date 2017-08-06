@@ -496,7 +496,7 @@ void MyMidiPlayer::set_effects_conversion(int conv)
 }
 #endif
 
-void MyMidiPlayer::set_midi_driver(std::string desired_driver, bool use_oggs)
+void MyMidiPlayer::set_midi_driver(const std::string& desired_driver, bool use_oggs)
 {
 	// Don't kill the device if we don't need to
 	if ((midi_driver_name != desired_driver && (!ogg_enabled || !ogg_is_playing())) || // if ogg is playing we don't care about drivers
@@ -770,7 +770,7 @@ void    MyMidiPlayer::stop_sound_effects()
 }
 #endif
 
-bool MyMidiPlayer::ogg_play_track(std::string filename, int num, bool repeat)
+bool MyMidiPlayer::ogg_play_track(const std::string& filename, int num, bool repeat)
 {
 	string ogg_name;
 	string basepath = "<MUSIC>/";

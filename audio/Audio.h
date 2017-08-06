@@ -102,8 +102,8 @@ public:
 	void	play(uint8 *sound_data,uint32 len,bool);
 	void	playfile(const char *,const char *,bool);
 	bool	playing(void);
-	void	start_music(int num,bool continuous=false,std::string flex=MAINMUS);
-	void	start_music(std::string fname,int num,bool continuous=false);
+	void	start_music(int num,bool continuous=false,const std::string& flex=MAINMUS);
+	void	start_music(const std::string& fname,int num,bool continuous=false);
 	void	start_music_combat(Combat_song song,bool continuous);
 	void	stop_music();
 	int		play_sound_effect (int num, int volume = AUDIO_MAX_VOLUME,

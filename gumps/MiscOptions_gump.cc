@@ -50,7 +50,7 @@ static const char *canceltext = "CANCEL";
 
 class MiscOptions_button : public Text_button {
 public:
-	MiscOptions_button(Gump *par, string text, int px, int py)
+	MiscOptions_button(Gump *par, const string& text, int px, int py)
 		: Text_button(par, text, px, py, 59, 11)
 	{ }
 	// What to do when 'clicked':

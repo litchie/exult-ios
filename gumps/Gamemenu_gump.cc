@@ -62,7 +62,7 @@ static const char *iphonetext = "iOS Options";
 
 class Gamemenu_button : public Text_button {
 public:
-	Gamemenu_button(Gump *par, string text, int px, int py)
+	Gamemenu_button(Gump *par, const string& text, int px, int py)
 		: Text_button(par, text, px, py, 108, 11)
 	{  }
 	// What to do when 'clicked':

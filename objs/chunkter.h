@@ -87,7 +87,7 @@ public:
 	}
 
 	// Set tile's shape.
-	void set_flat(int tilex, int tiley, ShapeID id);
+	void set_flat(int tilex, int tiley, const ShapeID& id);
 	bool commit_edits();        // Commit changes.  Rets. true if
 	//   edited.
 	void abort_edits();     // Undo changes.

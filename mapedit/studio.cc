@@ -1184,7 +1184,7 @@ void ExultStudio::open_game_dialog(
 /*
  *  Note:   If mod name is "", no mod is loaded
  */
-void ExultStudio::set_game_path(string gamename, string modname) {
+void ExultStudio::set_game_path(const string& gamename, const string& modname) {
 	// Finish up external edits.
 	Shape_chooser::clear_editing_files();
 
@@ -3066,7 +3066,7 @@ void convertToUTF8::convert(gchar *&_convstr, const char *str, const char *enc) 
 // Exult-dependant stuff to be included in ES. Thus, Exult
 // defines the working version of this function.
 // Maybe we should do something about this...
-int get_skinvar(std::string key) {
+int get_skinvar(const std::string& key) {
 	ignore_unused_variable_warning(key);
 	return -1;
 }

@@ -112,7 +112,7 @@ class Chunk_cache : public Game_singletons {
 			              from_tx, from_ty, eggbits, now);
 	}
 	// Find door blocking given tile.
-	Game_object *find_door(Tile_coord t);
+	Game_object *find_door(const Tile_coord& t);
 public:
 	// Is there something on this tile?
 	inline bool is_tile_occupied(int tx, int ty, int tz) {
