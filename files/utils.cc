@@ -820,8 +820,6 @@ void U7copy(
 		throw(file_read_exception(src));
 	if (!outok)
 		throw(file_write_exception(dest));
-
-	return;
 }
 
 /*

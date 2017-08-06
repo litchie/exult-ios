@@ -497,7 +497,6 @@ void Image_buffer8::paint_rle(int xoff, int yoff, unsigned char *inptr) {
 				scanlen -= bcnt;
 				if (!repeat) in += bcnt;
 				else ++in;
-				continue;
 			}
 		}
 	}
@@ -642,7 +641,6 @@ void Image_buffer8::paint_rle_remapped(
 				scanlen -= bcnt;
 				if (!repeat) in += bcnt;
 				else ++in;
-				continue;
 			}
 		}
 	}

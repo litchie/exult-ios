@@ -432,7 +432,6 @@ void Game_window::save_gamedat(
 	bool result = flex.close(); // Write it all out.
 	if (!result)            // ++++Better error system needed??
 		throw file_write_exception(fname);
-	return;
 }
 
 /*
