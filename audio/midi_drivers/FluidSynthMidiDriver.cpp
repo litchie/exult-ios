@@ -33,7 +33,7 @@ const MidiDriver::MidiDriverDesc FluidSynthMidiDriver::desc =
 // MidiDriver method implementations
 
 FluidSynthMidiDriver::FluidSynthMidiDriver()
-	: LowLevelMidiDriver(), _settings(0), _synth(0) 
+	: _settings(0), _synth(0) 
 {
 }
 

@@ -1078,7 +1078,7 @@ void Shape::del_frame(
  * Empty constructor
  */
 
-Shape_file::Shape_file() : Shape() {
+Shape_file::Shape_file() {
 	// Nothing to see here
 }
 
@@ -1088,7 +1088,7 @@ Shape_file::Shape_file() : Shape() {
 
 Shape_file::Shape_file(
     const char *nm          // Path to file.
-) : Shape() {
+) {
 	load(nm);
 }
 
@@ -1111,7 +1111,7 @@ void Shape_file::load(
 
 Shape_file::Shape_file(
     DataSource *shape_source        // datasource.
-) : Shape() {
+) {
 	Shape::load(shape_source);
 }
 

@@ -282,7 +282,7 @@ public:
 };
 
 
-PointScaler::PointScaler() : ArbScaler() {
+PointScaler::PointScaler() {
 	Scale8To8 = PointScalerInternal<uint8, Manip8to8, uint8>::Scale;
 	Scale8To32 = PointScalerInternal<uint32, Manip8to32, uint8>::Scale;
 	Scale32To32 = PointScalerInternal<uint32, Manip32to32, uint32>::Scale;

@@ -37,7 +37,7 @@ const uint16	XMidiSequence::ChannelShadow::combined_value = (coarse_value << 8) 
 XMidiSequence::XMidiSequence(XMidiSequenceHandler *Handler, uint16 seq_id, XMidiEventList *events,
 						bool Repeat, int volume, int branch) :
 	handler(Handler), sequence_id(seq_id), evntlist(events), event(0),
-	repeat(Repeat),  notes_on(), last_tick(0), loop_num(-1), vol_multi(volume),
+	repeat(Repeat), last_tick(0), loop_num(-1), vol_multi(volume),
 	paused(false), speed(100)
 {
 	std::memset(loop_event,0,XMIDI_MAX_FOR_LOOP_COUNT*sizeof(int));

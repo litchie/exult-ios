@@ -1775,7 +1775,7 @@ Usecode_machine *Usecode_machine::create(
  */
 
 Usecode_internal::Usecode_internal(
-) : Usecode_machine(), symtbl(0), frame(0), modified_map(false),
+) : symtbl(0), frame(0), modified_map(false),
 	book(0), caller_item(0),
 	path_npc(0), user_choice(0),
 	saved_pos(-1, -1, -1),

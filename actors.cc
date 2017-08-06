@@ -868,7 +868,7 @@ Actor::Actor(
     int shapenum,
     int num,
     int uc
-) : Container_game_object(), name(nm), usecode(uc),
+) : name(nm), usecode(uc),
 	usecode_assigned(false), usecode_name(""), unused(false),
 	npc_num(num), face_num(num), party_id(-1), atts(0), temperature(0),
 	shape_save(-1), oppressor(-1), target(0),
