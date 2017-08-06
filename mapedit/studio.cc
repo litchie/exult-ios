@@ -1294,8 +1294,8 @@ void ExultStudio::set_game_path(string gamename, string modname) {
 	palbuf = reinterpret_cast<unsigned char *>(palobj.retrieve(len));
 	if (!palbuf || !len) {
 		// No palette file, so create fake.
-		if (palbuf) // Just in case.
-			delete [] palbuf;
+		// Just in case.
+		delete [] palbuf;
 		palbuf = new unsigned char[3 * 256]; // How about all white?
 		memset(palbuf, 63, 3 * 256);
 	}

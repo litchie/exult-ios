@@ -1318,8 +1318,7 @@ bool Vga_file::import_shapes(
 }
 
 void Vga_file::reset() {
-	if (shapes)
-		delete [] shapes;
+	delete [] shapes;
 
 	for (vector<pair<DataSource *, bool> >::iterator it = shape_sources.begin();
 	        it != shape_sources.end(); ++it)
