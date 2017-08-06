@@ -42,7 +42,6 @@ Boston, MA  02111-1307, USA.
 
 #include <algorithm>
 using std::rotate;
-using std::memmove;
 
 GammaTable<uint8> Image_window8::GammaRed(256);
 GammaTable<uint8> Image_window8::GammaBlue(256);

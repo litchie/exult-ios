@@ -30,13 +30,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream>
 
 using std::vector;
-using std::cout;
 using std::cerr;
 using std::endl;
 using std::string;
-using std::strcat;
-using std::strcpy;
-using std::strlen;
 
 #include "utils.h"
 #include "listfiles.h"

@@ -49,10 +49,6 @@ using std::cout;
 using std::endl;
 using std::string;
 using std::cerr;
-using std::ends;
-using std::setw;
-using std::setfill;
-using std::setbase;
 using std::pair;
 using std::map;
 

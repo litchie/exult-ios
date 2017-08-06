@@ -46,7 +46,6 @@
 using std::vector;
 using std::ifstream;
 using std::map;
-using std::multimap;
 using std::pair;
 using std::string;
 using std::stringstream;

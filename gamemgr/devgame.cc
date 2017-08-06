@@ -36,8 +36,3 @@
 #include "txtscroll.h"
 #include "common_types.h"
 
-using std::cout;
-using std::endl;
-using std::rand;
-using std::strlen;
-using std::toupper;

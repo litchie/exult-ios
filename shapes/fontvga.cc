@@ -19,8 +19,6 @@
 #include "Flex.h"
 #include "array_size.h"
 
-using std::cout;
-using std::endl;
 // using std::string;
 
 /*

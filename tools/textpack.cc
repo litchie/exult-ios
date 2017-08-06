@@ -38,7 +38,6 @@
 #include "exceptions.h"
 #include "msgfile.h"
 
-using std::atoi;
 using std::cerr;
 using std::cin;
 using std::cout;
@@ -49,7 +48,6 @@ using std::ofstream;
 using std::istream;
 using std::ostream;
 using std::size_t;
-using std::strlen;
 using std::string;
 using std::vector;
 

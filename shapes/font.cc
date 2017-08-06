@@ -26,8 +26,6 @@
 #include "exceptions.h"
 #include "ignore_unused_variable_warning.h"
 
-using std::cout;
-using std::endl;
 using std::size_t;
 using std::string;
 using std::strncmp;

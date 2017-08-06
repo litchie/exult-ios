@@ -41,7 +41,6 @@
 #include "pngio.h"
 #include "ibuf8.h"
 
-using std::atoi;
 using std::cerr;
 using std::cout;
 using std::endl;

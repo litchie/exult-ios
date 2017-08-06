@@ -27,6 +27,7 @@
 #include <vector>
 #include <utility>
 #include <string>
+#include "array_size.h"
 #include "items.h"
 #include "files/U7file.h"
 #include "files/utils.h"
@@ -59,7 +60,6 @@ using std::abs;
 using std::rand;
 using std::strchr;
 using std::strlen;
-using std::toupper;
 
 #ifdef __IPHONEOS__
 #include "iphone_gumps.h"

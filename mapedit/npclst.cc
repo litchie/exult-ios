@@ -65,10 +65,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 using std::cout;
 using std::cerr;
 using std::endl;
-using std::strlen;
 using std::string;
 using std::vector;
-using EStudio::Prompt;
 using EStudio::Alert;
 using EStudio::Add_menu_item;
 

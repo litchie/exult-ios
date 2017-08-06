@@ -28,11 +28,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ODataSource.h"
 #endif
 
-using std::atof;
-using std::atoi;
-using std::memcmp;
-using std::memcpy;
-using std::memset;
 using std::size_t;
 using std::string;
 using std::endl;

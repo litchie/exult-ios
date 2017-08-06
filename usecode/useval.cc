@@ -39,11 +39,7 @@
 #include "databuf.h"
 #include "ios_state.hpp"
 
-using std::cout;
-using std::endl;
-using std::dec;
 using std::hex;
-using std::memcpy;
 using std::ostream;
 using std::setfill;
 using std::setw;

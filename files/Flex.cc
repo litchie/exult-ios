@@ -32,7 +32,6 @@
 #include "utils.h"
 #include "databuf.h"
 
-using std::endl;
 using std::memset;
 using std::size_t;
 using std::string;

@@ -30,11 +30,7 @@
 #include "utils.h"
 
 using std::string;
-using std::vector;
 
-using std::cout;
-using std::cerr;
-using std::endl;
 using std::FILE;
 using std::size_t;
 

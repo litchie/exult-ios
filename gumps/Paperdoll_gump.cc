@@ -40,8 +40,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <cstdio>
 
-using std::cerr;
-using std::endl;
 using std::size_t;
 
 //#define SHOW_USECODE_CONTAINER

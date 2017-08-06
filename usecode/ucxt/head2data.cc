@@ -18,7 +18,6 @@ using std::ostream;
 using std::string;
 using std::setfill;
 using std::setbase;
-using std::vector;
 using std::setw;
 using std::ios;
 using std::ofstream;

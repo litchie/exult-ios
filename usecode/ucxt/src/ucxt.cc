@@ -62,7 +62,6 @@ void usage();
 void open_usecode_file(UCData &uc, const Configuration &config);
 
 Configuration *config = new Configuration();
-using std::setw;
 using std::cerr;
 using std::cout;
 using std::ios;
