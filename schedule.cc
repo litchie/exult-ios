@@ -1832,8 +1832,9 @@ void Tool_schedule::get_tool(
  */
 
 void Tool_schedule::ending(
-    int
+    int newtype
 ) {
+	ignore_unused_variable_warning(newtype);
 	if (tool) {
 		tool->remove_this();    // Should safely remove from NPC.
 		tool = 0;

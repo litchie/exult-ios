@@ -215,7 +215,7 @@ static class Windnd *windnd = 0;
 /*
  *  Local functions:
  */
-static int exult_main(const char *);
+static int exult_main(const char * runpath);
 static void Init();
 static int Play();
 static int Get_click(int &x, int &y, char *chr, bool drag_ok, Paintable *p, bool rotate_colors = false);

@@ -22,6 +22,7 @@
 
 
 #include "Zombie.h"
+#include "ignore_unused_variable_warning.h"
 
 /*
  *  Figure 'dir' (1 or -1) and abs. value of 'delta'.
@@ -46,7 +47,8 @@ inline void Figure_dir(
  *
  *  Output: 1 if successful, else 0.
  */
-int Zombie::NewPath(Tile_coord const &s, Tile_coord const &d, Pathfinder_client *) {
+int Zombie::NewPath(Tile_coord const &s, Tile_coord const &d, Pathfinder_client * client) {
+	ignore_unused_variable_warning(client);
 	src = s;            // Store start, destination.
 	dest = d;
 	cur = s;            // Get current coords.

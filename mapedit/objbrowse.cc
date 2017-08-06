@@ -56,14 +56,16 @@ bool Object_browser::search_name(
 }
 
 
-bool Object_browser::server_response(int , unsigned char *, int) {
+bool Object_browser::server_response(int id, unsigned char *data, int datalen) {
+	ignore_unused_variable_warning(id, data, datalen);
 	return false;           // Not handled here.
 }
 
 void Object_browser::end_terrain_editing() {
 }
 
-void Object_browser::set_background_color(guint32) {
+void Object_browser::set_background_color(guint32 c) {
+	ignore_unused_variable_warning(c);
 }
 
 GtkWidget *Object_browser::get_widget() {
