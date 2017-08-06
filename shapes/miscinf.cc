@@ -396,7 +396,7 @@ void Shapeinfo_lookup::Read_data_file(
 	for (unsigned int i = 0; i < static_strings.size(); i++) {
 		Readstrings &section = static_strings[i];
 		for (unsigned int j = 0; j < section.size(); j++) {
-			if (section[j].size()) {
+			if (!section[j].empty()) {
 				stringstream src(section[j]);
 				parsers[i]->parse_entry(j, src, false, static_version);
 			}
@@ -407,7 +407,7 @@ void Shapeinfo_lookup::Read_data_file(
 	for (unsigned int i = 0; i < patch_strings.size(); i++) {
 		Readstrings &section = patch_strings[i];
 		for (unsigned int j = 0; j < section.size(); j++) {
-			if (section[j].size()) {
+			if (!section[j].empty()) {
 				stringstream src(section[j]);
 				parsers[i]->parse_entry(j, src, true, patch_version);
 			}

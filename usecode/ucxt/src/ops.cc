@@ -104,7 +104,7 @@ string ucxtInit::get_datadir(const Configuration &config, const UCOptions &optio
 	if (options.noconf == false) config.value("config/ucxt/root", datadir, "data/");
 #endif
 
-	if (datadir.size() && datadir[datadir.size() - 1] != '/' && datadir[datadir.size() - 1] != '\\') datadir += '/';
+	if (!datadir.empty() && datadir[datadir.size() - 1] != '/' && datadir[datadir.size() - 1] != '\\') datadir += '/';
 	if (options.verbose) cout << "datadir: " << datadir << endl;
 
 	return datadir;
@@ -151,7 +151,7 @@ void ucxtInit::opcodes() {
 
 			opdata.getsubkeys(ktl, *key);
 
-			if (ktl.size()) {
+			if (!ktl.empty()) {
 				unsigned int i = static_cast<unsigned int>(strtol(key->substr(key->find_first_of("0")).c_str(), 0, 0));
 				opcode_table_data[i] = UCOpcodeData(i, ktl);
 			}
@@ -202,7 +202,7 @@ std::vector<std::string> qnd_ocsplit(const std::string &s) {
 		} else
 			tstr += *i;
 	}
-	if (tstr.size())
+	if (!tstr.empty())
 		vs.push_back(tstr);
 
 	return vs;
@@ -213,7 +213,7 @@ std::vector<std::string> str2vec(const std::string &s) {
 	unsigned int lasti = 0;
 
 	// if it's empty return null
-	if (s.size() == 0) return vs;
+	if (s.empty()) return vs;
 
 	bool indquote = false;
 	for (unsigned int i = 0; i < s.size(); i++) {

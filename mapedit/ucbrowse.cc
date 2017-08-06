@@ -289,7 +289,7 @@ void Usecode_browser::okay(
 		if (name[0])
 			choice = name;
 		g_free(name);
-		if (choice == "") { // No name? Get number.
+		if (choice.empty()) { // No name? Get number.
 			gtk_tree_model_get(model, &iter, NUM_COL, &name, -1);
 			choice = name;
 			g_free(name);

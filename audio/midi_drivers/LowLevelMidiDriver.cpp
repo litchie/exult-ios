@@ -389,7 +389,7 @@ sint32 LowLevelMidiDriver::peekComMessageType()
 {
 	lockComMessage();
 	sint32 ret = 0;
-	if (messages.size()) ret = messages.front().type;
+	if (!messages.empty()) ret = messages.front().type;
 	unlockComMessage();
 	return ret;
 }

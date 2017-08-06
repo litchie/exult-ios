@@ -293,7 +293,7 @@ void Audio::Init(int _samplerate,int _channels)
 
 bool	Audio::can_sfx(const std::string &file, std::string *out)
 {
-	if (file == "")
+	if (file.empty())
 		return false;
 	string d = file;
 	// Full path?

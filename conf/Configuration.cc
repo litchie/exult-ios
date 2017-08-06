@@ -288,7 +288,7 @@ void Configuration::clear(const string &new_root) {
 
 	delete xmltree;
 	CTRACE("Configuration::clear - xmltree deleted");
-	if (new_root.size())
+	if (!new_root.empty())
 		rootname = new_root;
 	CTRACE("Configuration::clear - new root specified");
 	xmltree = new XMLnode(rootname);

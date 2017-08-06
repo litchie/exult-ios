@@ -196,7 +196,7 @@ void Time_queue::activate0(
 		data.pop_front();   // Remove from chain.
 		obj->queue_cnt--;
 		obj->handle_event(curtime, udata);
-	} while (data.size() && !(curtime < data.front().time));
+	} while (!data.empty() && !(curtime < data.front().time));
 }
 
 /*

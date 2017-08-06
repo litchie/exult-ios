@@ -208,7 +208,7 @@ void Notebook_gump::initialize(
 
 void Notebook_gump::clear(
 ) {
-	while (notes.size()) {
+	while (!notes.empty()) {
 		One_note *note = notes.back();
 		delete note;
 		notes.pop_back();
@@ -283,7 +283,7 @@ Notebook_gump *Notebook_gump::create(
  */
 Notebook_gump::~Notebook_gump(
 ) {
-	if (notes.size()) {
+	if (!notes.empty()) {
 		// Check for empty 'new' note.
 		One_note *note = notes.back();
 		if (note->is_new && !note->text.length()) {

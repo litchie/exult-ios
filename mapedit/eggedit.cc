@@ -297,7 +297,7 @@ int ExultStudio::init_egg_window(
 		set_spin("speech_number", data1 & 0xff);
 		break;
 	case 5:             // Usecode:
-		if (str1.size())
+		if (!str1.empty())
 			set_entry("usecode_number", str1.c_str(), true);
 		else
 			set_entry("usecode_number", data2, true);

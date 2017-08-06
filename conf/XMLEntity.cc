@@ -136,7 +136,7 @@ void XMLnode::dump(ostream &o, const string &indentstr, const unsigned int depth
 	// if this tag has a closing tag...
 	if (id[id.length() - 1] != '/') {
 		// if we've got some subnodes, terminate this line...
-		if (nodelist.size()) {
+		if (!nodelist.empty()) {
 			o << endl;
 
 			// ... then walk through them outputting them all ...
@@ -154,7 +154,7 @@ void XMLnode::dump(ostream &o, const string &indentstr, const unsigned int depth
 		// append a closing tag if there is one.
 		if (!no_close) {
 			// if we've got subnodes, we need to reindent
-			if (nodelist.size())
+			if (!nodelist.empty())
 				for (unsigned int i = 0; i < depth; i++)
 					o << indentstr;
 

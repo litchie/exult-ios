@@ -528,7 +528,7 @@ int ExultStudio::init_npc_window(
 	set_npc_shape(shape, frame);
 	set_npc_face(face, 0);
 	// Usecode #.
-	if (npc_num >= 256 && usecodefun.size())
+	if (npc_num >= 256 && !usecodefun.empty())
 		set_entry("npc_usecode_entry", usecodefun.c_str(), true);
 	else
 		set_entry("npc_usecode_entry", usecode, true, npc_num >= 256);

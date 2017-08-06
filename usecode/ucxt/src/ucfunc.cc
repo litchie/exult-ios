@@ -145,14 +145,14 @@ bool UCFunc::output_list(ostream &o, unsigned int funcno, const UCOptions &optio
 bool UCFunc::output_ucs(ostream &o, const FuncMap &funcmap, const map<unsigned int, string> &intrinsics, const UCOptions &options, int new_indent, Usecode_symbol_table *symtbl) {
 	unsigned int indent = new_indent;
 
-	if (_externs.size()) tab_indent(indent, o) << "// externs" << endl;
+	if (!_externs.empty()) tab_indent(indent, o) << "// externs" << endl;
 	// output the 'externs'
 	for (vector<unsigned int>::iterator e = _externs.begin(); e != _externs.end(); ++e) {
 		FuncMap::const_iterator fmp = funcmap.find(*e);
 		output_ucs_funcname(tab_indent(indent, o) << "extern ", funcmap, *e, fmp->second.num_args, symtbl) << ';' << endl;
 	}
 
-	if (_externs.size()) o << endl;
+	if (!_externs.empty()) o << endl;
 
 	// output the function name
 	output_ucs_funcname(tab_indent(indent, o), funcmap, _funcid, _num_args, symtbl) << endl;
@@ -196,7 +196,7 @@ ostream &UCFunc::output_ucs_funcname(ostream &o, const FuncMap &funcmap,
 	// output the "function name"
 	// TODO: Probably want to grab this from a file in the future...
 	//o << demunge_ocstring(*this, funcmap, "%f1", intrinsics, ucc, true, symtbl)
-	if (fmp->second.funcname.size()) {
+	if (!fmp->second.funcname.empty()) {
 		if (fmp->second.funcname[0] == '&')
 			o << fmp->second.funcname.substr(1, fmp->second.funcname.size() - 1);
 		else
@@ -281,7 +281,7 @@ void UCFunc::output_ucs_node(ostream &o, const FuncMap &funcmap, UCNode *ucn, co
 	if (ucn->ucc != 0)
 		output_asm_opcode(tab_indent(indent, o), funcmap, opcode_table_data, intrinsics, *(ucn->ucc), options, symtbl);
 
-	if (ucn->nodelist.size())
+	if (!ucn->nodelist.empty())
 		for (vector<UCNode *>::iterator i = ucn->nodelist.begin(); i != ucn->nodelist.end(); ++i) {
 			//tab_indent(indent, o);
 			output_ucs_node(o, funcmap, *i, intrinsics, indent + 1, options, symtbl);
@@ -455,7 +455,7 @@ vector<UCc *> UCFunc::parse_ucs_pass2a(vector<pair<UCc *, bool> >::reverse_itera
 #endif
 
 					} else if (opcode_table_data[current->first->_id].flag_function_effect) {
-						assert(current->first->_params_parsed.size() >= 1);
+						assert(!current->first->_params_parsed.empty());
 						FuncMap::const_iterator fmp = funcmap.find(current->first->_params_parsed[0]);
 						assert(fmp != funcmap.end());
 #ifdef DEBUG_PARSE2
@@ -464,7 +464,7 @@ vector<UCc *> UCFunc::parse_ucs_pass2a(vector<pair<UCc *, bool> >::reverse_itera
 
 						num_args = fmp->second.num_args + opcode_table_data[current->first->_id].num_pop;
 					} else if (opcode_table_data[current->first->_id].flag_call_effect) {
-						assert(current->first->_params_parsed.size() >= 1);
+						assert(!current->first->_params_parsed.empty());
 						assert(_externs.size() >= current->first->_params_parsed[0]);
 						FuncMap::const_iterator fmp = funcmap.find(_externs[current->first->_params_parsed[0]]);
 						assert(fmp != funcmap.end());
@@ -595,7 +595,7 @@ vector<UCc *> UCFunc::parse_ucs_pass2a(vector<pair<UCc *, bool> >::reverse_itera
 		}
 	}
 
-	if (vucc.size() > 0) cout << "DID NOT FIND ALL OPCODE PARAMETERS." << endl;
+	if (!vucc.empty()) cout << "DID NOT FIND ALL OPCODE PARAMETERS." << endl;
 	return vucc;
 }
 
@@ -689,7 +689,7 @@ bool UCFunc::output_asm(ostream &o, const FuncMap &funcmap, const map<unsigned i
 	if (debugging_info)
 		o << "\t  .dbgoffset " << std::setw(4) << debugging_offset << "H" << endl;
 
-	if (_data.size())
+	if (!_data.empty())
 		output_asm_data(o);
 
 	o << "\t; Code segment at file offset " << std::setw(8) << _codeoffset << "H" << endl;
@@ -729,7 +729,7 @@ void UCFunc::output_asm_data(ostream &o) {
 void UCFunc::output_raw_opcodes(ostream &o, const UCc &op) {
 	// chars in opcode
 	o << ' ' << std::setw(2) << static_cast<unsigned int>(op._id);
-	if (op._params.size()) cout << ' ';
+	if (!op._params.empty()) cout << ' ';
 
 	for (unsigned int i = 0; i < op._params.size(); i++) {
 		o << std::setw(2) << static_cast<unsigned int>(op._params[i]);
@@ -989,13 +989,13 @@ string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmst
 
 					assert(ucf._externs.size() >= t);
 					assert(t != 0);
-					assert(params.size() >= 1);
+					assert(!params.empty());
 
 					FuncMap::const_iterator fmp = funcmap.find(ucf._externs[params[t - 1]]);
 					funcname = fmp->second.funcname;
 					funcid = ucf._externs[params[t - 1]];
 				}
-				if (funcname.size()) {
+				if (!funcname.empty()) {
 					if (funcname[0] == '&')
 						str << funcname.substr(1, funcname.size() - 1);
 					else
@@ -1047,7 +1047,7 @@ string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmst
 			}
 			case 'v': {
 				// If it is a static variable reference, want to output correct reference.
-				assert(params.size() >= 1);
+				assert(!params.empty());
 				i++;
 				c = asmstr[i];
 				if (c == 's') {
@@ -1332,7 +1332,7 @@ void readbin_U7UCFunc(
 					     i < ucf._num_args + ucf._num_locals && it != ucf._data.end();
 					     ++it, i++) {
 						std::string varname = it->second;
-						if (varname.size()) {
+						if (!varname.empty()) {
 							if (std::isdigit(varname[0]))
 								varname = UCFunc::VARPREFIX + varname;
 							else if (varname == "item")

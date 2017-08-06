@@ -1028,7 +1028,7 @@ bool Game_window::locate_shape(
 ) {
 	// Get (first) selected object.
 	const std::vector<Game_object *> &sel = cheat.get_selected();
-	Game_object *start = sel.size() ? sel[0] : 0;
+	Game_object *start = !sel.empty() ? sel[0] : 0;
 	char msg[80];
 	snprintf(msg, sizeof(msg), "Searching for shape %d", shapenum);
 	effects->center_text(msg);

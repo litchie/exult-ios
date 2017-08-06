@@ -572,7 +572,7 @@ ExultStudio::ExultStudio(int argc, char **argv): glade_path(0), static_path(0),
 	redirect_output("studio_");
 #endif
 	config = new Configuration;
-	if (alt_cfg != "")
+	if (!alt_cfg.empty())
 		config->read_abs_config_file(alt_cfg);
 	else {
 		config->read_config_file(USER_CONFIGURATION_FILE);
@@ -633,10 +633,10 @@ ExultStudio::ExultStudio(int argc, char **argv): glade_path(0), static_path(0),
 		string defgame;         // Default game name.
 		config->value("config/estudio/default_game", defgame, "blackgate");
 		default_game = g_strdup(defgame.c_str());
-		if (game == "")
+		if (game.empty())
 			game = default_game;
 		config->set("config/estudio/default_game", defgame, true);
-		if (game != "")         // Game given?
+		if (!game.empty())         // Game given?
 			set_game_path(game, modtitle);
 	}
 
@@ -962,7 +962,7 @@ C_EXPORT void on_gameselect_ok_clicked(
 	if (GTK_WIDGET_VISIBLE(frame)) {
 		// Creating a new mod
 		modtitle = studio->get_text_entry("gameselect_cfgname");
-		if (modtitle == "")
+		if (modtitle.empty())
 			return;
 		//Get the mod's Exult menu string.
 		GtkTextBuffer *buff = gtk_text_view_get_buffer(GTK_TEXT_VIEW(
@@ -973,7 +973,7 @@ C_EXPORT void on_gameselect_ok_clicked(
 		codepageStr menu(modmenu, "CP437");
 		string modmenustr = menu.get_str();
 		g_free(modmenu);
-		if (modmenustr == "")
+		if (modmenustr.empty())
 			return;
 		// Ensure <MODS> dir exists
 		string pathname("<" + game->get_path_prefix() + "_MODS>");

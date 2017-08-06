@@ -237,7 +237,7 @@ Animation_info *Shape_info::get_animation_info_safe(
 }
 
 bool Shape_info::has_paperdoll_info() const {
-	return objpaperdoll.size() != 0;
+	return !objpaperdoll.empty();
 }
 
 std::vector<Paperdoll_item> &Shape_info::set_paperdoll_info(bool tf) {
@@ -257,7 +257,7 @@ void Shape_info::add_paperdoll_info(Paperdoll_item &add) {
 }
 
 bool Shape_info::has_content_rules() const {
-	return cntrules.size() != 0;
+	return !cntrules.empty();
 }
 
 std::vector<Content_rules> &Shape_info::set_content_rules(bool tf) {
@@ -277,7 +277,7 @@ void Shape_info::add_content_rule(Content_rules &add) {
 }
 
 bool Shape_info::has_effective_hp_info() const {
-	return hpinf.size() != 0;
+	return !hpinf.empty();
 }
 
 std::vector<Effective_hp_info> &Shape_info::set_effective_hp_info(bool tf) {
@@ -297,7 +297,7 @@ void Shape_info::add_effective_hp_info(Effective_hp_info &add) {
 }
 
 bool Shape_info::has_frame_name_info() const {
-	return nameinf.size() != 0;
+	return !nameinf.empty();
 }
 
 std::vector<Frame_name_info> &Shape_info::set_frame_name_info(bool tf) {
@@ -317,7 +317,7 @@ void Shape_info::add_frame_name_info(Frame_name_info &add) {
 }
 
 bool Shape_info::has_frame_usecode_info() const {
-	return frucinf.size() != 0;
+	return !frucinf.empty();
 }
 
 std::vector<Frame_usecode_info> &Shape_info::set_frame_usecode_info(bool tf) {
@@ -337,7 +337,7 @@ void Shape_info::add_frame_usecode_info(Frame_usecode_info &add) {
 }
 
 bool Shape_info::has_frame_flags() const {
-	return frflagsinf.size() != 0;
+	return !frflagsinf.empty();
 }
 
 std::vector<Frame_flags_info> &Shape_info::set_frame_flags(bool tf) {
@@ -357,7 +357,7 @@ void Shape_info::add_frame_flags(Frame_flags_info &add) {
 }
 
 bool Shape_info::has_warmth_info() const {
-	return warminf.size() != 0;
+	return !warminf.empty();
 }
 
 std::vector<Warmth_info> &Shape_info::set_warmth_info(bool tf) {

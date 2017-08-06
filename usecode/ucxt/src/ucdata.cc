@@ -204,7 +204,7 @@ void UCData::disassamble(ostream &o) {
 	if (!_foundfunc)
 		o << "Function not found." << endl;
 
-	if (search_funcs.size() == 0)
+	if (search_funcs.empty())
 		o << "Functions: " << _funcs.size() << endl;
 
 	if (options.output_list)
@@ -319,7 +319,7 @@ void UCData::load_globals(ostream &o) {
 		boost::io::ios_fill_saver fill(o);
 		o << setbase(16) << setfill('0');
 		while (gflags.good()) {
-			if (flagname.size()) {
+			if (!flagname.empty()) {
 				if (flagname[0] == '$')
 					flagname.erase(0, 1);
 				if (flags.find(flagname) != flags.end()) {

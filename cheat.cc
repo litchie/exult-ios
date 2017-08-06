@@ -178,7 +178,7 @@ void Cheat::toggle_map_editor(void) {
 			strcat(cmnd, gamenamestr.c_str());
 			// Now want mod name.
 			std::string modnamestr = Game::get_modtitle();
-			if (modnamestr != "") {
+			if (!modnamestr.empty()) {
 				strcat(cmnd, " -m ");
 				strcat(cmnd, modnamestr.c_str());
 			}

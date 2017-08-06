@@ -219,7 +219,7 @@ void Write_msg_file_section(
 	boost::io::ios_flags_saver flags(out);
 	out << "%%section " << section << hex << endl;
 	for (unsigned i = 0; i < items.size(); ++i)
-		if (items[i].size())
+		if (!items[i].empty())
 			out << "0x" << i << ':' << items[i] << endl;
 	out << "%%endsection " << section << endl;
 }
