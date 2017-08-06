@@ -87,7 +87,7 @@ static void Write_flex(
 	for (vector<string>::const_iterator it = strings.begin();
 	        it != strings.end(); ++it) {
 		const string &str = *it;
-		if (str.size())
+		if (!str.empty())
 			out << str;
 		out.put(0); // 0-delimit.
 		writer.mark_section_done();

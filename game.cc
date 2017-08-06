@@ -91,7 +91,7 @@ Game::Game() : xml(0), menushapes() {
 Game::~Game() {
 	game_type = NONE;
 	delete xml;
-	while (xmlstrings.size()) {
+	while (!xmlstrings.empty()) {
 		char *str = const_cast<char *>(xmlstrings.back());
 		xmlstrings.pop_back();
 		delete [] str;
@@ -115,7 +115,7 @@ Game *Game::create_game(BaseGameInfo *mygame) {
 	sman->set_paperdoll_status(game_type == SERPENT_ISLE || str == "yes");
 	config->set("config/gameplay/bg_paperdolls", str, true);
 	char buf[256];
-	if (mygame->get_mod_title() != "")
+	if (!mygame->get_mod_title().empty())
 		snprintf(buf, 256, " with the '%s' modification.",
 		         mygame->get_mod_title().c_str());
 	else

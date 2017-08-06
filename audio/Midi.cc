@@ -843,7 +843,7 @@ bool MyMidiPlayer::ogg_play_track(std::string filename, int num, bool repeat)
 		basepath = "<STATIC>/music/";
 		}
 
-	if (ogg_name == "") return false;
+	if (ogg_name.empty()) return false;
 
 	if (U7exists("<PATCH>/music/" + ogg_name))
 		ogg_name = get_system_path("<PATCH>/music/" + ogg_name);

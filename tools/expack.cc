@@ -221,7 +221,7 @@ int main(int argc, char **argv)
 				int linenum = 2;
 				while (respfile.good()) {
 					getline(respfile, temp);
-					if (temp.size() > 0) {
+					if (!temp.empty()) {
 						const char *ptr = temp.c_str();
 						if (*ptr == ':') {
 							ptr++;
@@ -359,7 +359,7 @@ int main(int argc, char **argv)
 		// The files
 		{
 			for (unsigned int i = 0; i < file_names.size(); i++) {
-				if (file_names[i].size()) {
+				if (!file_names[i].empty()) {
 					size_t fsize = get_file_size(file_names[i]);
 					if (fsize) {
 						ifstream infile;

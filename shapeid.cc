@@ -170,7 +170,7 @@ void Shape_manager::load(
 			// Gump shapes to import from SI.
 			imports = Shapeinfo_lookup::GetImportedGumpShapes();
 
-			if (imports->size())
+			if (!imports->empty())
 				can_have_paperdolls = files[SF_GUMPS_VGA].import_shapes(source, *imports);
 			else
 				can_have_paperdolls = false;
@@ -185,7 +185,7 @@ void Shape_manager::load(
 		source = pair<string, int>(string("<SERPENT_STATIC>/shapes.vga"), -1);
 		// Skin shapes to import from SI.
 		imports = Shapeinfo_lookup::GetImportedSkins();
-		if (imports->size())
+		if (!imports->empty())
 			got_si_shapes = shapes.import_shapes(source, *imports);
 		else
 			got_si_shapes = false;

@@ -682,7 +682,7 @@ void Uc_converse_case_statement::gen(
 			}
 			Call_intrinsic(fun, blocks, case_body, end, labels,
 			               Uc_function::get_remove_answer(), strlist);
-		} else if (string_offset.size())
+		} else if (!string_offset.empty())
 			Call_intrinsic(fun, blocks, case_body, end, labels,
 			               Uc_function::get_remove_answer(),
 			               new Uc_string_expression(string_offset[0]));

@@ -313,7 +313,7 @@ void Game_window::write_schedules() {
 		offset += cnt;
 		sfile.write2(offset);
 	}
-	if (script_names.size()) {
+	if (!script_names.empty()) {
 		int total = 0;      // Figure total size.
 		vector<char *>::iterator it;
 		for (it = script_names.begin(); it != script_names.end(); ++it)

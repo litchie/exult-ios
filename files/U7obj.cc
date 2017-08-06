@@ -167,7 +167,7 @@ U7multiobject::U7multiobject(
     int objnum
 )
 	: U7object("", objnum), buffer(0), length(0) {
-	if (files.size()) {
+	if (!files.empty()) {
 		identifier = files[0];
 		std::vector<U7object> objects;
 		for (std::vector<File_spec>::const_iterator it = files.begin();

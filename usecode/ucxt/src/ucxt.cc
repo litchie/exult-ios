@@ -103,7 +103,7 @@ int main(int argc, char **argv) {
 	// FIXME: Problem nolonger exists. Probably should put some 'nice' code in it's place.
 	std::ofstream outputstream;
 	std::streambuf *coutbuf = 0;
-	if (uc.output_redirect().size()) {
+	if (!uc.output_redirect().empty()) {
 		U7open(outputstream, uc.output_redirect().c_str(), false);
 		if (outputstream.fail()) {
 			cout << "error. failed to open " << uc.output_redirect() << " for writing. exiting." << endl;
@@ -126,7 +126,7 @@ int main(int argc, char **argv) {
 		usage();
 
 	// now we clean up the <ick>y ness from before
-	if (uc.output_redirect().size()) {
+	if (!uc.output_redirect().empty()) {
 		cout.rdbuf(coutbuf);
 	}
 
@@ -262,7 +262,7 @@ void open_usecode_file(UCData &uc, const Configuration &config) {
 	const string mucc_cc(string("/") + mucc_sc + "/" + mucc_uc);
 
 	// an icky exception chain for those who don't use .exult.cfg
-	if (uc.input_usecode_file().size())
+	if (!uc.input_usecode_file().empty())
 		uc.open_usecode(uc.input_usecode_file());
 	else if (uc.options.noconf == false) {
 		uc.open_usecode(path + mucc_ll);

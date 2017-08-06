@@ -156,7 +156,7 @@ void AudioOptions_gump::toggle(Gump_button *btn, int state) {
 }
 
 static void strip_path(std::string &file) {
-	if (!file.size())
+	if (file.empty())
 		return;
 	size_t sep = file.rfind('/');
 	if (sep != std::string::npos) {

@@ -54,7 +54,7 @@ static std::vector<const MidiDriver::MidiDriverDesc*> midi_drivers;
 
 static void InitMidiDriverVector()
 {
-	if (midi_drivers.size()) return;
+	if (!midi_drivers.empty()) return;
 
 #ifdef USE_FMOPL_MIDI
 	midi_drivers.push_back(FMOplMidiDriver::getDesc());

@@ -114,7 +114,7 @@ Game_object *Schedule::set_procure_item_action(
 	// First, look in inventory.
 	Game_object_vector vec;
 	actor->get_objects(vec, shnum, c_any_qual, frnum);
-	if (vec.size())
+	if (!vec.empty())
 		return vec[0];   // If there, just use it.
 
 	// Now find one around and get the nearest one.
@@ -879,7 +879,7 @@ Actor *Find_congregant(
 		        !act->is_in_party())
 			vec2.push_back(act);
 	}
-	return vec2.size() ? vec2[rand() % vec2.size()] : 0;
+	return !vec2.empty() ? vec2[rand() % vec2.size()] : 0;
 }
 
 /*
@@ -1045,7 +1045,7 @@ void Patrol_schedule::now_what(
 	case -1: { // Initialization
 		Game_object_vector nearby;
 		npc->find_nearby(nearby, PATH_SHAPE, 25, 0x10, c_any_qual, c_any_framenum);
-		gotpath = nearby.size() != 0;
+		gotpath = !nearby.empty();
 #if 0 // will make the automaton (160) not open the door in the first place unless the closest is 0
 		if (gotpath) {
 			// Start at nearest (to prevent NPCs from going all the way back to
@@ -2658,7 +2658,7 @@ void Desk_schedule::find_tables(
  *  Output: false if failed.
  */
 bool Desk_schedule::walk_to_table() {
-	if (tables.size()) {
+	if (!tables.empty()) {
 		table = tables[rand() % tables.size()];
 		add_client(table);
 //		Tile_coord pos = Map_chunk::find_spot(table->get_tile(), 1, npc);
@@ -3264,7 +3264,7 @@ int Waiter_schedule::find_items(Game_object_vector &vec, int dist)
 		npc->find_nearby(vec, 377, dist, 0);
 		npc->find_nearby(vec, 944, dist, 0);
 	}
-	if (!cooking || !vec.size()) {
+	if (!cooking || vec.empty()) {
 		// Bottle, cup, pot
 		for (int i = 0; i < waiter_nshapes; ++i)
 			npc->find_nearby(vec, waiter_shapes[i], dist, 0);
@@ -3366,7 +3366,7 @@ bool Waiter_schedule::walk_to_work_spot(
     bool counter
 ) {
 	vector <Game_object *> &tables = counter ? counters : prep_tables;
-	while (tables.size()) {   // Walk to a 'prep' table.
+	while (!tables.empty()) {   // Walk to a 'prep' table.
 		int index = rand() % tables.size();
 		prep_table = tables[index];
 		add_client(prep_table);
@@ -4543,7 +4543,7 @@ void Bake_schedule::now_what() {
 	case clear_display: {   // Mark food for deletion by remove_food
 		Game_object_vector food;
 		npc->find_nearby(food, npcpos, 377, 4, 0, c_any_qual, c_any_framenum, true);
-		if (!food.size() && !clearing) { // none of our food on the table
+		if (food.empty() && !clearing) { // none of our food on the table
 			// so we can't clear it
 			if (dough_in_oven)
 				dough_in_oven->remove_this();
@@ -4552,7 +4552,7 @@ void Bake_schedule::now_what() {
 			break;
 		}
 		clearing = true;
-		if (food.size()) {
+		if (!food.empty()) {
 			delay = 500;
 			state = remove_food;
 		} else {
@@ -4563,7 +4563,7 @@ void Bake_schedule::now_what() {
 	case remove_food: { // Delete food on display table one by one with a slight delay
 		Game_object_vector food;
 		npc->find_nearby(food, npcpos, 377, 4, 0, c_any_qual, c_any_framenum, true);
-		if (food.size()) {
+		if (!food.empty()) {
 			delay = 500;
 			state = clear_display;
 			gwin->add_dirty(food[0]);

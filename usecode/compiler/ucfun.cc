@@ -716,14 +716,14 @@ void Uc_function::gen(
 	if (statement)
 		statement->gen(this, fun_blocks, current, endblock, label_blocks);
 	assert(initial->no_parents() && endblock->is_childless());
-	while (fun_blocks.size() && fun_blocks.back()->no_parents()) {
+	while (!fun_blocks.empty() && fun_blocks.back()->no_parents()) {
 		Basic_block *blk = fun_blocks.back();
 		fun_blocks.pop_back();
 		delete blk;
 	}
 	// Mark all blocks reachable from initial block.
 	initial->mark_reachable();
-	if (fun_blocks.size() && !fun_blocks.back()->is_end_block())
+	if (!fun_blocks.empty() && !fun_blocks.back()->is_end_block())
 		fun_blocks.back()->set_targets(UC_INVALID, endblock);
 	// Labels map is no longer needed.
 	for (map<string, Basic_block *>::iterator it = label_blocks.begin();
@@ -752,7 +752,7 @@ void Uc_function::gen(
 		block->link_predecessors();
 	}
 	vector<char> code;      // Generate code here first.
-	if (fun_blocks.size()) {
+	if (!fun_blocks.empty()) {
 		// Mark blocks for 32-bit usecode jump sizes.
 		Set_32bit_jump_flags(fun_blocks);
 		vector<int> locs;

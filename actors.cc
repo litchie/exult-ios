@@ -1189,7 +1189,7 @@ void Actor::set_action(
  */
 
 void Actor::purge_deleted_actions() {
-	while (deletedactions.size()) {
+	while (!deletedactions.empty()) {
 		Actor_action *act = deletedactions.back();
 		deletedactions.pop_back();
 		delete act;
@@ -2246,7 +2246,7 @@ void Actor::update_from_studio(
 		// Create.  Gets initialized below.
 		npc = new Npc_actor(name, shape, npc_num, usecode);
 		npc->usecode_name = usecodefun;
-		if (usecodefun.size())
+		if (!usecodefun.empty())
 			npc->usecode = ucmachine->find_function(usecodefun.c_str(), true);
 		if (npc_num >= 256 && npc->usecode != -1 &&
 		        npc->usecode != 0x400 + npc_num)
@@ -2271,7 +2271,7 @@ void Actor::update_from_studio(
 	} else {            // Old.
 		npc->add_dirty();
 		npc->usecode_name = usecodefun;
-		if (usecodefun.size())
+		if (!usecodefun.empty())
 			npc->usecode = ucmachine->find_function(usecodefun.c_str(), true);
 		else
 			npc->usecode = usecode;

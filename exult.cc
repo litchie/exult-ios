@@ -558,7 +558,7 @@ int exult_main(const char *runpath) {
 	// Read in configuration file
 	config = new Configuration;
 
-	if (arg_configfile != "") {
+	if (!arg_configfile.empty()) {
 		config->read_abs_config_file(arg_configfile);
 	} else {
 		config->read_config_file(USER_CONFIGURATION_FILE);
