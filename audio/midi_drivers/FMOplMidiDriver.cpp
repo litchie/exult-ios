@@ -206,7 +206,7 @@ const unsigned char FMOplMidiDriver::adlib_opadd[9] = {
 //
 // Constructor
 //
-FMOplMidiDriver::FMOplMidiDriver() : LowLevelMidiDriver()
+FMOplMidiDriver::FMOplMidiDriver()
 {
 }
 

@@ -671,7 +671,7 @@ bool MyMidiPlayer::is_adlib()
 
 MyMidiPlayer::MyMidiPlayer()	: repeating(false),current_track(-1),
 				  midi_driver_name("default"), midi_driver(0), initialized(false),
-				  timbre_lib(TIMBRE_LIB_GM), timbre_lib_filename(),
+				  timbre_lib(TIMBRE_LIB_GM),
 				  timbre_lib_index(0), timbre_lib_game(NONE),
 				  music_conversion(XMIDIFILE_CONVERT_MT32_TO_GM),
 				  effects_conversion(XMIDIFILE_CONVERT_GS127_TO_GS),

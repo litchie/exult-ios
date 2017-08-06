@@ -43,8 +43,7 @@ using namespace MT32Emu;
 const MidiDriver::MidiDriverDesc MT32EmuMidiDriver::desc =
 		MidiDriver::MidiDriverDesc ("MT32Emu", createInstance);
 
-MT32EmuMidiDriver::MT32EmuMidiDriver() :
-	LowLevelMidiDriver()
+MT32EmuMidiDriver::MT32EmuMidiDriver()
 {
 }
 

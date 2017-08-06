@@ -408,7 +408,7 @@ Fast_pathfinder_client::Fast_pathfinder_client(
     Game_object *to,
     int dist,
     int mf
-) : Pathfinder_client(mf), destbox() {
+) : Pathfinder_client(mf) {
 	init(from, to, dist);
 }
 
@@ -435,7 +435,7 @@ Fast_pathfinder_client::Fast_pathfinder_client(
     Actor *from,
     Game_object *to,
     int dist
-) : Pathfinder_client(from->get_type_flags()), destbox() {
+) : Pathfinder_client(from->get_type_flags()) {
 	init(from, to, dist);
 }
 

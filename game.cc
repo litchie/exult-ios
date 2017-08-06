@@ -71,7 +71,7 @@ std::string Game::modtitle;
 
 unsigned int Game::ticks = 0;
 
-Game::Game() : xml(0), menushapes() {
+Game::Game() : xml(0) {
 	try {               // Okay to fail if development game.
 		menushapes.load(MAINSHP_FLX, PATCH_MAINSHP);
 	} catch (const exult_exception &e) {
