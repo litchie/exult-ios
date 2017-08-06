@@ -431,7 +431,10 @@ int main(int argc, char *argv[]) {
 	sh = load_shape(infilename);
 	if (!sh) return 1;
 	palette = load_palette(palfilename);
-	if (!palette) return 1;
+	if (!palette) {
+		delete sh;
+		return 1;
+	}
 
 	for (int i = 0; i < sh->num_frames; i++) {
 		sprintf(outfilename, "%s%02i.pcx", outprefix, i);
@@ -439,5 +442,6 @@ int main(int argc, char *argv[]) {
 		save_image(sh->frames[i].pixels, palette, sh->width, sh->height, outfilename);
 	}
 
+	delete sh;
 	return 0;
 }
