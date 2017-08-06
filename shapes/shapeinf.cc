@@ -94,8 +94,7 @@ Shape_info::~Shape_info() {
 	delete weapon;
 	delete ammo;
 	delete armor;
-	if (weapon_offsets)
-		delete [] weapon_offsets;
+	delete [] weapon_offsets;
 	delete monstinf;
 	delete npcpaperdoll;
 	delete sfxinf;

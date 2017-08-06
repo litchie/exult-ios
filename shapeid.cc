@@ -237,7 +237,7 @@ void Shape_manager::load(
 
 	read_shape_info();
 
-	if (fonts) delete fonts;
+	delete fonts;
 	fonts = new Fonts_vga_file();
 	fonts->init();
 
