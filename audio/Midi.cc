@@ -772,7 +772,7 @@ void    MyMidiPlayer::stop_sound_effects()
 
 bool MyMidiPlayer::ogg_play_track(std::string filename, int num, bool repeat)
 {
-	string ogg_name = "";
+	string ogg_name;
 	string basepath = "<MUSIC>/";
 
 	if (filename == EXULT_FLX && num == EXULT_FLX_MEDITOWN_MID)
