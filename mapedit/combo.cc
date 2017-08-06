@@ -1082,7 +1082,7 @@ void Combo_chooser::enable_controls(
 	}
 }
 
-static gint Mouse_release(GtkWidget *, GdkEventButton *, gpointer);
+static gint Mouse_release(GtkWidget * widget, GdkEventButton * event, gpointer data);
 
 /*
  *  Create the list.

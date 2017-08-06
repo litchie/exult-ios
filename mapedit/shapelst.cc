@@ -917,8 +917,9 @@ void Shape_chooser::edit_shape(
  */
 
 gint Shape_chooser::check_editing_files_cb(
-    gpointer
+    gpointer data
 ) {
+	ignore_unused_variable_warning(data);
 	ExultStudio *studio = ExultStudio::get_instance();
 	// Is focus in main window?
 	if (studio->has_focus())

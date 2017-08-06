@@ -1643,7 +1643,8 @@ Game_object *Game_object::attacked(
 /*
  *  Can't set usecode.
  */
-bool Game_object::set_usecode(int, const char *) {
+bool Game_object::set_usecode(int ui, const char *nm) {
+	ignore_unused_variable_warning(ui, nm);
 	return false;
 }
 

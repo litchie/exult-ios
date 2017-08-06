@@ -162,10 +162,13 @@ public:
 	{  }
 	// What to do when 'clicked':
 	virtual bool activate(int button = 1);
-	virtual bool push(int) {
+	virtual bool push(int button) {
+		ignore_unused_variable_warning(button);
 		return false;
 	}
-	virtual void unpush(int) {}
+	virtual void unpush(int button) {
+		ignore_unused_variable_warning(button);
+	}
 };
 
 /*
