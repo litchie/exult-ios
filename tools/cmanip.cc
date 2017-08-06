@@ -209,7 +209,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	assert(config != 0);
-	config->read_config_file(config_file_name.c_str());
+	config->read_config_file(config_file_name);
 
 	process_ops();
 

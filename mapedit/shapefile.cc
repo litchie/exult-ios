@@ -470,7 +470,7 @@ void Flex_file_info::flush(
 			out.write(entries[0], lengths[0]);
 		out.close();
 		if (!out.good())
-			throw file_write_exception(filestr.c_str());
+			throw file_write_exception(filestr);
 		return;
 	}
 	Flex_writer writer(out, "Written by ExultStudio", cnt);
@@ -480,7 +480,7 @@ void Flex_file_info::flush(
 		writer.mark_section_done();
 	}
 	if (!writer.close())
-		throw file_write_exception(filestr.c_str());
+		throw file_write_exception(filestr);
 }
 
 /*
@@ -550,7 +550,7 @@ static bool Create_file(
 		U7open(out, pathname.c_str());  // May throw exception.
 		Flex_writer writer(out, "Written by ExultStudio", 0);
 		if (!writer.close())
-			throw file_write_exception(pathname.c_str());
+			throw file_write_exception(pathname);
 		return true;
 	} else if (strcasecmp(".pal", basename + namelen - 4) == 0) {
 		// Empty 1-palette file.
