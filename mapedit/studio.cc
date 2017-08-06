@@ -537,12 +537,10 @@ ExultStudio::ExultStudio(int argc, char **argv): glade_path(0), static_path(0),
 #endif
 	// Get options.
 	const char *xmldir = 0;     // Default:  Look here for .glade.
-	string game = "";           // Game to look up in .exult.cfg.
-	string modtitle = "";       // Mod title to look up in <MODS>/*.cfg.
-	string alt_cfg = "";
+	string game;                // Game to look up in .exult.cfg.
+	string modtitle;            // Mod title to look up in <MODS>/*.cfg.
+	string alt_cfg;
 	static const char *optstring = "c:g:x:m:p";
-	extern int opterr/*, optind, optopt*/;
-	extern char *optarg;
 	opterr = 0;         // Don't let getopt() print errs.
 	int optchr;
 	while ((optchr = getopt(argc, argv, optstring)) != -1)
@@ -958,7 +956,7 @@ C_EXPORT void on_gameselect_ok_clicked(
 	g_free(text);
 
 	ModManager *game = gamemanager->get_game(gamenum);
-	string modtitle = "";
+	string modtitle;
 
 	GtkWidget *frame = glade_xml_get_widget(app_xml, "modinfo_frame");
 	if (GTK_WIDGET_VISIBLE(frame)) {

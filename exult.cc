@@ -248,7 +248,7 @@ static bool run_ss = false;     // skip menu and run ss
 static bool run_sib = false;        // skip menu and run sib
 static string arg_gamename = "default"; // cmdline arguments
 static string arg_modname = "default";  // cmdline arguments
-static string arg_configfile = "";
+static string arg_configfile;
 static int arg_buildmap = -1;
 static int arg_mapnum = -1;
 static bool arg_nomenu = false;
