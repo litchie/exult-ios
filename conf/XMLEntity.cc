@@ -288,10 +288,10 @@ static  string  decode_entity(const string &s, std::size_t &pos) {
 }
 
 static  string  close_tag(const string &s) {
-	if (s.find(" ") == string::npos)
+	if (s.find(' ') == string::npos)
 		return s;
 
-	return s.substr(0, s.find(" "));
+	return s.substr(0, s.find(' '));
 }
 
 
