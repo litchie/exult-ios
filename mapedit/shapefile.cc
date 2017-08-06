@@ -310,7 +310,6 @@ void Npcs_file_info::setup(
 			npcs[i].name = "";
 		}
 	}
-	return;
 }
 
 /*

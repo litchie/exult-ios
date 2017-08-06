@@ -163,7 +163,6 @@ static void select_sample(int v, Instrument *ip)
 		sp++;
 	}
 	voice[v].sample=closest;
-	return;
 }
 
 static void recompute_freq(int v)

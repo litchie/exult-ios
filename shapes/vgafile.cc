@@ -422,7 +422,6 @@ void Shape_frame::paint_rle(
 			return;
 
 	win->paint_rle(xoff, yoff, data);
-	return;
 }
 
 /*
@@ -442,7 +441,6 @@ void Shape_frame::paint_rle_remapped(
 			return;
 
 	win->paint_rle_remapped(xoff, yoff, data, trans);
-	return;
 }
 
 /*

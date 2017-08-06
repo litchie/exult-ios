@@ -536,7 +536,6 @@ void Game_map::write_ifix_objects(
 	if (!writer.close())
 		throw file_write_exception(fname);
 	schunk_modified[schunk] = false;
-	return;
 }
 
 /*
@@ -749,7 +748,6 @@ void Game_map::write_ireg_objects(
 	ireg_stream.flush();
 	int result = ireg_stream.good();
 	if (!result) throw file_write_exception(fname);
-	return;
 }
 
 
