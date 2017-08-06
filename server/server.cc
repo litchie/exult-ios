@@ -512,7 +512,6 @@ void Server_delay(
     Message_handler handle_message
 ) {
 #ifndef WIN32
-	extern int xfd;
 	fd_set rfds;
 	struct timeval timer;
 	timer.tv_sec = 0;
