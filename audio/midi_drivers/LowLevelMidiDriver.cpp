@@ -431,9 +431,9 @@ int LowLevelMidiDriver::initThreadedSynth()
 
 	quit_thread = false;
 #if SDL_VERSION_ATLEAST(2, 0, 0)
-	thread = SDL_CreateThread (threadMain_Static, "LowLevelMidiDriver", static_cast<void*>(this));
+	thread = SDL_CreateThread (threadMain_Static, "LowLevelMidiDriver", this);
 #else
-	thread = SDL_CreateThread (threadMain_Static, static_cast<void*>(this));
+	thread = SDL_CreateThread (threadMain_Static, this);
 #endif
 
 	while (peekComMessageType() == LLMD_MSG_THREAD_INIT)

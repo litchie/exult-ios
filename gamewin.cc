@@ -2280,7 +2280,7 @@ void Game_window::show_items(
 		     ", hp = " << obj->get_obj_hp() << ", weight = " << obj->get_weight()
 		     << ", volume = " << obj->get_volume()
 		     << endl;
-		cout << "obj = " << static_cast<void *>(obj) << endl;
+		cout << "obj = " << obj << endl;
 		if (obj->get_flag(Obj_flags::asleep))
 			cout << "ASLEEP" << endl;
 		if (obj->is_egg())  // Show egg info. here.
@@ -3076,7 +3076,7 @@ void Game_window::emulate_cache(Map_chunk *olist, Map_chunk *nlist) {
 #ifdef DEBUG
 		Tile_coord t = (*it)->get_tile();
 		cout << "Culling object: " << (*it)->get_name() <<
-		     '(' << static_cast<void *>(*it) << ")@" <<
+		     '(' << *it << ")@" <<
 		     t.tx << "," << t.ty << "," << t.tz << endl;
 #endif
 		(*it)->delete_contents();  // first delete item's contents

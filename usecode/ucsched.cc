@@ -309,8 +309,8 @@ void Usecode_script::handle_event(
 	if (act && act->get_casting_mode() == Actor::show_casting_frames)
 		act->end_casting_mode(delay);
 #ifdef DEBUG
-    if (intrinsic_trace)
-	    cout << "Ending script for " << obj << endl;
+	if (intrinsic_trace)
+		cout << "Ending script for " << obj << endl;
 #endif
 	delete this;            // Hope this is safe.
 }
@@ -775,7 +775,7 @@ void Usecode_script::print(
 	boost::io::ios_flags_saver flags(out);
 	boost::io::ios_fill_saver fill(out);
 	out << hex << "Obj = 0x" << setfill('0') << setw(2)
-	    << static_cast<void *>(obj) << ": " "(";
+	    << obj << ": (";
 	for (int i = 0; i < cnt; i++) {
 		if (i > 0)
 			out << ", ";
