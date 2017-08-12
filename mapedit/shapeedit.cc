@@ -2543,7 +2543,7 @@ void ExultStudio::set_shape_notebook_frame(
 	set_spin("shinfo_originy", shape->get_ybelow(), -shape->get_height(),
 	         shape->get_height());
 
-	Shape_info *info = static_cast<Shape_info *>(
+	const Shape_info *info = static_cast<const Shape_info *>(
 	                   gtk_object_get_user_data(GTK_OBJECT(shapewin)));
 	if (!info)
 		return;
@@ -2630,7 +2630,7 @@ inline short get_alt_spots(short spot) {
  */
 
 void ExultStudio::init_shape_notebook(
-    Shape_info &info,
+    const Shape_info &info,
     GtkWidget *book,        // The notebook.
     int shnum,          // Shape #.
     int frnum           // Frame #.
@@ -2688,7 +2688,7 @@ void ExultStudio::init_shape_notebook(
 	set_bit_toggles(&shpflags[0],
 	                array_size(shpflags), info.get_shape_flags());
 	// Extras.
-	Weapon_info *winfo = info.get_weapon_info();
+	const Weapon_info *winfo = info.get_weapon_info();
 	set_toggle("shinfo_weapon_check", winfo != 0);
 	set_visible("shinfo_weapon_box", winfo != 0);
 	if (winfo) {        // Setup weapon page.
@@ -2732,7 +2732,7 @@ void ExultStudio::init_shape_notebook(
 		set_spin("shinfo_proj_rotation", winfo->get_rotation_speed());
 		set_optmenu("shinfo_proj_speed", winfo->get_missile_speed() - 1);
 	}
-	Ammo_info *ainfo = info.get_ammo_info();
+	const Ammo_info *ainfo = info.get_ammo_info();
 	set_toggle("shinfo_ammo_check", ainfo != 0);
 	set_visible("shinfo_ammo_box", ainfo != 0);
 	if (ainfo) {        // Setup ammo page.
@@ -2764,7 +2764,7 @@ void ExultStudio::init_shape_notebook(
 		set_toggle("shinfo_ammo_special", ainfo->is_homing());
 		set_optmenu("shinfo_ammo_drop", ainfo->get_drop_type(), !ainfo->is_homing());
 	}
-	Armor_info *arinfo = info.get_armor_info();
+	const Armor_info *arinfo = info.get_armor_info();
 	set_toggle("shinfo_armor_check", arinfo != 0);
 	set_visible("shinfo_armor_box", arinfo != 0);
 	if (arinfo) {       // Setup armor page.
@@ -2796,7 +2796,7 @@ void ExultStudio::init_shape_notebook(
 		                             };
 		set_bit_toggles(&flags[0], array_size(flags), aflags);
 	}
-	Monster_info *minfo = info.get_monster_info();
+	const Monster_info *minfo = info.get_monster_info();
 	set_toggle("shinfo_monster_check", minfo != 0);
 	set_visible("shinfo_monster_box", minfo != 0);
 	if (minfo) {        // Setup monster page.
@@ -2913,7 +2913,7 @@ void ExultStudio::init_shape_notebook(
 		}
 	}
 
-	SFX_info *sfxinf = info.get_sfx_info();
+	const SFX_info *sfxinf = info.get_sfx_info();
 	set_toggle("shinfo_sound_check", sfxinf != 0);
 	set_visible("shinfo_sfx_box", sfxinf != 0);
 	if (sfxinf) {
@@ -2928,7 +2928,7 @@ void ExultStudio::init_shape_notebook(
 		set_spin("shinfo_sfx_clock_sfx", sfxinf->get_extra_sfx(), hourly);
 	}
 
-	Paperdoll_npc *npcinf = info.get_npc_paperdoll();
+	const Paperdoll_npc *npcinf = info.get_npc_paperdoll();
 	set_toggle("shinfo_npcpaperdoll_check", npcinf != 0);
 	set_visible("shinfo_npcpaperdoll_box", npcinf != 0);
 	if (npcinf) {
@@ -2948,7 +2948,7 @@ void ExultStudio::init_shape_notebook(
 			set_spin(arm_names[i], npcinf->get_arms_frame(i));
 	}
 
-	Animation_info *aniinf = info.get_animation_info();
+	const Animation_info *aniinf = info.get_animation_info();
 	set_toggle("shinfo_animation_check", aniinf != 0);
 	set_visible("shinfo_animation_box", aniinf != 0);
 	if (aniinf) {
@@ -2984,7 +2984,7 @@ void ExultStudio::init_shape_notebook(
 		set_spin("shinfo_animation_recycle", rec ? rec : nframes, on && rec);
 	}
 
-	std::vector<Effective_hp_info> &hpinf = info.get_effective_hp_info();
+	const std::vector<Effective_hp_info> &hpinf = info.get_effective_hp_info();
 	set_toggle("shinfo_effhps_check", !hpinf.empty());
 	set_visible("shinfo_effhps_box", !hpinf.empty());
 	if (!hpinf.empty()) {
@@ -2993,10 +2993,10 @@ void ExultStudio::init_shape_notebook(
 		GtkTreeModel *model = gtk_tree_view_get_model(hptree);
 		GtkTreeStore *store = GTK_TREE_STORE(model);
 		GtkTreeIter iter;
-		Effective_hp_info *first = 0;
-		for (std::vector<Effective_hp_info>::iterator it = hpinf.begin();
+		const Effective_hp_info *first = 0;
+		for (std::vector<Effective_hp_info>::const_iterator it = hpinf.begin();
 		        it != hpinf.end(); ++it) {
-			Effective_hp_info &hps = *it;
+			const Effective_hp_info &hps = *it;
 			if (hps.is_invalid())
 				continue;
 			if (!first)
@@ -3022,7 +3022,7 @@ void ExultStudio::init_shape_notebook(
 	} else
 		Set_hp_fields();
 
-	std::vector<Warmth_info> &warminf = info.get_warmth_info();
+	const std::vector<Warmth_info> &warminf = info.get_warmth_info();
 	set_toggle("shinfo_warmth_check", !warminf.empty());
 	set_visible("shinfo_warmth_box", !warminf.empty());
 	if (!warminf.empty()) {
@@ -3031,10 +3031,10 @@ void ExultStudio::init_shape_notebook(
 		GtkTreeModel *model = gtk_tree_view_get_model(warmtree);
 		GtkTreeStore *store = GTK_TREE_STORE(model);
 		GtkTreeIter iter;
-		Warmth_info *first = 0;
-		for (std::vector<Warmth_info>::iterator it = warminf.begin();
+		const Warmth_info *first = 0;
+		for (std::vector<Warmth_info>::const_iterator it = warminf.begin();
 		        it != warminf.end(); ++it) {
-			Warmth_info &warm = *it;
+			const Warmth_info &warm = *it;
 			if (warm.is_invalid())
 				continue;
 			if (!first)
@@ -3058,7 +3058,7 @@ void ExultStudio::init_shape_notebook(
 	} else
 		Set_warmth_fields();
 
-	std::vector<Content_rules> &cntinf = info.get_content_rules();
+	const std::vector<Content_rules> &cntinf = info.get_content_rules();
 	set_toggle("shinfo_cntrules_check", !cntinf.empty());
 	set_visible("shinfo_cntrules_box", !cntinf.empty());
 	if (!cntinf.empty()) {
@@ -3067,10 +3067,10 @@ void ExultStudio::init_shape_notebook(
 		GtkTreeModel *model = gtk_tree_view_get_model(cnttree);
 		GtkTreeStore *store = GTK_TREE_STORE(model);
 		GtkTreeIter iter;
-		Content_rules *first = 0;
-		for (std::vector<Content_rules>::iterator it = cntinf.begin();
+		const Content_rules *first = 0;
+		for (std::vector<Content_rules>::const_iterator it = cntinf.begin();
 		        it != cntinf.end(); ++it) {
-			Content_rules &cntr = *it;
+			const Content_rules &cntr = *it;
 			if (cntr.is_invalid())
 				continue;
 			if (!first)
@@ -3094,7 +3094,7 @@ void ExultStudio::init_shape_notebook(
 	} else
 		Set_cntrules_fields();
 
-	std::vector<Frame_flags_info> &frflaginf = info.get_frame_flags();
+	const std::vector<Frame_flags_info> &frflaginf = info.get_frame_flags();
 	set_toggle("shinfo_frameflags_check", !frflaginf.empty());
 	set_visible("shinfo_frameflags_box", !frflaginf.empty());
 	if (!frflaginf.empty()) {
@@ -3103,10 +3103,10 @@ void ExultStudio::init_shape_notebook(
 		GtkTreeModel *model = gtk_tree_view_get_model(flagtree);
 		GtkTreeStore *store = GTK_TREE_STORE(model);
 		GtkTreeIter iter;
-		Frame_flags_info *first = 0;
-		for (std::vector<Frame_flags_info>::iterator it = frflaginf.begin();
+		const Frame_flags_info *first = 0;
+		for (std::vector<Frame_flags_info>::const_iterator it = frflaginf.begin();
 		        it != frflaginf.end(); ++it) {
-			Frame_flags_info &frflag = *it;
+			const Frame_flags_info &frflag = *it;
 			if (frflag.is_invalid())
 				continue;
 			if (!first)
@@ -3133,7 +3133,7 @@ void ExultStudio::init_shape_notebook(
 	} else
 		Set_frameflags_fields();
 
-	std::vector<Frame_usecode_info> &frucinf = info.get_frame_usecode_info();
+	const std::vector<Frame_usecode_info> &frucinf = info.get_frame_usecode_info();
 	set_toggle("shinfo_frameusecode_check", !frucinf.empty());
 	set_visible("shinfo_frameusecode_box", !frucinf.empty());
 	if (!frucinf.empty()) {
@@ -3142,10 +3142,10 @@ void ExultStudio::init_shape_notebook(
 		GtkTreeModel *model = gtk_tree_view_get_model(uctree);
 		GtkTreeStore *store = GTK_TREE_STORE(model);
 		GtkTreeIter iter;
-		Frame_usecode_info *first = 0;
-		for (std::vector<Frame_usecode_info>::iterator it = frucinf.begin();
+		const Frame_usecode_info *first = 0;
+		for (std::vector<Frame_usecode_info>::const_iterator it = frucinf.begin();
 		        it != frucinf.end(); ++it) {
-			Frame_usecode_info &frucfun = *it;
+			const Frame_usecode_info &frucfun = *it;
 			if (frucfun.is_invalid())
 				continue;
 			if (!first)
@@ -3183,7 +3183,7 @@ void ExultStudio::init_shape_notebook(
 	} else
 		Set_frameusecode_fields();
 
-	std::vector<Frame_name_info> &nmvec = info.get_frame_name_info();
+	const std::vector<Frame_name_info> &nmvec = info.get_frame_name_info();
 	set_toggle("shinfo_framenames_check", !nmvec.empty());
 	set_visible("shinfo_framenames_box", !nmvec.empty());
 	if (!nmvec.empty()) {
@@ -3192,12 +3192,12 @@ void ExultStudio::init_shape_notebook(
 		GtkTreeModel *model = gtk_tree_view_get_model(nametree);
 		GtkTreeStore *store = GTK_TREE_STORE(model);
 		GtkTreeIter iter;
-		Frame_name_info *first = 0;
+		const Frame_name_info *first = 0;
 		codepageStr locsname(get_text_entry("shinfo_name"));
 		const char *sname = locsname.get_str();
-		for (std::vector<Frame_name_info>::iterator it = nmvec.begin();
+		for (std::vector<Frame_name_info>::const_iterator it = nmvec.begin();
 		        it != nmvec.end(); ++it) {
-			Frame_name_info &nmit = *it;
+			const Frame_name_info &nmit = *it;
 			if (nmit.is_invalid())
 				continue;
 			if (!first)
@@ -3241,7 +3241,7 @@ void ExultStudio::init_shape_notebook(
 	} else
 		Set_framenames_fields();
 
-	std::vector<Paperdoll_item> &dollinf = info.get_paperdoll_info();
+	const std::vector<Paperdoll_item> &dollinf = info.get_paperdoll_info();
 	set_toggle("shinfo_objpaperdoll_check", !dollinf.empty());
 	set_visible("shinfo_objpaperdoll_box", !dollinf.empty());
 	if (!dollinf.empty()) {
@@ -3250,10 +3250,10 @@ void ExultStudio::init_shape_notebook(
 		GtkTreeModel *model = gtk_tree_view_get_model(dolltree);
 		GtkTreeStore *store = GTK_TREE_STORE(model);
 		GtkTreeIter iter;
-		Paperdoll_item *first = 0;
-		for (std::vector<Paperdoll_item>::iterator it = dollinf.begin();
+		const Paperdoll_item *first = 0;
+		for (std::vector<Paperdoll_item>::const_iterator it = dollinf.begin();
 		        it != dollinf.end(); ++it) {
-			Paperdoll_item &doll = *it;
+			const Paperdoll_item &doll = *it;
 			if (doll.is_invalid())
 				continue;
 			if (!first)
@@ -3280,7 +3280,7 @@ void ExultStudio::init_shape_notebook(
 		gtk_tree_view_set_cursor(dolltree, path, NULL, false);
 		gtk_tree_path_free(path);
 		if (first) {
-			Paperdoll_item &doll = *first;
+			const Paperdoll_item &doll = *first;
 			Set_objpaperdoll_fields(doll.get_world_frame(), doll.get_object_spot(),
 			                        doll.is_translucent(), doll.is_gender_based(),
 			                        doll.get_spot_frame(), doll.get_paperdoll_shape(),

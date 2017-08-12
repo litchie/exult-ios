@@ -35,7 +35,7 @@ static int Check_mask(
     int mask
 ) {
 	ignore_unused_variable_warning(gwin);
-	Shape_info &info = obj->get_info();
+	const Shape_info &info = obj->get_info();
 	if ((mask & (4 | 8)) && // Both seem to be all NPC's.
 	        !info.is_npc())
 		return 0;

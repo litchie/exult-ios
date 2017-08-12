@@ -395,7 +395,7 @@ public:
 	static int get_info_flag() {
 		return 8;
 	}
-	int get_base_xp_value();
+	int get_base_xp_value() const;
 };
 
 

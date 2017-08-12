@@ -1289,7 +1289,7 @@ Usecode_value Usecode_internal::add_party_items(
 		                     shapenum, framenum, 2);
 		if (pos.tx == -1)   // Hope this rarely happens.
 			break;
-		Shape_info &info = ShapeID::get_info(shapenum);
+		const Shape_info &info = ShapeID::get_info(shapenum);
 		// Create and place.
 		Game_object *newobj = gmap->create_ireg_object(
 		                          info, shapenum, framenum, 0, 0, 0);
@@ -1385,7 +1385,7 @@ Game_object *Usecode_internal::create_object(
     bool equip          // Equip monsters.
 ) {
 	Game_object *obj;       // Create to be written to Ireg.
-	Shape_info &info = ShapeID::get_info(shapenum);
+	const Shape_info &info = ShapeID::get_info(shapenum);
 	modified_map = true;
 	// +++Not sure if 1st test is needed.
 	if (info.get_monster_info() || info.is_npc()) {
@@ -3199,7 +3199,7 @@ void Usecode_internal::write(
 				const char *nm = fsym->get_name();
 				nfile->write4(0xfffffffeU);
 				nfile->write2(strlen(nm));
-				nfile->write(const_cast<char *>(nm), strlen(nm));
+				nfile->write(nm, strlen(nm));
 			} else
 				nfile->write4(fun->id);
 			nfile->write4(fun->statics.size());

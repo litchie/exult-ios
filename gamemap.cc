@@ -602,7 +602,7 @@ void Game_map::get_ifix_chunk_objects(
 			int tx = (ent[0] >> 4) & 0xf, ty = ent[0] & 0xf,
 			    tz = ent[1] & 0xf;
 			int shnum = ent[2] + 256 * (ent[3] & 3), frnum = ent[3] >> 2;
-			Shape_info &info = ShapeID::get_info(shnum);
+			const Shape_info &info = ShapeID::get_info(shnum);
 			obj = (info.is_animated() || info.has_sfx()) ?
 			      new Animated_ifix_object(shnum, frnum, tx, ty, tz)
 			      : new Ifix_game_object(shnum, frnum, tx, ty, tz);
@@ -615,7 +615,7 @@ void Game_map::get_ifix_chunk_objects(
 			int tx = (ent[0] >> 4) & 0xf, ty = ent[0] & 0xf,
 			    tz = ent[1] & 0xf;
 			int shnum = ent[2] + 256 * ent[3], frnum = ent[4];
-			Shape_info &info = ShapeID::get_info(shnum);
+			const Shape_info &info = ShapeID::get_info(shnum);
 			obj = (info.is_animated() || info.has_sfx()) ?
 			      new Animated_ifix_object(shnum, frnum, tx, ty, tz)
 			      : new Ifix_game_object(shnum, frnum, tx, ty, tz);
@@ -964,7 +964,7 @@ void Game_map::read_ireg_objects(
 			shnum = entry[2] + 256 * (entry[3] & 3);
 			frnum = entry[3] >> 2;
 		}
-		Shape_info &info = ShapeID::get_info(shnum);
+		const Shape_info &info = ShapeID::get_info(shnum);
 		unsigned int lift, quality, type;
 		Ireg_game_object *obj;
 		int is_egg = 0;     // Fields are eggs.
@@ -1129,7 +1129,7 @@ void Game_map::read_ireg_objects(
  */
 
 Ireg_game_object *Game_map::create_ireg_object(
-    Shape_info &info,       // Info. about shape.
+    const Shape_info &info,       // Info. about shape.
     int shnum, int frnum,       // Shape, frame.
     int tilex, int tiley,       // Tile within chunk.
     int lift            // Desired lift.
@@ -1190,7 +1190,7 @@ Ireg_game_object *Game_map::create_ireg_object(
 Ifix_game_object *Game_map::create_ifix_object(
     int shnum, int frnum        // Shape, frame.
 ) {
-	Shape_info &info = ShapeID::get_info(shnum);
+	const Shape_info &info = ShapeID::get_info(shnum);
 	return (info.is_animated() || info.has_sfx())
 	       ? new Animated_ifix_object(shnum, frnum, 0, 0, 0)
 	       : new Ifix_game_object(shnum, frnum, 0, 0, 0);
@@ -1512,11 +1512,11 @@ void Game_map::find_unused_shapes(
 		}
 	int i;
 	for (i = 0; i < maxbits; i++) { // Add all possible monsters.
-		Shape_info &info = ShapeID::get_info(i);
-		Monster_info *minf = info.get_monster_info();
+		const Shape_info &info = ShapeID::get_info(i);
+		const Monster_info *minf = info.get_monster_info();
 		if (minf)
 			found[i / 8] |= (1 << (i % 8));
-		Weapon_info *winf = info.get_weapon_info();
+		const Weapon_info *winf = info.get_weapon_info();
 		if (winf) {     // Get projectiles for weapons.
 			int proj = winf->get_projectile();
 			if (proj > 0 && proj < maxbits)

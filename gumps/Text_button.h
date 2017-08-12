@@ -37,9 +37,9 @@ public:
 	virtual ~Text_button() {  }
 	virtual void paint();
 
-	virtual int on_widget(int mx, int my);
+	virtual int on_widget(int mx, int my) const;
 
-	virtual int on_button(int mx, int my) {
+	virtual int on_button(int mx, int my) const {
 		return on_widget(mx, my);
 	}
 

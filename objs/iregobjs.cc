@@ -161,7 +161,7 @@ void Ireg_game_object::write_ireg(
 	uint8 *ptr = write_common_ireg(10, buf);
 	*ptr++ = (get_lift() & 15) << 4;
 	*ptr = get_quality();
-	Shape_info &info = get_info();
+	const Shape_info &info = get_info();
 	if (info.has_quality_flags()) {
 		// Store 'quality_flags'.
 		*ptr = get_flag((Obj_flags::invisible) != 0) +

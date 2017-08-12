@@ -151,30 +151,30 @@ public:
 		GLOUTLINE  paint_rle_outline(scrwin, px, py, color);
 	}
 
-	int has_point(int x, int y);    // Is a point within the shape?
+	int has_point(int x, int y) const;    // Is a point within the shape?
 	int get_width() const {     // Get dimensions.
 		return xleft + xright + 1;
 	}
 	int get_height() const {
 		return yabove + ybelow + 1;
 	}
-	int get_xleft() {
+	int get_xleft() const {
 		return xleft;
 	}
-	int get_xright() {
+	int get_xright() const {
 		return xright;
 	}
-	int get_yabove() {
+	int get_yabove() const {
 		return yabove;
 	}
-	int get_ybelow() {
+	int get_ybelow() const {
 		return ybelow;
 	}
 	void set_offset(int new_xright, int new_ybelow);
-	int get_size() {
+	int get_size() const {
 		return datalen;
 	}
-	int is_empty() {
+	int is_empty() const {
 		return data[0] == 0 && data[1] == 0;
 	}
 	virtual ~Shape_frame() {

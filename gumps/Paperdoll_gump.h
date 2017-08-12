@@ -127,18 +127,18 @@ public:
 	//
 
 	// Generic Paint Object Method
-	void paint_object(const Rectangle &box, Paperdoll_npc *info, int spot,
+	void paint_object(const Rectangle &box, const Paperdoll_npc *info, int spot,
 	                  int sx, int sy, int frame = 0, int itemtype = -1);
 
 	// Generic Paint Object Method for something that is armed dependant
-	void paint_object_arms(const Rectangle &box, Paperdoll_npc *info, int spot,
+	void paint_object_arms(const Rectangle &box, const Paperdoll_npc *info, int spot,
 	                       int sx, int sy, int start = 0, int itemtype = -1);
 
 	// Special 'Constant' Paint Methods
-	void paint_body(const Rectangle &box, Paperdoll_npc *info);
-	void paint_belt(const Rectangle &box, Paperdoll_npc *info);
-	void paint_head(const Rectangle &box, Paperdoll_npc *info);
-	void paint_arms(const Rectangle &box, Paperdoll_npc *info);
+	void paint_body(const Rectangle &box, const Paperdoll_npc *info);
+	void paint_belt(const Rectangle &box, const Paperdoll_npc *info);
+	void paint_head(const Rectangle &box, const Paperdoll_npc *info);
+	void paint_arms(const Rectangle &box, const Paperdoll_npc *info);
 
 	// What are we holding?
 	int get_arm_type(void);
@@ -149,19 +149,19 @@ public:
 	//
 
 	// Generic Check Object Method
-	Game_object *check_object(int mx, int my, Paperdoll_npc *info, int spot,
+	Game_object *check_object(int mx, int my, const Paperdoll_npc *info, int spot,
 	                          int sx, int sy, int frame = 0, int itemtype = -1);
 
 
 	// Generic Check Object Method for something that is armed dependant
-	Game_object *check_object_arms(int mx, int my, Paperdoll_npc *info, int spot,
+	Game_object *check_object_arms(int mx, int my, const Paperdoll_npc *info, int spot,
 	                               int sx, int sy, int start = 0, int itemtype = -1);
 
 	// Special 'Constant' Check Methods
-	bool check_body(int mx, int my, Paperdoll_npc *info);
-	bool check_belt(int mx, int my, Paperdoll_npc *info);
-	bool check_head(int mx, int my, Paperdoll_npc *info);
-	bool check_arms(int mx, int my, Paperdoll_npc *info);
+	bool check_body(int mx, int my, const Paperdoll_npc *info);
+	bool check_belt(int mx, int my, const Paperdoll_npc *info);
+	bool check_head(int mx, int my, const Paperdoll_npc *info);
+	bool check_arms(int mx, int my, const Paperdoll_npc *info);
 
 	// Generic Method to check a shape
 	bool check_shape(int px, int py, int shape, int frame, ShapeFile file);

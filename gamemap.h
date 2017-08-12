@@ -190,7 +190,7 @@ public:
 	void read_ireg_objects(DataSource *ireg, int scx, int scy,
 	                       Game_object *container = 0,
 	                       unsigned long flags = (1 << Obj_flags::okay_to_take));
-	Ireg_game_object *create_ireg_object(Shape_info &info, int shnum,
+	Ireg_game_object *create_ireg_object(const Shape_info &info, int shnum,
 	                                     int frnum, int tilex, int tiley, int lift);
 	Ireg_game_object *create_ireg_object(int shnum, int frnum);
 	Ifix_game_object *create_ifix_object(int shnum, int frnum);

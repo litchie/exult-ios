@@ -2525,7 +2525,7 @@ static void Move_dragged_shape(
 		gwin->set_all_dirty();
 		return;
 	}
-	Shape_info &info = ShapeID::get_info(shape);
+	const Shape_info &info = ShapeID::get_info(shape);
 	// Get footprint in tiles.
 	int xtiles = info.get_3d_xtiles(frame),
 	    ytiles = info.get_3d_ytiles(frame);
@@ -2564,7 +2564,7 @@ static Game_object *Create_object(
     int shape, int frame,       // What to create.
     bool &ireg          // Rets. TRUE if ireg (moveable).
 ) {
-	Shape_info &info = ShapeID::get_info(shape);
+	const Shape_info &info = ShapeID::get_info(shape);
 	int sclass = info.get_shape_class();
 	// Is it an ireg (changeable) obj?
 	ireg = (sclass != Shape_info::unusable &&

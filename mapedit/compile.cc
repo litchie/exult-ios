@@ -133,7 +133,7 @@ void ExultStudio::compile(
 	argv[3] = source.c_str();   // What to compile.
 	argv[4] = incdir.c_str();   // Include dir
 	argv[5] = 0;            // NULL.
-	if (!compile_box->exec("ucc", const_cast<char **>(argv)))
+	if (!compile_box->exec("ucc", argv))
 		EStudio::Alert("Error executing usecode compiler ('ucc')");
 }
 

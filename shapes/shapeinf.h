@@ -328,8 +328,8 @@ public:
 	bool has_weapon_info() const {
 		return weapon != 0;
 	}
-	Weapon_info *get_weapon_info_safe() const;
-	Weapon_info *get_weapon_info() const {
+	const Weapon_info *get_weapon_info_safe() const;
+	const Weapon_info *get_weapon_info() const {
 		return weapon;
 	}
 	Weapon_info *set_weapon_info(bool tf);
@@ -337,8 +337,8 @@ public:
 	bool has_ammo_info() const {
 		return ammo != 0;
 	}
-	Ammo_info *get_ammo_info_safe() const;
-	Ammo_info *get_ammo_info() const {
+	const Ammo_info *get_ammo_info_safe() const;
+	const Ammo_info *get_ammo_info() const {
 		return ammo;
 	}
 	Ammo_info *set_ammo_info(bool tf);
@@ -346,7 +346,7 @@ public:
 	bool has_armor_info() const {
 		return armor != 0;
 	}
-	Armor_info *get_armor_info() const {
+	const Armor_info *get_armor_info() const {
 		return armor;
 	}
 	Armor_info *set_armor_info(bool tf);
@@ -354,8 +354,8 @@ public:
 	bool has_monster_info() const {
 		return monstinf != 0;
 	}
-	Monster_info *get_monster_info_safe() const;
-	Monster_info *get_monster_info() const {
+	const Monster_info *get_monster_info_safe() const;
+	const Monster_info *get_monster_info() const {
 		return monstinf;
 	}
 	Monster_info *set_monster_info(bool tf);
@@ -363,16 +363,16 @@ public:
 	bool has_npc_paperdoll_info() const {
 		return npcpaperdoll != 0;
 	}
-	Paperdoll_npc *get_npc_paperdoll() const {
+	const Paperdoll_npc *get_npc_paperdoll() const {
 		return npcpaperdoll;
 	}
 	Paperdoll_npc *set_npc_paperdoll_info(bool tf);
-	Paperdoll_npc *get_npc_paperdoll_safe(bool sex) const;
+	const Paperdoll_npc *get_npc_paperdoll_safe(bool sex) const;
 
 	bool has_sfx_info() const {
 		return sfxinf != 0;
 	}
-	SFX_info *get_sfx_info() const {
+	const SFX_info *get_sfx_info() const {
 		return sfxinf;
 	}
 	SFX_info *set_sfx_info(bool tf);
@@ -380,7 +380,7 @@ public:
 	bool has_explosion_info() const {
 		return explosion != 0;
 	}
-	Explosion_info *get_explosion_info() const {
+	const Explosion_info *get_explosion_info() const {
 		return explosion;
 	}
 	Explosion_info *set_explosion_info(bool tf);
@@ -388,95 +388,95 @@ public:
 	bool has_animation_info() const {
 		return aniinf != 0;
 	}
-	Animation_info *get_animation_info() const {
+	const Animation_info *get_animation_info() const {
 		return aniinf;
 	}
-	Animation_info *get_animation_info_safe(int shnum, int nframes);
+	const Animation_info *get_animation_info_safe(int shnum, int nframes);
 	Animation_info *set_animation_info(bool tf);
 
 	bool has_body_info() const {
 		return body != 0;
 	}
-	Body_info *get_body_info() const {
+	const Body_info *get_body_info() const {
 		return body;
 	}
 	Body_info *set_body_info(bool tf);
 
 	bool has_paperdoll_info() const;
-	std::vector<Paperdoll_item> &get_paperdoll_info() {
+	const std::vector<Paperdoll_item> &get_paperdoll_info() const {
 		return objpaperdoll;
 	}
 	std::vector<Paperdoll_item> &set_paperdoll_info(bool tf);
 	void clean_invalid_paperdolls();
 	void clear_paperdoll_info();
 	void add_paperdoll_info(Paperdoll_item &add);
-	Paperdoll_item *get_item_paperdoll(int frame, int spot);
-	bool is_object_allowed(int frame, int spot) {
+	const Paperdoll_item *get_item_paperdoll(int frame, int spot) const;
+	bool is_object_allowed(int frame, int spot) const {
 		return get_item_paperdoll(frame, spot) != 0;
 	}
 
 	bool has_content_rules() const;
-	std::vector<Content_rules> &get_content_rules() {
+	const std::vector<Content_rules> &get_content_rules() const {
 		return cntrules;
 	}
 	std::vector<Content_rules> &set_content_rules(bool tf);
 	void clean_invalid_content_rules();
 	void clear_content_rules();
 	void add_content_rule(Content_rules &add);
-	bool is_shape_accepted(int shape);
+	bool is_shape_accepted(int shape) const;
 
 	bool has_effective_hp_info() const;
-	std::vector<Effective_hp_info> &get_effective_hp_info() {
+	const std::vector<Effective_hp_info> &get_effective_hp_info() const {
 		return hpinf;
 	}
 	std::vector<Effective_hp_info> &set_effective_hp_info(bool tf);
 	void clean_invalid_hp_info();
 	void clear_effective_hp_info();
 	void add_effective_hp_info(Effective_hp_info &add);
-	int get_effective_hps(int frame, int quality);
+	int get_effective_hps(int frame, int quality) const;
 
 	bool has_frame_name_info() const;
-	std::vector<Frame_name_info> &get_frame_name_info() {
+	const std::vector<Frame_name_info> &get_frame_name_info() const {
 		return nameinf;
 	}
 	std::vector<Frame_name_info> &set_frame_name_info(bool tf);
 	void clean_invalid_name_info();
 	void clear_frame_name_info();
 	void add_frame_name_info(Frame_name_info &add);
-	Frame_name_info *get_frame_name(int frame, int quality);
+	const Frame_name_info *get_frame_name(int frame, int quality) const;
 
 	bool has_frame_usecode_info() const;
-	std::vector<Frame_usecode_info> &get_frame_usecode_info() {
+	const std::vector<Frame_usecode_info> &get_frame_usecode_info() const {
 		return frucinf;
 	}
 	std::vector<Frame_usecode_info> &set_frame_usecode_info(bool tf);
 	void clean_invalid_usecode_info();
 	void clear_frame_usecode_info();
 	void add_frame_usecode_info(Frame_usecode_info &add);
-	Frame_usecode_info *get_frame_usecode(int frame, int quality);
+	const Frame_usecode_info *get_frame_usecode(int frame, int quality) const;
 
 	bool has_frame_flags() const;
-	std::vector<Frame_flags_info> &get_frame_flags() {
+	const std::vector<Frame_flags_info> &get_frame_flags() const {
 		return frflagsinf;
 	}
 	std::vector<Frame_flags_info> &set_frame_flags(bool tf);
 	void clean_invalid_frame_flags();
 	void clear_frame_flags();
 	void add_frame_flags(Frame_flags_info &add);
-	int get_object_flags(int frame, int qual);
-	int has_object_flag(int frame, int qual, int p) {
+	int get_object_flags(int frame, int qual) const;
+	int has_object_flag(int frame, int qual, int p) const {
 		return (get_object_flags(frame, qual) & (1 << p)) != 0;
 	}
 
 	bool has_warmth_info() const;
-	std::vector<Warmth_info> &get_warmth_info() {
+	const std::vector<Warmth_info> &get_warmth_info() const {
 		return warminf;
 	}
 	std::vector<Warmth_info> &set_warmth_info(bool tf);
 	void clean_invalid_warmth_info();
 	void clear_warmth_info();
 	void add_warmth_info(Warmth_info &add);
-	int get_object_warmth(int frame);
+	int get_object_warmth(int frame) const;
 
 	int get_monster_food() const {
 		return monster_food;
@@ -641,92 +641,92 @@ public:
 	}
 	// Get tile dims., flipped for
 	//   reflected (bit 5) frames.
-	int get_3d_xtiles(unsigned int framenum) {
+	int get_3d_xtiles(unsigned int framenum) const {
 		return dims[(framenum >> 5) & 1];
 	}
-	int get_3d_ytiles(unsigned int framenum) {
+	int get_3d_ytiles(unsigned int framenum) const {
 		return dims[1 ^ ((framenum >> 5) & 1)];
 	}
-	int get_3d_height() {   // Height (in lifts?).
+	int get_3d_height() const {   // Height (in lifts?).
 		return dims[2];
 	}
 	void set_3d(int xt, int yt, int zt);
-	unsigned char get_tfa(int i) {  // For debugging:
+	unsigned char get_tfa(int i) const {  // For debugging:
 		return tfa[i];
 	}
-	int has_sfx() {         // Has a sound effect (guessing).
+	int has_sfx() const {         // Has a sound effect (guessing).
 		return (tfa[0] & (1 << 0)) != 0;
 	}
 	void set_sfx(bool tf) {
 		set_tfa(0, 0, tf);
 	}
-	int has_strange_movement() { // Slimes, sea monsters.
+	int has_strange_movement() const { // Slimes, sea monsters.
 		return (tfa[0] & (1 << 1)) != 0;
 	}
 	void set_strange_movement(bool tf) {
 		set_tfa(0, 1, tf);
 	}
-	int is_animated() {
+	int is_animated() const {
 		return (tfa[0] & (1 << 2)) != 0;
 	}
 	void set_animated(bool tf) {
 		set_tfa(0, 2, tf);
 	}
-	int is_solid() {        // Guessing.  Means can't walk through.
+	int is_solid() const {        // Guessing.  Means can't walk through.
 		return (tfa[0] & (1 << 3)) != 0;
 	}
 	void set_solid(bool tf) {
 		set_tfa(0, 3, tf);
 	}
-	int is_water() {        // Guessing.
+	int is_water() const {        // Guessing.
 		return (tfa[0] & (1 << 4)) != 0;
 	}
 	void set_water(bool tf) {
 		set_tfa(0, 4, tf);
 	}
-	int is_poisonous() {    // Swamps.  Applies to tiles.
+	int is_poisonous() const {    // Swamps.  Applies to tiles.
 		return (tfa[1] & (1 << 4)) != 0;
 	}
-	int is_field() {        // Applies to Game_objects??
+	int is_field() const {        // Applies to Game_objects??
 		return (tfa[1] & (1 << 4)) != 0;
 	}
 	void set_field(bool tf) {
 		set_tfa(1, 4, tf);
 	}
-	int is_door() {
+	int is_door() const {
 		return (tfa[1] & (1 << 5)) != 0;
 	}
 	void set_door(bool tf) {
 		set_tfa(1, 5, tf);
 	}
-	int is_barge_part() {
+	int is_barge_part() const {
 		return (tfa[1] & (1 << 6)) != 0;
 	}
 	void set_barge_part(bool tf) {
 		set_tfa(1, 6, tf);
 	}
-	int is_transparent() {      // ??
+	int is_transparent() const {      // ??
 		return (tfa[1] & (1 << 7)) != 0;
 	}
 	void set_transparent(bool tf) {
 		set_tfa(1, 7, tf);
 	}
-	int is_light_source() {
+	int is_light_source() const {
 		return (tfa[2] & (1 << 6)) != 0;
 	}
 	void set_light_source(bool tf) {
 		set_tfa(2, 6, tf);
 	}
-	int has_translucency() {
+	int has_translucency() const {
 		return (tfa[2] & (1 << 7)) != 0;
 	}
 	void set_translucency(bool tf) {
 		set_tfa(2, 7, tf);
 	}
-	int is_xobstacle() {    // Obstacle in x-dir.???
+	int is_xobstacle() const {    // Obstacle in x-dir.???
 		return (shpdims[1] & 1) != 0;
 	}
-	int is_yobstacle() {    // Obstacle in y-dir.???
+	int is_yobstacle() const {    // Obstacle in y-dir.???
 		return (shpdims[0] & 1) != 0;
 	}
 	void set_obstacle(bool x, bool y) {
@@ -752,23 +752,23 @@ public:
 	    human = 13,     // Human NPC's.
 	    building = 14       // Roof, window, mountain.
 	};
-	Shape_class get_shape_class() {
+	Shape_class get_shape_class() const {
 		return static_cast<Shape_class>(tfa[1] & 15);
 	}
 	void set_shape_class(Shape_class c) {
 		tfa[1] = (tfa[1]&~15) | static_cast<int>(c);
 	}
-	bool is_npc() {
+	bool is_npc() const {
 		Shape_class c = get_shape_class();
 		return c == human || c == monster;
 	}
-	bool has_quantity() {
+	bool has_quantity() const {
 		return get_shape_class() == quantity;
 	}
-	bool has_quality_flags() {  // Might be more...
+	bool has_quality_flags() const {  // Might be more...
 		return get_shape_class() == quality_flags;
 	}
-	bool has_quality() {
+	bool has_quality() const {
 #if 0
 		static bool qual[16] =  // Ugly, but quick.
 		    //          quality
@@ -790,7 +790,7 @@ public:
 	void set_occludes(bool tf) {
 		occludes_flag = tf;
 	}
-	char get_ready_type() {
+	char get_ready_type() const {
 		return ready_type;
 	}
 	void set_ready_type(char t) {
@@ -799,7 +799,7 @@ public:
 			ready_type = t;
 		}
 	}
-	bool is_spell() {
+	bool is_spell() const {
 		return spell_flag;
 	}
 	void set_is_spell(bool tf) {
@@ -808,10 +808,10 @@ public:
 			spell_flag = tf;
 		}
 	}
-	char get_alt_ready1() {
+	char get_alt_ready1() const {
 		return alt_ready1;
 	}
-	char get_alt_ready2() {
+	char get_alt_ready2() const {
 		return alt_ready2;
 	}
 	void set_alt_ready(char t1, char t2) {
@@ -822,7 +822,7 @@ public:
 		}
 	}
 	// Sets x to 255 if there is no weapon offset
-	void get_weapon_offset(int frame, unsigned char &x, unsigned char &y) {
+	void get_weapon_offset(int frame, unsigned char &x, unsigned char &y) const {
 		if (!weapon_offsets) {
 			x = 255;
 			y = 255;
@@ -833,7 +833,7 @@ public:
 		}
 	}
 	void set_weapon_offset(int frame, unsigned char x, unsigned char y);
-	int get_rotated_frame(int curframe, int quads);
+	int get_rotated_frame(int curframe, int quads) const;
 };
 
 #endif

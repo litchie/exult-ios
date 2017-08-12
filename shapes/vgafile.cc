@@ -629,7 +629,7 @@ void Shape_frame::paint_rle_outline(
 
 int Shape_frame::has_point(
     int x, int y            // Relative to origin of shape.
-) {
+) const {
 	if (!rle) {         // 8x8 flat?
 		return x >= -xleft && x < xright &&
 		       y >= -yabove && y < ybelow;

@@ -64,10 +64,10 @@ public:
 		return true;
 	}
 
-	virtual Rectangle get_rect() {
+	virtual Rectangle get_rect() const {
 		return region;
 	}
-	virtual bool has_point(int x, int y);
+	virtual bool has_point(int x, int y) const;
 
 	// add dirty region, if dirty
 	virtual void update_gump();

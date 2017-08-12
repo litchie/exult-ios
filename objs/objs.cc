@@ -72,8 +72,8 @@ using std::string;
  */
 
 int Game_object::get_usecode() const {
-	Shape_info &inf = get_info();
-	Frame_usecode_info *useinf = inf.get_frame_usecode(
+	const Shape_info &inf = get_info();
+	const Frame_usecode_info *useinf = inf.get_frame_usecode(
 	                                 get_framenum(), inf.has_quality() ? get_quality() : -1);
 	if (useinf) {
 		// Shape has frame- or quality-dependent usecode.
@@ -240,7 +240,7 @@ int Game_object::distance(
     Game_object *o2
 ) const {
 	Tile_coord t1 = get_tile(), t2 = o2->get_tile();
-	Shape_info &info1 = get_info(), info2 = o2->get_info();
+	const Shape_info &info1 = get_info(), info2 = o2->get_info();
 	int f1 = get_framenum(), f2 = o2->get_framenum();
 	int dx = Tile_coord::delta(t1.tx, t2.tx),
 	    dy = Tile_coord::delta(t1.ty, t2.ty),
@@ -262,7 +262,7 @@ int Game_object::distance(
     Tile_coord t2
 ) const {
 	Tile_coord t1 = get_tile();
-	Shape_info &info1 = get_info();
+	const Shape_info &info1 = get_info();
 	int f1 = get_framenum();
 	int dx = Tile_coord::delta(t1.tx, t2.tx),
 	    dy = Tile_coord::delta(t1.ty, t2.ty),
@@ -329,12 +329,12 @@ int Game_object::get_facing_direction(
 static int Has_quantity(
     int shnum           // Shape number.
 ) {
-	Shape_info &info = ShapeID::get_info(shnum);
+	const Shape_info &info = ShapeID::get_info(shnum);
 	return info.has_quantity();
 }
 
 static int Has_hitpoints(int shnum) {
-	Shape_info &info = ShapeID::get_info(shnum);
+	const Shape_info &info = ShapeID::get_info(shnum);
 	return ((info.get_shape_class() == Shape_info::has_hp) ||
 	        (info.get_shape_class() == Shape_info::container));
 
@@ -394,7 +394,7 @@ int Game_object::get_weapon_ammo(
 	if (weapon < 0)
 		return false;   // Bare hands.
 	// See if we need ammo.
-	Weapon_info *winf = ShapeID::get_info(weapon).get_weapon_info();
+	const Weapon_info *winf = ShapeID::get_info(weapon).get_weapon_info();
 	if (!winf)
 		// No ammo needed.
 		return 0;
@@ -407,7 +407,7 @@ int Game_object::get_weapon_ammo(
 		need_ammo = 1;
 	if (need_ammo && family >= 0 && proj >= 0) {
 		// BG triple crossbows uses 3x ammo.
-		Shape_info &info = ShapeID::get_info(winf->get_projectile());
+		const Shape_info &info = ShapeID::get_info(winf->get_projectile());
 		if (info.get_ready_type() == triple_bolts)
 			need_ammo = 3;
 	}
@@ -421,7 +421,7 @@ int Game_object::get_effective_obj_hp(int weapon_shape) const {
 	ignore_unused_variable_warning(weapon_shape);
 	int hps = get_obj_hp();
 	if (!hps) {
-		Shape_info &inf = get_info();
+		const Shape_info &inf = get_info();
 		int qual = inf.has_quality() ? get_quality() : -1;
 		hps = inf.get_effective_hps(get_framenum(), qual);
 	}
@@ -622,8 +622,8 @@ void Game_object::change_frame(
 int Game_object::swap_positions(
     Game_object *obj2
 ) {
-	Shape_info &inf1 = get_info();
-	Shape_info &inf2 = obj2->get_info();
+	const Shape_info &inf1 = get_info();
+	const Shape_info &inf2 = obj2->get_info();
 	int frame1 = get_framenum();
 	int frame2 = obj2->get_framenum();
 	if (inf1.get_3d_xtiles(frame1) != inf2.get_3d_xtiles(frame2) ||
@@ -818,7 +818,7 @@ Game_object *Game_object::find_closest(
 
 Rectangle Game_object::get_footprint(
 ) {
-	Shape_info &info = get_info();
+	const Shape_info &info = get_info();
 	// Get footprint.
 	int frame = get_framenum();
 	int xtiles = info.get_3d_xtiles(frame);
@@ -836,7 +836,7 @@ Rectangle Game_object::get_footprint(
 
 Block Game_object::get_block(
 ) {
-	Shape_info &info = get_info();
+	const Shape_info &info = get_info();
 	// Get footprint.
 	int frame = get_framenum();
 	int xtiles = info.get_3d_xtiles(frame);
@@ -860,7 +860,7 @@ bool Game_object::blocks(
 	Tile_coord t = get_tile();
 	if (t.tx < tile.tx || t.ty < tile.ty || t.tz > tile.tz)
 		return false;       // Out of range.
-	Shape_info &info = get_info();
+	const Shape_info &info = get_info();
 	int ztiles = info.get_3d_height();
 	if (!ztiles || !info.is_solid())
 		return false;       // Skip if not an obstacle.
@@ -914,7 +914,7 @@ Game_object *Game_object::find_door(
 
 int Game_object::is_closed_door(
 ) const {
-	Shape_info &info = get_info();
+	const Shape_info &info = get_info();
 	if (!info.is_door())
 		return 0;
 	// Get door's footprint.
@@ -1138,7 +1138,7 @@ int Game_object::get_weight(
     int shnum,          // Shape #,
     int quant           // Quantity.
 ) {
-	Shape_info &inf = ShapeID::get_info(shnum);
+	const Shape_info &inf = ShapeID::get_info(shnum);
 	int wt = quant * inf.get_weight();
 	if (inf.is_lightweight()) {
 		// Special case:  reagents, coins.
@@ -1168,13 +1168,13 @@ int Game_object::get_weight(
  */
 
 int Game_object::get_max_weight(
-) {
+) const {
 	// Looking outwards for NPC.
 	Container_game_object *own = get_owner();
 	if (!own) {
 		return 0;
 	}
-	Shape_info &info = own->get_info();
+	const Shape_info &info = own->get_info();
 	if (!info.has_extradimensional_storage()) {
 		return own->get_max_weight();
 	}
@@ -1211,7 +1211,7 @@ bool Game_object::add(
 int Game_object::drop(
     Game_object *obj        // This may be deleted.
 ) {
-	Shape_info &inf = get_info();
+	const Shape_info &inf = get_info();
 	int shapenum = get_shapenum();  // It's possible if shapes match.
 	if (obj->get_shapenum() != shapenum || !inf.has_quantity() ||
 	        (!inf.has_quantity_frames() && get_framenum() != obj->get_framenum()))
@@ -1520,7 +1520,7 @@ int Game_object::figure_hit_points(
     bool explosion          // If this is an explosion attacking.
 ) {
 	const Weapon_info *winf;
-	Ammo_info *ainf;
+	const Ammo_info *ainf;
 
 	int wpoints = 0;
 	if (weapon_shape >= 0)
@@ -1579,7 +1579,7 @@ int Game_object::figure_hit_points(
 }
 
 void Game_object::play_hit_sfx(int weapon, bool ranged) {
-	Weapon_info *winf = weapon >= 0 ?
+	const Weapon_info *winf = weapon >= 0 ?
 	                    ShapeID::get_info(weapon).get_weapon_info() : 0;
 	if (winf && winf->get_damage()) {
 		int sfx;

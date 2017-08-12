@@ -210,7 +210,7 @@ void Chunk_cache::update_object(
     bool add                // 1 to add, 0 to remove.
 ) {
 	ignore_unused_variable_warning(chunk);
-	Shape_info &info = obj->get_info();
+	const Shape_info &info = obj->get_info();
 	if (info.is_door()) {   // Special door list.
 		if (add)
 			doors.insert(obj);
@@ -682,7 +682,7 @@ void Map_chunk::set_terrain(
 			if (shape && shape->is_rle()) {
 				int shapenum = id.get_shapenum(),
 				    framenum = id.get_framenum();
-				Shape_info &info = id.get_info();
+				const Shape_info &info = id.get_info();
 				Game_object *obj = info.is_animated() ?
 				                   new Animated_object(shapenum,
 				                                       framenum, tilex, tiley)
@@ -841,7 +841,7 @@ void Map_chunk::remove(
 		cache->update_object(this, remove, false);
 	remove->clear_dependencies();   // Remove all dependencies.
 	Game_map *gmap = gwin->get_map();
-	Shape_info &info = remove->get_info();
+	const Shape_info &info = remove->get_info();
 	// See if it extends outside.
 	int frame = remove->get_framenum(), tx = remove->get_tx(),
 	    ty = remove->get_ty();
@@ -1121,7 +1121,7 @@ Tile_coord Map_chunk::find_spot(
     //   random.
     Find_spot_where where       // Inside/outside.
 ) {
-	Shape_info &info = ShapeID::get_info(shapenum);
+	const Shape_info &info = ShapeID::get_info(shapenum);
 	int xs = info.get_3d_xtiles(framenum);
 	int ys = info.get_3d_ytiles(framenum);
 	int zs = info.get_3d_height();
@@ -1307,7 +1307,7 @@ void Map_chunk::setup_dungeon_levels(
 	Game_object *each;
 	while ((each = next.get_next()) != 0) {
 		// Test for mountain-tops.
-		Shape_info &shinf = each->get_info();
+		const Shape_info &shinf = each->get_info();
 		if (shinf.get_shape_class() == Shape_info::building &&
 		        shinf.get_mountain_top_type() == Shape_info::normal_mountain_top) {
 			// SI shape 941, frame 0 => do whole chunk (I think).

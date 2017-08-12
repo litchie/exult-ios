@@ -296,7 +296,7 @@ public:
 	                      int x = 0, int y = 0, int w = -1, int h = -1);
 	void new_equip_record();
 	void set_shape_notebook_frame(int frnum);
-	void init_shape_notebook(Shape_info &info, GtkWidget *book,
+	void init_shape_notebook(const Shape_info &info, GtkWidget *book,
 	                         int shnum, int frnum);
 	void save_shape_notebook(Shape_info &info, int shnum, int frnum);
 	void open_shape_window(int shnum, int frnum,

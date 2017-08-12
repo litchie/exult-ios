@@ -709,7 +709,7 @@ static Game_object *Create_object(
     Game_window *gwin,
     int shape, int frame        // What to create.
 ) {
-	Shape_info &info = ShapeID::get_info(shape);
+	const Shape_info &info = ShapeID::get_info(shape);
 	int sclass = info.get_shape_class();
 	// Is it an ireg (changeable) obj?
 	bool ireg = (sclass != Shape_info::unusable &&

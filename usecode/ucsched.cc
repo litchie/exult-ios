@@ -187,7 +187,7 @@ void Usecode_script::add(int *vals, int c) {
  */
 
 Usecode_script *Usecode_script::find(
-    Game_object *srch,
+    const Game_object *srch,
     Usecode_script *last_found  // Find next after this.
 ) {
 	Usecode_script *start = last_found ? last_found->next : first;
@@ -204,7 +204,7 @@ Usecode_script *Usecode_script::find(
  */
 
 Usecode_script *Usecode_script::find_active(
-    Game_object *srch,
+    const Game_object *srch,
     Usecode_script *last_found  // Find next after this.
 ) {
 	Usecode_script *start = last_found ? last_found->next : first;
@@ -219,7 +219,7 @@ Usecode_script *Usecode_script::find_active(
  */
 
 void Usecode_script::terminate(
-    Game_object *obj
+    const Game_object *obj
 ) {
 	Usecode_script *next = 0;
 	for (Usecode_script *each = first; each; each = next) {
@@ -296,7 +296,7 @@ void Usecode_script::handle_event(
 	Usecode_internal *usecode = reinterpret_cast<Usecode_internal *>(udata);
 #ifdef DEBUG
     if (intrinsic_trace)
-        cout << "Executing script (" << i << ":" << cnt << ") for " 
+        cout << "Executing script (" << i << ":" << cnt << ") for "
 			 		  << obj << ", time: " <<
 				 		  	   	   curtime << endl;
 #endif

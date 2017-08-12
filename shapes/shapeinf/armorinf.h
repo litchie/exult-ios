@@ -66,8 +66,8 @@ public:
 	static int get_info_flag() {
 		return 4;
 	}
-	int get_base_strength();
-	int get_base_xp_value() {
+	int get_base_strength() const;
+	int get_base_xp_value() const {
 		return prot;
 	}
 };

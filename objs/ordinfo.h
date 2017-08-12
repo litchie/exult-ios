@@ -27,13 +27,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "ignore_unused_variable_warning.h"
 
+#include "objs.h"
+#include "gamewin.h"
+#include "shapeinf.h"
+
 /*
  *  Information about an object used during render-order comparison (lt()):
  */
 class Ordering_info {
 public:
 	Rectangle area;         // Area (pixels) rel. to screen.
-	Shape_info &info;       // Info. about shape.
+	const Shape_info &info;       // Info. about shape.
 	int tx, ty, tz;         // Absolute tile coords.
 	int xs, ys, zs;         // Tile dimensions.
 #if 1   /* For experimental compare(). */
@@ -61,15 +65,13 @@ private:
 #endif
 	}
 public:
-	friend class Game_object;
-	friend class Map_chunk;
 	// Create from scratch.
-	Ordering_info(Game_window *gwin, Game_object *obj)
+	Ordering_info(const Game_window *gwin, const Game_object *obj)
 		: area(gwin->get_shape_rect(obj)),
 		  info(obj->get_info()) {
 		init(obj);
 	}
-	Ordering_info(Game_window *gwin, Game_object *obj, Rectangle &a)
+	Ordering_info(const Game_window *gwin, const Game_object *obj, Rectangle &a)
 		: area(a),
 		  info(obj->get_info()) {
 		ignore_unused_variable_warning(gwin);

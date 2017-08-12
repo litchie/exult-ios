@@ -146,7 +146,7 @@ public:
 	// update dirty region, if required
 	virtual void update_widget();
 
-	virtual int on_button(int mx, int my);
+	virtual int on_button(int mx, int my) const;
 
 	virtual Rectangle get_rect();
 
@@ -187,7 +187,7 @@ void Portrait_button::double_clicked(int x, int y) {
 		actor->show_inventory();
 }
 
-int Portrait_button::on_button(int x, int y) {
+int Portrait_button::on_button(int x, int y) const {
 	if (hp && hp->on_button(x, y))
 		return true;
 	else if (mana && mana->on_button(x, y))
@@ -413,7 +413,7 @@ void Face_stats::create_buttons() {
 		}
 }
 
-bool Face_stats::has_point(int x, int y) {
+bool Face_stats::has_point(int x, int y) const {
 	for (int i = 0; i < 8; i++)
 		if (party[i] && party[i]->on_button(x, y))
 			return true;

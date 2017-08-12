@@ -144,7 +144,7 @@ void ShapeBrowser::browse_shapes() {
 					//font->draw_text(ibuf, 32, 32, buf);
 					font->paint_text_fixedwidth(ibuf, buf, 2, 22, 8);
 
-					Shape_info &info =
+					const Shape_info &info =
 					    ShapeID::get_info(current_shape);
 
 					snprintf(buf, 255, "class: %2i  ready_type: 0x%02x", info.get_shape_class(), info.get_ready_type());

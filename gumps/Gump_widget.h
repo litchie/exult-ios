@@ -52,8 +52,8 @@ public:
 	}
 	virtual ~Gump_widget() {  }
 	// Is a given point on the widget?
-	virtual int on_widget(int mx, int my);
-	virtual int on_button(int mx, int my) {
+	virtual int on_widget(int mx, int my) const;
+	virtual int on_button(int mx, int my) const {
 		ignore_unused_variable_warning(mx, my);
 		return 0;
 	}

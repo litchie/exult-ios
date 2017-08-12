@@ -28,7 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ignore_unused_variable_warning.h"
 using std::istream;
 
-int Armor_info::get_base_strength() {
+int Armor_info::get_base_strength() const {
 	// ++++The strength values are utter guesses.
 	int strength = prot;
 	if (immune) // Double strength for any immunities? Give bonus for each?

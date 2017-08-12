@@ -2178,11 +2178,11 @@ void Shape_chooser::search(
 		const char *nm = studio->get_shape_name(shnum);
 		if (nm && search_name(nm, srch))
 			break;      // Found it.
-		Shape_info &info = shapes_file->get_info(shnum);
+		const Shape_info &info = shapes_file->get_info(shnum);
 		if (info.has_frame_name_info()) {
 			bool found = false;
-			std::vector<Frame_name_info> &nminf = info.get_frame_name_info();
-			for (std::vector<Frame_name_info>::iterator it = nminf.begin();
+			const std::vector<Frame_name_info> &nminf = info.get_frame_name_info();
+			for (std::vector<Frame_name_info>::const_iterator it = nminf.begin();
 			        it != nminf.end(); ++it) {
 				int type = it->get_type(), msgid = it->get_msgid();
 				if (type == -255 || type == -1 || msgid >= get_num_misc_names()
@@ -2465,8 +2465,8 @@ void Shape_chooser::update_statusbar(
 			}
 			shapes_file->read_info(studio->get_game_type(), true);
 			int frnum = info[selected].framenum;
-			Shape_info &inf = shapes_file->get_info(shapenum);
-			Frame_name_info *nminf;
+			const Shape_info &inf = shapes_file->get_info(shapenum);
+			const Frame_name_info *nminf;
 			if (inf.has_frame_name_info() &&
 			        (nminf = inf.get_frame_name(frnum, -1)) != 0) {
 				int type = nminf->get_type(), msgid = nminf->get_msgid();

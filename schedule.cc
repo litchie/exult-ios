@@ -250,7 +250,7 @@ int Schedule::try_street_maintenance(
 		for (j = 0; j < cnt; j++) {
 			Game_object *obj = objs[j];
 			int shnum = obj->get_shapenum();
-			if (!bg) {					// Serpent isle?  
+			if (!bg) {					// Serpent isle?
 			    int frnum = obj->get_framenum();
 			    if ((shnum == 290 || shnum == 291) &&  // Shutters?
 				    // Want closed during day.
@@ -377,7 +377,7 @@ bool Schedule_with_objects::drop_item(Game_object *to_drop, Game_object *table)
 	else            // North/south.
 		spot.ty = spot.ty <= foot.y ? foot.y
 		                  : foot.y + foot.h - 1;
-	Shape_info &info = table->get_info();
+	const Shape_info &info = table->get_info();
 	spot.tz = table->get_lift() + info.get_3d_height();
 	Tile_coord pos = Map_chunk::find_spot(spot, 1,
 			   to_drop->get_shapenum(), to_drop->get_framenum());
@@ -1853,7 +1853,7 @@ static void Grow_crops(Actor *npc)
 			continue;
 		Game_object *c = *it;
 		int frnum = c->get_framenum();
-		int growth = ((frnum&3) + 1) & 3;		
+		int growth = ((frnum&3) + 1) & 3;
 		if (growth != 3)
 			c->change_frame((frnum & ~3) | growth);
 	}
@@ -2267,7 +2267,7 @@ void Sleep_schedule::now_what(
 		}
 		Tile_coord bloc = bed->get_tile();
 		bloc.tz -= bloc.tz % 5; // Round down to floor level.
-		Shape_info &info = bed->get_info();
+		const Shape_info &info = bed->get_info();
 		bloc.tx -= info.get_3d_xtiles(bed->get_framenum()) / 2;
 		bloc.ty -= info.get_3d_ytiles(bed->get_framenum()) / 2;
 		// Get within 3 tiles.
@@ -2289,7 +2289,7 @@ void Sleep_schedule::now_what(
 		int dir = (bedshape == 696 || bedshape == 363) ? west : north;
 		npc->set_frame(npc->get_dir_framenum(dir, Actor::sleep_frame));
 		// Get bed info.
-		Shape_info &info = bed->get_info();
+		const Shape_info &info = bed->get_info();
 		Tile_coord bedloc = bed->get_tile();
 		floorloc = npc->get_tile();
 		Usecode_script::terminate(bed);
@@ -2662,7 +2662,7 @@ bool Desk_schedule::walk_to_table() {
 		add_client(table);
 //		Tile_coord pos = Map_chunk::find_spot(table->get_tile(), 1, npc);
 		// This will find a random spot around the table:
-		Tile_coord pos = Map_chunk::find_spot(table->get_tile(), 1, 
+		Tile_coord pos = Map_chunk::find_spot(table->get_tile(), 1,
 				   npc->get_shapenum(), npc->get_framenum());
 
 		if (pos.tx != -1 &&
@@ -2710,8 +2710,8 @@ static int Desk_item_frame()
 	case 5:  return 5;							// Letter opener.
 	case 6:  non_docs = 0; return documents[rand()%2];
 	case 7:  return wax[rand()%2];
-	case 8:	 return 8;							// Seal.
-	case 9:	 return 9;							// Blotter.
+	case 8:  return 8;							// Seal.
+	case 9:  return 9;							// Blotter.
 	default: return 0;
 	}
 }
@@ -3087,7 +3087,7 @@ void Lab_schedule::now_what(
 		                         npcpos, spot, cost0);
 		if (!pact)
 			break;      // Failed.
-		Shape_info &info = table->get_info();
+		const Shape_info &info = table->get_info();
 		spot_on_table.tz += info.get_3d_height();
 		npc->set_action(new Sequence_actor_action(pact,
 		                new Face_pos_actor_action(spot_on_table, 200)));
@@ -3317,7 +3317,7 @@ bool Waiter_schedule::find_unattended_plate()
 		int floor = npc->get_lift() / 5; // Make sure it's on same floor.
 
 		for (Game_object_vector::iterator it = unattended_plates.begin();
-										     it != unattended_plates.end(); ) {
+		                                     it != unattended_plates.end(); ) {
 			Actor_vector custs;
 			Game_object *plate = *it;
 			if (plate->get_lift() / 5 != floor ||
@@ -3515,7 +3515,7 @@ Game_object *Waiter_schedule::create_customer_plate(
 			          : foot.y + foot.h - 1;
 		if (foot.has_world_point(spot.tx, spot.ty)) {
 			// Passes test.
-			Shape_info &info = table->get_info();
+			const Shape_info &info = table->get_info();
 			spot.tz = table->get_lift() + info.get_3d_height();
 			// Small plates:  frames 4, 5.  Seems random.
 			Game_object *plate = gmap->create_ireg_object(717, 4 + rand()%2);
@@ -4031,7 +4031,7 @@ void Sew_schedule::now_what(
 		                         npcpos, tpos, cost);
 		// Find where to put cloth.
 		Rectangle foot = work_table->get_footprint();
-		Shape_info &info = work_table->get_info();
+		const Shape_info &info = work_table->get_info();
 		Tile_coord cpos(foot.x + foot.w / 2, foot.y + foot.h / 2,
 		                work_table->get_lift() + info.get_3d_height());
 		if (pact)
@@ -4119,7 +4119,7 @@ void Sew_schedule::now_what(
 		                         npcpos, tpos, cost);
 		// Find where to put cloth.
 		Rectangle foot = wares_table->get_footprint();
-		Shape_info &info = wares_table->get_info();
+		const Shape_info &info = wares_table->get_info();
 		Tile_coord cpos(foot.x + rand() % foot.w, foot.y + rand() % foot.h,
 		                wares_table->get_lift() + info.get_3d_height());
 		if (pact)
@@ -4356,7 +4356,7 @@ void Bake_schedule::now_what() {
 		add_client(worktable);
 		// Find where to put dough.
 		Rectangle foot = worktable->get_footprint();
-		Shape_info &info = worktable->get_info();
+		const Shape_info &info = worktable->get_info();
 		Tile_coord cpos(foot.x + rand() % foot.w, foot.y + rand() % foot.h,
 		                worktable->get_lift() + info.get_3d_height());
 		Tile_coord tablepos = cpos;
@@ -4515,7 +4515,7 @@ void Bake_schedule::now_what() {
 		Actor_pathfinder_client COST = (GAME_SI ? cost : cost2);
 		Actor_action *pact = Path_walking_actor_action::create_path(
 		                         npcpos, spot, COST);
-		Shape_info &info = displaytable->get_info();
+		const Shape_info &info = displaytable->get_info();
 		spot_on_table.tz += info.get_3d_height();
 
 		// Place baked goods if spot is empty.
@@ -4635,7 +4635,7 @@ void Bake_schedule::now_what() {
 			offX = -3, offY = 0, offZ = -2;
 
 		Rectangle foot = oven->get_footprint();
-		Shape_info &info = oven->get_info();
+		const Shape_info &info = oven->get_info();
 		Tile_coord cpos(foot.x + offX, foot.y + offY,
 		                oven->get_lift() + info.get_3d_height() + offZ);
 
@@ -4736,7 +4736,7 @@ void Forge_schedule::now_what(
 		                         npcpos, tpos, cost);
 
 		Rectangle foot = firepit->get_footprint();
-		Shape_info &info = firepit->get_info();
+		const Shape_info &info = firepit->get_info();
 		Tile_coord bpos(foot.x + foot.w / 2 + 1, foot.y + foot.h / 2,
 		                firepit->get_lift() + info.get_3d_height());
 		if (pact) {
@@ -4848,7 +4848,7 @@ void Forge_schedule::now_what(
 		                          tpos, tpos2, cost);
 
 		Rectangle foot = anvil->get_footprint();
-		Shape_info &info = anvil->get_info();
+		const Shape_info &info = anvil->get_info();
 		Tile_coord bpos(foot.x + 2, foot.y,
 		                anvil->get_lift() + info.get_3d_height());
 		if (pact && pact2) {

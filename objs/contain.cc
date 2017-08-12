@@ -56,12 +56,12 @@ using std::ostream;
  *  Determines if a shape can be added/found inside a container.
  */
 static inline bool Can_be_added(
-    Container_game_object *cont,
+    const Container_game_object *cont,
     int shapenum,
     bool allow_locked = false
 ) {
-	Shape_info &continfo = cont->get_info();
-	Shape_info &add_info = ShapeID::get_info(shapenum);
+	const Shape_info &continfo = cont->get_info();
+	const Shape_info &add_info = ShapeID::get_info(shapenum);
 	return !(cont->get_shapenum() == shapenum   // Shape can't be inside itself.
 	         || (!allow_locked && continfo.is_container_locked())   // Locked container.
 	         || !continfo.is_shape_accepted(shapenum)  // Shape can't be inside.
@@ -121,13 +121,13 @@ bool Container_game_object::add(
 	// Casting to void* to avoid including actors.h.
 	if (obj == static_cast<void *>(gwin->get_main_actor()))
 		return false;
-	Shape_info &info = get_info();
+	const Shape_info &info = get_info();
 	if (!dont_check && (get_shapenum() == obj->get_shapenum()   // Shape can't be inside itself (not sure originals check this).
 	        || info.is_container_locked())) // Locked container.
 		return false;
 	if (!info.is_shape_accepted(obj->get_shapenum()))   // Shape can't be inside.
 		return false;
-	Shape_info &add_info = obj->get_info();
+	const Shape_info &add_info = obj->get_info();
 	if (!dont_check && !cheat.in_map_editor() && !cheat.in_hack_mover() && add_info.is_on_fire())
 		return false;
 
@@ -139,7 +139,7 @@ bool Container_game_object::add(
 	while ((parent = parent->get_owner()) != 0);
 
 	if (combine) {          // Should we try to combine?
-		Shape_info &info = obj->get_info();
+		const Shape_info &info = obj->get_info();
 		int quant = obj->get_quantity();
 		// Combine, but don't add.
 		int newquant = add_quantity(quant, obj->get_shapenum(),
@@ -242,7 +242,7 @@ int Container_game_object::add_quantity(
 			delta -= cant_add;
 		}
 	}
-	Shape_info &info = ShapeID::get_info(shapenum);
+	const Shape_info &info = ShapeID::get_info(shapenum);
 	bool has_quantity = info.has_quantity();    // Quantity-type shape?
 	bool has_quantity_frame = has_quantity ? info.has_quantity_frames() : false;
 	// Note:  quantity is ignored for
@@ -290,10 +290,10 @@ int Container_game_object::create_quantity(
 	if (!Can_be_added(this, shnum))
 		return delta;
 	// Usecode container?
-	Shape_info &info = ShapeID::get_info(get_shapenum());
+	const Shape_info &info = ShapeID::get_info(get_shapenum());
 	if (info.get_ready_type() == ucont)
 		return delta;
-	Shape_info &shp_info = ShapeID::get_info(shnum);
+	const Shape_info &shp_info = ShapeID::get_info(shnum);
 	if (!shp_info.has_quality())    // Not a quality object?
 		qual = c_any_qual;  // Then don't set it.
 	while (delta) {         // Create them here first.
@@ -401,7 +401,7 @@ bool Container_game_object::show_gump(
     int event
 ) {
 	ignore_unused_variable_warning(event);
-	Shape_info &inf = get_info();
+	const Shape_info &inf = get_info();
 	int gump;
 	if (cheat.in_map_editor())
 		return true;    // Do nothing.
@@ -519,7 +519,7 @@ void Container_game_object::update_from_studio(
 int Container_game_object::get_weight(
 ) {
 	int wt = Ireg_game_object::get_weight();
-	Shape_info &info = get_info();
+	const Shape_info &info = get_info();
 	if (info.has_extradimensional_storage()) {
 		return wt;
 	}
@@ -754,7 +754,7 @@ Game_object *Container_game_object::find_weapon_ammo(
 	ignore_unused_variable_warning(recursive);
 	if (weapon < 0 || !Can_be_added(this, weapon))
 		return 0;
-	Weapon_info *winf = ShapeID::get_info(weapon).get_weapon_info();
+	const Weapon_info *winf = ShapeID::get_info(weapon).get_weapon_info();
 	if (!winf)
 		return 0;
 	int family = winf->get_ammo_consumed();
@@ -769,7 +769,7 @@ Game_object *Container_game_object::find_weapon_ammo(
 		Game_object *obj = *it;
 		if (obj->get_shapenum() != weapon)
 			continue;
-		Shape_info &inf = obj->get_info();
+		const Shape_info &inf = obj->get_info();
 		if (family == -2) {
 			if (!inf.has_quality() || obj->get_quality() >= needed)
 				return obj;

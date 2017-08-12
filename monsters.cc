@@ -110,7 +110,7 @@ Monster_actor::Monster_actor(
 ) : Npc_actor(nm, shapenum, num, uc), next_monster(0), prev_monster(0),
 	animator(0) {
 	// Check for animated shape.
-	Shape_info &info = get_info();
+	const Shape_info &info = get_info();
 	if (info.is_animated() || info.has_sfx())
 		animator = Animator::create(this);
 }
@@ -150,8 +150,8 @@ void Monster_actor::equip(
 		            get_info().get_monster_food() : 0;
 		if (frnum < 0)  // Food.
 			frnum = rand() % ShapeID(377, 0).get_num_frames();
-		Shape_info &einfo = ShapeID::get_info(elem.shapenum);
-		Weapon_info *winfo = einfo.get_weapon_info();
+		const Shape_info &einfo = ShapeID::get_info(elem.shapenum);
+		const Weapon_info *winfo = einfo.get_weapon_info();
 		if (einfo.has_quality() && winfo && winfo->uses_charges())
 			create_quantity(1, elem.shapenum, elem.quantity,
 			                frnum, temporary);
@@ -403,7 +403,7 @@ bool Monster_actor::add(
 
 int Monster_actor::get_armor_points(
 ) {
-	Monster_info *inf = get_info().get_monster_info();
+	const Monster_info *inf = get_info().get_monster_info();
 	// Kind of guessing here.
 	return Actor::get_armor_points() + (inf ? inf->armor : 0);
 }
@@ -412,13 +412,13 @@ int Monster_actor::get_armor_points(
  *  Get weapon value.
  */
 
-Weapon_info *Monster_actor::get_weapon(
+const Weapon_info *Monster_actor::get_weapon(
     int &points,
     int &shape,
     Game_object  *&obj      // ->weapon itself returned, or 0.
 ) {
 	// Kind of guessing here.
-	Weapon_info *winf = Actor::get_weapon(points, shape, obj);
+	const Weapon_info *winf = Actor::get_weapon(points, shape, obj);
 	if (!winf) {        // No readied weapon?
 		// Look up monster itself.
 		shape = 0;
@@ -427,7 +427,7 @@ Weapon_info *Monster_actor::get_weapon(
 			shape = get_shapenum();
 			points = winf->get_damage();
 		} else {        // Builtin (claws?):
-			Monster_info *inf = get_info().get_monster_info();
+			const Monster_info *inf = get_info().get_monster_info();
 			if (inf)
 				points = inf->weapon;
 		}

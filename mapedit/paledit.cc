@@ -397,7 +397,7 @@ void Palette_edit::drag_data_get(
 		return;         // Not sure about this.
 	guchar buf[30];
 	int file = U7_SHAPE_SHAPES; // +++++For now.
-	Shape_info &shinfo = paled->info[paled->selected];
+	const Shape_info &shinfo = paled->info[paled->selected];
 	int len = Store_u7_shapeid(buf, file, shinfo.shapenum,
 	                           shinfo.framenum);
 	cout << "Setting selection data (" << shinfo.shapenum <<

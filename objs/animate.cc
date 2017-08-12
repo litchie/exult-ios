@@ -267,7 +267,7 @@ Animator *Animator::create(
     Game_object *ob         // Animated object.
 ) {
 	int frames = ob->get_num_frames();
-	Shape_info &info = ob->get_info();
+	const Shape_info &info = ob->get_info();
 	if (!info.is_animated())    // Assume it's just SFX.
 		return new Sfx_animator(ob);
 	else if (frames > 1)

@@ -227,7 +227,7 @@ Rectangle Combo::get_member_footprint(
 ) {
 	Combo_member *m = members[i];
 	// Get tile dims.
-	Shape_info &info = shapes_file->get_info(m->shapenum);
+	const Shape_info &info = shapes_file->get_info(m->shapenum);
 	int xtiles = info.get_3d_xtiles(m->framenum),
 	    ytiles = info.get_3d_ytiles(m->framenum);
 	// Get tile footprint.
@@ -297,7 +297,7 @@ void Combo::add(
 		}
 	}
 	// Get tile dims.
-	Shape_info &info = shapes_file->get_info(shnum);
+	const Shape_info &info = shapes_file->get_info(shnum);
 	int xtiles = info.get_3d_xtiles(frnum),
 	    ytiles = info.get_3d_ytiles(frnum),
 	    ztiles = info.get_3d_height();

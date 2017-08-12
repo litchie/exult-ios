@@ -55,8 +55,8 @@ public:
  *  A class for playing sound effects when certain objects are nearby.
  */
 class Shape_sfx : public Game_singletons {
-	Game_object *obj;       // Object that caused the sound.
-	SFX_info *sfxinf;
+	const Game_object *obj;       // Object that caused the sound.
+	const SFX_info *sfxinf;
 	int channel[2];         // ID of sound effect being played.
 	int distance;           // Distance in tiles from Avatar.
 	int dir;            // Direction (0-15) from Avatar.
@@ -121,7 +121,7 @@ public:
  *  Animate by going through frames.
  */
 class Frame_animator : public Animator {
-	Animation_info *aniinf;
+	const Animation_info *aniinf;
 	unsigned short first_frame; // Initial frame of animation cycle
 	unsigned short currpos;         // Current position in the animation.
 	unsigned short nframes;     // Number of frames in cycle.

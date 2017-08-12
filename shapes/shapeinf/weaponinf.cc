@@ -62,7 +62,7 @@ const Weapon_info *Weapon_info::get_default() {
 	return &default_info;
 }
 
-int Weapon_info::get_base_strength() {
+int Weapon_info::get_base_strength() const {
 	// ++++The strength values are utter guesses.
 	if (m_explodes && uses == melee)
 		return -50;     // Avoid hand-held explosives at all costs.
@@ -176,7 +176,7 @@ bool Weapon_info::read(
  *  Actor::reduce_health for why).
  */
 
-int Weapon_info::get_base_xp_value() {
+int Weapon_info::get_base_xp_value() const {
 	// This formula is exact.
 	int expval = damage;
 	expval += 2 * bitcount(powers);

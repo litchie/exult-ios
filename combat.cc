@@ -85,7 +85,7 @@ static inline bool not_in_melee_range(
 bool In_ammo_family(int shnum, int family) {
 	if (shnum == family)
 		return true;
-	Ammo_info *ainf = ShapeID::get_info(shnum).get_ammo_info();
+	const Ammo_info *ainf = ShapeID::get_info(shnum).get_ammo_info();
 	return (ainf != 0 && ainf->get_family_shape() == family);
 }
 
@@ -565,7 +565,7 @@ void Combat_schedule::back_off(
 ) {
 	int points, weapon_shape;
 	Game_object *weapon;
-	Weapon_info *winf = npc->get_weapon(points, weapon_shape, weapon);
+	const Weapon_info *winf = npc->get_weapon(points, weapon_shape, weapon);
 	int weapon_dist = winf ? winf->get_range() : 3;
 	int attacker_dist = npc->distance(attacker);
 	Game_object *opponent = npc->get_target();
@@ -617,7 +617,7 @@ void Combat_schedule::approach_foe(
     //  and we try to reach target.
 ) {
 	int points;
-	Weapon_info *winf = npc->get_weapon(points, weapon_shape, weapon);
+	const Weapon_info *winf = npc->get_weapon(points, weapon_shape, weapon);
 	int dist = for_projectile ? 1 : winf ? winf->get_range() : 3;
 	Game_object *opponent = npc->get_target();
 	// Find opponent.
@@ -630,7 +630,7 @@ void Combat_schedule::approach_foe(
 	Actor::Attack_mode mode = npc->get_attack_mode();
 	Game_window *gwin = Game_window::get_instance();
 	// Time to run?
-	Monster_info *minf = npc->get_info().get_monster_info();
+	const Monster_info *minf = npc->get_info().get_monster_info();
 	if ((!minf || !minf->cant_die()) &&
 	        (mode == Actor::flee ||
 	         (mode != Actor::berserk &&
@@ -728,8 +728,8 @@ static Game_object *Get_usable_weapon(
 	Game_object *bobj = npc->get_readied(index);
 	if (!bobj)
 		return 0;
-	Shape_info &info = bobj->get_info();
-	Weapon_info *winf = info.get_weapon_info();
+	const Shape_info &info = bobj->get_info();
+	const Weapon_info *winf = info.get_weapon_info();
 	if (!winf)
 		return 0;       // Not a weapon.
 	Game_object *aobj;  // Check ranged first.
@@ -815,12 +815,12 @@ void Combat_schedule::start_strike(
 	Game_object *opponent = npc->get_target();
 	bool check_lof = !no_blocking;
 	// Get difference in lift.
-	Weapon_info *winf = weapon_shape >= 0 ?
+	const Weapon_info *winf = weapon_shape >= 0 ?
 	                    ShapeID::get_info(weapon_shape).get_weapon_info() : 0;
 	int dist = npc->distance(opponent);
 	int reach;
 	if (!winf) {
-		Monster_info *minf = npc->get_info().get_monster_info();
+		const Monster_info *minf = npc->get_info().get_monster_info();
 		reach = minf ? minf->get_reach() : Monster_info::get_default()->get_reach();
 	} else
 		reach = winf->get_range();
@@ -894,7 +894,7 @@ void Combat_schedule::start_strike(
 	if (winf)
 		sfx = winf->get_sfx();
 	if (sfx < 0 || !winf) {
-		Monster_info *minf = ShapeID::get_info(
+		const Monster_info *minf = ShapeID::get_info(
 		                         npc->get_shapenum()).get_monster_info();
 		if (minf)
 			sfx = minf->get_hitsfx();
@@ -937,14 +937,14 @@ bool Combat_schedule::attack_target(
 	bool flash_mouse = !combat && att && gwin->get_main_actor() == att
 	                   && att->get_attack_mode() != Actor::manual;
 
-	Shape_info &info = ShapeID::get_info(weapon);
+	const Shape_info &info = ShapeID::get_info(weapon);
 	const Weapon_info *winf = weapon >= 0 ? info.get_weapon_info() : 0;
 
 	int reach;
 	int family = -1;    // Ammo, is needed, is the weapon itself.
 	int proj = -1;  // This is what we will use as projectile sprite.
 	if (!winf) {
-		Monster_info *minf = attacker->get_info().get_monster_info();
+		const Monster_info *minf = attacker->get_info().get_monster_info();
 		reach = minf ? minf->get_reach() : Monster_info::get_default()->get_reach();
 	} else {
 		reach = winf->get_range();
@@ -1172,7 +1172,7 @@ void Combat_schedule::set_weapon(
 ) {
 	int points;
 	spellbook = 0;
-	Weapon_info *info = npc->get_weapon(points, weapon_shape, weapon);
+	const Weapon_info *info = npc->get_weapon(points, weapon_shape, weapon);
 	if (!removed &&
 	        // Not dragging?
 	        !gwin->is_dragging() &&
@@ -1196,7 +1196,7 @@ void Combat_schedule::set_weapon(
 		ammo_shape = info->get_ammo_consumed();
 		no_blocking = info->no_blocking();
 		if (ammo_shape) {
-			Ammo_info *ainfo =
+			const Ammo_info *ainfo =
 			    ShapeID::get_info(ammo_shape).get_ammo_info();
 			if (ainfo)
 				no_blocking =
@@ -1302,7 +1302,7 @@ void Combat_schedule::now_what(
 	// Running away?
 	if (npc->get_attack_mode() == Actor::flee) {
 		// If not in combat, stop running.
-		Monster_info *minf = npc->get_info().get_monster_info();
+		const Monster_info *minf = npc->get_info().get_monster_info();
 		if (minf && minf->cant_die())
 			npc->set_attack_mode(Actor::nearest);
 		else if (fleed > 2 && !gwin->in_combat() &&

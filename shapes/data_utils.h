@@ -105,8 +105,8 @@ void clean_vector(std::vector<T> &vec) {
 }
 
 template <class T, typename U>
-static T *Search_vector_data_single_wildcard(
-    vector<T> &vec,
+static const T *Search_vector_data_single_wildcard(
+    const vector<T> &vec,
     int src,
     U T::*dat
 ) {
@@ -114,7 +114,7 @@ static T *Search_vector_data_single_wildcard(
 		return 0;
 	T inf;
 	inf.*dat = src;
-	typename vector<T>::iterator it;
+	typename vector<T>::const_iterator it;
 	// Try finding exact match first.
 	it = std::lower_bound(vec.begin(), vec.end(), inf);
 	if (it == vec.end())    // Nowhere to be found.
@@ -132,8 +132,8 @@ static T *Search_vector_data_single_wildcard(
 }
 
 template <class T>
-static T *Search_vector_data_double_wildcards(
-    vector<T> &vec,
+static const T *Search_vector_data_double_wildcards(
+    const vector<T> &vec,
     int frame, int quality,
     short T::*fr, short T::*qual
 ) {
@@ -142,7 +142,7 @@ static T *Search_vector_data_double_wildcards(
 	T inf;
 	inf.*fr = frame;
 	inf.*qual = quality;
-	typename vector<T>::iterator it;
+	typename vector<T>::const_iterator it;
 	// Try finding exact match first.
 	it = std::lower_bound(vec.begin(), vec.end(), inf);
 	if (it == vec.end())    // Nowhere to be found.

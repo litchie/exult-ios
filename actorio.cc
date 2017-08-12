@@ -456,7 +456,7 @@ void Actor::read(
 		// If a monster can't die, force it to have at least 1 hit point,
 		// but only if the monster is used.
 		// Maybe we should restore it to full health?
-		Monster_info *minf = get_info().get_monster_info();
+		const Monster_info *minf = get_info().get_monster_info();
 		if (minf && minf->cant_die())
 			set_property(static_cast<int>(Actor::health),
 			             get_property(static_cast<int>(Actor::strength)));
