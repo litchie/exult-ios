@@ -31,7 +31,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 int Gump_widget::on_widget(
     int mx, int my          // Point in window.
-) {
+) const {
 	mx -= parent->get_x() + x;  // Get point rel. to gump.
 	my -= parent->get_y() + y;
 	Shape_frame *cshape = get_shape();

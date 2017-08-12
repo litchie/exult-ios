@@ -855,7 +855,7 @@ void Game_window::toggle_combat(
 				act->set_attack_mode(Actor::nearest);
 			// And avoid attacking party members,
 			//  in case of Usecode bug.
-			Game_object *targ = act->get_target();
+			const Game_object *targ = act->get_target();
 			if (targ && targ->get_flag(Obj_flags::in_party))
 				act->set_target(0);
 		}
@@ -1219,7 +1219,7 @@ void Game_window::show_game_location(
  *  Get screen area used by object.
  */
 
-Rectangle Game_window::get_shape_rect(Game_object *obj) {
+Rectangle Game_window::get_shape_rect(const Game_object *obj) const {
 	if (!obj->get_chunk()) {    // Not on map?
 		Gump *gump = gump_man->find_gump(obj);
 		if (gump)
@@ -1275,7 +1275,7 @@ inline void Get_shape_location(
  *  Get screen loc. of object which MUST be on the map (no owner).
  */
 
-void Game_window::get_shape_location(Game_object *obj, int &x, int &y) {
+void Game_window::get_shape_location(const Game_object *obj, int &x, int &y) {
 	Get_shape_location(obj->get_tile(), scrolltx, scrollty, x, y);
 	// Smooth scroll the avatar as well, if possible
 	if (obj == get_camera_actor()) {
@@ -2148,7 +2148,7 @@ void Game_window::find_nearby_objects(Game_object_map_xy *mobjxy, int x, int y, 
 	}
 }
 #endif
-static inline string Get_object_name(Game_object *obj) {
+static inline string Get_object_name(const Game_object *obj) {
 	if (obj == Game_window::get_instance()->get_main_actor()) {
 		if (GAME_BG)
 			return get_misc_name(0x42);
@@ -2254,7 +2254,7 @@ void Game_window::show_items(
 	int shnum, frnum;
 	if (obj) {
 		shnum = obj->get_shapenum(), frnum = obj->get_framenum();
-		Shape_info &info = obj->get_info();
+		const Shape_info &info = obj->get_info();
 		cout << "Object " << shnum << ':' << frnum <<
 		     " has 3d tiles (x, y, z): " <<
 		     info.get_3d_xtiles(frnum) << ", " <<
@@ -2305,7 +2305,7 @@ void Game_window::show_items(
 		if (id.is_invalid())
 			return;
 	}
-	Shape_info &info = ShapeID::get_info(shnum);
+	const Shape_info &info = ShapeID::get_info(shnum);
 	cout << "TFA[1][0-6]= " << (info.get_tfa(1) & 127) << endl;
 	cout << "TFA[0][0-1]= " << (info.get_tfa(0) & 3) << endl;
 	cout << "TFA[0][3-4]= " << ((info.get_tfa(0) >> 3) & 3) << endl;

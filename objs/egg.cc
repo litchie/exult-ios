@@ -74,7 +74,7 @@ class Missile_launcher : public Time_sensitive, public Game_singletons {
 public:
 	Missile_launcher(Egg_object *e, int weap, int shnum, int di, int del)
 		: egg(e), weapon(weap), shapenum(shnum), dir(di), delay(del), range(20) {
-		Weapon_info *winfo = ShapeID::get_info(weapon).get_weapon_info();
+		const Weapon_info *winfo = ShapeID::get_info(weapon).get_weapon_info();
 		// Guessing.
 		if (winfo) {
 			range = winfo->get_range();
@@ -191,8 +191,7 @@ class Monster_egg : public Egg_object {
 	unsigned short mshape;      // For monster.
 	unsigned char mframe;
 	unsigned char sched, align, cnt;
-	void create_monster(Monster_info *inf) {
-		ignore_unused_variable_warning(inf);
+	void create_monster() const {
 		Tile_coord dest = Map_chunk::find_spot(
 		                      get_tile(), 5, mshape, 0, 1);
 		if (dest.tx != -1) {
@@ -220,19 +219,16 @@ public:
 	}
 	virtual void hatch_now(Game_object *obj, bool must) {
 		ignore_unused_variable_warning(obj, must);
-		Shape_info &inf = ShapeID::get_info(mshape);
-		Monster_info *minf = inf.is_npc() ?
-		                     inf.get_monster_info_safe() : 0;
-		if (minf) {
+		const Shape_info &info = ShapeID::get_info(mshape);
+		if (info.is_npc()) {
 			if (gwin->armageddon)
 				return;
 			int num = cnt;
 			if (num > 1)    // Randomize.
 				num = 1 + (rand() % num);
 			while (num--)
-				create_monster(minf);
+				create_monster();
 		} else {        // Create item.
-			Shape_info &info = ShapeID::get_info(mshape);
 			Game_object *nobj = get_map()->create_ireg_object(info,
 			                    mshape, mframe, get_tx(), get_ty(), get_lift());
 			if (nobj->is_egg())
@@ -337,8 +333,8 @@ public:
 	}
 	virtual void hatch_now(Game_object *obj, bool must) {
 		ignore_unused_variable_warning(obj, must);
-		Shape_info &info = ShapeID::get_info(weapon);
-		Weapon_info *winf = info.get_weapon_info();
+		const Shape_info &info = ShapeID::get_info(weapon);
+		const Weapon_info *winf = info.get_weapon_info();
 		int proj;
 		if (winf && winf->get_projectile())
 			proj = winf->get_projectile();
@@ -652,7 +648,7 @@ void Egg_object::set_area(
 		break;
 	case avatar_footpad:
 	case party_footpad: {
-		Shape_info &info = get_info();
+		const Shape_info &info = get_info();
 		int frame = get_framenum();
 		int xtiles = info.get_3d_xtiles(frame),
 		    ytiles = info.get_3d_ytiles(frame);
@@ -963,7 +959,7 @@ void Egg_object::update_from_studio(
 			break;
 		}
 
-	Shape_info &info = ShapeID::get_info(shape);
+	const Shape_info &info = ShapeID::get_info(shape);
 	bool anim = info.is_animated() || info.has_sfx();
 	Egg_object *egg = create_egg(anim, shape, frame, tx, ty, tz, type,
 	                             probability, data1, data2, data3, str1.c_str());
@@ -1210,7 +1206,7 @@ int Egg_object::get_ireg_size() {
 Field_object::Field_object(int shapenum, int framenum, unsigned int tilex,
                            unsigned int tiley, unsigned int lft, unsigned char ty)
 	: Egg_object(shapenum, framenum, tilex, tiley, lft, ty) {
-	Shape_info &info = get_info();
+	const Shape_info &info = get_info();
 	if (info.is_animated())
 		set_animator(new Field_frame_animator(this));
 }

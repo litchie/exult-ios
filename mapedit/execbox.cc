@@ -162,7 +162,7 @@ static inline bool dup_wrapper(int pipe[2], int fd, bool for_read) {
 
 bool Exec_process::exec(
     const char *file,       // PATH will be searched.
-    char *argv[],           // Args.  1st is filename, last is 0.
+    const char *argv[],     // Args.  1st is filename, last is 0.
     Reader_fun rfun,        // Called when child writes, exits.
     void *udata         // User_data for rfun.
 ) {
@@ -192,7 +192,7 @@ bool Exec_process::exec(
 			Close_pipes(stdin_pipe, stdout_pipe, stderr_pipe);
 			return false;
 		}
-		execvp(file, argv); // Become the new command.
+		execvp(file, const_cast<char **>(argv)); // Become the new command.
 		exit(-1);       // Gets here if exec failed.
 	}
 	// HERE, we're the parent.
@@ -326,7 +326,7 @@ void Exec_box::add_message(
 
 bool Exec_box::exec(
     const char *file,       // PATH will be searched.
-    char *argv[]            // Args.  1st is filename, last is 0.
+    const char *argv[]      // Args.  1st is filename, last is 0.
 ) {
 	GtkTextBuffer *buffer = gtk_text_view_get_buffer(box);
 	gtk_text_buffer_set_text(buffer, "", 0);    // Clear out old text

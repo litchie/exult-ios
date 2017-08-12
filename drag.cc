@@ -633,7 +633,7 @@ int Game_window::drop_at_lift(
 	int cy = ty / c_tiles_per_chunk;
 	Map_chunk *chunk = map->get_chunk(cx, cy);
 	int lift;           // Can we put it here?
-	Shape_info &info = to_drop->get_info();
+	const Shape_info &info = to_drop->get_info();
 	int frame = to_drop->get_framenum();
 	int xtiles = info.get_3d_xtiles(frame), ytiles = info.get_3d_ytiles(frame);
 	int max_drop, move_flags;

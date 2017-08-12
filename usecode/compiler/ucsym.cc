@@ -214,7 +214,7 @@ Uc_expression *Uc_static_class_symbol::create_expression(
  */
 
 bool Uc_struct_symbol::is_dup(
-    char *nm
+    const char *nm
 ) {
 	int index = search(nm);
 	if (index >= 0) {       // Already declared?
@@ -460,7 +460,7 @@ Uc_function_symbol *Uc_function_symbol::create(
 					msg += "new decl. should use 'object#' instead of 'shape#'";
 				break;
 			}
-			Uc_location::yyerror(const_cast<char *>(msg.c_str()));
+			Uc_location::yyerror(msg.c_str());
 		} else if (scope) {
 			if (!sym->is_inherited()) {
 				char buf[256];
@@ -625,7 +625,7 @@ int Uc_function_symbol::gen_call(
 }
 
 
-bool String_compare::operator()(char *const &x, char *const &y) const {
+bool String_compare::operator()(const char *const &x, const char *const &y) const {
 	return strcmp(x, y) < 0;
 }
 
@@ -635,7 +635,7 @@ bool String_compare::operator()(char *const &x, char *const &y) const {
 
 Uc_scope::~Uc_scope(
 ) {
-	for (std::map<char *, Uc_symbol *, String_compare>::iterator it = symbols.begin();
+	for (std::map<const char *, Uc_symbol *, String_compare>::iterator it = symbols.begin();
 	        it != symbols.end(); ++it)
 		delete(*it).second;
 	for (std::vector<Uc_scope *>::iterator it = scopes.begin();
@@ -718,7 +718,7 @@ int Uc_scope::add_function_symbol(
  */
 
 bool Uc_scope::is_dup(
-    char *nm
+    const char *nm
 ) {
 	Uc_symbol *sym = search(nm);
 	if (sym) {          // Already in scope?

@@ -145,7 +145,7 @@ void Text_button::paint() {
 	    iwin->get_ib8(), text.c_str(), px + text_x + offset, py + text_y + offset);
 }
 
-int Text_button::on_widget(int mx, int my) {
+int Text_button::on_widget(int mx, int my) const {
 	int px = x;
 	int py = y;
 

@@ -95,9 +95,9 @@ public:
 		return get_container();
 	}
 	// Get screen rect. of obj. in here.
-	Rectangle get_shape_rect(Game_object *obj);
+	Rectangle get_shape_rect(const Game_object *obj) const;
 	// Get screen loc. of object.
-	void get_shape_location(Game_object *obj, int &ox, int &oy);
+	void get_shape_location(const Game_object *obj, int &ox, int &oy) const;
 	// Find obj. containing mouse point.
 	virtual Game_object *find_object(int mx, int my);
 	virtual Rectangle get_dirty();      // Get dirty rect. for gump+contents.
@@ -132,8 +132,8 @@ public:
 		return false;
 	}
 
-	virtual bool has_point(int x, int y);
-	virtual Rectangle get_rect();
+	virtual bool has_point(int x, int y) const;
+	virtual Rectangle get_rect() const;
 	virtual bool handle_kbd_event(void *ev) {
 		ignore_unused_variable_warning(ev);
 		return false;

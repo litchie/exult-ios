@@ -211,22 +211,19 @@ int Shape_info::get_body_frame() const {
 	return body ? body->bframe : 3;
 }
 
-Weapon_info *Shape_info::get_weapon_info_safe() const {
-	return weapon ? weapon :
-	       const_cast<Weapon_info *>(Weapon_info::get_default());
+const Weapon_info *Shape_info::get_weapon_info_safe() const {
+	return weapon ? weapon : Weapon_info::get_default();
 }
 
-Ammo_info *Shape_info::get_ammo_info_safe() const {
-	return ammo ? ammo :
-	       const_cast<Ammo_info *>(Ammo_info::get_default());
+const Ammo_info *Shape_info::get_ammo_info_safe() const {
+	return ammo ? ammo : Ammo_info::get_default();
 }
 
-Monster_info *Shape_info::get_monster_info_safe() const {
-	return monstinf ? monstinf :
-	       const_cast<Monster_info *>(Monster_info::get_default());
+const Monster_info *Shape_info::get_monster_info_safe() const {
+	return monstinf ? monstinf : Monster_info::get_default();
 }
 
-Animation_info *Shape_info::get_animation_info_safe(
+const Animation_info *Shape_info::get_animation_info_safe(
     int shnum,
     int nframes
 ) {
@@ -376,33 +373,33 @@ void Shape_info::add_warmth_info(Warmth_info &add) {
 	add_vector_info(add, warminf);
 }
 
-Frame_name_info *Shape_info::get_frame_name(int frame, int quality) {
+const Frame_name_info *Shape_info::get_frame_name(int frame, int quality) const {
 	return Search_vector_data_double_wildcards(nameinf,
 	        frame, quality,
 	        &Frame_name_info::frame, &Frame_name_info::quality);
 }
 
-Frame_usecode_info *Shape_info::get_frame_usecode(int frame, int quality) {
+const Frame_usecode_info *Shape_info::get_frame_usecode(int frame, int quality) const {
 	return Search_vector_data_double_wildcards(frucinf,
 	        frame, quality,
 	        &Frame_usecode_info::frame, &Frame_usecode_info::quality);
 }
 
-int Shape_info::get_effective_hps(int frame, int quality) {
-	Effective_hp_info *inf = Search_vector_data_double_wildcards(hpinf,
+int Shape_info::get_effective_hps(int frame, int quality) const {
+	const Effective_hp_info *inf = Search_vector_data_double_wildcards(hpinf,
 	                         frame, quality,
 	                         &Effective_hp_info::frame, &Effective_hp_info::quality);
 	return inf ? inf->hps : 0;  // Default to indestructible.
 }
 
-int Shape_info::get_object_flags(int frame, int qual) {
-	Frame_flags_info *inf = Search_vector_data_double_wildcards(frflagsinf,
+int Shape_info::get_object_flags(int frame, int qual) const {
+	const Frame_flags_info *inf = Search_vector_data_double_wildcards(frflagsinf,
 	                        frame, qual,
 	                        &Frame_flags_info::frame, &Frame_flags_info::quality);
 	return inf ? inf->m_flags : 0;  // Default to no flagss.
 }
 
-Paperdoll_item *Shape_info::get_item_paperdoll(int frame, int spot) {
+const Paperdoll_item *Shape_info::get_item_paperdoll(int frame, int spot) const {
 	if (objpaperdoll.empty())
 		return 0;   // No paperdoll.
 	Paperdoll_item inf;
@@ -416,7 +413,7 @@ Paperdoll_item *Shape_info::get_item_paperdoll(int frame, int spot) {
 	else if (spot == scabbard)
 		spot = belt;
 	inf.spot = spot;
-	vector<Paperdoll_item>::iterator it;
+	vector<Paperdoll_item>::const_iterator it;
 	// Try finding exact match first.
 	it = std::lower_bound(objpaperdoll.begin(), objpaperdoll.end(), inf);
 	if (it == objpaperdoll.end())   // Nowhere to be found.
@@ -433,8 +430,8 @@ Paperdoll_item *Shape_info::get_item_paperdoll(int frame, int spot) {
 		return &*it;
 }
 
-bool Shape_info::is_shape_accepted(int shape) {
-	Content_rules *inf = Search_vector_data_single_wildcard(cntrules,
+bool Shape_info::is_shape_accepted(int shape) const {
+	const Content_rules *inf = Search_vector_data_single_wildcard(cntrules,
 	                     shape, &Content_rules::shape);
 #ifdef DEBUG
 	if (inf && !inf->accept)
@@ -443,8 +440,8 @@ bool Shape_info::is_shape_accepted(int shape) {
 	return inf ? inf->accept : true;    // Default to true.
 }
 
-int Shape_info::get_object_warmth(int frame) {
-	Warmth_info *inf = Search_vector_data_single_wildcard(warminf,
+int Shape_info::get_object_warmth(int frame) const {
+	const Warmth_info *inf = Search_vector_data_single_wildcard(warminf,
 	                   frame, &Warmth_info::frame);
 	return inf ? inf->warmth : 0;   // Default to no warmth.
 }
@@ -497,7 +494,7 @@ void Shape_info::set_weapon_offset(
 int Shape_info::get_rotated_frame(
     int curframe,
     int quads           // 1=90, 2=180, 3=270.
-) {
+) const {
 	// Seat is a special case.
 	if (barge_type == barge_seat) {
 		int dir = curframe % 4; // Current dir (0-3).

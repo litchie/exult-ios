@@ -37,7 +37,7 @@ public:
 		: Gump_widget(par, shnum, px, py, shfile), pushed_button(0)
 	{  }
 	// Is a given point on the checkmark?
-	virtual int on_button(int mx, int my) {
+	virtual int on_button(int mx, int my) const {
 		return on_widget(mx, my);
 	}
 	// What to do when 'clicked':

@@ -60,7 +60,7 @@ inline bool is_sint_32bit(int val) {
  */
 class String_compare {
 public:
-	bool operator()(char *const &x, char *const &y) const;
+	bool operator()(const char *const &x, const char *const &y) const;
 };
 
 /*
@@ -358,7 +358,7 @@ public:
  *  usecode variable -- this is left to Exult.
  */
 class Uc_struct_symbol : public Uc_symbol {
-	typedef std::map<char *, int, String_compare> Var_map;
+	typedef std::map<const char *, int, String_compare> Var_map;
 	Var_map vars;
 	int num_vars;           // # member variables.
 public:
@@ -366,7 +366,7 @@ public:
 		: Uc_symbol(nm), num_vars(0)
 	{  }
 	~Uc_struct_symbol();
-	int add(char *nm) {
+	int add(const char *nm) {
 		if (is_dup(nm))
 			return 0;
 		// Add struct variable.
@@ -381,14 +381,13 @@ public:
 		return num_vars;
 	}
 	int search(const char *nm) {
-		char *nm1 = const_cast<char *>(nm);
-		Var_map::const_iterator it = vars.find(nm1);
+		Var_map::const_iterator it = vars.find(nm);
 		if (it == vars.end())
 			return -1;
 		else
 			return (*it).second;
 	}
-	bool is_dup(char *nm);      // Already declared?
+	bool is_dup(const char *nm);      // Already declared?
 };
 
 /*
@@ -633,7 +632,7 @@ public:
 class Uc_scope {
 	Uc_scope *parent;       // ->parent.
 	// For finding syms. by name.
-	typedef std::map<char *, Uc_symbol *, String_compare> Sym_map;
+	typedef std::map<const char *, Uc_symbol *, String_compare> Sym_map;
 	Sym_map symbols;
 	std::vector<Uc_scope *> scopes; // Scopes within.
 public:
@@ -644,8 +643,7 @@ public:
 		return parent;
 	}
 	Uc_symbol *search(const char *nm) { // Look in this scope.
-		char *nm1 = const_cast<char *>(nm);
-		Sym_map::const_iterator it = symbols.find(nm1);
+		Sym_map::const_iterator it = symbols.find(nm);
 		if (it == symbols.end())
 			return 0;
 		else
@@ -654,9 +652,7 @@ public:
 	// Search upwards through scopes.
 	Uc_symbol *search_up(const char *nm);
 	void add(Uc_symbol *sym) {  // Add (does NOT check for dups.)
-		const char *nm = sym->name.c_str();
-		char *nm1 = const_cast<char *>(nm); // ???Can't figure this out!
-		symbols[nm1] = sym;
+		symbols[sym->name.c_str()] = sym;
 	}
 	Uc_scope *add_scope() {     // Create new scope.
 		Uc_scope *newscope = new Uc_scope(this);
@@ -665,7 +661,7 @@ public:
 	}
 	// Add a function decl.
 	int add_function_symbol(Uc_function_symbol *fun, Uc_scope *parent = 0);
-	bool is_dup(char *nm);      // Already declared?
+	bool is_dup(const char *nm);      // Already declared?
 };
 
 /*

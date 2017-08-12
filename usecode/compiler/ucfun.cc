@@ -70,7 +70,7 @@ Uc_function::Uc_function(
 	statement(0) {
 	add_global_function_symbol(proto, parent);// Add prototype to globals.
 #if 0
-	char *nm = const_cast<char *>(proto->get_name());
+	const char *nm = proto->get_name();
 	if (!globals.search(nm))
 		globals.add(proto);
 	else {
@@ -161,7 +161,7 @@ Uc_var_symbol *Uc_function::add_symbol(
 Uc_var_symbol *Uc_function::add_symbol(
     Uc_var_symbol *var
 ) {
-	if (cur_scope->is_dup(const_cast<char *>(var->get_name())))
+	if (cur_scope->is_dup(var->get_name()))
 		return 0;
 	// Create & assign slot.
 	var->set_offset(num_parms + num_locals++);
@@ -902,7 +902,7 @@ void Uc_function::set_intrinsics(
 	remove_face = 4;
 	intrinsics.resize(cnt);
 	for (int i = 0; i < cnt; i++) {
-		char *nm = const_cast<char *>(table[i]);
+		const char *nm = table[i];
 		if (!strncmp(nm, "UI_get_usecode_fun", sizeof("UI_get_usecode_fun")))
 			get_usecode_fun = i;
 		else if (!strncmp(nm, "UI_get_item_shape", sizeof("UI_get_item_shape")))

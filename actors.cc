@@ -290,7 +290,7 @@ Game_object *Actor::find_best_ammo(
 		Game_object *obj = *it;
 		if (obj->inside_locked() || !In_ammo_family(obj->get_shapenum(), family))
 			continue;
-		Ammo_info *ainf = obj->get_info().get_ammo_info();
+		const Ammo_info *ainf = obj->get_info().get_ammo_info();
 		if (!ainf)  // E.g., musket ammunition doesn't have it.
 			continue;
 		// Can't use it.
@@ -325,7 +325,7 @@ int Actor::get_effective_range(
 ) {
 	if (reach < 0) {
 		if (!winf) {
-			Monster_info *minf = get_info().get_monster_info();
+			const Monster_info *minf = get_info().get_monster_info();
 			return minf ? minf->get_reach()
 			       : Monster_info::get_default()->get_reach();
 		}
@@ -367,7 +367,7 @@ Game_object *Actor::find_weapon_ammo(
 ) {
 	if (weapon < 0)
 		return 0;
-	Weapon_info *winf = ShapeID::get_info(weapon).get_weapon_info();
+	const Weapon_info *winf = ShapeID::get_info(weapon).get_weapon_info();
 	if (!winf)
 		return 0;
 	int family = winf->get_ammo_consumed();
@@ -388,7 +388,7 @@ Game_object *Actor::find_weapon_ammo(
 		Game_object *obj = spots[static_cast<int>(wspots[i])];
 		if (!obj || obj->get_shapenum() != weapon)
 			continue;
-		Shape_info &inf = obj->get_info();
+		const Shape_info &inf = obj->get_info();
 		if (family == -2) {
 			if (!inf.has_quality() || obj->get_quality() >= needed)
 				return obj;
@@ -439,7 +439,7 @@ static inline bool Is_weapon_usable(
 ) {
 	if (ammo)
 		*ammo = 0;
-	Weapon_info *winf = bobj->get_info().get_weapon_info();
+	const Weapon_info *winf = bobj->get_info().get_weapon_info();
 	if (!winf)
 		return false;       // Not a weapon.
 	Game_object *aobj = 0;  // Check ranged first.
@@ -470,8 +470,8 @@ bool Actor::ready_ammo(
 	Game_object *weapon = spots[static_cast<int>(lhand)];
 	if (!weapon)
 		return false;
-	Shape_info &info = weapon->get_info();
-	Weapon_info *winf = info.get_weapon_info();
+	const Shape_info &info = weapon->get_info();
+	const Weapon_info *winf = info.get_weapon_info();
 	if (!winf)
 		return false;
 	int ammo = winf->get_ammo_consumed();
@@ -506,7 +506,7 @@ bool Actor::ready_best_shield(
 	if (two_handed)
 		return false;
 	if (spots[rhand]) {
-		Shape_info &inf = spots[rhand]->get_info();
+		const Shape_info &inf = spots[rhand]->get_info();
 		if (is_in_party() || inf.get_armor() || inf.get_armor_immunity())
 			return inf.get_armor() || inf.get_armor_immunity();
 	}
@@ -525,12 +525,12 @@ bool Actor::ready_best_shield(
 		Game_object *obj = *it;
 		if (obj->inside_locked())
 			continue;
-		Shape_info &info = obj->get_info();
+		const Shape_info &info = obj->get_info();
 		// Only want those that can be readied in hand.
 		int ready = info.get_ready_type();
 		if (ready != lhand && ready != backpack)
 			continue;
-		Armor_info *arinf = info.get_armor_info();
+		const Armor_info *arinf = info.get_armor_info();
 		if (!arinf)
 			continue;   // Not a shield.
 		if (spots[lhand] == obj) // Don't take the weapon.
@@ -586,13 +586,13 @@ bool Actor::ready_best_weapon(
 		Game_object *obj = *it, *ammo_obj = 0;
 		if (obj->inside_locked())
 			continue;
-		Shape_info &info = obj->get_info();
+		const Shape_info &info = obj->get_info();
 		int ready = info.get_ready_type();
 		// backpack and rhand added for dragon breath and some spells
 		if (ready != lhand && ready != both_hands &&
 		        ready != rhand && ready != backpack)
 			continue;
-		Weapon_info *winf = info.get_weapon_info();
+		const Weapon_info *winf = info.get_weapon_info();
 		if (!winf)
 			continue;   // Not a weapon.
 		if (!Is_weapon_usable(this, obj, &ammo_obj))
@@ -759,7 +759,7 @@ int Actor::is_blocked(
     Tile_coord *f,          // Step from here, or curpos if null.
     const int move_flags
 ) {
-	Shape_info &info = get_info();
+	const Shape_info &info = get_info();
 	// Get dim. in tiles.
 	int frame = get_framenum();
 	int xtiles = info.get_3d_xtiles(frame), ytiles = info.get_3d_ytiles(frame);
@@ -917,7 +917,7 @@ void Actor::refigure_gear() {
 	for (size_t i = 0; i < array_size(locs); i++) {
 		Game_object *worn = spots[static_cast<int>(locs[i])];
 		if (worn) {
-			Shape_info &info = worn->get_info();
+			const Shape_info &info = worn->get_info();
 			char rdy = info.get_ready_type();
 			if (info.is_light_source() && (locs[i] != belt ||
 			                               (rdy != lhand && rdy != rhand && rdy != both_hands)))
@@ -1073,7 +1073,7 @@ int Actor::get_attack_frames(
 			slow_swing_attack_frames = slow_swing_attack_frames1;
 		}
 		unsigned char frame_flags;  // Get Actor_frame flags.
-		Weapon_info *winfo;
+		const Weapon_info *winfo;
 		if (weapon >= 0 &&
 		        (winfo = ShapeID::get_info(weapon).get_weapon_info()) != 0)
 			frame_flags = winfo->get_actor_frames(projectile);
@@ -1467,7 +1467,7 @@ void Actor::get_tile_info(
 	if (flat.get_shapenum() == -1)
 		water = poison = 0;
 	else {
-		Shape_info &finfo = flat.get_info();
+		const Shape_info &finfo = flat.get_info();
 		water = finfo.is_water();
 		poison = finfo.is_poisonous();
 		// Check for swamp/swamp boots.
@@ -1477,7 +1477,7 @@ void Actor::get_tile_info(
 				poison = 0;
 			else {      // Not protected by gear?
 				// Safe from poisoning?
-				Monster_info *minf =
+				const Monster_info *minf =
 				    actor->get_info().get_monster_info();
 				if (minf && minf->poison_safe())
 					poison = 0;
@@ -1516,7 +1516,7 @@ void Actor::set_target(
  */
 
 bool Actor::fits_in_spot(Game_object *obj, int spot) {
-	Shape_info &inf = obj->get_info();
+	const Shape_info &inf = obj->get_info();
 	int rtype = inf.get_ready_type(),
 	    alt1 = inf.get_alt_ready1(),
 	    alt2 = inf.get_alt_ready2();
@@ -1596,7 +1596,7 @@ void Actor::get_prefered_slots(
     int &alt1,
     int &alt2
 ) {
-	Shape_info &info = obj->get_info();
+	const Shape_info &info = obj->get_info();
 
 	// Defaults
 	prefered = info.get_ready_type();
@@ -2093,7 +2093,7 @@ int Actor::figure_weapon_pos(
 
 	// Get offsets for weapon shape
 	int shnum = get_effective_weapon_shape();
-	Shape_info &info = ShapeID::get_info(shnum);
+	const Shape_info &info = ShapeID::get_info(shnum);
 	info.get_weapon_offset(weapon_frame & 0xf, wx, wy);
 
 	// actor_x will be 255 if (for example) the actor is lying down
@@ -2629,7 +2629,7 @@ int Actor::apply_damage(
 	}
 
 	int armor = -bias;
-	Monster_info *minf = get_info().get_monster_info();
+	const Monster_info *minf = get_info().get_monster_info();
 	// Monster armor protects only in UI_apply_damage.
 	if (minf)
 		armor += minf->get_armor();
@@ -2639,7 +2639,7 @@ int Actor::apply_damage(
 	for (int i = 0; i < num_spots; i++) {
 		Game_object *obj = spots[i];
 		if (obj) {
-			Shape_info &info = obj->get_info();
+			const Shape_info &info = obj->get_info();
 			armor += info.get_armor();
 			if ((info.get_armor_immunity() & (1 << type)) != 0) {
 				// Armor gives immunity.
@@ -2710,7 +2710,7 @@ int Actor::reduce_health(
 	if (is_dead() || (cheat.in_god_mode() && ((party_id != -1) || (npc_num == 0))))
 		return 0;
 
-	Monster_info *minf = get_info().get_monster_info_safe();
+	const Monster_info *minf = get_info().get_monster_info_safe();
 	Actor *npc = attacker ? attacker->as_actor() : 0;
 
 	// Monster immunities DO affect UI_reduce_health, unlike
@@ -2817,7 +2817,7 @@ int Actor::reduce_health(
 			expval = properties[static_cast<int>(strength)] + combval +
 			         (properties[static_cast<int>(dexterity)] + 1) / 3 +
 			         properties[static_cast<int>(intelligence)] / 5;
-			Monster_info *minf = get_info().get_monster_info();
+			const Monster_info *minf = get_info().get_monster_info();
 			int immune = minf ? minf->get_immune() : 0;
 			int vuln = minf ? minf->get_vulnerable() : 0;
 			if (minf)
@@ -2836,7 +2836,7 @@ int Actor::reduce_health(
 					// can still be dangerous...
 					if (obj->get_owner() != this)
 						continue;
-					Shape_info &inf = obj->get_info();
+					const Shape_info &inf = obj->get_info();
 					expval += inf.get_armor();
 					// Strictly speaking, the original does not give
 					// XP for armor immunities; but I guess this is
@@ -2846,7 +2846,7 @@ int Actor::reduce_health(
 					// I decided to have them give a (non-cumulative)
 					// increase in experience.
 					immune |= inf.get_armor_immunity();
-					Weapon_info *winf = inf.get_weapon_info();
+					const Weapon_info *winf = inf.get_weapon_info();
 					if (!winf)
 						continue;
 					expval += winf->get_base_xp_value();
@@ -2974,7 +2974,7 @@ int Actor::get_property(int prop) const {
 	else if (prop == Actor::missile_weapon) {
 		// Seems to give the same results as in the originals.
 		Game_object *weapon = get_readied(lhand);
-		Weapon_info *winf = weapon ? weapon->get_info().get_weapon_info() : 0;
+		const Weapon_info *winf = weapon ? weapon->get_info().get_weapon_info() : 0;
 		if (!winf)
 			return 0;
 		return winf->get_uses() >= 2;
@@ -3088,7 +3088,7 @@ void Actor::set_flag(
     int flag
 ) {
 //	cout << "Set flag for NPC " << get_npc_num() << " = " << flag << endl;
-	Monster_info *minf = get_info().get_monster_info_safe();
+	const Monster_info *minf = get_info().get_monster_info_safe();
 	Actor *avatar = gwin->get_main_actor();
 	switch (flag) {
 	case Obj_flags::asleep:
@@ -3302,7 +3302,7 @@ int Actor::figure_warmth(
  */
 
 int Actor::get_max_weight(
-) {
+) const {
 	return 2 * get_effective_prop(static_cast<int>(Actor::strength));
 }
 
@@ -3320,7 +3320,7 @@ void Actor::call_readied_usecode(
 	if (!obj->get_info().has_usecode_events())
 		return;
 
-	Shape_info &info = obj->get_info();
+	const Shape_info &info = obj->get_info();
 	if (info.get_shape_class() != Shape_info::container)
 		ucmachine->call_usecode(obj->get_usecode(),
 		                        obj, static_cast<Usecode_machine::Usecode_events>(eventid));
@@ -3334,8 +3334,7 @@ bool Actor::in_usecode_control() const {
 	if (get_flag(Obj_flags::dont_render) || get_flag(Obj_flags::dont_move))
 		return true;
 	Usecode_script *scr = 0;
-	Actor *act = const_cast<Actor *>(this);
-	while ((scr = Usecode_script::find_active(act, scr)) != 0)
+	while ((scr = Usecode_script::find_active(this, scr)) != 0)
 		// no_halt scripts seem not to prevent movement.
 		if (!scr->is_no_halt())
 			return true;
@@ -3470,7 +3469,7 @@ bool Actor::add(
 		call_readied_usecode(index, obj, Usecode_machine::readied);
 	// (Readied usecode now in drop().)
 
-	Shape_info &info = obj->get_info();
+	const Shape_info &info = obj->get_info();
 
 	if (info.is_light_source() &&
 	        (index == lhand || index == rhand))
@@ -3538,7 +3537,7 @@ int Actor::add_readied(
 	if (!dont_check)
 		call_readied_usecode(index, obj, Usecode_machine::readied);
 
-	Shape_info &info = obj->get_info();
+	const Shape_info &info = obj->get_info();
 
 	if (info.is_light_source() &&
 	        (index == lhand || index == rhand))
@@ -3694,7 +3693,7 @@ int Actor::is_immune(
 ) const {
 	if (gear_immunities & (1 << type))
 		return 1;
-	Monster_info *minf = get_info().get_monster_info();
+	const Monster_info *minf = get_info().get_monster_info();
 	if (minf && minf->get_immune() & (1 << type))
 		return 1;
 	if (minf && minf->get_vulnerable() & (1 << type))
@@ -3708,12 +3707,12 @@ bool Actor::is_goblin() const {
 }
 
 bool Actor::can_see_invisible() const {
-	Monster_info *minf = get_info().get_monster_info();
+	const Monster_info *minf = get_info().get_monster_info();
 	return !minf || (minf->get_flags() & (1 << Monster_info::see_invisible)) != 0;
 }
 
 bool Actor::can_speak() const {
-	Monster_info *minf = get_info().get_monster_info();
+	const Monster_info *minf = get_info().get_monster_info();
 	// TODO: Check for SI monks that don't speak (vows of silence, deafness).
 	return !minf || !minf->cant_yell();
 }
@@ -3727,7 +3726,7 @@ bool Actor::is_sentient() const {
 #endif
 	// Try based on average monster intelligence (prevents some random animals
 	// from opening doors or assisting in battle).
-	Monster_info *minf = get_info().get_monster_info_safe();
+	const Monster_info *minf = get_info().get_monster_info_safe();
 	return minf->get_intelligence() >= 6;
 }
 
@@ -3735,14 +3734,14 @@ bool Actor::is_sentient() const {
  *  Get weapon value.
  */
 
-Weapon_info *Actor::get_weapon(
+const Weapon_info *Actor::get_weapon(
     int &points,
     int &shape,
     Game_object  *&obj      // ->weapon itself returned, or 0.
 ) {
 	points = 1;         // Bare hands = 1.
 	shape = -1;         // Bare hands.
-	Weapon_info *winf = 0;
+	const Weapon_info *winf = 0;
 	Game_object *weapon = spots[static_cast<int>(lhand)];
 	obj = weapon;
 	if (weapon) {
@@ -3756,7 +3755,7 @@ Weapon_info *Actor::get_weapon(
 	// Try right hand.
 	weapon = spots[static_cast<int>(rhand)];
 	if (weapon) {
-		Weapon_info *rwinf = weapon->get_info().get_weapon_info();
+		const Weapon_info *rwinf = weapon->get_info().get_weapon_info();
 		int rpoints;
 		if (rwinf && (rpoints = rwinf->get_damage()) > points) {
 			winf = rwinf;
@@ -3825,7 +3824,7 @@ int Actor::figure_hit_points(
 	           (theyre_party ? -Combat::difficulty : 0);
 
 	const Weapon_info *winf;
-	Ammo_info *ainf;
+	const Ammo_info *ainf;
 
 	int wpoints = 0;
 	if (weapon_shape >= 0)
@@ -4095,8 +4094,8 @@ void Actor::die(
 	// Get location.
 	Tile_coord pos = get_tile();
 	//properties[static_cast<int>(health)] = -50;
-	Shape_info &info = get_info();
-	Monster_info *minfo = info.get_monster_info();
+	const Shape_info &info = get_info();
+	const Monster_info *minfo = info.get_monster_info();
 #if 0   // ++++ Trying new thing.
 	remove_this(1);         // Remove (but don't delete this).
 	set_invalid();
@@ -4149,7 +4148,7 @@ void Actor::die(
 		Game_object::remove_this(1);
 		int old_body_frame = body->get_framenum();	// Fix for #1925
 		body->set_frame(frnum);			// Fix for #1925
-		Shape_info &binf = body->get_info();
+		const Shape_info &binf = body->get_info();
 		int dx = binf.get_3d_xtiles(frnum) - info.get_3d_xtiles(get_framenum()),
 		    dy = binf.get_3d_ytiles(frnum) - info.get_3d_ytiles(get_framenum());
 		Tile_coord bp;
@@ -4236,7 +4235,7 @@ void Actor::die(
 
 Monster_actor *Actor::clone(
 ) {
-	Shape_info &info = get_info();
+	const Shape_info &info = get_info();
 	// Base distance on greater dim.
 	int frame = get_framenum();
 	int xs = info.get_3d_xtiles(frame), ys = info.get_3d_ytiles(frame);
@@ -4668,7 +4667,7 @@ void Actor::set_polymorph_default() {
  */
 
 int Actor::get_shape_real(
-) {
+) const {
 #if 0   /* Messes up start of BG after earthquake if you use an SI shape */
 	if (Game::get_game_type() == BLACK_GATE)
 		return get_shapenum();

@@ -290,7 +290,7 @@ void Barge_object::gather(
 			if (!tiles.has_world_point(t.tx, t.ty) ||
 			        obj->get_owner() == this)
 				continue;
-			Shape_info &info = obj->get_info();
+			const Shape_info &info = obj->get_info();
 			// Above barge, within 5-tiles up?
 			bool isbarge = info.is_barge_part() != 0 /*+++ || !info.get_weight() */;
 			if (t.tz + info.get_3d_height() > lift &&
@@ -315,7 +315,7 @@ void Barge_object::gather(
 		if (flat.is_invalid())
 			boat = 0;
 		else {
-			Shape_info &info = flat.get_info();
+			const Shape_info &info = flat.get_info();
 			boat = info.is_water();
 		}
 	}
@@ -437,7 +437,7 @@ void Barge_object::turn_right(
 	for (int i = 0; i < cnt; i++) {
 		Game_object *obj = get_object(i);
 		int frame = obj->get_framenum();
-		Shape_info &info = obj->get_info();
+		const Shape_info &info = obj->get_info();
 		positions[i] = Rotate90r(gwin, obj, info.get_3d_xtiles(frame),
 		                         info.get_3d_ytiles(frame), center);
 		obj->remove_this(1);    // Remove object from world.
@@ -468,7 +468,7 @@ void Barge_object::turn_left(
 	for (int i = 0; i < cnt; i++) {
 		Game_object *obj = get_object(i);
 		int frame = obj->get_framenum();
-		Shape_info &info = obj->get_info();
+		const Shape_info &info = obj->get_info();
 		positions[i] = Rotate90l(gwin, obj, info.get_3d_xtiles(frame),
 		                         info.get_3d_ytiles(frame), center);
 		obj->remove_this(1);    // Remove object from world.
@@ -496,7 +496,7 @@ void Barge_object::turn_around(
 	for (int i = 0; i < cnt; i++) {
 		Game_object *obj = get_object(i);
 		int frame = obj->get_framenum();
-		Shape_info &info = obj->get_info();
+		const Shape_info &info = obj->get_info();
 		positions[i] = Rotate180(gwin, obj, info.get_3d_xtiles(frame),
 		                         info.get_3d_ytiles(frame), center);
 		obj->remove_this(1);    // Remove object from world.

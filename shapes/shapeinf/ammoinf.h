@@ -171,7 +171,7 @@ public:
 	static int get_info_flag() {
 		return 2;
 	}
-	int get_base_strength();
+	int get_base_strength() const;
 };
 
 #endif

@@ -602,7 +602,7 @@ public:
 	virtual Game_object *get_readied(int index) const;
 	virtual void call_readied_usecode(int index,
 	                                  Game_object *obj, int eventid);
-	virtual int get_max_weight();   // Get max. weight allowed.
+	virtual int get_max_weight() const;   // Get max. weight allowed.
 	// Change member shape.
 	virtual void change_member_shape(Game_object *obj, int newshape);
 	// Move out of the way.
@@ -622,9 +622,9 @@ public:
 		return (gear_powers & flags) != 0;
 	}
 	// Get total weapon value.
-	virtual Weapon_info *get_weapon(int &points, int &shape,
+	virtual const Weapon_info *get_weapon(int &points, int &shape,
 	                                Game_object  *&obj);
-	Weapon_info *get_weapon(int &points) {
+	const Weapon_info *get_weapon(int &points) {
 		int sh;
 		Game_object *o;
 		return get_weapon(points, sh, o);
@@ -661,10 +661,10 @@ public:
 	}
 	// Get the non polymorph shape (note, doesn't returned skin coloured shapes)
 	// For usecode
-	int get_shape_real();
+	int get_shape_real() const;
 	// This does the same, but will return skin coloured shapes
 	// For paperdolls/face stats
-	int get_sexed_coloured_shape() {
+	int get_sexed_coloured_shape() const {
 		return shape_save != -1 ? shape_save : get_shapenum();
 	}
 

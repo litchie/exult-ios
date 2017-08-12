@@ -444,7 +444,7 @@ void Fast_pathfinder_client::init(
     Game_object *to,
     int dist
 ) {
-	Shape_info &info1 = from->get_info();
+	const Shape_info &info1 = from->get_info();
 	int frame1 = from->get_framenum();
 	axtiles = info1.get_3d_xtiles(frame1);
 	aytiles = info1.get_3d_ytiles(frame1);

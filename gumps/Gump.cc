@@ -115,9 +115,9 @@ void Gump::set_object_area(
  */
 
 Rectangle Gump::get_shape_rect(
-    Game_object *obj
-) {
-	Shape_frame *s = obj->get_shape();
+    const Game_object *obj
+) const {
+	const Shape_frame *s = obj->get_shape();
 	if (!s)
 		return Rectangle(0, 0, 0, 0);
 	return Rectangle(x + object_area.x + obj->get_tx() - s->get_xleft(),
@@ -130,9 +130,9 @@ Rectangle Gump::get_shape_rect(
  */
 
 void Gump::get_shape_location(
-    Game_object *obj,
+    const Game_object *obj,
     int &ox, int &oy
-) {
+) const {
 	ox = x + object_area.x + obj->get_tx(),
 	oy = y + object_area.y + obj->get_ty();
 }
@@ -399,7 +399,7 @@ void Gump::close(
 /*
  *  Does the gump have this spot
  */
-bool Gump::has_point(int sx, int sy) {
+bool Gump::has_point(int sx, int sy) const {
 	Shape_frame *s = get_shape();
 
 	if (s && s->has_point(sx - x, sy - y)) return true;
@@ -411,7 +411,7 @@ bool Gump::has_point(int sx, int sy) {
  *  Get screen area used by a gump.
  */
 
-Rectangle Gump::get_rect() {
+Rectangle Gump::get_rect() const {
 	Shape_frame *s = get_shape();
 
 	if (!s) return Rectangle(0, 0, 0, 0);

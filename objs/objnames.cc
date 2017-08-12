@@ -142,9 +142,9 @@ static void get_plural_name(
  */
 string Game_object::get_name(
 ) const {
-	Shape_info &info = get_info();
+	const Shape_info &info = get_info();
 	int qual = info.has_quality() && !info.is_npc() ? get_quality() : -1;
-	Frame_name_info *nminf = info.get_frame_name(get_framenum(), qual);
+	const Frame_name_info *nminf = info.get_frame_name(get_framenum(), qual);
 	int shnum = get_shapenum();
 	const char *name;
 	const char *shpname = (shnum >= 0 && shnum < get_num_item_names()) ?

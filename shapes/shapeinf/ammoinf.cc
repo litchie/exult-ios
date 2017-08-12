@@ -48,7 +48,7 @@ const Ammo_info *Ammo_info::get_default() {
 	return &default_info;
 }
 
-int Ammo_info::get_base_strength() {
+int Ammo_info::get_base_strength() const {
 	// ++++The strength values are utter guesses.
 	int strength = damage;
 	// These 4 get picked with about the same odds.

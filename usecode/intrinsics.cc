@@ -268,7 +268,7 @@ USECODE_INTRINSIC(get_item_quality) {
 	Game_object *obj = get_item(parms[0]);
 	if (!obj)
 		return Usecode_value(0);
-	Shape_info &info = obj->get_info();
+	const Shape_info &info = obj->get_info();
 	return Usecode_value(info.has_quality() ? obj->get_quality() : 0);
 }
 
@@ -281,7 +281,7 @@ USECODE_INTRINSIC(set_item_quality) {
 		return Usecode_value(1);
 	Game_object *obj = get_item(parms[0]);
 	if (obj) {
-		Shape_info &info = obj->get_info();
+		const Shape_info &info = obj->get_info();
 		if (info.has_quality()) {
 			obj->set_quality(static_cast<unsigned int>(qual));
 			return Usecode_value(1);
@@ -1132,7 +1132,7 @@ USECODE_INTRINSIC(set_to_attack) {
 	int shnum = parms[2].get_int_value();
 	if (shnum < 0)
 		return Usecode_value(0);
-	Weapon_info *winf = ShapeID::get_info(shnum).get_weapon_info();
+	const Weapon_info *winf = ShapeID::get_info(shnum).get_weapon_info();
 	if (!winf)
 		return Usecode_value(0);
 
@@ -1214,7 +1214,7 @@ USECODE_INTRINSIC(summon) {
 	// summon(shape, flag??).  Create monster of desired shape.
 
 	int shapenum = parms[0].get_int_value();
-	Monster_info *info = ShapeID::get_info(shapenum).get_monster_info();
+	const Monster_info *info = ShapeID::get_info(shapenum).get_monster_info();
 	if (!info)
 		return Usecode_value(0);
 	Tile_coord start = gwin->get_main_actor()->get_tile();
@@ -2265,7 +2265,7 @@ USECODE_INTRINSIC(is_water) {
 		ShapeID sid = gwin->get_flat(x, y);
 		if (sid.is_invalid())
 			return Usecode_value(0);
-		Shape_info &info = sid.get_info();
+		const Shape_info &info = sid.get_info();
 		return Usecode_value(info.is_water());
 	}
 	return Usecode_value(0);
@@ -2432,7 +2432,7 @@ USECODE_INTRINSIC(is_not_blocked) {
 	int shapenum = parms[1].get_int_value();
 	int framenum = parms[2].get_int_value();
 	// Find out about given shape.
-	Shape_info &info = ShapeID::get_info(shapenum);
+	const Shape_info &info = ShapeID::get_info(shapenum);
 	Rectangle footprint(
 	    tile.tx - info.get_3d_xtiles(framenum) + 1,
 	    tile.ty - info.get_3d_ytiles(framenum) + 1,
@@ -2497,13 +2497,13 @@ USECODE_INTRINSIC(get_item_flag) {
 			return Usecode_value(0);
 		return Usecode_value(barge->okay_to_land());
 	} else if (fnum == static_cast<int>(Obj_flags::immunities)) {
-		Actor *npc = obj->as_actor();
-		Monster_info *inf = obj->get_info().get_monster_info();
+		const Actor *npc = obj->as_actor();
+		const Monster_info *inf = obj->get_info().get_monster_info();
 		return Usecode_value((inf != 0 && inf->power_safe()) ||
 		                     (npc && npc->check_gear_powers(Frame_flags::power_safe)));
 	} else if (fnum == static_cast<int>(Obj_flags::cant_die)) {
-		Actor *npc = obj->as_actor();
-		Monster_info *inf = obj->get_info().get_monster_info();
+		const Actor *npc = obj->as_actor();
+		const Monster_info *inf = obj->get_info().get_monster_info();
 		return Usecode_value((inf != 0 && inf->death_safe()) ||
 		                     (npc && npc->check_gear_powers(Frame_flags::death_safe)));
 	}

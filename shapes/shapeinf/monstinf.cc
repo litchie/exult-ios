@@ -163,7 +163,7 @@ void Monster_info::set_stats(
  *  for why).
  */
 
-int Monster_info::get_base_xp_value() {
+int Monster_info::get_base_xp_value() const {
 	// This formula is exact.
 	int expval = armor + weapon;
 	expval += m_sleep_safe ? 1 : 0;

@@ -526,7 +526,7 @@ void Projectile_effect::init(
 ) {
 	no_blocking = false;        // We'll check the ammo & weapon.
 	Game_window *gwin = Game_window::get_instance();
-	Weapon_info *winfo = ShapeID::get_info(weapon).get_weapon_info();
+	const Weapon_info *winfo = ShapeID::get_info(weapon).get_weapon_info();
 	if (winfo) {
 		no_blocking = no_blocking || winfo->no_blocking();
 		if (speed < 0)
@@ -535,7 +535,7 @@ void Projectile_effect::init(
 	}
 	if (speed < 0)
 		speed = 4;
-	Ammo_info *ainfo = ShapeID::get_info(projectile_shape).get_ammo_info();
+	const Ammo_info *ainfo = ShapeID::get_info(projectile_shape).get_ammo_info();
 	if (ainfo) {
 		no_blocking = no_blocking || ainfo->no_blocking();
 		autohit = autohit || ainfo->autohits();
@@ -714,7 +714,7 @@ void Projectile_effect::handle_event(
 	Game_window *gwin = Game_window::get_instance();
 	int delay = gwin->get_std_delay() / 2;
 	add_dirty();            // Force repaint of old pos.
-	Weapon_info *winf = ShapeID::get_info(weapon).get_weapon_info();
+	const Weapon_info *winf = ShapeID::get_info(weapon).get_weapon_info();
 	if (winf && winf->get_rotation_speed()) {
 		// The missile rotates (such as axes/boomerangs)
 		int new_frame = sprite.get_framenum() + winf->get_rotation_speed();
@@ -729,7 +729,7 @@ void Projectile_effect::handle_event(
 		if (path_finished)
 			break;
 	}
-	Ammo_info *ainf = ShapeID::get_info(projectile_shape).get_ammo_info();
+	const Ammo_info *ainf = ShapeID::get_info(projectile_shape).get_ammo_info();
 	if (path_finished) {
 		// Done?
 		bool explodes = (winf && winf->explodes()) || (ainf && ainf->explodes());

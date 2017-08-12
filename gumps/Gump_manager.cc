@@ -111,10 +111,10 @@ Gump *Gump_manager::find_gump(
  */
 
 Gump *Gump_manager::find_gump(
-    Game_object *obj
+    const Game_object *obj
 ) {
 	// Get container object is in.
-	Game_object *owner = obj->get_owner();
+	const Game_object *owner = obj->get_owner();
 	if (!owner)
 		return (0);
 	// Look for container's gump.
@@ -134,7 +134,7 @@ Gump *Gump_manager::find_gump(
  */
 
 Gump *Gump_manager::find_gump(
-    Game_object *owner,
+    const Game_object *owner,
     int shapenum            // May be c_any_shapenum
 ) {
 	Gump_list *gmp;         // See if already open.

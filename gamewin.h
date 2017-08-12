@@ -539,7 +539,7 @@ public:
 	}
 	// Add dirty rect. for obj. Rets. false
 	//   if not on screen.
-	bool add_dirty(Game_object *obj) {
+	bool add_dirty(const Game_object *obj) {
 		Rectangle rect = get_shape_rect(obj);
 		rect.enlarge(1 + c_tilesize / 2);
 		rect = clip_to_win(rect);
@@ -558,7 +558,7 @@ public:
 	}
 	// Scroll if necessary.
 	bool scroll_if_needed(Tile_coord t);
-	bool scroll_if_needed(Actor *a, Tile_coord const &t) {
+	bool scroll_if_needed(const Actor *a, Tile_coord const &t) {
 		if (a == camera_actor) return scroll_if_needed(t);
 		else return false;
 	}
@@ -572,9 +572,9 @@ public:
 		                 s->get_width(), s->get_height());
 	}
 	// Get screen area used by object.
-	Rectangle get_shape_rect(Game_object *obj);
+	Rectangle get_shape_rect(const Game_object *obj) const;
 	// Get screen loc. of object.
-	void get_shape_location(Game_object *obj, int &x, int &y);
+	void get_shape_location(const Game_object *obj, int &x, int &y);
 	void get_shape_location(Tile_coord const &t, int &x, int &y);
 	void plasma(int w, int h, int x, int y, int startc, int endc);
 	/*

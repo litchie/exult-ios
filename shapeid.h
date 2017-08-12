@@ -162,12 +162,12 @@ public:
 class ShapeID : public Game_singletons {
 	short shapenum;         // Shape #.
 	signed char framenum;       // Frame # within shape.
-	char has_trans;
+	mutable char has_trans;
 	ShapeFile shapefile;
-	Shape_frame *shape;
-	Shape_info *info;
+	mutable Shape_frame *shape;
+	mutable Shape_info *info;
 
-	Shape_frame *cache_shape();
+	Shape_frame *cache_shape() const;
 
 public:
 	// Read from buffer & incr. ptr.
@@ -202,13 +202,13 @@ public:
 	inline ShapeFile get_shapefile() const {
 		return shapefile;
 	}
-	inline Shape_frame *get_shape() {
+	inline Shape_frame *get_shape() const {
 		return (shape != 0) ? shape : cache_shape();
 	}
 	inline void set_translucent(int trans) {
 		has_trans = trans;
 	}
-	inline bool is_translucent() {
+	inline bool is_translucent() const {
 		if (shape == 0) cache_shape();
 		return has_trans != 0;
 	}
@@ -250,17 +250,9 @@ public:
 		sman->paint_outline(xoff, yoff, get_shape(), pix);
 	}
 	int get_num_frames() const;
-#if 0
-	//This would be very bad form, but who knows?
-	Shape_info &get_info() const {  // Get info. about shape.
-		return *(info ? info :
-		         const_cast<ShapeID *>(this)->info =
+	const Shape_info &get_info() const {  // Get info. about shape.
+		return *(info ? info : info =
 		             &Shape_manager::instance->shapes.get_info(shapenum));
-	}
-#endif
-	Shape_info &get_info() const {  // Get info. about shape.
-		return info ? *info :
-		       Shape_manager::instance->shapes.get_info(shapenum);
 	}
 	Shape_info &get_info() { // Get info. about shape.
 		return *(info ? info : info =

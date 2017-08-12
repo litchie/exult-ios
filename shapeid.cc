@@ -106,8 +106,8 @@ void Shape_manager::read_shape_info(
 	// Read in shape information.
 	shapes.read_info(Game::get_game_type(), Game::is_editing());
 	// Fixup Avatar shapes (1024-1035 in default SI).
-	Shape_info &male = shapes.get_info(Shapeinfo_lookup::GetMaleAvShape());
-	Shape_info &female = shapes.get_info(Shapeinfo_lookup::GetFemaleAvShape());
+	const Shape_info &male = shapes.get_info(Shapeinfo_lookup::GetMaleAvShape());
+	const Shape_info &female = shapes.get_info(Shapeinfo_lookup::GetFemaleAvShape());
 
 	vector<Skin_data> *skins = Shapeinfo_lookup::GetSkinList();
 	for (vector<Skin_data>::iterator it = skins->begin();
@@ -474,7 +474,7 @@ Font *Shape_manager::get_font(int fontnum) {
 /*
  *  Read in shape.
  */
-Shape_frame *ShapeID::cache_shape() {
+Shape_frame *ShapeID::cache_shape() const {
 	if (framenum == -1) return 0;
 
 	if (has_trans != 2) has_trans = 0;

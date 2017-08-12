@@ -68,7 +68,7 @@ public:
 	void kill_child();      // Kill process.
 	void read_from_child(int id);   // Read and call 'reader'.
 	// Execute.
-	bool exec(const char *file, char *argv[], Reader_fun rfun,
+	bool exec(const char *file, const char *argv[], Reader_fun rfun,
 	          void *udata);
 	bool check_child(int &exit_code);   // Is child still running?
 };
@@ -86,7 +86,7 @@ public:
 	void read_from_child(int id) {
 		ignore_unused_variable_warning(id);
 	}
-	bool exec(const char *file, char *argv[], Reader_fun rfun,
+	bool exec(const char *file, const char *argv[], Reader_fun rfun,
 	          void *udata) {
 		ignore_unused_variable_warning(file, argv, rfun, udata);
 		return false;
@@ -118,7 +118,7 @@ public:
 	void read_from_child(char *data, int datalen, int exit_code);
 	void add_message(const char *txt);  // Add text to box.
 	// Execute.
-	bool exec(const char *file, char *argv[]);
+	bool exec(const char *file, const char *argv[]);
 	void kill_child();      // End.
 };
 
