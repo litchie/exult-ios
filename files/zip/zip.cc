@@ -446,7 +446,7 @@ extern int ZEXPORT zipOpenNewFileInZip(zipFile file,
 	if ((err == ZIP_OK) && (file->ci.method == Z_DEFLATED)) {
 		file->ci.stream.zalloc = static_cast<alloc_func>(0);
 		file->ci.stream.zfree = static_cast<free_func>(0);
-		file->ci.stream.opaque = static_cast<voidpf>(0);
+		file->ci.stream.opaque = 0;
 
 		err = deflateInit2(&file->ci.stream, level,
 		                   Z_DEFLATED, -MAX_WBITS, DEF_MEM_LEVEL, 0);

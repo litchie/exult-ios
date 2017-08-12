@@ -858,7 +858,7 @@ extern int ZEXPORT unzOpenCurrentFile(unzFile file) {
 	if (!Store) {
 	  pfile_in_zip_read_info->stream.zalloc = static_cast<alloc_func>(0);
 	  pfile_in_zip_read_info->stream.zfree = static_cast<free_func>(0);
-	  pfile_in_zip_read_info->stream.opaque = static_cast<voidpf>(0);
+	  pfile_in_zip_read_info->stream.opaque = 0;
 
 		err = inflateInit2(&pfile_in_zip_read_info->stream, -MAX_WBITS);
 		if (err == Z_OK)

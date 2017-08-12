@@ -376,7 +376,7 @@ void save_image(uint8 *pixels, uint8 *palette, int width, int height, char *file
 		return;
 	}
 
-	memset(static_cast<void *>(&header), 0, sizeof(PCX_Header));
+	memset(&header, 0, sizeof(PCX_Header));
 	pitch = width;
 
 	header.manufacturer = 0x0a;

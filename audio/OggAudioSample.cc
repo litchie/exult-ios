@@ -94,7 +94,7 @@ bool OggAudioSample::isThis(IDataSource *oggdata)
 {
 	OggVorbis_File vf;
 	oggdata->seek(0);
-	int res = ov_test_callbacks(static_cast<void*>(oggdata),&vf,0,0,callbacks);
+	int res = ov_test_callbacks(oggdata,&vf,0,0,callbacks);
 	ov_clear(&vf);
 
 	return res == 0;
@@ -119,7 +119,7 @@ void OggAudioSample::initDecompressor(void *DecompData) const
 	}
 
 	decomp->datasource->seek(0);
-	ov_open_callbacks(static_cast<void*>(decomp->datasource),&decomp->ov,NULL,0,callbacks);
+	ov_open_callbacks(decomp->datasource,&decomp->ov,NULL,0,callbacks);
 	decomp->bitstream = 0;
 
 	vorbis_info *info = ov_info(&decomp->ov,-1);

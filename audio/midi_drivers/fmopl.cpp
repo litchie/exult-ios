@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 1999/2000 Tatsuyuki Satoh
  * Copyright (C) 2001-2016 The ScummVM project
  * Copyright (C) 2002/2016 The Exult Team
@@ -974,8 +974,8 @@ void YM3812UpdateOne_Mono(FM_OPL *OPL, sint16 *buffer, int length) {
 	uint8 rythm = OPL->rythm & 0x20;
 	OPL_CH *CH, *R_CH;
 
-	if (static_cast<void *>(OPL) != cur_chip) {
-		cur_chip = static_cast<void *>(OPL);
+	if (OPL != cur_chip) {
+		cur_chip = OPL;
 		/* channel pointers */
 		S_CH = OPL->P_CH;
 		E_CH = &S_CH[9];
@@ -1024,8 +1024,8 @@ void YM3812UpdateOne_Stereo(FM_OPL *OPL, sint16 *buffer, int length) {
 	uint8 rythm = OPL->rythm & 0x20;
 	OPL_CH *CH, *R_CH;
 
-	if (static_cast<void *>(OPL) != cur_chip) {
-		cur_chip = static_cast<void *>(OPL);
+	if (OPL != cur_chip) {
+		cur_chip = OPL;
 		/* channel pointers */
 		S_CH = OPL->P_CH;
 		E_CH = &S_CH[9];
