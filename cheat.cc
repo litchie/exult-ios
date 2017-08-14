@@ -22,6 +22,7 @@
 
 #include <iostream>
 #include <algorithm>
+#include <string>
 
 #include "SDL_mouse.h"
 #include "cheat.h"
@@ -57,7 +58,7 @@
 #include <windows.h>
 #endif // WIN32
 
-#endif //USE_EXULTSTUDIO 
+#endif //USE_EXULTSTUDIO
 
 using std::cout;
 using std::endl;
@@ -162,45 +163,44 @@ void Cheat::toggle_map_editor(void) {
 		}
 		if (client_socket < 0 &&
 		        !gwin->get_win()->is_fullscreen()) {
-			char cmnd[256];     // Set up command.
+			std::string cmnd;     // Set up command.
 #ifdef WIN32
 			if (get_system_path("<HOME>") == ".")   // portable
-				strcpy(cmnd, "exult_studio -p -x ");
+				cmnd = "exult_studio -p -x ";
 			else
 #endif
-				strcpy(cmnd, "exult_studio -x ");
+				cmnd = "exult_studio -x ";
 			std::string data_path = get_system_path("<DATA>");
 			if (data_path.find(' ') != std::string::npos)
 				data_path = "\"" + data_path + "\"";
-			strcat(cmnd, data_path.c_str());// Path to where .glade file should be.
-			strcat(cmnd, " -g ");   // Now want game name.
-			std::string gamenamestr = Game::get_gametitle();
-			strcat(cmnd, gamenamestr.c_str());
+			cmnd += data_path;// Path to where .glade file should be.
+			cmnd += " -g ";   // Now want game name.
+			cmnd += Game::get_gametitle();
 			// Now want mod name.
 			std::string modnamestr = Game::get_modtitle();
 			if (!modnamestr.empty()) {
-				strcat(cmnd, " -m ");
-				strcat(cmnd, modnamestr.c_str());
+				cmnd += " -m ";
+				cmnd += modnamestr;
 			}
 			std::string alt_cfg = get_system_path("<alt_cfg>");
 			if (alt_cfg != "<alt_cfg>") {
-				strcat(cmnd, " -c ");
-				strcat(cmnd, alt_cfg.c_str());
+				cmnd += " -c ";
+				cmnd += alt_cfg;
 			}
-			strcat(cmnd, " &");
+			cmnd += " &";
 			cout << "Executing: " << cmnd << endl;
 #ifndef WIN32
-			int ret = system(cmnd);
+			int ret = system(cmnd.c_str());
 			if (ret == 127 || ret == -1)
 				cout << "Couldn't run Exult Studio" << endl;
-#else
+#elif !(defined(UNDER_CE))
 			PROCESS_INFORMATION pi;
 			STARTUPINFO     si;
 
 			std::memset(&si, 0, sizeof(si));
 			si.cb = sizeof(si);
 
-			int ret = CreateProcess(NULL, cmnd, NULL, NULL,
+			int ret = CreateProcess(NULL, cmnd.c_str(), NULL, NULL,
 			                        FALSE, 0,
 			                        NULL, NULL, &si, &pi);
 			if (!ret) cout << "Couldn't run Exult Studio" << endl;
