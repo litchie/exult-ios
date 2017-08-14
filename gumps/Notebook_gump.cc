@@ -68,7 +68,7 @@ class One_note {
 	bool is_new;            // Newly created at cur. time/place.
 public:
 	friend class Notebook_gump;
-	One_note() : day(0), hour(0), minute(0), tx(0), ty(0), gflag(-1)
+	One_note() : day(0), hour(0), minute(0), tx(0), ty(0), gflag(-1), is_new(false)
 	{  }
 	void set_time(int d, int h, int m) {
 		day = d;
@@ -85,14 +85,15 @@ public:
 	void set_gflag(int gf) {
 		gflag = gf;
 	}
-	void set(int d, int h, int m, int x, int y, const string &txt, int gf = -1) {
+	void set(int d, int h, int m, int x, int y, const string &txt, int gf = -1, bool isnew = false) {
 		set_time(d, h, m);
 		set_loc(x, y);
 		set_text(txt);
 		gflag = gf;
+		is_new = isnew;
 	}
-	One_note(int d, int h, int m, int x, int y, const string &txt = 0, int gf = -1) {
-		set(d, h, m, x, y, txt, gf);
+	One_note(int d, int h, int m, int x, int y, const string &txt = 0, int gf = -1, bool isnew = false) {
+		set(d, h, m, x, y, txt, gf, isnew);
 	}
 	// Insert text.
 	void insert(int chr, int offset) {
@@ -241,6 +242,8 @@ Notebook_gump::Notebook_gump(
 	curpage(0), updnx(0) {
 	handles_kbd = true;
 	cursor.offset = 0;
+	cursor.x = cursor.y = -1;
+	cursor.line = cursor.nlines = 0;
 	// (Obj. area doesn't matter.)
 	set_object_area(Rectangle(36, 10, 100, 100), 7, 40);
 	if (page_info.empty())

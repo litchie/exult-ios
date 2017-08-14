@@ -55,7 +55,7 @@ public:
 	/// Initializes from a file spec. Needed by some constructors.
 	/// @param spec A file specification.
 	U7file(const File_spec &spec)
-		: identifier(spec)
+		: identifier(spec), data(NULL)
 	{  }
 	/// Deletes the data source. The destructors of derived classes
 	/// should delete anything else that is needed by the datasource

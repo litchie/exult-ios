@@ -1768,15 +1768,15 @@ Usecode_machine *Usecode_machine::create(
  */
 
 Usecode_internal::Usecode_internal(
-) : symtbl(0), frame(0), modified_map(false),
+) : symtbl(0), frame(0), modified_map(false), speech_track(-1),
 	book(0), caller_item(0),
-	path_npc(0), user_choice(0),
+	path_npc(0), user_choice(0), found_answer(false),
 	saved_pos(-1, -1, -1),
 	saved_map(-1),
 	String(0), telekenesis_fun(-1), stack(new Usecode_value[1024]),
 	intercept_item(0), intercept_tile(0), temp_to_be_deleted(0)
 #ifdef USECODE_DEBUGGER
-	, on_breakpoint(false)
+	, on_breakpoint(false), breakpoint_action(-1)
 #endif
 {
 	sp = stack;

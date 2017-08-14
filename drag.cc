@@ -69,7 +69,7 @@ Dragging_info::Dragging_info(
     int x, int y            // Mouse position.
 ) : obj(0), is_new(false), gump(0), button(0), old_pos(-1, -1, -1),
 	old_foot(0, 0, 0, 0), old_lift(-1), quantity(0),
-	readied_index(-1), mousex(x), mousey(y),
+	readied_index(-1), mousex(x), mousey(y), paintx(-1000), painty(-1000),
 	mouse_shape(Mouse::mouse->get_shape()), rect(0, 0, 0, 0),
 	save(0), okay(false), possible_theft(false) {
 	// First see if it's a gump.

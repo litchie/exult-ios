@@ -51,6 +51,7 @@ Party_manager::Party_manager(
 	// Clear party list.
 	std::memset(&party[0], 0, sizeof(party));
 	std::memset(&dead_party[0], 0, sizeof(dead_party));
+	std::memset(&valid[0], 0, sizeof(valid));
 }
 
 /*

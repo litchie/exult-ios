@@ -1044,7 +1044,7 @@ void Text_effect::init(
 Text_effect::Text_effect(
     const string &m,        // A copy is made.
     Game_object *it         // Item text is on, or null.
-) : msg(m), item(it), pos(Figure_text_pos()), num_ticks(0) {
+) : next(0), prev(0), msg(m), item(it), pos(Figure_text_pos()), num_ticks(0) {
 	init();
 }
 
@@ -1055,7 +1055,7 @@ Text_effect::Text_effect(
 Text_effect::Text_effect(
     const string &m,        // A copy is made.
     int t_x, int t_y        // Abs. tile coords.
-) : msg(m), item(0), tpos(t_x, t_y, 0), pos(Figure_text_pos()), num_ticks(0) {
+) : next(0), prev(0), msg(m), item(0), tpos(t_x, t_y, 0), pos(Figure_text_pos()), num_ticks(0) {
 	init();
 }
 

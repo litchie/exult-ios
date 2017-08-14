@@ -81,9 +81,12 @@ Cheat::Cheat() {
 	infravision = false;
 	pickpocket = false;
 	grab_actor = true;
+	npc_numbers = false;
+	hack_mover = false;
 
 	browser = NULL;
 	tester = NULL;
+	cscreen = NULL;
 	chunksel_left = chunksel_top = c_num_chunks;
 	chunksel_right = chunksel_bottom = -1;
 }

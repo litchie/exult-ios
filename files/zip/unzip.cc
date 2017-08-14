@@ -384,6 +384,7 @@ extern unzFile ZEXPORT unzOpen(const char *path) {
 	                             (us.offset_central_dir + us.size_central_dir);
 	us.central_pos = central_pos;
 	us.pfile_in_zip_read = NULL;
+	us.num_file = 0;
 
 	s = new unz_s(us);
 	unzGoToFirstFile(s);

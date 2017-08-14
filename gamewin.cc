@@ -383,13 +383,14 @@ Game_window::Game_window(
 	tqueue(new Time_queue()), background_noise(new Background_noise(this)),
 	usecode(0), combat(false), focus(true), ice_dungeon(false),
 	painted(false), ambient_light(false),
-	skip_above_actor(31), in_dungeon(0),
+	skip_above_actor(31), in_dungeon(0), num_npcs1(0),
 	std_delay(c_std_delay), time_stopped(0), special_light(0),
 	theft_warnings(0), theft_cx(255), theft_cy(255),
 	moving_barge(0), main_actor(0), camera_actor(0), npcs(0), bodies(0),
-	removed(new Deleted_objects()), dirty(0, 0, 0, 0),
+	removed(new Deleted_objects()), scrolltx(0), scrollty(0), dirty(0, 0, 0, 0),
 	mouse3rd(false), fastmouse(false), double_click_closes_gumps(false),
 	text_bg(false), step_tile_delta(8), allow_right_pathfind(2),
+	scroll_with_mouse(false), alternate_drop(false), allow_autonotes(false), in_exult_menu(false),
 #ifdef RED_PLASMA
 	load_palette_timer(0), plasma_start_color(0), plasma_cycle_range(0),
 #endif
