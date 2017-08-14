@@ -3143,7 +3143,8 @@ USECODE_INTRINSIC(a_or_an) {
 	// a_or_an (word)
 	// return a/an depending on 'word'
 
-	if (strchr("aeiouyAEIOUY", (parms[0].get_str_value())[0]) == 0)
+	const char *str = parms[0].get_str_value();
+	if (str && strchr("aeiouyAEIOUY", str[0]) == 0)
 		return (Usecode_value("a"));
 	else
 		return (Usecode_value("an"));
