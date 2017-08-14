@@ -153,7 +153,7 @@ Path_walking_actor_action::Path_walking_actor_action(
     int pers            // Keeps retrying this many times.
 ) : reached_end(false), path(p), deleted(false), speed(0),
 	from_offscreen(false), subseq(0), blocked(0), max_blocked(maxblk),
-	persistence(pers) {
+	blocked_frame(0), persistence(pers) {
 	if (!path)
 		path = new Astar();
 	Tile_coord src = path->get_src(), dest = path->get_dest();

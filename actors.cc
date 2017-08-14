@@ -875,9 +875,9 @@ Actor::Actor(
 	casting_mode(false), casting_shape(-1),
 	target_object(0), target_tile(Tile_coord(-1, -1, 0)), attack_weapon(-1),
 	attack_mode(nearest),
-	schedule_type(static_cast<int>(Schedule::loiter)), schedule(0),
+	schedule_type(Schedule::loiter), next_schedule(255), schedule(0),
 	restored_schedule(-1), dormant(true), hit(false), combat_protected(false),
-	user_set_attack(false), alignment(0), two_handed(false),
+	user_set_attack(false), alignment(0), charmalign(0), two_handed(false),
 	two_fingered(false), use_scabbard(false), use_neck(false),
 	light_sources(0), usecode_dir(0), type_flags(0),
 	gear_immunities(0), gear_powers(0), ident(0),
@@ -908,9 +908,10 @@ Actor::~Actor(
  */
 
 void Actor::refigure_gear() {
-	static enum Ready_type_Exult locs[] = {head, belt, lhand, lfinger, legs,
-	                                       feet, rfinger, rhand, torso, amulet, earrings, cloak, gloves
-	                                      };
+	static Ready_type_Exult locs[] = {head, belt, lhand, lfinger, legs,
+	                                  feet, rfinger, rhand, torso, amulet,
+	                                  earrings, cloak, gloves
+	                                 };
 	int powers = 0, immune = 0;
 	light_sources = 0;
 	for (size_t i = 0; i < array_size(locs); i++) {
