@@ -269,18 +269,22 @@ int main(int argc, char *argv[]) {
 	}
 	gtk_init(&argc, &argv);
 	int  size = atoi(argv[2]);
+	if (size < 0 || size > 2048) {
+		cerr << "Invalid thumbnail size: " << size << "!" << endl;
+		return 2;
+	}
 	char *inputfile = argv[3];
 	char *outputfile = argv[4];
 	Shape_file shape(inputfile);    // May throw an exception.
 	int nframes = shape.get_num_frames();
 	if (nframes == 0) {
 		cerr << "Shape is empty!" << endl;
-		return 2;
+		return 3;
 	}
 	Shape_frame *frame0 = shape.get_frame(0);
 	if (!frame0) {
 		cerr << "Null first frame!" << endl;
-		return 3;
+		return 4;
 	}
 	try {
 		if (frame0->is_rle()) {
@@ -302,7 +306,7 @@ int main(int argc, char *argv[]) {
 		}
 	} catch (const std::exception& except) {
 		cerr << "Could not generate thumbnail: " << except.what() << endl;
-		return 4;
+		return 5;
 	}
 	return 0;
 }
