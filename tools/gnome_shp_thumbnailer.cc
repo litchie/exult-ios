@@ -282,22 +282,27 @@ int main(int argc, char *argv[]) {
 		cerr << "Null first frame!" << endl;
 		return 3;
 	}
-	if (frame0->is_rle()) {
-		for (int i = 0; i < nframes; i++) {
-			Shape_frame *frame = shape.get_frame(i);
-			if (!frame || frame->is_empty())
-				continue;
-			Write_thumbnail<Shape_frame, Render_frame>(outputfile, frame, shppal,
-			        frame->get_width(), frame->get_height(), size);
-			break;
+	try {
+		if (frame0->is_rle()) {
+			for (int i = 0; i < nframes; i++) {
+				Shape_frame *frame = shape.get_frame(i);
+				if (!frame || frame->is_empty())
+					continue;
+				Write_thumbnail<Shape_frame, Render_frame>(outputfile, frame, shppal,
+					    frame->get_width(), frame->get_height(), size);
+				break;
+			}
+		} else {
+			int dim0 = intSqrt(nframes);
+			if (dim0 * dim0 < nframes)
+				dim0 += 1;
+			int dim1 = (nframes + dim0 - 1) / dim0;
+			Write_thumbnail<Shape, Render_tiles>(outputfile, &shape, shppal,
+				                                 dim0 * 8, dim1 * 8, size);
 		}
-	} else {
-		int dim0 = intSqrt(nframes);
-		if (dim0 * dim0 < nframes)
-			dim0 += 1;
-		int dim1 = (nframes + dim0 - 1) / dim0;
-		Write_thumbnail<Shape, Render_tiles>(outputfile, &shape, shppal,
-		                                     dim0 * 8, dim1 * 8, size);
+	} catch (const std::exception& except) {
+		cerr << "Could not generate thumbnail: " << except.what() << endl;
+		return 4;
 	}
 	return 0;
 }
