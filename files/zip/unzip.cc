@@ -43,13 +43,6 @@ using namespace std;
 #define UNZ_MAXFILENAMEINZIP (256)
 #endif
 
-#ifndef ALLOC
-# define ALLOC(size) (malloc(size))
-#endif
-#ifndef TRYFREE
-# define TRYFREE(p) {if (p) free(p);}
-#endif
-
 #define SIZECENTRALDIRITEM (0x2e)
 #define SIZEZIPLOCALHEADER (0x1e)
 
