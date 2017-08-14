@@ -1256,11 +1256,10 @@ void Patrol_schedule::now_what(
 				npc->start(speed, speed * delay);
 				return;
 			case 14:    // Check area.
-				// Foce check for lamps, etc.
+				// Force check for lamps, etc.
 				street_maintenance_time = 0;
 				if (try_street_maintenance()) {
-					// TODO: fix bug 2016
-					//delete scr;
+					delete scr;
 					return;     // We no longer exist.
 				}
 				delay += 2;
