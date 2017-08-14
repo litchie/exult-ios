@@ -162,7 +162,9 @@ const char *CheatScreen::alignments[4] = {
 	"Chaotic"
 };
 
-CheatScreen::CheatScreen() : grabbed(NULL) {
+CheatScreen::CheatScreen()
+ : grabbed(NULL), gwin(NULL), ibuf(NULL), font(NULL), clock(NULL),
+   maxx(0), maxy(0), centerx(0), centery(0) {
 }
 
 CheatScreen::~CheatScreen() {

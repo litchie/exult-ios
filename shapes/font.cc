@@ -661,7 +661,9 @@ int Font::find_xcursor(
 
 Font::Font(
 )
-	: font_shapes(0), font_data(0), font_buf(0), orig_font_buf(0) {
+	: hor_lead(0), ver_lead(0),
+	  font_shapes(0), font_data(0), font_buf(0), orig_font_buf(0),
+	  highest(0), lowest(0) {
 }
 
 Font::Font(

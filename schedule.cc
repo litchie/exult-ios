@@ -4204,7 +4204,7 @@ void Sew_schedule::notify_object_gone(Game_object *obj) {
 
 Bake_schedule::Bake_schedule(Actor *n) : Schedule(n),
 	oven(0), worktable(0), displaytable(0), flourbag(0),
-	dough(0), dough_in_oven(0), state(find_leftovers)
+	dough(0), dough_in_oven(0), clearing(false), state(find_leftovers)
 { }
 
 void Bake_schedule::now_what() {

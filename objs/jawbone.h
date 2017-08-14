@@ -29,7 +29,7 @@ public:
 	Jawbone_object(int shapenum, int framenum, unsigned int tilex,
 	               unsigned int tiley, unsigned int lft,
 	               char res = 0)
-		: Container_game_object(shapenum, framenum, tilex, tiley, lft, res)
+		: Container_game_object(shapenum, framenum, tilex, tiley, lft, res), toothcount(0)
 	{ }
 	Jawbone_object() : Container_game_object() {  }
 
