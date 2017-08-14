@@ -34,17 +34,20 @@
 class   Args {
 	struct Opts {
 		std::string option;
-		bool    *bval;
-		std::string  *sval;
-		int *ival;
-		uint32 *uval;
-
-		bool    dbval;
-		std::string dsval;
-		int dival;
-		uint32 duval;
+		union {
+			bool    *bval;
+			std::string  *sval;
+			int *ival;
+			uint32 *uval;
+		};
+		union {
+			bool    dbval;
+			const char *dsval;
+			int dival;
+			uint32 duval;
+		};
 		enum { no_type = 0, type_bool, type_string, type_int, type_unsigned } valuetype;
-		Opts() : option(""), valuetype(no_type) {}
+		Opts() : option(""), sval(0), dsval(0), valuetype(no_type) {}
 		~Opts() {}
 	};
 	std::vector<Opts> options;
