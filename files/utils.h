@@ -49,184 +49,99 @@ extern int snprintf(char *, size_t, const char *, /*args*/ ...) ATTR_PRINTF(3,4)
  *  Read a 1-byte value.
  */
 
-inline uint8 Read1(std::istream &in) {
+inline uint8 Read1(
+    std::istream& in
+) {
 	return static_cast<uint8>(in.get());
 }
 
-inline uint8 Read1(uint8  *&in) {
+inline uint8 Read1(
+    uint8 *& in
+) {
 	return *in++;
+}
+
+inline uint8 Read1(
+    std::FILE *in
+) {
+	uint8 b0;
+	if (std::fread(&b0, sizeof(uint8), 1, in) != 1)
+		b0 = 0;
+	return b0;
 }
 
 /*
  *  Read a 2-byte value, lsb first.
  */
 
-inline uint16 Read2(std::istream &in) {
-	uint32 val = in.get();
-	val |= (in.get() << 8);
-	return static_cast<uint16>(val);
-}
-
-/*
- *  Read a 2-byte value from a buffer.
- */
-
+template <typename Source>
 inline uint16 Read2(
-    uint8  *&in
+    Source& in
 ) {
-	uint8 b0 = *in++;
-	uint8 b1 = *in++;
-	return static_cast<uint16>(b0 | (b1 << 8));
-}
-
-/*
- *  Read a 2-byte value from a file.
- */
-
-inline uint16 Read2(
-    std::FILE *in
-) {
-	uint8 b0, b1;
-	if (std::fread(&b0, sizeof(uint8), 1, in) != 1) b0 = 0;
-	if (std::fread(&b1, sizeof(uint8), 1, in) != 1) b1 = 0;
-	return static_cast<uint16>(b0 | (b1 << 8));
+	uint16 b0 = Read1(in);
+	uint16 b1 = Read1(in);
+	return (b1 << 8) | b0;
 }
 
 /*
  *  Read a 2-byte value, hsb first.
  */
 
-inline uint16 Read2high(std::istream &in) {
-	uint32 val = in.get() << 8;
-	val |= in.get();
-	return static_cast<uint16>(val);
-}
-
-/*
- *  Read a 2-byte value from a buffer.
- */
-
+template <typename Source>
 inline uint16 Read2high(
-    uint8  *&in
+    Source& in
 ) {
-	uint8 b0 = *in++;
-	uint8 b1 = *in++;
-	return static_cast<uint16>((b0 << 8) | b1);
-}
-
-/*
- *  Read a 2-byte value from a file.
- */
-
-inline uint16 Read2high(
-    std::FILE *in
-) {
-	uint8 b0, b1;
-	if (std::fread(&b0, sizeof(uint8), 1, in) != 1) b0 = 0;
-	if (std::fread(&b1, sizeof(uint8), 1, in) != 1) b1 = 0;
-	return static_cast<uint16>((b0 << 8) | b1);
+	uint16 b0 = Read1(in);
+	uint16 b1 = Read1(in);
+	return (b0 << 8) | b1;
 }
 
 /*
  *  Read a 4-byte long value, lsb first.
  */
 
-inline uint32 Read4(std::istream &in) {
-	uint32 val = 0;
-	val |= static_cast<uint32>(in.get());
-	val |= static_cast<uint32>(in.get() << 8);
-	val |= static_cast<uint32>(in.get() << 16);
-	val |= static_cast<uint32>(in.get() << 24);
-	return val;
-}
-
-/*
- *  Read a 4-byte value from a buffer.
- */
-
+template <typename Source>
 inline uint32 Read4(
-    uint8  *&in
+    Source& in
 ) {
-	uint8 b0 = *in++;
-	uint8 b1 = *in++;
-	uint8 b2 = *in++;
-	uint8 b3 = *in++;
-	return (b0 | (b1 << 8) | (b2 << 16) | (b3 << 24));
-}
-
-/*
- *  Read a 4-byte value from a file.
- */
-
-inline uint32 Read4(
-    std::FILE *in
-) {
-	uint8 b0, b1, b2, b3;
-	if (std::fread(&b0, sizeof(uint8), 1, in) != 1) b0 = 0;
-	if (std::fread(&b1, sizeof(uint8), 1, in) != 1) b1 = 0;
-	if (std::fread(&b2, sizeof(uint8), 1, in) != 1) b2 = 0;
-	if (std::fread(&b3, sizeof(uint8), 1, in) != 1) b3 = 0;
-	return (b0 | (b1 << 8) | (b2 << 16) | (b3 << 24));
+	uint32 b0 = Read1(in);
+	uint32 b1 = Read1(in);
+	uint32 b2 = Read1(in);
+	uint32 b3 = Read1(in);
+	return (b3 << 24) | (b2 << 16) | (b1 << 8) | b0;
 }
 
 /*
  *  Read a 4-byte long value, hsb first.
  */
-inline uint32 Read4high(std::istream &in) {
-	uint32 val = 0;
-	val |= static_cast<uint32>(in.get() << 24);
-	val |= static_cast<uint32>(in.get() << 16);
-	val |= static_cast<uint32>(in.get() << 8);
-	val |= static_cast<uint32>(in.get());
-	return val;
-}
-
-/*
- *  Read a 4-byte value from a buffer.
- */
+template <typename Source>
 inline uint32 Read4high(
-    uint8  *&in
+    Source& in
 ) {
-	uint8 b0 = *in++;
-	uint8 b1 = *in++;
-	uint8 b2 = *in++;
-	uint8 b3 = *in++;
-	return ((b0 << 24) | (b1 << 16) | (b2 << 8) | b3);
-}
-
-/*
- *  Read a 4-byte value from a file.
- */
-inline uint32 Read4high(
-    std::FILE *in
-) {
-	uint8 b0, b1, b2, b3;
-	if (std::fread(&b0, sizeof(uint8), 1, in) != 1) b0 = 0;
-	if (std::fread(&b1, sizeof(uint8), 1, in) != 1) b1 = 0;
-	if (std::fread(&b2, sizeof(uint8), 1, in) != 1) b2 = 0;
-	if (std::fread(&b3, sizeof(uint8), 1, in) != 1) b3 = 0;
-	return ((b0 << 24) | (b1 << 16) | (b2 << 8) | b3);
+	uint32 b0 = Read1(in);
+	uint32 b1 = Read1(in);
+	uint32 b2 = Read1(in);
+	uint32 b3 = Read1(in);
+	return (b0 << 24) | (b1 << 16) | (b2 << 8) | b3;
 }
 
 /*
  *  Read a 2-byte value, lsb first, unsigned.
  */
-inline sint16 Read2s(uint8  *&in) {
-	return static_cast<sint16>(Read2(in));
-}
-
-inline sint16 Read2s(std::istream &in) {
+template <typename Source>
+inline sint16 Read2s(
+    Source& in
+) {
 	return static_cast<sint16>(Read2(in));
 }
 
 /*
  *  Read a 4-byte value, lsb first, unsigned.
  */
-inline sint32 Read4s(uint8  *&in) {
-	return static_cast<sint32>(Read4(in));
-}
-
-inline sint32 Read4s(std::istream &in) {
+template <typename Source>
+inline sint32 Read4s(
+    Source& in
+) {
 	return static_cast<sint32>(Read4(in));
 }
 
@@ -234,42 +149,13 @@ inline sint32 Read4s(std::istream &in) {
  *  Read a N-byte long value, lsb first.
  */
 
-template<typename T>
-inline T ReadN(std::istream &in) {
-	T val = 0;
-	for (size_t i = 0; i < sizeof(T); i++)
-		val |= static_cast<T>(T(in.get()) << (8 * i));
-	return val;
-}
-
-/*
- *  Read a N-byte value from a buffer.
- */
-
-template<typename T>
+template<typename T, typename Source>
 inline T ReadN(
-    uint8  *&in
+    Source& in
 ) {
 	T val = 0;
 	for (size_t i = 0; i < sizeof(T); i++)
-		val |= static_cast<T>(T((*in++)) << (8 * i));
-	return val;
-}
-
-/*
- *  Read a N-byte value from a file.
- */
-
-template<typename T>
-inline T ReadN(
-    std::FILE *in
-) {
-	T val = 0;
-	for (size_t i = 0; i < sizeof(T); i++) {
-		uint8 b0;
-		if (std::fread(&b0, sizeof(uint8), 1, in) != 1)
-			val |= static_cast<T>(T(b0) << (8 * i));
-	}
+		val |= static_cast<T>(T(Read1(in)) << (8 * i));
 	return val;
 }
 
@@ -277,46 +163,20 @@ inline T ReadN(
  *  Read a N-byte long value, hsb first.
  */
 
-template<typename T>
-inline T ReadNhigh(std::istream &in) {
-	T val = 0;
-	for (int i = sizeof(T) - 1; i >= 0; i--)
-		val |= static_cast<T>(T(in.get()) << (8 * i));
-	return val;
-}
-
-/*
- *  Read a N-byte value from a buffer.
- */
-
-template<typename T>
+template<typename T, typename Source>
 inline T ReadNhigh(
-    uint8  *&in
+    Source& in
 ) {
 	T val = 0;
 	for (int i = sizeof(T) - 1; i >= 0; i--)
-		val |= static_cast<T>(T((*in++)) << (8 * i));
+		val |= static_cast<T>(T(Read1(in)) << (8 * i));
 	return val;
 }
 
-/*
- *  Read a N-byte value from a file.
- */
-
-template<typename T>
-inline T ReadNhigh(
-    std::FILE *in
+inline int ReadInt(
+    std::istream &in,
+    int def = 0
 ) {
-	T val = 0;
-	for (int i = sizeof(T) - 1; i >= 0; i--) {
-		uint8 b0;
-		if (std::fread(&b0, sizeof(uint8), 1, in) != 1)
-			val |= static_cast<T>(T(b0) << (8 * i));
-	}
-	return val;
-}
-
-inline int ReadInt(std::istream &in, int def = 0) {
 	int num;
 	if (in.eof())
 		return def;
@@ -327,7 +187,10 @@ inline int ReadInt(std::istream &in, int def = 0) {
 	return num;
 }
 
-inline unsigned int ReadUInt(std::istream &in, unsigned int def = 0) {
+inline unsigned int ReadUInt(
+    std::istream &in,
+    int def = 0
+) {
 	unsigned int num;
 	if (in.eof())
 		return def;
@@ -383,7 +246,10 @@ inline void WriteRect(
 	WriteInt(out, rect.h, final);
 }
 
-inline std::string ReadStr(char *&eptr, int off = 1) {
+inline std::string ReadStr(
+    char *&eptr,
+    int off = 1
+) {
 	eptr += off;
 	char *pos = std::strchr(eptr, '/');
 	std::string retval(eptr, pos - eptr);
@@ -391,7 +257,9 @@ inline std::string ReadStr(char *&eptr, int off = 1) {
 	return retval;
 }
 
-inline std::string ReadStr(std::istream &in) {
+inline std::string ReadStr(
+    std::istream &in
+) {
 	std::string retval;
 	std::getline(in, retval, '/');
 	return retval;
@@ -413,93 +281,93 @@ inline void WriteStr(
  *  Write a 1-byte value.
  */
 
-inline void Write1(std::ostream &out, uint16 val) {
-	out.put(static_cast<char>(val & 0xff));
+inline void Write1(
+    std::ostream &out,
+    uint8 val
+) {
+	out.put(static_cast<char>(val));
+}
+
+inline void Write1(
+    uint8 *& out,
+    uint8 val
+) {
+	*out++ = val;
+}
+
+inline void Write1(
+    std::FILE *out,
+    uint8 val
+) {
+	std::fputc(val, out);
 }
 
 /*
  *  Write a 2-byte value, lsb first.
  */
 
+template <typename Dest>
 inline void Write2(
-    std::ostream &out,
+    Dest& out,
     uint16 val
 ) {
-	out.put(static_cast<char>(val & 0xff));
-	out.put(static_cast<char>((val >> 8) & 0xff));
+	Write1(out, val & 0xffu);
+	Write1(out, (val >> 8) & 0xffu);
 }
 
 /*
  *  Write a 2-byte value, msb first.
  */
 
+template <typename Dest>
 inline void Write2high(
-    std::ostream &out,
+    Dest& out,
     uint16 val
 ) {
-	out.put(static_cast<char>((val >> 8) & 0xff));
-	out.put(static_cast<char>(val & 0xff));
+	Write1(out, (val >> 8) & 0xffu);
+	Write1(out, val & 0xffu);
 }
 
-/*
- *  Write a 2-byte value to a buffer, lsb first.
- */
-
-inline void Write2(
-    uint8  *&out,       // Write here and update.
-    uint16 val
-) {
-	*out++ = static_cast<char>(val & 0xff);
-	*out++ = static_cast<char>((val >> 8) & 0xff);
-}
 
 /*
  *  Write a 4-byte value, lsb first.
  */
 
+template <typename Dest>
 inline void Write4(
-    std::ostream &out,
+    Dest& out,
     uint32 val
 ) {
-	out.put(static_cast<char>(val & 0xff));
-	out.put(static_cast<char>((val >> 8) & 0xff));
-	out.put(static_cast<char>((val >> 16) & 0xff));
-	out.put(static_cast<char>((val >> 24) & 0xff));
+	Write1(out, val & 0xffu);
+	Write1(out, (val >> 8) & 0xffu);
+	Write1(out, (val >> 16) & 0xffu);
+	Write1(out, (val >> 24) & 0xffu);
 }
 
 /*
  *  Write a 4-byte value, msb first.
  */
 
+template <typename Dest>
 inline void Write4high(
-    std::ostream &out,
+    Dest& out,
     uint32 val
 ) {
-	out.put(static_cast<char>((val >> 24) & 0xff));
-	out.put(static_cast<char>((val >> 16) & 0xff));
-	out.put(static_cast<char>((val >> 8) & 0xff));
-	out.put(static_cast<char>(val & 0xff));
-}
-
-/*
- *  Write a 4-byte value to a buffer, lsb first.
- */
-
-inline void Write4(
-    uint8  *&out,       // Write here and update.
-    uint32 val
-) {
-	*out++ = static_cast<char>(val & 0xff);
-	*out++ = static_cast<char>((val >> 8) & 0xff);
-	*out++ = static_cast<char>((val >> 16) & 0xff);
-	*out++ = static_cast<char>((val >> 24) & 0xff);
+	Write1(out, (val >> 24) & 0xffu);
+	Write1(out, (val >> 16) & 0xffu);
+	Write1(out, (val >> 8) & 0xffu);
+	Write1(out, val & 0xffu);
 }
 
 /*
  *  Write a signed 4-byte value to a stream, lsb first.
  */
 
-inline void Write4s(std::ostream &out, sint32 val) {
+template <typename Dest>
+inline void Write4s(
+    Dest& out,
+    sint32 val
+) {
 	Write4(out, static_cast<uint32>(val));
 }
 
@@ -507,39 +375,26 @@ inline void Write4s(std::ostream &out, sint32 val) {
  *  Write a N-byte value, lsb first.
  */
 
-template<typename T>
+template<typename T, typename Dest>
 inline void WriteN(
-    std::ostream &out,
+    Dest& out,
     T val
 ) {
 	for (size_t i = 0; i < sizeof(T); i++)
-		out.put(static_cast<char>((val >>(8 * i)) & 0xff));
+		Write1(out, (val >>(8 * i)) & 0xffu);
 }
 
 /*
  *  Write a N-byte value, msb first.
  */
 
-template<typename T>
+template<typename T, typename Dest>
 inline void WriteNhigh(
-    std::ostream &out,
+    Dest& out,
     T val
 ) {
 	for (int i = sizeof(T) - 1; i >= 0 ; i--)
-		out.put(static_cast<char>((val >>(8 * i)) & 0xff));
-}
-
-/*
- *  Write a N-byte value to a buffer, lsb first.
- */
-
-template<typename T>
-inline void WriteN(
-    uint8  *&out,       // Write here and update.
-    T val
-) {
-	for (size_t i = 0; i < sizeof(T); i++)
-		*out++ = static_cast<char>((val >>(8 * i)) & 0xff);
+		Write1(out, (val >>(8 * i)) & 0xffu);
 }
 
 bool U7open(
