@@ -504,8 +504,10 @@ int Usecode_script::exec(
 		}
 		case next_frame: {
 			int nframes = obj->get_num_frames();
-			usecode->set_item_frame(obj,
-			                        (1 + obj->get_framenum()) % nframes);
+			if (nframes > 0) {
+				usecode->set_item_frame(obj,
+				                        (1 + obj->get_framenum()) % nframes);
+			}
 			break;
 		}
 		case prev_frame_min:
@@ -515,9 +517,11 @@ int Usecode_script::exec(
 			break;
 		case prev_frame: {
 			int nframes = obj->get_num_frames();
-			int pframe = obj->get_framenum() - 1;
-			usecode->set_item_frame(obj,
-			                        (pframe + nframes) % nframes);
+			if (nframes > 0) {
+				int pframe = obj->get_framenum() - 1;
+				usecode->set_item_frame(obj,
+				                        (pframe + nframes) % nframes);
+			}
 			break;
 		}
 		case say: {     // Say string.
