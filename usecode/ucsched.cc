@@ -62,8 +62,9 @@ Usecode_script::Usecode_script(
     int findex,
     int nhalt,
     int del
-) : obj(item), code(cd), i(0), frame_index(findex),
-	no_halt(nhalt != 0), must_finish(false),
+) : next(0), prev(0),
+	obj(item), code(cd), i(0), frame_index(findex),
+	started(false), no_halt(nhalt != 0), must_finish(false),
 	killed_barks(false), delay(del) {
 	cnt = code->get_array_size();
 }
@@ -75,8 +76,9 @@ Usecode_script::Usecode_script(
 Usecode_script::Usecode_script(
     Game_object *o,
     Usecode_value *cd       // May be NULL for empty script.
-) : obj(o), code(cd), cnt(0), i(0), frame_index(0), no_halt(false),
-	must_finish(false), killed_barks(false), delay(0) {
+) : next(0), prev(0),
+	obj(o), code(cd), cnt(0), i(0), frame_index(0), started(false),
+	no_halt(false), must_finish(false), killed_barks(false), delay(0) {
 	if (!code)          // Empty?
 		code = new Usecode_value(0, 0);
 	else {
@@ -95,6 +97,8 @@ Usecode_script::Usecode_script(
 
 Usecode_script::~Usecode_script() {
 	delete code;
+	if (!started)
+		return;
 	count--;
 	if (next)
 		next->prev = prev;
@@ -133,6 +137,7 @@ void Usecode_script::start(
 	if (first)
 		first->prev = this;
 	first = this;
+	started = true;
 //++++ Messes up Moonshade Trial.
 //	gwin->get_tqueue()->add(d + Game::get_ticks(), this,
 	gwin->get_tqueue()->add(d + SDL_GetTicks(), this,

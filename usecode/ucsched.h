@@ -38,6 +38,7 @@ class Usecode_script : public Time_sensitive {
 	int cnt;            // Length of arrval.
 	int i;              // Current index.
 	int frame_index;        // For taking steps.
+	bool started;			// Whether or not this script has started.
 	bool no_halt;           // 1 to ignore halt().
 	bool must_finish;       // 1 to finish before deleting.
 	bool killed_barks;      // 1 to prevent barks from showing.
