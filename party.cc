@@ -123,7 +123,7 @@ bool Party_manager::remove_from_party(
 
 int Party_manager::in_dead_party(
     Actor *npc
-) {
+) const {
 	int num = npc->get_npc_num();
 	for (int i = 0; i < dead_party_count; i++)
 		if (dead_party[i] == num)
@@ -237,7 +237,7 @@ void Party_manager::link_party(
  *            2 3 4
  *           7 5 6 8
  */
-static int followers[EXULT_PARTY_MAX + 1][2] = {
+static const int followers[EXULT_PARTY_MAX + 1][2] = {
 	{0, 1},             // These follow Avatar (ID = -1).
 	{2, 3},             // Follow 0.
 	{ -1, 4},           // Follow 1.
@@ -251,13 +251,13 @@ static int followers[EXULT_PARTY_MAX + 1][2] = {
  *  Offsets for the follower, depending on direction (0-3, with
  *  0 = North, 1 = East, 2 = South, 3 = West).
  */
-static int left_offsets[4][2] = {   // Follower is behind and to left.
+static const int left_offsets[4][2] = {   // Follower is behind and to left.
 	{ -2, 2},           // North.
 	{ -2, -2},          // East.
 	{2, -2},            // South.
 	{2, 2}
 };           // West.
-static int right_offsets[4][2] = {  // Follower is behind and to right.
+static const int right_offsets[4][2] = {  // Follower is behind and to right.
 	{2, 2},             // North.
 	{ -2, 2},           // East.
 	{ -2, -2},          // South.
@@ -301,7 +301,7 @@ void Party_manager::move_followers(
     Actor *npc,         // Party member who just stepped.
     int vindex,         // Index within 'valid'.
     int dir             // Direction (0-7) he stepped in.
-) {
+) const {
 	ignore_unused_variable_warning(vindex);
 	int id = npc->get_party_id();   // (-1 if Avatar).
 	Tile_coord pos = npc->get_tile();
@@ -537,7 +537,7 @@ int Party_manager::step(
     Actor *leader,          // Who NPC is following.
     int dir,            // Direction we're walking (0-7).
     Tile_coord const &dest          // Destination tile.
-) {
+) const {
 	Tile_coord pos = npc->get_tile();   // Current position.
 	Tile_coord to = Get_step_tile(pos, dest, dir);
 	if (to.tx == pos.tx && to.ty == pos.ty)
