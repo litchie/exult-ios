@@ -250,7 +250,7 @@ void Game_clock::set_fog(
  */
 
 void Game_clock::check_hunger(
-) {
+) const {
 	Game_window *gwin = Game_window::get_instance();
 	Actor *party[9];        // Get party + Avatar.
 	int cnt = gwin->get_party(party, 1);

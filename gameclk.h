@@ -50,7 +50,7 @@ class Game_clock : public Time_sensitive {
 	unsigned short time_rate;
 	void set_time_palette();
 	void set_light_source_level(int lev);
-	void check_hunger();
+	void check_hunger() const;
 public:
 	Game_clock(Time_queue *tq) : tqueue(tq), hour(6), minute(0), day(0),
 		light_source_level(0), old_light_level(0), old_special_light(false),
@@ -58,28 +58,28 @@ public:
 		overcast(0), was_overcast(false), fog(0), was_foggy(false),
 		transition(0), time_rate(1)
 	{ }
-	int get_hour() {
+	int get_hour() const {
 		return hour;
 	}
 	void set_hour(int h) {
 		hour = h;
 	}
-	int get_minute() {
+	int get_minute() const {
 		return minute;
 	}
 	void set_minute(int m) {
 		minute = m;
 	}
-	int get_day() {
+	int get_day() const {
 		return day;
 	}
 	void set_day(int d) {
 		day = d;
 	}
-	unsigned long get_total_hours() { // Get total # hours.
+	unsigned long get_total_hours() const { // Get total # hours.
 		return day * 24 + hour;
 	}
-	unsigned long get_total_minutes() {
+	unsigned long get_total_minutes() const {
 		return get_total_hours() * 60 + minute;
 	}
 	void set_palette();     // Set palette for current hour.
@@ -104,7 +104,7 @@ public:
 	void increment(int num_minutes);// Increment clock.
 	virtual void handle_event(unsigned long curtime, uintptr udata);
 	void fake_next_period();    // For debugging.
-	int get_time_rate() {
+	int get_time_rate() const {
 		return time_rate;
 	}
 	void set_time_rate(int i) {
