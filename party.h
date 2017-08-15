@@ -41,8 +41,8 @@ class Party_manager : public Game_singletons {
 	Actor *valid[EXULT_PARTY_MAX];  // NPC's able to walk with Avatar.
 	int validcnt;
 	// Formation-walking:
-	void move_followers(Actor *npc, int vindex, int dir);
-	int step(Actor *npc, Actor *leader, int dir, Tile_coord const &dest);
+	void move_followers(Actor *npc, int vindex, int dir) const;
+	int step(Actor *npc, Actor *leader, int dir, Tile_coord const &dest) const;
 public:
 	Party_manager();
 	void set_count(int n) {     // For initializing from file.
@@ -51,22 +51,22 @@ public:
 	void set_member(int i, int npcnum) {
 		party[i] = npcnum;
 	}
-	int get_count() {       // Get # party members.
+	int get_count() const {       // Get # party members.
 		return party_count;
 	}
-	int get_member(int i) {     // Get npc# of i'th party member.
+	int get_member(int i) const {     // Get npc# of i'th party member.
 		return party[i];
 	}
-	int get_dead_count() {      // Same for dead party members.
+	int get_dead_count() const {      // Same for dead party members.
 		return dead_party_count;
 	}
-	int get_dead_member(int i) {
+	int get_dead_member(int i) const {
 		return dead_party[i];
 	}
 	// Add/remove party member.
 	bool add_to_party(Actor *npc);
 	bool remove_from_party(Actor *npc);
-	int in_dead_party(Actor *npc);
+	int in_dead_party(Actor *npc) const;
 	bool add_to_dead_party(Actor *npc);
 	bool remove_from_dead_party(Actor *npc);
 	// Update status of NPC that died or
