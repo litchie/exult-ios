@@ -61,27 +61,32 @@ static inline bool Get_sfx_out_of_range(
  *  Play SFX.
  */
 
-Object_sfx::Object_sfx(Game_object *o, int s, int delay)
-	: obj(o), sfx(s), channel(-1) {
-	add_client(obj);
+void Object_sfx::Play(Game_object *obj, int sfx, int delay) {
+	Object_sfx *osfx = new Object_sfx(obj, sfx);
+
 	if (!delay) {
 		// Start right now -- so that usecode sounds will play when intended
 		// (e.g., books). We *really* don't want to call handle_event here
 		// since it can delete the object (e.g., if it is out of range),
 		// resulting in undefined behavior.
 		Game_object *outer = obj->get_outermost();
-		last_pos = outer->get_center_tile();
+		osfx->last_pos = outer->get_center_tile();
 
 		int volume = AUDIO_MAX_VOLUME;  // Set volume based on distance.
-		bool halt = Get_sfx_out_of_range(gwin, last_pos);
+		bool halt = Get_sfx_out_of_range(gwin, osfx->last_pos);
 
-		if (!halt && channel == -1 && sfx > -1)     // First time?
+		if (!halt && osfx->channel == -1 && sfx > -1)     // First time?
 			// Start playing.
-			channel = Audio::get_ptr()->play_sound_effect(sfx, last_pos, volume, 0);
+			osfx->channel = Audio::get_ptr()->play_sound_effect(sfx, osfx->last_pos, volume, 0);
 		delay = 100;
 	}
-	gwin->get_tqueue()->add(Game::get_ticks() + delay, this,
+	gwin->get_tqueue()->add(Game::get_ticks() + delay, osfx,
 	                        reinterpret_cast<uintptr>(gwin));
+}
+
+Object_sfx::Object_sfx(Game_object *o, int s)
+	: obj(o), sfx(s), channel(-1) {
+	add_client(obj);
 }
 
 void Object_sfx::stop_playing() {

@@ -39,11 +39,12 @@ class Object_sfx : public Time_sensitive, public Game_singletons, public Object_
 	int sfx;            // ID of sound effect being played.
 	int channel;        // Channel of sfx being played.
 	void stop_playing();
+	Object_sfx(Game_object *o, int sfx);
 protected:
 	virtual void dequeue();
-	virtual void notify_object_gone(Game_object *o);
+	virtual void notify_object_gone(Game_object *obj);
 public:
-	Object_sfx(Game_object *o, int sfx, int delay = 20);
+	static void Play(Game_object *o, int sfx, int delay = 20);
 	void stop();
 	int get_sfxnum() {
 		return sfx;

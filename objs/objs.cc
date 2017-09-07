@@ -1460,8 +1460,7 @@ int Game_object::apply_damage(
 	}
 
 	if (damage <= 0) {
-		int sfx = Audio::game_sfx(5);
-		new Object_sfx(this, sfx);
+		Object_sfx::Play(this, Audio::game_sfx(5));
 		return 0;
 	}
 	return reduce_health(damage, type, attacker);
@@ -1589,7 +1588,7 @@ void Game_object::play_hit_sfx(int weapon, bool ranged) {
 			sfx = Audio::game_sfx(37);
 		else
 			sfx = Audio::game_sfx(4);
-		new Object_sfx(this, sfx);
+		Object_sfx::Play(this, sfx);
 	}
 }
 
