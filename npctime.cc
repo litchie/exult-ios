@@ -271,7 +271,7 @@ Npc_timer::Npc_timer(
     Npc_timer_list *l,
     int start_delay         // Time in msecs. before starting.
 ) : list(l) {
-	gwin->get_tqueue()->add(Game::get_ticks() + start_delay, this, 0L);
+	gwin->get_tqueue()->add(Game::get_ticks() + start_delay, this);
 }
 
 /*
@@ -325,7 +325,7 @@ void Npc_hunger_timer::handle_event(
 		}
 		last_time = minute;
 	}
-	gwin->get_tqueue()->add(curtime + 5000, this, 0L);
+	gwin->get_tqueue()->add(curtime + 5000, this);
 }
 
 /*
@@ -371,7 +371,7 @@ void Npc_poison_timer::handle_event(
 //	npc->set_property(static_cast<int>(Actor::health),
 //		npc->get_property(static_cast<int>(Actor::health)) - penalty);
 	// Check again in 10-20 secs.
-	gwin->get_tqueue()->add(curtime + 10000 + rand() % 10000, this, 0L);
+	gwin->get_tqueue()->add(curtime + 10000 + rand() % 10000, this);
 }
 
 /*
@@ -418,7 +418,7 @@ void Npc_sleep_timer::handle_event(
 		return;
 	}
 	// Check again every half a game minute.
-	gwin->get_tqueue()->add(curtime + (ticks_per_minute * gwin->get_std_delay()) / 2, this, 0L);
+	gwin->get_tqueue()->add(curtime + (ticks_per_minute * gwin->get_std_delay()) / 2, this);
 }
 
 /*
@@ -466,7 +466,7 @@ void Npc_invisibility_timer::handle_event(
 		return;
 	}
 	// Check again in 2 secs.
-	gwin->get_tqueue()->add(curtime + 2000, this, 0L);
+	gwin->get_tqueue()->add(curtime + 2000, this);
 }
 
 /*
@@ -493,7 +493,7 @@ void Npc_protection_timer::handle_event(
 		return;
 	}
 	// Check again in 2 secs.
-	gwin->get_tqueue()->add(curtime + 2000, this, 0L);
+	gwin->get_tqueue()->add(curtime + 2000, this);
 }
 
 /*
@@ -511,6 +511,6 @@ void Npc_flag_timer::handle_event(
 		npc->clear_flag(flag);
 		delete this;
 	} else              // Check again in 10 secs.
-		gwin->get_tqueue()->add(curtime + 10000, this, 0L);
+		gwin->get_tqueue()->add(curtime + 10000, this);
 }
 

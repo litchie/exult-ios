@@ -320,7 +320,7 @@ public:
 		// Make sure launcher is active.
 		if (launcher && !launcher->in_queue() &&
 		    (criteria == party_near || criteria == avatar_near))
-			gwin->get_tqueue()->add(0L, launcher, 0);
+			gwin->get_tqueue()->add(0L, launcher);
 		Egg_object::paint();
 	}
 	virtual void set(int crit, int dist) {
@@ -344,7 +344,7 @@ public:
 			launcher = new Missile_launcher(this, weapon,
 			                                proj, dir, gwin->get_std_delay()*delay);
 		if (!launcher->in_queue())
-			gwin->get_tqueue()->add(0L, launcher, 0);
+			gwin->get_tqueue()->add(0L, launcher);
 	}
 };
 
