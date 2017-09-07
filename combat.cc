@@ -277,7 +277,7 @@ bool Combat_schedule::be_invisible(
 	if (npc->get_flag(Obj_flags::invisible))
 		return false;   // Also don't to it again for a while.
 #endif
-	new Object_sfx(npc, Audio::game_sfx(44));
+	Object_sfx::Play(npc, Audio::game_sfx(44));
 	gwin->get_effects()->add_effect(
 	    new Sprites_effect(12, npc, 0, 0, 0, 0, 0, -1));
 	npc->set_flag(Obj_flags::invisible);
@@ -901,7 +901,7 @@ void Combat_schedule::start_strike(
 	}
 	if (sfx >= 0) {
 		int delay = ranged ? cnt : cnt / 2;
-		new Object_sfx(npc, sfx, delay * gwin->get_std_delay());
+		Object_sfx::Play(npc, sfx, delay * gwin->get_std_delay());
 	}
 	dex_points -= dex_to_attack;
 }

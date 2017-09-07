@@ -2644,8 +2644,7 @@ int Actor::apply_damage(
 			if ((info.get_armor_immunity() & (1 << type)) != 0) {
 				// Armor gives immunity.
 				// Metal clang.
-				int sfx = Audio::game_sfx(5);
-				new Object_sfx(this, sfx);
+				Object_sfx::Play(this, Audio::game_sfx(5));
 				// Attack back anyway.
 				fight_back(attacker);
 				return 0;   // No damage == no powers.
@@ -2675,8 +2674,7 @@ int Actor::apply_damage(
 
 	if (damage <= 0) {
 		// No damage caused.
-		int sfx = Audio::game_sfx(5);
-		new Object_sfx(this, sfx);
+		Object_sfx::Play(this, Audio::game_sfx(5));
 
 		// Flash red outline.
 		hit = true;
