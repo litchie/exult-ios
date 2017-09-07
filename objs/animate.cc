@@ -80,8 +80,7 @@ void Object_sfx::Play(Game_object *obj, int sfx, int delay) {
 			osfx->channel = Audio::get_ptr()->play_sound_effect(sfx, osfx->last_pos, volume, 0);
 		delay = 100;
 	}
-	gwin->get_tqueue()->add(Game::get_ticks() + delay, osfx,
-	                        reinterpret_cast<uintptr>(gwin));
+	gwin->get_tqueue()->add(Game::get_ticks() + delay, osfx, gwin);
 }
 
 Object_sfx::Object_sfx(Game_object *o, int s)
@@ -304,8 +303,7 @@ void Animator::start_animation(
 ) {
 	// Clean out old entry if there.
 	gwin->get_tqueue()->remove(this);
-	gwin->get_tqueue()->add(Game::get_ticks() + 20, this,
-	                        reinterpret_cast<uintptr>(gwin));
+	gwin->get_tqueue()->add(Game::get_ticks() + 20, this, gwin);
 	animating = 1;
 }
 

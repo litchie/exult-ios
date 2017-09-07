@@ -132,7 +132,7 @@ class Background_noise : public Time_sensitive {
 public:
 	Background_noise(Game_window *gw) : repeats(0), last_sound(-1),
 		gwin(gw), laststate(Invalid) {
-		gwin->get_tqueue()->add(5000, this, 0L);
+		gwin->get_tqueue()->add(5000, this);
 	}
 	virtual ~Background_noise() {
 		gwin->get_tqueue()->remove(this);
@@ -647,7 +647,7 @@ void Game_window::init_files(bool cycle) {
 	unsigned long timer = SDL_GetTicks();
 	srand(timer);           // Use time to seed rand. generator.
 	// Force clock to start.
-	tqueue->add(timer, clock, reinterpret_cast<uintptr>(this));
+	tqueue->add(timer, clock, this);
 	// Go to starting chunk
 	scrolltx_lp = scrolltx_l = scrolltx = game->get_start_tile_x();
 	scrollty_lp = scrollty_l = scrollty = game->get_start_tile_y();
@@ -1486,8 +1486,7 @@ void Game_window::write_gwin(
 void Game_window::read_gwin(
 ) {
 	if (!clock->in_queue())     // Be sure clock is running.
-		tqueue->add(Game::get_ticks(), clock,
-		            reinterpret_cast<uintptr>(this));
+		tqueue->add(Game::get_ticks(), clock, this);
 	ifstream gin_stream;
 	try {
 		U7open(gin_stream, GWINDAT);    // Gamewin.dat.

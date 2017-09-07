@@ -139,9 +139,8 @@ void Usecode_script::start(
 	first = this;
 	started = true;
 //++++ Messes up Moonshade Trial.
-//	gwin->get_tqueue()->add(d + Game::get_ticks(), this,
-	gwin->get_tqueue()->add(d + SDL_GetTicks(), this,
-	                        reinterpret_cast<uintptr>(gwin->get_usecode()));
+//	gwin->get_tqueue()->add(d + Game::get_ticks(), this, gwin->get_usecode());
+	gwin->get_tqueue()->add(d + SDL_GetTicks(), this, gwin->get_usecode());
 }
 
 /*

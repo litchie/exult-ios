@@ -412,7 +412,7 @@ void Barge_object::travel_to_tile(
 		if (!ice_raft)      // Ice-raft doesn't rotate.
 			face_direction(ndir);
 		if (!in_queue())    // Not already in queue?
-			gwin->get_tqueue()->add(Game::get_ticks(), this, 0L);
+			gwin->get_tqueue()->add(Game::get_ticks(), this);
 	} else
 		frame_time = 0;     // Not moving.
 }

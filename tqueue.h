@@ -94,9 +94,18 @@ public:
 	{  }
 	void clear();           // Remove all entries.
 	// Add an entry.
+	void add(uint32 t, Time_sensitive *obj) {
+		add(t, obj, static_cast<uintptr>(0));
+	}
+	void add(uint32 t, Time_sensitive *obj, void *ud) {
+		add(t, obj, reinterpret_cast<uintptr>(ud));
+	}
 	void add(uint32 t, Time_sensitive *obj, uintptr ud);
 	// Remove object's entry.
 	int remove(Time_sensitive *obj);
+	void remove(Time_sensitive *obj, void *ud) {
+		remove(obj, reinterpret_cast<uintptr>(ud));
+	}
 	int remove(Time_sensitive *obj, uintptr udata);
 	int find(Time_sensitive const *obj) const;  // Find an entry.
 	// Find delay when obj. is due.

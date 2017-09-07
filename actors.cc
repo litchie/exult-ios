@@ -1282,8 +1282,7 @@ void Actor::start(
 		if (delay)
 			gwin->get_tqueue()->remove(this);
 		uint32 curtime = Game::get_ticks();
-		gwin->get_tqueue()->add(curtime + delay, this,
-		                        reinterpret_cast<uintptr>(gwin));
+		gwin->get_tqueue()->add(curtime + delay, this, gwin);
 	}
 }
 
@@ -2481,8 +2480,7 @@ void Clear_casting::handle_event(unsigned long curtime, uintptr udata) {
 
 void Actor::end_casting_mode(int delay) {
 	Clear_casting *c = new Clear_casting();
-	gwin->get_tqueue()->add(Game::get_ticks() + 2 * delay, c,
-	                        reinterpret_cast<uintptr>(this));
+	gwin->get_tqueue()->add(Game::get_ticks() + 2 * delay, c, this);
 }
 
 /*
@@ -2680,8 +2678,7 @@ int Actor::apply_damage(
 		hit = true;
 		add_dirty();
 		Clear_hit *c = new Clear_hit();
-		gwin->get_tqueue()->add(Game::get_ticks() + 200, c,
-		                        reinterpret_cast<uintptr>(this));
+		gwin->get_tqueue()->add(Game::get_ticks() + 200, c, this);
 		// Attack back.
 		fight_back(attacker);
 		return 0;   // No damage == no powers (usually).
@@ -2747,8 +2744,7 @@ int Actor::reduce_health(
 		hit = true;     // Flash red outline.
 		add_dirty();
 		Clear_hit *c = new Clear_hit();
-		gwin->get_tqueue()->add(Game::get_ticks() + 200, c,
-		                        reinterpret_cast<uintptr>(this));
+		gwin->get_tqueue()->add(Game::get_ticks() + 200, c, this);
 	}
 	if (oldhp >= maxhp / 2 && val < maxhp / 2 && rand() % 2 != 0) {
 		// A little oomph.
@@ -4689,8 +4685,7 @@ bool Actor::quake_on_walk(
 	if (get_info().quake_on_walk()) {
 		qsteps = (qsteps + 1) % 5;
 		if (!qsteps)        // Time to roll?
-			gwin->get_tqueue()->add(Game::get_ticks() + 10,
-			                        new Earthquake(2), 0L);
+			gwin->get_tqueue()->add(Game::get_ticks() + 10, new Earthquake(2));
 		return true;
 	}
 	return false;
@@ -4935,7 +4930,7 @@ void Npc_actor::paint(
 		// Force schedule->now_what() in .5secs
 		// DO NOT call now_what here!!!
 		uint32 curtime = Game::get_ticks();
-		gwin->get_tqueue()->add(curtime + 500, this, reinterpret_cast<uintptr>(gwin));
+		gwin->get_tqueue()->add(curtime + 500, this, gwin);
 	}
 	if (!nearby)            // Make sure we're in 'nearby' list.
 		gwin->add_nearby_npc(this);

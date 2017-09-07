@@ -342,7 +342,7 @@ Sprites_effect::Sprites_effect(
 	Game_window *gwin = Game_window::get_instance();
 	frames = sprite.get_num_frames();
 	// Start.
-	gwin->get_tqueue()->add(Game::get_ticks() + delay, this, 0L);
+	gwin->get_tqueue()->add(Game::get_ticks() + delay, this);
 }
 
 /**
@@ -362,7 +362,7 @@ Sprites_effect::Sprites_effect(
 	Game_window *gwin = Game_window::get_instance();
 	frames = sprite.get_num_frames();
 	// Start immediately.
-	gwin->get_tqueue()->add(Game::get_ticks(), this, 0L);
+	gwin->get_tqueue()->add(Game::get_ticks(), this);
 }
 
 /**
@@ -859,7 +859,7 @@ Homing_projectile::Homing_projectile(   // A better name is welcome...
 	// Go for 20 seconds.
 	stop_time = Game::get_ticks() + 20 * 1000;
 	// Start immediately.
-	gwin->get_tqueue()->add(Game::get_ticks(), this, 0L);
+	gwin->get_tqueue()->add(Game::get_ticks(), this);
 	channel = Audio::get_ptr()->play_sound_effect(sfx, pos, -1);
 }
 
@@ -1029,7 +1029,7 @@ void Text_effect::init(
 	height = 8 + sman->get_text_height(0);
 	add_dirty();            // Force first paint.
 	// Start immediately.
-	gwin->get_tqueue()->add(Game::get_ticks(), this, 0L);
+	gwin->get_tqueue()->add(Game::get_ticks(), this);
 	if (msg[0] == '@')
 		msg[0] = '"';
 	int len = msg.size();
@@ -1076,8 +1076,7 @@ void Text_effect::handle_event(
 		return;
 	}
 	// Back into queue.
-	gwin->get_tqueue()->add(Game::get_ticks() + gwin->get_std_delay(),
-	                        this, 0L);
+	gwin->get_tqueue()->add(Game::get_ticks() + gwin->get_std_delay(), this);
 
 	update_dirty();
 }
@@ -1127,7 +1126,7 @@ Weather_effect::Weather_effect(
 		eggloc = Tile_coord(-1, -1, -1);
 	stop_time = Game::get_ticks() + delay + duration * gwin->get_std_delay() * ticks_per_minute;
 	// Start immediately.
-	gwin->get_tqueue()->add(Game::get_ticks() + delay, this, 0L);
+	gwin->get_tqueue()->add(Game::get_ticks() + delay, this);
 }
 
 /**
@@ -1761,8 +1760,7 @@ Fire_field_effect::Fire_field_effect(
 	field = gmap->create_ireg_object(895, 0);
 	field->set_flag(Obj_flags::is_temporary);
 	field->move(t.tx, t.ty, t.tz);
-	gwin->get_tqueue()->add(Game::get_ticks() + 3000 + rand() % 2000, this,
-	                        0L);
+	gwin->get_tqueue()->add(Game::get_ticks() + 3000 + rand() % 2000, this);
 }
 
 /**
@@ -1785,8 +1783,7 @@ void Fire_field_effect::handle_event(
 			frnum--;
 		gwin->add_dirty(field);
 		field->set_frame(frnum);
-		gwin->get_tqueue()->add(curtime + gwin->get_std_delay(),
-		                        this, udata);
+		gwin->get_tqueue()->add(curtime + gwin->get_std_delay(), this, udata);
 	}
 }
 
