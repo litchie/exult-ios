@@ -41,6 +41,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 using std::cout;
 using std::endl;
 
+class Container_game_object;
+
 /*
  *  Container window's Okay button.
  */
@@ -256,7 +258,7 @@ int ExultStudio::init_cont_window(
     unsigned char *data,
     int datalen
 ) {
-	uintptr addr;
+	Container_game_object *addr;
 	int tx, ty, tz;
 	int shape, frame, quality;
 	std::string name;
@@ -305,8 +307,7 @@ int ExultStudio::save_cont_window(
 ) {
 	cout << "In save_cont_window()" << endl;
 	// Get container address.
-	uintptr addr = reinterpret_cast<uintptr>(gtk_object_get_user_data(
-	                         GTK_OBJECT(contwin)));
+	Container_game_object *addr = static_cast<Container_game_object*>(gtk_object_get_user_data(GTK_OBJECT(contwin)));
 	int tx = get_spin("cont_x"), ty = get_spin("cont_y"),
 	    tz = get_spin("cont_z");
 	std::string name(get_text_entry("cont_name"));

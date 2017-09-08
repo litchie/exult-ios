@@ -443,9 +443,8 @@ bool Container_game_object::edit(
 	        cheat.in_map_editor()) {
 		editing = 0;
 		Tile_coord t = get_tile();
-		uintptr addr = reinterpret_cast<uintptr>(this);
 		std::string name = get_name();
-		if (Container_out(client_socket, addr, t.tx, t.ty, t.tz,
+		if (Container_out(client_socket, this, t.tx, t.ty, t.tz,
 		                  get_shapenum(), get_framenum(), get_quality(), name,
 		                  get_obj_hp(),
 		                  get_flag(Obj_flags::invisible) != 0,
@@ -469,18 +468,17 @@ void Container_game_object::update_from_studio(
     int datalen
 ) {
 #ifdef USE_EXULTSTUDIO
-	uintptr addr;
+	Container_game_object *obj;
 	int tx, ty, tz;
 	int shape, frame, quality;
 	unsigned char res;
 	bool invis, can_take;
 	std::string name;
-	if (!Container_in(data, datalen, addr, tx, ty, tz, shape, frame,
+	if (!Container_in(data, datalen, obj, tx, ty, tz, shape, frame,
 	                  quality, name, res, invis, can_take)) {
 		cout << "Error decoding object" << endl;
 		return;
 	}
-	Container_game_object *obj = reinterpret_cast<Container_game_object *>(addr);
 	if (!editing || obj != editing) {
 		cout << "Obj from ExultStudio is not being edited" << endl;
 		return;

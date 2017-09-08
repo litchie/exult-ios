@@ -40,6 +40,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 using std::cout;
 using std::endl;
 
+class Game_object;
+
 /*
  *  Object window's Okay button.
  */
@@ -234,7 +236,7 @@ int ExultStudio::init_obj_window(
     unsigned char *data,
     int datalen
 ) {
-	uintptr addr;
+	Game_object *addr;
 	int tx, ty, tz;
 	int shape, frame, quality;
 	std::string name;
@@ -280,8 +282,7 @@ int ExultStudio::save_obj_window(
 ) {
 	cout << "In save_obj_window()" << endl;
 	// Get object address.
-	uintptr addr = reinterpret_cast<uintptr>(gtk_object_get_user_data(
-	                         GTK_OBJECT(objwin)));
+	Game_object *addr = static_cast<Game_object*>(gtk_object_get_user_data(GTK_OBJECT(objwin)));
 	int tx = get_spin("obj_x"), ty = get_spin("obj_y"),
 	    tz = get_spin("obj_z");
 	std::string name(get_text_entry("obj_name"));

@@ -39,6 +39,8 @@ using std::cout;
 using std::endl;
 using std::string;
 
+class Egg_object;
+
 /*
  *  Open egg window.
  */
@@ -242,7 +244,7 @@ int ExultStudio::init_egg_window(
     unsigned char *data,
     int datalen
 ) {
-	uintptr addr;
+	Egg_object *addr;
 	int tx, ty, tz;
 	int shape, frame;
 	int type;
@@ -260,7 +262,7 @@ int ExultStudio::init_egg_window(
 		return 0;
 	}
 	// Store address with window.
-	gtk_object_set_user_data(GTK_OBJECT(eggwin), reinterpret_cast<gpointer>(addr));
+	gtk_object_set_user_data(GTK_OBJECT(eggwin), addr);
 	GtkWidget *notebook = glade_xml_get_widget(app_xml, "notebook1");
 	if (notebook)           // 1st is monster (1).
 		gtk_notebook_set_page(GTK_NOTEBOOK(notebook), type - 1);
@@ -382,8 +384,6 @@ int ExultStudio::save_egg_window(
 ) {
 	cout << "In save_egg_window()" << endl;
 	// Get egg (null if creating new).
-	uintptr addr = reinterpret_cast<uintptr>(gtk_object_get_user_data(
-	                         GTK_OBJECT(eggwin)));
 	int tx = -1, ty = -1, tz = -1;  // +++++For now.
 	int shape = -1, frame = -1; // For now.
 	int type = -1;
@@ -480,6 +480,7 @@ int ExultStudio::save_egg_window(
 		cout << "Unknown egg type" << endl;
 		return 0;
 	}
+	Egg_object *addr = static_cast<Egg_object*>(gtk_object_get_user_data(GTK_OBJECT(eggwin)));
 	if (Egg_object_out(server_socket, addr, tx, ty, tz,
 	                   shape, frame, type, criteria, probability, distance,
 	                   nocturnal, once, hatched, auto_reset,

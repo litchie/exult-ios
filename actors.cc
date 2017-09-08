@@ -2172,7 +2172,6 @@ bool Actor::edit(
 	        cheat.in_map_editor()) {
 		editing = 0;
 		Tile_coord t = get_tile();
-		uintptr addr = reinterpret_cast<uintptr>(this);
 		int num_schedules;  // Set up schedule-change list.
 		Schedule_change *changes;
 		get_schedules(changes, num_schedules);
@@ -2185,7 +2184,7 @@ bool Actor::edit(
 			schedules[i].ty = p.ty;
 			schedules[i].tz = p.tz;
 		}
-		if (Npc_actor_out(client_socket, addr, t.tx, t.ty, t.tz,
+		if (Npc_actor_out(client_socket, this, t.tx, t.ty, t.tz,
 		                  get_shapenum(), get_framenum(), get_face_shapenum(),
 		                  name, npc_num, ident, usecode, usecode_name, properties,
 		                  attack_mode, alignment, flags, flags2, type_flags,
@@ -2209,7 +2208,7 @@ void Actor::update_from_studio(
     int datalen
 ) {
 #ifdef USE_EXULTSTUDIO
-	uintptr addr;
+	Actor *npc;
 	int tx, ty, tz;
 	int shape, frame, face;
 	std::string name;
@@ -2223,14 +2222,13 @@ void Actor::update_from_studio(
 	unsigned long type_flags;   // Movement flags.
 	short num_schedules;
 	Serial_schedule schedules[8];
-	if (!Npc_actor_in(data, datalen, addr, tx, ty, tz, shape, frame,
+	if (!Npc_actor_in(data, datalen, npc, tx, ty, tz, shape, frame,
 	                  face, name, npc_num, ident, usecode, usecodefun,
 	                  properties, attack_mode, alignment,
 	                  oflags, xflags, type_flags, num_schedules, schedules)) {
 		cout << "Error decoding npc" << endl;
 		return;
 	}
-	Actor *npc = reinterpret_cast<Actor *>(addr);
 	if (npc && npc != editing) {
 		cout << "Npc from ExultStudio is not being edited" << endl;
 		return;

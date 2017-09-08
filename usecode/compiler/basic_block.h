@@ -476,9 +476,9 @@ public:
 	}
 #ifdef DEBUG    // For debugging.
 	void check() const {
-		cout << hex << setw(8) << setfill('0') << reinterpret_cast<uintptr>(this)
-		     << '\t' << setw(8) << setfill('0') << reinterpret_cast<uintptr>(taken)
-		     << '\t' << setw(8) << setfill('0') << reinterpret_cast<uintptr>(ntaken)
+		cout << hex << setw(8) << setfill('0') << this
+		     << '\t' << setw(8) << setfill('0') << taken
+		     << '\t' << setw(8) << setfill('0') << ntaken
 		     << '\t';
 		for (vector<Opcode *>::const_iterator it = instructions.begin();
 		        it != instructions.end(); ++it)

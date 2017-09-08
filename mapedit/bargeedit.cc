@@ -35,6 +35,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 using std::cout;
 using std::endl;
+
+class Barge_object;
+
 /*
  *  Open barge window.
  */
@@ -134,7 +137,7 @@ int ExultStudio::init_barge_window(
     unsigned char *data,
     int datalen
 ) {
-	uintptr addr;
+	Barge_object *addr;
 	int tx, ty, tz;
 	int shape, frame;
 	int xtiles, ytiles, dir;
@@ -144,7 +147,7 @@ int ExultStudio::init_barge_window(
 		return 0;
 	}
 	// Store address with window.
-	gtk_object_set_user_data(GTK_OBJECT(bargewin), reinterpret_cast<gpointer>(addr));
+	gtk_object_set_user_data(GTK_OBJECT(bargewin), addr);
 	set_spin("barge_xtiles", xtiles);
 	set_spin("barge_ytiles", ytiles);
 	set_optmenu("barge_dir", dir);
@@ -177,8 +180,7 @@ int ExultStudio::save_barge_window(
 ) {
 	cout << "In save_barge_window()" << endl;
 	// Get barge (null if creating new).
-	uintptr addr = reinterpret_cast<uintptr>(gtk_object_get_user_data(
-	                         GTK_OBJECT(bargewin)));
+	Barge_object *addr = static_cast<Barge_object*>(gtk_object_get_user_data(GTK_OBJECT(bargewin)));
 	int tx = -1, ty = -1, tz = -1;  // +++++For now.
 	int shape = -1, frame = -1; // For now.
 	int dir = get_optmenu("barge_dir");
