@@ -1039,10 +1039,9 @@ bool Game_object::edit(
 	        cheat.in_map_editor()) {
 		editing = 0;
 		Tile_coord t = get_tile();
-		uintptr addr = reinterpret_cast<uintptr>(this);
 		std::string name = get_name();
 		if (Object_out(client_socket, Exult_server::obj,
-		               addr, t.tx, t.ty, t.tz,
+		               this, t.tx, t.ty, t.tz,
 		               get_shapenum(), get_framenum(), get_quality(),
 		               name) != -1) {
 			cout << "Sent object data to ExultStudio" << endl;
@@ -1064,16 +1063,15 @@ void Game_object::update_from_studio(
     int datalen
 ) {
 #ifdef USE_EXULTSTUDIO
-	uintptr addr;
+	Game_object *obj;
 	int tx, ty, tz;
 	int shape, frame, quality;
 	std::string name;
-	if (!Object_in(data, datalen, addr, tx, ty, tz, shape, frame,
+	if (!Object_in(data, datalen, obj, tx, ty, tz, shape, frame,
 	               quality, name)) {
 		cout << "Error decoding object" << endl;
 		return;
 	}
-	Game_object *obj = reinterpret_cast<Game_object *>(addr);
 	if (!editing || obj != editing) {
 		cout << "Obj from ExultStudio is not being edited" << endl;
 		return;

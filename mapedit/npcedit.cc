@@ -46,6 +46,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 using   std::cout;
 using   std::endl;
+
+class Actor;
+
 /*
  *  Open npc window.
  */
@@ -495,7 +498,7 @@ int ExultStudio::init_npc_window(
     unsigned char *data,
     int datalen
 ) {
-	uintptr addr;
+	Actor *addr;
 	int tx, ty, tz;
 	int shape, frame, face;
 	std::string name;
@@ -517,7 +520,7 @@ int ExultStudio::init_npc_window(
 		return 0;
 	}
 	// Store address with window.
-	gtk_object_set_user_data(GTK_OBJECT(npcwin), reinterpret_cast<gpointer>(addr));
+	gtk_object_set_user_data(GTK_OBJECT(npcwin), addr);
 	// Store name, ident, num.
 	utf8Str utf8name(name.c_str());
 	set_entry("npc_name_entry", utf8name);
@@ -616,8 +619,7 @@ int ExultStudio::save_npc_window(
 ) {
 	cout << "In save_npc_window()" << endl;
 	// Get npc (null if creating new).
-	uintptr addr = reinterpret_cast<uintptr>(gtk_object_get_user_data(
-	                         GTK_OBJECT(npcwin)));
+	Actor *addr = static_cast<Actor*>(gtk_object_get_user_data(GTK_OBJECT(npcwin)));
 	int tx = -1, ty = -1, tz = -1;  // +++++For now.
 	codepageStr locname(get_text_entry("npc_name_entry"));
 	std::string name(locname);

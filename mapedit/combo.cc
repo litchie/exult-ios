@@ -42,6 +42,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 using std::cout;
 using std::endl;
 
+class Game_object;
+
 const int border = 2;           // Border at bottom, sides of each
 //   combo in browser.
 const int maxtiles = 32;        // Max. width/height in tiles.
@@ -694,7 +696,7 @@ void Combo_editor::add(
     int datalen,
     bool toggle
 ) {
-	uintptr addr;
+	Game_object *addr;
 	int tx, ty, tz;
 	int shape, frame, quality;
 	std::string name;

@@ -748,8 +748,7 @@ bool Barge_object::edit(
 	        cheat.in_map_editor()) {
 		editing = 0;
 		Tile_coord t = get_tile();
-		uintptr addr = reinterpret_cast<uintptr>(this);
-		if (Barge_object_out(client_socket, addr, t.tx, t.ty, t.tz,
+		if (Barge_object_out(client_socket, this, t.tx, t.ty, t.tz,
 		                     get_shapenum(), get_framenum(),
 		                     xtiles, ytiles, dir) != -1) {
 			cout << "Sent barge data to ExultStudio" << endl;
@@ -773,16 +772,15 @@ void Barge_object::update_from_studio(
     int datalen
 ) {
 #ifdef USE_EXULTSTUDIO
-	uintptr addr;
+	Barge_object *barge;
 	int tx, ty, tz;
 	int shape, frame;
 	int xtiles, ytiles, dir;
-	if (!Barge_object_in(data, datalen, addr, tx, ty, tz, shape, frame,
+	if (!Barge_object_in(data, datalen, barge, tx, ty, tz, shape, frame,
 	                     xtiles, ytiles, dir)) {
 		cout << "Error decoding barge" << endl;
 		return;
 	}
-	Barge_object *barge = reinterpret_cast<Barge_object *>(addr);
 	if (barge && barge != editing) {
 		cout << "Barge from ExultStudio is not being edited" << endl;
 		return;

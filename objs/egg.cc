@@ -858,10 +858,9 @@ bool Egg_object::edit(
 	        cheat.in_map_editor()) {
 		editing = 0;
 		Tile_coord t = get_tile();
-		uintptr addr = reinterpret_cast<uintptr>(this);
 		// Usecode function name.
 		string str1 = get_str1();
-		if (Egg_object_out(client_socket, addr, t.tx, t.ty, t.tz,
+		if (Egg_object_out(client_socket, this, t.tx, t.ty, t.tz,
 		                   get_shapenum(), get_framenum(),
 		                   type, criteria, probability, distance,
 		                   (flags >> nocturnal) & 1, (flags >> once) & 1,
@@ -888,7 +887,7 @@ void Egg_object::update_from_studio(
 ) {
 #ifdef USE_EXULTSTUDIO
 	int x, y;           // Mouse click for new egg.
-	uintptr addr;
+	Egg_object *oldegg;
 	int tx, ty, tz;
 	int shape, frame;
 	int type;
@@ -898,14 +897,13 @@ void Egg_object::update_from_studio(
 	bool nocturnal, once, hatched, auto_reset;
 	int data1, data2, data3;
 	string str1;
-	if (!Egg_object_in(data, datalen, addr, tx, ty, tz, shape, frame,
+	if (!Egg_object_in(data, datalen, oldegg, tx, ty, tz, shape, frame,
 	                   type, criteria, probability, distance,
 	                   nocturnal, once, hatched, auto_reset,
 	                   data1, data2, data3, str1)) {
 		cout << "Error decoding egg" << endl;
 		return;
 	}
-	Egg_object *oldegg = reinterpret_cast<Egg_object *>(addr);
 	if (oldegg && oldegg != editing) {
 		cout << "Egg from ExultStudio is not being edited" << endl;
 		return;
