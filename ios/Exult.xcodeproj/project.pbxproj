@@ -387,8 +387,8 @@
 		8AB53D8B1C9CA0A90084C69D /* ShortcutBar_gump.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShortcutBar_gump.h; path = ../gumps/ShortcutBar_gump.h; sourceTree = "<group>"; };
 		8AC797C51C8D0E4F001AF014 /* unzip.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = unzip.cc; sourceTree = "<group>"; };
 		8AC797C61C8D0E4F001AF014 /* zip.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zip.cc; sourceTree = "<group>"; };
-		8AD2C46A1DF8390E006D6005 /* array_size.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = array_size.h; path = "../../../GIT/exult-ios/headers/array_size.h"; sourceTree = "<group>"; };
-		8AD2C46F1DF83918006D6005 /* ios_state.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = ios_state.hpp; path = "../../../GIT/exult-ios/headers/ios_state.hpp"; sourceTree = "<group>"; };
+		8AD2C46A1DF8390E006D6005 /* array_size.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = array_size.h; path = "../headers/array_size.h"; sourceTree = "<group>"; };
+		8AD2C46F1DF83918006D6005 /* ios_state.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = ios_state.hpp; path = "../headers/ios_state.hpp"; sourceTree = "<group>"; };
 		8AD4A92F1A92B9DB0004762D /* iphoneOptions_gump.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = iphoneOptions_gump.cc; path = ../gumps/iphoneOptions_gump.cc; sourceTree = "<group>"; };
 		8AD4A9301A92B9DB0004762D /* iphoneOptions_gump.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = iphoneOptions_gump.h; path = ../gumps/iphoneOptions_gump.h; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
