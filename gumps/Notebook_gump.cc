@@ -141,11 +141,7 @@ void One_note::write(
  */
 
 inline Rectangle Get_text_area(bool right, bool startnote) {
-#ifdef __IPHONEOS__
-	const int ninf = 0;        // Space for note info.
-#else
 	const int ninf = 12;        // Space for note info.
-#endif
 	if (!startnote)
 		return right ? Rectangle(rpagex, pagey, 122, 130)
 		       : Rectangle(lpagex, pagey, 122, 130);
@@ -330,38 +326,33 @@ bool Notebook_gump::paint_page(
 		}
 		snprintf(buf, sizeof(buf), "Day %d, %02d:%02d%s",
 		         note->day, h ? h : 12, note->minute, ampm);
+		sman->paint_text(
 #ifdef __IPHONEOS__
-		sman->paint_text(2, buf, x + box.x, box.h - 7);
+		4,
 #else
-		sman->paint_text(2, buf, x + box.x, y + pagey);
+		2,
 #endif
+		buf, x + box.x, y + pagey);
 		//when cheating show location of entry (in dec - could use sextant postions)
 		if (cheat()) {
 			snprintf(buf, sizeof(buf), "%d, %d",
 			         note->tx, note->ty);
+			sman->paint_text(4, buf, x + box.x + 80, 
 #ifdef __IPHONEOS__
-			sman->paint_text(4, buf, x + box.x + 80, box.h - 15);
+			y + pagey);
 #else
-			sman->paint_text(4, buf, x + box.x + 80, y + pagey - 4);
+			y + pagey - 4);
 #endif
 		}
 		// Use bright green for automatic text.
 		gwin->get_win()->fill8(sman->get_special_pixel(
 		                           note->gflag >= 0 ? POISON_PIXEL : CHARMED_PIXEL),
-#ifdef __IPHONEOS__
-		                       box.w, 1, x + box.x, box.h - 17);
-#else
 							   box.w, 1, x + box.x, y + box.y - 3);
-#endif
 	}
 	const char *str = note->text.c_str() + offset;
 	cursor.offset -= offset;
 	int endoff = sman->paint_text_box(font, str, x + box.x,
-#ifdef __IPHONEOS__
-	                                  y + box.y , box.w, box.h -35, vlead,
-#else
 									  y + box.y , box.w, box.h, vlead,
-#endif
 	                                  false, false, -1, find_cursor ? &cursor : 0);
 	cursor.offset += offset;
 	if (endoff > 0) {       // All painted?
