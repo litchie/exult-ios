@@ -246,28 +246,21 @@ void Notebook_gump::add_new(
 Notebook_gump::Notebook_gump(
 ) : Gump(0, 
 #ifdef __IPHONEOS__
-5, -4, game->get_shape("gumps/book")), curnote(0),
-#else
-EXULT_FLX_NOTEBOOK_SHP, SF_EXULT_FLX), curnote(0),
+//on iOS the Notebook gump needs to be aligned with the top
+5, -2,
 #endif
+EXULT_FLX_NOTEBOOK_SHP, SF_EXULT_FLX), curnote(0),
 	curpage(0), updnx(0) {
 	handles_kbd = true;
 	cursor.offset = 0;
 	// (Obj. area doesn't matter.)
-#ifndef __IPHONEOS__
 	set_object_area(Rectangle(36, 10, 100, 100), 7, 40);
-#endif
 	if (page_info.empty())
 		page_info.push_back(Notebook_top(0, 0));
 	// Where to paint page marks:
 	const int lpagex = 35, rpagex = 298, lrpagey = 12;
-#ifdef __IPHONEOS__
-	leftpage = new Notebook_page_button(this, lpagex + 1, lrpagey - 3, 0);
-	rightpage = new Notebook_page_button(this, rpagex +1 , lrpagey -3, 1);
-#else
 	leftpage = new Notebook_page_button(this, lpagex, lrpagey, 0);
 	rightpage = new Notebook_page_button(this, rpagex, lrpagey, 1);
-#endif
 	add_new("");          // Add new note to end.
 }
 
@@ -279,7 +272,8 @@ Notebook_gump *Notebook_gump::create(
 		instance = new Notebook_gump;
 #ifdef __IPHONEOS__
 		touchui->hideGameControls();
-		 SDL_StartTextInput();
+		if (!SDL_IsTextInputActive())
+			SDL_StartTextInput();
 #endif
 	}
 	return instance;
@@ -444,7 +438,8 @@ Gump_button *Notebook_gump::on_button(
 		paint();
 		updnx = cursor.x - x - lpagex;
 #ifdef __IPHONEOS__
-		SDL_StartTextInput();
+		if (!SDL_IsTextInputActive())
+			SDL_StartTextInput();
 #endif
 	} else {
 		offset += -coff;        // New offset.
@@ -467,7 +462,8 @@ Gump_button *Notebook_gump::on_button(
 			paint();
 			updnx = cursor.x - x - rpagex;
 #ifdef __IPHONEOS__
-			SDL_StartTextInput();
+			if (!SDL_IsTextInputActive())
+				SDL_StartTextInput();
 #endif
 		}
 	}
@@ -661,10 +657,6 @@ bool Notebook_gump::handle_kbd_event(
 			next_page();
 			paint();
 		}
-#ifdef __IPHONEOS__
-		//hack to reinable the iOS keyboard. It wants to hide after Return is hit
-		SDL_StartTextInput();
-#endif
 		break;
 	case SDLK_BACKSPACE:
 		if (note->del(cursor.offset - 1)) {
