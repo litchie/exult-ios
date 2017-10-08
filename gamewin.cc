@@ -2191,7 +2191,7 @@ void Game_window::show_items(
 #ifdef __IPHONEOS__
 	Game_object_map_xy mobjxy;
 	find_nearby_objects(&mobjxy, x, y, gump);
-	if ((mobjxy.size() > 0) && (item_menu)) {
+	if ((mobjxy.size() > 0) && (item_menu) && !Notebook_gump::get_instance()) {
 		// Make sure menu is visible on the screen
 		int w = Game_window::get_instance()->get_width();
 		int h = Game_window::get_instance()->get_height();
