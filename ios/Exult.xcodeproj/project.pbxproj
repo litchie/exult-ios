@@ -888,8 +888,8 @@
 		E71BBD911A725E1E0003F662 /* dpadglass-southwest.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dpadglass-southwest.png"; sourceTree = "<group>"; };
 		E71BBD921A725E1E0003F662 /* dpadglass-west.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dpadglass-west.png"; sourceTree = "<group>"; };
 		E71BBD931A725E1E0003F662 /* dpadglass.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = dpadglass.png; sourceTree = "<group>"; };
-		E738C8491A6FFF58003A950D /* libogg.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = libogg.xcodeproj; path = "libogg-1.3.2/Xcode-iOS/libogg.xcodeproj"; sourceTree = "<group>"; };
-		E738C84F1A6FFF65003A950D /* vorbis.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = vorbis.xcodeproj; path = "libvorbis-1.3.4/Xcode-iOS/vorbis.xcodeproj"; sourceTree = "<group>"; };
+		E738C8491A6FFF58003A950D /* libogg.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = libogg.xcodeproj; path = "libogg/Xcode-iOS/libogg.xcodeproj"; sourceTree = "<group>"; };
+		E738C84F1A6FFF65003A950D /* vorbis.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = vorbis.xcodeproj; path = "libvorbis/Xcode-iOS/vorbis.xcodeproj"; sourceTree = "<group>"; };
 		E738C85F1A71DEA1003A950D /* touchui.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = touchui.cc; path = ../touchui.cc; sourceTree = "<group>"; };
 		E738C8601A71DEA1003A950D /* touchui.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = touchui.h; path = ../touchui.h; sourceTree = "<group>"; };
 		FD779EDD0E26BA1200F39101 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
@@ -2240,8 +2240,8 @@
 					./include,
 					../,
 					"./SDL2-2.0.3/include",
-					"./libvorbis-1.3.4/include",
-					"./libogg-1.3.2/include",
+					"./libvorbis/include",
+					"./libogg/include",
 					./libpng/include,
 				);
 				INFOPLIST_FILE = Info.plist;
@@ -2275,8 +2275,8 @@
 					./include,
 					../,
 					"./SDL2-2.0.3/include",
-					"./libvorbis-1.3.4/include",
-					"./libogg-1.3.2/include",
+					"./libvorbis/include",
+					"./libogg/include",
 					./libpng/include,
 				);
 				INFOPLIST_FILE = Info.plist;
