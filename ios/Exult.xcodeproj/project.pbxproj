@@ -2242,7 +2242,6 @@
 					"./SDL2-2.0.3/include",
 					"./libvorbis/include",
 					"./libogg/include",
-					./libpng/include,
 				);
 				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -2277,7 +2276,6 @@
 					"./SDL2-2.0.3/include",
 					"./libvorbis/include",
 					"./libogg/include",
-					./libpng/include,
 				);
 				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
