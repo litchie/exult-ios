@@ -2197,8 +2197,29 @@ void Wizard_eye(
 				break;
 			}
 			case SDL_KEYDOWN:
-				if (event.key.keysym.sym == SDLK_ESCAPE)
-					timeout = true;
+			case SDL_KEYUP:
+				int c = event.key.keysym.sym;
+				for (int i = 16; i; i--)
+					switch (c) {
+						case SDLK_ESCAPE:
+							timeout = true;
+							break;
+#ifdef __IPHONEOS__
+						case SDLK_LEFT:
+							gwin->view_left();
+							break;
+						case SDLK_UP:
+							gwin->view_up();
+							break;
+						case SDLK_DOWN:
+							gwin->view_down();
+							break;
+						case SDLK_RIGHT:
+							gwin->view_right();
+							break;
+#endif
+					}
+			break;
 			}
 		// Get current time, & animate.
 		uint32 ticks = SDL_GetTicks();
