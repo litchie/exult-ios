@@ -360,6 +360,8 @@
 
 #	LEGGINGS
 
+#	Diaper
+:822/		0/		1/		5/		0/		1/		208/	0
 #	Greaves
 :353/		-1/		1/		5/		0/		1/		178/	0
 #	Leather

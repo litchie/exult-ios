@@ -133,6 +133,7 @@ EXULT_BG_PAPERDOL_VGA_OBJECTS = \
 	bg/love_arrows.shp \
 	bg/magebane.shp \
 	bg/shieldbacks.shp \
+	bg/diaper.shp \
 	bg/bg_paperdol.in
 EXULT_BG_MR_FACES_VGA_OBJECTS = \
 	bg/mr_faces.shp \
