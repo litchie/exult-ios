@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -20,6 +20,10 @@
 #include <stdio.h>
 #include <string.h>
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten/emscripten.h>
+#endif
+
 #include "SDL.h"
 
 #define MOOSEPIC_W 64
@@ -29,112 +33,124 @@
 #define MOOSEFRAMES_COUNT 10
 
 SDL_Color MooseColors[84] = {
-    {49, 49, 49}
-    , {66, 24, 0}
-    , {66, 33, 0}
-    , {66, 66, 66}
+    {49, 49, 49, SDL_ALPHA_OPAQUE}
+    , {66, 24, 0, SDL_ALPHA_OPAQUE}
+    , {66, 33, 0, SDL_ALPHA_OPAQUE}
+    , {66, 66, 66, SDL_ALPHA_OPAQUE}
     ,
-    {66, 115, 49}
-    , {74, 33, 0}
-    , {74, 41, 16}
-    , {82, 33, 8}
+    {66, 115, 49, SDL_ALPHA_OPAQUE}
+    , {74, 33, 0, SDL_ALPHA_OPAQUE}
+    , {74, 41, 16, SDL_ALPHA_OPAQUE}
+    , {82, 33, 8, SDL_ALPHA_OPAQUE}
     ,
-    {82, 41, 8}
-    , {82, 49, 16}
-    , {82, 82, 82}
-    , {90, 41, 8}
+    {82, 41, 8, SDL_ALPHA_OPAQUE}
+    , {82, 49, 16, SDL_ALPHA_OPAQUE}
+    , {82, 82, 82, SDL_ALPHA_OPAQUE}
+    , {90, 41, 8, SDL_ALPHA_OPAQUE}
     ,
-    {90, 41, 16}
-    , {90, 57, 24}
-    , {99, 49, 16}
-    , {99, 66, 24}
+    {90, 41, 16, SDL_ALPHA_OPAQUE}
+    , {90, 57, 24, SDL_ALPHA_OPAQUE}
+    , {99, 49, 16, SDL_ALPHA_OPAQUE}
+    , {99, 66, 24, SDL_ALPHA_OPAQUE}
     ,
-    {99, 66, 33}
-    , {99, 74, 33}
-    , {107, 57, 24}
-    , {107, 82, 41}
+    {99, 66, 33, SDL_ALPHA_OPAQUE}
+    , {99, 74, 33, SDL_ALPHA_OPAQUE}
+    , {107, 57, 24, SDL_ALPHA_OPAQUE}
+    , {107, 82, 41, SDL_ALPHA_OPAQUE}
     ,
-    {115, 57, 33}
-    , {115, 66, 33}
-    , {115, 66, 41}
-    , {115, 74, 0}
+    {115, 57, 33, SDL_ALPHA_OPAQUE}
+    , {115, 66, 33, SDL_ALPHA_OPAQUE}
+    , {115, 66, 41, SDL_ALPHA_OPAQUE}
+    , {115, 74, 0, SDL_ALPHA_OPAQUE}
     ,
-    {115, 90, 49}
-    , {115, 115, 115}
-    , {123, 82, 0}
-    , {123, 99, 57}
+    {115, 90, 49, SDL_ALPHA_OPAQUE}
+    , {115, 115, 115, SDL_ALPHA_OPAQUE}
+    , {123, 82, 0, SDL_ALPHA_OPAQUE}
+    , {123, 99, 57, SDL_ALPHA_OPAQUE}
     ,
-    {132, 66, 41}
-    , {132, 74, 41}
-    , {132, 90, 8}
-    , {132, 99, 33}
+    {132, 66, 41, SDL_ALPHA_OPAQUE}
+    , {132, 74, 41, SDL_ALPHA_OPAQUE}
+    , {132, 90, 8, SDL_ALPHA_OPAQUE}
+    , {132, 99, 33, SDL_ALPHA_OPAQUE}
     ,
-    {132, 99, 66}
-    , {132, 107, 66}
-    , {140, 74, 49}
-    , {140, 99, 16}
+    {132, 99, 66, SDL_ALPHA_OPAQUE}
+    , {132, 107, 66, SDL_ALPHA_OPAQUE}
+    , {140, 74, 49, SDL_ALPHA_OPAQUE}
+    , {140, 99, 16, SDL_ALPHA_OPAQUE}
     ,
-    {140, 107, 74}
-    , {140, 115, 74}
-    , {148, 107, 24}
-    , {148, 115, 82}
+    {140, 107, 74, SDL_ALPHA_OPAQUE}
+    , {140, 115, 74, SDL_ALPHA_OPAQUE}
+    , {148, 107, 24, SDL_ALPHA_OPAQUE}
+    , {148, 115, 82, SDL_ALPHA_OPAQUE}
     ,
-    {148, 123, 74}
-    , {148, 123, 90}
-    , {156, 115, 33}
-    , {156, 115, 90}
+    {148, 123, 74, SDL_ALPHA_OPAQUE}
+    , {148, 123, 90, SDL_ALPHA_OPAQUE}
+    , {156, 115, 33, SDL_ALPHA_OPAQUE}
+    , {156, 115, 90, SDL_ALPHA_OPAQUE}
     ,
-    {156, 123, 82}
-    , {156, 132, 82}
-    , {156, 132, 99}
-    , {156, 156, 156}
+    {156, 123, 82, SDL_ALPHA_OPAQUE}
+    , {156, 132, 82, SDL_ALPHA_OPAQUE}
+    , {156, 132, 99, SDL_ALPHA_OPAQUE}
+    , {156, 156, 156, SDL_ALPHA_OPAQUE}
     ,
-    {165, 123, 49}
-    , {165, 123, 90}
-    , {165, 132, 82}
-    , {165, 132, 90}
+    {165, 123, 49, SDL_ALPHA_OPAQUE}
+    , {165, 123, 90, SDL_ALPHA_OPAQUE}
+    , {165, 132, 82, SDL_ALPHA_OPAQUE}
+    , {165, 132, 90, SDL_ALPHA_OPAQUE}
     ,
-    {165, 132, 99}
-    , {165, 140, 90}
-    , {173, 132, 57}
-    , {173, 132, 99}
+    {165, 132, 99, SDL_ALPHA_OPAQUE}
+    , {165, 140, 90, SDL_ALPHA_OPAQUE}
+    , {173, 132, 57, SDL_ALPHA_OPAQUE}
+    , {173, 132, 99, SDL_ALPHA_OPAQUE}
     ,
-    {173, 140, 107}
-    , {173, 140, 115}
-    , {173, 148, 99}
-    , {173, 173, 173}
+    {173, 140, 107, SDL_ALPHA_OPAQUE}
+    , {173, 140, 115, SDL_ALPHA_OPAQUE}
+    , {173, 148, 99, SDL_ALPHA_OPAQUE}
+    , {173, 173, 173, SDL_ALPHA_OPAQUE}
     ,
-    {181, 140, 74}
-    , {181, 148, 115}
-    , {181, 148, 123}
-    , {181, 156, 107}
+    {181, 140, 74, SDL_ALPHA_OPAQUE}
+    , {181, 148, 115, SDL_ALPHA_OPAQUE}
+    , {181, 148, 123, SDL_ALPHA_OPAQUE}
+    , {181, 156, 107, SDL_ALPHA_OPAQUE}
     ,
-    {189, 148, 123}
-    , {189, 156, 82}
-    , {189, 156, 123}
-    , {189, 156, 132}
+    {189, 148, 123, SDL_ALPHA_OPAQUE}
+    , {189, 156, 82, SDL_ALPHA_OPAQUE}
+    , {189, 156, 123, SDL_ALPHA_OPAQUE}
+    , {189, 156, 132, SDL_ALPHA_OPAQUE}
     ,
-    {189, 189, 189}
-    , {198, 156, 123}
-    , {198, 165, 132}
-    , {206, 165, 99}
+    {189, 189, 189, SDL_ALPHA_OPAQUE}
+    , {198, 156, 123, SDL_ALPHA_OPAQUE}
+    , {198, 165, 132, SDL_ALPHA_OPAQUE}
+    , {206, 165, 99, SDL_ALPHA_OPAQUE}
     ,
-    {206, 165, 132}
-    , {206, 173, 140}
-    , {206, 206, 206}
-    , {214, 173, 115}
+    {206, 165, 132, SDL_ALPHA_OPAQUE}
+    , {206, 173, 140, SDL_ALPHA_OPAQUE}
+    , {206, 206, 206, SDL_ALPHA_OPAQUE}
+    , {214, 173, 115, SDL_ALPHA_OPAQUE}
     ,
-    {214, 173, 140}
-    , {222, 181, 148}
-    , {222, 189, 132}
-    , {222, 189, 156}
+    {214, 173, 140, SDL_ALPHA_OPAQUE}
+    , {222, 181, 148, SDL_ALPHA_OPAQUE}
+    , {222, 189, 132, SDL_ALPHA_OPAQUE}
+    , {222, 189, 156, SDL_ALPHA_OPAQUE}
     ,
-    {222, 222, 222}
-    , {231, 198, 165}
-    , {231, 231, 231}
-    , {239, 206, 173}
+    {222, 222, 222, SDL_ALPHA_OPAQUE}
+    , {231, 198, 165, SDL_ALPHA_OPAQUE}
+    , {231, 231, 231, SDL_ALPHA_OPAQUE}
+    , {239, 206, 173, SDL_ALPHA_OPAQUE}
 };
 
+Uint8 MooseFrame[MOOSEFRAMES_COUNT][MOOSEFRAME_SIZE*2];
+SDL_Texture *MooseTexture;
+SDL_Rect displayrect;
+int window_w;
+int window_h;
+SDL_Window *window;
+SDL_Renderer *renderer;
+int paused = 0;
+int i;
+SDL_bool done = SDL_FALSE;
+Uint32 pixel_format = SDL_PIXELFORMAT_YV12;
+static int fpsdelay;
 
 /* Call this instead of exit(), so we can clean up SDL: atexit() is evil. */
 static void
@@ -206,6 +222,29 @@ ConvertRGBtoYV12(Uint8 *rgb, Uint8 *out, int w, int h,
     }
 }
 
+void
+ConvertRGBtoNV12(Uint8 *rgb, Uint8 *out, int w, int h,
+                 int monochrome, int luminance)
+{
+    int x, y;
+    int yuv[3];
+    Uint8 *op[2];
+
+    op[0] = out;
+    op[1] = op[0] + w*h;
+    for (y = 0; y < h; ++y) {
+        for (x = 0; x < w; ++x) {
+            RGBtoYUV(rgb, yuv, monochrome, luminance);
+            *(op[0]++) = yuv[0];
+            if (x % 2 == 0 && y % 2 == 0) {
+                *(op[1]++) = yuv[1];
+                *(op[1]++) = yuv[2];
+            }
+            rgb += 3;
+        }
+    }
+}
+
 static void
 PrintUsage(char *argv0)
 {
@@ -223,27 +262,79 @@ PrintUsage(char *argv0)
     SDL_Log("\n");
 }
 
+void
+loop()
+{
+    SDL_Event event;
+
+    while (SDL_PollEvent(&event)) {
+        switch (event.type) {
+        case SDL_WINDOWEVENT:
+            if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
+                SDL_RenderSetViewport(renderer, NULL);
+                displayrect.w = window_w = event.window.data1;
+                displayrect.h = window_h = event.window.data2;
+            }
+            break;
+        case SDL_MOUSEBUTTONDOWN:
+            displayrect.x = event.button.x - window_w / 2;
+            displayrect.y = event.button.y - window_h / 2;
+            break;
+        case SDL_MOUSEMOTION:
+            if (event.motion.state) {
+                displayrect.x = event.motion.x - window_w / 2;
+                displayrect.y = event.motion.y - window_h / 2;
+            }
+            break;
+        case SDL_KEYDOWN:
+            if (event.key.keysym.sym == SDLK_SPACE) {
+                paused = !paused;
+                break;
+            }
+            if (event.key.keysym.sym != SDLK_ESCAPE) {
+                break;
+            }
+        case SDL_QUIT:
+            done = SDL_TRUE;
+            break;
+        }
+    }
+
+#ifndef __EMSCRIPTEN__
+    SDL_Delay(fpsdelay);
+#endif
+
+    if (!paused) {
+        i = (i + 1) % MOOSEFRAMES_COUNT;
+
+        SDL_UpdateTexture(MooseTexture, NULL, MooseFrame[i], MOOSEPIC_W*SDL_BYTESPERPIXEL(pixel_format));
+    }
+    SDL_RenderClear(renderer);
+    SDL_RenderCopy(renderer, MooseTexture, NULL, &displayrect);
+    SDL_RenderPresent(renderer);
+
+#ifdef __EMSCRIPTEN__
+    if (done) {
+        emscripten_cancel_main_loop();
+    }
+#endif
+}
+
 int
 main(int argc, char **argv)
 {
     Uint8 *RawMooseData;
     SDL_RWops *handle;
-    int window_w;
-    int window_h;
     SDL_Window *window;
-    SDL_Renderer *renderer;
-    Uint8 MooseFrame[MOOSEFRAMES_COUNT][MOOSEFRAME_SIZE*2];
-    SDL_Texture *MooseTexture;
-    SDL_Rect displayrect;
-    SDL_Event event;
-    int paused = 0;
-    int i, j;
+    int j;
     int fps = 12;
-    int fpsdelay;
     int nodelay = 0;
+#ifdef TEST_NV12
+    Uint32 pixel_format = SDL_PIXELFORMAT_NV12;
+#else
     Uint32 pixel_format = SDL_PIXELFORMAT_YV12;
+#endif
     int scale = 5;
-    SDL_bool done = SDL_FALSE;
 
     /* Enable standard application logging */
     SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO);
@@ -312,7 +403,6 @@ main(int argc, char **argv)
     RawMooseData = (Uint8 *) malloc(MOOSEFRAME_SIZE * MOOSEFRAMES_COUNT);
     if (RawMooseData == NULL) {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Can't allocate memory for movie !\n");
-        free(RawMooseData);
         quit(1);
     }
 
@@ -371,7 +461,17 @@ main(int argc, char **argv)
             rgb[2] = MooseColors[frame[j]].b;
             rgb += 3;
         }
-        ConvertRGBtoYV12(MooseFrameRGB, MooseFrame[i], MOOSEPIC_W, MOOSEPIC_H, 0, 100);
+        switch (pixel_format) {
+        case SDL_PIXELFORMAT_YV12:
+            ConvertRGBtoYV12(MooseFrameRGB, MooseFrame[i], MOOSEPIC_W, MOOSEPIC_H, 0, 100);
+            break;
+        case SDL_PIXELFORMAT_NV12:
+            ConvertRGBtoNV12(MooseFrameRGB, MooseFrame[i], MOOSEPIC_W, MOOSEPIC_H, 0, 100);
+            break;
+        default:
+            SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Unsupported pixel format\n");
+            break;
+        }
     }
 
     free(RawMooseData);
@@ -393,50 +493,14 @@ main(int argc, char **argv)
     SDL_EventState(SDL_KEYUP, SDL_IGNORE);
 
     /* Loop, waiting for QUIT or RESIZE */
+#ifdef __EMSCRIPTEN__
+    emscripten_set_main_loop(loop, nodelay ? 0 : fps, 1);
+#else
     while (!done) {
-        while (SDL_PollEvent(&event)) {
-            switch (event.type) {
-            case SDL_WINDOWEVENT:
-                if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
-                    SDL_RenderSetViewport(renderer, NULL);
-                    displayrect.w = window_w = event.window.data1;
-                    displayrect.h = window_h = event.window.data2;
-                }
-                break;
-            case SDL_MOUSEBUTTONDOWN:
-                displayrect.x = event.button.x - window_w / 2;
-                displayrect.y = event.button.y - window_h / 2;
-                break;
-            case SDL_MOUSEMOTION:
-                if (event.motion.state) {
-                    displayrect.x = event.motion.x - window_w / 2;
-                    displayrect.y = event.motion.y - window_h / 2;
-                }
-                break;
-            case SDL_KEYDOWN:
-                if (event.key.keysym.sym == SDLK_SPACE) {
-                    paused = !paused;
-                    break;
-                }
-                if (event.key.keysym.sym != SDLK_ESCAPE) {
-                    break;
-                }
-            case SDL_QUIT:
-                done = SDL_TRUE;
-                break;
+        loop();
             }
-        }
-        SDL_Delay(fpsdelay);
+#endif
 
-        if (!paused) {
-            i = (i + 1) % MOOSEFRAMES_COUNT;
-
-            SDL_UpdateTexture(MooseTexture, NULL, MooseFrame[i], MOOSEPIC_W*SDL_BYTESPERPIXEL(pixel_format));
-        }
-        SDL_RenderClear(renderer);
-        SDL_RenderCopy(renderer, MooseTexture, NULL, &displayrect);
-        SDL_RenderPresent(renderer);
-    }
     SDL_DestroyRenderer(renderer);
     quit(0);
     return 0;

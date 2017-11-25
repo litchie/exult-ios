@@ -134,6 +134,8 @@ static const char rcsid[] =
 #include "math_libm.h"
 #include "math_private.h"
 
+#include "SDL_assert.h"
+
 libm_hidden_proto(scalbn)
     libm_hidden_proto(floor)
 #ifdef __STDC__
@@ -181,10 +183,13 @@ __kernel_rem_pio2(x, y, e0, nx, prec, ipio2)
     double z, fw, f[20], fq[20], q[20];
 
     /* initialize jk */
+    SDL_assert((prec >= 0) && (prec < SDL_arraysize(init_jk)));
     jk = init_jk[prec];
+    SDL_assert((jk >= 2) && (jk <= 6));
     jp = jk;
 
     /* determine jx,jv,q0, note that 3>q0 */
+    SDL_assert(nx > 0);
     jx = nx - 1;
     jv = (e0 - 3) / 24;
     if (jv < 0)
@@ -199,8 +204,13 @@ __kernel_rem_pio2(x, y, e0, nx, prec, ipio2)
 
     /* compute q[0],q[1],...q[jk] */
     for (i = 0; i <= jk; i++) {
-        for (j = 0, fw = 0.0; j <= jx; j++)
-            fw += x[j] * f[jx + i - j];
+        for (j = 0, fw = 0.0; j <= jx; j++) {
+            const int32_t idx = jx + i - j;
+            SDL_assert(idx >= 0);
+            SDL_assert(idx < 20);
+            SDL_assert(idx <= m);
+            fw += x[j] * f[idx];
+        }
         q[i] = fw;
     }
 
