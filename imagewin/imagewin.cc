@@ -382,7 +382,12 @@ void Image_window::static_init() {
 #if SDL_VERSION_ATLEAST(2, 0, 0)
 		for (int j = 0; j < SDL_GetNumDisplayModes(0); j++) {
 			SDL_DisplayMode dispmode;
+#ifdef __IPHONEOS__
+			//only get the landscape resolutions
 			if (SDL_GetCurrentDisplayMode(SDL_COMPAT_DISPLAY_INDEX, &dispmode) == 0) {
+#else
+			if (SDL_GetDisplayMode(SDL_COMPAT_DISPLAY_INDEX, j, &dispmode) == 0) {
+#endif
 				Resolution res = { dispmode.w, dispmode.h, false, false, false};
 				p_resolutions[(res.width << 16) | res.height] = res;
 			
