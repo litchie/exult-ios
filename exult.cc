@@ -2477,8 +2477,14 @@ void setup_video(bool fullscreen, int setup_video_type, int resx, int resy,
 		w = 320, h = 240, sc = 1;
 		default_scaler = "point";
 #elif defined(__IPHONEOS__)
-		w = 320, h = 240, sc = 1;
+		SDL_DisplayMode dispmode;
+		if (SDL_GetDesktopDisplayMode(SDL_COMPAT_DISPLAY_INDEX, &dispmode) == 0) {
+			w = dispmode.w, h = dispmode.h,	sc = 1;
+		}
+		else
+			w = 320, h = 240, sc = 1;
 		default_scaler = "point";
+        fullscreen = 1;
 #else
 		// Default resolution is now 320x240 with 2x scaling
 		w = 320, h = 240, sc = 2;
@@ -2519,11 +2525,19 @@ void setup_video(bool fullscreen, int setup_video_type, int resx, int resy,
 		config->value(vidStr + "/display/height", resy, resy * scaleval);
 		config->value(vidStr + "/game/width", gw, 320);
 		config->value(vidStr + "/game/height", gh, 200);
+#ifdef __IPHONEOS__
+		config->value(vidStr + "/fill_mode", fmode_string, "Fill");
+#else
 		config->value(vidStr + "/fill_mode", fmode_string, "Centre");
+#endif
 		fillmode = Image_window::string_to_fillmode(fmode_string.c_str());
 		if (fillmode == 0)
 			fillmode = Image_window::AspectCorrectCentre;
+#ifdef __IPHONEOS__
+		config->value(vidStr + "/fill_scaler", fill_scaler_str, "point");
+#else
 		config->value(vidStr + "/fill_scaler", fill_scaler_str, "bilinear");
+#endif
 		fill_scaler = Image_window::get_scaler_for_name(fill_scaler_str.c_str());
 		if (fill_scaler == Image_window::NoScaler)
 			fill_scaler = Image_window::bilinear;
