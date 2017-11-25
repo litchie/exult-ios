@@ -660,11 +660,6 @@ bool Image_window::create_scale_surfaces(int w, int h, int bpp) {
 
 	// Get best bpp
 	flags = SDL_SWSURFACE | (fullscreen ? SDL_FULLSCREEN : 0);
-#ifdef __IPHONEOS__
-	flags |= SDL_WINDOW_BORDERLESS;
-	// Turn on landscape
-	SDL_SetHint(SDL_HINT_ORIENTATIONS, "LandscapeLeft LandscapeRight");
-#endif
 	hwdepth = Get_best_bpp(w, h, hwdepth, flags);
 	if (!hwdepth) return false;
 
@@ -1337,9 +1332,6 @@ void Image_window::UpdateRect(SDL_Surface *surf, int x, int y, int w, int h)
 	//SDL_Rect destRect = {x, y, w, h};
 	SDL_RenderCopy(screen_renderer, screen_texture, NULL, NULL);
 	SDL_RenderPresent(screen_renderer);
-#ifdef __IPHONEOS__
-	SDL_PumpEvents(); /* Otherwise screen won't be updated */
-#endif
 }
 int Image_window::VideoModeOK(int width, int height, int bpp, Uint32 flags)
 {
