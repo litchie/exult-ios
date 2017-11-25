@@ -2,7 +2,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import "GamePadView.h"
-#import "./SDL2-2.0.3/src/video/uikit/SDL_uikitappdelegate.h"
+#import "./SDL2/src/video/uikit/SDL_uikitappdelegate.h"
 #include "Configuration.h"
 
 #include <cassert>
