@@ -387,7 +387,8 @@ SDL_AppleTVControllerUIHintChanged(void *userdata, const char *name, const char 
 {
     SDL_SendKeyboardKey(SDL_PRESSED, SDL_SCANCODE_RETURN);
     SDL_SendKeyboardKey(SDL_RELEASED, SDL_SCANCODE_RETURN);
-    SDL_StopTextInput();
+    // SDL closes Text Input after Return but that is not desireable for multiline texts
+    //SDL_StopTextInput();
     return YES;
 }
 
