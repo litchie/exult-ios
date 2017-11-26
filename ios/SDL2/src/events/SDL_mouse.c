@@ -34,7 +34,7 @@
 /* The mouse state */
 static SDL_Mouse SDL_mouse;
 static Uint32 SDL_double_click_time = 500;
-static int SDL_double_click_radius = 5;
+static int SDL_double_click_radius = 1;
 
 static int
 SDL_PrivateSendMouseMotion(SDL_Window * window, SDL_MouseID mouseID, int relative, int x, int y);
