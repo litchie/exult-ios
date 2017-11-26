@@ -648,6 +648,11 @@ bool Notebook_gump::handle_kbd_event(
 			next_page();
 			paint();
 		}
+#ifdef __IPHONEOS__
+			//hack to reinable the iOS keyboard. It wants to hide after Return is hit
+			if (!SDL_IsTextInputActive())
+				SDL_StartTextInput();
+#endif
 		break;
 	case SDLK_BACKSPACE:
 		if (note->del(cursor.offset - 1)) {
