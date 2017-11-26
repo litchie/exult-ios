@@ -2,41 +2,12 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import "GamePadView.h"
-#import "./SDL2/src/video/uikit/SDL_uikitappdelegate.h"
 #include "Configuration.h"
 
 #include <cassert>
 
 static char docs_dir[512];
 extern "C" int SDL_SendKeyboardKey(Uint8 state, SDL_Scancode scancode);
-
-// Add a 'category' to the SDL app delegate class
-@interface ExultAppDelegate : SDLUIKitDelegate
-{
-    UIWindow* window;
-}
-@property (nonatomic, retain) UIWindow *window;
-
-@end
-
-@implementation SDLUIKitDelegate (Exult)
-+ (NSString *)getAppDelegateClassName
-{
-    //override this SDL method so an instance of our subclass is used
-    return @"ExultAppDelegate";
-}
-
-@end
-
-@implementation ExultAppDelegate
-@synthesize window;
-
--(void) dealloc {
-    [window release];
-    [super dealloc];
-}
-
-@end
 
 @interface UIManager : NSObject<UIAlertViewDelegate, KeyInputDelegate, GamePadButtonDelegate>
 {

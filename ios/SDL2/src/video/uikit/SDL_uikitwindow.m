@@ -211,8 +211,6 @@ UIKit_CreateWindow(_THIS, SDL_Window *window)
         /* ignore the size user requested, and make a fullscreen window */
         /* !!! FIXME: can we have a smaller view? */
         UIWindow *uiwindow = [[SDL_uikitwindow alloc] initWithFrame:data.uiscreen.bounds];
-        // !!! FIXME: this needs to be in Exult code
-        [[[UIApplication sharedApplication] delegate] setWindow:uiwindow];
 
         /* put the window on an external display if appropriate. */
         if (data.uiscreen != [UIScreen mainScreen]) {
