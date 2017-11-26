@@ -2480,8 +2480,9 @@ void setup_video(bool fullscreen, int setup_video_type, int resx, int resy,
 		SDL_DisplayMode dispmode;
 		if (SDL_GetDesktopDisplayMode(SDL_COMPAT_DISPLAY_INDEX, &dispmode) == 0) {
 			w = dispmode.w, h = dispmode.h,	sc = 1;
-            config->value(vidStr + "/display/width", resx, true);
-            config->value(vidStr + "/display/height", resy, true);
+			//FixME!! Temporarily remove old video settings to grab a working mode
+			config->value(vidStr + "/display/width", resx, true);
+			config->value(vidStr + "/display/height", resy, true);
 			config->value("config/video/fullscreen", fullscreen, true);
 			if (resx != w || resy != h || fullscreen != 1){
 				cout << "Fixing iOS video setup" << endl;
