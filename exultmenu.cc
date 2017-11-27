@@ -522,14 +522,10 @@ BaseGameInfo *ExultMenu::run() {
 		throw quit_exception(1);
 #else
 		// Never quits because Apple doesn't allow you
-		SDL_Event event;
-		while (1) {
-			while (SDL_PollEvent(&event)) {
-					//if the screen gets touched open the Documentation on our website
-					if (event.type == SDL_MOUSEBUTTONDOWN)
-						ios_open_url("http://exult.sourceforge.net/docs.php#ios_games");
-			}
-		}
+		while (!wait_delay(200))
+			;
+		ios_open_url("http://exult.sourceforge.net/docs.php#ios_games");
+		while (1) wait_delay(1000);
 #endif
 	}
 	ExultDataSource mouse_data(BUNDLE_CHECK(BUNDLE_EXULT_FLX, EXULT_FLX),
