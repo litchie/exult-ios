@@ -507,18 +507,29 @@ BaseGameInfo *ExultMenu::run() {
 #ifndef __IPHONEOS__
 		                  centerx, topy + 60, "Please edit the configuration file");
 #else
-		                  centerx, topy + 60, "Please add the games in iTunes file sharing");
+		                  centerx, topy + 60, "Please add the games in iTunes File Sharing");
 #endif
 		font->center_text(gwin->get_win()->get_ib8(),
-		                  centerx, topy + 70, "and restart Exult");
+		                  centerx, topy + 70, "and restart Exult.");
+#ifdef __IPHONEOS__
+		font->center_text(gwin->get_win()->get_ib8(),
+		                  centerx, topy + 100, "Touch screen for help!");
+#endif
 		gpal->apply();
 #ifndef __IPHONEOS__
 		while (!wait_delay(200))
 			;
 		throw quit_exception(1);
 #else
-		/* Never quits */
-		while (1) wait_delay(1000);
+		// Never quits because Apple doesn't allow you
+		SDL_Event event;
+		while (1) {
+			while (SDL_PollEvent(&event)) {
+					//if the screen gets touched open the Documentation on our website
+					if (event.type == SDL_MOUSEBUTTONDOWN)
+						ios_open_url("http://exult.sourceforge.net/docs.php#ios_games");
+			}
+		}
 #endif
 	}
 	ExultDataSource mouse_data(BUNDLE_CHECK(BUNDLE_EXULT_FLX, EXULT_FLX),
