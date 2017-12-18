@@ -11,6 +11,7 @@
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		28FD15000DC6FC520079059D /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD14FF0DC6FC520079059D /* OpenGLES.framework */; };
 		28FD15080DC6FC5B0079059D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD15070DC6FC5B0079059D /* QuartzCore.framework */; };
+		8A1C58211FE7D91B00738E40 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A1C581B1FE7D91B00738E40 /* libz.tbd */; };
 		8A2C52511DE6E1810016E16A /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A7F1F8E1DE5BDD40066F6FC /* CoreFoundation.framework */; };
 		8A2C52591DE6E8E50016E16A /* crc.cc in Sources */ = {isa = PBXBuildFile; fileRef = E700DD671A6E3161006C8BE4 /* crc.cc */; };
 		8A2C525A1DE6E8E90016E16A /* Flat.cc in Sources */ = {isa = PBXBuildFile; fileRef = E700DD6A1A6E3161006C8BE4 /* Flat.cc */; };
@@ -271,7 +272,6 @@
 		E700DFD21A6E3943006C8BE4 /* devgame.cc in Sources */ = {isa = PBXBuildFile; fileRef = E700DFC41A6E3943006C8BE4 /* devgame.cc */; };
 		E700DFD61A6E3943006C8BE4 /* modmgr.cc in Sources */ = {isa = PBXBuildFile; fileRef = E700DFC91A6E3943006C8BE4 /* modmgr.cc */; };
 		E700DFD71A6E3943006C8BE4 /* sigame.cc in Sources */ = {isa = PBXBuildFile; fileRef = E700DFCB1A6E3943006C8BE4 /* sigame.cc */; };
-		E700DFDC1A6E3BAD006C8BE4 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E700DFDB1A6E3BAD006C8BE4 /* libz.dylib */; };
 		E700E0261A6E3EE9006C8BE4 /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E700E0251A6E3EE9006C8BE4 /* CoreMIDI.framework */; };
 		E700E0291A6E4067006C8BE4 /* gamewin.cc in Sources */ = {isa = PBXBuildFile; fileRef = E700E0271A6E4067006C8BE4 /* gamewin.cc */; };
 		E700E02B1A6E4074006C8BE4 /* gamemap.cc in Sources */ = {isa = PBXBuildFile; fileRef = E700E02A1A6E4074006C8BE4 /* gamemap.cc */; };
@@ -342,9 +342,10 @@
 		28FD14FF0DC6FC520079059D /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		28FD15070DC6FC5B0079059D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		8A0C19E11D6D9F1800B9105A /* sibetaintrinsics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sibetaintrinsics.h; sourceTree = "<group>"; };
+		8A1C581B1FE7D91B00738E40 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		8A7F1F721DE5B72A0066F6FC /* expack */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = expack; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A7F1F7D1DE5B7820066F6FC /* expack.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = expack.cc; path = ../tools/expack.cc; sourceTree = "<group>"; };
-		8A7F1F8E1DE5BDD40066F6FC /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.12.sdk/System/Library/Frameworks/CoreFoundation.framework; sourceTree = DEVELOPER_DIR; };
+		8A7F1F8E1DE5BDD40066F6FC /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		8A8340BF1F8977FB000696C7 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		8A8340C81F897806000696C7 /* GameController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameController.framework; path = System/Library/Frameworks/GameController.framework; sourceTree = SDKROOT; };
 		8A8340CA1F897826000696C7 /* CoreAudioKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudioKit.framework; path = System/Library/Frameworks/CoreAudioKit.framework; sourceTree = SDKROOT; };
@@ -880,7 +881,6 @@
 		E700DFCB1A6E3943006C8BE4 /* sigame.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sigame.cc; sourceTree = "<group>"; };
 		E700DFCC1A6E3943006C8BE4 /* sigame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sigame.h; sourceTree = "<group>"; };
 		E700DFD81A6E39A2006C8BE4 /* uctools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = uctools.h; path = ../tools/uctools.h; sourceTree = "<group>"; };
-		E700DFDB1A6E3BAD006C8BE4 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		E700E0251A6E3EE9006C8BE4 /* CoreMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMIDI.framework; path = System/Library/Frameworks/CoreMIDI.framework; sourceTree = SDKROOT; };
 		E700E0271A6E4067006C8BE4 /* gamewin.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = gamewin.cc; path = ../gamewin.cc; sourceTree = "<group>"; };
 		E700E0281A6E4067006C8BE4 /* gamewin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gamewin.h; path = ../gamewin.h; sourceTree = "<group>"; };
@@ -925,7 +925,7 @@
 				E738C8551A6FFF71003A950D /* liblibogg.a in Frameworks */,
 				E700E12E1A6F83CE006C8BE4 /* libSDL2.a in Frameworks */,
 				E700E0261A6E3EE9006C8BE4 /* CoreMIDI.framework in Frameworks */,
-				E700DFDC1A6E3BAD006C8BE4 /* libz.dylib in Frameworks */,
+				8A1C58211FE7D91B00738E40 /* libz.tbd in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				8A8340C71F8977FC000696C7 /* CoreMotion.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
@@ -1006,6 +1006,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				8A1C581B1FE7D91B00738E40 /* libz.tbd */,
 				8A7F1F8E1DE5BDD40066F6FC /* CoreFoundation.framework */,
 				8A8340CD1F897826000696C7 /* AVFoundation.framework */,
 				8A8340CA1F897826000696C7 /* CoreAudioKit.framework */,
@@ -1014,7 +1015,6 @@
 				8A8340C81F897806000696C7 /* GameController.framework */,
 				8A8340BF1F8977FB000696C7 /* CoreMotion.framework */,
 				E700E0251A6E3EE9006C8BE4 /* CoreMIDI.framework */,
-				E700DFDB1A6E3BAD006C8BE4 /* libz.dylib */,
 				FDB8BFC50E5A0F6A00980157 /* CoreGraphics.framework */,
 				FD77A0840E26BDB800F39101 /* AudioToolbox.framework */,
 				FD779EDD0E26BA1200F39101 /* CoreAudio.framework */,
@@ -2272,9 +2272,9 @@
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					./include,
 					../,
-					"./SDL2/include",
-					"./libvorbis/include",
-					"./libogg/include",
+					./SDL2/include,
+					./libvorbis/include,
+					./libogg/include,
 				);
 				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -2306,9 +2306,9 @@
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					./include,
 					../,
-					"./SDL2/include",
-					"./libvorbis/include",
-					"./libogg/include",
+					./SDL2/include,
+					./libvorbis/include,
+					./libogg/include,
 				);
 				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
