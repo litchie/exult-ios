@@ -573,8 +573,8 @@ void Image_window::create_surface(
 		if (screen_window != NULL) {
 			SDL_SetWindowSize(screen_window, w / scale, h / scale);
 			SDL_SetWindowFullscreen(screen_window, flags);
-			SDL_DestroyRenderer(screen_renderer);
 			SDL_DestroyTexture(screen_texture);
+			SDL_DestroyRenderer(screen_renderer);
 		} else
 			screen_window = SDL_CreateWindow("", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w / scale, h / scale, flags);
 		if (screen_window == NULL)
@@ -671,8 +671,8 @@ bool Image_window::create_scale_surfaces(int w, int h, int bpp) {
 	if (screen_window != NULL) {
 		SDL_SetWindowSize(screen_window, w, h);
 		SDL_SetWindowFullscreen(screen_window, flags);
-		SDL_DestroyRenderer(screen_renderer);
 		SDL_DestroyTexture(screen_texture);
+		SDL_DestroyRenderer(screen_renderer);
 	} else
 		screen_window = SDL_CreateWindow("", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h, flags);
 	if (screen_window == NULL)
