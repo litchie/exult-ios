@@ -11,16 +11,16 @@ SRC=.
 
 ### Modify these paths
 SDL_CFLAGS:=-I$(SRC)/sdl/include
-ifdef SDL2
-	LIB_SDL=-lSDL2
-	LIB_SDL_IMAGE=-lSDL2_image
-	LIB_SDL_MAIN=-lSDL2main
-	SDL_DLL_NAME=SDL2.dll
-else
+ifdef SDL1
 	LIB_SDL=-lSDL
 	LIB_SDL_MAIN=-lSDLmain
 	LIB_SDL_IMAGE=-lSDL_image
 	SDL_DLL_NAME=SDL.dll
+else
+	LIB_SDL=-lSDL2
+	LIB_SDL_IMAGE=-lSDL2_image
+	LIB_SDL_MAIN=-lSDL2main
+	SDL_DLL_NAME=SDL2.dll
 endif
 
 ### We want to do our own stdout/stderr redirection, thank you.
@@ -45,7 +45,8 @@ else
 endif
 
 ### OpenGL mode support
-ifndef SDL2 # hasn't been updated to support SDL2 yet
+### OpenGL doesn't support SDL2 yet
+ifdef SDL1
 	OPENGL_LIBS:=-lopengl32
 	OPENGL_OBJS:=shapes/glshape.o
 	OPENGL_CFLAGS:=-DHAVE_OPENGL
