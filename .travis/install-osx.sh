@@ -1,7 +1,7 @@
 #!/bin/sh
 
 MACPORTS_URL=https://distfiles.macports.org/MacPorts
-MACPORTS_PKG=MacPorts-2.3.5-10.11-ElCapitan.pkg
+MACPORTS_PKG=MacPorts-2.4.2-10.12-Sierra.pkg
 MACPORTS_PREFIX=/opt/local
 MACPORTS_PATH=/tmp/$MACPORTS_PKG
 
