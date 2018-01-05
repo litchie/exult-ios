@@ -54,7 +54,11 @@ int VideoOptions_gump::num_resolutions = 0;
 uint32 *VideoOptions_gump::win_resolutions = 0;
 int VideoOptions_gump::num_win_resolutions = 0;
 
+#ifdef  __IPHONEOS__
+uint32 VideoOptions_gump::game_resolutions[5] = {0, 0, 0};
+#else
 uint32 VideoOptions_gump::game_resolutions[3] = {0, 0, 0};
+#endif
 int VideoOptions_gump::num_game_resolutions = 0;
 
 Image_window::FillMode VideoOptions_gump::startup_fill_mode = static_cast<Image_window::FillMode>(0);
@@ -153,10 +157,22 @@ void VideoOptions_gump::rebuild_buttons() {
 	buttons[id_scaler] = new VideoTextToggle(this, scalers, colx[2], rowy[3], 74,
 	        scaler, Image_window::NumScalers);
 
+#ifdef __IPHONEOS__
+	//more Game Area modes on iOS devices
+	// because editing the cfg is not as easy
+	std::string *game_restext = new std::string[5];
+#else
 	std::string *game_restext = new std::string[3];
+#endif
 	game_restext[0] = "Auto";
 	game_restext[1] = "320x200";
+#ifdef __IPHONEOS__
+	game_restext[2] = "400x250";
+	game_restext[3] = "480x300";
+	game_restext[4] = resolutionstring(game_resolutions[2] >> 16, game_resolutions[2] & 0xFFFF);
+#else
 	game_restext[2] = resolutionstring(game_resolutions[2] >> 16, game_resolutions[2] & 0xFFFF);
+#endif
 
 	buttons[id_game_resolution] = new VideoTextToggle(this, game_restext, colx[2], rowy[6], 74,
 	        game_resolution, num_game_resolutions);
@@ -325,8 +341,19 @@ void VideoOptions_gump::load_settings(bool Fullscreen) {
 	if (num_game_resolutions == 0) {
 		game_resolutions[0] = 0;
 		game_resolutions[1] = (320 << 16) | 200;
+#ifdef  __IPHONEOS__
+		game_resolutions[2] = (400 << 16) | 250;
+		game_resolutions[3] = (480 << 16) | 300;
+		game_resolutions[4] = (gw << 16) | gh;
+		num_game_resolutions = (game_resolutions[0] != game_resolutions[4] 
+							&& game_resolutions[1] != game_resolutions[4] 
+							&& game_resolutions[2] != game_resolutions[4]
+							&& game_resolutions[3] != game_resolutions[4]) ? 5 : 4;
+#else
 		game_resolutions[2] = (gw << 16) | gh;
-		num_game_resolutions = (game_resolutions[0] != game_resolutions[2] && game_resolutions[1] != game_resolutions[2]) ? 3 : 2;
+		num_game_resolutions = (game_resolutions[0] != game_resolutions[2] 
+							&& game_resolutions[1] != game_resolutions[2] ? 3 : 2;
+#endif
 	}
 	gclock->set_palette();
 

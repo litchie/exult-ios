@@ -382,12 +382,7 @@ void Image_window::static_init() {
 #if SDL_VERSION_ATLEAST(2, 0, 0)
 		for (int j = 0; j < SDL_GetNumDisplayModes(0); j++) {
 			SDL_DisplayMode dispmode;
-#ifdef __IPHONEOS__
-			//only get the landscape resolutions
-			if (SDL_GetCurrentDisplayMode(SDL_COMPAT_DISPLAY_INDEX, &dispmode) == 0) {
-#else
 			if (SDL_GetDisplayMode(SDL_COMPAT_DISPLAY_INDEX, j, &dispmode) == 0) {
-#endif
 				Resolution res = { dispmode.w, dispmode.h, false, false, false};
 				p_resolutions[(res.width << 16) | res.height] = res;
 			
@@ -516,8 +511,10 @@ void Image_window::static_init() {
 		}
 	}
 
+#ifndef __IPHONEOS__
 	if (windowed_16 == 0 && windowed_32 == 0)
 		cerr << "SDL Reports 640x400 16 bpp and 32 bpp windowed surfaces are not OK. Windowed scalers may not work properly." << endl;
+#endif
 
 	if (!ok_pal && !ok_rgb)
 		cerr << "SDL Reports no usable fullscreen resolutions." << endl;
@@ -574,6 +571,9 @@ void Image_window::create_surface(
 
 	if (!paletted_surface && !force_bpp) {      // No scaling, or failed?
 		uint32 flags = SDL_SWSURFACE | (fullscreen ? SDL_FULLSCREEN : 0) | (ibuf->depth == 8 ? SDL_HWPALETTE : 0);
+#ifdef __IPHONEOS__
+		flags |= SDL_WINDOW_ALLOW_HIGHDPI; 
+#endif
 #if SDL_VERSION_ATLEAST(2, 0, 0)
 		if (screen_window != NULL) {
 			SDL_SetWindowSize(screen_window, w / scale, h / scale);
@@ -660,6 +660,9 @@ bool Image_window::create_scale_surfaces(int w, int h, int bpp) {
 
 	// Get best bpp
 	flags = SDL_SWSURFACE | (fullscreen ? SDL_FULLSCREEN : 0);
+#ifdef __IPHONEOS__
+	flags |= SDL_WINDOW_ALLOW_HIGHDPI; 
+#endif
 	hwdepth = Get_best_bpp(w, h, hwdepth, flags);
 	if (!hwdepth) return false;
 
@@ -677,6 +680,17 @@ bool Image_window::create_scale_surfaces(int w, int h, int bpp) {
 	if (screen_renderer == NULL)
 		cout << "Couldn't create renderer: " << SDL_GetError() << std::endl;
 
+#ifdef __IPHONEOS__
+	// Getting the HighDPI screen size and using that
+	int dw, dh;	
+	SDL_GetRendererOutputSize(screen_renderer, &dw, &dh);
+	w=dw;
+	h=dh;
+	SDL_RenderSetLogicalSize(screen_renderer, w, h);
+	Resolution res = { w, h, false, false, false};
+	p_resolutions[(w << 16) | h] = res;
+#endif
+	
 	// Do an initial draw/fill
 	SDL_SetRenderDrawColor(screen_renderer, SDL2_INITIAL_FILL);
 	SDL_RenderClear(screen_renderer);
@@ -1341,7 +1355,12 @@ int Image_window::VideoModeOK(int width, int height, int bpp, Uint32 flags)
  	for (int j = 0; j < SDL_GetNumDisplayModes(0); j++)
 	{
 		SDL_DisplayMode dispmode;
-		if (SDL_GetDisplayMode(SDL_COMPAT_DISPLAY_INDEX, j, &dispmode) == 0
+#ifdef __IPHONEOS__
+		//only get the landscape resolutions
+		if (SDL_GetCurrentDisplayMode(SDL_COMPAT_DISPLAY_INDEX, &dispmode) == 0
+#else
+		if (SDL_GetDisplayMode(SDL_COMPAT_DISPLAY_INDEX, j, &dispmode) == 0)
+#endif
 			&& SDL_PixelFormatEnumToMasks(dispmode.format, &nbpp, &Rmask, &Gmask, &Bmask, &Amask) == SDL_TRUE
 			&& dispmode.w == width
 			&& dispmode.h == height)

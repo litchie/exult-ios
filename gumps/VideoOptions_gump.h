@@ -54,7 +54,11 @@ private:
 	static uint32 *win_resolutions;
 	static int num_win_resolutions;
 
+#ifdef __IPHONEOS__
+	static uint32 game_resolutions[5];
+#else
 	static uint32 game_resolutions[3];
+#endif
 	static int num_game_resolutions;
 
 	static Image_window::FillMode startup_fill_mode;
