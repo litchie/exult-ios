@@ -569,6 +569,9 @@ void Image_window::create_surface(
 
 	if (!paletted_surface && !force_bpp) {      // No scaling, or failed?
 		uint32 flags = SDL_SWSURFACE | (fullscreen ? SDL_FULLSCREEN : 0) | (ibuf->depth == 8 ? SDL_HWPALETTE : 0);
+#if SDL_VERSION_ATLEAST(2, 0, 0) && defined (MACOSX)
+		flags |= SDL_WINDOW_ALLOW_HIGHDPI;
+#endif
 #if SDL_VERSION_ATLEAST(2, 0, 0)
 		if (screen_window != NULL) {
 			SDL_SetWindowSize(screen_window, w / scale, h / scale);
@@ -655,6 +658,9 @@ bool Image_window::create_scale_surfaces(int w, int h, int bpp) {
 
 	// Get best bpp
 	flags = SDL_SWSURFACE | (fullscreen ? SDL_FULLSCREEN : 0);
+#if SDL_VERSION_ATLEAST(2, 0, 0) && defined (MACOSX)
+		flags |= SDL_WINDOW_ALLOW_HIGHDPI;
+#endif
 #ifdef __IPHONEOS__
 	// Turn on landscape mode if desired
 	if (w > h) {
@@ -682,11 +688,18 @@ bool Image_window::create_scale_surfaces(int w, int h, int bpp) {
 		cout << "Couldn't create renderer: " << SDL_GetError() << std::endl;
 
 #ifdef MACOSX
-	//high resolution fullscreen needs this to make the whole screen available
-	if (fullscreen)
+	if (fullscreen) {
+		//grabbing the full HighDPi resolution
+		int dw, dh;	
+		SDL_GL_GetDrawableSize(screen_window, &dw, &dh);
+		w=dw;
+		h=dh;
+		Resolution res = { w, h, false, false, false};
+		p_resolutions[(w << 16) | h] = res;
+		//high resolution fullscreen needs this to make the whole screen available
 		SDL_RenderSetLogicalSize(screen_renderer, w, h);
 	//make sure the window has the right dimensions
-	else
+	} else
 		SDL_SetWindowSize(screen_window, w, h);
 #endif
 	// Do an initial draw/fill
