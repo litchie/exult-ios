@@ -54,34 +54,33 @@ extern "C" int SDL_SendKeyboardKey(Uint8 state, SDL_Scancode scancode);
 	SDL_SendKeyboardKey(SDL_RELEASED, (SDL_Scancode) [btn.keyCodes[0] integerValue] );
 }
 
-- (void) alertView:(UIAlertView *)alert clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-	if (buttonIndex == [alert cancelButtonIndex]) {
-		/* do nothing */
-	} else {
-		TouchUI::onTextInput([alert textFieldAtIndex:0].text.UTF8String);
-	}
-}
-
 - (void)promptForName:(NSString*)name
 {
-	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Name"
-    	message:@"" delegate:self
-    	cancelButtonTitle:@"Cancel"
-	otherButtonTitles:@"OK", nil];
-	[alert setAlertViewStyle:UIAlertViewStylePlainTextInput];
-	UITextField *textField = [alert textFieldAtIndex:0];
-	
-	if ([textField respondsToSelector:@selector(inputAssistantItem)]) {
-		textField.inputAssistantItem.trailingBarButtonGroups = @[];
-		textField.inputAssistantItem.leadingBarButtonGroups  = @[];
-	}
+	UIAlertController *alert = 	[UIAlertController 
+											alertControllerWithTitle:@"Name" 
+											message:@"" 
+											preferredStyle:UIAlertControllerStyleAlert
+	];
+	UIAlertAction* ok = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault 
+										handler:^(UIAlertAction *action) {
+											UITextField *textField = alert.textFields.firstObject;
+											TouchUI::onTextInput(textField.text.UTF8String);
+                                            if (name)
+                                                [textField setText:name];
+                                            [alert dismissViewControllerAnimated:YES completion:nil];
+	}];
+	UIAlertAction* cancel = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault
+											handler:^(UIAlertAction * action) {
+											[alert dismissViewControllerAnimated:YES completion:nil];
+	}];
+	[alert addAction:ok];
+	[alert addAction:cancel];
+	[alert addTextFieldWithConfigurationHandler:^(UITextField *textField) {
+		textField.placeholder = @"Your Name";
+	}];
 
-	if (name) {
-		[textField setText:name];
-	}
-	[alert show];
-	[alert release];
+	UIWindow *window = [[[UIApplication sharedApplication] delegate] window];
+	[window.rootViewController presentViewController:alert animated:YES completion:nil];
 }
 
 - (CGRect)calcRectForDPad
@@ -248,5 +247,5 @@ const char* ios_get_documents_dir()
 void ios_open_url(const char *sUrl)
 {
 	NSURL *url = [NSURL URLWithString:[NSString stringWithUTF8String:sUrl]];
-	[[UIApplication sharedApplication] openURL:url];
+	[[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
 }
