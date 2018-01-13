@@ -9,7 +9,7 @@
 static char docs_dir[512];
 extern "C" int SDL_SendKeyboardKey(Uint8 state, SDL_Scancode scancode);
 
-@interface UIManager : NSObject<UIAlertViewDelegate, KeyInputDelegate, GamePadButtonDelegate>
+@interface UIManager : NSObject<KeyInputDelegate, GamePadButtonDelegate>
 {
 	TouchUI_iOS *touchUI;
 	DPadView *dpad;
@@ -57,7 +57,7 @@ extern "C" int SDL_SendKeyboardKey(Uint8 state, SDL_Scancode scancode);
 - (void)promptForName:(NSString*)name
 {
 	UIAlertController *alert = 	[UIAlertController 
-											alertControllerWithTitle:@"Name" 
+											alertControllerWithTitle:@"" 
 											message:@"" 
 											preferredStyle:UIAlertControllerStyleAlert
 	];
@@ -65,18 +65,18 @@ extern "C" int SDL_SendKeyboardKey(Uint8 state, SDL_Scancode scancode);
 										handler:^(UIAlertAction *action) {
 											UITextField *textField = alert.textFields.firstObject;
 											TouchUI::onTextInput(textField.text.UTF8String);
-                                            if (name)
-                                                [textField setText:name];
-                                            [alert dismissViewControllerAnimated:YES completion:nil];
+											[alert dismissViewControllerAnimated:YES completion:nil];
 	}];
 	UIAlertAction* cancel = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault
 											handler:^(UIAlertAction * action) {
-											[alert dismissViewControllerAnimated:YES completion:nil];
+												[alert dismissViewControllerAnimated:YES completion:nil];
 	}];
 	[alert addAction:ok];
 	[alert addAction:cancel];
 	[alert addTextFieldWithConfigurationHandler:^(UITextField *textField) {
-		textField.placeholder = @"Your Name";
+		textField.placeholder = @"";
+        if (name)
+            [textField setText:name];
 	}];
 
 	UIWindow *window = [[[UIApplication sharedApplication] delegate] window];
