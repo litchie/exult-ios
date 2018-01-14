@@ -806,12 +806,15 @@ bool Newfile_gump::mouse_up(
 		if (pushed->on_button(mx, my))
 			pushed->activate(button);
 		pushed = 0;
+       
 	}
 	
 #ifdef __IPHONEOS__
-	if (selected == -2 || (selected >= 0 && selected == last_selected)) {
+	if ((selected == -2 && last_selected != -4) || (selected >= 0 && selected == last_selected)) {
 		touchui->promptForName(newname);
 	}
+	//reset so the prompt doesn't pop up on closing
+	last_selected = -4;
 #endif
 
 	return true;
