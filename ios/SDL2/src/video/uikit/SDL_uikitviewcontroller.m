@@ -181,6 +181,13 @@ SDL_AppleTVControllerUIHintChanged(void *userdata, const char *name, const char 
 {
     return (window->flags & (SDL_WINDOW_FULLSCREEN|SDL_WINDOW_BORDERLESS)) != 0;
 }
+
+- (UIRectEdge)preferredScreenEdgesDeferringSystemGestures
+{
+    //dim the Home indicator on iPhone
+    return UIRectEdgeBottom;
+}
+
 #endif
 
 /*
