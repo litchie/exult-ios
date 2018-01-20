@@ -687,8 +687,8 @@ bool Image_window::create_scale_surfaces(int w, int h, int bpp) {
 	if (screen_renderer == NULL)
 		cout << "Couldn't create renderer: " << SDL_GetError() << std::endl;
 
-#ifdef MACOSX
 	if (fullscreen) {
+#ifdef MACOSX
 		//grabbing the full HighDPi resolution
 		int dw, dh;	
 		SDL_GL_GetDrawableSize(screen_window, &dw, &dh);
@@ -696,12 +696,17 @@ bool Image_window::create_scale_surfaces(int w, int h, int bpp) {
 		h=dh;
 		Resolution res = { w, h, false, false, false};
 		p_resolutions[(w << 16) | h] = res;
+#endif
 		//high resolution fullscreen needs this to make the whole screen available
 		SDL_RenderSetLogicalSize(screen_renderer, w, h);
-	//make sure the window has the right dimensions
-	} else
+	}
+#ifdef MACOSX
+	
+	else
+		//make sure the window has the right dimensions
 		SDL_SetWindowSize(screen_window, w, h);
 #endif
+
 	// Do an initial draw/fill
 	SDL_SetRenderDrawColor(screen_renderer, SDL2_INITIAL_FILL);
 	SDL_RenderClear(screen_renderer);
