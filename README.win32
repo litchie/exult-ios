@@ -74,8 +74,8 @@ Extract all the mingw packages to the mingw directory
 Download and install MSYS from:
 	http://prdownloads.sourceforge.net/mingw/MSYS-1.0.10.exe
 
-Download the SDL binaries & headers from:
-	http://exult.sourceforge.net/snapshots/exult_sdl_win32.zip
+Download the SDL2 binaries & headers from:
+	http://exult.sourceforge.net/snapshots/exult_sdl2_win32.zip
 Unzip this file into the main directory of Exult source code. (it should add a
 SDL subdirectory)
 
