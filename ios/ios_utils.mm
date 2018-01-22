@@ -132,15 +132,15 @@ extern "C" int SDL_SendKeyboardKey(Uint8 state, SDL_Scancode scancode);
 	if (dpad == nil) {
 		dpad = [[DPadView alloc] initWithFrame:CGRectZero];
 		dpad.images = @[
-			[UIImage imageNamed:@"dpadglass.png"],
-			[UIImage imageNamed:@"dpadglass-east.png"],
-			[UIImage imageNamed:@"dpadglass-northeast.png"],
-			[UIImage imageNamed:@"dpadglass-north.png"],
-			[UIImage imageNamed:@"dpadglass-northwest.png"],
-			[UIImage imageNamed:@"dpadglass-west.png"],
-			[UIImage imageNamed:@"dpadglass-southwest.png"],
-			[UIImage imageNamed:@"dpadglass-south.png"],
-			[UIImage imageNamed:@"dpadglass-southeast.png"],
+			[UIImage imageNamed:@"joypad-glass.png"],
+			[UIImage imageNamed:@"joypad-glass-east.png"],
+			[UIImage imageNamed:@"joypad-glass-northeast.png"],
+			[UIImage imageNamed:@"joypad-glass-north.png"],
+			[UIImage imageNamed:@"joypad-glass-northwest.png"],
+			[UIImage imageNamed:@"joypad-glass-west.png"],
+			[UIImage imageNamed:@"joypad-glass-southwest.png"],
+			[UIImage imageNamed:@"joypad-glass-south.png"],
+			[UIImage imageNamed:@"joypad-glass-southeast.png"],
 		];
 		dpad.keyInput = self;
 	}

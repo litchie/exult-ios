@@ -54,6 +54,15 @@
 		8AC797C71C8D0E4F001AF014 /* unzip.cc in Sources */ = {isa = PBXBuildFile; fileRef = 8AC797C51C8D0E4F001AF014 /* unzip.cc */; };
 		8AC797C81C8D0E4F001AF014 /* zip.cc in Sources */ = {isa = PBXBuildFile; fileRef = 8AC797C61C8D0E4F001AF014 /* zip.cc */; };
 		8AD4A9311A92B9DB0004762D /* iphoneOptions_gump.cc in Sources */ = {isa = PBXBuildFile; fileRef = 8AD4A92F1A92B9DB0004762D /* iphoneOptions_gump.cc */; };
+		8AF2AFDF2016708100696E08 /* joypad-glass-southwest.png in Resources */ = {isa = PBXBuildFile; fileRef = 8AF2AFD62016707F00696E08 /* joypad-glass-southwest.png */; };
+		8AF2AFE02016708100696E08 /* joypad-glass-north.png in Resources */ = {isa = PBXBuildFile; fileRef = 8AF2AFD72016708000696E08 /* joypad-glass-north.png */; };
+		8AF2AFE12016708100696E08 /* joypad-glass.png in Resources */ = {isa = PBXBuildFile; fileRef = 8AF2AFD82016708000696E08 /* joypad-glass.png */; };
+		8AF2AFE22016708100696E08 /* joypad-glass-southeast.png in Resources */ = {isa = PBXBuildFile; fileRef = 8AF2AFD92016708000696E08 /* joypad-glass-southeast.png */; };
+		8AF2AFE32016708100696E08 /* joypad-glass-northeast.png in Resources */ = {isa = PBXBuildFile; fileRef = 8AF2AFDA2016708000696E08 /* joypad-glass-northeast.png */; };
+		8AF2AFE42016708100696E08 /* joypad-glass-east.png in Resources */ = {isa = PBXBuildFile; fileRef = 8AF2AFDB2016708000696E08 /* joypad-glass-east.png */; };
+		8AF2AFE52016708100696E08 /* joypad-glass-west.png in Resources */ = {isa = PBXBuildFile; fileRef = 8AF2AFDC2016708000696E08 /* joypad-glass-west.png */; };
+		8AF2AFE62016708100696E08 /* joypad-glass-northwest.png in Resources */ = {isa = PBXBuildFile; fileRef = 8AF2AFDD2016708100696E08 /* joypad-glass-northwest.png */; };
+		8AF2AFE72016708100696E08 /* joypad-glass-south.png in Resources */ = {isa = PBXBuildFile; fileRef = 8AF2AFDE2016708100696E08 /* joypad-glass-south.png */; };
 		E700DBBA1A6E2CE7006C8BE4 /* Audio.cc in Sources */ = {isa = PBXBuildFile; fileRef = E700DB001A6E2CE7006C8BE4 /* Audio.cc */; };
 		E700DBBB1A6E2CE7006C8BE4 /* AudioChannel.cc in Sources */ = {isa = PBXBuildFile; fileRef = E700DB021A6E2CE7006C8BE4 /* AudioChannel.cc */; };
 		E700DBBC1A6E2CE7006C8BE4 /* AudioMixer.cc in Sources */ = {isa = PBXBuildFile; fileRef = E700DB041A6E2CE7006C8BE4 /* AudioMixer.cc */; };
@@ -408,6 +417,15 @@
 		8AD2C46F1DF83918006D6005 /* ios_state.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = ios_state.hpp; path = ../headers/ios_state.hpp; sourceTree = "<group>"; };
 		8AD4A92F1A92B9DB0004762D /* iphoneOptions_gump.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = iphoneOptions_gump.cc; path = ../gumps/iphoneOptions_gump.cc; sourceTree = "<group>"; };
 		8AD4A9301A92B9DB0004762D /* iphoneOptions_gump.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = iphoneOptions_gump.h; path = ../gumps/iphoneOptions_gump.h; sourceTree = "<group>"; };
+		8AF2AFD62016707F00696E08 /* joypad-glass-southwest.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "joypad-glass-southwest.png"; sourceTree = "<group>"; };
+		8AF2AFD72016708000696E08 /* joypad-glass-north.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "joypad-glass-north.png"; sourceTree = "<group>"; };
+		8AF2AFD82016708000696E08 /* joypad-glass.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "joypad-glass.png"; sourceTree = "<group>"; };
+		8AF2AFD92016708000696E08 /* joypad-glass-southeast.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "joypad-glass-southeast.png"; sourceTree = "<group>"; };
+		8AF2AFDA2016708000696E08 /* joypad-glass-northeast.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "joypad-glass-northeast.png"; sourceTree = "<group>"; };
+		8AF2AFDB2016708000696E08 /* joypad-glass-east.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "joypad-glass-east.png"; sourceTree = "<group>"; };
+		8AF2AFDC2016708000696E08 /* joypad-glass-west.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "joypad-glass-west.png"; sourceTree = "<group>"; };
+		8AF2AFDD2016708100696E08 /* joypad-glass-northwest.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "joypad-glass-northwest.png"; sourceTree = "<group>"; };
+		8AF2AFDE2016708100696E08 /* joypad-glass-south.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "joypad-glass-south.png"; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E700DB001A6E2CE7006C8BE4 /* Audio.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Audio.cc; sourceTree = "<group>"; };
 		E700DB011A6E2CE7006C8BE4 /* Audio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Audio.h; sourceTree = "<group>"; };
@@ -1759,6 +1777,15 @@
 		E71BBD881A725E1E0003F662 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				8AF2AFDB2016708000696E08 /* joypad-glass-east.png */,
+				8AF2AFD72016708000696E08 /* joypad-glass-north.png */,
+				8AF2AFDA2016708000696E08 /* joypad-glass-northeast.png */,
+				8AF2AFDD2016708100696E08 /* joypad-glass-northwest.png */,
+				8AF2AFDE2016708100696E08 /* joypad-glass-south.png */,
+				8AF2AFD92016708000696E08 /* joypad-glass-southeast.png */,
+				8AF2AFD62016707F00696E08 /* joypad-glass-southwest.png */,
+				8AF2AFDC2016708000696E08 /* joypad-glass-west.png */,
+				8AF2AFD82016708000696E08 /* joypad-glass.png */,
 				E71BBD891A725E1E0003F662 /* btn.png */,
 				E71BBD8A1A725E1E0003F662 /* btnpressed.png */,
 				E71BBD8B1A725E1E0003F662 /* dpadglass-east.png */,
@@ -1937,6 +1964,15 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8AF2AFDF2016708100696E08 /* joypad-glass-southwest.png in Resources */,
+				8AF2AFE02016708100696E08 /* joypad-glass-north.png in Resources */,
+				8AF2AFE12016708100696E08 /* joypad-glass.png in Resources */,
+				8AF2AFE22016708100696E08 /* joypad-glass-southeast.png in Resources */,
+				8AF2AFE32016708100696E08 /* joypad-glass-northeast.png in Resources */,
+				8AF2AFE42016708100696E08 /* joypad-glass-east.png in Resources */,
+				8AF2AFE52016708100696E08 /* joypad-glass-west.png in Resources */,
+				8AF2AFE62016708100696E08 /* joypad-glass-northwest.png in Resources */,
+				8AF2AFE72016708100696E08 /* joypad-glass-south.png in Resources */,
 				8A93BD6A1F8901E3001850AA /* Media.xcassets in Resources */,
 				E71BBD941A725E1E0003F662 /* btn.png in Resources */,
 				E71BBD951A725E1E0003F662 /* btnpressed.png in Resources */,
