@@ -2466,6 +2466,10 @@ void setup_video(bool fullscreen, int setup_video_type, int resx, int resy,
 	config->value("config/video/share_video_settings", share_settings, true);
 	const string vidStr((fullscreen || share_settings) ?
 	                       "config/video" : "config/video/window");
+#if SDL_VERSION_ATLEAST(2, 0, 0) && (defined(MACOSX) || defined(__IPHONEOS__))
+	bool high_dpi;
+	config->value("config/video/highdpi", high_dpi, true);
+#endif
 	if (read_config) {
 #ifdef DEBUG
 		cout << "Reading video menu adjustable configuration options" << endl;
@@ -2525,6 +2529,12 @@ void setup_video(bool fullscreen, int setup_video_type, int resx, int resy,
 		config->value(vidStr + "/display/height", resy, resy * scaleval);
 		config->value(vidStr + "/game/width", gw, 320);
 		config->value(vidStr + "/game/height", gh, 200);
+#if SDL_VERSION_ATLEAST(2, 0, 0) && (defined(MACOSX) || defined(__IPHONEOS__))
+		if (high_dpi)
+			SDL_SetHint(SDL_HINT_VIDEO_HIGHDPI_DISABLED, "0");
+		else
+			SDL_SetHint(SDL_HINT_VIDEO_HIGHDPI_DISABLED, "1");
+#endif
 #ifdef __IPHONEOS__
 		config->value(vidStr + "/fill_mode", fmode_string, "Fill");
 #else
@@ -2562,6 +2572,10 @@ void setup_video(bool fullscreen, int setup_video_type, int resx, int resy,
 		config->set((vidStr + "/scale_method").c_str(), scalerName , false);
 		config->set((vidStr + "/fill_mode").c_str(), fmode_string, false);
 		config->set((vidStr + "/fill_scaler").c_str(), fillScalerName, false);
+#if SDL_VERSION_ATLEAST(2, 0, 0) && (defined(MACOSX) || defined(__IPHONEOS__))
+		config->set("config/video/highdpi", high_dpi ?
+		            "yes" : "no", false);
+#endif
 	}
 	if (video_init) {
 #ifdef DEBUG
