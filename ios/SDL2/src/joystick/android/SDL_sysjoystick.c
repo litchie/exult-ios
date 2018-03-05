@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2018 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -34,6 +34,7 @@
 #include "SDL_log.h"
 #include "SDL_sysjoystick_c.h"
 #include "../SDL_joystick_c.h"
+#include "../../events/SDL_keyboard_c.h"
 #include "../../core/android/SDL_android.h"
 #include "../steam/SDL_steamcontroller.h"
 
@@ -78,10 +79,9 @@ static int instance_counter = 0;
 static int
 keycode_to_SDL(int keycode)
 {
-    /* FIXME: If this function gets too unwiedly in the future, replace with a lookup table */
+    /* FIXME: If this function gets too unwieldy in the future, replace with a lookup table */
     int button = 0;
-    switch(keycode) 
-    {
+    switch (keycode) {
         /* Some gamepad buttons (API 9) */
         case AKEYCODE_BUTTON_A:
             button = SDL_CONTROLLER_BUTTON_A;
@@ -110,6 +110,7 @@ keycode_to_SDL(int keycode)
         case AKEYCODE_BUTTON_START:
             button = SDL_CONTROLLER_BUTTON_START;
             break;
+        case AKEYCODE_BACK:
         case AKEYCODE_BUTTON_SELECT:
             button = SDL_CONTROLLER_BUTTON_BACK;
             break;
@@ -143,7 +144,9 @@ keycode_to_SDL(int keycode)
             button = SDL_CONTROLLER_BUTTON_DPAD_RIGHT;
             break;
         case AKEYCODE_DPAD_CENTER:
-            button = SDL_CONTROLLER_BUTTON_MAX+4; /* Not supported by GameController */
+            /* This is handled better by applications as the A button */
+            /*button = SDL_CONTROLLER_BUTTON_MAX+4;*/ /* Not supported by GameController */
+            button = SDL_CONTROLLER_BUTTON_A;
             break;
 
         /* More gamepad buttons (API 12), these get mapped to 20...35*/
@@ -176,7 +179,30 @@ keycode_to_SDL(int keycode)
      */
     SDL_assert(button < ANDROID_MAX_NBUTTONS);
     return button;
-    
+}
+
+static SDL_Scancode
+button_to_scancode(int button)
+{
+    switch (button) {
+    case SDL_CONTROLLER_BUTTON_A:
+        return SDL_SCANCODE_RETURN;
+    case SDL_CONTROLLER_BUTTON_B:
+        return SDL_SCANCODE_ESCAPE;
+    case SDL_CONTROLLER_BUTTON_BACK:
+        return SDL_SCANCODE_ESCAPE;
+    case SDL_CONTROLLER_BUTTON_DPAD_UP:
+        return SDL_SCANCODE_UP;
+    case SDL_CONTROLLER_BUTTON_DPAD_DOWN:
+        return SDL_SCANCODE_DOWN;
+    case SDL_CONTROLLER_BUTTON_DPAD_LEFT:
+        return SDL_SCANCODE_LEFT;
+    case SDL_CONTROLLER_BUTTON_DPAD_RIGHT:
+        return SDL_SCANCODE_RIGHT;
+    }
+
+    /* Unsupported button */
+    return SDL_SCANCODE_UNKNOWN;
 }
 
 int
@@ -188,6 +214,8 @@ Android_OnPadDown(int device_id, int keycode)
         item = JoystickByDeviceId(device_id);
         if (item && item->joystick) {
             SDL_PrivateJoystickButton(item->joystick, button , SDL_PRESSED);
+        } else {
+            SDL_SendKeyboardKey(SDL_PRESSED, button_to_scancode(button));
         }
         return 0;
     }
@@ -204,6 +232,8 @@ Android_OnPadUp(int device_id, int keycode)
         item = JoystickByDeviceId(device_id);
         if (item && item->joystick) {
             SDL_PrivateJoystickButton(item->joystick, button, SDL_RELEASED);
+        } else {
+            SDL_SendKeyboardKey(SDL_RELEASED, button_to_scancode(button));
         }
         return 0;
     }
@@ -249,8 +279,15 @@ Android_AddJoystick(int device_id, const char *name, const char *desc, SDL_bool 
 {
     SDL_JoystickGUID guid;
     SDL_joylist_item *item;
+
+    if (!SDL_GetHintBoolean(SDL_HINT_TV_REMOTE_AS_JOYSTICK, SDL_TRUE)) {
+        /* Ignore devices that aren't actually controllers (e.g. remotes), they'll be handled as keyboard input */
+        if (naxes < 2 && nhats < 1) {
+            return -1;
+        }
+    }
     
-    if(JoystickByDeviceId(device_id) != NULL || name == NULL) {
+    if (JoystickByDeviceId(device_id) != NULL || name == NULL) {
         return -1;
     }
     
@@ -454,7 +491,7 @@ SDL_SYS_JoystickDetect(void)
      * Ref: http://developer.android.com/reference/android/hardware/input/InputManager.InputDeviceListener.html
      */
     static Uint32 timeout = 0;
-    if (SDL_TICKS_PASSED(SDL_GetTicks(), timeout)) {
+    if (!timeout || SDL_TICKS_PASSED(SDL_GetTicks(), timeout)) {
         timeout = SDL_GetTicks() + 3000;
         Android_JNI_PollInputDevices();
     }
@@ -638,6 +675,11 @@ SDL_JoystickGUID SDL_SYS_JoystickGetGUID(SDL_Joystick * joystick)
     
     SDL_zero(guid);
     return guid;
+}
+
+SDL_bool SDL_SYS_IsDPAD_DeviceIndex(int device_index)
+{
+    return JoystickByDevIndex(device_index)->naxes == 0;
 }
 
 #endif /* SDL_JOYSTICK_ANDROID */
