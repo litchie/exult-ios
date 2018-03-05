@@ -895,6 +895,7 @@ static void Init(
 #ifdef __IPHONEOS__
 	init_flags |= SDL_INIT_JOYSTICK;
 	SDL_SetHint(SDL_HINT_ORIENTATIONS, "Landscape");
+	SDL_SetHint(SDL_HINT_IOS_HIDE_HOME_INDICATOR, "2");
 #endif
 	if (SDL_Init(init_flags) < 0) {
 		cerr << "Unable to initialize SDL: " << SDL_GetError() << endl;
