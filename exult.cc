@@ -865,6 +865,14 @@ static void SetIcon() {
 }
 #endif
 
+#ifdef __IPHONEOS__
+Uint32 HomeIndicatorCallback(Uint32 interval, void *param)
+{
+    SDL_SetHint(SDL_HINT_IOS_HIDE_HOME_INDICATOR, "2");
+    return 0;
+}
+#endif
+
 /*
  *  Initialize and create main window.
  */
@@ -895,7 +903,6 @@ static void Init(
 #ifdef __IPHONEOS__
 	init_flags |= SDL_INIT_JOYSTICK;
 	SDL_SetHint(SDL_HINT_ORIENTATIONS, "Landscape");
-	SDL_SetHint(SDL_HINT_IOS_HIDE_HOME_INDICATOR, "2");
 #endif
 	if (SDL_Init(init_flags) < 0) {
 		cerr << "Unable to initialize SDL: " << SDL_GetError() << endl;
@@ -975,6 +982,12 @@ static void Init(
 	SetIcon();
 #endif
 
+#ifdef __IPHONEOS__
+        // 3s delay is a bit arbitrary
+        // just to wait for root SDL_uikitviewcontroller to be shown
+        SDL_AddTimer(3000, HomeIndicatorCallback, NULL);
+#endif
+        
 		Audio::Init();
 
 		gwin->get_pal()->set_fades_enabled(!disable_fades);
