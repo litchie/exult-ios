@@ -56,7 +56,7 @@ void Virtue_stone_object::set_target_pos(
  */
 
 void Virtue_stone_object::write_ireg(
-    DataSource *out
+    ODataSource *out
 ) {
 	unsigned char buf[20];      // 12-byte entry.
 	unsigned char *ptr = write_common_ireg(12, buf);

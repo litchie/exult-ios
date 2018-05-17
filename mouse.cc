@@ -71,7 +71,7 @@ Mouse::Mouse(
 
 Mouse::Mouse(
     Game_window *gw,        // Where to draw.
-    DataSource &shapes
+    IDataSource &shapes
 ) : gwin(gw), iwin(gwin->get_win()), backup(0), box(0, 0, 0, 0), dirty(0, 0, 0, 0), cur_framenum(0), cur(0), avatar_speed(100 * gwin->get_std_delay() / slow_speed_factor) {
 	SDL_GetMouseState(&mousex, &mousey);
 	iwin->screen_to_game(mousex, mousey, gwin->get_fastmouse(), mousex, mousey);

@@ -597,7 +597,7 @@ void SI_Game::play_intro() {
 
 		U7multiobject introshapes(INTRO_DAT, PATCH_INTRO, 30);
 		shape_buf = introshapes.retrieve(shapesize);
-		BufferDataSource gshape_ds(shape_buf + 8, shapesize - 8);
+		IBufferDataSource gshape_ds(shape_buf + 8, shapesize - 8);
 		Shape_frame *sf;
 
 		Shape_file gshape(&gshape_ds);

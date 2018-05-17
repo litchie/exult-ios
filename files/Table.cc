@@ -95,7 +95,7 @@ char *Table::retrieve(uint32 objnum, size_t &len) {
  *  @param in   DataSource to verify.
  *  @return Whether or not the DataSource is a table file.
  */
-bool Table::is_table(DataSource *in) {
+bool Table::is_table(IDataSource *in) {
 	size_t pos = in->getPos();
 	size_t file_size = in->getSize();
 
@@ -130,7 +130,7 @@ bool Table::is_table(const std::string& fname) {
 
 	std::ifstream in;
 	U7open(in, fname.c_str());
-	StreamDataSource ds(&in);
+	IStreamDataSource ds(&in);
 
 	if (in.good())
 		return is_table(&ds);

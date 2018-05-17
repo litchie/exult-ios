@@ -63,7 +63,7 @@ public:
 		return "TABLE";
 	}
 
-	static bool is_table(DataSource *in);
+	static bool is_table(IDataSource *in);
 	static bool is_table(const std::string& fname);
 private:
 	/// No default constructor.

@@ -130,7 +130,7 @@ uint32  Flex::get_entry_info(uint32 objnum, size_t &len) {
  */
 
 void Flex::write_header(
-    DataSource *out,            // File to write to.
+    ODataSource *out,            // File to write to.
     const char *title,
     size_t count,           // # entries.
     Flex_vers vers
@@ -156,7 +156,7 @@ void Flex::write_header(
  *  @param in   DataSource to verify.
  *  @return Whether or not the DataSource is a FLEX file.
  */
-bool Flex::is_flex(DataSource *in) {
+bool Flex::is_flex(IDataSource *in) {
 	long pos = in->getPos();        // Fill to data (past table at 0x80).
 	long len = in->getSize();   // Check length.
 	uint32 magic = 0;
@@ -186,7 +186,7 @@ bool Flex::is_flex(const std::string& fname) {
 
 	std::ifstream in;
 	U7open(in, fname.c_str());
-	StreamDataSource ds(&in);
+	IStreamDataSource ds(&in);
 
 	if (in.good())
 		return is_flex(&ds);
@@ -205,7 +205,7 @@ Flex_writer::Flex_writer(
     Flex::Flex_vers vers    ///< Version of flex file.
 ) : out(&o), dout(0), count(cnt) {
 	// Write out header.
-	StreamDataSource ds(out);
+	OStreamDataSource ds(out);
 	Flex::write_header(&ds, title, count, vers);
 	// Create table.
 	tptr = table = new uint8[2 * count * 4];
@@ -216,7 +216,7 @@ Flex_writer::Flex_writer(
  *  Start writing out a new Flex file.
  */
 Flex_writer::Flex_writer(
-    DataSource *o,              ///< Where to write.
+    ODataSource *o,              ///< Where to write.
     const char *title,          ///< Flex title.
     size_t cnt,             ///< Number of entries we'll write.
     Flex::Flex_vers vers    ///< Version of flex file.
