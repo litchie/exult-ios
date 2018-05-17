@@ -632,7 +632,7 @@ void Animated_ireg_object::paint(
  *  Write out.
  */
 
-void Animated_ireg_object::write_ireg(DataSource *out) {
+void Animated_ireg_object::write_ireg(ODataSource *out) {
 	int oldframe = get_framenum();
 	set_frame(animator->get_framenum());
 	Ireg_game_object::write_ireg(out);
@@ -675,7 +675,7 @@ void Animated_ifix_object::paint(
  *  Write out an IFIX object.
  */
 
-void Animated_ifix_object::write_ifix(DataSource *ifix,  bool v2)
+void Animated_ifix_object::write_ifix(ODataSource *ifix,  bool v2)
 
 {
 	int oldframe = get_framenum();

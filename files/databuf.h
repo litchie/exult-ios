@@ -30,10 +30,10 @@
 
 typedef char *charptr;
 
-class DataSource {
+class IDataSource {
 public:
-	DataSource() {}
-	virtual ~DataSource() {}
+	IDataSource() {}
+	virtual ~IDataSource() {}
 
 	virtual uint32 peek() = 0;
 
@@ -45,20 +45,11 @@ public:
 	virtual void read(void *, size_t) = 0;
 	virtual void read(std::string&, size_t) = 0;
 
-	virtual void write1(uint32) = 0;
-	virtual void write2(uint16) = 0;
-	virtual void write2high(uint16) = 0;
-	virtual void write4(uint32) = 0;
-	virtual void write4high(uint32) = 0;
-	virtual void write(const void *, size_t) = 0;
-	virtual void write(const std::string &) = 0;
-
 	virtual void seek(size_t) = 0;
 	virtual void skip(std::streamoff) = 0;
 	virtual size_t getSize() = 0;
 	virtual size_t getPos() = 0;
 	virtual bool eof() = 0;
-	virtual void flush() { }
 	virtual bool good() {
 		return true;
 	}
@@ -77,40 +68,36 @@ public:
 	}
 };
 
-class StreamDataSource: public DataSource {
+class IStreamDataSource: public IDataSource {
 protected:
 	std::istream *in;
-	std::ostream *out;
 public:
-	StreamDataSource(std::istream *data_stream) : in(data_stream), out(0) {
+	IStreamDataSource(std::istream *data_stream) : in(data_stream) {
 	}
 
-	StreamDataSource(std::ostream *data_stream) : in(0), out(data_stream) {
-	}
+	virtual ~IStreamDataSource() {}
 
-	virtual ~StreamDataSource() {}
-
-	virtual uint32 peek()       {
+	virtual uint32 peek() {
 		return in->peek();
 	}
 
-	virtual uint32 read1()      {
+	virtual uint32 read1() {
 		return Read1(*in);
 	}
 
-	virtual uint16 read2()      {
+	virtual uint16 read2() {
 		return Read2(*in);
 	}
 
-	virtual uint16 read2high()  {
+	virtual uint16 read2high() {
 		return Read2high(*in);
 	}
 
-	virtual uint32 read4()      {
+	virtual uint32 read4() {
 		return Read4(*in);
 	}
 
-	virtual uint32 read4high()  {
+	virtual uint32 read4high() {
 		return Read4high(*in);
 	}
 
@@ -123,82 +110,38 @@ public:
 		in->read(&s[0], len);
 	}
 
-	virtual void write1(uint32 val)      {
-		Write1(*out, static_cast<uint16>(val));
-	}
-
-	virtual void write2(uint16 val)      {
-		Write2(*out, val);
-	}
-
-	virtual void write2high(uint16 val)  {
-		Write2high(*out, val);
-	}
-
-	virtual void write4(uint32 val)      {
-		Write4(*out, val);
-	}
-
-	virtual void write4high(uint32 val)  {
-		Write4high(*out, val);
-	}
-
-	virtual void write(const void *b, size_t len) {
-		out->write(static_cast<const char *>(b), len);
-	}
-
-	virtual void write(const std::string &s) {
-		out->write(&s[0], s.size());
-	}
-
 	virtual void seek(size_t pos) {
-		if (in) in->seekg(pos);
-		else out->seekp(pos);
+		in->seekg(pos);
 	}
 
 	virtual void skip(std::streamoff pos) {
-		if (in) in->seekg(pos, std::ios::cur);
-		else out->seekp(pos, std::ios::cur);
+		in->seekg(pos, std::ios::cur);
 	}
 
 	virtual size_t getSize() {
-		if (in) {
-			size_t pos = in->tellg();
-			in->seekg(0, std::ios::end);
-			size_t len = in->tellg();
-			in->seekg(pos);
-			return len;
-		} else {
-			size_t pos = out->tellp();
-			out->seekp(0, std::ios::end);
-			size_t len = out->tellp();
-			out->seekp(pos);
-			return len;
-		}
+		size_t pos = in->tellg();
+		in->seekg(0, std::ios::end);
+		size_t len = in->tellg();
+		in->seekg(pos);
+		return len;
 	}
 
 	virtual size_t getPos() {
-		return in ? in->tellg() : out->tellp();
+		return in->tellg();
 	}
 
 	virtual bool eof() {
-		return in->peek() == std::char_traits<char>::eof();
-	}
-	virtual void flush() {
-		if (out) out->flush();
+		return in->eof();
 	}
 	virtual bool good() {
-		return in ? in->good() : out->good();
+		return in->good();
 	}
 	virtual void clear_error() {
-		if (in)
-			in->clear();
-		else
-			out->clear();
+		in->clear();
 	}
 };
 
-class BufferDataSource: public DataSource {
+class IBufferDataSource: public IDataSource {
 protected:
 	/* const solely so that no-one accidentally modifies it.
 	    data is being passed 'non-const' anyway */
@@ -206,7 +149,7 @@ protected:
 	unsigned char *buf_ptr;
 	std::size_t size;
 public:
-	BufferDataSource(const void *data, size_t len) {
+	IBufferDataSource(const void *data, size_t len) {
 		// data can be NULL if len is also 0
 		assert(data != 0 || len == 0);
 		buf = static_cast<const unsigned char *>(data);
@@ -214,14 +157,7 @@ public:
 		size = len;
 	}
 
-	void load(void *data, size_t len) {
-		// data can be NULL if len is also 0
-		assert(data != 0 || len == 0);
-		buf = buf_ptr = static_cast<unsigned char *>(data);
-		size = len;
-	}
-
-	virtual ~BufferDataSource() {}
+	virtual ~IBufferDataSource() {}
 
 	virtual uint32 peek() {
 		unsigned char b0;
@@ -276,6 +212,174 @@ public:
 		s = std::string(reinterpret_cast<const char *>(buf_ptr), len);
 		buf_ptr += len;
 	}
+
+	virtual void seek(size_t pos) {
+		buf_ptr = const_cast<unsigned char *>(buf) + pos;
+	}
+
+	virtual void skip(std::streamoff pos) {
+		buf_ptr += pos;
+	}
+
+	virtual size_t getSize() {
+		return size;
+	}
+
+	virtual size_t getPos() {
+		return (buf_ptr - buf);
+	}
+
+	unsigned char *getPtr() {
+		return buf_ptr;
+	}
+
+	virtual bool eof() {
+		return (buf_ptr - buf) >= static_cast<std::ptrdiff_t>(size);
+	}
+};
+
+class IExultDataSource: public IBufferDataSource {
+public:
+	IExultDataSource(const File_spec &fname, int index)
+		: IBufferDataSource(0, 0) {
+		U7object obj(fname, index);
+		buf = buf_ptr = reinterpret_cast<unsigned char *>(obj.retrieve(size));
+	}
+
+	IExultDataSource(const File_spec &fname0, const File_spec &fname1, int index)
+		: IBufferDataSource(0, 0) {
+		U7multiobject obj(fname0, fname1, index);
+		buf = buf_ptr = reinterpret_cast<unsigned char *>(obj.retrieve(size));
+	}
+
+	IExultDataSource(const File_spec &fname0, const File_spec &fname1,
+	                const File_spec &fname2, int index)
+		: IBufferDataSource(0, 0) {
+		U7multiobject obj(fname0, fname1, fname2, index);
+		buf = buf_ptr = reinterpret_cast<unsigned char *>(obj.retrieve(size));
+	}
+
+	~IExultDataSource() {
+		delete [] const_cast<unsigned char *>(buf);
+	}
+};
+
+class ODataSource {
+public:
+	ODataSource() {}
+	virtual ~ODataSource() {}
+
+	virtual void write1(uint32) = 0;
+	virtual void write2(uint16) = 0;
+	virtual void write2high(uint16) = 0;
+	virtual void write4(uint32) = 0;
+	virtual void write4high(uint32) = 0;
+	virtual void write(const void *, size_t) = 0;
+	virtual void write(const std::string &) = 0;
+
+	virtual void seek(size_t) = 0;
+	virtual void skip(std::streamoff) = 0;
+	virtual size_t getSize() = 0;
+	virtual size_t getPos() = 0;
+	virtual void flush() { }
+	virtual bool good() {
+		return true;
+	}
+	virtual void clear_error() { }
+};
+
+class OStreamDataSource: public ODataSource {
+protected:
+	std::ostream *out;
+public:
+	OStreamDataSource(std::ostream *data_stream) : out(data_stream) {
+	}
+
+	virtual ~OStreamDataSource() {}
+
+	virtual void write1(uint32 val) {
+		Write1(*out, static_cast<uint16>(val));
+	}
+
+	virtual void write2(uint16 val) {
+		Write2(*out, val);
+	}
+
+	virtual void write2high(uint16 val) {
+		Write2high(*out, val);
+	}
+
+	virtual void write4(uint32 val) {
+		Write4(*out, val);
+	}
+
+	virtual void write4high(uint32 val) {
+		Write4high(*out, val);
+	}
+
+	virtual void write(const void *b, size_t len) {
+		out->write(static_cast<const char *>(b), len);
+	}
+
+	virtual void write(const std::string &s) {
+		out->write(&s[0], s.size());
+	}
+
+	virtual void seek(size_t pos) {
+		out->seekp(pos);
+	}
+
+	virtual void skip(std::streamoff pos) {
+		out->seekp(pos, std::ios::cur);
+	}
+
+	virtual size_t getSize() {
+		size_t pos = out->tellp();
+		out->seekp(0, std::ios::end);
+		size_t len = out->tellp();
+		out->seekp(pos);
+		return len;
+	}
+
+	virtual size_t getPos() {
+		return out->tellp();
+	}
+
+	virtual void flush() {
+		out->flush();
+	}
+	virtual bool good() {
+		return out->good();
+	}
+	virtual void clear_error() {
+		out->clear();
+	}
+};
+
+class OBufferDataSource: public ODataSource {
+protected:
+	/* const solely so that no-one accidentally modifies it.
+	    data is being passed 'non-const' anyway */
+	const unsigned char *buf;
+	unsigned char *buf_ptr;
+	std::size_t size;
+public:
+	OBufferDataSource(const void *data, size_t len) {
+		// data can be NULL if len is also 0
+		assert(data != 0 || len == 0);
+		buf = static_cast<const unsigned char *>(data);
+		buf_ptr = const_cast<unsigned char *>(buf);
+		size = len;
+	}
+
+	void load(void *data, size_t len) {
+		// data can be NULL if len is also 0
+		assert(data != 0 || len == 0);
+		buf = buf_ptr = static_cast<unsigned char *>(data);
+		size = len;
+	}
+
+	virtual ~OBufferDataSource() {}
 
 	virtual void write1(uint32 val) {
 		*buf_ptr++ = static_cast<uint8>(val & 0xff);
@@ -334,35 +438,30 @@ public:
 	unsigned char *getPtr() {
 		return buf_ptr;
 	}
-
-	virtual bool eof() {
-		return (buf_ptr - buf) >= static_cast<std::ptrdiff_t>(size);
-	}
-
 };
 
-class ExultDataSource: public BufferDataSource {
+class OExultDataSource: public OBufferDataSource {
 public:
-	ExultDataSource(const File_spec &fname, int index)
-		: BufferDataSource(0, 0) {
+	OExultDataSource(const File_spec &fname, int index)
+		: OBufferDataSource(0, 0) {
 		U7object obj(fname, index);
 		buf = buf_ptr = reinterpret_cast<unsigned char *>(obj.retrieve(size));
 	}
 
-	ExultDataSource(const File_spec &fname0, const File_spec &fname1, int index)
-		: BufferDataSource(0, 0) {
+	OExultDataSource(const File_spec &fname0, const File_spec &fname1, int index)
+		: OBufferDataSource(0, 0) {
 		U7multiobject obj(fname0, fname1, index);
 		buf = buf_ptr = reinterpret_cast<unsigned char *>(obj.retrieve(size));
 	}
 
-	ExultDataSource(const File_spec &fname0, const File_spec &fname1,
+	OExultDataSource(const File_spec &fname0, const File_spec &fname1,
 	                const File_spec &fname2, int index)
-		: BufferDataSource(0, 0) {
+		: OBufferDataSource(0, 0) {
 		U7multiobject obj(fname0, fname1, fname2, index);
 		buf = buf_ptr = reinterpret_cast<unsigned char *>(obj.retrieve(size));
 	}
 
-	~ExultDataSource() {
+	~OExultDataSource() {
 		delete [] const_cast<unsigned char *>(buf);
 	}
 };

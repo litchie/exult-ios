@@ -50,7 +50,7 @@ using std::ostream;
  */
 
 void Actor::read(
-    DataSource *nfile,      // 'npc.dat', generally.
+    IDataSource *nfile,      // 'npc.dat', generally.
     int num,            // NPC #, or -1.
     bool has_usecode,       // 1 if a 'type1' NPC.
     bool &fix_unused        // Old savegame, so 'unused' isn't
@@ -501,7 +501,7 @@ void Actor::read(
  */
 
 void Actor::write(
-    DataSource *nfile           // Generally 'npc.dat'.
+    ODataSource *nfile           // Generally 'npc.dat'.
 ) {
 	int i;
 	unsigned char buf4[4];      // Write coords., shape, frame.
@@ -716,7 +716,7 @@ void Actor::write(
  */
 
 void Monster_actor::write(
-    DataSource *nfile           // Generally 'npc.dat'.
+    ODataSource *nfile           // Generally 'npc.dat'.
 ) {
 	/*  // This is checked in Game_window::write_npcs.
 	if (Actor::is_dead())       // Not alive?
@@ -734,7 +734,7 @@ void Monster_actor::write(
  */
 
 void Actor::write_contents(
-    DataSource *out
+    ODataSource *out
 ) {
 	if (!objects.is_empty()) {  // Now write out what's inside.
 		const int num_spots = static_cast<int>(array_size(spots));

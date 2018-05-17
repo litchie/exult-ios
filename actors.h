@@ -641,17 +641,17 @@ public:
 	Monster_actor *clone();     // Create another nearby to this.
 	void mend_wounds(bool mendmana);        // Restore HP's and MP's.
 	// Read from file.
-	void read(DataSource *nfile, int num, bool has_usecode,
+	void read(IDataSource *nfile, int num, bool has_usecode,
 	          bool &fix_unused);
 	// Don't write out to IREG file.
-	virtual void write_ireg(DataSource *out) {
+	virtual void write_ireg(ODataSource *out) {
 		ignore_unused_variable_warning(out);
 	}
 	virtual int get_ireg_size() {
 		return 0;
 	}
-	void write(DataSource *nfile);// Write out (to 'npc.dat').
-	virtual void write_contents(DataSource *out);   // Write contents
+	void write(ODataSource *nfile);// Write out (to 'npc.dat').
+	virtual void write_contents(ODataSource *out);   // Write contents
 	void set_actor_shape();     // Set shape based on sex, skin color
 	void set_polymorph(int shape);  // Set a polymorph shape
 	void set_polymorph_default();   // Set the default shape
@@ -819,7 +819,7 @@ public:
 		ignore_unused_variable_warning(attacker, weapon_shape, ammo_shape, explosion);
 		return this;    // Not affected.
 	}
-	virtual void write_ireg(DataSource *out);
+	virtual void write_ireg(ODataSource *out);
 	virtual int get_ireg_size();
 };
 

@@ -42,7 +42,7 @@ protected:
 	File_spec identifier;
 	/// Pointer to the DataSource which will be used by
 	/// derived classes.
-	DataSource *data;
+	IDataSource *data;
 	/// Causes file/buffer information to be read. Or will do,
 	/// when it is implemented for derived classes.
 	virtual void index_file()
@@ -93,7 +93,7 @@ public:
 		: T(spec) {
 		if (U7exists(this->identifier.name)) {
 			U7open(this->_file, this->identifier.name.c_str());
-			this->data = new StreamDataSource(&(this->_file));
+			this->data = new IStreamDataSource(&(this->_file));
 			this->index_file();
 		} else
 			this->data = 0;
@@ -127,8 +127,8 @@ public:
 	/// Takes ownership of the parameters and deletes them when done,
 	/// so callers should NOT delete them.
 	/// @param spec Unique identifier for this data object.
-	/// @param dt   BufferDataSource that we shoud use.
-	U7DataBuffer(const File_spec &spec, BufferDataSource *dt)
+	/// @param dt   IBufferDataSource that we shoud use.
+	U7DataBuffer(const File_spec &spec, IBufferDataSource *dt)
 		: T(spec), _buffer(reinterpret_cast<const char *>(dt->getPtr())), _len(dt->getSize()) {
 		this->data = dt;
 		this->index_file();
@@ -143,7 +143,7 @@ public:
 	U7DataBuffer(const File_spec &spec, const char *buf, unsigned int l)
 		: T(spec), _buffer(buf), _len(l) {
 		this->identifier = spec;
-		this->data = new BufferDataSource(this->_buffer, this->_len);
+		this->data = new IBufferDataSource(this->_buffer, this->_len);
 		this->index_file();
 	}
 	/// Creates and initializes the data source from the specified
@@ -156,7 +156,7 @@ public:
 		std::size_t size;
 		U7object from(spec.name, spec.index);
 		this->_buffer = from.retrieve(size);
-		this->data = new BufferDataSource(_buffer, this->_len = size);
+		this->data = new IBufferDataSource(_buffer, this->_len = size);
 		this->index_file();
 	}
 	/// This destructor simply deletes the buffer if non-null.

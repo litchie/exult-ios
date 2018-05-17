@@ -97,7 +97,7 @@ public:
 	static Mouse *mouse;
 
 	Mouse(Game_window *gw);
-	Mouse(Game_window *gw, DataSource &shapes);
+	Mouse(Game_window *gw, IDataSource &shapes);
 	~Mouse();
 
 	void show();            // Paint it.

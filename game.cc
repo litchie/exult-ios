@@ -285,7 +285,7 @@ bool Game::show_menu(bool skip) {
 			return false;
 		return true;
 	}
-	ExultDataSource mouse_data(MAINSHP_FLX, PATCH_MAINSHP, 19);
+	IExultDataSource mouse_data(MAINSHP_FLX, PATCH_MAINSHP, 19);
 	menu_mouse = new Mouse(gwin, mouse_data);
 
 	top_menu();

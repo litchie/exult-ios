@@ -122,7 +122,7 @@ void Handle_debug_message(unsigned char *data, int datalen) {
 			Usecode_value zeroval(0);
 			stringstream dataio(ios::in|ios::out|ios::binary);
 			std::ostream *dataout = &dataio;
-			StreamDataSource ds(dataout);
+			OStreamDataSource ds(dataout);
 			ds.write1(static_cast<unsigned char>(Exult_server::dbg_stack));
 			int stacksize = uci->get_stack_size();
 			ds.write2(stacksize);

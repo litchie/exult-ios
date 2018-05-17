@@ -730,7 +730,7 @@ int Font::load_internal(
 			font_buf += 8;      // Yes, skip first 8 bytes.
 		delete font_data;
 		delete font_shapes;
-		font_data = new BufferDataSource(font_buf, len);
+		font_data = new IBufferDataSource(font_buf, len);
 		font_shapes = new Shape_file(font_data);
 		hor_lead = hlead;
 		ver_lead = vlead;

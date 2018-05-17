@@ -199,8 +199,8 @@ public:
 	int add_values(int index, Usecode_value &val2);
 	void print(std::ostream &out, bool shortformat = false); // Print in ASCII.
 	// Save/restore.
-	bool save(DataSource *out);
-	bool restore(DataSource *in);
+	bool save(ODataSource *out);
+	bool restore(IDataSource *in);
 	// Class objects.
 	void class_new(Usecode_class_symbol *cls, int nvars);
 	void class_delete();
