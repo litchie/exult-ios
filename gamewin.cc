@@ -1452,7 +1452,7 @@ void Game_window::write_gwin(
 ) {
 	ofstream gout_stream;
 	U7open(gout_stream, GWINDAT);   // Gamewin.dat.
-	StreamDataSource gout(&gout_stream);
+	OStreamDataSource gout(&gout_stream);
 	// Start with scroll coords (in tiles).
 	gout.write2(get_scrolltx());
 	gout.write2(get_scrollty());
@@ -1494,7 +1494,7 @@ void Game_window::read_gwin(
 		return;
 	}
 
-	StreamDataSource gin(&gin_stream);
+	IStreamDataSource gin(&gin_stream);
 
 	// Start with scroll coords (in tiles).
 	scrolltx_lp = scrolltx_l = scrolltx = gin.read2();

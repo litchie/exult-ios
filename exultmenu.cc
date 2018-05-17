@@ -528,7 +528,7 @@ BaseGameInfo *ExultMenu::run() {
 		while (1) wait_delay(1000);
 #endif
 	}
-	ExultDataSource mouse_data(BUNDLE_CHECK(BUNDLE_EXULT_FLX, EXULT_FLX),
+	IExultDataSource mouse_data(BUNDLE_CHECK(BUNDLE_EXULT_FLX, EXULT_FLX),
 	                           EXULT_FLX_POINTERS_SHP);
 	menu_mouse = new Mouse(gwin, mouse_data);
 

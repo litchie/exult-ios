@@ -5191,7 +5191,7 @@ int Dead_body::get_ireg_size() {
  */
 
 void Dead_body::write_ireg(
-    DataSource *out
+    ODataSource *out
 ) {
 	unsigned char buf[21];      // 13-byte entry - Exult extension.
 	uint8 *ptr = write_common_ireg(13, buf);

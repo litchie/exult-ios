@@ -45,12 +45,12 @@ using std::endl;
 playfli::playfli(const char *fli_name) {
 	ifstream fli_stream;
 	U7open(fli_stream, fli_name);
-	fli_data = new StreamDataSource(&fli_stream);
+	fli_data = new IStreamDataSource(&fli_stream);
 
 	initfli();
 }
 
-playfli::playfli(char *buffer, size_t len): fli_data(new BufferDataSource(buffer, len)) {
+playfli::playfli(char *buffer, size_t len): fli_data(new IBufferDataSource(buffer, len)) {
 	initfli();
 }
 

@@ -524,7 +524,7 @@ Usecode_value Usecode_value::operator%(const Usecode_value &v2) {
  */
 
 bool Usecode_value::save(
-    DataSource *out
+    ODataSource *out
 ) {
 	out->write1(static_cast<int>(type));
 	switch (type) {
@@ -570,7 +570,7 @@ bool Usecode_value::save(
  */
 
 bool Usecode_value::restore(
-    DataSource *in
+    IDataSource *in
 ) {
 	undefined = false;
 	type = static_cast<Val_type>(in->read1());

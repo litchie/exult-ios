@@ -616,7 +616,7 @@ void Container_game_object::set_flag_recursively(
  */
 
 void Container_game_object::write_ireg(
-    DataSource *out
+    ODataSource *out
 ) {
 	unsigned char buf[20];      // 12-byte entry.
 	uint8 *ptr = write_common_ireg(12, buf);
@@ -668,7 +668,7 @@ int Container_game_object::get_ireg_size() {
  */
 
 void Container_game_object::write_contents(
-    DataSource *out
+    ODataSource *out
 ) {
 	if (!objects.is_empty()) {  // Now write out what's inside.
 		Game_object *obj;

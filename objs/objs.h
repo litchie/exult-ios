@@ -47,7 +47,7 @@ class Rectangle;
 class Schedule;
 class Usecode_machine;
 class Vga_file;
-class DataSource;
+class ODataSource;
 class Game_map;
 class Object_client;
 
@@ -424,7 +424,7 @@ public:
 	virtual int reduce_health(int delta, int damage_type, Game_object *attacker = 0,
 	                          int *exp = 0);
 	// Write out to IREG file.
-	virtual void write_ireg(DataSource *out) {
+	virtual void write_ireg(ODataSource *out) {
 		ignore_unused_variable_warning(out);
 	}
 	// Get size of IREG. Returns -1 if can't write to buffer
@@ -432,7 +432,7 @@ public:
 		return 0;
 	}
 	// Write out IFIX, CHUNKS.
-	virtual void write_ifix(DataSource *ifix, bool v2) {
+	virtual void write_ifix(ODataSource *ifix, bool v2) {
 		ignore_unused_variable_warning(ifix, v2);
 	}
 	virtual void elements_read()    // Called when all member items read.
@@ -486,7 +486,7 @@ public:
 	// Remove/delete this object.
 	virtual void remove_this(int nodel = 0);
 	virtual void paint_terrain() {  }
-	virtual void write_ifix(DataSource *ifix, bool v2);
+	virtual void write_ifix(ODataSource *ifix, bool v2);
 };
 
 #endif

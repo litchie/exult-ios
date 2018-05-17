@@ -57,7 +57,7 @@ char *Flat::retrieve(uint32 objnum, size_t &len) {
  *  @param in   DataSource containing the data we wish to investigate.
  *  @return If the datasource is non-null and good, true; false otherwise.
  */
-bool Flat::is_flat(DataSource *in) {
+bool Flat::is_flat(IDataSource *in) {
 	return in && in->good();
 }
 

@@ -1748,7 +1748,7 @@ void Ifix_game_object::remove_this(
  */
 
 void Ifix_game_object::write_ifix(
-    DataSource *ifix,       // Where to write.
+    ODataSource *ifix,       // Where to write.
     bool v2             // More shapes/frames allowed.
 ) {
 	unsigned char buf[5];

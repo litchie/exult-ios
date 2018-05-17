@@ -369,7 +369,7 @@ int main(int argc, char **argv)
 							cerr << e.what() << endl;
 							exit(1);
 						}
-						StreamDataSource ifs(&infile);
+						IStreamDataSource ifs(&infile);
 						char *buf = new char[fsize];
 						ifs.read(buf, fsize);
 						flex.write(buf, fsize);

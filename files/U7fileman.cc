@@ -60,7 +60,7 @@ U7file *U7FileManager::get_file_object(const File_spec &s, bool allow_errors) {
 		U7object from(s.name, s.index);
 		std::size_t size;
 		char *buffer = from.retrieve(size);
-		BufferDataSource *data = new BufferDataSource(buffer, size);
+		IBufferDataSource *data = new IBufferDataSource(buffer, size);
 		if (IFF::is_iff(data))
 			uf = new IFFBuffer(s, data);
 		else if (Flex::is_flex(data))
