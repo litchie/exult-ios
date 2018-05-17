@@ -450,7 +450,7 @@ void Spellbook_gump::paint(
 			if (GAME_BG && page == 0 && !cheat.in_map_editor()) // No quantities for 0th circle in BG.
 				continue;
 			int num = avail[spindex + s];
-			char text[7];
+			char text[8];
 #ifdef USE_EXULTSTUDIO
 			if (cheat.in_map_editor()) {
 				unsigned char cflags = book->circles[page];
@@ -466,7 +466,7 @@ void Spellbook_gump::paint(
 					else if (num >= 1000 || cheat.in_wizard_mode())
 						std::strcpy(text, "999");
 					else
-						snprintf(text, 6, "%d", num);
+						snprintf(text, 7, "%d", num);
 				} else  // prevent garbage text
 					std::strcpy(text, "");
 			sman->paint_text(5, text,
