@@ -513,7 +513,7 @@ void Game_map::write_ifix_objects(
 	char fname[128];        // Set up name.
 	ofstream ifix_stream;   // There it is.
 	U7open(ifix_stream, get_schunk_file_name(PATCH_U7IFIX, schunk, fname));
-	StreamDataSource ifix(&ifix_stream);
+	OStreamDataSource ifix(&ifix_stream);
 	// +++++Use game title.
 	const int count = c_chunks_per_schunk * c_chunks_per_schunk;
 	Flex::Flex_vers vers = !New_shapes() ? Flex::orig : Flex::exult_v2;
@@ -561,7 +561,7 @@ void Game_map::get_ifix_objects(
 		}
 	FlexFile flex(fname);
 	int vers = static_cast<int>(flex.get_vers());
-	StreamDataSource ifix(&ifix_stream);
+	IStreamDataSource ifix(&ifix_stream);
 	int scy = 16 * (schunk / 12); // Get abs. chunk coords.
 	int scx = 16 * (schunk % 12);
 	// Go through chunks.
@@ -582,7 +582,7 @@ void Game_map::get_ifix_objects(
  */
 
 void Game_map::get_ifix_chunk_objects(
-    DataSource *ifix,
+    IDataSource *ifix,
     int vers,           // Flex file vers.
     long filepos,           // Offset in file.
     int len,            // Length of data.
@@ -641,7 +641,7 @@ void Game_map::get_ifix_chunk_objects(
  */
 
 void Game_map::write_attributes(
-    DataSource *ireg,
+    ODataSource *ireg,
     vector<pair<const char *, int> > &attlist
 ) {
 	int len = 0;            // Figure total length.
@@ -668,14 +668,14 @@ void Game_map::write_attributes(
  */
 
 void Game_map::write_scheduled(
-    DataSource *ireg,
+    ODataSource *ireg,
     Game_object *obj,
     bool write_mark         // Write an IREG_ENDMARK if true.
 ) {
 	for (Usecode_script *scr = Usecode_script::find(obj); scr;
 	        scr = Usecode_script::find(obj, scr)) {
 		ostringstream outbuf(ios::out);
-		StreamDataSource nbuf(&outbuf);
+		OStreamDataSource nbuf(&outbuf);
 		int len = scr->save(&nbuf);
 		if (len < 0)
 			cerr << "Error saving Usecode script" << endl;
@@ -696,7 +696,7 @@ void Game_map::write_scheduled(
  *  Write string entry and/or return length of what's written.
  */
 int Game_map::write_string(
-    DataSource *ireg,       // Null if we just want length.
+    ODataSource *ireg,       // Null if we just want length.
     const char *str
 ) {
 	int len = 1 + strlen(str);
@@ -743,7 +743,7 @@ void Game_map::write_ireg_objects(
 	char fname[128];        // Set up name.
 	ofstream ireg_stream;           // There it is.
 	U7open(ireg_stream, get_schunk_file_name(U7IREG, schunk, fname));
-	StreamDataSource ireg(&ireg_stream);
+	OStreamDataSource ireg(&ireg_stream);
 	write_ireg_objects(schunk, &ireg);
 	ireg_stream.flush();
 	int result = ireg_stream.good();
@@ -759,7 +759,7 @@ void Game_map::write_ireg_objects(
 
 void Game_map::write_ireg_objects(
     int schunk,         // Superchunk # (0-143).
-    DataSource *ireg
+    ODataSource *ireg
 ) {
 	int scy = 16 * (schunk / 12); // Get abs. chunk coords.
 	int scx = 16 * (schunk % 12);
@@ -787,12 +787,12 @@ void Game_map::get_ireg_objects(
 ) {
 	char fname[128];        // Set up name.
 	ifstream ireg_stream;           // There it is.
-	DataSource *ireg = 0;
+	IDataSource *ireg = 0;
 
 	if (schunk_cache[schunk] && schunk_cache_sizes[schunk] >= 0) {
 		// No items
 		if (schunk_cache_sizes[schunk] == 0) return;
-		ireg = new BufferDataSource(schunk_cache[schunk], schunk_cache_sizes[schunk]);
+		ireg = new IBufferDataSource(schunk_cache[schunk], schunk_cache_sizes[schunk]);
 #ifdef DEBUG
 		std::cout << "Reading " << get_schunk_file_name(U7IREG, schunk, fname) << " from memory" << std::endl;
 #endif
@@ -802,7 +802,7 @@ void Game_map::get_ireg_objects(
 		} catch (const file_exception & /*f*/) {
 			return;         // Just don't show them.
 		}
-		ireg = new StreamDataSource(&ireg_stream);
+		ireg = new IStreamDataSource(&ireg_stream);
 	}
 	int scy = 16 * (schunk / 12); // Get abs. chunk coords.
 	int scx = 16 * (schunk % 12);
@@ -829,7 +829,7 @@ void Game_map::get_ireg_objects(
  */
 
 void Read_special_ireg(
-    DataSource *ireg,
+    IDataSource *ireg,
     Game_object *obj        // Last object read.
 ) {
 	int type = ireg->read1();       // Get type.
@@ -837,7 +837,7 @@ void Read_special_ireg(
 	unsigned char *buf = new unsigned char[len];
 	ireg->read(reinterpret_cast<char *>(buf), len);
 	if (type == IREG_UCSCRIPT) { // Usecode script?
-		BufferDataSource nbuf(buf, len);
+		IBufferDataSource nbuf(buf, len);
 		Usecode_script *scr = Usecode_script::restore(obj, &nbuf);
 		if (scr) {
 			scr->start(scr->get_delay());
@@ -865,7 +865,7 @@ void Read_special_ireg(
  */
 
 void Game_map::read_special_ireg(
-    DataSource *ireg,
+    IDataSource *ireg,
     Game_object *obj        // Last object read.
 ) {
 	unsigned char entlen;
@@ -898,7 +898,7 @@ inline unsigned long Get_quality_flags(
  */
 
 void Game_map::read_ireg_objects(
-    DataSource *ireg,           // File to read from.
+    IDataSource *ireg,           // File to read from.
     int scx, int scy,       // Abs. chunk coords. of superchunk.
     Game_object *container,     // Container, or null.
     unsigned long flags     // Usecode item flags.
@@ -1795,7 +1795,7 @@ void Game_map::cache_out_schunk(int schunk) {
 	schunk_cache[schunk] = new char[buf_size];
 	schunk_cache_sizes[schunk] = buf_size;
 
-	BufferDataSource ds(schunk_cache[schunk], schunk_cache_sizes[schunk]);
+	OBufferDataSource ds(schunk_cache[schunk], schunk_cache_sizes[schunk]);
 
 	write_ireg_objects(schunk, &ds);
 

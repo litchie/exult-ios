@@ -41,7 +41,8 @@ class Ifix_game_object;
 class Egg_object;
 class Shape_info;
 class Shapes_vga_file;
-class DataSource;
+class IDataSource;
+class ODataSource;
 class Shape;
 
 using std::vector;
@@ -170,24 +171,24 @@ public:
 	// Get "ifix" objects for a superchunk.
 	void get_ifix_objects(int schunk);
 	// Get "ifix" objs. for given chunk.
-	void get_ifix_chunk_objects(DataSource *ifix, int vers,
+	void get_ifix_chunk_objects(IDataSource *ifix, int vers,
 	                            long filepos, int len, int cx, int cy);
-	static void write_attributes(DataSource *ireg,
+	static void write_attributes(ODataSource *ireg,
 	                             std::vector<std::pair<const char *, int> > &attlist);
 	// Write scheduled script for obj.
-	static void write_scheduled(DataSource *ireg, Game_object *obj,
+	static void write_scheduled(ODataSource *ireg, Game_object *obj,
 	                            bool write_mark = false);
-	static int write_string(DataSource *ireg, const char *str);
+	static int write_string(ODataSource *ireg, const char *str);
 	void write_ireg();      // Write modified ireg files.
 	// Write moveable objects to file.
 	void write_ireg_objects(int schunk);
 	// Write moveable objects to datasource.
-	void write_ireg_objects(int schunk, DataSource *ireg);
+	void write_ireg_objects(int schunk, ODataSource *ireg);
 	// Get moveable objects.
 	void get_ireg_objects(int schunk);
 	// Read scheduled script(s) for obj.
-	void read_special_ireg(DataSource *ireg, Game_object *obj);
-	void read_ireg_objects(DataSource *ireg, int scx, int scy,
+	void read_special_ireg(IDataSource *ireg, Game_object *obj);
+	void read_ireg_objects(IDataSource *ireg, int scx, int scy,
 	                       Game_object *container = 0,
 	                       unsigned long flags = (1 << Obj_flags::okay_to_take));
 	Ireg_game_object *create_ireg_object(const Shape_info &info, int shnum,

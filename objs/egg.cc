@@ -1161,7 +1161,7 @@ void Egg_object::remove_this(
  */
 
 void Egg_object::write_ireg(
-    DataSource *out
+    ODataSource *out
 ) {
 	unsigned char buf[30];      // 12-14 byte entry.
 	int sz = data3 > 0 ? 14 : 12;
@@ -1319,7 +1319,7 @@ void Field_object::hatch(
  */
 
 void Field_object::write_ireg(
-    DataSource *out
+    ODataSource *out
 ) {
 	Ireg_game_object::write_ireg(out);
 }
@@ -1407,7 +1407,7 @@ void Mirror_object::paint() {
  *  Write out.  These are stored as normal game objects.
  */
 
-void Mirror_object::write_ireg(DataSource *out) {
+void Mirror_object::write_ireg(ODataSource *out) {
 	Ireg_game_object::write_ireg(out);
 }
 

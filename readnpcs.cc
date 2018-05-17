@@ -52,7 +52,7 @@ void Game_window::read_npcs(
 	npcs.resize(1);         // Create main actor.
 	camera_actor = npcs[0] = main_actor = new Main_actor("", 0);
 	ifstream nfile_stream;
-	StreamDataSource nfile(&nfile_stream);
+	IStreamDataSource nfile(&nfile_stream);
 	int num_npcs;
 	bool fix_unused = false;    // Get set for old savegames.
 	try {
@@ -137,7 +137,7 @@ void Game_window::write_npcs(
 	int num_npcs = npcs.size();
 	ofstream nfile_stream;
 	U7open(nfile_stream, NPC_DAT);
-	StreamDataSource nfile(&nfile_stream);
+	OStreamDataSource nfile(&nfile_stream);
 
 	nfile.write2(num_npcs1);    // Start with counts.
 	nfile.write2(num_npcs - num_npcs1);
@@ -176,7 +176,7 @@ void Game_window::write_npcs(
  */
 
 void Set_to_read_schedules(
-    StreamDataSource &sfile,
+    IStreamDataSource &sfile,
     int &num_npcs,          // # npc's returnes.
     int &entsize,           // Entry size returned.
     int &num_script_names,      // # of usecode script names ret'd.
@@ -204,7 +204,7 @@ void Set_to_read_schedules(
  */
 
 void Read_a_schedule(
-    StreamDataSource &sfile,
+    IStreamDataSource &sfile,
     int index,
     Actor *npc,
     int entsize,
@@ -256,7 +256,7 @@ void Game_window::read_schedules(
 				return;
 		}
 	}
-	StreamDataSource sfile(&sfile_stream);
+	IStreamDataSource sfile(&sfile_stream);
 	Set_to_read_schedules(sfile, num_npcs, entsize, num_script_names,
 	                      offsets);
 	Schedule_change::clear();
@@ -300,7 +300,7 @@ void Game_window::write_schedules() {
 	num = npcs.size();
 
 	U7open(sfile_stream, GSCHEDULE);
-	StreamDataSource sfile(&sfile_stream);
+	OStreamDataSource sfile(&sfile_stream);
 	vector<char *> &script_names = Schedule_change::get_script_names();
 
 	sfile.write4(static_cast<unsigned int>(-2));        // Exult version #.
@@ -345,7 +345,7 @@ void Game_window::revert_schedules(Actor *npc) {
 	short *offsets;
 
 	U7open(sfile_stream, SCHEDULE_DAT);
-	StreamDataSource sfile(&sfile_stream);
+	IStreamDataSource sfile(&sfile_stream);
 	Set_to_read_schedules(sfile, num_npcs, entsize, num_script_names,
 	                      offsets);
 	if (num_script_names) {

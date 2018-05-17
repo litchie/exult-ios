@@ -333,7 +333,7 @@ Shape_frame::Shape_frame(
  */
 
 unsigned int Shape_frame::read(
-    DataSource *shapes,     // Shapes data source to read.
+    IDataSource *shapes,     // Shapes data source to read.
     uint32 shapeoff,        // Offset of shape in file.
     uint32 shapelen,        // Length expected for detecting RLE.
     int frnum           // Frame #.
@@ -387,7 +387,7 @@ unsigned int Shape_frame::read(
  */
 
 void Shape_frame::get_rle_shape(
-    DataSource *shapes,     // Shapes data source to read.
+    IDataSource *shapes,     // Shapes data source to read.
     long filepos,           // Position in file.
     long len            // Length of entire frame data.
 ) {
@@ -718,7 +718,7 @@ void Shape_frame::set_offset(
  */
 
 Shape_frame *Shape::reflect(
-    vector<pair<DataSource *, bool> > const &shapes,    // shapes data source to read.
+    vector<pair<IDataSource *, bool> > const &shapes,    // shapes data source to read.
     int shapenum,           // Shape #.
     int framenum,           // Frame # without the 'reflect' bit.
     vector<int> const &counts
@@ -804,13 +804,13 @@ inline void Shape::create_frames_list(
  */
 
 Shape_frame *Shape::read(
-    vector<pair<DataSource *, bool> > const &shapes, // Shapes data source to read.
+    vector<pair<IDataSource *, bool> > const &shapes, // Shapes data source to read.
     int shapenum,           // Shape #.
     int framenum,           // Frame # within shape.
     vector<int> const &counts,      // Number of shapes in files.
     int src
 ) {
-	DataSource *shp = 0;
+	IDataSource *shp = 0;
 	// Figure offset in "shapes.vga".
 	uint32 shapeoff = 0x80 + shapenum * 8;
 	uint32 shapelen = 0;
@@ -818,11 +818,11 @@ Shape_frame *Shape::read(
 	// Check backwards for the shape file to use.
 	int i = counts.size();
 	if (src < 0) {
-		vector<pair<DataSource *, bool> >::const_reverse_iterator it = shapes.rbegin();
+		vector<pair<IDataSource *, bool> >::const_reverse_iterator it = shapes.rbegin();
 		for (; it != shapes.rend(); ++it) {
 			i--;
 			if (shapenum < counts[i]) {
-				DataSource *ds = (*it).first;
+				IDataSource *ds = (*it).first;
 				ds->seek(shapeoff);
 				// Get location, length.
 				int s = ds->read4();
@@ -837,7 +837,7 @@ Shape_frame *Shape::read(
 			}
 		}
 	} else if (shapenum < counts[src]) {
-		DataSource *ds = shapes[src].first;
+		IDataSource *ds = shapes[src].first;
 		ds->seek(shapeoff);
 		// Get location, length.
 		int s = ds->read4();
@@ -1006,7 +1006,7 @@ void Shape::take(
  */
 
 void Shape::load(
-    DataSource *shape_source        // datasource.
+    IDataSource *shape_source        // datasource.
 ) {
 	reset();
 	Shape_frame *frame = new Shape_frame();
@@ -1101,7 +1101,7 @@ void Shape_file::load(
 ) {
 	ifstream file;
 	U7open(file, nm);
-	StreamDataSource shape_source(&file);
+	IStreamDataSource shape_source(&file);
 	Shape::load(&shape_source);
 }
 
@@ -1110,7 +1110,7 @@ void Shape_file::load(
  */
 
 Shape_file::Shape_file(
-    DataSource *shape_source        // datasource.
+    IDataSource *shape_source        // datasource.
 ) {
 	Shape::load(shape_source);
 }
@@ -1126,7 +1126,7 @@ int Shape_file::get_size() {
 }
 
 // NOTE: Only works on shapes other than the special 8x8 tile-shapes
-void Shape_file::save(DataSource *shape_source) {
+void Shape_file::save(ODataSource *shape_source) {
 	int *offsets = new int[num_frames];
 	int size;
 	offsets[0] = 4 + num_frames * 4;
@@ -1187,21 +1187,21 @@ bool Vga_file::load(
 	return load(src, resetimports);
 }
 
-DataSource *Vga_file::U7load(
+IDataSource *Vga_file::U7load(
     pair<string, int> const &resource,
     vector<ifstream *> &fs,
     vector<char *> &bs,
-    vector<pair<DataSource *, bool> > &shps
+    vector<pair<IDataSource *, bool> > &shps
 ) {
-	DataSource *source = 0;
+	IDataSource *source = 0;
 	if (resource.second < 0) {
 		// It is a file.
 		if (U7exists(resource.first)) {
 			ifstream *file = new ifstream();
 			U7open(*file, resource.first.c_str());
-			source = new StreamDataSource(file);
+			source = new IStreamDataSource(file);
 			fs.push_back(file);
-			shps.push_back(pair<DataSource *, bool>(source,
+			shps.push_back(pair<IDataSource *, bool>(source,
 			                                        !resource.first.compare(0, 7, "<PATCH>")));
 		}
 	} else {
@@ -1214,9 +1214,9 @@ DataSource *Vga_file::U7load(
 			delete [] buf;
 			return 0;
 		}
-		source = new BufferDataSource(buf, len);
+		source = new IBufferDataSource(buf, len);
 		bs.push_back(buf);
-		shps.push_back(pair<DataSource *, bool>(source, false));
+		shps.push_back(pair<IDataSource *, bool>(source, false));
 	}
 	return source;
 }
@@ -1238,7 +1238,7 @@ bool Vga_file::load(
 		is_good = false;
 	for (vector<pair<string, int> >::const_iterator it = sources.begin();
 	        it != sources.end(); ++it) {
-		DataSource *source = U7load(*it, files, buffers, shape_sources);
+		IDataSource *source = U7load(*it, files, buffers, shape_sources);
 		if (source) {
 			flex = Flex::is_flex(source);
 			if (flex) {
@@ -1285,7 +1285,7 @@ bool Vga_file::import_shapes(
     vector<pair<int, int> > const &imports
 ) {
 	reset_imports();
-	DataSource *ds =
+	IDataSource *ds =
 	    U7load(source, imported_files, imported_buffers, imported_sources);
 	if (ds) {
 		ds->seek(0x54); // Get # of shapes.
@@ -1320,7 +1320,7 @@ bool Vga_file::import_shapes(
 void Vga_file::reset() {
 	delete [] shapes;
 
-	for (vector<pair<DataSource *, bool> >::iterator it = shape_sources.begin();
+	for (vector<pair<IDataSource *, bool> >::iterator it = shape_sources.begin();
 	        it != shape_sources.end(); ++it)
 		delete it->first;
 	shape_sources.clear();
@@ -1350,7 +1350,7 @@ void Vga_file::reset_imports() {
 		delete *it;
 	imported_shapes.clear();
 
-	for (vector<pair<DataSource *, bool> >::iterator it = imported_sources.begin();
+	for (vector<pair<IDataSource *, bool> >::iterator it = imported_sources.begin();
 	        it != imported_sources.end(); ++it)
 		delete it->first;
 	imported_sources.clear();

@@ -173,7 +173,7 @@ public:
 		return 1;
 	}
 	// Write out to IREG file.
-	virtual void write_ireg(DataSource *out);
+	virtual void write_ireg(ODataSource *out);
 	// Get size of IREG. Returns -1 if can't write to buffer
 	virtual int get_ireg_size();
 
@@ -202,7 +202,7 @@ public:
 	virtual void activate(int event = 1);
 	virtual void hatch(Game_object *obj, bool must = false);
 	// Write out to IREG file.
-	virtual void write_ireg(DataSource *out);
+	virtual void write_ireg(ODataSource *out);
 	// Get size of IREG. Returns -1 if can't write to buffer
 	virtual int get_ireg_size();
 	virtual int is_findable() {
@@ -242,7 +242,7 @@ public:
 		return Ireg_game_object::is_findable();
 	}
 
-	virtual void write_ireg(DataSource *out);
+	virtual void write_ireg(ODataSource *out);
 	// Get size of IREG. Returns -1 if can't write to buffer
 	virtual int get_ireg_size();
 	virtual bool edit() {

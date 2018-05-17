@@ -3186,7 +3186,7 @@ void Usecode_internal::write(
 		throw file_write_exception(USEDAT);
 	out.close();
 	U7open(out, USEVARS);       // Static variables. 1st, globals.
-	StreamDataSource *nfile = new StreamDataSource(&out);
+	OStreamDataSource *nfile = new OStreamDataSource(&out);
 	nfile->write4(statics.size());  // # globals.
 	vector<Usecode_value>::iterator it;
 	for (it = statics.begin(); it != statics.end(); ++it)
@@ -3306,7 +3306,7 @@ void Usecode_internal::read_usevars(
     std::istream &in
 ) {
 	int cnt = Read4(in);        // Global statics.
-	StreamDataSource nfile(&in);
+	IStreamDataSource nfile(&in);
 	statics.resize(cnt);
 	int i;
 	for (i = 0; i < cnt; i++)

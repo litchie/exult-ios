@@ -365,7 +365,7 @@ void Shapeinfo_lookup::Read_data_file(
 		U7object txtobj(resource.str, resource.num);
 		std::size_t len;
 		char *txt = txtobj.retrieve(len);
-		BufferDataSource ds(txt, len);
+		IBufferDataSource ds(txt, len);
 		static_version = Read_text_msg_file_sections(&ds,
 		                 static_strings, sections, numsections);
 		delete [] txt;

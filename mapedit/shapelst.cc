@@ -1350,7 +1350,7 @@ void Shape_chooser::import_shape(
 			return;         // Shouldn't happen.
 		ifstream file;
 		U7open(file, fname);
-		StreamDataSource ds(&file);
+		IStreamDataSource ds(&file);
 		// Check to see if it is a valid shape file.
 		// We never get here through a flat, so we don't deal
 		// with that case. These tests aren't perfect!

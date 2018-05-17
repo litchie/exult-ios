@@ -272,8 +272,8 @@ int main(int argc, char *argv[]) {
 			if (!size)
 				throw(exult_exception("No data in index 0"));
 
-			// Create us a BufferDataSource
-			BufferDataSource ds(data, size);
+			// Create us a IBufferDataSource
+			IBufferDataSource ds(data, size);
 
 			uint32 num_timbres = ds.read1();
 			std::cout << num_timbres << " custom timbres..." << std::endl;

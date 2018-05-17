@@ -115,28 +115,22 @@
 // DataSources
 //
 
-#define IDataSource DataSource
-#define ODataSource DataSource
-
-#define IBufferDataSource BufferDataSource
-#define OBufferDataSource BufferDataSource
-
 #include "databuf.h"
 
-class IFileDataSource : public StreamDataSource {
+class IFileDataSource : public IStreamDataSource {
 public:
 public:
-	IFileDataSource(std::ifstream *data_stream) : StreamDataSource(data_stream) {
+	IFileDataSource(std::ifstream *data_stream) : IStreamDataSource(data_stream) {
 	}
 	~IFileDataSource() {
 		FORGET_OBJECT(in);
 	}
 };
 
-class OFileDataSource : public StreamDataSource {
+class OFileDataSource : public OStreamDataSource {
 public:
 public:
-	OFileDataSource(std::ofstream *data_stream) : StreamDataSource(data_stream) {
+	OFileDataSource(std::ofstream *data_stream) : OStreamDataSource(data_stream) {
 	}
 	~OFileDataSource() {
 		FORGET_OBJECT(out);
