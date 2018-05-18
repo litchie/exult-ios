@@ -223,7 +223,7 @@ void Game_map::init(
 			u7map.read(reinterpret_cast<char *>(buf), sizeof(buf));
 		int scy = 16 * (schunk / 12); // Get abs. chunk coords.
 		int scx = 16 * (schunk % 12);
-		uint8 *mapdata = buf;
+		const uint8 *mapdata = buf;
 		// Go through chunks.
 		for (int cy = 0; cy < 16; cy++)
 			for (int cx = 0; cx < 16; cx++)

@@ -56,7 +56,13 @@ inline uint8 Read1(
 }
 
 inline uint8 Read1(
-    uint8 *& in
+    std::istream *in
+) {
+	return static_cast<uint8>(in->get());
+}
+
+inline uint8 Read1(
+    const uint8 *& in
 ) {
 	return *in++;
 }
@@ -278,6 +284,28 @@ inline void WriteStr(
 }
 
 /*
+ *  Read a 1-byte value from mutable data.
+ */
+
+inline uint8 MRead1(
+    uint8 *& in
+) {
+	return *in++;
+}
+
+/*
+ *  Read a 2-byte value, lsb first, from mutable data.
+ */
+
+inline uint16 MRead2(
+    uint8 *& in
+) {
+	uint16 b0 = MRead1(in);
+	uint16 b1 = MRead1(in);
+	return (b1 << 8) | b0;
+}
+
+/*
  *  Write a 1-byte value.
  */
 
@@ -286,6 +314,13 @@ inline void Write1(
     uint8 val
 ) {
 	out.put(static_cast<char>(val));
+}
+
+inline void Write1(
+    std::ostream *out,
+    uint8 val
+) {
+	out->put(static_cast<char>(val));
 }
 
 inline void Write1(

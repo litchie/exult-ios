@@ -66,7 +66,7 @@ class Exec_box;
 class BaseGameInfo;
 // Callback for msgs.
 typedef void (*Msg_callback)(Exult_server::Msg_type id,
-                             unsigned char *data, int datalen, void *client);
+                             const unsigned char *data, int datalen, void *client);
 
 #ifndef WIN32
 #define C_EXPORT extern "C"

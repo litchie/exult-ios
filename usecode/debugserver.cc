@@ -73,7 +73,7 @@ void Handle_debug_message(unsigned char *data, int datalen) {
 
 	Exult_server::Debug_msg_type id = static_cast<Exult_server::Debug_msg_type>(data[0]);
 
-	unsigned char *ptr = data;
+	const unsigned char *ptr = data;
 
 	if (uci->is_on_breakpoint()) {
 		// accept extra messages now

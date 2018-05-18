@@ -61,7 +61,7 @@ public:
 			char character =  static_cast<char>(read1());
 
 			if (character == '\r') continue;        // Skip cr
-			else if (character == '\n')     break;  // break on line feed
+			else if (character == '\n') break;      // break on line feed
 
 			str += character;
 		}
@@ -82,26 +82,26 @@ public:
 	}
 
 	virtual uint32 read1() {
-		return Read1(*in);
+		return Read1(in);
 	}
 
 	virtual uint16 read2() {
-		return Read2(*in);
+		return Read2(in);
 	}
 
 	virtual uint16 read2high() {
-		return Read2high(*in);
+		return Read2high(in);
 	}
 
 	virtual uint32 read4() {
-		return Read4(*in);
+		return Read4(in);
 	}
 
 	virtual uint32 read4high() {
-		return Read4high(*in);
+		return Read4high(in);
 	}
 
-	void read(void *b, size_t len) {
+	virtual void read(void *b, size_t len) {
 		in->read(static_cast<char *>(b), len);
 	}
 
@@ -143,67 +143,44 @@ public:
 
 class IBufferDataSource: public IDataSource {
 protected:
-	/* const solely so that no-one accidentally modifies it.
-	    data is being passed 'non-const' anyway */
 	const unsigned char *buf;
-	unsigned char *buf_ptr;
+	const unsigned char *buf_ptr;
 	std::size_t size;
 public:
 	IBufferDataSource(const void *data, size_t len) {
 		// data can be NULL if len is also 0
 		assert(data != 0 || len == 0);
-		buf = static_cast<const unsigned char *>(data);
-		buf_ptr = const_cast<unsigned char *>(buf);
+		buf_ptr = buf = static_cast<const unsigned char *>(data);
 		size = len;
 	}
 
 	virtual ~IBufferDataSource() {}
 
 	virtual uint32 peek() {
-		unsigned char b0;
-		b0 = *buf_ptr;
-		return (b0);
+		return *buf_ptr;
 	}
 
 	virtual uint32 read1() {
-		unsigned char b0;
-		b0 = *buf_ptr++;
-		return (b0);
+		return Read1(buf_ptr);
 	}
 
 	virtual uint16 read2() {
-		unsigned char b0, b1;
-		b0 = *buf_ptr++;
-		b1 = *buf_ptr++;
-		return static_cast<uint16>(b0 | (b1 << 8));
+		return Read2(buf_ptr);
 	}
 
 	virtual uint16 read2high() {
-		unsigned char b0, b1;
-		b1 = *buf_ptr++;
-		b0 = *buf_ptr++;
-		return static_cast<uint16>(b0 | (b1 << 8));
+		return Read2high(buf_ptr);
 	}
 
 	virtual uint32 read4() {
-		unsigned char b0, b1, b2, b3;
-		b0 = *buf_ptr++;
-		b1 = *buf_ptr++;
-		b2 = *buf_ptr++;
-		b3 = *buf_ptr++;
-		return (b0 | (b1 << 8) | (b2 << 16) | (b3 << 24));
+		return Read4(buf_ptr);
 	}
 
 	virtual uint32 read4high() {
-		unsigned char b0, b1, b2, b3;
-		b3 = *buf_ptr++;
-		b2 = *buf_ptr++;
-		b1 = *buf_ptr++;
-		b0 = *buf_ptr++;
-		return (b0 | (b1 << 8) | (b2 << 16) | (b3 << 24));
+		return Read4high(buf_ptr);
 	}
 
-	void read(void *b, size_t len) {
+	virtual void read(void *b, size_t len) {
 		std::memcpy(b, buf_ptr, len);
 		buf_ptr += len;
 	}
@@ -214,7 +191,7 @@ public:
 	}
 
 	virtual void seek(size_t pos) {
-		buf_ptr = const_cast<unsigned char *>(buf) + pos;
+		buf_ptr = buf + pos;
 	}
 
 	virtual void skip(std::streamoff pos) {
@@ -226,41 +203,42 @@ public:
 	}
 
 	virtual size_t getPos() {
-		return (buf_ptr - buf);
+		return buf_ptr - buf;
 	}
 
-	unsigned char *getPtr() {
+	const unsigned char *getPtr() {
 		return buf_ptr;
 	}
 
 	virtual bool eof() {
-		return (buf_ptr - buf) >= static_cast<std::ptrdiff_t>(size);
+		return buf_ptr >= buf + size;
 	}
 };
 
 class IExultDataSource: public IBufferDataSource {
+	unsigned char *data;
 public:
 	IExultDataSource(const File_spec &fname, int index)
-		: IBufferDataSource(0, 0) {
+		: IBufferDataSource(0, 0), data(0) {
 		U7object obj(fname, index);
-		buf = buf_ptr = reinterpret_cast<unsigned char *>(obj.retrieve(size));
+		buf = buf_ptr = data = reinterpret_cast<unsigned char *>(obj.retrieve(size));
 	}
 
 	IExultDataSource(const File_spec &fname0, const File_spec &fname1, int index)
-		: IBufferDataSource(0, 0) {
+		: IBufferDataSource(0, 0), data(0) {
 		U7multiobject obj(fname0, fname1, index);
-		buf = buf_ptr = reinterpret_cast<unsigned char *>(obj.retrieve(size));
+		buf = buf_ptr = data = reinterpret_cast<unsigned char *>(obj.retrieve(size));
 	}
 
 	IExultDataSource(const File_spec &fname0, const File_spec &fname1,
-	                const File_spec &fname2, int index)
-		: IBufferDataSource(0, 0) {
+	                 const File_spec &fname2, int index)
+		: IBufferDataSource(0, 0), data(0) {
 		U7multiobject obj(fname0, fname1, fname2, index);
-		buf = buf_ptr = reinterpret_cast<unsigned char *>(obj.retrieve(size));
+		buf = buf_ptr = data = reinterpret_cast<unsigned char *>(obj.retrieve(size));
 	}
 
 	~IExultDataSource() {
-		delete [] const_cast<unsigned char *>(buf);
+		delete [] data;
 	}
 };
 
@@ -298,23 +276,23 @@ public:
 	virtual ~OStreamDataSource() {}
 
 	virtual void write1(uint32 val) {
-		Write1(*out, static_cast<uint16>(val));
+		Write1(out, static_cast<uint16>(val));
 	}
 
 	virtual void write2(uint16 val) {
-		Write2(*out, val);
+		Write2(out, val);
 	}
 
 	virtual void write2high(uint16 val) {
-		Write2high(*out, val);
+		Write2high(out, val);
 	}
 
 	virtual void write4(uint32 val) {
-		Write4(*out, val);
+		Write4(out, val);
 	}
 
 	virtual void write4high(uint32 val) {
-		Write4high(*out, val);
+		Write4high(out, val);
 	}
 
 	virtual void write(const void *b, size_t len) {
@@ -358,56 +336,38 @@ public:
 
 class OBufferDataSource: public ODataSource {
 protected:
-	/* const solely so that no-one accidentally modifies it.
-	    data is being passed 'non-const' anyway */
-	const unsigned char *buf;
+	unsigned char *buf;
 	unsigned char *buf_ptr;
 	std::size_t size;
 public:
-	OBufferDataSource(const void *data, size_t len) {
+	OBufferDataSource(void *data, size_t len) {
 		// data can be NULL if len is also 0
 		assert(data != 0 || len == 0);
-		buf = static_cast<const unsigned char *>(data);
-		buf_ptr = const_cast<unsigned char *>(buf);
-		size = len;
-	}
-
-	void load(void *data, size_t len) {
-		// data can be NULL if len is also 0
-		assert(data != 0 || len == 0);
-		buf = buf_ptr = static_cast<unsigned char *>(data);
+		buf_ptr = buf = static_cast<unsigned char *>(data);
 		size = len;
 	}
 
 	virtual ~OBufferDataSource() {}
 
 	virtual void write1(uint32 val) {
-		*buf_ptr++ = static_cast<uint8>(val & 0xff);
+		Write1(buf_ptr, val);
 	}
 
 	virtual void write2(uint16 val) {
-		*buf_ptr++ = static_cast<uint8>(val & 0xff);
-		*buf_ptr++ = static_cast<uint8>((val >> 8) & 0xff);
+		Write2(buf_ptr, val);
 	}
 
 	virtual void write2high(uint16 val) {
-		*buf_ptr++ = static_cast<uint8>((val >> 8) & 0xff);
-		*buf_ptr++ = static_cast<uint8>(val & 0xff);
+		Write2high(buf_ptr, val);
 	}
 
 
 	virtual void write4(uint32 val) {
-		*buf_ptr++ = static_cast<uint8>(val & 0xff);
-		*buf_ptr++ = static_cast<uint8>((val >> 8) & 0xff);
-		*buf_ptr++ = static_cast<uint8>((val >> 16) & 0xff);
-		*buf_ptr++ = static_cast<uint8>((val >> 24) & 0xff);
+		Write4(buf_ptr, val);
 	}
 
 	virtual void write4high(uint32 val) {
-		*buf_ptr++ = static_cast<uint8>((val >> 24) & 0xff);
-		*buf_ptr++ = static_cast<uint8>((val >> 16) & 0xff);
-		*buf_ptr++ = static_cast<uint8>((val >> 8) & 0xff);
-		*buf_ptr++ = static_cast<uint8>(val & 0xff);
+		Write4high(buf_ptr, val);
 	}
 
 	virtual void write(const void *b, size_t len) {
@@ -420,7 +380,7 @@ public:
 	}
 
 	virtual void seek(size_t pos) {
-		buf_ptr = const_cast<unsigned char *>(buf) + pos;
+		buf_ptr = buf + pos;
 	}
 
 	virtual void skip(std::streamoff pos) {
@@ -432,7 +392,7 @@ public:
 	}
 
 	virtual size_t getPos() {
-		return (buf_ptr - buf);
+		return buf_ptr - buf;
 	}
 
 	unsigned char *getPtr() {
@@ -455,14 +415,14 @@ public:
 	}
 
 	OExultDataSource(const File_spec &fname0, const File_spec &fname1,
-	                const File_spec &fname2, int index)
+	                 const File_spec &fname2, int index)
 		: OBufferDataSource(0, 0) {
 		U7multiobject obj(fname0, fname1, fname2, index);
 		buf = buf_ptr = reinterpret_cast<unsigned char *>(obj.retrieve(size));
 	}
 
 	~OExultDataSource() {
-		delete [] const_cast<unsigned char *>(buf);
+		delete [] buf;
 	}
 };
 

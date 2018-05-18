@@ -207,7 +207,7 @@ static void Handle_client_message(
 	int datalen = Exult_server::Receive_data(fd, id, data, sizeof(data));
 	if (datalen < 0)
 		return;
-	unsigned char *ptr = &data[0];
+	const unsigned char *ptr = &data[0];
 	Game_window *gwin = Game_window::get_instance();
 	switch (id) {
 	case Exult_server::obj:
@@ -266,49 +266,54 @@ static void Handle_client_message(
 		int cy = Read2s(ptr);
 		bool up = *ptr++ ? true : false;
 		bool okay = gwin->get_map()->locate_terrain(tnum, cx, cy, up);
-		ptr = &data[2];     // Set back reply.
-		Write2(ptr, cx);
-		Write2(ptr, cy);
-		ptr++;          // Skip 'up' flag.
-		*ptr++ = okay ? 1 : 0;
+		unsigned char *wptr = &data[2];
+		// Set back reply.
+		Write2(wptr, cx);
+		Write2(wptr, cy);
+		wptr++;          // Skip 'up' flag.
+		*wptr++ = okay ? 1 : 0;
 		Exult_server::Send_data(client_socket,
-		                        Exult_server::locate_terrain, data, ptr - data);
+		                        Exult_server::locate_terrain, data, wptr - data);
 		break;
 	}
 	case Exult_server::swap_terrain: {
 		int tnum = Read2(ptr);
 		bool okay = gwin->get_map()->swap_terrains(tnum);
-		*ptr++ = okay ? 1 : 0;
+		unsigned char *wptr = &data[2];
+		*wptr++ = okay ? 1 : 0;
 		Exult_server::Send_data(client_socket,
-		                        Exult_server::swap_terrain, data, ptr - data);
+		                        Exult_server::swap_terrain, data, wptr - data);
 		break;
 	}
 	case Exult_server::insert_terrain: {
 		int tnum = Read2s(ptr);
 		bool dup = *ptr++ ? true : false;
 		bool okay = gwin->get_map()->insert_terrain(tnum, dup);
-		*ptr++ = okay ? 1 : 0;
+		unsigned char *wptr = &data[3];
+		*wptr++ = okay ? 1 : 0;
 		Exult_server::Send_data(client_socket,
-		                        Exult_server::insert_terrain, data, ptr - data);
+		                        Exult_server::insert_terrain, data, wptr - data);
 		break;
 	}
 	case Exult_server::delete_terrain: {
 		int tnum = Read2s(ptr);
 		bool okay = gwin->get_map()->delete_terrain(tnum);
-		*ptr++ = okay ? 1 : 0;
+		unsigned char *wptr = &data[2];
+		*wptr++ = okay ? 1 : 0;
 		Exult_server::Send_data(client_socket,
-		                        Exult_server::delete_terrain, data, ptr - data);
+		                        Exult_server::delete_terrain, data, wptr - data);
 		break;
 	}
 	case Exult_server::send_terrain: {
 		// Send back #, total, 512-bytes data.
 		int tnum = Read2s(ptr);
-		Write2(ptr, gwin->get_map()->get_num_chunk_terrains());
+		unsigned char *wptr = &data[2];
+		Write2(wptr, gwin->get_map()->get_num_chunk_terrains());
 		Chunk_terrain *ter = gwin->get_map()->get_terrain(tnum);
 		// Serialize it.
-		ptr += ter->write_flats(ptr, Game_map::is_v2_chunks());
+		wptr += ter->write_flats(wptr, Game_map::is_v2_chunks());
 		Exult_server::Send_data(client_socket,
-		                        Exult_server::send_terrain, data, ptr - data);
+		                        Exult_server::send_terrain, data, wptr - data);
 		break;
 	}
 	case Exult_server::terrain_editing_mode: {
@@ -386,11 +391,11 @@ static void Handle_client_message(
 		int qual = Read2s(ptr);
 		bool up = *ptr++ ? true : false;
 		bool okay = gwin->locate_shape(shnum, up, frnum, qual);
-		ptr = &data[6];     // Send back reply.
-		ptr++;          // Skip 'up' flag.
-		*ptr++ = okay ? 1 : 0;
+		unsigned char *wptr = &data[6];     // Send back reply.
+		wptr++;          // Skip 'up' flag.
+		*wptr++ = okay ? 1 : 0;
 		Exult_server::Send_data(client_socket,
-		                        Exult_server::locate_shape, data, ptr - data);
+		                        Exult_server::locate_shape, data, wptr - data);
 		break;
 	}
 	case Exult_server::cut:     // Cut/copy.
@@ -399,26 +404,29 @@ static void Handle_client_message(
 	case Exult_server::paste:
 		cheat.paste();
 		break;
-	case Exult_server::npc_unused:
-		Write2(ptr, gwin->get_num_npcs());
-		Write2(ptr, gwin->get_unused_npc());
+	case Exult_server::npc_unused: {
+		unsigned char *wptr = &data[0];
+		Write2(wptr, gwin->get_num_npcs());
+		Write2(wptr, gwin->get_unused_npc());
 		Exult_server::Send_data(client_socket,
-		                        Exult_server::npc_unused, data, ptr - data);
+		                        Exult_server::npc_unused, data, wptr - data);
 		break;
+	}
 	case Exult_server::npc_info: {
 		int npcnum = Read2(ptr);
 		Actor *npc = gwin->get_npc(npcnum);
+		unsigned char *wptr = &data[2];
 		if (npc) {
-			Write2(ptr, npc->get_shapenum());
-			*ptr++ = npc->is_unused();
+			Write2(wptr, npc->get_shapenum());
+			*wptr++ = npc->is_unused();
 			std::string nm = npc->get_npc_name();
-			strcpy(reinterpret_cast<char *>(ptr), nm.c_str());
+			strcpy(reinterpret_cast<char *>(wptr), nm.c_str());
 			// Point past ending NULL.
-			ptr += strlen(reinterpret_cast<char *>(ptr)) + 1;
+			wptr += strlen(reinterpret_cast<char *>(wptr)) + 1;
 		} else
-			Write2(ptr, static_cast<unsigned short>(-1));
+			Write2(wptr, static_cast<unsigned short>(-1));
 		Exult_server::Send_data(client_socket,
-		                        Exult_server::npc_info, data, ptr - data);
+		                        Exult_server::npc_info, data, wptr - data);
 		break;
 	}
 	case Exult_server::locate_npc:
@@ -447,11 +455,12 @@ static void Handle_client_message(
 		break;
 	case Exult_server::game_pos: {
 		Tile_coord pos = gwin->get_main_actor()->get_tile();
-		Write2(ptr, pos.tx);
-		Write2(ptr, pos.ty);
-		Write2(ptr, pos.tz);
+		unsigned char *wptr = &data[0];
+		Write2(wptr, pos.tx);
+		Write2(wptr, pos.ty);
+		Write2(wptr, pos.tz);
 		Exult_server::Send_data(client_socket,
-		                        Exult_server::game_pos, data, ptr - data);
+		                        Exult_server::game_pos, data, wptr - data);
 		break;
 	}
 	case Exult_server::goto_map: {

@@ -63,12 +63,12 @@ void Usecode_internal::uc_trace_disasm(Stack_frame *frame) {
 
 void Usecode_internal::uc_trace_disasm(Usecode_value *locals, int num_locals,
                                        std::vector<Usecode_value> &locstatics,
-                                       uint8 *data, uint8 *externals,
-                                       uint8 *code, uint8 *ip) {
+                                       const uint8 *data, const uint8 *externals,
+                                       const uint8 *code, const uint8 *ip) {
 	ignore_unused_variable_warning(num_locals);
 	int func_ip = static_cast<int>(ip - code);
 	int opcode = *ip++;
-	uint8 *param_ip = ip;
+	const uint8 *param_ip = ip;
 	_opcode_desc *pdesc = 0;
 
 	if (opcode >= 0 && static_cast<unsigned>(opcode) < array_size(opcode_table))
@@ -106,7 +106,7 @@ void Usecode_internal::uc_trace_disasm(Usecode_value *locals, int num_locals,
 			break;
 		case op_data_string:
 		case op_data_string32: {
-			char *pstr;
+			const char *pstr;
 			size_t len;
 			// Print data string operand
 			if (pdesc->type == op_data_string)
@@ -114,7 +114,7 @@ void Usecode_internal::uc_trace_disasm(Usecode_value *locals, int num_locals,
 			else
 				offset = Read4s(ip);
 
-			pstr = reinterpret_cast<char *>(data + offset);
+			pstr = reinterpret_cast<const char *>(data + offset);
 			len = strlen(pstr);
 			if (len > 20)
 				len = 20 - 3;

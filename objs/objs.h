@@ -338,7 +338,7 @@ public:
 	virtual int is_egg() const { // An egg?
 		return 0;
 	}
-	virtual void read_attributes(unsigned char *buf, int len) {
+	virtual void read_attributes(const unsigned char *buf, int len) {
 		ignore_unused_variable_warning(buf, len);
 	}
 	// Count contained objs.

@@ -3045,12 +3045,12 @@ void Actor::get_attributes(
  */
 
 void Actor::read_attributes(
-    unsigned char *buf,     // Attribute/value pairs.
+    const unsigned char *buf,     // Attribute/value pairs.
     int len
 ) {
-	unsigned char *ptr = buf, *endbuf = buf + len;
+	const unsigned char *ptr = buf, *endbuf = buf + len;
 	while (ptr < endbuf) {
-		char *att = reinterpret_cast<char *>(ptr);
+		const char *att = reinterpret_cast<const char *>(ptr);
 		ptr += strlen(att) + 1;
 		assert(ptr + 2 <= endbuf);
 		int val = Read2(ptr);

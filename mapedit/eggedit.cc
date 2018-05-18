@@ -364,7 +364,7 @@ int ExultStudio::init_egg_window(
 
 static void Egg_response(
     Exult_server::Msg_type id,
-    unsigned char *data,
+    const unsigned char *data,
     int datalen,
     void * /* client */
 ) {

@@ -66,14 +66,14 @@ public:
 	virtual void fill_line8(unsigned char val, int srcw,
 	                        int destx, int desty);
 	// Copy rectangle into here.
-	virtual void copy8(unsigned char *src_pixels,
+	virtual void copy8(const unsigned char *src_pixels,
 	                   int srcw, int srch, int destx, int desty);
 	// Copy line to here.
-	virtual void copy_line8(unsigned char *src_pixels, int srcw,
+	virtual void copy_line8(const unsigned char *src_pixels, int srcw,
 	                        int destx, int desty);
 	// Copy with translucency table.
 	virtual void copy_line_translucent8(
-	    unsigned char *src_pixels, int srcw,
+	    const unsigned char *src_pixels, int srcw,
 	    int destx, int desty, int first_translucent,
 	    int last_translucent, Xform_palette *xforms);
 	// Apply translucency to a line.
@@ -83,7 +83,7 @@ public:
 	virtual void fill_translucent8(unsigned char val, int srcw, int srch,
 	                               int destx, int desty, Xform_palette &xform);
 	// Copy rect. with transp. color.
-	virtual void copy_transparent8(unsigned char *src_pixels, int srcw,
+	virtual void copy_transparent8(const unsigned char *src_pixels, int srcw,
 	                               int srch, int destx, int desty);
 	// Get/put a single pixel.
 	unsigned char get_pixel8(int x, int y) {
@@ -95,11 +95,11 @@ public:
 			bits[y * line_width + x] = pix;
 	}
 
-	void paint_rle(int xoff, int yoff, unsigned char *in);
-	void paint_rle_remapped(int xoff, int yoff, unsigned char *inptr,
-	                        unsigned char *&trans);
+	void paint_rle(int xoff, int yoff, const unsigned char *in);
+	void paint_rle_remapped(int xoff, int yoff, const unsigned char *inptr,
+	                        const unsigned char *&trans);
 	// Convert to 32-bit rgba.
-	unsigned char *rgba(unsigned char *pal, unsigned char transp,
+	unsigned char *rgba(const unsigned char *pal, unsigned char transp,
 	                    bool &rotate, int first_rotate, int last_rotate,
 	                    int first_translucent = 256, int last_translucent = 256,
 	                    Xform_palette *xforms = 0, int alpha = 255);

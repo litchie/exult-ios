@@ -84,7 +84,7 @@ class Chunk_chooser: public Object_browser, public Shape_draw {
 	}
 	unsigned char *get_chunk(int chunknum);
 	void update_num_chunks(int new_num_chunks);
-	void set_chunk(unsigned char *data, int datalen);
+	void set_chunk(const unsigned char *data, int datalen);
 	void render_chunk(int chunknum, int xoff, int yoff);
 	void scroll(int newindex);  // Scroll.
 	void scroll(bool upwards);
@@ -133,13 +133,13 @@ public:
 	static void scrolled(GtkAdjustment *adj, gpointer data);
 	void locate(int dir);       // Locate terrain on game map.
 	virtual void locate(bool upwards);
-	void locate_response(unsigned char *data, int datalen);
+	void locate_response(const unsigned char *data, int datalen);
 	void insert(bool dup);      // Insert new chunk.
 	void del();         // Delete current chunk.
-	void insert_response(unsigned char *data, int datalen);
-	void delete_response(unsigned char *data, int datalen);
+	void insert_response(const unsigned char *data, int datalen);
+	void delete_response(const unsigned char *data, int datalen);
 	virtual void move(bool upwards);    // Move current selected chunk.
-	void swap_response(unsigned char *data, int datalen);
+	void swap_response(const unsigned char *data, int datalen);
 #ifdef WIN32
 	static gint win32_drag_motion(GtkWidget *widget, GdkEventMotion *event,
 	                              gpointer data);

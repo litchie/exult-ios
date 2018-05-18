@@ -140,7 +140,7 @@ void Usecode_internal::stack_trace(ostream &out) {
 	out << std::hex << std::setfill('0');
 	do {
 		out << *(*iter);
-		std::map<Stack_frame *, uint8 *>::iterator it = except_stack.find(*iter);
+		std::map<Stack_frame *, const uint8 *>::iterator it = except_stack.find(*iter);
 		if (it != except_stack.end()) {
 			out << ", active catch at 0x" << std::setw(8) << it->second;
 		}
@@ -305,7 +305,7 @@ void Usecode_internal::previous_stack_frame() {
 
 	// Get rid of exception handler for the current function (say, due to return
 	// in a try block).
-	std::map<Stack_frame *, uint8 *>::iterator it = except_stack.find(frame);
+	std::map<Stack_frame *, const uint8 *>::iterator it = except_stack.find(frame);
 	if (it != except_stack.end()) {
 		except_stack.erase(it);
 	}
@@ -415,9 +415,9 @@ void Usecode_internal::abort_function(Usecode_value &retval) {
 	while (call_stack.front() != 0) {
 		previous_stack_frame();
 		Stack_frame *frame = call_stack.front();
-		std::map<Stack_frame *, uint8 *>::iterator it = except_stack.find(frame);
+		std::map<Stack_frame *, const uint8 *>::iterator it = except_stack.find(frame);
 		if (it != except_stack.end()) {
-			uint8 *target = it->second;
+			const uint8 *target = it->second;
 #ifdef DEBUG
 			int functionid = frame->function->id;
 
@@ -2255,7 +2255,7 @@ int Usecode_internal::run() {
 					break;
 				}
 
-				uint8 *tempptr = frame->externs + 2 * offset;
+				const uint8 *tempptr = frame->externs + 2 * offset;
 				int funcid = Read2(tempptr);
 
 				call_function(funcid, frame->eventid);
@@ -2628,7 +2628,7 @@ int Usecode_internal::run() {
 				except_stack[frame] = frame->ip + offset;
 				break;
 			case UC_TRYEND: {
-				std::map<Stack_frame *, uint8 *>::iterator it = except_stack.find(frame);
+				std::map<Stack_frame *, const uint8 *>::iterator it = except_stack.find(frame);
 				if (it != except_stack.end()) {
 					except_stack.erase(it);
 				}

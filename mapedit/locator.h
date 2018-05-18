@@ -51,7 +51,7 @@ public:
 	void configure(GtkWidget *widget);
 	void render(GdkRectangle *area = 0);
 	// Message from exult.
-	void view_changed(unsigned char *data, int datalen);
+	void view_changed(const unsigned char *data, int datalen);
 	// Handle scrollbar.
 	static void vscrolled(GtkAdjustment *adj, gpointer data);
 	static void hscrolled(GtkAdjustment *adj, gpointer data);

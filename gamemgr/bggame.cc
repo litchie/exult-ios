@@ -668,8 +668,8 @@ static const int eye_frame_LUT[6][9] = {
 
 class LipSynchReader {
 	char * data;
-	unsigned char *ptr;
-	unsigned char *eptr;
+	const unsigned char *ptr;
+	const unsigned char *eptr;
 public:
 	LipSynchReader() {
 		U7multiobject lipdata(MAINSHP_FLX, PATCH_MAINSHP, 0x0F);

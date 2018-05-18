@@ -445,7 +445,7 @@ void ExultStudio::init_new_npc(
 	Exult_server::Msg_type id;
 	Exult_server::wait_for_response(server_socket, 100);
 	Exult_server::Receive_data(server_socket, id, data, sizeof(data));
-	unsigned char *ptr = &data[0];
+	const unsigned char *ptr = &data[0];
 	Read2(ptr);	// Snip number of NPCs
 	int first_unused = Read2(ptr);
 	npc_num = first_unused;
@@ -596,7 +596,7 @@ void ExultStudio::update_npc() { // update npc browser display (if open)
 
 static void Npc_response(
     Exult_server::Msg_type id,
-    unsigned char *data,
+    const unsigned char *data,
     int datalen,
     void * /* client */
 ) {
@@ -848,7 +848,7 @@ C_EXPORT void on_npc_set_sched(
  */
 static void Game_loc_response(
     Exult_server::Msg_type id,
-    unsigned char *data,
+    const unsigned char *data,
     int datalen,
     void *client
 ) {

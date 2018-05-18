@@ -74,7 +74,7 @@ class Usecode_internal : public Usecode_machine {
 	vector<Usecode_value> statics;  // Global persistent vars.
 	Usecode_symbol_table *symtbl;   // (optional) symbol table.
 	std::deque<Stack_frame *> call_stack; // the call stack
-	std::map<Stack_frame *, uint8 *> except_stack; // the exception handling stack
+	std::map<Stack_frame *, const uint8 *> except_stack; // the exception handling stack
 	Stack_frame *frame;     // One intrinsic uses this for now...
 	bool modified_map;      // We add/deleted/moved an object.
 	std::map<int, uint32> timers;   // Each has time in hours when set.
@@ -431,8 +431,8 @@ class Usecode_internal : public Usecode_machine {
 	void uc_trace_disasm(Stack_frame *frame);
 	void uc_trace_disasm(Usecode_value *locals, int num_locals,
 	                     std::vector<Usecode_value> &locstatics,
-	                     uint8 *data, uint8 *externals, uint8 *code,
-	                     uint8 *ip);
+	                     const uint8 *data, const uint8 *externals, const uint8 *code,
+	                     const uint8 *ip);
 	static int get_opcode_length(int opcode);
 	void stack_trace(std::ostream &out);
 	bool is_object_fun(int n);

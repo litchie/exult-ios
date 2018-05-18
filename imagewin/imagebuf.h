@@ -161,12 +161,12 @@ public:
 		ignore_unused_variable_warning(pix, srcw, srch, destx, desty);
 	}
 	// Copy rectangle into here.
-	virtual void copy16(unsigned short *src_pixels,
+	virtual void copy16(const unsigned short *src_pixels,
 	                    int srcw, int srch, int destx, int desty) {
 		ignore_unused_variable_warning(src_pixels, srcw, srch, destx, desty);
 	}
 	// Copy rect. with transp. color.
-	virtual void copy_transparent16(unsigned char *src_pixels, int srcw,
+	virtual void copy_transparent16(const unsigned char *src_pixels, int srcw,
 	                                int srch, int destx, int desty) {
 		ignore_unused_variable_warning(src_pixels, srcw, srch, destx, desty);
 	}
@@ -182,14 +182,14 @@ public:
 	virtual void fill_line8(unsigned char val, int srcw,
 	                        int destx, int desty) = 0;
 	// Copy rectangle into here.
-	virtual void copy8(unsigned char *src_pixels,
+	virtual void copy8(const unsigned char *src_pixels,
 	                   int srcw, int srch, int destx, int desty) = 0;
 	// Copy line to here.
-	virtual void copy_line8(unsigned char *src_pixels, int srcw,
+	virtual void copy_line8(const unsigned char *src_pixels, int srcw,
 	                        int destx, int desty) = 0;
 	// Copy with translucency table.
 	virtual void copy_line_translucent8(
-	    unsigned char *src_pixels, int srcw,
+	    const unsigned char *src_pixels, int srcw,
 	    int destx, int desty, int first_translucent,
 	    int last_translucent, Xform_palette *xforms) = 0;
 	// Apply translucency to a line.
@@ -199,7 +199,7 @@ public:
 	virtual void fill_translucent8(unsigned char val, int srcw, int srch,
 	                               int destx, int desty, Xform_palette &xform) = 0;
 	// Copy rect. with transp. color.
-	virtual void copy_transparent8(unsigned char *src_pixels, int srcw,
+	virtual void copy_transparent8(const unsigned char *src_pixels, int srcw,
 	                               int srch, int destx, int desty) = 0;
 	/*
 	 *  Depth-independent methods:

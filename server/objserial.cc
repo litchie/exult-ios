@@ -55,7 +55,7 @@ Serial_in &Serial_in::operator<<(
 ) {
 	int len;
 	(*this) << len;         // Get length.
-	s.assign(reinterpret_cast<char *>(buf), len);   // Set string.
+	s.assign(reinterpret_cast<const char *>(buf), len);   // Set string.
 	buf += len;
 	return *this;
 }
@@ -234,7 +234,7 @@ int Object_out(
  */
 
 int Object_in(
-    unsigned char *data,        // Data that was read.
+    const unsigned char *data,        // Data that was read.
     int datalen,            // Length of data.
     Game_object *&addr,        // Address.
     int &tx, int &ty, int &tz,  // Absolute tile coords.
@@ -242,7 +242,7 @@ int Object_in(
     int &quality,
     std::string &name
 ) {
-	unsigned char *ptr = data;
+	const unsigned char *ptr = data;
 	Serial_in io(ptr);
 	Object_io(io, addr, tx, ty, tz, shape, frame, quality,
 	          name);
@@ -280,7 +280,7 @@ int Container_out(
  */
 
 int Container_in(
-    unsigned char *data,        // Data that was read.
+    const unsigned char *data,        // Data that was read.
     int datalen,            // Length of data.
     Container_game_object *&addr,        // Address.
     int &tx, int &ty, int &tz,      // Absolute tile coords.
@@ -290,7 +290,7 @@ int Container_in(
     unsigned char &resistance,
     bool &invisible, bool &okay_to_take
 ) {
-	unsigned char *ptr = data;
+	const unsigned char *ptr = data;
 	Serial_in io(ptr);
 	Container_io(io, addr, tx, ty, tz, shape, frame, quality,
 	             name, resistance, invisible, okay_to_take);
@@ -327,7 +327,7 @@ int Barge_object_out(
  */
 
 int Barge_object_in(
-    unsigned char *data,        // Data that was read.
+    const unsigned char *data,        // Data that was read.
     int datalen,            // Length of data.
     Barge_object *&addr,        // Address.
     int &tx, int &ty, int &tz,  // Absolute tile coords.
@@ -336,7 +336,7 @@ int Barge_object_in(
     int &ytiles,
     int &dir
 ) {
-	unsigned char *ptr = data;
+	const unsigned char *ptr = data;
 	Serial_in io(ptr);
 	Barge_object_io(io, addr, tx, ty, tz, shape, frame,
 	                xtiles, ytiles, dir);
@@ -382,7 +382,7 @@ int Egg_object_out(
  */
 
 int Egg_object_in(
-    unsigned char *data,        // Data that was read.
+    const unsigned char *data,        // Data that was read.
     int datalen,            // Length of data.
     Egg_object *&addr,        // Address.
     int &tx, int &ty, int &tz,  // Absolute tile coords.
@@ -398,7 +398,7 @@ int Egg_object_in(
     int &data1, int &data2, int &data3,
     std::string &str1
 ) {
-	unsigned char *ptr = data;
+	const unsigned char *ptr = data;
 	Serial_in io(ptr);
 	Egg_object_io(io, addr, tx, ty, tz, shape, frame,
 	              type, criteria, probability, distance,
@@ -450,7 +450,7 @@ int Npc_actor_out(
  */
 
 int Npc_actor_in(
-    unsigned char *data,        // Data that was read.
+    const unsigned char *data,        // Data that was read.
     int datalen,            // Length of data.
     Actor *&addr,        // Address.
     int &tx, int &ty, int &tz,  // Absolute tile coords.
@@ -469,7 +469,7 @@ int Npc_actor_in(
     short &num_schedules,       // # of schedule changes.
     Serial_schedule *schedules  // Schedule changes.  Room for 8.
 ) {
-	unsigned char *ptr = data;
+	const unsigned char *ptr = data;
 	Serial_in io(ptr);
 	Npc_actor_io(io, addr, tx, ty, tz, shape, frame, face,
 	             name, npc_num, ident, usecode, usecodefun,
@@ -529,7 +529,7 @@ int Game_info_out(
  */
 
 int Game_info_in(
-    unsigned char *data,        // Data that was read.
+    const unsigned char *data,        // Data that was read.
     int datalen,            // Length of data.
     int &version,           // Server/client version.
     int &edit_lift,         // Lift being edited.
@@ -539,7 +539,7 @@ int Game_info_in(
     bool &map_modified,     // Map was changed.
     int &edit_mode          // Mode we're in.
 ) {
-	unsigned char *ptr = data;
+	const unsigned char *ptr = data;
 	Serial_in io(ptr);
 	Game_info_io(io, version, edit_lift, hide_lift, map_editing,
 	             tile_grid, map_modified, edit_mode);

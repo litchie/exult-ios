@@ -83,7 +83,7 @@ int Stack_frame_out(
 
 
 bool Stack_frame_in(
-    unsigned char *data,        // Data that was read.
+    const unsigned char *data,        // Data that was read.
     int datalen,            // Length of data.
     int &functionid,
     int &ip,
@@ -95,7 +95,7 @@ bool Stack_frame_in(
     int &num_vars,
     Usecode_value *&locals
 ) {
-	unsigned char *ptr = data;
+	const unsigned char *ptr = data;
 	Serial_in io(ptr);
 	Stack_frame_io<Serial_in>(io, functionid, ip, call_chain, call_depth,
 	                          eventid, caller_item, num_args, num_vars);

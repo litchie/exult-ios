@@ -184,7 +184,7 @@ unsigned char *Chunk_chooser::get_chunk(
 	// Get from server.
 	unsigned char buf[Exult_server::maxlength];
 	unsigned char *ptr = &buf[0];
-	unsigned char *newptr = &buf[0];
+	const unsigned char *newptr = &buf[0];
 	Write2(ptr, chunknum);
 	ExultStudio *studio = ExultStudio::get_instance();
 	int server_socket = studio->get_server_socket();
@@ -232,7 +232,7 @@ void Chunk_chooser::update_num_chunks(
  */
 
 void Chunk_chooser::set_chunk(
-    unsigned char *data,        // Message from server.
+    const unsigned char *data,        // Message from server.
     int datalen
 ) {
 	int tnum = Read2(data);     // First the terrain #.
@@ -990,11 +990,11 @@ void Chunk_chooser::locate(
  */
 
 void Chunk_chooser::locate_response(
-    unsigned char *data,
+    const unsigned char *data,
     int datalen
 ) {
 	ignore_unused_variable_warning(datalen);
-	unsigned char *ptr = data;
+	const unsigned char *ptr = data;
 	int tnum = Read2(ptr);
 	if (selected < 0 || tnum != info[selected].num) {
 		to_del = -1;
@@ -1058,11 +1058,11 @@ void Chunk_chooser::del(
  */
 
 void Chunk_chooser::insert_response(
-    unsigned char *data,
+    const unsigned char *data,
     int datalen
 ) {
 	ignore_unused_variable_warning(datalen);
-	unsigned char *ptr = data;
+	const unsigned char *ptr = data;
 	int tnum = static_cast<short>(Read2(ptr));
 	bool dup = *ptr++ ? true : false;
 	if (!*ptr)
@@ -1089,11 +1089,11 @@ void Chunk_chooser::insert_response(
  */
 
 void Chunk_chooser::delete_response(
-    unsigned char *data,
+    const unsigned char *data,
     int datalen
 ) {
 	ignore_unused_variable_warning(datalen);
-	unsigned char *ptr = data;
+	const unsigned char *ptr = data;
 	int tnum = static_cast<short>(Read2(ptr));
 	if (!*ptr)
 		EStudio::Alert("Terrain delete failed.");
@@ -1134,11 +1134,11 @@ void Chunk_chooser::move(
  */
 
 void Chunk_chooser::swap_response(
-    unsigned char *data,
+    const unsigned char *data,
     int datalen
 ) {
 	ignore_unused_variable_warning(datalen);
-	unsigned char *ptr = data;
+	const unsigned char *ptr = data;
 	int tnum = static_cast<short>(Read2(ptr));
 	if (!*ptr)
 		cout << "Terrain insert failed." << endl;

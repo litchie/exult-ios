@@ -757,8 +757,8 @@ public:
 	static vector<char *> &get_script_names() {
 		return script_names;
 	}
-	void set4(unsigned char *ent);  // Create from 4-byte entry.
-	void set8(unsigned char *ent);  // Create from Exult entry (v. -1).
+	void set4(const unsigned char *ent);  // Create from 4-byte entry.
+	void set8(const unsigned char *ent);  // Create from Exult entry (v. -1).
 	void write8(unsigned char *ent) const;// Write out 8-byte Exult entry.
 	void set(int ax, int ay, int az,
 	         unsigned char stype, unsigned char stime);
