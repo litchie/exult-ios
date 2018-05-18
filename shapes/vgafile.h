@@ -121,7 +121,7 @@ public:
 	                  uint32 shapelen, int frnum);
 	// Paint into given buffer.
 	void paint_rle(Image_buffer8 *win, int px, int py);
-	void paint_rle_remapped(Image_buffer8 *win, int px, int py, unsigned char *trans);
+	void paint_rle_remapped(Image_buffer8 *win, int px, int py, const unsigned char *trans);
 	void paint(Image_buffer8 *win, int px, int py);
 	void paint_rle_translucent(Image_buffer8 *win, int px, int py,
 	                           Xform_palette *xforms, int xfcnt);

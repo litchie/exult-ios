@@ -5356,7 +5356,7 @@ void Schedule_change::clear(
  */
 
 void Schedule_change::set4(
-    unsigned char *entry        // 4 bytes read from schedule.dat.
+    const unsigned char *entry        // 4 bytes read from schedule.dat.
 ) {
 	time = entry[0] & 7;
 	type = entry[0] >> 3;
@@ -5374,7 +5374,7 @@ void Schedule_change::set4(
  */
 
 void Schedule_change::set8(
-    unsigned char *entry        // 8 bytes read from schedule.dat.
+    const unsigned char *entry        // 8 bytes read from schedule.dat.
 ) {
 	pos.tx = Read2(entry);
 	pos.ty = Read2(entry);

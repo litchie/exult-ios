@@ -38,7 +38,7 @@ extern int Stack_frame_out(
     Usecode_value *locals
 );
 extern bool Stack_frame_in(
-    unsigned char *data,        // Data that was read.
+    const unsigned char *data,        // Data that was read.
     int datalen,            // Length of data.
     int &functionid,
     int &ip,

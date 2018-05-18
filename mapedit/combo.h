@@ -82,7 +82,7 @@ public:
 	int find(int mx, int my);   // Find at mouse position.
 	// Serialize:
 	unsigned char *write(int &datalen);
-	unsigned char *read(unsigned char *buf, int bufsize);
+	const unsigned char *read(const unsigned char *buf, int bufsize);
 };
 
 /*

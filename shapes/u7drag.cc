@@ -54,12 +54,12 @@ int Store_u7_shapeid(
  */
 
 void Get_u7_shapeid(
-    unsigned char *data,        // At least 4 bytes.
+    const unsigned char *data,        // At least 4 bytes.
     int &file,          // 0-255.
     int &shape,         // 0-0xffff.
     int &frame          // 0-255.
 ) {
-	unsigned char *ptr = data;
+	const unsigned char *ptr = data;
 	file = *ptr++;
 	shape = Read2(ptr);
 	frame = *ptr;
@@ -81,10 +81,10 @@ int Store_u7_chunkid(
 }
 
 void Get_u7_chunkid(
-    unsigned char *data,        // At least 4 bytes.
+    const unsigned char *data,        // At least 4 bytes.
     int &cnum           // 0-0xffff returned.
 ) {
-	unsigned char *ptr = data;
+	const unsigned char *ptr = data;
 	cnum = Read2(ptr);
 }
 
@@ -104,10 +104,10 @@ int Store_u7_npcid(
 }
 
 void Get_u7_npcid(
-    unsigned char *data,        // At least 4 bytes.
+    const unsigned char *data,        // At least 4 bytes.
     int &npcnum         // 0-0xffff returned.
 ) {
-	unsigned char *ptr = data;
+	const unsigned char *ptr = data;
 	npcnum = Read2(ptr);
 }
 
@@ -150,14 +150,14 @@ int Store_u7_comboid(
  */
 
 void Get_u7_comboid(
-    unsigned char *data,
+    const unsigned char *data,
     int &xtiles, int &ytiles,   // Footprint in tiles.
     int &tiles_right,       // Tiles to right of hot-spot.
     int &tiles_below,       // Tiles below hot-spot.
     int &cnt,
     U7_combo_data  *&ents
 ) {
-	unsigned char *ptr = data;
+	const unsigned char *ptr = data;
 	xtiles = Read2(ptr);
 	ytiles = Read2(ptr);
 	tiles_right = Read2(ptr);

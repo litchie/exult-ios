@@ -492,7 +492,7 @@ public:
 	typedef std::vector<std::pair<const char *, int> > Atts_vector;
 	void get_attributes(Atts_vector &attlst);
 	// Set atts. from savegame.
-	virtual void read_attributes(unsigned char *buf, int len);
+	virtual void read_attributes(const unsigned char *buf, int len);
 	Npc_timer_list *need_timers();
 	// Set/clear/get actor flag.
 	void force_sleep();

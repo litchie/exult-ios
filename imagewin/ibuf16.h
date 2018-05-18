@@ -70,7 +70,7 @@ public:
 	virtual void fill_line16(unsigned short pix, int srcw,
 	                         int destx, int desty);
 	// Copy rectangle into here.
-	virtual void copy16(unsigned short *src_pixels,
+	virtual void copy16(const unsigned short *src_pixels,
 	                    int srcw, int srch, int destx, int desty);
 	/*
 	 *  Depth-independent methods:
@@ -108,14 +108,14 @@ public:
 		                            destx, desty);
 	}
 	// Copy rectangle into here.
-	virtual void copy8(unsigned char *src_pixels,
+	virtual void copy8(const unsigned char *src_pixels,
 	                   int srcw, int srch, int destx, int desty);
 	// Copy line to here.
-	virtual void copy_line8(unsigned char *src_pixels, int srcw,
+	virtual void copy_line8(const unsigned char *src_pixels, int srcw,
 	                        int destx, int desty);
 	// Copy with translucency table.
 	virtual void copy_line_translucent8(
-	    unsigned char *src_pixels, int srcw,
+	    const unsigned char *src_pixels, int srcw,
 	    int destx, int desty, int first_translucent,
 	    int last_translucent, Xform_palette *xforms) {
 		ignore_unused_variable_warning(first_translucent, last_translucent, xforms);
@@ -134,7 +134,7 @@ public:
 		fill8(val, srcw, srch, destx, desty);
 	}
 	// Copy rect. with transp. color.
-	virtual void copy_transparent8(unsigned char *src_pixels, int srcw,
+	virtual void copy_transparent8(const unsigned char *src_pixels, int srcw,
 	                               int srch, int destx, int desty);
 };
 

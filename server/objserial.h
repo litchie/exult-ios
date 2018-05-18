@@ -55,9 +55,9 @@ public:
  *  Decode.
  */
 class Serial_in {
-	unsigned char *&buf;
+	const unsigned char *&buf;
 public:
-	Serial_in(unsigned char *&b) : buf(b)
+	Serial_in(const unsigned char *&b) : buf(b)
 	{  }
 	template <typename T>
 	Serial_in &operator<<(T &v) {
@@ -90,7 +90,7 @@ extern int Object_out(
     std::string name
 );
 extern int Object_in(
-    unsigned char *data,        // Data that was read.
+    const unsigned char *data,        // Data that was read.
     int datalen,            // Length of data.
     Game_object *&addr,        // Address.
     int &tx, int &ty, int &tz,  // Absolute tile coords.
@@ -112,7 +112,7 @@ extern int Container_out(
     bool invisible, bool okay_to_take
 );
 extern int Container_in(
-    unsigned char *data,        // Data that was read.
+    const unsigned char *data,        // Data that was read.
     int datalen,            // Length of data.
     Container_game_object *&addr,        // Address.
     int &tx, int &ty, int &tz,  // Absolute tile coords.
@@ -135,7 +135,7 @@ extern int Barge_object_out(
     int dir
 );
 extern int Barge_object_in(
-    unsigned char *data,        // Data that was read.
+    const unsigned char *data,        // Data that was read.
     int datalen,            // Length of data.
     Barge_object *&addr,        // Address.
     int &tx, int &ty, int &tz,  // Absolute tile coords.
@@ -164,7 +164,7 @@ extern int Egg_object_out(
     std::string str1
 );
 extern int Egg_object_in(
-    unsigned char *data,        // Data that was read.
+    const unsigned char *data,        // Data that was read.
     int datalen,            // Length of data.
     Egg_object *&addr,        // Address.
     int &tx, int &ty, int &tz,  // Absolute tile coords.
@@ -209,7 +209,7 @@ int Npc_actor_out(
     Serial_schedule *schedules  // Schedule changes.
 );
 int Npc_actor_in(
-    unsigned char *data,        // Data that was read.
+    const unsigned char *data,        // Data that was read.
     int datalen,            // Length of data.
     Actor *&addr,        // Address.
     int &tx, int &ty, int &tz,  // Absolute tile coords.
@@ -240,7 +240,7 @@ extern int Game_info_out(
     int edit_mode           // Mode we're in.
 );
 extern int Game_info_in(
-    unsigned char *data,        // Data that was read.
+    const unsigned char *data,        // Data that was read.
     int datalen,            // Length of data.
     int &version,           // Server/client version.
     int &edit_lift,         // Lift being edited.

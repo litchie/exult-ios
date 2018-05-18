@@ -238,8 +238,9 @@ bool Npcs_file_info::read_npc(unsigned num) {
 	unsigned char buf[Exult_server::maxlength];
 	Exult_server::Msg_type id;
 	int datalen;
-	unsigned char *ptr, *newptr;
-	ptr = newptr = &buf[0];
+	unsigned char *ptr;
+	const unsigned char *newptr;
+	newptr = ptr = &buf[0];
 	Write2(ptr, num);
 	if (!studio->send_to_server(Exult_server::npc_info, buf, ptr - buf) ||
 	        !Exult_server::wait_for_response(server_socket, 100) ||
@@ -252,7 +253,7 @@ bool Npcs_file_info::read_npc(unsigned num) {
 	npcs[num].shapenum = Read2(newptr); // -1 if unused.
 	if (npcs[num].shapenum >= 0) {
 		npcs[num].unused = (*newptr++ != 0);
-		utf8Str utf8name(reinterpret_cast<char *>(newptr));
+		utf8Str utf8name(reinterpret_cast<const char *>(newptr));
 		npcs[num].name = utf8name;
 	} else {
 		npcs[num].unused = true;
@@ -283,11 +284,12 @@ void Npcs_file_info::setup(
 		cerr << "Error sending data to server." << endl;
 		return;
 	}
-	unsigned char *ptr = &buf[0], *newptr;
-	num_npcs = Read2(ptr);
+	unsigned char *ptr;
+	const unsigned char *newptr = &buf[0];
+	num_npcs = Read2(newptr);
 	npcs.resize(num_npcs);
 	for (int i = 0; i < num_npcs; ++i) {
-		ptr = newptr = &buf[0];
+		newptr = ptr = &buf[0];
 		Write2(ptr, i);
 		if (!studio->send_to_server(Exult_server::npc_info,
 		                            buf, ptr - buf) ||
@@ -303,7 +305,7 @@ void Npcs_file_info::setup(
 		npcs[i].shapenum = Read2(newptr);   // -1 if unused.
 		if (npcs[i].shapenum >= 0) {
 			npcs[i].unused = (*newptr++ != 0);
-			utf8Str utf8name(reinterpret_cast<char *>(newptr));
+			utf8Str utf8name(reinterpret_cast<const char *>(newptr));
 			npcs[i].name = utf8name;
 		} else {
 			npcs[i].unused = true;

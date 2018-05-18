@@ -35,11 +35,11 @@ public:
 	~Stack_frame();
 
 	Usecode_function *function;
-	uint8 *ip; // current IP
-	uint8 *data; // pointer to start of data segment
-	uint8 *externs; // pointer to start of externs
-	uint8 *code; // pointer to (actual) code
-	uint8 *endp; // pointer directly past code segment
+	const uint8 *ip; // current IP
+	const uint8 *data; // pointer to start of data segment
+	const uint8 *externs; // pointer to start of externs
+	const uint8 *code; // pointer to (actual) code
+	const uint8 *endp; // pointer directly past code segment
 	int line_number; // if debugging info present
 
 	// should probably add source filename?

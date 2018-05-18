@@ -40,7 +40,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 //	Store/get shapeid.
 int Store_u7_shapeid(unsigned char *data, int file, int shape, int frame);
-void Get_u7_shapeid(unsigned char *data, int &file, int &shape, int &frame);
+void Get_u7_shapeid(const unsigned char *data, int &file, int &shape, int &frame);
 
 //	Target information for dragging a chunk:
 #define U7_TARGET_CHUNKID_NAME "U7CHUNKID"
@@ -48,7 +48,7 @@ void Get_u7_shapeid(unsigned char *data, int &file, int &shape, int &frame);
 
 //	Store/get chunk #.
 int Store_u7_chunkid(unsigned char *data, int cnum);
-void Get_u7_chunkid(unsigned char *data, int &cnum);
+void Get_u7_chunkid(const unsigned char *data, int &cnum);
 
 //	Target information for dragging an npc:
 #define U7_TARGET_NPCID_NAME "U7NPCID"
@@ -56,7 +56,7 @@ void Get_u7_chunkid(unsigned char *data, int &cnum);
 
 //	Store/get npc #.
 int Store_u7_npcid(unsigned char *data, int npcnum);
-void Get_u7_npcid(unsigned char *data, int &npcnum);
+void Get_u7_npcid(const unsigned char *data, int &npcnum);
 
 //	Target information for dragging a 'combo' (group of shapes):
 #define U7_TARGET_COMBOID_NAME "U7COMBOID"
@@ -68,7 +68,7 @@ typedef struct U7_combo_data {
 } U7_combo_data;
 int Store_u7_comboid(unsigned char *data, int xtiles, int ytiles,
                      int tiles_right, int tiles_below, int cnt, U7_combo_data *ents);
-void Get_u7_comboid(unsigned char *data, int &xtiles, int &ytiles,
+void Get_u7_comboid(const unsigned char *data, int &xtiles, int &ytiles,
                     int &tiles_right, int &tiles_below, int &cnt, U7_combo_data  *&ents);
 
 // Put these here since they are shared between XWin and Win32

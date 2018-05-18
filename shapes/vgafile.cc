@@ -99,7 +99,7 @@ Shape_frame *Shape_frame::reflect(
 	ibuf->fill8(255);       // Fill with 'transparent' pixel.
 	// Figure origin.
 	int xoff = reflected->xleft, yoff = reflected->yabove;
-	uint8 *in = data;   // Point to data, and draw.
+	const uint8 *in = data;   // Point to data, and draw.
 	int scanlen;
 	while ((scanlen = Read2(in)) != 0) {
 		// Get length of scan line.
@@ -431,7 +431,7 @@ void Shape_frame::paint_rle(
 void Shape_frame::paint_rle_remapped(
     Image_buffer8 *win,     // Buffer to paint in.
     int xoff, int yoff,     // Where to show in iwin.
-    unsigned char *trans
+    const unsigned char *trans
 ) {
 	assert(rle);
 
@@ -477,7 +477,7 @@ void Shape_frame::paint_rle_translucent(
 			return;
 	// First pix. value to transform.
 	const int xfstart = 0xff - xfcnt;
-	uint8 *in = data;
+	const uint8 *in = data;
 	int scanlen;
 	while ((scanlen = Read2(in)) != 0) {
 		// Get length of scan line.
@@ -534,7 +534,7 @@ void Shape_frame::paint_rle_transformed(
 		if (!win->is_visible(xoff - xleft,
 		                     yoff - yabove, w, h))
 			return;
-	uint8 *in = data;
+	const uint8 *in = data;
 	int scanlen;
 	while ((scanlen = Read2(in)) != 0) {
 		// Get length of scan line.
@@ -580,7 +580,7 @@ void Shape_frame::paint_rle_outline(
 			return;
 	int firsty = -10000;        // Finds first line.
 	int lasty = -10000;
-	uint8 *in = data;
+	const uint8 *in = data;
 	int scanlen;
 	while ((scanlen = Read2(in)) != 0) {
 		// Get length of scan line.
@@ -634,7 +634,7 @@ int Shape_frame::has_point(
 		return x >= -xleft && x < xright &&
 		       y >= -yabove && y < ybelow;
 	}
-	uint8 *in = data;       // Point to data.
+	const uint8 *in = data;       // Point to data.
 	int scanlen;
 	while ((scanlen = Read2(in)) != 0) {
 		// Get length of scan line.
@@ -686,14 +686,14 @@ void Shape_frame::set_offset(
 	yabove = h - ybelow - 1;
 	uint8 *in = data;       // Got to update all scan lines!
 	int scanlen;
-	while ((scanlen = Read2(in)) != 0) {
+	while ((scanlen = MRead2(in)) != 0) {
 		// Get length of scan line.
 		int encoded = scanlen & 1; // Is it encoded?
 		scanlen = scanlen >> 1;
-		short scanx = Read2(in);
+		short scanx = MRead2(in);
 		in -= 2;
 		Write2(in, scanx + deltax);
-		short scany = Read2(in);
+		short scany = MRead2(in);
 		in -= 2;
 		Write2(in, scany + deltay);
 		// Just need to scan past EOL.

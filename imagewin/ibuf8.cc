@@ -185,7 +185,7 @@ void Image_buffer8::fill_line8(
  */
 
 void Image_buffer8::copy8(
-    unsigned char *src_pixels,  // Source rectangle pixels.
+    const unsigned char *src_pixels,  // Source rectangle pixels.
     int srcw, int srch,     // Dimensions of source.
     int destx, int desty
 ) {
@@ -203,7 +203,7 @@ void Image_buffer8::copy8(
 
 #if !defined(__sparc__)
 	uint32 *to = reinterpret_cast<uint32 *>(bits + desty * line_width + destx);
-	uint32 *from = reinterpret_cast<uint32 *>(src_pixels + srcy * src_width + srcx);
+	const uint32 *from = reinterpret_cast<const uint32 *>(src_pixels + srcy * src_width + srcx);
 	int to_next = line_width - srcw;// # pixels to next line.
 	int from_next = src_width - srcw;
 
@@ -213,20 +213,20 @@ void Image_buffer8::copy8(
 	int aligned = srcw / 4;
 
 	uint8 *to8;
-	uint8 *from8;
+	const uint8 *from8;
 
 	while (srch--) {        // Do each line.
 		int counter = aligned;
 		while (counter--) *to++ = *from++;
 
 		to8 = reinterpret_cast<uint8 *>(to);
-		from8 = reinterpret_cast<uint8 *>(from);
+		from8 = reinterpret_cast<const uint8 *>(from);
 
 		counter = end_align;
 		while (counter--) *to8++ = *from8++;
 
 		to = reinterpret_cast<uint32 *>(to8 + to_next);
-		from = reinterpret_cast<uint32 *>(from8 + from_next);
+		from = reinterpret_cast<const uint32 *>(from8 + from_next);
 	}
 #else
 	uint8 *to = bits + desty * line_width + destx;
@@ -244,7 +244,7 @@ void Image_buffer8::copy8(
  */
 
 void Image_buffer8::copy_line8(
-    unsigned char *src_pixels,  // Source rectangle pixels.
+    const unsigned char *src_pixels,  // Source rectangle pixels.
     int srcw,           // Width to copy.
     int destx, int desty
 ) {
@@ -253,7 +253,7 @@ void Image_buffer8::copy_line8(
 	if (!clip_x(srcx, srcw, destx, desty))
 		return;
 	unsigned char *to = bits + desty * line_width + destx;
-	unsigned char *from = src_pixels + srcx;
+	const unsigned char *from = src_pixels + srcx;
 	std::memcpy(to, from, srcw);
 }
 
@@ -262,7 +262,7 @@ void Image_buffer8::copy_line8(
  */
 
 void Image_buffer8::copy_line_translucent8(
-    unsigned char *src_pixels,  // Source rectangle pixels.
+    const unsigned char *src_pixels,  // Source rectangle pixels.
     int srcw,           // Width to copy.
     int destx, int desty,
     int first_translucent,      // Palette index of 1st trans. color.
@@ -276,7 +276,7 @@ void Image_buffer8::copy_line_translucent8(
 	if (!clip_x(srcx, srcw, destx, desty))
 		return;
 	unsigned char *to = bits + desty * line_width + destx;
-	unsigned char *from = src_pixels + srcx;
+	const unsigned char *from = src_pixels + srcx;
 	for (int i = srcw; i; i--) {
 		// Get char., and transform.
 		unsigned char c = *from++;
@@ -338,7 +338,7 @@ void Image_buffer8::fill_translucent8(
  */
 
 void Image_buffer8::copy_transparent8(
-    unsigned char *src_pixels,  // Source rectangle pixels.
+    const unsigned char *src_pixels,  // Source rectangle pixels.
     int srcw, int srch,     // Dimensions of source.
     int destx, int desty
 ) {
@@ -348,7 +348,7 @@ void Image_buffer8::copy_transparent8(
 	if (!clip(srcx, srcy, srcw, srch, destx, desty))
 		return;
 	unsigned char *to = bits + desty * line_width + destx;
-	unsigned char *from = src_pixels + srcy * src_width + srcx;
+	const unsigned char *from = src_pixels + srcy * src_width + srcx;
 	int to_next = line_width - srcw;// # pixels to next line.
 	int from_next = src_width - srcw;
 	while (srch--) {        // Do each line.
@@ -363,8 +363,8 @@ void Image_buffer8::copy_transparent8(
 }
 
 // Slightly Optimized RLE Painter
-void Image_buffer8::paint_rle(int xoff, int yoff, unsigned char *inptr) {
-	uint8 *in = inptr;
+void Image_buffer8::paint_rle(int xoff, int yoff, const unsigned char *inptr) {
+	const uint8 *in = inptr;
 	int scanlen;
 	const int right = clipx + clipw;
 	const int bottom = clipy + cliph;
@@ -399,7 +399,7 @@ void Image_buffer8::paint_rle(int xoff, int yoff, unsigned char *inptr) {
 				// Is there anything to put on the screen?
 				if (skip < scanlen) {
 					unsigned char *dest = bits + scany * line_width + scanx;
-					unsigned char *end = in + scanlen - skip;
+					const unsigned char *end = in + scanlen - skip;
 					while (in < end) *dest++ = *in++;
 					in += skip;
 					continue;
@@ -505,10 +505,10 @@ void Image_buffer8::paint_rle(int xoff, int yoff, unsigned char *inptr) {
 // Slightly Optimized RLE Painter
 void Image_buffer8::paint_rle_remapped(
     int xoff, int yoff,
-    unsigned char *inptr,
-    unsigned char *&trans
+    const unsigned char *inptr,
+    const unsigned char *&trans
 ) {
-	uint8 *in = inptr;
+	const uint8 *in = inptr;
 	int scanlen;
 	const int right = clipx + clipw;
 	const int bottom = clipy + cliph;
@@ -543,7 +543,7 @@ void Image_buffer8::paint_rle_remapped(
 				// Is there anything to put on the screen?
 				if (skip < scanlen) {
 					unsigned char *dest = bits + scany * line_width + scanx;
-					unsigned char *end = in + scanlen - skip;
+					const unsigned char *end = in + scanlen - skip;
 					while (in < end) *dest++ = trans[*in++];
 					in += skip;
 					continue;
@@ -651,7 +651,7 @@ void Image_buffer8::paint_rle_remapped(
  */
 
 unsigned char *Image_buffer8::rgba(
-    unsigned char *pal,     // 3*256 bytes (rgbrgbrgb...).
+    const unsigned char *pal,     // 3*256 bytes (rgbrgbrgb...).
     unsigned char transp,       // Transparent value.
     bool &rotate,               // Flag set to true if any of the colors rotate.
     int first_rotate,           // First color that rotates.

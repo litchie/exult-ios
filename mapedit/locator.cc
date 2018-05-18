@@ -309,7 +309,7 @@ void Locator::render(
  */
 
 void Locator::view_changed(
-    unsigned char *data,        // Tx, Ty, xtiles, ytiles, scale.
+    const unsigned char *data,        // Tx, Ty, xtiles, ytiles, scale.
     int datalen
 ) {
 	if (datalen < 4 * 4)

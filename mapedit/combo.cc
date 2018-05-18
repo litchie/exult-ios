@@ -475,12 +475,12 @@ unsigned char *Combo::write(
  *  Output: ->past actual data read.
  */
 
-unsigned char *Combo::read(
-    unsigned char *buf,
+const unsigned char *Combo::read(
+    const unsigned char *buf,
     int bufsize
 ) {
 	ignore_unused_variable_warning(bufsize);
-	unsigned char *ptr = buf;
+	const unsigned char *ptr = buf;
 	Serial_in in(ptr);
 	in << name;
 	in << hot_index << starttx << startty;
@@ -498,7 +498,7 @@ unsigned char *Combo::read(
 		else
 			tilefoot = tilefoot.add(box);
 	}
-	return ptr;
+	return buf;
 }
 
 /*

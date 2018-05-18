@@ -229,11 +229,11 @@ Shape_group_file::Shape_group_file(
 			// Get each group.
 			std::size_t len;
 			char *buf = flex->retrieve(i, len);
-			char *gname = buf;  // Starts with name.
-			unsigned char *ptr = reinterpret_cast<unsigned char *>(
+			const char *gname = buf;  // Starts with name.
+			const unsigned char *ptr = reinterpret_cast<const unsigned char *>(
 			                     gname) + strlen(gname) + 1;
 			size_t sz = Read2(ptr); // Get # entries.
-			assert((len - (reinterpret_cast<char *>(ptr) - buf)) / 2 == sz);
+			assert((len - (reinterpret_cast<const char *>(ptr) - buf)) / 2 == sz);
 			Shape_group *grp = new Shape_group(gname, this);
 			grp->reserve(sz);
 			for (size_t j = 0; j < sz; j++)

@@ -83,7 +83,7 @@ bool Ammo_info::read(
 	ignore_unused_variable_warning(version, game);
 	uint8 buf[Ammo_info::entry_size - 2];       // Entry length.
 	in.read(reinterpret_cast<char *>(buf), sizeof(buf));
-	uint8 *ptr = buf;
+	const uint8 *ptr = buf;
 	if (buf[Ammo_info::entry_size - 3] == 0xff) { // means delete entry.
 		set_invalid(true);
 		return true;
