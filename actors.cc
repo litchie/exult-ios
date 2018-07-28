@@ -4189,9 +4189,10 @@ void Actor::die(
 			tooheavy.push_back(item);
 			continue;
 		}
-		if (body)
+		if (body) {
+		    item->set_shape_pos(255, 255);	// So it gets placed.
 			body->add(item, 1);// Always succeed at adding.
-		else {          // No body?  Drop on ground.
+		} else {          // No body?  Drop on ground.
 			item->set_flag_recursively(Obj_flags::okay_to_take);
 			Tile_coord pos2 = Map_chunk::find_spot(pos, 5,
 			                                       item->get_shapenum(), item->get_framenum(), 1);

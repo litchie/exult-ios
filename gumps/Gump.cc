@@ -294,6 +294,27 @@ void Gump::paint_elems(
 		(*it)->paint();
 }
 
+void check_elem_positions(Object_list &objects)
+{
+	int prevx = -1, prevy = -1;
+	Game_object *obj;
+	Object_iterator next(objects);
+	// See if all have the same position, indicating from a new game.
+	while ((obj = next.get_next()) != 0) {
+		int tx = obj->get_tx(), ty = obj->get_ty();
+	    if (prevx == -1) {
+		    prevx = tx;
+			prevy = ty;
+		} else if (tx != prevx || ty != prevy) {
+		    return;
+		}
+	}
+	next.reset();
+	while ((obj = next.get_next()) != 0) {
+	    obj->set_shape_pos(255, 255);
+	}
+}
+
 /*
  *  Paint on screen.
  */
@@ -317,6 +338,7 @@ void Gump::paint(
 	int cury = 0, curx = 0;
 	int endy = box.h, endx = box.w;
 	int loop = 0;           // # of times covering container.
+	check_elem_positions(objects);	// Set to place if new game.
 	Game_object *obj;
 	Object_iterator next(objects);
 	while ((obj = next.get_next()) != 0) {
