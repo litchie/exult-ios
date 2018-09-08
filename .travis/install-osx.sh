@@ -1,7 +1,7 @@
 #!/bin/sh
 
 MACPORTS_URL=https://distfiles.macports.org/MacPorts
-MACPORTS_PKG=MacPorts-2.4.2-10.12-Sierra.pkg
+MACPORTS_PKG=MacPorts-2.5.3-10.13-HighSierra.pkg
 MACPORTS_PREFIX=/opt/local
 MACPORTS_PATH=/tmp/$MACPORTS_PKG
 
@@ -18,3 +18,4 @@ sudo port -q upgrade outdated | cat
 sudo port -q install automake libtool pkgconfig libvorbis libpng zlib libglade2 | cat
 sudo port -q install libsdl +x11 | cat
 sudo port -q install libsdl2 +x11 | cat
+https://distfiles.macports.org/MacPorts/MacPorts-2.5.3-10.13-HighSierra.pkg
