@@ -21,7 +21,11 @@
 #endif
 
 #include <iostream>
+#include <sstream>
 #include <algorithm>
+#include <iomanip>
+using std::setw;
+using std::setfill;
 
 #include "SDL_mouse.h"
 #include "cheat.h"
@@ -470,8 +474,11 @@ void Cheat::fake_time_period(void) const {
 	if (!enabled) return;
 
 	if (!map_editor) {
+	    std::ostringstream s;
 		gwin->get_clock()->fake_next_period();
-		eman->center_text("Game clock incremented");
+		s << "Game clock incremented to " << gclock->get_hour() << ":"
+		  	 << setfill('0') << setw(2) << gclock->get_minute();
+		eman->center_text(s.str().c_str());
 	}
 }
 
