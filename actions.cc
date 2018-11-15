@@ -500,8 +500,8 @@ Approach_actor_action::Approach_actor_action(
     int gdist,          // Stop when this close to dest.
     bool for_proj           // Check for projectile path.
 ) : Path_walking_actor_action(p, 0),    // (Stop if blocked.)
-	dest_obj(d), goal_dist(gdist), orig_dest_pos(d->get_tile()), cur_step(0),
-	for_projectile(for_proj) {
+	dest_obj(weak_from_obj(d)), goal_dist(gdist),
+	orig_dest_pos(d->get_tile()), cur_step(0), for_projectile(for_proj) {
 	// Get length of path.
 	int nsteps = path->get_num_steps();
 	//cout << "Approach nsteps is " << nsteps << "." << endl;
@@ -544,22 +544,23 @@ int Approach_actor_action::handle_event(
     Actor *actor
 ) {
 	int delay = Path_walking_actor_action::handle_event(actor);
-	if (!delay || deleted)          // Done or blocked.
+	Game_object *dest_ptr = obj_from_weak(dest_obj);
+	if (!dest_ptr || !delay || deleted)          // Done or blocked.
 		return 0;
 	// Close enough?
-	if (goal_dist >= 0 && actor->distance(dest_obj) <= goal_dist)
+	if (goal_dist >= 0 && actor->distance(dest_ptr) <= goal_dist)
 		return 0;
 	if (++cur_step == check_step) { // Time to check.
 #ifdef DEBUG
 		cout << actor->get_name() <<
 		     " approach: Dist. to dest is " <<
-		     actor->distance(dest_obj) <<
+		     actor->distance(dest_ptr) <<
 		     endl;
 #endif
-		if (dest_obj->distance(orig_dest_pos) > 2)
+		if (dest_ptr->distance(orig_dest_pos) > 2)
 			return 0;   // Moved too much, so stop.
 		if (for_projectile &&
-		        Fast_pathfinder_client::is_straight_path(actor, dest_obj))
+		        Fast_pathfinder_client::is_straight_path(actor, dest_ptr))
 			return 0;   // Can fire projectile.
 		// Figure next check.
 		int nsteps = path->get_num_steps();
@@ -683,6 +684,14 @@ int Move_actor_action::handle_event(
 }
 
 /**
+ *  Activate an actor at a given time.
+ */
+Activate_actor_action::Activate_actor_action(
+    Game_object *o
+) : obj(weak_from_obj(o))
+	{  }
+
+/**
  *  Handle a time event.
  *
  *  @return     0 if done with this action, else delay for next frame.
@@ -692,9 +701,21 @@ int Activate_actor_action::handle_event(
     Actor *actor
 ) {
 	ignore_unused_variable_warning(actor);
-	obj->activate();
+	Game_object *obj_ptr = obj_from_weak(obj);
+	if (obj_ptr)
+	    obj_ptr->activate();
 	return 0;           // That's all.
 }
+
+/**
+ *  Create usecode action.
+ */
+Usecode_actor_action::Usecode_actor_action(
+    int f,
+	Game_object *i,
+	int ev
+) : fun(f), item(weak_from_obj(i)), eventid(ev)
+	{  }
 
 /**
  *  Handle a time event.
@@ -707,9 +728,12 @@ int Usecode_actor_action::handle_event(
 ) {
 	ignore_unused_variable_warning(actor);
 	Game_window *gwin = Game_window::get_instance();
-	gwin->get_usecode()->call_usecode(fun, item,
-	                                  static_cast<Usecode_machine::Usecode_events>(eventid));
-	gwin->set_all_dirty();      // Clean up screen.
+    Game_object *item_ptr = obj_from_weak(item);
+	if (item_ptr) {
+	    gwin->get_usecode()->call_usecode(fun, item_ptr,
+	                    static_cast<Usecode_machine::Usecode_events>(eventid));
+	    gwin->set_all_dirty();      // Clean up screen.
+	}
 	return 0;           // That's all.
 }
 
@@ -825,8 +849,8 @@ Object_animate_actor_action::Object_animate_actor_action(
     Game_object *o,
     int cy,             // # of cycles.
     int spd             // Time between frames.
-) : obj(o), cycles(cy), speed(spd) {
-	nframes = obj->get_num_frames();
+) : obj(weak_from_obj(o)), cycles(cy), speed(spd) {
+	nframes = o->get_num_frames();
 }
 
 Object_animate_actor_action::Object_animate_actor_action(
@@ -834,7 +858,7 @@ Object_animate_actor_action::Object_animate_actor_action(
     int nfr,
     int cy,
     int spd
-) : obj(o), nframes(nfr), cycles(cy), speed(spd)
+) : obj(weak_from_obj(o)), nframes(nfr), cycles(cy), speed(spd)
 { }
 
 
@@ -845,12 +869,14 @@ Object_animate_actor_action::Object_animate_actor_action(
 int Object_animate_actor_action::handle_event(
     Actor *actor
 ) {
+    Game_object *obj_ptr = obj_from_weak(obj);
 	ignore_unused_variable_warning(actor);
-	if (!cycles) return 0;
-	int frnum = (obj->get_framenum() + 1) % nframes;
+	if (!obj_ptr || !cycles)
+	    return 0;
+	int frnum = (obj_ptr->get_framenum() + 1) % nframes;
 	if (!frnum)         // New cycle?
 		--cycles;
-	obj->change_frame(frnum);
+	obj_ptr->change_frame(frnum);
 	return cycles ? speed : 0;
 }
 
@@ -859,13 +885,14 @@ int Object_animate_actor_action::handle_event(
  */
 Pickup_actor_action::Pickup_actor_action(Game_object *o, int spd,
 													bool del)
-	: obj(o), pickup(1), speed(spd), cnt(0),
-	  objpos(obj->get_tile()), dir(0), temp(false), to_del(del) {
+	: obj(weak_from_obj(o)), pickup(1), speed(spd), cnt(0),
+	  objpos(o->get_tile()), dir(0), temp(false), to_del(del) {
 }
 // To put down an object:
 Pickup_actor_action::Pickup_actor_action(Game_object *o, Tile_coord const &opos,
         int spd, bool t)
-	: obj(o), pickup(0), speed(spd), cnt(0), objpos(opos), dir(0), temp(t), to_del(false) {
+	: obj(weak_from_obj(o)), pickup(0), speed(spd), cnt(0), objpos(opos),
+	  dir(0), temp(t), to_del(false) {
 }
 
 /**
@@ -877,7 +904,10 @@ int Pickup_actor_action::handle_event(
 ) {
 	Game_window *gwin = Game_window::get_instance();
 	Game_object_shared keep;
+	Game_object *obj_ptr = obj_from_weak(obj);
 	int frnum = -1;
+	if (!obj_ptr)
+	    return 0;		// It's gone!  So we're done.
 	switch (cnt) {
 	case 0:             // Face object.
 		dir = actor->get_direction(objpos);
@@ -885,30 +915,30 @@ int Pickup_actor_action::handle_event(
 		cnt++;
 		break;
 	case 1: {            // Bend down.
-		int tz = pickup ? obj->get_lift() : objpos.tz;
+		int tz = pickup ? obj_ptr->get_lift() : objpos.tz;
 		frnum = (tz >= actor->get_lift() + 2) ?
 			  ((rand()%2) ? Actor::reach1_frame : Actor::reach2_frame) :
 			  Actor::bow_frame;
 		frnum = actor->get_dir_framenum(dir, frnum);
 		cnt++;
 		if (pickup) {
-			if (actor->distance(obj) > 8) {
+			if (actor->distance(obj_ptr) > 8) {
 				// No longer nearby.
 				break;
 			}
-			gwin->add_dirty(obj);
+			gwin->add_dirty(obj_ptr);
 			if (to_del) {
-				obj->remove_this();		// Delete it.
+				obj_ptr->remove_this();		// Delete it.
 			} else {
-				obj->remove_this(&keep);
-				actor->add(obj, true);
+				obj_ptr->remove_this(&keep);
+				actor->add(obj_ptr, true);
 			}
 		} else {
-			obj->remove_this(&keep);
-			obj->move(objpos);
+			obj_ptr->remove_this(&keep);
+			obj_ptr->move(objpos);
 			if (temp)
-				obj->set_flag(Obj_flags::is_temporary);
-			gwin->add_dirty(obj);
+				obj_ptr->set_flag(Obj_flags::is_temporary);
+			gwin->add_dirty(obj_ptr);
 		}
 		}
 		break;
@@ -959,7 +989,7 @@ Change_actor_action::Change_actor_action(
     int sh,
     int fr,
     int ql
-) : obj(o), shnum(sh), frnum(fr), qual(ql) {
+) : obj(weak_from_obj(o)), shnum(sh), frnum(fr), qual(ql) {
 }
 
 /**
@@ -971,9 +1001,12 @@ int Change_actor_action::handle_event(
 ) {
 	ignore_unused_variable_warning(actor);
 	Game_window *gwin = Game_window::get_instance();
-	gwin->add_dirty(obj);
-	obj->set_shape(shnum, frnum);
-	obj->set_quality(qual);
-	gwin->add_dirty(obj);
+	Game_object *obj_ptr = obj_from_weak(obj);
+	if (obj_ptr) {
+		gwin->add_dirty(obj_ptr);
+		obj_ptr->set_shape(shnum, frnum);
+		obj_ptr->set_quality(qual);
+		gwin->add_dirty(obj_ptr);
+	}
 	return 0;
 }

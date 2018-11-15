@@ -146,7 +146,7 @@ public:
  *  moved.
  */
 class Approach_actor_action : public Path_walking_actor_action {
-	Game_object *dest_obj;      // Destination object.
+	Game_object_weak dest_obj;      // Destination object.
 	int goal_dist;          // Stop if within this distance.
 	Tile_coord orig_dest_pos;   // Dest_obj's pos. when we start.
 	int cur_step;           // Count steps.
@@ -202,10 +202,9 @@ public:
  *  Activate an object.
  */
 class Activate_actor_action : public Actor_action {
-	Game_object *obj;
+	Game_object_weak obj;
 public:
-	Activate_actor_action(Game_object *o) : obj(o)
-	{  }
+	Activate_actor_action(Game_object *o);
 	// Handle time event.
 	virtual int handle_event(Actor *actor);
 };
@@ -242,12 +241,10 @@ public:
  */
 class Usecode_actor_action : public Actor_action {
 	int fun;            // Fun. #.
-	Game_object *item;      // Call it on this item.
+	Game_object_weak item;      // Call it on this item.
 	int eventid;
 public:
-	Usecode_actor_action(int f, Game_object *i, int ev)
-		: fun(f), item(i), eventid(ev)
-	{  }
+	Usecode_actor_action(int f, Game_object *i, int ev);
 	// Handle time event.
 	virtual int handle_event(Actor *actor);
 };
@@ -287,7 +284,7 @@ public:
  *  Rotate through an object's frames.
  */
 class Object_animate_actor_action : public Actor_action {
-	Game_object *obj;
+	Game_object_weak obj;
 	int nframes;            // # of frames.
 	int cycles;         // # of cycles to do.
 	int speed;          // Time between frames.
@@ -306,7 +303,7 @@ public:
  */
 
 class Pickup_actor_action : public Actor_action {
-	Game_object *obj;       // What to pick up/put down.
+	Game_object_weak obj;       // What to pick up/put down.
 	int pickup;         // 1 to pick up, 0 to put down.
 	int speed;          // Time between frames.
 	int cnt;            // 0, 1, 2.
@@ -349,7 +346,7 @@ public:
  */
 
 class Change_actor_action : public Actor_action {
-	Game_object *obj;       // What to modify.
+	Game_object_weak obj;       // What to modify.
 	int shnum, frnum, qual; // New shape, frame and quality.
 public:
 	Change_actor_action(Game_object *o, int sh, int fr, int ql);
