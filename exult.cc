@@ -2665,7 +2665,7 @@ static void Move_dragged_combo(
  *  Create an object as moveable (IREG) or fixed.
  */
 
-static Game_object *Create_object(
+static Game_object_sharedCreate_object(
     int shape, int frame,       // What to create.
     bool &ireg          // Rets. TRUE if ireg (moveable).
 ) {
@@ -2674,7 +2674,7 @@ static Game_object *Create_object(
 	// Is it an ireg (changeable) obj?
 	ireg = (sclass != Shape_info::unusable &&
 	        sclass != Shape_info::building);
-	Game_object *newobj;
+	Game_object_shared newobj;
 	if (ireg)
 		newobj = gwin->get_map()->create_ireg_object(
 		             info, shape, frame, 0, 0, 0);

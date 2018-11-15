@@ -23,8 +23,8 @@
 
 #include "tiles.h"
 #include "singles.h"
-#include "objclient.h"
 #include <vector>
+#include <memory>
 #include "ignore_unused_variable_warning.h"
 
 #ifdef WIN32
@@ -39,11 +39,12 @@ class Actor_action;
 class Usecode_value;
 
 using std::vector;
+typedef std::weak_ptr<Game_object> Game_object_weak;
 
 /*
  *  A Schedule controls the NPC it is assigned to.
  */
-class Schedule : public Game_singletons, public Object_client {
+class Schedule : public Game_singletons {
 protected:
 	Actor *npc;         // Who this controls.
 	Tile_coord blocked;     // Tile where actor was blocked.
@@ -54,7 +55,6 @@ protected:
 public:
 	Schedule(Actor *n);
 	virtual ~Schedule() {
-		remove_clients();
 	}
 	int get_prev_type() const {
 		return prev_type;
@@ -117,11 +117,6 @@ public:
 	virtual int get_actual_type(Actor *npc) const;
 	// Look for foes.
 	bool seek_foes();
-	/* For Object_client: +++++ Override in sub-classes. */
-	// Notify that schedule's obj. has been moved or deleted.
-	virtual void notify_object_gone(Game_object *obj) {
-		ignore_unused_variable_warning(obj);
-	}
 	bool try_proximity_usecode(int odds);
 };
 
@@ -129,20 +124,24 @@ public:
  *	A schedule that creates objects that need to be cleaned up after.
  */
 class Schedule_with_objects : public Schedule {
-	vector<Game_object *> created;	// Items we created.
+	vector<Game_object_weak> created;	// Items we created.
+	Game_object_weak current_item;		// One we're using/walking to.
 protected:
-	Game_object *current_item;		// One we're using/walking to.
-	int items_in_hand; 	  	// # NPC's desk items.
+    Game_object *get_current_item() {
+	    return obj_from_weak(current_item);
+	}
+	void set_current_item(Game_object *obj) {
+	    current_item = weak_from_obj(obj);
+	}
+    int items_in_hand; 	  	// # NPC's desk items.
 	void cleanup();				// Remove items we created.
 public:
-	Schedule_with_objects(Actor *n) : Schedule(n), current_item(0),
+	Schedule_with_objects(Actor *n) : Schedule(n), current_item(),
 									items_in_hand(0) {
 	}
 	~Schedule_with_objects();
-	virtual void notify_object_gone(Game_object *obj);
 	void add_object(Game_object *obj) {
-		created.push_back(obj);
-		add_client(obj);
+	    created.push_back(obj->weak_from_this());
 	}
 	// Find desk or waiter items.
 	virtual int find_items(Game_object_vector& vec, int dist) = 0;
@@ -156,8 +155,7 @@ public:
 class Scripted_schedule : public Schedule {
 	Usecode_value *inst;        // Usecode schedule instance.
 	// Usecode function #'s:
-	int now_what_id, im_dormant_id, ending_id, set_weapon_id, set_bed_id,
-	    notify_object_gone_id;
+	int now_what_id, im_dormant_id, ending_id, set_weapon_id, set_bed_id;
 	void run(int id);
 public:
 	Scripted_schedule(Actor *n, int type);
@@ -180,17 +178,13 @@ public:
 		ignore_unused_variable_warning(b);
 		run(set_bed_id);
 	}
-	virtual void notify_object_gone(Game_object *obj) {
-		ignore_unused_variable_warning(obj);
-		run(notify_object_gone_id);
-	}
 };
 
 /*
  *  Street maintenance (turn lamps on/off).
  */
 class Street_maintenance_schedule : public Schedule {
-	Game_object *obj;       // Lamp/shutters.
+	Game_object_weak obj;       // Lamp/shutters.
 	int shapenum, framenum;     // Save original shapenum.
 	Actor_action *paction;      // Path to follow to get there.
 	Tile_coord oldloc;
@@ -199,7 +193,6 @@ public:
 	virtual void now_what();
 	// For Usecode intrinsic.
 	virtual int get_actual_type(Actor *npc) const;
-	virtual void notify_object_gone(Game_object *obj);
 	virtual void ending(int newtype);
 };
 
@@ -289,15 +282,14 @@ class Patrol_schedule : public Schedule {
 	char whichdir;          // For 'pace' path eggs.
 	int phase;              // For 'pace' path eggs.
 	int pace_count;         // For 'pace' path eggs.
-	Game_object *hammer;    // For 'hammer' path eggs.
-	Game_object *book;      // For 'read' path eggs.
+	Game_object_weak hammer;    // For 'hammer' path eggs.
+	Game_object_weak book;      // For 'read' path eggs.
 	bool seek_combat;       // The NPC should seek enemies while patrolling.
 	bool forever;           // If should keep executing last path egg.
 public:
 	Patrol_schedule(Actor *n);
 	virtual void now_what();    // Now what should NPC do?
 	virtual void ending(int newtype); // Switching to another schedule
-	virtual void notify_object_gone(Game_object *obj);
 };
 
 /*
@@ -376,11 +368,11 @@ public:
 class Tool_schedule : public Loiter_schedule {
 protected:
 	int toolshape;          // Pick/scythe shape.
-	Game_object *tool;
+	Game_object_weak tool;
 	void get_tool();
 public:
 	Tool_schedule(Actor *n, int shnum) : Loiter_schedule(n, 12),
-		toolshape(shnum), tool(0)
+		toolshape(shnum), tool()
 	{  }
 	virtual void now_what() = 0;    // Now what should NPC do?
 	virtual void ending(int newtype);// Switching to another schedule.
@@ -390,7 +382,7 @@ public:
  *  Farmer.
  */
 class Farmer_schedule : public Tool_schedule {
-	Game_object *crop;
+	Game_object_weak crop;
 	int grow_cnt;
 	enum {
 	    start,
@@ -401,7 +393,7 @@ class Farmer_schedule : public Tool_schedule {
 	} state;
 public:
 	Farmer_schedule(Actor *n) : Tool_schedule(n, 618),
-		crop(0), grow_cnt(0), state(start)
+		crop(), grow_cnt(0), state(start)
 	{  }
 	virtual void now_what();    // Now what should NPC do?
 };
@@ -410,7 +402,7 @@ public:
  *  Miner.
  */
 class Miner_schedule : public Tool_schedule {
-	Game_object *ore;
+	Game_object_weak ore;
 	enum {
 	    find_ore,
 	    attack_ore,
@@ -419,7 +411,7 @@ class Miner_schedule : public Tool_schedule {
 	} state;
 public:
 	Miner_schedule(Actor *n) : Tool_schedule(n, 624),
-		ore(0), state(find_ore)
+		ore(), state(find_ore)
 	{  }
 	virtual void now_what();    // Now what should NPC do?
 };
@@ -449,7 +441,7 @@ public:
  */
 class Sleep_schedule : public Schedule {
 	Tile_coord floorloc;        // Where NPC was standing before.
-	Game_object *bed;       // Bed being slept on, or 0.
+	Game_object_weak bed;       // Bed being slept on, or 0.
 	int state;
 	int spread0, spread1;       // Range of bedspread frames.
 	bool for_nap_time;
@@ -459,7 +451,6 @@ public:
 	virtual void ending(int newtype);// Switching to another schedule.
 	// Set where to sleep.
 	virtual void set_bed(Game_object *b);
-	virtual void notify_object_gone(Game_object *obj);
 	virtual void im_dormant();  // Just went dormant.
 	static bool is_bed_occupied(Game_object *bed, Actor *npc);
 };
@@ -468,13 +459,12 @@ public:
  *  Sit in a chair.
  */
 class Sit_schedule : public Schedule {
-	Game_object *chair;     // What to sit in.
+	Game_object_weak chair;     // What to sit in.
 	bool sat;           // True if we already sat down.
 	bool did_barge_usecode;     // So we only call it once.
 public:
 	Sit_schedule(Actor *n, Game_object *ch = 0);
 	virtual void now_what();    // Now what should NPC do?
-	virtual void notify_object_gone(Game_object *obj);
 	virtual void im_dormant();  // Just went dormant.
 	static bool is_occupied(Game_object *chairobj, Actor *actor);
 	static bool set_action(Actor *actor, Game_object *chairobj = 0,
@@ -485,9 +475,9 @@ public:
  *  Desk work - Just sit in front of desk.
  */
 class Desk_schedule : public Schedule_with_objects {
-	Game_object *chair;     // What to sit in.
-	Game_object *desk, *table;
-	vector<Game_object *> tables;	// Other tables to work at.
+	Game_object_weak chair;     // What to sit in.
+	Game_object_weak desk, table;
+	vector<Game_object_weak> tables;	// Other tables to work at.
 	enum {
 	    desk_setup,
 	    sit_at_desk,
@@ -502,7 +492,6 @@ public:
 	Desk_schedule(Actor *n);
 	virtual void now_what();    // Now what should NPC do?
 	virtual void ending(int newtype);// Switching to another schedule.
-	virtual void notify_object_gone(Game_object *obj);
 	virtual void im_dormant();  // Just went dormant.
 };
 
@@ -520,10 +509,10 @@ public:
  *  Lab work.
  */
 class Lab_schedule : public Schedule {
-	vector<Game_object *> tables;
-	Game_object *chair;     // Chair to sit in.
-	Game_object *book;      // Book to read.
-	Game_object *cauldron;
+	vector<Game_object_weak> tables;
+	Game_object_weak chair;     // Chair to sit in.
+	Game_object_weak book;      // Book to read.
+	Game_object_weak cauldron;
 	Tile_coord spot_on_table;
 	enum {
 	    start,
@@ -539,7 +528,6 @@ class Lab_schedule : public Schedule {
 public:
 	Lab_schedule(Actor *n);
 	virtual void now_what();    // Now what should NPC do?
-	virtual void notify_object_gone(Game_object *obj);
 };
 
 /*
@@ -560,14 +548,14 @@ public:
 class Waiter_schedule : public Schedule_with_objects {
 	Tile_coord startpos;        // Starting position.
 	Actor *customer;        // Current customer.
-	Game_object *prep_table;    // Table we're working at.
+	Game_object_weak prep_table;    // Table we're working at.
 	bool cooking;
 	vector<Actor *> customers;  // List of customers.
 	vector<Actor *> customers_ordered;  // Taken orders from these.
-	vector<Game_object *> prep_tables; // Prep. tables.
-	vector<Game_object *> counters;    // Places to hang out.
-	vector<Game_object *> eating_tables; // Tables with chairs around them.
-	vector<Game_object *> unattended_plates;
+	vector<Game_object_weak > prep_tables; // Prep. tables.
+	vector<Game_object_weak > counters;    // Places to hang out.
+	vector<Game_object_weak > eating_tables; // Tables with chairs around them.
+	vector<Game_object_weak > unattended_plates;
 	enum {
 	    waiter_setup,
 	    get_customer,
@@ -603,20 +591,19 @@ public:
 	Waiter_schedule(Actor *n);
 	virtual void now_what();    // Now what should NPC do?
 	virtual void ending(int newtype);// Switching to another schedule.
-	virtual void notify_object_gone(Game_object *obj);
 };
 
 /*
  *  Sew/weave schedule.
  */
 class Sew_schedule : public Schedule {
-	Game_object *bale;      // Bale of wool.
-	Game_object *spinwheel;
-	Game_object *chair;     // In front of spinning wheel.
-	Game_object *spindle;       // Spindle of thread.
-	Game_object *loom;
-	Game_object *cloth;
-	Game_object *work_table, *wares_table;
+	Game_object_weak bale;      // Bale of wool.
+	Game_object_weak spinwheel;
+	Game_object_weak chair;     // In front of spinning wheel.
+	Game_object_weak spindle;       // Spindle of thread.
+	Game_object_weak loom;
+	Game_object_weak cloth;
+	Game_object_weak work_table, wares_table;
 	int sew_clothes_cnt;
 	enum {
 	    get_wool,
@@ -636,19 +623,18 @@ public:
 	Sew_schedule(Actor *n);
 	virtual void now_what();    // Now what should NPC do?
 	virtual void ending(int newtype);// Switching to another schedule.
-	virtual void notify_object_gone(Game_object *obj);
 };
 
 /*
  *  Bake schedule
  */
 class Bake_schedule : public Schedule {
-	Game_object *oven;
-	Game_object *worktable;
-	Game_object *displaytable;
-	Game_object *flourbag;
-	Game_object *dough;
-	Game_object *dough_in_oven;
+	Game_object_weak oven;
+	Game_object_weak worktable;
+	Game_object_weak displaytable;
+	Game_object_weak flourbag;
+	Game_object_weak dough;
+	Game_object_weak dough_in_oven;
 	bool clearing;
 	enum {
 	    find_leftovers,     // Look for misplaced dough already made by this schedule
@@ -668,20 +654,19 @@ public:
 	Bake_schedule(Actor *n);
 	virtual void now_what();
 	virtual void ending(int newtype);
-	virtual void notify_object_gone(Game_object *obj);
 };
 
 /*
  *  Blacksmith schedule
  */
 class Forge_schedule : public Schedule {
-	Game_object *tongs;
-	Game_object *hammer;
-	Game_object *blank;
-	Game_object *firepit;
-	Game_object *anvil;
-	Game_object *trough;
-	Game_object *bellows;
+	Game_object_weak tongs;
+	Game_object_weak hammer;
+	Game_object_weak blank;
+	Game_object_weak firepit;
+	Game_object_weak anvil;
+	Game_object_weak trough;
+	Game_object_weak bellows;
 	enum {
 	    put_sword_on_firepit,
 	    use_bellows,
@@ -699,14 +684,13 @@ public:
 	Forge_schedule(Actor *n);
 	virtual void now_what();    // Now what should NPC do?
 	virtual void ending(int newtype); // Switching to another schedule
-	virtual void notify_object_gone(Game_object *obj);
 };
 
 /*
  *  Eat without a server
  */
 class Eat_schedule : public Schedule {
-	Game_object *plate;
+	Game_object_weak plate;
 	enum {
 	    eat,        // eat food and say food barks
 	    find_plate, // make sure there is a plate, create one if not
@@ -716,7 +700,6 @@ public:
 	Eat_schedule(Actor *n);
 	virtual void now_what();    // Now what should NPC do?
 	virtual void ending(int newtype); // Switching to another schedule
-	virtual void notify_object_gone(Game_object *obj);
 	virtual void im_dormant();  // Just went dormant.
 };
 

@@ -52,9 +52,9 @@ public:
 template<class T>
 class T_Object_iterator : public T_Safe_object_iterator<T> {
 protected:
-	T first;
-	T stop;
-	T cur;      // Next to return.
+	T *first;
+	T *stop;
+	T *cur;      // Next to return.
 public:
 	void reset() {
 		cur = first;
@@ -64,24 +64,24 @@ public:
 		: T_Safe_object_iterator<T>(objects), first(objects.get_first()) {
 		reset();
 	}
-	T get_next() {
+	T *get_next() {
 		if (cur == stop)
 			return 0;
-		T ret = cur;
-		cur = cur->next;
+		T *ret = cur;
+		cur = cur->next.get();
 		stop = first;
 		return ret;
 	}
 };
 
-typedef T_Object_iterator<Game_object *> Object_iterator;
+typedef T_Object_iterator<Game_object> Object_iterator;
 
 /*
  *  Iterate through a chunk's nonflat objects.
  */
 template<class T, class L>
 class T_Nonflat_object_iterator : public T_Object_iterator<T> {
-	T nonflats;
+	T *nonflats;
 public:
 	void reset() {
 		this->cur = nonflats;
@@ -93,17 +93,17 @@ public:
 	}
 };
 
-typedef T_Nonflat_object_iterator<Game_object *, Map_chunk *> Nonflat_object_iterator;
+typedef T_Nonflat_object_iterator<Game_object, Map_chunk *> Nonflat_object_iterator;
 
 /*
  *  Iterate through a chunk's flat objects.
  */
 template<class T, class L>
 class T_Flat_object_iterator : public T_Safe_object_iterator<T> {
-	T first;
-	T stop;
-	T cur;      // Next to return.
-	T stop_at;
+	T *first;
+	T *stop;
+	T *cur;      // Next to return.
+	T *stop_at;
 public:
 	void reset() {
 		cur = first;
@@ -117,26 +117,26 @@ public:
 		          : chunk->get_objects().get_first();
 		reset();
 	}
-	T get_next() {
+	T *get_next() {
 		if (cur == stop)
 			return 0;
-		T ret = cur;
+		T *ret = cur;
 		cur = cur->get_next();
 		stop = stop_at;
 		return ret;
 	}
 };
 
-typedef T_Flat_object_iterator<Game_object *, Map_chunk *> Flat_object_iterator;
+typedef T_Flat_object_iterator<Game_object, Map_chunk *> Flat_object_iterator;
 
 /*
  *  Iterate backwards through list of objects.
  */
 template<class T, class L>
 class T_Object_iterator_backwards : public T_Safe_object_iterator<T> {
-	T first;
-	T stop;
-	T cur;      // Return prev. to this.
+	T *first;
+	T *stop;
+	T *cur;      // Return prev. to this.
 public:
 	void reset() {
 		cur = first;
@@ -152,7 +152,7 @@ public:
 		  first(objects.get_first()) {
 		reset();
 	}
-	T get_next() {
+	T *get_next() {
 		if (cur == stop)
 			return 0;
 		cur = cur->prev;
@@ -161,7 +161,7 @@ public:
 	}
 };
 
-typedef T_Object_iterator_backwards<Game_object *, Map_chunk *> Object_iterator_backwards;
+typedef T_Object_iterator_backwards<Game_object, Map_chunk *> Object_iterator_backwards;
 
 /*
  *  Iterate through a list of objects (recursively).

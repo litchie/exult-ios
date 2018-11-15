@@ -50,7 +50,6 @@
 #include "cheat.h"
 #include "chunkter.h"
 #include "combat_opts.h"
-#include "delobjs.h"
 #include "dir.h"
 #include "effects.h"
 #include "egg.h"
@@ -393,7 +392,7 @@ Game_window::Game_window(
 	std_delay(c_std_delay), time_stopped(0), special_light(0),
 	theft_warnings(0), theft_cx(255), theft_cy(255),
 	moving_barge(0), main_actor(0), camera_actor(0), npcs(0), bodies(0),
-	removed(new Deleted_objects()), dirty(0, 0, 0, 0),
+	dirty(0, 0, 0, 0),
 	mouse3rd(false), fastmouse(false), double_click_closes_gumps(false),
 	text_bg(false), step_tile_delta(8), allow_right_pathfind(2),
 #ifdef RED_PLASMA
@@ -562,7 +561,6 @@ Game_window::~Game_window(
 	        it != maps.end(); ++it)
 		delete *it;
 	delete usecode;
-	delete removed;
 	delete clock;
 	delete npc_prox;
 	delete effects;
@@ -865,13 +863,24 @@ void Game_window::add_npc(
 ) {
 	assert(num == npc->get_npc_num());
 	assert(num <= static_cast<int>(npcs.size()));
-	if (num == static_cast<int>(npcs.size()))       // Add at end.
-		npcs.push_back(npc);
-	else {
+	if (num == static_cast<int>(npcs.size())) {      // Add at end.
+		npcs.push_back(nullptr);
+		npcs[npcs.size() - 1] = npc->shared_from_this();
+	} else {
 		// Better be unused.
-		assert(!npcs[num] || npcs[num]->is_unused());
-		delete npcs[num];
-		npcs[num] = npc;
+		assert(!npcs[num] || get_npc(num)->is_unused());
+		npcs[num] = npc->shared_from_this();
+	}
+}
+
+/*  Get desired NPD.
+ */
+Actor *Game_window::get_npc(long npc_num) const {
+    if (npc_num < 0 || npc_num >= static_cast<int>(npcs.size()))
+	    return 0;
+	else {
+	    Game_object *npc = npcs[npc_num].get();
+	    return static_cast<Actor *>(npc);
 	}
 }
 
@@ -916,16 +925,17 @@ int Game_window::get_unused_npc(
 	for (; i < cnt; i++) {
 		if (i >= 356 && i <= 359)
 			continue;   // Never return these.
-		if (!npcs[i] || npcs[i]->is_unused())
+		if (!npcs[i] || get_npc(i)->is_unused())
 			break;
 	}
 	if (i >= 356 && i <= 359) {
 		// Special, 'reserved' cases.
 		i = 360;
 		do {
-			npcs.push_back(new Npc_actor("Reserved", 0));
-			npcs[cnt]->set_schedule_type(Schedule::wait);
-			npcs[cnt]->set_unused(true);
+			npcs.push_back(std::make_shared<Npc_actor>("Reserved", 0));
+			Actor *npc = get_npc(cnt);
+			npc->set_schedule_type(Schedule::wait);
+			npc->set_unused(true);
 		} while (++cnt < 360);
 	}
 	return i;           // First free one is past the end.
@@ -976,13 +986,14 @@ void Game_window::clear_world(
 	Combat::resume();
 	tqueue->clear();        // Remove all entries.
 	clear_dirty();
-	removed->flush();       // Delete.
 	Usecode_script::clear();    // Clear out all scheduled usecode.
 	// Most NPCs were deleted when the map is cleared; we have to deal with some stragglers.
-	for (vector<Actor *>::iterator it = npcs.begin();
-	        it != npcs.end(); ++it)
-		if ((*it)->is_unused())
-			delete *it;
+	for (vector<Game_object_shared>::iterator it = npcs.begin();
+	        it != npcs.end(); ++it) {
+	    Actor *npc = static_cast<Actor *>((*it).get());
+		if (npc->is_unused())
+			*it = nullptr;
+	}
 	for (vector<Game_map *>::iterator it = maps.begin();
 	        it != maps.end(); ++it)
 		(*it)->clear();
@@ -1018,8 +1029,8 @@ bool Game_window::locate_shape(
     int qual            // Quality/quantity.
 ) {
 	// Get (first) selected object.
-	const std::vector<Game_object *> &sel = cheat.get_selected();
-	Game_object *start = sel.size() ? sel[0] : 0;
+	const std::vector<Game_object_shared> &sel = cheat.get_selected();
+	Game_object *start = sel.size() ? (sel[0]).get() : 0;
 	char msg[80];
 	snprintf(msg, sizeof(msg), "Searching for shape %d", shapenum);
 	effects->center_text(msg);
@@ -2374,36 +2385,6 @@ ShapeID Game_window::get_flat(
 }
 
 /*
- *  Remove an item from the world and set it for later deletion.
- */
-
-void Game_window::delete_object(
-    Game_object *obj
-) {
-	obj->set_invalid();     // Set to invalid chunk.
-	if (!obj->is_monster())     // Don't delete these!
-		removed->insert(obj);   // Add to pool instead.
-}
-#if 0   /* ++++++Goes away. */
-/*
- *  A sign or plaque?
- */
-
-static bool Is_sign(
-    int shnum
-) {
-	switch (shnum) {
-	case 820:           // Plaque.
-	case 360:
-	case 361:
-	case 379:
-		return true;
-	default:
-		return false;
-	}
-}
-#endif
-/*
  *  Handle a double-click.
  */
 
@@ -2424,8 +2405,6 @@ void Game_window::double_clicked(
 	if (main_actor_dont_move())
 		return;
 	// Nothing going on?
-	if (!Usecode_script::get_count())
-		removed->flush();   // Flush removed objects.
 	// Look for obj. in open gump.
 	Game_object *obj = 0;
 	bool gump = gump_man->double_clicked(x, y, obj);
@@ -2519,9 +2498,9 @@ void Game_window::schedule_npcs(
     bool repaint
 ) {
 	// Go through npc's, skipping Avatar.
-	for (Actor_vector::iterator it = npcs.begin() + 1;
+	for (std::vector<Game_object_shared>::iterator it = npcs.begin() + 1;
 	        it != npcs.end(); ++it) {
-		Actor *npc = *it;
+		Actor *npc = static_cast<Actor *>((*it).get());
 		if (!npc)
 			continue;
 		// Don't want companions leaving.
@@ -2542,9 +2521,9 @@ void Game_window::schedule_npcs(
 void Game_window::mend_npcs(
 ) {
 	// Go through npc's.
-	for (Actor_vector::iterator it = npcs.begin();
+	for (std::vector<Game_object_shared>::iterator it = npcs.begin();
 	        it != npcs.end(); ++it) {
-		Actor *npc = *it;
+		Actor *npc = static_cast<Actor *>((*it).get());
 		if (npc)
 			npc->mend_wounds(true);
 	}
@@ -2594,7 +2573,7 @@ Actor *Game_window::find_witness(
 	int gshape = get_guard_shape();
 	for (Actor_vector::const_iterator it = npcs.begin();
 	        it != npcs.end(); ++it) {
-		Actor *npc = *it;
+		Actor *npc = (*it);
 		// Want non-party intelligent and not disabled NPCs only.
 		if (npc->is_in_party() || !npc->is_sentient() || !npc->can_act())
 			continue;
@@ -2757,8 +2736,9 @@ void Game_window::stop_arresting(
 
 	Actor_vector npcs;      // See if someone is nearby.
 	main_actor->find_nearby_actors(npcs, gshape, 20, 0x28);
-	for (Actor_vector::const_iterator it = npcs.begin(); it != npcs.end(); ++it) {
-		Actor *npc = *it;
+	for (Actor_vector::const_iterator it = npcs.begin();
+												   it != npcs.end(); ++it) {
+		Actor *npc = (*it);
 		if (!npc->is_in_party() && npc->get_schedule_type() == Schedule::arrest_avatar) {
 			npc->set_schedule_type(Schedule::wander);
 			// Prevent guard from becoming hostile.
@@ -2796,7 +2776,7 @@ void Game_window::attack_avatar(
 	main_actor->find_nearby_actors(npcs, c_any_shapenum, 20, 0x28);
 	for (Actor_vector::const_iterator it = npcs.begin();
 	        it != npcs.end() && numhelpers < maxhelpers; ++it) {
-		Actor *npc = *it;
+		Actor *npc = (*it);
 		if (npc->can_act() && !npc->is_in_party() && npc->is_sentient() &&
 		        ((npc->get_shapenum() == gshape && !in_dungeon) ||
 		         align == npc->get_effective_alignment()) &&
@@ -3063,8 +3043,6 @@ void Game_window::emulate_cache(Map_chunk *olist, Map_chunk *nlist) {
 		omap->cache_out(newx, newy);
 	else                    // Going to new map?
 		omap->cache_out(-1, -1);    // Cache out whole of old map.
-	// Could cause some problems
-	removed->flush();
 }
 
 // Tests to see if a move goes out of range of the actors superchunk

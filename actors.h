@@ -146,7 +146,8 @@ protected:
 	void movef(Map_chunk *old_chunk, Map_chunk *new_chunk,
 	           int new_sx, int new_sy, int new_frame, int new_lift);
 	bool is_really_blocked(Tile_coord &t, bool force);
-	bool empty_hand(Game_object *obj);      // Empty one hand
+    // Empty one hand
+    bool empty_hand(Game_object *obj, Game_object_shared *keep);
 public:
 	friend class Clear_casting;
 	friend class Clear_hit;
@@ -349,8 +350,6 @@ public:
 	// Set new action.
 	void set_action(Actor_action *newact);
 	void purge_deleted_actions();
-	// Notify scheduler obj. disappeared.
-	void notify_object_gone(Game_object *obj);
 	Tile_coord get_dest();      // Get destination.
 	// Walk to a desired spot.
 	void walk_to_tile(Tile_coord const &dest, int speed = 250, int delay = 0,
@@ -701,6 +700,7 @@ public:
 	bool in_usecode_control() const;
 	bool quake_on_walk();
 };
+typedef std::shared_ptr<Actor> Actor_shared;
 
 /*
  *  Actor frame descriptions:
@@ -742,6 +742,7 @@ public:
 	virtual void move(int newtx, int newty, int newlift, int newmap = -1);
 	virtual void die(Game_object *attacker);        // We're dead.
 };
+typedef std::shared_ptr<Main_actor> Main_actor_shared;
 
 /*
  *  A non-player-character that one can converse (or fight) with:
@@ -788,7 +789,7 @@ public:
 	// Step onto an (adjacent) tile.
 	virtual int step(Tile_coord t, int frame, bool force = false);
 	// Remove/delete this object.
-	virtual void remove_this(int nodel = 0);
+	virtual void remove_this(Game_object_shared *keep = 0);
 	// Update chunks after NPC moved.
 	virtual void switched_chunks(Map_chunk *olist,
 	                             Map_chunk *nlist);
@@ -799,6 +800,7 @@ public:
 		return this;
 	}
 };
+typedef std::shared_ptr<Npc_actor> Npc_actor_shared;
 
 /*
  *  An actor's dead body:
@@ -822,5 +824,6 @@ public:
 	virtual void write_ireg(DataSource *out);
 	virtual int get_ireg_size();
 };
+typedef std::shared_ptr<Dead_body> Dead_body_shared;
 
 #endif

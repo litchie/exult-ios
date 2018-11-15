@@ -492,8 +492,9 @@ static bool Take_best_step(
 	if (!best_in_way)       // Nobody in way?
 		return npc->step(best, frame) != 0;
 	best = best_in_way->get_tile(); // Swap positions.
-	npc->remove_this(true);
-	best_in_way->remove_this(true);
+    Game_object_shared npc_keep, best_keep;
+	npc->remove_this(&npc_keep);
+	best_in_way->remove_this(&best_keep);
 	npc->set_frame(frame);      // Appear to take a step.
 	npc->move(best);
 	best_in_way->move(pos);

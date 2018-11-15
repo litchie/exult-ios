@@ -20,6 +20,7 @@
 #define CHEAT_H
 
 #include <vector>
+#include <memory>
 #include "singles.h"
 
 class Game_window;
@@ -33,6 +34,7 @@ class Effects_manager;
 class Map_chunk;
 
 using std::vector;
+typedef std::shared_ptr<Game_object> Game_object_shared;
 
 class Cheat : public Game_singletons {
 public:
@@ -61,8 +63,8 @@ private:
 	int  edit_lift;
 	int  edit_shape, edit_frame;      // What to 'paint' with.
 	int  edit_chunknum;           // For painting with chunks.
-	vector<Game_object *> selected;   // Selected objects (map-editing).
-	vector<Game_object *> clipboard;  // Cut/copy/paste objects.
+	vector<Game_object_shared> selected;   // Selected objects (map-editing).
+	vector<Game_object_shared> clipboard;  // Cut/copy/paste objects.
 	bool infravision;
 	bool pickpocket;
 	bool grab_actor;
@@ -174,7 +176,7 @@ public:
 	void delete_selected();
 	void move_selected_objs(int dx, int dy, int dz);
 	void move_selected(int dx, int dy, int dz);
-	const vector<Game_object *> &get_selected() const {
+	const vector<Game_object_shared> &get_selected() const {
 		return selected;
 	}
 	bool is_selected(Game_object *o);
@@ -182,7 +184,7 @@ public:
 	void cut(bool copy = false);
 	void paste(int mx, int my);
 	void paste();
-	const vector<Game_object *> &get_clipboard() const {
+	const vector<Game_object_shared> &get_clipboard() const {
 		return clipboard;
 	}
 

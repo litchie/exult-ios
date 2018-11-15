@@ -122,7 +122,7 @@ public:
 
 	virtual void delete_contents();
 
-	virtual void remove_this(int nodel = 0);
+	virtual void remove_this(Game_object_shared *keep = 0);
 
 	virtual Container_game_object *as_container() {
 		return this;

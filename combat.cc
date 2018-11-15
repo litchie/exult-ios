@@ -1528,15 +1528,17 @@ void Ready_duel_weapon(
 	Game_object *weap = npc->get_readied(lhand);
 	if (!weap || weap->get_shapenum() != wshape) {
 		// Need a bow.
-		Game_object *newweap =
+		Game_object_shared newweap, keep, newkeep;
+		Game_object *found =
 		    npc->find_item(wshape, c_any_qual, c_any_framenum);
-		if (newweap)        // Have it?
-			newweap->remove_this(1);
-		else            // Create new one.
+		if (found) {        // Have it?
+		    newweap = found->shared_from_this();
+			newweap->remove_this(&newkeep);
+		} else            // Create new one.
 			newweap = gmap->create_ireg_object(wshape, 0);
 		if (weap)       // Remove old item.
-			weap->remove_this(1);
-		npc->add(newweap, 1);   // Should go in correct spot.
+			weap->remove_this(&keep);
+		npc->add(newweap.get(), 1);   // Should go in correct spot.
 		if (weap)
 			npc->add(weap, 1);
 	}
@@ -1546,11 +1548,11 @@ void Ready_duel_weapon(
 	Game_object *aobj = npc->get_readied(quiver);
 	if (aobj)
 		aobj->remove_this();    // Toss current ammo.
-	Game_object *arrows = gmap->create_ireg_object(ashape, 0);
+	Game_object_shared arrows = gmap->create_ireg_object(ashape, 0);
 	int extra = rand() % 3;     // Add 1 or 2.
 	if (extra)
 		arrows->modify_quantity(extra);
-	npc->add(arrows, 1);        // Should go to right spot.
+	npc->add(arrows.get(), 1);        // Should go to right spot.
 }
 
 /*

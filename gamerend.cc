@@ -272,11 +272,11 @@ int Game_render::paint_map(
 		                stop_chunky, gwin->ice_dungeon ? 73 : 0);
 
 	// Outline selected objects.
-	const Game_object_vector &sel = cheat.get_selected();
+	const Game_object_shared_vector &sel = cheat.get_selected();
 	int render_skip = gwin->get_render_skip_lift();
-	for (Game_object_vector::const_iterator it = sel.begin();
+	for (Game_object_shared_vector::const_iterator it = sel.begin();
 	        it != sel.end(); ++it) {
-		Game_object *obj = *it;
+		Game_object *obj = (*it).get();
 		if (!obj->get_owner() && obj->get_lift() < render_skip)
 			obj->paint_outline(HIT_PIXEL);
 	}

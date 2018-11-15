@@ -30,6 +30,7 @@ class PathFinder;
 class Pathfinder_client;
 class Path_walking_actor_action;
 class If_else_path_actor_action;
+typedef std::weak_ptr<Game_object> Game_object_weak;
 
 /*
  *  This class controls the current actions of an actor:
@@ -218,7 +219,8 @@ class Frames_actor_action : public Actor_action {
 	int cnt;            // Size of list.
 	int index;          // Index for next.
 	int speed;          // Frame delay in 1/1000 secs.
-	Game_object *obj;       // Object to animate
+	Game_object_weak obj;       // Object to animate
+    bool use_actor;
 public:
 	Frames_actor_action(signed char *f, int c, int spd = 200, Game_object *o = 0);
 	Frames_actor_action(char f, int spd = 200, Game_object *o = 0);

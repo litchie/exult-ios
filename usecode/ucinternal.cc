@@ -798,6 +798,7 @@ void Usecode_internal::set_item_shape(
 	gwin->add_dirty(item);
 	// Get chunk it's in.
 	Map_chunk *chunk = item->get_chunk();
+	Game_object_shared keep = item->shared_from_this();
 	chunk->remove(item);        // Remove and add to update cache.
 	item->set_shape(shape);
 	chunk->add(item);
@@ -875,7 +876,7 @@ void Usecode_internal::remove_item(
 ) {
 	if (!obj)
 		return;
-	if (!last_created.empty() && obj == last_created.back())
+	if (!last_created.empty() && obj == last_created.back().get())
 		last_created.pop_back();
 	add_dirty(obj);
 	if (GAME_SI && frame && frame->function->id == 0x70e
@@ -894,7 +895,8 @@ void Usecode_internal::remove_item(
 			}
 		}
 	}
-	obj->remove_this(obj->as_actor() != 0);
+	Game_object_shared keep;
+	obj->remove_this(obj->as_actor() != 0 ? &keep : NULL);
 }
 
 /*
@@ -1293,7 +1295,7 @@ Usecode_value Usecode_internal::add_party_items(
 			break;
 		Shape_info &info = ShapeID::get_info(shapenum);
 		// Create and place.
-		Game_object *newobj = gmap->create_ireg_object(
+		Game_object_shared newobj = gmap->create_ireg_object(
 		                          info, shapenum, framenum, 0, 0, 0);
 		if (quality != c_any_qual)
 			newobj->set_quality(quality); // set quality
@@ -1386,7 +1388,7 @@ Game_object *Usecode_internal::create_object(
     int shapenum,
     bool equip          // Equip monsters.
 ) {
-	Game_object *obj;       // Create to be written to Ireg.
+	Game_object_shared obj;       // Create to be written to Ireg.
 	Shape_info &info = ShapeID::get_info(shapenum);
 	modified_map = true;
 	// +++Not sure if 1st test is needed.
@@ -1401,11 +1403,11 @@ Game_object *Usecode_internal::create_object(
 		gwin->add_dirty(monster);
 		gwin->add_nearby_npc(monster);
 		gwin->show();
-		last_created.push_back(monster);
+		last_created.push_back(monster->shared_from_this());
 		return monster;
 	} else {
 		if (info.is_body_shape())
-			obj = new Dead_body(shapenum, 0, 0, 0, 0, -1);
+			obj = std::make_shared<Dead_body>(shapenum, 0, 0, 0, 0, -1);
 		else {
 			obj = gmap->create_ireg_object(shapenum, 0);
 			// Be liberal about taking stuff.
@@ -1414,8 +1416,8 @@ Game_object *Usecode_internal::create_object(
 	}
 	obj->set_invalid();     // Not in world yet.
 	obj->set_flag(Obj_flags::okay_to_take);
-	last_created.push_back(obj);
-	return obj;
+	last_created.push_back(obj->shared_from_this());
+	return obj.get();
 }
 
 /*

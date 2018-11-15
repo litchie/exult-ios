@@ -28,6 +28,8 @@ class   Missile_launcher;
 #include "iregobjs.h"
 #include "ignore_unused_variable_warning.h"
 
+typedef std::shared_ptr<Egg_object> Egg_object_shared;
+
 /*
  *  Here's a class for eggs and paths; i.e., objects that generally aren't
  *  visible.
@@ -63,7 +65,7 @@ protected:
 	unsigned char solid_area;   // 1 if area is solid, 0 if outline.
 	Animator *animator;     // Controls animation.
 	void init_field(unsigned char ty);
-	static Egg_object *create_egg(bool animated,
+	static Egg_object_shared create_egg(bool animated,
 	                              int shnum, int frnum, unsigned int tx,
 	                              unsigned int ty, unsigned int tz,
 	                              unsigned short itype,
@@ -108,7 +110,7 @@ public:
 	    external_criteria = 7   // Appears on Isle of Avatar.  Guessing
 	                        //   these set off all nearby.
 	};
-	static Egg_object *create_egg(unsigned char *entry, int entlen,
+	static Egg_object_shared create_egg(unsigned char *entry, int entlen,
 	                              bool animated, int shnum, int frnum, unsigned int tx,
 	                              unsigned int ty, unsigned int tz);
 	// Create normal eggs.
@@ -168,7 +170,7 @@ public:
 	// Move to new abs. location.
 	virtual void move(int newtx, int newty, int newlift, int newmap = -1);
 	// Remove/delete this object.
-	virtual void remove_this(int nodel = 0);
+	virtual void remove_this(Game_object_shared *keep = 0);
 	virtual int is_egg() const { // An egg?
 		return 1;
 	}
@@ -186,7 +188,6 @@ public:
 	}
 
 };
-
 
 /*
  *  Fields are activated like eggs.

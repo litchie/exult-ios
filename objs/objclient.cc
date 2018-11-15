@@ -18,6 +18,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#if 0 /* ++++++GOES AWAY */
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
@@ -66,3 +67,4 @@ void Object_client::object_gone(Game_object *obj) {
 		}
 	}
 }
+#endif /* ++++++GOES AWAY */

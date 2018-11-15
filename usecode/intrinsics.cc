@@ -531,15 +531,16 @@ USECODE_INTRINSIC(set_last_created) {
 	// Take itemref off map and set last_created to it.
 	Game_object *obj = get_item(parms[0]);
 	// Don't do it for same object if already there.
-	for (vector<Game_object *>::const_iterator it = last_created.begin();
+	for (vector<Game_object_shared>::const_iterator it = last_created.begin();
 	        it != last_created.end(); ++it)
-		if (*it == obj)
+		if ((*it).get() == obj)
 			return Usecode_value(0);
 	modified_map = true;
+	Game_object_shared keep;
 	if (obj) {
 		add_dirty(obj);     // Set to repaint area.
-		last_created.push_back(obj);
-		obj->remove_this(1);    // Remove, but don't delete.
+		last_created.push_back(obj->shared_from_this());
+		obj->remove_this(&keep);    // Remove, but don't delete.
 	}
 	Usecode_value u(obj);
 	return(u);
@@ -555,7 +556,7 @@ USECODE_INTRINSIC(update_last_created) {
 		Usecode_value u(static_cast<Game_object *>(NULL));
 		return(u);
 	}
-	Game_object *obj = last_created.back();
+	Game_object_shared obj = last_created.back();
 	last_created.pop_back();
 	obj->set_invalid();     // It's already been removed.
 	Usecode_value &arr = parms[0];
@@ -955,7 +956,7 @@ USECODE_INTRINSIC(give_last_created) {
 	int ret = 0;
 	if (cont && !last_created.empty()) {
 		// Get object, but don't pop yet.
-		Game_object *obj = last_created.back();
+		Game_object *obj = last_created.back().get();
 		// Might not have been removed from world yet.
 		if (!obj->get_owner() && obj->is_pos_invalid())
 			// Don't check vol.  Causes failures.
@@ -1094,7 +1095,8 @@ USECODE_INTRINSIC(remove_npc) {
 		if (npc->get_ident() == Schedule::follow_avatar)
 			npc->set_ident(0);
 		gwin->add_dirty(npc);
-		npc->remove_this(1);    // Remove, but don't delete.
+		Game_object_shared keep;
+		npc->remove_this(&keep);    // Remove, but don't delete.
 	}
 	return (no_ret);
 }
@@ -1847,13 +1849,14 @@ USECODE_INTRINSIC(mark_virtue_stone) {
 
 USECODE_INTRINSIC(recall_virtue_stone) {
 	Game_object *obj = get_item(parms[0]);
+	Game_object_shared keep;
 	Virtue_stone_object *vs = dynamic_cast<Virtue_stone_object *>(obj);
 	if (vs) {
 		gumpman->close_all_gumps();
 		// Pick it up if necessary.
 		if (!obj->get_owner()) {
 			// Go through whole party.
-			obj->remove_this(1);
+			obj->remove_this(&keep);
 			Usecode_value party = get_party();
 			int cnt = party.get_array_size();
 			int i;
@@ -1953,7 +1956,7 @@ USECODE_INTRINSIC(set_orrery) {
 				p->remove_this();
 		}
 		for (int frame = 0; frame <= 7; ++frame) {
-			Game_object *p = gmap->create_ireg_object(988, frame);
+			Game_object_shared p = gmap->create_ireg_object(988, frame);
 			p->move(pos.tx + offsets[state][frame][0],
 			        pos.ty + offsets[state][frame][1], pos.tz);
 		}
@@ -3170,7 +3173,7 @@ USECODE_INTRINSIC(remove_from_area) {
 	        it != vec.end(); ++it) {
 		Game_object *obj = *it;
 		gwin->add_dirty(obj);
-		obj->remove_this(0);
+		obj->remove_this();
 	}
 	return no_ret;
 }
@@ -3422,7 +3425,7 @@ USECODE_INTRINSIC(create_barge_object) {
 
 	b->set_invalid();       // Not in world yet.
 	b->set_flag(Obj_flags::okay_to_take);
-	last_created.push_back(b);
+	last_created.push_back(b->shared_from_this());
 
 	Usecode_value u(b);
 	return(u);

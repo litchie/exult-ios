@@ -63,7 +63,7 @@ public:
 		move(t.tx, t.ty, t.tz, newmap);
 	}
 	// Remove/delete this object.
-	virtual void remove_this(int nodel = 0);
+	virtual void remove_this(Game_object_shared *keep = 0);
 	virtual Container_game_object *get_owner() const {
 		return owner;
 	}
@@ -125,5 +125,6 @@ public:
 		lowlift = l;
 	};
 };
+typedef std::shared_ptr<Ireg_game_object> Ireg_game_object_shared;
 
 #endif

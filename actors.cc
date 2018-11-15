@@ -415,9 +415,12 @@ void Actor::swap_ammo(
 	Game_object *aobj = get_readied(quiver);
 	if (aobj == newammo)
 		return;         // Already what we need.
-	if (aobj)           // Something there already?
-		aobj->remove_this(1);   // Remove it.
-	newammo->remove_this(1);
+						// Keep these from getting deleted:
+    Game_object_shared aobj_shared, newammo_shared;
+    if (aobj) {           // Something there already?
+		aobj->remove_this(&aobj_shared);   // Remove it.
+	}
+	newammo->remove_this(&newammo_shared);
 	add(newammo, 1);        // Should go to the right place.
 	if (aobj)           // Put back old ammo.
 		add(aobj, 1);
@@ -513,9 +516,10 @@ bool Actor::ready_best_shield(
 			return inf.get_armor() || inf.get_armor_immunity();
 	}
 	Game_object *old_rhand = 0;
+	Game_object_shared rhand_keep, best_keep;
 	if (spots[rhand]) {     // remove old offhand item
 		old_rhand = spots[rhand];
-		old_rhand->remove_this(1);
+		old_rhand->remove_this(&rhand_keep);
 	}
 	Game_object_vector vec;     // Get list of all possessions.
 	vec.reserve(50);
@@ -549,7 +553,7 @@ bool Actor::ready_best_shield(
 		return false;
 	}
 	// Spot is free already.
-	best->remove_this(1);
+	best->remove_this(&best_keep);
 	add(best, 1);           // Should go to the right place.
 	if (old_rhand && old_rhand != best) // don't add twice
 		add(old_rhand, 1);
@@ -580,7 +584,9 @@ bool Actor::ready_best_weapon(
 	Game_object_vector vec;     // Get list of all possessions.
 	vec.reserve(50);
 	get_objects(vec, c_any_shapenum, c_any_qual, c_any_framenum);
-	Game_object *best = 0, *best_ammo = 0;
+	Game_object *best = NULL;
+	Game_object *best_ammo = 0;
+	Game_object_shared keep1, keep2, best_keep;
 	int best_strength = -20;
 	int wtype = backpack;
 	for (Game_object_vector::const_iterator it = vec.begin();
@@ -613,20 +619,20 @@ bool Actor::ready_best_weapon(
 		return false;
 	}
 	// If nothing is in left hand, nothing will happen.
-	Game_object *remove1 = spots[lhand], *remove2 = 0;
-	if (wtype == both_hands)
+	Game_object* remove1 = spots[lhand], *remove2 = NULL;
+	if (wtype == both_hands && spots[rhand])
 		remove2 = spots[rhand];
 	// Prevent double removal and double add (can corrupt objects list).
 	// No need for similar check for remove1 as we wouldn't be here
 	// if remove1 were a weapon we could use.
 	if (remove2 == best)
-		remove2 = 0;
+		remove2 = nullptr;
 	// Free the spot(s).
 	if (remove1)
-		remove1->remove_this(1);
+		remove1->remove_this(&keep1);
 	if (remove2)
-		remove2->remove_this(1);
-	best->remove_this(1);
+		remove2->remove_this(&keep2);
+	best->remove_this(&best_keep);
 	if (wtype == rhand) // tell it the correct ready spot
 		add_readied(best, lhand);
 	else
@@ -646,13 +652,14 @@ bool Actor::ready_best_weapon(
  */
 
 bool Actor::empty_hand(
-    Game_object *obj
+    Game_object *obj,
+    Game_object_shared *keep
 ) {
 	if (!obj)
 		return true;
 	static int chkspots[] = {belt, backpack};
 	add_dirty();
-	obj->remove_this(1);
+	obj->remove_this(keep);
 	for (size_t i = 0; i < array_size(chkspots); i++)
 		if (add_readied(obj, chkspots[i], true, true))      // Slot free?
 			return true;
@@ -667,10 +674,11 @@ bool Actor::empty_hand(
 void Actor::empty_hands(
 ) {
 	Game_object *obj = spots[lhand];
-	if (!empty_hand(obj))
+	Game_object_shared keep;
+	if (!empty_hand(obj, &keep))
 		add(obj, true);
 	obj = spots[rhand];
-	if (!empty_hand(obj))
+	if (!empty_hand(obj, &keep))
 		add(obj, true);
 }
 
@@ -847,7 +855,8 @@ inline void Actor::movef(
     int new_sx, int new_sy, int new_frame,
     int new_lift
 ) {
-	if (old_chunk)          // Remove from current chunk.
+    Game_object_shared keep = shared_from_this();
+    if (old_chunk)          // Remove from current chunk.
 		old_chunk->remove(this);
 	set_shape_pos(new_sx, new_sy);
 	if (new_frame >= 0)
@@ -1196,17 +1205,6 @@ void Actor::purge_deleted_actions() {
 		deletedactions.pop_back();
 		delete act;
 	}
-}
-
-/*
- *  Notify scheduler that an object it may be using has disappeared.
- */
-
-void Actor::notify_object_gone(
-    Game_object *obj
-) {
-	if (schedule)
-		schedule->object_gone(obj);
 }
 
 /*
@@ -2773,7 +2771,7 @@ int Actor::reduce_health(
 #endif
 	        && find_nearby(vec, blood, 1, 0) < 2) {
 		// Create blood where actor stands.
-		Game_object *bobj = gmap->create_ireg_object(blood, 0);
+		Game_object_shared bobj = gmap->create_ireg_object(blood, 0);
 		bobj->set_flag(Obj_flags::is_temporary);
 		bobj->move(get_tile());
 	}
@@ -4112,6 +4110,7 @@ void Actor::die(
 		lay_down(true);
 #endif
 
+	std::shared_ptr<Dead_body> body_keep;
 	Dead_body *body;        // See if we need a body.
 	if (info.has_body_info() && (!minfo || !minfo->has_no_body())) {
 		// Get body shape/frame.
@@ -4123,8 +4122,9 @@ void Actor::die(
 		body = new Dead_body(shnum, frnum, 0, 0, 0,
 		                     npc_num > 0 ? npc_num : -1);
 #else
-		body = new Dead_body(shnum, 0, 0, 0, 0,
+		body_keep = std::make_shared<Dead_body>(shnum, 0, 0, 0, 0,
 		                     npc_num > 0 ? npc_num : -1);
+		body = body_keep.get();
 		Shape_frame *shp;
 		if ((shp = body->get_shape()) != 0 && shp->is_empty()) {
 			// Note: only do this if target shape is an actual
@@ -4147,7 +4147,8 @@ void Actor::die(
 			body->set_flag(Obj_flags::is_temporary);
 		// Remove NPC from map to prevent the body
 		// from colliding with it.
-		Game_object::remove_this(1);
+		Game_object_shared keep_this;
+		Game_object::remove_this(&keep_this);
 		int old_body_frame = body->get_framenum();	// Fix for #1925
 		body->set_frame(frnum);			// Fix for #1925
 		Shape_info &binf = body->get_info();
@@ -4719,12 +4720,6 @@ Npc_actor::Npc_actor(
 
 Npc_actor::~Npc_actor(
 ) {
-	// If we are here, then the NPC is being deleted due to the map being
-	// deleted. This means that objects all around are being deleted.
-	// So we **CANNOT** let the schedule, if any, notify anything that it
-	// no longer needs it. The schedule itself if destroyed in Actor::~Actor.
-	if (schedule)
-		schedule->kill_client_list();
 	delete [] schedules;
 }
 
@@ -5120,7 +5115,7 @@ int Npc_actor::step(
  */
 
 void Npc_actor::remove_this(
-    int nodel           // 1 to not delete.
+    Game_object_shared *keep     // Non-null to not delete.
 ) {
 	set_action(0);
 //	delete schedule; // Problems in SI monster creation.
@@ -5130,10 +5125,10 @@ void Npc_actor::remove_this(
 	gwin->remove_nearby_npc(this);  // Remove from nearby list.
 	// Store old chunk list.
 	Map_chunk *olist = get_chunk();
-	Actor::remove_this(1);  // Remove, but don't ever delete an NPC
+	Actor::remove_this(keep);  // Remove, but don't ever delete an NPC
 	Npc_actor::switched_chunks(olist, 0);
 	set_invalid();
-	if (!nodel && npc_num > 0)  // Really going?
+	if (!keep && npc_num > 0)  // Really going?
 		unused = true;      // Mark unused if a numbered NPC.
 }
 

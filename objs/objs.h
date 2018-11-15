@@ -24,6 +24,7 @@
 
 #include <string>   // STL string
 #include <set>
+#include <memory>
 #include "exult_constants.h"
 #include "common_types.h"
 #include "flags.h"
@@ -57,12 +58,16 @@ class T_Object_list;
 typedef std::vector<Game_object *>   Game_object_vector;
 typedef std::vector<Egg_object *>    Egg_vector;
 typedef std::vector<Actor *>     Actor_vector;
+typedef std::shared_ptr<Game_object> Game_object_shared;
+typedef std::weak_ptr<Game_object> Game_object_weak;
+typedef std::vector<Game_object_shared>   Game_object_shared_vector;
 
 /*
  *  A game object is a shape from shapes.vga along with info. about its
  *  position within its chunk.
  */
-class Game_object : public ShapeID {
+class Game_object : public ShapeID,
+	  			  public std::enable_shared_from_this<Game_object> {
 protected:
 	static Game_object *editing;    // Obj. being edited by ExultStudio.
 	Map_chunk *chunk;       // Chunk we're in, or NULL.
@@ -74,9 +79,9 @@ protected:
 	short quality;          // Some sort of game attribute.
 	int get_cxi() const;
 	int get_cyi() const;
-	void remove_clients();
 private:
-	Game_object *next, *prev;   // ->next in chunk list or container.
+	Game_object_shared next;   // ->next in chunk list or container.
+    Game_object *prev;
 public:
 	typedef std::set<Game_object *> Game_object_set;
 private:
@@ -88,10 +93,10 @@ private:
 public:
 	uint32 render_seq;      // Render sequence #.
 public:
-	friend class T_Object_list<Game_object *>;
-	friend class T_Object_iterator<Game_object *>;
-	friend class T_Flat_object_iterator<Game_object *, Map_chunk *>;
-	friend class T_Object_iterator_backwards < Game_object *,
+	friend class T_Object_list<Game_object>;
+	friend class T_Object_iterator<Game_object>;
+	friend class T_Flat_object_iterator<Game_object, Map_chunk *>;
+	friend class T_Object_iterator_backwards < Game_object,
 			Map_chunk * >;
 	friend class Map_chunk;
 	Game_object(int shapenum, int framenum, unsigned int tilex,
@@ -101,13 +106,17 @@ public:
 	{  }
 	// Copy constructor.
 	Game_object(const Game_object &obj2)
-		: ShapeID(obj2), chunk(obj2.chunk), tx(obj2.tx), ty(obj2.ty),
+		: ShapeID(obj2), std::enable_shared_from_this<Game_object>(),
+		  chunk(obj2.chunk), tx(obj2.tx), ty(obj2.ty),
 		  lift(obj2.lift), quality(obj2.quality), render_seq(0)
 	{  }
 	Game_object() : ShapeID(), chunk(0), render_seq(0)  // Create fake entry.
 	{  }
 	virtual ~Game_object()
 	{  }
+    Game_object_weak weak_from_this() {
+	    return std::weak_ptr<Game_object>(shared_from_this());
+	}
 	int get_tx() const {    // Get tile (0-15) within chunk.
 		return tx;
 	}
@@ -158,7 +167,7 @@ public:
 		lift = l;
 	}
 	Game_object *get_next() {
-		return next;
+		return next.get();
 	}
 	Game_object *get_prev() {
 		return prev;
@@ -191,8 +200,6 @@ public:
 	void move(Tile_coord const &t, int newmap = -1) {
 		move(t.tx, t.ty, t.tz, newmap);
 	}
-	bool add_client(Object_client *c);
-	void remove_client(Object_client *c);
 	void change_frame(int frnum);   // Change frame & set to repaint.
 	// Swap positions.
 	int swap_positions(Game_object *obj2);
@@ -285,7 +292,7 @@ public:
 	static void update_from_studio(unsigned char *data, int datalen);
 	virtual std::string get_name() const;
 	// Remove/delete this object.
-	virtual void remove_this(int nodel = 0);
+	virtual void remove_this(Game_object_shared *keep = 0);
 	virtual Container_game_object *get_owner() const {
 		return 0;
 	}
@@ -449,6 +456,13 @@ public:
 	virtual bool set_usecode(int funid, const char *nm = 0);
 };
 
+inline Game_object *obj_from_weak(Game_object_weak wobj) {
+    return wobj.expired() ? nullptr : wobj.lock().get();
+}
+inline Game_object_weak weak_from_obj(Game_object *obj) {
+    return obj ? obj->weak_from_this() : Game_object_weak();
+}
+
 /*
  *  Object from U7chunks.
  */
@@ -467,7 +481,7 @@ public:
 	// Move to new abs. location.
 	virtual void move(int newtx, int newty, int newlift, int newmap = -1);
 	// Remove/delete this object.
-	virtual void remove_this(int nodel = 0);
+	virtual void remove_this(Game_object_shared *keep = 0);
 	virtual void paint_terrain();
 };
 
@@ -484,7 +498,7 @@ public:
 	// Move to new abs. location.
 	virtual void move(int newtx, int newty, int newlift, int newmap = -1);
 	// Remove/delete this object.
-	virtual void remove_this(int nodel = 0);
+	virtual void remove_this(Game_object_shared *keep = 0);
 	virtual void paint_terrain() {  }
 	virtual void write_ifix(DataSource *ifix, bool v2);
 };

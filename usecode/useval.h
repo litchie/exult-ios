@@ -31,6 +31,8 @@
 #include <cstring>
 #include <cstdlib>
 
+#include "objs.h"
+
 class Game_object;
 class Usecode_class_symbol;
 
@@ -49,7 +51,8 @@ public:
 	};
 private:
 	Val_type type;      // Type stored here.
-	union {
+	Game_object_shared keep_ptr;
+    union {
 		long intval;
 		char *str;
 		struct {
@@ -80,7 +83,13 @@ public:
 			value.array.elems[0] = *elem0;
 	}
 	Usecode_value(Game_object *ptr) : type(pointer_type), undefined(false) {
-		value.ptr = ptr;
+	    value.ptr = ptr;
+	    keep_ptr = ptr ? ptr->shared_from_this() : nullptr;
+	}
+    Usecode_value(Game_object_shared ptr) :
+									 type(pointer_type), undefined(false) {
+	    value.ptr = ptr.get();
+	    keep_ptr = ptr;
 	}
 	Usecode_value(Usecode_class_symbol *ptr) : type(class_sym_type),
 		undefined(false) {

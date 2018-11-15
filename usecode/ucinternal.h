@@ -81,7 +81,7 @@ class Usecode_internal : public Usecode_machine {
 	int speech_track;       // Set/read by some intrinsics.
 	Text_gump *book;        // Book/scroll being displayed.
 	Game_object *caller_item;   // Item this is being called on.
-	vector<Game_object *> last_created; // Stack of last items created with
+	vector<Game_object_shared> last_created; // Stack of last items created with
 	//   intrins. x24.
 	Actor *path_npc;        // Last NPC in path_run_usecode().
 	const char *user_choice;    // String user clicked on.

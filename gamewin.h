@@ -31,6 +31,7 @@
 
 #include <string>   // STL string
 #include <vector>
+#include <memory>
 
 #define RED_PLASMA  1
 
@@ -85,6 +86,7 @@ class ShapeID;
 class Shape_info;
 class Game_render;
 class Effects_manager;
+typedef std::shared_ptr<Game_object> Game_object_shared;
 
 using std::vector;
 
@@ -128,9 +130,8 @@ class Game_window {
 	Barge_object *moving_barge; // ->cart/ship that's moving, or 0.
 	Main_actor *main_actor;     // Main sprite to move around.
 	Actor *camera_actor;        // What to center view around.
-	vector<Actor *> npcs;       // Array of NPC's + the Avatar.
+	vector<Game_object_shared> npcs;  // Array of NPC's + the Avatar.
 	vector<Dead_body *> bodies; // Corresponding Dead_body's.
-	Deleted_objects *removed;   // List of 'removed' objects.
 	// Rendering info:
 	int scrolltx, scrollty;     // Top-left tile of screen.
 	Rectangle scroll_bounds;    // Walking outside this scrolls.
@@ -422,10 +423,7 @@ public:
 	void set_std_delay(int msecs) {
 		std_delay = msecs;
 	}
-	inline Actor *get_npc(long npc_num) const {
-		return (npc_num >= 0 && npc_num < static_cast<int>(npcs.size())) ?
-		       npcs[npc_num] : 0;
-	}
+	Actor *get_npc(long npc_num) const;
 	void locate_npc(int npc_num);
 	void set_body(int npc_num, Dead_body *body) {
 		if (npc_num >= static_cast<int>(bodies.size()))
@@ -648,7 +646,6 @@ public:
 	void paused_combat_select(int x, int y);
 	ShapeID get_flat(int x, int y); // Return terrain (x, y) is in.
 	// Schedule object for deletion.
-	void delete_object(Game_object *obj);
 	// Handle a double-click in window.
 	void double_clicked(int x, int y);
 	bool start_dragging(int x, int y);

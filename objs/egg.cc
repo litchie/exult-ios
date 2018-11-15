@@ -235,13 +235,13 @@ public:
 				create_monster(minf);
 		} else {        // Create item.
 			Shape_info &info = ShapeID::get_info(mshape);
-			Game_object *nobj = get_map()->create_ireg_object(info,
+			Game_object_shared nobj = get_map()->create_ireg_object(info,
 			                    mshape, mframe, get_tx(), get_ty(), get_lift());
 			if (nobj->is_egg())
 				chunk->add_egg(nobj->as_egg());
 			else
-				chunk->add(nobj);
-			gwin->add_dirty(nobj);
+				chunk->add(nobj.get());
+			gwin->add_dirty(nobj.get());
 			nobj->set_flag(Obj_flags::okay_to_take);
 			// Objects are created temporary
 			nobj->set_flag(Obj_flags::is_temporary);
@@ -314,13 +314,13 @@ public:
 			delete launcher;
 		}
 	}
-	virtual void remove_this(int nodel) {
+	virtual void remove_this(Game_object_shared *keep) {
 		if (launcher) {     // Stop missiles.
 			gwin->get_tqueue()->remove(launcher);
 			delete launcher;
 			launcher = 0;
 		}
-		Egg_object::remove_this(nodel);
+		Egg_object::remove_this(keep);
 	}
 	virtual void paint() {
 		// Make sure launcher is active.
@@ -455,7 +455,7 @@ public:
  *  Create an "egg" from Ireg data.
  */
 
-Egg_object *Egg_object::create_egg(
+Egg_object_shared Egg_object::create_egg(
     unsigned char *entry,       // 12+ byte ireg entry.
     int entlen,
     bool animated,
@@ -474,7 +474,7 @@ Egg_object *Egg_object::create_egg(
 	                  data1, data2, data3);
 }
 
-Egg_object *Egg_object::create_egg(
+Egg_object_shared Egg_object::create_egg(
     bool animated,
     int shnum, int frnum,
     unsigned int tx, unsigned int ty, unsigned int tz,
@@ -488,56 +488,56 @@ Egg_object *Egg_object::create_egg(
 	if (type == teleport && frnum == 6 && shnum == 275)
 		type = path;        // (Mountains N. of Vesper).
 
-	Egg_object *obj = 0;
+	Egg_object_shared obj;
 	switch (type) {     // The type:
 	case monster:
-		obj = new Monster_egg(shnum, frnum, tx, ty, tz, itype, prob,
+		obj = std::make_shared<Monster_egg>(shnum, frnum, tx, ty, tz, itype, prob,
 		                      data1, data2, data3);
 		break;
 	case jukebox:
-		obj = new Jukebox_egg(shnum, frnum, tx, ty, tz, itype, prob,
+		obj = std::make_shared<Jukebox_egg>(shnum, frnum, tx, ty, tz, itype, prob,
 		                      data1);
 		break;
 	case soundsfx:
-		obj = new Soundsfx_egg(shnum, frnum, tx, ty, tz, itype, prob,
+		obj = std::make_shared<Soundsfx_egg>(shnum, frnum, tx, ty, tz, itype, prob,
 		                       data1);
 		break;
 	case voice:
-		obj = new Voice_egg(shnum, frnum, tx, ty, tz, itype, prob,
+		obj = std::make_shared<Voice_egg>(shnum, frnum, tx, ty, tz, itype, prob,
 		                    data1);
 		break;
 	case usecode:
-		obj = new Usecode_egg(shnum, frnum, tx, ty, tz, itype, prob,
+		obj = std::make_shared<Usecode_egg>(shnum, frnum, tx, ty, tz, itype, prob,
 		                      data1, data2, str1);
 		break;
 	case missile:
-		obj = new Missile_egg(shnum, frnum, tx, ty, tz, itype, prob,
+		obj = std::make_shared<Missile_egg>(shnum, frnum, tx, ty, tz, itype, prob,
 		                      data1, data2);
 		break;
 	case teleport:
 	case intermap:
-		obj = new Teleport_egg(shnum, frnum, tx, ty, tz, itype, prob,
+		obj = std::make_shared<Teleport_egg>(shnum, frnum, tx, ty, tz, itype, prob,
 		                       data1, data2, data3);
 		break;
 	case weather:
-		obj = new Weather_egg(shnum, frnum, tx, ty, tz, itype, prob,
+		obj = std::make_shared<Weather_egg>(shnum, frnum, tx, ty, tz, itype, prob,
 		                      data1, data2);
 		break;
 	case path:
-		obj = new Path_egg(shnum, frnum, tx, ty, tz, itype, prob,
+		obj = std::make_shared<Path_egg>(shnum, frnum, tx, ty, tz, itype, prob,
 		                   data1, data2);
 		break;
 	case button:
-		obj = new Button_egg(shnum, frnum, tx, ty, tz, itype, prob,
+		obj = std::make_shared<Button_egg>(shnum, frnum, tx, ty, tz, itype, prob,
 		                     data1, data2);
 		break;
 	default:
 		cerr << "Illegal egg itype:  " << type << endl;
-		obj = new Egg_object(shnum, frnum, tx, ty, tz, itype, prob,
-		                     data1, data2, data3);
+		obj = std::make_shared<Egg_object>(shnum, frnum, tx, ty, tz, itype,
+			  									  prob, data1, data2, data3);
 	}
 	if (animated)
-		obj->set_animator(new Frame_animator(obj));
+		obj->set_animator(new Frame_animator(obj.get()));
 	return (obj);
 }
 
@@ -967,18 +967,18 @@ void Egg_object::update_from_studio(
 
 	Shape_info &info = ShapeID::get_info(shape);
 	bool anim = info.is_animated() || info.has_sfx();
-	Egg_object *egg = create_egg(anim, shape, frame, tx, ty, tz, type,
+	Egg_object_shared egg = create_egg(anim, shape, frame, tx, ty, tz, type,
 	                             probability, data1, data2, data3, str1.c_str());
 	if (!oldegg) {
 		int lift;       // Try to drop at increasing hts.
 		for (lift = 0; lift < 12; lift++)
-			if (gwin->drop_at_lift(egg, x, y, lift) == 1)
+			if (gwin->drop_at_lift(egg.get(), x, y, lift) == 1)
 				break;
 		if (lift == 12) {
 			if (client_socket >= 0)
 				Exult_server::Send_data(client_socket,
 				                        Exult_server::cancel);
-			delete egg;
+			egg = nullptr;
 			return;
 		}
 		if (client_socket >= 0)
@@ -988,7 +988,7 @@ void Egg_object::update_from_studio(
 		Tile_coord pos = oldegg->get_tile();
 		egg->move(pos.tx, pos.ty, pos.tz);
 	}
-	gwin->add_dirty(egg);
+	gwin->add_dirty(egg.get());
 	egg->criteria = criteria & 7;
 	egg->distance = distance & 31;
 	egg->probability = probability;
@@ -1000,8 +1000,8 @@ void Egg_object::update_from_studio(
 	if (oldegg)
 		oldegg->remove_this();
 	Map_chunk *echunk = egg->get_chunk();
-	echunk->remove_egg(egg);    // Got to add it back.
-	echunk->add_egg(egg);
+	echunk->remove_egg(egg.get());    // Got to add it back.
+	echunk->add_egg(egg.get());
 	cout << "Egg updated" << endl;
 #else
 	ignore_unused_variable_warning(data, datalen);
@@ -1048,9 +1048,12 @@ void Egg_object::hatch(
 	int roll = must ? 0 : 1 + rand() % 100;
 	if (roll <= probability) {
 		// Time to hatch the egg.
+		// Watch it in case it gets deleted.
+		Game_object_weak watch = weak_from_this();;
 		hatch_now(obj, must);
 		if (flags & (1 << static_cast<int>(once))) {
-			remove_this(0);
+		    if (!watch.expired())
+			    remove_this(0);
 			return;
 		}
 	}
@@ -1138,7 +1141,8 @@ void Egg_object::move(
 	Map_chunk *newchunk = eggmap->get_chunk_safely(newcx, newcy);
 	if (!newchunk)
 		return;         // Bad loc.
-	remove_this(1);         // Remove from old.
+	Game_object_shared keep;
+	remove_this(&keep);         // Remove from old.
 	set_lift(newlift);      // Set new values.
 	set_shape_pos(newtx % c_tiles_per_chunk, newty % c_tiles_per_chunk);
 	newchunk->add_egg(this);    // Updates cx, cy.
@@ -1150,8 +1154,10 @@ void Egg_object::move(
  */
 
 void Egg_object::remove_this(
-    int nodel                       // 1 to not delete.
+    Game_object_shared *keep     // Non-null to not delete.
 ) {
+    if (keep)
+	    *keep = shared_from_this();
 	if (get_owner())        // Watch for this.
 		get_owner()->remove(this);
 	else {
@@ -1160,8 +1166,6 @@ void Egg_object::remove_this(
 			chunk->remove_egg(this);
 		}
 	}
-	if (!nodel)
-		gwin->delete_object(this);
 }
 
 /*

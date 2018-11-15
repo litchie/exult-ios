@@ -67,14 +67,13 @@ static inline bool Get_sfx_out_of_range(
  */
 
 Object_sfx::Object_sfx(Game_object *o, int s, int delay)
-	: obj(o), sfx(s), channel(-1) {
-	add_client(obj);
+	: obj(weak_from_obj(o)), sfx(s), channel(-1) {
 	if (!delay) {
 		// Start right now -- so that usecode sounds will play when intended
 		// (e.g., books). We *really* don't want to call handle_event here
 		// since it can delete the object (e.g., if it is out of range),
 		// resulting in undefined behavior.
-		Game_object *outer = obj->get_outermost();
+		Game_object *outer = o->get_outermost();
 		last_pos = outer->get_center_tile();
 
 		int volume = AUDIO_MAX_VOLUME;  // Set volume based on distance.
@@ -100,7 +99,6 @@ void Object_sfx::stop() {
 	while (gwin->get_tqueue()->remove(this))
 		;
 	stop_playing();
-	remove_clients();
 	delete this;
 }
 
@@ -108,21 +106,7 @@ void Object_sfx::dequeue() {
 	Time_sensitive::dequeue();
 	if (!in_queue()) {
 		stop_playing();
-		remove_clients();
 		delete this;
-	}
-}
-
-void Object_sfx::notify_object_gone(Game_object *o) {
-	if (obj == o) {
-		kill_client_list();
-		Game_object *outer = obj->get_outermost();
-		if (outer == obj)
-			obj = 0;    // Use last_pos.
-		else {
-			obj = outer;
-			add_client(obj);
-		}
 	}
 }
 
@@ -135,9 +119,9 @@ void Object_sfx::handle_event(
 	//AudioMixer *mixer = AudioMixer::get_instance();
 	//bool active = channel != -1 ? mixer->isPlaying(channel) : false;
 
-	Game_object *outer;
-	if (obj) {
-		outer = obj->get_outermost();
+	Game_object *outer, *obj_ptr = obj_from_weak(obj);
+	if (obj_ptr) {
+		outer = obj_ptr->get_outermost();
 		last_pos = outer->get_center_tile();
 	} else
 		outer = 0;

@@ -53,7 +53,9 @@ using std::ofstream;
 void Game_window::read_npcs(
 ) {
 	npcs.resize(1);         // Create main actor.
-	camera_actor = npcs[0] = main_actor = new Main_actor("", 0);
+	Main_actor_shared ava = std::make_shared<Main_actor>("", 0);
+	npcs[0] = ava;
+	camera_actor = main_actor = ava.get();
 	ifstream nfile_stream;
 	StreamDataSource nfile(&nfile_stream);
 	int num_npcs;
@@ -80,14 +82,16 @@ void Game_window::read_npcs(
 	// Don't like it... no i don't.
 	center_view(main_actor->get_tile());
 	for (i = 1; i < num_npcs; i++) { // Create the rest.
-		npcs[i] = new Npc_actor("", 0);
-		npcs[i]->read(&nfile, i, i < num_npcs1, fix_unused);
-		if (npcs[i]->is_unused()) {
+		npcs[i] = std::make_shared<Npc_actor>("", 0);
+		Actor *npc = static_cast<Actor *>(npcs[i].get());
+		npc->read(&nfile, i, i < num_npcs1, fix_unused);
+		if (npc->is_unused()) {
 			// Not part of the game.
-			npcs[i]->remove_this(1);
-			npcs[i]->set_schedule_type(Schedule::wait);
+			Game_object_shared keep;
+			npc->remove_this(&keep);
+			npc->set_schedule_type(Schedule::wait);
 		} else
-			npcs[i]->restore_schedule();
+			npc->restore_schedule();
 		CYCLE_RED_PLASMA();
 	}
 	nfile_stream.close();
@@ -108,7 +112,9 @@ void Game_window::read_npcs(
 			ShapeID sid(shnum, 0);
 			if (!okay || sid.get_num_frames() < 16)
 				break;  // Watch for corrupted file.
-			Monster_actor *act = Monster_actor::create(shnum);
+			Game_object_shared new_monster = Monster_actor::create(shnum);
+			Monster_actor *act =
+						  static_cast<Monster_actor *>(new_monster.get());
 			act->read(&nfile, -1, false, fix_unused);
 			act->set_schedule_loc(act->get_tile());
 			act->restore_schedule();
@@ -147,7 +153,7 @@ void Game_window::write_npcs(
 	int i;
 	std::cout << "NPC write " << std::endl;
 	for (i = 0; i < num_npcs; i++)
-		npcs[i]->write(&nfile);
+		get_npc(i)->write(&nfile);
 	nfile_stream.flush();
 	bool result = nfile_stream.good();
 	if (!result)
@@ -278,7 +284,7 @@ void Game_window::read_schedules(
 
 	for (i = 0; i < num_npcs - 1; i++) { // Do each NPC, except Avatar.
 		// Avatar isn't included here.
-		Actor *npc = npcs[i + 1];
+		Actor *npc = get_npc(i + 1);
 		Read_a_schedule(sfile, i + 1, npc, entsize, offsets);
 		CYCLE_RED_PLASMA();
 	}
@@ -312,7 +318,7 @@ void Game_window::write_schedules() {
 	sfile.write2(0);        // First offset
 
 	for (i = 1; i < num; i++) { // write offsets with list of scheds.
-		npcs[i]->get_schedules(schedules, cnt);
+		get_npc(i)->get_schedules(schedules, cnt);
 		offset += cnt;
 		sfile.write2(offset);
 	}
@@ -330,7 +336,7 @@ void Game_window::write_schedules() {
 		}
 	}
 	for (i = 1; i < num; i++) { // Do each NPC, except Avatar.
-		npcs[i]->get_schedules(schedules, cnt);
+		get_npc(i)->get_schedules(schedules, cnt);
 		for (int j = 0; j < cnt; j++) {
 			unsigned char ent[20];
 			schedules[j].write8(ent);

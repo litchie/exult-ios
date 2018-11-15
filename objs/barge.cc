@@ -440,7 +440,8 @@ void Barge_object::turn_right(
 		Shape_info &info = obj->get_info();
 		positions[i] = Rotate90r(gwin, obj, info.get_3d_xtiles(frame),
 		                         info.get_3d_ytiles(frame), center);
-		obj->remove_this(1);    // Remove object from world.
+        Game_object_shared keep;
+		obj->remove_this(&keep);    // Remove object from world.
 		// Set to rotated frame.
 		obj->set_frame(obj->get_rotated_frame(1));
 		obj->set_invalid(); // So it gets added back right.
@@ -471,7 +472,8 @@ void Barge_object::turn_left(
 		Shape_info &info = obj->get_info();
 		positions[i] = Rotate90l(gwin, obj, info.get_3d_xtiles(frame),
 		                         info.get_3d_ytiles(frame), center);
-		obj->remove_this(1);    // Remove object from world.
+		Game_object_shared keep;
+		obj->remove_this(&keep);    // Remove object from world.
 		// Set to rotated frame.
 		obj->set_frame(obj->get_rotated_frame(3));
 		obj->set_invalid(); // So it gets added back right.
@@ -499,7 +501,8 @@ void Barge_object::turn_around(
 		Shape_info &info = obj->get_info();
 		positions[i] = Rotate180(gwin, obj, info.get_3d_xtiles(frame),
 		                         info.get_3d_ytiles(frame), center);
-		obj->remove_this(1);    // Remove object from world.
+		Game_object_shared keep;
+		obj->remove_this(&keep);    // Remove object from world.
 		// Set to rotated frame.
 		obj->set_frame(obj->get_rotated_frame(2));
 		obj->set_invalid(); // So it gets added back right.
@@ -623,7 +626,8 @@ void Barge_object::move(
 		                   (ot.tx + dx + c_num_tiles) % c_num_tiles,
 		                   (ot.ty + dy + c_num_tiles) % c_num_tiles,
 		                   ot.tz + dz);
-		obj->remove_this(1);    // Remove object from world.
+		Game_object_shared keep;
+		obj->remove_this(&keep);    // Remove object from world.
 		obj->set_invalid(); // So it gets added back right.
 		if (!taking_2nd_step) {
 			// Animate a few shapes.
@@ -649,7 +653,8 @@ void Barge_object::remove(
     Game_object *obj
 ) {
 	obj->set_owner(0);
-	obj->remove_this(1);        // Now remove from outside world.
+	Game_object_shared keep;	// +++++SHARED
+	obj->remove_this(&keep);        // Now remove from outside world.
 }
 
 /*

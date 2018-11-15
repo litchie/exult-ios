@@ -21,6 +21,7 @@
 #ifndef DELOBJS_H
 #define DELOBJS_H   1
 
+#if 0 /* NO LONGER USED. */
 #include <map>
 
 /*
@@ -53,4 +54,5 @@ public:
 	{  }
 };
 
+#endif
 #endif  /* DELOBJS_H */

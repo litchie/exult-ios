@@ -722,9 +722,10 @@ Frames_actor_action::Frames_actor_action(
     int c,              // Count.
     int spd,            // Frame delay in 1/1000 secs.
     Game_object *o
-) : cnt(c), index(0), speed(spd), obj(o) {
+) : cnt(c), index(0), speed(spd), obj(weak_from_obj(o)) {
 	frames = new signed char[cnt];
 	std::memcpy(frames, f, cnt);
+	use_actor = (o == NULL);
 }
 
 /**
@@ -735,9 +736,10 @@ Frames_actor_action::Frames_actor_action(
     char f,             // Frames.  -1 means don't change.
     int spd,            // Frame delay in 1/1000 secs.
     Game_object *o
-) : cnt(1), index(0), speed(spd), obj(o) {
+) : cnt(1), index(0), speed(spd), obj(weak_from_obj(o)) {
 	frames = new signed char[1];
 	frames[0] = f;
+	use_actor = (o == NULL);
 }
 
 /**
@@ -749,8 +751,8 @@ Frames_actor_action::Frames_actor_action(
 int Frames_actor_action::handle_event(
     Actor *actor
 ) {
-	Game_object *o = obj;
-	if (index == cnt)
+	Game_object *o = obj_from_weak(obj);
+	if (index == cnt || (!o && !use_actor))
 		return 0;       // Done.
 	int frnum = frames[index++];    // Get frame.
 	if (frnum >= 0) {
@@ -874,6 +876,7 @@ int Pickup_actor_action::handle_event(
     Actor *actor
 ) {
 	Game_window *gwin = Game_window::get_instance();
+	Game_object_shared keep;
 	int frnum = -1;
 	switch (cnt) {
 	case 0:             // Face object.
@@ -891,18 +894,17 @@ int Pickup_actor_action::handle_event(
 		if (pickup) {
 			if (actor->distance(obj) > 8) {
 				// No longer nearby.
-				actor->notify_object_gone(obj);
 				break;
 			}
 			gwin->add_dirty(obj);
 			if (to_del) {
 				obj->remove_this();		// Delete it.
 			} else {
-				obj->remove_this(1);
+				obj->remove_this(&keep);
 				actor->add(obj, true);
 			}
 		} else {
-			obj->remove_this(1);
+			obj->remove_this(&keep);
 			obj->move(objpos);
 			if (temp)
 				obj->set_flag(Obj_flags::is_temporary);

@@ -24,7 +24,6 @@
 #endif
 
 #include "objs.h"
-#include "objclient.h"
 #include "chunks.h"
 #include "objiter.h"
 #include "egg.h"
@@ -572,6 +571,7 @@ void Game_object::move(
 	if (!newchunk)
 		return;         // Bad loc.
 	Map_chunk *oldchunk = chunk;    // Remove from old.
+	Game_object_shared keep = shared_from_this();
 	if (oldchunk) {
 		gwin->add_dirty(this);  // Want to repaint old area.
 		oldchunk->remove(this);
@@ -581,31 +581,6 @@ void Game_object::move(
 	ty = newty % c_tiles_per_chunk;
 	newchunk->add(this);        // Updates 'chunk'.
 	gwin->add_dirty(this);      // And repaint new area.
-}
-
-/*
- *  Add/remove a client.
- */
-bool Game_object::add_client(
-    Object_client *c
-) {
-	for (vector<Object_client *>::iterator it = clients.begin();
-	        it != clients.end(); ++it)
-		if ((*it) == c)
-			return false;
-	clients.push_back(c);
-	return true;
-}
-
-void Game_object::remove_client(
-    Object_client *c
-) {
-	for (vector<Object_client *>::iterator it = clients.begin();
-	        it != clients.end(); ++it)
-		if ((*it) == c) {
-			clients.erase(it);
-			return;
-		}
 }
 
 /*
@@ -638,9 +613,10 @@ int Game_object::swap_positions(
 		return 0;       // Not the same size.
 	Tile_coord p1 = get_tile();
 	Tile_coord p2 = obj2->get_tile();
-	remove_this(1);         // Remove (but don't delete) each.
+    Game_object_shared keep1, keep2;
+	remove_this(&keep1);         // Remove (but don't delete) each.
 	set_invalid();
-	obj2->remove_this(1);
+	obj2->remove_this(&keep2);
 	obj2->set_invalid();
 	move(p2.tx, p2.ty, p2.tz);  // Move to new locations.
 	obj2->move(p1.tx, p1.ty, p1.tz);
@@ -1101,31 +1077,18 @@ void Game_object::update_from_studio(
 }
 
 /*
- *  Remove from clients list.
- */
-void Game_object::remove_clients() {
-	for (vector<Object_client *>::iterator it = clients.begin();
-	        it != clients.end(); ++it) {
-		(*it)->object_gone(this);
-	}
-	clients.clear();
-}
-
-/*
  *  Remove an object from the world.
  *  The object is deleted.
  */
 
 void Game_object::remove_this(
-    int nodel           // 1 to not delete.
+    Game_object_shared *keep     // Non-null to not delete.
 ) {
 	// Do this before all else.
-	if (!nodel)
-		remove_clients();
+	if (keep)
+	    *keep = shared_from_this();
 	if (chunk)
 		chunk->remove(this);
-	if (!nodel)
-		gwin->delete_object(this);
 }
 
 /*
@@ -1693,9 +1656,9 @@ void Terrain_game_object::move(
  */
 
 void Terrain_game_object::remove_this(
-    int nodel           // 1 to not delete.
+    Game_object_shared *keep     // Non-null to not delete.
 ) {
-	if (chunk && !nodel && !chunk->get_map()->is_caching_out()) {
+	if (chunk && !keep && !chunk->get_map()->is_caching_out()) {
 		// This code removes the terrain object if the object was deleted.
 		// This should NOT be run if the map is being cached out!
 		chunk->get_map()->set_map_modified();
@@ -1706,7 +1669,7 @@ void Terrain_game_object::remove_this(
 			ter->set_flat(get_tx(), get_ty(), ShapeID(12, 0));
 		gwin->get_map()->set_chunk_terrains_modified();
 	}
-	Game_object::remove_this(nodel);
+	Game_object::remove_this(keep);
 }
 
 /*
@@ -1743,13 +1706,13 @@ void Ifix_game_object::move(
  */
 
 void Ifix_game_object::remove_this(
-    int nodel           // 1 to not delete.
+    Game_object_shared *keep     // Non-null to not delete.
 ) {
 	if (chunk) {        // Mark superchunk as 'modified'.
 		int cx = get_cx(), cy = get_cy();
 		get_map()->set_ifix_modified(cx, cy);
 	}
-	Game_object::remove_this(nodel);
+	Game_object::remove_this(keep);
 }
 
 /*

@@ -267,7 +267,7 @@ void Cheat::move_chunk(Map_chunk *chunk, int dx, int dy) {
 	int tox = (chunk->get_cx() + dx + c_num_chunks) % c_num_chunks;
 	int toy = (chunk->get_cy() + dy + c_num_chunks) % c_num_chunks;
 	Map_chunk *tochunk = gmap->get_chunk(tox, toy);
-	Game_object_vector tmplist; // Delete objs. in 'tochunk'.
+	Game_object_shared_vector tmplist; // Delete objs. in 'tochunk'.
 	Game_object *obj;
 
 	{
@@ -275,9 +275,9 @@ void Cheat::move_chunk(Map_chunk *chunk, int dx, int dy) {
 		Object_iterator toiter(tochunk->get_objects());
 		while ((obj = toiter.get_next()) != 0)
 			if (!obj->as_npc())
-				tmplist.push_back(obj);
+				tmplist.push_back(obj->shared_from_this());
 	}
-	for (Game_object_vector::const_iterator it = tmplist.begin();
+	for (Game_object_shared_vector::const_iterator it = tmplist.begin();
 	        it != tmplist.end(); ++it)
 		(*it)->remove_this();
 	tmplist.clear();
@@ -287,13 +287,13 @@ void Cheat::move_chunk(Map_chunk *chunk, int dx, int dy) {
 		Object_iterator fromiter(chunk->get_objects());
 		while ((obj = fromiter.get_next()) != 0)
 			if (!obj->as_terrain())
-				tmplist.push_back(obj);
+				tmplist.push_back(obj->shared_from_this());
 	}
 	dx *= c_tiles_per_chunk;
 	dy *= c_tiles_per_chunk;
-	for (Game_object_vector::const_iterator it = tmplist.begin();
+	for (Game_object_shared_vector::const_iterator it = tmplist.begin();
 	        it != tmplist.end(); ++it) {
-		obj = *it;
+		obj = (*it).get();
 		Tile_coord t = obj->get_tile();
 		// Got to move objects legally.
 		obj->move((t.tx + dx + c_num_tiles) % c_num_tiles,
@@ -520,7 +520,7 @@ void Cheat::send_select_status() {
  *  Add an object to the selected list without checking.
  */
 void Cheat::append_selected(Game_object *obj) {
-	selected.push_back(obj);
+	selected.push_back(obj->shared_from_this());
 	if (selected.size() == 1)   // First one?
 		send_select_status();
 }
@@ -534,16 +534,16 @@ void Cheat::toggle_selected(Game_object *obj) {
 	else
 		gwin->set_all_dirty();
 	// In list?
-	for (Game_object_vector::iterator it = selected.begin();
+	for (Game_object_shared_vector::iterator it = selected.begin();
 	        it != selected.end(); ++it)
-		if (*it == obj) {
+		if ((*it).get() == obj) {
 			// Yes, so remove it.
 			selected.erase(it);
 			if (selected.empty())   // Last one?
 				send_select_status();
 			return;
 		}
-	selected.push_back(obj);    // No, so add it.
+	selected.push_back(obj->shared_from_this());    // No, so add it.
 	if (selected.size() == 1)   // 1st one?
 		send_select_status();
 }
@@ -554,9 +554,9 @@ void Cheat::toggle_selected(Game_object *obj) {
 void Cheat::clear_selected() {
 	if (selected.empty())
 		return;
-	for (Game_object_vector::iterator it = selected.begin();
+	for (Game_object_shared_vector::iterator it = selected.begin();
 	        it != selected.end(); ++it) {
-		Game_object *obj = *it;
+		Game_object *obj = (*it).get();
 		if (!obj->get_owner())
 			gwin->add_dirty(obj);
 		else
@@ -573,10 +573,10 @@ void Cheat::delete_selected() {
 	if (selected.empty())
 		return;
 	while (!selected.empty()) {
-		Game_object *obj = selected.back();
+		Game_object_shared obj = selected.back();
 		selected.pop_back();
 		if (obj->get_owner())
-			gwin->add_dirty(obj);
+			gwin->add_dirty(obj.get());
 		else            // In a gump?
 			gwin->set_all_dirty();
 		obj->remove_this();
@@ -594,9 +594,9 @@ void Cheat::move_selected_objs(int dx, int dy, int dz) {
 	std::vector<Tile_coord> tiles;  // Store locations here.
 	int lowz = 1000, highz = -1000; // Get min/max lift.
 	// Remove & store old locations.
-	Game_object_vector::iterator it;
+	Game_object_shared_vector::iterator it;
 	for (it = selected.begin(); it != selected.end(); ++it) {
-		Game_object *obj = *it;
+		Game_object *obj = (*it).get();
 		Game_object *owner = obj->get_outermost();
 		// Get location.  Use owner if inside.
 		Tile_coord tile = owner->get_tile();
@@ -605,7 +605,8 @@ void Cheat::move_selected_objs(int dx, int dy, int dz) {
 			gwin->add_dirty(obj);
 		else            // In a gump.  Repaint all for now.
 			gwin->set_all_dirty();
-		obj->remove_this(true);
+		Game_object_shared keep;
+		obj->remove_this(&keep);
 		if (tile.tz < lowz)
 			lowz = tile.tz;
 		if (tile.tz > highz)
@@ -635,9 +636,9 @@ void Cheat::move_selected(int dx, int dy, int dz) {
 }
 
 bool Cheat::is_selected(Game_object *o) {
-	for (Game_object_vector::const_iterator it = selected.begin();
+	for (Game_object_shared_vector::const_iterator it = selected.begin();
 	        it != selected.end(); ++it)
-		if (o == *it)
+		if (o == (*it).get())
 			return true;
 	return false;
 }
@@ -647,7 +648,7 @@ bool Cheat::is_selected(Game_object *o) {
  */
 class Clip_compare {
 public:
-	bool operator()(const Game_object *o1, const Game_object *o2) {
+	bool operator()(const Game_object_shared o1, const Game_object_shared o2) {
 		Tile_coord t1 = o1->get_tile(),
 		           t2 = o2->get_tile();
 		if (t1.tz != t2.tz)
@@ -665,31 +666,32 @@ void Cheat::cut(bool copy) {
 	if (selected.empty())
 		return;         // Nothing selected.
 	bool clip_was_empty = clipboard.empty();
-	Game_object_vector::iterator it;
+	Game_object_shared_vector::iterator it;
 	// Clear out old clipboard.
-	for (it = clipboard.begin(); it != clipboard.end(); ++it)
-		gwin->delete_object(*it);   // Careful here.
 	clipboard.resize(0);
 	clipboard.reserve(selected.size());
 	if (!copy)          // Removing?  Force repaint.
 		gwin->set_all_dirty();
 	// Go through selected objects.
 	for (it = selected.begin(); it != selected.end(); ++it) {
-		Game_object *obj = *it;
+		Game_object_shared newobj, keep;
+		Game_object *obj = (*it).get();
 		Tile_coord t = obj->get_outermost()->get_tile();
 		if (copy)
 			// TEST+++++REALLY want a 'clone()'.
-			obj = gwin->get_map()->create_ireg_object(
+			newobj = gwin->get_map()->create_ireg_object(
 			          obj->get_shapenum(), obj->get_framenum());
-		else            // Cut:  Remove but don't delete.
-			obj->remove_this(true);
+		else {           // Cut:  Remove but don't delete.
+			newobj = obj->shared_from_this();
+			obj->remove_this(&keep);
+		}
 		// Set pos. & add to list.
-		obj->set_shape_pos(t.tx % c_tiles_per_chunk,
-		                   t.ty % c_tiles_per_chunk);
+		newobj->set_shape_pos(t.tx % c_tiles_per_chunk,
+		                   	  t.ty % c_tiles_per_chunk);
 #if 0   /* ++++++What's this for? */
 		obj->set_chunk(t.tx / c_tiles_per_chunk, t.ty / c_tiles_per_chunk);
 #endif
-		clipboard.push_back(obj);
+		clipboard.push_back(newobj);
 	}
 	// Sort.
 	std::sort(selected.begin(), selected.end(), Clip_compare());
@@ -704,7 +706,7 @@ void Cheat::cut(bool copy) {
  *  ++++++++Goes away when we have obj->clone()++++++++++
  */
 
-static Game_object *Create_object(
+static Game_object_shared Create_object(
     Game_window *gwin,
     int shape, int frame        // What to create.
 ) {
@@ -713,7 +715,7 @@ static Game_object *Create_object(
 	// Is it an ireg (changeable) obj?
 	bool ireg = (sclass != Shape_info::unusable &&
 	             sclass != Shape_info::building);
-	Game_object *newobj;
+	Game_object_shared newobj;
 	if (ireg)
 		newobj = gwin->get_map()->create_ireg_object(info,
 		         shape, frame, 0, 0, 0);
@@ -733,20 +735,20 @@ void Cheat::paste(
 	// Use lowest/south/east for position.
 	Tile_coord hot = clipboard[0]->get_tile();
 	clear_selected();       // Remove old selected.
-	Game_object_vector::iterator it;
+	Game_object_shared_vector::iterator it;
 	for (it = clipboard.begin(); it != clipboard.end(); ++it) {
-		Game_object *obj = *it;
+		Game_object_shared obj = *it;
 		Tile_coord t = obj->get_tile();
 		// Figure spot rel. to hot-spot.
 		int liftpix = ((t.tz - hot.tz) * c_tilesize) / 2;
 		int x = mx + (t.tx - hot.tx) * c_tilesize - liftpix,
 		    y = my + (t.ty - hot.ty) * c_tilesize - liftpix;
 		// +++++Use clone().
-		obj = Create_object(gwin, obj->get_shapenum(),
+		Game_object_shared newobj = Create_object(gwin, obj->get_shapenum(),
 		                    obj->get_framenum());
-		Dragging_info drag(obj);
+		Dragging_info drag(newobj);
 		if (drag.drop(x, y, true))  // (Dels if it fails.)
-			append_selected(obj);
+			append_selected(newobj.get());
 	}
 	gwin->set_all_dirty();      // Just repaint all.
 }
@@ -879,11 +881,11 @@ void Cheat::create_last_shape(void) const {
 	int current_shape = 0;
 	int current_frame = 0;
 	if (browser->get_shape(current_shape, current_frame)) {
-		Game_object *obj = gwin->get_map()->create_ireg_object(
+		Game_object_shared obj = gwin->get_map()->create_ireg_object(
 		                       current_shape, current_frame);
 		obj->set_flag(Obj_flags::okay_to_take);
 		Tile_coord t =  Map_chunk::find_spot(
-		                    gwin->get_main_actor()->get_tile(), 4, obj, 2);
+	                    gwin->get_main_actor()->get_tile(), 4, obj.get(), 2);
 		if (t.tx != -1) {
 			obj->move(t);
 			eman->center_text("Object created");

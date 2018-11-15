@@ -685,12 +685,12 @@ void Map_chunk::set_terrain(
 				int shapenum = id.get_shapenum(),
 				    framenum = id.get_framenum();
 				Shape_info &info = id.get_info();
-				Game_object *obj = info.is_animated() ?
-				                   new Animated_object(shapenum,
-				                                       framenum, tilex, tiley)
-				                   : new Terrain_game_object(shapenum,
+				Game_object_shared obj = info.is_animated() ?
+				            std::make_shared<Animated_object>(shapenum,
+				                              framenum, tilex, tiley)
+				          : std::make_shared<Terrain_game_object>(shapenum,
 				                           framenum, tilex, tiley);
-				add(obj);
+				add(obj.get());
 			}
 		}
 }
@@ -754,11 +754,12 @@ void Map_chunk::add(
 ) {
 	newobj->chunk = this;       // Set object's chunk.
 	Ordering_info ord(gwin, newobj);
+	Game_object_shared newobj_shared = newobj->shared_from_this();
 	// Put past flats.
 	if (first_nonflat)
-		objects.insert_before(newobj, first_nonflat);
+		objects.insert_before(newobj_shared, first_nonflat);
 	else
-		objects.append(newobj);
+		objects.append(newobj_shared);
 	// Not flat?
 	if (newobj->get_lift() || ord.info.get_3d_height()) {
 		// Deal with dependencies.
@@ -825,9 +826,9 @@ void Map_chunk::add_egg(
 void Map_chunk::remove_egg(
     Egg_object *egg
 ) {
-	remove(egg);            // Remove it normally.
 	if (cache)          // Remove from cache.
 		cache->update_egg(this, egg, false);
+	remove(egg);            // Remove it normally.
 }
 
 /*
@@ -869,8 +870,8 @@ void Map_chunk::remove(
 		if (first_nonflat == objects.get_first())
 			first_nonflat = 0;
 	}
-	objects.remove(remove);     // Remove from list.
 	remove->set_invalid();      // No longer part of world.
+	objects.remove(remove);     // Remove from list.
 }
 
 /*

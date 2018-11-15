@@ -24,14 +24,17 @@
 #include "actors.h"
 #include "ignore_unused_variable_warning.h"
 
+class Monster_actor;
+
 /*
  *  Monsters get their own class because they have a bigger footprint
  *  than humans.
  */
 class Monster_actor : public Npc_actor {
-	static Monster_actor *in_world; // All monsters in the world.
+	static Game_object_shared in_world; // All monsters in the world.
 	// Links for 'in_world' list.
-	Monster_actor *next_monster, *prev_monster;
+    Game_object_shared next_monster;
+	Monster_actor *prev_monster;
 	Animator *animator;     // For wounded men.
 	void link_in();         // Add to in_world list.
 	void link_out();        // Remove from list.
@@ -41,16 +44,18 @@ public:
 	              int uc = -1);
 	virtual ~Monster_actor();
 	// Create an instance.
-	static Monster_actor *create(int shnum);
+	static Game_object_shared create(int shnum);
 	static Monster_actor *create(int shnum, Tile_coord pos,
 	                             int sched = -1, int align = static_cast<int>(Actor::neutral),
 	                             bool tempoary = true, bool equipment = true);
 	// Methods to retrieve them all:
 	static Monster_actor *get_first_in_world() {
-		return in_world;
+		return in_world ? static_cast<Monster_actor *>(in_world.get())
+			   			: nullptr;
 	}
 	Monster_actor *get_next_in_world() {
-		return next_monster;
+		return next_monster ? static_cast<Monster_actor *>(next_monster.get())
+			   				: nullptr;
 	}
 	static void delete_all();   // Delete all monsters.
 	static void give_up() {     // For file errors only!
@@ -65,7 +70,7 @@ public:
 	// Step onto an (adjacent) tile.
 	virtual int step(Tile_coord t, int frame, bool force = false);
 	// Remove/delete this object.
-	virtual void remove_this(int nodel = 0);
+	virtual void remove_this(Game_object_shared *keep = 0);
 	// Move to new abs. location.
 	virtual void move(int newtx, int newty, int newlift, int newmap = -1);
 	// Add an object.

@@ -738,9 +738,9 @@ void Projectile_effect::handle_event(
 		// Done?
 		bool explodes = (winf && winf->explodes()) || (ainf && ainf->explodes());
 		if (return_path) {  // Returned a boomerang?
-			Ireg_game_object *obj =
+			Ireg_game_object_shared obj =
 			    gmap->create_ireg_object(sprite.get_shapenum(), 0);
-			if (!target || !target->add(obj)) {
+			if (!target || !target->add(obj.get())) {
 				obj->set_flag(Obj_flags::okay_to_take);
 				obj->set_flag(Obj_flags::is_temporary);
 				obj->move(pos.tx, pos.ty, pos.tz, -1);
@@ -805,7 +805,7 @@ void Projectile_effect::handle_event(
 					Tile_coord dpos = Map_chunk::find_spot(pos, 3,
 					                                       sprite.get_shapenum(), 0, 1);
 					if (dpos.tx != -1) {
-						Game_object *aobj = gmap->create_ireg_object(
+						Game_object_shared aobj = gmap->create_ireg_object(
 						                        sprite.get_shapenum(), 0);
 						if (!attacker || attacker->get_flag(Obj_flags::is_temporary))
 							aobj->set_flag(Obj_flags::is_temporary);
@@ -1762,7 +1762,8 @@ void Earthquake::handle_event(
 Fire_field_effect::Fire_field_effect(
     Tile_coord const &t         // Where to create it.
 ) {
-	field = gmap->create_ireg_object(895, 0);
+    Game_object_shared field_shared = gmap->create_ireg_object(895, 0);
+	field = field_shared.get();
 	field->set_flag(Obj_flags::is_temporary);
 	field->move(t.tx, t.ty, t.tz);
 	gwin->get_tqueue()->add(Game::get_ticks() + 3000 + rand() % 2000, this,
