@@ -882,9 +882,9 @@ Actor::Actor(
 ) : Container_game_object(), name(nm), usecode(uc),
 	usecode_assigned(false), usecode_name(""), unused(false),
 	npc_num(num), face_num(num), party_id(-1), atts(0), temperature(0),
-	shape_save(-1), oppressor(-1), target(0),
+	shape_save(-1), oppressor(-1), target(),
 	casting_mode(false), casting_shape(-1),
-	target_object(0), target_tile(Tile_coord(-1, -1, 0)), attack_weapon(-1),
+	target_object(), target_tile(Tile_coord(-1, -1, 0)), attack_weapon(-1),
 	attack_mode(nearest),
 	schedule_type(static_cast<int>(Schedule::loiter)), schedule(0),
 	restored_schedule(-1), dormant(true), hit(false), combat_protected(false),
@@ -1493,7 +1493,7 @@ void Actor::set_target(
     Game_object *obj,
     bool start_combat       // If true, set sched. to combat.
 ) {
-	target = obj;
+	target = weak_from_obj(obj);
 	bool im_party = is_in_party() || this == gwin->get_main_actor();
 	if (start_combat && !im_party &&
 	        (schedule_type != Schedule::combat || !schedule))
@@ -2548,7 +2548,7 @@ void Actor::fight_back(
 				party[i]->set_schedule_type(Schedule::combat);
 		}
 	}
-	if (!target && !is_in_party())
+	if (!target.lock() && !is_in_party())
 		set_target(npc, npc->get_schedule_type() != Schedule::duel);
 	// Being a bully?
 	if (npc->is_in_party() && !is_in_party() && is_sentient()) {
@@ -2891,7 +2891,7 @@ int Actor::reduce_health(
 	else if (val <= 0 && !get_flag(Obj_flags::asleep)) {
 		Combat_schedule::stop_attacking_npc(this);
 		set_flag(Obj_flags::asleep);
-	} else if (npc && !target && !in_party) {
+	} else if (npc && !target.lock() && !in_party) {
 		set_target(npc, npc->get_schedule_type() != Schedule::duel);
 		set_oppressor(npc->get_npc_num());
 	}
@@ -3349,7 +3349,7 @@ bool Actor::in_usecode_control() const {
  */
 bool Actor::usecode_attack() {
 	return Combat_schedule::attack_target(
-	           this, target_object, target_tile, attack_weapon);
+	           this, obj_from_weak(target_object), target_tile, attack_weapon);
 }
 
 /*

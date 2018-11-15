@@ -46,12 +46,10 @@ public:
 	{  }
 	// Delete the chain.
 	~T_Object_list() {
-#if 0   /* Crashes.  Is it even necessary? SHARED +++++++ */
 		if (first) {
 		    T *last = first->prev;
 			last->next = nullptr;		/* Release so objects get freed.	*/
 		}
-#endif
 	}
 	// Report iterator problem.
 	void report_problem() const {

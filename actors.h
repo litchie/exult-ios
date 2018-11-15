@@ -63,11 +63,11 @@ protected:
 	unsigned char temperature;  // Measure of coldness (0-63).
 	short shape_save;       // Our old shape, or -1.
 	short oppressor;        // NPC ID (>= 0) of oppressor, or -1.
-	Game_object *target;        // Who/what we're attacking.
+	Game_object_weak target;        // Who/what we're attacking.
 	short casting_mode;     //For displaying casting frames.
 	int casting_shape;  //Shape of casting frames.
 	// These 2 are set by the Usecode function 'set_to_attack':
-	Game_object *target_object;
+	Game_object_weak target_object;
 	Tile_coord target_tile;
 	int attack_weapon;
 public:
@@ -380,7 +380,7 @@ public:
 	// Set combat opponent.
 	void set_target(Game_object *obj, bool start_combat = false);
 	Game_object *get_target() { // Get who/what we're attacking.
-		return target;
+	  return obj_from_weak(target);
 	}
 	// Works out if an object fits in a spot
 	bool fits_in_spot(Game_object *obj, int spot);
@@ -453,17 +453,17 @@ public:
 	void fight_back(Game_object *attacker);
 	bool get_attack_target(Game_object *&obj, Tile_coord &t) {
 		static Tile_coord invalidloc(-1, -1, 0);
-		obj = target_object;
+		obj = obj_from_weak(target_object);
 		t = target_tile;
-		return (target_object || target_tile != invalidloc);
+		return (obj || target_tile != invalidloc);
 	}
 	void set_attack_target(Game_object *t, int w) {
 		target_tile = Tile_coord(-1, -1, 0);
-		target_object = t;
+		target_object = weak_from_obj(t);
 		attack_weapon = w;
 	}
 	void set_attack_target(Tile_coord const &t, int w) {
-		target_object = 0;
+	    target_object = Game_object_weak();
 		target_tile = t;
 		target_tile.fixme();
 		attack_weapon = w;
