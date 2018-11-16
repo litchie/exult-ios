@@ -61,6 +61,7 @@ enum Damage_type {
 class Base_info {
 protected:
 	enum Info_bit_flags {
+	    All_clear = 0,
 	    Info_modified = 1,
 	    From_patch = 2,
 	    Have_static = 4,
@@ -78,13 +79,12 @@ protected:
 	}
 public:
 	friend class Shape_info;
-	Base_info() {
-		info_flags = static_cast<Info_bit_flags>(0);
+	Base_info() : info_flags(All_clear) {
 	}
-	Base_info(bool patch) {
+	Base_info(bool patch) : info_flags(All_clear) {
 		set_patch(patch);
 	}
-	Base_info(bool mod, bool patch, bool inv, bool st) {
+	Base_info(bool mod, bool patch, bool inv, bool st) : info_flags(All_clear) {
 		set_modified(mod);
 		set_patch(patch);
 		set_invalid(inv);
