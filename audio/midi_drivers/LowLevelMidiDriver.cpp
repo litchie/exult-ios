@@ -31,18 +31,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "XMidiEventList.h"
 #include "array_size.h"
 
-#define LLMD_MSG_PLAY					1
-#define LLMD_MSG_FINISH					2
-#define LLMD_MSG_PAUSE					3
-#define LLMD_MSG_SET_VOLUME				4
-#define LLMD_MSG_SET_SPEED				5
-#define LLMD_MSG_PRECACHE_TIMBRES		6
-
-// These are only used by thread
-#define LLMD_MSG_THREAD_INIT			-1
-#define LLMD_MSG_THREAD_INIT_FAILED		-2
-#define LLMD_MSG_THREAD_EXIT			-3
-
 // If the time to wait is less than this then we yield instead of waiting on the condition variable
 // This must be great than or equal to 2
 #define LLMD_MINIMUM_YIELD_THRESHOLD 6
@@ -283,13 +271,12 @@ void LowLevelMidiDriver::startSequence(int seq_num, XMidiEventList *eventlist, b
 
 	if (precacheTimbresOnPlay)
 	{
-		ComMessage precache(LLMD_MSG_PRECACHE_TIMBRES);
+		ComMessage precache(LLMD_MSG_PRECACHE_TIMBRES, -1);
 		precache.data.precache.list = eventlist;
 		sendComMessage(precache);
 	}
 
-	ComMessage message(LLMD_MSG_PLAY);
-	message.sequence = seq_num;
+	ComMessage message(LLMD_MSG_PLAY, seq_num);
 	message.data.play.list = eventlist;
 	message.data.play.repeat = repeat;
 	message.data.play.volume = vol;
@@ -304,9 +291,7 @@ void LowLevelMidiDriver::finishSequence(int seq_num)
 	if (!initialized) return;
 	if (uploading_timbres) return;
 
-	ComMessage message(LLMD_MSG_FINISH);
-	message.sequence = seq_num;
-
+	ComMessage message(LLMD_MSG_FINISH, seq_num);
 	sendComMessage(message);
 }
 
@@ -317,8 +302,7 @@ void LowLevelMidiDriver::setSequenceVolume(int seq_num, int vol)
 	if (!initialized) return;
 	if (uploading_timbres) return;
 
-	ComMessage message(LLMD_MSG_SET_VOLUME);
-	message.sequence = seq_num;
+	ComMessage message(LLMD_MSG_SET_VOLUME, seq_num);
 	message.data.volume.level = vol;
 
 	sendComMessage(message);
@@ -329,8 +313,7 @@ void LowLevelMidiDriver::setGlobalVolume(int vol)
 	if (vol < 0 || vol > 255) return;
 	if (!initialized) return;
 
-	ComMessage message(LLMD_MSG_SET_VOLUME);
-	message.sequence = -1;
+	ComMessage message(LLMD_MSG_SET_VOLUME, -1);
 	message.data.volume.level = vol;
 
 	sendComMessage(message);
@@ -343,8 +326,7 @@ void LowLevelMidiDriver::setSequenceSpeed(int seq_num, int speed)
 	if (!initialized) return;
 	if (uploading_timbres) return;
 
-	ComMessage message(LLMD_MSG_SET_SPEED);
-	message.sequence = seq_num;
+	ComMessage message(LLMD_MSG_SET_SPEED, seq_num);
 	message.data.speed.percentage = speed;
 
 	sendComMessage(message);
@@ -370,8 +352,7 @@ void LowLevelMidiDriver::pauseSequence(int seq_num)
 	if (!initialized) return;
 	if (uploading_timbres) return;
 
-	ComMessage message(LLMD_MSG_PAUSE);
-	message.sequence = seq_num;
+	ComMessage message(LLMD_MSG_PAUSE, seq_num);
 	message.data.pause.paused = true;
 
 	sendComMessage(message);
@@ -383,8 +364,7 @@ void LowLevelMidiDriver::unpauseSequence(int seq_num)
 	if (!initialized) return;
 	if (uploading_timbres) return;
 
-	ComMessage message(LLMD_MSG_PAUSE);
-	message.sequence = seq_num;
+	ComMessage message(LLMD_MSG_PAUSE, seq_num);
 	message.data.pause.paused = false;
 
 	sendComMessage(message);
@@ -446,7 +426,7 @@ int LowLevelMidiDriver::initThreadedSynth()
 	// Create the thread
 	giveinfo();
 
-	ComMessage message(LLMD_MSG_THREAD_INIT);
+	ComMessage message(LLMD_MSG_THREAD_INIT, -1);
 	sendComMessage(message);
 
 	quit_thread = false;
@@ -479,7 +459,7 @@ void LowLevelMidiDriver::destroyThreadedSynth()
 {
 	initialized = false;
 
-	ComMessage message(LLMD_MSG_THREAD_EXIT);
+	ComMessage message(LLMD_MSG_THREAD_EXIT, -1);
 	sendComMessage(message);
 
 	int count = 0;
@@ -543,7 +523,7 @@ int LowLevelMidiDriver::threadMain()
 		// else we are ok to go
 		if (code)
 		{
-			ComMessage message(LLMD_MSG_THREAD_INIT_FAILED);
+			ComMessage message(LLMD_MSG_THREAD_INIT_FAILED, -1);
 			message.data.init_failed.code = code;
 			messages.push(message);
 		}
@@ -669,7 +649,7 @@ int LowLevelMidiDriver::initSoftwareSynth()
 void LowLevelMidiDriver::destroySoftwareSynth()
 {
 	// Will cause the synth to set it self uninitialized
-	ComMessage message(LLMD_MSG_THREAD_EXIT);
+	ComMessage message(LLMD_MSG_THREAD_EXIT, -1);
 	sendComMessage(message);
 
 	// Wait till all pending commands have been executed
@@ -1265,8 +1245,7 @@ void LowLevelMidiDriver::loadTimbreLibrary(IDataSource *ds, TimbreLibraryType ty
 	// Ensure all sequences are stopped
 	uint32 i,j;
 	for (i = 0 ; i < LLMD_NUM_SEQ; i++) {
-		ComMessage message(LLMD_MSG_FINISH);
-		message.sequence = i;
+		ComMessage message(LLMD_MSG_FINISH, i);
 		sendComMessage(message);
 	}
 
@@ -1383,8 +1362,7 @@ void LowLevelMidiDriver::loadTimbreLibrary(IDataSource *ds, TimbreLibraryType ty
 	// Play the SysEx data - no wait, don't it makes startup slow.
 	//pout << "Loading Timbres" << std::endl;
 
-	ComMessage message(LLMD_MSG_PLAY);
-	message.sequence = 3;
+	ComMessage message(LLMD_MSG_PLAY, 3);
 	message.data.play.list = eventlist;
 	message.data.play.repeat = false;
 	message.data.play.volume = 255;
@@ -1414,7 +1392,7 @@ void LowLevelMidiDriver::loadTimbreLibrary(IDataSource *ds, TimbreLibraryType ty
 		} while (is_playing);
 		uploading_timbres = false;
 
-		ComMessage precache(LLMD_MSG_PRECACHE_TIMBRES);
+		ComMessage precache(LLMD_MSG_PRECACHE_TIMBRES, -1);
 		precache.data.precache.list = 0;
 		sendComMessage(precache);
 	}

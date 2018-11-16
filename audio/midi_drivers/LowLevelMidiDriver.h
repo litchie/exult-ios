@@ -109,10 +109,21 @@ protected:
 	virtual void		yield() { SDL_Delay(1); }
 
 private:
-
+	enum Messages {
+		LLMD_MSG_PLAY = 1,
+		LLMD_MSG_FINISH = 2,
+		LLMD_MSG_PAUSE = 3,
+		LLMD_MSG_SET_VOLUME = 4,
+		LLMD_MSG_SET_SPEED = 5,
+		LLMD_MSG_PRECACHE_TIMBRES = 6,
+		// These are only used by thread
+		LLMD_MSG_THREAD_INIT = -1,
+		LLMD_MSG_THREAD_INIT_FAILED = -2,
+		LLMD_MSG_THREAD_EXIT = -3
+	};
 	struct ComMessage {
 
-		ComMessage(int T) : type(T) { }
+		ComMessage(Messages T, int seq) : type(T), sequence(seq) { }
 
 		ComMessage(const ComMessage &other)
 		{
@@ -129,7 +140,7 @@ private:
 			return  *this;
 		}
 
-		int				type;
+		Messages		type;
 		int				sequence;
 		union
 		{
