@@ -145,8 +145,6 @@ EXTRA_DIST = 	\
 	FAQ \
 	README.win32 \
 	README.MacOSX \
-	README.Qtopia \
-	Makefile.be \
 	Makefile.common \
 	Makefile.mingw \
 	Makefile.studio.mingw \

@@ -2683,10 +2683,6 @@
 			>
 		</File>
 		<File
-			RelativePath="..\Makefile.be"
-			>
-		</File>
-		<File
 			RelativePath="..\Makefile.common"
 			>
 		</File>
