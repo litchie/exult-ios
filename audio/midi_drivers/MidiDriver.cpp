@@ -34,7 +34,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifdef PENTAGRAM_IN_EXULT
 #include "MT32EmuMidiDriver.h"
 #include "mixer_midiout.h"
-#include "amiga_midi.h"
 #include "forked_player.h"
 #include "KMIDI.h"
 #endif
@@ -92,9 +91,6 @@ static void InitMidiDriverVector()
 #endif
 #ifdef USE_FORKED_PLAYER_MIDI
 	midi_drivers.push_back(forked_player::getDesc());
-#endif
-#ifdef USE_AMIGA_MIDI
-	midi_drivers.push_back(AmigaMIDI::getDesc());
 #endif
 #ifdef USE_MIXER_MIDI
 	midi_drivers.push_back(Mixer_MidiOut::getDesc());

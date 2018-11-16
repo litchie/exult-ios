@@ -20,8 +20,6 @@ noinst_LTLIBRARIES = libmididrv.la
 libmididrv_la_SOURCES =	\
 	ALSAMidiDriver.cpp	\
 	ALSAMidiDriver.h	\
-	amiga_midi.cc		\
-	amiga_midi.h		\
 	CoreAudioMidiDriver.cpp	\
 	CoreAudioMidiDriver.h	\
 	CoreMidiDriver.cpp \

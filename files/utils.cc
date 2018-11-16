@@ -142,23 +142,10 @@ bool is_system_path_defined(const string &path) {
  */
 
 string get_system_path(const string &path) {
-	string new_path;
+	string new_path = path;
 	string::size_type pos;
 	string::size_type pos2;
 
-#if defined(__MORPHOS__) || defined(AMIGA)
-	pos = path.find("../");
-	if (pos != string::npos)
-		new_path = path.substr(0, pos) + path.substr(pos + 2);
-	else
-		new_path = path;
-
-	pos = new_path.find("./");
-	if (pos != string::npos)
-		new_path = new_path.substr(0, pos) + new_path.substr(pos + 2);
-#else
-	new_path = path;
-#endif
 	pos = new_path.find('>');
 	pos2 = new_path.find('<');
 	// If there is no separator, return the path as is
@@ -231,7 +218,7 @@ string get_system_path(const string &path) {
 
 void to_uppercase(string &str) {
 	for (string::iterator X = str.begin(); X != str.end(); ++X) {
-#if (defined(OPENBSD) || defined(CYGWIN) || defined(__MORPHOS__))
+#if (defined(OPENBSD) || defined(CYGWIN))
 		if ((*X >= 'a') && (*X <= 'z')) *X -= 32;
 #else
 		*X = static_cast<char>(std::toupper(*X));
@@ -263,7 +250,7 @@ static bool base_to_uppercase(string &str, int count) {
 		if (todo <= 0)
 			break;
 
-#if (defined(OPENBSD) || defined(CYGWIN) || defined(__MORPHOS__))
+#if (defined(OPENBSD) || defined(CYGWIN))
 		if ((*X >= 'a') && (*X <= 'z')) *X -= 32;
 #else
 		*X = static_cast<char>(std::toupper(*X));

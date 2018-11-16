@@ -333,7 +333,7 @@ ModManager::ModManager(const string &name, const string &menu, bool needtitle,
 		// ++++ read access. They default to a subdirectory of:
 		// ++++     *nix: /usr/local/share/exult or /usr/share/exult
 		// ++++     MacOS X: /Library/Application Support/Exult
-		// ++++     Windows, MacOS, Amiga: program path.
+		// ++++     Windows, MacOS: program path.
 
 		// <path> setting: default is "$gameprefix".
 		config_path = base_cfg_path + "/path";

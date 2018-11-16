@@ -465,7 +465,7 @@ bool CheatScreen::SharedInput(char *input, int len, int &command, Cheat_Prompt &
 					int curlen = std::strlen(input);
 					char chr = key.sym;
 					if (key.mod & KMOD_SHIFT) {
-#if (defined(OPENBSD) || defined(CYGWIN) || defined(__MORPHOS__))
+#if (defined(OPENBSD) || defined(CYGWIN))
 						if ((chr >= 'a') && (chr <= 'z')) chr -= 32;
 #else
 						chr = std::toupper(chr);
