@@ -2204,7 +2204,7 @@ void Game_window::show_items(
 	} else if (cheat.in_map_editor() && skip_lift > 0) {
 		// Show flat, but not when editing ter.
 		ShapeID id = get_flat(x, y);
-		char str[13];
+		char str[20];
 		snprintf(str, sizeof(str)-1, "Flat %d:%d",
 		         id.get_shapenum(), id.get_framenum());
 		str[sizeof(str)-1] = 0;
