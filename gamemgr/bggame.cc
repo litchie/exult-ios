@@ -55,17 +55,12 @@
 #include <cctype>
 #include <cstring>
 
-#ifndef UNDER_EMBEDDED_CE
 using std::abs;
 using std::rand;
 using std::strchr;
 using std::strlen;
 using std::toupper;
-#endif
 
-#ifdef UNDER_CE
-#include "exult_pocketpc_flx.h"
-#endif
 #ifdef __IPHONEOS__
 #include "data/exult_iphone_flx.h"
 #include "iphone_gumps.h"
@@ -2024,10 +2019,6 @@ bool BG_Game::new_game(Vga_file &shapes) {
 	oldpal->create_palette_map(pal, transto);
 	delete oldpal;
 	pal->apply(true);
-#ifdef UNDER_CE
-	gkeyboard->autopaint = false;
-	gkeyboard->minimize();
-#endif
 #ifdef __IPHONEOS__
 	gkeybb->autopaint = false;
 #endif
@@ -2055,9 +2046,6 @@ bool BG_Game::new_game(Vga_file &shapes) {
 			else
 				snprintf(disp_name, max_name_len + 2, "%s", npc_name);
 			font->draw_text(ibuf, topx + 60, menuy + 10, disp_name, transto);
-#ifdef UNDER_CE
-			gkeyboard->paint();
-#endif
 #ifdef __IPHONEOS__
 			gkeybb->paint();
 #endif
@@ -2065,10 +2053,6 @@ bool BG_Game::new_game(Vga_file &shapes) {
 			redraw = false;
 		}
 		while (SDL_PollEvent(&event)) {
-#ifdef UNDER_CE
-			if (gkeyboard->handle_event(&event))
-				redraw = true;
-#endif
 #ifdef __IPHONEOS__
 			if (gkeybb->handle_event(&event))
 				redraw = true;
@@ -2178,10 +2162,6 @@ bool BG_Game::new_game(Vga_file &shapes) {
 	if (ok) {
 #ifdef DEBUG
 		std::cout << "Skin is: " << skindata->skin_id << " Sex is: " << skindata->is_female << std::endl;
-#endif
-#ifdef UNDER_CE
-		gkeyboard->minimize();
-		gkeyboard->autopaint = true;
 #endif
 #ifdef __IPHONEOS__
 		gkeybb->autopaint = true;

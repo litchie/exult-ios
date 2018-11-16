@@ -29,10 +29,7 @@
 #include <cstdlib>
 #include <algorithm>
 using std::rotate;
-
-#ifndef UNDER_EMBEDDED_CE
 using std::memmove;
-#endif
 
 /*
  *  Create a default palette for 8-bit graphics on a 16-bit display.

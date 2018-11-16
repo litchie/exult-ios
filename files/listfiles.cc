@@ -29,7 +29,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cstring>
 #include <iostream>
 
-#ifndef UNDER_EMBEDDED_CE
 using std::vector;
 using std::cout;
 using std::cerr;
@@ -38,7 +37,6 @@ using std::string;
 using std::strcat;
 using std::strcpy;
 using std::strlen;
-#endif
 
 #include "utils.h"
 #include "listfiles.h"

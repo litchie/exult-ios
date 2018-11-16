@@ -23,9 +23,7 @@
 #endif
 
 #ifdef WIN32
-#ifndef UNDER_CE
 #include <io.h>
-#endif
 #endif
 
 #include <fstream>
@@ -61,7 +59,6 @@
 #   define offsetof(type, field) reinterpret_cast<long>(&(static_cast<type *>(0)->field))
 #endif
 
-#ifndef UNDER_EMBEDDED_CE
 using std::cerr;
 using std::cout;
 using std::stringstream;
@@ -83,14 +80,8 @@ using std::strncpy;
 using std::time_t;
 using std::tm;
 using std::time_t;
-#endif
-
-#ifndef UNDER_CE
 using std::localtime;
 using std::time;
-#else
-#include <time.h>
-#endif
 
 // Save game compression level
 extern int save_compression;

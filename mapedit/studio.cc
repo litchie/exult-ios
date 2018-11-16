@@ -577,12 +577,7 @@ ExultStudio::ExultStudio(int argc, char **argv): glade_path(0), static_path(0),
 	if (alt_cfg != "")
 		config->read_abs_config_file(alt_cfg);
 	else {
-#ifdef EASY_USER_CONFIGURATION_FILE
-		if (U7exists(EASY_USER_CONFIGURATION_FILE))
-			config->read_config_file(EASY_USER_CONFIGURATION_FILE);
-		else
-#endif
-			config->read_config_file(USER_CONFIGURATION_FILE);
+		config->read_config_file(USER_CONFIGURATION_FILE);
 	}
 	// Setup virtual directories
 	string data_path;

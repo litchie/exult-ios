@@ -36,7 +36,6 @@
 #include "utils.h"
 #include "keyactions.h"
 
-#ifndef UNDER_EMBEDDED_CE
 using std::pair;
 using std::atoi;
 using std::cerr;
@@ -49,7 +48,6 @@ using std::strchr;
 using std::string;
 using std::strlen;
 using std::vector;
-#endif
 
 static  class Chardata { // ctype-like character lists
 public:
@@ -100,13 +98,6 @@ const struct Action {
 		"OLD_FILE_GUMP",
 		ActionOldFileGump, 0, "Save/restore", Action::normal_keys, NONE, true, true, true, false
 	},
-#ifdef UNDER_CE
-	{ "MINIMIZE_GAME", ActionMinimizeGame, 0, "Minimize game", Action::normal_keys, NONE, true, true, true, false },
-	{ "TOUCHSCREEN_MODE", ActionTouchscreenMode, 0, "Touchscreen mode", Action::normal_keys, NONE, true, true, true, false },
-	{ "KEYBOARD_POSITION", ActionKeyboardPosition, 0, "Keyboard position", Action::normal_keys, NONE, true, true, true, false },
-	{ "KEYBOARD_MODE", ActionKeyboardMode, 0, "Keyboard mode", Action::normal_keys, NONE, true, true, true, false },
-#endif
-
 	{
 		"SCALEVAL_INCREASE",
 		ActionScalevalIncrease, 0, "Increase scaleval", Action::mapedit_keys, NONE, true, true, true, false
@@ -841,30 +832,6 @@ void KeyBinder::LoadFromPatch() {
 		LoadFromFileInternal(PATCH_KEYS);
 	}
 }
-
-#ifdef UNDER_CE
-void KeyBinder::WINCE_LoadFromDPADOPT(int opt) {
-	if (opt == 0) { // Portrait
-		ParseLine("up walk_north");
-		ParseLine("down walk_south");
-		ParseLine("left walk_west");
-		ParseLine("right walk_east");
-	} else if (opt == 1) { // Landscape1
-		ParseLine("up walk_east");
-		ParseLine("down walk_west");
-		ParseLine("left walk_north");
-		ParseLine("right walk_south");
-	} else if (opt == 2) { // Landscape2
-		ParseLine("up walk_west");
-		ParseLine("down walk_east");
-		ParseLine("left walk_south");
-		ParseLine("right walk_north");
-	}
-	/*  // Shouldn't do anything, as the user may have custom keybindings
-	    else {}
-	*/
-}
-#endif
 
 void KeyBinder::LoadDefaults() {
 	Flush();

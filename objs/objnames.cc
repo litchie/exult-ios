@@ -44,11 +44,8 @@ extern int snprintf(char *, size_t, const char *, /*args*/ ...) ATTR_PRINTF(3,4)
 namespace std {
 using ::snprintf;
 }
-#else
 #endif
-#ifndef UNDER_EMBEDDED_CE
 using std::strchr;
-#endif
 
 /*
  *  For objects that can have a quantity, the name is in the format:

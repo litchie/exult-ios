@@ -61,7 +61,6 @@
 #include "servemsg.h"
 #endif
 
-#ifndef UNDER_EMBEDDED_CE
 using std::cerr;
 using std::cout;
 using std::endl;
@@ -72,7 +71,6 @@ using std::ostream;
 using std::strchr;
 using std::string;
 using std::set;
-#endif
 
 /*
  *  Determines the object's usecode function.

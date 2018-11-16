@@ -25,10 +25,8 @@
 //#define HAVE_OPENGL
 //#define FUDGE_SAMPLE_RATES
 #define USE_FMOPL_MIDI
-#ifndef UNDER_CE
 #define USE_MT32EMU_MIDI
 #define USE_TIMIDITY_MIDI
-#endif
 
 #ifndef WIN32
 #error WTF!
@@ -40,9 +38,7 @@
 // Settings for debug builds
 #ifndef NDEBUG
 
-#ifndef UNDER_CE
 #define USE_EXULTSTUDIO
-#endif
 #define ENABLE_MIDISFX
 #define COLOURLESS_REALLY_HATES_THE_BG_SFX
 #define FORCE_44KHZ
@@ -179,10 +175,8 @@ using std::strtol;
 #include <set>
 #include <map>
 #include <assert.h>
-#ifndef UNDER_CE
 #include <fcntl.h>
 #include <direct.h>
-#endif
 #include <windows.h>
 #include <mmsystem.h>
 #include <windef.h>
@@ -295,9 +289,6 @@ using std::getline;
 #include "../gumps/Face_stats.h"
 #include "../gumps/File_gump.h"
 #include "../gumps/Gamemenu_gump.h"
-#ifdef UNDER_CE
-#include "../gumps/Keyboard_gump.h"
-#endif
 #include "../gumps/Gump.h"
 #include "../gumps/Gump_button.h"
 #include "../gumps/Gump_manager.h"

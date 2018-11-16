@@ -37,9 +37,7 @@
 
 #include "SDL_timer.h"
 
-#ifndef UNDER_EMBEDDED_CE
 using std::rand;
-#endif
 
 bool Bg_dont_wake(Game_window *gwin, Actor *npc);
 

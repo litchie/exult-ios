@@ -46,13 +46,11 @@
 #include "AudioMixer.h"
 using namespace Pentagram;
 
-#ifndef UNDER_EMBEDDED_CE
 using std::cout;
 using std::endl;
 using std::rand;
 using std::string;
 using std::strlen;
-#endif
 
 int Cloud::randcnt = 0;
 int Lightning_effect::active = 0;

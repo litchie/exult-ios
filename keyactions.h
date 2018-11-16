@@ -29,12 +29,6 @@ void ActionCloseGumps(int const *params);
 void ActionCloseOrMenu(int const *params);
 void ActionMenuGump(int const *params);
 void ActionOldFileGump(int const *params);
-#ifdef UNDER_CE
-void ActionMinimizeGame(int const *params);
-void ActionTouchscreenMode(int const *params);
-void ActionKeyboardPosition(int const *params);
-void ActionKeyboardMode(int const *params);
-#endif
 
 void ActionScreenshot(int const *params);
 void ActionRepaint(int const *params);

@@ -49,11 +49,6 @@
 #include "ShortcutBar_gump.h"
 #include "ignore_unused_variable_warning.h"
 
-#ifdef UNDER_CE
-#  include "Keyboard_gump.h"
-#  include "Touchscreen.h"
-#endif
-
 /*
  *  Get the i'th party member, with the 0'th being the Avatar.
  */
@@ -82,69 +77,6 @@ void ActionOldFileGump(int const *params) {
 	        Mouse::hand);
 	delete fileio;
 }
-
-#ifdef UNDER_CE
-// { ActionMinimizeGame, 0, "Minimize game", normal_keys, NONE },
-void ActionMinimizeGame(int const *params) {
-	//gwin->clear_screen(true);
-	minimized = true;
-	SDL_WM_IconifyWindow();
-	SDL_Delay(250);
-	SDL_WM_IconifyWindow();
-}
-
-// { ActionTouchscreenMode, 0, "Touchscreen mode", normal_keys, NONE },
-void ActionTouchscreenMode(int const *params) {
-	int Right, Double;
-	Touchscreen->getModes(&Right, &Double);
-	if (params[0] == Right)
-		params[0] = 0;
-	if (params[1] == Double)
-		params[1] = 0;
-	Touchscreen->setModes(params[0], params[1]);
-}
-
-// { "KEYBOARD_POSITION", ActionKeyboardPosition, 0, "Keyboard position", normal_keys, NONE, true },
-void ActionKeyboardPosition(int const *params) {
-	// 0 = upper left, 1 = upper right, 2 = lower left, 3 = lower right
-	int corner = params[0];
-	if (corner == -1)
-		corner = gkeyboard->getCorner() + 1;
-	if (corner > 3 || corner < 0)
-		corner = 0;
-
-	gkeyboard->show(corner, -1);
-}
-
-// { "KEYBOARD_MODE", ActionKeyboardMode, 0, "Keyboard mode", normal_keys, NONE, true },
-void ActionKeyboardMode(int const *params) {
-	int newstate = params[0];
-	int curstate = gkeyboard->getState();
-	if (newstate == curstate) {
-		if (newstate == KEYG_HIDDEN)
-			newstate = -1;
-		else
-			newstate = KEYG_MINIMIZED;
-	} else if (newstate == -1) {
-		newstate = curstate + 1;
-		(newstate > KEYG_MINIMIZED) && (newstate = KEYG_KEYBOARD);
-	} else if (newstate < -1 || newstate > KEYG_HIDDEN) {
-		newstate = KEYG_KEYBOARD;
-	}
-	switch (newstate) {
-	case KEYG_MINIMIZED:
-		gkeyboard->minimize();
-		break;
-	case KEYG_HIDDEN:
-		gkeyboard->hide();
-		break;
-	default:
-		gkeyboard->show(-1, newstate);
-		break;
-	}
-}
-
-#endif
 
 // { ActionMenuGump, 0, "GameMenu", normal_keys, NONE },
 void ActionMenuGump(int const *params) {

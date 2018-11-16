@@ -30,9 +30,6 @@ class GameplayOptions_gump : public Modal_gump {
 private:
 	int facestats;
 	int fastmouse;
-#ifdef UNDER_CE
-	int dpadopt;
-#endif
 	int mouse3rd;
 	int doubleclick;
 	int rightclick_close;
@@ -54,11 +51,7 @@ private:
 	    id_facestats,
 	    id_text_bg,
 	    id_fastmouse,
-#ifdef UNDER_CE
-	    id_dpadopt,
-#else
 	    id_mouse3rd,
-#endif
 	    id_doubleclick,
 	    id_rightclick_close,
 	    id_right_pathfind,

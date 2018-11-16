@@ -422,9 +422,6 @@ void Gump_manager::update_gumps() {
 void Gump_manager::paint(bool modal) {
 	for (Gump_list *gmp = open_gumps; gmp; gmp = gmp->next)
 		if (gmp->gump->is_modal() == modal) gmp->gump->paint();
-#ifdef UNDER_CE
-	gkeyboard->paint();
-#endif
 #ifdef __IPHONEOS__
 	gkeybb->paint();
 #endif
@@ -456,25 +453,12 @@ int Gump_manager::handle_modal_gump_event(
 	Uint16 keysym_unicode = 0;
 
 	switch (event.type) {
-#ifdef UNDER_CE
-	case SDL_ACTIVEEVENT:
-		if ((event.active.state & SDL_APPACTIVE) && event.active.gain && minimized) {
-			minimized = false;
-			gwin->set_all_dirty();
-			gwin->show();
-			gwin->paint();
-		}
-#endif
 	case SDL_MOUSEBUTTONDOWN:
 		gwin->get_win()->screen_to_game(event.button.x, event.button.y, gwin->get_fastmouse(), gx, gy);
 
 #ifdef DEBUG
 		cout << "(x,y) rel. to gump is (" << (gx - gump->get_x())
 		     << ", " << (gy - gump->get_y()) << ")" << endl;
-#endif
-#ifdef UNDER_CE
-		if (gkeyboard->handle_event(&event))
-			break;
 #endif
 #ifdef __IPHONEOS__
 		if (gkeybb->handle_event(&event))
@@ -502,10 +486,6 @@ int Gump_manager::handle_modal_gump_event(
 		break;
 	case SDL_MOUSEBUTTONUP:
 		gwin->get_win()->screen_to_game(event.button.x, event.button.y, gwin->get_fastmouse(), gx, gy);
-#ifdef UNDER_CE
-		if (gkeyboard->handle_event(&event))
-			break;
-#endif
 #ifdef __IPHONEOS__
 		if (gkeybb->handle_event(&event))
 			break;
@@ -603,9 +583,6 @@ int Gump_manager::do_modal_gump(
 		paint->paint();
 	Mouse::mouse->show();
 	gwin->show();
-#ifdef UNDER_CE
-	gkeyboard->paint();
-#endif
 #ifdef __IPHONEOS__
 	gkeybb->paint();
 #endif
@@ -626,9 +603,6 @@ int Gump_manager::do_modal_gump(
 		if (!gwin->show() &&    // Blit to screen if necessary.
 		        Mouse::mouse_update)    // If not, did mouse change?
 			Mouse::mouse->blit_dirty();
-#ifdef UNDER_CE
-		gkeyboard->paint();
-#endif
 #ifdef __IPHONEOS__
 		gkeybb->paint();
 #endif

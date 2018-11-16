@@ -108,11 +108,6 @@ Gamemenu_gump::~Gamemenu_gump() {
 void Gamemenu_gump::quit(bool return_to_menu) {
 	ignore_unused_variable_warning(return_to_menu);
 	if (!Yesno_gump::ask("Do you really want to quit?")) {
-#ifdef UNDER_CE
-		if (Yesno_gump::ask("Do you want to minimize?")) {
-			ActionMinimizeGame(NULL);
-		}
-#endif
 		return;
 	}
 	quitting_time = QUIT_TIME_YES;

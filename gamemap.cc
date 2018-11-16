@@ -59,7 +59,6 @@
 #include <sstream>
 #include "ios_state.hpp"
 
-#ifndef UNDER_EMBEDDED_CE
 using std::cerr;
 using std::cout;
 using std::endl;
@@ -79,7 +78,6 @@ using std::strlen;
 using std::srand;
 using std::vector;
 using std::pair;
-#endif
 
 vector<Chunk_terrain *> *Game_map::chunk_terrains = 0;
 std::ifstream *Game_map::chunks = 0;

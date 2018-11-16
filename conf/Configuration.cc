@@ -36,24 +36,17 @@
 #include <sstream>
 #endif
 
-#ifndef UNDER_EMBEDDED_CE
 using std::atoi;
 using std::cerr;
 using std::endl;
 using std::string;
 using std::ostream;
-#endif
-
-#ifndef UNDER_CE
 using std::perror;
-#endif
 
 // isspace could be a macro
-#ifndef UNDER_CE
 #ifndef isspace
 #if defined(_MSC_VER) && (_MSC_VER > 1400)
 using std::isspace;
-#endif
 #endif
 #endif
 
@@ -211,13 +204,6 @@ bool    Configuration::read_config_file(const string &input_filename, const stri
 		}
 #endif // WIN32
 	}
-#ifdef UNDER_CE
-	if (fname[0] != '/' && fname[0] != '\\') {
-		// Its a relative path, so we need to make it into a full path
-		fname = WINCE_exepath + fname;
-	}
-	std::cout << "Config file: " << fname << "\n";
-#endif
 	return read_abs_config_file(fname, root);
 }
 

@@ -33,36 +33,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ODataSource.h"
 #endif
 
-#ifndef UNDER_EMBEDDED_CE
 using std::atof;
 using std::atoi;
 using std::memcmp;
 using std::memcpy;
 using std::memset;
 using std::size_t;
-#endif
 using std::string;
 using std::endl;
 
-#ifndef UNDER_EMBEDDED_CE
 #define XMidiEvent__Malloc XMidiEvent::Malloc
 #define XMidiEvent__Calloc XMidiEvent::Calloc
-#else
-
-template<class T>
-static inline T* XMidiEvent__Malloc(size_t num=1)
-{
-	return static_cast<T*>(std::malloc(num));
-}
-
-template<class T>
-static inline T* XMidiEvent__Calloc(size_t num=1,size_t sz=0)
-{
-	if(!sz) sz=sizeof(T);
-	return static_cast<T*>(std::calloc(num,sz));
-}
-
-#endif
 
 //#include "gamma.h"
 

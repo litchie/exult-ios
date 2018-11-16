@@ -51,14 +51,12 @@
 #include "servemsg.h"
 #endif
 
-#ifndef UNDER_EMBEDDED_CE
 using std::cout;
 using std::cerr;
 using std::endl;
 using std::rand;
 using std::ostream;
 using std::string;
-#endif
 
 Egg_object *Egg_object::editing = 0;
 

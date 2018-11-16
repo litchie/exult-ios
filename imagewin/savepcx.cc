@@ -37,10 +37,8 @@ It has been partly rewritten to use an SDL surface as input.
 #include <iostream>
 #include "sdl-compat.h"
 
-#ifndef UNDER_EMBEDDED_CE
 using std::cout;
 using std::endl;
-#endif
 
 #if SDL_BYTEORDER == SDL_LIL_ENDIAN
 #define qtohl(x) (x)

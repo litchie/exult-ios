@@ -47,18 +47,14 @@
 #include <iostream>
 #include <climits>
 
-#ifndef UNDER_CE
-#  include <csignal>
-#  include <fcntl.h>
-#  include <unistd.h>
-#  include <sys/stat.h>
-#  include <sys/types.h>
-#endif
+#include <csignal>
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 //#include <crtdbg.h>
 
-
-#ifndef UNDER_EMBEDDED_CE
 using std::cerr;
 using std::cout;
 using std::endl;
@@ -70,7 +66,6 @@ using std::strncmp;
 using std::vector;
 using std::ifstream;
 using std::ios;
-#endif
 
 // These MIGHT be macros!
 #ifndef min
@@ -244,11 +239,6 @@ void Audio::Init(void)
 	{
 		int sample_rate = 22050;
 		bool stereo = true;
-
-#ifdef UNDER_CE
-		sample_rate = 11025;
-		stereo = false;
-#endif
 
 		config->value("config/audio/sample_rate", sample_rate, sample_rate);
 		config->value("config/audio/stereo", stereo, stereo);
@@ -841,11 +831,6 @@ void Audio::set_audio_enabled(bool ena)
 
 		int sample_rate = 22050;
 		bool stereo = true;
-
-#ifdef UNDER_CE
-		sample_rate = 11025;
-		stereo = false;
-#endif
 
 		config->value("config/audio/sample_rate", sample_rate, sample_rate);
 		config->value("config/audio/stereo", stereo, stereo);

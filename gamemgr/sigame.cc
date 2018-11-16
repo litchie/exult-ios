@@ -43,13 +43,12 @@
 #include "ignore_unused_variable_warning.h"
 #include "array_size.h"
 
-#ifndef UNDER_EMBEDDED_CE
 using std::cout;
 using std::endl;
 using std::rand;
 using std::strlen;
 using std::toupper;
-#endif
+
 #ifdef __IPHONEOS__
 #include "data/exult_iphone_flx.h"
 #include "exult.h"
@@ -1330,10 +1329,6 @@ bool SI_Game::new_game(Vga_file &shapes) {
 	Skin_data *skindata =
 	    Shapeinfo_lookup::GetSkinInfoSafe(
 	        defskin->default_skin, defskin->default_female, true);
-#ifdef UNDER_CE
-	gkeyboard->autopaint = false;
-	gkeyboard->minimize();
-#endif
 #ifdef __IPHONEOS__
 	gkeybb->autopaint = false;
 #endif
@@ -1360,9 +1355,6 @@ bool SI_Game::new_game(Vga_file &shapes) {
 			else
 				snprintf(disp_name, max_len + 2, "%s", npc_name);
 			font->draw_text(ibuf, topx + 60, menuy + 10, disp_name);
-#ifdef UNDER_CE
-			gkeyboard->paint();
-#endif
 #ifdef __IPHONEOS__
 			gkeybb->paint();
 #endif
@@ -1370,10 +1362,6 @@ bool SI_Game::new_game(Vga_file &shapes) {
 			redraw = false;
 		}
 		while (SDL_PollEvent(&event)) {
-#ifdef UNDER_CE
-			if (gkeyboard->handle_event(&event))
-				redraw = true;
-#endif
 #ifdef __IPHONEOS__
 			if (gkeybb->handle_event(&event))
 				redraw = true;
@@ -1482,10 +1470,6 @@ bool SI_Game::new_game(Vga_file &shapes) {
 	if (ok) {
 #ifdef DEBUG
 		std::cout << "Skin is: " << skindata->skin_id << " Sex is: " << skindata->is_female << std::endl;
-#endif
-#ifdef UNDER_CE
-		gkeyboard->minimize();
-		gkeyboard->autopaint = true;
 #endif
 #ifdef __IPHONEOS__
 		gkeybb->autopaint = true;

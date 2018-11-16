@@ -578,15 +578,6 @@ inline bool U7exists(std::string fname) {
 	return U7exists(fname.c_str());
 }
 
-#ifdef UNDER_CE
-inline void perror(const char *errmsg) {
-	return;
-}
-#define strdup myce_strdup
-char *myce_strdup(const char *s);
-
-#endif
-
 int U7mkdir(
     const char *dirname,
     int mode
@@ -599,9 +590,6 @@ void cleanup_output(const char *prefix = "std");
 void setup_data_dir(const std::string &data_path, const char *runpath);
 void setup_program_paths();
 
-// These are not supported in WinCE (PocketPC) for now
-#ifndef UNDER_CE
-
 int U7chdir(
     const char *dirname
 );
@@ -610,8 +598,6 @@ void U7copy(
     const char *src,
     const char *dest
 );
-
-#endif //UNDER_CE
 
 bool is_system_path_defined(const std::string &key);
 void store_system_paths();

@@ -28,10 +28,8 @@
 #include <cstdio>
 #include <iostream>
 
-#ifndef UNDER_EMBEDDED_CE
 using std::strlen;
 using std::cout;
-#endif
 
 #include "ucinternal.h"
 #include "uctools.h"

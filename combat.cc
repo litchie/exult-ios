@@ -50,11 +50,9 @@
 #include "ready.h"
 #include "usefuns.h"
 
-#ifndef UNDER_EMBEDDED_CE
 using std::cout;
 using std::endl;
 using std::rand;
-#endif
 using std::list;
 
 unsigned long Combat_schedule::battle_time = static_cast<unsigned long>(-30000);

@@ -93,13 +93,6 @@ extern GameManager *gamemanager;
 
 extern quitting_time_enum quitting_time;
 
-#ifdef UNDER_CE
-extern std::string WINCE_exepath;
-extern bool minimized;
-extern class Keyboard_gump *gkeyboard;
-extern class clsTouchscreen *Touchscreen;
-#endif
-
 extern class ShortcutBar_gump *g_shortcutBar;
 #ifdef __IPHONEOS__
 extern class KeyboardButton_gump *gkeybb;

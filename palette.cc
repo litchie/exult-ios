@@ -33,12 +33,10 @@
 
 #include "SDL_timer.h"
 
-#ifndef UNDER_EMBEDDED_CE
 using std::memcpy;
 using std::memset;
 using std::size_t;
 using std::string;
-#endif
 
 unsigned char Palette::border[3] = {
 	0, 0, 0

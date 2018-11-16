@@ -41,10 +41,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "usefuns.h"
 #include "ignore_unused_variable_warning.h"
 
-#ifndef UNDER_EMBEDDED_CE
 using std::memcpy;
 using std::ostream;
-#endif
 
 // ++++TAG: De-hard-code reagent shape and costs.
 const int REAGENTS = 842;       // Shape #.

@@ -56,8 +56,6 @@ int strcasecmp(const char *s1, const char *s2) {
 	return strncasecmp(s1, s2, 2147483647);
 }
 
-#ifndef UNDER_CE
-
 bool ichar_traits::eq(const char_type &c1, const char_type &c2) {
 	uint32 c3 = c1;
 	uint32 c4 = c2;
@@ -81,8 +79,6 @@ bool ichar_traits::lt(const char_type &c1, const char_type &c2) {
 int ichar_traits::compare(const char_type *s1, const char_type *s2, size_t length) {
 	return strncasecmp(s1, s2, length);
 }
-
-#endif
 
 }
 
