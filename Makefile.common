@@ -88,7 +88,6 @@ MT32EMU_OBJS=\
 # Note we now always compile all midi drivers
 MIDI_DRV_OBJS=\
 	audio/midi_drivers/ALSAMidiDriver.o \
-	audio/midi_drivers/amiga_midi.o \
 	audio/midi_drivers/CoreAudioMidiDriver.o \
 	audio/midi_drivers/FileMidiDriver.o \
 	audio/midi_drivers/FluidSynthMidiDriver.o \

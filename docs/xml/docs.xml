@@ -430,7 +430,7 @@
 								<configtag name="driver">
 								default
 								<comment>**choose your music driver between default, MT32Emu, Fluidsynth, FMOPL, </comment>
-								<comment>TiMidity, Windows, Amiga, Forked, KMIDI, alsa, CoreAudio, </comment>
+								<comment>TiMidity, Windows, Forked, KMIDI, alsa, CoreAudio, </comment>
 								<comment>CoreMidi, UnixSeqDevice. </comment>
 								<comment>See <ref target="music"/> for details.</comment>
 								</configtag>
@@ -1216,8 +1216,6 @@
 						If both sets are present the CM32L ROM set will be used.</li>
 					<li><strong>Windows</strong><br/>
         				When you are using Windows and for some reason the <strong>Default</strong> driver doesn't work.</li>
-					<li><strong>Amiga</strong><br/>
-        				Uses the Amiga MIDI driver on the Amiga system.</li>
 					<li><strong>CoreAudio</strong><br/>
         				uses XMIDI on Mac OS X. You can use a different soundfont than OS X' default by pointing
 						&lt;config&gt;&lt;audio&gt;&lt;midi&gt;&lt;coreaudio_soundfont&gt; to it in exult.cfg.</li>

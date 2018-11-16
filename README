@@ -459,7 +459,7 @@ Note: yes means enabled, no means disabled
       <driver>
       default
 				**choose your music driver between default, MT32Emu, Fluidsynth, FMOPL, 
-				TiMidity, Windows, Amiga, Forked, KMIDI, alsa, CoreAudio, 
+				TiMidity, Windows, Forked, KMIDI, alsa, CoreAudio, 
 				CoreMidi, UnixSeqDevice. 
 				See 3.1. for details.
       </driver>
@@ -962,7 +962,6 @@ The MIDI driver can be changed to:
 * FluidSynth is another software synthesizer, which uses SoundFont 2 technology without need for a SoundFont-compatible sound card. It is available for many Operating Systems and opposed to TiMidity still actively developed. Since Fluidsynth pulls in many dependencies it is not compiled into Exult at the moment. If you compiled Exult ourself and you enabled Fluidsynth you just need to edit exult.cfg and point <config><audio><midi><fluidsynth_soundfont> to the SoundFont you want to use. Exult supports FluidSynth's soundfont stack. Soundfonts are specified in the <config><audio><midi><fluidsynth_soundfontN> exult.cfg entries (N = 0 to 9) which are loaded in numerical order (0 first), plus the old <fluidsynth_soundfont> entry, which loads after all others.
 * MT32Emu Roland MT32 emulation requires either the ROM set "MT32_CONTROL.ROM" and "MT32_PCM.ROM" or the ROM set "CM32L_CONTROL.ROM" and "CM32L_PCM.ROM" in the Exult data folder. If both sets are present the CM32L ROM set will be used.
 * Windows When you are using Windows and for some reason the Default driver doesn't work.
-* Amiga Uses the Amiga MIDI driver on the Amiga system.
 * CoreAudio uses XMIDI on Mac OS X. You can use a different soundfont than OS X' default by pointing <config><audio><midi><coreaudio_soundfont> to it in exult.cfg.
 * CoreMIDI on Mac OS X this MIDI driver allows using a real MIDI device like a Roland MT32 or software MIDI devices like Munt MT-32 Emulator. If you have more than one MIDI device you can choose the the device by setting the device ID in exult.cfg <config><audio><midi><coremidi_device> - see 3.5..
 * alsa uses ALSA on Linux systems. If your ALSA port is not on 65:0 you need to change <config><audio><midi><alsa_port> in the exult.cfg.

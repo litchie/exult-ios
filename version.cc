@@ -253,10 +253,6 @@ void getVersionInfo(std::ostream &out) {
 	}
 #elif (defined(MACOSX))
 	out << "Mac OS X";
-#elif (defined(__MORPHOS__))
-	out << "MorphOS";
-#elif (defined(AMIGA))
-	out << "Amiga";
 #elif (defined(NETBSD))
 	out << "NetBSD";
 #else

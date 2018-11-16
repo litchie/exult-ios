@@ -141,40 +141,6 @@ int U7ListFiles(const std::string &mask, FileList &files) {
 	return 0;
 }
 
-
-#elif defined(__MORPHOS__) || defined(AMIGA)
-
-#define NO_PPCINLINE_VARARGS
-#define NO_PPCINLINE_STDARG
-#include <proto/dos.h>
-
-static struct AnchorPath ap __attribute__((aligned(4)));
-
-int U7ListFiles(const std::string &mask, FileList &files) {
-	string path(get_system_path(mask));
-	char   buffer[ 256 ];
-	size_t pos;
-
-	// convert MS-DOS jokers to AmigaDOS wildcards
-	while ((pos = path.find('*')) != string::npos)
-		path.replace(pos, 1, "#?");
-
-	if (ParsePattern(path.c_str(), buffer, sizeof(buffer)) != -1) {
-		LONG error = MatchFirst(buffer, &ap);
-
-		while (error == DOSFALSE) {
-			files.push_back(ap.ap_Info.fib_FileName);
-			error = MatchNext(&ap);
-		}
-
-		MatchEnd(&ap);
-	} else
-		cout << "ParsePattern() failed." << endl;
-
-	return 0;
-}
-
-
 #else   // This system has glob.h
 
 #include <glob.h>
