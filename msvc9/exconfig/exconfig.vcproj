@@ -567,7 +567,7 @@
 				ExecutionBucket="7"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\Gumps,..\,..\..\,..\..\conf,..\..\files,..\..\filc,..\..\imagewin,..\..\objs,..\..\shapes,..\..\usecode,..\..\Audio,..\..\Audio\MIDI_drivers,..\..\data,..\..\headers"
-				PreprocessorDefinitions="_DEBUG;_WINDOWS;_USRDLL;EXCONFIG_EXPORTS;WIN32;USING_PRECOMPILED_HEADER;DEBUG;ARM;_ARM_;ARMV4T;_CONSOLE;EXULT;_WIN32_WCE=$(CEVER);$(CePlatform);UNDER_CE=$(CEVER);UNICODE"
+				PreprocessorDefinitions="_DEBUG;_WINDOWS;_USRDLL;EXCONFIG_EXPORTS;WIN32;USING_PRECOMPILED_HEADER;DEBUG;ARM;_ARM_;ARMV4T;_CONSOLE;EXULT;UNICODE"
 				RuntimeLibrary="1"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="msvc_kludges.h"

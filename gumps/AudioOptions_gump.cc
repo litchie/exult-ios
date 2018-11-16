@@ -328,14 +328,8 @@ void AudioOptions_gump::load_settings() {
 	bool sfx_on = (Audio::get_ptr()->are_effects_enabled() ? true : false);
 	speech_enabled = (Audio::get_ptr()->is_speech_enabled() ? 1 : 0);
 	midi_looping = (Audio::get_ptr()->is_music_looping_allowed() ? 1 : 0);
-
-#ifdef UNDER_CE
-	speaker_type = 0; // mono
-	sample_rate = 11025;
-#else
 	speaker_type = 1; // stereo
 	sample_rate = 22050;
-#endif
 	config->value("config/audio/stereo", speaker_type, speaker_type);
 	config->value("config/audio/sample_rate", sample_rate, sample_rate);
 	num_sample_rates = 4;

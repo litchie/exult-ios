@@ -56,10 +56,6 @@
 #include <csignal>
 #endif
 
-#ifdef UNDER_CE
-#include <gx.h>
-#endif
-
 #include "Audio.h"
 #include "Configuration.h"
 #include "Gump_manager.h"
@@ -104,16 +100,12 @@
 #include "ignore_unused_variable_warning.h"
 using namespace Pentagram;
 
-#ifdef UNDER_CE
-#  include "Keyboard_gump.h"
-#  include "touchscreen.h"
-#endif
 #ifdef __IPHONEOS__
 #  include "iphone_gumps.h"
 #  include "touchui.h"
 #  include "ios_utils.h"
 #endif
-#ifndef UNDER_EMBEDDED_CE
+
 using std::atof;
 using std::cerr;
 using std::cout;
@@ -123,7 +115,6 @@ using std::exit;
 using std::toupper;
 using std::string;
 using std::vector;
-#endif
 
 #if SDL_VERSION_ATLEAST(2, 0, 0) && (defined(WIN32) || (defined(MACOSX) && defined(USE_EXULTSTUDIO)))
 
@@ -168,12 +159,6 @@ bool ignore_crc = false;
 
 const std::string c_empty_string;
 
-#ifdef UNDER_CE
-string WINCE_exepath;
-bool minimized;
-Keyboard_gump *gkeyboard;
-clsTouchscreen *Touchscreen;
-#endif
 #ifdef __IPHONEOS__
 SDL_Joystick *sdl_joy;
 TouchUI *touchui;
@@ -191,14 +176,6 @@ struct resolution {
 	int y;
 	int scale;
 } res_list[] = {
-#ifdef UNDER_CE
-	{ 240, 160, 1 },
-	{ 160, 240, 1 },
-	{ 240, 320, 1 },
-	{ 240, 160, 2 },
-	{ 160, 240, 2 },
-	{ 240, 320, 2 },
-#endif
 	{ 320, 200, 1 },
 	{ 320, 240, 1 },
 	{ 400, 300, 1 },
@@ -573,26 +550,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
  */
 
 int exult_main(const char *runpath) {
-#ifdef UNDER_CE
-	HWND RunningHandle = FindWindow(NULL, _T("Exult Ultima7 Engine"));
-	if (RunningHandle != NULL) {
-		// There's a minimized (probably) instance of Exult ... let's switch to it
-		//cerr << "ERROR: Already running.  Switching to running instance..." << std::endl;
-		HWND OldHandle = GetForegroundWindow();
-		ShowWindow(RunningHandle, SW_RESTORE);
-		ShowWindow(OldHandle, SW_MINIMIZE);
-		return -1;
-	}
-	minimized = false;
-#endif
-
 	string music_path;
 	// output version info
 	getVersionInfo(cout);
 
-#ifdef UNDER_CE
-	WINCE_exepath = string(runpath).substr(0, string(runpath).find_last_of("\\") + 1);
-#endif
 #ifndef WIN32
 	setup_program_paths();
 #endif
@@ -602,14 +563,7 @@ int exult_main(const char *runpath) {
 	if (arg_configfile != "") {
 		config->read_abs_config_file(arg_configfile);
 	} else {
-#ifdef EASY_USER_CONFIGURATION_FILE
-		if (U7exists(EASY_USER_CONFIGURATION_FILE))
-			config->read_config_file(EASY_USER_CONFIGURATION_FILE);
-		else
-			config->read_config_file(USER_CONFIGURATION_FILE);
-#else
 		config->read_config_file(USER_CONFIGURATION_FILE);
-#endif
 	}
 
 	// reset-video command line option
@@ -744,23 +698,6 @@ int exult_main(const char *runpath) {
 
 	cheat.init();
 
-#ifdef UNDER_CE
-	GXOpenInput();
-
-	GXKeyList keys = GXGetDefaultKeys(GX_LANDSCAPEKEYS);
-
-	std::cout << "Up " << keys.vkUp << std::endl;
-	std::cout << "Down " << keys.vkDown << std::endl;
-	std::cout << "Left " << keys.vkLeft << std::endl;
-	std::cout << "Right " << keys.vkRight << std::endl;
-	std::cout << "A " << keys.vkA << std::endl;
-	std::cout << "B " << keys.vkB << std::endl;
-	std::cout << "C " << keys.vkC << std::endl;
-	std::cout << "Start " << keys.vkStart << std::endl;
-
-	gkeyboard = new Keyboard_gump();
-	Touchscreen = new clsTouchscreen();
-#endif
 #ifdef __IPHONEOS__
 	touchui = new TouchUI_iOS();
 #endif
@@ -774,12 +711,6 @@ int exult_main(const char *runpath) {
 	Mouse::mouse = new Mouse(gwin);
 	Mouse::mouse->set_shape(Mouse::hand);
 
-#ifdef UNDER_CE
-	gkeyboard->autopaint = false;
-	gkeyboard->minimize();
-	gkeyboard->autopaint = true;
-#endif
-
 #ifdef __IPHONEOS__
 	touchui->showButtonControls();
 	Usecode_machine *usecode = Game_window::get_instance()->get_usecode();
@@ -790,10 +721,6 @@ int exult_main(const char *runpath) {
 #endif
 
 	int result = Play();        // start game
-
-#ifdef UNDER_CE
-	GXCloseInput();
-#endif
 
 #ifdef USE_EXULTSTUDIO
 	// Currently, leaving the game results in destruction of the window.
@@ -1128,7 +1055,7 @@ static void Init(
 	                Move_dragged_shape, Move_dragged_combo,
 	                Drop_dragged_shape, Drop_dragged_chunk,
 	                Drop_dragged_npc, Drop_dragged_combo);
-#elif !defined(UNDER_CE)
+#else
 #if SDL_VERSION_ATLEAST(2, 0, 0)
 	SDL_GetWindowWMInfo(gwin->get_win()->get_screen_window(), &info);
 	hgwin = info.info.win.window;
@@ -1528,11 +1455,6 @@ static void Handle_event(
 		uint32 curtime = SDL_GetTicks();
 		last_b1down_click = curtime;
 #endif
-#ifdef UNDER_CE
-		if (gkeyboard->handle_event(&event))
-			break;
-		Touchscreen->handle_event(&event);
-#endif
 		if (g_shortcutBar && g_shortcutBar->handle_event(&event))
 			break;
 		int x, y;
@@ -1621,11 +1543,6 @@ static void Handle_event(
 	case SDL_MOUSEBUTTONUP: {
 		if (dont_move_mode)
 			break;
-#ifdef UNDER_CE
-		if (gkeyboard->handle_event(&event))
-			break;
-		Touchscreen->handle_event(&event);
-#endif
 		int x , y;
 		gwin->get_win()->screen_to_game(event.button.x, event.button.y, gwin->get_fastmouse(), x, y);
 
@@ -1931,11 +1848,6 @@ static int Get_click(
 		while (SDL_PollEvent(&event))
 			switch (event.type) {
 			case SDL_MOUSEBUTTONDOWN:
-#ifdef UNDER_CE
-				if (gkeyboard->handle_event(&event))
-					break;
-				Touchscreen->handle_event(&event);
-#endif
 				if (g_shortcutBar && g_shortcutBar->handle_event(&event))
 					break;
 				if (event.button.button == 3)
@@ -1947,11 +1859,6 @@ static int Get_click(
 				}
 				break;
 			case SDL_MOUSEBUTTONUP:
-#ifdef UNDER_CE
-				if (gkeyboard->handle_event(&event))
-					break;
-				Touchscreen->handle_event(&event);
-#endif
 				if (g_shortcutBar && g_shortcutBar->handle_event(&event))
 					break;
 				if (event.button.button == 1) {
@@ -2490,11 +2397,7 @@ void setup_video(bool fullscreen, int setup_video_type, int resx, int resy,
 #endif
 		int w, h, sc;
 		string default_scaler, fill_scaler_str;
-#ifdef UNDER_CE
-		// WinCE default resolution is 320x240 with no scaling
-		w = 320, h = 240, sc = 1;
-		default_scaler = "point";
-#elif defined(__IPHONEOS__)
+#ifdef __IPHONEOS__
 		SDL_DisplayMode dispmode;
 		if (SDL_GetDesktopDisplayMode(SDL_COMPAT_DISPLAY_INDEX, &dispmode) == 0) {
 			w = dispmode.w, h = dispmode.h,	sc = 1;
@@ -2505,8 +2408,8 @@ void setup_video(bool fullscreen, int setup_video_type, int resx, int resy,
         fullscreen = 1;
 #else
 		// Default resolution is now 320x240 with 2x scaling
-		w = 320, h = 240, sc = 2;
-		default_scaler = "2xSaI";
+		int w = 320, h = 240, sc = 2;
+		string default_scaler = "2xSaI", fill_scaler_str;
 #endif
 		if (video_init) {
 			// Convert from old video dims to new

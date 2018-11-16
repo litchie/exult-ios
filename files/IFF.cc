@@ -33,14 +33,11 @@
 
 using std::string;
 using std::vector;
-
-#ifndef UNDER_EMBEDDED_CE
 using std::cout;
 using std::cerr;
 using std::endl;
 using std::memcmp;
 using std::size_t;
-#endif
 
 /**
  *  Reads the header from an IFF and builds an object index.

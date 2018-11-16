@@ -30,9 +30,6 @@
 #include "shapeid.h"
 #include "gump_utils.h"
 
-#ifdef UNDER_CE
-#include <string.h>
-#endif
 // MenuEntry: a selectable menu entry (a button)
 MenuEntry::MenuEntry(Shape_frame *on, Shape_frame *off, int xpos, int ypos) {
 	frame_on = on;

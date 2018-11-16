@@ -26,14 +26,12 @@
 #include "exceptions.h"
 #include "ignore_unused_variable_warning.h"
 
-#ifndef UNDER_EMBEDDED_CE
 using std::cout;
 using std::endl;
 using std::size_t;
 using std::string;
 using std::strncmp;
 using std::toupper;
-#endif
 
 FontManager fontManager;
 

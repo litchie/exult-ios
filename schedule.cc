@@ -47,12 +47,10 @@
 #include "ignore_unused_variable_warning.h"
 #include "array_size.h"
 
-#ifndef UNDER_EMBEDDED_CE
 using std::cout;
 using std::cerr;
 using std::endl;
 using std::rand;
-#endif
 
 vector<char *> Schedule_change::script_names;
 int Patrol_schedule::num_path_eggs = -1;

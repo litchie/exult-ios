@@ -49,7 +49,6 @@
 #include "shapes/miscinf.h"
 #include "array_size.h"
 
-#ifndef UNDER_EMBEDDED_CE
 using std::cout;
 using std::endl;
 using std::ifstream;
@@ -57,7 +56,6 @@ using std::strcmp;
 using std::strcpy;
 using std::strncmp;
 using std::string;
-#endif
 
 bool Game::new_game_flag = false;
 bool Game::editing_flag = false;

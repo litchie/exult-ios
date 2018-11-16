@@ -19,11 +19,7 @@
 #ifndef EXCEPTIONS_H
 #define EXCEPTIONS_H
 
-#ifdef UNDER_CE
-extern int errno;
-#else
 #include <cerrno>
-#endif
 #include <stdexcept>
 #include <string>
 

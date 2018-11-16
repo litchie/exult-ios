@@ -126,13 +126,8 @@ void GameplayOptions_gump::toggle(Gump_button *btn, int state) {
 		facestats = state;
 	else if (btn == buttons[id_fastmouse])
 		fastmouse = state;
-#ifdef UNDER_CE
-	else if (btn == buttons[id_dpadopt])
-		dpadopt = state;
-#else
 	else if (btn == buttons[id_mouse3rd])
 		mouse3rd = state;
-#endif
 	else if (btn == buttons[id_doubleclick])
 		doubleclick = state;
 	else if (btn == buttons[id_cheats])
@@ -180,14 +175,6 @@ void GameplayOptions_gump::build_buttons() {
 	textbgcolor[16] = "Dark gray";
 	textbgcolor[17] = "White";
 
-#ifdef UNDER_CE
-	std::string *dpadtext = new std::string[4];
-	dpadtext[0] = "Portrait";
-	dpadtext[1] = "Landscape1";
-	dpadtext[2] = "Landscape2";
-	dpadtext[3] = "Normal";
-#endif
-
 	std::string *smooth_text = new std::string[5];
 	smooth_text[0] = "Disabled";
 	smooth_text[1] = "25%";
@@ -211,10 +198,6 @@ void GameplayOptions_gump::build_buttons() {
 #ifndef __IPHONEOS__
 	buttons[id_fastmouse] = new GameplayEnabledToggle(this, colx[3], rowy[3],
 	        59, fastmouse);
-/*#ifdef UNDER_CE
-	buttons[id_dpadopt] = new GameplayTextToggle(this, dpadtext, colx[3] - 21, rowy[4],
-	        80, dpadopt, 4);
-#else*/
 	buttons[id_mouse3rd] = new GameplayEnabledToggle(this, colx[3], rowy[4],
 	        59, mouse3rd);
 #endif
@@ -238,11 +221,7 @@ void GameplayOptions_gump::build_buttons() {
 
 void GameplayOptions_gump::load_settings() {
 	fastmouse = gwin->get_fastmouse(true);
-#ifdef UNDER_CE
-	config->value("config/gameplay/dpadopt", dpadopt, 0);
-#else
 	mouse3rd = gwin->get_mouse3rd();
-#endif
 	cheats = cheat();
 	if (gwin->is_in_exult_menu()) {
 		config->value("config/gameplay/facestats", facestats, -1);
@@ -313,13 +292,8 @@ void GameplayOptions_gump::save_settings() {
 	config->set("config/video/fps", fps, false);
 	gwin->set_fastmouse(fastmouse != 0);
 	config->set("config/gameplay/fastmouse", fastmouse ? "yes" : "no", false);
-#ifdef UNDER_CE
-	config->set("config/gameplay/dpadopt", dpadopt, false);
-	keybinder->WINCE_LoadFromDPADOPT(dpadopt);
-#else
 	gwin->set_mouse3rd(mouse3rd != 0);
 	config->set("config/gameplay/mouse3rd", mouse3rd ? "yes" : "no", false);
-#endif
 	gwin->set_double_click_closes_gumps(doubleclick != 0);
 	config->set("config/gameplay/double_click_closes_gumps",
 	            doubleclick ? "yes" : "no", false);
@@ -371,9 +345,6 @@ void GameplayOptions_gump::paint() {
 		font->paint_text(iwin->get_ib8(), "Paperdolls:", x + colx[0], y + rowy[12] + 1);
 #ifndef __IPHONEOS__
 	font->paint_text(iwin->get_ib8(), "Fullscreen Fast Mouse:", x + colx[0], y + rowy[3] + 1);
-/*#ifdef UNDER_CE
-	font->paint_text(iwin->get_ib8(), "D-Pad:", x + colx[0], y + rowy[4] + 1);
-#else*/
 	font->paint_text(iwin->get_ib8(), "Use Middle Mouse Button:", x + colx[0], y + rowy[4] + 1);
 #endif
 	font->paint_text(iwin->get_ib8(), "Doubleclick closes Gumps:", x + colx[0], y + rowy[5] + 1);

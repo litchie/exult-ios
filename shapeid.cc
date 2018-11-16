@@ -241,10 +241,6 @@ void Shape_manager::load(
 	fonts = new Fonts_vga_file();
 	fonts->init();
 
-#ifdef UNDER_CE
-	files[SF_POCKETPC_FLX].load(POCKETPC_FLX);
-#endif
-
 	// Get translucency tables.
 	unsigned char *blends = 0;
 	unsigned char *ptr; // We will delete THIS at the end, not blends!

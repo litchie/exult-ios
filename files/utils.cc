@@ -31,9 +31,7 @@
 #include <fstream>
 #include <map>
 #include <list>
-#ifndef UNDER_CE
 #include <sys/stat.h>
-#endif
 #include <unistd.h>
 
 #ifdef __IPHONEOS__
@@ -43,9 +41,7 @@
 #ifdef WIN32
 #include <windows.h>
 #include <shlobj.h>
-#ifndef UNDER_CE
 #include <direct.h> // For mkdir and chdir
-#endif
 #endif
 
 #include <cassert>
@@ -173,12 +169,6 @@ string get_system_path(const string &path) {
 		std::cerr << "Expansion resulted in '" << new_path << "'." << std::endl;
 		exit(1);
 	}
-#ifdef UNDER_CE
-	if (new_path[0] != '/' && new_path[0] != '\\') {
-		// Its a relative path, so we need to make it into a full path
-		new_path = WINCE_exepath + new_path;
-	}
-#endif
 
 	switch_slashes(new_path);
 #ifdef WIN32
@@ -473,15 +463,6 @@ bool U7exists(
     const char *fname         // May be converted to upper-case.
 ) {
 	string name = get_system_path(fname);
-
-#ifdef UNDER_CE // This is a bit of a hack for WinCE
-	const char *n = name.c_str();
-	int nLen = std::strlen(n) + 1;
-	LPTSTR lpszT = (LPTSTR) alloca(nLen * 2);
-	MultiByteToWideChar(CP_ACP, 0, n, -1, lpszT, nLen);
-	return GetFileAttributes(lpszT) != 0xFFFFFFFF;
-#else
-
 	bool    exists;
 	struct stat sbuf;
 
@@ -494,7 +475,6 @@ bool U7exists(
 
 	// file not found
 	return false;
-#endif
 }
 
 /*
@@ -797,9 +777,6 @@ void setup_program_paths() {
 	U7mkdir("<SAVEHOME>", 0755);
 }
 
-// These are not supported in WinCE (PocketPC) for now
-#ifndef UNDER_CE
-
 /*
  *  Change the current directory
  *
@@ -860,7 +837,6 @@ void U7copy(
 
 	return;
 }
-#endif //UNDER_CE
 
 /*
  *  Take log2 of a number.
@@ -964,12 +940,3 @@ int Find_next_map(
 	return -1;
 }
 
-#ifdef UNDER_CE
-int errno;
-char *myce_strdup(const char *s) {
-	int l = strlen(s);
-	char *newstr = reinterpret_cast<char *>(malloc(sizeof(char) * (l + 1)));
-	strcpy(newstr, s);
-	return newstr;
-}
-#endif

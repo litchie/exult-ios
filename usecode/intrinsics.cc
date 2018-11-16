@@ -66,13 +66,11 @@
 #include "ignore_unused_variable_warning.h"
 #include "array_size.h"
 
-#ifndef UNDER_EMBEDDED_CE
 using std::cerr;
 using std::cout;
 using std::endl;
 using std::rand;
 using std::strchr;
-#endif
 
 extern Usecode_value no_ret;
 

@@ -25,9 +25,6 @@
 // This will get prepended with different things at runtime
 // depending on the OS
 #define USER_CONFIGURATION_FILE "exult.cfg"
-#ifdef UNDER_CE
-#define EASY_USER_CONFIGURATION_FILE "exult.cfg.txt"
-#endif
 
 #if (defined(MACOSX) || defined(__IPHONEOS__)) && !defined(EXULT_DATADIR)
 #define EXULT_DATADIR   "data"
@@ -164,10 +161,6 @@
 #define BUNDLE_EXULT_BG_FLX "<BUNDLE>/exult_bg.flx"
 #define BUNDLE_EXULT_SI_FLX "<BUNDLE>/exult_si.flx"
 #define BUNDLE_EXULT_GAM_FLX "<BUNDLE>/exult_%s.flx"
-
-#if defined(UNDER_CE)
-#define POCKETPC_FLX "<DATA>/exult_pocketpc.flx"
-#endif
 
 #define AUTONOTES   "autonotes.txt"
 #define PATCH_AUTONOTES "<PATCH>/autonotes.txt"

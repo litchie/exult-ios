@@ -39,7 +39,6 @@
 #include "databuf.h"
 #include "ios_state.hpp"
 
-#ifndef UNDER_EMBEDDED_CE
 using std::cout;
 using std::endl;
 using std::dec;
@@ -50,8 +49,6 @@ using std::setfill;
 using std::setw;
 using std::strcmp;
 using std::strlen;
-#endif
-
 
 /*
  *  Destructor

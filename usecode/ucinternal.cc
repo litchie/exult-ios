@@ -78,7 +78,6 @@
 #include "debugserver.h"
 #endif
 
-#ifndef UNDER_EMBEDDED_CE
 using std::cerr;
 using std::cout;
 using std::endl;
@@ -103,7 +102,6 @@ using std::strcpy;
 using std::strlen;
 using std::vector;
 using std::ostream;
-#endif
 
 // External globals..
 

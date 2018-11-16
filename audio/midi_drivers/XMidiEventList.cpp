@@ -28,14 +28,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ODataSource.h"
 #endif
 
-#ifndef UNDER_EMBEDDED_CE
 using std::atof;
 using std::atoi;
 using std::memcmp;
 using std::memcpy;
 using std::memset;
 using std::size_t;
-#endif
 using std::string;
 using std::endl;
 

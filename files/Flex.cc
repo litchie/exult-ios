@@ -32,7 +32,6 @@
 #include "utils.h"
 #include "databuf.h"
 
-#ifndef UNDER_EMBEDDED_CE
 using std::endl;
 using std::memset;
 using std::size_t;
@@ -40,7 +39,6 @@ using std::string;
 using std::strncpy;
 using std::ofstream;
 using std::ios;
-#endif
 
 /**
  *  Reads the header from a flex and builds an object index.

@@ -31,14 +31,12 @@
 #include "data/exult_bg_flx.h"
 #include "array_size.h"
 
-#ifndef UNDER_EMBEDDED_CE
 using std::cout;
 using std::endl;
 using std::size_t;
 using std::strcpy;
 using std::string;
 using std::vector;
-#endif
 
 //TODO: show_face & show_avatar_choices seem to share code?
 //TODO: show_avatar_choices shouldn't first convert to char**, probably

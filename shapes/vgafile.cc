@@ -41,7 +41,6 @@
 #include <utility>
 #include <map>
 
-#ifndef UNDER_EMBEDDED_CE
 using std::cerr;
 using std::cout;
 using std::endl;
@@ -53,7 +52,6 @@ using std::ostream;
 using std::vector;
 using std::string;
 using std::pair;
-#endif
 
 GL_manager *Shape_frame::glman = 0;
 Image_buffer8 *Shape_frame::scrwin = 0;

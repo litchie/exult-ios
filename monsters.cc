@@ -37,9 +37,7 @@
 #include "actors.h"
 #include "ignore_unused_variable_warning.h"
 
-#ifndef UNDER_EMBEDDED_CE
 using std::rand;
-#endif
 
 /*
  *  Slimes move differently.

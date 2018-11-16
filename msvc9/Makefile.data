@@ -65,23 +65,3 @@ rebuild_si : clean_si build_si
 
 reinst_si : clean_si install_si
 
-
-# exult_pocketpc.flx
-build_pocketpc :
-!if !EXIST(data\exult_pocketpc.flx)
-	cd data\pocketpc
-	..\..\expack$(EXEEXT) -i flx.in
-	cd ..\..
-!endif
-
-install_pocketpc : 
-	copy data\exult_pocketpc.flx "$(EXULT_INSTALL_PATH)\data"
-
-clean_pocketpc :
-	del data\exult_pocketpc_flx.h
-	del data\exult_pocketpc.flx
-
-rebuild_pocketpc : clean_pocketpc build_pocketpc
-
-reinst_pocketpc : clean_pocketpc install_pocketpc
-

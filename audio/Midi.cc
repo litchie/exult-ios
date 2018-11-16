@@ -19,9 +19,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Includes Pentagram headers so we must include pent_include.h
 #include "pent_include.h"
 
-#ifndef UNDER_CE
-#  include <csignal>
-#endif
+#include <csignal>
 #include <iostream>
 #include <unistd.h>
 #include <fstream>
@@ -52,13 +50,11 @@ extern	Configuration	*config;
 #include "AudioMixer.h"
 #include "OggAudioSample.h"
 
-#ifndef UNDER_EMBEDDED_CE
 using std::cerr;
 using std::cout;
 using std::endl;
 using std::string;
 using std::strcpy;
-#endif
 
 //
 // Midi devices types and conversions

@@ -95,7 +95,6 @@
 #ifdef __IPHONEOS__
 #include "iphone_gumps.h"
 #endif
-#ifndef UNDER_EMBEDDED_CE
 using std::cerr;
 using std::cout;
 using std::endl;
@@ -112,7 +111,6 @@ using std::string;
 using std::strlen;
 using std::srand;
 using std::vector;
-#endif
 
 // THE game window:
 Game_window *Game_window::game_window = 0;
@@ -678,12 +676,6 @@ void Game_window::init_files(bool cycle) {
 		}
 	}
 	keybinder->LoadFromPatch();
-#ifdef UNDER_CE
-	// Take care of special WinCE D-PAD Options
-	int dpadopt;
-	config->value("config/gameplay/dpadopt", dpadopt, 3);
-	keybinder->WINCE_LoadFromDPADOPT(dpadopt);
-#endif
 	CYCLE_RED_PLASMA();
 
 	int fps;            // Init. animation speed.

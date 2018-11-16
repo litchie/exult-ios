@@ -35,14 +35,12 @@
 #include "Yesno_gump.h"
 #include "array_size.h"
 
-#ifndef UNDER_EMBEDDED_CE
 using std::cout;
 using std::endl;
 using std::memmove;
 using std::string;
 using std::strlen;
 using std::strncpy;
-#endif
 
 /*
  *  Statics:
