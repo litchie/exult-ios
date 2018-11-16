@@ -282,7 +282,7 @@ void Shapes_vga_file::write_info(
 			wihh.write(reinterpret_cast<char *>(info[i].weapon_offsets), 64);
 	wihh.close();
 
-	ofstream(occ);          // Write occlude.dat.
+	ofstream occ;          // Write occlude.dat.
 	U7open(occ, PATCH_OCCLUDE);
 	unsigned char occbits[c_occsize];   // c_max_shapes bit flags.
 	// +++++This could be rewritten better!

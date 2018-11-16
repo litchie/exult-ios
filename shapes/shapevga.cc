@@ -520,7 +520,7 @@ void Shapes_vga_file::read_info(
 		wihh.close();
 	}
 
-	ifstream(occ);          // Read flags from occlude.dat.
+	ifstream occ;          // Read flags from occlude.dat.
 	if (U7open2(occ, patch_name(PATCH_OCCLUDE), OCCLUDE, editing)) {
 		unsigned char occbits[c_occsize];   // c_max_shapes bit flags.
 		// Ensure sensible defaults.
