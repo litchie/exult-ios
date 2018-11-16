@@ -165,7 +165,7 @@ int Font::paint_text_box(
 		const char *ewrd = Pass_word(text);
 		int width;
 		if (ucase_next) {
-			const char c = static_cast<const char>(toupper(*text));
+			const char c = static_cast<char>(toupper(*text));
 			width = get_text_width(&c, 1u)
 			        + get_text_width(text + 1, static_cast<uint32>(ewrd - text - 1));
 		} else
@@ -186,7 +186,7 @@ int Font::paint_text_box(
 			                  cury, cur_line);
 		// Store word.
 		if (ucase_next) {
-			lines[cur_line].push_back(static_cast<const char>(toupper(*text)));
+			lines[cur_line].push_back(static_cast<char>(toupper(*text)));
 			++text;
 		}
 		lines[cur_line].append(text, ewrd - text);
@@ -383,7 +383,7 @@ int Font::paint_text_box_fixedwidth(
 
 		// Store word.
 		if (ucase_next) {
-			lines[cur_line].push_back(static_cast<const char>(toupper(*text)));
+			lines[cur_line].push_back(static_cast<char>(toupper(*text)));
 			++text;
 		}
 		lines[cur_line].append(text, ewrd - text);
@@ -603,7 +603,7 @@ int Font::find_cursor(
 		const char *ewrd = Pass_word(text);
 		int width;
 		if (ucase_next) {
-			const char c = static_cast<const char>(toupper(*text));
+			const char c = static_cast<char>(toupper(*text));
 			width = get_text_width(&c, 1u)
 			        + get_text_width(text + 1, static_cast<uint32>(ewrd - text - 1));
 		} else
