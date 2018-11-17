@@ -80,7 +80,7 @@ public:
 		return (fontnum >= 0 &&
 		        static_cast<unsigned int>(fontnum) < fonts.size()) ?
 		       &(fonts[fontnum]) : NULL;
-	};
+	}
 };
 
 #endif

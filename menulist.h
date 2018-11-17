@@ -49,7 +49,7 @@ public:
 	}
 	bool is_mouse_over(int mx, int my) {
 		return ((mx >= x1) && (mx <= x2) && (my >= y1) && (my <= y2));
-	};
+	}
 
 	virtual void paint(Game_window *gwin) = 0;
 	virtual bool handle_event(SDL_Event &event) = 0;

@@ -34,8 +34,8 @@ public:
 	          std::map<unsigned int, std::string>& new_varmap)
 		: funcid(new_funcid), num_args(new_num_args), return_var(new_return_var), aborts(new_aborts),
 		  class_fun(new_class_fun), funcname(new_funcname), kind(new_kind),
-		  varmap(new_varmap) {};
-	~UCFuncSet() {};
+		  varmap(new_varmap) {}
+	~UCFuncSet() {}
 
 	unsigned int funcid;      // the id of the function
 	unsigned int num_args;    // the number of arguments
@@ -61,20 +61,20 @@ public:
 
 	FlagData(const long func, const unsigned int offset,
 	         const unsigned int flag, const bool access)
-		: _func(func), _offset(offset), _flag(flag), _access(access) {};
+		: _func(func), _offset(offset), _flag(flag), _access(access) {}
 
 	long         func() const {
 		return _func;
-	};
+	}
 	unsigned int offset() const {
 		return _offset;
-	};
+	}
 	unsigned int flag() const {
 		return _flag;
-	};
+	}
 	bool         access() const {
 		return _access;
-	};
+	}
 
 private:
 	long         _func;
@@ -91,14 +91,14 @@ public:
 		       (fd1.func() < fd2.func()) ? true :
 		       (fd1.func() > fd2.func()) ? false :
 		       (fd1.offset() < fd2.offset());
-	};
+	}
 	bool operator()(const FlagData *fd1, const FlagData *fd2) const {
 		return (fd1->flag() < fd2->flag()) ? true :
 		       (fd1->flag() > fd2->flag()) ? false :
 		       (fd1->func() < fd2->func()) ? true :
 		       (fd1->func() > fd2->func()) ? false :
 		       (fd1->offset() < fd2->offset());
-	};
+	}
 };
 
 class SortFlagDataLessFunc {
@@ -109,22 +109,22 @@ public:
 		       (fd1.flag() < fd2.flag()) ? true :
 		       (fd1.flag() > fd2.flag()) ? false :
 		       (fd1.offset() < fd2.offset());
-	};
+	}
 	bool operator()(const FlagData *fd1, const FlagData *fd2) const {
 		return (fd1->func() < fd2->func()) ? true :
 		       (fd1->func() > fd2->func()) ? false :
 		       (fd1->flag() < fd2->flag()) ? true :
 		       (fd1->flag() > fd2->flag()) ? false :
 		       (fd1->offset() < fd2->offset());
-	};
+	}
 };
 
 class UCNode;
 
 class UCNode {
 public:
-	UCNode(UCc *newucc = 0) : ucc(newucc) { };
-	~UCNode() { };
+	UCNode(UCc *newucc = 0) : ucc(newucc) { }
+	~UCNode() { }
 
 	UCc *ucc;
 	std::vector<UCNode *> nodelist;
@@ -134,29 +134,29 @@ public:
 
 class GotoSet {
 public:
-	GotoSet() : _offset(0) {};
+	GotoSet() : _offset(0) {}
 	GotoSet(const unsigned int offset, UCc *ucc)
 		: _offset(offset) {
 		add(ucc);
-	};
+	}
 	GotoSet(UCc *ucc) : _offset(ucc->_offset) {
 		add(ucc);
-	};
+	}
 
 	std::vector<std::pair<UCc *, bool> > &operator()() {
 		return _uccs;
-	};
+	}
 
 	UCc &operator[](const unsigned int i) {
 		return *(_uccs[i].first);
-	};
+	}
 	unsigned int size() const {
 		return static_cast<unsigned int>(_uccs.size());
-	};
+	}
 
 	void add(UCc *ucc, bool gc = false) {
 		_uccs.push_back(std::pair<UCc *, bool>(ucc, gc));
-	};
+	}
 
 	/* Just a quick function to remove all the Uccs in _uccs marked for
 	   garbage collection. */
@@ -192,11 +192,11 @@ public:
 			std::cout << std::endl;
 #endif
 		}
-	};
+	}
 
 	unsigned int offset() const {
 		return _offset;
-	};
+	}
 
 	typedef std::vector<std::pair<UCc *, bool> >::iterator iterator;
 
@@ -212,7 +212,7 @@ public:
 	UCFunc() : _offset(0), _funcid(0), _funcsize(0), _bodyoffset(0), _datasize(0),
 		_codeoffset(0), _num_args(0), _num_locals(0), _num_externs(0), _num_statics(0),
 		return_var(false), aborts(false), debugging_info(false), debugging_offset(0),
-		_sym(0), _cls(0), ext32(false) {};
+		_sym(0), _cls(0), ext32(false) {}
 
 	bool output_list(std::ostream &o, unsigned int funcno, const UCOptions &options);
 
@@ -276,7 +276,7 @@ public:
 
 	unsigned int codesize() const {
 		return _funcsize - _datasize;
-	};
+	}
 
 	UCNode node;
 

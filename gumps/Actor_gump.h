@@ -31,7 +31,7 @@ class Combat_mode_button;
  *  A rectangular area showing a character and his/her possessions:
  */
 class Actor_gump : public Gump {
-	UNREPLICATABLE_CLASS_I(Actor_gump, Gump());
+	UNREPLICATABLE_CLASS_I(Actor_gump, Gump())
 
 protected:
 	static short coords[24];    // Coords. of where to draw things,

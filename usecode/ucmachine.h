@@ -43,7 +43,7 @@ class Tile_coord;
  *  are in Usecode_internal.
  */
 class Usecode_machine : public Game_singletons {
-	UNREPLICATABLE_CLASS(Usecode_machine);
+	UNREPLICATABLE_CLASS(Usecode_machine)
 protected:
 	unsigned char gflags[c_last_gflag + 1]; // Global flags.
 	Keyring *keyring;

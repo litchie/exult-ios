@@ -40,7 +40,7 @@ protected:
 		uint16 size;
 		Reference()
 			: offset(0), size(0)
-		{  };
+		{  }
 	};
 	/// List of objects in the table file.
 	std::vector<Reference> object_list;
@@ -57,18 +57,18 @@ public:
 
 	virtual size_t number_of_objects(void) {
 		return object_list.size();
-	};
+	}
 	virtual char *retrieve(uint32 objnum, std::size_t &len);
 	virtual const char *get_archive_type() {
 		return "TABLE";
-	};
+	}
 
 	static bool is_table(DataSource *in);
 	static bool is_table(const std::string& fname);
 private:
 	/// No default constructor.
 	Table();
-	UNREPLICATABLE_CLASS_I(Table, U7file(""));
+	UNREPLICATABLE_CLASS_I(Table, U7file(""))
 };
 
 typedef U7DataFile<Table> TableFile;

@@ -67,10 +67,10 @@ public:
 };
 
 // Some handy macros which you can use to make a class non-replicable
-#define UNREPLICATABLE_CLASS(NAME)  NAME(const NAME &) { throw replication_exception( #NAME " cannot be replicated"); }; \
+#define UNREPLICATABLE_CLASS(NAME)  NAME(const NAME &) { throw replication_exception( #NAME " cannot be replicated"); } \
 	NAME &operator=(const NAME &) { throw replication_exception( #NAME " cannot be replicated"); return *this; }
 
-#define UNREPLICATABLE_CLASS_I(NAME,INIT)   NAME(const NAME &) : INIT { throw replication_exception( #NAME " cannot be replicated"); }; \
+#define UNREPLICATABLE_CLASS_I(NAME,INIT)   NAME(const NAME &) : INIT { throw replication_exception( #NAME " cannot be replicated"); } \
 	NAME &operator=(const NAME &) { throw replication_exception( #NAME " cannot be replicated"); return *this; }
 
 

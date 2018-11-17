@@ -114,16 +114,16 @@ public:
 	int highshape;
 	virtual int get_high_shape() const {
 		return highshape;
-	};
+	}
 	virtual void set_high_shape(int s) {
 		highshape = s;
-	};
+	}
 	virtual int get_low_lift() const {
 		return lowlift;
-	};
+	}
 	virtual void set_low_lift(int l) {
 		lowlift = l;
-	};
+	}
 };
 
 #endif

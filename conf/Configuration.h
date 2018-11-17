@@ -34,7 +34,7 @@ public:
 
 	~Configuration() {
 		if (xmltree != 0) delete xmltree;
-	};
+	}
 
 	bool    read_config_file(const std::string &input_filename, const std::string &root = std::string());
 	bool    read_abs_config_file(const std::string &input_filename, const std::string &root = std::string());
@@ -47,16 +47,16 @@ public:
 
 	void    value(const std::string &key, std::string &ret, const char *defaultvalue = "") const {
 		value(key, ret, std::string(defaultvalue));
-	};
+	}
 	void    value(const char *key, std::string &ret, const char *defaultvalue = "") const {
 		value(std::string(key), ret, defaultvalue);
-	};
+	}
 	void    value(const char *key, bool &ret, bool defaultvalue = false) const {
 		value(std::string(key), ret, defaultvalue);
-	};
+	}
 	void    value(const char *key, int &ret, int defaultvalue = 0) const {
 		value(std::string(key), ret, defaultvalue);
-	};
+	}
 
 	bool    key_exists(const std::string &key) const;
 

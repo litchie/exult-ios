@@ -624,7 +624,7 @@ public:
 	}
 	inline int get_step_tile_delta() {
 		return step_tile_delta;
-	};
+	}
 	inline void set_allow_right_pathfind(int a) {
 		allow_right_pathfind = a;
 	}

@@ -33,7 +33,7 @@ typedef std::map<Game_object *, int *> Game_object_map_xy;
 
 enum ITEMMENU_ACTIONS { ITEMMENU_ACTION_NONE, ITEMMENU_ACTION_MENU, ITEMMENU_ACTION_USE, ITEMMENU_ACTION_PICKUP, ITEMMENU_ACTION_MOVE, ITEMMENU_ACTION_COUNT };
 class Itemmenu_gump : public Modal_gump {
-	UNREPLICATABLE_CLASS_I(Itemmenu_gump, Modal_gump(0, 0, 0, 0));
+	UNREPLICATABLE_CLASS_I(Itemmenu_gump, Modal_gump(0, 0, 0, 0))
 public:
 	Gump_button_vector buttons;
 	Game_object_map_xy objects;
