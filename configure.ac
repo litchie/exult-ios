@@ -777,20 +777,24 @@ fi
 # Warning level
 # ---------------------------------------------------------------------
 
-CHK_WARN="-Wall -Wextra -pedantic -Wcast-qual -Wwrite-strings -Wredundant-decls -Wdisabled-optimization -fcheck-new"
-CHK_WARN="$CHK_WARN -Wctor-dtor-privacy -Wnon-virtual-dtor -Wold-style-cast -Woverloaded-virtual -Wuseless-cast"
-CHK_WARN="$CHK_WARN -Wformat-nonliteral -Wformat-security -Wshift-negative-value -Wshift-overflow -Wtrigraphs"
-CHK_WARN="$CHK_WARN -Wuninitialized -fstrict-aliasing -Wduplicated-cond -Wplacement-new -Wcast-align"
-CHK_WARN="$CHK_WARN -Wlogical-op -Wlogical-not-parentheses -Wpointer-sign"
-CHK_WARN="$CHK_WARN -Wundef -Wduplicated-cond"
-#CHK_WARN="$CHK_WARN -Wpadded -Wshadow -Wconditionally-supported"
-CHK_WARN="$CHK_WARN -Wc++11-compat -Wc++14-compat -Wc++1z-compat"
+CHK_WARN="-Wall -Wextra -pedantic"
+CHK_WARN="$CHK_WARN -Walloc-zero -Walloca"
+CHK_WARN="$CHK_WARN -Wc++11-compat -Wc++14-compat -Wc++17-compat"
+CHK_WARN="$CHK_WARN -Wcatch-value=3 -Wcast-align -Wcast-qual"
+CHK_WARN="$CHK_WARN -Wconditionally-supported -Wctor-dtor-privacy -Wdisabled-optimization"
+CHK_WARN="$CHK_WARN -Wduplicated-branches -Wduplicated-cond -Wextra-semi"
+CHK_WARN="$CHK_WARN -Wformat-nonliteral -Wformat-security"
+CHK_WARN="$CHK_WARN -Wlogical-not-parentheses -Wlogical-op"
+CHK_WARN="$CHK_WARN -Wmissing-include-dirs -Wnon-virtual-dtor -Wnull-dereference"
+CHK_WARN="$CHK_WARN -Wold-style-cast -Woverloaded-virtual -Wplacement-new"
+CHK_WARN="$CHK_WARN -Wredundant-decls -Wshift-negative-value -Wshift-overflow"
+CHK_WARN="$CHK_WARN -Wtrigraphs -Wundef -Wuninitialized -Wuseless-cast -Wwrite-strings"
+# Warnings that give lots of warnings
+#CHK_WARN="$CHK_WARN -Wformat-signedness -Wcast-align=strict -Weffc++ -Wpadded -Wshadow -Wsign-conversion"
 # GCC attributes
-#CHK_WARN="$CHK_WARN -Wsuggest-attribute=pure -Wsuggest-attribute=const -Wsuggest-attribute=noreturn -Wsuggest-attribute=format"
+#CHK_WARN="$CHK_WARN -Wsuggest-attribute=cold -Wsuggest-attribute=const -Wsuggest-attribute=format -Wsuggest-attribute=malloc -Wsuggest-attribute=noreturn -Wsuggest-attribute=pure"
 # C++11 and newer
-#CHK_WARN="$CHK_WARN -Wsuggest-final-types -Wsuggest-final-methods -Wsuggest-override -Wzero-as-null-pointer-constant"
-# Clang warnings
-CHK_WARN="$CHK_WARN -Wunused-const-variables -Wabsolute-value -Wdeprecated-register -Wmismatched-tags -Wunused-private-field"
+#CHK_WARN="$CHK_WARN -Wsuggest-final-methods -Wsuggest-final-types -Wsuggest-override -Wzero-as-null-pointer-constant"
 
 # Eliminate some spurious warnings due to low optimization level.
 if test x$opt_level = xnone -o x$opt_level = xdebug; then
