@@ -36,7 +36,7 @@ class Gump_widget;
  *  A 'model' represents a top-level gump OR a widget within.
  */
 class  Gump_model : public ShapeID {
-	UNREPLICATABLE_CLASS(Gump_model);
+	UNREPLICATABLE_CLASS(Gump_model)
 public:
 	typedef enum {
 	    // Top-level gumps.

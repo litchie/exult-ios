@@ -48,22 +48,22 @@ public:
 
 	std::string output_redirect() const {
 		return _output_redirect;
-	};
+	}
 	std::string input_usecode_file() const {
 		return _input_usecode_file;
-	};
+	}
 
 	bool fail() const {
 		return _file.fail();
-	};
+	}
 
 	const std::map<unsigned int, UCFuncSet> &funcmap() {
 		return _funcmap;
-	};
+	}
 
 	const UCOptions &opt() {
 		return options;
-	};
+	}
 
 	UCOptions options;
 
@@ -72,10 +72,10 @@ private:
 	void file_open(const std::string &filename);
 	void file_seek_start() {
 		_file.seekg(0, std::ios::beg);
-	};
+	}
 	void file_seek_end() {
 		_file.seekg(0, std::ios::end);
-	};
+	}
 
 	std::ifstream _file;
 

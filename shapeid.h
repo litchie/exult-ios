@@ -81,7 +81,7 @@ public:
 	void reload_shape_info();
 	Vga_file &get_file(enum ShapeFile f) {
 		return files[static_cast<int>(f)];
-	};
+	}
 	Shapes_vga_file &get_shapes() {
 		return shapes;
 	}
@@ -277,7 +277,7 @@ public:
 class Paintable {
 public:
 	virtual void paint() = 0;
-	virtual ~Paintable() {  };
+	virtual ~Paintable() {  }
 };
 
 #endif

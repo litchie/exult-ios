@@ -50,7 +50,7 @@ protected:
 private:
 	/// No default constructor.
 	U7file();
-	UNREPLICATABLE_CLASS(U7file);
+	UNREPLICATABLE_CLASS(U7file)
 public:
 	/// Initializes from a file spec. Needed by some constructors.
 	/// @param spec A file specification.
@@ -83,7 +83,7 @@ protected:
 private:
 	/// No default constructor.
 	U7DataFile();
-	UNREPLICATABLE_CLASS(U7DataFile);
+	UNREPLICATABLE_CLASS(U7DataFile)
 public:
 	/// This constructor treats the identifier as a file name and
 	/// opens the file if it exists. It also creates and initializes
@@ -121,7 +121,7 @@ protected:
 private:
 	/// No default constructor.
 	U7DataBuffer();
-	UNREPLICATABLE_CLASS(U7DataBuffer);
+	UNREPLICATABLE_CLASS(U7DataBuffer)
 public:
 	/// Creates and initializes the data source from the data source.
 	/// Takes ownership of the parameters and deletes them when done,
@@ -210,7 +210,7 @@ protected:
 private:
 	/// No default constructor.
 	U7multifile();
-	UNREPLICATABLE_CLASS(U7multifile);
+	UNREPLICATABLE_CLASS(U7multifile)
 public:
 	U7multifile(const File_spec &spec);
 	U7multifile(const File_spec &spec0, const File_spec &spec1);

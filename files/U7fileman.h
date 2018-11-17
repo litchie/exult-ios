@@ -33,7 +33,7 @@ class U7file;
  *  unique identifier which is the actual file name for real files.
  */
 class U7FileManager {
-	UNREPLICATABLE_CLASS(U7FileManager);
+	UNREPLICATABLE_CLASS(U7FileManager)
 protected:
 	/// The actual "file" list.
 	std::map<File_spec, U7file *> file_list;

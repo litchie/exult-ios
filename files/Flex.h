@@ -53,7 +53,7 @@ protected:
 	struct Reference {
 		uint32 offset;
 		uint32 size;
-		Reference() : offset(0), size(0) {};
+		Reference() : offset(0), size(0) {}
 	};
 	std::vector<Reference> object_list;
 
@@ -78,12 +78,12 @@ public:
 	/// @return Number of objects.
 	virtual size_t  number_of_objects() {
 		return object_list.size();
-	};
+	}
 	virtual char   *retrieve(uint32 objnum, std::size_t &len);
 	uint32  get_entry_info(uint32 objnum, size_t &len);
 	virtual const char *get_archive_type() {
 		return "FLEX";
-	};
+	}
 	static void write_header(DataSource *out, const char *title, size_t count,
 	                         Flex_vers vers = orig);
 
@@ -92,7 +92,7 @@ public:
 private:
 	/// No default constructor.
 	Flex();
-	UNREPLICATABLE_CLASS_I(Flex, U7file(""));
+	UNREPLICATABLE_CLASS_I(Flex, U7file(""))
 	void IndexFlexFile(void);
 };
 

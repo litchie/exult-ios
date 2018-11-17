@@ -27,11 +27,11 @@ class UCc;
 class UCc {
 public:
 	UCc(const unsigned int offset = 0, const unsigned int id = 0, const std::vector<unsigned char> &params = std::vector<unsigned char>())
-		: _id(id), _offset(offset), _params(params), _tagged(false), _missing_args(0) {};
+		: _id(id), _offset(offset), _params(params), _tagged(false), _missing_args(0) {}
 	UCc(const unsigned int id, const std::string &miscstr)
-		: _id(id), _miscstr(miscstr), _missing_args(0) {};
+		: _id(id), _miscstr(miscstr), _missing_args(0) {}
 	UCc(const std::vector<unsigned int> &params_parsed)
-		: _id(0), _offset(0), _params_parsed(params_parsed), _tagged(false), _missing_args(0) {};
+		: _id(0), _offset(0), _params_parsed(params_parsed), _tagged(false), _missing_args(0) {}
 
 	unsigned int               _id;
 	std::string                _miscstr;
@@ -61,29 +61,29 @@ public:
 		mode_all(false), mode_dis(false),
 		force_ext32(false),
 		_game(GAME_BG)
-	{};
+	{}
 
 	bool game_bg()      const {
 		return _game == GAME_BG;
-	};
+	}
 	bool game_si()      const {
 		return _game == GAME_SI;
-	};
+	}
 	bool game_fov()     const {
 		return _game == GAME_FOV;
-	};
+	}
 	bool game_ss()      const {
 		return _game == GAME_SS;
-	};
+	}
 	bool game_sib()      const {
 		return _game == GAME_SIB;
-	};
+	}
 	bool game_u7()      const {
 		return game_bg() || game_si() || game_fov() || game_ss() || game_sib();
-	};
+	}
 	bool game_u8()      const {
 		return _game == GAME_U8;
-	};
+	}
 
 	bool output_extern_header;
 

@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class Gump_button;
 
 class VideoOptions_gump : public Modal_gump {
-	UNREPLICATABLE_CLASS_I(VideoOptions_gump, Modal_gump(0, 0, 0, 0));
+	UNREPLICATABLE_CLASS_I(VideoOptions_gump, Modal_gump(0, 0, 0, 0))
 	static VideoOptions_gump *video_options_gump;
 private:
 

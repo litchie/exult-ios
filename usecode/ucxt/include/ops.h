@@ -45,7 +45,7 @@ class ucxtInit {
 public:
 	ucxtInit(const std::string &new_ucxtdata = std::string("ucxt.data"))
 		: ucxtdata(new_ucxtdata)
-	{ };
+	{ }
 	void init(const Configuration &config, const UCOptions &options);
 
 private:
@@ -84,7 +84,7 @@ public:
 		flag_abort(false), flag_staticref(false), flag_loop(false),
 		flag_new_effect(false), flag_method_effect(false), flag_function_effect(false),
 		flag_not_param(false)
-	{};
+	{}
 	UCOpcodeData(unsigned int op, const Configuration::KeyTypeList &ktl)
 		: opcode(op), num_bytes(0), num_pop(0),
 		  num_push(0), flag_call_effect(false), flag_return(false),
@@ -151,7 +151,7 @@ public:
 			}
 		}
 		map_type_size(param_types, param_sizes);
-	};
+	}
 
 	void dump(std::ostream &o) const {
 		o << "opcode: " << opcode << std::endl;
@@ -182,7 +182,7 @@ public:
 		o << "flag_method_effect: " << flag_method_effect << std::endl;
 		o << "flag_function_effect: " << flag_function_effect << std::endl;
 		o << "flag_not_param: " << flag_not_param << std::endl;
-	};
+	}
 
 	unsigned int   opcode;
 	std::string    name;

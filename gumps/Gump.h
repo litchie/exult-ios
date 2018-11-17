@@ -37,10 +37,10 @@ class Gump_widget;
  *  A gump contains an image of an open container from "gumps.vga".
  */
 class Gump : public ShapeID, public Paintable {
-	UNREPLICATABLE_CLASS_I(Gump, ShapeID());
+	UNREPLICATABLE_CLASS_I(Gump, ShapeID())
 
 protected:
-	Gump() : ShapeID() {   };
+	Gump() : ShapeID() {   }
 	Container_game_object *container;// What this gump shows.
 	int x, y;           // Location on screen.
 	Rectangle object_area;      // Area to paint objects in, rel. to
@@ -144,7 +144,7 @@ public:
  *  A generic gump used by generic containers:
  */
 class Container_gump : public Gump {
-	UNREPLICATABLE_CLASS_I(Container_gump, Gump());
+	UNREPLICATABLE_CLASS_I(Container_gump, Gump())
 
 	void initialize(int shnum);     // Initialize object_area.
 

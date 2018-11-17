@@ -33,7 +33,7 @@ public:
 	{ }
 	Jawbone_object() : Container_game_object() {  }
 
-	//virtual ~Jawbone_object() { };
+	//virtual ~Jawbone_object() { }
 
 	// Add an object.
 	virtual bool add(Game_object *obj, bool dont_check = false,

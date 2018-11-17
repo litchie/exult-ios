@@ -27,7 +27,7 @@ class Gump_text;
  *  The file save/load box:
  */
 class File_gump : public Modal_gump {
-	UNREPLICATABLE_CLASS_I(File_gump, Modal_gump(0, 0, 0, 0));
+	UNREPLICATABLE_CLASS_I(File_gump, Modal_gump(0, 0, 0, 0))
 
 protected:
 	static short textx, texty;  // Where to draw first text field.

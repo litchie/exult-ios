@@ -133,10 +133,10 @@ public:
 	//! Load the Timbre Library
 	virtual void		loadTimbreLibrary(IDataSource*, TimbreLibraryType type) {
 		ignore_unused_variable_warning(type);
-	};
+	}
 
 	//! Destructor
-	virtual ~MidiDriver() { };
+	virtual ~MidiDriver() { }
 
 	//
 	// Statics to Initialize Midi Drivers and to get info

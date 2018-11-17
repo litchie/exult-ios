@@ -55,7 +55,7 @@ public:
 	struct Reference {
 		size_t  offset;
 		uint32  size;
-		Reference() : offset(0), size(0) {};
+		Reference() : offset(0), size(0) {}
 	};
 
 protected:
@@ -76,18 +76,18 @@ public:
 
 	virtual size_t number_of_objects(void) {
 		return object_list.size();
-	};
+	}
 	virtual char *retrieve(uint32 objnum, std::size_t &len);
 	virtual const char *get_archive_type() {
 		return "IFF";
-	};
+	}
 
 	static bool is_iff(DataSource *in);
 	static bool is_iff(const std::string& fname);
 private:
 	/// No default constructor
 	IFF();
-	UNREPLICATABLE_CLASS_I(IFF, U7file(""));
+	UNREPLICATABLE_CLASS_I(IFF, U7file(""))
 };
 
 typedef U7DataFile<IFF> IFFFile;

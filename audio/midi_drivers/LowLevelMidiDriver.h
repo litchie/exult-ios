@@ -95,15 +95,15 @@ protected:
 	// encountered.
 	virtual void		send_sysex(uint8 status, const uint8 *msg, uint16 length) {
 		ignore_unused_variable_warning(status, msg, length);
-	};
+	}
 
 	//! Increate the Thread Priority of the Play (current) thread
-	virtual void		increaseThreadPriority() { };
+	virtual void		increaseThreadPriority() { }
 
 	//! Allows LowLevelMidiDrivers to produce samples
 	virtual void		lowLevelProduceSamples(sint16 *samples, uint32 num_samples) {
 		ignore_unused_variable_warning(samples, num_samples);
-	};
+	}
 
 	//! Yield execution of the current thread
 	virtual void		yield() { SDL_Delay(1); }

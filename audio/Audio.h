@@ -54,7 +54,7 @@ enum Combat_song
 class Audio 
 {
 private:
-	UNREPLICATABLE_CLASS(Audio);
+	UNREPLICATABLE_CLASS(Audio)
 	static	Audio	*self;
 	static	const int *bg2si_songs;	// Converts BG songs to SI songs.
 	static	const int *bg2si_sfxs;	// Converts BG sfx's to SI sfx's.

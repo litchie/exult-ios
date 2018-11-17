@@ -204,7 +204,7 @@ public:
 };
 
 class GameManager {
-	UNREPLICATABLE_CLASS(GameManager);
+	UNREPLICATABLE_CLASS(GameManager)
 protected:
 	// -> to original games.
 	ModManager *bg;
@@ -235,19 +235,19 @@ public:
 	}
 	bool is_bg_installed() const {
 		return bg != 0;
-	};
+	}
 	bool is_fov_installed() const {
 		return fov != 0;
-	};
+	}
 	bool is_si_installed() const {
 		return si != 0;
-	};
+	}
 	bool is_ss_installed() const {
 		return ss != 0;
-	};
+	}
 	bool is_sib_installed() const {
 		return sib != 0;
-	};
+	}
 	ModManager *find_game(const string &name);
 	ModManager *get_bg() {
 		return bg ? bg : fov;
