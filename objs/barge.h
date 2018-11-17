@@ -34,7 +34,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 class Barge_object : public Container_game_object, public Time_sensitive {
 	static Barge_object *editing;   // Egg being edited by ExultStudio.
-	Game_object_vector objects; // All objects in/on barge.
+    vector<Game_object_shared> objects; // All objects in/on barge.
 	int perm_count;         // Counts permanent parts of barge,
 	//   which proceed those placed on it.
 	unsigned char xtiles, ytiles;   // Tiles covered (when vertical).
@@ -50,7 +50,7 @@ class Barge_object : public Container_game_object, public Time_sensitive {
 	PathFinder *path;       // For traveling.
 	Tile_coord center;      // Center of barge.
 	Game_object *get_object(int i) {
-		return objects[i];
+		return objects[i].get();
 	}
 	void swap_dims();
 	void set_center();
