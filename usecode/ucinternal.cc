@@ -895,8 +895,8 @@ void Usecode_internal::remove_item(
 			}
 		}
 	}
-	Game_object_shared keep;
-	obj->remove_this(obj->as_actor() != 0 ? &keep : NULL);
+	removed.push_back(Game_object_shared());
+	obj->remove_this(&removed.back());	/* Keep it active.				*/
 }
 
 /*
@@ -2967,7 +2967,7 @@ int Usecode_internal::run() {
 		// pop the NULL frame from the stack
 		call_stack.pop_front();
 	}
-
+	removed.clear();				/* Let these go now.					*/
 	if (aborted)
 		return 0;
 
