@@ -409,8 +409,7 @@ void Actor::read(
 	for (int i = 0; i < 16; i++)
 		if (namebuf[i] == 0)
 			i = 16;
-	/*  Used to also require namebuf[i] < 127 (jsf).    */
-		else if (namebuf[i] < ' ') {
+		else if ((namebuf[i] & 0x80u) != 0 || namebuf[i] < ' ') {
 			namebuf[0] = 0;
 			break;
 		}
