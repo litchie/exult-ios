@@ -191,13 +191,13 @@ public:
 	virtual void copy_line_translucent8(
 	    const unsigned char *src_pixels, int srcw,
 	    int destx, int desty, int first_translucent,
-	    int last_translucent, Xform_palette *xforms) = 0;
+	    int last_translucent, const Xform_palette *xforms) = 0;
 	// Apply translucency to a line.
 	virtual void fill_line_translucent8(unsigned char val,
-	                                    int srcw, int destx, int desty, Xform_palette &xform) = 0;
+	                                    int srcw, int destx, int desty, const Xform_palette &xform) = 0;
 	// Apply translucency to a rectangle
 	virtual void fill_translucent8(unsigned char val, int srcw, int srch,
-	                               int destx, int desty, Xform_palette &xform) = 0;
+	                               int destx, int desty, const Xform_palette &xform) = 0;
 	// Copy rect. with transp. color.
 	virtual void copy_transparent8(const unsigned char *src_pixels, int srcw,
 	                               int srch, int destx, int desty) = 0;

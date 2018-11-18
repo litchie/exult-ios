@@ -53,20 +53,20 @@ class GL_texshape {
 	int outline;        // Outline color or -1 if not outline.
 	bool rotates;
 	// Create from this source.
-	void create(Image_buffer8 *src, unsigned char *pal, int firstrot,
-	            int lastrot, Xform_palette *xforms = 0, int xfcnt = 0,
+	void create(Image_buffer8 *src, const unsigned char *pal, int firstrot,
+	            int lastrot, const Xform_palette *xforms = 0, int xfcnt = 0,
 	            int alpha = 255);
 public:
 	friend class GL_manager;
-	GL_texshape(Shape_frame *f, unsigned char *pal, int first_rot, int last_rot,
-	            Xform_palette *xforms = 0, int xfcnt = 0, int alpha = 255);
-	GL_texshape(Shape_frame *f, unsigned char *pal, int first_rot, int last_rot,
-	            unsigned char *trans, int alpha = 255);
-	GL_texshape(Shape_frame *f, unsigned char *pal, int first_rot, int last_rot,
-	            Xform_palette &xform, int alpha = 255);
-	GL_texshape(Shape_frame *f, unsigned char *pal, int first_rot, int last_rot,
+	GL_texshape(Shape_frame *f, const unsigned char *pal, int first_rot, int last_rot,
+	            const Xform_palette *xforms = 0, int xfcnt = 0, int alpha = 255);
+	GL_texshape(Shape_frame *f, const unsigned char *pal, int first_rot, int last_rot,
+	            const unsigned char *trans, int alpha = 255);
+	GL_texshape(Shape_frame *f, const unsigned char *pal, int first_rot, int last_rot,
+	            const Xform_palette &xform, int alpha = 255);
+	GL_texshape(Shape_frame *f, const unsigned char *pal, int first_rot, int last_rot,
 	            unsigned char color, int alpha = 255);
-	GL_texshape(Image_buffer8 *src, unsigned char *pal, int first_rot,
+	GL_texshape(Image_buffer8 *src, const unsigned char *pal, int first_rot,
 	            int last_rot, int alpha = 255);
 	~GL_texshape();
 	void paint(int px, int py); // Render at given position.
@@ -114,9 +114,9 @@ public:
 	// Paint a shape & create GL_shape
 	//   for it if necessary.
 	void paint(Shape_frame *frame, int px, int py,
-	           Xform_palette *xforms = 0, int xfcnt = 0);
+	           const Xform_palette *xforms = 0, int xfcnt = 0);
 	void paint_remapped(Shape_frame *frame, int px, int py, unsigned char *trans);
-	void paint_transformed(Shape_frame *frame, int px, int py, Xform_palette &xform);
+	void paint_transformed(Shape_frame *frame, int px, int py, const Xform_palette &xform);
 	void paint_outline(Shape_frame *frame, int px, int py, unsigned char color);
 	void set_palette_rotation(int first, int last) {
 		first_rot = first;

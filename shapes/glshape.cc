@@ -44,9 +44,9 @@ const unsigned char transp = 255;   // Transparent pixel.
 
 void GL_texshape::create(
     Image_buffer8 *src,     // Source image.
-    unsigned char *pal,     // 3*256 bytes (rgb).
+    const unsigned char *pal,     // 3*256 bytes (rgb).
     int firstrot, int lastrot,  // Palette rotations.
-    Xform_palette *xforms,      // Transforms translucent colors if !0.
+    const Xform_palette *xforms,      // Transforms translucent colors if !0.
     int xfcnt,          // Number of xforms.
     int alpha           // Alpha value to use.
 ) {
@@ -91,9 +91,9 @@ void GL_texshape::create(
 
 GL_texshape::GL_texshape(
     Shape_frame *f,
-    unsigned char *pal,     // 3*256 bytes (rgb).
+    const unsigned char *pal,     // 3*256 bytes (rgb).
     int first_rot, int last_rot,    // Palette rotations.
-    Xform_palette *xforms,      // Transforms translucent colors if !0.
+    const Xform_palette *xforms,      // Transforms translucent colors if !0.
     int xfcnt,          // Number of xforms.
     int alpha           // Alpha value to use.
 ) : frame(f), lru_next(0), lru_prev(0), outline(-1) {
@@ -111,9 +111,9 @@ GL_texshape::GL_texshape(
 
 GL_texshape::GL_texshape(
     Shape_frame *f,
-    unsigned char *pal,         // 'Pixel' position from top-left.
+    const unsigned char *pal,         // 'Pixel' position from top-left.
     int first_rot, int last_rot,    // Palette rotations.
-    unsigned char *trans,   // Translation table.
+    const unsigned char *trans,   // Translation table.
     int alpha           // Alpha value to use.
 ) : frame(f), lru_next(0), lru_prev(0), outline(-1) {
 	// Figure texture size as 2^n, rounding up.
@@ -130,9 +130,9 @@ GL_texshape::GL_texshape(
 
 GL_texshape::GL_texshape(
     Shape_frame *f,
-    unsigned char *pal,     // 3*256 bytes (rgb).
+    const unsigned char *pal,     // 3*256 bytes (rgb).
     int first_rot, int last_rot,    // Palette rotations.
-    Xform_palette &xform,       // Transforms colors.
+    const Xform_palette &xform,       // Transforms colors.
     int alpha           // Alpha value to use.
 ) : frame(f), lru_next(0), lru_prev(0), outline(-1) {
 	// Figure texture size as 2^n, rounding up.
@@ -149,7 +149,7 @@ GL_texshape::GL_texshape(
 
 GL_texshape::GL_texshape(
     Shape_frame *f,
-    unsigned char *pal,     // 3*256 bytes (rgb).
+    const unsigned char *pal,     // 3*256 bytes (rgb).
     int first_rot, int last_rot,    // Palette rotations.
     unsigned char color,        // Transforms colors.
     int alpha           // Alpha value to use.
@@ -172,7 +172,7 @@ GL_texshape::GL_texshape(
 
 GL_texshape::GL_texshape(
     Image_buffer8 *src,     // Must be square.
-    unsigned char *pal,     // 3*256 bytes (rgb).
+    const unsigned char *pal,     // 3*256 bytes (rgb).
     int first_rot, int last_rot,    // Palette rotations.
     int alpha           // Alpha value to use.
 ) : frame(0), lru_next(0), lru_prev(0), outline(-1) {
@@ -312,16 +312,16 @@ void GL_manager::resized(
 }
 
 class Paint {
-	Xform_palette *xforms;
+	const Xform_palette *xforms;
 	int xfcnt;
 public:
-	Paint(Xform_palette *xf, int xc)
+	Paint(const Xform_palette *xf, int xc)
 		: xforms(xf), xfcnt(xc)
 	{  }
 	void paint(Shape_frame *frame, Image_buffer8 *win,  int px, int py) {
 		frame->paint(win, px, py);
 	}
-	GL_texshape *newtex(Shape_frame *frame, unsigned char *pal,
+	GL_texshape *newtex(Shape_frame *frame, const unsigned char *pal,
 	                    int first_rot, int last_rot, int alpha) {
 		return new GL_texshape(frame, pal,
 		                       first_rot, last_rot, xforms, xfcnt, alpha);
@@ -340,7 +340,7 @@ public:
 	void paint(Shape_frame *frame, Image_buffer8 *win, int px, int py) {
 		(frame->*Fun)(win, px, py, data);
 	}
-	GL_texshape *newtex(Shape_frame *frame, unsigned char *pal,
+	GL_texshape *newtex(Shape_frame *frame, const unsigned char *pal,
 	                    int first_rot, int last_rot, int alpha) {
 		return new GL_texshape(frame, pal,
 		                       first_rot, last_rot, data, alpha);
@@ -381,7 +381,7 @@ template<typename Functor>
 static void Paint_image(
     Shape_frame *frame,
     int px, int py,         // 'Pixel' position from top-left.
-    unsigned char *pal,     // 3*256 bytes (rgb).
+    const unsigned char *pal,     // 3*256 bytes (rgb).
     int first_rot, int last_rot,    // Palette rotations.
     int alpha,
     int scale,          // Scale factor.
@@ -454,7 +454,7 @@ void GL_manager::paint_internal(
 void GL_manager::paint(
     Shape_frame *frame,
     int px, int py,         // 'Pixel' position from top-left.
-    Xform_palette *xforms,      // Transforms translucent colors if !0.
+    const Xform_palette *xforms,      // Transforms translucent colors if !0.
     int xfcnt           // Number of xforms.
 ) {
 	Paint f(xforms, xfcnt);
@@ -470,7 +470,7 @@ void GL_manager::paint_remapped(
     int px, int py,         // 'Pixel' position from top-left.
     unsigned char *trans    // Translation table.
 ) {
-	Paint_trans<unsigned char *, &Shape_frame::paint_rle_remapped> f(trans);
+	Paint_trans<const unsigned char *, &Shape_frame::paint_rle_remapped> f(trans);
 	paint_internal(frame, px, py, 255, f);
 }
 
@@ -481,7 +481,7 @@ void GL_manager::paint_remapped(
 void GL_manager::paint_transformed(
     Shape_frame *frame,
     int px, int py,         // 'Pixel' position from top-left.
-    Xform_palette &xform    // Translation table.
+    const Xform_palette &xform    // Translation table.
 ) {
 	// For all the purists out there:
 #ifdef U7_INVISIBILITY

@@ -51,7 +51,7 @@ public:
 		return ib8;
 	}
 	// Set palette.
-	virtual void set_palette(unsigned char *rgbs, int maxval,
+	virtual void set_palette(const unsigned char *rgbs, int maxval,
 	                         int brightness = 100);
 	// Get palette.
 	virtual const unsigned char *get_palette() const {
@@ -79,34 +79,34 @@ public:
 		ib8->Image_buffer8::fill_line8(val, srcw, destx, desty);
 	}
 	// Copy rectangle into here.
-	void copy8(unsigned char *src_pixels,
+	void copy8(const unsigned char *src_pixels,
 	           int srcw, int srch, int destx, int desty) {
 		ib8->Image_buffer8::copy8(src_pixels, srcw, srch,
 		                          destx, desty);
 	}
 	// Copy line to here.
-	void copy_line8(unsigned char *src_pixels, int srcw,
+	void copy_line8(const unsigned char *src_pixels, int srcw,
 	                int destx, int desty) {
 		ib8->Image_buffer8::copy_line8(src_pixels, srcw,
 		                               destx, desty);
 	}
 	// Copy with translucency table.
 	void copy_line_translucent8(
-	    unsigned char *src_pixels, int srcw,
+	    const unsigned char *src_pixels, int srcw,
 	    int destx, int desty, int first_translucent,
-	    int last_translucent, Xform_palette *xforms) {
+	    int last_translucent, const Xform_palette *xforms) {
 		ib8->Image_buffer8::copy_line_translucent8(src_pixels, srcw,
 		        destx, desty,
 		        first_translucent, last_translucent, xforms);
 	}
 	// Apply translucency to a line.
 	void fill_line_translucent8(unsigned char val,
-	                            int srcw, int destx, int desty, Xform_palette &xform) {
+	                            int srcw, int destx, int desty, const Xform_palette &xform) {
 		ib8->Image_buffer8::fill_line_translucent8(val,
 		        srcw, destx, desty, xform);
 	}
 	// Copy rect. with transp. color.
-	void copy_transparent8(unsigned char *src_pixels, int srcw,
+	void copy_transparent8(const unsigned char *src_pixels, int srcw,
 	                       int srch, int destx, int desty) {
 		ib8->Image_buffer8::copy_transparent8(src_pixels, srcw, srch,
 		                                      destx, desty);

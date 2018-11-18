@@ -267,7 +267,7 @@ void Image_buffer8::copy_line_translucent8(
     int destx, int desty,
     int first_translucent,      // Palette index of 1st trans. color.
     int last_translucent,       // Index of last trans. color.
-    Xform_palette *xforms       // Transformers.  Need same # as
+    const Xform_palette *xforms       // Transformers.  Need same # as
     //   (last_translucent -
     //    first_translucent + 1).
 ) {
@@ -295,7 +295,7 @@ void Image_buffer8::fill_line_translucent8(
     unsigned char val,      // Ignored for this method.
     int srcw,
     int destx, int desty,
-    Xform_palette &xform        // Transform table.
+    const Xform_palette &xform        // Transform table.
 ) {
 	ignore_unused_variable_warning(val);
 	int srcx = 0;
@@ -317,7 +317,7 @@ void Image_buffer8::fill_translucent8(
     unsigned char /* val */,    // Not used.
     int srcw, int srch,
     int destx, int desty,
-    Xform_palette &xform        // Transform table.
+    const Xform_palette &xform        // Transform table.
 ) {
 	int srcx = 0, srcy = 0;
 	// Constrain to window's space.
@@ -658,7 +658,7 @@ unsigned char *Image_buffer8::rgba(
     int last_rotate,            // Last color that rotates.
     int first_translucent,      // Palette index of 1st trans. color.
     int last_translucent,       // Index of last trans. color.
-    Xform_palette *xforms,      // Transformers.  Need same # as
+    const Xform_palette *xforms,      // Transformers.  Need same # as
     //   (last_translucent -
     //    first_translucent + 1).
     int alpha       // What to use as alpha
@@ -677,7 +677,7 @@ unsigned char *Image_buffer8::rgba(
 		unsigned char r, g, b, a; // Pieces of the color.
 		if (pix >= first_translucent && pix <= last_translucent) {
 			// Get actual color & alpha from tbl.
-			Xform_palette &xf = xforms[pix - first_translucent];
+			const Xform_palette &xf = xforms[pix - first_translucent];
 			r = xf.r;
 			g = xf.g;
 			b = xf.b;

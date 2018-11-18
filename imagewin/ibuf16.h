@@ -54,7 +54,7 @@ public:
 		palette[num] = rgb(r, g, b);
 	}
 	// Set palette.
-	void set_palette(unsigned char *rgbs, int maxval,
+	void set_palette(const unsigned char *rgbs, int maxval,
 	                 int brightness = 100);
 	// Rotate palette colors.
 	void rotate_colors(int first, int num, int upd);
@@ -117,19 +117,19 @@ public:
 	virtual void copy_line_translucent8(
 	    const unsigned char *src_pixels, int srcw,
 	    int destx, int desty, int first_translucent,
-	    int last_translucent, Xform_palette *xforms) {
+	    int last_translucent, const Xform_palette *xforms) {
 		ignore_unused_variable_warning(first_translucent, last_translucent, xforms);
 		copy_line8(src_pixels, srcw, destx, desty);
 	}
 	// Apply translucency to a line.
 	virtual void fill_line_translucent8(unsigned char val,
-	                                    int srcw, int destx, int desty, Xform_palette &xform) {
+	                                    int srcw, int destx, int desty, const Xform_palette &xform) {
 		ignore_unused_variable_warning(xform);
 		fill_line8(val, srcw, destx, desty);
 	}
 	// Apply translucency to a rectangle
 	virtual void fill_translucent8(unsigned char val, int srcw, int srch,
-	                               int destx, int desty, Xform_palette &xform) {
+	                               int destx, int desty, const Xform_palette &xform) {
 		ignore_unused_variable_warning(xform);
 		fill8(val, srcw, srch, destx, desty);
 	}
