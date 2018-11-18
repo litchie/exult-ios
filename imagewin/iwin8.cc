@@ -88,7 +88,7 @@ inline unsigned char Get_color8(
  */
 
 void Image_window8::set_palette(
-    unsigned char *rgbs,        // 256 3-byte entries.
+    const unsigned char *rgbs,        // 256 3-byte entries.
     int maxval,         // Highest val. for each color.
     int brightness          // Brightness control (100 = normal).
 ) {
@@ -155,7 +155,7 @@ unsigned char *Image_window8::mini_screenshot() {
 	if (GL_manager::get_instance()) {
 		int width = ibuf->get_width(), height = ibuf->get_height();
 		GL_manager *glman = GL_manager::get_instance();
-		unsigned char *pixels = glman->get_unscaled_rgb(width, height, true, true);
+		const unsigned char *pixels = glman->get_unscaled_rgb(width, height, true, true);
 		for (int y = 0; y < h; y += 3)
 			for (int x = 0; x < w; x += 3) {
 				//calculate average colour
@@ -189,7 +189,7 @@ unsigned char *Image_window8::mini_screenshot() {
 		return buf;
 	}
 #endif
-	unsigned char *pixels = ibuf->get_bits();
+	const unsigned char *pixels = ibuf->get_bits();
 	int pitch = ibuf->get_line_width();
 
 	for (int y = 0; y < h; y += 3)

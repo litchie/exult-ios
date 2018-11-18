@@ -1113,10 +1113,10 @@ void Image_window::opengl_fill8(
 */
 
 void Image_window::opengl_fill_translucent8(
-    unsigned char /* val */,    // Not used.
+    const unsigned char /* val */,    // Not used.
     int srcw, int srch,
     int destx, int desty,
-    Xform_palette &xform        // Transform table.
+    const Xform_palette &xform        // Transform table.
 ) {
 	glDisable(GL_TEXTURE_2D);   // Disable texture-mapping.
 	int x = destx;          // Left edge.

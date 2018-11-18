@@ -124,9 +124,9 @@ public:
 	void paint_rle_remapped(Image_buffer8 *win, int px, int py, const unsigned char *trans);
 	void paint(Image_buffer8 *win, int px, int py);
 	void paint_rle_translucent(Image_buffer8 *win, int px, int py,
-	                           Xform_palette *xforms, int xfcnt);
+	                           const Xform_palette *xforms, int xfcnt);
 	void paint_rle_transformed(Image_buffer8 *win, int px, int py,
-	                           Xform_palette &xform);
+	                           const Xform_palette &xform);
 	void paint_rle_outline(Image_buffer8 *win, int px, int py,
 	                       unsigned char color);
 	// Paint to screen.
@@ -141,11 +141,11 @@ public:
 	}
 	// ++++++GL versions of these needed:
 	void paint_rle_translucent(int px, int py,
-	                           Xform_palette *xforms, int xfcnt) {
+	                           const Xform_palette *xforms, int xfcnt) {
 		GLTRANSLUCENT  paint_rle_translucent(
 		    scrwin, px, py, xforms, xfcnt);
 	}
-	void paint_rle_transformed(int px, int py, Xform_palette &xform) {
+	void paint_rle_transformed(int px, int py, const Xform_palette &xform) {
 		GLTRANSFORM  paint_rle_transformed(scrwin, px, py, xform);
 	}
 	void paint_rle_outline(int px, int py, unsigned char color) {

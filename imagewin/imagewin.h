@@ -438,7 +438,7 @@ public:
 
 	void toggle_fullscreen();
 	// Set palette.
-	virtual void set_palette(unsigned char *rgbs, int maxval,
+	virtual void set_palette(const unsigned char *rgbs, int maxval,
 	                         int brightness = 100) {
 		ignore_unused_variable_warning(rgbs, maxval, brightness);
 	}
@@ -464,7 +464,7 @@ public:
 		ibuf->copy16(src_pixels, srcw, srch, destx, desty);
 	}
 	// Copy rect. with transp. color.
-	void copy_transparent16(unsigned char *src_pixels, int srcw,
+	void copy_transparent16(const unsigned char *src_pixels, int srcw,
 	                        int srch, int destx, int desty) {
 		ibuf->copy_transparent16(src_pixels, srcw, srch,
 		                         destx, desty);
@@ -489,38 +489,38 @@ public:
 		ibuf->fill_line8(val, srcw, destx, desty);
 	}
 	// Copy rectangle into here.
-	void copy8(unsigned char *src_pixels,
+	void copy8(const unsigned char *src_pixels,
 	           int srcw, int srch, int destx, int desty) {
 		ibuf->copy8(src_pixels, srcw, srch, destx, desty);
 	}
 	// Copy line to here.
-	void copy_line8(unsigned char *src_pixels, int srcw,
+	void copy_line8(const unsigned char *src_pixels, int srcw,
 	                int destx, int desty) {
 		ibuf->copy_line8(src_pixels, srcw, destx, desty);
 	}
 	// Copy with translucency table.
 	void copy_line_translucent8(
-	    unsigned char *src_pixels, int srcw,
+	    const unsigned char *src_pixels, int srcw,
 	    int destx, int desty, int first_translucent,
-	    int last_translucent, Xform_palette *xforms) {
+	    int last_translucent, const Xform_palette *xforms) {
 		ibuf->copy_line_translucent8(src_pixels, srcw, destx, desty,
 		                             first_translucent, last_translucent, xforms);
 	}
 	// Apply translucency to a line.
 	void fill_line_translucent8(unsigned char val,
-	                            int srcw, int destx, int desty, Xform_palette &xform) {
+	                            int srcw, int destx, int desty, const Xform_palette &xform) {
 		ibuf->fill_line_translucent8(val, srcw, destx, desty,
 		                             xform);
 	}
 	// Apply translucency to a rectangle
 	virtual void fill_translucent8(unsigned char val, int srcw, int srch,
-	                               int destx, int desty, Xform_palette &xform) {
+	                               int destx, int desty, const Xform_palette &xform) {
 		IF_OPENGL(opengl_fill_translucent8(val, srcw, srch,
 		                                   destx, desty, xform), ibuf->fill_translucent8(val,
 		                                           srcw, srch, destx, desty, xform));
 	}
 	// Copy rect. with transp. color.
-	void copy_transparent8(unsigned char *src_pixels, int srcw,
+	void copy_transparent8(const unsigned char *src_pixels, int srcw,
 	                       int srch, int destx, int desty) {
 		ibuf->copy_transparent8(src_pixels, srcw, srch,
 		                        destx, desty);
@@ -536,7 +536,7 @@ public:
 	void opengl_fill8(unsigned char val, int srcw, int srch,
 	                  int destx, int desty);
 	virtual void opengl_fill_translucent8(unsigned char val,
-	                                      int srcw, int srch, int destx, int desty, Xform_palette &xform);
+	                                      int srcw, int srch, int destx, int desty, const Xform_palette &xform);
 #endif
 	/*
 	*   Depth-independent methods:

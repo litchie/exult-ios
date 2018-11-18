@@ -238,7 +238,7 @@ inline unsigned char Get_color16(
  */
 
 void Image_buffer16::set_palette(
-    unsigned char *rgbs,        // 256 3-byte entries.
+    const unsigned char *rgbs,        // 256 3-byte entries.
     int maxval,         // Highest val. for each color.
     int brightness          // Brightness control (100 = normal).
 ) {

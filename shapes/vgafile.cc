@@ -465,7 +465,7 @@ void Shape_frame::paint(
 void Shape_frame::paint_rle_translucent(
     Image_buffer8 *win,     // Buffer to paint in.
     int xoff, int yoff,     // Where to show in iwin.
-    Xform_palette *xforms,      // Transforms translucent colors
+    const Xform_palette *xforms,      // Transforms translucent colors
     int xfcnt           // Number of xforms.
 ) {
 	assert(rle);
@@ -525,7 +525,7 @@ void Shape_frame::paint_rle_translucent(
 void Shape_frame::paint_rle_transformed(
     Image_buffer8 *win,     // Buffer to paint in.
     int xoff, int yoff,     // Where to show in iwin.
-    Xform_palette &xform        // Use to transform pixels.
+    const Xform_palette &xform        // Use to transform pixels.
 ) {
 	assert(rle);
 
