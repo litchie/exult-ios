@@ -1,39 +1,84 @@
-os:
-  - linux
-  - osx
-
-dist: trusty
-sudo: required
-
 language: cpp
 
-compiler:
-  - gcc
-  - clang
+dist: xenial
+sudo: required
+
+cache:
+  directories:
+    - ${TRAVIS_BUILD_DIR}/deps
 
 env:
-  matrix:
-    - EXTRA_OPT="--with-debug=messages --with-sdl=sdl12"
-    - EXTRA_OPT="--with-debug=messages --with-sdl=sdl2"
-    - EXTRA_OPT="--with-sdl=sdl12"
-    - EXTRA_OPT="--with-sdl=sdl2"
   global:
     # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
     #   via the "travis encrypt" command using the project repo's public key
     - secure: "l8bkMxAIg9/95ZQh+Rq5V+1LInw55vlKaZIEgpqZ5nKDkcVVt4U0zGRCQKuUVZzV/TOt5ClOqxnZDgvQCpPtcyMriuBXTAeS/cP7zaTP10wkrq2saSfaLsJwiRIjnNeDtoIJQM8c/II5Vu7rqA9R1t1ejG9gcdHakH9tJnVU4N+ys9qvgIExJKhjSamuZdpoMuvXENE4arKyghhy+ZR+cJEzYkS3CcEQ894nBabdDyFlu+FLLDAwCF1apv/6dzMYRWwogFlkvjZ81G4joYUrQMozaGd+MRJ0kDgPnDEJFsqF/GC7sRZbp9Kvws4ZXdw15+e0u3jcfZgcDuXVuM+TaLGXMAWm9kuz3xj6DHDUYU7Epeg1I4riT9c/PEtYyLsE0wSD3z36erN2dlMxRuaR7awFBLlL63LERWCFES2n4Ulap2mTaJjRjjEJwQ8vB4W7B3SuOyCYJq3X64p44bD3m4fWPcAqCv1DN295JR9+nSRcMsPySkKbgSFtUPoJfayK27GEnF9YAuqcpgf+cbZNxsjcfYzhPD7GcLhyi1gS3+e5eq98EvF+uPA1HTYlhkS0jWypo1XDnFOjYJ59v+rNwpCvnAsSH0rKnks1wfsVytTD2KUb09HqRNdh3Gklr3AVWHSi6ru2MRk6IKt2IQl988SMj/bx1h5qtP8fOB1iKg4="
+    - MAKEFLAGS="-j 2"
+
+matrix:
+  include:
+    ##########################################################################
+    # Coverity with GCC on Linux
+    ##########################################################################
+    - os: linux
+      env: MATRIX_EVAL="export CXX=g++-8 && export CC=gcc-8" EXTRA_OPT="--with-sdl=sdl2" DO_COVERITY=1
+
+    ##########################################################################
+    # Clang on OSX
+    # Travis seems to take longer to start OSX instances,
+    # so leave this first for the overall build to be faster
+    ##########################################################################
+    - os: osx
+      env: MATRIX_EVAL="export CXX=clang++ && export CC=clang" EXTRA_OPT="--with-sdl=sdl12" DO_COVERITY=0
+      compiler: clang
+
+    - os: osx
+      env: MATRIX_EVAL="export CXX=clang++ && export CC=clang"EXTRA_OPT="--with-sdl=sdl2" DO_COVERITY=0
+      compiler: clang
+
+    ##########################################################################
+    # Clang on Linux
+    ##########################################################################
+    - os: linux
+      env: MATRIX_EVAL="export CXX=clang++-7 && export CC=clang-7" EXTRA_OPT="--with-sdl=sdl12" DO_COVERITY=0
+
+    - os: linux
+      env: MATRIX_EVAL="export CXX=clang++-7 && export CC=clang-7" EXTRA_OPT="--with-sdl=sdl2" DO_COVERITY=0
+
+    ##########################################################################
+    # GCC on Linux
+    ##########################################################################
+    - os: linux
+      env: MATRIX_EVAL="export CXX=g++-8 && export CC=gcc-8" EXTRA_OPT="--with-debug=messages --with-sdl=sdl12" DO_COVERITY=0
+
+    - os: linux
+      env: MATRIX_EVAL="export CXX=g++-8 && export CC=gcc-8" EXTRA_OPT="--with-debug=messages --with-sdl=sdl2" DO_COVERITY=0
+
+    - os: linux
+      env: MATRIX_EVAL="export CXX=g++-8 && export CC=gcc-8" EXTRA_OPT="--with-sdl=sdl12" DO_COVERITY=0
+
+    - os: linux
+      env: MATRIX_EVAL="export CXX=g++-8 && export CC=gcc-8" EXTRA_OPT="--with-sdl=sdl2" DO_COVERITY=0
 
 before_install:
-  # Exit immediately if the branch is the "coverity_scan" branch and the job number is not 1
-  - test "$TRAVIS_BRANCH" != "coverity_scan" -o "${TRAVIS_JOB_NUMBER##*.}" = "1" || exit 0
+  # Exit immediately if the branch is the "coverity_scan" branch and DO_COVERITY is "0"
+  - if [ "$TRAVIS_BRANCH" == "coverity_scan" -a "${DO_COVERITY}" = "0" ] ; then exit 0; fi
+  # Exit immediately if the branch is not the "coverity_scan" branch and DO_COVERITY is "1"
+  - eval "${MATRIX_EVAL}"
   - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo apt-get -qq update; fi
-  - if [ "$TRAVIS_BRANCH" = "coverity_scan" ]; then echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca- ; fi
+  - if [ "$TRAVIS_BRANCH" != "coverity_scan" -a "${DO_COVERITY}" = "1" ] ; then exit 0; fi
+  - if [ "$DO_COVERITY" = "1" ]; then echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca- ; fi
 
 install:
   - if [ "$TRAVIS_OS_NAME" = "osx" -a "$TRAVIS_BRANCH" != "coverity_scan" ]; then source .travis/install-osx.sh; fi
 
 addons:
   apt:
+    sources:
+      - ubuntu-toolchain-r-test
+      - llvm-toolchain-trusty-7
     packages:
+      - clang-7
+      - g++-8
       - libsdl1.2-dev
       - libsdl2-dev
       - libx11-dev
