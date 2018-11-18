@@ -13,8 +13,10 @@ compiler:
 
 env:
   matrix:
-    - DEBUG_OPT="--with-debug=messages"
-    - DEBUG_OPT=""
+    - EXTRA_OPT="--with-debug=messages --with-sdl=sdl12"
+    - EXTRA_OPT="--with-debug=messages --with-sdl=sdl2"
+    - EXTRA_OPT="--with-sdl=sdl12"
+    - EXTRA_OPT="--with-sdl=sdl2"
   global:
     # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
     #   via the "travis encrypt" command using the project repo's public key
@@ -33,6 +35,7 @@ addons:
   apt:
     packages:
       - libsdl1.2-dev
+      - libsdl2-dev
       - libx11-dev
       - zlib1g-dev
       - libgl1-mesa-dev
@@ -63,7 +66,7 @@ addons:
       name: "exult/exult"
       description: "Exult is an open source engine for Ultima 7 and Serpent Isle."
     notification_email: marzojr@gmail.com
-    build_command_prepend: "./autogen.sh && ./configure --with-debug=messages --disable-oggtest --disable-vorbistest --enable-exult-studio --enable-exult-studio-support --enable-mt32emu --enable-zip-support --enable-shared --enable-opengl --enable-midi-sfx --enable-gimp-plugin --enable-gnome-shp-thumbnailer --enable-compiler --enable-mods --with-usecode-debugger=yes"
+    build_command_prepend: "./autogen.sh && ./configure --with-debug=messages --disable-oggtest --disable-vorbistest --enable-exult-studio --enable-exult-studio-support --enable-mt32emu --enable-zip-support --enable-shared --enable-opengl --enable-midi-sfx --enable-gimp-plugin --enable-gnome-shp-thumbnailer --enable-compiler --enable-mods --with-usecode-debugger=yes --with-sdl=sdl2"
     build_command:   "make"
     branch_pattern: coverity_scan
 

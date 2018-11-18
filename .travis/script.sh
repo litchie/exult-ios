@@ -20,7 +20,7 @@ else
 	export LIBTOOLFLAGS="--silent"
 fi
 
-./autogen.sh && ./configure --with-cxx=`which $CXX` $LIBOPTS $DEBUG_OPT	\
+./autogen.sh && ./configure --with-cxx=`which $CXX` $LIBOPTS $EXTRA_OPT	\
                             --disable-oggtest --disable-vorbistest	\
                             --enable-exult-studio --enable-exult-studio-support	\
                             --enable-mt32emu --enable-zip-support	\
