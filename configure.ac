@@ -126,8 +126,6 @@ fi
 AC_PROG_CXX([$cxx_compilers])
 
 AC_LANG([C++])
-AX_CXX_COMPILE_STDCXX_11([noext],[optional])
-AC_PROG_CXXCPP
 
 # TODO: Maybe making a function to do these.
 # Lets clean up CFLAGS of -O[0-3gs]? and -g[0-3]?
@@ -153,6 +151,7 @@ if test "$HAVE_CXX17" = "0"; then
 		AX_CXX_COMPILE_STDCXX_11([noext],[mandatory])
 	fi
 fi
+AC_PROG_CXXCPP
 
 AC_PROG_INSTALL
 AM_PROG_LEX
@@ -188,15 +187,10 @@ AC_CHECK_HEADERS(limits.h sys/time.h unistd.h)
 AC_CHECK_HEADERS(sys/types.h sys/socket.h netdb.h)
 AC_CHECK_HEADERS(sys/wait.h signal.h)
 AC_CHECK_HEADERS(png.h, AM_CONDITIONAL(HAVE_PNG,true), AM_CONDITIONAL(HAVE_PNG, false))
-AC_CHECK_HEADERS(sstream)
 
-if test "$HAVE_CXX11" = "1"; then
-	AC_CHECK_HEADERS(unordered_map, [], AC_DEFINE(DONT_HAVE_HASH_MAP, 1, [Doesn't have hash map]))
-	AC_CHECK_HEADERS(unordered_set, [], AC_DEFINE(DONT_HAVE_HASH_SET, 1, [Doesn't have hash set]))
-else
-	AC_CHECK_HEADERS(tr1/unordered_map ext/hash_map hash_map, [], AC_DEFINE(DONT_HAVE_HASH_MAP, 1, [Doesn't have hash map]))
-	AC_CHECK_HEADERS(tr1/unordered_set ext/hash_set hash_set, [], AC_DEFINE(DONT_HAVE_HASH_SET, 1, [Doesn't have hash set]))
-fi
+AC_CHECK_HEADERS(sstream)
+AC_CHECK_HEADERS(unordered_map, [], AC_DEFINE(DONT_HAVE_HASH_MAP, 1, [Doesn't have hash map]))
+AC_CHECK_HEADERS(unordered_set, [], AC_DEFINE(DONT_HAVE_HASH_SET, 1, [Doesn't have hash set]))
 
 # ---------------------------------------------------------------------
 # Checks for typedefs, structures, and compiler characteristics.
