@@ -85,6 +85,7 @@ Usecode_value &Usecode_value::operator=(
 		break;
 	case pointer_type:
 		value.ptr = v2.value.ptr;
+		keep_ptr = v2.keep_ptr;
 		break;
 	case string_type:
 		value.str = v2.value.str ? newstrdup(v2.value.str) : 0;

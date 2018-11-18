@@ -82,8 +82,6 @@ class Usecode_internal : public Usecode_machine {
 	Text_gump *book;        // Book/scroll being displayed.
 	Game_object *caller_item;   // Item this is being called on.
 	vector<Game_object_shared> last_created; // Stack of last items created with
-    vector<Game_object_shared> removed;      // Removed items.  This is cleared
-							   				 //  at the end of run().
 	//   intrins. x24.
 	Actor *path_npc;        // Last NPC in path_run_usecode().
 	const char *user_choice;    // String user clicked on.
