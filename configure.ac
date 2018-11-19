@@ -117,10 +117,10 @@ AM_CONDITIONAL(MACOSX, test x$ARCH = xmacosx)
 
 AC_PROG_AWK
 
-AC_ARG_WITH(cxx, AS_HELP_STRING([--with-cxx=COMMAND], [Explicitly specify the C++ compiler to use]),[CXX="$withval"],[CXX=""])
+AC_ARG_WITH(cxx, AS_HELP_STRING([--with-cxx=COMMAND], [Explicitly specify the C++ compiler to use]),[WITHCXX="$withval"],[WITHCXX="$CXX"])
 
-if test "x$CXX" != "x"; then
-	cxx_compilers="$CXX"
+if test "x$WITHCXX" != "x"; then
+	cxx_compilers="$WITHCXX"
 fi
 
 AC_PROG_CXX([$cxx_compilers])
