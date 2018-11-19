@@ -28,14 +28,14 @@ public:
 	inline windragdata() : size(0), data(0) {
 	}
 	// Copy constructor
-	inline windragdata(windragdata &o) : id(o.id), size(o.size), data(new unsigned char [o.size]) {
+	inline windragdata(const windragdata &o) : id(o.id), size(o.size), data(new unsigned char [o.size]) {
 		std::memcpy(data, o.data, size);
 	}
 	// Read from buffer
-	inline windragdata(unsigned char *buf) : data(0) {
+	inline windragdata(const unsigned char *buf) : data(0) {
 		operator = (buf);
 	}
-	inline windragdata(sint32 i, uint32 s, unsigned char *d) :
+	inline windragdata(sint32 i, uint32 s, const unsigned char *d) :
 		id(i), size(s), data(new unsigned char [s]) {
 		std::memcpy(data, d, size);
 	}
@@ -50,7 +50,7 @@ public:
 		Write4(buf, size);
 		std::memcpy(buf, data, size);
 	}
-	inline windragdata &operator = (unsigned char *buf) {
+	inline windragdata &operator = (const unsigned char *buf) {
 		delete [] data;
 
 		id = Read4(buf);
@@ -60,7 +60,7 @@ public:
 		return *this;
 	}
 	// Copy constructor
-	inline windragdata &operator = (windragdata &o) {
+	inline windragdata &operator = (const windragdata &o) {
 		if (this != &o) {
 			delete [] data;
 			id = o.id;
@@ -70,7 +70,7 @@ public:
 		}
 		return *this;
 	}
-	inline void assign(sint32 i, uint32 s, unsigned char *d) {
+	inline void assign(sint32 i, uint32 s, const unsigned char *d) {
 		delete [] data;
 		id = i;
 		size = s;

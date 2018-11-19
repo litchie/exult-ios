@@ -41,6 +41,9 @@ using std::endl;
 using std::string;
 using std::ostream;
 using std::perror;
+#ifdef WIN32
+using std::cerr;
+#endif
 
 // isspace could be a macro
 #ifndef isspace

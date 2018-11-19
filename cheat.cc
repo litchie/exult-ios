@@ -196,14 +196,14 @@ void Cheat::toggle_map_editor(void) {
 			int ret = system(cmnd.c_str());
 			if (ret == 127 || ret == -1)
 				cout << "Couldn't run Exult Studio" << endl;
-#elif !(defined(UNDER_CE))
+#else
 			PROCESS_INFORMATION pi;
 			STARTUPINFO     si;
 
 			std::memset(&si, 0, sizeof(si));
 			si.cb = sizeof(si);
 
-			int ret = CreateProcess(NULL, cmnd.c_str(), NULL, NULL,
+			int ret = CreateProcess(NULL, const_cast<char*>(cmnd.c_str()), NULL, NULL,
 			                        FALSE, 0,
 			                        NULL, NULL, &si, &pi);
 			if (!ret) cout << "Couldn't run Exult Studio" << endl;
