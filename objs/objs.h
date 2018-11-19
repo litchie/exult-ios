@@ -462,6 +462,9 @@ inline Game_object *obj_from_weak(Game_object_weak wobj) {
 inline Game_object_weak weak_from_obj(Game_object *obj) {
     return obj ? obj->weak_from_this() : Game_object_weak();
 }
+inline Game_object_shared shared_from_obj(Game_object *obj) {
+    return obj ? obj->shared_from_this() : Game_object_shared();
+}
 
 /*
  *  Object from U7chunks.

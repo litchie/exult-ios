@@ -4177,8 +4177,9 @@ void Actor::die(
 	} else
 		body = 0;
 	Game_object *item;      // Move/remove all the items.
-	Game_object_vector tooheavy;    // Some shouldn't be moved.
+	Game_object_shared_vector tooheavy;    // Some shouldn't be moved.
 	while ((item = objects.get_first()) != 0) {
+	    Game_object_shared item_keep = shared_from_obj(item);
 		remove(item);
 		item->set_invalid();
 #if 1       // Guessing it is spells that get deleted.
@@ -4187,7 +4188,7 @@ void Actor::die(
 		if (!item->is_dragable())
 #endif
 		{
-			tooheavy.push_back(item);
+			tooheavy.push_back(item_keep);
 			continue;
 		}
 		if (body) {
@@ -4200,16 +4201,16 @@ void Actor::die(
 			if (pos.tx != -1)
 				item->move(pos2);
 			else        // No room anywhere.
-				tooheavy.push_back(item);
+				tooheavy.push_back(item_keep);
 		}
 	}
 	if (body)           // Okay to take its contents.
 		body->set_flag_recursively(Obj_flags::okay_to_take);
 
 	// Put the heavy ones back.
-	for (Game_object_vector::const_iterator it = tooheavy.begin();
+	for (Game_object_shared_vector::const_iterator it = tooheavy.begin();
 	        it != tooheavy.end(); ++it)
-		add(*it, 1);
+		add((*it).get(), 1);
 	if (body)
 		gwin->add_dirty(body);
 	add_dirty();            // Want to repaint area.

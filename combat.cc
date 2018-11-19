@@ -967,6 +967,7 @@ bool Combat_schedule::attack_target(
 	Game_object *ammo = 0;
 	int need_ammo = attacker->get_weapon_ammo(weapon, family,
 	                proj, ranged, &ammo);
+	Game_object_shared ammo_keep = shared_from_obj(ammo);
 	if (need_ammo && !ammo) {
 		if (flash_mouse)
 			Mouse::mouse->flash_shape(Mouse::outofammo);
