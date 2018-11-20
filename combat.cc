@@ -1226,7 +1226,8 @@ void Combat_schedule::set_hand_to_hand(
 	// Put aside weapon.
 	Game_object *weapon = npc->get_readied(lhand);
 	if (weapon) {
-		npc->remove(weapon);
+	    Game_object_shared keep = weapon->shared_from_this();
+	    npc->remove(weapon);
 		if (!npc->add_readied(weapon, belt, 1) &&
 		        !npc->add_readied(weapon, back_2h, 1) &&
 		        !npc->add_readied(weapon, back_shield, 1) &&
