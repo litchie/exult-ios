@@ -4318,6 +4318,7 @@ Actor *Actor::resurrect(
 		gwin->set_body(npc_num, 0); // Clear from gwin's list.
 		Game_object *item;      // Get back all the items.
 		while ((item = body->get_objects().get_first()) != 0) {
+		    Game_object_shared keep = item->shared_from_this();
 			body->remove(item);
 			add(item, 1);       // Always succeed at adding.
 		}
