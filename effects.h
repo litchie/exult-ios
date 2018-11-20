@@ -96,7 +96,7 @@ protected:
 	//int sprite_num;       // Which one.
 	//int frame_num;        // Current frame.
 	int frames;         // # frames.
-	Game_object *item;      // Follows this around if not null.
+	Game_object_weak item;      // Follows this around if not null.
 	Tile_coord pos;         // Position within world.
 	int xoff, yoff;         // Offset from position in pixels.
 	int deltax, deltay;     // Add to xoff, yoff on each frame.
@@ -117,11 +117,11 @@ public:
  *  An explosion.
  */
 class Explosion_effect : public Sprites_effect {
-	Game_object *explode;       // What's exploding, or 0.
+	Game_object_weak explode;       // What's exploding, or 0.
 	int weapon;         // Weapon to use for attack values.
 	int projectile;     // The projectile, for e.g., burst arrows
 	int exp_sfx;        // Explosion SFX.
-	Game_object *attacker;  //Who is responsible for the explosion;
+	Game_object_weak attacker;  //Who is responsible for the explosion;
 	//otherwise, explosion and delayed blast spells
 	//would not trigger a response from target
 public:
@@ -135,8 +135,8 @@ public:
  *  implement Usecode intrinsic 0x41:
  */
 class Projectile_effect : public Special_effect {
-	Game_object *attacker;      // Source of attack/spell.
-	Game_object *target;        // Target of path.
+	Game_object_weak attacker;      // Source of attack/spell.
+	Game_object_weak target;        // Target of path.
 	int weapon;         // Shape # of firing weapon.
 	int projectile_shape;       // Shape # of projectile/spell.
 	ShapeID sprite;         // Sprite shape to display.
@@ -181,7 +181,7 @@ public:
 class Homing_projectile : public Special_effect {
 	ShapeID sprite;
 	int weapon;     // The weapon's shape number.
-	Game_object *attacker;  // Who is responsible for the attack.
+	Game_object_weak attacker;  // Who is responsible for the attack.
 	Actor *target;          // We'll follow this around if not 0.
 	Tile_coord pos;         // Current position.
 	Tile_coord dest;        // Destination pos for when there is no target.
@@ -209,7 +209,7 @@ public:
 class Text_effect : public Time_sensitive, public Game_singletons {
 	Text_effect *next, *prev;   // All of them are chained together.
 	std::string msg;        // What to print.
-	Game_object *item;      // Item text is on.  May be null.
+	Game_object_weak item;      // Item text is on.  May be null.
 	Tile_coord tpos;        // Position to display it at.
 	Rectangle pos;
 	short width, height;        // Dimensions of rectangle.
@@ -227,7 +227,7 @@ public:
 	virtual void paint();
 	// Check for matching item.
 	int is_text(Game_object *it) {
-		return it == item;
+	    return it == obj_from_weak(item);
 	}
 	virtual void update_dirty();
 };
