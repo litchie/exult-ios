@@ -335,7 +335,7 @@
 		};
 		E738C8531A6FFF65003A950D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = E738C84F1A6FFF65003A950D /* vorbis.xcodeproj */;
+			containerPortal = E738C84F1A6FFF65003A950D /* libvorbis.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = E700E0641A6E4341006C8BE4;
 			remoteInfo = vorbis;
@@ -915,8 +915,8 @@
 		E71BBD911A725E1E0003F662 /* dpadglass-southwest.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dpadglass-southwest.png"; sourceTree = "<group>"; };
 		E71BBD921A725E1E0003F662 /* dpadglass-west.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dpadglass-west.png"; sourceTree = "<group>"; };
 		E71BBD931A725E1E0003F662 /* dpadglass.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = dpadglass.png; sourceTree = "<group>"; };
-		E738C8491A6FFF58003A950D /* libogg.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = libogg.xcodeproj; path = "libogg/Xcode-iOS/libogg.xcodeproj"; sourceTree = "<group>"; };
-		E738C84F1A6FFF65003A950D /* vorbis.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = vorbis.xcodeproj; path = "libvorbis/Xcode-iOS/vorbis.xcodeproj"; sourceTree = "<group>"; };
+		E738C8491A6FFF58003A950D /* libogg.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = libogg.xcodeproj; path = "libogg.xcodeproj"; sourceTree = "<group>"; };
+		E738C84F1A6FFF65003A950D /* libvorbis.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = libvorbis.xcodeproj; path = "libvorbis.xcodeproj"; sourceTree = "<group>"; };
 		E738C85F1A71DEA1003A950D /* touchui.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = touchui.cc; path = ../touchui.cc; sourceTree = "<group>"; };
 		E738C8601A71DEA1003A950D /* touchui.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = touchui.h; path = ../touchui.h; sourceTree = "<group>"; };
 		FD779EDD0E26BA1200F39101 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
@@ -1823,7 +1823,7 @@
 			children = (
 				E738C8491A6FFF58003A950D /* libogg.xcodeproj */,
 				E700E1271A6F839E006C8BE4 /* SDL.xcodeproj */,
-				E738C84F1A6FFF65003A950D /* vorbis.xcodeproj */,
+				E738C84F1A6FFF65003A950D /* libvorbis.xcodeproj */,
 			);
 			name = Libs;
 			sourceTree = "<group>";
@@ -1906,7 +1906,7 @@
 				},
 				{
 					ProductGroup = E738C8501A6FFF65003A950D /* Products */;
-					ProjectRef = E738C84F1A6FFF65003A950D /* vorbis.xcodeproj */;
+					ProjectRef = E738C84F1A6FFF65003A950D /* libvorbis.xcodeproj */;
 				},
 			);
 			projectRoot = "";
