@@ -45,48 +45,48 @@
 
 /* Begin PBXFileReference section */
 		E700E0641A6E4341006C8BE4 /* libvorbis.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libvorbis.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		E700E07E1A6E439C006C8BE4 /* analysis.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = analysis.c; path = ../lib/analysis.c; sourceTree = "<group>"; };
-		E700E07F1A6E439C006C8BE4 /* backends.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = backends.h; path = ../lib/backends.h; sourceTree = "<group>"; };
-		E700E0811A6E439C006C8BE4 /* bitrate.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = bitrate.c; path = ../lib/bitrate.c; sourceTree = "<group>"; };
-		E700E0821A6E439C006C8BE4 /* bitrate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bitrate.h; path = ../lib/bitrate.h; sourceTree = "<group>"; };
-		E700E0831A6E439C006C8BE4 /* block.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = block.c; path = ../lib/block.c; sourceTree = "<group>"; };
-		E700E0841A6E439C006C8BE4 /* codebook.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = codebook.c; path = ../lib/codebook.c; sourceTree = "<group>"; };
-		E700E0851A6E439C006C8BE4 /* codebook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = codebook.h; path = ../lib/codebook.h; sourceTree = "<group>"; };
-		E700E0861A6E439C006C8BE4 /* codec_internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = codec_internal.h; path = ../lib/codec_internal.h; sourceTree = "<group>"; };
-		E700E0871A6E439C006C8BE4 /* envelope.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = envelope.c; path = ../lib/envelope.c; sourceTree = "<group>"; };
-		E700E0881A6E439C006C8BE4 /* envelope.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = envelope.h; path = ../lib/envelope.h; sourceTree = "<group>"; };
-		E700E0891A6E439C006C8BE4 /* floor0.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = floor0.c; path = ../lib/floor0.c; sourceTree = "<group>"; };
-		E700E08A1A6E439C006C8BE4 /* floor1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = floor1.c; path = ../lib/floor1.c; sourceTree = "<group>"; };
-		E700E08B1A6E439C006C8BE4 /* highlevel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = highlevel.h; path = ../lib/highlevel.h; sourceTree = "<group>"; };
-		E700E08C1A6E439C006C8BE4 /* info.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = info.c; path = ../lib/info.c; sourceTree = "<group>"; };
-		E700E08D1A6E439C006C8BE4 /* lookup_data.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lookup_data.h; path = ../lib/lookup_data.h; sourceTree = "<group>"; };
-		E700E08E1A6E439C006C8BE4 /* lookup.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = lookup.c; path = ../lib/lookup.c; sourceTree = "<group>"; };
-		E700E08F1A6E439C006C8BE4 /* lookup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lookup.h; path = ../lib/lookup.h; sourceTree = "<group>"; };
-		E700E0901A6E439C006C8BE4 /* lookups.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; name = lookups.pl; path = ../lib/lookups.pl; sourceTree = "<group>"; };
-		E700E0911A6E439C006C8BE4 /* lpc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = lpc.c; path = ../lib/lpc.c; sourceTree = "<group>"; };
-		E700E0921A6E439C006C8BE4 /* lpc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lpc.h; path = ../lib/lpc.h; sourceTree = "<group>"; };
-		E700E0931A6E439C006C8BE4 /* lsp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = lsp.c; path = ../lib/lsp.c; sourceTree = "<group>"; };
-		E700E0941A6E439C006C8BE4 /* lsp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lsp.h; path = ../lib/lsp.h; sourceTree = "<group>"; };
-		E700E0971A6E439C006C8BE4 /* mapping0.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mapping0.c; path = ../lib/mapping0.c; sourceTree = "<group>"; };
-		E700E0981A6E439C006C8BE4 /* masking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = masking.h; path = ../lib/masking.h; sourceTree = "<group>"; };
-		E700E0991A6E439C006C8BE4 /* mdct.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mdct.c; path = ../lib/mdct.c; sourceTree = "<group>"; };
-		E700E09A1A6E439C006C8BE4 /* mdct.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mdct.h; path = ../lib/mdct.h; sourceTree = "<group>"; };
-		E700E09B1A6E439C006C8BE4 /* misc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = misc.h; path = ../lib/misc.h; sourceTree = "<group>"; };
-		E700E09C1A6E439C006C8BE4 /* os.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = os.h; path = ../lib/os.h; sourceTree = "<group>"; };
-		E700E09D1A6E439C006C8BE4 /* psy.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = psy.c; path = ../lib/psy.c; sourceTree = "<group>"; };
-		E700E09E1A6E439C006C8BE4 /* psy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = psy.h; path = ../lib/psy.h; sourceTree = "<group>"; };
-		E700E0A01A6E439C006C8BE4 /* registry.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = registry.c; path = ../lib/registry.c; sourceTree = "<group>"; };
-		E700E0A11A6E439C006C8BE4 /* registry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = registry.h; path = ../lib/registry.h; sourceTree = "<group>"; };
-		E700E0A21A6E439C006C8BE4 /* res0.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = res0.c; path = ../lib/res0.c; sourceTree = "<group>"; };
-		E700E0A31A6E439C006C8BE4 /* scales.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = scales.h; path = ../lib/scales.h; sourceTree = "<group>"; };
-		E700E0A41A6E439C006C8BE4 /* sharedbook.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sharedbook.c; path = ../lib/sharedbook.c; sourceTree = "<group>"; };
-		E700E0A51A6E439C006C8BE4 /* smallft.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = smallft.c; path = ../lib/smallft.c; sourceTree = "<group>"; };
-		E700E0A61A6E439C006C8BE4 /* smallft.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = smallft.h; path = ../lib/smallft.h; sourceTree = "<group>"; };
-		E700E0A71A6E439C006C8BE4 /* synthesis.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = synthesis.c; path = ../lib/synthesis.c; sourceTree = "<group>"; };
-		E700E0A91A6E439C006C8BE4 /* vorbisenc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vorbisenc.c; path = ../lib/vorbisenc.c; sourceTree = "<group>"; };
-		E700E0AA1A6E439C006C8BE4 /* vorbisfile.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vorbisfile.c; path = ../lib/vorbisfile.c; sourceTree = "<group>"; };
-		E700E0AB1A6E439C006C8BE4 /* window.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = window.c; path = ../lib/window.c; sourceTree = "<group>"; };
-		E700E0AC1A6E439C006C8BE4 /* window.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = window.h; path = ../lib/window.h; sourceTree = "<group>"; };
+		E700E07E1A6E439C006C8BE4 /* analysis.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = analysis.c; path = libvorbis/lib/analysis.c; sourceTree = "<group>"; };
+		E700E07F1A6E439C006C8BE4 /* backends.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = backends.h; path = libvorbis/lib/backends.h; sourceTree = "<group>"; };
+		E700E0811A6E439C006C8BE4 /* bitrate.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = bitrate.c; path = libvorbis/lib/bitrate.c; sourceTree = "<group>"; };
+		E700E0821A6E439C006C8BE4 /* bitrate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bitrate.h; path = libvorbis/lib/bitrate.h; sourceTree = "<group>"; };
+		E700E0831A6E439C006C8BE4 /* block.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = block.c; path = libvorbis/lib/block.c; sourceTree = "<group>"; };
+		E700E0841A6E439C006C8BE4 /* codebook.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = codebook.c; path = libvorbis/lib/codebook.c; sourceTree = "<group>"; };
+		E700E0851A6E439C006C8BE4 /* codebook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = codebook.h; path = libvorbis/lib/codebook.h; sourceTree = "<group>"; };
+		E700E0861A6E439C006C8BE4 /* codec_internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = codec_internal.h; path = libvorbis/lib/codec_internal.h; sourceTree = "<group>"; };
+		E700E0871A6E439C006C8BE4 /* envelope.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = envelope.c; path = libvorbis/lib/envelope.c; sourceTree = "<group>"; };
+		E700E0881A6E439C006C8BE4 /* envelope.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = envelope.h; path = libvorbis/lib/envelope.h; sourceTree = "<group>"; };
+		E700E0891A6E439C006C8BE4 /* floor0.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = floor0.c; path = libvorbis/lib/floor0.c; sourceTree = "<group>"; };
+		E700E08A1A6E439C006C8BE4 /* floor1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = floor1.c; path = libvorbis/lib/floor1.c; sourceTree = "<group>"; };
+		E700E08B1A6E439C006C8BE4 /* highlevel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = highlevel.h; path = libvorbis/lib/highlevel.h; sourceTree = "<group>"; };
+		E700E08C1A6E439C006C8BE4 /* info.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = info.c; path = libvorbis/lib/info.c; sourceTree = "<group>"; };
+		E700E08D1A6E439C006C8BE4 /* lookup_data.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lookup_data.h; path = libvorbis/lib/lookup_data.h; sourceTree = "<group>"; };
+		E700E08E1A6E439C006C8BE4 /* lookup.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = lookup.c; path = libvorbis/lib/lookup.c; sourceTree = "<group>"; };
+		E700E08F1A6E439C006C8BE4 /* lookup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lookup.h; path = libvorbis/lib/lookup.h; sourceTree = "<group>"; };
+		E700E0901A6E439C006C8BE4 /* lookups.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; name = lookups.pl; path = libvorbis/lib/lookups.pl; sourceTree = "<group>"; };
+		E700E0911A6E439C006C8BE4 /* lpc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = lpc.c; path = libvorbis/lib/lpc.c; sourceTree = "<group>"; };
+		E700E0921A6E439C006C8BE4 /* lpc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lpc.h; path = libvorbis/lib/lpc.h; sourceTree = "<group>"; };
+		E700E0931A6E439C006C8BE4 /* lsp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = lsp.c; path = libvorbis/lib/lsp.c; sourceTree = "<group>"; };
+		E700E0941A6E439C006C8BE4 /* lsp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lsp.h; path = libvorbis/lib/lsp.h; sourceTree = "<group>"; };
+		E700E0971A6E439C006C8BE4 /* mapping0.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mapping0.c; path = libvorbis/lib/mapping0.c; sourceTree = "<group>"; };
+		E700E0981A6E439C006C8BE4 /* masking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = masking.h; path = libvorbis/lib/masking.h; sourceTree = "<group>"; };
+		E700E0991A6E439C006C8BE4 /* mdct.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mdct.c; path = libvorbis/lib/mdct.c; sourceTree = "<group>"; };
+		E700E09A1A6E439C006C8BE4 /* mdct.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mdct.h; path = libvorbis/lib/mdct.h; sourceTree = "<group>"; };
+		E700E09B1A6E439C006C8BE4 /* misc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = misc.h; path = libvorbis/lib/misc.h; sourceTree = "<group>"; };
+		E700E09C1A6E439C006C8BE4 /* os.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = os.h; path = libvorbis/lib/os.h; sourceTree = "<group>"; };
+		E700E09D1A6E439C006C8BE4 /* psy.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = psy.c; path = libvorbis/lib/psy.c; sourceTree = "<group>"; };
+		E700E09E1A6E439C006C8BE4 /* psy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = psy.h; path = libvorbis/lib/psy.h; sourceTree = "<group>"; };
+		E700E0A01A6E439C006C8BE4 /* registry.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = registry.c; path = libvorbis/lib/registry.c; sourceTree = "<group>"; };
+		E700E0A11A6E439C006C8BE4 /* registry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = registry.h; path = libvorbis/lib/registry.h; sourceTree = "<group>"; };
+		E700E0A21A6E439C006C8BE4 /* res0.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = res0.c; path = libvorbis/lib/res0.c; sourceTree = "<group>"; };
+		E700E0A31A6E439C006C8BE4 /* scales.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = scales.h; path = libvorbis/lib/scales.h; sourceTree = "<group>"; };
+		E700E0A41A6E439C006C8BE4 /* sharedbook.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sharedbook.c; path = libvorbis/lib/sharedbook.c; sourceTree = "<group>"; };
+		E700E0A51A6E439C006C8BE4 /* smallft.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = smallft.c; path = libvorbis/lib/smallft.c; sourceTree = "<group>"; };
+		E700E0A61A6E439C006C8BE4 /* smallft.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = smallft.h; path = libvorbis/lib/smallft.h; sourceTree = "<group>"; };
+		E700E0A71A6E439C006C8BE4 /* synthesis.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = synthesis.c; path = libvorbis/lib/synthesis.c; sourceTree = "<group>"; };
+		E700E0A91A6E439C006C8BE4 /* vorbisenc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vorbisenc.c; path = libvorbis/lib/vorbisenc.c; sourceTree = "<group>"; };
+		E700E0AA1A6E439C006C8BE4 /* vorbisfile.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vorbisfile.c; path = libvorbis/lib/vorbisfile.c; sourceTree = "<group>"; };
+		E700E0AB1A6E439C006C8BE4 /* window.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = window.c; path = libvorbis/lib/window.c; sourceTree = "<group>"; };
+		E700E0AC1A6E439C006C8BE4 /* window.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = window.h; path = libvorbis/lib/window.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -283,11 +283,10 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
-					"../../libogg/include",
-					../include,
-					..,
-					../lib,
+					./libogg/include,
+					./libvorbis/include,
+					./include,
+					./libvorbis/lib,
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -328,10 +327,10 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
-					"../../libogg/include",
-					../include,
-					..,
-					../lib,
+					./libogg/include,
+					./libvorbis/include,
+					./include,
+					./libvorbis/lib,
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
