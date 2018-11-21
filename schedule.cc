@@ -1966,6 +1966,7 @@ void Miner_schedule::now_what(
 		cnt = to;
 		if (cnt) {
 			Game_object *ore_obj = ores[rand() % cnt];
+			ore = weak_from_obj(ore_obj);
 			Actor_pathfinder_client cost(npc, 2);
 			Actor_action *pact =
 			    Path_walking_actor_action::create_path(
@@ -1984,7 +1985,8 @@ void Miner_schedule::now_what(
 	}
 	case attack_ore: {
 		Game_object *ore_obj = obj_from_weak(ore);
-		if (ore_obj->is_pos_invalid() || npc->distance(ore_obj) > 2) {
+		if (!ore_obj || ore_obj->is_pos_invalid() ||
+		   			 	npc->distance(ore_obj) > 2) {
 			state = find_ore;
 			break;
 		}
@@ -2003,7 +2005,7 @@ void Miner_schedule::now_what(
 	}
 	case ore_attacked: {
 		Game_object *ore_obj = obj_from_weak(ore);
-		if (ore_obj->is_pos_invalid()) {
+		if (!ore_obj || ore_obj->is_pos_invalid()) {
 			state = find_ore;
 			break;
 		}
