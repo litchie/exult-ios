@@ -469,6 +469,7 @@ inline Usecode_value Usecode_internal::pop() {
 		cerr << "Stack underflow" << endl;
 		return Usecode_value(0);
 	}
+	// +++++SHARED:  Shouldn't we reset *sp.
 	return *--sp;
 }
 

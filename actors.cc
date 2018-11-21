@@ -176,8 +176,32 @@ uint8 visible_frames[16] = {
 	Actor::ready_frame
 };   // Can't strech arms outward.
 
+
+	// Set up actor's frame lists.
+	// Most NPC's walk with a 'stand'
+	//   frame between steps.
+	const int FRAME_NUM = 5;
+	uint8 npc_north_framenums[FRAME_NUM] = { 0,  1,  0,  2,  0},
+		  npc_south_framenums[FRAME_NUM] = {16, 17, 16, 18, 16},
+		  npc_east_framenums[FRAME_NUM] = {48, 49, 48, 50, 48},
+		  npc_west_framenums[FRAME_NUM] = {32, 33, 32, 34, 32};
+    static Frames_sequence npc_north_frames(FRAME_NUM, npc_north_framenums);
+    static Frames_sequence npc_south_frames(FRAME_NUM, npc_south_framenums);
+    static Frames_sequence npc_east_frames(FRAME_NUM, npc_east_framenums);
+    static Frames_sequence npc_west_frames(FRAME_NUM, npc_west_framenums);
+	// Avatar just walks left, right.
+	uint8 avatar_north_framenums[3] = {0, 1, 2},
+	      avatar_south_framenums[3] = {16, 17, 18},
+	      avatar_east_framenums[3] = {48, 49, 50},
+	      avatar_west_framenums[3] = {32, 33, 34};
+    static Frames_sequence avatar_north_frames(3, avatar_north_framenums);
+    static Frames_sequence avatar_south_frames(3, avatar_south_framenums);
+    static Frames_sequence avatar_east_frames(3, avatar_east_framenums);
+    static Frames_sequence avatar_west_frames(3, avatar_west_framenums);
+
 Frames_sequence *Actor::avatar_frames[4] = {0, 0, 0, 0};
 Frames_sequence *Actor::npc_frames[4] = {0, 0, 0, 0};
+
 const signed char sea_serpent_attack_frames[] = {1, 2, 3};
 const signed char reach_attack_frames1[] = {3, 6};
 const signed char raise_attack_frames1[] = {3, 4, 6};
@@ -1132,34 +1156,14 @@ int Actor::get_attack_frames(
 void Actor::init_default_frames(
 ) {
 	// Set up actor's frame lists.
-	// Most NPC's walk with a 'stand'
-	//   frame between steps.
-	const int FRAME_NUM = 5;
-	uint8 npc_north_frames[FRAME_NUM] = { 0,  1,  0,  2,  0},
-	                                    npc_south_frames[FRAME_NUM] = {16, 17, 16, 18, 16},
-	                                            npc_east_frames[FRAME_NUM] = {48, 49, 48, 50, 48},
-	                                                    npc_west_frames[FRAME_NUM] = {32, 33, 32, 34, 32};
-	npc_frames[static_cast<int>(north) / 2] =
-	    new Frames_sequence(FRAME_NUM, npc_north_frames);
-	npc_frames[static_cast<int>(south) / 2] =
-	    new Frames_sequence(FRAME_NUM, npc_south_frames);
-	npc_frames[static_cast<int>(east) / 2] =
-	    new Frames_sequence(FRAME_NUM, npc_east_frames);
-	npc_frames[static_cast<int>(west) / 2] =
-	    new Frames_sequence(FRAME_NUM, npc_west_frames);
-	// Avatar just walks left, right.
-	uint8 avatar_north_frames[3] = {0, 1, 2},
-	                               avatar_south_frames[3] = {16, 17, 18},
-	                                       avatar_east_frames[3] = {48, 49, 50},
-	                                               avatar_west_frames[3] = {32, 33, 34};
-	avatar_frames[static_cast<int>(north) / 2] =
-	    new Frames_sequence(3, avatar_north_frames);
-	avatar_frames[static_cast<int>(south) / 2] =
-	    new Frames_sequence(3, avatar_south_frames);
-	avatar_frames[static_cast<int>(east) / 2] =
-	    new Frames_sequence(3, avatar_east_frames);
-	avatar_frames[static_cast<int>(west) / 2] =
-	    new Frames_sequence(3, avatar_west_frames);
+	npc_frames[static_cast<int>(north) / 2] = &npc_north_frames;
+	npc_frames[static_cast<int>(south) / 2] = &npc_south_frames;
+	npc_frames[static_cast<int>(east) / 2] =  &npc_east_frames;
+	npc_frames[static_cast<int>(west) / 2] =  &npc_west_frames;
+	avatar_frames[static_cast<int>(north) / 2] = &avatar_north_frames;
+	avatar_frames[static_cast<int>(south) / 2] = &avatar_south_frames;
+	avatar_frames[static_cast<int>(east) / 2] =  &avatar_east_frames;
+	avatar_frames[static_cast<int>(west) / 2] =  &avatar_west_frames;
 }
 
 /*
@@ -5237,13 +5241,5 @@ Frames_sequence::Frames_sequence(
 }
 
 Main_actor::~Main_actor() {
-	// For improving Valgrind's signal-to-noise ratio.
-	FORGET_OBJECT(npc_frames[static_cast<int>(north) / 2]);
-	FORGET_OBJECT(npc_frames[static_cast<int>(south) / 2]);
-	FORGET_OBJECT(npc_frames[static_cast<int>(east) / 2]);
-	FORGET_OBJECT(npc_frames[static_cast<int>(west) / 2]);
-	FORGET_OBJECT(avatar_frames[static_cast<int>(north) / 2]);
-	FORGET_OBJECT(avatar_frames[static_cast<int>(south) / 2]);
-	FORGET_OBJECT(avatar_frames[static_cast<int>(east) / 2]);
-	FORGET_OBJECT(avatar_frames[static_cast<int>(west) / 2]);
+
 }
