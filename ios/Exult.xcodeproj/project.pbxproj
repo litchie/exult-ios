@@ -71,7 +71,6 @@
 		E700DBBE1A6E2CE7006C8BE4 /* conv.cc in Sources */ = {isa = PBXBuildFile; fileRef = E700DB081A6E2CE7006C8BE4 /* conv.cc */; };
 		E700DBC21A6E2CE7006C8BE4 /* Midi.cc in Sources */ = {isa = PBXBuildFile; fileRef = E700DB0E1A6E2CE7006C8BE4 /* Midi.cc */; };
 		E700DBD81A6E2CE7006C8BE4 /* ALSAMidiDriver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E700DB271A6E2CE7006C8BE4 /* ALSAMidiDriver.cpp */; };
-		E700DBD91A6E2CE7006C8BE4 /* amiga_midi.cc in Sources */ = {isa = PBXBuildFile; fileRef = E700DB291A6E2CE7006C8BE4 /* amiga_midi.cc */; };
 		E700DBDB1A6E2CE7006C8BE4 /* CoreAudioMidiDriver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E700DB2D1A6E2CE7006C8BE4 /* CoreAudioMidiDriver.cpp */; };
 		E700DBDC1A6E2CE7006C8BE4 /* CoreMidiDriver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E700DB2F1A6E2CE7006C8BE4 /* CoreMidiDriver.cpp */; };
 		E700DBDD1A6E2CE7006C8BE4 /* FileMidiDriver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E700DB311A6E2CE7006C8BE4 /* FileMidiDriver.cpp */; };
@@ -140,7 +139,6 @@
 		E700DCAC1A6E30A7006C8BE4 /* readnpcs.cc in Sources */ = {isa = PBXBuildFile; fileRef = E700DC781A6E30A7006C8BE4 /* readnpcs.cc */; };
 		E700DCAD1A6E30A7006C8BE4 /* schedule.cc in Sources */ = {isa = PBXBuildFile; fileRef = E700DC7A1A6E30A7006C8BE4 /* schedule.cc */; };
 		E700DCAE1A6E30A7006C8BE4 /* shapeid.cc in Sources */ = {isa = PBXBuildFile; fileRef = E700DC7D1A6E30A7006C8BE4 /* shapeid.cc */; };
-		E700DCAF1A6E30A7006C8BE4 /* touchscreen.cc in Sources */ = {isa = PBXBuildFile; fileRef = E700DC811A6E30A7006C8BE4 /* touchscreen.cc */; };
 		E700DCB01A6E30A7006C8BE4 /* tqueue.cc in Sources */ = {isa = PBXBuildFile; fileRef = E700DC831A6E30A7006C8BE4 /* tqueue.cc */; };
 		E700DCB11A6E30A7006C8BE4 /* txtscroll.cc in Sources */ = {isa = PBXBuildFile; fileRef = E700DC851A6E30A7006C8BE4 /* txtscroll.cc */; };
 		E700DCB21A6E30A7006C8BE4 /* version.cc in Sources */ = {isa = PBXBuildFile; fileRef = E700DC871A6E30A7006C8BE4 /* version.cc */; };
@@ -240,7 +238,6 @@
 		E700DE8D1A6E3497006C8BE4 /* Gump.cc in Sources */ = {isa = PBXBuildFile; fileRef = E700DE581A6E3497006C8BE4 /* Gump.cc */; };
 		E700DE8E1A6E3497006C8BE4 /* iphone_gumps.cc in Sources */ = {isa = PBXBuildFile; fileRef = E700DE5A1A6E3497006C8BE4 /* iphone_gumps.cc */; };
 		E700DE8F1A6E3497006C8BE4 /* Jawbone_gump.cc in Sources */ = {isa = PBXBuildFile; fileRef = E700DE5C1A6E3497006C8BE4 /* Jawbone_gump.cc */; };
-		E700DE901A6E3497006C8BE4 /* Keyboard_gump.cc in Sources */ = {isa = PBXBuildFile; fileRef = E700DE5E1A6E3497006C8BE4 /* Keyboard_gump.cc */; };
 		E700DE911A6E3497006C8BE4 /* misc_buttons.cc in Sources */ = {isa = PBXBuildFile; fileRef = E700DE601A6E3497006C8BE4 /* misc_buttons.cc */; };
 		E700DE921A6E3497006C8BE4 /* MiscOptions_gump.cc in Sources */ = {isa = PBXBuildFile; fileRef = E700DE621A6E3497006C8BE4 /* MiscOptions_gump.cc */; };
 		E700DE931A6E3497006C8BE4 /* Newfile_gump.cc in Sources */ = {isa = PBXBuildFile; fileRef = E700DE651A6E3497006C8BE4 /* Newfile_gump.cc */; };
@@ -444,8 +441,6 @@
 		E700DB0F1A6E2CE7006C8BE4 /* Midi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Midi.h; sourceTree = "<group>"; };
 		E700DB271A6E2CE7006C8BE4 /* ALSAMidiDriver.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ALSAMidiDriver.cpp; sourceTree = "<group>"; };
 		E700DB281A6E2CE7006C8BE4 /* ALSAMidiDriver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALSAMidiDriver.h; sourceTree = "<group>"; };
-		E700DB291A6E2CE7006C8BE4 /* amiga_midi.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = amiga_midi.cc; sourceTree = "<group>"; };
-		E700DB2A1A6E2CE7006C8BE4 /* amiga_midi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = amiga_midi.h; sourceTree = "<group>"; };
 		E700DB2D1A6E2CE7006C8BE4 /* CoreAudioMidiDriver.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CoreAudioMidiDriver.cpp; sourceTree = "<group>"; };
 		E700DB2E1A6E2CE7006C8BE4 /* CoreAudioMidiDriver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreAudioMidiDriver.h; sourceTree = "<group>"; };
 		E700DB2F1A6E2CE7006C8BE4 /* CoreMidiDriver.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CoreMidiDriver.cpp; sourceTree = "<group>"; };
@@ -597,8 +592,6 @@
 		E700DC7E1A6E30A7006C8BE4 /* shapeid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = shapeid.h; path = ../shapeid.h; sourceTree = "<group>"; };
 		E700DC7F1A6E30A7006C8BE4 /* singles.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = singles.h; path = ../singles.h; sourceTree = "<group>"; };
 		E700DC801A6E30A7006C8BE4 /* tiles.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tiles.h; path = ../tiles.h; sourceTree = "<group>"; };
-		E700DC811A6E30A7006C8BE4 /* touchscreen.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = touchscreen.cc; path = ../touchscreen.cc; sourceTree = "<group>"; };
-		E700DC821A6E30A7006C8BE4 /* touchscreen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = touchscreen.h; path = ../touchscreen.h; sourceTree = "<group>"; };
 		E700DC831A6E30A7006C8BE4 /* tqueue.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = tqueue.cc; path = ../tqueue.cc; sourceTree = "<group>"; };
 		E700DC841A6E30A7006C8BE4 /* tqueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tqueue.h; path = ../tqueue.h; sourceTree = "<group>"; };
 		E700DC851A6E30A7006C8BE4 /* txtscroll.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = txtscroll.cc; path = ../txtscroll.cc; sourceTree = "<group>"; };
@@ -805,8 +798,6 @@
 		E700DE5B1A6E3497006C8BE4 /* iphone_gumps.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = iphone_gumps.h; path = ../gumps/iphone_gumps.h; sourceTree = "<group>"; };
 		E700DE5C1A6E3497006C8BE4 /* Jawbone_gump.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Jawbone_gump.cc; path = ../gumps/Jawbone_gump.cc; sourceTree = "<group>"; };
 		E700DE5D1A6E3497006C8BE4 /* Jawbone_gump.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Jawbone_gump.h; path = ../gumps/Jawbone_gump.h; sourceTree = "<group>"; };
-		E700DE5E1A6E3497006C8BE4 /* Keyboard_gump.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Keyboard_gump.cc; path = ../gumps/Keyboard_gump.cc; sourceTree = "<group>"; };
-		E700DE5F1A6E3497006C8BE4 /* Keyboard_gump.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Keyboard_gump.h; path = ../gumps/Keyboard_gump.h; sourceTree = "<group>"; };
 		E700DE601A6E3497006C8BE4 /* misc_buttons.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = misc_buttons.cc; path = ../gumps/misc_buttons.cc; sourceTree = "<group>"; };
 		E700DE611A6E3497006C8BE4 /* misc_buttons.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = misc_buttons.h; path = ../gumps/misc_buttons.h; sourceTree = "<group>"; };
 		E700DE621A6E3497006C8BE4 /* MiscOptions_gump.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MiscOptions_gump.cc; path = ../gumps/MiscOptions_gump.cc; sourceTree = "<group>"; };
@@ -1095,8 +1086,6 @@
 			children = (
 				E700DB271A6E2CE7006C8BE4 /* ALSAMidiDriver.cpp */,
 				E700DB281A6E2CE7006C8BE4 /* ALSAMidiDriver.h */,
-				E700DB291A6E2CE7006C8BE4 /* amiga_midi.cc */,
-				E700DB2A1A6E2CE7006C8BE4 /* amiga_midi.h */,
 				E700DB2D1A6E2CE7006C8BE4 /* CoreAudioMidiDriver.cpp */,
 				E700DB2E1A6E2CE7006C8BE4 /* CoreAudioMidiDriver.h */,
 				E700DB2F1A6E2CE7006C8BE4 /* CoreMidiDriver.cpp */,
@@ -1318,8 +1307,6 @@
 				E700DC7E1A6E30A7006C8BE4 /* shapeid.h */,
 				E700DC7F1A6E30A7006C8BE4 /* singles.h */,
 				E700DC801A6E30A7006C8BE4 /* tiles.h */,
-				E700DC811A6E30A7006C8BE4 /* touchscreen.cc */,
-				E700DC821A6E30A7006C8BE4 /* touchscreen.h */,
 				E738C85F1A71DEA1003A950D /* touchui.cc */,
 				E738C8601A71DEA1003A950D /* touchui.h */,
 				E700DC831A6E30A7006C8BE4 /* tqueue.cc */,
@@ -1588,8 +1575,6 @@
 				E700DE5B1A6E3497006C8BE4 /* iphone_gumps.h */,
 				E700DE5C1A6E3497006C8BE4 /* Jawbone_gump.cc */,
 				E700DE5D1A6E3497006C8BE4 /* Jawbone_gump.h */,
-				E700DE5E1A6E3497006C8BE4 /* Keyboard_gump.cc */,
-				E700DE5F1A6E3497006C8BE4 /* Keyboard_gump.h */,
 				E700DE601A6E3497006C8BE4 /* misc_buttons.cc */,
 				E700DE611A6E3497006C8BE4 /* misc_buttons.h */,
 				E700DE621A6E3497006C8BE4 /* MiscOptions_gump.cc */,
@@ -2155,7 +2140,6 @@
 				E700DC291A6E2CE7006C8BE4 /* WavAudioSample.cc in Sources */,
 				E700DCA91A6E30A7006C8BE4 /* palette.cc in Sources */,
 				E700DCDB1A6E30D8006C8BE4 /* contain.cc in Sources */,
-				E700DBD91A6E2CE7006C8BE4 /* amiga_midi.cc in Sources */,
 				E700DE821A6E3497006C8BE4 /* Face_button.cc in Sources */,
 				E700DC231A6E2CE7006C8BE4 /* OggAudioSample.cc in Sources */,
 				E700DE861A6E3497006C8BE4 /* GameplayOptions_gump.cc in Sources */,
@@ -2181,7 +2165,6 @@
 				8AB53D8C1C9CA0A90084C69D /* ShortcutBar_gump.cc in Sources */,
 				E700DCD71A6E30D8006C8BE4 /* animate.cc in Sources */,
 				E700DD601A6E3121006C8BE4 /* weaponinf.cc in Sources */,
-				E700DCAF1A6E30A7006C8BE4 /* touchscreen.cc in Sources */,
 				E700DFB51A6E372A006C8BE4 /* Astar.cc in Sources */,
 				E700DC931A6E30A7006C8BE4 /* cheat.cc in Sources */,
 				E700DCB01A6E30A7006C8BE4 /* tqueue.cc in Sources */,
@@ -2214,7 +2197,6 @@
 				E700E0291A6E4067006C8BE4 /* gamewin.cc in Sources */,
 				E700DE871A6E3497006C8BE4 /* Gump_button.cc in Sources */,
 				E700DE8B1A6E3497006C8BE4 /* Gump_ToggleButton.cc in Sources */,
-				E700DE901A6E3497006C8BE4 /* Keyboard_gump.cc in Sources */,
 				E700DBDB1A6E2CE7006C8BE4 /* CoreAudioMidiDriver.cpp in Sources */,
 				E700DE2A1A6E344D006C8BE4 /* savepcx.cc in Sources */,
 				8A8728D91DD8AEFF005AC3FC /* TVF.cpp in Sources */,
