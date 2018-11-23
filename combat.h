@@ -49,7 +49,7 @@ protected:
 	static unsigned long battle_end_time;   // And when it ended.
 	Phase state;
 	Schedule_types prev_schedule;   // Before going into combat.
-	std::list<Actor *> opponents;   // Possible opponents.
+	std::list<Game_object_weak> opponents;   // Possible opponents.
 	Game_object *practice_target;   // Only for duel schedule.
 	Game_object *weapon;
 	int weapon_shape;       // Weapon's shape in shapes.vga.
@@ -74,7 +74,7 @@ protected:
 	bool be_invisible();
 	virtual void find_opponents();
 	// Find attacker of protected member.
-	std::list<Actor *>::iterator find_protected_attacker();
+	std::list<Game_object_weak>::iterator find_protected_attacker();
 	Game_object *find_foe(int mode);// Find a new opponent.
 	Game_object *find_foe();
 	// Back off when being attacked.

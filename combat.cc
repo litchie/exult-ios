@@ -351,7 +351,7 @@ void Combat_schedule::find_opponents(
 				if (combat_trace)
 					cout << npc->get_name() << " pushed back(asleep,1) " << actor->get_name() << endl;
 			} else {
-				opponents.push_back(actor);
+				opponents.push_back(actor->weak_from_this());
 				if (combat_trace)
 					cout << npc->get_name() << " pushed back(1) " << actor->get_name() << endl;
 			}
@@ -362,7 +362,7 @@ void Combat_schedule::find_opponents(
 			// Is actor attacking a party member?
 			if ((t->get_flag(Obj_flags::in_party) || t == avatar) &&
 			        t->as_actor() && is_enemy(npc_align, t->as_actor()->get_effective_alignment())) {
-				opponents.push_back(actor);
+				opponents.push_back(actor->weak_from_this());
 				if (combat_trace)
 					cout << npc->get_name() << " pushed back(2) " << actor->get_name() << endl;
 			}
@@ -373,7 +373,7 @@ void Combat_schedule::find_opponents(
 			// Is actor being attacked by a party member?
 			if ((oppr->get_flag(Obj_flags::in_party) || oppr == avatar) &&
 			        is_enemy(npc_align, oppr->get_effective_alignment())) {
-				opponents.push_back(actor);
+				opponents.push_back(actor->weak_from_this());
 				if (combat_trace)
 					cout << npc->get_name() << " pushed back(3) " << actor->get_name() << endl;
 			}
@@ -386,7 +386,7 @@ void Combat_schedule::find_opponents(
 		Actor *oppnpc = opp ? opp->as_actor() : 0;
 		if (oppnpc && oppnpc != npc
 		        && oppnpc->get_schedule_type() == Schedule::combat) {
-			opponents.push_back(oppnpc);
+			opponents.push_back(oppnpc->weak_from_this());
 			if (combat_trace)
 				cout << npc->get_name() << " pushed back (4) " << oppnpc->get_name() << endl;
 		}
@@ -394,7 +394,10 @@ void Combat_schedule::find_opponents(
 	// Still none? Try the sleeping/unconscious foes.
 	if (opponents.empty() && !sleeping.empty()
 	    && (npc != avatar || charmed_avatar)) {
-		opponents.insert(opponents.begin(), sleeping.begin(), sleeping.end());
+		for (Actor_vector::const_iterator it = sleeping.begin();
+										  	 it != sleeping.end(); ++it) {
+		    opponents.push_front(weak_from_obj(*it));
+		}
 		if (combat_trace)
 			cout << npc->get_name() << " pushed back asleep opponents" << endl;
 	}
@@ -406,7 +409,7 @@ void Combat_schedule::find_opponents(
  *  Output: ->attacker in opponents, or opponents.end() if not found.
  */
 
-list<Actor *>::iterator Combat_schedule::find_protected_attacker(
+list<Game_object_weak>::iterator Combat_schedule::find_protected_attacker(
 ) {
 	if (!npc->is_in_party())    // Not in party?
 		return opponents.end();
@@ -423,11 +426,11 @@ list<Actor *>::iterator Combat_schedule::find_protected_attacker(
 		return opponents.end();
 	// Find closest attacker.
 	int dist, best_dist = 4 * c_tiles_per_chunk;
-	list<Actor *>::iterator best_opp = opponents.end();
-	for (list<Actor *>::iterator it = opponents.begin();
+	list<Game_object_weak>::iterator best_opp = opponents.end();
+	for (list<Game_object_weak>::iterator it = opponents.begin();
 	        it != opponents.end(); ++it) {
-		Actor *opp = *it;
-		if (opp->get_target() == prot_actor &&
+		Actor *opp = static_cast<Actor *>(obj_from_weak(*it));
+		if (opp && opp->get_target() == prot_actor &&
 		        (dist = npc->distance(opp)) < best_dist) {
 			best_dist = dist;
 			best_opp = it;
@@ -467,10 +470,12 @@ Game_object *Combat_schedule::find_foe(
 	bool charmed_avatar = Combat::charmed_more_difficult &&
 	                      avatar->get_effective_alignment() !=  Actor::good;
 	// Remove any that died.
-	for (list<Actor *>::iterator it = opponents.begin();
+	for (list<Game_object_weak>::iterator it = opponents.begin();
 	        it != opponents.end();) {
-		if ((*it)->is_dead() ||
-		        (npc == avatar && !charmed_avatar && (*it)->get_flag(Obj_flags::asleep)))
+	    Actor *actor = static_cast<Actor *>(obj_from_weak(*it));
+		if (!actor || actor->is_dead() ||
+		        (npc == avatar && !charmed_avatar &&
+				 actor->get_flag(Obj_flags::asleep)))
 			it = opponents.erase(it);
 		else
 			++it;
@@ -480,13 +485,15 @@ Game_object *Combat_schedule::find_foe(
 		if (practice_target)    // For dueling.
 			return practice_target;
 	}
-	list<Actor *>::iterator new_opp_link = opponents.end();
+	list<Game_object_weak>::iterator new_opp_link = opponents.end();
 	switch (static_cast<Actor::Attack_mode>(mode)) {
 	case Actor::weakest: {
 		int str, least_str = 100;
-		for (list<Actor *>::iterator it = opponents.begin();
+		for (list<Game_object_weak>::iterator it = opponents.begin();
 		        it != opponents.end(); ++it) {
-			Actor *opp = *it;
+	    	Actor *opp = static_cast<Actor *>(obj_from_weak(*it));
+			if (!opp)
+			    continue;
 			str = opp->get_property(Actor::strength);
 			if (str < least_str) {
 				least_str = str;
@@ -497,9 +504,11 @@ Game_object *Combat_schedule::find_foe(
 	}
 	case Actor::strongest: {
 		int str, best_str = -100;
-		for (list<Actor *>::iterator it = opponents.begin();
+		for (list<Game_object_weak>::iterator it = opponents.begin();
 		        it != opponents.end(); ++it) {
-			Actor *opp = *it;
+	    	Actor *opp = static_cast<Actor *>(obj_from_weak(*it));
+			if (!opp)
+			    continue;
 			str = opp->get_property(Actor::strength);
 			if (str > best_str) {
 				best_str = str;
@@ -510,9 +519,11 @@ Game_object *Combat_schedule::find_foe(
 	}
 	case Actor::nearest: {
 		int best_dist = 4 * c_tiles_per_chunk;
-		for (list<Actor *>::iterator it = opponents.begin();
+		for (list<Game_object_weak>::iterator it = opponents.begin();
 		        it != opponents.end(); ++it) {
-			Actor *opp = *it;
+	    	Actor *opp = static_cast<Actor *>(obj_from_weak(*it));
+			if (!opp)
+			    continue;
 			int dist = npc->distance(opp);
 			if (opp->get_attack_mode() == Actor::flee)
 				dist += 16; // Avoid fleeing.
@@ -538,7 +549,7 @@ Game_object *Combat_schedule::find_foe(
 	if (new_opp_link == opponents.end())
 		new_opponent = 0;
 	else {
-		new_opponent = *new_opp_link;
+		new_opponent = static_cast<Actor *>(obj_from_weak(*new_opp_link));
 		opponents.erase(new_opp_link);
 	}
 	return new_opponent;
@@ -1490,10 +1501,10 @@ void Combat_schedule::ending(
 		// See if being a coward.
 		find_opponents();
 		bool found = false; // Find a close-by enemy.
-		for (list<Actor *>::const_iterator it = opponents.begin();
+		for (list<Game_object_weak>::const_iterator it = opponents.begin();
 		        it != opponents.end(); ++it) {
-			Actor *opp = *it;
-			if (opp->distance(npc) < (c_screen_tile_size / 2 - 2) &&
+	    	Actor *opp = static_cast<Actor *>(obj_from_weak(*it));
+			if (opp && opp->distance(npc) < (c_screen_tile_size / 2 - 2) &&
 			        Fast_pathfinder_client::is_grabable(npc, opp)) {
 				found = true;
 				break;
@@ -1591,7 +1602,7 @@ void Duel_schedule::find_opponents(
 		Game_object *oppopp = opp->get_target();
 		if (opp != npc && opp->get_schedule_type() == duel &&
 		        (!oppopp || oppopp == npc))
-			opponents.push_back(opp);
+			opponents.push_back(opp->weak_from_this());
 	}
 }
 
