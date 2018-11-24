@@ -78,11 +78,13 @@ void *plug_load_func(libhandle_t a_hdl, char *func_name) {
 	// Need to add _ to the start of the function names in windows
 //	TCHAR strProcName[256] = "_";
 //	strncat(strProcName, func_name, 256);
-	return GetProcAddress(a_hdl, func_name);
+	void *ret;
+	*(FARPROC*)&ret = GetProcAddress(a_hdl, func_name);
+	return ret;
 #else
 	return(dlsym(a_hdl, func_name));
 #endif
-};
+}
 
 int add_plugin_apply(int col_index, libhandle_t a_hdl) {
 	// NOTE: It is necessary to add the handle AT THE END of the list for index col_index
@@ -104,7 +106,7 @@ int add_plugin_apply(int col_index, libhandle_t a_hdl) {
 	node *cursor; // used to navigate the list found at action_table[idx]
 
 	// first of all, load a_hdl's apply function
-	apply = plug_load_func(a_hdl, "plugin_apply");
+	*(void**)&apply = plug_load_func(a_hdl, "plugin_apply");
 
 	if ((error = plug_error()) != NULL)  {
 		fprintf(stderr, "%s\n", error);
@@ -115,7 +117,7 @@ int add_plugin_apply(int col_index, libhandle_t a_hdl) {
 		fprintf(stderr, "Couldn't create node\n");
 		return(-1);
 	}
-	new_node->plugin_apply = (void *)apply;
+	new_node->plugin_apply = apply;
 
 	// add new_node at end of list found on action_table[idx]
 	// dealing with the special case
@@ -139,7 +141,7 @@ int add_plugin_parse(char *line, libhandle_t a_hdl) {
 	int (*teach)(char *);
 	char *error;
 
-	teach = plug_load_func(a_hdl, "plugin_parse");
+	*(void**)&teach = plug_load_func(a_hdl, "plugin_parse");
 	if ((error = plug_error()) != NULL) {
 		fprintf(stderr, "%s\n", error);
 		return(-1);

@@ -352,22 +352,20 @@ gint Npc_chooser::win32_drag_motion(
 		POINT pnt;
 		GetCursorPos(&pnt);
 
-		LPDROPSOURCE idsrc = (LPDROPSOURCE) new Windropsource(0,
-		                     pnt.x, pnt.y);
+		Windropsource idsrc(0, pnt.x, pnt.y);
 		LPDATAOBJECT idobj = (LPDATAOBJECT) new Winstudioobj(wdata);
 		DWORD dndout;
 
-		HRESULT res = DoDragDrop(idobj, idsrc, DROPEFFECT_COPY, &dndout);
+		HRESULT res = DoDragDrop(idobj, &idsrc, DROPEFFECT_COPY, &dndout);
 		if (FAILED(res)) {
 			g_warning("Oops! Something is wrong with OLE2 DnD..");
 		}
 
-		delete idsrc;
 		idobj->Release();   // Not sure if we really need this. However, it doesn't hurt either.
 	}
 
 	return true;
-};
+}
 #else
 gint Npc_chooser::drag_motion(
     GtkWidget *widget,      // The view window.

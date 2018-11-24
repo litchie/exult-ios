@@ -46,8 +46,9 @@ int read_config(FILE *f) {
 	int line_length;
 	char *pluginname = NULL;
 	colour_hex col;
-	int idx, r, g, b;
-	libhandle_t a_hdl;
+	int idx;
+	unsigned r, g, b;
+	libhandle_t a_hdl = NULL;
 	void *(*init)(glob_statics * g_var);
 
 	rewind(f);
@@ -96,7 +97,7 @@ int read_config(FILE *f) {
 						printf("Adding %s to list\n", pluginname);
 					}
 					// TODO: load the init function with our global stuff to initialise the plugin
-					init = plug_load_func(a_hdl, "init_plugin");
+					*(void**)&init = plug_load_func(a_hdl, "init_plugin");
 					(*init)(&g_statics);
 					hdl_list = add_handle(a_hdl, hdl_list);
 				}
@@ -112,7 +113,7 @@ int read_config(FILE *f) {
 				}
 				// send the line to the plugin_process_line from pluginname
 				// we should use the head of hdl_list as the handle of the loaded plugin
-				if (pluginname == NULL) {
+				if (pluginname == NULL || a_hdl == NULL) {
 					fprintf(stderr, "WARNING: line entered before first section. Use comments (# or ;) please.\nIgnoring line: %s", line);
 				} else {
 					// extract the first colour from the line, get index from palette and populate action_table at right index with hdl

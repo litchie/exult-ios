@@ -55,7 +55,7 @@ int main(int argc, char **argv) {
 	Uint8 red, green, blue; // values of pix in RGB
 	SDL_PixelFormat *fmt;   // we need that to determine which BPP
 	long int offset;        // where in the real mapfile is coord (x,y)
-	int i, j, found;
+	int found;
 	u7map mymap;            // a table in which the map is created and is then written to a file
 	FILE *f;                // to write to the file
 	char cmd[256], buff[7];
@@ -98,14 +98,15 @@ int main(int argc, char **argv) {
 	f = fopen(argv[2], "ra");
 
 	// we can now prepare the mapping
-	for (i = 0; i < fmt->palette->ncolors; i++) {
+	for (int i = 0; i < fmt->palette->ncolors; i++) {
 		found = 0;
 		SDL_GetRGB(i, fmt, &red, &green, &blue);
-		sprintf(buff, "%02x%02x%02x\0", red, green, blue);
+		sprintf(buff, "%02x%02x%02x", red, green, blue);
 		// red, green and blue contains the colour definition. Now we need to enter the u7chunk retrieved for that one
 
 		fseek(f, 0, SEEK_SET); // back to the beginning for each colour
 		while ((!feof(f)) && found == 0) {
+			unsigned j;
 			fscanf(f, "%s %u", cmd, &j);
 			//printf("DEBUG: I've read: %s %d and I'm looking for %s\n",cmd,j,buff);
 			if (strcasecmp(cmd, buff) == 0) { // chains match
@@ -127,8 +128,8 @@ int main(int argc, char **argv) {
 	}
 	*/
 	// need to read all pixels one after the other
-	for (j = 0; j < mock_map->h; j++) {
-		for (i = 0; i < mock_map->w; i++) {
+	for (int j = 0; j < mock_map->h; j++) {
+		for (int i = 0; i < mock_map->w; i++) {
 			pix = getpixel(mock_map, i, j);
 
 			// calculate offset in u7map based on i,j coordinate of point in map
@@ -145,7 +146,7 @@ int main(int argc, char **argv) {
 		perror("Can't open file u7map: ");
 		exit(-1);
 	};
-	for (i = 0; i < 192 * 192 * 2; i++) {
+	for (int i = 0; i < 192 * 192 * 2; i++) {
 		fputc(mymap[i], f);
 	}
 	fclose(f);

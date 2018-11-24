@@ -116,7 +116,7 @@ void putpixel(SDL_Surface *surface, int x, int y, Uint8 pixel) {
 char *transform(int index) {
 	char *ret, *tmp;
 	node *cursor;
-	void * (*tmp_func)(char *, glob_variables * g_variables);
+	pfnPluginApply tmp_func;
 
 	ret = (char *)malloc(7 * sizeof(char));
 
@@ -130,8 +130,8 @@ char *transform(int index) {
 		// there is some apply functions to take care of
 		cursor = action_table[index];
 		while (cursor != NULL) {
-			tmp_func = (void *)cursor->plugin_apply;
-			tmp = (char *)(*tmp_func)(ret, &g_variables);
+			tmp_func = cursor->plugin_apply;
+			tmp = (*tmp_func)(ret, &g_variables);
 			cursor = cursor->next;
 		}
 		return(tmp);
@@ -144,7 +144,7 @@ char *transform(int index) {
 Uint8 palette_rw(char *col) {
 	// this function returns the colour number from image_out palette for the colour [rgb]
 	// or if it doesn't exist in the palette, it simply adds it!
-	int r, g, b;
+	unsigned r, g, b;
 	int ncol = g_variables.image_out->format->palette->ncolors;
 	int idx;
 
