@@ -567,9 +567,11 @@ void Image_window::create_surface(
 	}
 
 	if (!paletted_surface && !force_bpp) {      // No scaling, or failed?
-		uint32 flags = SDL_SWSURFACE | (fullscreen ? SDL_FULLSCREEN : 0) | (ibuf->depth == 8 ? SDL_HWPALETTE : 0);
-#if SDL_VERSION_ATLEAST(2, 0, 0) && (defined(MACOSX) || defined(__IPHONEOS__))
-		flags |= SDL_WINDOW_ALLOW_HIGHDPI; 
+		uint32 flags = SDL_SWSURFACE | (fullscreen ? SDL_FULLSCREEN : 0);
+#if SDL_VERSION_ATLEAST(2, 0, 1)
+		flags |= SDL_WINDOW_ALLOW_HIGHDPI;
+#elif !SDL_VERSION_ATLEAST(2, 0, 0)
+		flags |= (ibuf->depth == 8 ? SDL_HWPALETTE : 0);
 #endif
 #if SDL_VERSION_ATLEAST(2, 0, 0)
 		if (screen_window != NULL) {
