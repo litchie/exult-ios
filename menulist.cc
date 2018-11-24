@@ -405,6 +405,7 @@ int MenuList::handle_events(Game_window *gwin, Mouse *mouse) {
 					if ((event.key.keysym.mod & KMOD_ALT) &&
 					        (event.key.keysym.mod & KMOD_CTRL))
 						make_screenshot(true);
+					// FALLTHROUGH
 				default: {
 					// let key be processed by selected menu-item
 					if (selected) {

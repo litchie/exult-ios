@@ -1061,7 +1061,7 @@ void Synth::playSysexWithoutHeader(Bit8u device, Bit8u command, const Bit8u *sys
 			break;
 		}
 		*/
-		// Deliberate fall-through
+		// FALLTHROUGH
 	case SYSEX_CMD_DT1:
 		writeSysex(device, sysex, len);
 		break;
@@ -1071,7 +1071,7 @@ void Synth::playSysexWithoutHeader(Bit8u device, Bit8u command, const Bit8u *sys
 			// FIXME: We should send SYSEX_CMD_RJC in this case
 			break;
 		}
-		// Deliberate fall-through
+		// FALLTHROUGH
 	case SYSEX_CMD_RQ1:
 		readSysex(device, sysex, len);
 		break;
