@@ -92,7 +92,7 @@ Game::~Game() {
 	game_type = NONE;
 	delete xml;
 	while (!xmlstrings.empty()) {
-		char *str = const_cast<char *>(xmlstrings.back());
+		char *str = xmlstrings.back();
 		xmlstrings.pop_back();
 		delete [] str;
 	}
@@ -199,7 +199,7 @@ const str_int_pair &Game::get_resource(const char *name) {
 		string key = string(xml_root) + "/resources/" + name;
 		string str;
 		xml->value(key, str, "");
-		const char *res = newstrdup(str.c_str());
+		char *res = newstrdup(str.c_str());
 		// This is used to prevent leaks.
 		key += "/num";
 		int num;
