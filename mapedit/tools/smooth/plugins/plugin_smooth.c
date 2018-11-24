@@ -68,7 +68,6 @@ int plugin_parse(char *line) {
 	int newrec = 1;
 	int let = 0;
 	unsigned int idx = -1;
-	int j; // use in debug
 
 	// in this case we know we should receive 18 parameters
 	// 1 for slave, 1 for master and 13 for the resulting colour
@@ -94,7 +93,7 @@ int plugin_parse(char *line) {
 
 	if (my_g_stat.debug > 3) {
 		printf("Parsed line checking:\n");
-		for (j = 0; j <= idx; j++) {
+		for (unsigned j = 0; j <= idx; j++) {
 			printf("Value(%d): %s\n", glob_idx, col[glob_idx][j]);
 		}
 	}
@@ -113,7 +112,7 @@ int calculate(Uint8 col_num, unsigned int my_x, unsigned int my_y) {
 	// it also checks boundaries and return 0 if out of boundaries
 	int ret;
 
-	if (my_x > 191 || my_x < 0 || my_y > 191 || my_y < 0) { // should never be < 0, but just for fun
+	if (my_x > 191 || my_y > 191) {
 		//    printf("out of bounds\n");
 		return(0);
 	} else {

@@ -310,7 +310,7 @@ void Usecode_browser::setup_list(
 	ifstream in;
 	U7open(in, ucfile);
 	Usecode_symbol_table symtbl;
-	long magic = Read4(in);     // Test for symbol table.
+	unsigned int magic = Read4(in);     // Test for symbol table.
 	if (!in.good()) {
 		EStudio::Alert("Error reading '%s'.", ucfile);
 		return;

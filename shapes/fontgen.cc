@@ -95,7 +95,7 @@ static bool Gen_font_shape_win32(
 		// Get each glyph.
 		GLYPHMETRICS metrics;
 
-		int buffsize = GetGlyphOutline(dc, chr, GGO_BITMAP, &metrics, 0, 0, &matrix);
+		unsigned int buffsize = GetGlyphOutline(dc, chr, GGO_BITMAP, &metrics, 0, 0, &matrix);
 		int offset = 0;     // Starting row, col.
 
 		if (buffsize == GDI_ERROR || buffsize == 0) {
@@ -145,8 +145,8 @@ static bool Gen_font_shape_win32(
 
 			unsigned char *dest = pixels + offset * sw + offset;
 			const uint8 *src = (uint8 *)buffer;
-			for (int row = 0; row < metrics.gmBlackBoxY; row++) {
-				for (int b = 0; b < metrics.gmBlackBoxX; b++)
+			for (unsigned int row = 0; row < metrics.gmBlackBoxY; row++) {
+				for (unsigned int b = 0; b < metrics.gmBlackBoxX; b++)
 					if (src[b / 8] & (0x80 >> (b % 8)))
 						dest[b] = fg;
 				dest += sw; // Advance to next row.

@@ -33,7 +33,7 @@ Send patches using: 2,tnum,24,50,24,0,1,0 (enables reverb)
 #include "utils.h"
 #include "databuf.h"
 #include "exceptions.h"
-
+#include "ignore_unused_variable_warning.h"
 
 //
 // MT32 SysEx
@@ -228,6 +228,7 @@ std::size_t fill_sysex_buffer(uint32 address_base, uint16 address_offset, uint32
 
 
 int main(int argc, char *argv[]) {
+	ignore_unused_variable_warning(argc, argv);
 	uint32 i, j, patch_num;
 	std::size_t num_to_write;
 
