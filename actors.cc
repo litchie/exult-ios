@@ -931,6 +931,8 @@ Actor::Actor(
 Actor::~Actor(
 ) {
 	purge_deleted_actions();
+	if (in_queue())
+		gwin->get_tqueue()->remove(this);
 	delete schedule;
 	delete action;
 	delete timers;
@@ -2467,23 +2469,26 @@ void Actor::set_property(
  *  A class whose whole purpose is to stop casting mode.
  */
 class Clear_casting : public Time_sensitive {
+    Game_object_weak actor;
 public:
-	Clear_casting()
+	Clear_casting(Actor *a) : actor(weak_from_obj(a))
 	{  }
 	virtual void handle_event(unsigned long curtime, uintptr udata);
 };
 
-void Clear_casting::handle_event(unsigned long curtime, uintptr udata) {
+void Clear_casting::handle_event(unsigned long curtime, uintptr) {
 	ignore_unused_variable_warning(curtime);
-	Actor *a = reinterpret_cast<Actor *>(udata);
-	a->add_dirty();
-	a->hide_casting_frames();
-	a->add_dirty();
+	Actor *a = reinterpret_cast<Actor *>(obj_from_weak(actor));
+	if (a) {
+	    a->add_dirty();
+	    a->hide_casting_frames();
+	    a->add_dirty();
+	}
 	delete this;
 }
 
 void Actor::end_casting_mode(int delay) {
-	Clear_casting *c = new Clear_casting();
+	Clear_casting *c = new Clear_casting(this);
 	gwin->get_tqueue()->add(Game::get_ticks() + 2 * delay, c,
 	                        reinterpret_cast<uintptr>(this));
 }
@@ -2492,17 +2497,20 @@ void Actor::end_casting_mode(int delay) {
  *  A class whose whole purpose is to clear the 'hit' flag.
  */
 class Clear_hit : public Time_sensitive {
+    Game_object_weak actor;
 public:
-	Clear_hit()
+	Clear_hit(Actor *a) : actor(weak_from_obj(a))
 	{  }
 	virtual void handle_event(unsigned long curtime, uintptr udata);
 };
 
-void Clear_hit::handle_event(unsigned long curtime, uintptr udata) {
+void Clear_hit::handle_event(unsigned long curtime, uintptr) {
 	ignore_unused_variable_warning(curtime);
-	Actor *a = reinterpret_cast<Actor *>(udata);
-	a->hit = false;
-	a->add_dirty();
+	Actor *a = reinterpret_cast<Actor *>(obj_from_weak(actor));
+	if (a) {
+	    a->hit = false;
+	    a->add_dirty();
+	}
 	delete this;
 }
 
@@ -2684,7 +2692,7 @@ int Actor::apply_damage(
 		// Flash red outline.
 		hit = true;
 		add_dirty();
-		Clear_hit *c = new Clear_hit();
+		Clear_hit *c = new Clear_hit(this);
 		gwin->get_tqueue()->add(Game::get_ticks() + 200, c,
 		                        reinterpret_cast<uintptr>(this));
 		// Attack back.
@@ -2751,7 +2759,7 @@ int Actor::reduce_health(
 	else {
 		hit = true;     // Flash red outline.
 		add_dirty();
-		Clear_hit *c = new Clear_hit();
+		Clear_hit *c = new Clear_hit(this);
 		gwin->get_tqueue()->add(Game::get_ticks() + 200, c,
 		                        reinterpret_cast<uintptr>(this));
 	}

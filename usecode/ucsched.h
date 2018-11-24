@@ -33,7 +33,7 @@ class Usecode_script : public Time_sensitive {
 	static int count;       // Total # of these around.
 	static Usecode_script *first;// ->chain of all of them.
 	Usecode_script *next, *prev;    // Next/prev. in global chain.
-	Game_object *obj;       // From objval.
+	Game_object_weak obj;       // From objval.
 	Usecode_value *code;        // Array of code to execute.
 	int cnt;            // Length of arrval.
 	int i;              // Current index.
