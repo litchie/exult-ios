@@ -525,7 +525,7 @@ Game_object *Combat_schedule::find_foe(
 		new_opp_link = find_protected_attacker();
 		if (new_opp_link != opponents.end())
 			break;      // Found one.
-		// FALL THROUGH to 'random'.
+		// FALLTHROUGH
 	case Actor::random:
 	default:            // Default to random.
 		if (!opponents.empty())

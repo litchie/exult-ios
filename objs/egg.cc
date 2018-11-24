@@ -1239,7 +1239,7 @@ bool Field_object::field_effect(
 		// Campfire (Fire in SI) doesn't hurt when burnt out
 		if (frame == 0)
 			return false;
-		// Fall through to fire_field case.
+		// FALLTHROUGH
 	case fire_field:
 		actor->reduce_health(2 + rand() % 3, Weapon_data::fire_damage);
 		// But no sleeping here.

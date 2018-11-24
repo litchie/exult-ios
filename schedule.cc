@@ -1058,8 +1058,8 @@ void Patrol_schedule::now_what(
 			pathnum--;
 		}
 #endif
-		// Fall-through to state 0
 	}
+	// FALLTHROUGH
 	case 0: { // Find next path.
 		if (!gotpath) {
 			// SI seems to try switching to preprogrammed schedules
@@ -1153,7 +1153,7 @@ void Patrol_schedule::now_what(
 			case 25:        // 50% wrap to 0.
 				if (rand() % 2)
 					break;
-				// Fall through to wrap.
+				// FALLTHROUGH
 			case 1:         // Wrap to 0.
 				pathnum = -1;
 				dir = 1;
@@ -1166,7 +1166,7 @@ void Patrol_schedule::now_what(
 				// Find the book which will be read.
 				book = npc->find_closest(642, 4);
 				add_client(book);
-				// Fall through to sit.
+				// FALLTHROUGH
 			case 3:         // Sit.
 				if (Sit_schedule::set_action(npc)) {
 					scr->start();   // Start next tick.
