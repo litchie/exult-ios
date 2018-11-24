@@ -198,11 +198,12 @@ class Monster_egg : public Egg_object {
 		Tile_coord dest = Map_chunk::find_spot(
 		                      get_tile(), 5, mshape, 0, 1);
 		if (dest.tx != -1) {
-			Monster_actor *monster =
+			Game_object_shared new_monster =
 			    Monster_actor::create(mshape, dest, sched, align);
+			Game_object *monster = new_monster.get();
 			monster->change_frame(mframe);
 			gwin->add_dirty(monster);
-			gwin->add_nearby_npc(monster);
+			gwin->add_nearby_npc(static_cast<Monster_actor *>(monster));
 		}
 	}
 public:

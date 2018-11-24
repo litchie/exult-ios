@@ -1385,7 +1385,7 @@ Usecode_value Usecode_internal::remove_cont_items(
  *  Create a new object and push it onto the last_created stack.
  */
 
-Game_object *Usecode_internal::create_object(
+Game_object_shared Usecode_internal::create_object(
     int shapenum,
     bool equip          // Equip monsters.
 ) {
@@ -1396,16 +1396,18 @@ Game_object *Usecode_internal::create_object(
 	if (info.get_monster_info() || info.is_npc()) {
 		// (Wait sched. added for FOV.)
 		// don't add equipment (Erethian's transform sequence)
-		Monster_actor *monster = Monster_actor::create(shapenum,
+		Game_object_shared new_monster = Monster_actor::create(shapenum,
 		                         Tile_coord(-1, -1, -1), Schedule::wait,
 		                         static_cast<int>(Actor::neutral), true, equip);
+		Monster_actor *monster = static_cast<Monster_actor *>(
+					  		   	 				new_monster.get());
 		// FORCE it to be neutral (dec04,01).
 		monster->set_alignment(static_cast<int>(Actor::neutral));
 		gwin->add_dirty(monster);
 		gwin->add_nearby_npc(monster);
 		gwin->show();
 		last_created.push_back(monster->shared_from_this());
-		return monster;
+		return new_monster;
 	} else {
 		if (info.is_body_shape())
 			obj = std::make_shared<Dead_body>(shapenum, 0, 0, 0, 0, -1);
@@ -1418,7 +1420,7 @@ Game_object *Usecode_internal::create_object(
 	obj->set_invalid();     // Not in world yet.
 	obj->set_flag(Obj_flags::okay_to_take);
 	last_created.push_back(obj->shared_from_this());
-	return obj.get();
+	return obj;
 }
 
 /*

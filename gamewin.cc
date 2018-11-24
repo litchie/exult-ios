@@ -2707,8 +2707,10 @@ void Game_window::call_guards(
 		Schedule::Schedule_types sched = /*combat ? Schedule::combat
                                                 :*/ Schedule::arrest_avatar;
 		for (int i = 0; i < numguards; i++) {
-			Monster_actor *guard = Monster_actor::create(gshape, offscreen,
-			                       sched, Actor::chaotic);
+			Game_object_shared new_guard = Monster_actor::create(
+							   gshape, offscreen, sched, Actor::chaotic);
+			Monster_actor *guard = static_cast<Monster_actor *>(
+													new_guard.get());
 			add_nearby_npc(guard);
 			guard->approach_another(main_actor);
 		}
@@ -2761,9 +2763,11 @@ void Game_window::attack_avatar(
 	if (gshape >= 0 && !in_dungeon) {
 		while (create_guards--) {
 			// Create it off-screen.
-			Monster_actor *guard = Monster_actor::create(gshape,
-			                       main_actor->get_tile() + Tile_coord(128, 128, 0),
-			                       Schedule::combat, Actor::chaotic);
+			Game_object_shared new_guard = Monster_actor::create(gshape,
+			                  main_actor->get_tile() + Tile_coord(128, 128, 0),
+			                  Schedule::combat, Actor::chaotic);
+			Monster_actor *guard = static_cast<Monster_actor *>(
+													new_guard.get());
 			add_nearby_npc(guard);
 			guard->set_target(main_actor, true);
 			guard->approach_another(main_actor);

@@ -507,8 +507,8 @@ USECODE_INTRINSIC(create_new_object) {
 	ignore_unused_variable_warning(num_parms);
 	// create_new_object(shapenum).   Stores it in 'last_created'.
 	int shapenum = parms[0].get_int_value();
-	Game_object *obj = create_object(shapenum, false);
-	Usecode_value u(obj);
+	Game_object_shared obj = create_object(shapenum, false);
+	Usecode_value u(obj.get());
 	return(u);
 }
 
@@ -519,7 +519,7 @@ USECODE_INTRINSIC(create_new_object2) {
 
 	int shapenum = parms[0].get_int_value();
 	// Create, and equip if monster.
-	Game_object *obj = create_object(shapenum, true);
+	Game_object_shared obj = create_object(shapenum, true);
 	if (obj)
 		UI_update_last_created(1, &parms[1]);
 	Usecode_value u(obj);
@@ -1231,9 +1231,9 @@ USECODE_INTRINSIC(summon) {
 	int align = Actor::good;
 	if (npc && !npc->is_in_party())
 		align = npc->get_effective_alignment();
-	Monster_actor *monst = Monster_actor::create(shapenum, dest,
+	Game_object_shared monst = Monster_actor::create(shapenum, dest,
 	                       Schedule::combat, align);
-	return Usecode_value(monst);
+	return Usecode_value(monst.get());
 }
 
 /*
@@ -1411,7 +1411,8 @@ USECODE_INTRINSIC(clone) {
 	Actor *npc = as_actor(get_item(parms[0]));
 	if (npc) {
 		modified_map = true;
-		Actor *clonednpc = npc->clone();
+		Game_object_shared new_npc = npc->clone();
+		Actor *clonednpc = static_cast<Actor *>(new_npc.get());
 		clonednpc->set_alignment(Actor::good);
 		clonednpc->set_schedule_type(Schedule::combat);
 		return Usecode_value(clonednpc);

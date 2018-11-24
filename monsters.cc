@@ -197,7 +197,7 @@ static inline int Randomize_initial_stat(int val) {
  *  Create an instance of a monster and initialize from monstinf.dat.
  */
 
-Monster_actor *Monster_actor::create(
+Game_object_shared Monster_actor::create(
     int shnum,          // Shape to use.
     Tile_coord pos,         // Where to place it.  If pos.tx < 0,
     //   it's not placed in the world.
@@ -276,7 +276,7 @@ Monster_actor *Monster_actor::create(
 	if (sched < 0)          // Set sched. AFTER equipping.
 		sched = static_cast<int>(Schedule::loiter);
 	monster->set_schedule_type(sched);
-	return (monster);
+	return (new_monster);
 }
 
 /*

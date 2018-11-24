@@ -4249,7 +4249,7 @@ void Actor::die(
  *  Output: ->monster, or 0 if failed.
  */
 
-Monster_actor *Actor::clone(
+Game_object_shared Actor::clone(
 ) {
 	Shape_info &info = get_info();
 	// Base distance on greater dim.
@@ -4261,7 +4261,7 @@ Monster_actor *Actor::clone(
 	if (pos.tx < 0)
 		return 0;       // Failed.
 	// Create, temporary & with equip.
-	Monster_actor *monst = Monster_actor::create(
+	Game_object_shared monst = Monster_actor::create(
 	                           get_shapenum(), pos, get_schedule_type(),
 	                           get_effective_alignment(), true, true);
 	return monst;

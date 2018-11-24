@@ -637,7 +637,7 @@ public:
 	virtual void lay_down(bool die);
 	virtual void die(Game_object *attacker);        // We're dead.
 	Actor *resurrect(Dead_body *body);// Bring back to life.
-	Monster_actor *clone();     // Create another nearby to this.
+	Game_object_shared clone();     // Create another nearby to this.
 	void mend_wounds(bool mendmana);        // Restore HP's and MP's.
 	// Read from file.
 	void read(DataSource *nfile, int num, bool has_usecode,

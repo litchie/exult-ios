@@ -45,7 +45,7 @@ public:
 	virtual ~Monster_actor();
 	// Create an instance.
 	static Game_object_shared create(int shnum);
-	static Monster_actor *create(int shnum, Tile_coord pos,
+	static Game_object_shared create(int shnum, Tile_coord pos,
 	                             int sched = -1, int align = static_cast<int>(Actor::neutral),
 	                             bool tempoary = true, bool equipment = true);
 	// Methods to retrieve them all:
