@@ -55,7 +55,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <netdb.h>
 #endif
 
-#ifndef WIN32
+#ifndef _WIN32
 #include <sys/un.h>
 #endif
 
@@ -77,7 +77,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "debugserver.h"
 #endif
 
-#ifdef WIN32
+#ifdef _WIN32
 #include "servewin32.h"
 #include "cheat.h"
 #endif
@@ -119,7 +119,7 @@ void Server_init(
 ) {
 	// Get location of socket file.
 	std::string servename = get_system_path(EXULT_SERVER);
-#ifndef WIN32
+#ifndef _WIN32
 	// Make sure it isn't there.
 	unlink(servename.c_str());
 #ifdef HAVE_GETADDRINFOX
@@ -186,7 +186,7 @@ void Server_init(
 
 void Server_close(
 ) {
-#ifdef WIN32
+#ifdef _WIN32
 	Exult_server::close_pipe();
 	listen_socket = client_socket = -1;
 #else
@@ -520,7 +520,7 @@ static void Handle_client_message(
 void Server_delay(
     Message_handler handle_message
 ) {
-#ifndef WIN32
+#ifndef _WIN32
 	fd_set rfds;
 	struct timeval timer;
 	timer.tv_sec = 0;

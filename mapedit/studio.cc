@@ -44,7 +44,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <errno.h>
 
 #include <cstdio>           /* These are for sockets. */
-#ifdef WIN32
+#ifdef _WIN32
 #include <windows.h>
 #include <ole2.h>
 #include "servewin32.h"
@@ -534,7 +534,7 @@ ExultStudio::ExultStudio(int argc, char **argv): glade_path(nullptr), static_pat
 	gtk_init(&argc, &argv);
 	gdk_rgb_init();
 	glade_init();
-#ifdef WIN32
+#ifdef _WIN32
 	bool portable = false;
 #endif
 	// Get options.
@@ -559,18 +559,18 @@ ExultStudio::ExultStudio(int argc, char **argv): glade_path(nullptr), static_pat
 		case 'm':       // Mod.
 			modtitle = optarg;
 			break;
-#ifdef WIN32
+#ifdef _WIN32
 		case 'p':
 			portable = true;
 			break;
 #endif
 		}
-#ifdef WIN32
+#ifdef _WIN32
 	if (portable)
 		add_system_path("<HOME>", ".");
 #endif
 	setup_program_paths();
-#ifdef WIN32
+#ifdef _WIN32
 	redirect_output("studio_");
 #endif
 	config = new Configuration;
@@ -646,7 +646,7 @@ ExultStudio::ExultStudio(int argc, char **argv): glade_path(nullptr), static_pat
 	config->value("config/estudio/image_editor", iedit, "gimp");
 	image_editor = g_strdup(iedit.c_str());
 	config->set("config/estudio/image_editor", iedit, true);
-#ifdef WIN32
+#ifdef _WIN32
 	OleInitialize(nullptr);
 #endif
 	// Init. 'Mode' menu, since Glade
@@ -664,7 +664,7 @@ ExultStudio::ExultStudio(int argc, char **argv): glade_path(nullptr), static_pat
 }
 
 ExultStudio::~ExultStudio() {
-#ifdef WIN32
+#ifdef _WIN32
 	OleUninitialize();
 #endif
 	// Store main window size.
@@ -716,7 +716,7 @@ ExultStudio::~ExultStudio() {
 		gtk_widget_destroy(gameinfowin);
 	gameinfowin = nullptr;
 	g_object_unref(G_OBJECT(app_xml));
-#ifndef WIN32
+#ifndef _WIN32
 	if (server_input_tag >= 0)
 		gdk_input_remove(server_input_tag);
 	if (server_socket >= 0)
@@ -2470,7 +2470,7 @@ bool ExultStudio::send_to_server(
  *  Input from server is available.
  */
 
-#ifndef WIN32
+#ifndef _WIN32
 static void Read_from_server(
     gpointer data,          // ->ExultStudio.
     gint socket,
@@ -2494,7 +2494,7 @@ gint Do_Drop_Callback(gpointer data);
 
 void ExultStudio::read_from_server(
 ) {
-#ifdef WIN32
+#ifdef _WIN32
 	// Nothing
 	int len = Exult_server::peek_pipe();
 
@@ -2520,7 +2520,7 @@ void ExultStudio::read_from_server(
 	if (datalen < 0) {
 		cout << "Error reading from server" << endl;
 		if (server_socket == -1) { // Socket closed?
-#ifndef WIN32
+#ifndef _WIN32
 			gdk_input_remove(server_input_tag);
 #else
 			gtk_timeout_remove(server_input_tag);
@@ -2608,7 +2608,7 @@ bool ExultStudio::connect_to_server(
 ) {
 	if (!static_path)
 		return false;       // No place to go.
-#ifndef WIN32
+#ifndef _WIN32
 	if (server_socket >= 0) {   // Close existing socket.
 		close(server_socket);
 		gdk_input_remove(server_input_tag);
@@ -2674,7 +2674,7 @@ void ExultStudio::info_received(
 		// Wrong version of Exult.
 		EStudio::Alert("Expected ExultServer version %d, but got %d",
 		               Exult_server::version, vers);
-#ifndef WIN32
+#ifndef _WIN32
 		close(server_socket);
 		gdk_input_remove(server_input_tag);
 #else

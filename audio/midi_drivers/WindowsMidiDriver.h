@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef WINDOWSMIDIDRIVER_H_INCLUDED
 #define WINDOWSMIDIDRIVER_H_INCLUDED
 
-#if defined(WIN32)
+#if defined(_WIN32)
 #define USE_WINDOWS_MIDI
 
 #include "LowLevelMidiDriver.h"
@@ -70,6 +70,6 @@ protected:
 	virtual void		yield();
 };
 
-#endif //WIN32
+#endif //_WIN32
 
 #endif //WINDOWSMIDIDRIVER_H_INCLUDED

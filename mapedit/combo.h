@@ -209,7 +209,7 @@ public:
 	static void scrolled(GtkAdjustment *adj, gpointer data);
 	virtual void move(bool upwards);// Move current selected combo.
 	virtual void search(const char *srch, int dir);
-#ifdef WIN32
+#ifdef _WIN32
 	static gint win32_drag_motion(GtkWidget *widget, GdkEventMotion *event,
 	                              gpointer data);
 #else

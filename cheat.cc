@@ -51,12 +51,12 @@
 #include "servemsg.h"
 #include "ignore_unused_variable_warning.h"
 
-#ifdef WIN32
+#ifdef _WIN32
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
 #endif
 #include <windows.h>
-#endif // WIN32
+#endif // _WIN32
 
 #endif //USE_EXULTSTUDIO
 
@@ -167,7 +167,7 @@ void Cheat::toggle_map_editor(void) {
 		if (client_socket < 0 &&
 		        !gwin->get_win()->is_fullscreen()) {
 			std::string cmnd;     // Set up command.
-#ifdef WIN32
+#ifdef _WIN32
 			if (get_system_path("<HOME>") == ".")   // portable
 				cmnd = "exult_studio -p -x ";
 			else
@@ -192,7 +192,7 @@ void Cheat::toggle_map_editor(void) {
 			}
 			cmnd += " &";
 			cout << "Executing: " << cmnd << endl;
-#ifndef WIN32
+#ifndef _WIN32
 			int ret = system(cmnd.c_str());
 			if (ret == 127 || ret == -1)
 				cout << "Couldn't run Exult Studio" << endl;

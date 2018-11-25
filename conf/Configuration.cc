@@ -41,7 +41,7 @@ using std::endl;
 using std::string;
 using std::ostream;
 using std::perror;
-#ifdef WIN32
+#ifdef _WIN32
 using std::cerr;
 #endif
 
@@ -144,7 +144,7 @@ bool    Configuration::read_config_string(const string &s) {
 
 static inline bool is_path_absolute(const string &path) {
 	return ((path.find("./") == 0) || (path.find("../") == 0) || (path[0] == '/')
-#if defined(WIN32)
+#if defined(_WIN32)
 	        || (path.find(".\\") == 0) || (path.find("..\\") == 0) || (path[0] == '\\')
 	        || (std::isalpha(path[0]) && path[1] == ':' &&
 	            (path[2] == '/' || path[2] == '\\'))
@@ -162,7 +162,7 @@ bool    Configuration::read_config_file(const string &input_filename, const stri
 	// a slash or with two dots and a slash.
 	// Or if it's not a relative path.
 	if (!is_path_absolute(get_system_path(input_filename))) {
-#if (defined(XWIN) || defined(MACOSX) || defined(WIN32))
+#if (defined(XWIN) || defined(MACOSX) || defined(_WIN32))
 		fname = "<CONFIG>/";
 #   if (defined(XWIN) && !defined(MACOSX))
 		fname += ".";
@@ -179,7 +179,7 @@ bool    Configuration::read_config_file(const string &input_filename, const stri
 		U7copy(input_filename.c_str(), get_system_path(fname.c_str()).c_str());
 		//}
 #endif
-#if defined(WIN32)
+#if defined(_WIN32)
 		// Note: this first check misses some cases of path equality, but it
 		// does eliminates some spurious warnings.
 		if (fname != input_filename && U7exists(input_filename.c_str())
@@ -204,7 +204,7 @@ bool    Configuration::read_config_file(const string &input_filename, const stri
 				     << "' is being ignored in favor of file '"
 				     << fname << "'." << endl;
 		}
-#endif // WIN32
+#endif // _WIN32
 	}
 	return read_abs_config_file(fname, root);
 }

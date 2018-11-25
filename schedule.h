@@ -27,7 +27,7 @@
 #include <vector>
 #include "ignore_unused_variable_warning.h"
 
-#ifdef WIN32
+#ifdef _WIN32
 #include <windows.h>
 #define Rectangle RECTX
 #endif

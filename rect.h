@@ -22,7 +22,7 @@
 #ifndef RECT_H
 #define RECT_H  1
 
-#ifdef WIN32
+#ifdef _WIN32
 #include <windows.h>
 #define Rectangle RECTX
 #endif

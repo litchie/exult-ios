@@ -34,7 +34,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#ifdef WIN32
+#ifdef _WIN32
 #include <windows.h>
 #include <shlobj.h>
 #include <direct.h> // For mkdir and chdir
@@ -83,7 +83,7 @@ void reset_system_paths() {
 static const string remove_trainling_slash(const string &value) {
 	string new_path = value;
 	if (*(new_path.end() - 1) == '/'
-#ifdef WIN32
+#ifdef _WIN32
 	        || *(new_path.end() - 1) == '\\'
 #endif
 	   ) {
@@ -167,7 +167,7 @@ string get_system_path(const string &path) {
 	}
 
 	switch_slashes(new_path);
-#ifdef WIN32
+#ifdef _WIN32
 	if (*(new_path.end() - 1) == '/' || *(new_path.end() - 1) == '\\') {
 		//std::cerr << "Trailing slash in path: \"" << new_path << "\"" << std::endl << "...compensating, but go complain to Colourless anyway" << std::endl;
 		std::cerr << "Warning, trailing slash in path: \"" << new_path << "\"" << std::endl;
@@ -254,7 +254,7 @@ static bool base_to_uppercase(string &str, int count) {
 static void switch_slashes(
     string &name
 ) {
-#ifdef WIN32
+#ifdef _WIN32
 	for (string::iterator X = name.begin(); X != name.end(); ++X) {
 		if (*X == '/')
 			*X = '\\';
@@ -401,7 +401,7 @@ void U7remove(
 ) {
 	string name = get_system_path(fname);
 
-#if defined(WIN32) && defined(UNICODE)
+#if defined(_WIN32) && defined(UNICODE)
 	const char *n = name.c_str();
 	int nLen = std::strlen(n) + 1;
 	LPTSTR lpszT = (LPTSTR) alloca(nLen * 2);
@@ -488,14 +488,14 @@ int U7mkdir(
 	if (pos != string::npos)
 		name.resize(pos + 1);
 #endif
-#if defined(WIN32) && defined(UNICODE)
+#if defined(_WIN32) && defined(UNICODE)
 	const char *n = name.c_str();
 	int nLen = std::strlen(n) + 1;
 	LPTSTR lpszT = (LPTSTR) alloca(nLen * 2);
 	MultiByteToWideChar(CP_ACP, 0, n, -1, lpszT, nLen);
 	ignore_unused_variable_warning(mode);
 	return CreateDirectory(lpszT, nullptr);
-#elif defined(WIN32)
+#elif defined(_WIN32)
 	ignore_unused_variable_warning(mode);
 	return mkdir(name.c_str());
 #else
@@ -503,7 +503,7 @@ int U7mkdir(
 #endif
 }
 
-#ifdef WIN32
+#ifdef _WIN32
 class shell32_wrapper {
 protected:
 	HMODULE hLib;
@@ -639,11 +639,11 @@ void cleanup_output(const char *prefix) {
 	}
 }
 #endif // USE_CONSOLE
-#endif  // WIN32
+#endif  // _WIN32
 
 const string Get_home() {
 	std::string home_dir;
-#ifdef WIN32
+#ifdef _WIN32
 #ifdef PORTABLE_EXULT_WIN32
 	home_dir = ".";
 #else
@@ -751,7 +751,7 @@ void setup_program_paths() {
 	savehome_dir += "/.exult";
 	gamehome_dir = EXULT_DATADIR;
 #endif
-#ifdef WIN32
+#ifdef _WIN32
 	if (get_system_path("<HOME>") != ".")
 #endif
 		add_system_path("<HOME>", home_dir);

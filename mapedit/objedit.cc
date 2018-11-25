@@ -167,7 +167,7 @@ static void Obj_shape_dropped(
 		static_cast<ExultStudio *>(udata)->set_obj_shape(shape, frame);
 }
 
-#ifdef WIN32
+#ifdef _WIN32
 
 static void Drop_dragged_shape(int shape, int frame, int x, int y, void *data) {
 	cout << "Dropped a shape: " << shape << "," << frame << " " << data << endl;
@@ -186,11 +186,11 @@ void ExultStudio::open_obj_window(
     unsigned char *data,        // Serialized object.
     int datalen
 ) {
-#ifdef WIN32
+#ifdef _WIN32
 	bool first_time = false;
 #endif
 	if (!objwin) {          // First time?
-#ifdef WIN32
+#ifdef _WIN32
 		first_time = true;
 #endif
 		objwin = glade_xml_get_widget(app_xml, "obj_window");
@@ -206,7 +206,7 @@ void ExultStudio::open_obj_window(
 	if (!init_obj_window(data, datalen))
 		return;
 	gtk_widget_show(objwin);
-#ifdef WIN32
+#ifdef _WIN32
 	if (first_time || !objdnd)
 		Windnd::CreateStudioDropDest(objdnd, objhwnd, Drop_dragged_shape, nullptr, nullptr, this);
 #endif
@@ -220,7 +220,7 @@ void ExultStudio::close_obj_window(
 ) {
 	if (objwin) {
 		gtk_widget_hide(objwin);
-#ifdef WIN32
+#ifdef _WIN32
 		Windnd::DestroyStudioDropDest(objdnd, objhwnd);
 #endif
 	}

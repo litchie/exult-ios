@@ -39,7 +39,7 @@ using std::string;
 
 
 // System Specific Code for Windows
-#if defined(WIN32)
+#if defined(_WIN32)
 
 // Need this for _findfirst, _findnext, _findclose
 #include <windows.h>

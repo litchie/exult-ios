@@ -42,7 +42,7 @@ typedef void (*Exec_done_fun)(int exit_code, Exec_box *box,
                               gpointer user_data);
 
 
-#ifndef WIN32
+#ifndef _WIN32
 
 /*
  *  A class for executing a child process and capturing its output in a

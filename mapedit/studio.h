@@ -69,7 +69,7 @@ class BaseGameInfo;
 typedef void (*Msg_callback)(Exult_server::Msg_type id,
                              const unsigned char *data, int datalen, void *client);
 
-#ifndef WIN32
+#ifndef _WIN32
 #define C_EXPORT extern "C"
 #else
 #ifndef WIN32_LEAN_AND_MEAN
@@ -148,7 +148,7 @@ private:
 	int curr_mod;   // Which mod is loaded, or -1 for none
 	std::string game_encoding;  // Character set for current game/mod.
 	// For Win32 DND
-#ifdef WIN32
+#ifdef _WIN32
 	HWND            egghwnd;
 	Windnd          *eggdnd;
 	HWND            npchwnd;

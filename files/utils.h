@@ -473,7 +473,7 @@ int U7mkdir(
     int mode
 );
 
-#ifdef WIN32
+#ifdef _WIN32
 void redirect_output(const char *prefix = "std");
 void cleanup_output(const char *prefix = "std");
 #endif

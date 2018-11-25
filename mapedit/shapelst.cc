@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include <config.h>
 #endif
 
-#ifdef WIN32
+#ifdef _WIN32
 #include "windrag.h"
 #include <windows.h>
 #endif
@@ -527,7 +527,7 @@ gint Shape_chooser::expose(
  *  Handle a mouse drag event.
  */
 
-#ifdef WIN32
+#ifdef _WIN32
 
 static bool win32_button = false;
 
@@ -605,7 +605,7 @@ gint Shape_chooser::mouse_press(
 		if (info[i].box.distance(absx, absy) <= 2) {
 			// Found the box?
 			// Indicate we can drag.
-#ifdef WIN32
+#ifdef _WIN32
 // Here, we have to override GTK+'s Drag and Drop, which is non-OLE and
 // usually stucks outside the program window. I think it's because
 // the dragged shape only receives mouse motion events when the new mouse pointer
@@ -878,7 +878,7 @@ void Shape_chooser::edit_shape(
 	string cmd(studio->get_image_editor());
 	cmd += ' ';
 	string imgpath;
-#ifdef WIN32
+#ifdef _WIN32
 	if (fname[0] == '.' && (fname[1] == '\\' || fname[1] == '/')) {
 		char currdir[MAX_PATH];
 		GetCurrentDirectory(MAX_PATH, currdir);
@@ -892,7 +892,7 @@ void Shape_chooser::edit_shape(
 	if (imgpath.find(' ') != string::npos)
 		imgpath = "\"" + imgpath + "\"";
 	cmd += imgpath;
-#ifndef WIN32
+#ifndef _WIN32
 	cmd += " &";            // Background.
 	int ret = system(cmd.c_str());
 	if (ret == 127 || ret == -1)
@@ -1724,7 +1724,7 @@ void Shape_chooser::drag_data_get(
 	                           shinfo.framenum);
 	cout << "Setting selection data (" << shinfo.shapenum <<
 	     '/' << shinfo.framenum << ')' << endl;
-#ifdef WIN32
+#ifdef _WIN32
 	windragdata *wdata = reinterpret_cast<windragdata*>(seldata);
 	wdata->assign(info, len, buf);
 #else
@@ -2350,7 +2350,7 @@ Shape_chooser::Shape_chooser(
 	// Mouse motion.
 	gtk_signal_connect(GTK_OBJECT(draw), "drag_begin",
 	                   GTK_SIGNAL_FUNC(drag_begin), this);
-#ifdef WIN32
+#ifdef _WIN32
 // required to override GTK+ Drag and Drop
 	gtk_signal_connect(GTK_OBJECT(draw), "motion_notify_event",
 	                   GTK_SIGNAL_FUNC(win32_drag_motion), this);
