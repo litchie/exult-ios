@@ -511,19 +511,19 @@ mklink$(EXEEXT) : tools/mklink.o
 	$(CXX) $(LDFLAGS) -o $(@) tools/mklink.o
 
 mockup$(EXEEXT): mapedit/tools/mockup/main.o
-	$(CC) $(LDFLAGS) -o $(@) mapedit/tools/mockup/main.o $(SDL_IMAGE_LIBS)
+	$(CC) $(LDFLAGS) -o $(@) mapedit/tools/mockup/main.o $(subst -mwindows,-mconsole,$(SDL_IMAGE_LIBS))
 
 rip$(EXEEXT) : tools/rip.o
 	$(CXX) $(LDFLAGS) -o $(@) tools/rip.o
 
 libsmooth_randomize$(LIBEXT): mapedit/tools/smooth/plugins/plugin_randomize.o
-	$(CXX) -shared -o $(@) mapedit/tools/smooth/plugins/plugin_randomize.o $(SDL_LIBS) -static -lstdc++
+	$(CXX) -shared -o $(@) mapedit/tools/smooth/plugins/plugin_randomize.o $(subst -mwindows,-mconsole,$(SDL_LIBS)) $(LDFLAGS)
 
 libsmooth_smooth$(LIBEXT): mapedit/tools/smooth/plugins/plugin_smooth.o
-	$(CXX) -shared -o $(@) mapedit/tools/smooth/plugins/plugin_smooth.o $(SDL_LIBS) -static -lstdc++
+	$(CXX) -shared -o $(@) mapedit/tools/smooth/plugins/plugin_smooth.o $(subst -mwindows,-mconsole,$(SDL_LIBS)) $(LDFLAGS)
 
 libsmooth_stream$(LIBEXT): mapedit/tools/smooth/plugins/plugin_stream.o
-	$(CXX) -shared -o $(@) mapedit/tools/smooth/plugins/plugin_stream.o $(SDL_LIBS) -static -lstdc++
+	$(CXX) -shared -o $(@) mapedit/tools/smooth/plugins/plugin_stream.o $(subst -mwindows,-mconsole,$(SDL_LIBS)) $(LDFLAGS)
 
 SMOOTH_OBJS=\
 	mapedit/tools/smooth/config.o \
@@ -534,7 +534,7 @@ SMOOTH_OBJS=\
 	mapedit/tools/smooth/smooth.o
 
 smooth$(EXEEXT) : $(SMOOTH_OBJS)
-	$(CC) $(LDFLAGS) -o $(@) $(SMOOTH_OBJS) $(SDL_IMAGE_LIBS)
+	$(CC) $(LDFLAGS) -o $(@) $(SMOOTH_OBJS) $(subst -mwindows,-mconsole,$(SDL_IMAGE_LIBS))
 
 shp2pcx$(EXEEXT) : tools/shp2pcx.o
 	$(CXX) $(LDFLAGS) -o $(@) tools/shp2pcx.o
@@ -565,7 +565,7 @@ UCC_OBJS=\
 	usecode/compiler/ucclass.o
 
 ucc$(EXEEXT) : $(UCC_OBJS) files/utils.h usecode/bgintrinsics.h usecode/siintrinsics.h usecode/sibetaintrinsics.h usecode/opcodes.h usecode/ucsymtbl.h
-	$(CXX) $(LDFLAGS) -o $(@) $(UCC_OBJS) -liberty
+	$(CXX) $(LDFLAGS) -o $(@) $(UCC_OBJS)
 
 ucparse.cc: usecode/compiler/ucparse.yy
 	bison -d usecode/compiler/ucparse.yy -o ucparse.c
