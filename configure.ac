@@ -146,10 +146,7 @@ CXXFLAGS="$NEWCXXFLAGS"
 
 AX_CXX_COMPILE_STDCXX_17([noext],[optional])
 if test "$HAVE_CXX17" = "0"; then
-	AX_CXX_COMPILE_STDCXX_14([noext],[optional])
-	if test "$HAVE_CXX14" = "0"; then
-		AX_CXX_COMPILE_STDCXX_11([noext],[mandatory])
-	fi
+	AX_CXX_COMPILE_STDCXX_14([noext],[mandatory])
 fi
 AC_PROG_CXXCPP
 
@@ -781,7 +778,7 @@ fi
 
 CHK_WARN="-Wall -Wextra -pedantic"
 CHK_WARN="$CHK_WARN -Walloc-zero -Walloca"
-CHK_WARN="$CHK_WARN -Wc++11-compat -Wc++14-compat -Wc++17-compat"
+CHK_WARN="$CHK_WARN -Wc++14-compat -Wc++17-compat"
 CHK_WARN="$CHK_WARN -Wcatch-value=3 -Wcast-align -Wcast-qual"
 CHK_WARN="$CHK_WARN -Wconditionally-supported -Wctor-dtor-privacy -Wdisabled-optimization"
 CHK_WARN="$CHK_WARN -Wduplicated-branches -Wduplicated-cond -Wextra-semi"
