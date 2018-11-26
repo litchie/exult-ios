@@ -51,7 +51,6 @@ private:
 	int frame;
 	Palette *palette;
 public:
-	playfli(const char *fli_name);
 	playfli(char *buffer, std::size_t len);
 	~playfli();
 	void info(fliinfo *fi = NULL);

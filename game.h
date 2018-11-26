@@ -130,7 +130,6 @@ public:
 	virtual void show_journey_failed() = 0;
 	virtual Shape_frame *get_menu_shape() = 0;
 
-	void play_flic(const char *archive, int index);
 	void add_shape(const char *name, int shapenum);
 	int get_shape(const char *name);
 	void add_resource(const char *name, const char *str, int num);

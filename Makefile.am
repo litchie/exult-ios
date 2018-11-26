@@ -14,8 +14,8 @@ if BUILD_MODS
 MODSDIR=content
 endif
 
-SUBDIRS =  files conf data shapes imagewin flic pathfinder \
-	gamemgr usecode tools audio gumps objs server \
+SUBDIRS =  files conf data shapes imagewin pathfinder \
+	gamemgr flic usecode tools audio gumps objs server \
 	mapedit desktop docs $(MODSDIR)
 
 bin_PROGRAMS = exult
@@ -116,11 +116,12 @@ EXULTLIBS = \
 	audio/libaudio.la	\
 	audio/midi_drivers/libmididrv.la	\
 	audio/midi_drivers/timidity/libtimidity.la	\
-	$(EXTRA_EXULTLIBS)	\
-	flic/libflic.la		\
+	$(EXTRA_EXULTLIBS)		\
 	conf/libconf.la		\
 	imagewin/libimagewin.la	\
 	server/libserver.la \
+	gamemgr/libgamemgr.la	\
+	flic/libflic.la \
 	usecode/libusecode.la	\
 	shapes/libshapes.la \
 	shapes/shapeinf/libshapeinf.la \
@@ -128,8 +129,7 @@ EXULTLIBS = \
 	gumps/libgumps.la \
 	files/libu7file.la \
 	files/sha1/libsha1.la \
-	files/zip/libminizip.la \
-	gamemgr/libgamemgr.la
+	files/zip/libminizip.la
 
 exult_LDADD = \
 	$(EXULTLIBS) \
