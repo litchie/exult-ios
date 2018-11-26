@@ -400,30 +400,4 @@ public:
 	}
 };
 
-class OExultDataSource: public OBufferDataSource {
-public:
-	OExultDataSource(const File_spec &fname, int index)
-		: OBufferDataSource(0, 0) {
-		U7object obj(fname, index);
-		buf = buf_ptr = reinterpret_cast<unsigned char *>(obj.retrieve(size));
-	}
-
-	OExultDataSource(const File_spec &fname0, const File_spec &fname1, int index)
-		: OBufferDataSource(0, 0) {
-		U7multiobject obj(fname0, fname1, index);
-		buf = buf_ptr = reinterpret_cast<unsigned char *>(obj.retrieve(size));
-	}
-
-	OExultDataSource(const File_spec &fname0, const File_spec &fname1,
-	                 const File_spec &fname2, int index)
-		: OBufferDataSource(0, 0) {
-		U7multiobject obj(fname0, fname1, fname2, index);
-		buf = buf_ptr = reinterpret_cast<unsigned char *>(obj.retrieve(size));
-	}
-
-	~OExultDataSource() {
-		delete [] buf;
-	}
-};
-
 #endif
