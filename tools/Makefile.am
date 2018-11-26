@@ -17,8 +17,8 @@ GTHUMB=
 endif
 
 if BUILD_TOOLS
-NOINSTTOOLS = wuc mklink rip cmanip
-EXTRATOOLS = splitshp shp2pcx textpack
+NOINSTTOOLS =
+EXTRATOOLS = wuc mklink rip cmanip splitshp shp2pcx textpack
 else
 EXTRATOOLS =
 NOINSTTOOLS =
