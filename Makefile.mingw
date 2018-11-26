@@ -150,7 +150,7 @@ ifdef DEBUG_SYMBOLS
 endif
 
 CXXFLAGS=$(ARCHFLAGS) $(strip $(OPT_LEVEL) -Wall -Wextra -pedantic -mms-bitfields)
-CXX=g++ -std=c++11
+CXX=g++ -std=c++14
 
 CFLAGS=$(ARCHFLAGS) $(strip $(OPT_LEVEL) -Wall -Wextra -pedantic -mms-bitfields)
 CC=gcc
