@@ -554,6 +554,7 @@ Game_window::~Game_window(
 	delete party_man;
 	delete background_noise;
 	delete tqueue;
+	tqueue = 0;
 	delete win;
 	delete dragging;
 	delete pal;

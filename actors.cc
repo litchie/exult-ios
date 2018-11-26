@@ -931,7 +931,7 @@ Actor::Actor(
 Actor::~Actor(
 ) {
 	purge_deleted_actions();
-	if (in_queue())
+	if (in_queue() && gwin->get_tqueue())
 		gwin->get_tqueue()->remove(this);
 	delete schedule;
 	delete action;
