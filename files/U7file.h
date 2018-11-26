@@ -114,8 +114,6 @@ public:
 template <class T>
 class U7DataBuffer : public T {
 protected:
-	/// The buffer to read from.
-	const char *_buffer;
 	/// Buffer length.
 	size_t _len;
 private:
@@ -129,7 +127,7 @@ public:
 	/// @param spec Unique identifier for this data object.
 	/// @param dt   IBufferDataSource that we shoud use.
 	U7DataBuffer(const File_spec &spec, IBufferDataSource *dt)
-		: T(spec), _buffer(reinterpret_cast<const char *>(dt->getPtr())), _len(dt->getSize()) {
+		: T(spec), _len(dt->getSize()) {
 		this->data = dt;
 		this->index_file();
 	}
@@ -140,10 +138,10 @@ public:
 	/// @param buf  Buffer to read from. The class deletes the buffer
 	/// at the end. Can be null if l also is.
 	/// @param l    Length of data in the buffer.
-	U7DataBuffer(const File_spec &spec, const char *buf, unsigned int l)
-		: T(spec), _buffer(buf), _len(l) {
+	U7DataBuffer(const File_spec &spec, char *buf, unsigned int l)
+		: T(spec), _len(l) {
 		this->identifier = spec;
-		this->data = new IBufferDataSource(this->_buffer, this->_len);
+		this->data = new IBufferDataSource(buf, this->_len);
 		this->index_file();
 	}
 	/// Creates and initializes the data source from the specified
@@ -155,13 +153,9 @@ public:
 		this->identifier = spec;
 		std::size_t size;
 		U7object from(spec.name, spec.index);
-		this->_buffer = from.retrieve(size);
-		this->data = new IBufferDataSource(_buffer, this->_len = size);
+		char *buffer = from.retrieve(size);
+		this->data = new IBufferDataSource(buffer, this->_len = size);
 		this->index_file();
-	}
-	/// This destructor simply deletes the buffer if non-null.
-	virtual ~U7DataBuffer() {
-		delete [] this->_buffer;
 	}
 };
 

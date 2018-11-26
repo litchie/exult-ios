@@ -49,8 +49,6 @@ private:
 	int ver_lead;
 	Shape_file *font_shapes;
 	IDataSource *font_data;
-	char *font_buf;
-	char *orig_font_buf;
 	int  highest, lowest;
 
 	void calc_highlow();

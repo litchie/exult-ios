@@ -36,7 +36,8 @@ public:
 		int speed;
 	};
 private:
-	IDataSource *fli_data;
+	IBufferDataSource fli_data;
+	char *fli_name;
 	int fli_size;
 	int fli_magic;
 	int fli_frames;
@@ -60,7 +61,6 @@ public:
 		return palette;
 	}
 private:
-	void initfli();
 	int nextpal;
 	int thispal;
 	int changepal;

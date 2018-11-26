@@ -792,7 +792,7 @@ void Game_map::get_ireg_objects(
 	if (schunk_cache[schunk] && schunk_cache_sizes[schunk] >= 0) {
 		// No items
 		if (schunk_cache_sizes[schunk] == 0) return;
-		ireg = new IBufferDataSource(schunk_cache[schunk], schunk_cache_sizes[schunk]);
+		ireg = new IBufferDataView(schunk_cache[schunk], schunk_cache_sizes[schunk]);
 #ifdef DEBUG
 		std::cout << "Reading " << get_schunk_file_name(U7IREG, schunk, fname) << " from memory" << std::endl;
 #endif
@@ -837,7 +837,7 @@ void Read_special_ireg(
 	unsigned char *buf = new unsigned char[len];
 	ireg->read(reinterpret_cast<char *>(buf), len);
 	if (type == IREG_UCSCRIPT) { // Usecode script?
-		IBufferDataSource nbuf(buf, len);
+		IBufferDataView nbuf(buf, len);
 		Usecode_script *scr = Usecode_script::restore(obj, &nbuf);
 		if (scr) {
 			scr->start(scr->get_delay());
@@ -855,8 +855,9 @@ void Read_special_ireg(
 		if (obj->is_egg())
 			static_cast<Egg_object *>(obj)->set_str1(
 			    reinterpret_cast<char *>(buf));
-	} else
+	} else {
 		cerr << "Unknown special IREG entry: " << type << endl;
+	}
 	delete [] buf;
 }
 
@@ -1795,7 +1796,7 @@ void Game_map::cache_out_schunk(int schunk) {
 	schunk_cache[schunk] = new char[buf_size];
 	schunk_cache_sizes[schunk] = buf_size;
 
-	OBufferDataSource ds(schunk_cache[schunk], schunk_cache_sizes[schunk]);
+	OBufferDataSpan ds(schunk_cache[schunk], schunk_cache_sizes[schunk]);
 
 	write_ireg_objects(schunk, &ds);
 

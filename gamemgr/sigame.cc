@@ -256,8 +256,6 @@ void SI_Game::play_intro() {
 	if (midi) midi->set_timbre_lib(MyMidiPlayer::TIMBRE_LIB_INTRO);
 
 	int next = 0;
-	size_t  flisize;
-	char    *fli_b = 0;
 	uint8   *buffer = 0;
 	size_t  size;
 	size_t  shapesize;
@@ -273,8 +271,9 @@ void SI_Game::play_intro() {
 	// Lord British presents...
 	try {
 		U7multiobject lbflic(INTRO_DAT, PATCH_INTRO, 0);
-		fli_b = lbflic.retrieve(flisize);
-		playfli fli0(fli_b + 8, flisize - 8);
+		size_t  flisize;
+		char *fli_b = lbflic.retrieve(flisize);
+		playfli fli0(fli_b, flisize);
 		fli0.info();
 
 		disable_direct_gl_render();
@@ -297,9 +296,6 @@ void SI_Game::play_intro() {
 			wait_delay(0, 0, 1);
 		}
 
-
-		FORGET_ARRAY(fli_b);
-
 		if (wait_delay(0, 0, 1))
 			throw UserBreakException();
 
@@ -320,7 +316,7 @@ void SI_Game::play_intro() {
 
 		U7multiobject flic(INTRO_DAT, PATCH_INTRO, 1);
 		fli_b = flic.retrieve(flisize);
-		playfli fli1(fli_b + 8, flisize - 8);
+		playfli fli1(fli_b, flisize);
 		fli1.info();
 
 		fli1.play(win, 0, 1, 0, 0);
@@ -407,7 +403,6 @@ void SI_Game::play_intro() {
 				throw UserBreakException();
 
 		}
-		FORGET_ARRAY(fli_b);
 
 		if (wait_delay(0))
 			throw UserBreakException();
@@ -418,7 +413,7 @@ void SI_Game::play_intro() {
 		// Guard walks in
 		U7multiobject flic2(INTRO_DAT, PATCH_INTRO, 2);
 		fli_b = flic2.retrieve(flisize);
-		playfli fli2(fli_b + 8, flisize - 8);
+		playfli fli2(fli_b, flisize);
 		fli2.info();
 
 		for (j = 0; j < 20; j++) {
@@ -540,15 +535,13 @@ void SI_Game::play_intro() {
 			if (wait_delay(10))
 				throw UserBreakException();
 
-		FORGET_ARRAY(fli_b);
-
 		// Do this! Prevents palette corruption
 		gwin->clear_screen(true);
 
 		// Scroll opens
 		U7multiobject flic3(INTRO_DAT, PATCH_INTRO, 3);
 		fli_b = flic3.retrieve(flisize);
-		playfli fli3(fli_b + 8, flisize - 8);
+		playfli fli3(fli_b, flisize);
 		fli3.info();
 
 		next = 0;
@@ -583,25 +576,25 @@ void SI_Game::play_intro() {
 				throw UserBreakException();
 		}
 
-		FORGET_ARRAY(fli_b);
-
 		// Do this! Prevents palette corruption
 		gwin->clear_screen(true);
 
 		// Big G speaks
 		U7multiobject flic4(INTRO_DAT, PATCH_INTRO, 4);
 		fli_b = flic4.retrieve(flisize);
-		playfli fli4(fli_b + 8, flisize - 8);
+		playfli fli4(fli_b, flisize);
 		fli4.info();
 
 		U7multiobject introshapes(INTRO_DAT, PATCH_INTRO, 30);
 		shape_buf = introshapes.retrieve(shapesize);
-		IBufferDataSource gshape_ds(shape_buf + 8, shapesize - 8);
+		IBufferDataSource gshape_ds(shape_buf, shapesize);
+		char name[9] = {0};
+		gshape_ds.read(name, 8);
 		Shape_frame *sf;
 
 		Shape_file gshape(&gshape_ds);
 
-		cout << "Shape in intro.dat has " << gshape.get_num_frames() << endl;
+		cout << "Shape '" << name << "' in intro.dat has " << gshape.get_num_frames() << endl;
 
 		if (speech && !jive) {
 			U7multiobject voc_big_g(INTRO_DAT, PATCH_INTRO, 20);
@@ -662,7 +655,6 @@ void SI_Game::play_intro() {
 		}
 
 		FORGET_ARRAY(shape_buf);
-		FORGET_ARRAY(fli_b);
 
 		// Do this! Prevents palette corruption
 		gwin->clear_screen(true);
@@ -670,7 +662,7 @@ void SI_Game::play_intro() {
 		// Tis LBs's Worst fear
 		U7multiobject flic5(INTRO_DAT, PATCH_INTRO, 5);
 		fli_b = flic5.retrieve(flisize);
-		playfli fli5(fli_b + 8, flisize - 8);
+		playfli fli5(fli_b, flisize);
 		fli5.info();
 
 		for (j = 0; j < 20; j++) {
@@ -702,15 +694,13 @@ void SI_Game::play_intro() {
 				throw UserBreakException();
 		}
 
-		FORGET_ARRAY(fli_b);
-
 		// Do this! Prevents palette corruption
 		gwin->clear_screen(true);
 
 		// Boat 1
 		U7multiobject flic6(INTRO_DAT, PATCH_INTRO, 6);
 		fli_b = flic6.retrieve(flisize);
-		playfli fli6(fli_b + 8, flisize - 8);
+		playfli fli6(fli_b, flisize);
 		fli6.info();
 
 		for (j = 0; j < 61; j++) {
@@ -720,15 +710,13 @@ void SI_Game::play_intro() {
 				throw UserBreakException();
 		}
 
-		FORGET_ARRAY(fli_b);
-
 		// Do this! Prevents palette corruption
 		gwin->clear_screen(true);
 
 		// Boat 2
 		U7multiobject flic7(INTRO_DAT, PATCH_INTRO, 7);
 		fli_b = flic7.retrieve(flisize);
-		playfli fli7(fli_b + 8, flisize - 8);
+		playfli fli7(fli_b, flisize);
 		fli7.info();
 
 		const char *zot = "Zot!";
@@ -744,15 +732,13 @@ void SI_Game::play_intro() {
 				throw UserBreakException();
 		}
 
-		FORGET_ARRAY(fli_b);
-
 		// Do this! Prevents palette corruption
 		gwin->clear_screen(true);
 
 		// Ultima VII Part 2
 		U7multiobject flic8(INTRO_DAT, PATCH_INTRO, 8);
 		fli_b = flic8.retrieve(flisize);
-		playfli fli8(fli_b + 8, flisize - 8);
+		playfli fli8(fli_b, flisize);
 		fli8.info();
 
 		for (j = 0; j < 20; j++) {
@@ -777,11 +763,9 @@ void SI_Game::play_intro() {
 			wait_delay(0, 0, 1);
 		}
 
-		FORGET_ARRAY(fli_b);
 		enable_direct_gl_render();
 	} catch (const UserBreakException &/*x*/) {
 		FORGET_ARRAY(shape_buf);
-		FORGET_ARRAY(fli_b);
 		FORGET_ARRAY(buffer);
 		enable_direct_gl_render();
 	}
@@ -853,8 +837,6 @@ private:
 
 	// Data info
 	U7object    *flic_obj;
-	size_t      size;
-	char        *buffer;
 	playfli     *player;
 
 public:
@@ -868,11 +850,11 @@ public:
 	ExCineFlic(uint32 time, const char *file, const char *patch,
 	           int i, int s, int c, bool r, int spd) :
 		ExCineEvent(time, file, patch, i), start(s), count(c), repeat(r),
-		cur(-1), speed(spd), flic_obj(0), size(0), buffer(0), player(0) { }
+		cur(-1), speed(spd), flic_obj(0), player(0) { }
 
 	ExCineFlic(uint32 time) : ExCineEvent(time, 0, 0, 0), start(0), count(0),
 		repeat(false), cur(0), speed(0),
-		flic_obj(0), size(0), buffer(0), player(0) { }
+		flic_obj(0), player(0) { }
 
 	virtual ~ExCineFlic() {
 		free_flic();
@@ -889,9 +871,9 @@ void ExCineFlic::load_flic() {
 	else
 		flic_obj = new U7object(file, index);
 
-	buffer = flic_obj->retrieve(size);
-
-	player = new playfli(buffer + 8, size - 8);
+	size_t size;
+	char *buffer = flic_obj->retrieve(size);
+	player = new playfli(buffer, size);
 	player->info();
 }
 
@@ -899,8 +881,6 @@ void ExCineFlic::free_flic() {
 	COUT("Freeing " << file << ":" << index);
 
 	FORGET_OBJECT(player);
-	FORGET_ARRAY(buffer);
-	size = 0;
 	FORGET_OBJECT(flic_obj);
 }
 

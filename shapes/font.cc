@@ -662,7 +662,7 @@ int Font::find_xcursor(
 Font::Font(
 )
 	: hor_lead(0), ver_lead(0),
-	  font_shapes(0), font_data(0), font_buf(0), orig_font_buf(0),
+	  font_shapes(0), font_data(0),
 	  highest(0), lowest(0) {
 }
 
@@ -672,7 +672,7 @@ Font::Font(
     int hlead,
     int vlead
 )
-	: font_shapes(0), font_data(0), font_buf(0), orig_font_buf(0) {
+	: font_shapes(0), font_data(0) {
 	load(fname0, index, hlead, vlead);
 }
 
@@ -683,7 +683,7 @@ Font::Font(
     int hlead,
     int vlead
 )
-	: font_shapes(0), font_data(0), font_buf(0), orig_font_buf(0) {
+	: font_shapes(0), font_data(0) {
 	load(fname0, fname1, index, hlead, vlead);
 }
 
@@ -694,10 +694,8 @@ Font::~Font() {
 void Font::clean_up() {
 	delete font_shapes;
 	delete font_data;
-	delete [] orig_font_buf;
 	font_shapes = 0;
 	font_data = 0;
-	orig_font_buf = 0;
 }
 
 /**
@@ -712,25 +710,21 @@ int Font::load_internal(
     int vlead
 ) {
 	size_t len;
-	delete [] orig_font_buf;
-	font_buf = font_obj.retrieve(len);
+	char *font_buf = font_obj.retrieve(len);
+	delete font_data;
 
 	if (!font_buf || !len) {
 		delete [] font_buf;
-		font_buf = 0;
 		font_data = 0;
 		font_shapes = 0;
 		hor_lead = 0;
 		ver_lead = 0;
-		orig_font_buf = 0;
 	} else {
-		orig_font_buf = font_buf;
 		// Is it an IFF archive?
-		if (!strncmp(font_buf, "font", 4))
-			font_buf += 8;      // Yes, skip first 8 bytes.
-		delete font_data;
-		delete font_shapes;
 		font_data = new IBufferDataSource(font_buf, len);
+		if (!strncmp(font_buf, "font", 4))
+			font_data->skip(8);      // Yes, skip first 8 bytes.
+		delete font_shapes;
 		font_shapes = new Shape_file(font_data);
 		hor_lead = hlead;
 		ver_lead = vlead;

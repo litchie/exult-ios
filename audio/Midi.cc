@@ -751,7 +751,6 @@ void    MyMidiPlayer::start_sound_effect(int num)
 	XMidiFile		midfile(mid_data, effects_conversion);
 
 	delete mid_data;
-	delete [] buffer;
 
 	// Now give the xmidi object to the midi device
 	XMidiEventList *eventlist = midfile.GetEventList(0);

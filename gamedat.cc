@@ -142,7 +142,6 @@ void Game_window::restore_flex_files(
 				fname[namelen + 1] = 0;
 				restore_flex_files(ds, fname);
 			}
-			delete [] buf;
 			continue;
 		}
 		ofstream out;
@@ -707,7 +706,6 @@ bool Game_window::get_saveinfo(int num, char *&name, Shape_file *&map, SaveGame_
 			in.read(buf, len);
 			IBufferDataSource ds(buf, len);
 			map = new Shape_file(&ds);
-			delete [] buf;
 		} else if (!strcmp(fname, GSAVEINFO)) {
 			read_saveinfo(&in, details, party);
 		}
@@ -792,9 +790,9 @@ bool Game_window::get_saveinfo_zip(const char *fname, char *&name, Shape_file *&
 		if (unzCloseCurrentFile(unzipfile) == UNZ_OK) {
 			IBufferDataSource ds(buf, file_info.uncompressed_size);
 			map = new Shape_file(&ds);
+		} else {
+			delete [] buf;
 		}
-
-		delete [] buf;
 	}
 
 	// Now saveinfo
@@ -807,9 +805,9 @@ bool Game_window::get_saveinfo_zip(const char *fname, char *&name, Shape_file *&
 		if (unzCloseCurrentFile(unzipfile) == UNZ_OK) {
 			IBufferDataSource ds(buf, file_info.uncompressed_size);
 			read_saveinfo(&ds, details, party);
+		} else {
+			delete [] buf;
 		}
-
-		delete [] buf;
 	}
 
 	unzClose(unzipfile);
@@ -826,7 +824,6 @@ bool Game_window::Restore_level2(
 
 	char oname[50];     // Set up name.
 	char *oname2 = oname + sizeof(GAMEDAT) + dirlen - 1;
-	char size_buffer[4];
 	int size;
 	strcpy(oname, dirname);
 	oname2[0] = '/';
@@ -849,12 +846,13 @@ bool Game_window::Restore_level2(
 		if (*oname2 == 0) break;
 
 		// Get file length.
+		unsigned char size_buffer[4];
 		if (unzReadCurrentFile(unzipfile, size_buffer, 4) != 4) {
 			std::cerr << "Couldn't read for size" << std::endl;
 			return false;
 		}
-		IBufferDataSource ds(size_buffer, 4);
-		size = ds.read4();
+		const unsigned char *ptr = size_buffer;
+		size = Read4(ptr);
 
 		if (size) {
 			// Watch for names ending in '.'.
@@ -1104,8 +1102,8 @@ static bool Save_level2(zipFile zipfile, const char *fname) {
 	// Size of the file
 	if (err == ZIP_OK) {
 		// Must be platform independant
-		OBufferDataSource bds(buf, 4);
-		bds.write4(size);
+		unsigned char *ptr = reinterpret_cast<unsigned char*>(buf);
+		Write4(ptr, size);
 		err = zipWriteInFileInZip(zipfile, buf, 4);
 	}
 

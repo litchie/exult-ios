@@ -818,8 +818,9 @@ void Notebook_gump::read_auto_text(
 				IBufferDataSource buf(txt, len);
 				cout << "Loading default autonotes" << endl;
 				Read_text_msg_file(&buf, auto_text);
+			} else {
+				delete[] txt;
 			}
-			delete[] txt;
 		}
 	}
 }

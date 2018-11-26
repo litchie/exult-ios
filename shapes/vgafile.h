@@ -286,10 +286,8 @@ protected:
 		int source_offset;
 	};
 	std::vector<std::ifstream *> files;
-	std::vector<char *> buffers;
 	std::vector<std::pair<IDataSource *, bool> > shape_sources;
 	std::vector<std::ifstream *> imported_files;
-	std::vector<char *> imported_buffers;
 	std::vector<std::pair<IDataSource *, bool> > imported_sources;
 	std::map<int, imported_map> imported_shape_table;
 	int u7drag_type;        // # from u7drag.h, or -1.
@@ -313,7 +311,6 @@ public:
 	IDataSource *U7load(
 	    std::pair<std::string, int> const &resource,
 	    std::vector<std::ifstream *> &fs,
-	    std::vector<char *> &bs,
 	    std::vector<std::pair<IDataSource *, bool> > &shps);
 	bool load(const char *nm, const char *nm2 = 0, bool resetimports = false);
 	bool load(std::vector<std::pair<std::string, int> > const &sources, bool resetimports = false);

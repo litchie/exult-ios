@@ -1527,10 +1527,6 @@ void BG_Game::end_game(bool success) {
 	bool speech = Audio::get_ptr()->is_audio_enabled() &&
 	              Audio::get_ptr()->is_speech_enabled();
 
-	// Fli Buffers
-	size_t  flisize;
-	char    *fli_b[3];
-
 	// Clear screen
 	gwin->clear_screen(true);
 
@@ -1551,14 +1547,17 @@ void BG_Game::end_game(bool success) {
 	cout << "Shape in Endgame.dat has " << sf.get_num_frames() << endl;
 	*/
 
-	fli_b[0] = flic1.retrieve(flisize);
-	playfli fli1(fli_b[0] + 8, flisize - 8);
+	// Fli Buffers
+	size_t  flisize;
+	char    *fli_b;
+	fli_b = flic1.retrieve(flisize);
+	playfli fli1(fli_b, flisize);
 
-	fli_b[1] = flic2.retrieve(flisize);
-	playfli fli2(fli_b[1] + 8, flisize - 8);
+	fli_b = flic2.retrieve(flisize);
+	playfli fli2(fli_b, flisize);
 
-	fli_b[2] = flic3.retrieve(flisize);
-	playfli fli3(fli_b[2] + 8, flisize - 8);
+	fli_b = flic3.retrieve(flisize);
+	playfli fli3(fli_b, flisize);
 
 	fli1.play(win, 0, 0, 0);
 
@@ -1943,9 +1942,6 @@ void BG_Game::end_game(bool success) {
 	audio->stop_music();
 
 	gwin->clear_screen(true);
-	FORGET_ARRAY(fli_b[0]);
-	FORGET_ARRAY(fli_b[1]);
-	FORGET_ARRAY(fli_b[2]);
 	enable_direct_gl_render();
 }
 

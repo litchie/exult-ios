@@ -72,7 +72,6 @@ U7file *U7FileManager::get_file_object(const File_spec &s, bool allow_errors) {
 		else {
 			// All other cases manage this, so we don't have to.
 			delete data;
-			delete [] buffer;
 		}
 	} else {
 		if (IFF::is_iff(s.name))

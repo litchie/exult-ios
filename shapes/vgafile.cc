@@ -1190,7 +1190,6 @@ bool Vga_file::load(
 IDataSource *Vga_file::U7load(
     pair<string, int> const &resource,
     vector<ifstream *> &fs,
-    vector<char *> &bs,
     vector<pair<IDataSource *, bool> > &shps
 ) {
 	IDataSource *source = 0;
@@ -1215,7 +1214,6 @@ IDataSource *Vga_file::U7load(
 			return 0;
 		}
 		source = new IBufferDataSource(buf, len);
-		bs.push_back(buf);
 		shps.push_back(pair<IDataSource *, bool>(source, false));
 	}
 	return source;
@@ -1231,14 +1229,13 @@ bool Vga_file::load(
 	int count = sources.size();
 	shape_sources.reserve(count);
 	files.reserve(count);
-	buffers.reserve(count);
 	shape_cnts.reserve(count);
 	bool is_good = true;
 	if (!U7exists(sources[0].first.c_str()))
 		is_good = false;
 	for (vector<pair<string, int> >::const_iterator it = sources.begin();
 	        it != sources.end(); ++it) {
-		IDataSource *source = U7load(*it, files, buffers, shape_sources);
+		IDataSource *source = U7load(*it, files, shape_sources);
 		if (source) {
 			flex = Flex::is_flex(source);
 			if (flex) {
@@ -1286,7 +1283,7 @@ bool Vga_file::import_shapes(
 ) {
 	reset_imports();
 	IDataSource *ds =
-	    U7load(source, imported_files, imported_buffers, imported_sources);
+	    U7load(source, imported_files, imported_sources);
 	if (ds) {
 		ds->seek(0x54); // Get # of shapes.
 		int cnt = ds->read4();
@@ -1333,11 +1330,6 @@ void Vga_file::reset() {
 	}
 	files.clear();
 
-	for (vector<char *>::iterator it = buffers.begin();
-	        it != buffers.end(); ++it)
-		delete [] *it;
-	buffers.clear();
-
 	shape_cnts.clear();
 
 	num_shapes = 0;
@@ -1362,11 +1354,6 @@ void Vga_file::reset_imports() {
 		delete *it;
 	}
 	imported_files.clear();
-
-	for (vector<char *>::iterator it = imported_buffers.begin();
-	        it != imported_buffers.end(); ++it)
-		delete [] *it;
-	imported_buffers.clear();
 
 	imported_cnts.clear();
 	imported_shape_table.clear();

@@ -115,7 +115,7 @@ void OggAudioSample::initDecompressor(void *DecompData) const
 	}
 	else
 	{
-		decomp->datasource = new IBufferDataSource(buffer,buffer_size);
+		decomp->datasource = new IBufferDataView(buffer,buffer_size);
 	}
 
 	decomp->datasource->seek(0);

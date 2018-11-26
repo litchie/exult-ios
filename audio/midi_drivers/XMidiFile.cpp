@@ -830,7 +830,7 @@ void XMidiFile::AdjustTimings(uint32 ppqn)
 
 	//std::cout << "Max Polyphony: " << notes.GetMaxPolyphony() << std::endl;
 	static const unsigned char tempo_buf[5] = { 0x51, 0x03, 0x07, 0xA1, 0x20 };
-	IBufferDataSource ds(tempo_buf, 5);
+	IBufferDataView ds(tempo_buf, 5);
 	current = list;
 	ConvertSystemMessage (0, 0xFF,&ds);
 }
@@ -1262,7 +1262,7 @@ int XMidiFile::ExtractTracksFromXmi (IDataSource *source)
 
 		// Add tempo
 		static const unsigned char tempo_buf[5] = { 0x51, 0x03, 0x07, 0xA1, 0x20 };
-		IBufferDataSource ds(tempo_buf, 5);
+		IBufferDataView ds(tempo_buf, 5);
 		current = list;
 		ConvertSystemMessage (0, 0xFF,&ds);
 
@@ -1722,7 +1722,7 @@ int XMidiFile::ExtractTracksFromU7V (IDataSource *source)
 
 	// Add tempo
 	static const unsigned char tempo_buf[5] = { 0x51, 0x03, 0x07, 0xA1, 0x20 };
-	IBufferDataSource ds(tempo_buf, 5);
+	IBufferDataView ds(tempo_buf, 5);
 	current = list;
 	ConvertSystemMessage (0, 0xFF,&ds);
 
@@ -1781,7 +1781,7 @@ int XMidiFile::ExtractTracksFromXMIDIMT (IDataSource *source)
 
 	// Add tempo
 	static const unsigned char tempo_buf[5] = { 0x51, 0x03, 0x07, 0xA1, 0x20 };
-	IBufferDataSource ds(tempo_buf, 5);
+	IBufferDataView ds(tempo_buf, 5);
 	current = list;
 	ConvertSystemMessage (0, 0xFF,&ds);
 

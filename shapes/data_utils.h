@@ -538,7 +538,6 @@ static void Read_text_data_file(
 		IBufferDataSource ds(txt, len);
 		static_version = Read_text_msg_file_sections(&ds,
 		                 static_strings, sections, numsections);
-		delete [] txt;
 	} else {
 		try {
 			snprintf(buf, 50, "<STATIC>/%s.txt", fname);
