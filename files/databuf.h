@@ -35,8 +35,12 @@ typedef char *charptr;
  */
 class IDataSource {
 public:
-	IDataSource() {}
-	virtual ~IDataSource() {}
+	IDataSource() = default;
+	IDataSource(const IDataSource&) = delete;
+	IDataSource& operator=(const IDataSource&) = delete;
+	IDataSource(IDataSource&&) noexcept = default;
+	IDataSource& operator=(IDataSource&&) noexcept = default;
+	virtual ~IDataSource() noexcept = default;
 
 	virtual uint32 peek() = 0;
 
@@ -79,55 +83,57 @@ class IStreamDataSource: public IDataSource {
 protected:
 	std::istream *in;
 public:
-	IStreamDataSource(std::istream *data_stream)
+	explicit IStreamDataSource(std::istream *data_stream)
 		: in(data_stream) {}
 
-	virtual ~IStreamDataSource() {}
+	IStreamDataSource(IStreamDataSource&&) noexcept = default;
+	IStreamDataSource& operator=(IStreamDataSource&&) noexcept = default;
+	~IStreamDataSource() noexcept override = default;
 
-	virtual uint32 peek() {
+	uint32 peek() override final {
 		return in->peek();
 	}
 
-	virtual uint32 read1() {
+	uint32 read1() override final {
 		return Read1(in);
 	}
 
-	virtual uint16 read2() {
+	uint16 read2() override final {
 		return Read2(in);
 	}
 
-	virtual uint16 read2high() {
+	uint16 read2high() override final {
 		return Read2high(in);
 	}
 
-	virtual uint32 read4() {
+	uint32 read4() override final {
 		return Read4(in);
 	}
 
-	virtual uint32 read4high() {
+	uint32 read4high() override final {
 		return Read4high(in);
 	}
 
-	virtual void read(void *b, size_t len) {
+	void read(void *b, size_t len) override final {
 		in->read(static_cast<char *>(b), len);
 	}
 
-	virtual void read(std::string& s, size_t len) {
+	void read(std::string& s, size_t len) override final {
 		s.resize(len);
 		in->read(&s[0], len);
 	}
 
-	virtual IDataSource *read(size_t len);
+	IDataSource *read(size_t len) override final;
 
-	virtual void seek(size_t pos) {
+	void seek(size_t pos) override final {
 		in->seekg(pos);
 	}
 
-	virtual void skip(std::streamoff pos) {
+	void skip(std::streamoff pos) override final {
 		in->seekg(pos, std::ios::cur);
 	}
 
-	virtual size_t getSize() {
+	size_t getSize() override final {
 		size_t pos = in->tellg();
 		in->seekg(0, std::ios::end);
 		size_t len = in->tellg();
@@ -135,17 +141,17 @@ public:
 		return len;
 	}
 
-	virtual size_t getPos() {
+	size_t getPos() override final {
 		return in->tellg();
 	}
 
-	virtual bool eof() {
+	bool eof() override final {
 		return in->eof();
 	}
-	virtual bool good() {
+	bool good() override final {
 		return in->good();
 	}
-	virtual void clear_error() {
+	void clear_error() override final {
 		in->clear();
 	}
 };
@@ -156,10 +162,10 @@ public:
 
 class IFileDataSource : public IStreamDataSource {
 public:
-	IFileDataSource(std::ifstream *data_stream)
+	explicit IFileDataSource(std::ifstream *data_stream)
 		: IStreamDataSource(data_stream) {}
 
-	IFileDataSource(const File_spec &spec)
+	explicit IFileDataSource(const File_spec &spec)
 		: IStreamDataSource(0) {
 		std::ifstream *fin = new std::ifstream();
 		in = fin;
@@ -171,7 +177,17 @@ public:
 		}
 	}
 
-	~IFileDataSource() {
+	IFileDataSource(IFileDataSource&& other) noexcept
+		: IStreamDataSource(other.in) {
+		other.in = nullptr;
+	}
+
+	IFileDataSource& operator=(IFileDataSource&& other) noexcept {
+		std::swap(in, other.in);
+		return *this;
+	}
+
+	~IFileDataSource() override final {
 		delete in;
 	}
 };
@@ -192,57 +208,59 @@ public:
 		size = len;
 	}
 
-	virtual ~IBufferDataView() {}
+	IBufferDataView(IBufferDataView&&) noexcept = default;
+	IBufferDataView& operator=(IBufferDataView&&) noexcept = default;
+	~IBufferDataView() noexcept override = default;
 
-	virtual uint32 peek() {
+	uint32 peek() override final {
 		return *buf_ptr;
 	}
 
-	virtual uint32 read1() {
+	uint32 read1() override final {
 		return Read1(buf_ptr);
 	}
 
-	virtual uint16 read2() {
+	uint16 read2() override final {
 		return Read2(buf_ptr);
 	}
 
-	virtual uint16 read2high() {
+	uint16 read2high() override final {
 		return Read2high(buf_ptr);
 	}
 
-	virtual uint32 read4() {
+	uint32 read4() override final {
 		return Read4(buf_ptr);
 	}
 
-	virtual uint32 read4high() {
+	uint32 read4high() override final {
 		return Read4high(buf_ptr);
 	}
 
-	virtual void read(void *b, size_t len) {
+	void read(void *b, size_t len) override final {
 		std::memcpy(b, buf_ptr, len);
 		buf_ptr += len;
 	}
 
-	virtual void read(std::string& s, size_t len) {
+	void read(std::string& s, size_t len) override final {
 		s = std::string(reinterpret_cast<const char *>(buf_ptr), len);
 		buf_ptr += len;
 	}
 
-	virtual IDataSource *read(size_t len);
+	IDataSource *read(size_t len) override final;
 
-	virtual void seek(size_t pos) {
+	void seek(size_t pos) override final {
 		buf_ptr = buf + pos;
 	}
 
-	virtual void skip(std::streamoff pos) {
+	void skip(std::streamoff pos) override final {
 		buf_ptr += pos;
 	}
 
-	virtual size_t getSize() {
+	size_t getSize() override final {
 		return size;
 	}
 
-	virtual size_t getPos() {
+	size_t getPos() override final {
 		return buf_ptr - buf;
 	}
 
@@ -250,11 +268,11 @@ public:
 		return buf_ptr;
 	}
 
-	virtual bool eof() {
+	bool eof() override final {
 		return buf_ptr >= buf + size;
 	}
 
-	virtual bool good() {
+	bool good() override final {
 		return buf && size;
 	}
 };
@@ -274,7 +292,18 @@ public:
 		size = len;
 	}
 
-	virtual ~IBufferDataSource() {
+	IBufferDataSource(IBufferDataSource&& other) noexcept
+		: IBufferDataView(std::move(other)), data(std::move(other.data)) {
+		other.data = nullptr;
+	}
+	IBufferDataSource& operator=(IBufferDataSource&& other) noexcept {
+		std::swap(buf, other.buf);
+		std::swap(buf_ptr, other.buf_ptr);
+		std::swap(data, other.data);
+		return *this;
+	}
+
+	~IBufferDataSource() override {
 		delete [] data;
 	}
 };
@@ -329,8 +358,12 @@ inline IDataSource *IBufferDataView::read(size_t len) {
  */
 class ODataSource {
 public:
-	ODataSource() {}
-	virtual ~ODataSource() {}
+	ODataSource() = default;
+	ODataSource(const ODataSource&) = delete;
+	ODataSource& operator=(const ODataSource&) = delete;
+	ODataSource(ODataSource&&) noexcept = default;
+	ODataSource& operator=(ODataSource&&) noexcept = default;
+	virtual ~ODataSource() noexcept = default;
 
 	virtual void write1(uint32) = 0;
 	virtual void write2(uint16) = 0;
@@ -358,48 +391,50 @@ class OStreamDataSource: public ODataSource {
 protected:
 	std::ostream *out;
 public:
-	OStreamDataSource(std::ostream *data_stream)
+	explicit OStreamDataSource(std::ostream *data_stream)
 		: out(data_stream) {}
 
-	virtual ~OStreamDataSource() {}
+	OStreamDataSource(OStreamDataSource&&) noexcept = default;
+	OStreamDataSource& operator=(OStreamDataSource&&) noexcept = default;
+	~OStreamDataSource() noexcept override = default;
 
-	virtual void write1(uint32 val) {
+	void write1(uint32 val) override final {
 		Write1(out, static_cast<uint16>(val));
 	}
 
-	virtual void write2(uint16 val) {
+	void write2(uint16 val) override final {
 		Write2(out, val);
 	}
 
-	virtual void write2high(uint16 val) {
+	void write2high(uint16 val) override final {
 		Write2high(out, val);
 	}
 
-	virtual void write4(uint32 val) {
+	void write4(uint32 val) override final {
 		Write4(out, val);
 	}
 
-	virtual void write4high(uint32 val) {
+	void write4high(uint32 val) override final {
 		Write4high(out, val);
 	}
 
-	virtual void write(const void *b, size_t len) {
+	void write(const void *b, size_t len) override final {
 		out->write(static_cast<const char *>(b), len);
 	}
 
-	virtual void write(const std::string &s) {
+	void write(const std::string &s) override final {
 		out->write(&s[0], s.size());
 	}
 
-	virtual void seek(size_t pos) {
+	void seek(size_t pos) override final {
 		out->seekp(pos);
 	}
 
-	virtual void skip(std::streamoff pos) {
+	void skip(std::streamoff pos) override final {
 		out->seekp(pos, std::ios::cur);
 	}
 
-	virtual size_t getSize() {
+	size_t getSize() override final {
 		size_t pos = out->tellp();
 		out->seekp(0, std::ios::end);
 		size_t len = out->tellp();
@@ -407,17 +442,17 @@ public:
 		return len;
 	}
 
-	virtual size_t getPos() {
+	size_t getPos() override final {
 		return out->tellp();
 	}
 
-	virtual void flush() {
+	void flush() override final {
 		out->flush();
 	}
-	virtual bool good() {
+	bool good() override final {
 		return out->good();
 	}
-	virtual void clear_error() {
+	void clear_error() override final {
 		out->clear();
 	}
 };
@@ -427,10 +462,19 @@ public:
  */
 class OFileDataSource : public OStreamDataSource {
 public:
-	OFileDataSource(std::ofstream *data_stream)
+	explicit OFileDataSource(std::ofstream *data_stream)
 		: OStreamDataSource(data_stream) {}
 
-	~OFileDataSource() {
+	OFileDataSource(OFileDataSource&& other) noexcept
+		: OStreamDataSource(std::move(other)) {
+		other.out = nullptr;
+	}
+	OFileDataSource& operator=(OFileDataSource&& other) noexcept {
+		std::swap(out, other.out);
+		return *this;
+	}
+
+	~OFileDataSource() override final {
 		delete out;
 	}
 };
@@ -451,50 +495,52 @@ public:
 		size = len;
 	}
 
-	virtual ~OBufferDataSpan() {}
+	OBufferDataSpan(OBufferDataSpan&&) noexcept = default;
+	OBufferDataSpan& operator=(OBufferDataSpan&&) noexcept = default;
+	~OBufferDataSpan() noexcept override = default;
 
-	virtual void write1(uint32 val) {
+	void write1(uint32 val) override final {
 		Write1(buf_ptr, val);
 	}
 
-	virtual void write2(uint16 val) {
+	void write2(uint16 val) override final {
 		Write2(buf_ptr, val);
 	}
 
-	virtual void write2high(uint16 val) {
+	void write2high(uint16 val) override final {
 		Write2high(buf_ptr, val);
 	}
 
-	virtual void write4(uint32 val) {
+	void write4(uint32 val) override final {
 		Write4(buf_ptr, val);
 	}
 
-	virtual void write4high(uint32 val) {
+	void write4high(uint32 val) override final {
 		Write4high(buf_ptr, val);
 	}
 
-	virtual void write(const void *b, size_t len) {
+	void write(const void *b, size_t len) override final {
 		std::memcpy(buf_ptr, b, len);
 		buf_ptr += len;
 	}
 
-	virtual void write(const std::string &s) {
+	void write(const std::string &s) override final {
 		write(&s[0], s.size());
 	}
 
-	virtual void seek(size_t pos) {
+	void seek(size_t pos) override final {
 		buf_ptr = buf + pos;
 	}
 
-	virtual void skip(std::streamoff pos) {
+	void skip(std::streamoff pos) override final {
 		buf_ptr += pos;
 	}
 
-	virtual size_t getSize() {
+	size_t getSize() override final {
 		return size;
 	}
 
-	virtual size_t getPos() {
+	size_t getPos() override final {
 		return buf_ptr - buf;
 	}
 
@@ -511,7 +557,16 @@ public:
 	OBufferDataSource(void *data, size_t len)
 		: OBufferDataSpan(data, len) {}
 
-	virtual ~OBufferDataSource() {
+	OBufferDataSource(OBufferDataSource&& other) noexcept
+		: OBufferDataSpan(std::move(other)) {
+		other.buf = nullptr;
+	}
+	OBufferDataSource& operator=(OBufferDataSource&& other) noexcept {
+		std::swap(buf, other.buf);
+		return *this;
+	}
+
+	~OBufferDataSource() override final {
 		delete [] buf;
 	}
 };
