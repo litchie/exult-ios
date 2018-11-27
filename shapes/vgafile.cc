@@ -52,6 +52,8 @@ using std::ostream;
 using std::vector;
 using std::string;
 using std::pair;
+using std::unique_ptr;
+using std::make_unique;
 
 GL_manager *Shape_frame::glman = 0;
 Image_buffer8 *Shape_frame::scrwin = 0;
@@ -718,7 +720,7 @@ void Shape_frame::set_offset(
  */
 
 Shape_frame *Shape::reflect(
-    vector<pair<IDataSource *, bool> > const &shapes,    // shapes data source to read.
+    vector<pair<std::unique_ptr<IDataSource>, bool>> const &shapes,    // shapes data source to read.
     int shapenum,           // Shape #.
     int framenum,           // Frame # without the 'reflect' bit.
     vector<int> const &counts
@@ -804,7 +806,7 @@ inline void Shape::create_frames_list(
  */
 
 Shape_frame *Shape::read(
-    vector<pair<IDataSource *, bool> > const &shapes, // Shapes data source to read.
+    vector<pair<std::unique_ptr<IDataSource>, bool>> const &shapes, // Shapes data source to read.
     int shapenum,           // Shape #.
     int framenum,           // Frame # within shape.
     vector<int> const &counts,      // Number of shapes in files.
@@ -818,11 +820,10 @@ Shape_frame *Shape::read(
 	// Check backwards for the shape file to use.
 	int i = counts.size();
 	if (src < 0) {
-		vector<pair<IDataSource *, bool> >::const_reverse_iterator it = shapes.rbegin();
-		for (; it != shapes.rend(); ++it) {
+		for (auto it = shapes.crbegin(); it != shapes.crend(); ++it) {
 			i--;
 			if (shapenum < counts[i]) {
-				IDataSource *ds = (*it).first;
+				IDataSource *ds = it->first.get();
 				ds->seek(shapeoff);
 				// Get location, length.
 				int s = ds->read4();
@@ -837,7 +838,7 @@ Shape_frame *Shape::read(
 			}
 		}
 	} else if (shapenum < counts[src]) {
-		IDataSource *ds = shapes[src].first;
+		IDataSource *ds = shapes[src].first.get();
 		ds->seek(shapeoff);
 		// Get location, length.
 		int s = ds->read4();
@@ -1155,19 +1156,19 @@ Vga_file::Vga_file(
     const char *nm,         // Path to file.
     int u7drag,         // # from u7drag.h, or -1.
     const char *nm2         // Patch file, or null.
-) : u7drag_type(u7drag), num_shapes(0), shapes(0), flex(true) {
+) : u7drag_type(u7drag), flex(true) {
 	load(nm, nm2);
 }
 
 Vga_file::Vga_file(
-) : u7drag_type(-1), num_shapes(0), shapes(0), flex(true) {
+) : u7drag_type(-1), flex(true) {
 	// Nothing to see here !!!
 }
 
 Vga_file::Vga_file(
-    vector<pair<string, int> > const &sources,
+    vector<pair<string, int>> const &sources,
     int u7drag      // # from u7drag.h, or -1
-) : u7drag_type(u7drag), num_shapes(0), flex(true) {
+) : u7drag_type(u7drag), flex(true) {
 	load(sources);
 }
 
@@ -1180,7 +1181,7 @@ bool Vga_file::load(
     const char *nm2,
     bool resetimports
 ) {
-	vector<pair<string, int> > src;
+	vector<pair<string, int>> src;
 	src.push_back(pair<string, int>(string(nm), -1));
 	if (nm2 != 0)
 		src.push_back(pair<string, int>(string(nm2), -1));
@@ -1189,31 +1190,31 @@ bool Vga_file::load(
 
 IDataSource *Vga_file::U7load(
     pair<string, int> const &resource,
-    vector<pair<IDataSource *, bool> > &shps
+    vector<pair<unique_ptr<IDataSource>, bool>> &shps
 ) {
-	IDataSource *source = 0;
+	unique_ptr<IDataSource> source;
 	bool is_patch = false;
 	if (resource.second < 0) {
 		// It is a file.
-		source = new IFileDataSource(resource.first);
+		source = make_unique<IFileDataSource>(resource.first);
 		is_patch = !resource.first.compare(0, 7, "<PATCH>");
 	} else {
 		// It is a resource.
-		source = new IExultDataSource(resource.first, resource.second);
+		source = make_unique<IExultDataSource>(resource.first, resource.second);
 		is_patch = false;
 	}
 	if (!source->good()) {
 		CERR("Resource '" << resource.first << "' not found.");
-		delete source;
 		return 0;
 	} else {
-		shps.push_back(pair<IDataSource *, bool>(source, is_patch));
-		return source;
+		IDataSource *ds = source.get();
+		shps.emplace_back(std::move(source), is_patch);
+		return ds;
 	}
 }
 
 bool Vga_file::load(
-    vector<pair<string, int> > const &sources,
+    vector<pair<string, int>> const &sources,
     bool resetimports
 ) {
 	reset();
@@ -1223,16 +1224,16 @@ bool Vga_file::load(
 	shape_sources.reserve(count);
 	shape_cnts.reserve(count);
 	bool is_good = true;
+	size_t num_shapes = shapes.size();
 	if (!U7exists(sources[0].first.c_str()))
 		is_good = false;
-	for (vector<pair<string, int> >::const_iterator it = sources.begin();
-	        it != sources.end(); ++it) {
-		IDataSource *source = U7load(*it, shape_sources);
+	for (auto& src : sources) {
+		IDataSource *source = U7load(src, shape_sources);
 		if (source) {
 			flex = Flex::is_flex(source);
 			if (flex) {
 				source->seek(0x54); // Get # of shapes.
-				int cnt = source->read4();
+				size_t cnt = source->read4();
 				num_shapes = num_shapes > cnt ? num_shapes : cnt;
 				shape_cnts.push_back(cnt);
 			}
@@ -1241,15 +1242,14 @@ bool Vga_file::load(
 	if (shape_sources.empty())
 		throw file_open_exception(get_system_path(sources[0].first));
 	if (!flex) {        // Just one shape, which we preload.
-		num_shapes = 1;
 		shape_cnts.clear();
 		shape_cnts.push_back(1);
-		shapes = new Shape[1];
-		shapes[0].load(shape_sources[shape_sources.size() - 1].first);
+		shapes.emplace_back();
+		shapes[0].load(shape_sources[shape_sources.size() - 1].first.get());
 		return true;
 	}
 	// Set up lists of pointers.
-	shapes = new Shape[num_shapes];
+	shapes.resize(num_shapes);
 	return is_good;
 }
 
@@ -1271,7 +1271,7 @@ bool Vga_file::get_imported_shape_data(int shnum, imported_map &data) {
 
 bool Vga_file::import_shapes(
     pair<string, int> const &source,
-    vector<pair<int, int> > const &imports
+    vector<pair<int, int>> const &imports
 ) {
 	reset_imports();
 	IDataSource *ds = U7load(source, imported_sources);
@@ -1282,7 +1282,7 @@ bool Vga_file::import_shapes(
 		flex = Flex::is_flex(ds);
 		assert(flex);
 		imported_shapes.reserve(imported_shapes.size() + imports.size());
-		for (vector<pair<int, int> >::const_iterator it = imports.begin();
+		for (vector<pair<int, int>>::const_iterator it = imports.begin();
 		        it != imports.end(); ++it) {
 			int shpsize = imported_shapes.size(), srcsize = imported_sources.size() - 1;
 			imported_map data = {
@@ -1291,12 +1291,12 @@ bool Vga_file::import_shapes(
 				srcsize
 			};   // The data source index.
 			imported_shape_table[(*it).first] = data;
-			imported_shapes.push_back(new Shape());
+			imported_shapes.emplace_back();
 		}
 		return true;
 	} else {
 		// Set up the import table anyway.
-		for (vector<pair<int, int> >::const_iterator it = imports.begin();
+		for (vector<pair<int, int>>::const_iterator it = imports.begin();
 		        it != imports.end(); ++it) {
 			imported_map data = {(*it).second, -1, -1};
 			imported_shape_table[(*it).first] = data;
@@ -1306,30 +1306,14 @@ bool Vga_file::import_shapes(
 }
 
 void Vga_file::reset() {
-	delete [] shapes;
-
-	for (vector<pair<IDataSource *, bool> >::iterator it = shape_sources.begin();
-	        it != shape_sources.end(); ++it)
-		delete it->first;
+	shapes.clear();
 	shape_sources.clear();
-
 	shape_cnts.clear();
-
-	num_shapes = 0;
-	shapes = 0;
 }
 
 void Vga_file::reset_imports() {
-	for (vector<Shape *>::iterator it = imported_shapes.begin();
-	        it != imported_shapes.end(); ++it)
-		delete *it;
 	imported_shapes.clear();
-
-	for (vector<pair<IDataSource *, bool> >::iterator it = imported_sources.begin();
-	        it != imported_sources.end(); ++it)
-		delete it->first;
 	imported_sources.clear();
-
 	imported_cnts.clear();
 	imported_shape_table.clear();
 }
@@ -1350,19 +1334,14 @@ Shape *Vga_file::new_shape(
 ) {
 	if (shapenum < 0 || shapenum >= c_max_shapes)
 		return 0;
-	if (shapenum < num_shapes) {
+	if (size_t(shapenum) < shapes.size()) {
 		shapes[shapenum].reset();
 		shapes[shapenum].num_frames = shapes[shapenum].frames_size = 0;
 		shapes[shapenum].set_modified();
 	} else {            // Enlarge list.
 		if (!flex)
 			return 0;   // 1-shape file.
-		Shape *newshapes = new Shape[shapenum + 1];
-		for (int i = 0; i < num_shapes; i++)
-			newshapes[i].take(&shapes[i]);
-		delete [] shapes;
-		shapes = newshapes;
-		num_shapes = shapenum + 1;
+		shapes.resize(shapenum + 1);
 	}
 	return &shapes[shapenum];
 }

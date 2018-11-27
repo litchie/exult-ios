@@ -29,6 +29,7 @@
 #include "common_types.h"
 #include "exult_constants.h"
 #include "imagebuf.h"
+#include <memory>
 #include <vector>
 #include <utility>
 #include <string>
@@ -200,12 +201,12 @@ protected:
 	bool modified;
 	bool from_patch;
 	// Create reflected frame.
-	Shape_frame *reflect(std::vector<std::pair<IDataSource *, bool> > const &shapes, int shnum,
+	Shape_frame *reflect(std::vector<std::pair<std::unique_ptr<IDataSource>, bool>> const &shapes, int shnum,
 	                     int frnum, std::vector<int> const &counts);
 	void enlarge(int newsize);  // Increase 'frames'.
 	void create_frames_list(int nframes);
 	// Read in shape/frame.
-	Shape_frame *read(std::vector<std::pair<IDataSource *, bool> > const &shapes, int shnum,
+	Shape_frame *read(std::vector<std::pair<std::unique_ptr<IDataSource>, bool>> const &shapes, int shnum,
 	                  int frnum, std::vector<int> const &counts, int src = -1);
 	// Store shape that was read.
 	Shape_frame *store_frame(Shape_frame *frame, int framenum);
@@ -215,8 +216,17 @@ public:
 	Shape() : frames(0), frames_size(0), num_frames(0),
 		modified(false), from_patch(false)
 	{  }
-	Shape(Shape_frame *fr);
-	Shape(int n);           // Create with given #frames.
+	explicit Shape(Shape_frame *fr);
+	explicit Shape(int n);           // Create with given #frames.
+	Shape(const Shape&) = delete;
+	Shape& operator=(const Shape&) = delete;
+	Shape(Shape&& other) noexcept {
+		take(&other);
+	}
+	Shape& operator=(Shape&& other) noexcept {
+		take(&other);
+		return *this;
+	}
 	virtual ~Shape();
 	void reset();
 	void take(Shape *s2);       // Take frames from another shape.
@@ -234,7 +244,7 @@ public:
 	bool get_from_patch() {
 		return from_patch;
 	}
-	Shape_frame *get(std::vector<std::pair<IDataSource *, bool> > const &shapes, int shnum,
+	Shape_frame *get(std::vector<std::pair<std::unique_ptr<IDataSource>, bool>> const &shapes, int shnum,
 	                 int frnum, std::vector<int> const &counts, int src = -1) {
 		return (frames && frnum < static_cast<int>(frames_size) &&
 		        frames[frnum]) ? frames[frnum] :
@@ -262,11 +272,13 @@ public:
  */
 class Shape_file : public Shape {
 public:
-	Shape_file(const char *nm);
-	Shape_file(Shape_frame *fr): Shape(fr) {}
-	Shape_file(IDataSource *shape_source);
+	explicit Shape_file(const char *nm);
+	explicit Shape_file(Shape_frame *fr): Shape(fr) {}
+	explicit Shape_file(IDataSource *shape_source);
 	Shape_file();
-	virtual ~Shape_file() {}
+	Shape_file(Shape_file&& other) noexcept = default;
+	Shape_file& operator=(Shape_file&& other) noexcept = default;
+	~Shape_file() noexcept override final = default;
 	void load(const char *nm);
 	void load(IDataSource *shape_source) {
 		Shape::load(shape_source);
@@ -285,44 +297,43 @@ protected:
 		int pointer_offset;
 		int source_offset;
 	};
-	std::vector<std::pair<IDataSource *, bool> > shape_sources;
-	std::vector<std::pair<IDataSource *, bool> > imported_sources;
+	std::vector<std::pair<std::unique_ptr<IDataSource>, bool>> shape_sources;
+	std::vector<std::pair<std::unique_ptr<IDataSource>, bool>> imported_sources;
 	std::map<int, imported_map> imported_shape_table;
 	int u7drag_type;        // # from u7drag.h, or -1.
-	int num_shapes;         // Total # of shapes.
 	std::vector<int> shape_cnts;    // Total # of shapes in each file.
 	std::vector<int> imported_cnts; // Total # of shapes in each file.
-	Shape *shapes;              // List of ->'s to shapes' lists
-	std::vector<Shape *> imported_shapes;   // List of ->'s to shapes' lists
+	std::vector<Shape> shapes;              // List of ->'s to shapes' lists
+	std::vector<Shape> imported_shapes;     // List of ->'s to shapes' lists
 	bool flex;          // This is the normal case (all .vga
 	//   files).  If false, file is a
 	//   single shape, like 'pointers.shp'.
 	// In this case, all frames are pre-
 	//   loaded.
 public:
-	Vga_file(const char *nm, int u7drag = -1, const char *nm2 = 0);
-	Vga_file(std::vector<std::pair<std::string, int> > const &sources, int u7drag = -1);
+	explicit Vga_file(const char *nm, int u7drag = -1, const char *nm2 = 0);
+	explicit Vga_file(std::vector<std::pair<std::string, int>> const &sources, int u7drag = -1);
 	Vga_file();
 	int get_u7drag_type() const {
 		return u7drag_type;
 	}
 	IDataSource *U7load(
 	    std::pair<std::string, int> const &resource,
-	    std::vector<std::pair<IDataSource *, bool> > &shps);
+	    std::vector<std::pair<std::unique_ptr<IDataSource>, bool>> &shps);
 	bool load(const char *nm, const char *nm2 = 0, bool resetimports = false);
-	bool load(std::vector<std::pair<std::string, int> > const &sources, bool resetimports = false);
+	bool load(std::vector<std::pair<std::string, int>> const &sources, bool resetimports = false);
 	bool import_shapes(std::pair<std::string, int> const &source,
-	                   std::vector<std::pair<int, int> > const &imports);
+	                   std::vector<std::pair<int, int>> const &imports);
 	bool is_shape_imported(int shnum);
 	bool get_imported_shape_data(int shnum, imported_map &data);
 	void reset();
 	void reset_imports();
 	virtual ~Vga_file();
 	int get_num_shapes() const {
-		return num_shapes;
+		return shapes.size();
 	}
 	int is_good() const {
-		return shapes != 0;
+		return !shapes.empty();
 	}
 	bool is_flex() const {
 		return flex;
@@ -336,10 +347,10 @@ public:
 			// Import table was set but the source could not be opened.
 			if (data.pointer_offset < 0)
 				return 0;
-			r = (imported_shapes[data.pointer_offset]->get(imported_sources,
+			r = (imported_shapes[data.pointer_offset].get(imported_sources,
 			        data.realshape, framenum, imported_cnts, data.source_offset));
 		} else {
-			assert(shapes != 0); // Because if shapes is NULL
+			assert(!shapes.empty()); // Because if shapes is NULL
 			// here, we won't die on the deref
 			// but we will return rubbish.
 			// I've put this assert in _before_ you know...
@@ -354,24 +365,24 @@ public:
 		imported_map data;
 		bool is_imported = get_imported_shape_data(shapenum, data);
 		if (is_imported)
-			assert(imported_shapes.size()); // For safety.
+			assert(!imported_shapes.empty()); // For safety.
 		else
-			assert(shapes != 0);
+			assert(!shapes.empty());
 		// Load all frames into memory
 		int count = get_num_frames(shapenum);
 		for (int i = 1; i < count; i++)
 			get_shape(shapenum, i);
 		if (is_imported)
-			return imported_shapes[data.pointer_offset];
+			return &imported_shapes[data.pointer_offset];
 		else
-			return shapes + shapenum;
+			return &shapes[shapenum];
 	}
 	// Get # frames for a shape.
 	int get_num_frames(int shapenum) {
 		get_shape(shapenum, 0); // Force it into memory.
 		imported_map data;
 		if (get_imported_shape_data(shapenum, data))
-			return imported_shapes[data.pointer_offset]->num_frames;
+			return imported_shapes[data.pointer_offset].num_frames;
 		else
 			return shapes[shapenum].num_frames;
 	}
