@@ -52,6 +52,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <stdlib.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <memory>
 #include "shapelst.h"
 #include "shapevga.h"
 #include "ibuf8.h"
@@ -73,6 +74,8 @@ using std::endl;
 using std::strlen;
 using std::string;
 using std::ifstream;
+using std::make_unique;
+using std::unique_ptr;
 using EStudio::Prompt;
 using EStudio::Alert;
 using EStudio::Add_menu_item;
@@ -1056,7 +1059,7 @@ static void Import_png(
 		xleft = w + xoff - 1;
 		yabove = h + yoff - 1;
 	}
-	shape->set_frame(new Shape_frame(pixels,
+	shape->set_frame(make_unique<Shape_frame>(pixels,
 	                                 w, h, xleft, yabove, !flat), framenum);
 	delete [] pixels;
 	finfo->set_modified();
@@ -1129,7 +1132,7 @@ static void Import_png_tiles(
 			ptr += c_tilesize;
 			src += w;
 		}
-		shape->set_frame(new Shape_frame(&buf[0], c_tilesize, c_tilesize,
+		shape->set_frame(make_unique<Shape_frame>(&buf[0], c_tilesize, c_tilesize,
 		                                 c_tilesize, c_tilesize, false), frnum);
 	}
 	delete [] pixels;
@@ -1305,12 +1308,12 @@ void Shape_chooser::import_all_pngs(
 		Convert_indexed_image(pixels, h * rowsize, oldpal, palsize, pal);
 		delete [] oldpal;
 		int xleft = w + xoff - 1, yabove = h + yoff - 1;
-		Shape_frame *frame = new Shape_frame(pixels,
+		unique_ptr<Shape_frame> frame = make_unique<Shape_frame>(pixels,
 		                                     w, h, xleft, yabove, true);
 		if (i < ifile->get_num_frames(shnum))
-			shape->set_frame(frame, i);
+			shape->set_frame(std::move(frame), i);
 		else
-			shape->add_frame(frame, i);
+			shape->add_frame(std::move(frame), i);
 		delete [] pixels;
 
 		i++;
@@ -1411,9 +1414,8 @@ void Shape_chooser::new_frame(
 	img.fill8(1);           // Just use color #1.
 	if (w > 2 && h > 2)
 		img.fill8(2, w - 2, h - 2, 1, 1);
-	Shape_frame *frame = new Shape_frame(img.get_bits(),
-	                                     w, h, xleft, yabove, !flat);
-	shape->add_frame(frame, frnum + 1);
+	shape->add_frame(make_unique<Shape_frame>(img.get_bits(),
+	                                     w, h, xleft, yabove, !flat), frnum + 1);
 	file_info->set_modified();
 	Object_browser *browser = studio->get_browser();
 	if (browser) {
@@ -1644,7 +1646,7 @@ void Shape_chooser::create_new_shape(
 		// Include some transparency.
 		img.fill8(255, w / 2, h / 2, w / 4, h / 4);
 		for (int i = 0; i < nframes; i++)
-			shape->add_frame(new Shape_frame(img.get_bits(),
+			shape->add_frame(make_unique<Shape_frame>(img.get_bits(),
 			                                 w, h, xleft, yabove, !flat), i);
 	}
 	file_info->set_modified();

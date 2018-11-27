@@ -55,6 +55,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <fcntl.h>
 #include <cstdarg>
 #include <cstdlib>
+#include <memory>
 
 #include "shapelst.h"
 #include "shapevga.h"
@@ -87,6 +88,7 @@ using std::string;
 using std::vector;
 using std::ofstream;
 using std::ifstream;
+using std::make_unique;
 
 ExultStudio *ExultStudio::self = 0;
 Configuration *config = 0;
@@ -1767,24 +1769,22 @@ void ExultStudio::create_shape_file(
     gpointer udata          // 1 if NOT a FLEX file.
 ) {
 	bool oneshape = reinterpret_cast<uintptr>(udata) != 0;
-	Shape *shape = 0;
-	if (oneshape) {         // Single-shape?
-		// Create one here.
-		const int w = c_tilesize, h = c_tilesize;
-		unsigned char pixels[w * h]; // Create an 8x8 shape.
-		memset(&pixels[0], 1, w * h); // Just use color #1.
-		shape = new Shape(new Shape_frame(&pixels[0],
-		                                  w, h, w - 1, h - 1, true));
-	}
 	try {               // Write file.
-		if (oneshape)
-			Image_file_info::write_file(pathname, &shape, 1, true);
-		else
+		if (oneshape) {         // Single-shape?
+			// Create one here.
+			const int w = c_tilesize, h = c_tilesize;
+			unsigned char pixels[w * h]; // Create an 8x8 shape.
+			memset(pixels, 1, w * h); // Just use color #1.
+			Shape shape(make_unique<Shape_frame>(pixels,
+												w, h, w - 1, h - 1, true));
+			Shape *ptr = &shape;
+			Image_file_info::write_file(pathname, &ptr, 1, true);
+		} else {
 			Image_file_info::write_file(pathname, 0, 0, false);
+		}
 	} catch (const exult_exception &e) {
 		EStudio::Alert("%s", e.what());
 	}
-	delete shape;
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->setup_file_list();  // Rescan list of shape files.
 }

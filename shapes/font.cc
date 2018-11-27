@@ -661,8 +661,7 @@ int Font::find_xcursor(
 
 Font::Font(
 )
-	: hor_lead(0), ver_lead(0), font_shapes(0),
-	  highest(0), lowest(0) {
+	: hor_lead(0), ver_lead(0), highest(0), lowest(0) {
 }
 
 Font::Font(
@@ -670,8 +669,7 @@ Font::Font(
     int index,
     int hlead,
     int vlead
-)
-	: font_shapes(0) {
+) {
 	load(fname0, index, hlead, vlead);
 }
 
@@ -681,18 +679,12 @@ Font::Font(
     int index,
     int hlead,
     int vlead
-)
-	: font_shapes(0) {
+) {
 	load(fname0, fname1, index, hlead, vlead);
 }
 
-Font::~Font() {
-	clean_up();
-}
-
 void Font::clean_up() {
-	delete font_shapes;
-	font_shapes = 0;
+	font_shapes.reset();
 }
 
 /**
@@ -707,7 +699,7 @@ int Font::load_internal(
     int vlead
 ) {
 	if (!data.good()) {
-		font_shapes = 0;
+		font_shapes.reset();
 		hor_lead = 0;
 		ver_lead = 0;
 	} else {
@@ -717,8 +709,7 @@ int Font::load_internal(
 		data.seek(0);
 		if (!strncmp(hdr, "font", 4))
 			data.skip(8);      // Yes, skip first 8 bytes.
-		delete font_shapes;
-		font_shapes = new Shape_file(&data);
+		font_shapes = std::make_unique<Shape_file>(&data);
 		hor_lead = hlead;
 		ver_lead = vlead;
 		calc_highlow();

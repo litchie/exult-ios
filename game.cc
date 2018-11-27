@@ -489,18 +489,17 @@ int wait_delay(int ms, int startcol, int ncol, int rotspd) {
 	int rot_speed = rotspd << (gwin->get_win()->fast_palette_rotate() ? 0 : 1);
 
 	static unsigned long last_rotate = 0;
-
 #ifdef HAVE_OPENGL
-	Shape_frame *screen = 0;
+	Shape_frame screen;
 	if (ncol != 0 && GL_manager::get_instance()) {
 		int w = gwin->get_width(), h = gwin->get_height();
 		Image_buffer8 *buf = gwin->get_win()->get_ib8();
-		screen = new Shape_frame(buf->get_bits(), w, h, 0, 0, true);
+		screen = Shape_frame(buf->get_bits(), w, h, 0, 0, true);
 		GL_manager::get_instance()->set_palette_rotation(startcol,
 		        startcol + abs(ncol) - 1);
 		// Want to reset them all.
 		Set_glpalette();
-		GL_manager::get_instance()->paint(screen, 0, 0);
+		GL_manager::get_instance()->paint(&screen, 0, 0);
 		gwin->get_win()->show();
 	}
 #endif
@@ -539,13 +538,11 @@ int wait_delay(int ms, int startcol, int ncol, int rotspd) {
 				case SDLK_RETURN:
 				case SDLK_KP_ENTER:
 #ifdef HAVE_OPENGL
-					delete screen;
 					Reset_gl_rotates();
 #endif
 					return 2;
 				default:
 #ifdef HAVE_OPENGL
-					delete screen;
 					Reset_gl_rotates();
 #endif
 					return 1;
@@ -555,7 +552,6 @@ int wait_delay(int ms, int startcol, int ncol, int rotspd) {
 				break;
 			case SDL_MOUSEBUTTONUP:
 #ifdef HAVE_OPENGL
-				delete screen;
 				Reset_gl_rotates();
 #endif
 				return 1;
@@ -575,8 +571,8 @@ int wait_delay(int ms, int startcol, int ncol, int rotspd) {
 #ifdef HAVE_OPENGL
 			if (GL_manager::get_instance()) {
 				Set_glpalette(0, true);
-				//Shape_manager::get_instance()->paint_shape(0, 0, screen);
-				GL_manager::get_instance()->paint(screen, 0, 0);
+				//Shape_manager::get_instance()->paint_shape(0, 0, &screen);
+				GL_manager::get_instance()->paint(&screen, 0, 0);
 			}
 #endif
 			gwin->get_win()->show();
@@ -584,7 +580,6 @@ int wait_delay(int ms, int startcol, int ncol, int rotspd) {
 	}
 
 #ifdef HAVE_OPENGL
-	delete screen;
 	Reset_gl_rotates();
 #endif
 	return 0;

@@ -188,8 +188,8 @@ Newfile_gump::Newfile_gump(
 	               gwin->get_height() / 2 - 100,
 	               EXULT_FLX_SAVEGUMP_SHP, SF_EXULT_FLX),
 	restored(0), games(0), num_games(0), first_free(0),
-	cur_shot(0), cur_details(0), cur_party(0),
-	gd_shot(0), gd_details(0), gd_party(0),
+	cur_details(0), cur_party(0),
+	gd_details(0), gd_party(0),
 	screenshot(0), details(0), party(0), is_readable(false), filename(0),
 	list_position(-2), selected(-3), cursor(0), slide_start(-1)
 
@@ -620,7 +620,7 @@ bool Newfile_gump::mouse_down(
 		want_load = false;
 		want_delete = false;
 		want_save = false;
-		screenshot = cur_shot;
+		screenshot = cur_shot.get();
 		details = cur_details;
 		party = cur_party;
 		newname[0] = 0;
@@ -629,7 +629,7 @@ bool Newfile_gump::mouse_down(
 		filename = 0;
 	} else if (selected == -1) {
 		want_delete = false;
-		screenshot = gd_shot;
+		screenshot = gd_shot.get();
 		details = gd_details;
 		party = gd_party;
 		strcpy(newname, "Quick Save");
@@ -637,7 +637,7 @@ bool Newfile_gump::mouse_down(
 		is_readable = true;
 		filename = 0;
 	} else {
-		screenshot = games[selected].screenshot;
+		screenshot = games[selected].screenshot.get();
 		details = games[selected].details;
 		party = games[selected].party;
 		strcpy(newname, games[selected].savename);
@@ -861,7 +861,7 @@ void Newfile_gump::text_input(int chr, int unicode) {
 
 	// This sets the game details to the cur set
 	if (update_details) {
-		screenshot = cur_shot;
+		screenshot = cur_shot.get();
 		details = cur_details;
 		party = cur_party;
 		repaint = true;
@@ -915,7 +915,6 @@ int Newfile_gump::AddCharacter(char c) {
 
 void Newfile_gump::LoadSaveGameDetails() {
 	int     i;
-
 
 	// Gamedat Details
 	gwin->get_saveinfo(gd_shot, gd_details, gd_party);
@@ -976,7 +975,7 @@ void Newfile_gump::LoadSaveGameDetails() {
 	}
 
 	party = cur_party;
-	screenshot = cur_shot;
+	screenshot = cur_shot.get();
 	details = cur_details;
 
 	// Now read save game details
@@ -1029,15 +1028,13 @@ void Newfile_gump::LoadSaveGameDetails() {
 }
 
 void Newfile_gump::FreeSaveGameDetails() {
-	delete cur_shot;
-	cur_shot = 0;
+	cur_shot.reset();
 	delete cur_details;
 	cur_details = 0;
 	delete [] cur_party;
 	cur_party = 0;
 
-	delete gd_shot;
-	gd_shot = 0;
+	gd_shot.reset();
 	delete gd_details;
 	gd_details = 0;
 	delete [] gd_party;
@@ -1055,7 +1052,7 @@ void Newfile_gump::FreeSaveGameDetails() {
 
 // Constructor
 Newfile_gump::SaveInfo::SaveInfo() : num(0), filename(0), savename(0), readable(true),
-	details(0), party(0), screenshot(0) {
+	details(0), party(0) {
 
 }
 
@@ -1065,7 +1062,6 @@ Newfile_gump::SaveInfo::~SaveInfo() {
 	delete [] savename;
 	delete details;
 	delete [] party;
-	delete screenshot;
 }
 
 // Set Sequence Number

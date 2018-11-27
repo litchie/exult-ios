@@ -29,6 +29,7 @@
 #include "vgafile.h"
 #include "shapeid.h"
 
+#include <memory>
 #include <string>   // STL string
 #include <vector>
 
@@ -563,12 +564,12 @@ public:
 	void init_files(bool cycle = true); // Load all files
 
 	// From Gamedat
-	void get_saveinfo(Shape_file *&map,
+	void get_saveinfo(std::unique_ptr<Shape_file> &map,
 	                  SaveGame_Details *&details,
 	                  SaveGame_Party  *&party);
 	// From Savegame
 	bool get_saveinfo(int num, char *&name,
-	                  Shape_file *&map,
+	                  std::unique_ptr<Shape_file> &map,
 	                  SaveGame_Details *&details,
 	                  SaveGame_Party  *&party);
 	void read_saveinfo(IDataSource *in,
@@ -577,7 +578,7 @@ public:
 #ifdef HAVE_ZIP_SUPPORT
 private:
 	bool get_saveinfo_zip(const char *fname, char *&name,
-	                      Shape_file *&map,
+	                      std::unique_ptr<Shape_file> &map,
 	                      SaveGame_Details *&details,
 	                      SaveGame_Party  *&party);
 	void restore_flex_files(IDataSource &ds, const char *basepath);
@@ -661,7 +662,7 @@ public:
 	int drop_at_lift(Game_object *to_drop, int x, int y, int at_lift);
 	Gump *get_dragging_gump();
 	// Create a mini-screenshot (96x60)
-	Shape_file *create_mini_screenshot();
+	std::unique_ptr<Shape_file> create_mini_screenshot();
 	/*
 	 *  Chunk-caching:
 	 */

@@ -80,7 +80,7 @@ class Shape_frame {
 	static GL_manager *glman;   // One to rule them all.
 	static Image_buffer8 *scrwin;   // Screen window to render to.
 
-	Shape_frame *reflect();     // Create new frame, reflected.
+	std::unique_ptr<Shape_frame> reflect();     // Create new frame, reflected.
 	// Create RLE data & store in frame.
 	void create_rle(unsigned char *pixels, int w, int h);
 	// Create from RLE entry.
@@ -195,41 +195,31 @@ public:
  */
 class Shape {
 protected:
-	Shape_frame **frames;       // List of ->'s to frames.
-	unsigned int frames_size;   // Size of 'frames' (incl. reflects).
+	std::vector<std::unique_ptr<Shape_frame>> frames;       // List of ->'s to frames.
 	unsigned int num_frames;    // # of frames (not counting reflects).
 	bool modified;
 	bool from_patch;
 	// Create reflected frame.
 	Shape_frame *reflect(std::vector<std::pair<std::unique_ptr<IDataSource>, bool>> const &shapes, int shnum,
 	                     int frnum, std::vector<int> const &counts);
-	void enlarge(int newsize);  // Increase 'frames'.
 	void create_frames_list(int nframes);
 	// Read in shape/frame.
 	Shape_frame *read(std::vector<std::pair<std::unique_ptr<IDataSource>, bool>> const &shapes, int shnum,
 	                  int frnum, std::vector<int> const &counts, int src = -1);
 	// Store shape that was read.
-	Shape_frame *store_frame(Shape_frame *frame, int framenum);
+	Shape_frame *store_frame(std::unique_ptr<Shape_frame> frame, int framenum);
 public:
 	friend class Vga_file;
 
-	Shape() : frames(0), frames_size(0), num_frames(0),
-		modified(false), from_patch(false)
-	{  }
-	explicit Shape(Shape_frame *fr);
+	Shape() : num_frames(0), modified(false), from_patch(false)	{}
+	explicit Shape(std::unique_ptr<Shape_frame> fr);
 	explicit Shape(int n);           // Create with given #frames.
 	Shape(const Shape&) = delete;
 	Shape& operator=(const Shape&) = delete;
-	Shape(Shape&& other) noexcept {
-		take(&other);
-	}
-	Shape& operator=(Shape&& other) noexcept {
-		take(&other);
-		return *this;
-	}
-	virtual ~Shape();
+	Shape(Shape&&) noexcept = default;
+	Shape& operator=(Shape&&) noexcept = default;
+	virtual ~Shape() noexcept = default;
 	void reset();
-	void take(Shape *s2);       // Take frames from another shape.
 	void load(IDataSource *shape_source);
 	void write(std::ostream &out);  // Write out.
 	void set_modified() {
@@ -246,23 +236,23 @@ public:
 	}
 	Shape_frame *get(std::vector<std::pair<std::unique_ptr<IDataSource>, bool>> const &shapes, int shnum,
 	                 int frnum, std::vector<int> const &counts, int src = -1) {
-		return (frames && frnum < static_cast<int>(frames_size) &&
-		        frames[frnum]) ? frames[frnum] :
-		       read(shapes, shnum, frnum, counts, src);
+		return (size_t(frnum) < frames.size() && frames[frnum])
+		       ? frames[frnum].get()
+		       : read(shapes, shnum, frnum, counts, src);
 	}
 	int get_num_frames() {
 		return num_frames;
 	}
 	Shape_frame *get_frame(int framenum) {
-		return 0 <= framenum &&
-		       static_cast<unsigned int>(framenum) < frames_size
-		       ? frames[framenum] : 0L;
+		return 0 <= framenum && size_t(framenum) < frames.size()
+		       ? frames[framenum].get()
+		       : nullptr;
 	}
 	void resize(int newsize);   // Modify #frames.
 	// Set frame.
-	void set_frame(Shape_frame *f, int framenum);
+	void set_frame(std::unique_ptr<Shape_frame> f, int framenum);
 	// Add/insert frame.
-	void add_frame(Shape_frame *f, int framenum);
+	void add_frame(std::unique_ptr<Shape_frame> f, int framenum);
 	void del_frame(int framenum);
 };
 
@@ -273,7 +263,7 @@ public:
 class Shape_file : public Shape {
 public:
 	explicit Shape_file(const char *nm);
-	explicit Shape_file(Shape_frame *fr): Shape(fr) {}
+	explicit Shape_file(std::unique_ptr<Shape_frame> fr): Shape(std::move(fr)) {}
 	explicit Shape_file(IDataSource *shape_source);
 	Shape_file();
 	Shape_file(Shape_file&& other) noexcept = default;

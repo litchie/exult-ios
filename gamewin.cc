@@ -100,11 +100,13 @@ using std::endl;
 using std::istream;
 using std::ifstream;
 using std::ios;
+using std::make_unique;
 using std::memset;
 using std::ofstream;
 using std::rand;
 using std::string;
 using std::srand;
+using std::unique_ptr;
 using std::vector;
 
 // THE game window:
@@ -3075,11 +3077,7 @@ bool Game_window::emulate_is_move_allowed(int tx, int ty) {
 }
 
 //create mini-screenshot (96x60) for use in savegames
-Shape_file *Game_window::create_mini_screenshot() {
-	Shape_file *sh = 0;
-	Shape_frame *fr = 0;
-	unsigned char *img = 0;
-
+unique_ptr<Shape_file> Game_window::create_mini_screenshot() {
 	set_all_dirty();
 	render->paint_map(0, 0, get_width(), get_height());
 #ifdef HAVE_OPENGL
@@ -3087,10 +3085,11 @@ Shape_file *Game_window::create_mini_screenshot() {
 		show();
 #endif
 
-	img = win->mini_screenshot();
+	unsigned char *img =win->mini_screenshot();
+	unique_ptr<Shape_file> sh;
 
 	if (img) {
-		fr = new Shape_frame();
+		unique_ptr<Shape_frame> fr = make_unique<Shape_frame>();
 		fr->xleft = 0;
 		fr->yabove = 0;
 		fr->xright = 95;
@@ -3099,7 +3098,7 @@ Shape_file *Game_window::create_mini_screenshot() {
 		fr->rle = 1;
 		delete [] img;
 
-		sh = new Shape_file(fr);
+		sh = make_unique<Shape_file>(std::move(fr));
 	}
 
 	set_all_dirty();
@@ -3151,11 +3150,10 @@ void Game_window::cycle_load_palette() {
 		if (GL_manager::get_instance()) {
 			int w = get_width(), h = get_height();
 			Image_buffer8 *buf = get_win()->get_ib8();
-			Shape_frame *screen =
-			    new Shape_frame(buf->get_bits(), w, h, 0, 0, true);
-			//Shape_manager::get_instance()->paint_shape(0, 0, screen);
+			Shape_frame screen(buf->get_bits(), w, h, 0, 0, true);
+			//Shape_manager::get_instance()->paint_shape(0, 0, &screen);
 			Set_glpalette(0, true);
-			GL_manager::get_instance()->paint(screen, 0, 0);
+			GL_manager::get_instance()->paint(&screen, 0, 0);
 		}
 #endif
 		show(true);

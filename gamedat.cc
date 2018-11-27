@@ -79,7 +79,6 @@ using std::strlen;
 using std::strncpy;
 using std::time_t;
 using std::tm;
-using std::time_t;
 using std::localtime;
 using std::time;
 
@@ -107,14 +106,14 @@ void Game_window::restore_flex_files(
 	int baselen = strlen(basepath);
 	for (i = 0; i < numfiles; i++) { // Now read each file.
 		// Get file length.
-		int len = finfo[2 * i + 1] - 13;
+		size_t len = finfo[2 * i + 1] - 13;
 		if (len <= 0)
 			continue;
 		in.seek(finfo[2 * i]);  // Get to it.
 		char fname[50];     // Set up name.
 		strcpy(fname, basepath);
 		in.read(&fname[baselen], 13);
-		int namelen = strlen(fname);
+		size_t namelen = strlen(fname);
 		// Watch for names ending in '.'.
 		if (fname[namelen - 1] == '.')
 			fname[namelen - 1] = 0;
@@ -571,11 +570,10 @@ void Game_window::write_saveinfo() {
 	out_stream.close();
 
 	// Save Shape
-	Shape_file *map = create_mini_screenshot();
+	std::unique_ptr<Shape_file> map = create_mini_screenshot();
 	U7open(out_stream, GSCRNSHOT);      // Open file; throws an exception - Don't care
 	map->save(&out);
 	out_stream.close();
-	delete map;
 
 	// Current Exult version
 
@@ -648,7 +646,7 @@ void Game_window::read_saveinfo(IDataSource *in,
 	}
 }
 
-bool Game_window::get_saveinfo(int num, char *&name, Shape_file *&map, SaveGame_Details *&details, SaveGame_Party  *&party) {
+bool Game_window::get_saveinfo(int num, char *&name, std::unique_ptr<Shape_file> &map, SaveGame_Details *&details, SaveGame_Party  *&party) {
 	char fname[50];         // Set up name.
 	snprintf(fname, 50, SAVENAME, num,
 	         Game::get_game_type() == BLACK_GATE ? "bg" :
@@ -689,14 +687,14 @@ bool Game_window::get_saveinfo(int num, char *&name, Shape_file *&map, SaveGame_
 	// Always first two entires
 	for (i = 0; i < 2; i++) { // Now read each file.
 		// Get file length.
-		int len = finfo[2 * i + 1] - 13;
+		size_t len = finfo[2 * i + 1] - 13;
 		if (len <= 0)
 			continue;
 		in.seek(finfo[2 * i]);  // Get to it.
 		char fname[50];     // Set up name.
 		strcpy(fname, GAMEDAT);
 		in.read(&fname[sizeof(GAMEDAT) - 1], 13);
-		int namelen = strlen(fname);
+		size_t namelen = strlen(fname);
 		// Watch for names ending in '.'.
 		if (fname[namelen - 1] == '.')
 			fname[namelen - 1] = 0;
@@ -705,7 +703,7 @@ bool Game_window::get_saveinfo(int num, char *&name, Shape_file *&map, SaveGame_
 			char *buf = new char[len];
 			in.read(buf, len);
 			IBufferDataSource ds(buf, len);
-			map = new Shape_file(&ds);
+			map = std::make_unique<Shape_file>(&ds);
 		} else if (!strcmp(fname, GSAVEINFO)) {
 			read_saveinfo(&in, details, party);
 		}
@@ -718,7 +716,7 @@ bool Game_window::get_saveinfo(int num, char *&name, Shape_file *&map, SaveGame_
 	return true;
 }
 
-void Game_window::get_saveinfo(Shape_file *&map, SaveGame_Details *&details, SaveGame_Party  *&party) {
+void Game_window::get_saveinfo(std::unique_ptr<Shape_file> &map, SaveGame_Details *&details, SaveGame_Party  *&party) {
 	try {
 		ifstream in;
 		U7open(in, GSAVEINFO);      // Open file; throws an exception
@@ -734,13 +732,10 @@ void Game_window::get_saveinfo(Shape_file *&map, SaveGame_Details *&details, Sav
 		ifstream in;
 		U7open(in, GSCRNSHOT);      // Open file; throws an exception
 		IStreamDataSource ds(&in);
-		map = new Shape_file(&ds);
+		map = std::make_unique<Shape_file>(&ds);
 		in.close();
 	} catch (const file_exception & /*f*/) {
-		// yes, this is weird, but seems to work-around a compiler
-		// problem... (gcc-2.95.2-12mdk)    -wjp
-		map = 0;
-		map = 0;
+		map.reset();
 	}
 }
 
@@ -761,7 +756,7 @@ static const char *remove_dir(const char *fname) {
 }
 
 
-bool Game_window::get_saveinfo_zip(const char *fname, char *&name, Shape_file *&map, SaveGame_Details *&details, SaveGame_Party  *&party) {
+bool Game_window::get_saveinfo_zip(const char *fname, char *&name, std::unique_ptr<Shape_file> &map, SaveGame_Details *&details, SaveGame_Party  *&party) {
 	// If a flex, so can't read it
 	if (Flex::is_flex(fname)) return false;
 
@@ -789,7 +784,7 @@ bool Game_window::get_saveinfo_zip(const char *fname, char *&name, Shape_file *&
 		unzReadCurrentFile(unzipfile, buf, file_info.uncompressed_size);
 		if (unzCloseCurrentFile(unzipfile) == UNZ_OK) {
 			IBufferDataSource ds(buf, file_info.uncompressed_size);
-			map = new Shape_file(&ds);
+			map = std::make_unique<Shape_file>(&ds);
 		} else {
 			delete [] buf;
 		}

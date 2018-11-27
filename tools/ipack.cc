@@ -33,6 +33,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <iomanip>
+#include <memory>
 #include <vector>
 #include "Flex.h"
 #include "utils.h"
@@ -695,7 +696,7 @@ static void Write_exult(
 			xleft = w + xoff - 1;
 			yabove = h + yoff - 1;
 		}
-		shape.set_frame(new Shape_frame(pixels,
+		shape.set_frame(std::make_unique<Shape_frame>(pixels,
 		                                w, h, xleft, yabove, !flat), frnum);
 		delete [] pixels;
 		if (palname) {      // Write palette for first frame.

@@ -56,6 +56,7 @@
 #include "databuf.h"
 #include "weaponinf.h"
 #include <fstream>
+#include <memory>
 #include <sstream>
 #include "ios_state.hpp"
 
@@ -1627,11 +1628,10 @@ void Game_map::create_minimap(Shape *minimaps, unsigned char *chunk_pixels) {
 			pixels[yoff + cx] = chunk_pixels[chunk_num];
 		}
 	}
-	Shape_frame *frame = new Shape_frame(pixels,
-	                                     c_num_chunks, c_num_chunks, 0, 0, true);
 	if (num >= minimaps->get_num_frames())
 		minimaps->resize(num + 1);
-	minimaps->set_frame(frame, num);
+	minimaps->set_frame(std::make_unique<Shape_frame>(pixels,
+	                                     c_num_chunks, c_num_chunks, 0, 0, true), num);
 	delete [] pixels;
 }
 

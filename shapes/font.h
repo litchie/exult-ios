@@ -18,6 +18,7 @@
 #define FONT_H
 
 #include "hash_utils.h"
+#include <memory>
 
 class Image_buffer8;
 class Shape_file;
@@ -47,7 +48,7 @@ class Font {
 private:
 	int hor_lead;
 	int ver_lead;
-	Shape_file *font_shapes;
+	std::unique_ptr<Shape_file> font_shapes;
 	int  highest, lowest;
 
 	void calc_highlow();
@@ -58,7 +59,9 @@ public:
 	Font(const File_spec &fname0, int index, int hlead = 0, int vlead = 1);
 	Font(const File_spec &fname0, const File_spec &fname1, int index,
 	     int hlead = 0, int vlead = 1);
-	~Font();
+	Font(Font&&) noexcept = default;
+	Font& operator=(Font&&) noexcept = default;
+	~Font() noexcept = default;
 	int load(const File_spec &fname0, int index, int hlead = 0, int vlead = 1);
 	int load(const File_spec &fname0, const File_spec &fname1, int index,
 	         int hlead = 0, int vlead = 1);

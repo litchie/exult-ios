@@ -28,8 +28,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <cstdio>
 #include <string.h>
+#include <memory>
 #include "vgafile.h"
 
+using std::unique_ptr;
+using std::make_unique;
 /*
  *  Generate a shadow around a character.
  */
@@ -115,16 +118,14 @@ static bool Gen_font_shape_win32(
 			memset(pixels, bg, size.cy * size.cx);
 
 			// Not sure about dims here+++++
-			Shape_frame *frame = new Shape_frame(pixels,
-			                                     size.cx, size.cy, offset, offset, true);
+			shape->set_frame(make_unique<Shape_frame>(pixels, size.cx, size.cy,
+				                         offset, offset, true), chr);
 			delete [] pixels;
-			shape->set_frame(frame, chr);
 		} else {
 			uint32 *buffer = new uint32[buffsize];
 			if (GetGlyphOutline(dc, chr, GGO_BITMAP, &metrics, buffsize, buffer, &matrix) == GDI_ERROR) {
 				delete [] buffer;
-				Shape_frame *frame = new Shape_frame(&bg, 1, 1, 0, 0, true);
-				shape->set_frame(frame, chr);
+				shape->set_frame(make_unique<Shape_frame>(&bg, 1, 1, 0, 0, true), chr);
 				continue;
 			}
 			int sw = metrics.gmBlackBoxX, sh = metrics.gmBlackBoxY; // Shape width/height.
@@ -144,7 +145,7 @@ static bool Gen_font_shape_win32(
 			memset(pixels, bg, cnt);// Fill with background.
 
 			unsigned char *dest = pixels + offset * sw + offset;
-			const uint8 *src = (uint8 *)buffer;
+			const uint8 *src = reinterpret_cast<uint8 *>(buffer);
 			for (unsigned int row = 0; row < metrics.gmBlackBoxY; row++) {
 				for (unsigned int b = 0; b < metrics.gmBlackBoxX; b++)
 					if (src[b / 8] & (0x80 >> (b % 8)))
@@ -157,9 +158,10 @@ static bool Gen_font_shape_win32(
 			if (shadow >= 0)
 				Gen_shadow(pixels, sw, sh, fg, static_cast<unsigned char>(shadow));
 			// Not sure about dims here+++++
-			Shape_frame *frame = new Shape_frame(pixels, sw, sh, offset - metrics.gmptGlyphOrigin.x, offset + metrics.gmptGlyphOrigin.y, true);
+			shape->set_frame(make_unique<Shape_frame>(pixels, sw, sh,
+				                         offset - metrics.gmptGlyphOrigin.x,
+										 offset + metrics.gmptGlyphOrigin.y, true), chr);
 			delete [] pixels;
-			shape->set_frame(frame, chr);
 		}
 	}
 	return true;
@@ -326,9 +328,7 @@ bool Gen_font_shape(
 		                     FT_LOAD_RENDER | FT_LOAD_MONOCHROME);
 		if (error) {
 			//+++++Do we need to store an empty frame?
-			Shape_frame *frame = new Shape_frame(&bg, 1, 1, 0, 0, true);
-			shape->set_frame(frame, chr);
-
+			shape->set_frame(make_unique<Shape_frame>(&bg, 1, 1, 0, 0, true), chr);
 			continue;
 		}
 		int w = glyph->bitmap.width, h = glyph->bitmap.rows;
@@ -360,11 +360,9 @@ bool Gen_font_shape(
 		if (shadow >= 0)
 			Gen_shadow(pixels, sw, sh, fg, static_cast<unsigned char>(shadow));
 		// Not sure about dims here+++++
-		Shape_frame *frame = new Shape_frame(pixels,
-		                                     sw, sh, glyph->bitmap_left + offset,
-		                                     glyph->bitmap_top + offset, true);
+		shape->set_frame(make_unique<Shape_frame>(pixels, sw, sh, glyph->bitmap_left + offset,
+			                         glyph->bitmap_top + offset, true), chr);
 		delete [] pixels;
-		shape->set_frame(frame, chr);
 	}
 	FT_Done_FreeType(library);
 	return true;

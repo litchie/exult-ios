@@ -37,6 +37,7 @@
 #include "exceptions.h"
 #include "miscinf.h"
 #include <fstream>
+#include <memory>
 #include <vector>
 #include <utility>
 
@@ -214,7 +215,7 @@ void Shape_manager::load(
 			Shape *shp = files[SF_SPRITES_VGA].new_shape(0);
 			unsigned char whitepix = 118;
 			for (int ii = 0; ii < 28; ii++) {
-				shp->add_frame(new Shape_frame(&whitepix, 1, 1, 0, 0, false), ii);
+				shp->add_frame(std::make_unique<Shape_frame>(&whitepix, 1, 1, 0, 0, false), ii);
 			}
 		}
 	}
