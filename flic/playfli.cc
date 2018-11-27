@@ -42,11 +42,8 @@ using std::size_t;
 using std::cout;
 using std::endl;
 
-playfli::playfli(char *buffer, size_t len)
-: fli_data(buffer, len) {
-	fli_name = new char[9];
+void playfli::initfli() {
 	fli_data.read(fli_name, 8);
-	fli_name[8] = 0;
 	fli_size = fli_data.read4();
 	fli_magic = fli_data.read2();
 	fli_frames = fli_data.read2();
@@ -55,11 +52,9 @@ playfli::playfli(char *buffer, size_t len)
 	fli_depth = fli_data.read2();
 	fli_flags = fli_data.read2();
 	fli_speed = fli_data.read2();
-	fli_buf =  NULL;
 	fli_data.skip(110);
 	streampos = streamstart = fli_data.getPos();
 	frame = 0;
-	palette = new Palette;
 	thispal = -1;
 	nextpal = 0;
 	changepal = false;
@@ -95,7 +90,9 @@ int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned l
 	int yoffset = (win->get_game_height() - fli_height) / 2;
 	bool dont_show = false;
 
-	if (!fli_buf) fli_buf = win->create_buffer(fli_width, fli_height);
+	if (!fli_buf) {
+		fli_buf = std::unique_ptr<Image_buffer>(win->create_buffer(fli_width, fli_height));
+	}
 
 	// Set up last frame
 	if (first_frame == last_frame) dont_show = true;
@@ -240,7 +237,7 @@ int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned l
 		// Speed related frame skipping detection
 		int skip_frame = Game_window::get_instance()->get_frame_skipping() && SDL_GetTicks() >= ticks;
 
-		win->put(fli_buf, xoffset, yoffset);
+		win->put(fli_buf.get(), xoffset, yoffset);
 
 		if (ticks > SDL_GetTicks()) SDL_Delay(ticks - SDL_GetTicks());
 
@@ -267,11 +264,5 @@ void playfli::put_buffer(Image_window *win) {
 	int xoffset = (win->get_game_width() - fli_width) / 2;
 	int yoffset = (win->get_game_height() - fli_height) / 2;
 
-	win->put(fli_buf, xoffset, yoffset);
-}
-
-playfli::~playfli() {
-	delete [] fli_name;
-	delete fli_buf;
-	delete palette;
+	win->put(fli_buf.get(), xoffset, yoffset);
 }

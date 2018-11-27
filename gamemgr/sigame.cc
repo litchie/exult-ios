@@ -258,8 +258,6 @@ void SI_Game::play_intro() {
 	int next = 0;
 	uint8   *buffer = 0;
 	size_t  size;
-	size_t  shapesize;
-	char   *shape_buf = 0;
 	int     i, j;
 	Font *sifont = fontManager.get_font("SIINTRO_FONT");
 
@@ -270,10 +268,7 @@ void SI_Game::play_intro() {
 
 	// Lord British presents...
 	try {
-		U7multiobject lbflic(INTRO_DAT, PATCH_INTRO, 0);
-		size_t  flisize;
-		char *fli_b = lbflic.retrieve(flisize);
-		playfli fli0(fli_b, flisize);
+		playfli fli0(INTRO_DAT, PATCH_INTRO, 0);
 		fli0.info();
 
 		disable_direct_gl_render();
@@ -282,7 +277,6 @@ void SI_Game::play_intro() {
 			non_gl_blit();
 			wait_delay(0, 0, 1);
 		}
-
 
 		next = fli0.play(win, 0, 0, next, 100);
 		non_gl_blit();
@@ -301,7 +295,6 @@ void SI_Game::play_intro() {
 
 		gwin->clear_screen(true);
 
-
 		// Castle Outside
 
 		// Start Music
@@ -314,16 +307,14 @@ void SI_Game::play_intro() {
 			audio->copy_and_play(buffer + 8, size - 8, false);
 		}
 
-		U7multiobject flic(INTRO_DAT, PATCH_INTRO, 1);
-		fli_b = flic.retrieve(flisize);
-		playfli fli1(fli_b, flisize);
+		playfli fli1(INTRO_DAT, PATCH_INTRO, 1);
 		fli1.info();
 
 		fli1.play(win, 0, 1, 0, 0);
 
 		next = SDL_GetTicks();
 		int prev = -1;
-		int     num;
+		int num;
 
 		for (j = 0; j < 20; j++) {
 			num = get_frame();
@@ -411,9 +402,7 @@ void SI_Game::play_intro() {
 		gwin->clear_screen(true);
 
 		// Guard walks in
-		U7multiobject flic2(INTRO_DAT, PATCH_INTRO, 2);
-		fli_b = flic2.retrieve(flisize);
-		playfli fli2(fli_b, flisize);
+		playfli fli2(INTRO_DAT, PATCH_INTRO, 2);
 		fli2.info();
 
 		for (j = 0; j < 20; j++) {
@@ -438,7 +427,6 @@ void SI_Game::play_intro() {
 			audio->copy_and_play(buffer + 8, size - 8, false);
 			FORGET_ARRAY(buffer);
 		}
-
 
 		for (; j < 55; j++) {
 			next = fli2.play(win, j, j, next);
@@ -498,7 +486,6 @@ void SI_Game::play_intro() {
 			if (wait_delay(10, 0, 1))
 				throw UserBreakException();
 
-
 		fli2.play(win, j, j);
 		j++;
 
@@ -539,9 +526,7 @@ void SI_Game::play_intro() {
 		gwin->clear_screen(true);
 
 		// Scroll opens
-		U7multiobject flic3(INTRO_DAT, PATCH_INTRO, 3);
-		fli_b = flic3.retrieve(flisize);
-		playfli fli3(fli_b, flisize);
+		playfli fli3(INTRO_DAT, PATCH_INTRO, 3);
 		fli3.info();
 
 		next = 0;
@@ -553,7 +538,6 @@ void SI_Game::play_intro() {
 			if (wait_delay(0, 0, 1))
 				throw UserBreakException();
 		}
-
 
 		// 'Stand Back'
 		if (speech && !jive) {
@@ -580,14 +564,10 @@ void SI_Game::play_intro() {
 		gwin->clear_screen(true);
 
 		// Big G speaks
-		U7multiobject flic4(INTRO_DAT, PATCH_INTRO, 4);
-		fli_b = flic4.retrieve(flisize);
-		playfli fli4(fli_b, flisize);
+		playfli fli4(INTRO_DAT, PATCH_INTRO, 4);
 		fli4.info();
 
-		U7multiobject introshapes(INTRO_DAT, PATCH_INTRO, 30);
-		shape_buf = introshapes.retrieve(shapesize);
-		IBufferDataSource gshape_ds(shape_buf, shapesize);
+		IExultDataSource gshape_ds(INTRO_DAT, PATCH_INTRO, 30);
 		char name[9] = {0};
 		gshape_ds.read(name, 8);
 		Shape_frame *sf;
@@ -654,15 +634,11 @@ void SI_Game::play_intro() {
 				throw UserBreakException();
 		}
 
-		FORGET_ARRAY(shape_buf);
-
 		// Do this! Prevents palette corruption
 		gwin->clear_screen(true);
 
 		// Tis LBs's Worst fear
-		U7multiobject flic5(INTRO_DAT, PATCH_INTRO, 5);
-		fli_b = flic5.retrieve(flisize);
-		playfli fli5(fli_b, flisize);
+		playfli fli5(INTRO_DAT, PATCH_INTRO, 5);
 		fli5.info();
 
 		for (j = 0; j < 20; j++) {
@@ -698,9 +674,7 @@ void SI_Game::play_intro() {
 		gwin->clear_screen(true);
 
 		// Boat 1
-		U7multiobject flic6(INTRO_DAT, PATCH_INTRO, 6);
-		fli_b = flic6.retrieve(flisize);
-		playfli fli6(fli_b, flisize);
+		playfli fli6(INTRO_DAT, PATCH_INTRO, 6);
 		fli6.info();
 
 		for (j = 0; j < 61; j++) {
@@ -714,9 +688,7 @@ void SI_Game::play_intro() {
 		gwin->clear_screen(true);
 
 		// Boat 2
-		U7multiobject flic7(INTRO_DAT, PATCH_INTRO, 7);
-		fli_b = flic7.retrieve(flisize);
-		playfli fli7(fli_b, flisize);
+		playfli fli7(INTRO_DAT, PATCH_INTRO, 7);
 		fli7.info();
 
 		const char *zot = "Zot!";
@@ -736,9 +708,7 @@ void SI_Game::play_intro() {
 		gwin->clear_screen(true);
 
 		// Ultima VII Part 2
-		U7multiobject flic8(INTRO_DAT, PATCH_INTRO, 8);
-		fli_b = flic8.retrieve(flisize);
-		playfli fli8(fli_b, flisize);
+		playfli fli8(INTRO_DAT, PATCH_INTRO, 8);
 		fli8.info();
 
 		for (j = 0; j < 20; j++) {
@@ -746,7 +716,6 @@ void SI_Game::play_intro() {
 			non_gl_blit();
 			wait_delay(0, 0, 1);
 		}
-
 
 		next = fli8.play(win, 0, 0, next, 100);
 		non_gl_blit();
@@ -756,7 +725,6 @@ void SI_Game::play_intro() {
 			if (wait_delay(10))
 				throw UserBreakException();
 
-
 		for (j = 20; j; j--) {
 			next = fli8.play(win, 0, 0, next, j * 5);
 			non_gl_blit();
@@ -765,7 +733,6 @@ void SI_Game::play_intro() {
 
 		enable_direct_gl_render();
 	} catch (const UserBreakException &/*x*/) {
-		FORGET_ARRAY(shape_buf);
 		FORGET_ARRAY(buffer);
 		enable_direct_gl_render();
 	}
@@ -773,7 +740,6 @@ void SI_Game::play_intro() {
 	// Fade out the palette...
 //	pal.fade_out(c_fade_out_time);
 // this doesn't work right ATM since the FLIC player has its own palette handling
-
 
 	// ... and clean the screen.
 	gwin->clear_screen(true);
@@ -806,12 +772,12 @@ void SI_Game::show_journey_failed() {
 
 // ExCineEvent
 struct ExCineEvent {
-	uint32          time;   // Time to start, In MS
-	const char      *file;
-	const char      *patch;
+	uint32      time;   // Time to start, In MS
+	const char *file;
+	const char *patch;
 	int         index;
 
-	virtual bool    play_it(Image_window *win, uint32 time) = 0;        // Return true if screen updated
+	virtual bool play_it(Image_window *win, uint32 time) = 0;        // Return true if screen updated
 
 	bool can_play() {
 		return file != 0;
@@ -829,22 +795,22 @@ struct ExCineEvent {
 
 struct ExCineFlic : public ExCineEvent {
 private:
-	int start;      // First frame to play
-	int count;      // Number of frames
-	bool    repeat;     // Repeat?
-	int cur;        // Frame currently being displayed (note, it's not the actual frame)
-	int speed;      // Speed of playback (ms per frame)
+	int  start;      // First frame to play
+	int  count;      // Number of frames
+	bool repeat;     // Repeat?
+	int  cur;        // Frame currently being displayed (note, it's not the actual frame)
+	int  speed;      // Speed of playback (ms per frame)
 
 	// Data info
-	playfli     *player;
+	playfli *player;
 
 public:
-	virtual bool    play_it(Image_window *win, uint32 t);
+	virtual bool play_it(Image_window *win, uint32 t);
 
-	void        load_flic(void);
-	void        free_flic(void);
+	void load_flic(void);
+	void free_flic(void);
 
-	void        fade_out(int cycles);
+	void fade_out(int cycles);
 
 	ExCineFlic(uint32 time, const char *file, const char *patch,
 	           int i, int s, int c, bool r, int spd) :
@@ -865,17 +831,12 @@ void ExCineFlic::load_flic() {
 
 	COUT("Loading " << file << ":" << index);
 
-	U7object *flic_obj;
 	if (patch)
-		flic_obj = new U7multiobject(file, patch, index);
+		player = new playfli(file, patch, index);
 	else
-		flic_obj = new U7object(file, index);
+		player = new playfli(file, index);
 
-	size_t size;
-	char *buffer = flic_obj->retrieve(size);
-	player = new playfli(buffer, size);
 	player->info();
-	delete flic_obj;
 }
 
 void ExCineFlic::free_flic() {

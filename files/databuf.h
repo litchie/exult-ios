@@ -166,7 +166,7 @@ public:
 		: IStreamDataSource(data_stream) {}
 
 	explicit IFileDataSource(const File_spec &spec)
-		: IStreamDataSource(0) {
+		: IStreamDataSource(nullptr) {
 		std::ifstream *fin = new std::ifstream();
 		in = fin;
 		if (U7exists(spec.name)) {
@@ -203,7 +203,7 @@ protected:
 public:
 	IBufferDataView(const void *data, size_t len) {
 		// data can be NULL if len is also 0
-		assert(data != 0 || len == 0);
+		assert(data != nullptr || len == 0);
 		buf_ptr = buf = static_cast<const unsigned char *>(data);
 		size = len;
 	}
@@ -285,9 +285,9 @@ protected:
 	char *data;
 public:
 	IBufferDataSource(void *data_, size_t len)
-		: IBufferDataView(0, 0), data(static_cast<char*>(data_)) {
+		: IBufferDataView(nullptr, 0), data(static_cast<char*>(data_)) {
 		// data can be NULL if len is also 0
-		assert(data != 0 || len == 0);
+		assert(data != nullptr || len == 0);
 		buf_ptr = buf = reinterpret_cast<const unsigned char *>(data);
 		size = len;
 	}
@@ -315,14 +315,14 @@ public:
 class IExultDataSource: public IBufferDataSource {
 public:
 	IExultDataSource(const File_spec &fname, int index)
-		: IBufferDataSource(0, 0) {
+		: IBufferDataSource(nullptr, 0) {
 		U7object obj(fname, index);
 		data = obj.retrieve(size);
 		buf = buf_ptr = reinterpret_cast<unsigned char *>(data);
 	}
 
 	IExultDataSource(const File_spec &fname0, const File_spec &fname1, int index)
-		: IBufferDataSource(0, 0) {
+		: IBufferDataSource(nullptr, 0) {
 		U7multiobject obj(fname0, fname1, index);
 		data = obj.retrieve(size);
 		buf = buf_ptr = reinterpret_cast<unsigned char *>(data);
@@ -330,7 +330,7 @@ public:
 
 	IExultDataSource(const File_spec &fname0, const File_spec &fname1,
 	                 const File_spec &fname2, int index)
-		: IBufferDataSource(0, 0) {
+		: IBufferDataSource(nullptr, 0) {
 		U7multiobject obj(fname0, fname1, fname2, index);
 		data = obj.retrieve(size);
 		buf = buf_ptr = reinterpret_cast<unsigned char *>(data);
@@ -490,7 +490,7 @@ protected:
 public:
 	OBufferDataSpan(void *data, size_t len) {
 		// data can be NULL if len is also 0
-		assert(data != 0 || len == 0);
+		assert(data != nullptr || len == 0);
 		buf_ptr = buf = static_cast<unsigned char *>(data);
 		size = len;
 	}

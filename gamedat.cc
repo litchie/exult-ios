@@ -128,12 +128,12 @@ void Game_window::restore_flex_files(
 			fname[namelen] = 0;
 
 			IBufferDataSource ds(buf, len);
-			if (!Flex::is_flex(&ds))
+			if (!Flex::is_flex(&ds)) {
 				// Save is most likely corrupted. Ignore the file but keep
 				// reading the savegame.
-				std::cerr << "Error reading flex: file '" <<
-				          fname << "' is not a valid flex file. This probably means a corrupt save game." << endl;
-			else {
+				std::cerr << "Error reading flex: file '" << fname
+				          << "' is not a valid flex file. This probably means a corrupt save game." << endl;
+			} else {
 				// fname should be a path hare.
 				U7mkdir(fname, 0755);
 				// Append trailing slash:

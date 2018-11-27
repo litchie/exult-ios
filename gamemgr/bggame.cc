@@ -640,7 +640,7 @@ void BG_Game::scene_butterfly() {
 
 static int text_times[] = {
 	250, 1700, 5250, 8200, 10550, 12900, 16000, 19950, 22700, 27200, 32400,
-		36400, 39650, 42400
+	36400, 39650, 42400
 };
 
 static const int text_num_frames = sizeof(text_times) / sizeof(int);
@@ -1530,10 +1530,6 @@ void BG_Game::end_game(bool success) {
 	// Clear screen
 	gwin->clear_screen(true);
 
-	U7multiobject flic1(ENDGAME, PATCH_ENDGAME, 0);
-	U7multiobject flic2(ENDGAME, PATCH_ENDGAME, 1);
-	U7multiobject flic3(ENDGAME, PATCH_ENDGAME, 2);
-
 	ExVoiceBuffer speech1(ENDGAME, PATCH_ENDGAME, 7);
 	ExVoiceBuffer speech2(ENDGAME, PATCH_ENDGAME, 8);
 	ExVoiceBuffer speech3(ENDGAME, PATCH_ENDGAME, 9);
@@ -1548,16 +1544,9 @@ void BG_Game::end_game(bool success) {
 	*/
 
 	// Fli Buffers
-	size_t  flisize;
-	char    *fli_b;
-	fli_b = flic1.retrieve(flisize);
-	playfli fli1(fli_b, flisize);
-
-	fli_b = flic2.retrieve(flisize);
-	playfli fli2(fli_b, flisize);
-
-	fli_b = flic3.retrieve(flisize);
-	playfli fli3(fli_b, flisize);
+	playfli fli1(ENDGAME, PATCH_ENDGAME, 0);
+	playfli fli2(ENDGAME, PATCH_ENDGAME, 1);
+	playfli fli3(ENDGAME, PATCH_ENDGAME, 2);
 
 	fli1.play(win, 0, 0, 0);
 
@@ -1784,7 +1773,7 @@ void BG_Game::end_game(bool success) {
 
 		// Paint backgound black
 		win->fill8(0);
-		
+
 		//Because of the German version we have to fit 11 lines of height 20 into a screen of 200 pixels
 		//so starty has needs to be a tiny bit in the negative but not -10
 		starty = (gwin->get_height() - normal->get_text_height() * 11) / 2.5;
@@ -1899,7 +1888,7 @@ void BG_Game::end_game(bool success) {
 		//TODO: only when finishing a game and not when viewed from menu
 		if (when not in menu) {
 			if (wait_delay(10)) break;
-		
+
 			// Congratulations
 
 			// Paint backgound black

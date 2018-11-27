@@ -36,8 +36,9 @@ public:
 		int speed;
 	};
 private:
-	IBufferDataSource fli_data;
-	char *fli_name;
+	IExultDataSource fli_data;
+	std::unique_ptr<Image_buffer> fli_buf;
+	std::unique_ptr<Palette> palette;
 	int fli_size;
 	int fli_magic;
 	int fli_frames;
@@ -46,21 +47,27 @@ private:
 	int fli_depth;
 	int fli_flags;
 	int fli_speed;
-	Image_buffer *fli_buf;
 	int streamstart;
 	int streampos;
 	int frame;
-	Palette *palette;
+	char fli_name[9];
 public:
-	playfli(char *buffer, std::size_t len);
-	~playfli();
-	void info(fliinfo *fi = NULL);
+	template <typename... T>
+	explicit playfli(T&&... args)
+		: fli_data(std::forward<T>(args)...),
+		  palette(std::make_unique<Palette>()),
+		  fli_name{0} {
+		initfli();
+	}
+	~playfli() noexcept = default;
+	void info(fliinfo *fi = nullptr);
 	int play(Image_window *win, int first_frame = 0, int last_frame = -1, unsigned long ticks = 0, int brightness = 100);
 	void put_buffer(Image_window *win);
 	inline Palette *get_palette() {
-		return palette;
+		return palette.get();
 	}
 private:
+	void initfli();
 	int nextpal;
 	int thispal;
 	int changepal;
