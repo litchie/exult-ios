@@ -34,7 +34,6 @@
 #include "files/U7fileman.h"
 #include "files/U7file.h"
 #include "files/utils.h"
-#include "flic/playfli.h"
 #include "font.h"
 #include "game.h"
 #include "gamemgr/bggame.h"
