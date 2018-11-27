@@ -811,15 +811,10 @@ void Notebook_gump::read_auto_text(
 			notesfile.close();
 		} else {
 			const str_int_pair &resource = game->get_resource("config/autonotes");
-			U7object txtobj(resource.str, resource.num);
-			size_t len;
-			char *txt = txtobj.retrieve(len);
-			if (txt && len > 0) {
-				IBufferDataSource buf(txt, len);
+			IExultDataSource buf(resource.str, resource.num);
+			if (buf.good()) {
 				cout << "Loading default autonotes" << endl;
 				Read_text_msg_file(&buf, auto_text);
-			} else {
-				delete[] txt;
 			}
 		}
 	}

@@ -43,7 +43,7 @@ void Table::index_file(void) {
 
 	unsigned int i = 0;
 	while (true) {
-		Table::Reference f;
+		Reference f;
 		f.size = data->read2();
 
 		if (f.size == 65535)
@@ -62,32 +62,6 @@ void Table::index_file(void) {
 		object_list.push_back(f);
 		i++;
 	}
-}
-
-/**
- *  Reads the desired object from the table file.
- *  @param objnum   Number of object to read.
- *  @param len  Receives the length of the object, or zero in any failure.
- *  @return Buffer created with new[] containing the object data or
- *  null on any failure.
- */
-char *Table::retrieve(uint32 objnum, size_t &len) {
-	if (!data || objnum >= object_list.size()) {
-		len = 0;
-		return 0;
-	}
-#if 0
-	// Trying to avoid exceptions.
-	if (objnum >= object_list.size())
-		throw exult_exception("objnum too large in Flex::retrieve()");
-#endif
-
-	data->seek(object_list[objnum].offset);
-	len = object_list[objnum].size;
-	char *buffer = new char[len];
-	data->read(buffer, len);
-
-	return buffer;
 }
 
 /**

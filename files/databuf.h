@@ -47,6 +47,7 @@ public:
 	virtual uint32 read4high() = 0;
 	virtual void read(void *, size_t) = 0;
 	virtual void read(std::string&, size_t) = 0;
+	virtual IDataSource *read(size_t) = 0;
 
 	virtual void seek(size_t) = 0;
 	virtual void skip(std::streamoff) = 0;
@@ -79,7 +80,7 @@ protected:
 	std::istream *in;
 public:
 	IStreamDataSource(std::istream *data_stream)
-	: in(data_stream) {}
+		: in(data_stream) {}
 
 	virtual ~IStreamDataSource() {}
 
@@ -116,6 +117,8 @@ public:
 		in->read(&s[0], len);
 	}
 
+	virtual IDataSource *read(size_t len);
+
 	virtual void seek(size_t pos) {
 		in->seekg(pos);
 	}
@@ -144,6 +147,32 @@ public:
 	}
 	virtual void clear_error() {
 		in->clear();
+	}
+};
+
+/**
+ * File-based input data source does owns the stream.
+ */
+
+class IFileDataSource : public IStreamDataSource {
+public:
+	IFileDataSource(std::ifstream *data_stream)
+		: IStreamDataSource(data_stream) {}
+
+	IFileDataSource(const File_spec &spec)
+		: IStreamDataSource(0) {
+		std::ifstream *fin = new std::ifstream();
+		in = fin;
+		if (U7exists(spec.name)) {
+			U7open(*fin, spec.name.c_str());
+		} else {
+			// Set fail bit
+			fin->seekg(0);
+		}
+	}
+
+	~IFileDataSource() {
+		delete in;
 	}
 };
 
@@ -199,6 +228,8 @@ public:
 		buf_ptr += len;
 	}
 
+	virtual IDataSource *read(size_t len);
+
 	virtual void seek(size_t pos) {
 		buf_ptr = buf + pos;
 	}
@@ -222,6 +253,10 @@ public:
 	virtual bool eof() {
 		return buf_ptr >= buf + size;
 	}
+
+	virtual bool good() {
+		return buf && size;
+	}
 };
 
 /**
@@ -232,7 +267,7 @@ protected:
 	char *data;
 public:
 	IBufferDataSource(void *data_, size_t len)
-	: IBufferDataView(0, 0), data(static_cast<char*>(data_)) {
+		: IBufferDataView(0, 0), data(static_cast<char*>(data_)) {
 		// data can be NULL if len is also 0
 		assert(data != 0 || len == 0);
 		buf_ptr = buf = reinterpret_cast<const unsigned char *>(data);
@@ -273,6 +308,22 @@ public:
 	}
 };
 
+inline IDataSource *IStreamDataSource::read(size_t len) {
+	char *buf = new char[len];
+	read(buf, len);
+	return new IBufferDataSource(buf, len);
+}
+
+inline IDataSource *IBufferDataView::read(size_t len) {
+	size_t avail = getSize() - getPos();
+	if (avail < len) {
+		len = avail;
+	}
+	const unsigned char *ptr = getPtr();
+	skip(len);
+	return new IBufferDataView(ptr, len);
+}
+
 /**
  * Abstract output base class.
  */
@@ -308,7 +359,7 @@ protected:
 	std::ostream *out;
 public:
 	OStreamDataSource(std::ostream *data_stream)
-	: out(data_stream) {}
+		: out(data_stream) {}
 
 	virtual ~OStreamDataSource() {}
 
@@ -368,6 +419,19 @@ public:
 	}
 	virtual void clear_error() {
 		out->clear();
+	}
+};
+
+/**
+ * File-based output data source which owns the stream.
+ */
+class OFileDataSource : public OStreamDataSource {
+public:
+	OFileDataSource(std::ofstream *data_stream)
+		: OStreamDataSource(data_stream) {}
+
+	~OFileDataSource() {
+		delete out;
 	}
 };
 
@@ -445,7 +509,7 @@ public:
 class OBufferDataSource: public OBufferDataSpan {
 public:
 	OBufferDataSource(void *data, size_t len)
-	: OBufferDataSpan(data, len) {}
+		: OBufferDataSpan(data, len) {}
 
 	virtual ~OBufferDataSource() {
 		delete [] buf;

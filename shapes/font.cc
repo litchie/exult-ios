@@ -661,8 +661,7 @@ int Font::find_xcursor(
 
 Font::Font(
 )
-	: hor_lead(0), ver_lead(0),
-	  font_shapes(0), font_data(0),
+	: hor_lead(0), ver_lead(0), font_shapes(0),
 	  highest(0), lowest(0) {
 }
 
@@ -672,7 +671,7 @@ Font::Font(
     int hlead,
     int vlead
 )
-	: font_shapes(0), font_data(0) {
+	: font_shapes(0) {
 	load(fname0, index, hlead, vlead);
 }
 
@@ -683,7 +682,7 @@ Font::Font(
     int hlead,
     int vlead
 )
-	: font_shapes(0), font_data(0) {
+	: font_shapes(0) {
 	load(fname0, fname1, index, hlead, vlead);
 }
 
@@ -693,9 +692,7 @@ Font::~Font() {
 
 void Font::clean_up() {
 	delete font_shapes;
-	delete font_data;
 	font_shapes = 0;
-	font_data = 0;
 }
 
 /**
@@ -705,27 +702,23 @@ void Font::clean_up() {
  *  @param vleah    Vertical lead of the font.
  */
 int Font::load_internal(
-    const U7multiobject &font_obj,
+    IDataSource& data,
     int hlead,
     int vlead
 ) {
-	size_t len;
-	char *font_buf = font_obj.retrieve(len);
-	delete font_data;
-
-	if (!font_buf || !len) {
-		delete [] font_buf;
-		font_data = 0;
+	if (!data.good()) {
 		font_shapes = 0;
 		hor_lead = 0;
 		ver_lead = 0;
 	} else {
 		// Is it an IFF archive?
-		font_data = new IBufferDataSource(font_buf, len);
-		if (!strncmp(font_buf, "font", 4))
-			font_data->skip(8);      // Yes, skip first 8 bytes.
+		char hdr[5] = {0};
+		data.read(hdr, 4);
+		data.seek(0);
+		if (!strncmp(hdr, "font", 4))
+			data.skip(8);      // Yes, skip first 8 bytes.
 		delete font_shapes;
-		font_shapes = new Shape_file(font_data);
+		font_shapes = new Shape_file(&data);
 		hor_lead = hlead;
 		ver_lead = vlead;
 		calc_highlow();
@@ -747,8 +740,8 @@ int Font::load(
     int vlead
 ) {
 	clean_up();
-	U7multiobject font_obj(fname0, index);
-	return load_internal(font_obj, hlead, vlead);
+	IExultDataSource data(fname0, index);
+	return load_internal(data, hlead, vlead);
 }
 
 /**
@@ -767,8 +760,8 @@ int Font::load(
     int vlead
 ) {
 	clean_up();
-	U7multiobject font_obj(fname0, fname1, index);
-	return load_internal(font_obj, hlead, vlead);
+	IExultDataSource data(fname0, fname1, index);
+	return load_internal(data, hlead, vlead);
 }
 
 int Font::center_text(Image_buffer8 *win, int x, int y, const char *s) {

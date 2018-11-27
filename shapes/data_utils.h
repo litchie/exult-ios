@@ -532,10 +532,7 @@ static void Read_text_data_file(
 		const char *flexfile =
 		    bg ? BUNDLE_CHECK(BUNDLE_EXULT_BG_FLX, EXULT_BG_FLX)
 		    : BUNDLE_CHECK(BUNDLE_EXULT_SI_FLX, EXULT_SI_FLX);
-		U7object txtobj(flexfile, resource);
-		std::size_t len;
-		char *txt = txtobj.retrieve(len);
-		IBufferDataSource ds(txt, len);
+		IExultDataSource ds(flexfile, resource);
 		static_version = Read_text_msg_file_sections(&ds,
 		                 static_strings, sections, numsections);
 	} else {

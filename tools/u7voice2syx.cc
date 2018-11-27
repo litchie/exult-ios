@@ -267,14 +267,11 @@ int main(int argc, char *argv[]) {
 			FlexFile f(filename);
 
 			std::cout << "Reading data..." << std::endl;
-			std::size_t size;
-			char *data = f.retrieve(0, size);
 
-			if (!size)
+			// Create us a data source
+			IExultDataSource ds = f.retrieve(0);
+			if (!ds.good())
 				throw(exult_exception("No data in index 0"));
-
-			// Create us a IBufferDataSource
-			IBufferDataSource ds(data, size);
 
 			uint32 num_timbres = ds.read1();
 			std::cout << num_timbres << " custom timbres..." << std::endl;

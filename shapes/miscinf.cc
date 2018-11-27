@@ -362,10 +362,7 @@ void Shapeinfo_lookup::Read_data_file(
 	if (GAME_BG || GAME_SI) {
 		snprintf(buf, 50, "config/%s", fname);
 		const str_int_pair &resource = game->get_resource(buf);
-		U7object txtobj(resource.str, resource.num);
-		std::size_t len;
-		char *txt = txtobj.retrieve(len);
-		IBufferDataSource ds(txt, len);
+		IExultDataSource ds(resource.str, resource.num);
 		static_version = Read_text_msg_file_sections(&ds,
 		                 static_strings, sections, numsections);
 	} else {

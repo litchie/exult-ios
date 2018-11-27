@@ -48,12 +48,11 @@ private:
 	int hor_lead;
 	int ver_lead;
 	Shape_file *font_shapes;
-	IDataSource *font_data;
 	int  highest, lowest;
 
 	void calc_highlow();
 	void clean_up();
-	int load_internal(const U7multiobject &font_obj, int hlead, int vlead);
+	int load_internal(IDataSource& data, int hlead, int vlead);
 public:
 	Font();
 	Font(const File_spec &fname0, int index, int hlead = 0, int vlead = 1);

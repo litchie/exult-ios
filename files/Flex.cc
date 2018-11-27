@@ -65,7 +65,7 @@ void Flex::index_file() {
 	// We should already be there.
 	data->seek(128);
 	for (uint32 c = 0; c < count; c++) {
-		Flex::Reference f;
+		Reference f;
 		f.offset = data->read4();
 		f.size = data->read4();
 #if DEBUGFLEX
@@ -73,32 +73,6 @@ void Flex::index_file() {
 #endif
 		object_list.push_back(f);
 	}
-}
-
-/**
- *  Reads the desired object from the flex.
- *  @param objnum   Number of object to read.
- *  @param len  Receives the length of the object, or zero in any failure.
- *  @return Buffer created with new[] containing the object data or
- *  null on any failure.
- */
-char *Flex::retrieve(uint32 objnum, size_t &len) {
-	if (!data || objnum >= object_list.size()) {
-		len = 0;
-		return 0;
-	}
-#if 0
-	// Trying to avoid exceptions.
-	if (objnum >= object_list.size())
-		throw exult_exception("objnum too large in Flex::retrieve()");
-#endif
-
-	data->seek(object_list[objnum].offset);
-	len = object_list[objnum].size;
-	char *buffer = new char[len];
-	data->read(buffer, len);
-
-	return buffer;
 }
 
 /**
@@ -115,7 +89,7 @@ uint32  Flex::get_entry_info(uint32 objnum, size_t &len) {
 #if 0
 	// Trying to avoid exceptions.
 	if (objnum >= object_list.size())
-		throw exult_exception("objnum too large in Flex::retrieve()");
+		throw exult_exception("objnum too large in Flex::get_entry_info()");
 #endif
 	len = object_list[objnum].size;
 	return object_list[objnum].offset;

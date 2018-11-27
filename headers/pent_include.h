@@ -117,26 +117,6 @@
 
 #include "databuf.h"
 
-class IFileDataSource : public IStreamDataSource {
-public:
-public:
-	IFileDataSource(std::ifstream *data_stream) : IStreamDataSource(data_stream) {
-	}
-	~IFileDataSource() {
-		FORGET_OBJECT(in);
-	}
-};
-
-class OFileDataSource : public OStreamDataSource {
-public:
-public:
-	OFileDataSource(std::ofstream *data_stream) : OStreamDataSource(data_stream) {
-	}
-	~OFileDataSource() {
-		FORGET_OBJECT(out);
-	}
-};
-
 //
 // FileSystem
 //

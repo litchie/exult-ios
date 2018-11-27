@@ -52,11 +52,6 @@ public:
 		char    name[8];
 		// char    data[]; // Variable
 	};
-	struct Reference {
-		size_t  offset;
-		uint32  size;
-		Reference() : offset(0), size(0) {}
-	};
 
 protected:
 	//  The IFF's header. ++++ Unused????
@@ -65,6 +60,9 @@ protected:
 	std::vector<Reference> object_list;
 
 	virtual void index_file();
+	virtual Reference get_object_reference(uint32 objnum) const {
+		return object_list[objnum];
+	}
 public:
 	/// Basic constructor.
 	/// @param spec File name and object index pair.
@@ -77,7 +75,6 @@ public:
 	virtual size_t number_of_objects(void) {
 		return object_list.size();
 	}
-	virtual char *retrieve(uint32 objnum, std::size_t &len);
 	virtual const char *get_archive_type() {
 		return "IFF";
 	}

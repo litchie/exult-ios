@@ -50,14 +50,12 @@ protected:
 	uint32  count;
 	uint32  magic2;
 	uint32  padding[9];
-	struct Reference {
-		uint32 offset;
-		uint32 size;
-		Reference() : offset(0), size(0) {}
-	};
 	std::vector<Reference> object_list;
 
 	virtual void index_file();
+	virtual Reference get_object_reference(uint32 objnum) const {
+		return object_list[objnum];
+	}
 public:
 	/// Basic constructor.
 	/// @param spec File name and object index pair.
@@ -79,7 +77,6 @@ public:
 	virtual size_t  number_of_objects() {
 		return object_list.size();
 	}
-	virtual char   *retrieve(uint32 objnum, std::size_t &len);
 	uint32  get_entry_info(uint32 objnum, size_t &len);
 	virtual const char *get_archive_type() {
 		return "FLEX";

@@ -724,38 +724,28 @@ void    MyMidiPlayer::start_sound_effect(int num)
 	// Only support SFX on devices with 2 or more sequences
 	if (midi_driver->maxSequences() < 2) return;
 
-	char		*buffer;
-	size_t		size;
-	IDataSource *mid_data;
-
-	U7object	*track =
+	IExultDataSource *mid_data =
 #ifdef MACOSX
 		is_system_path_defined("<BUNDLE>") ?
-			new U7multiobject("<DATA>/midisfx.flx",
-			                  "<BUNDLE>/midisfx.flx", real_num) :
+			new IExultDataSource("<DATA>/midisfx.flx",
+			                     "<BUNDLE>/midisfx.flx", real_num) :
 #endif
-			new U7object("<DATA>/midisfx.flx", real_num);
+			new IExultDataSource("<DATA>/midisfx.flx", real_num);
 
-	buffer = track->retrieve(size);
-	delete track;
-	if (!buffer || size <= 0)
-		{
-		delete [] buffer;
+	if (!mid_data->good()) {
+		delete mid_data;
 		return;
-		}
+	}
 
 	// Read the data into the XMIDI class
-	mid_data = new IBufferDataSource(buffer, size);
-
 	// It's already GM, so dont convert
-	XMidiFile		midfile(mid_data, effects_conversion);
+	XMidiFile midfile(mid_data, effects_conversion);
 
 	delete mid_data;
 
 	// Now give the xmidi object to the midi device
 	XMidiEventList *eventlist = midfile.GetEventList(0);
 	if (eventlist) midi_driver->startSequence(1,eventlist,false,255);
-
 }
 
 void    MyMidiPlayer::stop_sound_effects()

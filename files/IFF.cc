@@ -92,32 +92,6 @@ void IFF::index_file(void) {
 }
 
 /**
- *  Reads the desired object from the iff.
- *  @param objnum   Number of object to read.
- *  @param len  Receives the length of the object, or zero in any failure.
- *  @return Buffer created with new[] containing the object data or
- *  null on any failure.
- */
-char *IFF::retrieve(uint32 objnum, size_t &len) {
-	if (!data || objnum >= object_list.size()) {
-		len = 0;
-		return 0;
-	}
-#if 0
-	// Trying to avoid exceptions.
-	if (objnum >= object_list.size())
-		throw exult_exception("objnum too large in IFF::retrieve()");
-#endif
-
-	data->seek(object_list[objnum].offset);
-	len = object_list[objnum].size;
-	char *buffer = new char[len];
-	data->read(buffer, len);
-
-	return buffer;
-}
-
-/**
  *  Verify if a file is an IFF.  Note that this is a STATIC method.
  *  @param in   DataSource to verify.
  *  @return Whether or not the DataSource is an IFF file.

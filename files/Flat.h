@@ -38,6 +38,10 @@ private:
 	/// No default constructor.
 	Flat();
 	UNREPLICATABLE_CLASS_I(Flat, U7file(""))
+protected:
+	virtual Reference get_object_reference(uint32) const {
+		return Reference{0, data->getSize()};
+	}
 public:
 	/// Basic constructor.
 	/// @param spec File name and object index pair.
@@ -48,7 +52,6 @@ public:
 	virtual size_t number_of_objects(void) {
 		return 1;
 	}
-	virtual char *retrieve(uint32 objnum, std::size_t &len);
 	virtual const char *get_archive_type() {
 		return "FLAT";
 	}

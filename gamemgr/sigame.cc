@@ -836,7 +836,6 @@ private:
 	int speed;      // Speed of playback (ms per frame)
 
 	// Data info
-	U7object    *flic_obj;
 	playfli     *player;
 
 public:
@@ -850,11 +849,11 @@ public:
 	ExCineFlic(uint32 time, const char *file, const char *patch,
 	           int i, int s, int c, bool r, int spd) :
 		ExCineEvent(time, file, patch, i), start(s), count(c), repeat(r),
-		cur(-1), speed(spd), flic_obj(0), player(0) { }
+		cur(-1), speed(spd), player(0) { }
 
 	ExCineFlic(uint32 time) : ExCineEvent(time, 0, 0, 0), start(0), count(0),
 		repeat(false), cur(0), speed(0),
-		flic_obj(0), player(0) { }
+		player(0) { }
 
 	virtual ~ExCineFlic() {
 		free_flic();
@@ -866,6 +865,7 @@ void ExCineFlic::load_flic() {
 
 	COUT("Loading " << file << ":" << index);
 
+	U7object *flic_obj;
 	if (patch)
 		flic_obj = new U7multiobject(file, patch, index);
 	else
@@ -875,13 +875,13 @@ void ExCineFlic::load_flic() {
 	char *buffer = flic_obj->retrieve(size);
 	player = new playfli(buffer, size);
 	player->info();
+	delete flic_obj;
 }
 
 void ExCineFlic::free_flic() {
 	COUT("Freeing " << file << ":" << index);
 
 	FORGET_OBJECT(player);
-	FORGET_OBJECT(flic_obj);
 }
 
 bool    ExCineFlic::play_it(Image_window *win, uint32 t) {
