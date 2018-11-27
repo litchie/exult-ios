@@ -464,7 +464,7 @@ bool U7exists(
     const char *fname
 );
 
-inline bool U7exists(std::string fname) {
+inline bool U7exists(const std::string& fname) {
 	return U7exists(fname.c_str());
 }
 
