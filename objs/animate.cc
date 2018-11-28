@@ -272,8 +272,10 @@ Animator *Animator::create(
 
 Animator::~Animator(
 ) {
-	while (gwin->get_tqueue()->remove(this))
-		;
+    if (gwin->get_tqueue()) {
+	    while (gwin->get_tqueue()->remove(this))
+		    ;
+	}
 	if (objsfx) {
 		objsfx->stop();
 		delete objsfx;
