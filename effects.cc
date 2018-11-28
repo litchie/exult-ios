@@ -1777,9 +1777,10 @@ Fire_field_effect::Fire_field_effect(
     Tile_coord const &t         // Where to create it.
 ) {
     Game_object_shared field_shared = gmap->create_ireg_object(895, 0);
-	field = field_shared.get();
-	field->set_flag(Obj_flags::is_temporary);
-	field->move(t.tx, t.ty, t.tz);
+	Game_object *field_obj = field_shared.get();
+	field = Game_object_weak(field_shared);
+	field_obj->set_flag(Obj_flags::is_temporary);
+	field_obj->move(t.tx, t.ty, t.tz);
 	gwin->get_tqueue()->add(Game::get_ticks() + 3000 + rand() % 2000, this,
 	                        0L);
 }
@@ -1792,18 +1793,20 @@ void Fire_field_effect::handle_event(
     unsigned long curtime,      // Current time of day.
     uintptr udata
 ) {
-	int frnum = field->get_framenum();
+	Game_object *field_obj = obj_from_weak(field);
+	int frnum = field_obj ? field_obj->get_framenum() : 0;
 	if (frnum == 0) {       // All done?
-		field->remove_this();
+	    if (field_obj)
+		    field_obj->remove_this();
 		eman->remove_effect(this);
 	} else {
 		if (frnum > 3) {    // Starting to wind down?
-			field->as_egg()->stop_animation();
+			field_obj->as_egg()->stop_animation();
 			frnum = 3;
 		} else
 			frnum--;
-		gwin->add_dirty(field);
-		field->set_frame(frnum);
+		gwin->add_dirty(field_obj);
+		field_obj->set_frame(frnum);
 		gwin->get_tqueue()->add(curtime + gwin->get_std_delay(),
 		                        this, udata);
 	}
