@@ -902,7 +902,7 @@ void Usecode_internal::remove_item(
 		}
 	}
     Game_object_shared keep;
-    obj->remove_this(&keep);
+    obj->remove_this(obj->as_actor() ? &keep : NULL);
 }
 
 /*
