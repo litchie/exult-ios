@@ -503,9 +503,15 @@ void Explosion_effect::handle_event(
 		Game_object_vector vec; // Find objects near explosion.
 		Game_object::find_nearby(vec, pos, c_any_shapenum,
 		                         width / (2 * c_tilesize), 0);
-		for (Game_object_vector::const_iterator it = vec.begin(); it != vec.end(); ++it) {
-			Game_object *obj = *it;
-			obj->attacked(obj_from_weak(attacker), weapon, projectile, true);
+        // Objects could disappear due to Avatar being killed and teleported.
+		vector<Game_object_weak> cvec(vec.size());
+		Game_object::obj_vec_to_weak(cvec, vec);
+		for (vector<Game_object_weak>::const_iterator it = cvec.begin();
+													  it != cvec.end(); ++it) {
+			Game_object *obj = obj_from_weak(*it);
+			if (obj)
+			    obj->attacked(obj_from_weak(attacker), weapon, projectile,
+													   		   true);
 		}
 	}
 	Sprites_effect::handle_event(curtime, udata);
