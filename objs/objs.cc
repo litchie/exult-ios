@@ -719,6 +719,20 @@ int Game_object::find_nearby(
 }
 
 /*
+ *  Convert a vector to weak objects.
+ */
+void Game_object::obj_vec_to_weak(
+    std::vector<Game_object_weak> &dest,
+	Game_object_vector &src
+) {
+	for (Game_object_vector::const_iterator it = src.begin(); it != src.end();
+											   	 			  ++it) {
+		Game_object *obj = *it;
+		dest.push_back(weak_from_obj(obj));
+	}
+}
+
+/*
  *  For sorting closest to a given spot.
  */
 class Object_closest_sorter {
