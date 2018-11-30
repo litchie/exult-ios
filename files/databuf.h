@@ -51,7 +51,12 @@ public:
 	virtual uint32 read4high() = 0;
 	virtual void read(void *, size_t) = 0;
 	virtual void read(std::string&, size_t) = 0;
-	virtual IDataSource *read(size_t) = 0;
+	std::unique_ptr<unsigned char[]> read(size_t N) {
+		std::unique_ptr<unsigned char[]> ptr = std::make_unique<unsigned char[]>(N);
+		read(ptr.get(), N);
+		return ptr;
+	}
+	virtual std::unique_ptr<IDataSource> makeSource(size_t) = 0;
 
 	virtual void seek(size_t) = 0;
 	virtual void skip(std::streamoff) = 0;
@@ -123,7 +128,7 @@ public:
 		in->read(&s[0], len);
 	}
 
-	IDataSource *read(size_t len) override final;
+	std::unique_ptr<IDataSource> makeSource(size_t len) override final;
 
 	void seek(size_t pos) override final {
 		in->seekg(pos);
@@ -246,7 +251,7 @@ public:
 		buf_ptr += len;
 	}
 
-	IDataSource *read(size_t len) override final;
+	std::unique_ptr<IDataSource> makeSource(size_t len) override final;
 
 	void seek(size_t pos) override final {
 		buf_ptr = buf + pos;
@@ -337,20 +342,20 @@ public:
 	}
 };
 
-inline IDataSource *IStreamDataSource::read(size_t len) {
+inline std::unique_ptr<IDataSource> IStreamDataSource::makeSource(size_t len) {
 	char *buf = new char[len];
 	read(buf, len);
-	return new IBufferDataSource(buf, len);
+	return std::make_unique<IBufferDataSource>(buf, len);
 }
 
-inline IDataSource *IBufferDataView::read(size_t len) {
+inline std::unique_ptr<IDataSource> IBufferDataView::makeSource(size_t len) {
 	size_t avail = getSize() - getPos();
 	if (avail < len) {
 		len = avail;
 	}
 	const unsigned char *ptr = getPtr();
 	skip(len);
-	return new IBufferDataView(ptr, len);
+	return std::make_unique<IBufferDataView>(ptr, len);
 }
 
 /**
