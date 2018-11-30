@@ -66,7 +66,7 @@ class Palette;
  *  A shape from "shapes.vga":
  */
 class Shape_frame {
-	unsigned char *data;        // The actual data.
+	std::unique_ptr<unsigned char[]> data;        // The actual data.
 #ifdef HAVE_OPENGL
 	GL_texshape *glshape;       // OpenGL texture for painting this.
 	GL_texshape *gloutline;     // OpenGL texture for painting outline of this.
@@ -94,7 +94,7 @@ public:
 	friend class GL_texshape;
 	friend class GL_manager;
 	Shape_frame()
-		: data(0),
+		:
 #ifdef HAVE_OPENGL
 		  glshape(0), gloutline(0),
 #endif
@@ -108,14 +108,14 @@ public:
 		glman = gl;
 	}
 	unsigned char *get_data() {
-		return data;
+		return data.get();
 	}
 	unsigned char get_topleft_pix(unsigned char def = 255) const;
 	bool is_rle() const {
 		return rle;
 	}
 	// Convert raw image to RLE.
-	static unsigned char *encode_rle(unsigned char *pixels, int w, int h,
+	static std::unique_ptr<unsigned char[]> encode_rle(unsigned char *pixels, int w, int h,
 	                                 int xoff, int yoff, int &datalen);
 	// Read in shape/frame.
 	unsigned int read(IDataSource *shapes, uint32 shapeoff,
@@ -177,17 +177,22 @@ public:
 		return datalen;
 	}
 	int is_empty() const {
-		return data[0] == 0 && data[1] == 0;
+		return !data || (data[0] == 0 && data[1] == 0);
 	}
-	virtual ~Shape_frame() {
 #ifdef HAVE_OPENGL
+	virtual ~Shape_frame() {
 		if (glshape)
 			glshape->disassociate();
 		if (gloutline)
 			gloutline->disassociate();
-#endif
-		delete [] data;
 	}
+#else
+	virtual ~Shape_frame() noexcept = default;
+#endif
+	Shape_frame(const Shape_frame&) = delete;
+	Shape_frame& operator=(const Shape_frame&) = delete;
+	Shape_frame(Shape_frame&&) noexcept = default;
+	Shape_frame& operator=(Shape_frame&&) noexcept = default;
 };
 
 /*
@@ -318,7 +323,11 @@ public:
 	bool get_imported_shape_data(int shnum, imported_map &data);
 	void reset();
 	void reset_imports();
-	virtual ~Vga_file();
+	virtual ~Vga_file() noexcept;
+	Vga_file(const Vga_file&) = delete;
+	Vga_file& operator=(const Vga_file&) = delete;
+	Vga_file(Vga_file&&) noexcept = default;
+	Vga_file& operator=(Vga_file&&) noexcept = default;
 	int get_num_shapes() const {
 		return shapes.size();
 	}

@@ -101,7 +101,7 @@ unique_ptr<Shape_frame> Shape_frame::reflect(
 	ibuf.fill8(255);       // Fill with 'transparent' pixel.
 	// Figure origin.
 	int xoff = reflected->xleft, yoff = reflected->yabove;
-	const uint8 *in = data;   // Point to data, and draw.
+	const uint8 *in = data.get();   // Point to data, and draw.
 	int scanlen;
 	while ((scanlen = Read2(in)) != 0) {
 		// Get length of scan line.
@@ -203,7 +203,7 @@ unsigned char Shape_frame::get_topleft_pix(
 		return def;
 	else if (!rle)
 		return data[0];
-	unsigned char *ptr = data;
+	unsigned char *ptr = data.get();
 	int scanlen = (ptr[1] << 8) | ptr[0];
 	if (!scanlen)
 		return def;
@@ -225,7 +225,6 @@ void Shape_frame::create_rle(
     unsigned char *pixels,      // 8-bit uncompressed data.
     int w, int h            // Width, height.
 ) {
-	delete [] data;         // Delete old data if there.
 	data = encode_rle(pixels, w, h, xleft, yabove, datalen);
 }
 
@@ -235,7 +234,7 @@ void Shape_frame::create_rle(
  *  Output: ->allocated RLE data.
  */
 
-unsigned char *Shape_frame::encode_rle(
+unique_ptr<unsigned char[]> Shape_frame::encode_rle(
     unsigned char *pixels,      // 8-bit uncompressed data.
     int w, int h,           // Width, height.
     int xoff, int yoff,     // Origin (xleft, yabove).
@@ -297,8 +296,8 @@ unsigned char *Shape_frame::encode_rle(
 		cout << "create_rle: datalen: " << datalen << " w: " << w
 		     << " h: " << h << endl;
 #endif
-	unsigned char *data = new unsigned char[datalen];
-	memcpy(data, buf, datalen);
+	unique_ptr<unsigned char[]> data = make_unique<unsigned char[]>(datalen);
+	memcpy(data.get(), buf, datalen);
 	delete [] buf;
 	return data;
 }
@@ -321,8 +320,8 @@ Shape_frame::Shape_frame(
 	if (!rle) {
 		assert(w == c_tilesize && h == c_tilesize);
 		datalen = c_num_tile_bytes;
-		data = new unsigned char[c_num_tile_bytes];
-		memcpy(data, pixels, c_num_tile_bytes);
+		data = make_unique<unsigned char[]>(c_num_tile_bytes);
+		memcpy(data.get(), pixels, c_num_tile_bytes);
 	} else
 		data = encode_rle(pixels, w, h, xleft, yabove, datalen);
 }
@@ -376,10 +375,8 @@ unsigned int Shape_frame::read(
 	xleft = yabove = c_tilesize;        // Just an 8x8 bitmap.
 	xright = ybelow = -1;
 	shapes->seek(shapeoff + framenum * c_num_tile_bytes);
-	delete [] data;
-	data = new unsigned char[c_num_tile_bytes]; // Read in 8x8 pixels.
 	datalen = c_num_tile_bytes;
-	shapes->read(reinterpret_cast<char *>(data), c_num_tile_bytes);
+	data = shapes->read(c_num_tile_bytes);
 	return (shapelen / c_num_tile_bytes);   // That's how many frames.
 }
 
@@ -398,10 +395,8 @@ void Shape_frame::get_rle_shape(
 	yabove = shapes->read2();
 	ybelow = shapes->read2();
 	len -= 8;           // Subtract what we just read.
-	delete [] data;
-	data = new unsigned char[len + 2];  // Allocate and read data.
 	datalen = len + 2;
-	shapes->read(reinterpret_cast<char *>(data), len);
+	data = shapes->read(len);
 	data[len] = 0;          // 0-delimit.
 	data[len + 1] = 0;
 	rle = true;
@@ -422,7 +417,7 @@ void Shape_frame::paint_rle(
 		if (!win->is_visible(xoff - xleft, yoff - yabove, w, h))
 			return;
 
-	win->paint_rle(xoff, yoff, data);
+	win->paint_rle(xoff, yoff, data.get());
 }
 
 /*
@@ -441,7 +436,7 @@ void Shape_frame::paint_rle_remapped(
 		if (!win->is_visible(xoff - xleft, yoff - yabove, w, h))
 			return;
 
-	win->paint_rle_remapped(xoff, yoff, data, trans);
+	win->paint_rle_remapped(xoff, yoff, data.get(), trans);
 }
 
 /*
@@ -455,7 +450,7 @@ void Shape_frame::paint(
 	if (rle)
 		paint_rle(win, xoff, yoff);
 	else
-		win->copy8(data, c_tilesize, c_tilesize,
+		win->copy8(data.get(), c_tilesize, c_tilesize,
 		           xoff - c_tilesize, yoff - c_tilesize);
 }
 
@@ -478,7 +473,7 @@ void Shape_frame::paint_rle_translucent(
 			return;
 	// First pix. value to transform.
 	const int xfstart = 0xff - xfcnt;
-	const uint8 *in = data;
+	const uint8 *in = data.get();
 	int scanlen;
 	while ((scanlen = Read2(in)) != 0) {
 		// Get length of scan line.
@@ -535,7 +530,7 @@ void Shape_frame::paint_rle_transformed(
 		if (!win->is_visible(xoff - xleft,
 		                     yoff - yabove, w, h))
 			return;
-	const uint8 *in = data;
+	const uint8 *in = data.get();
 	int scanlen;
 	while ((scanlen = Read2(in)) != 0) {
 		// Get length of scan line.
@@ -581,7 +576,7 @@ void Shape_frame::paint_rle_outline(
 			return;
 	int firsty = -10000;        // Finds first line.
 	int lasty = -10000;
-	const uint8 *in = data;
+	const uint8 *in = data.get();
 	int scanlen;
 	while ((scanlen = Read2(in)) != 0) {
 		// Get length of scan line.
@@ -635,7 +630,7 @@ int Shape_frame::has_point(
 		return x >= -xleft && x < xright &&
 		       y >= -yabove && y < ybelow;
 	}
-	const uint8 *in = data;       // Point to data.
+	const uint8 *in = data.get();       // Point to data.
 	int scanlen;
 	while ((scanlen = Read2(in)) != 0) {
 		// Get length of scan line.
@@ -685,7 +680,7 @@ void Shape_frame::set_offset(
 	ybelow = new_ybelow;
 	xleft = w - xright - 1;     // Update other dims.
 	yabove = h - ybelow - 1;
-	uint8 *in = data;       // Got to update all scan lines!
+	uint8 *in = data.get();       // Got to update all scan lines!
 	int scanlen;
 	while ((scanlen = MRead2(in)) != 0) {
 		// Get length of scan line.
@@ -876,7 +871,7 @@ void Shape::write(
 			Write2(out, frame->yabove);
 			Write2(out, frame->ybelow);
 		}
-		out.write(reinterpret_cast<char *>(frame->data), frame->datalen);   // The frame data.
+		out.write(reinterpret_cast<char *>(frame->data.get()), frame->datalen);   // The frame data.
 	}
 	if (!flat) {
 		unsigned long pos = out.tellp();// Ending position.
@@ -1070,7 +1065,7 @@ void Shape_file::save(ODataSource *shape_source) {
 		shape_source->write2(frames[i]->xleft);
 		shape_source->write2(frames[i]->yabove);
 		shape_source->write2(frames[i]->ybelow);
-		shape_source->write(reinterpret_cast<char *>(frames[i]->data), frames[i]->get_size());
+		shape_source->write(reinterpret_cast<char *>(frames[i]->data.get()), frames[i]->get_size());
 	}
 	delete [] offsets;
 }
@@ -1245,9 +1240,8 @@ void Vga_file::reset_imports() {
 	imported_shape_table.clear();
 }
 
-Vga_file::~Vga_file() {
-	reset();
-	reset_imports();
+// Out-of-line definition to avoid more dependencies on databuf.h.
+Vga_file::~Vga_file() noexcept {
 }
 
 /*
