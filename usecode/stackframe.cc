@@ -41,7 +41,7 @@ Stack_frame::Stack_frame(Usecode_function *fun,
 	: function(fun), ip(0), data(0), externs(0), code(0), endp(0),
 	  line_number(-1), call_chain(chain), call_depth(depth),
 	  num_externs(0), num_args(0), num_vars(0), locals(0), eventid(event),
-	  caller_item(caller), save_sp(0) {
+	  caller_item(shared_from_obj(caller)), save_sp(0) {
 	ip = function->code;
 	endp = ip + function->len;
 
@@ -85,7 +85,7 @@ std::ostream &operator<<(std::ostream &out, Stack_frame &frame) {
 	    << std::hex << std::setw(4) << std::setfill('0')
 	    << static_cast<int>(frame.ip - frame.code) << " in 0x"
 	    << std::setw(4) << frame.function->id
-	    << "(obj=" << std::setw(8) << reinterpret_cast<uintptr>(frame.caller_item)
+	    << "(obj=" << std::setw(8) << reinterpret_cast<uintptr>(frame.caller_item.get())
 	    << ",ev=" << frame.eventid
 	    << std::setfill(' ') << std::dec;
 

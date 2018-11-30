@@ -229,7 +229,7 @@ bool Usecode_internal::call_function(int funcid,
 		chain = parent->call_chain;
 
 		if (caller == 0)
-			caller = parent->caller_item; // use parent's
+			caller = parent->caller_item.get(); // use parent's
 	}
 
 	Stack_frame *frame = new Stack_frame(fun, eventid, caller, chain, depth);
@@ -482,6 +482,11 @@ inline void Usecode_internal::pushref(Game_object *obj) {
 	push(v);
 }
 
+inline void Usecode_internal::pushref(Game_object_shared obj) {
+	Usecode_value v(obj);
+	push(v);
+}
+
 inline void Usecode_internal::pushi(long val) {     // Push/pop integers.
 	Usecode_value v(val);
 	push(v);
@@ -528,7 +533,7 @@ Game_object *Usecode_internal::get_item(
 		// Special case:  palace guards, Time Lord.
 		if (val < 0x400 && !itemref.is_array() &&
 		        caller_item && ((GAME_BG && val == 0x269) || val == caller_item->get_shapenum()))
-			obj = caller_item;
+			obj = caller_item.get();
 #if 0
 		// NO! BAD! Causes weird bug with Celia & slain wolf (and maybe others).
 		else if (val < gwin->get_num_npcs() &&  // Try as NPC.
@@ -1781,7 +1786,7 @@ Usecode_internal::Usecode_internal(
 	saved_pos(-1, -1, -1),
 	saved_map(-1),
 	String(0), telekenesis_fun(-1), stack(new Usecode_value[1024]),
-	intercept_item(0), intercept_tile(0), temp_to_be_deleted(0)
+	intercept_item(0), intercept_tile(0)
 #ifdef USECODE_DEBUGGER
 	, on_breakpoint(false)
 #endif
@@ -3138,7 +3143,7 @@ bool Usecode_internal::in_usecode_for(
 	for (std::deque<Stack_frame *>::iterator iter = call_stack.begin();
 	        iter != call_stack.end(); ++iter) {
 		Stack_frame *frame = *iter;
-		if (frame->eventid == event && frame->caller_item == item)
+		if (frame->eventid == event && frame->caller_item.get() == item)
 			return true;
 	}
 	return false;

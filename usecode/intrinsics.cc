@@ -875,7 +875,7 @@ USECODE_INTRINSIC(click_on_item) {
 		// changed to use the intercept_item instead, setting it
 		// to the caster's target and restoring the old value after
 		// it is used.
-		obj = caller_item;
+		obj = caller_item.get();
 		t = obj->get_tile();
 	} else {
 		int x, y;       // Allow dragging while here:
@@ -1227,7 +1227,7 @@ USECODE_INTRINSIC(summon) {
 	                                       Map_chunk::inside : Map_chunk::outside);
 	if (dest.tx == -1)
 		return Usecode_value(0);
-	Actor *npc = as_actor(caller_item);
+	Actor *npc = as_actor(caller_item.get());
 	int align = Actor::good;
 	if (npc && !npc->is_in_party())
 		align = npc->get_effective_alignment();

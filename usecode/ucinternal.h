@@ -80,7 +80,7 @@ class Usecode_internal : public Usecode_machine {
 	std::map<int, uint32> timers;   // Each has time in hours when set.
 	int speech_track;       // Set/read by some intrinsics.
 	Text_gump *book;        // Book/scroll being displayed.
-	Game_object *caller_item;   // Item this is being called on.
+	Game_object_shared caller_item;   // Item this is being called on.
 	vector<Game_object_shared> last_created; // Stack of last items created with
 	//   intrins. x24.
 	Actor *path_npc;        // Last NPC in path_run_usecode().
@@ -105,6 +105,7 @@ class Usecode_internal : public Usecode_machine {
 	Usecode_value pop();
 	Usecode_value peek();
 	void pushref(Game_object *obj); // Push itemref
+  void pushref(Game_object_shared obj);
 	void pushi(long val);       // Push/pop integers.
 	int popi();
 	// Push/pop strings.
@@ -416,7 +417,6 @@ class Usecode_internal : public Usecode_machine {
 
 	Game_object *intercept_item;
 	Tile_coord *intercept_tile;
-	Game_object *temp_to_be_deleted;
 
 	// execution functions
 	bool call_function(int funcid, int event, Game_object *caller = 0,
