@@ -149,7 +149,6 @@ int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned l
 				}
 				// Set palette
 				palette->set_palette(colors);
-				Set_glpalette();
 				if (thispal != nextpal) {
 					thispal = nextpal;
 					changepal = true;
@@ -244,13 +243,6 @@ int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned l
 		ticks += fli_speed * 10;
 
 		if (!dont_show && !skip_frame) {
-#ifdef HAVE_OPENGL
-			if (GL_manager::get_instance()) {
-				Shape_frame frame(win->get_ibuf()->get_bits(), win->get_game_width(),
-				                  win->get_game_height(), 0, 0, true);
-				GL_manager::get_instance()->paint(&frame, 0, 0);
-			}
-#endif
 			win->show();
 		}
 	}

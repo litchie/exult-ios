@@ -594,8 +594,8 @@ int Gump_manager::do_modal_gump(
 		while (!escaped && !gump->is_done() && SDL_PollEvent(&event))
 			escaped = !handle_modal_gump_event(gump, event);
 
-		if (gump->run() || gwin->is_dirty() || GL_manager::get_instance()) {
-			gwin->paint();  // OpenGL?  Paint each cycle.
+		if (gump->run() || gwin->is_dirty()) {
+			gwin->paint();  // Paint each cycle.
 			if (paint)
 				paint->paint();
 		}

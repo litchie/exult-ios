@@ -27,9 +27,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 #include "chunkter.h"
 #include "gamewin.h"
-#ifdef INCL_OPENGL
-#include "glshape.h"
-#endif
 
 #include <cstring>
 
@@ -102,7 +99,7 @@ Chunk_terrain::Chunk_terrain(
     unsigned char *data,        // Chunk data.
     bool v2_chunks          // 3 bytes/shape.
 ) : undo_shapes(0),
-	num_clients(0), modified(false), rendered_flats(0), glflats(0),
+	num_clients(0), modified(false), rendered_flats(0),
 	render_queue_next(0), render_queue_prev(0) {
 	for (int tiley = 0; tiley < c_tiles_per_chunk; tiley++)
 		for (int tilex = 0; tilex < c_tiles_per_chunk; tilex++) {
@@ -128,7 +125,7 @@ Chunk_terrain::Chunk_terrain(
 Chunk_terrain::Chunk_terrain(
     const Chunk_terrain &c2
 ) : undo_shapes(0),
-	num_clients(0), modified(true), rendered_flats(0), glflats(0),
+	num_clients(0), modified(true), rendered_flats(0),
 	render_queue_next(0), render_queue_prev(0) {
 	for (int tiley = 0; tiley < c_tiles_per_chunk; tiley++)
 		for (int tilex = 0; tilex < c_tiles_per_chunk; tilex++)
@@ -143,9 +140,6 @@ Chunk_terrain::~Chunk_terrain(
 ) {
 	delete [] undo_shapes;
 	delete rendered_flats;
-#ifdef HAVE_OPENGL
-	delete glflats;
-#endif
 	remove_from_queue();
 }
 
@@ -225,7 +219,7 @@ Image_buffer8 *Chunk_terrain::render_flats(
 		if (queue_size > Figure_queue_size()) {
 			// Grown too big.  Remove last.
 			Chunk_terrain *last = render_queue->render_queue_prev;
-			last->free_rendered_flats(false);
+			last->free_rendered_flats();
 			render_queue->render_queue_prev =
 			    last->render_queue_prev;
 			last->render_queue_prev->render_queue_next =
@@ -239,13 +233,6 @@ Image_buffer8 *Chunk_terrain::render_flats(
 	for (int tiley = 0; tiley < c_tiles_per_chunk; tiley++)
 		for (int tilex = 0; tilex < c_tiles_per_chunk; tilex++)
 			paint_tile(tilex, tiley);
-#ifdef HAVE_OPENGL
-	delete glflats;
-	glflats = 0;
-	GL_manager *glman = GL_manager::get_instance();
-	if (glman)          // Using OpenGL?
-		glflats = glman->create(rendered_flats);
-#endif
 	return rendered_flats;
 }
 
@@ -253,21 +240,9 @@ Image_buffer8 *Chunk_terrain::render_flats(
  *  Free pre-rendered landscape.
  */
 
-void Chunk_terrain::free_rendered_flats(
-    bool rotation
-) {
-#ifdef HAVE_OPENGL
-	if (rotation && glflats && !glflats->has_palette_rotation())
-		return;
-#else
-	ignore_unused_variable_warning(rotation);
-#endif
+void Chunk_terrain::free_rendered_flats() {
 	delete rendered_flats;
 	rendered_flats = 0;
-#ifdef HAVE_OPENGL
-	delete glflats;
-	glflats = 0;
-#endif
 }
 
 /*

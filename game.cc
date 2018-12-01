@@ -301,7 +301,6 @@ bool Game::show_menu(bool skip) {
 				}
 			}
 			menu->set_selection(2);
-			menu->set_background(get_menu_shape());
 		}
 
 		bool created = false;
@@ -430,44 +429,6 @@ void Game::clear_avskin() {
 	av_skin = -1;
 }
 
-void Game::disable_direct_gl_render() {
-#ifdef HAVE_OPENGL
-	if (GL_manager::get_instance())
-		Shape_frame::set_to_render(win->get_ib8(), 0);
-#endif
-}
-
-void Game::enable_direct_gl_render() {
-#ifdef HAVE_OPENGL
-	if (GL_manager::get_instance())
-		Shape_frame::set_to_render(win->get_ib8(), GL_manager::get_instance());
-#endif
-}
-
-void Game::non_gl_blit() {
-#ifdef HAVE_OPENGL
-	if (!GL_manager::get_instance())
-#endif
-		win->show();
-}
-
-void Game::gl_clear_win() {
-#ifdef HAVE_OPENGL
-	if (GL_manager::get_instance())
-		win->get_ib8()->fill8(0);
-#endif
-}
-
-#ifdef HAVE_OPENGL
-static inline void Reset_gl_rotates() {
-	if (GL_manager::get_instance()) {
-		GL_manager::get_instance()->set_palette_rotation(224, 254);
-		// Want to reset them all.
-		Set_glpalette();
-	}
-}
-#endif
-
 // wait ms milliseconds, while cycling colours startcol to startcol+ncol-1
 // return 0 if time passed completly, 1 if user pressed any key or mouse button,
 // and 2 if user pressed Return/Enter
@@ -489,20 +450,6 @@ int wait_delay(int ms, int startcol, int ncol, int rotspd) {
 	int rot_speed = rotspd << (gwin->get_win()->fast_palette_rotate() ? 0 : 1);
 
 	static unsigned long last_rotate = 0;
-#ifdef HAVE_OPENGL
-	Shape_frame screen;
-	if (ncol != 0 && GL_manager::get_instance()) {
-		int w = gwin->get_width(), h = gwin->get_height();
-		Image_buffer8 *buf = gwin->get_win()->get_ib8();
-		screen = Shape_frame(buf->get_bits(), w, h, 0, 0, true);
-		GL_manager::get_instance()->set_palette_rotation(startcol,
-		        startcol + abs(ncol) - 1);
-		// Want to reset them all.
-		Set_glpalette();
-		GL_manager::get_instance()->paint(&screen, 0, 0);
-		gwin->get_win()->show();
-	}
-#endif
 
 	for (int i = 0; i < loops; i++) {
 		unsigned long ticks1 = SDL_GetTicks();
@@ -537,23 +484,14 @@ int wait_delay(int ms, int startcol, int ncol, int rotspd) {
 					break;
 				case SDLK_RETURN:
 				case SDLK_KP_ENTER:
-#ifdef HAVE_OPENGL
-					Reset_gl_rotates();
-#endif
 					return 2;
 				default:
-#ifdef HAVE_OPENGL
-					Reset_gl_rotates();
-#endif
 					return 1;
 				}
 				break;
 			case SDL_MOUSEBUTTONDOWN:
 				break;
 			case SDL_MOUSEBUTTONUP:
-#ifdef HAVE_OPENGL
-				Reset_gl_rotates();
-#endif
 				return 1;
 			default:
 				break;
@@ -568,19 +506,9 @@ int wait_delay(int ms, int startcol, int ncol, int rotspd) {
 			gwin->get_win()->rotate_colors(startcol, ncol, 1);
 			while (ticks2 > last_rotate + rot_speed)
 				last_rotate += rot_speed;
-#ifdef HAVE_OPENGL
-			if (GL_manager::get_instance()) {
-				Set_glpalette(0, true);
-				//Shape_manager::get_instance()->paint_shape(0, 0, &screen);
-				GL_manager::get_instance()->paint(&screen, 0, 0);
-			}
-#endif
 			gwin->get_win()->show();
 		}
 	}
 
-#ifdef HAVE_OPENGL
-	Reset_gl_rotates();
-#endif
 	return 0;
 }

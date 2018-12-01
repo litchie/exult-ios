@@ -443,19 +443,10 @@ void Game_render::paint_chunk_flats(
 	Game_window *gwin = Game_window::get_instance();
 	Map_chunk *olist = gwin->map->get_chunk(cx, cy);
 	// Paint flat tiles.
-#ifdef HAVE_OPENGL
-	if (GL_manager::get_instance()) { // OpenGL rendering?
-		Chunk_terrain *terrain = olist->get_terrain();
-		if (terrain)
-			terrain->get_glflats()->paint(xoff, yoff);
-	} else
-#endif
-	{
-		Image_buffer8 *cflats = olist->get_rendered_flats();
-		if (cflats)
-			gwin->win->copy8(cflats->get_bits(),
-			                 c_chunksize, c_chunksize, xoff, yoff);
-	}
+	Image_buffer8 *cflats = olist->get_rendered_flats();
+	if (cflats)
+		gwin->win->copy8(cflats->get_bits(),
+							c_chunksize, c_chunksize, xoff, yoff);
 }
 
 /*

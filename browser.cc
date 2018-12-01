@@ -113,8 +113,7 @@ void ShapeBrowser::browse_shapes() {
 			} else
 				pal.load(pal_tuple.str, patch_tuple.str, pal_tuple.num);
 
-			if (GL_manager::get_instance())
-				pal.apply();
+			pal.apply();
 			font->paint_text_fixedwidth(ibuf, "Show [K]eys", 2, maxy - 50, 8);
 
 			snprintf(buf, 255, "VGA File: '%s'", fname);
@@ -175,11 +174,7 @@ void ShapeBrowser::browse_shapes() {
 			} else
 				font->draw_text(ibuf, centerx - 20, centery - 5, "No Shape");
 
-
-			if (GL_manager::get_instance())
-				gwin->get_win()->show();
-			else
-				pal.apply();
+			pal.apply();
 			redraw = false;
 		}
 		SDL_WaitEvent(&event);

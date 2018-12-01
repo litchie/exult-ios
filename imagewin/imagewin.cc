@@ -49,15 +49,6 @@ Boston, MA  02111-1307, USA.
 #include "BilinearScaler.h"
 #include "PointScaler.h"
 
-#ifdef HAVE_OPENGL
-#ifdef MACOSX
-#include <OpenGL/gl.h>
-#else
-#include <GL/gl.h>
-#endif
-#include "shapes/glshape.h"
-#endif
-
 #include "SDL.h"
 
 #include "Configuration.h"
@@ -86,7 +77,6 @@ const Image_window::ScalerConst Image_window::Hq4x("Hq4x");
 const Image_window::ScalerConst Image_window::_2xBR("2xBR");
 const Image_window::ScalerConst Image_window::_3xBR("3xBR");
 const Image_window::ScalerConst Image_window::_4xBR("4xBR");
-const Image_window::ScalerConst Image_window::OpenGL("OpenGL");
 const Image_window::ScalerConst Image_window::NumScalers(0);
 
 Image_window::ScalerVector Image_window::p_scalers;
@@ -250,18 +240,6 @@ Image_window::ScalerVector::ScalerVector() {
 		0
 	};
 	push_back(_4xbr);
-#endif
-
-#ifdef HAVE_OPENGL
-	const ScalerInfo opengl = {
-		"OpenGL", 0xFFFFFFFF, 0,
-		&Image_window::show_scaledOpenGL,
-		&Image_window::show_scaledOpenGL,
-		&Image_window::show_scaledOpenGL,
-		&Image_window::show_scaledOpenGL,
-		&Image_window::show_scaledOpenGL
-	};
-	push_back(opengl);
 #endif
 }
 
@@ -627,7 +605,7 @@ void Image_window::create_surface(
 	ibuf->width = draw_surface->w;
 	ibuf->height = draw_surface->h;
 
-	if (draw_surface != display_surface && scaler != OpenGL) {
+	if (draw_surface != display_surface) {
 		ibuf->width -= guard_band * 2;
 		ibuf->height -= guard_band * 2;
 	}
@@ -640,7 +618,8 @@ void Image_window::create_surface(
 	ibuf->offset_y = (get_full_height() - get_game_height()) / 2;
 	ibuf->bits = static_cast<unsigned char *>(draw_surface->pixels) - get_start_x() - get_start_y() * ibuf->line_width;
 	// Scaler guardband is in effect
-	if (draw_surface != display_surface && scaler != OpenGL) ibuf->bits += guard_band + ibuf->line_width * guard_band;
+	if (draw_surface != display_surface)
+		ibuf->bits += guard_band + ibuf->line_width * guard_band;
 }
 
 /*
@@ -771,56 +750,6 @@ bool Image_window::create_scale_surfaces(int w, int h, int bpp) {
 */
 
 bool Image_window::try_scaler(int w, int h) {
-	// OpenGL
-	if (scaler == OpenGL) {
-#ifdef HAVE_OPENGL
-		// Get info. about video.
-		const SDL_VideoInfo *vinfo = SDL_GetVideoInfo();
-		if (!vinfo) {
-			cout << "SDL_GetVideoInfo() failed: " << SDL_GetError()
-			     << endl;
-			return false;
-		}
-		// Set up SDL video flags.
-		int video_flags = SDL_OPENGL | SDL_GL_DOUBLEBUFFER |
-		                  SDL_HWPALETTE | SDL_RESIZABLE |
-		                  (fullscreen ? SDL_FULLSCREEN : 0);
-		// Can surface be in video RAM?
-		if (vinfo->hw_available)
-			video_flags |= SDL_HWSURFACE;
-		else
-			video_flags |= SDL_SWSURFACE;
-		if (vinfo->blit_hw) // Hardware blits?
-			video_flags |= SDL_HWACCEL;
-		// Want double-buffering.
-		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-		// Allocate surface.
-		int hwdepth = vinfo->vfmt->BitsPerPixel;
-		// +++++For now create 8-bit surface
-		//   to avoid crashing places we
-		//   haven't converted yet.
-		if ((display_surface = inter_surface = SDL_SetVideoMode(w, h,
-		                                       hwdepth, video_flags)) != 0 &&
-		        (draw_surface = paletted_surface = SDL_CreateRGBSurface(
-		                            SDL_SWSURFACE, w / scale, h / scale,
-		                            8, 0, 0, 0, 0)) != 0) {
-			inter_width = w;
-			inter_height = h;
-			game_width = draw_surface->w;
-			game_height = draw_surface->h;
-			//show_scaled = &Image_window::show_scaledOpenGL;
-			return true;
-		} else {
-			cerr << "Couldn't allocate surface: " <<  SDL_GetError() << endl;
-			free_surface();
-		}
-#else
-		cerr << "OpenGL not supported" << endl;
-
-#endif
-		scaler = point;
-	}
-
 #if SDL_VERSION_ATLEAST(2, 0, 0)
 	if (true) {
 #else
@@ -938,11 +867,6 @@ void Image_window::show(
 	x -= get_start_x();
 	y -= get_start_y();
 
-	if (scaler == OpenGL) {
-		Image_window::show_scaledOpenGL(x, y, w, h);
-		return;
-	}
-
 	// Increase the area by 4 pixels
 	increase_area(x, y, w, h, 4, 4, 4, 4, get_full_width(), get_full_height());
 
@@ -1039,7 +963,6 @@ void Image_window::show(
 #endif
 }
 
-
 /*
 *   Toggle fullscreen.
 */
@@ -1067,19 +990,6 @@ void Image_window::toggle_fullscreen() {
 
 bool Image_window::screenshot(SDL_RWops *dst) {
 	if (!paletted_surface) return false;
-#ifdef HAVE_OPENGL
-	if (GL_manager::get_instance()) {
-		int width = ibuf->width, height = ibuf->height;
-		GL_manager *glman = GL_manager::get_instance();
-		unsigned char *bits = glman->get_unscaled_rgb(width, height, false, true);
-		SDL_Surface *screenshot_surface = SDL_CreateRGBSurfaceFrom(bits,
-		                                  width, height, 24, 3 * width, 0, 0, 0, 0);
-		bool ret = SavePCX_RW(screenshot_surface, dst, true);
-		SDL_FreeSurface(screenshot_surface);
-		delete [] bits;
-		return ret;
-	}
-#endif
 	return SavePCX_RW(draw_surface, dst, true);
 }
 
@@ -1090,61 +1000,6 @@ void Image_window::set_title(const char *title) {
 	SDL_WM_SetCaption(title, 0);
 #endif
 }
-
-#ifdef HAVE_OPENGL
-/*
-*   Fill a rectangle with an 8-bit value.
-*/
-
-void Image_window::opengl_fill8(
-    unsigned char pix,
-    int srcw, int srch,
-    int destx, int desty
-) {
-	SDL_Color *colors = paletted_surface->format->palette->colors;
-	SDL_Color &color = colors[pix];
-	glDisable(GL_TEXTURE_2D);   // Disable texture-mapping.
-	glPushMatrix();
-	int x = destx;          // Left edge.
-	int y = -(desty + srch);
-	glTranslatef(static_cast<float>(x), static_cast<float>(y), 0);
-	glBegin(GL_QUADS);
-	{
-		glColor3ub(color.r, color.g, color.b);
-		glVertex3i(0, 0, 0);
-		glVertex3i(srcw, 0, 0);
-		glVertex3i(srcw, srch, 0);
-		glVertex3i(0, srch, 0);
-	}
-	glEnd();
-	glPopMatrix();
-}
-
-/*
-*   Apply a translucency table to a rectangle.
-*/
-
-void Image_window::opengl_fill_translucent8(
-    const unsigned char /* val */,    // Not used.
-    int srcw, int srch,
-    int destx, int desty,
-    const Xform_palette &xform        // Transform table.
-) {
-	glDisable(GL_TEXTURE_2D);   // Disable texture-mapping.
-	int x = destx;          // Left edge.
-	int y = -(desty + srch);
-	glBegin(GL_QUADS);
-	{
-		glColor4ub(xform.r, xform.g, xform.b, xform.a);
-		glVertex2i(x, y);
-		glVertex2i(x + srcw, y);
-		glVertex2i(x + srcw, y + srch);
-		glVertex2i(x, y + srch);
-	}
-	glEnd();
-}
-
-#endif
 
 int Image_window::get_display_width() {
 	return display_surface->w;

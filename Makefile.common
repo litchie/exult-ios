@@ -191,7 +191,6 @@ IMAGEWIN_OBJS=\
 	imagewin/imagewin.o \
 	imagewin/iwin8.o \
 	imagewin/savepcx.o \
-	imagewin/scale_gl.o \
 	imagewin/scale_2x.o \
 	imagewin/scale_2xSaI.o \
 	imagewin/scale_bilinear.o \
@@ -213,15 +212,10 @@ IMAGEWIN_OBJS=\
 #NMake Line\
 !if 0
 
-ifndef OPENGL_OBJS
-	OPENGL_OBJS= 
-endif
-
 #NMake Line\
 !else
 
 #NMake Line\
-OPENGL_OBJS= $(OPENGL_OBJS)
 
 #NMake Line\
 !endif
@@ -250,8 +244,7 @@ SHAPES_OBJS= \
 	shapes/shapeinf/objdollinf.o \
 	shapes/shapeinf/sfxinf.o \
 	shapes/shapeinf/warminf.o \
-	shapes/shapeinf/weaponinf.o \
-	$(OPENGL_OBJS)
+	shapes/shapeinf/weaponinf.o
 
 OBJS_OBJS= \
 	objs/animate.o \

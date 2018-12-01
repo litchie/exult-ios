@@ -494,10 +494,7 @@ bool CheatScreen::SharedInput(char *input, int len, int &command, Cheat_Prompt &
 			}
 			return false;
 		}
-		if (GL_manager::get_instance())
-			gwin->get_win()->show();
-		else
-			gwin->paint_dirty();
+		gwin->paint_dirty();
 	}
 	return false;
 }

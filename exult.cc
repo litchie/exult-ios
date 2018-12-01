@@ -81,7 +81,6 @@
 #include "u7drag.h"
 #include "drag.h"
 #include "palette.h"
-#include "glshape.h"
 #include "combat_opts.h"
 #include "U7file.h"
 #include "U7fileman.h"
@@ -1321,16 +1320,8 @@ static void Handle_events(
 			}
 		}
 		if (!lerp || !didlerp) { // No lerping
-#ifdef HAVE_OPENGL
-			// OpenGL?  Repaint all each time.
-			if (GL_manager::get_instance()) {
-				// Show animation every 1/20 sec.
-				if (ticks > last_repaint + 50 || gwin->was_painted())
-					gwin->paint();
-			} else
-#endif
-				if (gwin->is_dirty())   // Note the ending else in the above #if!
-					gwin->paint_dirty();
+			if (gwin->is_dirty())   // Note the ending else in the above #if!
+				gwin->paint_dirty();
 			// Reset it for lerping.
 			last_x = last_y = -1;
 		}
@@ -1350,7 +1341,7 @@ static void Handle_events(
 			while (ticks > last_rotate + rot_speed)
 				last_rotate += rot_speed;
 			// Non palettized needs explicit blit.
-			if (!Set_glpalette(0, true) && !gwin->get_win()->is_palettized())
+			if (!gwin->get_win()->is_palettized())
 				gwin->set_painted();
 		}
 		if (!gwin->show() &&    // Blit to screen if necessary.
@@ -1754,7 +1745,7 @@ static int Get_click(
     int &x, int &y,
     char *chr,          // Char. returned if not null.
     bool drag_ok,           // Okay to drag/close while here.
-    Paintable *paint,       // Paint this each cycle if OpenGL.
+    Paintable *paint,       // Paint this each cycle.
     bool rotate_colors      // If the palette colors should rotate.
 ) {
 	dragging = false;       // Init.
@@ -1771,8 +1762,7 @@ static int Get_click(
 
 		if (rotate_colors) {
 			int rot_speed = 100 << (gwin->get_win()->fast_palette_rotate() ? 0 : 1);
-			if (ticks > last_rotate + rot_speed &&
-			        !GL_manager::get_instance()) {  //++++Disable in OGL.
+			if (ticks > last_rotate + rot_speed) {
 				// (Blits in simulated 8-bit mode.)
 				gwin->get_win()->rotate_colors(0xfc, 3, 0);
 				gwin->get_win()->rotate_colors(0xf8, 4, 0);
@@ -1783,7 +1773,7 @@ static int Get_click(
 				while (ticks > last_rotate + rot_speed)
 					last_rotate += rot_speed;
 				// Non palettized needs explicit blit.
-				if (!Set_glpalette(0, true) && !gwin->get_win()->is_palettized())
+				if (!gwin->get_win()->is_palettized())
 					gwin->set_painted();
 			}
 		}
@@ -1906,11 +1896,7 @@ static int Get_click(
 				}
 #endif
 			}
-		if (GL_manager::get_instance()) {
-			gwin->paint();
-			if (paint)
-				paint->paint();
-		} else if (dragging)
+		if (dragging)
 			gwin->paint_dirty();
 		Mouse::mouse->show();       // Turn on mouse.
 		if (!gwin->show() &&    // Blit to screen if necessary.
@@ -2354,7 +2340,6 @@ void setup_video(bool fullscreen, int setup_video_type, int resx, int resy,
 			scaleval = 4;
 		else if (scaler != Image_window::point &&
 		         scaler != Image_window::interlaced &&
-		         scaler != Image_window::OpenGL &&
 		         scaler != Image_window::bilinear)
 			scaleval = 2;
 		config->value(vidStr + "/display/width", resx, resx * scaleval);

@@ -36,10 +36,6 @@ Boston, MA  02111-1307, USA.
 #include "common_types.h"
 #include "gamma.h"
 #include <limits.h>
-#ifdef HAVE_OPENGL
-#include "shapes/glshape.h"
-#endif
-
 #include <algorithm>
 using std::rotate;
 using std::unique_ptr;
@@ -155,44 +151,6 @@ unique_ptr<unsigned char[]> Image_window8::mini_screenshot() {
 
 	auto buf = make_unique<Uint8[]>(96 * 60);
 	const int w = 3 * 96, h = 3 * 60;
-#ifdef HAVE_OPENGL
-	if (GL_manager::get_instance()) {
-		int width = ibuf->get_width(), height = ibuf->get_height();
-		GL_manager *glman = GL_manager::get_instance();
-		const unsigned char *pixels = glman->get_unscaled_rgb(width, height, true, true);
-		for (int y = 0; y < h; y += 3)
-			for (int x = 0; x < w; x += 3) {
-				//calculate average colour
-				int r = 0, g = 0, b = 0;
-				for (i = 0; i < 3; i++)
-					for (int j = 0; j < 3; j++) {
-						int pix = width * (j + y + (height - h) / 2) +
-						          (i + x + (width  - w) / 2);
-						r += pixels[3 * pix + 0];
-						g += pixels[3 * pix + 1];
-						b += pixels[3 * pix + 2];
-					}
-				r = r / 9;
-				g = g / 9;
-				b = b / 9;
-
-				//find nearest-colour in non-rotating palette
-				int bestdist = INT_MAX, bestindex = -1;
-				for (i = 0; i < 224; i++) {
-					int dist = pow2(colors[3 * i + 0] - r)
-					           + pow2(colors[3 * i + 1] - g)
-					           + pow2(colors[3 * i + 2] - b);
-					if (dist < bestdist) {
-						bestdist = dist;
-						bestindex = i;
-					}
-				}
-				buf[y * w / 9 + x / 3] = bestindex;
-			}
-		delete [] pixels;
-		return buf;
-	}
-#endif
 	const unsigned char *pixels = ibuf->get_bits();
 	int pitch = ibuf->get_line_width();
 

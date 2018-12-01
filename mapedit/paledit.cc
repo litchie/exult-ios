@@ -135,8 +135,7 @@ void Palette_edit::load(
 	else {
 		for (unsigned pnum = 0; pnum < cnt; pnum++) {
 			size_t len;
-			unsigned char *buf = reinterpret_cast<unsigned char *>(
-			                     flex_info->get(pnum, len));
+			unsigned char *buf = flex_info->get(pnum, len);
 			guint32 colors[256];
 			for (size_t i = 0; i < len / 3; i++)
 				colors[i] = (buf[3 * i] << 16) * 4 +

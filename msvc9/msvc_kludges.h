@@ -22,7 +22,6 @@
 #define SIZEOF_INTP 4
 #define DONT_HAVE_HASH_SET
 #define DONT_HAVE_HASH_MAP
-//#define HAVE_OPENGL
 //#define FUDGE_SAMPLE_RATES
 #define USE_FMOPL_MIDI
 #define USE_MT32EMU_MIDI

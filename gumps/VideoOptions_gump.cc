@@ -248,8 +248,7 @@ void VideoOptions_gump::rebuild_dynamic_buttons() {
 	const int max_scales = scaling > 8 && scaling <= 16 ? scaling : 8;
 	const int num_scales = (scaler == Image_window::point ||
 	                        scaler == Image_window::interlaced ||
-	                        scaler == Image_window::bilinear ||
-	                        scaler == Image_window::OpenGL) ? max_scales : 1;
+	                        scaler == Image_window::bilinear) ? max_scales : 1;
 	if (num_scales > 1) {
 		// the text arrays is freed by the destructor of the button
 		std::string *scalingtext = new std::string[num_scales];

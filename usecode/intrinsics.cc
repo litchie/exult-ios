@@ -1449,39 +1449,6 @@ USECODE_INTRINSIC(get_weapon) {
 	return Usecode_value(0);
 }
 
-/*
- *  Class to paint a specific shape frame centered.
- */
-class Paint_rgba_centered : public Paintable, public Game_singletons {
-protected:
-	unsigned char *pixels;
-	int x, y;           // Where to paint.
-	int w, h;           // Dimensions
-public:
-	Paint_rgba_centered(unsigned char *rgbapix, int alpha,
-	                    int w0, int h0, int scale)
-		: pixels(rgbapix), x(0), y(0), w(w0), h(h0) {
-#ifdef HAVE_OPENGL
-		if (alpha >= 0 && alpha < 256)
-			for (int i = 0; i < w * h; i++)
-				pixels[4 * i + 3] = alpha;
-		// Get coords. for centered view.
-		x = (scale * gwin->get_win()->get_full_width() - w) / 2;
-		y = (scale * gwin->get_win()->get_full_height() - h) / 2;
-#else
-	ignore_unused_variable_warning(alpha, scale);
-#endif
-	}
-	virtual ~Paint_rgba_centered() {
-		delete [] pixels;
-	}
-	virtual void paint() {
-#ifdef HAVE_OPENGL
-		gl_paint_rgba_bitmap(pixels, x, y, w, h, 1);
-#endif
-	}
-};
-
 USECODE_INTRINSIC(display_area) {
 	ignore_unused_variable_warning(num_parms);
 	// display_area(tilepos) - used for crystal balls.
@@ -1521,20 +1488,8 @@ USECODE_INTRINSIC(display_area) {
 		                  topy + sprite->get_yabove(), sprite, 1);
 		gwin->set_in_dungeon(save_dungeon);
 		gwin->show();
-		Paint_rgba_centered *paint = 0;
-#ifdef HAVE_OPENGL
-		GL_manager *glman = GL_manager::get_instance();
-		if (glman) {
-			int scale = gwin->get_win()->get_scale_factor();
-			int w = gwin->get_game_width(), h = gwin->get_game_height();
-			unsigned char *rgba_pixels = glman->get_screen_rgba(w, h);
-			paint = new Paint_rgba_centered(rgba_pixels, -1,
-			                                scale * w, scale * h, scale);
-		}
-#endif
 		// Wait for click.
-		Get_click(x, y, Mouse::hand, 0, false, paint);
-		delete paint;
+		Get_click(x, y, Mouse::hand, 0, false, nullptr);
 
 		// BG orrery viewer needs this because it also calls UI_view_tile:
 		gwin->center_view(gwin->get_main_actor()->get_tile());

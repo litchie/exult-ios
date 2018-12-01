@@ -271,22 +271,21 @@ void SI_Game::play_intro() {
 		playfli fli0(INTRO_DAT, PATCH_INTRO, 0);
 		fli0.info();
 
-		disable_direct_gl_render();
 		for (j = 0; j < 20; j++) {
 			next = fli0.play(win, 0, 0, next, j * 5);
-			non_gl_blit();
+			win->show();
 			wait_delay(0, 0, 1);
 		}
 
 		next = fli0.play(win, 0, 0, next, 100);
-		non_gl_blit();
+		win->show();
 
 		if (wait_delay(3000, 0, 1))
 			throw UserBreakException();
 
 		for (j = 20; j; j--) {
 			next = fli0.play(win, 0, 0, next, j * 5);
-			non_gl_blit();
+			win->show();
 			wait_delay(0, 0, 1);
 		}
 
@@ -325,7 +324,7 @@ void SI_Game::play_intro() {
 
 			prev = num;
 			next += 75;
-			non_gl_blit();
+			win->show();
 			if (wait_delay(1, 0, 1))
 				throw UserBreakException();
 
@@ -344,7 +343,7 @@ void SI_Game::play_intro() {
 
 			prev = num;
 			next += 75;
-			non_gl_blit();
+			win->show();
 			if (wait_delay(1, 0, 1))
 				throw UserBreakException();
 
@@ -364,7 +363,7 @@ void SI_Game::play_intro() {
 
 			prev = num;
 			next += 75;
-			non_gl_blit();
+			win->show();
 			if (wait_delay(1, 0, 1))
 				throw UserBreakException();
 
@@ -382,7 +381,7 @@ void SI_Game::play_intro() {
 
 			prev = num;
 			next += 75;
-			non_gl_blit();
+			win->show();
 			if (wait_delay(1, 0, 1))
 				throw UserBreakException();
 
@@ -390,7 +389,7 @@ void SI_Game::play_intro() {
 
 		for (j = 20; j; j--) {
 			next = fli1.play(win, 0, 0, next, j * 5);
-			non_gl_blit();
+			win->show();
 			if (wait_delay(0, 0, 1))
 				throw UserBreakException();
 
@@ -408,7 +407,7 @@ void SI_Game::play_intro() {
 
 		for (j = 0; j < 20; j++) {
 			next = fli2.play(win, 0, 0, next, j * 5);
-			non_gl_blit();
+			win->show();
 			if (wait_delay(0, 0, 1))
 				throw UserBreakException();
 		}
@@ -416,7 +415,7 @@ void SI_Game::play_intro() {
 		// Guard walks in
 		for (j = 0; j < 37; j++) {
 			next = fli2.play(win, j, j, next);
-			non_gl_blit();
+			win->show();
 			if (wait_delay(0, 0, 1))
 				throw UserBreakException();
 		}
@@ -436,13 +435,13 @@ void SI_Game::play_intro() {
 			else if (!speech)
 				sifont->draw_text(ibuf, centerx + 30, centery + 87, get_text_msg(my_leige));
 
-			non_gl_blit();
+			win->show();
 			if (wait_delay(0, 0, 1))
 				throw UserBreakException();
 		}
 
 		next = fli2.play(win, j, j, next);
-		non_gl_blit();
+		win->show();
 		wait_delay(0, 0, 1);
 
 		const char *all_we[2] = { get_text_msg(all_we0), get_text_msg(all_we0 + 1) };
@@ -461,7 +460,7 @@ void SI_Game::play_intro() {
 				sifont->draw_text(ibuf, centerx + 160 - sifont->get_text_width(all_we[1]), centery + 87, all_we[1]);
 			}
 
-			non_gl_blit();
+			win->show();
 			if (wait_delay(0, 0, 1))
 				throw UserBreakException();
 		}
@@ -478,7 +477,7 @@ void SI_Game::play_intro() {
 			sifont->draw_text(ibuf, centerx + 150 - sifont->get_text_width(and_a[1]), centery + 87, and_a[1]);
 		}
 
-		non_gl_blit();
+		win->show();
 		j++;
 
 		for (i = 0; i < 290; i++)
@@ -511,7 +510,7 @@ void SI_Game::play_intro() {
 				sifont->draw_text(ibuf, topx + 40, centery + 87, get_text_msg(indeed + 1));
 			}
 
-			non_gl_blit();
+			win->show();
 			if (wait_delay(0, 0, 1))
 				throw UserBreakException();
 		}
@@ -532,7 +531,7 @@ void SI_Game::play_intro() {
 		// Scroll opens
 		for (j = 0; j < 20; j++) {
 			next = fli3.play(win, j, j, next) + 20;
-			non_gl_blit();
+			win->show();
 			if (wait_delay(0, 0, 1))
 				throw UserBreakException();
 		}
@@ -552,7 +551,7 @@ void SI_Game::play_intro() {
 			else if (!speech)
 				sifont->draw_text(ibuf, topx + 70, centery + 60, get_text_msg(stand_back));
 
-			non_gl_blit();
+			win->show();
 			if (wait_delay(0, 0, 1))
 				throw UserBreakException();
 		}
@@ -614,7 +613,7 @@ void SI_Game::play_intro() {
 				sifont->center_text(ibuf, centerx, centery + 87, get_text_msg(there_i + 1));
 			}
 
-			non_gl_blit();
+			win->show();
 			if (wait_delay(0, 0, 1))
 				throw UserBreakException();
 		}
@@ -625,7 +624,7 @@ void SI_Game::play_intro() {
 			if (sf)
 				sman->paint_shape(centerx - 36, centery, sf);
 
-			non_gl_blit();
+			win->show();
 			if (wait_delay(0, 0, 1))
 				throw UserBreakException();
 		}
@@ -639,7 +638,7 @@ void SI_Game::play_intro() {
 
 		for (j = 0; j < 20; j++) {
 			next = fli5.play(win, 0, 0, next, j * 5);
-			non_gl_blit();
+			win->show();
 			if (wait_delay(0, 0, 1))
 				throw UserBreakException();
 		}
@@ -660,7 +659,7 @@ void SI_Game::play_intro() {
 				sifont->center_text(ibuf, centerx, centery + 87, get_text_msg(tis_my + 2));
 			}
 
-			non_gl_blit();
+			win->show();
 			if (wait_delay(0, 0, 1))
 				throw UserBreakException();
 		}
@@ -674,7 +673,7 @@ void SI_Game::play_intro() {
 
 		for (j = 0; j < 61; j++) {
 			next = fli6.play(win, j, j, next) + 30;
-			non_gl_blit();
+			win->show();
 			if (wait_delay(0, 0, 1))
 				throw UserBreakException();
 		}
@@ -694,7 +693,7 @@ void SI_Game::play_intro() {
 			if (j > 55 && jive)
 				sifont->center_text(ibuf, centerx, centery + 74, zot);
 
-			non_gl_blit();
+			win->show();
 			if (wait_delay(0, 0, 1))
 				throw UserBreakException();
 		}
@@ -708,12 +707,12 @@ void SI_Game::play_intro() {
 
 		for (j = 0; j < 20; j++) {
 			next = fli8.play(win, 0, 0, next, j * 5);
-			non_gl_blit();
+			win->show();
 			wait_delay(0, 0, 1);
 		}
 
 		next = fli8.play(win, 0, 0, next, 100);
-		non_gl_blit();
+		win->show();
 		wait_delay(0, 0, 1);
 
 		for (i = 0; i < 300; i++)
@@ -722,13 +721,10 @@ void SI_Game::play_intro() {
 
 		for (j = 20; j; j--) {
 			next = fli8.play(win, 0, 0, next, j * 5);
-			non_gl_blit();
+			win->show();
 			wait_delay(0, 0, 1);
 		}
-
-		enable_direct_gl_render();
 	} catch (const UserBreakException &/*x*/) {
-		enable_direct_gl_render();
 	}
 
 	// Fade out the palette...
@@ -1181,11 +1177,7 @@ void SI_Game::end_game(bool success) {
 			subs[cur_sub].show_sub(ibuf, centerx, centery);
 		}
 
-		if (updated
-#ifdef HAVE_OPENGL
-		        && !GL_manager::get_instance()
-#endif
-		   )
+		if (updated)
 			win->show();
 
 		if (wait_delay(0, 0, 1)) {
@@ -1259,12 +1251,7 @@ bool SI_Game::new_game(Vga_file &shapes) {
 #endif
 	do {
 		Delay();
-#ifdef HAVE_OPENGL
-		if (redraw || GL_manager::get_instance())
-#else
-		if (redraw)
-#endif
-		{
+		if (redraw) {
 			gwin->clear_screen();
 			sman->paint_shape(topx, topy, shapes.get_shape(0x2, 0));
 			sman->paint_shape(topx + 10, menuy + 10, shapes.get_shape(0xC, selected == 0));

@@ -40,44 +40,19 @@ class ODataSource;
 class IStreamDataSource;
 class Shape;
 class Image_buffer8;
-class GL_texshape;
-class GL_manager;
 class Palette;
-
-#ifdef HAVE_OPENGL
-#include "glshape.h"
-
-#define GLRENDER    if (glman) glman->paint(this, px, py); else
-#define GLTRANSLUCENT   if (glman) glman->paint(this, px, py, xforms, xfcnt); \
-	else
-#define GLTRANSFORM if (glman) glman->paint_transformed(this, px, py, xform); \
-	else
-#define GLREMAPPED  if (glman) glman->paint_remapped(this, px, py, trans); else
-#define GLOUTLINE   if (glman) glman->paint_outline(this, px, py, color); else
-#else
-#define GLRENDER
-#define GLTRANSLUCENT
-#define GLTRANSFORM
-#define GLREMAPPED
-#define GLOUTLINE
-#endif
 
 /*
  *  A shape from "shapes.vga":
  */
 class Shape_frame {
 	std::unique_ptr<unsigned char[]> data;        // The actual data.
-#ifdef HAVE_OPENGL
-	GL_texshape *glshape;       // OpenGL texture for painting this.
-	GL_texshape *gloutline;     // OpenGL texture for painting outline of this.
-#endif
 	int datalen;
 	short xleft;            // Extent to left of origin.
 	short xright;           // Extent to right.
 	short yabove;           // Extent above origin.
 	short ybelow;           // Extent below origin.
 	bool rle;           // Run-length encoded.
-	static GL_manager *glman;   // One to rule them all.
 	static Image_buffer8 *scrwin;   // Screen window to render to.
 
 	// Create RLE data & store in frame.
@@ -86,14 +61,8 @@ class Shape_frame {
 	void get_rle_shape(IDataSource *shapes, long filepos, long len);
 
 public:
-	friend class GL_texshape;
-	friend class GL_manager;
 	Shape_frame()
-		:
-#ifdef HAVE_OPENGL
-		  glshape(0), gloutline(0),
-#endif
-		  datalen(0)
+		: datalen(0)
 	{  }
 	// Create frame from data.
 	Shape_frame(unsigned char *pixels, int w, int h, int xoff, int yoff,
@@ -101,9 +70,8 @@ public:
 	Shape_frame(std::unique_ptr<unsigned char[]> pixels, int w, int h, int xoff, int yoff,
 	            bool setrle);
 	std::unique_ptr<Shape_frame> reflect();     // Create new frame, reflected.
-	static void set_to_render(Image_buffer8 *w, GL_manager *gl = 0) {
+	static void set_to_render(Image_buffer8 *w) {
 		scrwin = w;
-		glman = gl;
 	}
 	unsigned char *get_data() {
 		return data.get();
@@ -132,25 +100,24 @@ public:
 	                       unsigned char color);
 	// Paint to screen.
 	void paint_rle(int px, int py) {
-		GLRENDER  paint_rle(scrwin, px, py);
+		paint_rle(scrwin, px, py);
 	}
 	void paint_rle_remapped(int px, int py, unsigned char *trans) {
-		GLREMAPPED  paint_rle_remapped(scrwin, px, py, trans);
+		paint_rle_remapped(scrwin, px, py, trans);
 	}
 	void paint(int px, int py) {
-		GLRENDER  paint(scrwin, px, py);
+		paint(scrwin, px, py);
 	}
-	// ++++++GL versions of these needed:
 	void paint_rle_translucent(int px, int py,
 	                           const Xform_palette *xforms, int xfcnt) {
-		GLTRANSLUCENT  paint_rle_translucent(
+		paint_rle_translucent(
 		    scrwin, px, py, xforms, xfcnt);
 	}
 	void paint_rle_transformed(int px, int py, const Xform_palette &xform) {
-		GLTRANSFORM  paint_rle_transformed(scrwin, px, py, xform);
+		paint_rle_transformed(scrwin, px, py, xform);
 	}
 	void paint_rle_outline(int px, int py, unsigned char color) {
-		GLOUTLINE  paint_rle_outline(scrwin, px, py, color);
+		paint_rle_outline(scrwin, px, py, color);
 	}
 
 	int has_point(int x, int y) const;    // Is a point within the shape?
@@ -179,16 +146,7 @@ public:
 	int is_empty() const {
 		return !data || (data[0] == 0 && data[1] == 0);
 	}
-#ifdef HAVE_OPENGL
-	virtual ~Shape_frame() {
-		if (glshape)
-			glshape->disassociate();
-		if (gloutline)
-			gloutline->disassociate();
-	}
-#else
 	virtual ~Shape_frame() noexcept = default;
-#endif
 	Shape_frame(const Shape_frame&) = delete;
 	Shape_frame& operator=(const Shape_frame&) = delete;
 	Shape_frame(Shape_frame&&) noexcept = default;

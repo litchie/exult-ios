@@ -78,7 +78,6 @@
 #include "mappatch.h"
 #include "version.h"
 #include "drag.h"
-#include "glshape.h"
 #include "party.h"
 #include "Notebook_gump.h"
 #include "AudioMixer.h"
@@ -279,99 +278,6 @@ void Background_noise::handle_event(
 }
 
 /*
- *  Set renderer (OpenGL or normal SDL).
- */
-
-void Set_renderer(
-    Image_window8 *win,
-    Palette *pal,
-    bool resize
-) {
-	GL_manager *glman = GL_manager::get_instance();
-#ifdef HAVE_OPENGL
-	delete glman;
-	glman = 0;
-	if (win->get_scaler() == Image_window::OpenGL) {
-		glman = new GL_manager();
-		glman->set_palette(pal);
-		if (resize)
-			glman->resized(win->get_full_width(), win->get_full_height(),
-			               win->get_scale_factor());
-	}
-#else
-	ignore_unused_variable_warning(pal, resize);
-#endif
-	// Tell shapes how to render.
-	Shape_frame::set_to_render(win->get_ib8(), glman);
-}
-
-#ifdef HAVE_OPENGL
-/*
- *  Set palette and reset all textures. If given null palette, uses current
- *  game window palette.
- */
-
-void GL_manager::set_palette(Palette *pal, bool rotation) {
-	Chunk_terrain::clear_glflats(rotation);
-	if (rotation) {
-		// Free only those that rotate.
-		GL_texshape *next = shapes;
-		while (next) {
-			GL_texshape *tex = next;
-			// Point to next element to be safe.
-			next = next->lru_next;
-			if (tex->has_palette_rotation()) {
-				// Unlink.
-				if (shapes == tex)
-					shapes = next;
-				if (tex->lru_next)
-					tex->lru_next->lru_prev = tex->lru_prev;
-				if (tex->lru_prev)
-					tex->lru_prev->lru_next = tex->lru_next;
-				delete tex;
-			}
-		}
-	} else  // Kill them all.
-		while (shapes) {
-			GL_texshape *next = shapes->lru_next;
-			delete shapes;
-			shapes = next;
-		}
-	if (!palette)
-		palette = new unsigned char[768];
-	if (pal) {
-		for (int i = 0; i < 256; i++) {
-			// Palette colors are 0-63.
-			palette[3 * i] = 4 * pal->get_red(i);
-			palette[3 * i + 1] = 4 * pal->get_green(i);
-			palette[3 * i + 2] = 4 * pal->get_blue(i);
-		}
-	} else {
-		const unsigned char *cpal =
-		    Game_window::get_instance()->get_win()->get_palette();
-		std::memcpy(palette, cpal, 768);
-	}
-}
-#endif
-
-/*
- *  Set palette and reset all textures. If given null palette, uses current
- *  game window palette.
- */
-
-bool Set_glpalette(Palette *pal, bool rotation) {
-#ifdef HAVE_OPENGL
-	if (GL_manager::get_instance()) {
-		GL_manager::get_instance()->set_palette(pal, rotation);
-		return true;
-	}
-#else
-	ignore_unused_variable_warning(pal, rotation);
-#endif
-	return false;
-}
-
-/*
  *  Create game window.
  */
 
@@ -411,7 +317,7 @@ Game_window::Game_window(
 	win->set_title("Exult Ultima7 Engine");
 	pal = new Palette();
 	Game_singletons::init(this);    // Everything but 'usecode' exists.
-	Set_renderer(win, pal, true);
+	Shape_frame::set_to_render(win->get_ib8());
 
 	string str;
 	config->value("config/gameplay/textbackground", text_bg, -1);
@@ -939,7 +845,7 @@ void Game_window::resized(
 ) {
 	win->resized(neww, newh, newfs, newgw, newgh, newsc, newsclr, newfill, newfillsclr);
 	pal->apply(false);
-	Set_renderer(win, pal, true);
+	Shape_frame::set_to_render(win->get_ib8());
 	if (!main_actor)        // In case we're before start.
 		return;
 	center_view(main_actor->get_tile());
@@ -1599,17 +1505,10 @@ void Game_window::view_right(
 		return;
 	}
 	map->read_map_data();       // Be sure objects are present.
-#ifdef HAVE_OPENGL
-	if (GL_manager::get_instance()) // OpenGL? Just repaint all.
-		paint();
-	else
-#endif
-	{
-		// Shift image to left.
-		win->copy(c_tilesize, 0, w - c_tilesize, h, 0, 0);
-		// Paint 1 column to right.
-		paint(w - c_tilesize, 0, c_tilesize, h);
-	}
+	// Shift image to left.
+	win->copy(c_tilesize, 0, w - c_tilesize, h, 0, 0);
+	// Paint 1 column to right.
+	paint(w - c_tilesize, 0, c_tilesize, h);
 	dirty.x -= c_tilesize;  // Shift dirty rect.
 	dirty = clip_to_win(dirty);
 	// New chunk?
@@ -1629,17 +1528,10 @@ void Game_window::view_left(
 		return;
 	}
 	map->read_map_data();       // Be sure objects are present.
-#ifdef HAVE_OPENGL
-	if (GL_manager::get_instance()) // OpenGL? Just repaint all.
-		paint();
-	else
-#endif
-	{
-		win->copy(0, 0, get_width() - c_tilesize, get_height(),
-		          c_tilesize, 0);
-		int h = get_height();
-		paint(0, 0, c_tilesize, h);
-	}
+	win->copy(0, 0, get_width() - c_tilesize, get_height(),
+				c_tilesize, 0);
+	int h = get_height();
+	paint(0, 0, c_tilesize, h);
 	dirty.x += c_tilesize;      // Shift dirty rect.
 	dirty = clip_to_win(dirty);
 	// New chunk?
@@ -1660,15 +1552,8 @@ void Game_window::view_down(
 		return;
 	}
 	map->read_map_data();       // Be sure objects are present.
-#ifdef HAVE_OPENGL
-	if (GL_manager::get_instance()) // OpenGL? Just repaint all.
-		paint();
-	else
-#endif
-	{
-		win->copy(0, c_tilesize, w, h - c_tilesize, 0, 0);
-		paint(0, h - c_tilesize, w, c_tilesize);
-	}
+	win->copy(0, c_tilesize, w, h - c_tilesize, 0, 0);
+	paint(0, h - c_tilesize, w, c_tilesize);
 	dirty.y -= c_tilesize;      // Shift dirty rect.
 	dirty = clip_to_win(dirty);
 	// New chunk?
@@ -1688,16 +1573,9 @@ void Game_window::view_up(
 		return;
 	}
 	map->read_map_data();       // Be sure objects are present.
-#ifdef HAVE_OPENGL
-	if (GL_manager::get_instance()) // OpenGL? Just repaint all.
-		paint();
-	else
-#endif
-	{
-		int w = get_width();
-		win->copy(0, 0, w, get_height() - c_tilesize, 0, c_tilesize);
-		paint(0, 0, w, c_tilesize);
-	}
+	int w = get_width();
+	win->copy(0, 0, w, get_height() - c_tilesize, 0, c_tilesize);
+	paint(0, 0, w, c_tilesize);
 	dirty.y += c_tilesize;      // Shift dirty rect.
 	dirty = clip_to_win(dirty);
 	// New chunk?
@@ -3080,10 +2958,6 @@ bool Game_window::emulate_is_move_allowed(int tx, int ty) {
 unique_ptr<Shape_file> Game_window::create_mini_screenshot() {
 	set_all_dirty();
 	render->paint_map(0, 0, get_width(), get_height());
-#ifdef HAVE_OPENGL
-	if (GL_manager::get_instance())
-		show();
-#endif
 
 	unique_ptr<unsigned char[]> img(win->mini_screenshot());
 	unique_ptr<Shape_file> sh;
@@ -3137,16 +3011,6 @@ void Game_window::cycle_load_palette() {
 	if (ticks > load_palette_timer + 75) {
 		for (int i = 0; i < 4; ++i)
 			get_win()->rotate_colors(plasma_start_color, plasma_cycle_range, 1);
-#ifdef HAVE_OPENGL
-		if (GL_manager::get_instance()) {
-			int w = get_width(), h = get_height();
-			Image_buffer8 *buf = get_win()->get_ib8();
-			Shape_frame screen(buf->get_bits(), w, h, 0, 0, true);
-			//Shape_manager::get_instance()->paint_shape(0, 0, &screen);
-			Set_glpalette(0, true);
-			GL_manager::get_instance()->paint(&screen, 0, 0);
-		}
-#endif
 		show(true);
 
 		// We query the timer here again, as the blit can take easily 50 ms and more

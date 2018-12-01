@@ -265,8 +265,7 @@ int Import_png32(
     //   image returned.  (0,0) if not
     //   specified in file.
     unsigned char  *&pixels,    // ->(allocated) pixels returned.
-    bool bottom_first       // Return last row first.  Useful for
-    //   OpenGL textures.
+    bool bottom_first       // Return last row first.
 ) {
 	pixels = 0;         // In case we fail.
 	// Open file.

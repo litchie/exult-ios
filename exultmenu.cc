@@ -192,19 +192,6 @@ void ExultMenu::setup() {
 	Font *font = fontManager.get_font("CREDITS_FONT");
 	Font *fonton = fontManager.get_font("HOT_FONT");
 	MenuList menu;
-#ifdef HAVE_OPENGL
-	unique_ptr<Shape_frame> setupbg;
-	if (GL_manager::get_instance()) {
-		int w = gwin->get_win()->get_full_width(), h = gwin->get_win()->get_full_height();
-		Image_buffer8 *buf = dynamic_cast<Image_buffer8 *>
-		                     (gwin->get_win()->get_ib8()->create_another(w, h));
-		assert(buf);
-		buf->fill8(0);
-		setupbg = make_unique<Shape_frame>(buf->get_bits(), w, h, 0, 0, true);
-		delete buf;
-	}
-	menu.set_background(setupbg.get());
-#endif
 
 	int menuypos = centery - 44;
 
@@ -280,7 +267,7 @@ void ExultMenu::setup() {
 #endif
 }
 
-MenuList *ExultMenu::create_main_menu(Shape_frame *bg, int first) {
+MenuList *ExultMenu::create_main_menu(int first) {
 	MenuList *menu = new MenuList();
 
 	int ypos = 15 + gwin->get_win()->get_start_y();
@@ -334,12 +321,10 @@ MenuList *ExultMenu::create_main_menu(Shape_frame *bg, int first) {
 		menu->add_entry(entry);
 		xpos += max_width;
 	}
-
-	menu->set_background(bg);
 	return menu;
 }
 
-MenuList *ExultMenu::create_mods_menu(ModManager *selgame, Shape_frame *bg, int first) {
+MenuList *ExultMenu::create_mods_menu(ModManager *selgame, int first) {
 	MenuList *menu = new MenuList();
 
 	int ypos = 15 + gwin->get_win()->get_start_y();
@@ -387,12 +372,10 @@ MenuList *ExultMenu::create_mods_menu(ModManager *selgame, Shape_frame *bg, int 
 		menu->add_entry(entry);
 		xpos += max_width;
 	}
-
-	menu->set_background(bg);
 	return menu;
 }
 
-BaseGameInfo *ExultMenu::show_mods_menu(ModManager *selgame, Shape_frame *logobg) {
+BaseGameInfo *ExultMenu::show_mods_menu(ModManager *selgame) {
 	Palette *gpal = gwin->get_pal();
 	Shape_manager *sman = Shape_manager::get_instance();
 
@@ -402,7 +385,7 @@ BaseGameInfo *ExultMenu::show_mods_menu(ModManager *selgame, Shape_frame *logobg
 
 	int first_mod = 0, num_choices = selgame->get_mod_list().size() - 1,
 	    last_page = num_choices - num_choices % pagesize;
-	MenuList *menu = create_mods_menu(selgame, logobg, first_mod);
+	MenuList *menu = create_mods_menu(selgame, first_mod);
 	menu->set_selection(0);
 	BaseGameInfo *sel_mod = 0;
 
@@ -414,16 +397,10 @@ BaseGameInfo *ExultMenu::show_mods_menu(ModManager *selgame, Shape_frame *logobg
 
 	do {
 		// Interferes with the menu.
-#ifdef HAVE_OPENGL
-		if (!GL_manager::get_instance())
-#endif
-			sman->paint_shape(logox, logoy, exultlogo);
-#ifdef HAVE_OPENGL
-		if (!GL_manager::get_instance())
-#endif
-			font->draw_text(gwin->get_win()->get_ib8(),
-			                gwin->get_win()->get_end_x() - font->get_text_width(VERSION),
-			                gwin->get_win()->get_end_y() - font->get_text_height() - 5, VERSION);
+		sman->paint_shape(logox, logoy, exultlogo);
+		font->draw_text(gwin->get_win()->get_ib8(),
+						gwin->get_win()->get_end_x() - font->get_text_width(VERSION),
+						gwin->get_win()->get_end_y() - font->get_text_height() - 5, VERSION);
 		int choice = menu->handle_events(gwin, menu_mouse);
 		switch (choice) {
 		case -10: // The incompatibility notice; do nothing
@@ -442,7 +419,7 @@ BaseGameInfo *ExultMenu::show_mods_menu(ModManager *selgame, Shape_frame *logobg
 				break;
 			} else if (handle_menu_click(choice, first_mod, last_page, pagesize)) {
 				delete menu;
-				menu = create_mods_menu(selgame, logobg, first_mod);
+				menu = create_mods_menu(selgame, first_mod);
 				gwin->clear_screen(true);
 			}
 		}
@@ -451,33 +428,6 @@ BaseGameInfo *ExultMenu::show_mods_menu(ModManager *selgame, Shape_frame *logobg
 
 	gwin->clear_screen(true);
 	return sel_mod;
-}
-
-static unique_ptr<Shape_frame> create_exultlogo(int logox, int logoy, Vga_file &exult_flx, Font *font) {
-#ifdef HAVE_OPENGL
-	if (GL_manager::get_instance()) {
-		Game_window *gwin = Game_window::get_instance();
-		int w = gwin->get_win()->get_full_width(), h = gwin->get_win()->get_full_height();
-		Shape_frame *logo = exult_flx.get_shape(EXULT_FLX_EXULT_LOGO_SHP, 1);
-		Image_buffer8 *buf = dynamic_cast<Image_buffer8 *>
-		                     (gwin->get_win()->get_ib8()->create_another(w, h));
-		assert(buf);
-		buf->fill8(0);
-		logo->paint(buf, logox, logoy);
-		// Disable OpenGL rendering for a bit.
-		Shape_frame::set_to_render(buf, 0);
-		font->draw_text(buf, w - font->get_text_width(VERSION),
-		                h - font->get_text_height() - 5, VERSION);
-		Shape_frame::set_to_render(gwin->get_win()->get_ib8(),
-		                           GL_manager::get_instance());
-		auto exultlogo = make_unique<Shape_frame>(buf->get_bits(), w, h, 0, 0, true);
-		delete buf;
-		return exultlogo;
-	}
-#else
-	ignore_unused_variable_warning(logox, logoy, exult_flx, font);
-#endif
-	return nullptr;
 }
 
 BaseGameInfo *ExultMenu::run() {
@@ -521,10 +471,6 @@ BaseGameInfo *ExultMenu::run() {
 		Audio::get_ptr()->start_music(EXULT_FLX_MEDITOWN_MID, true, EXULT_FLX);
 	}
 
-#ifdef HAVE_OPENGL
-	if (GL_manager::get_instance())
-		gwin->get_win()->fill8(0);
-#endif
 	Shape_frame *exultlogo = exult_flx.get_shape(EXULT_FLX_EXULT_LOGO_SHP, 0);
 	int logox = centerx - exultlogo->get_width() / 2,
 	    logoy = centery - exultlogo->get_height() / 2;
@@ -539,26 +485,16 @@ BaseGameInfo *ExultMenu::run() {
 	// Erase the old logo.
 	gwin->clear_screen(true);
 
-	unique_ptr<Shape_frame> logobg(create_exultlogo(logox, logoy, exult_flx, font));
-	MenuList *menu = create_main_menu(logobg.get(), first_game);;
+	MenuList *menu = create_main_menu(first_game);;
 	BaseGameInfo *sel_game = 0;
 	menu->set_selection(0);
 
 	do {
 		// Interferes with the menu.
-#ifdef HAVE_OPENGL
-		if (GL_manager::get_instance() && !logobg) {
-			logobg = create_exultlogo(logox, logoy, exult_flx, font);
-			menu->set_background(logobg.get());
-		} else if (!GL_manager::get_instance())
-#endif
-			sman->paint_shape(logox, logoy, exultlogo);
-#ifdef HAVE_OPENGL
-		if (!GL_manager::get_instance())
-#endif
-			font->draw_text(gwin->get_win()->get_ib8(),
-			                gwin->get_win()->get_end_x() - font->get_text_width(VERSION),
-			                gwin->get_win()->get_end_y() - font->get_text_height() - 5, VERSION);
+		sman->paint_shape(logox, logoy, exultlogo);
+		font->draw_text(gwin->get_win()->get_ib8(),
+						gwin->get_win()->get_end_x() - font->get_text_width(VERSION),
+						gwin->get_win()->get_end_y() - font->get_text_height() - 5, VERSION);
 		int choice = menu->handle_events(gwin, menu_mouse);
 		switch (choice) {
 		case -4: // Setup
@@ -574,9 +510,8 @@ BaseGameInfo *ExultMenu::run() {
 			calc_win();
 			logox = centerx - exultlogo->get_width() / 2;
 			logoy = centery - exultlogo->get_height() / 2;
-			logobg = create_exultlogo(logox, logoy, exult_flx, font);
 			first_game = 0;
-			menu = create_main_menu(logobg.get(), first_game);
+			menu = create_main_menu(first_game);
 			menu->set_selection(0);
 			break;
 		case -3: { // Exult Credits
@@ -618,12 +553,12 @@ BaseGameInfo *ExultMenu::run() {
 				// Show the mods for the game:
 				gpal->fade_out(c_fade_out_time / 2);
 				sel_game = show_mods_menu(
-				               gamemanager->get_game(choice - MAX_GAMES), logobg.get());
+				               gamemanager->get_game(choice - MAX_GAMES));
 				gwin->clear_screen(true);
 				gpal->apply();
 			} else if (handle_menu_click(choice, first_game, last_page, pagesize)) {
 				delete menu;
-				menu = create_main_menu(logobg.get(), first_game);
+				menu = create_main_menu(first_game);
 				gwin->clear_screen(true);
 			}
 			break;

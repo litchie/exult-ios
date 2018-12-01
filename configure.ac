@@ -549,40 +549,6 @@ else
 	AC_MSG_RESULT(no)
 fi
 
-# OpenGL rendering
-
-AC_ARG_ENABLE(opengl, AS_HELP_STRING([--enable-opengl], [Enable OpenGL rendering support @<:@EXPERIMENTAL@:>@]),,enable_opengl=no)
-
-if test x$enable_opengl = xyes; then
-	# Check for header presence. Damn you, Apple!
-	if test x$ARCH != xmacosx; then
-		AC_CHECK_HEADER(GL/gl.h,,enable_opengl=no)
-	else
-		AC_CHECK_HEADER(OpenGL/gl.h,,enable_opengl=no)
-	fi
-	# OpenGL scaler is broken with SDL2
-	if test x$sdl_ver = xsdl2; then
-		enable_opengl=no
-	fi
-fi
-
-AC_MSG_CHECKING([for OpenGL rendering support])
-
-if test x$enable_opengl = xyes ; then
-	AC_DEFINE(HAVE_OPENGL, 1, [Have OpenGL])
-	
-	# Mac OS X gets OpenGL through a framework.
-	if test x$ARCH != xmacosx; then
-		OPENGL_LIBS="-lGL"
-	else
-		OPENGL_LIBS="-framework OpenGL"
-	fi
-	
-	AC_MSG_RESULT(yes)
-else
-	AC_MSG_RESULT(no)
-fi
-
 # Midi Sfx
 
 AC_ARG_ENABLE(midi-sfx, AS_HELP_STRING([--enable-midi-sfx], [Support for Midi Sfx (sounds horrible) @<:@default no@:>@]),,enable_midi_sfx=no)
@@ -1042,7 +1008,6 @@ AC_SUBST(SYSLIBS)
 AC_SUBST(ICON_FILE)
 AC_SUBST(DEBUG_FLAGS)
 AC_SUBST(ZLIB_LIBS)
-AC_SUBST(OPENGL_LIBS)
 AC_SUBST(WARNINGS)
 AC_SUBST(AR_FLAGS)
 

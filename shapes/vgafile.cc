@@ -55,7 +55,6 @@ using std::pair;
 using std::unique_ptr;
 using std::make_unique;
 
-GL_manager *Shape_frame::glman = 0;
 Image_buffer8 *Shape_frame::scrwin = 0;
 
 #if 1   /* For debugging. */
@@ -333,11 +332,7 @@ Shape_frame::Shape_frame(
     int w, int h,           // Dimensions.
     int xoff, int yoff,     // Xleft, yabove.
     bool setrle         // Run-length-encode.
-) :
-#ifdef HAVE_OPENGL
-	glshape(0), gloutline(0),
-#endif
-	xleft(xoff), xright(w - xoff - 1), yabove(yoff), ybelow(h - yoff - 1),
+) : xleft(xoff), xright(w - xoff - 1), yabove(yoff), ybelow(h - yoff - 1),
 	rle(setrle) {
 	if (!rle) {
 		assert(w == c_tilesize && h == c_tilesize);
@@ -357,11 +352,7 @@ Shape_frame::Shape_frame(
     int w, int h,           // Dimensions.
     int xoff, int yoff,     // Xleft, yabove.
     bool setrle         // Run-length-encode.
-) :
-#ifdef HAVE_OPENGL
-	glshape(0), gloutline(0),
-#endif
-	xleft(xoff), xright(w - xoff - 1), yabove(yoff), ybelow(h - yoff - 1),
+) : xleft(xoff), xright(w - xoff - 1), yabove(yoff), ybelow(h - yoff - 1),
 	rle(setrle) {
 	if (!rle) {
 		assert(w == c_tilesize && h == c_tilesize);
