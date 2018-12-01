@@ -218,7 +218,7 @@ static class Windnd *windnd = 0;
 static int exult_main(const char * runpath);
 static void Init();
 static int Play();
-static int Get_click(int &x, int &y, char *chr, bool drag_ok, Paintable *p, bool rotate_colors = false);
+static int Get_click(int &x, int &y, char *chr, bool drag_ok, bool rotate_colors = false);
 static int find_resolution(int w, int h, int s);
 static void set_scaleval(int new_scaleval);
 #ifdef USE_EXULTSTUDIO
@@ -1745,7 +1745,6 @@ static int Get_click(
     int &x, int &y,
     char *chr,          // Char. returned if not null.
     bool drag_ok,           // Okay to drag/close while here.
-    Paintable *paint,       // Paint this each cycle.
     bool rotate_colors      // If the palette colors should rotate.
 ) {
 	dragging = false;       // Init.
@@ -1932,7 +1931,7 @@ int Get_click(
 	Mouse::mouse->show();
 	gwin->show(1);          // Want to see new mouse.
 	gwin->get_tqueue()->pause(Game::get_ticks());
-	int ret = Get_click(x, y, chr, drag_ok, paint, rotate_colors);
+	int ret = Get_click(x, y, chr, drag_ok, rotate_colors);
 	gwin->get_tqueue()->resume(Game::get_ticks());
 	Mouse::mouse->set_shape(saveshape);
 	return (ret);
