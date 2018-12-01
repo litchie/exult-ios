@@ -24,6 +24,6 @@ fi
                             --disable-oggtest --disable-vorbistest	\
                             --enable-exult-studio --enable-exult-studio-support	\
                             --enable-mt32emu --enable-zip-support	\
-                            --enable-shared --enable-opengl --enable-midi-sfx	\
+                            --enable-shared --enable-midi-sfx	\
                             $EXTRA_TOOLS && make -j $NPROC
 
