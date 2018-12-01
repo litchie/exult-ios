@@ -42,7 +42,7 @@ Send patches using: 2,tnum,24,50,24,0,1,0 (enables reverb)
 char sysex_buffer[8 + 256 + 2];
 
 const uint32 sysex_data_start = 8;      // Data starts at byte 8
-const uint32 sysex_max_data_size = 256;
+//const uint32 sysex_max_data_size = 256;
 
 
 //
@@ -53,16 +53,16 @@ const uint32 rhythm_base = 0x030110;    // Note, these are 7 bit!
 const uint32 rhythm_mem_size = 4;
 
 const uint32 rhythm_first_note = 24;
-const uint32 rhythm_num_notes = 64;
+//const uint32 rhythm_num_notes = 64;
 
 // Memory offset based on index in the table
 inline uint32 rhythm_mem_offset(uint32 index_num) {
-	return index_num * 4;
+	return index_num * rhythm_mem_size;
 }
 
 // Memory offset based on note key num
 inline uint32 rhythm_mem_offset_note(uint32 rhythm_note_num) {
-	return (rhythm_note_num - rhythm_first_note) * 4;
+	return (rhythm_note_num - rhythm_first_note) * rhythm_mem_size;
 }
 
 struct RhythmSetupData {
@@ -119,7 +119,7 @@ const PatchMemData patch_template = {
 // System Area Consts
 //
 const uint32 system_base = 0x100000;    // Note, these are 7 bit!
-const uint32 system_mem_size = 0x17;    // Display is 20 ASCII characters (32-127)
+//const uint32 system_mem_size = 0x17;    // Display is 20 ASCII characters (32-127)
 #include <cstddef>
 #ifndef offsetof	// Broken <cstddef>? Just in case...
 #   define offsetof(type, field) reinterpret_cast<uintptr>(&(static_cast<type *>(0)->field))
