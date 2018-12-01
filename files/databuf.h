@@ -51,7 +51,7 @@ public:
 	virtual uint32 read4high() = 0;
 	virtual void read(void *, size_t) = 0;
 	virtual void read(std::string&, size_t) = 0;
-	std::unique_ptr<unsigned char[]> read(size_t N) {
+	std::unique_ptr<unsigned char[]> readN(size_t N) {
 		auto ptr = std::make_unique<unsigned char[]>(N);
 		read(ptr.get(), N);
 		return ptr;
@@ -287,29 +287,21 @@ public:
  */
 class IBufferDataSource: public IBufferDataView {
 protected:
-	char *data;
+	std::unique_ptr<unsigned char[]> data;
 public:
 	IBufferDataSource(void *data_, size_t len)
-		: IBufferDataView(nullptr, 0), data(static_cast<char*>(data_)) {
+		: IBufferDataView(nullptr, 0), data(static_cast<unsigned char*>(data_)) {
 		// data can be NULL if len is also 0
 		assert(data != nullptr || len == 0);
-		buf_ptr = buf = reinterpret_cast<const unsigned char *>(data);
+		buf_ptr = buf = data.get();
 		size = len;
 	}
-
-	IBufferDataSource(IBufferDataSource&& other) noexcept
-		: IBufferDataView(std::move(other)), data(std::move(other.data)) {
-		other.data = nullptr;
-	}
-	IBufferDataSource& operator=(IBufferDataSource&& other) noexcept {
-		std::swap(buf, other.buf);
-		std::swap(buf_ptr, other.buf_ptr);
-		std::swap(data, other.data);
-		return *this;
-	}
-
-	~IBufferDataSource() override {
-		delete [] data;
+	IBufferDataSource(std::unique_ptr<unsigned char[]> data_, size_t len)
+		: IBufferDataView(nullptr, 0), data(std::move(data_)) {
+		// data can be NULL if len is also 0
+		assert(data != nullptr || len == 0);
+		buf_ptr = buf = data.get();
+		size = len;
 	}
 };
 
@@ -323,14 +315,14 @@ public:
 		: IBufferDataSource(nullptr, 0) {
 		U7object obj(fname, index);
 		data = obj.retrieve(size);
-		buf = buf_ptr = reinterpret_cast<unsigned char *>(data);
+		buf = buf_ptr = data.get();
 	}
 
 	IExultDataSource(const File_spec &fname0, const File_spec &fname1, int index)
 		: IBufferDataSource(nullptr, 0) {
 		U7multiobject obj(fname0, fname1, index);
 		data = obj.retrieve(size);
-		buf = buf_ptr = reinterpret_cast<unsigned char *>(data);
+		buf = buf_ptr = data.get();
 	}
 
 	IExultDataSource(const File_spec &fname0, const File_spec &fname1,
@@ -338,7 +330,7 @@ public:
 		: IBufferDataSource(nullptr, 0) {
 		U7multiobject obj(fname0, fname1, fname2, index);
 		data = obj.retrieve(size);
-		buf = buf_ptr = reinterpret_cast<unsigned char *>(data);
+		buf = buf_ptr = data.get();
 	}
 };
 
@@ -470,6 +462,18 @@ public:
 	explicit OFileDataSource(std::ofstream *data_stream)
 		: OStreamDataSource(data_stream) {}
 
+	explicit OFileDataSource(const File_spec &spec)
+		: OStreamDataSource(nullptr) {
+		std::ofstream *fout = new std::ofstream();
+		out = fout;
+		if (U7exists(spec.name)) {
+			U7open(*fout, spec.name.c_str());
+		} else {
+			// Set fail bit
+			fout->seekp(0);
+		}
+	}
+
 	OFileDataSource(OFileDataSource&& other) noexcept
 		: OStreamDataSource(std::move(other)) {
 		other.out = nullptr;
@@ -558,22 +562,27 @@ public:
  * Buffer-based output data source which owns the buffer.
  */
 class OBufferDataSource: public OBufferDataSpan {
+	std::unique_ptr<unsigned char[]> data;
 public:
-	OBufferDataSource(void *data, size_t len)
-		: OBufferDataSpan(data, len) {}
+	OBufferDataSource(size_t len)
+		: OBufferDataSpan(nullptr, 0), data(std::make_unique<unsigned char[]>(len)) {
+		assert(len != 0);
+		buf_ptr = buf = data.get();
+		size = len;
+	}
+	OBufferDataSource(std::unique_ptr<unsigned char[]> data_, size_t len)
+		: OBufferDataSpan(nullptr, 0), data(std::move(data_)) {
+		assert(data != nullptr || len == 0);
+		buf_ptr = buf = data.get();
+		size = len;
+	}
+	OBufferDataSource(void *data_, size_t len)
+		: OBufferDataSpan(data_, len), data(static_cast<unsigned char*>(data_)) {}
 
-	OBufferDataSource(OBufferDataSource&& other) noexcept
-		: OBufferDataSpan(std::move(other)) {
-		other.buf = nullptr;
-	}
-	OBufferDataSource& operator=(OBufferDataSource&& other) noexcept {
-		std::swap(buf, other.buf);
-		return *this;
-	}
+	OBufferDataSource(OBufferDataSource&& other) noexcept = default;
+	OBufferDataSource& operator=(OBufferDataSource&& other) noexcept = default;
 
-	~OBufferDataSource() override final {
-		delete [] buf;
-	}
+	~OBufferDataSource() override final = default;
 };
 
 #endif

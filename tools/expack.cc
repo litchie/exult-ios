@@ -142,12 +142,11 @@ bool Write_Object(U7object &obj, const char *fname) {
 		ofstream out;
 		U7open(out, fname, false);
 		size_t l;
-		char *n = obj.retrieve(l);
+		auto n = obj.retrieve(l);
 		if (!n) {
 			return false;
 		}
-		out.write(n, l);
-		delete [] n;
+		out.write(reinterpret_cast<char*>(n.get()), l);
 	} catch (const std::exception &err) {
 		cerr << err.what() << endl;
 		return false;
@@ -283,12 +282,9 @@ int main(int argc, char **argv)
 		cout << "Size: " << count << endl;
 		cout << "-------------------------" << endl;
 		for (size_t i = 0; i < count; i++) {
-			char *buf;
 			size_t len;
-
-			buf = f->retrieve(static_cast<uint32>(i), len);
+			auto buf = f->retrieve(static_cast<uint32>(i), len);
 			cout << i << "\t" << len << endl;
-			delete [] buf;
 		}
 	}
 	break;

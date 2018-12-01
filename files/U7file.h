@@ -42,7 +42,7 @@ protected:
 	File_spec identifier;
 	/// Pointer to the DataSource which will be used by
 	/// derived classes.
-	IDataSource *data;
+	std::unique_ptr<IDataSource> data;
 	/// Causes file/buffer information to be read. Or will do,
 	/// when it is implemented for derived classes.
 	virtual void index_file() {}
@@ -53,21 +53,19 @@ protected:
 	virtual Reference get_object_reference(uint32) const {
 		return Reference{0, 0};
 	}
-private:
-	/// No default constructor.
-	U7file();
-	UNREPLICATABLE_CLASS(U7file)
 public:
 	/// Initializes from a file spec. Needed by some constructors.
 	/// @param spec A file specification.
 	U7file(const File_spec &spec)
-		: identifier(spec), data(NULL) {}
+		: identifier(spec), data(nullptr) {}
 	/// Deletes the data source. The destructors of derived classes
 	/// should delete anything else that is needed by the datasource
 	/// (e.g. buffers) but NOT the datadource.
-	virtual ~U7file() {
-		delete data;
-	}
+	virtual ~U7file() noexcept = default;
+	U7file(const U7file&) = delete;
+	U7file& operator=(const U7file&) = delete;
+	U7file(U7file&&) = default;
+	U7file& operator=(U7file&&) = default;
 
 	/**
 	 *  Reads the desired object from the file.
@@ -77,7 +75,7 @@ public:
 	 *  null on any failure.
 	 */
 	virtual size_t number_of_objects() = 0;
-	char *retrieve(uint32 objnum, std::size_t &len) {
+	std::unique_ptr<unsigned char[]> retrieve(uint32 objnum, std::size_t &len) {
 		if (!data || objnum >= number_of_objects()) {
 			len = 0;
 			return 0;
@@ -89,10 +87,7 @@ public:
 			return 0;
 		}
 		len = ref.size;
-		char *buffer = new char[len];
-		data->read(buffer, len);
-
-		return buffer;
+		return data->readN(len);
 	}
 
 	virtual const char *get_archive_type() = 0;
@@ -100,14 +95,14 @@ public:
 	/**
 	 *  Reads the desired object from the file.
 	 *  @param objnum   Number of object to read.
-	 *  @return IExultDataSource wrapping object data. If any error
+	 *  @return IBufferDataSource wrapping object data. If any error
 	 *  has occurred, calling good() on the returned data source will
 	 *  return false.
 	 */
-	IExultDataSource retrieve(uint32 objnum) {
+	IBufferDataSource retrieve(uint32 objnum) {
 		std::size_t len;
-		char *data = retrieve(objnum, len);
-		return IExultDataSource(data, len);
+		auto buffer = retrieve(objnum, len);
+		return IBufferDataSource(std::move(buffer), len);
 	}
 };
 
@@ -129,13 +124,13 @@ public:
 	/// @param spec Name of file to open. Ignores the index portion.
 	U7DataFile(const File_spec &spec)
 		: T(spec) {
-		this->data = new IFileDataSource(this->identifier.name);
+		this->data = std::make_unique<IFileDataSource>(this->identifier.name);
 		if (this->data->good()) {
 			this->index_file();
 		}
 	}
 	/// This destructor simply closes the file.
-	virtual ~U7DataFile() {}
+	~U7DataFile() override final {}
 };
 
 /**
@@ -152,13 +147,11 @@ class U7DataBuffer : public T {
 	UNREPLICATABLE_CLASS(U7DataBuffer)
 public:
 	/// Creates and initializes the data source from the data source.
-	/// Takes ownership of the parameters and deletes them when done,
-	/// so callers should NOT delete them.
 	/// @param spec Unique identifier for this data object.
-	/// @param dt   IExultDataSource that we shoud use.
-	U7DataBuffer(const File_spec &spec, IExultDataSource *dt)
+	/// @param dt   Unique pointer to IExultDataSource that we shoud use.
+	U7DataBuffer(const File_spec &spec, std::unique_ptr<IExultDataSource> dt)
 		: T(spec) {
-		this->data = dt;
+		this->data = std::move(dt);
 		this->index_file();
 	}
 	/// Creates and initializes the data source from the buffer.
@@ -170,7 +163,7 @@ public:
 	/// @param l    Length of data in the buffer.
 	U7DataBuffer(const File_spec &spec, const char *buf, unsigned int l)
 		: T(spec) {
-		this->data = new IExultDataSource(buf, l);
+		this->data = std::make_unique<IExultDataSource>(buf, l);
 		this->index_file();
 	}
 	/// Creates and initializes the data source from the specified
@@ -179,11 +172,11 @@ public:
 	/// member **MUST** be a valid file name.
 	U7DataBuffer(const File_spec &spec)
 		: T(spec) {
-		this->data = new IExultDataSource(spec.name, spec.index);
+		this->data = std::make_unique<IExultDataSource>(spec.name, spec.index);
 		this->index_file();
 	}
 	/// This destructor simply deletes the buffer if non-null.
-	virtual ~U7DataBuffer() {}
+	~U7DataBuffer() override final {}
 };
 
 // Not yet.

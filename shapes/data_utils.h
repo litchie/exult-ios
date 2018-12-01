@@ -278,11 +278,10 @@ public:
 		    : BUNDLE_CHECK(BUNDLE_EXULT_SI_FLX, EXULT_SI_FLX);
 		U7object txtobj(flexfile, resource);
 		std::size_t len;
-		char *txt = txtobj.retrieve(len);
-		std::string databuf(txt, len);
+		auto txt = txtobj.retrieve(len);
+		std::string databuf(reinterpret_cast<char*>(txt.get()), len);
 		std::istringstream strin(databuf, std::ios::in | std::ios::binary);
 		read_binary_internal(strin, false, game);
-		delete [] txt;
 	}
 };
 

@@ -421,7 +421,7 @@ unsigned int Shape_frame::read(
 	xright = ybelow = -1;
 	shapes->seek(shapeoff + framenum * c_num_tile_bytes);
 	datalen = c_num_tile_bytes;
-	data = shapes->read(c_num_tile_bytes);
+	data = shapes->readN(c_num_tile_bytes);
 	return (shapelen / c_num_tile_bytes);   // That's how many frames.
 }
 
@@ -441,7 +441,7 @@ void Shape_frame::get_rle_shape(
 	ybelow = shapes->read2();
 	len -= 8;           // Subtract what we just read.
 	datalen = len + 2;
-	data = shapes->read(len);
+	data = shapes->readN(len);
 	data[len] = 0;          // 0-delimit.
 	data[len + 1] = 0;
 	rle = true;

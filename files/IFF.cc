@@ -44,7 +44,7 @@ void IFF::index_file(void) {
 	if (!data)
 		throw file_read_exception(identifier.name);
 
-	if (!is_iff(data))  // Not an IFF file we recognise
+	if (!is_iff(data.get()))  // Not an IFF file we recognise
 		throw wrong_file_type_exception(identifier.name, "IFF");
 
 #ifdef DEBUG

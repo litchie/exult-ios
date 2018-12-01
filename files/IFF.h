@@ -59,8 +59,8 @@ protected:
 	/// List of objects in the IFF file.
 	std::vector<Reference> object_list;
 
-	virtual void index_file();
-	virtual Reference get_object_reference(uint32 objnum) const {
+	void index_file() override;
+	Reference get_object_reference(uint32 objnum) const override {
 		return object_list[objnum];
 	}
 public:
@@ -69,13 +69,13 @@ public:
 	IFF(const File_spec &spec)
 		: U7file(spec)
 	{  }
-	virtual ~IFF()
+	~IFF() override
 	{   }
 
-	virtual size_t number_of_objects(void) {
+	size_t number_of_objects() override {
 		return object_list.size();
 	}
-	virtual const char *get_archive_type() {
+	const char *get_archive_type() override {
 		return "IFF";
 	}
 

@@ -61,6 +61,7 @@ using std::rand;
 using std::strchr;
 using std::strlen;
 using std::unique_ptr;
+using std::make_unique;
 
 #ifdef __IPHONEOS__
 #include "data/exult_iphone_flx.h"
@@ -611,26 +612,16 @@ void BG_Game::scene_butterfly() {
 
 
 class LipSynchReader {
-	char * data;
+	std::unique_ptr<IBufferDataView> data;
 	const unsigned char *ptr;
 	const unsigned char *eptr;
 public:
-	LipSynchReader() {
-		U7multiobject lipdata(MAINSHP_FLX, PATCH_MAINSHP, 0x0F);
-		size_t len;
-		data = lipdata.retrieve(len);
-		ptr = reinterpret_cast<unsigned char *>(data);
-		eptr = ptr + len;
-	}
-	LipSynchReader(char const *pp, int len) {
-		data = new char[len];
-		memcpy(data, pp, len);
-		ptr = reinterpret_cast<unsigned char *>(data);
-		eptr = ptr + len;
-	}
-	~LipSynchReader() {
-		delete [] data;
-	}
+	LipSynchReader()
+		: data(std::make_unique<IExultDataSource>(MAINSHP_FLX, PATCH_MAINSHP, 0x0F)),
+		  ptr(data->getPtr()), eptr(ptr + data->getSize()) {}
+	LipSynchReader(char const *pp, int len)
+		: data(std::make_unique<IBufferDataView>(pp, len)),
+		  ptr(data->getPtr()), eptr(ptr + data->getSize()) {}
 	bool have_events() const {
 		return ptr < eptr;
 	}
@@ -932,9 +923,9 @@ void BG_Game::scene_guardian() {
 					Font *font = fontManager.get_font("GUARDIAN_FONT");
 					U7multiobject textobj(MAINSHP_FLX, PATCH_MAINSHP, 0x0D);
 					size_t txt_len;
-					unique_ptr<char[]> txt(textobj.retrieve(txt_len));
+					auto txt = textobj.retrieve(txt_len);
 					char *txt_ptr, *txt_end, *next_txt;
-					next_txt = txt_ptr = txt.get();
+					next_txt = txt_ptr = reinterpret_cast<char*>(txt.get());
 
 					int txt_height = font->get_text_height();
 					int txt_ypos = gwin->get_height() - txt_height - 16;
@@ -1403,15 +1394,14 @@ public:
 bool ExVoiceBuffer::play_it() {
 	size_t  size;
 	U7multiobject voc(file, patch, index);
-	uint8 *buffer = reinterpret_cast<uint8 *>(voc.retrieve(size));
-	uint8 *buf = buffer;
+	auto buffer = voc.retrieve(size);
+	uint8 *buf = buffer.get();
 	if (!memcmp(buf, "voc", sizeof("voc") - 1)) {
 		// IFF junk.
 		buf += 8;
 		size -= 8;
 	}
 	Audio::get_ptr()->copy_and_play(buf, size, false);
-	FORGET_ARRAY(buffer);
 	played = true;
 
 	return false;

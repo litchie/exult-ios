@@ -47,6 +47,7 @@ using std::cout;
 using std::endl;
 using std::rand;
 using std::strlen;
+using std::unique_ptr;
 #ifdef __IPHONEOS__
 #include "data/exult_iphone_flx.h"
 #include "exult.h"
@@ -256,7 +257,6 @@ void SI_Game::play_intro() {
 	if (midi) midi->set_timbre_lib(MyMidiPlayer::TIMBRE_LIB_INTRO);
 
 	int next = 0;
-	uint8   *buffer = 0;
 	size_t  size;
 	int     i, j;
 	Font *sifont = fontManager.get_font("SIINTRO_FONT");
@@ -300,11 +300,12 @@ void SI_Game::play_intro() {
 		// Start Music
 		audio->start_music(R_SINTRO, 0, false);
 
+		unique_ptr<unsigned char[]> buffer;
 		// Thunder, note we use the buffer again later so it's not freed here
 		if (speech) {
 			U7multiobject voc_thunder(INTRO_DAT, PATCH_INTRO, 15);
-			buffer = reinterpret_cast<uint8 *>(voc_thunder.retrieve(size));
-			audio->copy_and_play(buffer + 8, size - 8, false);
+			buffer = voc_thunder.retrieve(size);
+			audio->copy_and_play(buffer.get() + 8, size - 8, false);
 		}
 
 		playfli fli1(INTRO_DAT, PATCH_INTRO, 1);
@@ -357,8 +358,8 @@ void SI_Game::play_intro() {
 
 			// Thunder again, we free the buffer here
 			if (speech && j == 5) {
-				audio->copy_and_play(buffer + 8, size - 8, false);
-				FORGET_ARRAY(buffer);
+				audio->copy_and_play(buffer.get() + 8, size - 8, false);
+				buffer.reset();
 			}
 
 			prev = num;
@@ -423,9 +424,8 @@ void SI_Game::play_intro() {
 		// Guard walks in
 		if (speech && !jive) {
 			U7multiobject voc_my_leige(INTRO_DAT, PATCH_INTRO, 16);
-			buffer = reinterpret_cast<uint8 *>(voc_my_leige.retrieve(size));
-			audio->copy_and_play(buffer + 8, size - 8, false);
-			FORGET_ARRAY(buffer);
+			auto buffer = voc_my_leige.retrieve(size);
+			audio->copy_and_play(buffer.get() + 8, size - 8, false);
 		}
 
 		for (; j < 55; j++) {
@@ -449,9 +449,8 @@ void SI_Game::play_intro() {
 
 		if (speech && !jive) {
 			U7multiobject voc_all_we(INTRO_DAT, PATCH_INTRO, 17);
-			buffer = reinterpret_cast<uint8 *>(voc_all_we.retrieve(size));
-			audio->copy_and_play(buffer + 8, size - 8, false);
-			FORGET_ARRAY(buffer);
+			auto buffer = voc_all_we.retrieve(size);
+			audio->copy_and_play(buffer.get() + 8, size - 8, false);
 		}
 
 		for (; j < 73; j++) {
@@ -495,9 +494,8 @@ void SI_Game::play_intro() {
 
 		if (speech && !jive) {
 			U7multiobject voc_indeed(INTRO_DAT, PATCH_INTRO, 18);
-			buffer = reinterpret_cast<uint8 *>(voc_indeed.retrieve(size));
-			audio->copy_and_play(buffer + 8, size - 8, false);
-			FORGET_ARRAY(buffer);
+			auto buffer = voc_indeed.retrieve(size);
+			audio->copy_and_play(buffer.get() + 8, size - 8, false);
 		}
 
 		next = fli2.play(win, j, j);
@@ -542,9 +540,8 @@ void SI_Game::play_intro() {
 		// 'Stand Back'
 		if (speech && !jive) {
 			U7multiobject voc_stand_back(INTRO_DAT, PATCH_INTRO, 19);
-			buffer = reinterpret_cast<uint8 *>(voc_stand_back.retrieve(size));
-			audio->copy_and_play(buffer + 8, size - 8, false);
-			FORGET_ARRAY(buffer);
+			auto buffer = voc_stand_back.retrieve(size);
+			audio->copy_and_play(buffer.get() + 8, size - 8, false);
 		}
 
 		for (; j < 61; j++) {
@@ -578,9 +575,8 @@ void SI_Game::play_intro() {
 
 		if (speech && !jive) {
 			U7multiobject voc_big_g(INTRO_DAT, PATCH_INTRO, 20);
-			buffer = reinterpret_cast<uint8 *>(voc_big_g.retrieve(size));
-			audio->copy_and_play(buffer + 8, size - 8, false);
-			FORGET_ARRAY(buffer);
+			auto buffer = voc_big_g.retrieve(size);
+			audio->copy_and_play(buffer.get() + 8, size - 8, false);
 		}
 
 		next = 0;
@@ -650,9 +646,8 @@ void SI_Game::play_intro() {
 
 		if (speech && !jive) {
 			U7multiobject voc_tis_my(INTRO_DAT, PATCH_INTRO, 21);
-			buffer = reinterpret_cast<uint8 *>(voc_tis_my.retrieve(size));
-			audio->copy_and_play(buffer + 8, size - 8, false);
-			FORGET_ARRAY(buffer);
+			auto buffer = voc_tis_my.retrieve(size);
+			audio->copy_and_play(buffer.get() + 8, size - 8, false);
 		}
 
 		for (j = 0; j < 61; j++) {
@@ -733,7 +728,6 @@ void SI_Game::play_intro() {
 
 		enable_direct_gl_render();
 	} catch (const UserBreakException &/*x*/) {
-		FORGET_ARRAY(buffer);
 		enable_direct_gl_render();
 	}
 
@@ -894,15 +888,14 @@ bool ExCineVoc::play_it(Image_window *win, uint32 t) {
 	ignore_unused_variable_warning(win, t);
 	size_t  size;
 	U7multiobject voc(file, patch, index);
-	uint8 *buffer = reinterpret_cast<uint8 *>(voc.retrieve(size));
-	uint8 *buf = buffer;
+	auto buffer = voc.retrieve(size);
+	uint8 *buf = buffer.get();
 	if (!memcmp(buf, "win", sizeof("win") - 1)) {
 		// IFF junk.
 		buf += 8;
 		size -= 8;
 	}
 	Audio::get_ptr()->copy_and_play(buf, size, false);
-	FORGET_ARRAY(buffer);
 	played = true;
 
 	return false;

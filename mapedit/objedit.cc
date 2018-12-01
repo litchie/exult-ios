@@ -196,7 +196,7 @@ void ExultStudio::open_obj_window(
 		objwin = glade_xml_get_widget(app_xml, "obj_window");
 		// Note: vgafile can't be null here.
 		if (palbuf) {
-			obj_draw = new Shape_draw(vgafile->get_ifile(), palbuf,
+			obj_draw = new Shape_draw(vgafile->get_ifile(), palbuf.get(),
 			                          glade_xml_get_widget(app_xml, "obj_draw"));
 			obj_draw->enable_drop(Obj_shape_dropped, this);
 		}

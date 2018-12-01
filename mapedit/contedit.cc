@@ -218,7 +218,7 @@ void ExultStudio::open_cont_window(
 		contwin = glade_xml_get_widget(app_xml, "cont_window");
 		// Note: vgafile can't be null here.
 		if (palbuf) {
-			cont_draw = new Shape_draw(vgafile->get_ifile(), palbuf,
+			cont_draw = new Shape_draw(vgafile->get_ifile(), palbuf.get(),
 			                           glade_xml_get_widget(app_xml, "cont_draw"));
 			cont_draw->enable_drop(cont_shape_dropped, this);
 		}

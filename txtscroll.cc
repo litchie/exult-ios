@@ -47,30 +47,29 @@ using std::strchr;
 using std::string;
 using std::strlen;
 using std::strncmp;
+using std::unique_ptr;
+using std::make_unique;
 using std::vector;
 
 TextScroller::TextScroller(const char *archive, int index, Font *fnt, Shape *shp) {
 	font = fnt;
 	shapes = shp;
-	U7object *txtobj;
+	unique_ptr<U7object> txtobj;
 	// Hack to patch MAINSHP_FLX.
 	if (!strncmp(archive, MAINSHP_FLX, sizeof(MAINSHP_FLX) - 1))
-		txtobj = new U7multiobject(archive, PATCH_MAINSHP, index);
+		txtobj = make_unique<U7multiobject>(archive, PATCH_MAINSHP, index);
 	else
-		txtobj = new U7object(archive, index);
+		txtobj = make_unique<U7object>(archive, index);
 	size_t len;
 	const char  CR = '\r', LF = '\n';
 
-	char *txt, *ptr, *end;
-	txt = txtobj->retrieve(len);
-	delete txtobj;
+	unique_ptr<unsigned char[]> txt = txtobj->retrieve(len);
 	if (!txt || len <= 0) {
-		delete [] txt;
 		text = new vector<string>();
 		return;
 	}
-	ptr = txt;
-	end = ptr + len;
+	char *ptr = reinterpret_cast<char*>(txt.get());
+	char *end = ptr + len;
 
 	text = new vector<string>();
 	while (ptr < end) {
@@ -86,7 +85,6 @@ TextScroller::TextScroller(const char *archive, int index, Font *fnt, Shape *shp
 		} else
 			break;
 	}
-	delete [] txt;
 }
 
 TextScroller::~TextScroller() {

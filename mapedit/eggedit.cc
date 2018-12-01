@@ -187,7 +187,7 @@ void ExultStudio::open_egg_window(
 		eggwin = glade_xml_get_widget(app_xml, "egg_window");
 		if (vgafile && palbuf) {
 			egg_monster_draw = new Shape_draw(vgafile->get_ifile(),
-			                                  palbuf,
+			                                  palbuf.get(),
 			                                  glade_xml_get_widget(app_xml, "egg_monster_draw"));
 			egg_monster_draw->enable_drop(Egg_monster_dropped,
 			                              this);

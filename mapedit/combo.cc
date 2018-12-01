@@ -41,6 +41,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 using std::cout;
 using std::endl;
+using std::unique_ptr;
+using std::make_unique;
 
 class Game_object;
 
@@ -70,7 +72,7 @@ void ExultStudio::open_combo_window(
 	}
 	Shapes_vga_file *svga = static_cast<Shapes_vga_file *>(vgafile->get_ifile());
 	delete combowin;        // Delete old (svga may have changed).
-	combowin = new Combo_editor(svga, palbuf);
+	combowin = new Combo_editor(svga, palbuf.get());
 	combowin->show(true);
 	// Set edit-mode to pick.
 	GtkWidget *mitem = glade_xml_get_widget(app_xml, "pick_for_combo1");
@@ -446,15 +448,15 @@ int Combo::find(
  *  Output: Allocated buffer containing result.
  */
 
-unsigned char *Combo::write(
+unique_ptr<unsigned char[]> Combo::write(
     int &datalen            // Actual length of data in buf. is
     //   returned here.
 ) {
 	int namelen = name.length();    // Name length.
 	// Room for our data + members.
-	unsigned char *buf = new unsigned char[namelen + 1 +
-	                                       7 * 4 + members.size() * (5 * 4)];
-	unsigned char *ptr = buf;
+	auto buf = make_unique<unsigned char[]>(namelen + 1 +
+	                                       7 * 4 + members.size() * (5 * 4));
+	unsigned char *ptr = buf.get();
 	Serial_out out(ptr);
 	out << name;
 	out << hot_index << starttx << startty;
@@ -465,7 +467,7 @@ unsigned char *Combo::write(
 		out << m->tx << m->ty << m->tz << m->shapenum <<
 		    m->framenum;
 	}
-	datalen = ptr - buf;        // Return actual length.
+	datalen = ptr - buf.get();        // Return actual length.
 	return buf;
 }
 
@@ -740,10 +742,9 @@ void Combo_editor::save(
 	}
 	flex_info->set_modified();
 	int len;            // Serialize.
-	unsigned char *newbuf = combo->write(len);
+	auto newbuf = combo->write(len);
 	// Update or append file data.
-	flex_info->set(file_index == -1 ? flex_info->size() : file_index,
-	               reinterpret_cast<char *>(newbuf), len);
+	flex_info->set(file_index == -1 ? flex_info->size() : file_index, std::move(newbuf), len);
 	Combo_chooser *browser = dynamic_cast<Combo_chooser *>(
 	                             studio->get_browser());
 	if (browser)            // Browser open?

@@ -57,6 +57,7 @@ using std::strncmp;
 using std::strcpy;
 using std::strcat;
 using std::vector;
+using std::unique_ptr;
 
 /*
  *  A shape specification:
@@ -766,7 +767,7 @@ static void Update(
 	}
 	FlexFile in(imagename);     // May throw exception.
 	size_t oldcnt = in.number_of_objects();
-	vector<char *> data(oldcnt);    // Read in all the entries.
+	vector<unique_ptr<unsigned char[]>> data(oldcnt);    // Read in all the entries.
 	vector<int> lengths(oldcnt);
 	size_t i;
 	for (i = 0; i < oldcnt; i++) {
@@ -774,8 +775,7 @@ static void Update(
 		data[i] = in.retrieve(i, len);
 		lengths[i] = len;
 		if (!len) {     // Empty?
-			delete [] data[i];
-			data[i] = 0;
+			data[i].reset();
 		}
 	}
 	ofstream out;
@@ -791,13 +791,11 @@ static void Update(
 		}
 		// Write old entry.
 		else if (i < oldcnt && data[i])
-			out.write(data[i], lengths[i]);
+			out.write(reinterpret_cast<char*>(data[i].get()), lengths[i]);
 		writer.mark_section_done();
 	}
 	if (!writer.close())
 		throw file_write_exception(imagename);
-	for (i = 0; i < oldcnt; i++)    // Clean up.
-		delete [] data[i];
 }
 
 /*
@@ -816,7 +814,7 @@ static void Extract(
 	U7object pal(palname, 0);   // Get palette 0.
 	size_t len;
 	// This may throw an exception
-	unsigned char *palbuf = reinterpret_cast<unsigned char *>(pal.retrieve(len));
+	auto palbuf = pal.retrieve(len);
 	for (size_t i = 0; i < len; i++)    // Turn into full bytes.
 		palbuf[i] *= 4;     // Exult palette vals are 0-63.
 	Vga_file ifile(imagename);  // May throw an exception.
@@ -840,9 +838,8 @@ static void Extract(
 			     " doesn't match actual count (" << nframes <<
 			     ")" << endl;
 		for (int f = 0; f < nframes; f++)
-			Write_frame(basename, f, shape->get_frame(f), palbuf);
+			Write_frame(basename, f, shape->get_frame(f), palbuf.get());
 	}
-	delete [] palbuf;
 }
 
 /*

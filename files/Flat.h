@@ -39,7 +39,7 @@ private:
 	Flat();
 	UNREPLICATABLE_CLASS_I(Flat, U7file(""))
 protected:
-	virtual Reference get_object_reference(uint32) const {
+	Reference get_object_reference(uint32) const override {
 		return Reference{0, data->getSize()};
 	}
 public:
@@ -49,10 +49,10 @@ public:
 		: U7file(spec)
 	{  }
 
-	virtual size_t number_of_objects(void) {
+	size_t number_of_objects() override {
 		return 1;
 	}
-	virtual const char *get_archive_type() {
+	const char *get_archive_type() override {
 		return "FLAT";
 	}
 

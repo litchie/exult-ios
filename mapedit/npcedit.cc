@@ -320,13 +320,13 @@ void ExultStudio::open_npc_window(
 		npcwin = glade_xml_get_widget(app_xml, "npc_window");
 
 		if (vgafile && palbuf) {
-			npc_draw = new Shape_draw(vgafile->get_ifile(), palbuf,
+			npc_draw = new Shape_draw(vgafile->get_ifile(), palbuf.get(),
 			                          glade_xml_get_widget(app_xml, "npc_draw"));
 			npc_draw->enable_drop(Npc_shape_dropped, this);
 		}
 		if (facefile && palbuf) {
 			npc_face_draw = new Shape_draw(facefile->get_ifile(),
-			                               palbuf,
+			                               palbuf.get(),
 			                               glade_xml_get_widget(app_xml, "npc_face_draw"));
 			npc_face_draw->enable_drop(Npc_face_dropped, this);
 		}

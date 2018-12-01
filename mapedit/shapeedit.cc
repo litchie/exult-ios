@@ -440,7 +440,7 @@ void ExultStudio::open_equip_window(
 		GtkWidget *table = glade_xml_get_widget(app_xml,
 		                                        "equip_table");
 		Setup_equip(GTK_TABLE(table), vgafile->get_ifile(),
-		            palbuf, equip_rows);
+		            palbuf.get(), equip_rows);
 	}
 	// This will cause the data to be set:
 	set_spin("equip_recnum", recnum, 1, ecnt);
@@ -3920,20 +3920,20 @@ void ExultStudio::open_shape_window(
 	// Note: ifile and vgafile can't possibly be null if we are here.
 	Vga_file *ifile = file_info->get_ifile();
 	if (palbuf) {
-		shape_draw = new Shape_draw(ifile, palbuf,
+		shape_draw = new Shape_draw(ifile, palbuf.get(),
 		                            glade_xml_get_widget(app_xml, "shinfo_draw"));
 //		shape_draw->enable_drop(Shape_shape_dropped, this);
-		body_draw = new Shape_draw(vgafile->get_ifile(), palbuf,
+		body_draw = new Shape_draw(vgafile->get_ifile(), palbuf.get(),
 		                           glade_xml_get_widget(app_xml, "shinfo_body_draw"));
 		body_draw->enable_drop(Body_shape_dropped, this);
 	}
 	if (gumpfile && palbuf) {
-		gump_draw = new Shape_draw(gumpfile->get_ifile(), palbuf,
+		gump_draw = new Shape_draw(gumpfile->get_ifile(), palbuf.get(),
 		                           glade_xml_get_widget(app_xml, "shinfo_gump_draw"));
 		gump_draw->enable_drop(Gump_shape_dropped, this);
 	}
 	if (spritefile && palbuf) {
-		explosion_draw = new Shape_draw(spritefile->get_ifile(), palbuf,
+		explosion_draw = new Shape_draw(spritefile->get_ifile(), palbuf.get(),
 		                                glade_xml_get_widget(app_xml, "shinfo_explosion_draw"));
 		explosion_draw->enable_drop(Explosion_shape_dropped, this);
 	}

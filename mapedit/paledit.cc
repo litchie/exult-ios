@@ -61,6 +61,7 @@ using   std::ostream;
 using   std::ofstream;
 using   std::setw;
 using   std::ifstream;
+using   std::make_unique;
 using   EStudio::Prompt;
 using   EStudio::Alert;
 
@@ -735,10 +736,10 @@ void Palette_edit::new_palette(
 void Palette_edit::update_flex(
     int pnum            // Palette # to send to file.
 ) {
-	unsigned char *buf = new unsigned char[3 * 256];
-	Write_palette(buf, palettes[pnum]);
+	auto buf = make_unique<unsigned char[]>(3 * 256);
+	Write_palette(buf.get(), palettes[pnum]);
 	// Update or append file data.
-	flex_info->set(pnum, reinterpret_cast<char *>(buf), 3 * 256);
+	flex_info->set(pnum, std::move(buf), 3 * 256);
 	flex_info->set_modified();
 }
 

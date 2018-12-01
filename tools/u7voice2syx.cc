@@ -269,7 +269,7 @@ int main(int argc, char *argv[]) {
 			std::cout << "Reading data..." << std::endl;
 
 			// Create us a data source
-			IExultDataSource ds = f.retrieve(0);
+			IBufferDataSource ds = f.retrieve(0);
 			if (!ds.good())
 				throw(exult_exception("No data in index 0"));
 

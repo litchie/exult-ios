@@ -840,11 +840,9 @@ void KeyBinder::LoadDefaults() {
 
 	U7object txtobj(resource.str, resource.num);
 	size_t len;
-	char *txt = txtobj.retrieve(len);
+	auto txt = txtobj.retrieve(len);
 	if (txt && len > 0)
-		ParseText(txt, len);
-
-	delete [] txt;
+		ParseText(reinterpret_cast<char*>(txt.get()), len);
 }
 
 // codes used in keybindings-files. (use uppercase here)

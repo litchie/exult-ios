@@ -43,6 +43,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 using std::vector;
 using std::ios;
 using std::string;
+using std::unique_ptr;
+using std::make_unique;
 using EStudio::Alert;
 
 /*
@@ -216,32 +218,29 @@ void Shape_group::add(
 Shape_group_file::Shape_group_file(
     const char *nm          // Basename.
 ) : name(nm), modified(false) {
-	Flex *flex = 0;
+	unique_ptr<Flex> flex = 0;
 	std::string patchname = "<PATCH>/" + name;
 	std::string staticname = "<STATIC>/" + name;
 	if (U7exists(patchname))    // First try 'patch' directory.
-		flex = new FlexFile(patchname.c_str());
+		flex = make_unique<FlexFile>(patchname.c_str());
 	else if (U7exists(staticname))
-		flex = new FlexFile(staticname.c_str());
+		flex = make_unique<FlexFile>(staticname.c_str());
 	if (flex) {         // Exists?
 		int cnt = flex->number_of_objects();
 		for (int i = 0; i < cnt; i++) {
 			// Get each group.
 			std::size_t len;
-			char *buf = flex->retrieve(i, len);
-			const char *gname = buf;  // Starts with name.
-			const unsigned char *ptr = reinterpret_cast<const unsigned char *>(
-			                     gname) + strlen(gname) + 1;
+			auto buf = flex->retrieve(i, len);
+			const char *gname = reinterpret_cast<const char*>(buf.get());  // Starts with name.
+			const unsigned char *ptr = buf.get() + strlen(gname) + 1;
 			size_t sz = Read2(ptr); // Get # entries.
-			assert((len - (reinterpret_cast<const char *>(ptr) - buf)) / 2 == sz);
+			assert((len - (ptr - buf.get())) / 2 == sz);
 			Shape_group *grp = new Shape_group(gname, this);
 			grp->reserve(sz);
 			for (size_t j = 0; j < sz; j++)
 				grp->push_back(Read2(ptr));
 			groups.push_back(grp);
-			delete buf;
 		}
-		delete flex;
 	}
 }
 
@@ -805,7 +804,7 @@ void ExultStudio::open_group_window(
 	GladeXML *xml = glade_xml_new(glade_path, "group_window", NULL);
 	glade_xml_signal_autoconnect(xml);
 	GtkWidget *grpwin = glade_xml_get_widget(xml, "group_window");
-	Object_browser *chooser = curfile->create_browser(vgafile, palbuf, grp);
+	Object_browser *chooser = curfile->create_browser(vgafile, palbuf.get(), grp);
 	// Set xml as data on window.
 	gtk_object_set_data(GTK_OBJECT(grpwin), "xml", xml);
 	gtk_object_set_data(GTK_OBJECT(grpwin), "browser", chooser);

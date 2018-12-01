@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 #include <fstream>
+#include <memory>
 #include <string>
 #include <vector>
 #include "ignore_unused_variable_warning.h"
@@ -175,7 +176,7 @@ public:
 class Flex_file_info : public Shape_file_info {
 
 	Flex *flex;         // NULL if just 1 entry.
-	std::vector<char *> entries;    // Entries are stored here.
+	std::vector<std::unique_ptr<unsigned char[]>> entries;    // Entries are stored here.
 	std::vector<int> lengths;   // Lengths here.
 	bool write_flat;        // Write flat file if just 1 entry.
 public:
@@ -187,9 +188,9 @@ public:
 	unsigned size() {        // Get # flex entries.
 		return entries.size();
 	}
-	char *get(unsigned i, size_t &len);  // Get i'th entry.
+	unsigned char *get(unsigned i, size_t &len);  // Get i'th entry.
 	// Set i'th entry.
-	void set(unsigned i, char *newentry, int entlen);
+	void set(unsigned i, std::unique_ptr<unsigned char[]> newentry, int entlen);
 	void swap(unsigned i);       // Swap entries i, i+1.
 	void remove(unsigned i);     // Remove i'th entry.
 	virtual ~Flex_file_info();

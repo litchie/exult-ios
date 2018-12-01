@@ -25,6 +25,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+#include <memory>
 #include <string>
 #include <vector>
 #include "objbrowse.h"
@@ -81,7 +82,7 @@ public:
 	          int xoff = 0, int yoff = 0);
 	int find(int mx, int my);   // Find at mouse position.
 	// Serialize:
-	unsigned char *write(int &datalen);
+	std::unique_ptr<unsigned char[]> write(int &datalen);
 	const unsigned char *read(const unsigned char *buf, int bufsize);
 };
 

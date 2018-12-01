@@ -64,10 +64,9 @@ static void Read_flex(
 	strings.resize(cnt);
 	for (int i = 0; i < cnt; i++) {
 		size_t len;
-		const char *ptr = in.retrieve(i, len);
+		auto ptr = in.retrieve(i, len);
 		if (len) {     // Not empty?
-			strings[i] = ptr;
-			delete [] ptr;
+			strings[i] = reinterpret_cast<char*>(ptr.get());
 		}
 	}
 }

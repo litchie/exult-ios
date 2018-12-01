@@ -37,6 +37,7 @@
 
 using std::string;
 using std::map;
+using std::make_unique;
 
 static U7FileManager filemanager;
 U7FileManager *U7FileManager::self = &filemanager;
@@ -57,28 +58,26 @@ U7file *U7FileManager::get_file_object(const File_spec &s, bool allow_errors) {
 	// Not in our cache. Attempt to figure it out.
 	U7file *uf = 0;
 	if (s.index >= 0) {
-		IExultDataSource *data = new IExultDataSource(s.name, s.index);
-		if (IFF::is_iff(data))
-			uf = new IFFBuffer(s, data);
-		else if (Flex::is_flex(data))
-			uf = new FlexBuffer(s, data);
-		else if (Table::is_table(data))
-			uf = new TableBuffer(s, data);
-		else if (Flat::is_flat(data))
-			uf = new FlatBuffer(s, data);
-		else {
-			// All other cases manage this, so we don't have to.
-			delete data;
+		auto data = make_unique<IExultDataSource>(s.name, s.index);
+		if (IFF::is_iff(data.get())) {
+			uf = new IFFBuffer(s, std::move(data));
+		} else if (Flex::is_flex(data.get())) {
+			uf = new FlexBuffer(s, std::move(data));
+		} else if (Table::is_table(data.get())) {
+			uf = new TableBuffer(s, std::move(data));
+		} else if (Flat::is_flat(data.get())) {
+			uf = new FlatBuffer(s, std::move(data));
 		}
 	} else {
-		if (IFF::is_iff(s.name))
+		if (IFF::is_iff(s.name)) {
 			uf = new IFFFile(s.name);
-		else if (Flex::is_flex(s.name))
+		} else if (Flex::is_flex(s.name)) {
 			uf = new FlexFile(s.name);
-		else if (Table::is_table(s.name))
+		} else if (Table::is_table(s.name)) {
 			uf = new TableFile(s.name);
-		else if (Flat::is_flat(s.name))
+		} else if (Flat::is_flat(s.name)) {
 			uf = new FlatFile(s.name);
+		}
 	}
 
 	// Failed

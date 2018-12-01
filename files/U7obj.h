@@ -23,6 +23,7 @@
 #ifndef _U7OBJ_H_
 #define _U7OBJ_H_
 
+#include <memory>
 #include <string>
 #include <vector>
 #include "common_types.h"
@@ -87,16 +88,14 @@ public:
 	U7object(const File_spec &spec, int objnum)
 		: identifier(spec), objnumber(objnum)
 	{  }
-	/// Copy constructor.
-	/// @param other    What we are copying.
-	U7object(const U7object &other)
-		: identifier(other.identifier), objnumber(other.objnumber)
-	{  }
-	virtual ~U7object()
-	{  }
+	virtual ~U7object() noexcept = default;
+	U7object(const U7object&) = delete;
+	U7object& operator=(const U7object&) = delete;
+	U7object(U7object&&) = default;
+	U7object& operator=(U7object&&) = default;
 
 	size_t number_of_objects();
-	virtual char *retrieve(std::size_t &len) const;
+	virtual std::unique_ptr<unsigned char[]> retrieve(std::size_t &len) const;
 };
 
 /**
@@ -112,7 +111,7 @@ public:
  */
 class U7multiobject : public U7object {
 protected:
-	char *buffer;
+	std::unique_ptr<unsigned char[]> buffer;
 	size_t length;
 	void set_object(const std::vector<U7object> &objects);
 public:
@@ -123,11 +122,13 @@ public:
 	U7multiobject(const File_spec &file0, const File_spec &file1,
 	              const File_spec &file2, const File_spec &file3, int objnum);
 	U7multiobject(const std::vector<File_spec> &files, int objnum);
-	virtual ~U7multiobject() {
-		delete [] buffer;
-	}
+	virtual ~U7multiobject() noexcept final = default;
+	U7multiobject(const U7multiobject&) = delete;
+	U7multiobject& operator=(const U7multiobject&) = delete;
+	U7multiobject(U7multiobject&&) = default;
+	U7multiobject& operator=(U7multiobject&&) = default;
 
-	virtual char *retrieve(std::size_t &len) const;
+	std::unique_ptr<unsigned char[]> retrieve(std::size_t &len) const override final;
 };
 
 #endif

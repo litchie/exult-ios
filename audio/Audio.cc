@@ -129,8 +129,8 @@ public:
 			garbage_collect();
 
 			size_t wavlen;			// Read .wav file.
-			uint8 *wavbuf = reinterpret_cast<uint8*>(sfx_file->retrieve(id, wavlen));
-			loaded->second = AudioSample::createAudioSample(wavbuf,wavlen);
+			auto wavbuf = sfx_file->retrieve(id, wavlen);
+			loaded->second = AudioSample::createAudioSample(wavbuf.release(), wavlen);
 		}
 
 		if (!loaded->second) return 0;
@@ -507,15 +507,14 @@ void Audio::playfile(const char *fname, const char *fpatch, bool wait)
 	U7multiobject sample(fname, fpatch, 1);
 
 	size_t len;
-	uint8 *buf = reinterpret_cast<uint8*>(sample.retrieve(len));
+	auto buf = sample.retrieve(len);
 	if (!buf || len == 0) {
 		// Failed to find file in patch or static dirs.
 		CERR("Audio::playfile: Error reading file '" << fname << "'");
-		delete [] buf;
 		return;
 	}
 
-	play(buf, len, wait);
+	play(buf.release(), len, wait);
 }
 
 
@@ -612,14 +611,12 @@ bool Audio::start_speech(int num, bool wait)
 	U7multiobject sample(filename, patchfile, num);
 
 	size_t len;
-	uint8 *buf = reinterpret_cast<uint8*>(sample.retrieve(len));
-	if (!buf || len == 0)
-	{
-		delete [] buf;
+	auto buf = sample.retrieve(len);
+	if (!buf || len == 0) {
 		return false;
 	}
 
-	play(buf,len,wait);
+	play(buf.release(), len, wait);
 	return true;
 }
 

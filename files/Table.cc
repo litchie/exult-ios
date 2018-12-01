@@ -38,7 +38,7 @@ void Table::index_file(void) {
 	if (!data)
 		throw file_read_exception(identifier.name);
 
-	if (!is_table(data))    // Not a table file we recognise
+	if (!is_table(data.get()))    // Not a table file we recognise
 		throw wrong_file_type_exception(identifier.name, "TABLE");
 
 	unsigned int i = 0;

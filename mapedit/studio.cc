@@ -517,7 +517,7 @@ ExultStudio::ExultStudio(int argc, char **argv): glade_path(0), static_path(0),
 	image_editor(0), default_game(0), background_color(0),
 	shape_info_modified(false), shape_names_modified(false), npc_modified(false),
 	files(0), curfile(0), vgafile(0), facefile(0), fontfile(0), gumpfile(0),
-	spritefile(0), browser(0), palbuf(0),
+	spritefile(0), browser(0),
 	bargewin(0), barge_ctx(0), barge_status_id(0),
 	eggwin(0), egg_monster_draw(0), egg_ctx(0), egg_status_id(0),
 	npcwin(0), npc_draw(0), npc_face_draw(0),
@@ -677,8 +677,7 @@ ExultStudio::~ExultStudio() {
 	g_free(glade_path);
 	delete files;
 	files = 0;
-	delete [] palbuf;
-	palbuf = 0;
+	palbuf.reset();
 	if (objwin)
 		gtk_widget_destroy(objwin);
 	delete obj_draw;
@@ -803,7 +802,7 @@ Object_browser *ExultStudio::create_browser(const char *fname) {
 	curfile = open_shape_file(fname);
 	if (!curfile)
 		return 0;
-	Object_browser *chooser = curfile->get_browser(vgafile, palbuf);
+	Object_browser *chooser = curfile->get_browser(vgafile, palbuf.get());
 	setup_groups();         // Set up 'groups' page.
 	return chooser;
 }
@@ -1259,7 +1258,7 @@ void ExultStudio::set_game_path(const string& gamename, const string& modname) {
 	// Reset EVERYTHING.
 	// Clear file cache!
 	U7FileManager::get_ptr()->reset();
-	delete [] palbuf;           // Delete old.
+	palbuf.reset();           // Delete old.
 	delete files;           // Close old shape files.
 	Free_text();            // Delete old names.
 	// These were owned by 'files':
@@ -1293,13 +1292,12 @@ void ExultStudio::set_game_path(const string& gamename, const string& modname) {
 	gtk_notebook_prev_page(mainnotebook);
 	U7multiobject palobj(PALETTES_FLX, PATCH_PALETTES, 0);
 	size_t len;
-	palbuf = reinterpret_cast<unsigned char *>(palobj.retrieve(len));
+	palbuf = palobj.retrieve(len);
 	if (!palbuf || !len) {
 		// No palette file, so create fake.
 		// Just in case.
-		delete [] palbuf;
-		palbuf = new unsigned char[3 * 256]; // How about all white?
-		memset(palbuf, 63, 3 * 256);
+		palbuf = make_unique<unsigned char[]>(3 * 256); // How about all white?
+		memset(palbuf.get(), 63, 3 * 256);
 	}
 	// Set background color.
 	palbuf[3 * 255] = (background_color >> 18) & 0x3f;

@@ -45,6 +45,7 @@ using std::string;
 using std::cerr;
 using std::endl;
 using std::ofstream;
+using std::unique_ptr;
 
 /*
  *  Delete file and groups.
@@ -340,10 +341,8 @@ Flex_file_info::Flex_file_info(
 	entries.resize(size > 0);
 	lengths.resize(entries.size());
 	if (size > 0) {         // Read in whole thing.
-		std::ifstream in;
-		U7open(in, pnm);    // Shouldn't fail.
-		entries[0] = new char[size];
-		in.read(entries[0], size);
+		IFileDataSource in(pnm);
+		entries[0] = in.readN(size);
 		lengths[0] = size;
 	}
 }
@@ -355,16 +354,13 @@ Flex_file_info::Flex_file_info(
 Flex_file_info::~Flex_file_info(
 ) {
 	delete flex;
-	int cnt = entries.size();
-	for (int i = 0; i < cnt; i++)
-		delete entries[i];
 }
 
 /*
  *  Get i'th entry.
  */
 
-char *Flex_file_info::get(
+unsigned char *Flex_file_info::get(
     unsigned i,
     size_t &len
 ) {
@@ -374,7 +370,7 @@ char *Flex_file_info::get(
 			lengths[i] = len;
 		}
 		len = lengths[i];
-		return entries[i];
+		return entries[i].get();
 	} else
 		return 0;
 }
@@ -385,17 +381,16 @@ char *Flex_file_info::get(
 
 void Flex_file_info::set(
     unsigned i,
-    char *newentry,         // Allocated data that we'll own.
+    unique_ptr<unsigned char[]> newentry,         // Allocated data that we'll own.
     int entlen          // Length.
 ) {
 	if (i > entries.size())
 		return;
 	if (i == entries.size()) {  // Appending?
-		entries.push_back(newentry);
+		entries.push_back(std::move(newentry));
 		lengths.push_back(entlen);
 	} else {
-		delete entries[i];
-		entries[i] = newentry;
+		entries[i] = std::move(newentry);
 		lengths[i] = entlen;
 	}
 }
@@ -408,12 +403,8 @@ void Flex_file_info::swap(
     unsigned i
 ) {
 	assert(i < entries.size() - 1);
-	char *tmpent = entries[i];
-	int tmplen = lengths[i];
-	entries[i] = entries[i + 1];
-	lengths[i] = lengths[i + 1];
-	entries[i + 1] = tmpent;
-	lengths[i + 1] = tmplen;
+	std::swap(entries[i], entries[i + 1]);
+	std::swap(lengths[i], lengths[i + 1]);
 }
 
 /*
@@ -424,7 +415,6 @@ void Flex_file_info::remove(
     unsigned i
 ) {
 	assert(i < entries.size());
-	delete entries[i];      // Free memory.
 	entries.erase(entries.begin() + i);
 	lengths.erase(lengths.begin() + i);
 }
@@ -465,10 +455,11 @@ void Flex_file_info::flush(
 	ofstream out;
 	string filestr("<PATCH>/"); // Always write to 'patch'.
 	filestr += basename;
+	OStreamDataSource ds(&out);
 	U7open(out, filestr.c_str());   // May throw exception.
 	if (cnt <= 1 && write_flat) { // Write flat file.
 		if (cnt)
-			out.write(entries[0], lengths[0]);
+			ds.write(entries[0].get(), lengths[0]);
 		out.close();
 		if (!out.good())
 			throw file_write_exception(filestr);
@@ -477,7 +468,7 @@ void Flex_file_info::flush(
 	Flex_writer writer(out, "Written by ExultStudio", cnt);
 	// Write all out.
 	for (int i = 0; i < cnt; i++) {
-		out.write(entries[i], lengths[i]);
+		ds.write(entries[i].get(), lengths[i]);
 		writer.mark_section_done();
 	}
 	if (!writer.close())
@@ -497,8 +488,7 @@ bool Flex_file_info::revert(
 	modified = false;
 	int cnt = entries.size();
 	for (int i = 0; i < cnt; i++) {
-		delete entries[i];
-		entries[i] = 0;
+		entries[i].reset();
 		lengths[i] = 0;
 	}
 	if (flex) {
@@ -506,17 +496,13 @@ bool Flex_file_info::revert(
 		entries.resize(cnt);
 		lengths.resize(entries.size());
 	} else {            // Single palette.
-		std::ifstream in;
-		U7open(in, pathname.c_str());   // Shouldn't fail.
-		in.seekg(0, std::ios::end); // Figure size.
-		int sz = in.tellg();
+		IFileDataSource in(pathname);
+		int sz = in.getSize();
 		cnt = sz > 0 ? 1 : 0;
 		entries.resize(cnt);
 		lengths.resize(entries.size());
-		in.seekg(0);
 		if (cnt) {
-			entries[0] = new char[sz];
-			in.read(entries[0], sz);
+			entries[0] = in.readN(sz);
 			lengths[0] = sz;
 		}
 	}

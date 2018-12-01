@@ -47,6 +47,8 @@ using std::endl;
 using std::string;
 using std::vector;
 using std::pair;
+using std::unique_ptr;
+using std::make_unique;
 
 // These MIGHT be macros!
 #ifndef min
@@ -249,14 +251,15 @@ void Shape_manager::load(
 
 	// Get translucency tables.
 	unsigned char *blends = 0;
-	unsigned char *ptr; // We will delete THIS at the end, not blends!
+	unique_ptr<unsigned char[]> ptr; // We will delete THIS at the end, not blends!
 	int nblends;
 	// ++++TODO: Make this file editable in ES.
 	if (U7exists(PATCH_BLENDS)) {
 		std::ifstream fin;
 		U7open(fin, PATCH_BLENDS);
 		nblends = Read1(fin);
-		ptr = blends = new unsigned char[nblends * 4];
+		ptr = make_unique<unsigned char[]>(nblends * 4);
+		blends = ptr.get();
 		fin.read(reinterpret_cast<char *>(blends), nblends * 4);
 		fin.close();
 	} else if (GAME_BG || GAME_SI) {
@@ -266,13 +269,15 @@ void Shape_manager::load(
 		U7object txtobj(flexfile,
 		                GAME_BG ? EXULT_BG_FLX_BLENDS_DAT : EXULT_SI_FLX_BLENDS_DAT);
 		std::size_t len;
-		ptr = blends = reinterpret_cast<unsigned char *>(txtobj.retrieve(len));
+		ptr = txtobj.retrieve(len);
+		blends = ptr.get();
 		nblends = *blends++;
 	} else if (U7exists(BLENDS)) {
 		std::ifstream fin;
 		U7open(fin, BLENDS);
 		nblends = Read1(fin);
-		ptr = blends = new unsigned char[nblends * 4];
+		ptr = make_unique<unsigned char[]>(nblends * 4);
+		blends = ptr.get();
 		fin.read(reinterpret_cast<char *>(blends), nblends * 4);
 		fin.close();
 	}
@@ -308,28 +313,25 @@ void Shape_manager::load(
 		int pn = pxf ? pxf->number_of_objects() : 0;
 		int nobjs = min(max(sn, pn), nblends);  // Limit by blends.
 		for (int i = 0; i < nobjs; i++) {
-			uint8 *data = 0;
+			unique_ptr<unsigned char[]> data = 0;
 			std::size_t len = 0;
 			if (pxf)
-				data = reinterpret_cast<uint8 *>(pxf->retrieve(i, len));
+				data = pxf->retrieve(i, len);
 			if (!data || len == 0) {
 				// Not in patch;
-				delete [] data;
-				data = 0;
+				data.reset();
 				if (sxf)
-					data = reinterpret_cast<uint8 *>(sxf->retrieve(i, len));
+					data = sxf->retrieve(i, len);
 			}
 			if (!data || len == 0) {
-				delete [] data;
 				// No XForm data at all. Make this XForm into an
 				// identity transformation.
 				for (size_t j = 0; j < sizeof(xforms[0].colors); j++)
 					xforms[nxforms - 1 - i].colors[j] = j;
 				continue;
 			}
-			std::memcpy(xforms[nxforms - 1 - i].colors, data,
+			std::memcpy(xforms[nxforms - 1 - i].colors, data.get(),
 			            sizeof(xforms[0].colors));
-			delete[] data;
 		}
 		delete sxf;
 		delete pxf;
@@ -342,7 +344,6 @@ void Shape_manager::load(
 		}
 	}
 
-	delete [] ptr;
 	invis_xform = &xforms[nxforms - 1 - 0];   // ->entry 0.
 }
 

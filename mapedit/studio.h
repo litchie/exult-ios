@@ -34,6 +34,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <vector>
 #include <map>
+#include <memory>
 #include <string>
 #include "vgafile.h"
 #include "servemsg.h"
@@ -101,7 +102,7 @@ private:
 	Shape_file_info     *gumpfile;  // 'gumps.vga'.
 	Shape_file_info     *spritefile;    // 'sprites.vga'.
 	Object_browser      *browser;
-	unsigned char       *palbuf;    // 3*256 rgb's, each 0-63.
+	std::unique_ptr<unsigned char[]> palbuf;    // 3*256 rgb's, each 0-63.
 	// Barge editor:
 	GtkWidget       *bargewin;// Barge window.
 	int             barge_ctx;
@@ -195,7 +196,7 @@ public:
 		return browser;
 	}
 	unsigned char *get_palbuf() {
-		return palbuf;
+		return palbuf.get();
 	}
 	Shape_file_info *get_vgafile() { // 'shapes.vga'.
 		return vgafile;

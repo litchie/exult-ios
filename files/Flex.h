@@ -52,8 +52,8 @@ protected:
 	uint32  padding[9];
 	std::vector<Reference> object_list;
 
-	virtual void index_file();
-	virtual Reference get_object_reference(uint32 objnum) const {
+	void index_file() override;
+	Reference get_object_reference(uint32 objnum) const override {
 		return object_list[objnum];
 	}
 public:
@@ -62,7 +62,7 @@ public:
 	Flex(const File_spec &spec)
 		: U7file(spec)
 	{  }
-	virtual ~Flex()
+	~Flex() override
 	{   }
 
 
@@ -74,11 +74,11 @@ public:
 	}
 	/// Gets the number of objects in the flex.
 	/// @return Number of objects.
-	virtual size_t  number_of_objects() {
+	size_t  number_of_objects() override {
 		return object_list.size();
 	}
 	uint32  get_entry_info(uint32 objnum, size_t &len);
-	virtual const char *get_archive_type() {
+	const char *get_archive_type() override {
 		return "FLEX";
 	}
 	static void write_header(ODataSource *out, const char *title, size_t count,
