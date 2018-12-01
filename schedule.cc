@@ -507,7 +507,7 @@ void Street_maintenance_schedule::now_what(
 			pact = new Activate_actor_action(obj);
 
 		npc->set_action(new Sequence_actor_action(
-		                    new Frames_actor_action(frames, sizeof(frames)),
+		                    new Frames_actor_action(frames, array_size(frames)),
 		                    new Face_pos_actor_action(obj->get_tile(), gwin->get_std_delay()),
 		                    pact, new Frames_actor_action(&standframe, 1)));
 		add_client(obj);
@@ -929,12 +929,12 @@ void Preach_schedule::now_what(
 		return;
 	case exhort: {
 		signed char frames[8];      // Frames.
-		int cnt = 1 + rand() % (sizeof(frames) - 1);
+		int cnt = 1 + rand() % (array_size(frames) - 1);
 		// Frames to choose from:
 		static char choices[3] = {0, 8, 9};
 		for (int i = 0; i < cnt - 1; i++)
 			frames[i] = npc->get_dir_framenum(
-			                choices[rand() % (sizeof(choices))]);
+			                choices[rand() % (array_size(choices))]);
 		// Make last one standing.
 		frames[cnt - 1] = npc->get_dir_framenum(Actor::standing);
 		npc->set_action(new Frames_actor_action(frames, cnt, 250));
@@ -1669,7 +1669,7 @@ void Graze_schedule::now_what(
 				frames[1] = npc->get_dir_framenum(dir, 0xf);
 				frames[2] = npc->get_dir_framenum(dir, Actor::standing);
 				npc->set_action(new Frames_actor_action(frames,
-				                                        sizeof(frames)));
+				                                        array_size(frames)));
 			}
 		} else {
 			npc->add_dirty();
@@ -1797,7 +1797,7 @@ void Dance_schedule::now_what(
 		static signed char swing_frames[] = {Actor::ready_frame, Actor::raise1_frame,
 		                                     Actor::reach1_frame, Actor::strike1_frame, Actor::ready_frame
 		                                    };
-		nframes = sizeof(swing_frames);
+		nframes = array_size(swing_frames);
 		frames = new signed char[nframes];
 		for (int i = 0; i < nframes; i++)
 			frames[i] = npc->get_dir_framenum(dir, swing_frames[i]);
@@ -3256,7 +3256,7 @@ Waiter_schedule::Waiter_schedule(
 }
 
 static int waiter_shapes[] = {616, 628, 944};
-const int waiter_nshapes = sizeof(waiter_shapes)/sizeof(waiter_shapes[0]);
+const int waiter_nshapes = array_size(waiter_shapes);
 int Waiter_schedule::find_items(Game_object_vector &vec, int dist)
 {
 	if (cooking) {					// Find food, pot.
@@ -3312,7 +3312,7 @@ bool Waiter_schedule::find_unattended_plate()
 {
 	if (unattended_plates.empty()) {
 		static int shapes[] = {717};
-		const int shapecnt = sizeof(shapes)/sizeof(shapes[0]);
+		const int shapecnt = array_size(shapes);
 		(void) npc->find_closest(unattended_plates, shapes, shapecnt, 32);
 		int floor = npc->get_lift() / 5; // Make sure it's on same floor.
 
@@ -3447,7 +3447,7 @@ void Waiter_schedule::find_prep_tables()
 	static int shapes[] = {333, 1018, 1003,		// Tables.
 	                       664, 872,       		// Stoves
 	                       995};           		// Cauldron
-	const int nshapes = sizeof(shapes)/sizeof(shapes[0]);
+	const int nshapes = array_size(shapes);
 	for (int i = 0; i < nshapes; ++i)
 		find_tables(shapes[i], 26, true);
 	if (prep_tables.empty()) {		// Look farther.

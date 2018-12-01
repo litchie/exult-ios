@@ -86,6 +86,7 @@
 #include "U7file.h"
 #include "U7fileman.h"
 #include "party.h"
+#include "array_size.h"
 
 #include "exult_flx.h"
 #include "exult_bg_flx.h"
@@ -184,7 +185,7 @@ struct resolution {
 	{ 640, 480, 1 },
 	{ 800, 600, 1 }
 };
-int num_res = sizeof(res_list) / sizeof(struct resolution);
+int num_res = array_size(res_list);
 int current_res = 0;
 int current_scaleval = 1;
 

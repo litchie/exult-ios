@@ -277,7 +277,7 @@ bool Game::show_menu(bool skip) {
 
 
 	int menuchoices[] = { 0x04, 0x05, 0x08, 0x06, 0x11, 0x12, 0x07 };
-	int num_choices = sizeof(menuchoices) / sizeof(int);
+	int num_choices = array_size(menuchoices);
 
 	Vga_file exult_flx(BUNDLE_CHECK(BUNDLE_EXULT_FLX, EXULT_FLX));
 	char npc_name[16];

@@ -1,6 +1,8 @@
 #ifndef UCTOOLS_H
 #define UCTOOLS_H
 
+#include "array_size.h"
+
 // Opcode flags
 enum Opcode_flags {
     // Just a 16bit word
@@ -283,16 +285,16 @@ static opcode_desc opcode_table[] = {
 const char *bg_intrinsic_table[] = {
 #include "bgintrinsics.h"
 };
-const int bg_intrinsic_size = sizeof(bg_intrinsic_table) / sizeof(char *);
+const int bg_intrinsic_size = array_size(bg_intrinsic_table);
 const char *si_intrinsic_table[] = {
 #include "siintrinsics.h"
 };
-const int si_intrinsic_size = sizeof(si_intrinsic_table) / sizeof(char *);
+const int si_intrinsic_size = array_size(si_intrinsic_table);
 
 const char *sibeta_intrinsic_table[] = {
 #include "sibetaintrinsics.h"
 };
-const int sibeta_intrinsic_size = sizeof(sibeta_intrinsic_table) / sizeof(char *);
+const int sibeta_intrinsic_size = array_size(sibeta_intrinsic_table);
 
 
 

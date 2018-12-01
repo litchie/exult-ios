@@ -36,6 +36,7 @@
 #include "ucmachine.h"
 #include "actors.h"
 #include "ignore_unused_variable_warning.h"
+#include "array_size.h"
 
 using std::rand;
 
@@ -139,9 +140,7 @@ void Monster_actor::equip(
 	if (!equip_offset || equip_offset - 1 >= inf->get_equip_cnt())
 		return;
 	Equip_record &rec = equip[equip_offset - 1];
-	for (size_t i = 0;
-	        i < sizeof(equip[0].elements) / sizeof(equip[0].elements[0]);
-	        i++) {
+	for (size_t i = 0; i < array_size(equip[0].elements); i++) {
 		// Give equipment.
 		Equip_element &elem = rec.elements[i];
 		if (!elem.shapenum || 1 + rand() % 100 > elem.probability)
