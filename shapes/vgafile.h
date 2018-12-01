@@ -80,17 +80,12 @@ class Shape_frame {
 	static GL_manager *glman;   // One to rule them all.
 	static Image_buffer8 *scrwin;   // Screen window to render to.
 
-	std::unique_ptr<Shape_frame> reflect();     // Create new frame, reflected.
 	// Create RLE data & store in frame.
 	void create_rle(unsigned char *pixels, int w, int h);
 	// Create from RLE entry.
 	void get_rle_shape(IDataSource *shapes, long filepos, long len);
 
 public:
-	friend class Game_window;
-	friend class Shape_manager;
-	friend class Shape;
-	friend class Shape_file;
 	friend class GL_texshape;
 	friend class GL_manager;
 	Shape_frame()
@@ -103,6 +98,9 @@ public:
 	// Create frame from data.
 	Shape_frame(unsigned char *pixels, int w, int h, int xoff, int yoff,
 	            bool setrle);
+	Shape_frame(std::unique_ptr<unsigned char[]> pixels, int w, int h, int xoff, int yoff,
+	            bool setrle);
+	std::unique_ptr<Shape_frame> reflect();     // Create new frame, reflected.
 	static void set_to_render(Image_buffer8 *w, GL_manager *gl = 0) {
 		scrwin = w;
 		glman = gl;
@@ -114,6 +112,8 @@ public:
 	bool is_rle() const {
 		return rle;
 	}
+	void write(std::ostream &out) const;  // Write out.
+	void save(ODataSource *shape_source) const;
 	// Convert raw image to RLE.
 	static std::unique_ptr<unsigned char[]> encode_rle(unsigned char *pixels, int w, int h,
 	                                 int xoff, int yoff, int &datalen);
@@ -214,8 +214,6 @@ protected:
 	// Store shape that was read.
 	Shape_frame *store_frame(std::unique_ptr<Shape_frame> frame, int framenum);
 public:
-	friend class Vga_file;
-
 	Shape() : num_frames(0), modified(false), from_patch(false)	{}
 	explicit Shape(std::unique_ptr<Shape_frame> fr);
 	explicit Shape(int n);           // Create with given #frames.
@@ -226,17 +224,17 @@ public:
 	virtual ~Shape() noexcept = default;
 	void reset();
 	void load(IDataSource *shape_source);
-	void write(std::ostream &out);  // Write out.
+	void write(std::ostream &out) const;  // Write out.
 	void set_modified() {
 		modified = true;
 	}
-	bool get_modified() {
+	bool get_modified() const {
 		return modified;
 	}
 	void set_from_patch() {
 		from_patch = true;
 	}
-	bool get_from_patch() {
+	bool get_from_patch() const {
 		return from_patch;
 	}
 	Shape_frame *get(std::vector<std::pair<std::unique_ptr<IDataSource>, bool>> const &shapes, int shnum,
@@ -245,7 +243,7 @@ public:
 		       ? frames[frnum].get()
 		       : read(shapes, shnum, frnum, counts, src);
 	}
-	int get_num_frames() {
+	int get_num_frames() const {
 		return num_frames;
 	}
 	Shape_frame *get_frame(int framenum) {
@@ -278,8 +276,8 @@ public:
 	void load(IDataSource *shape_source) {
 		Shape::load(shape_source);
 	}
-	int get_size();
-	void save(ODataSource *shape_source);
+	int get_size() const;
+	void save(ODataSource *shape_source) const;
 };
 
 /*
@@ -381,9 +379,9 @@ public:
 		get_shape(shapenum, 0); // Force it into memory.
 		imported_map data;
 		if (get_imported_shape_data(shapenum, data))
-			return imported_shapes[data.pointer_offset].num_frames;
+			return imported_shapes[data.pointer_offset].get_num_frames();
 		else
-			return shapes[shapenum].num_frames;
+			return shapes[shapenum].get_num_frames();
 	}
 	// Create new shape (or del old).
 	virtual Shape *new_shape(int shapenum);

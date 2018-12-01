@@ -42,6 +42,8 @@ Boston, MA  02111-1307, USA.
 
 #include <algorithm>
 using std::rotate;
+using std::unique_ptr;
+using std::make_unique;
 
 GammaTable<uint8> Image_window8::GammaRed(256);
 GammaTable<uint8> Image_window8::GammaBlue(256);
@@ -145,11 +147,13 @@ static inline int pow2(int x) {
 }
 
 //a nearest-average-colour 1/3 scaler
-unsigned char *Image_window8::mini_screenshot() {
+unique_ptr<unsigned char[]> Image_window8::mini_screenshot() {
 	int i;
-	if (!paletted_surface) return 0;
+	if (!paletted_surface) {
+		return nullptr;
+	}
 
-	unsigned char *buf = new Uint8[96 * 60];
+	auto buf = make_unique<Uint8[]>(96 * 60);
 	const int w = 3 * 96, h = 3 * 60;
 #ifdef HAVE_OPENGL
 	if (GL_manager::get_instance()) {

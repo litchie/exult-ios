@@ -1308,7 +1308,7 @@ void Shape_chooser::import_all_pngs(
 		Convert_indexed_image(pixels, h * rowsize, oldpal, palsize, pal);
 		delete [] oldpal;
 		int xleft = w + xoff - 1, yabove = h + yoff - 1;
-		unique_ptr<Shape_frame> frame = make_unique<Shape_frame>(pixels,
+		auto frame = make_unique<Shape_frame>(pixels,
 		                                     w, h, xleft, yabove, true);
 		if (i < ifile->get_num_frames(shnum))
 			shape->set_frame(std::move(frame), i);

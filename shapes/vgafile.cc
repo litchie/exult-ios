@@ -90,7 +90,7 @@ unique_ptr<Shape_frame> Shape_frame::reflect(
 		w = h;
 	else
 		h = w;          // Use max. dim.
-	unique_ptr<Shape_frame> reflected = make_unique<Shape_frame>();
+	auto reflected = make_unique<Shape_frame>();
 	reflected->rle = true;      // Set data.
 	reflected->xleft = yabove;
 	reflected->yabove = xleft;
@@ -216,6 +216,28 @@ unsigned char Shape_frame::get_topleft_pix(
 }
 
 /*
+ *  Writes the frame to the given stream.
+ */
+
+void Shape_frame::write(std::ostream &out) const {
+	if (rle) {
+		Write2(out, xright);
+		Write2(out, xleft);
+		Write2(out, yabove);
+		Write2(out, ybelow);
+	}
+	out.write(reinterpret_cast<char*>(data.get()), datalen);   // The frame data.
+}
+
+void Shape_frame::save(ODataSource *shape_source) const {
+	shape_source->write2(xright);
+	shape_source->write2(xleft);
+	shape_source->write2(yabove);
+	shape_source->write2(ybelow);
+	shape_source->write(data.get(), get_size());
+}
+
+/*
  *  Encode an 8-bit image into an RLE frame.
  *
  *  Output: Data is set to compressed image.
@@ -296,7 +318,7 @@ unique_ptr<unsigned char[]> Shape_frame::encode_rle(
 		cout << "create_rle: datalen: " << datalen << " w: " << w
 		     << " h: " << h << endl;
 #endif
-	unique_ptr<unsigned char[]> data = make_unique<unsigned char[]>(datalen);
+	auto data = make_unique<unsigned char[]>(datalen);
 	memcpy(data.get(), buf, datalen);
 	delete [] buf;
 	return data;
@@ -324,6 +346,29 @@ Shape_frame::Shape_frame(
 		memcpy(data.get(), pixels, c_num_tile_bytes);
 	} else
 		data = encode_rle(pixels, w, h, xleft, yabove, datalen);
+}
+
+/*
+ *  Create from data.
+ */
+
+Shape_frame::Shape_frame(
+    unique_ptr<unsigned char[]> pixels,      // (Gets stolen.)
+    int w, int h,           // Dimensions.
+    int xoff, int yoff,     // Xleft, yabove.
+    bool setrle         // Run-length-encode.
+) :
+#ifdef HAVE_OPENGL
+	glshape(0), gloutline(0),
+#endif
+	xleft(xoff), xright(w - xoff - 1), yabove(yoff), ybelow(h - yoff - 1),
+	rle(setrle) {
+	if (!rle) {
+		assert(w == c_tilesize && h == c_tilesize);
+		datalen = c_num_tile_bytes;
+		data = std::move(pixels);
+	} else
+		data = encode_rle(pixels.get(), w, h, xleft, yabove, datalen);
 }
 
 /*
@@ -819,11 +864,11 @@ Shape_frame *Shape::read(
 		return 0;
 	}
 	// Read it in and get frame count.
-	unique_ptr<Shape_frame> frame = make_unique<Shape_frame>();
+	auto frame = make_unique<Shape_frame>();
 	int nframes = frame->read(shp, shapeoff, shapelen, framenum);
 	if (!num_frames)        // 1st time?
 		create_frames_list(nframes);
-	if (!frame->rle)
+	if (!frame->is_rle())
 		framenum &= 31;     // !!Guessing.
 	if (framenum >= nframes &&  // Compare against #frames in file.
 	        (framenum & 32)) {  // Reflection desired?
@@ -841,7 +886,7 @@ Shape_frame *Shape::read(
 
 void Shape::write(
     ostream &out            // What to write to.
-) {
+) const {
 	if (!num_frames)
 		return;         // Empty.
 	assert(!frames.empty() && frames[0]);
@@ -866,12 +911,8 @@ void Shape::write(
 			out.seekp(startpos + (frnum + 1) * 4);
 			Write4(out, pos - startpos);    // Store pos.
 			out.seekp(pos);         // Get back.
-			Write2(out, frame->xright);
-			Write2(out, frame->xleft);
-			Write2(out, frame->yabove);
-			Write2(out, frame->ybelow);
 		}
-		out.write(reinterpret_cast<char *>(frame->data.get()), frame->datalen);   // The frame data.
+		frame->write(out);
 	}
 	if (!flat) {
 		unsigned long pos = out.tellp();// Ending position.
@@ -934,6 +975,7 @@ Shape::Shape(
 
 void Shape::reset() {
 	frames.clear();
+	num_frames = 0;
 }
 
 /*
@@ -944,7 +986,7 @@ void Shape::load(
     IDataSource *shape_source        // datasource.
 ) {
 	reset();
-	unique_ptr<Shape_frame> frame = make_unique<Shape_frame>();
+	auto frame = make_unique<Shape_frame>();
 	uint32 shapelen = shape_source->read4();
 	// Read frame 0 & get frame count.
 	create_frames_list(frame->read(shape_source, 0L, shapelen, 0));
@@ -1041,7 +1083,7 @@ Shape_file::Shape_file(
 
 
 // NOTE: Only works on shapes other than the special 8x8 tile-shapes
-int Shape_file::get_size() {
+int Shape_file::get_size() const {
 	int size = 4;
 	for (size_t i = 0; i < num_frames; i++)
 		size += frames[i]->get_size() + 4 + 8;
@@ -1049,8 +1091,8 @@ int Shape_file::get_size() {
 }
 
 // NOTE: Only works on shapes other than the special 8x8 tile-shapes
-void Shape_file::save(ODataSource *shape_source) {
-	int *offsets = new int[num_frames];
+void Shape_file::save(ODataSource *shape_source) const {
+	auto offsets = make_unique<int[]>(num_frames);
 	int size;
 	offsets[0] = 4 + num_frames * 4;
 	size_t i;   // Blame MSVC
@@ -1061,13 +1103,8 @@ void Shape_file::save(ODataSource *shape_source) {
 	for (i = 0; i < num_frames; i++)
 		shape_source->write4(offsets[i]);
 	for (i = 0; i < num_frames; i++) {
-		shape_source->write2(frames[i]->xright);
-		shape_source->write2(frames[i]->xleft);
-		shape_source->write2(frames[i]->yabove);
-		shape_source->write2(frames[i]->ybelow);
-		shape_source->write(reinterpret_cast<char *>(frames[i]->data.get()), frames[i]->get_size());
+		frames[i]->save(shape_source);
 	}
-	delete [] offsets;
 }
 
 /*
@@ -1257,7 +1294,6 @@ Shape *Vga_file::new_shape(
 		return 0;
 	if (size_t(shapenum) < shapes.size()) {
 		shapes[shapenum].reset();
-		shapes[shapenum].num_frames = 0;
 		shapes[shapenum].set_modified();
 	} else {            // Enlarge list.
 		if (!flex)

@@ -52,7 +52,7 @@ public:
 	virtual void read(void *, size_t) = 0;
 	virtual void read(std::string&, size_t) = 0;
 	std::unique_ptr<unsigned char[]> read(size_t N) {
-		std::unique_ptr<unsigned char[]> ptr = std::make_unique<unsigned char[]>(N);
+		auto ptr = std::make_unique<unsigned char[]>(N);
 		read(ptr.get(), N);
 		return ptr;
 	}

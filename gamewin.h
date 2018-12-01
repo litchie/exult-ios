@@ -540,7 +540,7 @@ public:
 #endif
 	// Get screen area of shape at pt.
 	Rectangle get_shape_rect(const Shape_frame *s, int x, int y) const {
-		return Rectangle(x - s->xleft, y - s->yabove,
+		return Rectangle(x - s->get_xleft(), y - s->get_yabove(),
 		                 s->get_width(), s->get_height());
 	}
 	// Get screen area used by object.

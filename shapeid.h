@@ -111,9 +111,9 @@ public:
 	// Paint shape in window.
 	void paint_shape(int xoff, int yoff, Shape_frame *shape,
 	                 int translucent = 0, unsigned char *trans = 0) {
-		if (!shape || !shape->data)
+		if (!shape || !shape->get_data())
 			CERR("NULL SHAPE!!!");
-		else if (!shape->rle)
+		else if (!shape->is_rle())
 			shape->paint(xoff, yoff);
 		else if (trans)
 			shape->paint_rle_remapped(xoff, yoff, trans);

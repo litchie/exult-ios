@@ -470,7 +470,7 @@ static unique_ptr<Shape_frame> create_exultlogo(int logox, int logoy, Vga_file &
 		                h - font->get_text_height() - 5, VERSION);
 		Shape_frame::set_to_render(gwin->get_win()->get_ib8(),
 		                           GL_manager::get_instance());
-		unique_ptr<Shape_frame> exultlogo = make_unique<Shape_frame>(buf->get_bits(), w, h, 0, 0, true);
+		auto exultlogo = make_unique<Shape_frame>(buf->get_bits(), w, h, 0, 0, true);
 		delete buf;
 		return exultlogo;
 	}

@@ -3085,20 +3085,11 @@ unique_ptr<Shape_file> Game_window::create_mini_screenshot() {
 		show();
 #endif
 
-	unsigned char *img =win->mini_screenshot();
+	unique_ptr<unsigned char[]> img(win->mini_screenshot());
 	unique_ptr<Shape_file> sh;
-
 	if (img) {
-		unique_ptr<Shape_frame> fr = make_unique<Shape_frame>();
-		fr->xleft = 0;
-		fr->yabove = 0;
-		fr->xright = 95;
-		fr->ybelow = 59;
-		fr->create_rle(img, 96, 60);
-		fr->rle = 1;
-		delete [] img;
-
-		sh = make_unique<Shape_file>(std::move(fr));
+		sh = make_unique<Shape_file>(make_unique<Shape_frame>(std::move(img),
+		                             96, 60, 0, 0, true));
 	}
 
 	set_all_dirty();

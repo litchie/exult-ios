@@ -28,6 +28,7 @@ Boston, MA  02111-1307, USA.
 
 #include "imagewin.h"
 #include "ibuf8.h"
+#include <memory>
 
 template <class T> class GammaTable;
 
@@ -122,7 +123,7 @@ public:
 	static void get_gamma(float &r, float &g, float &b);
 	static void set_gamma(float r, float g, float b);
 
-	unsigned char *mini_screenshot();
+	std::unique_ptr<unsigned char[]> mini_screenshot();
 };
 
 #endif
