@@ -24,6 +24,7 @@
 #include <fstream>
 #include <string>
 #include <iomanip>
+#include <memory>
 #include <vector>
 #include "U7obj.h"
 #include "utils.h"

@@ -97,7 +97,7 @@ case "$host_os" in
 		AC_DEFINE(MACOSX, 1, [Using MacOSX])
 		AC_MSG_RESULT([Mac OS X])
 		SYSLIBS="-framework CoreFoundation -framework AudioUnit -framework AudioToolbox -framework CoreMIDI"
-		CXXFLAGS="$CXXFLAGS"
+		CXXFLAGS="$CXXFLAGS -stdlib=libc++"
 		EXULT_DATADIR="/Library/Application\ Support/Exult/data"
 		ARCH=macosx
 		dnl swap around clang for OSX
