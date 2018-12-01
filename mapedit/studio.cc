@@ -1051,6 +1051,7 @@ C_EXPORT void on_gameselect_gamelist_cursor_changed(
 	GtkTreeStore *model = GTK_TREE_STORE(oldmod);
 	gtk_tree_store_clear(model);
 
+	assert(gamemanager->get_game(gamenum) != nullptr);
 	std::vector<ModInfo> &mods = gamemanager->get_game(gamenum)->get_mod_list();
 	GtkTreeIter iter;
 

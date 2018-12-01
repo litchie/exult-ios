@@ -271,7 +271,9 @@ MenuList *ExultMenu::create_main_menu(int first) {
 	MenuList *menu = new MenuList();
 
 	int ypos = 15 + gwin->get_win()->get_start_y();
-	int xpos = (gwin->get_win()->get_full_width() / 2 + exult_flx.get_shape(EXULT_FLX_SFX_ICON_SHP, 0)->get_width()) / 2;
+	Shape_frame *fr = exult_flx.get_shape(EXULT_FLX_SFX_ICON_SHP, 0);
+	assert(fr != nullptr);
+	int xpos = (gwin->get_win()->get_full_width() / 2 + fr->get_width()) / 2;
 	std::vector<ModManager> &game_list = gamemanager->get_game_list();
 	int num_choices = game_list.size();
 	int last = num_choices > first + pagesize ? first + pagesize : num_choices;
@@ -389,8 +391,8 @@ BaseGameInfo *ExultMenu::show_mods_menu(ModManager *selgame) {
 	menu->set_selection(0);
 	BaseGameInfo *sel_mod = 0;
 
-	Shape_frame *exultlogo = 0;
-	exultlogo = exult_flx.get_shape(EXULT_FLX_EXULT_LOGO_SHP, 1);
+	Shape_frame *exultlogo = exult_flx.get_shape(EXULT_FLX_EXULT_LOGO_SHP, 1);
+	assert(exultlogo != nullptr);
 	int logox, logoy;
 	logox = centerx - exultlogo->get_width() / 2;
 	logoy = centery - exultlogo->get_height() / 2;
@@ -472,6 +474,7 @@ BaseGameInfo *ExultMenu::run() {
 	}
 
 	Shape_frame *exultlogo = exult_flx.get_shape(EXULT_FLX_EXULT_LOGO_SHP, 0);
+	assert(exultlogo != nullptr);
 	int logox = centerx - exultlogo->get_width() / 2,
 	    logoy = centery - exultlogo->get_height() / 2;
 	sman->paint_shape(logox, logoy, exultlogo);

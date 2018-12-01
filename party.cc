@@ -365,6 +365,7 @@ static Actor *Find_member_blocking(
 
 	for (int i = first; i < count; i++) {
 		Actor *npc = gwin->get_npc(pman->get_member(i));
+		assert(npc != nullptr);
 		pos.tz = npc->get_lift();// Use NPC's, since it might be up/dn
 		//   by a step.
 		if (npc->blocks(pos))

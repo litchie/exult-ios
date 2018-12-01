@@ -292,12 +292,13 @@ bool Game::show_menu(bool skip) {
 			int offset = 0;
 			for (int i = 0; i < num_choices; i++) {
 				if ((i != 4 && i != 5) || (i == 4 && U7exists("<SAVEGAME>/quotes.flg")) || (i == 5 && U7exists("<SAVEGAME>/endgame.flg"))) {
-					MenuEntry *entry = new MenuEntry(menushapes.get_shape(menuchoices[i], 1),
-					                                 menushapes.get_shape(menuchoices[i], 0),
-					                                 centerx, menuy + offset);
+					Shape_frame *f0 = menushapes.get_shape(menuchoices[i], 0);
+					Shape_frame *f1 = menushapes.get_shape(menuchoices[i], 1);
+					assert(f0 != nullptr && f1 != nullptr);
+					MenuEntry *entry = new MenuEntry(f1, f0, centerx, menuy + offset);
 					entry->set_id(i);
 					menu->add_entry(entry);
-					offset += menushapes.get_shape(menuchoices[i], 1)->get_ybelow() + 3;
+					offset += f1->get_ybelow() + 3;
 				}
 			}
 			menu->set_selection(2);

@@ -2538,6 +2538,7 @@ void ExultStudio::set_shape_notebook_frame(
 	int shnum = get_num_entry("shinfo_shape");
 	Vga_file *ifile = file_info->get_ifile();
 	Shape_frame *shape = ifile->get_shape(shnum, frnum);
+	assert(shape != nullptr);
 	set_spin("shinfo_originx", shape->get_xright(), -shape->get_width(),
 	         shape->get_width());
 	set_spin("shinfo_originy", shape->get_ybelow(), -shape->get_height(),
@@ -4268,6 +4269,7 @@ void ExultStudio::save_shape_window(
 	Shape_frame *frame = ifile->get_shape(shnum, frnum);
 	int xright = get_spin("shinfo_originx"),
 	    ybelow = get_spin("shinfo_originy");
+	assert(frame != nullptr);
 	if (xright != frame->get_xright() || ybelow != frame->get_ybelow()) {
 		// It changed.
 		file_info->set_modified();

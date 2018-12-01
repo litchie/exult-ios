@@ -250,8 +250,11 @@ static int Get_x_offset(
 	if (framenum >= nframes)
 		framenum = nframes - 1;
 	int xoff = 0;
-	for (int i = 0; i < framenum; i++)
-		xoff += shape->get_frame(i)->get_width() + border;
+	for (int i = 0; i < framenum; i++) {
+		Shape_frame *fr = shape->get_frame(i);
+		assert(fr);
+		xoff += fr->get_width() + border;
+	}
 	return xoff;
 }
 
@@ -396,7 +399,9 @@ void Shape_chooser::scroll_to_frame(
 			hoffset = xoff > border ? xoff - border : 0;
 		else {
 			gint winw = draw->allocation.width;
-			int sw = shape->get_frame(selframe)->get_width();
+			Shape_frame *fr = shape->get_frame(selframe);
+			assert(fr);
+			int sw = fr->get_width();
 			if (xoff + sw + border - hoffset > winw)
 				hoffset = xoff + sw + border - winw;
 		}
@@ -1396,10 +1401,12 @@ void Shape_chooser::new_frame(
 	else {              // Find largest frame.
 		int cnt = shape->get_num_frames();
 		for (int i = 0; i < cnt; i++) {
-			int ht = shape->get_frame(i)->get_height();
+			Shape_frame *fr = shape->get_frame(i);
+			assert(fr);
+			int ht = fr->get_height();
 			if (ht > h)
 				h = ht;
-			int wd = shape->get_frame(i)->get_width();
+			int wd = fr->get_width();
 			if (wd > w)
 				w = wd;
 		}

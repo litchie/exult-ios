@@ -366,11 +366,13 @@ void Face_stats::create_buttons() {
 
 	for (i = 0; i < party_size; i++) {
 		int num = partyman->get_member(i);
+		Actor *act = gwin->get_npc(num);
+		assert(act != nullptr);
 		// Show faces if in SI, or if paperdolls are allowed
 		if (sman->can_use_paperdolls() ||
 		        // Otherwise, show faces also if the character
 		        // has paperdoll information
-		        gwin->get_npc(num)->get_info().get_npc_paperdoll())
+		        act->get_info().get_npc_paperdoll())
 			++num_to_paint;
 	}
 
@@ -392,6 +394,7 @@ void Face_stats::create_buttons() {
 	for (i = 0; i < party_size; i++) {
 		npc_nums[i + 1] = partyman->get_member(i);
 		Actor *act = gwin->get_npc(npc_nums[i + 1]);
+		assert(act != nullptr);
 		// Show faces if in SI, or if paperdolls are allowed
 		if (sman->can_use_paperdolls() ||
 		        // Otherwise, show faces also if the character

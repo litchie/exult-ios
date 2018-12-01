@@ -48,6 +48,7 @@ using std::endl;
 using std::rand;
 using std::strlen;
 using std::unique_ptr;
+using std::make_unique;
 #ifdef __IPHONEOS__
 #include "data/exult_iphone_flx.h"
 #include "exult.h"
@@ -792,24 +793,24 @@ private:
 	int  speed;      // Speed of playback (ms per frame)
 
 	// Data info
-	playfli *player;
+	std::unique_ptr<playfli> player;
 
 public:
 	virtual bool play_it(Image_window *win, uint32 t);
 
-	void load_flic(void);
-	void free_flic(void);
+	void load_flic();
+	void free_flic();
 
 	void fade_out(int cycles);
 
 	ExCineFlic(uint32 time, const char *file, const char *patch,
 	           int i, int s, int c, bool r, int spd) :
 		ExCineEvent(time, file, patch, i), start(s), count(c), repeat(r),
-		cur(-1), speed(spd), player(0) { }
+		cur(-1), speed(spd), player(nullptr) { }
 
 	ExCineFlic(uint32 time) : ExCineEvent(time, 0, 0, 0), start(0), count(0),
 		repeat(false), cur(0), speed(0),
-		player(0) { }
+		player(nullptr) { }
 
 	virtual ~ExCineFlic() {
 		free_flic();
@@ -818,49 +819,41 @@ public:
 
 void ExCineFlic::load_flic() {
 	free_flic();
-
 	COUT("Loading " << file << ":" << index);
-
 	if (patch)
-		player = new playfli(file, patch, index);
+		player = make_unique<playfli>(file, patch, index);
 	else
-		player = new playfli(file, index);
-
+		player = make_unique<playfli>(file, index);
 	player->info();
 }
 
 void ExCineFlic::free_flic() {
 	COUT("Freeing " << file << ":" << index);
-
-	FORGET_OBJECT(player);
+	player.reset();
 }
 
-bool    ExCineFlic::play_it(Image_window *win, uint32 t) {
-	if (t < time) return false;
+bool ExCineFlic::play_it(Image_window *win, uint32 t) {
+	if (t < time)
+		return false;
 
 	if (cur + 1 < count || repeat) {
-
 		// Only advance frame if we can
 		uint32 time_next = time + (cur + 1) * speed;
 		if (time_next <= t) {
 			cur++;
-
 			// The actual frame number
 			int actual = start + (cur % count);
-
 			player->play(win, actual, actual, 0);
-
 			return true;
 		}
 	}
-
 	player->put_buffer(win);
-
 	return false;
 }
 
 void ExCineFlic::fade_out(int cycles) {
-	if (player) player->get_palette()->fade_out(cycles);
+	if (player)
+		player->get_palette()->fade_out(cycles);
 }
 
 //
@@ -869,20 +862,20 @@ void ExCineFlic::fade_out(int cycles) {
 
 struct ExCineVoc : public ExCineEvent {
 private:
-	bool        played;
+	bool played;
 
 public:
-	virtual bool    play_it(Image_window *win, uint32 t);
+	virtual bool play_it(Image_window *win, uint32 t);
 
-	ExCineVoc(uint32 time, const char *file, const char *patch, int index) :
-		ExCineEvent(time, file, patch, index), played(false) { }
+	ExCineVoc(uint32 time, const char *file, const char *patch, int index)
+		: ExCineEvent(time, file, patch, index), played(false) { }
 
 	virtual ~ExCineVoc() { }
 };
 
 bool ExCineVoc::play_it(Image_window *win, uint32 t) {
 	ignore_unused_variable_warning(win, t);
-	size_t  size;
+	size_t size;
 	U7multiobject voc(file, patch, index);
 	auto buffer = voc.retrieve(size);
 	uint8 *buf = buffer.get();
@@ -904,8 +897,8 @@ struct ExSubEvent {
 	const int num_subs;
 	Font *    sub_font;
 
-	ExSubEvent(uint32 t, const int first, const int cnt, Font *fnt) :
-		time(t), first_sub(first), num_subs(cnt), sub_font(fnt) { }
+	ExSubEvent(uint32 t, const int first, const int cnt, Font *fnt)
+		: time(t), first_sub(first), num_subs(cnt), sub_font(fnt) { }
 
 	void show_sub(Image_buffer8 *ibuf, int centerx, int centery) {
 		int suby;
@@ -1095,14 +1088,11 @@ void SI_Game::end_game(bool success) {
 	bool showing_subs = false;
 
 	while (1) {
-
 		uint32 time = SDL_GetTicks() - start_time;
 
 		// Need to go to the next flic?
 		if (cur_flic < last_flic && flics[cur_flic + 1].time <= time) {
-
 			bool next_play = flics[cur_flic + 1].can_play();
-
 			// Can play the new one, don't need the old one anymore
 			if (next_play) {
 				// Free it
