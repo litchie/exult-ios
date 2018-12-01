@@ -844,7 +844,7 @@ void Combo_chooser::load(
 	// Read them all in.
 	for (unsigned i = 0; i < num_combos; i++) {
 		size_t len;
-		unsigned char *buf = reinterpret_cast<unsigned char *>(flex_info->get(i, len));
+		unsigned char *buf = flex_info->get(i, len);
 		Combo *combo = new Combo(svga);
 		combo->read(buf, len);
 		combos[i] = combo;  // Store in list.
