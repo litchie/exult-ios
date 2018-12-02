@@ -432,7 +432,8 @@ void Shape_frame::get_rle_shape(
 	ybelow = shapes->read2();
 	len -= 8;           // Subtract what we just read.
 	datalen = len + 2;
-	data = shapes->readN(len);
+	data = make_unique<unsigned char[]>(datalen);
+	shapes->read(data.get(), len);
 	data[len] = 0;          // 0-delimit.
 	data[len + 1] = 0;
 	rle = true;
@@ -984,7 +985,7 @@ void Shape::load(
 	store_frame(std::move(frame), 0);
 	// Get the rest.
 	for (size_t i = 1; i < num_frames; i++) {
-		frame = make_unique<Shape_frame>();
+		auto frame = make_unique<Shape_frame>();
 		frame->read(shape_source, 0L, shapelen, i);
 		store_frame(std::move(frame), i);
 	}
