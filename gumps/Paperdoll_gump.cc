@@ -470,10 +470,11 @@ void Paperdoll_gump::paint(
 #endif
 
 #ifdef SHOW_NONREADIED_OBJECTS
+	Game_object *itm;
 	Object_iterator iter(actor->get_objects());
-	while ((obj = iter.get_next()) != 0)
-		if (actor->find_readied(obj) == -1)
-			obj->paint(box.x, box.y);
+	while ((itm = iter.get_next()) != nullptr)
+		if (actor->find_readied(itm) == -1)
+			itm->paint();
 #endif
 
 
@@ -730,7 +731,7 @@ Game_object *Paperdoll_gump::find_object(
 
 	// if debugging show usecode container
 #ifdef SHOW_USECODE_CONTAINER
-	if (obj = check_object(mx, my, info, ucont,  20,      20))
+	if ((obj = check_object(mx, my, info, ucont,  20,      20)) != nullptr)
 		return obj;
 #endif
 

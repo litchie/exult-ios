@@ -900,6 +900,26 @@ else
 	AC_MSG_RESULT(no)
 fi
 
+# Usecode container
+AC_ARG_ENABLE(usecode-container, AS_HELP_STRING([--enable-usecode-container], [Enable display of usecode container for debugging purposes @<:@default no@:>@]),,enable_usecode_container=no)
+AC_MSG_CHECKING([whether to display the usecode container in Gumps])
+if test x$enable_usecode_container = xyes; then
+	AC_MSG_RESULT(yes)
+	AC_DEFINE(SHOW_USECODE_CONTAINER, 1, [Display Usecode container])
+else
+	AC_MSG_RESULT(no)
+fi
+
+# Show non-readied objects
+AC_ARG_ENABLE(nonreadied-objects, AS_HELP_STRING([--enable-nonreadied-objects], [Enable display of non-readied objects for debugging purposes @<:@default no@:>@]),,enable_nonreadied_objects=no)
+AC_MSG_CHECKING([whether to display non-readied objects in Gumps])
+if test x$enable_nonreadied_objects = xyes; then
+	AC_MSG_RESULT(yes)
+	AC_DEFINE(SHOW_NONREADIED_OBJECTS, 1, [Display non-readied objects])
+else
+	AC_MSG_RESULT(no)
+fi
+
 # gnome-shp-thumbnailer
 AC_ARG_ENABLE(gnome-shp-thumbnailer, AS_HELP_STRING([--enable-gnome-shp-thumbnailer], [Build Gnome SHP Thumbnailer @<:@default no@:>@]),,enable_gnome_shp_thumbnailer=no)
 AC_MSG_CHECKING([whether to build the Gnome SHP Thumbnailer])
