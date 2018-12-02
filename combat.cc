@@ -368,6 +368,7 @@ void Combat_schedule::find_opponents(
 			if (oppressor < 0)
 				continue;
 			Actor *oppr = gwin->get_npc(oppressor);
+			assert(oppr != nullptr);
 			// Is actor being attacked by a party member?
 			if ((oppr->get_flag(Obj_flags::in_party) || oppr == avatar) &&
 			        is_enemy(npc_align, oppr->get_effective_alignment())) {
