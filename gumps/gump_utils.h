@@ -51,7 +51,7 @@ inline void Delay(
 	FD_ZERO(&rfds);
 	FD_SET(xfd, &rfds);
 	// Wait for timeout or event.
-	select(xfd + 1, &rfds, 0, 0, &timer);
+	select(xfd + 1, &rfds, nullptr, nullptr, &timer);
 #else                   /* May use this for Linux too. */
 	SDL_Delay(10);          // Try 1/100 second.
 #endif

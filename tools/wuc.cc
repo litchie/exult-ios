@@ -189,11 +189,11 @@ int main(int argc,char *argv[]) {
 	lindex = 0;
 	for (pass = 0; pass < 2; pass++) {
 		//          printf("Pass %d\n",pass+1);
-		if ((fi = fopen(argv[findex], "r")) == NULL) {
+		if ((fi = fopen(argv[findex], "r")) == nullptr) {
 			printf("Can't open infile for reading\n");
 			exit(0);
 		}
-		if ((fo = fopen(argv[findex + 1], "wb")) == NULL) {
+		if ((fo = fopen(argv[findex + 1], "wb")) == nullptr) {
 			printf("Can't open outfile for writing\n");
 			exit(0);
 		}
@@ -275,7 +275,7 @@ int main(int argc,char *argv[]) {
 							case op_call:
 								emit_byte(i);
 								read_token(fi);
-								if ((token2 = strchr(token, '@')) != NULL) {
+								if ((token2 = strchr(token, '@')) != nullptr) {
 									*token2++ = 0;
 									if (token[0] != '_')
 										word = find_intrinsic(func_table, funsize, token);

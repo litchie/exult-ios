@@ -50,11 +50,11 @@ using std::endl;
 Dragging_info::Dragging_info(
     Game_object *newobj     // Object NOT in world.  This is
     //   dropped, or deleted.
-) : obj(newobj), is_new(true), gump(0), button(0), old_pos(-1, -1, -1),
+) : obj(newobj), is_new(true), gump(nullptr), button(nullptr), old_pos(-1, -1, -1),
 	old_foot(0, 0, 0, 0), old_lift(-1), quantity(obj->get_quantity()),
 	readied_index(-1), mousex(-1), mousey(-1), paintx(-1000), painty(-1000),
 	mouse_shape(Mouse::mouse->get_shape()), rect(0, 0, 0, 0),
-	save(0), okay(true), possible_theft(false) {
+	save(nullptr), okay(true), possible_theft(false) {
 	rect = gwin->get_shape_rect(obj);
 	rect.enlarge(8);        // Make a little bigger.
 	// Create buffer to backup background.
@@ -67,11 +67,11 @@ Dragging_info::Dragging_info(
 
 Dragging_info::Dragging_info(
     int x, int y            // Mouse position.
-) : obj(0), is_new(false), gump(0), button(0), old_pos(-1, -1, -1),
+) : obj(nullptr), is_new(false), gump(nullptr), button(nullptr), old_pos(-1, -1, -1),
 	old_foot(0, 0, 0, 0), old_lift(-1), quantity(0),
 	readied_index(-1), mousex(x), mousey(y), paintx(-1000), painty(-1000),
 	mouse_shape(Mouse::mouse->get_shape()), rect(0, 0, 0, 0),
-	save(0), okay(false), possible_theft(false) {
+	save(nullptr), okay(false), possible_theft(false) {
 	// First see if it's a gump.
 	gump = gumpman->find_gump(x, y);
 	if (gump) {
@@ -80,8 +80,8 @@ Dragging_info::Dragging_info(
 			// Save location info.
 			gump->get_shape_location(obj, paintx, painty);
 			old_pos = Tile_coord(obj->get_tx(), obj->get_ty(), 0);
-		} else if ((button = gump->on_button(x, y)) != 0) {
-			gump = 0;
+		} else if ((button = gump->on_button(x, y)) != nullptr) {
+			gump = nullptr;
 			if (!button->is_draggable())
 				return;
 			button->push(1);
@@ -142,8 +142,8 @@ bool Dragging_info::start(
 		        !obj->get_owner()) {
 			Mouse::mouse->flash_shape(Mouse::tooheavy);
 			Audio::get_ptr()->play_sound_effect(Audio::game_sfx(76));
-			obj = 0;
-			gump = 0;
+			obj = nullptr;
+			gump = nullptr;
 			okay = false;
 			return (false);
 		}
@@ -152,7 +152,7 @@ bool Dragging_info::start(
 			if (!cheat.in_hack_mover() &&
 			        !Fast_pathfinder_client::is_grabable(gwin->get_main_actor(), obj)) {
 				Mouse::mouse->flash_shape(Mouse::blocked);
-				obj = 0;
+				obj = nullptr;
 				okay = false;
 				return (false);
 			}
@@ -173,8 +173,8 @@ bool Dragging_info::start(
 			// Check the range
 			if (!cheat.in_hack_mover() &&
 			        !Fast_pathfinder_client::is_grabable(main_actor, owner_obj)) {
-				obj = 0;
-				gump = 0;
+				obj = nullptr;
+				gump = nullptr;
 				okay = false;
 				Mouse::mouse->flash_shape(Mouse::outofrange);
 				return false;
@@ -277,8 +277,8 @@ bool Dragging_info::drop(
 		return handled;
 	else if (!drop(x, y))       // Drop it.
 		put_back();     // Wasn't (all) moved.
-	obj = 0;            // Clear so we don't paint them.
-	gump = 0;
+	obj = nullptr;            // Clear so we don't paint them.
+	gump = nullptr;
 	gwin->paint();
 	return handled;
 }
@@ -330,7 +330,7 @@ void Dragging_info::put_back(
 		obj->remove_this();
 	} else              // Normal object.  Put it back.
 		obj->move(old_pos);
-	obj = 0;            // Just to be safe.
+	obj = nullptr;            // Just to be safe.
 	is_new = false;
 }
 
@@ -489,11 +489,11 @@ bool Dragging_info::drop(
 	//or if alternate drop is enabled (ctrl inverts).
 
 #if SDL_VERSION_ATLEAST(2, 0, 0)
-	const Uint8 *keystate = SDL_GetKeyboardState(NULL);
+	const Uint8 *keystate = SDL_GetKeyboardState(nullptr);
 	bool drop = (keystate[SDL_GetScancodeFromKey(SDLK_LCTRL)] || keystate[SDL_GetScancodeFromKey(SDLK_RCTRL)]) ?
 	            gwin->get_alternate_drop() : !gwin->get_alternate_drop();
 #else
-	Uint8 *keystate = SDL_GetKeyState(NULL);
+	Uint8 *keystate = SDL_GetKeyState(nullptr);
 	bool drop = (keystate[SDLK_LCTRL] || keystate[SDLK_RCTRL]) ?
 	            gwin->get_alternate_drop() : !gwin->get_alternate_drop();
 #endif
@@ -572,7 +572,7 @@ bool Game_window::start_dragging(
 	if (dragging->okay)
 		return (true);      // Success, so far.
 	delete dragging;
-	dragging = 0;
+	dragging = nullptr;
 	return false;
 }
 
@@ -591,7 +591,7 @@ bool Game_window::drag(
  *  Mouse was released, so drop object.
  *      Return true iff the dropping mouseclick has been handled.
  *      (by buttonpress, drag)
- *  Output: MUST set dragging = 0.
+ *  Output: MUST set dragging = nullptr.
  */
 
 bool Game_window::drop_dragged(
@@ -602,13 +602,13 @@ bool Game_window::drop_dragged(
 		return false;
 	bool handled = dragging->drop(x, y, moved);
 	delete dragging;
-	dragging = 0;
+	dragging = nullptr;
 	return handled;
 }
 
 void Game_window::stop_dragging() {
 	delete dragging;
-	dragging = 0;
+	dragging = nullptr;
 }
 
 /*

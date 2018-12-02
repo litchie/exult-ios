@@ -36,8 +36,8 @@ class  Gump_manager : public Game_singletons {
 		Gump        *gump;
 		Gump_list   *next;
 
-		Gump_list() : gump(0), next(0) { }
-		Gump_list(Gump *g) : gump(g), next(0) { }
+		Gump_list() : gump(nullptr), next(nullptr) { }
+		Gump_list(Gump *g) : gump(g), next(nullptr) { }
 	};
 
 	Gump_list   *open_gumps;

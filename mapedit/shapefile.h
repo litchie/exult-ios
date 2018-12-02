@@ -53,7 +53,7 @@ public:
 	// We will own files and groups.
 	Shape_file_info(const char *bnm, const char *pnm, Shape_group_file *g)
 		: basename(bnm), pathname(pnm), groups(g), modified(false),
-		  browser(0)
+		  browser(nullptr)
 	{  }
 	virtual ~Shape_file_info();
 	const char *get_basename() {
@@ -69,22 +69,22 @@ public:
 		modified = true;
 	}
 	virtual Vga_file *get_ifile() {
-		return 0;
+		return nullptr;
 	}
 	// Call this to create group browser.
 	virtual Object_browser *create_browser(Shape_file_info *vgafile,
 	                                       unsigned char *palbuf, Shape_group *g) {
 		ignore_unused_variable_warning(vgafile, palbuf, g);
-		return 0;
+		return nullptr;
 	}
 	// Call for main browser.
 	virtual Object_browser *get_browser(Shape_file_info *vgafile,
 	                                    unsigned char *palbuf);
 	virtual std::ifstream *get_file() {
-		return 0;
+		return nullptr;
 	}
 	virtual Flex *get_flex() {
-		return 0;
+		return nullptr;
 	}
 	virtual void flush() {      // Write if modified.
 		modified = false;
@@ -110,7 +110,7 @@ public:
 		return ifile;
 	}
 	virtual Object_browser *create_browser(Shape_file_info *vgafile,
-	                                       unsigned char *palbuf, Shape_group *g = 0);
+	                                       unsigned char *palbuf, Shape_group *g = nullptr);
 	virtual void flush();       // Write if modified.
 	virtual bool revert();
 	static void write_file(const char *pathname, Shape **shapes,
@@ -121,7 +121,7 @@ public:
  *  Chunks file:
  */
 class Chunks_file_info : public Shape_file_info {
-	std::ifstream *file;        // For 'chunks'; ifile is NULL.
+	std::ifstream *file;        // For 'chunks'; ifile is nullptr.
 public:
 	// We will own file.
 	Chunks_file_info(const char *bnm, const char *pnm,
@@ -133,7 +133,7 @@ public:
 		return file;
 	}
 	virtual Object_browser *create_browser(Shape_file_info *vgafile,
-	                                       unsigned char *palbuf, Shape_group *g = 0);
+	                                       unsigned char *palbuf, Shape_group *g = nullptr);
 	virtual void flush();       // Write if modified.
 };
 
@@ -162,7 +162,7 @@ public:
 		setup();
 	}
 	virtual Object_browser *create_browser(Shape_file_info *vgafile,
-	                                       unsigned char *palbuf, Shape_group *g = 0);
+	                                       unsigned char *palbuf, Shape_group *g = nullptr);
 	std::vector<Estudio_npc> &get_npcs() {
 		return npcs;
 	}
@@ -175,7 +175,7 @@ public:
  */
 class Flex_file_info : public Shape_file_info {
 
-	Flex *flex;         // NULL if just 1 entry.
+	Flex *flex;         // nullptr if just 1 entry.
 	std::vector<std::unique_ptr<unsigned char[]>> entries;    // Entries are stored here.
 	std::vector<int> lengths;   // Lengths here.
 	bool write_flat;        // Write flat file if just 1 entry.
@@ -195,7 +195,7 @@ public:
 	void remove(unsigned i);     // Remove i'th entry.
 	virtual ~Flex_file_info();
 	virtual Object_browser *create_browser(Shape_file_info *vgafile,
-	                                       unsigned char *palbuf, Shape_group *g = 0);
+	                                       unsigned char *palbuf, Shape_group *g = nullptr);
 	virtual Flex *get_flex() {
 		return flex;
 	}

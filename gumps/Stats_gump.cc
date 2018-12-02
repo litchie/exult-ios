@@ -149,7 +149,7 @@ Stats_gump *Stats_gump::create(
     int x, int y
 ) {
 	Actor *npc = npc_obj->as_actor();
-	assert(npc != 0);
+	assert(npc != nullptr);
 	Actor::Atts_vector atts;
 	npc->get_attributes(atts);
 	int sz = atts.size();

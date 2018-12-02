@@ -255,11 +255,11 @@ void GameplayOptions_gump::load_settings() {
 	smooth_scrolling = gwin->is_lerping_enabled() / 25;
 }
 
-GameplayOptions_gump::GameplayOptions_gump() : Modal_gump(0, EXULT_FLX_GAMEPLAYOPTIONS_SHP, SF_EXULT_FLX) {
+GameplayOptions_gump::GameplayOptions_gump() : Modal_gump(nullptr, EXULT_FLX_GAMEPLAYOPTIONS_SHP, SF_EXULT_FLX) {
 	set_object_area(Rectangle(0, 0, 0, 0), 8, 162);//++++++ ???
 
 	for (int i = id_first; i < id_count; i++)
-		buttons[i] = 0;
+		buttons[i] = nullptr;
 
 	load_settings();
 
@@ -368,9 +368,9 @@ bool GameplayOptions_gump::mouse_down(int mx, int my, int button) {
 	}
 
 	if (pushed && !pushed->push(button))            // On a button?
-		pushed = 0;
+		pushed = nullptr;
 
-	return button == 1 || pushed != 0;
+	return button == 1 || pushed != nullptr;
 }
 
 bool GameplayOptions_gump::mouse_up(int mx, int my, int button) {
@@ -383,6 +383,6 @@ bool GameplayOptions_gump::mouse_up(int mx, int my, int button) {
 	pushed->unpush(button);
 	if (pushed->on_button(mx, my))
 		res = pushed->activate(button);
-	pushed = 0;
+	pushed = nullptr;
 	return res;
 }

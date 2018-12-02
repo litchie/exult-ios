@@ -238,11 +238,11 @@ protected:
 	bool reachable;
 public:
 	Basic_block()
-		:   index(0), taken(0), taken_index(-1), ntaken(0), ntaken_index(-1),
-		    jmp_op(0), reachable(false) {
+		:   index(0), taken(nullptr), taken_index(-1), ntaken(nullptr), ntaken_index(-1),
+		    jmp_op(nullptr), reachable(false) {
 		instructions.reserve(100);
 	}
-	Basic_block(int ind, Basic_block *t = 0, Basic_block *n = 0, UsecodeOps ins = UC_INVALID)
+	Basic_block(int ind, Basic_block *t = nullptr, Basic_block *n = nullptr, UsecodeOps ins = UC_INVALID)
 		:   index(ind), taken(t), taken_index(-1), ntaken(n), ntaken_index(-1),
 		    jmp_op(new Opcode(ins)), reachable(false) {
 		if (index != -1) instructions.reserve(100);
@@ -266,7 +266,7 @@ public:
 	}
 	void clear_jump() {
 		delete jmp_op;
-		jmp_op = 0;
+		jmp_op = nullptr;
 	}
 	UsecodeOps get_last_instruction() const {
 		return instructions.size() ? instructions.back()->get_opcode() : UC_INVALID;
@@ -278,7 +278,7 @@ public:
 		return jmp_op ? jmp_op->is_32bit() : false;
 	}
 	bool does_not_jump() const {
-		return jmp_op == 0;
+		return jmp_op == nullptr;
 	}
 	bool ends_in_return() const {
 		return instructions.size() && instructions.back()->is_return();
@@ -387,7 +387,7 @@ public:
 			ntaken->predecessors.erase(this);
 		ntaken = dest;
 	}
-	void set_targets(UsecodeOps op, Basic_block *t = 0, Basic_block *n = 0) {
+	void set_targets(UsecodeOps op, Basic_block *t = nullptr, Basic_block *n = nullptr) {
 		clear_jump();
 		if (op != UC_INVALID)
 			jmp_op = new Opcode(op);
@@ -397,11 +397,11 @@ public:
 	void unlink_descendants() {
 		if (taken) {
 			taken->predecessors.erase(this);
-			taken = 0;
+			taken = nullptr;
 		}
 		if (ntaken) {
 			ntaken->predecessors.erase(this);
-			ntaken = 0;
+			ntaken = nullptr;
 		}
 	}
 	void link_predecessors() {
@@ -419,11 +419,11 @@ public:
 		        it != predecessors.end(); ++it) {
 			Basic_block *block = *it;
 			if (block->taken == this) {
-				block->taken = 0;
+				block->taken = nullptr;
 				block->taken_index = -1;
 			}
 			if (block->ntaken == this) {
-				block->ntaken = 0;
+				block->ntaken = nullptr;
 				block->ntaken_index = -1;
 			}
 		}
@@ -447,7 +447,7 @@ public:
 					taken->predecessors.insert(pred);
 					pred->ntaken = taken;
 				} else
-					pred->ntaken = 0;
+					pred->ntaken = nullptr;
 			}
 		}
 		predecessors.clear();
@@ -463,7 +463,7 @@ public:
 		set_ntaken(safetaken->ntaken);
 		// Prevent these from being deleted.
 		safetaken->instructions.clear();
-		safetaken->jmp_op = 0;
+		safetaken->jmp_op = nullptr;
 	}
 	void write(vector<char> &out) {
 		for (vector<Opcode *>::iterator it = instructions.begin();

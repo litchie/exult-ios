@@ -95,7 +95,7 @@ void MenuTextEntry::paint(Game_window *gwin) {
 	else
 		fnt = font;
 	fnt->paint_text_box(gwin->get_win()->get_ib8(), text,
-	                    x1, y1, x2 - x1, y2 - y1, 0, false, true, 0);
+	                    x1, y1, x2 - x1, y2 - y1, 0, false, true, nullptr);
 	gwin->get_win()->show(x1, y1, x2 - x1, y2 - y1);
 }
 
@@ -164,7 +164,7 @@ void MenuGameEntry::paint(Game_window *gwin) {
 	else
 		fnt = font;
 	fnt->paint_text_box(gwin->get_win()->get_ib8(), text,
-	                    x1, y1, x2 - x1, y2 - y1, 0, false, true, 0);
+	                    x1, y1, x2 - x1, y2 - y1, 0, false, true, nullptr);
 	gwin->get_win()->show(x1, y1, x2 - x1, y2 - y1);
 }
 

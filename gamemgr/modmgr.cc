@@ -239,7 +239,7 @@ ModInfo::ModInfo(
  *      "*" if older savegame.
  */
 string get_game_identity(const char *savename, const string &title) {
-	char *game_identity = 0;
+	char *game_identity = nullptr;
 	ifstream in_stream;
 	if (!U7exists(savename))
 		return title;
@@ -254,8 +254,8 @@ string get_game_identity(const char *savename, const string &title) {
 				return "*";      // Old game.  Return wildcard.
 			} else {
 				unz_file_info file_info;
-				unzGetCurrentFileInfo(unzipfile, &file_info, NULL,
-				                      0, NULL, 0, NULL, 0);
+				unzGetCurrentFileInfo(unzipfile, &file_info, nullptr,
+				                      0, nullptr, 0, nullptr, 0);
 				game_identity = new char[file_info.uncompressed_size + 1];
 
 				if (unzOpenCurrentFile(unzipfile) != UNZ_OK) {
@@ -500,7 +500,7 @@ ModInfo *ModManager::find_mod(const string &name) {
 	        it != modlist.end(); ++it)
 		if (it->get_mod_title() == name)
 			return &*it;
-	return 0;
+	return nullptr;
 }
 
 int ModManager::find_mod_index(const string &name) {
@@ -522,13 +522,13 @@ void ModManager::add_mod(const string &mod, const string &modconfig) {
 // Exult, returns a reference to the mod; otherwise, returns the mod's parent game.
 // Outputs error messages is the mod is not found or is not compatible.
 BaseGameInfo *ModManager::get_mod(const string &name, bool checkversion) {
-	ModInfo *newgame = 0;
+	ModInfo *newgame = nullptr;
 	if (has_mods())
 		newgame = find_mod(name);
 	if (newgame) {
 		if (checkversion && !newgame->is_mod_compatible()) {
 			cerr << "Mod '" << name << "' is not compatible with this version of Exult." << endl;
-			return 0;
+			return nullptr;
 		}
 	}
 	if (!newgame)
@@ -580,7 +580,7 @@ void ModManager::get_game_paths(const string &game_path) {
 // GameManager: class that manages the installed games
 GameManager::GameManager(bool silent) {
 	games.clear();
-	bg = fov = si = ss = sib = 0;
+	bg = fov = si = ss = sib = nullptr;
 
 	// Search for games defined in exult.cfg:
 	string config_path("config/disk/game"), game_title;
@@ -673,7 +673,7 @@ void GameManager::print_found(
 	to_uppercase(cfgstr);
 	snprintf(path, sizeof(path), "<%s_STATIC>/", cfgstr.c_str());
 
-	if (game == 0) {
+	if (game == nullptr) {
 		if (!silent)
 			cout << title << "   : not found ("
 			     << get_system_path(path) << ")" << endl;
@@ -704,7 +704,7 @@ ModManager *GameManager::find_game(const string &name) {
 	        it != games.end(); ++it)
 		if (it->get_cfgname() == name)
 			return &*it;
-	return 0;
+	return nullptr;
 }
 
 int GameManager::find_game_index(const string &name) {

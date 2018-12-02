@@ -39,24 +39,24 @@ void speedtest() {
 	std::ifstream file("random");
 	assert(!file.fail());
 
-	gettimeofday(&tvstart, NULL);
+	gettimeofday(&tvstart, nullptr);
 
 	while (!file.eof())
 		uint8 ui8 = Read4(file);
 
-	gettimeofday(&tvend, NULL);
+	gettimeofday(&tvend, nullptr);
 
 	//-------------------------
 
 	std::ifstream file_diff("random");
 	assert(!file_diff.fail());
 
-	gettimeofday(&tvstart_diff, NULL);
+	gettimeofday(&tvstart_diff, nullptr);
 
 	while (!file_diff.eof())
 		uint8 ui8 = Read4diff(file_diff);
 
-	gettimeofday(&tvend_diff, NULL);
+	gettimeofday(&tvend_diff, nullptr);
 
 	cout << tvstart.tv_sec << '\t' << tvstart.tv_usec << endl;
 	cout << tvend.tv_sec << '\t' << tvend.tv_usec << endl;

@@ -68,7 +68,7 @@ void Handle_debug_message(unsigned char *data, int datalen) {
 	Usecode_machine *ucm = Game_window::get_instance()->get_usecode();
 	Usecode_internal *uci = dynamic_cast<Usecode_internal *>(ucm);
 
-	if (uci == 0)
+	if (uci == nullptr)
 		return; // huh?
 
 	Exult_server::Debug_msg_type id = static_cast<Exult_server::Debug_msg_type>(data[0]);

@@ -69,7 +69,7 @@ public:
 private:
 	static Intrinsic_type intrinsic_type;
 public:
-	Uc_function(Uc_function_symbol *p, Uc_scope *parent = 0);
+	Uc_function(Uc_function_symbol *p, Uc_scope *parent = nullptr);
 	~Uc_function();
 	static void set_intrinsics();
 	static void setup_intrinsics() {    // Init. the 1st time.
@@ -144,7 +144,7 @@ public:
 	}
 	static Uc_intrinsic_symbol *get_intrinsic(int i) {
 		setup_intrinsics();
-		return (i >= 0 && static_cast<unsigned>(i) < intrinsics.size()) ? intrinsics[i] : 0;
+		return (i >= 0 && static_cast<unsigned>(i) < intrinsics.size()) ? intrinsics[i] : nullptr;
 	}
 	static Uc_intrinsic_symbol *get_add_answer() {
 		return get_intrinsic(add_answer);
@@ -183,11 +183,11 @@ public:
 	void add_static(char *nm);  // Add static var. to current scope.
 	void add_static(char *nm, Uc_struct_symbol *type);  // Add static struct to current scope.
 	void add_static(char *nm, Uc_class *c); // Add static cls. to current scope.
-	int add_function_symbol(Uc_function_symbol *fun, Uc_scope *parent = 0) {
+	int add_function_symbol(Uc_function_symbol *fun, Uc_scope *parent = nullptr) {
 		return cur_scope->add_function_symbol(fun, parent);
 	}
 	static int add_global_function_symbol(Uc_function_symbol *fun,
-	                                      Uc_scope *parent = 0) {
+	                                      Uc_scope *parent = nullptr) {
 		return globals.add_function_symbol(fun, parent);
 	}
 	static void add_global_class_symbol(Uc_class_symbol *c) {

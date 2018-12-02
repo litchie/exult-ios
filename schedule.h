@@ -135,7 +135,7 @@ protected:
 	int items_in_hand; 	  	// # NPC's desk items.
 	void cleanup();				// Remove items we created.
 public:
-	Schedule_with_objects(Actor *n) : Schedule(n), current_item(0),
+	Schedule_with_objects(Actor *n) : Schedule(n), current_item(nullptr),
 									items_in_hand(0) {
 	}
 	~Schedule_with_objects();
@@ -380,7 +380,7 @@ protected:
 	void get_tool();
 public:
 	Tool_schedule(Actor *n, int shnum) : Loiter_schedule(n, 12),
-		toolshape(shnum), tool(0)
+		toolshape(shnum), tool(nullptr)
 	{  }
 	virtual void now_what() = 0;    // Now what should NPC do?
 	virtual void ending(int newtype);// Switching to another schedule.
@@ -401,7 +401,7 @@ class Farmer_schedule : public Tool_schedule {
 	} state;
 public:
 	Farmer_schedule(Actor *n) : Tool_schedule(n, 618),
-		crop(0), grow_cnt(0), state(start)
+		crop(nullptr), grow_cnt(0), state(start)
 	{  }
 	virtual void now_what();    // Now what should NPC do?
 };
@@ -419,7 +419,7 @@ class Miner_schedule : public Tool_schedule {
 	} state;
 public:
 	Miner_schedule(Actor *n) : Tool_schedule(n, 624),
-		ore(0), state(find_ore)
+		ore(nullptr), state(find_ore)
 	{  }
 	virtual void now_what();    // Now what should NPC do?
 };
@@ -472,13 +472,13 @@ class Sit_schedule : public Schedule {
 	bool sat;           // True if we already sat down.
 	bool did_barge_usecode;     // So we only call it once.
 public:
-	Sit_schedule(Actor *n, Game_object *ch = 0);
+	Sit_schedule(Actor *n, Game_object *ch = nullptr);
 	virtual void now_what();    // Now what should NPC do?
 	virtual void notify_object_gone(Game_object *obj);
 	virtual void im_dormant();  // Just went dormant.
 	static bool is_occupied(Game_object *chairobj, Actor *actor);
-	static bool set_action(Actor *actor, Game_object *chairobj = 0,
-	                       int delay = 0, Game_object **chair_found = 0);
+	static bool set_action(Actor *actor, Game_object *chairobj = nullptr,
+	                       int delay = 0, Game_object **chair_found = nullptr);
 };
 
 /*
@@ -773,7 +773,7 @@ public:
 	}
 	static char *get_script_name(int ty) {
 		return ty >= Schedule::first_scripted_schedule ?
-		       script_names[ty - Schedule::first_scripted_schedule] : 0;
+		       script_names[ty - Schedule::first_scripted_schedule] : nullptr;
 	}
 };
 

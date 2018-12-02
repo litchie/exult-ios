@@ -144,7 +144,7 @@ BG_Game::BG_Game()
 		const char *exultflx = BUNDLE_CHECK(BUNDLE_EXULT_FLX, EXULT_FLX);
 		const char *gameflx = BUNDLE_CHECK(BUNDLE_EXULT_BG_FLX, EXULT_BG_FLX);
 
-		add_resource("files/shapes/count", 0, 9);
+		add_resource("files/shapes/count", nullptr, 9);
 		add_resource("files/shapes/0", SHAPES_VGA, 0);
 		add_resource("files/shapes/1", FACES_VGA, 0);
 		add_resource("files/shapes/2", GUMPS_VGA, 0);
@@ -167,7 +167,7 @@ BG_Game::BG_Game()
 		add_resource("config/avatar_data", gameflx, EXULT_BG_FLX_AVATAR_DATA_TXT);
 		add_resource("config/autonotes", gameflx, EXULT_BG_FLX_AUTONOTES_TXT);
 
-		add_resource("palettes/count", 0, 18);
+		add_resource("palettes/count", nullptr, 18);
 		add_resource("palettes/0", PALETTES_FLX, 0);
 		add_resource("palettes/1", PALETTES_FLX, 1);
 		add_resource("palettes/2", PALETTES_FLX, 2);
@@ -206,7 +206,7 @@ BG_Game::BG_Game()
 		add_resource("palettes/patch/16", PATCH_INTROPAL, 4);
 		add_resource("palettes/patch/17", PATCH_INTROPAL, 5);
 
-		add_resource("xforms/count", 0, 20);
+		add_resource("xforms/count", nullptr, 20);
 		add_resource("xforms/0", XFORMTBL, 0);
 		add_resource("xforms/1", XFORMTBL, 1);
 		add_resource("xforms/2", XFORMTBL, 2);
@@ -1335,8 +1335,7 @@ void BG_Game::end_game(bool success) {
 	Font *font = fontManager.get_font("MENU_FONT");
 
 	if (!success) {
-		TextScroller text(MAINSHP_FLX, 0x15,
-		                  font, 0);
+		TextScroller text(MAINSHP_FLX, 0x15, font, nullptr);
 		gwin->clear_screen();
 		pal->load(INTROPAL_DAT, PATCH_INTROPAL, 0);
 		for (sint32 i = 0; i < text.get_count(); i++) {

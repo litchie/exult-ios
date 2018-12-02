@@ -56,7 +56,7 @@ using std::string;
 
 bool Game::new_game_flag = false;
 bool Game::editing_flag = false;
-Game *game = 0;
+Game *game = nullptr;
 Exult_Game Game::game_type = NONE;
 bool Game::expansion = false;
 bool Game::sibeta = false;
@@ -70,7 +70,7 @@ std::string Game::modtitle;
 
 unsigned int Game::ticks = 0;
 
-Game::Game() : xml(0) {
+Game::Game() : xml(nullptr) {
 	try {               // Okay to fail if development game.
 		menushapes.load(MAINSHP_FLX, PATCH_MAINSHP);
 	} catch (const exult_exception &e) {
@@ -138,7 +138,7 @@ Game *Game::create_game(BaseGameInfo *mygame) {
 		break;
 	default:
 		cout << "Unrecognized game type!" << endl;
-		game = 0;
+		game = nullptr;
 	}
 
 	cout << "Game path settings:" << std::endl;
@@ -273,7 +273,7 @@ bool Game::show_menu(bool skip) {
 	menu_mouse = new Mouse(gwin, mouse_data);
 
 	top_menu();
-	MenuList *menu = 0;
+	MenuList *menu = nullptr;
 
 
 	int menuchoices[] = { 0x04, 0x05, 0x08, 0x06, 0x11, 0x12, 0x07 };
@@ -346,7 +346,7 @@ bool Game::show_menu(bool skip) {
 			pal->fade_out(c_fade_out_time);
 			show_credits();
 			delete menu;
-			menu = 0;
+			menu = nullptr;
 			top_menu();
 			break;
 		case 4: // Quotes
@@ -394,7 +394,7 @@ const char *Game::get_avname() {
 	if (av_name[0])
 		return av_name;
 	else
-		return NULL;
+		return nullptr;
 }
 
 int Game::get_avsex() {

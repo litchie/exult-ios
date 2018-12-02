@@ -197,7 +197,7 @@ void ExultStudio::open_egg_window(
 		                                app_xml, "egg_status")), "Egg Editor");
 	}
 	// Init. egg address to null.
-	gtk_object_set_user_data(GTK_OBJECT(eggwin), 0);
+	gtk_object_set_user_data(GTK_OBJECT(eggwin), nullptr);
 	// Make 'apply' sensitive.
 	gtk_widget_set_sensitive(glade_xml_get_widget(app_xml,
 	                         "egg_apply_btn"), true);
@@ -216,7 +216,7 @@ void ExultStudio::open_egg_window(
 
 #ifdef WIN32
 	if (first_time || !eggdnd)
-		Windnd::CreateStudioDropDest(eggdnd, egghwnd, Drop_dragged_shape, NULL, NULL, (void *) this);
+		Windnd::CreateStudioDropDest(eggdnd, egghwnd, Drop_dragged_shape, nullptr, nullptr, (void *) this);
 #endif
 }
 

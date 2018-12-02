@@ -86,11 +86,11 @@ class Search_node {
 	short total_cost;       // Sum of the two above.
 	Search_node *parent;        // Prev. in path.
 	Search_node *priority_next; // ->next with same total_cost, or
-	//   NULL if not in 'open' set.
+	//   nullptr if not in 'open' set.
 public:
 	Search_node(Tile_coord const &t, short scost, short gcost, Search_node *p)
 		: tile(t), start_cost(scost), goal_cost(gcost),
-		  parent(p), priority_next(0) {
+		  parent(p), priority_next(nullptr) {
 		total_cost = gcost + scost;
 	}
 	// For creating a key to search for.
@@ -109,7 +109,7 @@ public:
 		return total_cost;
 	}
 	int is_open() {         // In 'open' priority queue?
-		return priority_next != 0;
+		return priority_next != nullptr;
 	}
 	void update(short scost, short gcost, Search_node *p) {
 		start_cost = scost;
@@ -122,7 +122,7 @@ public:
 		int cnt = 1;        // This.
 		// Count back to start.
 		Search_node *each = this;
-		while ((each = each->parent) != 0)
+		while ((each = each->parent) != nullptr)
 			cnt++;
 		pathlen = cnt - 1;  // Don't want starting tile.
 		Tile_coord *result = new Tile_coord[pathlen];
@@ -178,7 +178,7 @@ public:
 #endif
 		if (priority_next == this)
 			// Only one in chain?
-			last = 0;
+			last = nullptr;
 		else {
 			// Got to find prev. to this.
 			Search_node *prev = last;
@@ -194,7 +194,7 @@ public:
 					last = priority_next;
 			}
 		}
-		priority_next = 0;  // No longer in 'open'.
+		priority_next = nullptr;  // No longer in 'open'.
 #ifdef VERIFYCHAIN
 		if (!verify_chain(last, 1))
 			cout << "Bad chain after removing." << endl;
@@ -204,10 +204,10 @@ public:
 	static Search_node *remove_first_from_chain(Search_node *&last) {
 		Search_node *first = last->priority_next;
 		if (first == last)  // Last entry?
-			last = 0;
+			last = nullptr;
 		else
 			last->priority_next = first->priority_next;
-		first->priority_next = 0;
+		first->priority_next = nullptr;
 		return first;
 	}
 };
@@ -280,7 +280,7 @@ public:
 	A_star_queue() : open(256), lookup()
 #endif
 	{
-		open.insert(open.begin(), 256, static_cast<Search_node *>(0));
+		open.insert(open.begin(), 256, nullptr);
 		best = open.size(); // Best is past end.
 	}
 	~A_star_queue() {
@@ -308,7 +308,7 @@ public:
 	void add_back(Search_node *nd) { // Add an existing node back to 'open'.
 		int total_cost = nd->get_total_cost();
 		Search_node *last = total_cost < static_cast<int>(open.size()) ?
-		                    open[total_cost] : 0;
+		                    open[total_cost] : nullptr;
 		nd->add_to_chain(last); // Add node to this chain.
 		add_open(total_cost, last);
 		if (total_cost < best)
@@ -324,7 +324,7 @@ public:
 			return;     // Nothing to do.
 		int total_cost = nd->get_total_cost();
 		Search_node *last = total_cost < static_cast<int>(open.size()) ?
-		                    open[total_cost] : 0;
+		                    open[total_cost] : nullptr;
 		if (last) {
 			nd->remove_from_chain(last);
 			// Store updated 'last'.
@@ -334,15 +334,15 @@ public:
 			if (total_cost == best) {
 				int cnt = open.size();
 				for (best++; best < cnt; best++)
-					if (open[best] != 0)
+					if (open[best] != nullptr)
 						break;
 			}
 		}
 	}
 	Search_node *pop() {    // Pop best from priority queue.
-		Search_node *last = best < static_cast<int>(open.size()) ? open[best] : 0;
+		Search_node *last = best < static_cast<int>(open.size()) ? open[best] : nullptr;
 		if (!last)
-			return (0);
+			return nullptr;
 		// Return 1st in list.
 		Search_node *node = Search_node::remove_first_from_chain(last);
 		// Store updated 'last'.
@@ -350,7 +350,7 @@ public:
 		if (!last) {    // List now empty?
 			int cnt = open.size();
 			for (best++; best < cnt; best++)
-				if (open[best] != 0)
+				if (open[best] != nullptr)
 					break;
 		}
 		return node;
@@ -368,7 +368,7 @@ public:
 		if (it != lookup.end())
 			return *it;
 		else
-			return 0;
+			return nullptr;
 	}
 };
 
@@ -389,11 +389,11 @@ Tile_coord *Find_path(
 	A_star_queue nodes;     // The priority queue & hash table.
 	int max_cost = client->estimate_cost(start, goal);
 	// Create start node.
-	nodes.add(new Search_node(start, 0, max_cost, 0));
+	nodes.add(new Search_node(start, 0, max_cost, nullptr));
 	// Figure when to give up.
 	max_cost = client->get_max_cost(max_cost);
 	Search_node *node;      // Try 'best' node each iteration.
-	while ((node = nodes.pop()) != 0) {
+	while ((node = nodes.pop()) != nullptr) {
 		if (tracing)
 			cout << "Goal: (" << goal.tx << ", " << goal.ty << ", " << goal.tz <<
 			     "), Node: (" << node->get_tile().tx << ", " <<
@@ -435,5 +435,5 @@ Tile_coord *Find_path(
 		}
 	}
 	pathlen = 0;            // Failed if here.
-	return 0;
+	return nullptr;
 }

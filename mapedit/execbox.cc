@@ -51,7 +51,7 @@ using std::endl;
 
 Exec_process::Exec_process(
 ) : child_stdin(-1), child_stdout(-1), child_stderr(-1),
-	child_pid(-1), stdout_tag(-1), stderr_tag(-1), reader(0) {
+	child_pid(-1), stdout_tag(-1), stderr_tag(-1), reader(nullptr) {
 }
 
 /*
@@ -110,7 +110,7 @@ void Exec_process::read_from_child(
 	if (!check_child(exit_code)) {  // Child done?
 		kill_child();       // Clean up.
 		if (reader)     // Tell client.
-			(*reader)(0, 0, exit_code, reader_data);
+			(*reader)(nullptr, 0, exit_code, reader_data);
 	}
 }
 
@@ -281,7 +281,7 @@ void Exec_box::show_status(
  */
 
 static void Exec_callback(
-    char *data,         // Data read, or NULL.
+    char *data,         // Data read, or nullptr.
     int datalen,            // Length, or 0 if child exited.
     int exit_code,          // Exit code if datalen = 0.
     void *user_data         // ->Exex_box
@@ -290,7 +290,7 @@ static void Exec_callback(
 	box->read_from_child(data, datalen, exit_code);
 }
 void Exec_box::read_from_child(
-    char *data,         // Data read, or NULL.
+    char *data,         // Data read, or nullptr.
     int datalen,            // Length, or 0 if child exited.
     int exit_code           // Exit code if datalen = 0.
 ) {

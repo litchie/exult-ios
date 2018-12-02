@@ -119,7 +119,7 @@ void Game_window::read_npcs(
 	}
 	if (moving_barge) {     // Gather all NPC's on barge.
 		Barge_object *b = moving_barge;
-		moving_barge = 0;
+		moving_barge = nullptr;
 		set_moving_barge(b);
 	}
 	read_schedules();       // Now get their schedules.
@@ -212,7 +212,7 @@ void Read_a_schedule(
 ) {
 	int cnt = offsets[index] - offsets[index - 1];
 	// Read schedules into this array.
-	Schedule_change *schedules = cnt ? new Schedule_change[cnt] : 0;
+	Schedule_change *schedules = cnt ? new Schedule_change[cnt] : nullptr;
 	unsigned char ent[10];
 	if (entsize == 4) { // U7 format?
 		for (int j = 0; j < cnt; j++) {

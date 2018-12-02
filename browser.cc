@@ -46,7 +46,7 @@ ShapeBrowser::ShapeBrowser() {
 	current_frame = 0;
 	num_files = game->get_resource("files/shapes/count").num;
 	current_file = 0;
-	shapes = 0;
+	shapes = nullptr;
 	num_palettes = game->get_resource("palettes/count").num;
 	current_palette = 0;
 	num_xforms = game->get_resource("xforms/count").num;

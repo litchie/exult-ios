@@ -53,19 +53,19 @@ using std::skipws;
 
 using namespace std;
 
-static vector<pair<string, int> > *paperdoll_source_table = 0;
-static vector<pair<int, int> > *imported_gump_shapes = 0;
-static vector<pair<int, int> > *blue_shapes = 0;
-static vector<pair<int, int> > *imported_skin_shapes = 0;
-static map<string, int> *gumpvars = 0;
-static map<string, int> *skinvars = 0;
+static vector<pair<string, int> > *paperdoll_source_table = nullptr;
+static vector<pair<int, int> > *imported_gump_shapes = nullptr;
+static vector<pair<int, int> > *blue_shapes = nullptr;
+static vector<pair<int, int> > *imported_skin_shapes = nullptr;
+static map<string, int> *gumpvars = nullptr;
+static map<string, int> *skinvars = nullptr;
 
-static map<bool, Base_Avatar_info> *def_av_info = 0;
-static Avatar_default_skin *base_av_info = 0;
-static vector<Skin_data> *skins_table = 0;
-static map<int, bool> *unselectable_skins = 0;
-static map<int, int> *petra_table = 0;
-static map<int, Usecode_function_data> *usecode_funs = 0;
+static map<bool, Base_Avatar_info> *def_av_info = nullptr;
+static Avatar_default_skin *base_av_info = nullptr;
+static vector<Skin_data> *skins_table = nullptr;
+static map<int, bool> *unselectable_skins = nullptr;
+static map<int, int> *petra_table = nullptr;
+static map<int, Usecode_function_data> *usecode_funs = nullptr;
 static int last_skin = 0;
 
 // HACK. NPC Paperdolls need this, but miscinf has too many
@@ -527,7 +527,7 @@ Base_Avatar_info *Shapeinfo_lookup::GetBaseAvInfo(bool sex) {
 	if (it != def_av_info->end())
 		return &((*it).second);
 	else
-		return NULL;
+		return nullptr;
 }
 
 int Shapeinfo_lookup::get_skinvar(const string& key) {
@@ -571,7 +571,7 @@ Skin_data *Shapeinfo_lookup::GetSkinInfo(int skin, bool sex) {
 	        it != skins_table->end(); ++it)
 		if ((*it).skin_id == skin && (*it).is_female == sex)
 			return &(*it);
-	return NULL;
+	return nullptr;
 }
 
 Skin_data *Shapeinfo_lookup::GetSkinInfoSafe(int skin, bool sex, bool sishapes) {
@@ -636,7 +636,7 @@ Usecode_function_data *Shapeinfo_lookup::GetAvUsecode(int type) {
 	if (it != usecode_funs->end())
 		return &(*it).second;
 	else
-		return NULL;
+		return nullptr;
 }
 
 bool Shapeinfo_lookup::IsSkinSelectable(int skin) {

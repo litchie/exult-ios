@@ -111,14 +111,14 @@ static const T *Search_vector_data_single_wildcard(
     U T::*dat
 ) {
 	if (vec.empty())    // Not found.
-		return 0;
+		return nullptr;
 	T inf;
 	inf.*dat = src;
 	typename vector<T>::const_iterator it;
 	// Try finding exact match first.
 	it = std::lower_bound(vec.begin(), vec.end(), inf);
 	if (it == vec.end())    // Nowhere to be found.
-		return 0;
+		return nullptr;
 	else if (*it == inf && !it->is_invalid())   // Have it already.
 		return &*it;
 	// Try wildcard shape.
@@ -126,7 +126,7 @@ static const T *Search_vector_data_single_wildcard(
 	it = std::lower_bound(it, vec.end(), inf);
 	if (it == vec.end() || *it != inf   // It just isn't there...
 	        || it->is_invalid())   // ... or it is invalid.
-		return 0;
+		return nullptr;
 	else    // At last!
 		return &*it;
 }
@@ -138,7 +138,7 @@ static const T *Search_vector_data_double_wildcards(
     short T::*fr, short T::*qual
 ) {
 	if (vec.empty())
-		return 0;   // No name.
+		return nullptr;   // No name.
 	T inf;
 	inf.*fr = frame;
 	inf.*qual = quality;
@@ -146,7 +146,7 @@ static const T *Search_vector_data_double_wildcards(
 	// Try finding exact match first.
 	it = std::lower_bound(vec.begin(), vec.end(), inf);
 	if (it == vec.end())    // Nowhere to be found.
-		return 0;
+		return nullptr;
 	else if (*it == inf && !it->is_invalid())   // Have it already.
 		return &*it;
 	// We only have to search forward for a match.
@@ -156,7 +156,7 @@ static const T *Search_vector_data_double_wildcards(
 			inf.*qual = -1;
 			it = std::lower_bound(it, vec.end(), inf);
 			if (it == vec.end())    // Nowhere to be found.
-				return 0;
+				return nullptr;
 			else if (*it == inf && !it->is_invalid())   // We got it!
 				return &*it;
 		}
@@ -166,7 +166,7 @@ static const T *Search_vector_data_double_wildcards(
 		inf.*fr = -1;
 		it = std::lower_bound(it, vec.end(), inf);
 		if (it == vec.end())    // Nowhere to be found.
-			return 0;
+			return nullptr;
 		else if (*it == inf && !it->is_invalid())   // We got it!
 			return &*it;
 		inf.*qual = -1;
@@ -176,7 +176,7 @@ static const T *Search_vector_data_double_wildcards(
 	it = std::lower_bound(it, vec.end(), inf);
 	if (it == vec.end() || *it != inf || *it != inf // It just isn't there...
 	        || it->is_invalid())   // ... or it is invalid.
-		return 0;
+		return nullptr;
 	else    // At last!
 		return &*it;
 }
@@ -188,7 +188,7 @@ template <typename T>
 T *set_info(bool tf, T *&pt) {
 	if (!tf) {
 		delete pt;
-		pt = 0;
+		pt = nullptr;
 	} else if (!pt)
 		pt = new T();
 	return pt;
@@ -473,7 +473,7 @@ public:
 		if (cls->is_invalid() && pt) {
 			// 'Delete old' flag.
 			delete pt;
-			pt = 0;
+			pt = nullptr;
 			delete cls;
 			return false;
 		}

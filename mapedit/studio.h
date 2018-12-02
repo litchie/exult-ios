@@ -265,19 +265,19 @@ public:
 	void show_cont_shape(int x = 0, int y = 0, int w = -1, int h = -1);
 	void set_cont_shape(int shape, int frame);
 	// Barges:
-	void open_barge_window(unsigned char *data = 0, int datalen = 0);
+	void open_barge_window(unsigned char *data = nullptr, int datalen = 0);
 	void close_barge_window();
 	int init_barge_window(unsigned char *data, int datalen);
 	int save_barge_window();
 	// Eggs:
-	void open_egg_window(unsigned char *data = 0, int datalen = 0);
+	void open_egg_window(unsigned char *data = nullptr, int datalen = 0);
 	void close_egg_window();
 	int init_egg_window(unsigned char *data, int datalen);
 	int save_egg_window();
 	void show_egg_monster(int x = 0, int y = 0, int w = -1, int h = -1);
 	void set_egg_monster(int shape, int frame);
 	// NPC's:
-	void open_npc_window(unsigned char *data = 0, int datalen = 0);
+	void open_npc_window(unsigned char *data = nullptr, int datalen = 0);
 	void close_npc_window();
 	void init_new_npc();
 	int init_npc_window(unsigned char *data, int datalen);
@@ -302,7 +302,7 @@ public:
 	void save_shape_notebook(Shape_info &info, int shnum, int frnum);
 	void open_shape_window(int shnum, int frnum,
 	                       Shape_file_info *file_info,
-	                       const char *shname, Shape_info *info = 0);
+	                       const char *shname, Shape_info *info = nullptr);
 	void save_shape_window();
 	void close_shape_window();
 	void show_shinfo_shape(int x = 0, int y = 0, int w = -1, int h = -1);
@@ -334,7 +334,7 @@ public:
 	void show_charset();
 
 	bool send_to_server(Exult_server::Msg_type id,
-	                    unsigned char *data = 0, int datalen = 0);
+	                    unsigned char *data = nullptr, int datalen = 0);
 	void read_from_server();
 	bool connect_to_server();
 	// Message from Exult.
@@ -367,7 +367,7 @@ public:
 	void set_visible(const char *name, bool vis);
 	void set_sensitive(const char *name, bool vis);
 	int prompt(const char *msg, const char *choice0,
-	           const char *choice1 = 0, const char *choice2 = 0);
+	           const char *choice1 = nullptr, const char *choice2 = nullptr);
 	int find_palette_color(int r, int g, int b);
 	Exult_Game get_game_type() const {
 		return game_type;
@@ -396,10 +396,10 @@ public:
 // Utilities:
 namespace EStudio {
 int Prompt(const char *msg, const char *choice0,
-           const char *choice1 = 0, const char *choice2 = 0);
+           const char *choice1 = nullptr, const char *choice2 = nullptr);
 void Alert(const char *msg, ...) ATTR_PRINTF(1, 2);
-GtkWidget *Add_menu_item(GtkWidget *menu, const char *label = 0,
-                         GtkSignalFunc func = 0, gpointer func_data = 0, GSList *group = 0);
+GtkWidget *Add_menu_item(GtkWidget *menu, const char *label = nullptr,
+                         GtkSignalFunc func = nullptr, gpointer func_data = nullptr, GSList *group = nullptr);
 GtkWidget *Create_arrow_button(GtkArrowType dir, GtkSignalFunc clicked,
                                gpointer func_data);
 bool Copy_file(const char *src, const char *dest);

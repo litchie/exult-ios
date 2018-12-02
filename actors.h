@@ -154,7 +154,7 @@ public:
 	Actor(const std::string &nm, int shapenum, int num = -1, int uc = -1);
 	virtual ~Actor();
 	// Blocked moving onto tile 't'?
-	int is_blocked(Tile_coord &t, Tile_coord *f = 0, const int move_flags = 0);
+	int is_blocked(Tile_coord &t, Tile_coord *f = nullptr, const int move_flags = 0);
 	Game_object *find_blocking(Tile_coord const &tile, int dir);
 
 	void swap_ammo(Game_object *newammo);
@@ -296,7 +296,7 @@ public:
 	int get_usecode() const {
 		return usecode == -1 ? Game_object::get_usecode() : usecode;
 	}
-	virtual bool set_usecode(int funid, const char *nm = 0) {
+	virtual bool set_usecode(int funid, const char *nm = nullptr) {
 		if (funid < 0) {
 			usecode_assigned = false;
 			usecode_name.clear();
@@ -396,7 +396,7 @@ public:
 	}
 	// Set new schedule.
 	void set_schedule_type(int new_schedule_type,
-	                       Schedule *newsched = 0);
+	                       Schedule *newsched = nullptr);
 	// Change to new schedule at loc
 	virtual void set_schedule_and_loc(int new_schedule_type,
 	                                  Tile_coord const &dest, int delay = -1);
@@ -421,7 +421,7 @@ public:
 	{  }
 	// Update schedule for new 3-hour time.
 	virtual void update_schedule(int hour3, int delay = -1,
-	                             Tile_coord *pos = 0) {
+	                             Tile_coord *pos = nullptr) {
 		ignore_unused_variable_warning(hour3, delay, pos);
 	}
 	// Render.
@@ -447,10 +447,10 @@ public:
 	virtual int figure_hit_points(Game_object *attacker, int weapon_shape = -1,
 	                              int ammo_shape = -1, bool explosion = false);
 	virtual int apply_damage(Game_object *attacker, int str,
-	                         int wpoints, int type, int bias = 0, int *exp = 0);
+	                         int wpoints, int type, int bias = 0, int *exp = nullptr);
 	// Lose HP's and check for death.
-	virtual int reduce_health(int delta, int damage_type, Game_object *attacker = 0,
-	                          int *exp = 0);
+	virtual int reduce_health(int delta, int damage_type, Game_object *attacker = nullptr,
+	                          int *exp = nullptr);
 	void fight_back(Game_object *attacker);
 	bool get_attack_target(Game_object *&obj, Tile_coord &t) {
 		static Tile_coord invalidloc(-1, -1, 0);
@@ -464,12 +464,12 @@ public:
 		attack_weapon = w;
 	}
 	void set_attack_target(Tile_coord const &t, int w) {
-		target_object = 0;
+		target_object = nullptr;
 		target_tile = t;
 		target_tile.fixme();
 		attack_weapon = w;
 	}
-	virtual int get_effective_range(const Weapon_info *winf = 0, int reach = -1);
+	virtual int get_effective_range(const Weapon_info *winf = nullptr, int reach = -1);
 	virtual Game_object *find_weapon_ammo(int weapon, int needed = 1,
 	                                      bool recursive = false);
 	Game_object *find_best_ammo(int family, int needed = 1);
@@ -682,7 +682,7 @@ public:
 		ignore_unused_variable_warning(time);
 	}
 	virtual void get_schedules(Schedule_change *&list, int &cnt) {
-		list = NULL, cnt = 0;
+		list = nullptr, cnt = 0;
 	}
 	virtual int find_schedule_at_time(int hour3) {
 		ignore_unused_variable_warning(hour3);
@@ -777,7 +777,7 @@ public:
 	           int new_sx, int new_sy, int new_frame, int new_lift);
 	// Update schedule for new 3-hour time.
 	virtual void update_schedule(int hour3, int delay = -1,
-	                             Tile_coord *pos = 0);
+	                             Tile_coord *pos = nullptr);
 	virtual int find_schedule_at_time(int hour3);
 	// Render.
 	virtual void paint();

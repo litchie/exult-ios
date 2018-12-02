@@ -117,14 +117,14 @@ using std::vector;
 #if SDL_VERSION_ATLEAST(2, 0, 0) && (defined(WIN32) || (defined(MACOSX) && defined(USE_EXULTSTUDIO)))
 
 static int SDLCALL SDL_putenv(const char *_var) {
-    char *ptr = NULL;
+    char *ptr = nullptr;
     char *var = SDL_strdup(_var);
-    if (var == NULL) {
+    if (var == nullptr) {
         return -1;  /* we don't set errno. */
     }
 
     ptr = SDL_strchr(var, '=');
-    if (ptr == NULL) {
+    if (ptr == nullptr) {
         SDL_free(var);
         return -1;
     }
@@ -136,14 +136,14 @@ static int SDLCALL SDL_putenv(const char *_var) {
 }
 #endif
 
-Configuration *config = 0;
-KeyBinder *keybinder = 0;
-GameManager *gamemanager = 0;
+Configuration *config = nullptr;
+KeyBinder *keybinder = nullptr;
+GameManager *gamemanager = nullptr;
 
 /*
  *  Globals:
  */
-Game_window *gwin = 0;
+Game_window *gwin = nullptr;
 quitting_time_enum quitting_time = QUIT_TIME_NO;
 
 bool intrinsic_trace = false;       // Do we trace Usecode-intrinsics?
@@ -162,7 +162,7 @@ KeyboardButton_gump *gkeybb;
 SDL_Joystick *sdl_joy;
 #endif
 bool g_waiting_for_click = false;
-ShortcutBar_gump *g_shortcutBar = NULL;
+ShortcutBar_gump *g_shortcutBar = nullptr;
 
 #ifdef USECODE_DEBUGGER
 bool    usecode_debugging = false;  // Do we enable the usecode debugger?
@@ -199,7 +199,7 @@ static inline int WrappedConnectionNumber(Display *display) {
 	return ConnectionNumber(display);
 }
 #ifdef USE_EXULTSTUDIO
-static class Xdnd *xdnd = 0;
+static class Xdnd *xdnd = nullptr;
 #endif
 
 #  ifdef __GNUC__
@@ -208,7 +208,7 @@ static class Xdnd *xdnd = 0;
 
 #elif defined(WIN32)
 static HWND hgwin;
-static class Windnd *windnd = 0;
+static class Windnd *windnd = nullptr;
 #endif
 
 
@@ -272,7 +272,7 @@ static int left_down_x = 0, left_down_y = 0;
 #include <signal.h>
 void sigchld_handler(int sig) {
 	ignore_unused_variable_warning(sig);
-	waitpid(-1, 0, WNOHANG);
+	waitpid(-1, nullptr, WNOHANG);
 }
 
 #endif
@@ -512,7 +512,7 @@ PCHAR *CommandLineToArgvA(
 		i++;
 	}
 	_argv[j] = '\0';
-	argv[argc] = NULL;
+	argv[argc] = nullptr;
 
 	(*_argc) = argc;
 	return argv;
@@ -526,7 +526,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	   someday.  DDHELP.EXE starts up the first time DDRAW.DLL is loaded.
 	 */
 	HMODULE hLib = LoadLibrary(TEXT("DDRAW.DLL"));
-	if (hLib != NULL)
+	if (hLib != nullptr)
 		FreeLibrary(hLib);
 
 	int argc;
@@ -747,7 +747,7 @@ static void SetIcon() {
 				ExultIcon::height,
 				32,
 				0, 0, 0, 0);
-	if (iconsurface == NULL)
+	if (iconsurface == nullptr)
 		cout << "Error creating icon surface: " << SDL_GetError() << std::endl;
 	for (int y = 0; y < static_cast<int>(ExultIcon::height); ++y)
 	{
@@ -775,7 +775,7 @@ static void SetIcon() {
 	                           0, 0, 0, 0);
 	SDL_SetPalette(iconsurface, SDL_LOGPAL, iconpal, 0, 256);
 	SDL_SetColorKey(iconsurface, SDL_SRCCOLORKEY, 0);
-	SDL_WM_SetIcon(iconsurface, 0);
+	SDL_WM_SetIcon(iconsurface, nullptr);
 #endif
 
 	SDL_FreeSurface(iconsurface);
@@ -822,7 +822,7 @@ static void Init(
 	std::cout << "There are " << SDL_NumJoysticks() << " joystick(s) available" << std::endl;
 	std::cout << "Default joystick (index 0) is " << SDL_JoystickName(0) << std::endl;
 	sdl_joy = SDL_JoystickOpen(0);
-	if (sdl_joy == NULL)
+	if (sdl_joy == nullptr)
 		std::cout << "Error: could not open joystick" << std::endl;
 	std::cout << "joystick number of axis: " << SDL_JoystickNumAxes(sdl_joy) << ", number of hats: " << SDL_JoystickNumHats(sdl_joy) << ", number of balls: " << SDL_JoystickNumBalls(sdl_joy) << ", number of buttons: " << SDL_JoystickNumButtons(sdl_joy) << std::endl;
 #endif
@@ -893,9 +893,9 @@ static void Init(
 		gwin->set_in_exult_menu(false);
 	}
 
-	SDL_SETEVENTFILTER(0);
+	SDL_SETEVENTFILTER(nullptr);
 	// Show the banner
-	game = 0;
+	game = nullptr;
 
 	do {
 		reset_system_paths();
@@ -904,10 +904,10 @@ static void Init(
 
 		if (game) {
 			delete game;
-			game = 0;
+			game = nullptr;
 		}
 
-		ModManager *basegame = 0;
+		ModManager *basegame = nullptr;
 		if (run_bg) {
 			basegame = gamemanager->get_bg();
 			arg_gamename = CFG_BG_NAME;
@@ -929,7 +929,7 @@ static void Init(
 			arg_gamename = CFG_SIB_NAME;
 			run_sib = false;
 		}
-		BaseGameInfo *newgame = 0;
+		BaseGameInfo *newgame = nullptr;
 		if (basegame || arg_gamename != "default") {
 			if (!basegame)
 				basegame = gamemanager->find_game(arg_gamename);
@@ -942,7 +942,7 @@ static void Init(
 				arg_modname = "default";
 			} else {
 				cerr << "Game '" << arg_gamename << "' not found." << endl;
-				newgame = 0;
+				newgame = nullptr;
 			}
 			// Prevent game from being reloaded in case the player
 			// tries to return to the main menu:
@@ -994,7 +994,7 @@ static void Init(
 
 	// Should not be needed anymore:
 	delete gamemanager;
-	gamemanager = 0;
+	gamemanager = nullptr;
 
 	Audio *audio = Audio::get_ptr();
 	MyMidiPlayer *midi = audio->get_midi();
@@ -1031,7 +1031,7 @@ static void Init(
 	hgwin = info.window;
 #endif
 	Server_init();          // Initialize server (for map-editor).
-	OleInitialize(NULL);
+	OleInitialize(nullptr);
 	windnd = new Windnd(hgwin,
 	                    Move_dragged_shape, Move_dragged_combo,
 	                    Drop_dragged_shape, Drop_dragged_chunk,
@@ -1108,7 +1108,7 @@ static void Paint_with_shape(
 		cheat.set_edit_shape(shnum, nextframe);
 	} else
 		frnum = cheat.get_edit_frame();
-	Drop_dragged_shape(shnum, frnum, event.button.x, event.button.y, 0);
+	Drop_dragged_shape(shnum, frnum, event.button.x, event.button.y, nullptr);
 }
 
 /*
@@ -1131,7 +1131,7 @@ static void Paint_with_chunk(
 	lastcx = cx;
 	lastcy = cy;
 	int chnum = cheat.get_edit_chunknum();
-	Drop_dragged_chunk(chnum, event.button.x, event.button.y, 0);
+	Drop_dragged_chunk(chnum, event.button.x, event.button.y, nullptr);
 }
 
 /*
@@ -1173,7 +1173,7 @@ static void Select_for_combo(
     bool dragging,          // Dragging to select.
     bool toggle
 ) {
-	static Game_object *last_obj = 0;
+	static Game_object *last_obj = nullptr;
 	int x, y;
 	gwin->get_win()->screen_to_game(event.button.x, event.button.y, false, x, y);
 	//int tx = (gwin->get_scrolltx() + x/c_tilesize)%c_num_tiles;
@@ -1196,7 +1196,7 @@ static void Select_for_combo(
 	}
 	if (Object_out(client_socket,
 	               toggle ? Exult_server::combo_toggle : Exult_server::combo_pick,
-	               0, t.tx, t.ty, t.tz, id.get_shapenum(),
+	               nullptr, t.tx, t.ty, t.tz, id.get_shapenum(),
 	               id.get_framenum(), 0, name) == -1)
 		cout << "Error sending shape to ExultStudio" << endl;
 }
@@ -1365,7 +1365,7 @@ static void Handle_event(
 
 	// We want this
 	Gump_manager *gump_man = gwin->get_gump_man();
-	Gump *gump = 0;
+	Gump *gump = nullptr;
 
 	// For detecting double-clicks.
 	static uint32 last_b1_click = 0, last_b3_click = 0;
@@ -1451,7 +1451,7 @@ static void Handle_event(
 		// Middle click, use targetting crosshairs.
 		if (gwin->get_mouse3rd())
 			if (event.button.button == 2)
-				ActionTarget(0);
+				ActionTarget(nullptr);
 
 		// Right click. Only walk if avatar can act.
 		if (event.button.button == 3) {
@@ -1459,7 +1459,7 @@ static void Handle_event(
 			        gump_man->can_right_click_close() &&
 			        gump_man->gump_mode() &&
 			        gump_man->find_gump(x, y, false)) {
-				gump = 0;
+				gump = nullptr;
 				right_on_gump = true;
 			} else if (avatar_can_act && gwin->main_actor_can_act_charmed()) {
 				// Try removing old queue entry.
@@ -1475,13 +1475,13 @@ static void Handle_event(
 			SDLMod mod = SDL_GetModState();
 			if (event.button.button == 4)
 				if (mod & KMOD_ALT)
-					ActionScrollLeft(0);
+					ActionScrollLeft(nullptr);
 				else
-					ActionScrollUp(0);
+					ActionScrollUp(nullptr);
 			else if (mod & KMOD_ALT)
-				ActionScrollRight(0);
+				ActionScrollRight(nullptr);
 			else
-				ActionScrollDown(0);
+				ActionScrollDown(nullptr);
 		}
 		break;
 	}
@@ -1500,7 +1500,7 @@ static void Handle_event(
 					Rectangle dirty = gump->get_dirty();
 					gwin->add_dirty(dirty);
 					gump_man->close_gump(gump);
-					gump = 0;
+					gump = nullptr;
 					right_on_gump = false;
 				}
 			} else if (avatar_can_act) {

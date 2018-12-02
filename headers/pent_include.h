@@ -79,8 +79,8 @@
 // Two very useful macros that one should use instead of pure delete; they
 // will additionally set the old object pointer to 0, thus helping prevent
 // double deletes (note that "delete 0" is a no-op).
-#define FORGET_OBJECT(x) do { delete x; x = 0; } while(0)
-#define FORGET_ARRAY(x) do { delete [] x; x = 0; } while(0)
+#define FORGET_OBJECT(x) do { delete x; x = nullptr; } while(0)
+#define FORGET_ARRAY(x) do { delete [] x; x = nullptr; } while(0)
 
 
 //
@@ -135,7 +135,7 @@ public:
 		std::ifstream *f = new std::ifstream();
 		if (!U7open(*f, vfn.c_str(), is_text)) {
 			delete f;
-			return 0;
+			return nullptr;
 		}
 		return new IFileDataSource(f);
 	}
@@ -145,7 +145,7 @@ public:
 		std::ofstream *f = new std::ofstream();
 		if (!U7open(*f, vfn.c_str(), is_text)) {
 			delete f;
-			return 0;
+			return nullptr;
 		}
 		return new OFileDataSource(f);
 	}

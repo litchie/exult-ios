@@ -127,7 +127,7 @@ void create_scroller_menu(MenuList *menu, Font *fonton, Font *font, int first, i
 }
 
 ExultMenu::ExultMenu(Game_window *gw)
-	: font(0), fonton(0), navfont(0), navfonton(0) {
+	: font(nullptr), fonton(nullptr), navfont(nullptr), navfonton(nullptr) {
 	gwin = gw;
 	ibuf = gwin->get_win()->get_ib8();
 	const char *fname = BUNDLE_CHECK(BUNDLE_EXULT_FLX, EXULT_FLX);
@@ -179,9 +179,9 @@ void ExultMenu::setup() {
 	Gamemenu_gump::do_exult_menu();
 	gwin->set_in_exult_menu(false);
 
-	Mouse::mouse = 0;
+	Mouse::mouse = nullptr;
 	delete exult_menu_game;
-	game = exult_menu_game = 0;
+	game = exult_menu_game = nullptr;
 
 	gwin->clear_screen(true);
 	gpal->load(BUNDLE_CHECK(BUNDLE_EXULT_FLX, EXULT_FLX), EXULT_FLX_EXULT0_PAL);
@@ -340,14 +340,14 @@ MenuList *ExultMenu::create_mods_menu(ModManager *selgame, int first) {
 		ModInfo &exultmod = mod_list[i];
 		MenuGameEntry *entry = new MenuGameEntry(fonton, font,
 		        exultmod.get_menu_string().c_str(),
-		        0, menux, ypos);
+		        nullptr, menux, ypos);
 		entry->set_id(i);
 		entry->set_enabled(exultmod.is_mod_compatible());
 		menu->add_entry(entry);
 
 		if (!exultmod.is_mod_compatible()) {
 			MenuGameEntry *incentry = new MenuGameEntry(navfonton, navfont, "WRONG EXULT VERSION",
-			        0, menux, ypos + entry->get_height() + 4);
+			        nullptr, menux, ypos + entry->get_height() + 4);
 			// Accept no clicks:
 			incentry->set_enabled(false);
 			menu->add_entry(incentry);
@@ -389,7 +389,7 @@ BaseGameInfo *ExultMenu::show_mods_menu(ModManager *selgame) {
 	    last_page = num_choices - num_choices % pagesize;
 	MenuList *menu = create_mods_menu(selgame, first_mod);
 	menu->set_selection(0);
-	BaseGameInfo *sel_mod = 0;
+	BaseGameInfo *sel_mod = nullptr;
 
 	Shape_frame *exultlogo = exult_flx.get_shape(EXULT_FLX_EXULT_LOGO_SHP, 1);
 	assert(exultlogo != nullptr);
@@ -412,7 +412,7 @@ BaseGameInfo *ExultMenu::show_mods_menu(ModManager *selgame) {
 			wait_delay(c_fade_out_time / 2);
 			gwin->clear_screen(true);
 			delete menu;
-			return 0;
+			return nullptr;
 		default:
 			if (choice >= 0) {
 				// Load the game:
@@ -425,7 +425,7 @@ BaseGameInfo *ExultMenu::show_mods_menu(ModManager *selgame) {
 				gwin->clear_screen(true);
 			}
 		}
-	} while (sel_mod == 0);
+	} while (sel_mod == nullptr);
 	delete menu;
 
 	gwin->clear_screen(true);
@@ -489,7 +489,7 @@ BaseGameInfo *ExultMenu::run() {
 	gwin->clear_screen(true);
 
 	MenuList *menu = create_main_menu(first_game);;
-	BaseGameInfo *sel_game = 0;
+	BaseGameInfo *sel_game = nullptr;
 	menu->set_selection(0);
 
 	do {
@@ -566,7 +566,7 @@ BaseGameInfo *ExultMenu::run() {
 			}
 			break;
 		}
-	} while (sel_game == 0);
+	} while (sel_game == nullptr);
 	delete menu;
 	gwin->clear_screen(true);
 	Audio::get_ptr()->stop_music();

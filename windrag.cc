@@ -71,10 +71,10 @@ Windnd::~Windnd() {
 
 STDMETHODIMP
 Windnd::QueryInterface(REFIID iid, void **ppvObject) {
-	*ppvObject = NULL;
+	*ppvObject = nullptr;
 	if (IID_IUnknown == iid || IID_IDropTarget == iid)
 		*ppvObject = this;
-	if (NULL == *ppvObject)
+	if (nullptr == *ppvObject)
 		return E_NOINTERFACE;
 	static_cast<LPUNKNOWN>(*ppvObject)->AddRef();
 	return NOERROR;
@@ -109,7 +109,7 @@ Windnd::DragEnter(IDataObject *pDataObject,
 
 	FORMATETC fetc;
 	fetc.cfFormat = CF_EXULT;
-	fetc.ptd = NULL;
+	fetc.ptd = nullptr;
 	fetc.dwAspect = DVASPECT_CONTENT;
 	fetc.lindex = -1;
 	fetc.tymed = TYMED_HGLOBAL;
@@ -218,7 +218,7 @@ Windnd::Drop(IDataObject *pDataObject,
 	// retrieve the dragged data
 	FORMATETC fetc;
 	fetc.cfFormat = CF_EXULT;
-	fetc.ptd = NULL;
+	fetc.ptd = nullptr;
 	fetc.dwAspect = DVASPECT_CONTENT;
 	fetc.lindex = -1;
 	fetc.tymed = TYMED_HGLOBAL;
@@ -265,7 +265,7 @@ Windnd::Drop(IDataObject *pDataObject,
 bool Windnd::is_valid(IDataObject *pDataObject) {
 	FORMATETC fetc;
 	fetc.cfFormat = CF_EXULT;
-	fetc.ptd = NULL;
+	fetc.ptd = nullptr;
 	fetc.dwAspect = DVASPECT_CONTENT;
 	fetc.lindex = -1;
 	fetc.tymed = TYMED_HGLOBAL;
@@ -293,14 +293,14 @@ Windropsource::Windropsource(HBITMAP pdrag_bitmap, int x0, int y0)
 	int shw = bsize.cx, shh = bsize.cy;
 	drag_shape = CreateWindowEx(WS_EX_TRANSPARENT,
 	                            "STATIC",
-	                            NULL,
+	                            nullptr,
 	                            WS_POPUP, // | SS_OWNERDRAW, /*SS_OWNERDRAW,*/
 	                            x0, y0,
 	                            shw, shh,
 	                            GetForegroundWindow(), // TODO: owner window
-	                            NULL,
+	                            nullptr,
 	                            (HINSTANCE)GetWindowLong(GetForegroundWindow(), GWL_HINSTANCE),
-	                            NULL);
+	                            nullptr);
 
 	if (FAILED(drag_shape)) {
 		g_warning("Create Window FAILED !");
@@ -316,10 +316,10 @@ Windropsource::~Windropsource() {
 
 STDMETHODIMP
 Windropsource::QueryInterface(REFIID iid, void **ppvObject) {
-	*ppvObject = NULL;
+	*ppvObject = nullptr;
 	if (IID_IUnknown == iid || IID_IDropSource == iid)
 		*ppvObject = this;
-	if (NULL == *ppvObject)
+	if (nullptr == *ppvObject)
 		return E_NOINTERFACE;
 	static_cast<LPUNKNOWN>(*ppvObject)->AddRef();
 	return NOERROR;
@@ -386,10 +386,10 @@ Winstudioobj::~Winstudioobj() {
 
 STDMETHODIMP
 Winstudioobj::QueryInterface(REFIID iid, void **ppvObject) {
-	*ppvObject = NULL;
+	*ppvObject = nullptr;
 	if (IID_IUnknown == iid || IID_IDataObject == iid)
 		*ppvObject = this;
-	if (NULL == *ppvObject)
+	if (nullptr == *ppvObject)
 		return E_NOINTERFACE;
 	static_cast<LPUNKNOWN>(*ppvObject)->AddRef();
 	return NOERROR;
@@ -419,8 +419,8 @@ Winstudioobj::GetData(
 	unsigned char *ldata;
 
 	pmedium->tymed = 0;
-	pmedium->pUnkForRelease = NULL;
-	pmedium->hGlobal = NULL;
+	pmedium->pUnkForRelease = nullptr;
+	pmedium->hGlobal = nullptr;
 
 	// This method is called by the drag-drop target to obtain the data
 	// that is being dragged.
@@ -473,7 +473,7 @@ Winstudioobj::GetCanonicalFormatEtc(
     FORMATETC *pFormatetcOut
 ) {
 	ignore_unused_variable_warning(pFormatetcIn);
-	pFormatetcOut->ptd = NULL;
+	pFormatetcOut->ptd = nullptr;
 	return E_NOTIMPL;
 }
 
@@ -506,11 +506,11 @@ Winstudioobj::EnumFormatEtc(
 		fmtetc.cfFormat = CF_EXULT;
 		fmtetc.dwAspect = DVASPECT_CONTENT;
 		fmtetc.tymed = TYMED_HGLOBAL;
-		fmtetc.ptd = NULL;
+		fmtetc.ptd = nullptr;
 		fmtetc.lindex = -1;
 
 		*ppenumFormatetc = OleStdEnumFmtEtc_Create(1, &fmtetc);
-		if (*ppenumFormatetc == NULL)
+		if (*ppenumFormatetc == nullptr)
 		sc = E_OUTOFMEMORY;*/
 		sc = E_NOTIMPL;
 

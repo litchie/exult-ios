@@ -224,13 +224,13 @@ void ExultStudio::open_cont_window(
 		}
 	}
 	// Init. cont address to null.
-	gtk_object_set_user_data(GTK_OBJECT(contwin), 0);
+	gtk_object_set_user_data(GTK_OBJECT(contwin), nullptr);
 	if (!init_cont_window(data, datalen))
 		return;
 	gtk_widget_show(contwin);
 #ifdef WIN32
 	if (first_time || !contdnd)
-		Windnd::CreateStudioDropDest(contdnd, conthwnd, Drop_dragged_shape, NULL, NULL, (void *) this);
+		Windnd::CreateStudioDropDest(contdnd, conthwnd, Drop_dragged_shape, nullptr, nullptr, (void *) this);
 #endif
 }
 

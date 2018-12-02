@@ -421,7 +421,7 @@ static void Handle_client_message(
 			*wptr++ = npc->is_unused();
 			std::string nm = npc->get_npc_name();
 			strcpy(reinterpret_cast<char *>(wptr), nm.c_str());
-			// Point past ending NULL.
+			// Point past ending nullptr.
 			wptr += strlen(reinterpret_cast<char *>(wptr)) + 1;
 		} else
 			Write2(wptr, static_cast<unsigned short>(-1));
@@ -532,14 +532,14 @@ void Server_delay(
 	if (client_socket >= 0)
 		FD_SET(client_socket, &rfds);
 	// Wait for timeout or event.
-	if (select(highest_fd, &rfds, 0, 0, &timer) > 0) {
+	if (select(highest_fd, &rfds, nullptr, nullptr, &timer) > 0) {
 		// Something's come in.
 		if (listen_socket >= 0 && FD_ISSET(listen_socket, &rfds)) {
 			// New client connection.
 			// For now, just one at a time.
 			if (client_socket >= 0)
 				close(client_socket);
-			client_socket = accept(listen_socket, 0, 0);
+			client_socket = accept(listen_socket, nullptr, nullptr);
 			cout << "Accept returned client_socket = " <<
 			     client_socket << endl;
 			// Non-blocking.

@@ -42,16 +42,16 @@
 
 using std::string;
 
-VideoOptions_gump *VideoOptions_gump::video_options_gump = 0;
+VideoOptions_gump *VideoOptions_gump::video_options_gump = nullptr;
 
 static const int rowy[] = { 5, 17, 29, 41, 53, 65, 77, 89, 101, 113, 130, 139, 156 };
 static const int colx[] = { 35, 50, 115, 127, 130, 148 };
 static const char *applytext = "APPLY";
 
-uint32 *VideoOptions_gump::resolutions = 0;
+uint32 *VideoOptions_gump::resolutions = nullptr;
 int VideoOptions_gump::num_resolutions = 0;
 
-uint32 *VideoOptions_gump::win_resolutions = 0;
+uint32 *VideoOptions_gump::win_resolutions = nullptr;
 int VideoOptions_gump::num_win_resolutions = 0;
 
 uint32 VideoOptions_gump::game_resolutions[3] = {0, 0, 0};
@@ -280,7 +280,7 @@ void VideoOptions_gump::load_settings(bool Fullscreen) {
 	setup_video(fullscreen, MENU_INIT);
 	int w = resolution >> 16;
 	int h = resolution & 0xFFFF;
-	if (resolutions == 0) {
+	if (resolutions == nullptr) {
 		fullscreen = gwin->get_win()->is_fullscreen() ? 1 : 0;
 		std::map<uint32, Image_window::Resolution> Resolutions = gwin->get_win()->Resolutions;
 		if (fullscreen) Resolutions[(w << 16) | h] = Image_window::Resolution();
@@ -337,11 +337,11 @@ void VideoOptions_gump::load_settings(bool Fullscreen) {
 	o_game_resolution = game_resolution;
 }
 
-VideoOptions_gump::VideoOptions_gump() : Modal_gump(0, EXULT_FLX_VIDEOOPTIONS_SHP, SF_EXULT_FLX) {
+VideoOptions_gump::VideoOptions_gump() : Modal_gump(nullptr, EXULT_FLX_VIDEOOPTIONS_SHP, SF_EXULT_FLX) {
 	video_options_gump = this;
 	set_object_area(Rectangle(0, 0, 0, 0), 8, 170);
 
-	for (int i = id_first; i < id_count; i++)buttons[i] = 0;
+	for (int i = id_first; i < id_count; i++)buttons[i] = nullptr;
 	fullscreen = gwin->get_win()->is_fullscreen();
 	std::string *enabledtext = new std::string[2];
 	enabledtext[0] = "Disabled";
@@ -369,7 +369,7 @@ VideoOptions_gump::~VideoOptions_gump() {
 	delete [] resolutions;
 	delete [] win_resolutions;
 	num_resolutions = num_win_resolutions = num_game_resolutions = 0;
-	resolutions = win_resolutions = 0;
+	resolutions = win_resolutions = nullptr;
 }
 
 void VideoOptions_gump::save_settings() {
@@ -464,9 +464,9 @@ bool VideoOptions_gump::mouse_down(int mx, int my, int button) {
 	}
 
 	if (pushed && !pushed->push(button))            // On a button?
-		pushed = 0;
+		pushed = nullptr;
 
-	return button == 1 || pushed != 0;
+	return button == 1 || pushed != nullptr;
 }
 
 bool VideoOptions_gump::mouse_up(int mx, int my, int button) {
@@ -479,6 +479,6 @@ bool VideoOptions_gump::mouse_up(int mx, int my, int button) {
 	pushed->unpush(button);
 	if (pushed->on_button(mx, my))
 		res = pushed->activate(button);
-	pushed = 0;
+	pushed = nullptr;
 	return res;
 }

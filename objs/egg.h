@@ -68,7 +68,7 @@ protected:
 	                              unsigned int ty, unsigned int tz,
 	                              unsigned short itype,
 	                              unsigned char prob, short data1, short data2, short data3,
-	                              const char *str1 = 0);
+	                              const char *str1 = nullptr);
 public:
 	friend class Button_egg;
 	enum Egg_types {        // Types of eggs:
@@ -164,7 +164,7 @@ public:
 	virtual void hatch(Game_object *obj, bool must = false);
 	void print_debug();
 	static void set_weather(int weather, int len = 15,
-	                        Game_object *egg = 0);
+	                        Game_object *egg = nullptr);
 	// Move to new abs. location.
 	virtual void move(int newtx, int newty, int newlift, int newmap = -1);
 	// Remove/delete this object.

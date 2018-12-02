@@ -47,7 +47,7 @@ GammaTable<uint8> Image_window8::GammaGreen(256);
 
 Image_window8::Image_window8(unsigned int w, unsigned int h, unsigned int gwidth, unsigned int gheight,
                              int scl, bool fs, int sclr, Image_window::FillMode fillmode, unsigned int fillsclr)
-	: Image_window(new Image_buffer8(0, 0, static_cast<Image_buffer8 *>(0)), w, h, gwidth, gheight,
+	: Image_window(new Image_buffer8(0, 0, nullptr), w, h, gwidth, gheight,
 	               scl, fs, sclr, fillmode, fillsclr) {
 	ib8 = static_cast<Image_buffer8 *>(ibuf);
 }

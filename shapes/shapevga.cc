@@ -60,7 +60,7 @@ using namespace std;
 
 // For convienience
 #define patch_exists(p) (have_patch_path && U7exists(p))
-#define patch_name(p) (patch_exists(p) ? (p) : 0)
+#define patch_name(p) (patch_exists(p) ? (p) : nullptr)
 
 /*
  *  Open, but don't quit if editing.  We first try the patch name if it's
@@ -499,7 +499,7 @@ void Shapes_vga_file::read_info(
 		for (size_t i = 0; i < cnt; i++)
 			// A zero offset means there is no record
 			if (offsets[i] == 0)
-				info[i].weapon_offsets = 0;
+				info[i].weapon_offsets = nullptr;
 			else {
 				wihh.seekg(offsets[i]);
 				// There are two bytes per frame: 64 total

@@ -109,7 +109,7 @@ using std::unique_ptr;
 using std::vector;
 
 // THE game window:
-Game_window *Game_window::game_window = 0;
+Game_window *Game_window::game_window = nullptr;
 
 /*
  *  Provide chirping birds.
@@ -284,17 +284,17 @@ void Background_noise::handle_event(
 Game_window::Game_window(
     int width, int height, bool fullscreen, int gwidth, int gheight, int scale, int scaler, Image_window::FillMode fillmode, unsigned int fillsclr      // Window dimensions.
 ) :
-	dragging(0), effects(new Effects_manager(this)), map(new Game_map(0)),
+	dragging(nullptr), effects(new Effects_manager(this)), map(new Game_map(0)),
 	render(new Game_render), gump_man(new Gump_manager),
-	party_man(new Party_manager), win(0),
-	npc_prox(new Npc_proximity_handler(this)), pal(0),
+	party_man(new Party_manager), win(nullptr),
+	npc_prox(new Npc_proximity_handler(this)), pal(nullptr),
 	tqueue(new Time_queue()), background_noise(new Background_noise(this)),
-	usecode(0), combat(false), focus(true), ice_dungeon(false),
+	usecode(nullptr), combat(false), focus(true), ice_dungeon(false),
 	painted(false), ambient_light(false),
 	skip_above_actor(31), in_dungeon(0), num_npcs1(0),
 	std_delay(c_std_delay), time_stopped(0), special_light(0),
 	theft_warnings(0), theft_cx(255), theft_cy(255),
-	moving_barge(0), main_actor(0), camera_actor(0), npcs(0), bodies(0),
+	moving_barge(nullptr), main_actor(nullptr), camera_actor(nullptr), npcs(0), bodies(0),
 	removed(new Deleted_objects()), scrolltx(0), scrollty(0), dirty(0, 0, 0, 0),
 	mouse3rd(false), fastmouse(false), double_click_closes_gumps(false),
 	text_bg(false), step_tile_delta(8), allow_right_pathfind(2),
@@ -578,7 +578,7 @@ Game_map *Game_window::get_map(
 ) {
 	if (num >= static_cast<int>(maps.size()))
 		maps.resize(num + 1);
-	if (maps[num] == 0) {
+	if (maps[num] == nullptr) {
 		Game_map *newmap = new Game_map(num);
 		maps[num] = newmap;
 		maps[num]->init();
@@ -637,7 +637,7 @@ bool Game_window::is_moving(
  */
 
 bool Game_window::main_actor_dont_move() {
-	return !cheat.in_map_editor() && main_actor != 0 && // Not if map-editing.
+	return !cheat.in_map_editor() && main_actor != nullptr && // Not if map-editing.
 	       ((main_actor->get_flag(Obj_flags::dont_move) != 0) ||
 	        (main_actor->get_flag(Obj_flags::dont_render) != 0));
 }
@@ -731,7 +731,7 @@ void Game_window::toggle_combat(
 		main_actor->set_schedule_type(newsched);
 	if (combat) {       // Get rid of flee modes.
 		main_actor->ready_best_weapon();
-		set_moving_barge(0);    // And get out of barge mode.
+		set_moving_barge(nullptr);    // And get out of barge mode.
 		Actor *all[9];
 		int cnt = get_party(all, 1);
 		for (int i = 0; i < cnt; i++) {
@@ -744,7 +744,7 @@ void Game_window::toggle_combat(
 			//  in case of Usecode bug.
 			const Game_object *targ = act->get_target();
 			if (targ && targ->get_flag(Obj_flags::in_party))
-				act->set_target(0);
+				act->set_target(nullptr);
 		}
 	} else              // Ending combat.
 		Combat::resume();   // Make sure not still paused.
@@ -886,14 +886,14 @@ void Game_window::clear_world(
 	set_map(0);         // Back to main map.
 	Monster_actor::delete_all();    // To be safe, del. any still around.
 	Notebook_gump::clear();
-	main_actor = 0;
-	camera_actor = 0;
+	main_actor = nullptr;
+	camera_actor = nullptr;
 	num_npcs1 = 0;
 	theft_cx = theft_cy = -1;
 	combat = 0;
 	npcs.resize(0);         // NPC's already deleted above.
 	bodies.resize(0);
-	moving_barge = 0;       // Get out of barge mode.
+	moving_barge = nullptr;       // Get out of barge mode.
 	special_light = 0;      // Clear out light spells.
 	ambient_light = false;  // And ambient lighting.
 	effects->remove_all_effects(false);
@@ -916,7 +916,7 @@ bool Game_window::locate_shape(
 ) {
 	// Get (first) selected object.
 	const std::vector<Game_object *> &sel = cheat.get_selected();
-	Game_object *start = !sel.empty() ? sel[0] : 0;
+	Game_object *start = !sel.empty() ? sel[0] : nullptr;
 	char msg[80];
 	snprintf(msg, sizeof(msg), "Searching for shape %d", shapenum);
 	effects->center_text(msg);
@@ -996,7 +996,7 @@ void Game_window::set_scrolls(
 	if (!old_active_barge && moving_barge) {
 		// Do it right.
 		Barge_object *b = moving_barge;
-		moving_barge = 0;
+		moving_barge = nullptr;
 		set_moving_barge(b);
 	}
 	// Set where to skip rendering.
@@ -1118,7 +1118,7 @@ Rectangle Game_window::get_shape_rect(const Game_object *obj) const {
 	if (!s) {
 		// This is probably fatal.
 #ifdef DEBUG
-		std::cerr << "DEATH! get_shape() returned a NULL pointer: " << __FILE__ << ":" << __LINE__ << std::endl;
+		std::cerr << "DEATH! get_shape() returned a nullptr pointer: " << __FILE__ << ":" << __LINE__ << std::endl;
 		std::cerr << "Betcha it's a little doggie." << std::endl;
 #endif
 		return Rectangle(0, 0, 0, 0);
@@ -1590,7 +1590,7 @@ void Game_window::view_up(
 
 Gump *Game_window::get_dragging_gump(
 ) {
-	return dragging ? dragging->gump : 0;
+	return dragging ? dragging->gump : nullptr;
 }
 
 /*
@@ -1624,7 +1624,7 @@ void Game_window::start_actor_alt(
 	else if (blocked[dir] && !blocked[(dir + 7) % 8])
 		dir = (dir + 7) % 8;
 	else if (blocked[dir]) {
-		Game_object *block = main_actor->is_moving() ? 0
+		Game_object *block = main_actor->is_moving() ? nullptr
 		                     : main_actor->find_blocking(start.get_neighbor(dir), dir);
 		// We already know the blocking object isn't the avatar, so don't
 		// double check it here.
@@ -1811,9 +1811,9 @@ void Game_window::teleport_party(
     bool no_status_check
 ) {
 	Tile_coord oldpos = main_actor->get_tile();
-	main_actor->set_action(0);  // Definitely need this, or you may
+	main_actor->set_action(nullptr);  // Definitely need this, or you may
 	//   step back to where you came from.
-	moving_barge = 0;       // Calling 'done()' could be risky...
+	moving_barge = nullptr;       // Calling 'done()' could be risky...
 	int i, cnt = party_man->get_count();
 	if (newmap != -1)
 		set_map(newmap);
@@ -1830,7 +1830,7 @@ void Game_window::teleport_party(
 		if (person && !person->is_dead() &&
 		        person->get_schedule_type() != Schedule::wait
 		        && (person->can_act() || no_status_check)) {
-			person->set_action(0);
+			person->set_action(nullptr);
 			Tile_coord t1 = Map_chunk::find_spot(t, 8,
 			                                     person->get_shapenum(), person->get_framenum(),
 			                                     1);
@@ -1928,7 +1928,7 @@ Game_object *Game_window::find_object(
 	int stop_cy = (2 + (scrollty +
 	                    (y + 4 * not_above) / c_tilesize) / c_tiles_per_chunk) % c_num_chunks;
 
-	Game_object *best = 0;      // Find 'best' one.
+	Game_object *best = nullptr;      // Find 'best' one.
 	bool trans = true;      // Try to avoid 'transparent' objs.
 	// Go through them.
 	for (int cy = start_cy; cy != stop_cy; cy = INCR_CHUNK(cy))
@@ -1938,7 +1938,7 @@ Game_object *Game_window::find_object(
 				continue;
 			Object_iterator next(olist->get_objects());
 			Game_object *obj;
-			while ((obj = next.get_next()) != 0) {
+			while ((obj = next.get_next()) != nullptr) {
 				if (obj->get_lift() >= not_above ||
 				        !get_shape_rect(obj).has_world_point(x, y) ||
 				        !obj->is_findable())
@@ -2034,7 +2034,7 @@ void Game_window::show_items(
 		Game_window::get_instance()->get_gump_man()->do_modal_gump(itemgump, Mouse::hand);
 		itemgump->postCloseActions();
 		delete itemgump;
-		obj = NULL;
+		obj = nullptr;
 	}
 #endif
 	// Map-editing?
@@ -2052,7 +2052,7 @@ void Game_window::show_items(
 		cheat.clear_selected();
 
 	// Do we have an NPC?
-	Actor *npc = obj ? obj->as_actor() : 0;
+	Actor *npc = obj ? obj->as_actor() : nullptr;
 	if (npc && cheat.number_npcs() &&
 	        (npc->get_npc_num() > 0 || npc == main_actor)) {
 		char str[64];
@@ -2139,7 +2139,7 @@ void Game_window::show_items(
 			Object_iterator it(chunk->get_objects());
 			Game_object *each;
 			cout << "Chunk Contents: " << endl;
-			while ((each = it.get_next()) != 0)
+			while ((each = it.get_next()) != nullptr)
 				cout << "    " << each->get_name() << ":" << each->get_shapenum() << ":" << each->get_framenum() << endl;
 		}
 #endif
@@ -2177,7 +2177,7 @@ void Game_window::paused_combat_select(
 	if (gump)
 		return;         // Ignore if clicked on gump.
 	Game_object *obj = find_object(x, y);
-	Actor *npc = obj ? obj->as_actor() : 0;
+	Actor *npc = obj ? obj->as_actor() : nullptr;
 	if (!npc || !npc->is_in_party() ||
 	        npc->get_flag(Obj_flags::asleep) || npc->is_dead() ||
 	        npc->get_flag(Obj_flags::paralyzed) ||
@@ -2190,7 +2190,7 @@ void Game_window::paused_combat_select(
 	paint_dirty();
 	show();
 	// Pick a spot.
-	if (!Get_click(x, y, Mouse::greenselect, 0, true))
+	if (!Get_click(x, y, Mouse::greenselect, nullptr, true))
 		return;
 	obj = find_object(x, y);    // Find it.
 	if (!obj) {         // Nothing?  Walk there.
@@ -2203,7 +2203,7 @@ void Game_window::paused_combat_select(
 		if (!npc->walk_path_to_tile(dest, std_delay, 0, 1))
 			Mouse::mouse->flash_shape(Mouse::blocked);
 		else            // Make sure he's in combat mode.
-			npc->set_target(0, true);
+			npc->set_target(nullptr, true);
 		return;
 	}
 	Actor *target = obj->as_actor();
@@ -2295,7 +2295,7 @@ void Game_window::double_clicked(
 	if (!Usecode_script::get_count())
 		removed->flush();   // Flush removed objects.
 	// Look for obj. in open gump.
-	Game_object *obj = 0;
+	Game_object *obj = nullptr;
 	bool gump = gump_man->double_clicked(x, y, obj);
 	bool avatar_can_act = main_actor_can_act();
 
@@ -2304,7 +2304,7 @@ void Game_window::double_clicked(
 		obj = find_object(x, y);
 		if (!avatar_can_act && obj && obj->as_actor()
 		        && obj->as_actor() == main_actor->as_actor()) {
-			ActionFileGump(0);
+			ActionFileGump(nullptr);
 			return;
 		}
 		// Check path, except if an NPC, sign, or if editing.
@@ -2395,7 +2395,7 @@ void Game_window::schedule_npcs(
 		// Don't want companions leaving.
 		if (npc->get_schedule_type() != Schedule::wait &&
 		        (npc->get_schedule_type() != Schedule::combat ||
-		         npc->get_target() == 0))
+		         npc->get_target() == nullptr))
 			npc->update_schedule(hour / 3, hour % 3 == 0 ? -1 : 0);
 	}
 
@@ -2445,7 +2445,7 @@ int Game_window::get_guard_shape(
 /*
  *  Find a witness to the Avatar's thievery.
  *
- *  Output: ->witness, or NULL.
+ *  Output: ->witness, or nullptr.
  *      closest_npc = closest one that's nearby.
  */
 
@@ -2455,9 +2455,9 @@ Actor *Game_window::find_witness(
 ) {
 	Actor_vector npcs;          // See if someone is nearby.
 	main_actor->find_nearby_actors(npcs, c_any_shapenum, 12, 0x28);
-	closest_npc = 0;        // Look for closest NPC.
+	closest_npc = nullptr;        // Look for closest NPC.
 	int closest_dist = 5000;
-	Actor *witness = 0;     // And closest facing us.
+	Actor *witness = nullptr;     // And closest facing us.
 	int closest_witness_dist = 5000;
 	int gshape = get_guard_shape();
 	for (Actor_vector::const_iterator it = npcs.begin();
@@ -2553,7 +2553,7 @@ void Game_window::theft(
  */
 
 void Game_window::call_guards(
-    Actor *witness,         // ->witness, or 0 to find one.
+    Actor *witness,         // ->witness, or nullptr to find one.
     bool theft              // called from Game_window::theft
 ) {
 	Actor *closest;
@@ -2561,7 +2561,7 @@ void Game_window::call_guards(
 		return;
 	int gshape = get_guard_shape(),
 	    align = witness ? witness->get_effective_alignment() : Actor::neutral;
-	if (witness || (witness = find_witness(closest, align)) != 0) {
+	if (witness || (witness = find_witness(closest, align)) != nullptr) {
 		if (witness->is_goblin()) {
 			if (gshape < 0)
 				witness->say(goblin_need_help);
@@ -2906,7 +2906,7 @@ void Game_window::emulate_cache(Map_chunk *olist, Map_chunk *nlist) {
 			if (!list) continue;
 			Object_iterator it(list->get_objects());
 			Game_object *each;
-			while ((each = it.get_next()) != 0) {
+			while ((each = it.get_next()) != nullptr) {
 				if (each->is_egg())
 					each->as_egg()->reset();
 				else if (each->get_flag(Obj_flags::is_temporary))
@@ -3081,6 +3081,6 @@ void Game_window::set_shortcutbar(uint8 s) {
 		g_shortcutBar = new ShortcutBar_gump(0,0);
 	} else {
 		gump_man->close_gump(g_shortcutBar);
-		g_shortcutBar = NULL;
+		g_shortcutBar = nullptr;
 	}
 }

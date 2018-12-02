@@ -262,7 +262,7 @@ protected:
 	// In this case, all frames are pre-
 	//   loaded.
 public:
-	explicit Vga_file(const char *nm, int u7drag = -1, const char *nm2 = 0);
+	explicit Vga_file(const char *nm, int u7drag = -1, const char *nm2 = nullptr);
 	explicit Vga_file(std::vector<std::pair<std::string, int>> const &sources, int u7drag = -1);
 	Vga_file();
 	int get_u7drag_type() const {
@@ -271,7 +271,7 @@ public:
 	IDataSource *U7load(
 	    std::pair<std::string, int> const &resource,
 	    std::vector<std::pair<std::unique_ptr<IDataSource>, bool>> &shps);
-	bool load(const char *nm, const char *nm2 = 0, bool resetimports = false);
+	bool load(const char *nm, const char *nm2 = nullptr, bool resetimports = false);
 	bool load(std::vector<std::pair<std::string, int>> const &sources, bool resetimports = false);
 	bool import_shapes(std::pair<std::string, int> const &source,
 	                   std::vector<std::pair<int, int>> const &imports);
@@ -301,11 +301,11 @@ public:
 			// The shape is imported from another file.
 			// Import table was set but the source could not be opened.
 			if (data.pointer_offset < 0)
-				return 0;
+				return nullptr;
 			r = (imported_shapes[data.pointer_offset].get(imported_sources,
 			        data.realshape, framenum, imported_cnts, data.source_offset));
 		} else {
-			assert(!shapes.empty()); // Because if shapes is NULL
+			assert(!shapes.empty()); // Because if shapes is nullptr
 			// here, we won't die on the deref
 			// but we will return rubbish.
 			// I've put this assert in _before_ you know...

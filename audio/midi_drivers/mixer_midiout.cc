@@ -65,7 +65,7 @@ void Mixer_MidiOut::close()
 {
 	// Stop any current player
 	stop_track();
-	Mix_HookMusicFinished(NULL);
+	Mix_HookMusicFinished(nullptr);
 }
 
 void Mixer_MidiOut::stop_track()
@@ -74,7 +74,7 @@ void Mixer_MidiOut::stop_track()
 	if(mixermusic)
 	{
 		Mix_FreeMusic(mixermusic);
-		mixermusic = NULL;
+		mixermusic = nullptr;
 	}
 }
 
@@ -84,7 +84,7 @@ void Mixer_MidiOut::music_complete_callback(void)
 	if(mixermusic)
 	{
 		Mix_FreeMusic(mixermusic);
-		mixermusic = NULL;
+		mixermusic = nullptr;
 	}
 }
 

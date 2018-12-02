@@ -98,8 +98,8 @@ inline int SUB_TILE(int x, int y) {
 // Two very useful macros that one should use instead of pure delete; they will additionally
 // set the old object pointer to 0, thus helping prevent double deletes (not that "delete 0"
 // is a no-op.
-#define FORGET_OBJECT(x) do { delete x; x = 0; } while(0)
-#define FORGET_ARRAY(x) do { delete [] x; x = 0; } while(0)
+#define FORGET_OBJECT(x) do { delete x; x = nullptr; } while(0)
+#define FORGET_ARRAY(x) do { delete [] x; x = nullptr; } while(0)
 
 enum Exult_Game {
     NONE,

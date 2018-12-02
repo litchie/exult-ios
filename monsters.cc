@@ -67,7 +67,7 @@ public:
 };
 
 
-Monster_actor *Monster_actor::in_world = 0;
+Monster_actor *Monster_actor::in_world = nullptr;
 
 /*
  *  Add to global list (if not already there).
@@ -96,7 +96,7 @@ void Monster_actor::link_out(
 	else                // We're at start of list.
 		if (in_world == this)
 			in_world = next_monster;
-	next_monster = prev_monster = 0;
+	next_monster = prev_monster = nullptr;
 }
 
 /*
@@ -108,8 +108,8 @@ Monster_actor::Monster_actor(
     int shapenum,
     int num,            // Generally -1.
     int uc
-) : Npc_actor(nm, shapenum, num, uc), next_monster(0), prev_monster(0),
-	animator(0) {
+) : Npc_actor(nm, shapenum, num, uc), next_monster(nullptr), prev_monster(nullptr),
+	animator(nullptr) {
 	// Check for animated shape.
 	const Shape_info &info = get_info();
 	if (info.is_animated() || info.has_sfx())
@@ -321,7 +321,7 @@ int Monster_actor::step(
 	Map_chunk *nlist = gmap->get_chunk(cx, cy);
 	nlist->setup_cache();       // Setup cache if necessary.
 	// Blocked?
-	if (is_blocked(t, 0, force ? MOVE_ALL : 0)) {
+	if (is_blocked(t, nullptr, force ? MOVE_ALL : 0)) {
 		if (schedule)       // Tell scheduler.
 			schedule->set_blocked(t);
 		stop();

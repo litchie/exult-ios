@@ -144,13 +144,13 @@ void process_ops() {
 			assert(i->second.size() == 2);
 			if (verbose) {
 				string s;
-				assert(config != 0);
+				assert(config != nullptr);
 				config->value(i->second[0].c_str(), s, "---nil---");
 				cerr << "Original value of " << i->second[0] << " was " << s << endl;
 
 			}
 
-			assert(config != 0);
+			assert(config != nullptr);
 			config->set(i->second[0].c_str(), i->second[1].c_str(), false);
 
 			if (verbose)
@@ -160,13 +160,13 @@ void process_ops() {
 			assert(i->second.size() == 1);
 			if (verbose) {
 				string s;
-				assert(config != 0);
+				assert(config != nullptr);
 				config->value(i->second[0].c_str(), s, "---nil---");
 				cerr << "Original value was " << i->second[0] << " was " << s << endl;
 
 			}
 
-			assert(config != 0);
+			assert(config != nullptr);
 			config->set(i->second[0].c_str(), "", false);
 
 			if (verbose)
@@ -176,13 +176,13 @@ void process_ops() {
 			assert(i->second.size() == 1);
 			if (verbose) {
 				string s;
-				assert(config != 0);
+				assert(config != nullptr);
 				config->value(i->second[0].c_str(), s, "unknown");
 				cerr << "Return value for " << i->second[0] << " is " << s << endl;
 
 			}
 
-			assert(config != 0);
+			assert(config != nullptr);
 			//config->set(i->second[0].c_str(), "", false);
 			string s;
 			config->value(i->second[0].c_str(), s, "unknown");
@@ -208,12 +208,12 @@ int main(int argc, char *argv[]) {
 		}
 	}
 
-	assert(config != 0);
+	assert(config != nullptr);
 	config->read_config_file(config_file_name);
 
 	process_ops();
 
-	assert(config != 0);
+	assert(config != nullptr);
 	config->write_back();
 
 	return 0;

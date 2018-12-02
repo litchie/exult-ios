@@ -65,14 +65,14 @@ public:
 			if (playdata)
 				sample->freeDecompressor(playdata);
 			sample->Release();
-			sample = 0;
+			sample = nullptr;
 		}
 	}
 
 	void playSample(AudioSample *sample, int loop, int priority, bool paused, uint32 pitch_shift, int lvol, int rvol, sint32 instance_id);
 	void resampleAndMix(sint16 *stream, uint32 bytes);
 
-	bool isPlaying() { return sample != 0; }
+	bool isPlaying() { return sample != nullptr; }
 
 	void setPitchShift(int pitch_shift_) { pitch_shift = pitch_shift_; }
 	uint32 getPitchShift() const { return pitch_shift; }

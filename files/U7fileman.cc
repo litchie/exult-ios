@@ -56,7 +56,7 @@ U7file *U7FileManager::get_file_object(const File_spec &s, bool allow_errors) {
 		return file_list[s];
 
 	// Not in our cache. Attempt to figure it out.
-	U7file *uf = 0;
+	U7file *uf = nullptr;
 	if (s.index >= 0) {
 		auto data = make_unique<IExultDataSource>(s.name, s.index);
 		if (IFF::is_iff(data.get())) {
@@ -84,7 +84,7 @@ U7file *U7FileManager::get_file_object(const File_spec &s, bool allow_errors) {
 	if (!uf) {
 		if (!allow_errors)
 			throw(file_open_exception(s.name));
-		return 0;
+		return nullptr;
 	}
 
 	file_list[s] = uf;

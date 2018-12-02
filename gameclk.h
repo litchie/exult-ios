@@ -56,7 +56,7 @@ public:
 		light_source_level(0), old_light_level(0), old_special_light(false),
 		old_infravision(false), old_invisible(false), dungeon(255),
 		overcast(0), was_overcast(false), fog(0), was_foggy(false),
-		transition(0), time_rate(1)
+		transition(nullptr), time_rate(1)
 	{ }
 	int get_hour() const {
 		return hour;
@@ -97,7 +97,7 @@ public:
 		old_invisible = false;
 		dungeon = 255;
 		delete transition;
-		transition = 0;
+		transition = nullptr;
 	}
 	void set_overcast(bool onoff);  // Start/end cloud cover.
 	void set_fog(bool onoff);   // Start/end cloud cover.

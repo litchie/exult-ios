@@ -33,7 +33,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 Sign_gump::Sign_gump(
     int shapenum,
     int nlines          // # of text lines.
-) : Gump(0, shapenum), num_lines(nlines), serpentine(false) {
+) : Gump(nullptr, shapenum), num_lines(nlines), serpentine(false) {
 	// THIS IS A HACK, but don't ask me why this is like this,
 	if (Game::get_game_type() == SERPENT_ISLE && shapenum == 49) {
 		// check for avatar read here

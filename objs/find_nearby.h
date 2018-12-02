@@ -94,7 +94,7 @@ int Game_object::find_nearby(
 		tiles.y += cy * c_tiles_per_chunk;
 		Object_iterator next(chunk->get_objects());
 		Game_object *obj;
-		while ((obj = next.get_next()) != 0) {
+		while ((obj = next.get_next()) != nullptr) {
 			// Check shape.
 			if (shapenum >= 0) {
 				if (obj->get_shapenum() != shapenum)

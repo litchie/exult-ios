@@ -247,9 +247,9 @@ extern "C" {
 // Get the Game paths from the config file
 //
 	__declspec(dllexport) void __stdcall GetExultGamePaths(char *ExultDir, char *BGPath, char *SIPath, int MaxPath) {
-		MessageBoxDebug(NULL, ExultDir, "ExultDir", MB_OK);
-		MessageBoxDebug(NULL, BGPath, "BGPath", MB_OK);
-		MessageBoxDebug(NULL, SIPath, "SIPath", MB_OK);
+		MessageBoxDebug(nullptr, ExultDir, "ExultDir", MB_OK);
+		MessageBoxDebug(nullptr, BGPath, "BGPath", MB_OK);
+		MessageBoxDebug(nullptr, SIPath, "SIPath", MB_OK);
 
 		int p_size = strlen(ExultDir) + strlen("/exult.cfg") + MAX_STRLEN;
 		char *p = new char[p_size];
@@ -263,7 +263,7 @@ extern "C" {
 		const static char *si_pathdef = CFG_SI_NAME;
 		const static char *bg_pathdef = CFG_BG_NAME;
 
-		MessageBoxDebug(NULL, ExultDir, p, MB_OK);
+		MessageBoxDebug(nullptr, ExultDir, p, MB_OK);
 
 		try {
 			// Open config file
@@ -306,9 +306,9 @@ extern "C" {
 // Set Game paths in the config file
 //
 	__declspec(dllexport) void __stdcall SetExultGamePaths(char *ExultDir, char *BGPath, char *SIPath) {
-		MessageBoxDebug(NULL, ExultDir, "ExultDir", MB_OK);
-		MessageBoxDebug(NULL, BGPath, "BGPath", MB_OK);
-		MessageBoxDebug(NULL, SIPath, "SIPath", MB_OK);
+		MessageBoxDebug(nullptr, ExultDir, "ExultDir", MB_OK);
+		MessageBoxDebug(nullptr, BGPath, "BGPath", MB_OK);
+		MessageBoxDebug(nullptr, SIPath, "SIPath", MB_OK);
 
 		int i;
 
@@ -320,7 +320,7 @@ extern "C" {
 		config_path.GetString(p, p_size);
 		setup_program_paths();
 
-		MessageBoxDebug(NULL, p, "WriteConfig: p", MB_OK);
+		MessageBoxDebug(nullptr, p, "WriteConfig: p", MB_OK);
 
 		try {
 			// Open config file
@@ -331,11 +331,11 @@ extern "C" {
 				config.read_config_file("exult.cfg");
 
 			// Set BG Path
-			MessageBoxDebug(NULL, p, "WriteConfig: BG", MB_OK);
+			MessageBoxDebug(nullptr, p, "WriteConfig: BG", MB_OK);
 			config.set("config/disk/game/blackgate/path", BGPath, true);
 
 			// Set SI Path
-			MessageBoxDebug(NULL, p, "WriteConfig: SI", MB_OK);
+			MessageBoxDebug(nullptr, p, "WriteConfig: SI", MB_OK);
 			config.set("config/disk/game/serpentisle/path", SIPath, true);
 
 			// Set Defaults

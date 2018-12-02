@@ -188,9 +188,9 @@ RhythmSetupData U7PercussionData[] = {
 };
 
 
-// If data is NULL, then it is assumed that sysex_buffer already contains the data
+// If data is nullptr, then it is assumed that sysex_buffer already contains the data
 // address_base is 7-bit, while address_offset is 8 bit!
-std::size_t fill_sysex_buffer(uint32 address_base, uint16 address_offset, uint32 len, const void *data = 0) {
+std::size_t fill_sysex_buffer(uint32 address_base, uint16 address_offset, uint32 len, const void *data = nullptr) {
 	// SysEx status
 	sysex_buffer[0] = static_cast<char>(0xF0);
 

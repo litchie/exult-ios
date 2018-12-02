@@ -837,7 +837,7 @@ void Combo_chooser::load(
 	Shape_file_info *svga_info =
 	    ExultStudio::get_instance()->get_vgafile();
 	Shapes_vga_file *svga = svga_info ?
-	                        static_cast<Shapes_vga_file *>(svga_info->get_ifile()) : 0;
+	                        static_cast<Shapes_vga_file *>(svga_info->get_ifile()) : nullptr;
 	combos.resize(num_combos);  // Set size of list.
 	if (!svga)
 		num_combos = 0;
@@ -1100,7 +1100,7 @@ Combo_chooser::Combo_chooser(
 ) : Object_browser(g, flinfo),
 	Shape_draw(i, palbuf, gtk_drawing_area_new()),
 	flex_info(flinfo), index0(0),
-	info(0), info_cnt(0), sel_changed(0) {
+	info(nullptr), info_cnt(0), sel_changed(nullptr) {
 	load();             // Init. from file data.
 	// Put things in a vert. box.
 	GtkWidget *vbox = gtk_vbox_new(FALSE, 0);
@@ -1112,7 +1112,7 @@ Combo_chooser::Combo_chooser(
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, TRUE, TRUE, 0);
 
 	// A frame looks nice.
-	GtkWidget *frame = gtk_frame_new(NULL);
+	GtkWidget *frame = gtk_frame_new(nullptr);
 	gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_IN);
 	gtk_widget_show(frame);
 	gtk_box_pack_start(GTK_BOX(hbox), frame, TRUE, TRUE, 0);
@@ -1347,7 +1347,7 @@ gint Combo_chooser::win32_drag_motion(
 
 		// This call allows us to recycle the data transfer initialization code.
 		//  It's clumsy, but far easier to maintain.
-		drag_data_get(NULL, NULL, (GtkSelectionData *) &wdata,
+		drag_data_get(nullptr, nullptr, (GtkSelectionData *) &wdata,
 		              U7_TARGET_COMBOID, 0, data);
 
 		POINT pnt;
@@ -1435,7 +1435,7 @@ gint Combo_chooser::mouse_press(
 	}
 	if (event->button == 3)
 		gtk_menu_popup(GTK_MENU(chooser->create_popup()),
-		               0, 0, 0, 0, event->button, event->time);
+		               nullptr, nullptr, nullptr, nullptr, event->button, event->time);
 	return (TRUE);
 }
 

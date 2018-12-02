@@ -502,7 +502,7 @@ Palette_transition::Palette_transition(
     int nsteps,
     int sh, int smin
 )
-	: current(0), step(0), max_steps(nsteps),
+	: current(nullptr), step(0), max_steps(nsteps),
 	  start_hour(sh), start_minute(smin), rate(r) {
 	start = new Palette();
 	start->load(PALETTES_FLX, PATCH_PALETTES, from);
@@ -518,7 +518,7 @@ Palette_transition::Palette_transition(
     int nsteps,
     int sh, int smin
 )
-	: current(0), step(0), max_steps(nsteps),
+	: current(nullptr), step(0), max_steps(nsteps),
 	  start_hour(sh), start_minute(smin), rate(r) {
 	start = new Palette(from);
 	end = new Palette();
@@ -533,7 +533,7 @@ Palette_transition::Palette_transition(
     int nsteps,
     int sh, int smin
 )
-	: current(0), step(0), max_steps(nsteps),
+	: current(nullptr), step(0), max_steps(nsteps),
 	  start_hour(sh), start_minute(smin), rate(r) {
 	start = new Palette(from);
 	end = new Palette(to);

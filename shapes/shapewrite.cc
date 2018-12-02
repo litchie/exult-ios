@@ -273,7 +273,7 @@ void Shapes_vga_file::write_info(
 	U7open(wihh, PATCH_WIHH);
 	size_t cnt = 0;            // Keep track of actual entries.
 	for (size_t i = 0; i < num_shapes; i++)
-		if (info[i].weapon_offsets == 0)
+		if (info[i].weapon_offsets == nullptr)
 			Write2(wihh, 0);// None for this shape.
 		else            // Write where it will go.
 			Write2(wihh, 2 * num_shapes + 64 * (cnt++));

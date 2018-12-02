@@ -135,7 +135,7 @@ public:
 	void add_resource(const char *name, const char *str, int num);
 	const str_int_pair &get_resource(const char *name);
 	void write_game_xml();
-	bool read_game_xml(const char *name1 = 0);
+	bool read_game_xml(const char *name1 = nullptr);
 
 	bool show_menu(bool skip = false);
 	void journey_failed_text();

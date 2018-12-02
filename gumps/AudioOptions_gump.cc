@@ -451,10 +451,10 @@ void AudioOptions_gump::load_settings() {
 	}
 }
 
-AudioOptions_gump::AudioOptions_gump() : Modal_gump(0, EXULT_FLX_AUDIOOPTIONS_SHP, SF_EXULT_FLX) {
+AudioOptions_gump::AudioOptions_gump() : Modal_gump(nullptr, EXULT_FLX_AUDIOOPTIONS_SHP, SF_EXULT_FLX) {
 	set_object_area(Rectangle(0, 0, 0, 0), 8, 187); //++++++ ???
 
-	for (int i = id_first; i < id_count; i++) buttons[i] = 0;
+	for (int i = id_first; i < id_count; i++) buttons[i] = nullptr;
 
 	Exult_Game game = Game::get_game_type();
 	std::string title = Game::get_gametitle();
@@ -666,9 +666,9 @@ bool AudioOptions_gump::mouse_down(int mx, int my, int button) {
 	}
 
 	if (pushed && !pushed->push(button))            // On a button?
-		pushed = 0;
+		pushed = nullptr;
 
-	return button == 1 || pushed != 0;
+	return button == 1 || pushed != nullptr;
 }
 
 bool AudioOptions_gump::mouse_up(int mx, int my, int button) {
@@ -681,6 +681,6 @@ bool AudioOptions_gump::mouse_up(int mx, int my, int button) {
 	pushed->unpush(button);
 	if (pushed->on_button(mx, my))
 		res = pushed->activate(button);
-	pushed = 0;
+	pushed = nullptr;
 	return res;
 }

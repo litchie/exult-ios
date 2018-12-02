@@ -218,7 +218,7 @@ void Shape_group::add(
 Shape_group_file::Shape_group_file(
     const char *nm          // Basename.
 ) : name(nm), modified(false) {
-	unique_ptr<Flex> flex = 0;
+	unique_ptr<Flex> flex;
 	std::string patchname = "<PATCH>/" + name;
 	std::string staticname = "<STATIC>/" + name;
 	if (U7exists(patchname))    // First try 'patch' directory.
@@ -345,7 +345,7 @@ Shape_group *Shape_group_file::get_builtin(
 			break;
 		}
 	if (type < 0 || type >= Shape_group::last_builtin_group)
-		return 0;
+		return nullptr;
 	if (builtins.size() <= unsigned(type))
 		builtins.resize(type + 1);
 	if (!builtins[type])        // Create if needed.
@@ -480,7 +480,7 @@ on_group_list_row_deleted(GtkTreeModel *model,
                           GtkTreePath *path,
                           gpointer user_data) {
 	ignore_unused_variable_warning(user_data);
-	ExultStudio::get_instance()->groups_changed(model, path, 0);
+	ExultStudio::get_instance()->groups_changed(model, path, nullptr);
 }
 
 C_EXPORT void
@@ -523,12 +523,12 @@ void ExultStudio::setup_groups(
 		g_object_unref(model);
 		// Create column.
 		GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
-		g_object_set(renderer, "xalign", 0.0, NULL);
+		g_object_set(renderer, "xalign", 0.0, nullptr);
 		gint col_offset = gtk_tree_view_insert_column_with_attributes(
 		                      tview,
 		                      -1, "Names",
 		                      renderer, "text",
-		                      GRP_FILE_COLUMN, NULL);
+		                      GRP_FILE_COLUMN, nullptr);
 		GtkTreeViewColumn *column = gtk_tree_view_get_column(tview,
 		                            col_offset - 1);
 		gtk_tree_view_column_set_clickable(column, TRUE);
@@ -567,7 +567,7 @@ void ExultStudio::setup_groups(
 	GtkTreeIter iter;
 	for (int i = 0; i < cnt; i++) {
 		Shape_group *grp = groups->get(i);
-		gtk_tree_store_append(model, &iter, NULL);
+		gtk_tree_store_append(model, &iter, nullptr);
 		gtk_tree_store_set(model, &iter,
 		                   GRP_FILE_COLUMN, grp->get_name(),
 		                   GRP_GROUP_COLUMN, grp,
@@ -621,7 +621,7 @@ void ExultStudio::add_group(
 	if (nm && *nm && groups->find(nm) < 0) {
 		Shape_group *grp = new Shape_group(nm, groups);
 		GtkTreeIter iter;
-		gtk_tree_store_append(model, &iter, NULL);
+		gtk_tree_store_append(model, &iter, nullptr);
 		gtk_tree_store_set(model, &iter,
 		                   GRP_FILE_COLUMN, nm,
 		                   GRP_GROUP_COLUMN, grp,
@@ -685,7 +685,7 @@ void ExultStudio::groups_changed(
 	if (!loc)
 		groups->remove(row, false);
 	else {
-		void *grpaddr = 0;
+		void *grpaddr = nullptr;
 		gtk_tree_model_get(model, loc, GRP_GROUP_COLUMN, &grpaddr,
 		                   -1);
 		Shape_group *grp = static_cast<Shape_group *>(grpaddr);
@@ -801,7 +801,7 @@ void ExultStudio::open_builtin_group_window(
 void ExultStudio::open_group_window(
     Shape_group *grp
 ) {
-	GladeXML *xml = glade_xml_new(glade_path, "group_window", NULL);
+	GladeXML *xml = glade_xml_new(glade_path, "group_window", nullptr);
 	glade_xml_signal_autoconnect(xml);
 	GtkWidget *grpwin = glade_xml_get_widget(xml, "group_window");
 	Object_browser *chooser = curfile->create_browser(vgafile, palbuf.get(), grp);

@@ -545,7 +545,7 @@ gint Shape_chooser::win32_drag_motion(
 
 		// This call allows us to recycle the data transfer initialization code.
 		//  It's clumsy, but far easier to maintain.
-		drag_data_get(NULL, NULL, (GtkSelectionData *) &wdata,
+		drag_data_get(nullptr, nullptr, (GtkSelectionData *) &wdata,
 		              U7_TARGET_SHAPEID, 0, data);
 
 		POINT pnt;
@@ -634,7 +634,7 @@ gint Shape_chooser::mouse_press(
 	}
 	if (event->button == 3)
 		gtk_menu_popup(GTK_MENU(create_popup()),
-		               0, 0, 0, 0, event->button, event->time);
+		               nullptr, nullptr, nullptr, nullptr, event->button, event->time);
 	return (TRUE);
 }
 
@@ -765,7 +765,7 @@ time_t Shape_chooser::export_tiled_png(
 	// Low shape in 'shapes.vga'?
 	assert(IS_FLAT(shnum) && file_info == studio->get_vgafile());
 	Shape *shape = ifile->extract_shape(shnum);
-	assert(shape != 0);
+	assert(shape != nullptr);
 	cout << "Writing " << fname << " tiled"
 	     << (bycols ? ", by cols" : ", by rows") << " first" << endl;
 	int nframes = shape->get_num_frames();
@@ -817,8 +817,8 @@ void Shape_chooser::edit_shape_info(
 	ExultStudio *studio = ExultStudio::get_instance();
 	int shnum = info[selected].shapenum,
 	    frnum = info[selected].framenum;
-	Shape_info *info = 0;
-	const char *name = 0;
+	Shape_info *info = nullptr;
+	const char *name = nullptr;
 	if (shapes_file) {
 		// Read info. the first time.
 		shapes_file->read_info(studio->get_game_type(), true);
@@ -905,14 +905,14 @@ void Shape_chooser::edit_shape(
 	STARTUPINFO     si;
 	std::memset(&si, 0, sizeof(si));
 	si.cb = sizeof(si);
-	int ret = CreateProcess(NULL, const_cast<char *>(cmd.c_str()),
-	                        NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi);
+	int ret = CreateProcess(nullptr, const_cast<char *>(cmd.c_str()),
+	                        nullptr, nullptr, FALSE, 0, nullptr, nullptr, &si, &pi);
 	if (!ret)
 		Alert("Can't launch '%s'", studio->get_image_editor());
 #endif
 	if (check_editing_timer == -1)  // Monitor files every 6 seconds.
 		check_editing_timer = gtk_timeout_add(6000,
-		                                      Shape_chooser::check_editing_files_cb, 0L);
+		                                      Shape_chooser::check_editing_files_cb, nullptr);
 }
 
 /*
@@ -960,7 +960,7 @@ gint Shape_chooser::check_editing_files(
 			browser->render();
 			browser->show();
 		}
-		studio->update_group_windows(0);
+		studio->update_group_windows(nullptr);
 	}
 	return 1;           // Continue timeouts.
 }
@@ -1227,7 +1227,7 @@ void Shape_chooser::import_frame(
 	ed->render();
 	ed->show();
 	ExultStudio *studio = ExultStudio::get_instance();
-	studio->update_group_windows(0);
+	studio->update_group_windows(nullptr);
 }
 
 /*
@@ -1327,7 +1327,7 @@ void Shape_chooser::import_all_pngs(
 	render();
 	show();
 	file_info->set_modified();
-	studio->update_group_windows(0);
+	studio->update_group_windows(nullptr);
 	delete [] fullname;
 }
 
@@ -1432,7 +1432,7 @@ void Shape_chooser::new_frame(
 		browser->render();
 		browser->show();
 	}
-	studio->update_group_windows(0);
+	studio->update_group_windows(nullptr);
 }
 
 /*
@@ -1525,7 +1525,7 @@ void Shape_chooser::from_font_toggled(
 	studio->set_sensitive("new_shape_font_color", true);
 	studio->set_sensitive("new_shape_font_height", true);
 	GtkFileSelection *fsel = Create_file_selection(
-	                             "Choose font file", font_file_chosen, 0L);
+	                             "Choose font file", font_file_chosen, nullptr);
 	if (is_system_path_defined("<PATCH>")) {
 		// Default to a writable location.
 		string patch = get_system_path("<PATCH>/");
@@ -1629,7 +1629,7 @@ void Shape_chooser::create_new_shape(
 	// Want to create from a font?
 	use_font = studio->get_toggle("new_shape_font");
 	const char *fontname = studio->get_text_entry("new_shape_font_name");
-	use_font = use_font && (fontname != 0) && *fontname != 0;
+	use_font = use_font && (fontname != nullptr) && *fontname != 0;
 	if (use_font) {
 		if (flat) {
 			Alert("Can't load font into a 'flat' shape");
@@ -1664,7 +1664,7 @@ void Shape_chooser::create_new_shape(
 		browser->render();
 		browser->show();
 	}
-	studio->update_group_windows(0);
+	studio->update_group_windows(nullptr);
 }
 
 /*
@@ -1695,7 +1695,7 @@ void Shape_chooser::del_frame(
 		browser->render();
 		browser->show();
 	}
-	studio->update_group_windows(0);
+	studio->update_group_windows(nullptr);
 }
 
 /*
@@ -2137,7 +2137,7 @@ void Shape_chooser::shape_dropped_here(
 ) {
 	ignore_unused_variable_warning(frame);
 	// Got to be from same file type.
-	if (ifile->get_u7drag_type() == file && group != 0) {
+	if (ifile->get_u7drag_type() == file && group != nullptr) {
 		// Add to group.
 		if (group->is_builtin()) {
 			Alert("Can't modify builtin group.");
@@ -2306,10 +2306,10 @@ Shape_chooser::Shape_chooser(
     Shape_file_info *fi
 ) : Object_browser(g, fi),
 	Shape_draw(i, palbuf, gtk_drawing_area_new()),
-	shapes_file(0), framenum0(0),
+	shapes_file(nullptr), framenum0(0),
 	info(0), rows(0), row0(0),
 	row0_voffset(0), total_height(0),
-	frames_mode(false), hoffset(0), voffset(0), status_id(-1), sel_changed(0) {
+	frames_mode(false), hoffset(0), voffset(0), status_id(-1), sel_changed(nullptr) {
 	rows.reserve(40);
 	// Put things in a vert. box.
 	GtkWidget *vbox = gtk_vbox_new(FALSE, 0);
@@ -2321,7 +2321,7 @@ Shape_chooser::Shape_chooser(
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, TRUE, TRUE, 0);
 
 	// A frame looks nice.
-	GtkWidget *frame = gtk_frame_new(NULL);
+	GtkWidget *frame = gtk_frame_new(nullptr);
 	gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_IN);
 	gtk_widget_show(frame);
 	gtk_box_pack_start(GTK_BOX(hbox), frame, TRUE, TRUE, 0);
@@ -2475,7 +2475,7 @@ void Shape_chooser::update_statusbar(
 			const Shape_info &inf = shapes_file->get_info(shapenum);
 			const Frame_name_info *nminf;
 			if (inf.has_frame_name_info() &&
-			        (nminf = inf.get_frame_name(frnum, -1)) != 0) {
+			        (nminf = inf.get_frame_name(frnum, -1)) != nullptr) {
 				int type = nminf->get_type(), msgid = nminf->get_msgid();
 				if (type >= 0 && msgid < get_num_misc_names()) {
 					const char *msgstr = get_misc_name(msgid);
@@ -2494,7 +2494,7 @@ void Shape_chooser::update_statusbar(
 							            get_misc_name(otmsg));
 							if (!otmsgstr) otmsgstr = "";
 						}
-						const char *prefix = 0, *suffix = 0;
+						const char *prefix = nullptr, *suffix = nullptr;
 						if (type & 1) {
 							prefix = otmsgstr;
 							suffix = msgstr;

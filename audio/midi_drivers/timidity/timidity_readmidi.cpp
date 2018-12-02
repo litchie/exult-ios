@@ -114,7 +114,7 @@ static int dumpstring(sint32 len, const char *label)
 #define MIDIEVENT(at,t,ch,pa,pb) \
 		event=safe_Malloc<MidiEventList>(); \
 		event->event.time=at; event->event.type=t; event->event.channel=ch; \
-		event->event.a=pa; event->event.b=pb; event->next=0;\
+		event->event.a=pa; event->event.b=pb; event->next=nullptr;\
 		return event;
 
 #define MAGIC_EOT (reinterpret_cast<MidiEventList *>(-1))
@@ -137,7 +137,7 @@ static MidiEventList *read_midi_event(void)
 		{
 			ctl->cmsg(CMSG_ERROR, VERB_NORMAL, "%s: read_midi_event: %s",
 			          current_filename, strerror(errno));
-			return 0;
+			return nullptr;
 		}
 
 		if(me==0xF0 || me == 0xF7) /* SysEx event */
@@ -385,7 +385,7 @@ static void free_midi_list(void)
 		free(meep);
 		meep=next;
 	}
-	evlist=0;
+	evlist=nullptr;
 }
 
 /* Allocate an array of MidiEvents and fill it from the linked list of
@@ -558,7 +558,7 @@ MidiEvent *read_midi_file(FILE *mfp, sint32 *count, sint32 *sp)
 	fp=mfp;
 	event_count=0;
 	at=0;
-	evlist=0;
+	evlist=nullptr;
 
 	if ((fread(tmp,1,4,fp) != 4) || (fread(&len,4,1,fp) != 1))
 	{
@@ -570,14 +570,14 @@ MidiEvent *read_midi_file(FILE *mfp, sint32 *count, sint32 *sp)
 		else
 			ctl->cmsg(CMSG_ERROR, VERB_NORMAL,
 			          "%s: Not a MIDI file!", current_filename);
-		return 0;
+		return nullptr;
 	}
 	len=BE_LONG(len);
 	if (memcmp(tmp, "MThd", 4) != 0 || len < 6)
 	{
 		ctl->cmsg(CMSG_ERROR, VERB_NORMAL,
 		          "%s: Not a MIDI file!", current_filename);
-		return 0;
+		return nullptr;
 	}
 
 	err = fread(&format, 2, 1, fp);
@@ -608,7 +608,7 @@ MidiEvent *read_midi_file(FILE *mfp, sint32 *count, sint32 *sp)
 	{
 		ctl->cmsg(CMSG_ERROR, VERB_NORMAL,
 		          "%s: Unknown MIDI file format %d", current_filename, format);
-		return 0;
+		return nullptr;
 	}
 	ctl->cmsg(CMSG_INFO, VERB_VERBOSE,
 	          "Format: %d  Tracks: %d  Divisions: %d", format, tracks, divisions);
@@ -617,7 +617,7 @@ MidiEvent *read_midi_file(FILE *mfp, sint32 *count, sint32 *sp)
 	evlist=safe_Malloc<MidiEventList>();
 	evlist->event.time=0;
 	evlist->event.type=ME_NONE;
-	evlist->next=0;
+	evlist->next=nullptr;
 	event_count++;
 
 	switch(format)
@@ -626,7 +626,7 @@ MidiEvent *read_midi_file(FILE *mfp, sint32 *count, sint32 *sp)
 			if (read_track(0))
 			{
 				free_midi_list();
-				return 0;
+				return nullptr;
 			}
 			break;
 
@@ -635,7 +635,7 @@ MidiEvent *read_midi_file(FILE *mfp, sint32 *count, sint32 *sp)
 				if (read_track(0))
 				{
 					free_midi_list();
-					return 0;
+					return nullptr;
 				}
 			break;
 
@@ -644,7 +644,7 @@ MidiEvent *read_midi_file(FILE *mfp, sint32 *count, sint32 *sp)
 				if (read_track(1))
 				{
 					free_midi_list();
-					return 0;
+					return nullptr;
 				}
 			break;
 	}

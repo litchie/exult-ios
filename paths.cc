@@ -119,7 +119,7 @@ int Actor_pathfinder_client::get_step_cost(
 	int cost = 1;
 	olist->setup_cache();       // Make sure cache is valid.
 	int water, poison;      // Get tile info.
-	Actor::get_tile_info(0, gwin, olist, tx, ty, water, poison);
+	Actor::get_tile_info(nullptr, gwin, olist, tx, ty, water, poison);
 	int old_lift = to.tz;       // Might climb/descend.
 	Tile_coord from(frm);
 	if (npc->is_blocked(to, &from)) {
@@ -395,7 +395,7 @@ Fast_pathfinder_client::Fast_pathfinder_client(
     int mf
 ) : Pathfinder_client(mf),
 	destbox(Rectangle(dest.tx, dest.ty, 0, 0).enlarge(dist)) {
-	init(from, 0, dist);
+	init(from, nullptr, dist);
 }
 
 /*
@@ -423,7 +423,7 @@ Fast_pathfinder_client::Fast_pathfinder_client(
     int dist
 ) : Pathfinder_client(from->get_type_flags()),
 	destbox(Rectangle(dest.tx, dest.ty, 0, 0).enlarge(dist)) {
-	init(from, 0, dist);
+	init(from, nullptr, dist);
 }
 
 /*
@@ -587,7 +587,7 @@ int Fast_pathfinder_client::is_grabable_internal(
 	Get_closest_edge(fromvol, tovol, t, dst);
 
 	Zombie zpath;
-	if (!zpath.NewPath(t, dst, 0))  // Should always succeed.
+	if (!zpath.NewPath(t, dst, nullptr))  // Should always succeed.
 		return 0;
 
 	if (zpath.get_num_steps() == 0)
@@ -599,9 +599,9 @@ int Fast_pathfinder_client::is_grabable_internal(
 		        !srcvol.has_world_point(t.tx, t.ty, t.tz) &&
 		        !fromvol.has_world_point(t.tx, t.ty, t.tz) &&
 		        gmap->is_tile_occupied(t) &&
-		        (block = Game_object::find_blocking(t)) != 0 &&
+		        (block = Game_object::find_blocking(t)) != nullptr &&
 		        // Ignore all blocking actors and movable objects.
-		        block->as_actor() == 0 && !block->is_dragable())
+		        block->as_actor() == nullptr && !block->is_dragable())
 			return 0;   // Blocked.
 	return 1;
 }
@@ -691,7 +691,7 @@ int Fast_pathfinder_client::is_straight_path(
 	Game_map *gmap = Game_window::get_instance()->get_map();
 
 	Zombie path;
-	if (!path.NewPath(from, to, 0)) // Should always succeed.
+	if (!path.NewPath(from, to, nullptr)) // Should always succeed.
 		return 0;
 	Tile_coord t;           // Check each tile.
 	bool done;
@@ -714,7 +714,7 @@ int Fast_pathfinder_client::is_straight_path(
 
 	Game_map *gmap = Game_window::get_instance()->get_map();
 	Zombie path;
-	if (!path.NewPath(pos1, pos2, 0))   // Should always succeed.
+	if (!path.NewPath(pos1, pos2, nullptr))   // Should always succeed.
 		return 0;
 	Tile_coord t;           // Check each tile.
 	bool done;

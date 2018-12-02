@@ -110,8 +110,8 @@ class Exec_box {
 	Exec_done_fun done_fun;     // Called when child has exited.
 	gpointer user_data;     // Passed to done_fun.
 public:
-	Exec_box(GtkTextView *b, GtkStatusbar *s, Exec_done_fun dfun = 0,
-	         gpointer udata = 0);
+	Exec_box(GtkTextView *b, GtkStatusbar *s, Exec_done_fun dfun = nullptr,
+	         gpointer udata = nullptr);
 	~Exec_box();
 	void show_status(const char *msg);  // Set status bar.
 	// Handle data from child.

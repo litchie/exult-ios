@@ -93,7 +93,7 @@ class Chunk_chooser: public Object_browser, public Shape_draw {
 	virtual GtkWidget *create_popup();  // Popup menu.
 public:
 	Chunk_chooser(Vga_file *i, std::istream &cfile, unsigned char *palbuf,
-	              int w, int h, Shape_group *g = 0);
+	              int w, int h, Shape_group *g = nullptr);
 	virtual ~Chunk_chooser();
 	virtual bool server_response(int id, unsigned char *data, int datalen);
 	virtual void end_terrain_editing();

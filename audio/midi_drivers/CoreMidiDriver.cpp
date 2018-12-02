@@ -32,7 +32,7 @@ CoreMidiDriver::CoreMidiDriver() :
 	mClient(0), mOutPort(0), mDest(0)
 {
 	OSStatus err;
-	err = MIDIClientCreate(CFSTR("Pentagram MIDI Driver for OS X"), NULL, NULL, &mClient);
+	err = MIDIClientCreate(CFSTR("Pentagram MIDI Driver for OS X"), nullptr, nullptr, &mClient);
 
 }
 

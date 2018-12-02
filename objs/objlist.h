@@ -41,7 +41,7 @@ class T_Object_list {
 	T first;        // ->first in (circular) chain.
 	unsigned short iter_count;  // # of iterators.
 public:
-	T_Object_list(T f = 0) : first(f), iter_count(0)
+	T_Object_list(T f = nullptr) : first(f), iter_count(0)
 	{  }
 	// Delete the chain.
 	~T_Object_list() {
@@ -61,7 +61,7 @@ public:
 		std::cerr.flush();
 	}
 	int is_empty() const {
-		return first == 0;
+		return first == nullptr;
 	}
 	void add_iterator() {
 		iter_count++;
@@ -110,7 +110,7 @@ public:
 		if (iter_count)
 			report_problem();
 		if (dobj == first)
-			first = dobj->next != first ? dobj->next : 0;
+			first = dobj->next != first ? dobj->next : nullptr;
 		dobj->next->prev = dobj->prev;
 		dobj->prev->next = dobj->next;
 	}

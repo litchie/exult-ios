@@ -62,7 +62,7 @@ protected:
 	void set_widget(GtkWidget *w);
 	static bool search_name(const char *nm, const char *srch);
 public:
-	Object_browser(Shape_group *grp = 0, Shape_file_info *fi = 0);
+	Object_browser(Shape_group *grp = nullptr, Shape_file_info *fi = nullptr);
 	virtual ~Object_browser();
 
 	GtkWidget *get_widget();

@@ -86,7 +86,7 @@ const char *CheatScreen::flag_names[64] = {
 	"charmed",      // 0x02
 	"cursed",       // 0x03
 	"dead",         // 0x04
-	0,          // 0x05
+	nullptr,          // 0x05
 	"in_party",     // 0x06
 	"paralyzed",        // 0x07
 
@@ -102,16 +102,16 @@ const char *CheatScreen::flag_names[64] = {
 	"dont_move/bg_dont_render",     // 0x10
 	"si_on_moving_barge",   // 0x11
 	"is_temporary",     // 0x12
-	0,          // 0x13
+	nullptr,          // 0x13
 	"sailor",          // 0x14
 	"okay_to_land",     // 0x15
 	"dont_render/bg_dont_move", // 0x16
 	"in_dungeon",   // 0x17
 
-	0,          // 0x18
+	nullptr,          // 0x18
 	"confused",     // 0x19
 	"in_motion",        // 0x1A
-	0,         // 0x1B
+	nullptr,         // 0x1B
 	"met",          // 0x1C
 	"tournament",   // 0x1D
 	"si_zombie",    // 0x1E
@@ -124,34 +124,34 @@ const char *CheatScreen::flag_names[64] = {
 	"si_lizard_king",  // 0x24
 	"freeze",       // 0x25
 	"naked",    // 0x26
-	0,          // 0x27
+	nullptr,          // 0x27
 
-	0,          // 0x28
-	0,          // 0x29
-	0,          // 0x2A
-	0,          // 0x2B
-	0,          // 0x2C
-	0,          // 0x2D
-	0,          // 0x2E
-	0,          // 0x2F
+	nullptr,          // 0x28
+	nullptr,          // 0x29
+	nullptr,          // 0x2A
+	nullptr,          // 0x2B
+	nullptr,          // 0x2C
+	nullptr,          // 0x2D
+	nullptr,          // 0x2E
+	nullptr,          // 0x2F
 
-	0,          // 0x30
-	0,          // 0x31
-	0,          // 0x32
-	0,          // 0x33
-	0,          // 0x34
-	0,          // 0x35
-	0,          // 0x36
-	0,          // 0x37
+	nullptr,          // 0x30
+	nullptr,          // 0x31
+	nullptr,          // 0x32
+	nullptr,          // 0x33
+	nullptr,          // 0x34
+	nullptr,          // 0x35
+	nullptr,          // 0x36
+	nullptr,          // 0x37
 
-	0,          // 0x38
-	0,          // 0x39
-	0,          // 0x3A
-	0,          // 0x3B
-	0,          // 0x3C
-	0,          // 0x3D
-	0,          // 0x3E
-	0,          // 0x3F
+	nullptr,          // 0x38
+	nullptr,          // 0x39
+	nullptr,          // 0x3A
+	nullptr,          // 0x3B
+	nullptr,          // 0x3C
+	nullptr,          // 0x3D
+	nullptr,          // 0x3E
+	nullptr,          // 0x3F
 };
 
 const char *CheatScreen::alignments[4] = {
@@ -162,7 +162,7 @@ const char *CheatScreen::alignments[4] = {
 };
 
 CheatScreen::CheatScreen()
- : grabbed(NULL), gwin(NULL), ibuf(NULL), font(NULL), clock(NULL),
+ : grabbed(nullptr), gwin(nullptr), ibuf(nullptr), font(nullptr), clock(nullptr),
    maxx(0), maxy(0), centerx(0), centery(0) {
 }
 
@@ -2706,7 +2706,7 @@ void CheatScreen::TeleportActivate(char *input, int &command, Cheat_Prompt &mode
 		break;
 
 	case 'h':   // hex X coord
-		i = strtol(input, 0, 16);
+		i = strtol(input, nullptr, 16);
 		if (i < -1 || i > c_num_tiles) mode = CP_InvalidValue;
 		else if (i == -1) mode = CP_Canceled;
 		else if (!input[0]) {
@@ -2720,7 +2720,7 @@ void CheatScreen::TeleportActivate(char *input, int &command, Cheat_Prompt &mode
 		break;
 
 	case 'i':   // hex Y coord
-		i = strtol(input, 0, 16);
+		i = strtol(input, nullptr, 16);
 		if (i < -1 || i > c_num_tiles) mode = CP_InvalidValue;
 		else if (i == -1) mode = CP_Canceled;
 		else if (!input[0]) {

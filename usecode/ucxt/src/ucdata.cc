@@ -46,7 +46,7 @@ using std::ostream;
 
 const string CLASSNAME = "class";
 
-UCData::UCData() : _symtbl(0), _search_opcode(-1), _search_intrinsic(-1) {
+UCData::UCData() : _symtbl(nullptr), _search_opcode(-1), _search_intrinsic(-1) {
 }
 
 UCData::~UCData() {
@@ -148,7 +148,7 @@ void UCData::disassamble(ostream &o) {
 		o << endl;
 	}
 
-	Usecode_class_symbol *cls = 0;
+	Usecode_class_symbol *cls = nullptr;
 	bool _foundfunc = false; //did we find and print the function?
 	for (unsigned int i = 0; i < _funcs.size(); i++) {
 		if (options.mode_all || (options.mode_dis && count(search_funcs.begin(), search_funcs.end(), _funcs[i]->_funcid))) {
@@ -407,7 +407,7 @@ void UCData::load_funcs(ostream &o) {
 			kind = Usecode_symbol::fun_defined;
 		_funcmap.insert(FuncMapPair((*i)->_funcid, UCFuncSet(funcid, (*i)->_num_args,
 		                                                     (*i)->return_var, (*i)->aborts,
-		                                                     (*i)->_cls != 0, (*i)->funcname,
+		                                                     (*i)->_cls != nullptr, (*i)->funcname,
 		                                                     kind, (*i)->_varmap)));
 	}
 	/*  for(map<unsigned int, UCFuncSet>::iterator i=_funcmap.begin(); i!=_funcmap.end(); ++i)

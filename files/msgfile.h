@@ -17,17 +17,17 @@ int Read_text_msg_file(
     IDataSource *in,
     vector<string> &strings,    // Strings returned here, each
     //   allocated on heap.
-    const char *section = 0
+    const char *section = nullptr
 );
 int Read_text_msg_file(
     istream &in,
     vector<string> &strings,    // Strings returned here, each
     //   allocated on heap.
-    const char *section = 0
+    const char *section = nullptr
 );
 bool Search_text_msg_section(
     IDataSource *in,
-    const char *section = 0
+    const char *section = nullptr
 );
 int Read_text_msg_file_sections(
     IDataSource *in,

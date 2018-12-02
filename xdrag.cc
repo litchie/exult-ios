@@ -76,7 +76,7 @@ Xdnd::Xdnd(
 ) : display(d), xwmwin(xw), xgamewin(xgw),
 	num_types(0), lastx(-1), lasty(-1),
 	file(-1), shape(-1), frame(-1), chunknum(-1), npcnum(-1),
-	combo_cnt(-1), combo_xtiles(0), combo_ytiles(0), combo(0),
+	combo_cnt(-1), combo_xtiles(0), combo_ytiles(0), combo(nullptr),
 	data_valid(false), move_shape_handler(movefun),
 	move_combo_handler(movecmbfun),
 	shape_handler(shapefun), chunk_handler(cfun),
@@ -215,13 +215,13 @@ void Xdnd::client_msg(
 		if (shape >= 0) {   // Dropping a shape?
 			if (file == U7_SHAPE_SHAPES)
 				// For now, just allow "shapes.vga".
-				(*shape_handler)(shape, frame, lastx, lasty, 0);
+				(*shape_handler)(shape, frame, lastx, lasty, nullptr);
 		} else if (chunknum >= 0) // A whole chunk.
-			(*chunk_handler)(chunknum, lastx, lasty, 0);
+			(*chunk_handler)(chunknum, lastx, lasty, nullptr);
 		else if (npcnum >= 0)   // An NPC.
-			(*npc_handler)(npcnum, lastx, lasty, 0);
+			(*npc_handler)(npcnum, lastx, lasty, nullptr);
 		else if (combo_cnt >= 0 && combo)
-			(*combo_handler)(combo_cnt, combo, lastx, lasty, 0);
+			(*combo_handler)(combo_cnt, combo, lastx, lasty, nullptr);
 
 		data_valid = false;
 	}
@@ -247,7 +247,7 @@ void Xdnd::select_msg(
 	combo_cnt = -1;
 	combo_xtiles = combo_ytiles = 0;
 	delete combo;
-	combo = 0;
+	combo = nullptr;
 	Atom type = None;       // Get data.
 	int format;
 	unsigned long nitems, after;

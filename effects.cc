@@ -121,7 +121,7 @@ void Effects_manager::add_effect(
     Special_effect *effect
 ) {
 	effect->next = effects;     // Insert into chain.
-	effect->prev = 0;
+	effect->prev = nullptr;
 	if (effect->next)
 		effect->next->prev = effect;
 	effects = effect;
@@ -135,7 +135,7 @@ void Effects_manager::add_text_effect(
     Text_effect *effect
 ) {
 	effect->next = texts;       // Insert into chain.
-	effect->prev = 0;
+	effect->prev = nullptr;
 	if (effect->next)
 		effect->next->prev = effect;
 	texts = effect;
@@ -337,7 +337,7 @@ Sprites_effect::Sprites_effect(
     int delay,          // Delay (msecs) before starting.
     int frm,            // Starting frame.
     int rps             // Reps, or <0 to go through frames.
-) : sprite(num, frm, SF_SPRITES_VGA), item(0), pos(p),
+) : sprite(num, frm, SF_SPRITES_VGA), item(nullptr), pos(p),
 	xoff(0), yoff(0), deltax(dx), deltay(dy), reps(rps) {
 	Game_window *gwin = Game_window::get_instance();
 	frames = sprite.get_num_frames();
@@ -460,7 +460,7 @@ Explosion_effect::Explosion_effect(
     //   -1 for default(704 = powder keg).
     int proj,       // Projectile for e.g., burst arrows, 0 otherwise
     Game_object *att    //who is responsible for the explosion
-    //  or 0 for default
+    //  or nullptr for default
     //Different sprites for different explosion types
 ) : Sprites_effect(get_explosion_shape(weap, proj), p, 0, 0, delay),
 	explode(exp), weapon(weap >= 0 ? weap : (proj >= 0 ? proj : 704)),
@@ -489,7 +489,7 @@ void Explosion_effect::handle_event(
 		if (explode && !explode->is_pos_invalid()) {
 			Game_window::get_instance()->add_dirty(explode);
 			explode->remove_this();
-			explode = 0;
+			explode = nullptr;
 		}
 		Shape_frame *shape = sprite.get_shape();
 		int width = shape->get_width();     //Get the sprite's width
@@ -557,9 +557,9 @@ void Projectile_effect::init(
 	// Find path.  Should never fail.
 	bool explodes = (winfo && winfo->explodes()) || (ainfo && ainfo->explodes());
 	if (explodes && ainfo && ainfo->is_homing())
-		path->NewPath(pos, pos, 0); //A bit of a hack, I know...
+		path->NewPath(pos, pos, nullptr); //A bit of a hack, I know...
 	else {
-		path->NewPath(pos, dst, 0);
+		path->NewPath(pos, dst, nullptr);
 		if (attacker) {
 			// Getprojectile  out of shooter's volume.
 			Block vol = attacker->get_block();
@@ -632,7 +632,7 @@ Projectile_effect::Projectile_effect(
     int attpts,         // Attack points of projectile.
     int spd,            // Projectile speed, or -1 to use default.
     bool retpath            // Return of a boomerang.
-) : attacker(att), target(0), weapon(weap), projectile_shape(proj),
+) : attacker(att), target(nullptr), weapon(weap), projectile_shape(proj),
 	sprite(spr, 0), return_path(retpath), skip_render(spr < 0),
 	speed(spd), attval(attpts), autohit(false) {
 	init(att->get_tile(), d);
@@ -651,7 +651,7 @@ Projectile_effect::Projectile_effect(
     int attpts,         // Attack points of projectile.
     int spd,            // Projectile speed, or -1 to use default.
     bool retpath            // Return of a boomerang.
-) : attacker(0), target(to), weapon(weap), projectile_shape(proj),
+) : attacker(nullptr), target(to), weapon(weap), projectile_shape(proj),
 	sprite(spr, 0), return_path(retpath), skip_render(spr < 0),
 	speed(spd), attval(attpts), autohit(false) {
 	init(s, to->get_tile());
@@ -699,7 +699,7 @@ inline Game_object *Find_target(
 	Tile_coord dest = pos;      // This gets modified.
 	if (!Map_chunk::is_blocked(pos, 1, MOVE_FLY, 0) &&
 	        dest == pos)
-		return (0);
+		return nullptr;
 	return Game_object::find_blocking(pos);
 }
 
@@ -725,7 +725,7 @@ void Projectile_effect::handle_event(
 		// This speeds up the missile.
 		path_finished = (path->GetNextStep(pos) == 0) ||    // Get next spot.
 		                // If missile egg, detect target.
-		                (!target && !no_blocking && (target = Find_target(gwin, pos)) != 0);
+		                (!target && !no_blocking && (target = Find_target(gwin, pos)) != nullptr);
 		if (path_finished)
 			break;
 	}
@@ -753,8 +753,8 @@ void Projectile_effect::handle_event(
 				                                       attacker, target, pos, pos + offset));
 			else
 				eman->add_effect(new Explosion_effect(pos + offset,
-				                                      0, 0, weapon, projectile_shape, attacker));
-			target = 0; // Takes care of attack.
+				                                      nullptr, 0, weapon, projectile_shape, attacker));
+			target = nullptr; // Takes care of attack.
 		} else {
 			// Not teleported away ?
 			bool returns = (winf && winf->returns()) || (ainf && ainf->returns());
@@ -772,7 +772,7 @@ void Projectile_effect::handle_event(
 				// work as it does in the original when you target the
 				// avatar with the spell.
 				if (winf && winf->get_usecode() > 0)
-					ucmachine->call_usecode(winf->get_usecode(), 0,
+					ucmachine->call_usecode(winf->get_usecode(), nullptr,
 					                        Usecode_machine::weapon);
 			}
 			if (returns && attacker &&  // boomerangs
@@ -852,7 +852,7 @@ Homing_projectile::Homing_projectile(   // A better name is welcome...
 	attacker = att;
 	pos = sp;
 	dest = tp;
-	target = trg ? trg->as_actor() : 0;
+	target = trg ? trg->as_actor() : nullptr;
 	stationary = target ? false : true; //If true, the sprite will 'park' at dest
 	Game_window *gwin = Game_window::get_instance();
 	frames = sprite.get_num_frames();
@@ -913,7 +913,7 @@ void Homing_projectile::handle_event(
 		//The target has been killed; find another one
 		Actor_vector npcs;  // Find NPC's.
 		Game_object::find_nearby_actors(npcs, pos, -1, 30);
-		Actor *nearest = 0;
+		Actor *nearest = nullptr;
 		uint32 bestdist = 100000;
 		for (Actor_vector::const_iterator it = npcs.begin();
 		        it != npcs.end(); ++it) {
@@ -1044,7 +1044,7 @@ void Text_effect::init(
 Text_effect::Text_effect(
     const string &m,        // A copy is made.
     Game_object *it         // Item text is on, or null.
-) : next(0), prev(0), msg(m), item(it), pos(Figure_text_pos()), num_ticks(0) {
+) : next(nullptr), prev(nullptr), msg(m), item(it), pos(Figure_text_pos()), num_ticks(0) {
 	init();
 }
 
@@ -1055,7 +1055,7 @@ Text_effect::Text_effect(
 Text_effect::Text_effect(
     const string &m,        // A copy is made.
     int t_x, int t_y        // Abs. tile coords.
-) : next(0), prev(0), msg(m), item(0), tpos(t_x, t_y, 0), pos(Figure_text_pos()), num_ticks(0) {
+) : next(nullptr), prev(nullptr), msg(m), item(nullptr), tpos(t_x, t_y, 0), pos(Figure_text_pos()), num_ticks(0) {
 	init();
 }
 
@@ -1291,7 +1291,7 @@ protected:
 	}
 public:
 	Rain_effect(int duration, int delay = 0,
-	            int ndrops = MAXDROPS, int n = -1, Game_object *egg = 0)
+	            int ndrops = MAXDROPS, int n = -1, Game_object *egg = nullptr)
 		: Weather_effect(duration, delay, n, egg),
 		  num_drops(ndrops), gradual(ndrops == 0)
 	{  }

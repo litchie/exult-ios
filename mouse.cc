@@ -49,7 +49,7 @@ short Mouse::long_arrows[8] = {24, 25, 26, 27, 28, 29, 30, 31};
 short Mouse::short_combat_arrows[8] = {32, 33, 34, 35, 36, 37, 38, 39};
 short Mouse::med_combat_arrows[8] = {40, 41, 42, 43, 44, 45, 46, 47};
 
-Mouse *Mouse::mouse = 0;
+Mouse *Mouse::mouse = nullptr;
 bool Mouse::mouse_update = false;
 
 /*
@@ -58,7 +58,7 @@ bool Mouse::mouse_update = false;
 
 Mouse::Mouse(
     Game_window *gw         // Where to draw.
-) : gwin(gw), iwin(gwin->get_win()), backup(0), box(0, 0, 0, 0), dirty(0, 0, 0, 0), cur_framenum(0), cur(0), avatar_speed(100 * gwin->get_std_delay() / slow_speed_factor) {
+) : gwin(gw), iwin(gwin->get_win()), backup(nullptr), box(0, 0, 0, 0), dirty(0, 0, 0, 0), cur_framenum(0), cur(nullptr), avatar_speed(100 * gwin->get_std_delay() / slow_speed_factor) {
 	SDL_GetMouseState(&mousex, &mousey);
 	iwin->screen_to_game(mousex, mousey, gwin->get_fastmouse(), mousex, mousey);
 	if (is_system_path_defined("<PATCH>") && U7exists(PATCH_POINTERS))
@@ -72,7 +72,7 @@ Mouse::Mouse(
 Mouse::Mouse(
     Game_window *gw,        // Where to draw.
     IDataSource &shapes
-) : gwin(gw), iwin(gwin->get_win()), backup(0), box(0, 0, 0, 0), dirty(0, 0, 0, 0), cur_framenum(0), cur(0), avatar_speed(100 * gwin->get_std_delay() / slow_speed_factor) {
+) : gwin(gw), iwin(gwin->get_win()), backup(nullptr), box(0, 0, 0, 0), dirty(0, 0, 0, 0), cur_framenum(0), cur(nullptr), avatar_speed(100 * gwin->get_std_delay() / slow_speed_factor) {
 	SDL_GetMouseState(&mousex, &mousey);
 	iwin->screen_to_game(mousex, mousey, gwin->get_fastmouse(), mousex, mousey);
 	pointers.load(&shapes);
@@ -286,9 +286,9 @@ void Mouse::set_speed_cursor() {
 		float speed_section = max(max(-static_cast<float>(dx) / ax, static_cast<float>(dx) / (gamewin_dims.w - ax)), max(static_cast<float>(dy) / ay, -static_cast<float>(dy) / (gamewin_dims.h - ay)));
 		bool nearby_hostile = gwin->is_hostile_nearby();
 		bool has_active_nohalt_scr = false;
-		Usecode_script *scr = 0;
+		Usecode_script *scr = nullptr;
 		Actor *act = gwin->get_main_actor();
-		while ((scr = Usecode_script::find_active(act, scr)) != 0)
+		while ((scr = Usecode_script::find_active(act, scr)) != nullptr)
 			// We should only be here is scripts are nohalt, but just
 			// in case...
 			if (scr->is_no_halt()) {

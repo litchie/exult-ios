@@ -97,7 +97,7 @@ Slider_gump::Slider_gump(
     int mival, int mxval,       // Value range.
     int step,           // Amt. to change by.
     int defval          // Default value.
-) : Modal_gump(0, game->get_shape("gumps/slider")),
+) : Modal_gump(nullptr, game->get_shape("gumps/slider")),
 	min_val(mival), max_val(mxval), step_val(step),
 	val(defval), dragging(0), prev_dragx(0) {
 	diamond = ShapeID(game->get_shape("gumps/slider_diamond"), 0, SF_GUMPS_VGA);
@@ -186,9 +186,9 @@ bool Slider_gump::mouse_down(
 	if (btn)
 		pushed = btn;
 	else
-		pushed = 0;
+		pushed = nullptr;
 	if (pushed) {
-		if (!pushed->push(button)) pushed = 0;
+		if (!pushed->push(button)) pushed = nullptr;
 		return true;
 	}
 	// See if on diamond.
@@ -236,7 +236,7 @@ bool Slider_gump::mouse_up(
 	pushed->unpush(button);
 	if (pushed->on_button(mx, my))
 		pushed->activate(button);
-	pushed = 0;
+	pushed = nullptr;
 
 	return true;
 }

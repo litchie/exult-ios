@@ -52,7 +52,7 @@ using std::cout;
 using std::endl;
 
 Gump_manager::Gump_manager()
-	: open_gumps(0), kbd_focus(0), non_persistent_count(0),
+	: open_gumps(nullptr), kbd_focus(nullptr), non_persistent_count(0),
 	  modal_gump_count(0), right_click_close(true), dont_pause_game(false) {
 	std::string str;
 	config->value("config/gameplay/right_click_closes_gumps", str, "yes");
@@ -72,7 +72,7 @@ Gump_manager::Gump_manager()
 
 bool Gump_manager::showing_gumps(bool no_pers) const {
 	// If no gumps, or we do want to check for persistent, just check to see if any exist
-	if (!no_pers || !open_gumps) return open_gumps != 0;
+	if (!no_pers || !open_gumps) return open_gumps != nullptr;
 
 	// If we don't want to check for persistend
 	for (Gump_list *gump = open_gumps; gump; gump = gump->next)
@@ -93,7 +93,7 @@ Gump *Gump_manager::find_gump(
     bool pers               // Persistent?
 ) {
 	Gump_list *gmp;
-	Gump *found = 0;        // We want last found in chain.
+	Gump *found = nullptr;        // We want last found in chain.
 	for (gmp = open_gumps; gmp; gmp = gmp->next) {
 		Gump *gump = gmp->gump;
 		if (gump->has_point(x, y) && (pers || !gump->is_persistent()))
@@ -112,7 +112,7 @@ Gump *Gump_manager::find_gump(
 	// Get container object is in.
 	const Game_object *owner = obj->get_owner();
 	if (!owner)
-		return (0);
+		return nullptr;
 	// Look for container's gump.
 	for (Gump_list *gmp = open_gumps; gmp; gmp = gmp->next)
 		if (gmp->gump->get_container() == owner)
@@ -122,7 +122,7 @@ Gump *Gump_manager::find_gump(
 	if (dragged && dragged->get_container() == owner)
 		return dragged;
 
-	return (0);
+	return nullptr;
 }
 
 /*
@@ -146,7 +146,7 @@ Gump *Gump_manager::find_gump(
 	         dragged->get_shapenum() == shapenum))
 		return dragged;
 
-	return (0);
+	return nullptr;
 }
 
 /*
@@ -190,7 +190,7 @@ bool Gump_manager::close_gump(Gump *gump) {
 
 bool Gump_manager::remove_gump(Gump *gump) {
 	if (gump == kbd_focus)
-		set_kbd_focus(0);
+		set_kbd_focus(nullptr);
 	if (open_gumps) {
 		if (open_gumps->gump == gump) {
 			Gump_list *p = open_gumps->next;
@@ -198,7 +198,7 @@ bool Gump_manager::remove_gump(Gump *gump) {
 			open_gumps = p;
 		} else {
 			Gump_list *p = open_gumps;      // Find prev. to this.
-			while (p->next != 0 && p->next->gump != gump) p = p->next;
+			while (p->next != nullptr && p->next->gump != gump) p = p->next;
 
 			if (p->next) {
 				Gump_list *g = p->next->next;
@@ -272,7 +272,7 @@ void Gump_manager::add_gump(
 		y = gwin->get_width() / 10;
 	}
 
-	Gump *new_gump = 0;
+	Gump *new_gump = nullptr;
 	if (obj) {
 		Actor *npc = obj->as_actor();
 		if (npc && paperdoll)
@@ -321,7 +321,7 @@ void Gump_manager::close_all_gumps(
 ) {
 	bool removed = false;
 
-	Gump_list *prev = 0;
+	Gump_list *prev = nullptr;
 	Gump_list *next = open_gumps;
 
 	while (next) {      // Remove all gumps.
@@ -342,7 +342,7 @@ void Gump_manager::close_all_gumps(
 			prev = gump;
 	}
 	non_persistent_count = 0;
-	set_kbd_focus(0);
+	set_kbd_focus(nullptr);
 	gwin->get_npc_prox()->wait(4);      // Delay "barking" for 4 secs.
 	if (removed) gwin->paint();
 }
@@ -352,13 +352,13 @@ void Gump_manager::close_all_gumps(
  */
 
 void Gump_manager::set_kbd_focus(
-    Gump *gump          // May be NULL.
+    Gump *gump          // May be nullptr.
 ) {
 	if (gump && gump->can_handle_kbd()) {
 		kbd_focus = gump;
 		SDL_EnableUNICODE(1);   // Enable unicode translation.
 	} else {
-		kbd_focus = 0;
+		kbd_focus = nullptr;
 		if (!modal_gump_count)
 			SDL_EnableUNICODE(0);
 	}

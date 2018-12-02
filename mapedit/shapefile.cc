@@ -69,7 +69,7 @@ Object_browser *Shape_file_info::get_browser(
 ) {
 	if (browser)
 		return browser;     // Okay.
-	browser = create_browser(vgafile, palbuf, 0);
+	browser = create_browser(vgafile, palbuf, nullptr);
 	// Add a reference (us).
 	gtk_widget_ref(browser->get_widget());
 	return browser;
@@ -337,7 +337,7 @@ Flex_file_info::Flex_file_info(
     const char *bnm,        // Basename,
     const char *pnm,        // Full pathname,
     unsigned size           // File size.
-) : Shape_file_info(bnm, pnm, 0), flex(0), write_flat(true) {
+) : Shape_file_info(bnm, pnm, nullptr), flex(nullptr), write_flat(true) {
 	entries.resize(size > 0);
 	lengths.resize(entries.size());
 	if (size > 0) {         // Read in whole thing.
@@ -372,7 +372,7 @@ unsigned char *Flex_file_info::get(
 		len = lengths[i];
 		return entries[i].get();
 	} else
-		return 0;
+		return nullptr;
 }
 
 /*
@@ -572,7 +572,7 @@ Shape_file_info *Shape_file_set::create(
 	bool pexists = U7exists(ppath);
 	if (!sexists && !pexists)   // Neither place.  Try to create.
 		if (!(pexists = Create_file(basename, ppath)))
-			return 0;
+			return nullptr;
 	// Use patch file if it exists.
 	const char *fullname = pexists ? ppath : spath;
 	string group_name(basename);    // Create groups file.
@@ -627,13 +627,13 @@ Shape_file_info *Shape_file_set::create(
 		delete ifile;
 	}
 	cerr << "Error opening image file '" << basename << "'.\n";
-	return 0;
+	return nullptr;
 }
 
 /*
  *  Locates the NPC browser.
  *
- *  Output: ->file info, or 0 if not found.
+ *  Output: ->file info, or nullptr if not found.
  */
 
 Shape_file_info *Shape_file_set::get_npc_browser(
@@ -642,7 +642,7 @@ Shape_file_info *Shape_file_set::get_npc_browser(
 	        it != files.end(); ++it)
 		if (strcasecmp((*it)->basename.c_str(), "npcs") == 0)
 			return *it; // Found it.
-	return 0;   // Doesn't exist yet.
+	return nullptr;   // Doesn't exist yet.
 }
 
 /*

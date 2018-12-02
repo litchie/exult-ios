@@ -73,14 +73,14 @@ public:
 		return 0;
 	}
 	virtual If_else_path_actor_action *as_usecode_path() {
-		return 0;
+		return nullptr;
 	}
 	virtual int get_speed() const {
 		return 0;
 	}
 	virtual Actor_action *kill() {
 		delete this;
-		return 0;
+		return nullptr;
 	}
 };
 
@@ -116,7 +116,7 @@ private:
 		subseq = sub;
 	}
 public:
-	Path_walking_actor_action(PathFinder *p = 0, int maxblk = 3, int pers = 0);
+	Path_walking_actor_action(PathFinder *p = nullptr, int maxblk = 3, int pers = 0);
 	virtual ~Path_walking_actor_action();
 	static Path_walking_actor_action *create_path(Tile_coord const &src,
 	        Tile_coord const &dest, Pathfinder_client &cost);
@@ -169,7 +169,7 @@ class If_else_path_actor_action : public Path_walking_actor_action {
 	Actor_action *success, *failure;
 public:
 	If_else_path_actor_action(Actor *actor, Tile_coord const &dest,
-	                          Actor_action *s, Actor_action *f = 0);
+	                          Actor_action *s, Actor_action *f = nullptr);
 	~If_else_path_actor_action();
 	void set_failure(Actor_action *f);
 	bool done_and_failed() const {      // Happens if no path found in ctor.
@@ -220,8 +220,8 @@ class Frames_actor_action : public Actor_action {
 	int speed;          // Frame delay in 1/1000 secs.
 	Game_object *obj;       // Object to animate
 public:
-	Frames_actor_action(signed char *f, int c, int spd = 200, Game_object *o = 0);
-	Frames_actor_action(char f, int spd = 200, Game_object *o = 0);
+	Frames_actor_action(signed char *f, int c, int spd = 200, Game_object *o = nullptr);
+	Frames_actor_action(char f, int spd = 200, Game_object *o = nullptr);
 	virtual ~Frames_actor_action() {
 		delete [] frames;
 	}
@@ -265,7 +265,7 @@ public:
 	{  }
 	// Create with up to 4.
 	Sequence_actor_action(Actor_action *a0, Actor_action *a1,
-	                      Actor_action *a2 = 0, Actor_action *a3 = 0);
+	                      Actor_action *a2 = nullptr, Actor_action *a3 = nullptr);
 	virtual int get_speed() const {
 		return speed;
 	}

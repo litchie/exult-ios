@@ -338,7 +338,7 @@ void ExultStudio::open_npc_window(
 
 	}
 	// Init. npc address to null.
-	gtk_object_set_user_data(GTK_OBJECT(npcwin), 0);
+	gtk_object_set_user_data(GTK_OBJECT(npcwin), nullptr);
 	// Make 'apply', 'cancel' sensitive.
 	set_sensitive("npc_apply_btn", true);
 	set_sensitive("npc_cancel_btn", true);
@@ -351,7 +351,7 @@ void ExultStudio::open_npc_window(
 	gtk_widget_show(npcwin);
 #ifdef WIN32
 	if (first_time || !npcdnd)
-		Windnd::CreateStudioDropDest(npcdnd, npchwnd, Drop_dragged_shape, NULL, Drop_dragged_face, (void *) this);
+		Windnd::CreateStudioDropDest(npcdnd, npchwnd, Drop_dragged_shape, nullptr, Drop_dragged_face, (void *) this);
 
 #endif
 }
@@ -385,7 +385,7 @@ static bool Get_prop_spin(
 	GtkTableChild *ent = static_cast<GtkTableChild *>(list->data);
 	GtkBin *frame = GTK_BIN(ent->widget);
 	spin = GTK_SPIN_BUTTON(frame->child);
-	assert(spin != 0);
+	assert(spin != nullptr);
 	const char *name = glade_get_widget_name(GTK_WIDGET(spin));
 	// Names: npc_prop_nn.
 	if (strncmp(name, "npc_prop_", 9) != 0)
@@ -412,7 +412,7 @@ static bool Get_flag_cbox(
 ) {
 	GtkTableChild *ent = static_cast<GtkTableChild *>(list->data);
 	cbox = GTK_CHECK_BUTTON(ent->widget);
-	assert(cbox != 0);
+	assert(cbox != nullptr);
 	const char *name = glade_get_widget_name(GTK_WIDGET(cbox));
 	// Names: npc_flag_xx_nn, where
 	//   xx = si, of, tf.

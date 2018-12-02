@@ -151,7 +151,7 @@ void	MyMidiPlayer::start_music(int num,bool repeat,std::string flex)
 		else if (flex == MAINSHP_FLX) num--;
 	}
 
-	IDataSource *mid_data = 0;
+	IDataSource *mid_data = nullptr;
 
 	// Try in patch dir first.
 	string pflex("<PATCH>/");
@@ -334,7 +334,7 @@ void MyMidiPlayer::load_timbres()
 		music_conversion != XMIDIFILE_CONVERT_NOCONVERSION)
 		return;
 
-	const char *u7voice = 0;
+	const char *u7voice = nullptr;
 
 	// Black Gate Settings
 	if (GAME_BG && timbre_lib == TIMBRE_LIB_INTRO)
@@ -397,7 +397,7 @@ void MyMidiPlayer::load_timbres()
 	timbre_lib_game = Game::get_game_type();
 
 	std::ifstream file;
-	IDataSource *ds = 0;
+	IDataSource *ds = nullptr;
 
 	if (index == -1)
 	{
@@ -503,7 +503,7 @@ void MyMidiPlayer::set_midi_driver(const std::string& desired_driver, bool use_o
 		stop_music();
 		if (midi_driver) midi_driver->destroyMidiDriver();
 		delete midi_driver;
-		midi_driver = 0;
+		midi_driver = nullptr;
 		initialized = false;
 	}
 
@@ -520,7 +520,7 @@ void MyMidiPlayer::set_midi_driver(const std::string& desired_driver, bool use_o
 bool MyMidiPlayer::init_device(bool timbre_load)
 {
 	// already initialized? Do this first
-	if (initialized) return (midi_driver != 0) || ogg_enabled;
+	if (initialized) return (midi_driver != nullptr) || ogg_enabled;
 
 	string	s;
 	string	driver_default = "default";
@@ -607,7 +607,7 @@ bool MyMidiPlayer::init_device(bool timbre_load)
 	// no need for a MIDI device (for now)
 	if (!sfx && !music)
 	{
-		midi_driver = 0;
+		midi_driver = nullptr;
 		return false;
 	}
 
@@ -669,7 +669,7 @@ bool MyMidiPlayer::is_adlib()
 }
 
 MyMidiPlayer::MyMidiPlayer()	: repeating(false),current_track(-1),
-				  midi_driver_name("default"), midi_driver(0), initialized(false),
+				  midi_driver_name("default"), midi_driver(nullptr), initialized(false),
 				  timbre_lib(TIMBRE_LIB_GM),
 				  timbre_lib_index(0), timbre_lib_game(NONE),
 				  music_conversion(XMIDIFILE_CONVERT_MT32_TO_GM),
@@ -687,7 +687,7 @@ MyMidiPlayer::~MyMidiPlayer()
 	{
 		midi_driver->destroyMidiDriver();
 		delete midi_driver;
-		midi_driver = 0;
+		midi_driver = nullptr;
 	}
 }
 
@@ -847,7 +847,7 @@ bool MyMidiPlayer::ogg_play_track(const std::string& filename, int num, bool rep
 	cout << "OGG audio: Music track " << ogg_name << endl;
 #endif
 
-	std::ifstream *stream = 0;
+	std::ifstream *stream = nullptr;
 	try {
 		stream = new std::ifstream(ogg_name.c_str(), std::ios::in | std::ios::binary);
 	}

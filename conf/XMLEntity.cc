@@ -84,7 +84,7 @@ const XMLnode *XMLnode::subtree(const string &h) const {
 		}
 	}
 
-	return 0;
+	return nullptr;
 }
 
 

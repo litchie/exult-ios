@@ -93,7 +93,7 @@ void Container_game_object::remove(
 		return;
 	int shapenum = obj->get_shapenum();
 	volume_used -= obj->get_volume();
-	obj->set_owner(0);
+	obj->set_owner(nullptr);
 	objects.remove(obj);
 	obj->set_invalid();     // No longer part of world.
 	if(g_shortcutBar)
@@ -136,7 +136,7 @@ bool Container_game_object::add(
 	do              // Watch for snake eating itself.
 		if (obj == parent)
 			return false;
-	while ((parent = parent->get_owner()) != 0);
+	while ((parent = parent->get_owner()) != nullptr);
 
 	if (combine) {          // Should we try to combine?
 		const Shape_info &info = obj->get_info();
@@ -251,7 +251,7 @@ int Container_game_object::add_quantity(
 	if (!objects.is_empty()) {
 		// First try existing items.
 		Object_iterator next(objects);
-		while (delta && (obj = next.get_next()) != 0) {
+		while (delta && (obj = next.get_next()) != nullptr) {
 			if (has_quantity && obj->get_shapenum() == shapenum &&
 			        (framenum == c_any_framenum || has_quantity_frame ||
 			         obj->get_framenum() == framenum))
@@ -262,7 +262,7 @@ int Container_game_object::add_quantity(
 				delta -= Add2keyring(qual, framenum);
 		}
 		next.reset();           // Now try recursively.
-		while ((obj = next.get_next()) != 0)
+		while ((obj = next.get_next()) != nullptr)
 			delta = obj->add_quantity(
 			            delta, shapenum, qual, framenum, true, temporary);
 	}
@@ -320,7 +320,7 @@ int Container_game_object::create_quantity(
 	if (objects.is_empty())
 		return (delta);
 	Object_iterator next(objects);
-	while ((obj = next.get_next()) != 0)
+	while ((obj = next.get_next()) != nullptr)
 		delta = obj->create_quantity(delta, shnum, qual, frnum);
 	return (delta);
 }
@@ -345,7 +345,7 @@ int Container_game_object::remove_quantity(
 	Game_object *next;
 	while (obj && delta) {
 		// Might be deleting obj.
-		next = obj == last ? 0 : obj->get_next();
+		next = obj == last ? nullptr : obj->get_next();
 		bool del = false;   // Gets 'deleted' flag.
 		if (obj->get_shapenum() == shapenum &&
 		        (qual == c_any_qual || obj->get_quality() == qual) &&
@@ -365,7 +365,7 @@ int Container_game_object::remove_quantity(
 /*
  *  Find and return a desired item.
  *
- *  Output: ->object if found, else 0.
+ *  Output: ->object if found, else nullptr.
  */
 
 Game_object *Container_game_object::find_item(
@@ -374,10 +374,10 @@ Game_object *Container_game_object::find_item(
     int framenum            // Frame, or c_any_framenum for any.
 ) {
 	if (objects.is_empty() || !Can_be_added(this, shapenum, true))
-		return 0;       // Empty.
+		return nullptr;       // Empty.
 	Game_object *obj;
 	Object_iterator next(objects);
-	while ((obj = next.get_next()) != 0) {
+	while ((obj = next.get_next()) != nullptr) {
 		if (obj->get_shapenum() == shapenum &&
 		        (framenum == c_any_framenum ||
 		         (obj->get_framenum() & 31) == framenum) &&
@@ -389,7 +389,7 @@ Game_object *Container_game_object::find_item(
 		if (found)
 			return (found);
 	}
-	return (0);
+	return nullptr;
 }
 
 /*
@@ -441,7 +441,7 @@ bool Container_game_object::edit(
 #ifdef USE_EXULTSTUDIO
 	if (client_socket >= 0 &&   // Talking to ExultStudio?
 	        cheat.in_map_editor()) {
-		editing = 0;
+		editing = nullptr;
 		Tile_coord t = get_tile();
 		std::string name = get_name();
 		if (Container_out(client_socket, this, t.tx, t.ty, t.tz,
@@ -483,7 +483,7 @@ void Container_game_object::update_from_studio(
 		cout << "Obj from ExultStudio is not being edited" << endl;
 		return;
 	}
-//	editing = 0; // He may have chosen 'Apply', so still editing.
+//	editing = nullptr; // He may have chosen 'Apply', so still editing.
 	if (invis)
 		obj->set_flag(Obj_flags::invisible);
 	else
@@ -523,7 +523,7 @@ int Container_game_object::get_weight(
 	}
 	Game_object *obj;
 	Object_iterator next(objects);
-	while ((obj = next.get_next()) != 0)
+	while ((obj = next.get_next()) != nullptr)
 		wt += obj->get_weight();
 	return wt;
 }
@@ -556,7 +556,7 @@ int Container_game_object::count_objects(
 	int total = 0;
 	Game_object *obj;
 	Object_iterator next(objects);
-	while ((obj = next.get_next()) != 0) {
+	while ((obj = next.get_next()) != nullptr) {
 		if ((shapenum == c_any_shapenum || obj->get_shapenum() == shapenum) &&
 		        // Watch for reflection.
 		        (framenum == c_any_framenum || (obj->get_framenum() & 31) == framenum) &&
@@ -584,7 +584,7 @@ int Container_game_object::get_objects(
 	int vecsize = vec.size();
 	Game_object *obj;
 	Object_iterator next(objects);
-	while ((obj = next.get_next()) != 0) {
+	while ((obj = next.get_next()) != nullptr) {
 		if ((shapenum == c_any_shapenum || obj->get_shapenum() == shapenum) &&
 		        (qual == c_any_qual || obj->get_quality() == qual) &&
 		        // Watch for reflection.
@@ -607,7 +607,7 @@ void Container_game_object::set_flag_recursively(
 	set_flag(flag);
 	Game_object *obj;
 	Object_iterator next(objects);
-	while ((obj = next.get_next()) != 0)
+	while ((obj = next.get_next()) != nullptr)
 		obj->set_flag_recursively(flag);
 }
 
@@ -650,7 +650,7 @@ int Container_game_object::get_ireg_size() {
 	if (!objects.is_empty()) {
 		Game_object *obj;
 		Object_iterator next(objects);
-		while ((obj = next.get_next()) != 0) {
+		while ((obj = next.get_next()) != nullptr) {
 			int size = obj->get_ireg_size();
 
 			if (size < 0) return -1;
@@ -673,7 +673,7 @@ void Container_game_object::write_contents(
 	if (!objects.is_empty()) {  // Now write out what's inside.
 		Game_object *obj;
 		Object_iterator next(objects);
-		while ((obj = next.get_next()) != 0)
+		while ((obj = next.get_next()) != nullptr)
 			obj->write_ireg(out);
 		out->write1(0x01);      // A 01 terminates the list.
 	}
@@ -751,13 +751,13 @@ Game_object *Container_game_object::find_weapon_ammo(
 ) {
 	ignore_unused_variable_warning(recursive);
 	if (weapon < 0 || !Can_be_added(this, weapon))
-		return 0;
+		return nullptr;
 	const Weapon_info *winf = ShapeID::get_info(weapon).get_weapon_info();
 	if (!winf)
-		return 0;
+		return nullptr;
 	int family = winf->get_ammo_consumed();
 	if (family >= 0)
-		return 0;
+		return nullptr;
 
 	Game_object_vector vec;     // Get list of all possessions.
 	vec.reserve(50);
@@ -776,5 +776,5 @@ Game_object *Container_game_object::find_weapon_ammo(
 		else if (obj->get_quantity() >= needed)
 			return obj;
 	}
-	return 0;
+	return nullptr;
 }

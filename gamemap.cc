@@ -76,8 +76,8 @@ using std::strlen;
 using std::vector;
 using std::pair;
 
-vector<Chunk_terrain *> *Game_map::chunk_terrains = 0;
-std::ifstream *Game_map::chunks = 0;
+vector<Chunk_terrain *> *Game_map::chunk_terrains = nullptr;
+std::ifstream *Game_map::chunks = nullptr;
 bool Game_map::v2_chunks = false;
 bool Game_map::read_all_terrain = false;
 bool Game_map::chunk_terrains_modified = false;
@@ -251,10 +251,10 @@ void Game_map::clear_chunks(
 		for (int i = 0; i < cnt; i++)
 			delete(*chunk_terrains)[i];
 		delete chunk_terrains;
-		chunk_terrains = 0;
+		chunk_terrains = nullptr;
 	}
 	delete chunks;          // Close 'u7chunks'.
-	chunks = 0;
+	chunks = nullptr;
 	read_all_terrain = false;
 }
 
@@ -272,7 +272,7 @@ void Game_map::clear(
 		for (int y = 0; y < c_num_chunks; y++)
 			for (int x = 0; x < c_num_chunks; x++) {
 				delete objects[x][y];
-				objects[x][y] = 0;
+				objects[x][y] = nullptr;
 			}
 		for (int i = 0; i < 144; i++) delete [] schunk_cache[i];
 	} else
@@ -452,7 +452,7 @@ void Game_map::write_chunk_terrains(
 				ter->set_modified(false);
 			} else {
 				memset(&data[0], 0, ntiles * nbytes);
-				cerr << "NULL terrain.  U7chunks may be bad."
+				cerr << "nullptr terrain.  U7chunks may be bad."
 				     << endl;
 			}
 			ochunks.write(reinterpret_cast<char *>(data),
@@ -530,7 +530,7 @@ void Game_map::write_ifix_objects(
 			// Restore original order (sort of).
 			Object_iterator_backwards next(chunk);
 			Game_object *obj;
-			while ((obj = next.get_next()) != 0)
+			while ((obj = next.get_next()) != nullptr)
 				obj->write_ifix(&ifix, v2);
 			writer.mark_section_done();
 		}
@@ -651,7 +651,7 @@ void Game_map::write_attributes(
 		return;
 	for (i = 0; i < cnt; ++i) {
 		const char *att = attlist[i].first;
-		len += strlen(att) + 1 + 2; // Name, NULL, val.
+		len += strlen(att) + 1 + 2; // Name, nullptr, val.
 	}
 	ireg->write1(IREG_SPECIAL);
 	ireg->write1(IREG_ATTS);
@@ -772,7 +772,7 @@ void Game_map::write_ireg_objects(
 			Game_object *obj;
 			// Restore original order (sort of).
 			Object_iterator_backwards next(chunk);
-			while ((obj = next.get_next()) != 0)
+			while ((obj = next.get_next()) != nullptr)
 				obj->write_ireg(ireg);
 			ireg->write2(0);// End with 2 0's.
 		}
@@ -788,7 +788,7 @@ void Game_map::get_ireg_objects(
 ) {
 	char fname[128];        // Set up name.
 	ifstream ireg_stream;           // There it is.
-	IDataSource *ireg = 0;
+	IDataSource *ireg = nullptr;
 
 	if (schunk_cache[schunk] && schunk_cache_sizes[schunk] >= 0) {
 		// No items
@@ -819,7 +819,7 @@ void Game_map::get_ireg_objects(
 	delete ireg;
 	if (schunk_cache[schunk]) {
 		delete [] schunk_cache[schunk];
-		schunk_cache[schunk] = 0;
+		schunk_cache[schunk] = nullptr;
 		schunk_cache_sizes[schunk] = -1;
 	}
 
@@ -908,7 +908,7 @@ void Game_map::read_ireg_objects(
 	unsigned char entbuf[20];
 	int entlen;         // Gets entry length.
 	sint8 index_id = -1;
-	Game_object *last_obj = 0;  // Last one read in this call.
+	Game_object *last_obj = nullptr;  // Last one read in this call.
 	Game_window *gwin = Game_window::get_instance();
 	// Go through entries.
 	while (((entlen = ireg->read1(), !ireg->eof()))) {
@@ -1506,7 +1506,7 @@ void Game_map::find_unused_shapes(
 			Map_chunk *chunk = get_chunk(cx, cy);
 			Recursive_object_iterator all(chunk->get_objects());
 			Game_object *obj;
-			while ((obj = all.get_next()) != 0) {
+			while ((obj = all.get_next()) != nullptr) {
 				int shnum = obj->get_shapenum();
 				if (shnum >= 0 && shnum < maxbits)
 					found[shnum / 8] |= (1 << (shnum % 8));
@@ -1553,14 +1553,14 @@ Game_object *Game_map::locate_shape(
 		cx = c_num_chunks;  // Past last chunk.
 		cy = c_num_chunks - 1;
 	}
-	Game_object *obj = 0;
+	Game_object *obj = nullptr;
 	if (start) {        // Start here.
 		Game_object *owner = start->get_outermost();
 		cx = owner->get_cx();
 		cy = owner->get_cy();
 		if (upwards) {
 			Recursive_object_iterator_backwards next(start);
-			while ((obj = next.get_next()) != 0)
+			while ((obj = next.get_next()) != nullptr)
 				if (obj->get_shapenum() == shapenum &&
 				        (frnum == c_any_framenum ||
 				         obj->get_framenum() == frnum) &&
@@ -1569,7 +1569,7 @@ Game_object *Game_map::locate_shape(
 					break;
 		} else {
 			Recursive_object_iterator next(start);
-			while ((obj = next.get_next()) != 0)
+			while ((obj = next.get_next()) != nullptr)
 				if (obj->get_shapenum() == shapenum &&
 				        (frnum == c_any_framenum ||
 				         obj->get_framenum() == frnum) &&
@@ -1592,7 +1592,7 @@ Game_object *Game_map::locate_shape(
 		if (upwards) {
 			Recursive_object_iterator_backwards next(
 			    chunk->get_objects());
-			while ((obj = next.get_next()) != 0)
+			while ((obj = next.get_next()) != nullptr)
 				if (obj->get_shapenum() == shapenum &&
 				        (frnum == c_any_framenum ||
 				         obj->get_framenum() == frnum) &&
@@ -1601,7 +1601,7 @@ Game_object *Game_map::locate_shape(
 					break;
 		} else {
 			Recursive_object_iterator next(chunk->get_objects());
-			while ((obj = next.get_next()) != 0)
+			while ((obj = next.get_next()) != nullptr)
 				if (obj->get_shapenum() == shapenum &&
 				        (frnum == c_any_framenum ||
 				         obj->get_framenum() == frnum) &&
@@ -1788,7 +1788,7 @@ void Game_map::cache_out_schunk(int schunk) {
 	// Clear old (this shouldn't happen)
 	if (schunk_cache[schunk]) {
 		delete [] schunk_cache[schunk];
-		schunk_cache[schunk] = 0;
+		schunk_cache[schunk] = nullptr;
 		schunk_cache_sizes[schunk] = -1;
 	}
 

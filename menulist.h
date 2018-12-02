@@ -86,7 +86,7 @@ public:
 	Font *font;
 	Font *font_on;
 	const char *text;
-	MenuTextObject() : text(0) {}
+	MenuTextObject() : text(nullptr) {}
 	virtual ~MenuTextObject() {
 		delete [] text;
 	}

@@ -62,7 +62,7 @@ int main(
 	extern FILE *yyin;
 	const char *src;
 	char outbuf[256];
-	char *outname = 0;
+	char *outname = nullptr;
 	static const char *optstring = "o:I:s";
 	Uc_function::Intrinsic_type ty = Uc_function::unset;
 	opterr = 0;         // Don't let getopt() print errs.

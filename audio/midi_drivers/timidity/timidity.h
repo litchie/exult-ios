@@ -68,7 +68,7 @@ extern void Timidity_GenerateSamples(void *stream, int samples);
 /* When a patch file can't be opened, one of these extensions is
    appended to the filename and the open is tried again.
  */
-#define PATCH_EXT_LIST { ".pat", 0 }
+#define PATCH_EXT_LIST { ".pat", nullptr }
 
 /* Acoustic Grand Piano seems to be the usual default instrument. */
 #define DEFAULT_PROGRAM 0

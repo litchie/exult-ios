@@ -54,7 +54,7 @@ public:
 	}
 	static void delete_all();   // Delete all monsters.
 	static void give_up() {     // For file errors only!
-		in_world = 0;
+		in_world = nullptr;
 	}
 	virtual int move_aside(Actor *for_actor, int dir) {
 		ignore_unused_variable_warning(for_actor, dir);

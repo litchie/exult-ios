@@ -58,7 +58,7 @@ AudioSample *AudioSample::createAudioSample(uint8 *data, uint32 size)
 		delete [] data;
 	}
 
-	return 0;
+	return nullptr;
 }
 
 }

@@ -70,7 +70,7 @@ public:
 	bool bycol;         // If dim0_tiles > 0, go down first.
 	int dim0_tiles;         // File consists of 8x8 (flat) tiles.
 public:
-	Shape_spec() : filename(0), nframes(0), flat(false), bycol(false),
+	Shape_spec() : filename(nullptr), nframes(0), flat(false), bycol(false),
 		dim0_tiles(0)
 	{  }
 	Shape_spec(const Shape_spec &other)
@@ -79,7 +79,7 @@ public:
 		if (other.filename)
 			filename = newstrdup(other.filename);
 		else
-			filename = 0;
+			filename = nullptr;
 	}
 	~Shape_spec() {
 		delete [] filename;
@@ -233,7 +233,7 @@ static void Read_script(
     char  *&palname,        // Palette name returned.
     Shape_specs &specs      // Shape specs. returned here.
 ) {
-	imagename = 0;
+	imagename = nullptr;
 	specs.resize(0);        // Initialize.
 	specs.reserve(1200);
 	char buf[1024];
@@ -447,7 +447,7 @@ static void Write_frame(
     Shape_frame *frame,     // What to write.
     unsigned char *palette      // 3*256 bytes.
 ) {
-	assert(frame != 0);
+	assert(frame != nullptr);
 	char *fullname = new char[strlen(basename) + 30];
 	sprintf(fullname, "%s%02d.png", basename, frnum);
 	cout << "Writing " << fullname << endl;
@@ -702,7 +702,7 @@ static void Write_exult(
 		delete [] pixels;
 		if (palname) {      // Write palette for first frame.
 			Write_palettes(palname, palette, palsize);
-			palname = 0;
+			palname = nullptr;
 		}
 		delete [] palette;
 	}
@@ -723,7 +723,7 @@ static void Create(
 	if (palname && U7exists(palname)) {     // Palette?
 		cout << "Palette file '" << palname <<
 		     "' exists, so we won't overwrite it" << endl;
-		palname = 0;
+		palname = nullptr;
 	}
 	ofstream out;
 	U7open(out, imagename);     // May throw exception.
@@ -740,7 +740,7 @@ static void Create(
 			else
 				Write_exult(out, basename, (*it).nframes,
 				            (*it).flat, palname);
-			palname = 0;    // Only write 1st palette.
+			palname = nullptr;    // Only write 1st palette.
 		}
 		writer.mark_section_done();
 	}
@@ -763,7 +763,7 @@ static void Update(
 	if (palname && U7exists(palname)) {     // Palette?
 		cout << "Palette file '" << palname <<
 		     "' exists, so we won't overwrite it" << endl;
-		palname = 0;
+		palname = nullptr;
 	}
 	FlexFile in(imagename);     // May throw exception.
 	size_t oldcnt = in.number_of_objects();
@@ -784,10 +784,10 @@ static void Update(
 	Flex_writer writer(out, title, newcnt);
 	for (i = 0; i < newcnt; i++) {  // Write out new entries.
 		// New entry for this shape?
-		if (i < specs.size() && specs[i].filename != 0) {
+		if (i < specs.size() && specs[i].filename != nullptr) {
 			Write_exult(out, specs[i].filename,
 			            specs[i].nframes, specs[i].flat, palname);
-			palname = 0;    // Only write 1st palette.
+			palname = nullptr;    // Only write 1st palette.
 		}
 		// Write old entry.
 		else if (i < oldcnt && data[i])
@@ -862,7 +862,7 @@ int main(
 	if (argc < 3 || argv[1][0] != '-')
 		Usage();        // (Exits.)
 	char *scriptname = argv[2];
-	char *imagename = 0, *palname = 0;
+	char *imagename = nullptr, *palname = nullptr;
 	Shape_specs specs;      // Shape specs. stored here.
 	ifstream specin;
 	try {

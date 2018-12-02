@@ -278,7 +278,7 @@ void UCFunc::output_ucs_opcode(ostream &o, const FuncMap &funcmap, const vector<
 void UCFunc::output_ucs_node(ostream &o, const FuncMap &funcmap, UCNode *ucn, const map<unsigned int, string> &intrinsics, unsigned int indent, const UCOptions &options, Usecode_symbol_table *symtbl) {
 	if (!ucn->nodelist.empty()) tab_indent(indent, o) << '{' << endl;
 
-	if (ucn->ucc != 0)
+	if (ucn->ucc != nullptr)
 		output_asm_opcode(tab_indent(indent, o), funcmap, opcode_table_data, intrinsics, *(ucn->ucc), options, symtbl);
 
 	if (!ucn->nodelist.empty())
@@ -331,7 +331,7 @@ void UCFunc::parse_ucs_pass1(vector<UCNode *> &nodes) {
 
 	// collect jump references
 	for (unsigned int i = 0; i < nodes.size(); i++) {
-		if (nodes[i]->ucc != 0) {
+		if (nodes[i]->ucc != nullptr) {
 			unsigned int isjump = 0;
 			for (vector<pair<unsigned int, unsigned int> >::iterator op = opcode_jumps.begin(); op != opcode_jumps.end(); ++op)
 				if (op->first == nodes[i]->ucc->_id) {
@@ -349,7 +349,7 @@ void UCFunc::parse_ucs_pass1(vector<UCNode *> &nodes) {
 	gotoset.push_back(GotoSet());
 
 	for (unsigned int i = 0; i < nodes.size(); i++) {
-		if (nodes[i]->ucc != 0) {
+		if (nodes[i]->ucc != nullptr) {
 			if (count(jumps.begin(), jumps.end(), nodes[i]->ucc->_offset)) {
 				gotoset.push_back(nodes[i]->ucc);
 			} else
@@ -959,7 +959,7 @@ string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmst
 					funcname = fmp->second.funcname;
 					funcid = params[t - 1];
 				} else if (c == 'm') {
-					assert(symtbl != 0);
+					assert(symtbl != nullptr);
 					i++;
 					c = asmstr[i];
 					unsigned int t = charnum2uint(c);
@@ -1195,12 +1195,12 @@ void readbin_U7UCFunc(
 
 	if (symtbl) {
 		Usecode_symbol *sym = (*symtbl)[ucf._funcid];
-		Usecode_class_symbol *class_sym = 0;
+		Usecode_class_symbol *class_sym = nullptr;
 		// No symbol? Try looking inside class definitions.
 		if (!sym) {
 			for (int ii = 0; ii < symtbl->get_num_classes(); ii++) {
 				Usecode_class_symbol *cls = symtbl->get_class(ii);
-				assert(cls != 0);
+				assert(cls != nullptr);
 				sym = (*cls)[ucf._funcid];
 				if (sym) {
 					class_sym = cls;

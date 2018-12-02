@@ -83,7 +83,7 @@ struct SaveGame_Party {
  *  The file save/load box:
  */
 class Newfile_gump : public Modal_gump {
-	UNREPLICATABLE_CLASS_I(Newfile_gump, Modal_gump(0, 0, 0, 0))
+	UNREPLICATABLE_CLASS_I(Newfile_gump, Modal_gump(nullptr, 0, 0, 0))
 
 public:
 	struct SaveInfo {

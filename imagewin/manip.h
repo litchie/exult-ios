@@ -83,7 +83,7 @@ public:
 // 555 RGB dest
 template<> class ManipBaseDest<color_555> : public ManipBase {
 protected:
-	ManipBaseDest(SDL_Color *c, SDL_PixelFormat *f) : ManipBase(0, f) {
+	ManipBaseDest(SDL_Color *c, SDL_PixelFormat *f) : ManipBase(nullptr, f) {
 		if (c) {
 			if (fmt->Rmask == 0x7c00 && fmt->Gmask == 0x03e0 && fmt->Bmask == 0x001f)
 				std::memcpy(colors, c, sizeof(colors));
@@ -118,7 +118,7 @@ public:
 // 565 RGB dest
 template<> class ManipBaseDest<color_565> : public ManipBase {
 protected:
-	ManipBaseDest(SDL_Color *c, SDL_PixelFormat *f) : ManipBase(0, f) {
+	ManipBaseDest(SDL_Color *c, SDL_PixelFormat *f) : ManipBase(nullptr, f) {
 		if (c) {
 			if (fmt->Rmask == 0xf800 && fmt->Gmask == 0x7e0 && fmt->Bmask == 0x1f)
 				std::memcpy(colors, c, sizeof(colors));

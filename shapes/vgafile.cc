@@ -55,7 +55,7 @@ using std::pair;
 using std::unique_ptr;
 using std::make_unique;
 
-Image_buffer8 *Shape_frame::scrwin = 0;
+Image_buffer8 *Shape_frame::scrwin = nullptr;
 
 #if 1   /* For debugging. */
 #include <iomanip>
@@ -83,7 +83,7 @@ inline void Check_file(
 unique_ptr<Shape_frame> Shape_frame::reflect(
 ) {
 	if (!data)
-		return 0;
+		return nullptr;
 	int w = get_width(), h = get_height();
 	if (w < h)
 		w = h;
@@ -811,7 +811,7 @@ Shape_frame *Shape::read(
     vector<int> const &counts,      // Number of shapes in files.
     int src
 ) {
-	IDataSource *shp = 0;
+	IDataSource *shp = nullptr;
 	// Figure offset in "shapes.vga".
 	uint32 shapeoff = 0x80 + shapenum * 8;
 	uint32 shapelen = 0;
@@ -850,9 +850,9 @@ Shape_frame *Shape::read(
 		}
 	}
 	// The shape was not found anywhere, so leave.
-	if (shp == 0) {
+	if (shp == nullptr) {
 		std::cerr << "Shape num out of range: " << shapenum << std::endl;
-		return 0;
+		return nullptr;
 	}
 	// Read it in and get frame count.
 	auto frame = make_unique<Shape_frame>();
@@ -894,7 +894,7 @@ void Shape::write(
 	}
 	for (frnum = 0; frnum < num_frames; frnum++) {
 		Shape_frame *frame = frames[frnum].get();
-		assert(frame != 0); // Better all be the same type.
+		assert(frame != nullptr); // Better all be the same type.
 		assert(flat == !frame->is_rle());
 		if (frame->is_rle()) {
 			// Get position of frame.
@@ -927,12 +927,12 @@ Shape_frame *Shape::store_frame(
 		cerr << "Shape::store_frame:  framenum < 0 ("
 		     << framenum << " >= " << frames.size()
 		     << ")" << endl;
-		return 0;
+		return nullptr;
 	} else if (size_t(framenum) >= frames.size()) { // Something fishy?
 		cerr << "Shape::store_frame:  framenum >= frames.size() ("
 		     << framenum << " >= " << frames.size()
 		     << ")" << endl;
-		return 0;
+		return nullptr;
 	}
 	if (frames.empty()) {  // First one?
 		frames.resize(num_frames);
@@ -1133,7 +1133,7 @@ bool Vga_file::load(
 ) {
 	vector<pair<string, int>> src;
 	src.push_back(pair<string, int>(string(nm), -1));
-	if (nm2 != 0)
+	if (nm2 != nullptr)
 		src.push_back(pair<string, int>(string(nm2), -1));
 	return load(src, resetimports);
 }
@@ -1155,7 +1155,7 @@ IDataSource *Vga_file::U7load(
 	}
 	if (!source->good()) {
 		CERR("Resource '" << resource.first << "' not found.");
-		return 0;
+		return nullptr;
 	} else {
 		IDataSource *ds = source.get();
 		shps.emplace_back(std::move(source), is_patch);
@@ -1282,13 +1282,13 @@ Shape *Vga_file::new_shape(
     int shapenum
 ) {
 	if (shapenum < 0 || shapenum >= c_max_shapes)
-		return 0;
+		return nullptr;
 	if (size_t(shapenum) < shapes.size()) {
 		shapes[shapenum].reset();
 		shapes[shapenum].set_modified();
 	} else {            // Enlarge list.
 		if (!flex)
-			return 0;   // 1-shape file.
+			return nullptr;   // 1-shape file.
 		shapes.resize(shapenum + 1);
 	}
 	return &shapes[shapenum];

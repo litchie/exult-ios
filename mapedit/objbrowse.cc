@@ -16,10 +16,10 @@ using EStudio::Add_menu_item;
 using EStudio::Create_arrow_button;
 
 Object_browser::Object_browser(Shape_group *grp, Shape_file_info *fi)
-	: selected(-1), index0(0), vscroll(0), hscroll(0), group(grp), popup(0),
-	  file_info(fi), find_text(0), loc_down(0), loc_up(0), loc_q(0), loc_f(0),
-	  move_down(0), move_up(0), config_width(0), config_height(0) {
-	widget = 0;
+	: selected(-1), index0(0), vscroll(nullptr), hscroll(nullptr), group(grp), popup(nullptr),
+	  file_info(fi), find_text(nullptr), loc_down(nullptr), loc_up(nullptr), loc_q(nullptr), loc_f(nullptr),
+	  move_down(nullptr), move_up(nullptr), config_width(0), config_height(0) {
+	widget = nullptr;
 }
 
 Object_browser::~Object_browser() {
@@ -307,7 +307,7 @@ on_move_up(GtkButton       *button,
 GtkWidget *Object_browser::create_controls(
     int controls            // Browser_control flags.
 ) {
-	GtkWidget *topframe = gtk_frame_new(NULL);
+	GtkWidget *topframe = gtk_frame_new(nullptr);
 	gtk_widget_show(topframe);
 
 	// Everything goes in here.

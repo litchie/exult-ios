@@ -500,7 +500,7 @@ void Game_window::write_saveinfo() {
 
 	int party_size = party_man->get_count() + 1;
 
-	time_t t = time(0);
+	time_t t = time(nullptr);
 	struct tm *timeinfo = localtime(&t);
 
 	U7open(out_stream, GSAVEINFO);      // Open file; throws an exception - Don't care
@@ -724,8 +724,8 @@ void Game_window::get_saveinfo(std::unique_ptr<Shape_file> &map, SaveGame_Detail
 		read_saveinfo(&ds, details, party);
 		in.close();
 	} catch (const file_exception & /*f*/) {
-		details = NULL;
-		party = NULL;
+		details = nullptr;
+		party = nullptr;
 	}
 
 	try {
@@ -773,11 +773,11 @@ bool Game_window::get_saveinfo_zip(const char *fname, char *&name, std::unique_p
 
 	// Things we need
 	unz_file_info file_info;
-	char *buf = 0;
+	char *buf = nullptr;
 
 	// Get the screenshot first
 	if (unzLocateFile(unzipfile, remove_dir(GSCRNSHOT), 2) == UNZ_OK) {
-		unzGetCurrentFileInfo(unzipfile, &file_info, NULL, 0, NULL, 0, NULL, 0);
+		unzGetCurrentFileInfo(unzipfile, &file_info, nullptr, 0, nullptr, 0, nullptr, 0);
 		buf = new char[file_info.uncompressed_size];
 
 		unzOpenCurrentFile(unzipfile);
@@ -792,7 +792,7 @@ bool Game_window::get_saveinfo_zip(const char *fname, char *&name, std::unique_p
 
 	// Now saveinfo
 	if (unzLocateFile(unzipfile, remove_dir(GSAVEINFO), 2) == UNZ_OK) {
-		unzGetCurrentFileInfo(unzipfile, &file_info, NULL, 0, NULL, 0, NULL, 0);
+		unzGetCurrentFileInfo(unzipfile, &file_info, nullptr, 0, nullptr, 0, nullptr, 0);
 		buf = new char[file_info.uncompressed_size];
 
 		unzOpenCurrentFile(unzipfile);
@@ -942,15 +942,15 @@ bool Game_window::restore_gamedat_zip(
 
 		// For safer handling, better do it in two steps.
 		unzGetCurrentFileInfo(unzipfile, &file_info,
-		                      NULL, 0,
-		                      NULL, 0,
-		                      NULL, 0);
+		                      nullptr, 0,
+		                      nullptr, 0,
+		                      nullptr, 0);
 		// Get the needed buffer size.
 		int filenamelen = file_info.size_filename;
-		unzGetCurrentFileInfo(unzipfile, 0,
+		unzGetCurrentFileInfo(unzipfile, nullptr,
 		                      oname2, filenamelen,
-		                      NULL, 0,
-		                      NULL, 0);
+		                      nullptr, 0,
+		                      nullptr, 0);
 		oname2[filenamelen] = 0;
 
 		// Get file length.
@@ -1045,8 +1045,8 @@ static bool Save_level1(zipFile zipfile, const char *fname) {
 	ds.read(buf, size);
 
 
-	zipOpenNewFileInZip(zipfile, remove_dir(fname), NULL, NULL, 0,
-	                    NULL, 0, NULL, Z_DEFLATED, Z_BEST_COMPRESSION);
+	zipOpenNewFileInZip(zipfile, remove_dir(fname), nullptr, nullptr, 0,
+	                    nullptr, 0, nullptr, Z_DEFLATED, Z_BEST_COMPRESSION);
 
 	zipWriteInFileInZip(zipfile, buf, size);
 	delete [] buf;
@@ -1067,8 +1067,8 @@ static bool Begin_level2(zipFile zipfile, int mapnum) {
 		oname[4] = lb < 10 ? ('0' + lb) : ('a' + (lb - 10));
 		oname[5] = 0;
 	}
-	return zipOpenNewFileInZip(zipfile, oname, NULL, NULL, 0,
-	                           NULL, 0, NULL, Z_DEFLATED, Z_BEST_COMPRESSION) == ZIP_OK;
+	return zipOpenNewFileInZip(zipfile, oname, nullptr, nullptr, 0,
+	                           nullptr, 0, nullptr, Z_DEFLATED, Z_BEST_COMPRESSION) == ZIP_OK;
 }
 
 static bool Save_level2(zipFile zipfile, const char *fname) {

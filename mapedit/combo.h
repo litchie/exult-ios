@@ -72,7 +72,7 @@ public:
 	Combo(const Combo &c2);     // Copy.
 	~Combo();
 	Combo_member *get(int i) {
-		return i >= 0 && static_cast<unsigned>(i) < members.size() ? members[i] : 0;
+		return i >= 0 && static_cast<unsigned>(i) < members.size() ? members[i] : nullptr;
 	}
 	// Add a new object.
 	void add(int tx, int ty, int tz, int shnum, int frnum, bool toggle);
@@ -105,7 +105,7 @@ public:
 	void show(bool tf);     // Show/hide.
 	void render_area(GdkRectangle *area);
 	virtual void render() {
-		render_area(0);
+		render_area(nullptr);
 	}
 	void set_controls();        // Set controls to selected entry.
 	// Handle mouse.
@@ -174,7 +174,7 @@ class Combo_chooser: public Object_browser, public Shape_draw {
 public:
 	Combo_chooser(Vga_file *i, Flex_file_info *flinfo,
 	              unsigned char *palbuf, int w, int h,
-	              Shape_group *g = 0);
+	              Shape_group *g = nullptr);
 	virtual ~Combo_chooser();
 	// Turn off selection.
 	void unselect(bool need_render = true);

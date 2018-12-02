@@ -289,7 +289,7 @@ Spellbook_gump::Spellbook_gump(
 				                                 spnum,
 				                                 spells0 + spnum % 8, spnum / 8);
 			} else
-				spells[spindex + s] = 0;
+				spells[spindex + s] = nullptr;
 	}
 }
 
@@ -416,7 +416,7 @@ Gump_button *Spellbook_gump::on_button(
 	}
 	if (bookmark->on_button(mx, my))
 		return bookmark;
-	return 0;
+	return nullptr;
 }
 
 /*
@@ -563,7 +563,7 @@ bool Spellbook_gump::handle_kbd_event(void *vev) {
 
 Spellscroll_gump::Spellscroll_gump(
     Game_object *s
-) : Spelltype_gump(game->get_shape("gumps/spell_scroll")), scroll(s), spell(0) {
+) : Spelltype_gump(game->get_shape("gumps/spell_scroll")), scroll(s), spell(nullptr) {
 	set_object_area(Rectangle(30, 29, 50, 29), 8, 68);
 
 	// Get dims. of a spell.
@@ -596,7 +596,7 @@ void Spellscroll_gump::do_spell(
     int spellnum
 ) {
 	scroll->remove_this();      // Scroll is gone.
-	scroll = 0;
+	scroll = nullptr;
 	close();            // We've just been deleted!
 	gwin->paint();
 	gwin->show();
@@ -626,7 +626,7 @@ Gump_button *Spellscroll_gump::on_button(
 		return btn;
 	else if (spell && spell->on_button(mx, my))
 		return spell;
-	return 0;
+	return nullptr;
 }
 
 /*

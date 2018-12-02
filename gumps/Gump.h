@@ -66,7 +66,7 @@ public:
 	virtual ~Gump();
 	virtual Gump *clone(Container_game_object *obj, int initx, int inity) {
 		ignore_unused_variable_warning(obj, initx, inity);
-		return 0;
+		return nullptr;
 	}
 	int get_x() {       // Get coords.
 		return x;
@@ -84,7 +84,7 @@ public:
 	}
 	virtual Container_game_object *find_actor(int mx, int my) {
 		ignore_unused_variable_warning(mx, my);
-		return 0;
+		return nullptr;
 	}
 	bool can_handle_kbd() const {
 		return handles_kbd;

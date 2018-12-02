@@ -36,7 +36,7 @@ class Image_buffer16 : public Image_buffer {
 	}
 public:
 	Image_buffer16(unsigned int w, unsigned int h, int dpth)
-		: Image_buffer(w, h, dpth), palette(0) {
+		: Image_buffer(w, h, dpth), palette(nullptr) {
 		create_default_palette();
 		bits = new unsigned char[w * h * 2];
 	}

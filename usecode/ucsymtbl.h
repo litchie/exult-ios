@@ -99,7 +99,7 @@ public:
 	Usecode_symbol *operator[](const char *nm);
 	Usecode_symbol *operator[](int val);
 	Usecode_class_symbol *get_class(int n) {
-		return static_cast<unsigned>(n) < classes.size() ? classes[n] : 0;
+		return static_cast<unsigned>(n) < classes.size() ? classes[n] : nullptr;
 	}
 	int get_num_classes() const {
 		return static_cast<int>(classes.size());

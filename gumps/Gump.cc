@@ -149,14 +149,14 @@ Game_object *Gump::find_object(
 	int cnt = 0;
 	Game_object *list[100];
 	if (!container)
-		return (0);
+		return nullptr;
 	Object_iterator next(container->get_objects());
 	Game_object *obj;
 	Shape_frame *s;
 
 	int ox, oy;
 
-	while ((obj = next.get_next()) != 0) {
+	while ((obj = next.get_next()) != nullptr) {
 		Rectangle box = get_shape_rect(obj);
 		if (box.has_point(mx, my)) {
 			s = obj->get_shape();
@@ -166,7 +166,7 @@ Game_object *Gump::find_object(
 		}
 	}
 	// ++++++Return top item.
-	return (cnt ? list[cnt - 1] : 0);
+	return (cnt ? list[cnt - 1] : nullptr);
 }
 
 /*
@@ -180,7 +180,7 @@ Rectangle Gump::get_dirty(
 		return rect;
 	Object_iterator next(container->get_objects());
 	Game_object *obj;
-	while ((obj = next.get_next()) != 0) {
+	while ((obj = next.get_next()) != nullptr) {
 		Rectangle orect = get_shape_rect(obj);
 		rect = rect.add(orect);
 	}
@@ -209,7 +209,7 @@ Gump_button *Gump::on_button(
 		if (w->on_button(mx, my))
 			return dynamic_cast<Gump_button *>(w);
 	}
-	return 0;
+	return nullptr;
 }
 
 /*
@@ -300,7 +300,7 @@ void check_elem_positions(Object_list &objects)
 	Game_object *obj;
 	Object_iterator next(objects);
 	// See if all have the same position, indicating from a new game.
-	while ((obj = next.get_next()) != 0) {
+	while ((obj = next.get_next()) != nullptr) {
 		int tx = obj->get_tx(), ty = obj->get_ty();
 	    if (prevx == -1) {
 		    prevx = tx;
@@ -310,7 +310,7 @@ void check_elem_positions(Object_list &objects)
 		}
 	}
 	next.reset();
-	while ((obj = next.get_next()) != 0) {
+	while ((obj = next.get_next()) != nullptr) {
 	    obj->set_shape_pos(255, 255);
 	}
 }
@@ -341,7 +341,7 @@ void Gump::paint(
 	check_elem_positions(objects);	// Set to place if new game.
 	Game_object *obj;
 	Object_iterator next(objects);
-	while ((obj = next.get_next()) != 0) {
+	while ((obj = next.get_next()) != nullptr) {
 		Shape_frame *shape = obj->get_shape();
 		if (!shape)
 			continue;

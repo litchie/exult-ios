@@ -78,13 +78,13 @@ public:
 	std::unique_ptr<unsigned char[]> retrieve(uint32 objnum, std::size_t &len) {
 		if (!data || objnum >= number_of_objects()) {
 			len = 0;
-			return 0;
+			return nullptr;
 		}
 		Reference ref = get_object_reference(objnum);
 		data->seek(ref.offset);
 		if (!data->good()) {
 			len = 0;
-			return 0;
+			return nullptr;
 		}
 		len = ref.size;
 		return data->readN(len);

@@ -425,7 +425,7 @@ public:
 	}
 	inline Actor *get_npc(long npc_num) const {
 		return (npc_num >= 0 && npc_num < static_cast<int>(npcs.size())) ?
-		       npcs[npc_num] : 0;
+		       npcs[npc_num] : nullptr;
 	}
 	void locate_npc(int npc_num);
 	void set_body(int npc_num, Dead_body *body) {
@@ -462,7 +462,7 @@ public:
 	Actor *find_witness(Actor  *&closest_npc, int align);
 	void theft();           // Handle thievery.
 	static int get_guard_shape();
-	void call_guards(Actor *witness = 0, bool theft = false);
+	void call_guards(Actor *witness = nullptr, bool theft = false);
 	void stop_arresting();
 	void attack_avatar(int num_guards = 0, int align = 0);
 	bool is_hostile_nearby(); // detects if hostiles are nearby for movement speed
@@ -640,7 +640,7 @@ public:
 	Game_object *find_object(int x, int y);
 #ifdef __IPHONEOS__
 	typedef std::map<Game_object *, int *> Game_object_map_xy;
-	void find_nearby_objects(Game_object_map_xy *mobjxy, int x, int y, Gump *gump = NULL);
+	void find_nearby_objects(Game_object_map_xy *mobjxy, int x, int y, Gump *gump = nullptr);
 #endif
 
 	// Show names of items clicked on.
@@ -657,7 +657,7 @@ public:
 	bool drop_dragged(int x, int y, bool moved);// Done dragging.
 	void stop_dragging();
 	bool is_dragging() const {
-		return dragging != 0;
+		return dragging != nullptr;
 	}
 	int drop_at_lift(Game_object *to_drop, int x, int y, int at_lift);
 	Gump *get_dragging_gump();

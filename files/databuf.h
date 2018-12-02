@@ -208,7 +208,7 @@ protected:
 	std::size_t size;
 public:
 	IBufferDataView(const void *data, size_t len) {
-		// data can be NULL if len is also 0
+		// data can be nullptr if len is also 0
 		assert(data != nullptr || len == 0);
 		buf_ptr = buf = static_cast<const unsigned char *>(data);
 		size = len;
@@ -292,14 +292,14 @@ protected:
 public:
 	IBufferDataSource(void *data_, size_t len)
 		: IBufferDataView(nullptr, 0), data(static_cast<unsigned char*>(data_)) {
-		// data can be NULL if len is also 0
+		// data can be nullptr if len is also 0
 		assert(data != nullptr || len == 0);
 		buf_ptr = buf = data.get();
 		size = len;
 	}
 	IBufferDataSource(std::unique_ptr<unsigned char[]> data_, size_t len)
 		: IBufferDataView(nullptr, 0), data(std::move(data_)) {
-		// data can be NULL if len is also 0
+		// data can be nullptr if len is also 0
 		assert(data != nullptr || len == 0);
 		buf_ptr = buf = data.get();
 		size = len;
@@ -499,7 +499,7 @@ protected:
 	std::size_t size;
 public:
 	OBufferDataSpan(void *data, size_t len) {
-		// data can be NULL if len is also 0
+		// data can be nullptr if len is also 0
 		assert(data != nullptr || len == 0);
 		buf_ptr = buf = static_cast<unsigned char *>(data);
 		size = len;

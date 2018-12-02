@@ -91,7 +91,7 @@ int Font::paint_text_box(
     int vert_lead,          // Extra spacing between lines.
     bool pbreak,            // End at punctuation.
     bool center,            // Center each line.
-    Cursor_info *cursor     // We set x, y if not NULL.
+    Cursor_info *cursor     // We set x, y if not nullptr.
 ) {
 	const char *start = text;   // Remember the start.
 	win->set_clip(x, y, w, h);
@@ -102,7 +102,7 @@ int Font::paint_text_box(
 	int max_lines = h / height; // # lines that can be shown.
 	string *lines = new string[max_lines + 1];
 	int cur_line = 0;
-	const char *last_punct_end = 0;// ->last period, qmark, etc.
+	const char *last_punct_end = nullptr;// ->last period, qmark, etc.
 	// Last punct in 'lines':
 	int last_punct_line = -1, last_punct_offset = -1;
 	int coff = -1;
@@ -325,7 +325,7 @@ int Font::paint_text_box_fixedwidth(
 	int max_lines = h / height; // # lines that can be shown.
 	string *lines = new string[max_lines + 1];
 	int cur_line = 0;
-	const char *last_punct_end = 0;// ->last period, qmark, etc.
+	const char *last_punct_end = nullptr;// ->last period, qmark, etc.
 	// Last punct in 'lines':
 	int last_punct_line = -1, last_punct_offset = -1;
 
@@ -833,7 +833,7 @@ void FontManager::add_font(
 }
 
 void FontManager::remove_font(const char *name) {
-	if (fonts[name] != 0) {
+	if (fonts[name] != nullptr) {
 		delete fonts[name];
 		fonts.erase(name);
 	}

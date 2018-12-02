@@ -174,8 +174,8 @@ int CALLBACK EnumFontFamProc(
     LPARAM lParam          // application-defined data
 ) {
 	ignore_unused_variable_warning(lpntm, FontType);
-	//MessageBox(NULL,(const char*)lpelf->elfFullName,"lpelf->elfFullName",MB_OK);
-	//MessageBox(NULL,(const char*)lpelf->elfStyle,"lpelf->elfStyle",MB_OK);
+	//MessageBox(nullptr,(const char*)lpelf->elfFullName,"lpelf->elfFullName",MB_OK);
+	//MessageBox(nullptr,(const char*)lpelf->elfStyle,"lpelf->elfStyle",MB_OK);
 
 	if (!lParam) return 0;
 	if (!_strcmpi((const char *)lParam, (const char *)lpelf->elfFullName))
@@ -195,7 +195,7 @@ static bool Gen_font_shape_win32(
     unsigned char bg,       // Background color index.
     int shadow          // Shadow color, or -1
 ) {
-	HDC dc = CreateCompatibleDC(NULL);
+	HDC dc = CreateCompatibleDC(nullptr);
 
 	HFONT font = 0;
 
@@ -307,8 +307,8 @@ bool Gen_font_shape(
 
 	}
 	if (AddFontResourceExA && AddFontResourceExA(fontfile, FR_PRIVATE, 0) != 0) {
-		//if (face->family_name) MessageBox(NULL,face->family_name,"face->family_name",MB_OK);
-		//if (face->style_name) MessageBox(NULL,face->style_name,"face->style_name",MB_OK);
+		//if (face->family_name) MessageBox(nullptr,face->family_name,"face->family_name",MB_OK);
+		//if (face->style_name) MessageBox(nullptr,face->style_name,"face->style_name",MB_OK);
 		if (Gen_font_shape_win32(shape, face->family_name, face->style_name, nframes, pixels_ht, fg, bg, shadow)) {
 			FT_Done_FreeType(library);
 			return true;

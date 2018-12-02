@@ -130,14 +130,14 @@ public:
 		return ((type == int_type) ? value.intval : 0);
 	}
 	Game_object *get_ptr_value() const { // Get pointer value.
-		return ((type == pointer_type) ? value.ptr : 0);
+		return ((type == pointer_type) ? value.ptr : nullptr);
 	}
 	// Get string value.
 	const char *get_str_value() const {
 		static char const *emptystr = "";
 		return ((type == string_type) ? value.str :
 		        ((undefined ||
-		          (type == array_type && value.array.cnt == 0)) ? emptystr : 0));
+		          (type == array_type && value.array.cnt == 0)) ? emptystr : nullptr));
 	}
 	long need_int_value() const {
 		// Convert strings.
@@ -174,7 +174,7 @@ public:
 		case int_type:
 			return value.intval == 0;
 		case pointer_type:
-			return value.ptr == NULL;
+			return value.ptr == nullptr;
 		case array_type:
 			return value.array.cnt == 0;
 		default:
@@ -216,7 +216,7 @@ public:
 	}
 	Usecode_class_symbol *get_class_ptr() const {
 		return (type == class_obj_type) ?
-		       value.array.elems[0].value.cptr : 0;
+		       value.array.elems[0].value.cptr : nullptr;
 	}
 
 };

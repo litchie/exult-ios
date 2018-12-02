@@ -206,7 +206,7 @@ static int RATE_0[16]=
 static int num_lock = 0;
 
 /* work table */
-static void *cur_chip = NULL;	/* current chip point */
+static void *cur_chip = nullptr;	/* current chip point */
 /* currenct chip state */
 /* static OPLSAMPLE  *bufL,*bufR; */
 static OPL_CH *S_CH;
@@ -941,7 +941,7 @@ static int OPL_LockTable(void) {
 	if (num_lock>1)
 		return 0;
 	/* first time */
-	cur_chip = NULL;
+	cur_chip = nullptr;
 	/* allocate total level table (128kb space) */
 	if (!OPLOpenTable()) {
 		num_lock--;
@@ -956,7 +956,7 @@ static void OPL_UnLockTable(void) {
 	if (num_lock)
 		return;
 	/* last time */
-	cur_chip = NULL;
+	cur_chip = nullptr;
 	OPLCloseTable();
 }
 
@@ -1122,7 +1122,7 @@ FM_OPL *OPLCreate(int type, int clock, int rate) {
 	int max_ch = 9; /* normaly 9 channels */
 
 	if (OPL_LockTable() == -1)
-		return NULL;
+		return nullptr;
 	/* allocate OPL state space */
 	state_size  = sizeof(FM_OPL);
 	state_size += sizeof(OPL_CH) * max_ch;

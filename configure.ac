@@ -760,6 +760,7 @@ CHK_WARN="$CHK_WARN -Wtrigraphs -Wundef -Wuninitialized -Wuseless-cast -Wwrite-s
 #CHK_WARN="$CHK_WARN -Wsuggest-attribute=cold -Wsuggest-attribute=const -Wsuggest-attribute=format -Wsuggest-attribute=malloc -Wsuggest-attribute=noreturn -Wsuggest-attribute=pure"
 # C++11 and newer
 #CHK_WARN="$CHK_WARN -Wsuggest-final-methods -Wsuggest-final-types -Wsuggest-override -Wzero-as-null-pointer-constant"
+CHK_WARN="$CHK_WARN -Wzero-as-null-pointer-constant"
 # Clang warnings
 CHK_WARN="$CHK_WARN -Wunused-const-variables -Wabsolute-value -Wdeprecated-register -Wmismatched-tags -Wunused-private-field"
 

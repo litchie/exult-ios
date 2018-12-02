@@ -90,9 +90,9 @@ using std::ofstream;
 using std::ifstream;
 using std::make_unique;
 
-ExultStudio *ExultStudio::self = 0;
-Configuration *config = 0;
-GameManager *gamemanager = 0;
+ExultStudio *ExultStudio::self = nullptr;
+Configuration *config = nullptr;
+GameManager *gamemanager = nullptr;
 const std::string c_empty_string;   // Used by config. library.
 
 // Mode menu items:
@@ -278,7 +278,7 @@ on_fix_old_shape_info_activate(GtkMenuItem     *menuitem,
 	msg += "the Death Scythe's weapon information would be reloaded from the static file,\n";
 	msg += "but if you had added weapon information to a moongate, it would remain intact.\n\n";
 	msg += "\t\tAre you sure you want to proceed?";
-	int choice = studio->prompt(msg.c_str(), "Yes", "No", 0);
+	int choice = studio->prompt(msg.c_str(), "Yes", "No", nullptr);
 	if (choice == 1)    // No?
 		return;
 	svga->fix_old_shape_info(studio->get_game_type());
@@ -286,7 +286,7 @@ on_fix_old_shape_info_activate(GtkMenuItem     *menuitem,
 	choice = studio->prompt(
 	             "The data has been reloaded. You should save shape information now.\n\n"
 	             "\t\tDo you wish to save the shape information now?",
-	             "Yes", "No", 0);
+	             "Yes", "No", nullptr);
 	if (choice == 1)    // No?
 		return;
 	studio->write_shape_info(true);
@@ -513,22 +513,22 @@ C_EXPORT gboolean on_main_window_focus_in_event(
  *  Set up everything.
  */
 
-ExultStudio::ExultStudio(int argc, char **argv): glade_path(0), static_path(0),
-	image_editor(0), default_game(0), background_color(0),
+ExultStudio::ExultStudio(int argc, char **argv): glade_path(nullptr), static_path(nullptr),
+	image_editor(nullptr), default_game(nullptr), background_color(0),
 	shape_info_modified(false), shape_names_modified(false), npc_modified(false),
-	files(0), curfile(0), vgafile(0), facefile(0), fontfile(0), gumpfile(0),
-	spritefile(0), browser(0),
-	bargewin(0), barge_ctx(0), barge_status_id(0),
-	eggwin(0), egg_monster_draw(0), egg_ctx(0), egg_status_id(0),
-	npcwin(0), npc_draw(0), npc_face_draw(0),
+	files(nullptr), curfile(nullptr), vgafile(nullptr), facefile(nullptr), fontfile(nullptr), gumpfile(nullptr),
+	spritefile(nullptr), browser(nullptr),
+	bargewin(nullptr), barge_ctx(0), barge_status_id(0),
+	eggwin(nullptr), egg_monster_draw(nullptr), egg_ctx(0), egg_status_id(0),
+	npcwin(nullptr), npc_draw(nullptr), npc_face_draw(nullptr),
 	npc_ctx(0), npc_status_id(0),
-	objwin(0), obj_draw(0), contwin(0), cont_draw(0), shapewin(0),
-	shape_draw(0), gump_draw(0),
-	body_draw(0), explosion_draw(0),
-	equipwin(0), locwin(0), combowin(0), compilewin(0), compile_box(0),
-	ucbrowsewin(0), gameinfowin(0),
+	objwin(nullptr), obj_draw(nullptr), contwin(nullptr), cont_draw(nullptr), shapewin(nullptr),
+	shape_draw(nullptr), gump_draw(nullptr),
+	body_draw(nullptr), explosion_draw(nullptr),
+	equipwin(nullptr), locwin(nullptr), combowin(nullptr), compilewin(nullptr), compile_box(nullptr),
+	ucbrowsewin(nullptr), gameinfowin(nullptr),
 	game_type(BLACK_GATE), expansion(false), sibeta(false), curr_game(-1), curr_mod(-1),
-	server_socket(-1), server_input_tag(-1), waiting_for_server(0) {
+	server_socket(-1), server_input_tag(-1), waiting_for_server(nullptr) {
 	// Initialize the various subsystems
 	self = this;
 	gtk_init(&argc, &argv);
@@ -538,7 +538,7 @@ ExultStudio::ExultStudio(int argc, char **argv): glade_path(0), static_path(0),
 	bool portable = false;
 #endif
 	// Get options.
-	const char *xmldir = 0;     // Default:  Look here for .glade.
+	const char *xmldir = nullptr;     // Default:  Look here for .glade.
 	string game;                // Game to look up in .exult.cfg.
 	string modtitle;            // Mod title to look up in <MODS>/*.cfg.
 	string alt_cfg;
@@ -598,7 +598,7 @@ ExultStudio::ExultStudio(int argc, char **argv): glade_path(0), static_path(0),
 		strcpy(path, ".");
 	strcat(path, "/exult_studio.glade");
 	// Load the Glade interface
-	app_xml = glade_xml_new(path, NULL, NULL);
+	app_xml = glade_xml_new(path, nullptr, nullptr);
 	assert(app_xml);
 	app = glade_xml_get_widget(app_xml, "main_window");
 	assert(app);
@@ -647,11 +647,11 @@ ExultStudio::ExultStudio(int argc, char **argv): glade_path(0), static_path(0),
 	image_editor = g_strdup(iedit.c_str());
 	config->set("config/estudio/image_editor", iedit, true);
 #ifdef WIN32
-	OleInitialize(NULL);
+	OleInitialize(nullptr);
 #endif
 	// Init. 'Mode' menu, since Glade
 	//   doesn't seem to do it right.
-	GSList *group = NULL;
+	GSList *group = nullptr;
 	for (size_t i = 0; i < array_size(mode_names); i++) {
 		GtkWidget *item = glade_xml_get_widget(app_xml, mode_names[i]);
 		gtk_radio_menu_item_set_group(GTK_RADIO_MENU_ITEM(item),
@@ -676,7 +676,7 @@ ExultStudio::~ExultStudio() {
 	Free_text();
 	g_free(glade_path);
 	delete files;
-	files = 0;
+	files = nullptr;
 	palbuf.reset();
 	if (objwin)
 		gtk_widget_destroy(objwin);
@@ -687,34 +687,34 @@ ExultStudio::~ExultStudio() {
 	if (eggwin)
 		gtk_widget_destroy(eggwin);
 	delete egg_monster_draw;
-	eggwin = 0;
+	eggwin = nullptr;
 	if (npcwin)
 		gtk_widget_destroy(npcwin);
 	delete npc_draw;
-	npcwin = 0;
+	npcwin = nullptr;
 	if (shapewin)
 		gtk_widget_destroy(shapewin);
 	delete shape_draw;
 	delete gump_draw;
 	delete body_draw;
 	delete explosion_draw;
-	shapewin = 0;
+	shapewin = nullptr;
 	if (equipwin)
 		gtk_widget_destroy(equipwin);
-	equipwin = 0;
+	equipwin = nullptr;
 	if (compilewin)
 		gtk_widget_destroy(compilewin);
-	compilewin = 0;
+	compilewin = nullptr;
 	delete compile_box;
-	compile_box = 0;
+	compile_box = nullptr;
 	delete locwin;
-	locwin = 0;
+	locwin = nullptr;
 	delete combowin;
-	combowin = 0;
+	combowin = nullptr;
 	delete ucbrowsewin;
 	if (gameinfowin)
 		gtk_widget_destroy(gameinfowin);
-	gameinfowin = 0;
+	gameinfowin = nullptr;
 	g_object_unref(G_OBJECT(app_xml));
 #ifndef WIN32
 	if (server_input_tag >= 0)
@@ -730,9 +730,9 @@ ExultStudio::~ExultStudio() {
 	g_free(static_path);
 	g_free(image_editor);
 	g_free(default_game);
-	self = 0;
+	self = nullptr;
 	delete config;
-	config = 0;
+	config = nullptr;
 }
 
 /*
@@ -757,7 +757,7 @@ bool ExultStudio::okay_to_close(
  */
 
 inline bool Window_has_focus(GtkWindow *win) {
-	return (win->focus_widget != 0 &&
+	return (win->focus_widget != nullptr &&
 	        GTK_WIDGET_HAS_FOCUS(win->focus_widget));
 }
 
@@ -801,7 +801,7 @@ void ExultStudio::set_browser(const char *name, Object_browser *obj) {
 Object_browser *ExultStudio::create_browser(const char *fname) {
 	curfile = open_shape_file(fname);
 	if (!curfile)
-		return 0;
+		return nullptr;
 	Object_browser *chooser = curfile->get_browser(vgafile, palbuf.get());
 	setup_groups();         // Set up 'groups' page.
 	return chooser;
@@ -814,7 +814,7 @@ Object_browser *ExultStudio::create_browser(const char *fname) {
 const char *ExultStudio::get_shape_name(
     int shnum
 ) {
-	return shnum >= 0 && shnum < get_num_item_names() ? get_item_name(shnum) : 0;
+	return shnum >= 0 && shnum < get_num_item_names() ? get_item_name(shnum) : nullptr;
 }
 
 /*
@@ -823,7 +823,7 @@ const char *ExultStudio::get_shape_name(
 
 Shape_group_file *ExultStudio::get_cur_groups(
 ) {
-	return curfile ? curfile->get_groups() : 0;
+	return curfile ? curfile->get_groups() : nullptr;
 }
 
 /*
@@ -1002,7 +1002,7 @@ C_EXPORT void on_gameselect_ok_clicked(
 		gtk_tree_view_get_cursor(treeview, &path, &col);
 
 		modnum = -1;
-		if (path != NULL) {
+		if (path != nullptr) {
 			model = gtk_tree_view_get_model(GTK_TREE_VIEW(treeview));
 
 			gtk_tree_model_get_iter(model, &iter, path);
@@ -1010,7 +1010,7 @@ C_EXPORT void on_gameselect_ok_clicked(
 			g_free(text);
 			gtk_tree_path_free(path);
 		}
-		ModInfo *mod = modnum > -1 ? game->get_mod(modnum) : 0;
+		ModInfo *mod = modnum > -1 ? game->get_mod(modnum) : nullptr;
 		modtitle = mod ? mod->get_mod_title() : "";
 	}
 
@@ -1055,7 +1055,7 @@ C_EXPORT void on_gameselect_gamelist_cursor_changed(
 	std::vector<ModInfo> &mods = gamemanager->get_game(gamenum)->get_mod_list();
 	GtkTreeIter iter;
 
-	gtk_tree_store_append(model, &iter, NULL);
+	gtk_tree_store_append(model, &iter, nullptr);
 	gtk_tree_store_set(model, &iter,
 	                   0, "(unmodded game -- default if no mod is selected)",
 	                   1, -1,
@@ -1071,7 +1071,7 @@ C_EXPORT void on_gameselect_gamelist_cursor_changed(
 		// Titles need to be displayable in Exult menu, hence should not
 		// have any extra characters.
 		utf8Str title(modname.c_str(), "CP437");
-		gtk_tree_store_append(model, &iter, NULL);
+		gtk_tree_store_append(model, &iter, nullptr);
 		gtk_tree_store_set(model, &iter,
 		                   0, title.get_str(),
 		                   1, j,
@@ -1085,7 +1085,7 @@ void fill_game_tree(GtkTreeView *treeview, int curr_game) {
 	GtkTreeStore *model = GTK_TREE_STORE(oldmod);
 	std::vector<ModManager> &games = gamemanager->get_game_list();
 	GtkTreeIter iter;
-	GtkTreePath *path = 0;
+	GtkTreePath *path = nullptr;
 	for (size_t j = 0; j < games.size(); j++) {
 		ModManager &currgame = games[j];
 		string gamename = currgame.get_menu_string();
@@ -1096,7 +1096,7 @@ void fill_game_tree(GtkTreeView *treeview, int curr_game) {
 		// Titles need to be displayable in Exult menu, hence should not
 		// have any extra characters.
 		utf8Str title(gamename.c_str(), "CP437");
-		gtk_tree_store_append(model, &iter, NULL);
+		gtk_tree_store_append(model, &iter, nullptr);
 		gtk_tree_store_set(model, &iter,
 		                   0, title.get_str(),
 		                   1, j,
@@ -1113,7 +1113,7 @@ void fill_game_tree(GtkTreeView *treeview, int curr_game) {
 		return;
 	// Force the modlist to be updated:
 	gtk_tree_view_set_cursor(treeview,
-	                         path, NULL, false);
+	                         path, nullptr, false);
 	gtk_tree_path_free(path);
 }
 
@@ -1130,7 +1130,7 @@ void ExultStudio::open_game_dialog(
 	    GTK_OBJECT(glade_xml_get_widget(app_xml, "gameselect_ok")),
 	    "clicked",
 	    GTK_SIGNAL_FUNC(on_gameselect_ok_clicked),
-	    0L);
+	    nullptr);
 
 	GtkWidget *dlg_list[2] = {
 		glade_xml_get_widget(app_xml, "gameselect_gamelist"),
@@ -1155,12 +1155,12 @@ void ExultStudio::open_game_dialog(
 			GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
 
 			/* column for game names */
-			g_object_set(renderer, "xalign", 0.0, NULL);
+			g_object_set(renderer, "xalign", 0.0, nullptr);
 			col_offset = gtk_tree_view_insert_column_with_attributes(
 			                 GTK_TREE_VIEW(dlg_list[i]),
 			                 -1, "Column1",
 			                 renderer, "text",
-			                 FOLDER_COLUMN, NULL);
+			                 FOLDER_COLUMN, nullptr);
 			column = gtk_tree_view_get_column(GTK_TREE_VIEW(dlg_list[i]),
 			                                  col_offset - 1);
 			gtk_tree_view_column_set_clickable(
@@ -1172,7 +1172,7 @@ void ExultStudio::open_game_dialog(
 	if (!createmod) {
 		gtk_signal_connect(GTK_OBJECT(dlg_list[0]), "cursor_changed",
 		                   GTK_SIGNAL_FUNC(on_gameselect_gamelist_cursor_changed),
-		                   0L);
+		                   nullptr);
 		set_visible("modlist_frame", true);
 		set_visible("modinfo_frame", false);
 	} else {
@@ -1192,7 +1192,7 @@ void ExultStudio::set_game_path(const string& gamename, const string& modname) {
 
 	curr_game = curr_mod = -1;
 
-	ModManager *basegame = 0;
+	ModManager *basegame = nullptr;
 	if (gamename == CFG_BG_NAME) {
 		if (!(basegame = gamemanager->get_bg()))
 			cerr << "Black Gate not found." << endl;
@@ -1234,7 +1234,7 @@ void ExultStudio::set_game_path(const string& gamename, const string& modname) {
 	if (curr_game < 0 && basegame)
 		curr_game = gamemanager->find_game_index(basegame->get_cfgname());
 	assert(basegame);
-	BaseGameInfo *gameinfo = 0;
+	BaseGameInfo *gameinfo = nullptr;
 	curr_mod = modname.empty() ? -1 : basegame->find_mod_index(modname);
 	if (curr_mod > -1)
 		gameinfo = basegame->get_mod(curr_mod);
@@ -1263,8 +1263,8 @@ void ExultStudio::set_game_path(const string& gamename, const string& modname) {
 	delete files;           // Close old shape files.
 	Free_text();            // Delete old names.
 	// These were owned by 'files':
-	curfile = 0;
-	browser = 0;
+	curfile = nullptr;
+	browser = nullptr;
 	shape_info_modified = shape_names_modified = npc_modified = false;
 	vector<GtkWindow *>::const_iterator it;
 	for (it = group_windows.begin(); it != group_windows.end(); ++it) {
@@ -1313,10 +1313,10 @@ void ExultStudio::set_game_path(const string& gamename, const string& modname) {
 	Setup_text(game_type == SERPENT_ISLE, expansion, sibeta);   // Read in shape names.
 	misc_name_map.clear();
 	for (int i = 0; i < get_num_misc_names(); i++)
-		if (get_misc_name(i) != 0)
+		if (get_misc_name(i) != nullptr)
 			misc_name_map.insert(std::pair<string, int>(string(get_misc_name(i)), i));
 	setup_file_list();      // Set up file-list window.
-	set_browser("", 0);     // No browser.
+	set_browser("", nullptr);     // No browser.
 	connect_to_server();        // Connect to server with 'gamedat'.
 }
 
@@ -1327,10 +1327,10 @@ void add_to_tree(GtkTreeStore *model, const char *folderName,
 	GtkTreeIter iter;
 
 	// First, we add the folder
-	gtk_tree_store_append(model, &iter, NULL);
+	gtk_tree_store_append(model, &iter, nullptr);
 	gtk_tree_store_set(model, &iter,
 	                   FOLDER_COLUMN, folderName,
-	                   FILE_COLUMN, NULL,
+	                   FILE_COLUMN, nullptr,
 	                   DATA_COLUMN, -1,
 	                   -1);
 
@@ -1341,7 +1341,7 @@ void add_to_tree(GtkTreeStore *model, const char *folderName,
 	do {
 		char *pattern;
 		const char *commapos = strstr(startpos, ",");
-		if (commapos == 0) {
+		if (commapos == nullptr) {
 			pattern = g_strdup(startpos);
 			adding_children = 0;
 		} else {
@@ -1365,7 +1365,7 @@ void add_to_tree(GtkTreeStore *model, const char *folderName,
 					continue;
 				gtk_tree_store_append(model, &child_iter, &iter);
 				gtk_tree_store_set(model, &child_iter,
-				                   FOLDER_COLUMN, NULL,
+				                   FOLDER_COLUMN, nullptr,
 				                   FILE_COLUMN, fname,
 				                   DATA_COLUMN, file_type,
 				                   -1);
@@ -1392,7 +1392,7 @@ void add_to_tree(GtkTreeStore *model, const char *folderName,
 					continue;
 				gtk_tree_store_append(model, &child_iter, &iter);
 				gtk_tree_store_set(model, &child_iter,
-				                   FOLDER_COLUMN, NULL,
+				                   FOLDER_COLUMN, nullptr,
 				                   FILE_COLUMN, fname,
 				                   DATA_COLUMN, file_type,
 				                   -1);
@@ -1410,7 +1410,7 @@ void add_to_tree(GtkTreeStore *model, const char *folderName,
 		int ty = va_arg(ap, int);
 		gtk_tree_store_append(model, &child_iter, &iter);
 		gtk_tree_store_set(model, &child_iter,
-		                   FOLDER_COLUMN, NULL,
+		                   FOLDER_COLUMN, nullptr,
 		                   FILE_COLUMN, nm,
 		                   DATA_COLUMN, ty,
 		                   -1);
@@ -1442,12 +1442,12 @@ void ExultStudio::setup_file_list() {
 		GtkTreeViewColumn *column;
 
 		/* column for folder names */
-		g_object_set(renderer, "xalign", 0.0, NULL);
+		g_object_set(renderer, "xalign", 0.0, nullptr);
 		col_offset = gtk_tree_view_insert_column_with_attributes(
 		                 GTK_TREE_VIEW(file_list),
 		                 -1, "Folders",
 		                 renderer, "text",
-		                 FOLDER_COLUMN, NULL);
+		                 FOLDER_COLUMN, nullptr);
 		column = gtk_tree_view_get_column(GTK_TREE_VIEW(file_list),
 		                                  col_offset - 1);
 		gtk_tree_view_column_set_clickable(
@@ -1457,7 +1457,7 @@ void ExultStudio::setup_file_list() {
 		                 GTK_TREE_VIEW(file_list),
 		                 -1, "Files",
 		                 renderer, "text",
-		                 FILE_COLUMN, NULL);
+		                 FILE_COLUMN, nullptr);
 		column = gtk_tree_view_get_column(GTK_TREE_VIEW(file_list),
 		                                  col_offset - 1);
 		gtk_tree_view_column_set_clickable(
@@ -1779,7 +1779,7 @@ void ExultStudio::create_shape_file(
 			Shape *ptr = &shape;
 			Image_file_info::write_file(pathname, &ptr, 1, true);
 		} else {
-			Image_file_info::write_file(pathname, 0, 0, false);
+			Image_file_info::write_file(pathname, nullptr, 0, false);
 		}
 	} catch (const exult_exception &e) {
 		EStudio::Alert("%s", e.what());
@@ -1962,7 +1962,7 @@ int ExultStudio::get_num_entry(
 	if (!*txt)
 		return if_empty;
 	if (txt[0] == '0' && txt[1] == 'x')
-		return static_cast<int>(strtoul(txt + 2, 0, 16));   // Hex.
+		return static_cast<int>(strtoul(txt + 2, nullptr, 16));   // Hex.
 	else
 		return atoi(txt);
 }
@@ -1978,7 +1978,7 @@ const gchar *ExultStudio::get_text_entry(
 ) {
 	GtkWidget *field = glade_xml_get_widget(app_xml, name);
 	if (!field)
-		return 0;
+		return nullptr;
 	return gtk_entry_get_text(GTK_ENTRY(field));
 }
 
@@ -2128,14 +2128,14 @@ on_prompt3_cancel_clicked(GtkToggleButton *button,
 int ExultStudio::prompt(
     const char *msg,        // Question to ask.
     const char *choice0,        // 1st choice.
-    const char *choice1,        // 2nd choice, or NULL.
-    const char *choice2     // 3rd choice, or NULL.
+    const char *choice1,        // 2nd choice, or nullptr.
+    const char *choice2     // 3rd choice, or nullptr.
 ) {
-	static GdkPixmap *logo_pixmap = NULL;
-	static GdkBitmap *logo_mask = NULL;
+	static GdkPixmap *logo_pixmap = nullptr;
+	static GdkBitmap *logo_mask = nullptr;
 	if (!logo_pixmap) {     // First time?
 		logo_pixmap = gdk_pixmap_create_from_xpm_d(app->window,
-		              &logo_mask, NULL, const_cast<gchar **>(logo_xpm));
+		              &logo_mask, nullptr, const_cast<gchar **>(logo_xpm));
 		GtkWidget *pix = gtk_pixmap_new(logo_pixmap, logo_mask);
 		gtk_widget_show(pix);
 		GtkWidget *hbox = glade_xml_get_widget(app_xml,
@@ -2177,8 +2177,8 @@ namespace EStudio {
 int Prompt(
     const char *msg,        // Question to ask.
     const char *choice0,        // 1st choice.
-    const char *choice1,        // 2nd choice, or NULL.
-    const char *choice2     // 3rd choice, or NULL.
+    const char *choice1,        // 2nd choice, or nullptr.
+    const char *choice2     // 3rd choice, or nullptr.
 ) {
 	return ExultStudio::get_instance()->prompt(msg, choice0, choice1,
 	        choice2);
@@ -2207,7 +2207,7 @@ void Alert(
 
 GtkWidget *Add_menu_item(
     GtkWidget *menu,        // Menu to add to.
-    const char *label,      // What to put.  NULL for separator.
+    const char *label,      // What to put.  nullptr for separator.
     GtkSignalFunc func,     // Handle menu choice.
     gpointer func_data,     // Data passed to func().
     GSList *group           // If a radio menu item is wanted.
@@ -2341,7 +2341,7 @@ on_prefs_background_choose_clicked(GtkButton *button,
 	                          GTK_OBJECT(colorsel));
 	// Set delete handler.
 	gtk_signal_connect(GTK_OBJECT(colorsel), "delete_event",
-	                   GTK_SIGNAL_FUNC(gtk_false), 0L);
+	                   GTK_SIGNAL_FUNC(gtk_false), nullptr);
 	// Get color.
 	guint32 c = ExultStudio::get_instance()->get_background_color();
 	gdouble rgb[3];
@@ -2560,8 +2560,8 @@ void ExultStudio::read_from_server(
 	case Exult_server::game_pos:
 		if (waiting_for_server) { // Send msg. to callback.
 			waiting_for_server(id, data, datalen, waiting_client);
-			waiting_for_server = 0;
-			waiting_client = 0;
+			waiting_for_server = nullptr;
+			waiting_client = nullptr;
 		} else if (browser)
 			browser->server_response(static_cast<int>(id), data, datalen);
 		break;
@@ -2899,13 +2899,13 @@ void ExultStudio::set_game_information(
 		    GTK_OBJECT(glade_xml_get_widget(app_xml, "gameinfo_apply")),
 		    "clicked",
 		    GTK_SIGNAL_FUNC(on_gameinfo_apply_clicked),
-		    0L);
+		    nullptr);
 
 		gtk_signal_connect(
 		    GTK_OBJECT(glade_xml_get_widget(app_xml, "gameinfo_charset")),
 		    "clicked",
 		    GTK_SIGNAL_FUNC(on_gameinfo_charset_changed),
-		    0L);
+		    nullptr);
 	}
 
 	// game_encoding should equal gameinfo->get_codepage().
@@ -2936,7 +2936,7 @@ void ExultStudio::set_game_information(
 		     << "\tcode: " << error->code << endl   \
 		     << "\tmessage: \"" << error->message << "\"" << endl); \
 		g_error_free(error);    \
-		error = 0;  \
+		error = nullptr;  \
 	} while(0)
 
 /*
@@ -2949,7 +2949,7 @@ void convertFromUTF8::convert(gchar *&_convstr, const char *str, const char *enc
 		_convstr = g_strdup("");
 		return;
 	}
-	GError *error = 0;
+	GError *error = nullptr;
 	gsize bytes_read, bytes_written;
 
 	// Try lossless encoding to specified codepage.
@@ -3005,7 +3005,7 @@ void convertFromUTF8::convert(gchar *&_convstr, const char *str, const char *enc
 	}
 
 	// This shouldn't fail.
-	assert(_convstr != 0);
+	assert(_convstr != nullptr);
 }
 
 /*
@@ -3018,7 +3018,7 @@ void convertToUTF8::convert(gchar *&_convstr, const char *str, const char *enc) 
 		_convstr = g_strdup("");
 		return;
 	}
-	GError *error = 0;
+	GError *error = nullptr;
 	gsize bytes_read, bytes_written;
 
 	// Try lossless encoding to specified codepage.
@@ -3057,7 +3057,7 @@ void convertToUTF8::convert(gchar *&_convstr, const char *str, const char *enc) 
 			                                   &fallback, &bytes_read, &bytes_written, &error);
 		}
 	}
-	assert(_convstr != 0);
+	assert(_convstr != nullptr);
 }
 
 

@@ -54,7 +54,7 @@ using std::ostream;
 using std::cout;
 using std::endl;
 
-Barge_object *Barge_object::editing = 0;
+Barge_object *Barge_object::editing = nullptr;
 
 /*
  *  Rotate a point 90 degrees to the right around a point.
@@ -280,7 +280,7 @@ void Barge_object::gather(
 		tiles.y += cy * c_tiles_per_chunk;
 		Game_object *obj;
 		Object_iterator next(chunk->get_objects());
-		while ((obj = next.get_next()) != 0) {
+		while ((obj = next.get_next()) != nullptr) {
 			// Look at each object.
 			if (obj == this)
 				continue;
@@ -309,7 +309,7 @@ void Barge_object::gather(
 	// Test for boat.
 	Map_chunk *chunk = gmap->get_chunk_safely(
 	                       center.tx / c_tiles_per_chunk, center.ty / c_tiles_per_chunk);
-	if (boat == -1 && chunk != 0) {
+	if (boat == -1 && chunk != nullptr) {
 		ShapeID flat = chunk->get_flat(center.tx % c_tiles_per_chunk,
 		                               center.ty % c_tiles_per_chunk);
 		if (flat.is_invalid())
@@ -402,7 +402,7 @@ void Barge_object::travel_to_tile(
 	if (!path)
 		path = new Zombie();
 	// Set up new path.
-	if (path->NewPath(get_tile(), dest, 0)) {
+	if (path->NewPath(get_tile(), dest, nullptr)) {
 		frame_time = speed;
 		// Figure new direction.
 		Tile_coord cur = get_tile();
@@ -648,7 +648,7 @@ void Barge_object::move(
 void Barge_object::remove(
     Game_object *obj
 ) {
-	obj->set_owner(0);
+	obj->set_owner(nullptr);
 	obj->remove_this(1);        // Now remove from outside world.
 }
 
@@ -746,7 +746,7 @@ bool Barge_object::edit(
 #ifdef USE_EXULTSTUDIO
 	if (client_socket >= 0 &&   // Talking to ExultStudio?
 	        cheat.in_map_editor()) {
-		editing = 0;
+		editing = nullptr;
 		Tile_coord t = get_tile();
 		if (Barge_object_out(client_socket, this, t.tx, t.ty, t.tz,
 		                     get_shapenum(), get_framenum(),
@@ -785,10 +785,10 @@ void Barge_object::update_from_studio(
 		cout << "Barge from ExultStudio is not being edited" << endl;
 		return;
 	}
-	editing = 0;
+	editing = nullptr;
 	if (!barge) {       // Create a new one?
 		int x, y;
-		if (!Get_click(x, y, Mouse::hand, 0)) {
+		if (!Get_click(x, y, Mouse::hand, nullptr)) {
 			if (client_socket >= 0)
 				Exult_server::Send_data(client_socket,
 				                        Exult_server::cancel);

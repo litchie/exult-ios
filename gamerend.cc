@@ -359,7 +359,7 @@ void Game_window::paint(
  *  Paint whole window.
  */
 void Game_window::paint() {
-	if (main_actor != 0) map->read_map_data();      // Gather in all objs., etc.
+	if (main_actor != nullptr) map->read_map_data();      // Gather in all objs., etc.
 	set_all_dirty();
 	paint_dirty();
 }
@@ -462,7 +462,7 @@ void Game_render::paint_chunk_flat_rles(
 	Map_chunk *olist = gwin->map->get_chunk(cx, cy);
 	Flat_object_iterator next(olist);// Do flat RLE objects.
 	Game_object *obj;
-	while ((obj = next.get_next()) != 0)
+	while ((obj = next.get_next()) != nullptr)
 		obj->paint();
 }
 
@@ -484,7 +484,7 @@ int Game_render::paint_chunk_objects(
 	skip = gwin->get_render_skip_lift();
 	Nonflat_object_iterator next(olist);
 
-	while ((obj = next.get_next()) != 0)
+	while ((obj = next.get_next()) != nullptr)
 		if (obj->render_seq != render_seq)
 			paint_object(obj);
 

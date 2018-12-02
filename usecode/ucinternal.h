@@ -54,7 +54,7 @@ using std::vector;
 /*
  *  Recursively look for a barge that an object is a part of, or on.
  *
- *  Output: ->barge if found, else 0.
+ *  Output: ->barge if found, else nullptr.
  */
 
 Barge_object *Get_barge(
@@ -419,7 +419,7 @@ class Usecode_internal : public Usecode_machine {
 	Game_object *temp_to_be_deleted;
 
 	// execution functions
-	bool call_function(int funcid, int event, Game_object *caller = 0,
+	bool call_function(int funcid, int event, Game_object *caller = nullptr,
 	                   bool entrypoint = false, bool orig = false, int givenargs = 0);
 	void previous_stack_frame();
 	void return_from_function(Usecode_value &retval);
@@ -499,13 +499,13 @@ public:
 	virtual void intercept_click_on_item(Game_object *obj) {
 		intercept_item = obj;
 		delete intercept_tile;
-		intercept_tile = 0;
+		intercept_tile = nullptr;
 	}
 	virtual Game_object *get_intercept_click_on_item() const {
 		return intercept_item;
 	}
 	virtual void intercept_click_on_tile(Tile_coord *t) {
-		intercept_item = 0;
+		intercept_item = nullptr;
 		delete intercept_tile;
 		intercept_tile = t;
 	}
@@ -515,8 +515,8 @@ public:
 	virtual void save_intercept(Game_object *&obj, Tile_coord *&t) {
 		obj = intercept_item;
 		t = intercept_tile;
-		intercept_item = 0;
-		intercept_tile = 0;
+		intercept_item = nullptr;
+		intercept_tile = nullptr;
 	}
 	virtual void restore_intercept(Game_object *obj, Tile_coord *t) {
 		intercept_item = obj;

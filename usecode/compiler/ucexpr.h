@@ -74,13 +74,13 @@ public:
 		return 0;
 	}
 	virtual Uc_var_symbol *get_var() const {
-		return 0;
+		return nullptr;
 	}
 	virtual Uc_class *get_cls() const {
-		return 0;
+		return nullptr;
 	}
 	virtual Uc_struct_symbol *get_struct() const {
-		return 0;
+		return nullptr;
 	}
 	virtual int is_object_function(bool error = true) const {
 		ignore_unused_variable_warning(error);
@@ -374,7 +374,7 @@ public:
  */
 class Uc_call_expression : public Uc_expression {
 	Uc_symbol *sym;         // Function or intrinsic.
-	Uc_expression *ind;     // For indirect call (sym == 0).
+	Uc_expression *ind;     // For indirect call (sym == nullptr).
 	bool original;          // Call original function instead of
 	//   the one from 'patch'.
 	Uc_expression *itemref;     // Non-null for CALLE.
@@ -386,13 +386,13 @@ class Uc_call_expression : public Uc_expression {
 public:
 	Uc_call_expression(Uc_symbol *s, Uc_array_expression *prms,
 	                   Uc_function *fun, bool orig = false)
-		: sym(s), ind(0), original(orig), itemref(0), parms(prms),
-		  function(fun), return_value(true), meth_scope(0)
+		: sym(s), ind(nullptr), original(orig), itemref(nullptr), parms(prms),
+		  function(fun), return_value(true), meth_scope(nullptr)
 	{  }
 	Uc_call_expression(Uc_expression *i, Uc_array_expression *prms,
 	                   Uc_function *fun)
-		: sym(0), ind(i), original(false), itemref(0), parms(prms),
-		  function(fun), return_value(true), meth_scope(0)
+		: sym(nullptr), ind(i), original(false), itemref(nullptr), parms(prms),
+		  function(fun), return_value(true), meth_scope(nullptr)
 	{  }
 	~Uc_call_expression() {
 		delete parms;
@@ -426,7 +426,7 @@ public:
 	virtual void gen_value(Basic_block *out);
 	virtual void gen_assign(Basic_block *out);
 	virtual Uc_var_symbol *need_var(Basic_block *, Uc_function *) {
-		return 0;
+		return nullptr;
 	}
 	virtual bool is_class() const {
 		return true;
@@ -436,7 +436,7 @@ public:
 		return false;
 	}
 	virtual Uc_struct_symbol *get_struct() const {
-		return 0;
+		return nullptr;
 	}
 };
 

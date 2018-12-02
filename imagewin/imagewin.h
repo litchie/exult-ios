@@ -121,7 +121,7 @@ public:
 		ScalerConst(const char *name) : Name(name) {
 		}
 		operator ScalerType() const {
-			if (Name == 0) return Scalers.size();
+			if (Name == nullptr) return Scalers.size();
 			return get_scaler_for_name(Name);
 		}
 	};
@@ -298,9 +298,10 @@ public:
 		: ibuf(ib), scale(scl), scaler(sclr), uses_palette(true),
 		  fullscreen(fs), game_width(gamew), game_height(gameh),
 		  fill_mode(fmode), fill_scaler(fillsclr),
-		  paletted_surface(0), display_surface(0), inter_surface(0), draw_surface(0) {
+		  paletted_surface(nullptr), display_surface(nullptr),
+		  inter_surface(nullptr), draw_surface(nullptr) {
 #if SDL_VERSION_ATLEAST(2, 0, 0)
-		screen_window = NULL;
+		screen_window = nullptr;
 #endif
 		static_init();
 		create_surface(w, h);
@@ -398,7 +399,7 @@ public:
 	}
 
 	int ready() {       // Ready to draw?
-		return (ibuf->bits != 0);
+		return (ibuf->bits != nullptr);
 	}
 	bool is_fullscreen() {
 		return fullscreen;

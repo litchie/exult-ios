@@ -84,7 +84,7 @@ bool Gamemenu_button::activate(int button) {
 	return true;
 }
 
-Gamemenu_gump::Gamemenu_gump() : Modal_gump(0, EXULT_FLX_GAMEMENU_SHP, SF_EXULT_FLX) {
+Gamemenu_gump::Gamemenu_gump() : Modal_gump(nullptr, EXULT_FLX_GAMEMENU_SHP, SF_EXULT_FLX) {
 	set_object_area(Rectangle(0, 0, 0, 0), 8, 82); //+++++ ???
 
 	int y = 0;
@@ -189,7 +189,7 @@ bool Gamemenu_gump::mouse_up(int mx, int my, int button) {
 		pushed->unpush(button);
 		if (pushed->on_button(mx, my))
 			pushed->activate(1);
-		pushed = 0;
+		pushed = nullptr;
 	}
 
 	return true;

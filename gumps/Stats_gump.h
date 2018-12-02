@@ -57,7 +57,7 @@ public:
 
 	virtual Game_object *find_object(int mx, int my) {
 		ignore_unused_variable_warning(mx, my);
-		return 0;
+		return nullptr;
 	}
 };
 

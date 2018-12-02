@@ -346,7 +346,7 @@ gint Npc_chooser::win32_drag_motion(
 
 		// This call allows us to recycle the data transfer initialization code.
 		//  It's clumsy, but far easier to maintain.
-		drag_data_get(NULL, NULL, (GtkSelectionData *) &wdata,
+		drag_data_get(nullptr, nullptr, (GtkSelectionData *) &wdata,
 		              U7_TARGET_NPCID, 0, data);
 
 		POINT pnt;
@@ -435,7 +435,7 @@ gint Npc_chooser::mouse_press(
 	}
 	if (event->button == 3)
 		gtk_menu_popup(GTK_MENU(create_popup()),
-		               0, 0, 0, 0, event->button, event->time);
+		               nullptr, nullptr, nullptr, nullptr, event->button, event->time);
 	return (TRUE);
 }
 
@@ -779,7 +779,7 @@ void Npc_chooser::search(
 	for (i = start; i != stop; i += dir) {
 		unsigned npcnum = info[i].npcnum;
 		const char *nm = npcnum < npcs.size() ?
-		                 npcs[npcnum].name.c_str() : 0;
+		                 npcs[npcnum].name.c_str() : nullptr;
 		if (nm && search_name(nm, srch))
 			break;      // Found it.
 	}
@@ -855,7 +855,7 @@ Npc_chooser::Npc_chooser(
 	Shape_draw(i, palbuf, gtk_drawing_area_new()),
 	info(0), rows(0), row0(0),
 	row0_voffset(0), total_height(0),
-	voffset(0), status_id(-1), drop_enabled(false), sel_changed(0) {
+	voffset(0), status_id(-1), drop_enabled(false), sel_changed(nullptr) {
 	rows.reserve(40);
 	// Put things in a vert. box.
 	GtkWidget *vbox = gtk_vbox_new(FALSE, 0);
@@ -867,7 +867,7 @@ Npc_chooser::Npc_chooser(
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, TRUE, TRUE, 0);
 
 	// A frame looks nice.
-	GtkWidget *frame = gtk_frame_new(NULL);
+	GtkWidget *frame = gtk_frame_new(nullptr);
 	gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_IN);
 	gtk_widget_show(frame);
 	gtk_box_pack_start(GTK_BOX(hbox), frame, TRUE, TRUE, 0);

@@ -123,7 +123,7 @@ class UCNode;
 
 class UCNode {
 public:
-	UCNode(UCc *newucc = 0) : ucc(newucc) { }
+	UCNode(UCc *newucc = nullptr) : ucc(newucc) { }
 	~UCNode() { }
 
 	UCc *ucc;
@@ -212,7 +212,7 @@ public:
 	UCFunc() : _offset(0), _funcid(0), _funcsize(0), _bodyoffset(0), _datasize(0),
 		_codeoffset(0), _num_args(0), _num_locals(0), _num_externs(0), _num_statics(0),
 		return_var(false), aborts(false), debugging_info(false), debugging_offset(0),
-		_sym(0), _cls(0), ext32(false) {}
+		_sym(nullptr), _cls(nullptr), ext32(false) {}
 
 	bool output_list(std::ostream &o, unsigned int funcno, const UCOptions &options);
 

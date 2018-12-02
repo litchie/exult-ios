@@ -202,13 +202,13 @@ void ExultStudio::open_obj_window(
 		}
 	}
 	// Init. obj address to null.
-	gtk_object_set_user_data(GTK_OBJECT(objwin), 0);
+	gtk_object_set_user_data(GTK_OBJECT(objwin), nullptr);
 	if (!init_obj_window(data, datalen))
 		return;
 	gtk_widget_show(objwin);
 #ifdef WIN32
 	if (first_time || !objdnd)
-		Windnd::CreateStudioDropDest(objdnd, objhwnd, Drop_dragged_shape, NULL, NULL, (void *) this);
+		Windnd::CreateStudioDropDest(objdnd, objhwnd, Drop_dragged_shape, nullptr, nullptr, (void *) this);
 #endif
 }
 

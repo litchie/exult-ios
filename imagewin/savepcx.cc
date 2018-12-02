@@ -129,7 +129,7 @@ static void save_24(SDL_RWops *dst, int width, int height,
 }
 
 static bool save_image(SDL_Surface *surface, SDL_RWops *dst) {
-	Uint8 *cmap = 0;
+	Uint8 *cmap = nullptr;
 	Uint8 *pixels;
 	Uint8 tmp;
 	int width, height, pitch;
@@ -209,7 +209,7 @@ bool SavePCX_RW(SDL_Surface *saveme, SDL_RWops *dst, bool freedst) {
 
 	cout << "Taking screenshot...";
 
-	surface = NULL;
+	surface = nullptr;
 	if (dst) {
 		if (saveme->format->palette) {
 			if (saveme->format->BitsPerPixel == 8) {
@@ -244,7 +244,7 @@ bool SavePCX_RW(SDL_Surface *saveme, SDL_RWops *dst, bool freedst) {
 #endif
 			                               0);
 
-			if (surface != NULL) {
+			if (surface != nullptr) {
 				bounds.x = 0;
 				bounds.y = 0;
 				bounds.w = saveme->w;
@@ -254,7 +254,7 @@ bool SavePCX_RW(SDL_Surface *saveme, SDL_RWops *dst, bool freedst) {
 					SDL_FreeSurface(surface);
 					cout << "Couldn't convert image to 24 bpp for screenshot";
 					found_error = true;
-					surface = NULL;
+					surface = nullptr;
 				}
 			}
 		}

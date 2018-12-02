@@ -118,7 +118,7 @@ SI_Game::SI_Game() {
 		const char *exultflx = BUNDLE_CHECK(BUNDLE_EXULT_FLX, EXULT_FLX);
 		const char *gameflx = BUNDLE_CHECK(BUNDLE_EXULT_SI_FLX, EXULT_SI_FLX);
 
-		add_resource("files/shapes/count", 0, 8);
+		add_resource("files/shapes/count", nullptr, 8);
 		add_resource("files/shapes/0", SHAPES_VGA, 0);
 		add_resource("files/shapes/1", FACES_VGA, 0);
 		add_resource("files/shapes/2", GUMPS_VGA, 0);
@@ -138,7 +138,7 @@ SI_Game::SI_Game() {
 		add_resource("config/avatar_data", gameflx, EXULT_SI_FLX_AVATAR_DATA_TXT);
 		add_resource("config/autonotes", gameflx, EXULT_SI_FLX_AUTONOTES_TXT);
 
-		add_resource("palettes/count", 0, 14);
+		add_resource("palettes/count", nullptr, 14);
 		add_resource("palettes/0", PALETTES_FLX, 0);
 		add_resource("palettes/1", PALETTES_FLX, 1);
 		add_resource("palettes/2", PALETTES_FLX, 2);
@@ -171,7 +171,7 @@ SI_Game::SI_Game() {
 		add_resource("palettes/patch/13", PATCH_MAINSHP, 1);
 		add_resource("palettes/patch/14", PATCH_MAINSHP, 26);
 
-		add_resource("xforms/count", 0, 20);
+		add_resource("xforms/count", nullptr, 20);
 		add_resource("xforms/0", XFORMTBL, 0);
 		add_resource("xforms/1", XFORMTBL, 1);
 		add_resource("xforms/2", XFORMTBL, 2);
@@ -771,7 +771,7 @@ struct ExCineEvent {
 	virtual bool play_it(Image_window *win, uint32 time) = 0;        // Return true if screen updated
 
 	bool can_play() {
-		return file != 0;
+		return file != nullptr;
 	}
 
 	ExCineEvent(uint32 t, const char *f, const char *p, int i) :
@@ -808,7 +808,7 @@ public:
 		ExCineEvent(time, file, patch, i), start(s), count(c), repeat(r),
 		cur(-1), speed(spd), player(nullptr) { }
 
-	ExCineFlic(uint32 time) : ExCineEvent(time, 0, 0, 0), start(0), count(0),
+	ExCineFlic(uint32 time) : ExCineEvent(time, nullptr, nullptr, 0), start(0), count(0),
 		repeat(false), cur(0), speed(0),
 		player(nullptr) { }
 
@@ -1045,8 +1045,8 @@ void SI_Game::end_game(bool success) {
 	};
 	int last_flic = 7;
 	int cur_flic = -1;
-	ExCineFlic *flic = 0;
-	ExCineFlic *pal_flic = 0;
+	ExCineFlic *flic = nullptr;
+	ExCineFlic *pal_flic = nullptr;
 
 	// Voc List
 	ExCineVoc vocs[] = {
@@ -1102,7 +1102,7 @@ void SI_Game::end_game(bool success) {
 				if (pal_flic && pal_flic != flic)
 					pal_flic->free_flic();
 
-				pal_flic = 0;
+				pal_flic = nullptr;
 			}
 			// Set palette to prev if required
 			else if (flic && flic->can_play()) {
@@ -1132,7 +1132,7 @@ void SI_Game::end_game(bool success) {
 			ExCineVoc& voc = vocs[cur_voc];
 
 			// Just play it!
-			voc.play_it(NULL, time);
+			voc.play_it(nullptr, time);
 			//else COUT("Teminator ");
 			COUT("voc at time: " << voc.time);
 		}

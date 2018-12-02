@@ -80,7 +80,7 @@ Usecode_value &Usecode_value::operator=(
 		value.ptr = v2.value.ptr;
 		break;
 	case string_type:
-		value.str = v2.value.str ? newstrdup(v2.value.str) : 0;
+		value.str = v2.value.str ? newstrdup(v2.value.str) : nullptr;
 		break;
 	case array_type:
 		value.array.cnt = v2.value.array.cnt;
@@ -146,7 +146,7 @@ Usecode_value &Usecode_value::operator=(
 	else if (type == string_type)
 		delete [] value.str;
 	type = string_type;
-	value.str = str ? newstrdup(str) : 0;
+	value.str = str ? newstrdup(str) : nullptr;
 	return *this;
 }
 
@@ -157,7 +157,7 @@ Usecode_value &Usecode_value::operator=(
 Usecode_value::Usecode_value(
     const char *s
 ) : type(string_type), undefined(false) {
-	value.str = s ? newstrdup(s) : 0;
+	value.str = s ? newstrdup(s) : nullptr;
 }
 
 /*
@@ -580,7 +580,7 @@ bool Usecode_value::restore(
 		return true;
 	case pointer_type:
 		in->read4();
-		value.ptr = 0; //DON'T dereference this pointer!
+		value.ptr = nullptr; //DON'T dereference this pointer!
 		// Maybe add a new type "serialized_pointer" to prevent "accidents"?
 		return true;
 	case class_sym_type: {

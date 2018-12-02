@@ -35,7 +35,7 @@ int Astar::NewPath(Tile_coord const &s, Tile_coord const &d, Pathfinder_client *
 	dest = d;
 	path.clear();       // Clear out old path, if there.
 	Tile_coord *t = Find_path(s, d, client, pathlen);
-	bool success = (t != 0);
+	bool success = (t != nullptr);
 	for (int i = 0; i < pathlen; i++)
 		path.push_back(t[i]);
 	delete [] t;    // Discard temporary storage

@@ -27,12 +27,12 @@ namespace Pentagram {
 ov_callbacks OggAudioSample::callbacks = {
 	&read_func,
 	&seek_func,
-	0,
+	nullptr,
 	&tell_func
 };
 
 OggAudioSample::OggAudioSample(IDataSource *oggdata_)
-	: AudioSample(0, 0), oggdata(oggdata_)
+	: AudioSample(nullptr, 0), oggdata(oggdata_)
 {
 	frame_size = 4096;
 	decompressor_size = sizeof(OggDecompData);
@@ -43,7 +43,7 @@ OggAudioSample::OggAudioSample(IDataSource *oggdata_)
 }
 
 OggAudioSample::OggAudioSample(uint8 *buffer, uint32 size)
-	: AudioSample(buffer, size), oggdata(0)
+	: AudioSample(buffer, size), oggdata(nullptr)
 {
 	frame_size = 4096;
 	decompressor_size = sizeof(OggDecompData);
@@ -54,7 +54,7 @@ OggAudioSample::OggAudioSample(uint8 *buffer, uint32 size)
 OggAudioSample::~OggAudioSample()
 {
 	delete oggdata;
-	oggdata = 0;
+	oggdata = nullptr;
 }
 
 size_t OggAudioSample::read_func  (void *ptr, size_t size, size_t nmemb, void *datasource)
@@ -94,7 +94,7 @@ bool OggAudioSample::isThis(IDataSource *oggdata)
 {
 	OggVorbis_File vf;
 	oggdata->seek(0);
-	int res = ov_test_callbacks(oggdata,&vf,0,0,callbacks);
+	int res = ov_test_callbacks(oggdata,&vf,nullptr,0,callbacks);
 	ov_clear(&vf);
 
 	return res == 0;
@@ -119,7 +119,7 @@ void OggAudioSample::initDecompressor(void *DecompData) const
 	}
 
 	decomp->datasource->seek(0);
-	ov_open_callbacks(decomp->datasource,&decomp->ov,NULL,0,callbacks);
+	ov_open_callbacks(decomp->datasource,&decomp->ov,nullptr,0,callbacks);
 	decomp->bitstream = 0;
 
 	vorbis_info *info = ov_info(&decomp->ov,-1);
@@ -145,7 +145,7 @@ void OggAudioSample::freeDecompressor(void *DecompData) const
 	if (this->oggdata) *const_cast<bool*>(&locked) = false;
 	else delete decomp->datasource;
 
-	decomp->datasource = 0;
+	decomp->datasource = nullptr;
 }
 
 uint32 OggAudioSample::decompressFrame(void *DecompData, void *samples) const
@@ -154,7 +154,7 @@ uint32 OggAudioSample::decompressFrame(void *DecompData, void *samples) const
 
 	vorbis_info *info = ov_info(&decomp->ov,-1);
 
-	if (info == 0) return 0;
+	if (info == nullptr) return 0;
 
 	*const_cast<uint32*>(&sample_rate) = decomp->last_rate;
 	*const_cast<bool*>(&stereo) = decomp->last_stereo;

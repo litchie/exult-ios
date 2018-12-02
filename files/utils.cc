@@ -181,7 +181,7 @@ string get_system_path(const string &path) {
 	// and we'll only convert to short if a space is found
 	// really, we don't need to do this, but hey, you never know
 	if (pos == pos2 && pos3 != string::npos) {
-		int num_chars = GetShortPathName(new_path.c_str(), NULL, 0);
+		int num_chars = GetShortPathName(new_path.c_str(), nullptr, 0);
 		if (num_chars > 0) {
 			char *short_path = new char [num_chars + 1];
 			GetShortPathName(new_path.c_str(), short_path, num_chars + 1);
@@ -373,7 +373,7 @@ std::FILE *U7open(
 
 	// file not found.
 	throw(file_open_exception(get_system_path(fname)));
-	return 0;
+	return nullptr;
 }
 
 DIR *U7opendir(
@@ -388,7 +388,7 @@ DIR *U7opendir(
 		if (dir)
 			return dir; // found it!
 	} while (base_to_uppercase(name, ++uppercasecount));
-	return 0;
+	return nullptr;
 }
 
 /*
@@ -494,7 +494,7 @@ int U7mkdir(
 	LPTSTR lpszT = (LPTSTR) alloca(nLen * 2);
 	MultiByteToWideChar(CP_ACP, 0, n, -1, lpszT, nLen);
 	ignore_unused_variable_warning(mode);
-	return CreateDirectory(lpszT, NULL);
+	return CreateDirectory(lpszT, nullptr);
 #elif defined(WIN32)
 	ignore_unused_variable_warning(mode);
 	return mkdir(name.c_str());
@@ -528,7 +528,7 @@ protected:
 public:
 	shell32_wrapper() {
 		hLib = LoadLibrary("shell32.dll");
-		if (hLib != NULL) {
+		if (hLib != nullptr) {
 			SHGetFolderPath      = reinterpret_cast<SHGetFolderPathFunc>(
 			                          GetProcAddress(hLib, "SHGetFolderPathA"));
 			/*
@@ -536,8 +536,8 @@ public:
 			                GetProcAddress(hLib, "SHGetKnownFolderPath"));
 			*/
 		} else {
-			SHGetFolderPath      = NULL;
-			//SHGetKnownFolderPath = NULL;
+			SHGetFolderPath      = nullptr;
+			//SHGetKnownFolderPath = nullptr;
 		}
 	}
 	~shell32_wrapper() {
@@ -545,21 +545,21 @@ public:
 	}
 	const string Get_local_appdata() {
 		/*  Not yet.
-		if (SHGetKnownFolderPath != NULL)
+		if (SHGetKnownFolderPath != nullptr)
 		    {
 		    }
 		else */
-		if (SHGetFolderPath != NULL) {
+		if (SHGetFolderPath != nullptr) {
 			CHAR szPath[MAX_PATH];
-			HRESULT code = SHGetFolderPath(NULL, CSIDL_LOCAL_APPDATA,
-			                               NULL, 0, szPath);
+			HRESULT code = SHGetFolderPath(nullptr, CSIDL_LOCAL_APPDATA,
+			                               nullptr, 0, szPath);
 			if (code == E_INVALIDARG)
 				return string("");
 			else if (code == S_FALSE)   // E_FAIL for Unicode version.
 				// Lets try creating it through the API flag:
-				code = SHGetFolderPath(NULL,
+				code = SHGetFolderPath(nullptr,
 				                       CSIDL_LOCAL_APPDATA | CSIDL_FLAG_CREATE,
-				                       NULL, 0, szPath);
+				                       nullptr, 0, szPath);
 			if (code == E_INVALIDARG)
 				return string("");
 			else if (code == S_OK)
@@ -596,7 +596,7 @@ void redirect_output(const char *prefix) {
 
 	// Redirect standard input and standard output
 	FILE *newfp = freopen(stdoutfile, "w", stdout);
-	if (newfp == NULL) {
+	if (newfp == nullptr) {
 		// This happens on NT
 #if !defined(stdout)
 		stdout = fopen(stdoutfile, "w");
@@ -611,7 +611,7 @@ void redirect_output(const char *prefix) {
 	const char *stderrfile = stderrPath.c_str();
 
 	newfp = freopen(stderrfile, "w", stderr);
-	if (newfp == NULL) {
+	if (newfp == nullptr) {
 		// This happens on NT
 #if !defined(stderr)
 		stderr = fopen(stderrfile, "w");
@@ -621,8 +621,8 @@ void redirect_output(const char *prefix) {
 			*stderr = *newfp;
 #endif
 	}
-	setvbuf(stdout, NULL, _IOLBF, BUFSIZ);  // Line buffered
-	setbuf(stderr, NULL);           // No buffering
+	setvbuf(stdout, nullptr, _IOLBF, BUFSIZ);  // Line buffered
+	setbuf(stderr, nullptr);           // No buffering
 }
 
 void cleanup_output(const char *prefix) {
@@ -659,8 +659,8 @@ const string Get_home() {
 	}
 #endif // PORTABLE_WIN32_EXULT
 #elif !defined(MACOS)
-	const char *home = 0;
-	if ((home = getenv("HOME")) != 0)
+	const char *home = nullptr;
+	if ((home = getenv("HOME")) != nullptr)
 		home_dir = home;
 #endif
 	return home_dir;
@@ -870,7 +870,7 @@ int fgepow2(uint32 n) {
 
 char *newstrdup(const char *s) {
 	if (!s)
-		throw(std::invalid_argument("NULL pointer passed to newstrdup"));
+		throw(std::invalid_argument("nullptr pointer passed to newstrdup"));
 	char *ret = new char[std::strlen(s) + 1];
 	std::strcpy(ret, s);
 	return ret;
@@ -891,7 +891,7 @@ char *Get_mapped_name(
 		strcpy(to, from);   // Default map.
 	else {
 		const char *sep = strrchr(from, '/');
-		assert(sep != 0);
+		assert(sep != nullptr);
 		size_t len = sep - from;
 		memcpy(to, from, len);  // Copy dir.
 		strcpy(to + len, MULTIMAP_DIR);

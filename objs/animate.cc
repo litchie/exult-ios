@@ -117,7 +117,7 @@ void Object_sfx::notify_object_gone(Game_object *o) {
 		kill_client_list();
 		Game_object *outer = obj->get_outermost();
 		if (outer == obj)
-			obj = 0;    // Use last_pos.
+			obj = nullptr;    // Use last_pos.
 		else {
 			obj = outer;
 			add_client(obj);
@@ -139,7 +139,7 @@ void Object_sfx::handle_event(
 		outer = obj->get_outermost();
 		last_pos = outer->get_center_tile();
 	} else
-		outer = 0;
+		outer = nullptr;
 
 	/*
 	if (outer->is_pos_invalid())// || (distance >= 0 && !active))

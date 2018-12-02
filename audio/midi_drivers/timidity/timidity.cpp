@@ -56,8 +56,8 @@ int free_instruments_afterwards=0;
 static char def_instr_name[256]="";
 
 int AUDIO_BUFFER_SIZE;
-sample_t *resample_buffer=0;
-sint32 *common_buffer=0;
+sample_t *resample_buffer=nullptr;
+sint32 *common_buffer=nullptr;
 
 #define MAXWORDS 10u
 
@@ -67,7 +67,7 @@ static int read_config_file(const char *name)
 	char tmp[1024];
 	vector<char*> w;
 	w.reserve(MAXWORDS);
-	ToneBank *bank=0;
+	ToneBank *bank=nullptr;
 	int line=0;
 	static int rcf_count=0;
 
@@ -88,7 +88,7 @@ static int read_config_file(const char *name)
 		w.push_back(strtok(tmp, " \t\r\n\240"));
 		if (!w[0] || (*w[0]=='#')) continue;
 		while (w.back() && w.size() < MAXWORDS)
-			w.push_back(strtok(0," \t\r\n\240"));
+			w.push_back(strtok(nullptr," \t\r\n\240"));
 		if (!strcmp(w[0], "dir"))
 		{
 			if (w.size() < 2)
@@ -495,10 +495,10 @@ void Timidity_DeInit()
 	free_instruments();
 
 	free(resample_buffer);
-	resample_buffer = 0;
+	resample_buffer = nullptr;
 
 	free(common_buffer);
-	common_buffer = 0;
+	common_buffer = nullptr;
 }
 
 

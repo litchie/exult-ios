@@ -86,9 +86,9 @@ void Scale2x_noblur(
 	// reallocating space on each call, as new[]s are usually very
 	// expensive; we do allow it to grow though
 	static int buff_size = 0;
-	static Dest_pixel *rgb_row_prev  = 0;
-	static Dest_pixel *rgb_row_cur  = 0;
-	static Dest_pixel *rgb_row_next = 0;
+	static Dest_pixel *rgb_row_prev  = nullptr;
+	static Dest_pixel *rgb_row_cur  = nullptr;
+	static Dest_pixel *rgb_row_next = nullptr;
 	if (buff_size < sline_pixels) {
 		delete [] rgb_row_prev;
 		delete [] rgb_row_cur;

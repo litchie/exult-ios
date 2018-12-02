@@ -50,7 +50,7 @@ using namespace Ucscript;
 extern bool intrinsic_trace;
 
 int Usecode_script::count = 0;
-Usecode_script *Usecode_script::first = 0;
+Usecode_script *Usecode_script::first = nullptr;
 
 /*
  *  Create for a 'restore'.
@@ -62,7 +62,7 @@ Usecode_script::Usecode_script(
     int findex,
     int nhalt,
     int del
-) : next(0), prev(0),
+) : next(nullptr), prev(nullptr),
 	obj(item), code(cd), i(0), frame_index(findex),
 	started(false), no_halt(nhalt != 0), must_finish(false),
 	killed_barks(false), delay(del) {
@@ -75,12 +75,12 @@ Usecode_script::Usecode_script(
 
 Usecode_script::Usecode_script(
     Game_object *o,
-    Usecode_value *cd       // May be NULL for empty script.
-) : next(0), prev(0),
+    Usecode_value *cd       // May be nullptr for empty script.
+) : next(nullptr), prev(nullptr),
 	obj(o), code(cd), cnt(0), i(0), frame_index(0), started(false),
 	no_halt(false), must_finish(false), killed_barks(false), delay(0) {
 	if (!code)          // Empty?
-		code = new Usecode_value(0, 0);
+		code = new Usecode_value(0, nullptr);
 	else {
 		cnt = code->get_array_size();
 		if (!cnt) {     // Not an array??  (This happens.)
@@ -133,7 +133,7 @@ void Usecode_script::start(
 		Usecode_script::terminate(obj);
 	count++;            // Keep track of total.
 	next = first;           // Put in chain.
-	prev = 0;
+	prev = nullptr;
 	if (first)
 		first->prev = this;
 	first = this;
@@ -182,7 +182,7 @@ void Usecode_script::add(int *vals, int c) {
 /*
  *  Search list for one for a given item.
  *
- *  Output: ->Usecode_script if found, else 0.
+ *  Output: ->Usecode_script if found, else nullptr.
  */
 
 Usecode_script *Usecode_script::find(
@@ -193,13 +193,13 @@ Usecode_script *Usecode_script::find(
 	for (Usecode_script *each = start; each; each = each->next)
 		if (each->obj == srch)
 			return each;    // Found it.
-	return (0);
+	return nullptr;
 }
 
 /*
  *  Search list for one for a given item.
  *
- *  Output: ->Usecode_script if found, else 0.
+ *  Output: ->Usecode_script if found, else nullptr.
  */
 
 Usecode_script *Usecode_script::find_active(
@@ -210,7 +210,7 @@ Usecode_script *Usecode_script::find_active(
 	for (Usecode_script *each = start; each; each = each->next)
 		if (each->obj == srch && each->is_activated())
 			return each;    // Found it.
-	return (0);
+	return nullptr;
 }
 
 /*
@@ -220,7 +220,7 @@ Usecode_script *Usecode_script::find_active(
 void Usecode_script::terminate(
     const Game_object *obj
 ) {
-	Usecode_script *next = 0;
+	Usecode_script *next = nullptr;
 	for (Usecode_script *each = first; each; each = next) {
 		next = each->next;  // Get next in case we delete 'each'.
 		if (each->obj == obj)
@@ -248,7 +248,7 @@ void Usecode_script::purge(
     Tile_coord const &spot,
     int dist            // In tiles.
 ) {
-	Usecode_script *next = 0;
+	Usecode_script *next = nullptr;
 	Game_window *gwin = Game_window::get_instance();
 	Usecode_internal *usecode = static_cast<Usecode_internal *>(
 	                                gwin->get_usecode());
@@ -698,7 +698,7 @@ void Usecode_script::step(
 		if (tile.tz < 0)
 			tile.tz = 0;
 		obj->step(tile, frame, true);
-	} else if ((barge = obj->as_barge()) != 0) {
+	} else if ((barge = obj->as_barge()) != nullptr) {
 		for (int i = 0; i < 4; i++) {
 			Tile_coord t = obj->get_tile();
 			if (dir != -1)
@@ -752,17 +752,17 @@ Usecode_script *Usecode_script::restore(
 	int cnt = in->read2();      // Get # instructions.
 	int curindex = in->read2(); // Where it is.
 	// Create empty array.
-	Usecode_value *code = new Usecode_value(cnt, 0);
+	Usecode_value *code = new Usecode_value(cnt, nullptr);
 	for (int i = 0; i < cnt; i++) {
 		Usecode_value &val = code->get_elem(i);
 		if (!val.restore(in)) {
 			delete code;
-			return 0;
+			return nullptr;
 		}
 	}
 	if (in->getSize() - in->getPos() < 8) { // Enough room left?
 		delete code;
-		return 0;
+		return nullptr;
 	}
 	int frame_index = in->read2();
 	int no_halt = in->read2();

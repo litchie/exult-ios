@@ -170,15 +170,15 @@ static gint ucbrowser_compare_func(
 ) {
 	gint colnum = *static_cast<gint*>(userdata);
 	gint ret = 0;
-	gchar *name1 = 0, *name2 = 0;
+	gchar *name1 = nullptr, *name2 = nullptr;
 	gtk_tree_model_get(model, a, colnum, &name1, -1);
 	gtk_tree_model_get(model, b, colnum, &name2, -1);
 
-	if (name1 == NULL || name2 == NULL) {
-		if (name1 == NULL && name2 == NULL)
+	if (name1 == nullptr || name2 == nullptr) {
+		if (name1 == nullptr && name2 == nullptr)
 			ret = 0;
 		else
-			ret = (name1 == NULL) ? -1 : 1;
+			ret = (name1 == nullptr) ? -1 : 1;
 	} else
 		ret = g_utf8_collate(name1, name2);
 #if 0   /* This was in the example, but it causes crashes. */
@@ -236,17 +236,17 @@ Usecode_browser::Usecode_browser(
 	// Create each column.
 	GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
 	GtkTreeViewColumn *col = gtk_tree_view_column_new_with_attributes(
-	                             "Name", renderer, "text", NAME_COL, NULL);
+	                             "Name", renderer, "text", NAME_COL, nullptr);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), col);
 	gtk_tree_view_column_set_sort_column_id(col, SORTID_NAME);
 	renderer = gtk_cell_renderer_text_new();
 	col = gtk_tree_view_column_new_with_attributes(
-	          "Number", renderer, "text", NUM_COL, NULL);
+	          "Number", renderer, "text", NUM_COL, nullptr);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), col);
 	gtk_tree_view_column_set_sort_column_id(col, SORTID_NUM);
 	renderer = gtk_cell_renderer_text_new();
 	col = gtk_tree_view_column_new_with_attributes(
-	          "Type", renderer, "text", TYPE_COL, NULL);
+	          "Type", renderer, "text", TYPE_COL, nullptr);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), col);
 	gtk_tree_view_column_set_sort_column_id(col, SORTID_TYPE);
 	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(tree), TRUE);
@@ -338,7 +338,7 @@ void Usecode_browser::setup_list(
 	for (siter = syms.begin(); siter != syms.end(); ++siter) {
 		Usecode_symbol *sym = *siter;
 		Usecode_symbol::Symbol_kind kind = sym->get_kind();
-		const char *kindstr = 0;
+		const char *kindstr = nullptr;
 		const char *nm = sym->get_name();
 		if (!nm[0])
 			continue;
@@ -369,7 +369,7 @@ void Usecode_browser::setup_list(
 		char num[20];
 		sprintf(num, "%05xH", sym->get_val());
 		GtkTreeIter iter;
-		gtk_tree_store_append(model, &iter, NULL);
+		gtk_tree_store_append(model, &iter, nullptr);
 		gtk_tree_store_set(model, &iter, NAME_COL, nm,
 		                   NUM_COL, num, TYPE_COL, kindstr, -1);
 	}

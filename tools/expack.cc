@@ -292,7 +292,7 @@ int main(int argc, char **argv)
 		if (argc == 4) {
 			U7object f(fname, atoi(argv[3]));
 			unsigned long nobjs = f.number_of_objects();
-			unsigned long n = strtoul(argv[3], 0, 0);
+			unsigned long n = strtoul(argv[3], nullptr, 0);
 			if (n >= nobjs) {
 				cerr << "Obj. #(" << n <<
 				     ") is too large.  ";
