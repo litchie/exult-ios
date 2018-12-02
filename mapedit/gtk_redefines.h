@@ -97,14 +97,4 @@ inline T1 *gtk_cast(T2 *obj) {
 #define g_utf8_next_char(p)   ((p) + g_utf8_skip[*reinterpret_cast<const guchar *>((p))])
 #endif /* g_utf8_next_char */
 
-#ifdef GPOINTER_TO_INT
-#  undef GPOINTER_TO_INT
-#define GPOINTER_TO_INT(p)    static_cast<gint>(reinterpret_cast<glong>((p)))
-#endif /* GPOINTER_TO_INT */
-
-#ifdef GINT_TO_POINTER
-#  undef GINT_TO_POINTER
-#define GINT_TO_POINTER(i)    reinterpret_cast<gpointer>(static_cast<glong>((i)))
-#endif /* GINT_TO_POINTER */
-
 #endif

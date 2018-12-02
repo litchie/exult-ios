@@ -168,7 +168,7 @@ static gint ucbrowser_compare_func(
     GtkTreeIter  *b,
     gpointer      userdata
 ) {
-	gint colnum = GPOINTER_TO_INT(userdata);
+	gint colnum = *static_cast<gint*>(userdata);
 	gint ret = 0;
 	gchar *name1 = 0, *name2 = 0;
 	gtk_tree_model_get(model, a, colnum, &name1, -1);
@@ -188,6 +188,12 @@ static gint ucbrowser_compare_func(
 	return ret;
 }
 
+extern "C" {
+	void gint_deleter(gpointer data) {
+		gint *ptr = static_cast<gint*>(data);
+		delete ptr;
+	}
+}
 /*
  *  Create usecode browser window.
  */
@@ -218,12 +224,15 @@ Usecode_browser::Usecode_browser(
 	gtk_tree_view_set_model(GTK_TREE_VIEW(tree), GTK_TREE_MODEL(model));;
 	// Set up sorting.
 	GtkTreeSortable *sortable = GTK_TREE_SORTABLE(model);
+	gint *iname = new gint(NAME_COL),
+	     *inum = new gint(NUM_COL),
+		 *itype = new gint (TYPE_COL);
 	gtk_tree_sortable_set_sort_func(sortable, SORTID_NAME,
-	                                ucbrowser_compare_func, GINT_TO_POINTER(NAME_COL), NULL);
+	                                ucbrowser_compare_func, iname, gint_deleter);
 	gtk_tree_sortable_set_sort_func(sortable, SORTID_NUM,
-	                                ucbrowser_compare_func, GINT_TO_POINTER(NUM_COL), NULL);
+	                                ucbrowser_compare_func, inum , gint_deleter);
 	gtk_tree_sortable_set_sort_func(sortable, SORTID_TYPE,
-	                                ucbrowser_compare_func, GINT_TO_POINTER(TYPE_COL), NULL);
+	                                ucbrowser_compare_func, itype, gint_deleter);
 	// Create each column.
 	GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
 	GtkTreeViewColumn *col = gtk_tree_view_column_new_with_attributes(
