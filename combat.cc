@@ -429,9 +429,9 @@ list<Game_object_weak>::iterator Combat_schedule::find_protected_attacker(
 	list<Game_object_weak>::iterator best_opp = opponents.end();
 	for (list<Game_object_weak>::iterator it = opponents.begin();
 	        it != opponents.end(); ++it) {
-		Actor *opp = static_cast<Actor *>(obj_from_weak(*it));
+		Actor_shared opp = std::static_pointer_cast<Actor>((*it).lock());
 		if (opp && opp->get_target() == prot_actor &&
-		        (dist = npc->distance(opp)) < best_dist) {
+		        (dist = npc->distance(opp.get())) < best_dist) {
 			best_dist = dist;
 			best_opp = it;
 		}
@@ -472,7 +472,7 @@ Game_object *Combat_schedule::find_foe(
 	// Remove any that died.
 	for (list<Game_object_weak>::iterator it = opponents.begin();
 	        it != opponents.end();) {
-	    Actor *actor = static_cast<Actor *>(obj_from_weak(*it));
+	    Actor_shared actor = std::static_pointer_cast<Actor>((*it).lock());
 		if (!actor || actor->is_dead() ||
 		        (npc == avatar && !charmed_avatar &&
 				 actor->get_flag(Obj_flags::asleep)))
@@ -491,7 +491,7 @@ Game_object *Combat_schedule::find_foe(
 		int str, least_str = 100;
 		for (list<Game_object_weak>::iterator it = opponents.begin();
 		        it != opponents.end(); ++it) {
-	    	Actor *opp = static_cast<Actor *>(obj_from_weak(*it));
+	    	Actor_shared opp = std::static_pointer_cast<Actor>((*it).lock());
 			if (!opp)
 			    continue;
 			str = opp->get_property(Actor::strength);
@@ -506,7 +506,7 @@ Game_object *Combat_schedule::find_foe(
 		int str, best_str = -100;
 		for (list<Game_object_weak>::iterator it = opponents.begin();
 		        it != opponents.end(); ++it) {
-	    	Actor *opp = static_cast<Actor *>(obj_from_weak(*it));
+	    	Actor_shared opp = std::static_pointer_cast<Actor>((*it).lock());
 			if (!opp)
 			    continue;
 			str = opp->get_property(Actor::strength);
@@ -521,10 +521,10 @@ Game_object *Combat_schedule::find_foe(
 		int best_dist = 4 * c_tiles_per_chunk;
 		for (list<Game_object_weak>::iterator it = opponents.begin();
 		        it != opponents.end(); ++it) {
-	    	Actor *opp = static_cast<Actor *>(obj_from_weak(*it));
+	    	Actor_shared opp = std::static_pointer_cast<Actor>((*it).lock());
 			if (!opp)
 			    continue;
-			int dist = npc->distance(opp);
+			int dist = npc->distance(opp.get());
 			if (opp->get_attack_mode() == Actor::flee)
 				dist += 16; // Avoid fleeing.
 			if (dist < best_dist) {
@@ -545,14 +545,12 @@ Game_object *Combat_schedule::find_foe(
 			new_opp_link = opponents.begin();
 		break;
 	}
-	Actor *new_opponent;
-	if (new_opp_link == opponents.end())
-		new_opponent = 0;
-	else {
-		new_opponent = static_cast<Actor *>(obj_from_weak(*new_opp_link));
+	Actor_shared new_opponent;
+	if (new_opp_link != opponents.end()) {
+		new_opponent = std::static_pointer_cast<Actor>((*new_opp_link).lock());
 		opponents.erase(new_opp_link);
 	}
-	return new_opponent;
+	return new_opponent ? new_opponent.get() : NULL;
 }
 
 /*
@@ -1503,9 +1501,9 @@ void Combat_schedule::ending(
 		bool found = false; // Find a close-by enemy.
 		for (list<Game_object_weak>::const_iterator it = opponents.begin();
 		        it != opponents.end(); ++it) {
-	    	Actor *opp = static_cast<Actor *>(obj_from_weak(*it));
+	    	Actor_shared opp = std::static_pointer_cast<Actor>((*it).lock());
 			if (opp && opp->distance(npc) < (c_screen_tile_size / 2 - 2) &&
-			        Fast_pathfinder_client::is_grabable(npc, opp)) {
+			        Fast_pathfinder_client::is_grabable(npc, opp.get())) {
 				found = true;
 				break;
 			}

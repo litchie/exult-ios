@@ -544,11 +544,11 @@ int Approach_actor_action::handle_event(
     Actor *actor
 ) {
 	int delay = Path_walking_actor_action::handle_event(actor);
-	Game_object *dest_ptr = obj_from_weak(dest_obj);
+	Game_object_shared dest_ptr = dest_obj.lock();
 	if (!dest_ptr || !delay || deleted)          // Done or blocked.
 		return 0;
 	// Close enough?
-	if (goal_dist >= 0 && actor->distance(dest_ptr) <= goal_dist)
+	if (goal_dist >= 0 && actor->distance(dest_ptr.get()) <= goal_dist)
 		return 0;
 	if (++cur_step == check_step) { // Time to check.
 #ifdef DEBUG
@@ -560,7 +560,7 @@ int Approach_actor_action::handle_event(
 		if (dest_ptr->distance(orig_dest_pos) > 2)
 			return 0;   // Moved too much, so stop.
 		if (for_projectile &&
-		        Fast_pathfinder_client::is_straight_path(actor, dest_ptr))
+		        Fast_pathfinder_client::is_straight_path(actor, dest_ptr.get()))
 			return 0;   // Can fire projectile.
 		// Figure next check.
 		int nsteps = path->get_num_steps();
@@ -701,7 +701,7 @@ int Activate_actor_action::handle_event(
     Actor *actor
 ) {
 	ignore_unused_variable_warning(actor);
-	Game_object *obj_ptr = obj_from_weak(obj);
+	Game_object_shared obj_ptr = obj.lock();
 	if (obj_ptr)
 	    obj_ptr->activate();
 	return 0;           // That's all.
@@ -728,9 +728,9 @@ int Usecode_actor_action::handle_event(
 ) {
 	ignore_unused_variable_warning(actor);
 	Game_window *gwin = Game_window::get_instance();
-    Game_object *item_ptr = obj_from_weak(item);
+    Game_object_shared item_ptr = item.lock();
 	if (item_ptr) {
-	    gwin->get_usecode()->call_usecode(fun, item_ptr,
+	    gwin->get_usecode()->call_usecode(fun, item_ptr.get(),
 	                    static_cast<Usecode_machine::Usecode_events>(eventid));
 	    gwin->set_all_dirty();      // Clean up screen.
 	}
@@ -775,7 +775,7 @@ Frames_actor_action::Frames_actor_action(
 int Frames_actor_action::handle_event(
     Actor *actor
 ) {
-	Game_object *o = obj_from_weak(obj);
+	Game_object_shared o = obj.lock();
 	if (index == cnt || (!o && !use_actor))
 		return 0;       // Done.
 	int frnum = frames[index++];    // Get frame.
@@ -869,7 +869,7 @@ Object_animate_actor_action::Object_animate_actor_action(
 int Object_animate_actor_action::handle_event(
     Actor *actor
 ) {
-    Game_object *obj_ptr = obj_from_weak(obj);
+    Game_object_shared obj_ptr = obj.lock();
 	ignore_unused_variable_warning(actor);
 	if (!obj_ptr || !cycles)
 	    return 0;
@@ -904,7 +904,7 @@ int Pickup_actor_action::handle_event(
 ) {
 	Game_window *gwin = Game_window::get_instance();
 	Game_object_shared keep;
-	Game_object *obj_ptr = obj_from_weak(obj);
+	Game_object_shared obj_ptr = obj.lock();
 	int frnum = -1;
 	if (!obj_ptr)
 	    return 0;		// It's gone!  So we're done.
@@ -922,23 +922,23 @@ int Pickup_actor_action::handle_event(
 		frnum = actor->get_dir_framenum(dir, frnum);
 		cnt++;
 		if (pickup) {
-			if (actor->distance(obj_ptr) > 8) {
+			if (actor->distance(obj_ptr.get()) > 8) {
 				// No longer nearby.
 				break;
 			}
-			gwin->add_dirty(obj_ptr);
+			gwin->add_dirty(obj_ptr.get());
 			if (to_del) {
 				obj_ptr->remove_this();		// Delete it.
 			} else {
 				obj_ptr->remove_this(&keep);
-				actor->add(obj_ptr, true);
+				actor->add(obj_ptr.get(), true);
 			}
 		} else {
 			obj_ptr->remove_this(&keep);
 			obj_ptr->move(objpos);
 			if (temp)
 				obj_ptr->set_flag(Obj_flags::is_temporary);
-			gwin->add_dirty(obj_ptr);
+			gwin->add_dirty(obj_ptr.get());
 		}
 		}
 		break;
@@ -1001,12 +1001,12 @@ int Change_actor_action::handle_event(
 ) {
 	ignore_unused_variable_warning(actor);
 	Game_window *gwin = Game_window::get_instance();
-	Game_object *obj_ptr = obj_from_weak(obj);
+	Game_object_shared obj_ptr = obj.lock();
 	if (obj_ptr) {
-		gwin->add_dirty(obj_ptr);
+		gwin->add_dirty(obj_ptr.get());
 		obj_ptr->set_shape(shnum, frnum);
 		obj_ptr->set_quality(qual);
-		gwin->add_dirty(obj_ptr);
+		gwin->add_dirty(obj_ptr.get());
 	}
 	return 0;
 }

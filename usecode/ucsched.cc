@@ -127,9 +127,9 @@ void Usecode_script::start(
 	if (!is_no_halt()) {      // If flag not set,
 		// Remove other entries that aren't
 		//   'no_halt'.
-		Game_object *o = obj_from_weak(obj);
+		Game_object_shared o = obj.lock();
 		if (o)
-		    Usecode_script::terminate(o);
+		    Usecode_script::terminate(o.get());
 	}
 	count++;            // Keep track of total.
 	next = first;           // Put in chain.
@@ -190,9 +190,11 @@ Usecode_script *Usecode_script::find(
     Usecode_script *last_found  // Find next after this.
 ) {
 	Usecode_script *start = last_found ? last_found->next : first;
-	for (Usecode_script *each = start; each; each = each->next)
-		if (obj_from_weak(each->obj) == srch)
+	for (Usecode_script *each = start; each; each = each->next) {
+	    Game_object_shared obj = each->obj.lock();
+		if (obj.get() == srch)
 			return each;    // Found it.
+    }
 	return (0);
 }
 
@@ -207,9 +209,11 @@ Usecode_script *Usecode_script::find_active(
     Usecode_script *last_found  // Find next after this.
 ) {
 	Usecode_script *start = last_found ? last_found->next : first;
-	for (Usecode_script *each = start; each; each = each->next)
-		if (obj_from_weak(each->obj) == srch && each->is_activated())
+	for (Usecode_script *each = start; each; each = each->next) {
+	    Game_object_shared obj = each->obj.lock();
+		if (obj.get() == srch && each->is_activated())
 			return each;    // Found it.
+    }
 	return (0);
 }
 
@@ -223,7 +227,8 @@ void Usecode_script::terminate(
 	Usecode_script *next = 0;
 	for (Usecode_script *each = first; each; each = next) {
 		next = each->next;  // Get next in case we delete 'each'.
-		if (obj_from_weak(each->obj) == obj)
+	    Game_object_shared each_obj = each->obj.lock();
+		if (each_obj.get() == obj)
 			each->halt();
 	}
 }
@@ -255,7 +260,7 @@ void Usecode_script::purge(
 	for (Usecode_script *each = first; each; each = next) {
 		next = each->next;  // Get next in case we delete 'each'.
 		// Only purge if not yet started.
-		Game_object *o = obj_from_weak(each->obj);
+		Game_object_shared o = each->obj.lock();
 		if (o && !each->i &&
 		        o->get_outermost()->distance(spot) > dist) {
 			// Force it to halt.
@@ -290,7 +295,7 @@ void Usecode_script::handle_event(
     unsigned long curtime,      // Current time of day.
     uintptr udata          // ->usecode machine.
 ) {
-    Game_object *o = obj_from_weak(obj);
+    Game_object_shared o = obj.lock();
 	Actor *act = o ? o->as_actor() : NULL;
 	if (act && act->get_casting_mode() == Actor::init_casting)
 		act->display_casting_frames();
@@ -350,7 +355,7 @@ int Usecode_script::exec(
 	// If a 1 follows, keep going.
 	for (; i < cnt && ((opcode = code->get_elem(i).get_int_value())
 	                   == 0x1 || do_another); i++) {
-		Game_object *optr = obj_from_weak(obj);
+		Game_object_shared optr = obj.lock();
 		if (!optr) {
 		    i = cnt;
 			return delay;
@@ -419,13 +424,13 @@ int Usecode_script::exec(
 		}
 		case Ucscript::wait_while_near: {
 			int dist = code->get_elem(++i).get_int_value();
-			if (!finish && IsActorNear(gwin->get_main_actor(), optr, dist))
+			if (!finish && IsActorNear(gwin->get_main_actor(), optr.get(), dist))
 				i -= 2;     // Stay in this opcode.
 			break;
 		}
 		case Ucscript::wait_while_far: {
 			int dist = code->get_elem(++i).get_int_value();
-			if (!finish && !IsActorNear(gwin->get_main_actor(), optr, dist))
+			if (!finish && !IsActorNear(gwin->get_main_actor(), optr.get(), dist))
 				i -= 2;     // Stay in this opcode.
 			break;
 		}
@@ -445,7 +450,7 @@ int Usecode_script::exec(
 			//   delay before next instruction.
 			Usecode_value &delayval = code->get_elem(++i);
 			// It's # of ticks.
-			Actor *act = usecode->as_actor(optr);
+			Actor *act = usecode->as_actor(optr.get());
 			if (act)
 				act->clear_rest_time();
 			delay = delay * delayval.get_int_value();
@@ -470,7 +475,7 @@ int Usecode_script::exec(
 			break;
 #endif
 		case Ucscript::remove:  // Remove obj.
-			usecode->remove_item(optr);
+			usecode->remove_item(optr.get());
 			break;
 		case rise: {    // (For flying carpet.
 			Tile_coord t = optr->get_tile();
@@ -487,11 +492,11 @@ int Usecode_script::exec(
 			break;
 		}
 		case frame:     // Set frame.
-			usecode->set_item_frame(optr,
+			usecode->set_item_frame(optr.get(),
 			                        code->get_elem(++i).get_int_value());
 			break;
 		case egg:       // Guessing:  activate egg.
-			activate_egg(usecode, optr);
+			activate_egg(usecode, optr.get());
 			break;
 		case set_egg: {     // Set_egg(criteria, dist).
 			int crit = code->get_elem(++i).get_int_value();
@@ -504,31 +509,31 @@ int Usecode_script::exec(
 		case next_frame_max: {  // Stop at last frame.
 			int nframes = optr->get_num_frames();
 			if (optr->get_framenum() % 32 < nframes - 1)
-				usecode->set_item_frame(optr,
+				usecode->set_item_frame(optr.get(),
 				                        1 + optr->get_framenum());
 			break;
 		}
 		case next_frame: {
 			int nframes = optr->get_num_frames();
-			usecode->set_item_frame(optr,
+			usecode->set_item_frame(optr.get(),
 			                        (1 + optr->get_framenum()) % nframes);
 			break;
 		}
 		case prev_frame_min:
 			if (optr->get_framenum() > 0)
-				usecode->set_item_frame(optr,
+				usecode->set_item_frame(optr.get(),
 				                        optr->get_framenum() - 1);
 			break;
 		case prev_frame: {
 			int nframes = optr->get_num_frames();
 			int pframe = optr->get_framenum() - 1;
-			usecode->set_item_frame(optr,
+			usecode->set_item_frame(optr.get(),
 			                        (pframe + nframes) % nframes);
 			break;
 		}
 		case say: {     // Say string.
 			Usecode_value &strval = code->get_elem(++i);
-			Usecode_value objval(optr);
+			Usecode_value objval(optr.get());
 			if (!killed_barks)
 				usecode->item_say(objval, strval);
 			break;
@@ -588,13 +593,13 @@ int Usecode_script::exec(
 				ev = Usecode_internal::double_click;
 				usecode->telekenesis_fun = -1;
 			}
-			usecode->call_usecode(fun, optr, ev);
+			usecode->call_usecode(fun, optr.get(), ev);
 			break;
 		}
 		case Ucscript::usecode2: { // Call(fun, eventid).
 			Usecode_value &val = code->get_elem(++i);
 			int evid = code->get_elem(++i).get_int_value();
-			usecode->call_usecode(val.get_int_value(), optr,
+			usecode->call_usecode(val.get_int_value(), optr.get(),
 			                      static_cast<Usecode_internal::Usecode_events>(evid));
 			break;
 		}
@@ -608,7 +613,7 @@ int Usecode_script::exec(
 		case sfx: {     // Play sound effect!
 			Usecode_value &val = code->get_elem(++i);
 			Audio::get_ptr()->play_sound_effect(
-			    val.get_int_value(), optr);
+			    val.get_int_value(), optr.get());
 			break;
 		}
 		case face_dir: {    // Parm. is dir. (0-7).  0=north.
@@ -619,7 +624,7 @@ int Usecode_script::exec(
 			Actor *npc = optr->as_actor();
 			if (npc)
 				npc->set_usecode_dir(dir);
-			usecode->set_item_frame(optr, optr->get_dir_framenum(
+			usecode->set_item_frame(optr.get(), optr->get_dir_framenum(
 			                            dir, optr->get_framenum()), 1, 1);
 			frame_index = 0;// Reset walking frame index.
 			break;
@@ -646,7 +651,7 @@ int Usecode_script::exec(
 			break;
 		}
 		case resurrect: {
-			Dead_body *body = dynamic_cast<Dead_body *>(optr);
+			Dead_body *body = dynamic_cast<Dead_body *>(optr.get());
 			if (!body)
 				break;
 			Actor *act = gwin->get_npc(body->get_live_npc_num());
@@ -660,7 +665,7 @@ int Usecode_script::exec(
 				// But don't show empty frames.
 				//Get the actor's actual facing:
 				int v = (optr->get_framenum() & 48) | (opcode - 0x61);
-				usecode->set_item_frame(optr, v, 1, 1);
+				usecode->set_item_frame(optr.get(), v, 1, 1);
 			} else if (opcode >= 0x30 && opcode < 0x38) {
 				// Step in dir. opcode&7.
 				step(usecode, opcode & 7, 0);
@@ -688,8 +693,8 @@ void Usecode_script::step(
     int dz
 ) {
 	Barge_object *barge;
-	Game_object *optr = obj_from_weak(obj);
-	Actor *act = usecode->as_actor(optr);
+	Game_object_shared optr = obj.lock();
+	Actor *act = usecode->as_actor(optr.get());
 	if (act) {
 		Tile_coord tile = optr->get_tile();
 		if (dir != -1)
@@ -787,7 +792,7 @@ void Usecode_script::print(
 	boost::io::ios_flags_saver flags(out);
 	boost::io::ios_fill_saver fill(out);
 	out << hex << "Obj = 0x" << setfill('0') << setw(2)
-	    << static_cast<void *>(obj_from_weak(obj)) << ": " "(";
+	    << static_cast<void *>(obj.lock().get()) << ": " "(";
 	for (int i = 0; i < cnt; i++) {
 		if (i > 0)
 			out << ", ";

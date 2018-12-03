@@ -119,7 +119,8 @@ void Object_sfx::handle_event(
 	//AudioMixer *mixer = AudioMixer::get_instance();
 	//bool active = channel != -1 ? mixer->isPlaying(channel) : false;
 
-	Game_object *outer, *obj_ptr = obj_from_weak(obj);
+	Game_object *outer;
+	Game_object_shared obj_ptr = obj.lock();
 	if (obj_ptr) {
 		outer = obj_ptr->get_outermost();
 		last_pos = outer->get_center_tile();

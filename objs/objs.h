@@ -458,9 +458,6 @@ public:
 	virtual bool set_usecode(int funid, const char *nm = 0);
 };
 
-inline Game_object *obj_from_weak(Game_object_weak wobj) {
-    return wobj.expired() ? nullptr : wobj.lock().get();
-}
 inline Game_object_weak weak_from_obj(Game_object *obj) {
     return obj ? obj->weak_from_this() : Game_object_weak();
 }

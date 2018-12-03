@@ -2478,7 +2478,7 @@ public:
 
 void Clear_casting::handle_event(unsigned long curtime, uintptr) {
 	ignore_unused_variable_warning(curtime);
-	Actor *a = reinterpret_cast<Actor *>(obj_from_weak(actor));
+	Actor_shared a = std::static_pointer_cast<Actor>(actor.lock());
 	if (a) {
 	    a->add_dirty();
 	    a->hide_casting_frames();
@@ -2506,7 +2506,7 @@ public:
 
 void Clear_hit::handle_event(unsigned long curtime, uintptr) {
 	ignore_unused_variable_warning(curtime);
-	Actor *a = reinterpret_cast<Actor *>(obj_from_weak(actor));
+	Actor_shared a = std::static_pointer_cast<Actor>(actor.lock());
 	if (a) {
 	    a->hit = false;
 	    a->add_dirty();
@@ -3360,8 +3360,9 @@ bool Actor::in_usecode_control() const {
  *  a missile flying towards target), false otherwise
  */
 bool Actor::usecode_attack() {
+    Game_object_shared tobj = target_object.lock();
 	return Combat_schedule::attack_target(
-	           this, obj_from_weak(target_object), target_tile, attack_weapon);
+	           this, tobj.get(), target_tile, attack_weapon);
 }
 
 /*

@@ -227,7 +227,7 @@ public:
 	virtual void paint();
 	// Check for matching item.
 	int is_text(Game_object *it) {
-	    return it == obj_from_weak(item);
+	    return it == item.lock().get();
 	}
 	virtual void update_dirty();
 };

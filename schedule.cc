@@ -478,12 +478,12 @@ void Street_maintenance_schedule::now_what(
 		paction = 0;
 		return;
 	}
-	Game_object *objptr = obj_from_weak(obj);
-	if (objptr && npc->distance(objptr) <= 2 &&   // We're there.
+	Game_object_shared objptr = obj.lock();
+	if (objptr && npc->distance(objptr.get()) <= 2 &&   // We're there.
 	        objptr->get_shapenum() == shapenum && objptr->get_framenum() == framenum) {
 		cout << npc->get_name() <<
 		     " is about to perform street maintenance" << endl;
-		int dir = npc->get_direction(objptr);
+		int dir = npc->get_direction(objptr.get());
 		signed char frames[2];
 		frames[0] = npc->get_dir_framenum(dir, Actor::standing);
 		frames[1] = npc->get_dir_framenum(dir, 3);
@@ -499,9 +499,9 @@ void Street_maintenance_schedule::now_what(
 			// Makes it last some 5-9 hours; quality seems to be within this
 			// range in the original.
 			int qual = 30 + rand() % 27;
-			pact = new Change_actor_action(objptr, newshp, framenum, qual);
+			pact = new Change_actor_action(objptr.get(), newshp, framenum, qual);
 		} else  // Just call the correct usecode.
-			pact = new Activate_actor_action(objptr);
+			pact = new Activate_actor_action(objptr.get());
 
 		npc->set_action(new Sequence_actor_action(
 		                    new Frames_actor_action(frames, sizeof(frames)),
@@ -1229,15 +1229,17 @@ void Patrol_schedule::now_what(
 						dir = -1;   // Start backwards from num_path_eggs.
 				}
 				break;
-			case 13:        // Hammer.
+			case 13: {        // Hammer.
 				// Try to use an existing hammer.
+				Game_object_shared existing = hammer.lock();
 				hammer = weak_from_obj(
-					   set_procure_item_action(npc, obj_from_weak(hammer),
+					   set_procure_item_action(npc, existing.get(),
 														15, 623, 0));
 				scr->start();   // Start next tick.
 				state = 6;
 				npc->start(speed, speed * delay);
 				return;
+			}
 			case 14:    // Check area.
 				// Foce check for lamps, etc.
 				street_maintenance_time = 0;
@@ -1327,8 +1329,8 @@ void Patrol_schedule::now_what(
 	case 2: // Sitting/reading.
 		// Stay 5-15 secs.
 		if ((npc->get_framenum() & 0xf) == Actor::sit_frame) {
-		    Game_object *book_obj = obj_from_weak(book);
-			if (book_obj && npc->distance(book_obj) < 4) {
+		    Game_object_shared book_obj = book.lock();
+			if (book_obj && npc->distance(book_obj.get()) < 4) {
 				// Open book if reading.
 				int frnum = book_obj->get_framenum();
 				if (frnum % 3)
@@ -1341,8 +1343,8 @@ void Patrol_schedule::now_what(
 		break;
 	case 3: // Stand up.
 		if ((npc->get_framenum() & 0xf) == Actor::sit_frame) {
-		    Game_object *book_obj = obj_from_weak(book);
-			if (book_obj && npc->distance(book_obj) < 4) {
+		    Game_object_shared book_obj = book.lock();
+			if (book_obj && npc->distance(book_obj.get()) < 4) {
 				// Close book.
 				int frnum = book_obj->get_framenum();
 				book_obj->change_frame(frnum - frnum % 3 + 1);
@@ -1389,13 +1391,13 @@ void Patrol_schedule::now_what(
 		break;
 	case 6: { // Ready hammer and swing it.
 		// Hammer should be in inventory by now.
-		Game_object *hammer_obj = obj_from_weak(hammer);
+		Game_object_shared hammer_obj = hammer.lock();
 		Game_object_shared keep;
 		hammer_obj->remove_this(&keep);
 		// For safety, unready weapon first.
 		npc->empty_hands();
 		// Ready the hammer in the weapon hand.
-		npc->add_readied(hammer_obj, lhand, 0, 1);
+		npc->add_readied(hammer_obj.get(), lhand, 0, 1);
 		npc->add_dirty();
 		// Number of swings.
 		int repcnt = 1 + rand() % 3;
@@ -1434,7 +1436,7 @@ void Patrol_schedule::ending(
     int new_type            // New schedule.
 ) {
 	ignore_unused_variable_warning(new_type);
-	Game_object *hammer_obj = obj_from_weak(hammer);
+	Game_object_shared hammer_obj = hammer.lock();
 	if (hammer_obj) {
 		hammer_obj->remove_this();
 	}
@@ -1813,7 +1815,7 @@ void Tool_schedule::get_tool(
 void Tool_schedule::ending(
     int
 ) {
-    Game_object *tool_obj = obj_from_weak(tool);
+    Game_object_shared tool_obj = tool.lock();
 	if (tool_obj) {
 		tool_obj->remove_this();    // Should safely remove from NPC.
 	}
@@ -1845,7 +1847,7 @@ static void Grow_crops(Actor *npc)
 void Farmer_schedule::now_what(
 ) {
 	int delay = 0;
-	Game_object *tool_obj = obj_from_weak(tool);
+	Game_object_shared tool_obj = tool.lock();
 	if (!tool_obj)          // First time?
 		get_tool();
 	switch (state) {
@@ -1890,13 +1892,13 @@ void Farmer_schedule::now_what(
 		break;
 	}
 	case attack_crop: {
-	    Game_object *crop_obj = obj_from_weak(crop);
-		if (crop_obj->is_pos_invalid() || npc->distance(crop_obj) > 2) {
+	    Game_object_shared crop_obj = crop.lock();
+		if (crop_obj->is_pos_invalid() || npc->distance(crop_obj.get()) > 2) {
 			state = find_crop;
 			break;
 		}
 		signed char frames[20];     // Use tool.
-		int dir = npc->get_direction(crop_obj);
+		int dir = npc->get_direction(crop_obj.get());
 		int cnt = npc->get_attack_frames(toolshape, false, dir,
 		                                 frames);
 		if (cnt) {
@@ -1909,7 +1911,7 @@ void Farmer_schedule::now_what(
 		break;
 	}
 	case crop_attacked: {
-	    Game_object *crop_obj = obj_from_weak(crop);
+	    Game_object_shared crop_obj = crop.lock();
 		if (crop_obj->is_pos_invalid()) {
 			state = find_crop;
 			break;
@@ -1950,7 +1952,7 @@ void Farmer_schedule::now_what(
 void Miner_schedule::now_what(
 ) {
 	int delay = 0;
-    Game_object *tool_obj = obj_from_weak(tool);
+    Game_object_shared tool_obj = tool.lock();
 	if (!tool_obj)          // First time?
 		get_tool();
 	switch (state) {
@@ -1984,14 +1986,14 @@ void Miner_schedule::now_what(
 		break;
 	}
 	case attack_ore: {
-		Game_object *ore_obj = obj_from_weak(ore);
+		Game_object_shared ore_obj = ore.lock();
 		if (!ore_obj || ore_obj->is_pos_invalid() ||
-		   			 	npc->distance(ore_obj) > 2) {
+		   			 	npc->distance(ore_obj.get()) > 2) {
 			state = find_ore;
 			break;
 		}
 		signed char frames[20];     // Use pick.
-		int dir = npc->get_direction(ore_obj);
+		int dir = npc->get_direction(ore_obj.get());
 		int cnt = npc->get_attack_frames(toolshape, false, dir,
 		                                 frames);
 		if (cnt) {
@@ -2004,7 +2006,7 @@ void Miner_schedule::now_what(
 		break;
 	}
 	case ore_attacked: {
-		Game_object *ore_obj = obj_from_weak(ore);
+		Game_object_shared ore_obj = ore.lock();
 		if (!ore_obj || ore_obj->is_pos_invalid()) {
 			state = find_ore;
 			break;
@@ -2192,10 +2194,10 @@ bool Sleep_schedule::is_bed_occupied(
 
 void Sleep_schedule::now_what(
 ) {
-    Game_object *bed_obj = obj_from_weak(bed);
-	if (bed_obj && state <= 1 && is_bed_occupied(bed_obj, npc)) {
+    Game_object_shared bed_obj = bed.lock();
+	if (bed_obj && state <= 1 && is_bed_occupied(bed_obj.get(), npc)) {
 		bed_obj = NULL;
-		bed = weak_from_obj(bed_obj);
+		bed = Game_object_weak(bed_obj);
 		state = 0;
 		npc->stop();
 	}
@@ -2220,10 +2222,10 @@ void Sleep_schedule::now_what(
 			int newdist = npc->distance(newbed);
 			if (newdist < best_dist && !is_bed_occupied(newbed, npc)) {
 				best_dist = newdist;
-				bed_obj = newbed;
+				bed_obj = newbed->shared_from_this();
 			}
 		}
-		bed = weak_from_obj(bed_obj);
+		bed = Game_object_weak(bed_obj);
 	}
 	if (!bed_obj && npc == gwin->get_main_actor()) {
 		npc->start(gwin->get_std_delay());
@@ -2253,8 +2255,8 @@ void Sleep_schedule::now_what(
 			Tile_coord tpos = top->get_tile();
 			// Restrict to sheets on the same floor as the selected bed.
 			if (frnum >= spread0 && frnum <= spread1 && floor == (tpos.tz / 5)) {
-				bed_obj = top;
-				bed = weak_from_obj(bed_obj);
+				bed_obj = top->shared_from_this();
+				bed = Game_object_weak(bed_obj);
 				break;
 			}
 		}
@@ -2274,7 +2276,7 @@ void Sleep_schedule::now_what(
 	}
 	case 1: {           // Go to bed.
 		npc->stop();        // Just to be sure.
-		if (npc->distance(bed_obj) > 3) {
+		if (npc->distance(bed_obj.get()) > 3) {
 			state = 0;
 			npc->start(200);    // Try again.
 		}
@@ -2285,7 +2287,7 @@ void Sleep_schedule::now_what(
 		Shape_info &info = bed_obj->get_info();
 		Tile_coord bedloc = bed_obj->get_tile();
 		floorloc = npc->get_tile();
-		Usecode_script::terminate(bed_obj);
+		Usecode_script::terminate(bed_obj.get());
 		int bedframe = bed_obj->get_framenum();// Unmake bed.
 		if (bedframe >= spread0 && bedframe < spread1 && (bedframe % 2)) {
 			bedframe++;
@@ -2303,7 +2305,7 @@ void Sleep_schedule::now_what(
 		state = 2;
 		if (for_nap_time) {     // Usecode 622 handles sleeping.
 			// Calling it may delete us, though.
-			ucmachine->call_usecode(SleepUsecode, bed_obj, Usecode_machine::double_click);
+			ucmachine->call_usecode(SleepUsecode, bed_obj.get(), Usecode_machine::double_click);
 			return;             // So leave nothing to chance.
 		}
 		break;
@@ -2337,10 +2339,10 @@ void Sleep_schedule::ending(
 
 	bool makebed = false;
 	int dir;
-	Game_object *bed_obj = obj_from_weak(bed);
+	Game_object_shared bed_obj = bed.lock();
 	if (bed_obj &&          // Still in bed?
 	        (npc->get_framenum() & 0xf) == Actor::sleep_frame &&
-	        npc->distance(bed_obj) < 8) {
+	        npc->distance(bed_obj.get()) < 8) {
 		// Locate free spot.
 		if (floorloc.tx == -1) {
 			// Want spot on floor.
@@ -2362,10 +2364,10 @@ void Sleep_schedule::ending(
 		int frnum = bed_obj->get_framenum();
 		if (new_type != static_cast<int>(combat) &&  // Not if going into combat
 		        frnum >= spread0 && frnum <= spread1 && !(frnum % 2) &&
-		        !is_bed_occupied(bed_obj, npc)) { // And not if there is another occupant.
+		        !is_bed_occupied(bed_obj.get(), npc)) { // And not if there is another occupant.
 			// Make the bed set itself after a small delay.
 			makebed = true;
-			Usecode_script *scr = new Usecode_script(bed_obj);
+			Usecode_script *scr = new Usecode_script(bed_obj.get());
 			(*scr) << Ucscript::finish
 			       << Ucscript::delay_ticks << 3 << Ucscript::frame << frnum - 1;
 			scr->start();
@@ -2416,9 +2418,9 @@ Sit_schedule::Sit_schedule(
 void Sit_schedule::now_what(
 ) {
 	int frnum = npc->get_framenum();
-	Game_object *chair_obj = obj_from_weak(chair);
+	Game_object_shared chair_obj = chair.lock();
 	if (chair_obj && (frnum & 0xf) == Actor::sit_frame &&
-	        npc->distance(chair_obj) <= 1) {
+	        npc->distance(chair_obj.get()) <= 1) {
 		// Already sitting.
 		// Seat on barge?
 		if (chair_obj->get_info().get_barge_type() != Shape_info::barge_seat)
@@ -2447,13 +2449,14 @@ void Sit_schedule::now_what(
 		return;
 	}
 	// Wait a while if we got up.
-	if (!set_action(npc, chair_obj,
-	   					 sat ? (1000 + rand() % 1000) : 0, &chair_obj)) {
+	Game_object *new_chair = chair_obj.get();
+	if (!set_action(npc, new_chair,
+	   					 sat ? (1000 + rand() % 1000) : 0, &new_chair)) {
 		npc->start(200, 1000);  // Failed?  Try again later.
 	} else {
 		sat = true;
 	}
-	chair = weak_from_obj(chair_obj);
+	chair = weak_from_obj(new_chair);
 }
 
 /*
@@ -2540,7 +2543,7 @@ int Sit_actor_action::handle_event(
 	if (get_index() == 0) {     // First time?
 		if (is_occupied(sitloc, actor))
 			return 0;   // Abort.
-		Game_object *chair_obj = obj_from_weak(chair);
+		Game_object_shared chair_obj = chair.lock();
 		if (!chair_obj || chair_obj->get_tile() != chairloc) {
 			// Chair was moved!
 			actor->say(first_chair_thief, last_chair_thief);
@@ -2800,10 +2803,10 @@ void Desk_schedule::now_what(
 		break;
 	case work_at_table:
 		// Turn to face it.
-		Game_object *tbl = obj_from_weak(table);
+		Game_object_shared tbl = table.lock();
 		if (tbl)
 		    npc->change_frame(npc->get_dir_framenum(
-		           npc->get_facing_direction(tbl), Actor::standing));
+		           npc->get_facing_direction(tbl.get()), Actor::standing));
 		if (!tbl || rand() % 3 == 0) {
 			state = sit_at_desk;		// Back to desk.
 		} else if (items_in_hand && rand() % 6) {		// Put down an item.
@@ -2812,20 +2815,20 @@ void Desk_schedule::now_what(
 			                                 c_any_qual, c_any_framenum);
 			if (items_in_hand) {
 				Game_object *to_drop = items[rand()%items_in_hand];
-				if (drop_item(to_drop, tbl)) {
+				if (drop_item(to_drop, tbl.get())) {
 					if (rand() % 2)
 						state = sit_at_desk;
 				}
 			} else
 				state = sit_at_desk;
 		} else {
-			int dir = npc->get_facing_direction(tbl);
+			int dir = npc->get_facing_direction(tbl.get());
 			signed char frames[3];
 			frames[0] = npc->get_dir_framenum(dir, Actor::standing);
 			frames[1] = npc->get_dir_framenum(dir, (rand()%2)
 					  ? Actor::reach1_frame : Actor::reach2_frame);
 			frames[2] = npc->get_dir_framenum(dir, Actor::standing);
-			Actor_action *face = new Face_pos_actor_action(tbl, 200);;
+			Actor_action *face = new Face_pos_actor_action(tbl.get(), 200);;
 			npc->set_action(new Sequence_actor_action(face,
 			                    new Frames_actor_action(frames,
 			                            array_size(frames))));
@@ -2975,8 +2978,8 @@ void Lab_schedule::now_what(
 ) {
 	Tile_coord npcpos = npc->get_tile();
 	int delay = 100;        // 1/10 sec. to next action.
-	Game_object *cauldron_obj = obj_from_weak(cauldron);
-	Game_object *book_obj = obj_from_weak(book);
+	Game_object_shared cauldron_obj = cauldron.lock();
+	Game_object_shared book_obj = book.lock();
 	// Often want to get within 1 tile.
 	Actor_pathfinder_client cost(npc, 1);
 	switch (state) {
@@ -3004,13 +3007,13 @@ void Lab_schedule::now_what(
 		                         npcpos, cauldron_obj->get_tile(), cost);
 		if (pact) {
 			npc->set_action(new Sequence_actor_action(pact,
-			                new Face_pos_actor_action(cauldron_obj, 200)));
+		                new Face_pos_actor_action(cauldron_obj.get(), 200)));
 			state = use_cauldron;
 		}
 		break;
 	}
 	case use_cauldron: {
-		int dir = npc->get_direction(cauldron_obj);
+		int dir = npc->get_direction(cauldron_obj.get());
 		// Set random frame (skip last frame).
 		cauldron_obj->change_frame(rand() % (cauldron_obj->get_num_frames() - 1));
 		npc->change_frame(
@@ -3021,8 +3024,8 @@ void Lab_schedule::now_what(
 		break;
 	}
 	case sit_down: {
-	    Game_object *chair_obj = obj_from_weak(chair);
-		if (!chair_obj || !Sit_schedule::set_action(npc, chair_obj, 200))
+	    Game_object_shared chair_obj = chair.lock();
+		if (!chair_obj || !Sit_schedule::set_action(npc, chair_obj.get(), 200))
 			state = start;
 		else
 			state = read_book;
@@ -3030,7 +3033,7 @@ void Lab_schedule::now_what(
 	}
 	case read_book: {
 		state = stand_up;
-		if (!book_obj || npc->distance(book_obj) > 4)
+		if (!book_obj || npc->distance(book_obj.get()) > 4)
 			break;
 		// Read a little while.
 		delay = 1000 + 1000 * (rand() % 5);
@@ -3040,7 +3043,7 @@ void Lab_schedule::now_what(
 		break;
 	}
 	case stand_up: {
-		if (book_obj && npc->distance(book_obj) < 4) {
+		if (book_obj && npc->distance(book_obj.get()) < 4) {
 			// Close book.
 			int frnum = book_obj->get_framenum();
 			book_obj->change_frame(frnum - frnum % 3 + 1);
@@ -3053,7 +3056,7 @@ void Lab_schedule::now_what(
 		int ntables = tables.size();
 		if (!ntables)
 			break;
-		Game_object *table = obj_from_weak(tables[rand() % ntables]);
+		Game_object_shared table = (tables[rand() % ntables]).lock();
 		Rectangle r = table->get_footprint();
 		Perimeter p(r);     // Find spot adjacent to table.
 		Tile_coord spot;    // Also get closest spot on table.
@@ -3329,7 +3332,7 @@ bool Waiter_schedule::walk_to_work_spot(
 	while (tables.size()) {   // Walk to a 'prep' table.
 		int index = rand() % tables.size();
 		prep_table = tables[index];
-		Game_object *prep_table_obj = obj_from_weak(prep_table);
+		Game_object_shared prep_table_obj = prep_table.lock();
 		Tile_coord pos = Map_chunk::find_spot(
 		                     prep_table_obj->get_tile(), 1, npc);
 		if (pos.tx != -1 &&
@@ -3426,9 +3429,9 @@ static Game_object *Find_customer_table(Actor *customer,
 {
 	vector<Game_object_weak>::const_iterator it;
 	for (it = tables.begin(); it != tables.end(); ++it) {
-	    Game_object *table = obj_from_weak(*it);
-		if (customer->distance(table) < 3)
-			return table;
+	    Game_object_shared table = (*it).lock();
+		if (customer->distance(table.get()) < 3)
+			return table.get();
 	}
 	return 0;
 }
@@ -3462,7 +3465,7 @@ Game_object *Waiter_schedule::create_customer_plate(
 
 	// Go through tables.
 	for (it = eating_tables.begin(); it != eating_tables.end(); ++it) {
-		Game_object *table = obj_from_weak(*it);
+		Game_object_shared table = (*it).lock();
 		Rectangle foot = table->get_footprint();
 		if (foot.distance(cpos.tx, cpos.ty) > 2)
 			continue;
@@ -3656,10 +3659,10 @@ void Waiter_schedule::now_what(
 			state = get_waiter_item;
 			break;
 		}
-		Game_object *prep_table_obj = obj_from_weak(prep_table);
+		Game_object_shared prep_table_obj = prep_table.lock();
 		Ready_food(npc);					// So we can drop it.
 		if ((!cooking || rand()%3) &&
-		              prep_table_obj && npc->distance(prep_table_obj) <= 3) {
+	              prep_table_obj && npc->distance(prep_table_obj.get()) <= 3) {
 			Game_object *to_drop = 0;
 			if (rand()%3) {
 				Game_object_vector items;
@@ -3668,9 +3671,9 @@ void Waiter_schedule::now_what(
 			}
 			cooking = true;
 			if (to_drop)
-				(void) drop_item(to_drop, prep_table_obj);
+				(void) drop_item(to_drop, prep_table_obj.get());
 			else
-				Prep_animation(npc, prep_table_obj);
+				Prep_animation(npc, prep_table_obj.get());
 			npc->start(gwin->get_std_delay(), 500 + rand() % 500);
 			break;
 		}
@@ -3706,7 +3709,7 @@ void Waiter_schedule::now_what(
 		}
 		break;
 	case wait_at_counter: {
-		Game_object *prep_table_obj = obj_from_weak(prep_table);
+		Game_object_shared prep_table_obj = prep_table.lock();
 		/* Check for customers who have left: */
 		if (rand()%2 && find_unattended_plate()) {
 			state = walk_to_cleanup_food;
@@ -3715,10 +3718,10 @@ void Waiter_schedule::now_what(
 			break;
 		} else if (prep_table_obj) {
 			npc->change_frame(npc->get_dir_framenum(
-			                      npc->get_facing_direction(prep_table_obj),
+		                      npc->get_facing_direction(prep_table_obj.get()),
 			                      Actor::standing));
 			if (rand()%2)
-				Prep_animation(npc, prep_table_obj);
+				Prep_animation(npc, prep_table_obj.get());
 			if (rand()%3 == 1)
 				state = get_customer;
 		} else
@@ -3803,7 +3806,7 @@ void Waiter_schedule::now_what(
 	case walk_to_cleanup_food:
 		if (!unattended_plates.empty()) {
 			// Closest.
-			Game_object *plate = obj_from_weak(unattended_plates.front());
+			Game_object_shared plate = unattended_plates.front().lock();
 			if (npc->walk_path_to_tile(plate->get_tile(),
 			        gwin->get_std_delay(), 500 + rand() % 1000, 2)) {
 				state = cleanup_food;
@@ -3818,10 +3821,10 @@ void Waiter_schedule::now_what(
 		break;
 	case cleanup_food:
 		if (!unattended_plates.empty()) {
-			Game_object *plate = obj_from_weak(unattended_plates.front());
+			Game_object_shared plate = unattended_plates.front().lock();
 			unattended_plates.erase(unattended_plates.begin());
 			// Delete after picking up.
-			Actor_action *act = new Pickup_actor_action(plate, 250, true);
+			Actor_action *act = new Pickup_actor_action(plate.get(), 250, true);
 			Game_object *food = plate->find_closest(377, 2);
 			if (food) {
 				act = new Sequence_actor_action(act,
@@ -3933,7 +3936,7 @@ void Sew_schedule::now_what(
 		break;
 	}
 	case get_thread: {
-		Game_object *spinwheel_obj = obj_from_weak(spinwheel);
+		Game_object_shared spinwheel_obj = spinwheel.lock();
 		if (!spinwheel_obj) {
 		    state = get_wool;
 			break;
@@ -3953,7 +3956,7 @@ void Sew_schedule::now_what(
 		break;
 	}
 	case weave_cloth: {
-		Game_object *spindle_obj = obj_from_weak(spindle);
+		Game_object_shared spindle_obj = spindle.lock();
 		if (spindle_obj)        // Should be held by NPC.
 			spindle_obj->remove_this();
 		spindle = Game_object_weak();
@@ -3976,7 +3979,7 @@ void Sew_schedule::now_what(
 		break;
 	}
 	case get_cloth: {
-	    Game_object *loom_obj = obj_from_weak(loom);
+	    Game_object_shared loom_obj = loom.lock();
 		Tile_coord t = loom_obj ? Map_chunk::find_spot(loom_obj->get_tile(),
 		                                    1, 851, 0) : Tile_coord(-1, -1, -1);
 		if (t.tx != -1) {   // Space to create it?
@@ -3994,7 +3997,7 @@ void Sew_schedule::now_what(
 	case to_work_table: {
 		Game_object *work_table_obj = npc->find_closest(971);
 		work_table = weak_from_obj(work_table_obj);
-		Game_object *cloth_obj = obj_from_weak(cloth);
+		Game_object_shared cloth_obj = cloth.lock();
 		if (!work_table_obj || !cloth_obj) {
 			state = get_wool;
 			break;
@@ -4010,9 +4013,9 @@ void Sew_schedule::now_what(
 		                work_table_obj->get_lift() + info.get_3d_height());
 		if (pact)
 			npc->set_action(new Sequence_actor_action(pact,
-			                new Face_pos_actor_action(
+			          new Face_pos_actor_action(
 			                    work_table_obj, 250),
-			                new Pickup_actor_action(cloth_obj, cpos, 250)));
+			              new Pickup_actor_action(cloth_obj.get(), cpos, 250)));
 		state = set_to_sew;
 		break;
 	}
@@ -4042,12 +4045,12 @@ void Sew_schedule::now_what(
 		break;
 	}
 	case sew_clothes: {
-	    Game_object *cloth_obj = obj_from_weak(cloth);
+	    Game_object_shared cloth_obj = cloth.lock();
 		if (!cloth_obj) {
 		    state = get_wool;
 			break;
 		}
-		int dir = npc->get_direction(cloth_obj);
+		int dir = npc->get_direction(cloth_obj.get());
 		signed char frames[5];
 		int nframes = npc->get_attack_frames(698, false,
 		                                     dir, frames);
@@ -4058,7 +4061,7 @@ void Sew_schedule::now_what(
 			int num_cloth_frames = ShapeID(851, 0).get_num_frames();
 			cloth_obj->change_frame(rand() % num_cloth_frames);
 		} else if (sew_clothes_cnt == 5) {
-			gwin->add_dirty(cloth_obj);
+			gwin->add_dirty(cloth_obj.get());
 			Tile_coord pos = cloth_obj->get_tile();
 			Game_object_shared keep;
 			cloth_obj->remove_this(&keep);
@@ -4074,17 +4077,17 @@ void Sew_schedule::now_what(
 	}
 	case get_clothes: {
 		Game_object *shears = npc->get_readied(lhand);
-	    Game_object *cloth_obj = obj_from_weak(cloth);
+	    Game_object_shared cloth_obj = cloth.lock();
 		if (shears && cloth_obj) {
 			Tile_coord pos = cloth_obj->get_tile();
 			npc->set_action(new Sequence_actor_action(
-			                    new Pickup_actor_action(cloth_obj, 250),
+			                    new Pickup_actor_action(cloth_obj.get(), 250),
 			                    new Pickup_actor_action(shears, pos, 250)));
 		} else {
 			// ++++ maybe create shears? anyway, leaving this till after
 			// possible/probable schedule system rewrite
 			if (cloth_obj)
-			    npc->set_action(new Pickup_actor_action(cloth_obj, 250));
+			    npc->set_action(new Pickup_actor_action(cloth_obj.get(), 250));
 			else {
 			    state = get_wool;
 				break;
@@ -4097,7 +4100,7 @@ void Sew_schedule::now_what(
 		state = done;
 		Game_object *wares_table_obj = npc->find_closest(890);
 		wares_table = weak_from_obj(wares_table_obj);
-	    Game_object *cloth_obj = obj_from_weak(cloth);
+	    Game_object_shared cloth_obj = cloth.lock();
 		if (!wares_table_obj || !cloth_obj) {
 			if (cloth_obj) {
 		        cloth_obj->remove_this();
@@ -4116,7 +4119,7 @@ void Sew_schedule::now_what(
 		                wares_table_obj->get_lift() + info.get_3d_height());
 		if (pact)
 			npc->set_action(new Sequence_actor_action(pact,
-		                new Pickup_actor_action(cloth_obj, cpos, 250, true)));
+	                new Pickup_actor_action(cloth_obj.get(), cpos, 250, true)));
 		cloth = Game_object_shared();          // Leave it be.
 		break;
 	}
@@ -4192,19 +4195,19 @@ void Bake_schedule::now_what() {
 	switch (state) {
 	case find_leftovers: {  // Look for misplaced dough already made by this schedule
 		state = to_flour;
-		Game_object *dough_in_oven_obj = obj_from_weak(dough_in_oven);
-		Game_object *dough_obj = obj_from_weak(dough);
+		Game_object_shared dough_in_oven_obj = dough_in_oven.lock();
+		Game_object_shared dough_obj = dough.lock();
 		if (!dough_in_oven_obj) {
 			// look for baking dough
 			Game_object_vector baking_dough;
 			int frnum(GAME_SI ? 18 : 2);
 			npc->find_nearby(baking_dough, npcpos, dough_shp, 20, 0, 51, frnum, false);
-			if (!baking_dough.empty() && baking_dough[0] != dough_obj) {
+			if (!baking_dough.empty() && baking_dough[0] != dough_obj.get()) {
 			    // found dough
-				dough_in_oven_obj = baking_dough[0];
+				dough_in_oven_obj = baking_dough[0]->shared_from_this();
 				dough_in_oven_obj->clear_flag(Obj_flags::okay_to_take);
 				// doesn't save okay_to_take
-				dough_in_oven = weak_from_obj(dough_in_oven_obj);
+				dough_in_oven = Game_object_weak(dough_in_oven_obj);
 				state = remove_from_oven;
 				break;
 			}
@@ -4218,8 +4221,8 @@ void Bake_schedule::now_what() {
 				Tile_coord Opos = oven_obj->get_tile();
 				npc->find_nearby(food, Opos, 377, 2, 0, c_any_qual, c_any_framenum, true);
 				if (!food.empty()) { // found food
-					dough_in_oven_obj = food[0];
-					dough_in_oven = weak_from_obj(dough_in_oven_obj);
+					dough_in_oven_obj = food[0]->shared_from_this();
+					dough_in_oven = Game_object_weak(dough_in_oven_obj);
 					dough_in_oven_obj->clear_flag(Obj_flags::okay_to_take); // doesn't save okay_to_take
 					state = remove_from_oven;
 					break;
@@ -4234,9 +4237,9 @@ void Bake_schedule::now_what() {
 				npc->find_nearby(leftovers, npcpos, dough_shp, 20, 0, 50, 18, false);
 			} else
 				npc->find_nearby(leftovers, npcpos, dough_shp, 20, 0, 50, c_any_framenum, false);
-			if (!leftovers.empty() && leftovers[0] != dough_in_oven_obj) {  // found dough
-				dough_obj = leftovers[0];
-				dough = weak_from_obj(dough_obj);
+			if (!leftovers.empty() && leftovers[0] != dough_in_oven_obj.get()) {  // found dough
+				dough_obj = leftovers[0]->shared_from_this();
+				dough = Game_object_weak(dough_obj);
 				dough_obj->clear_flag(Obj_flags::okay_to_take); // doesn't save okay_to_take
 				state = make_dough;
 				delay = 0;
@@ -4278,14 +4281,14 @@ void Bake_schedule::now_what() {
 		break;
 	}
 	case get_flour: {   // Bend over flourbag and change the frame to zero if nonzero
-	    Game_object *flourbag_obj = obj_from_weak(flourbag);
+	    Game_object_shared flourbag_obj = flourbag.lock();
 		if (!flourbag_obj) {
 			// what are we doing here then? back to start
 			state = to_flour;
 			break;
 		}
 
-		int dir = npc->get_direction(flourbag_obj);
+		int dir = npc->get_direction(flourbag_obj.get());
 		npc->change_frame(
 		    npc->get_dir_framenum(dir, Actor::bow_frame));
 
@@ -4340,21 +4343,21 @@ void Bake_schedule::now_what() {
 		Actor_action *pact = Path_walking_actor_action::create_path(
 		                         npcpos, cpos, cost);
 		if (pact) {
-		    Game_object *dough_obj = obj_from_weak(dough);
+		    Game_object_shared dough_obj = dough.lock();
 			if (dough_obj) {
 				dough_obj->remove_this();
 			}
-			Game_object_shared keep;
 			if (Game::get_game_type() == SERPENT_ISLE)
-				keep = std::make_shared<Ireg_game_object>(dough_shp, 16, 0, 0);
+				dough_obj = std::make_shared<Ireg_game_object>(
+														dough_shp, 16, 0, 0);
 			else
-				keep = std::make_shared<Ireg_game_object>(dough_shp, 0, 0, 0);
-		    dough_obj = keep.get();
-			dough = Game_object_weak(keep);
-			npc->add(dough_obj, true);
+				dough_obj = std::make_shared<Ireg_game_object>(
+														dough_shp, 0, 0, 0);
+			dough = Game_object_weak(dough_obj);
+			npc->add(dough_obj.get(), true);
 			dough_obj->set_quality(50); // doesn't save okay_to_take
 			npc->set_action(new Sequence_actor_action(pact,
-			                new Pickup_actor_action(dough_obj, tablepos, 250)));
+	                new Pickup_actor_action(dough_obj.get(), tablepos, 250)));
 		} else {
 			// not good... try again
 			delay = 2500;
@@ -4366,7 +4369,7 @@ void Bake_schedule::now_what() {
 		break;
 	}
 	case make_dough: {  // Changes flour to flat dough then dough ball
-	    Game_object *dough_obj = obj_from_weak(dough);
+	    Game_object_shared dough_obj = dough.lock();
 		if (!dough_obj) {
 			// better try again...
 			delay = 2500;
@@ -4375,36 +4378,37 @@ void Bake_schedule::now_what() {
 		}
 		dough_obj->clear_flag(Obj_flags::okay_to_take); // doesn't save okay_to_take
 
-		int dir = npc->get_direction(dough_obj);
+		int dir = npc->get_direction(dough_obj.get());
 		signed char fr[2];
 		fr[0] = npc->get_dir_framenum(dir, 3);
 		fr[1] = npc->get_dir_framenum(dir, 0);
 
 		int frame = dough_obj->get_framenum();
+		Game_object *dobj = dough_obj.get();
 		if (GAME_SI ? frame == 16 : frame == 0)
 			npc->set_action(new Sequence_actor_action(
 			                    new Frames_actor_action(fr, 2, 500),
 			                    ((GAME_SI) ?
-			                     new Frames_actor_action(0x11, 250, dough_obj) :
-			                     new Frames_actor_action(0x01, 250, dough_obj)),
+			                     new Frames_actor_action(0x11, 250, dobj) :
+			                     new Frames_actor_action(0x01, 250, dobj)),
 			                    new Frames_actor_action(fr, 2, 500),
 			                    ((GAME_SI) ?
-			                     new Frames_actor_action(0x12, 250, dough_obj) :
-			                     new Frames_actor_action(0x02, 250, dough_obj))
+			                     new Frames_actor_action(0x12, 250, dobj) :
+			                     new Frames_actor_action(0x02, 250, dobj))
 			                ));
 		else if (GAME_SI ? frame == 17 : frame == 1)
 			npc->set_action(new Sequence_actor_action(
 			                    new Frames_actor_action(fr, 2, 500),
 			                    ((GAME_SI) ?
-			                     new Frames_actor_action(0x12, 250, dough_obj) :
-			                     new Frames_actor_action(0x02, 250, dough_obj))
+			                     new Frames_actor_action(0x12, 250, dobj) :
+			                     new Frames_actor_action(0x02, 250, dobj))
 			                ));
 
 		state = remove_from_oven;
 		break;
 	}
 	case remove_from_oven: { // Changes dough in oven to food %7 and picks it up
-	    Game_object *dough_in_oven_obj = obj_from_weak(dough_in_oven);
+	    Game_object_shared dough_in_oven_obj = dough_in_oven.lock();
 		if (!dough_in_oven_obj) {
 			// nothing in oven yet
 			state = get_dough;
@@ -4424,11 +4428,11 @@ void Bake_schedule::now_what() {
 			break;
 		}
 		if (dough_in_oven_obj->get_shapenum() != 377) {
-			gwin->add_dirty(dough_in_oven_obj);
+			gwin->add_dirty(dough_in_oven_obj.get());
 			dough_in_oven_obj->set_shape(377);
 			dough_in_oven_obj->set_frame(rand() % 7);
 			dough_in_oven_obj->clear_flag(Obj_flags::okay_to_take);  // doesn't save okay_to_take
-			gwin->add_dirty(dough_in_oven_obj);
+			gwin->add_dirty(dough_in_oven_obj.get());
 		}
 
 		Tile_coord tpos = oven_obj->get_tile() +
@@ -4437,12 +4441,12 @@ void Bake_schedule::now_what() {
 		                         npcpos, tpos, cost);
 		if (pact) {
 			npc->set_action(new Sequence_actor_action(
-			                    pact,
-			                    new Pickup_actor_action(dough_in_oven_obj, 250)));
+                    pact,
+                    new Pickup_actor_action(dough_in_oven_obj.get(), 250)));
 		} else {
 			// just pick it up
 			npc->set_action(
-			    new Pickup_actor_action(dough_in_oven_obj, 250));
+			    new Pickup_actor_action(dough_in_oven_obj.get(), 250));
 		}
 
 		state = display_wares;
@@ -4450,7 +4454,7 @@ void Bake_schedule::now_what() {
 	}
 	case display_wares: {
 	    // Walk to displaytable. Put food on it. If table full, go to
-	    Game_object *dough_in_oven_obj = obj_from_weak(dough_in_oven);
+	    Game_object_shared dough_in_oven_obj = dough_in_oven.lock();
 		// clear_display which eventualy comes back here to place food
 		if (!dough_in_oven_obj) {
 			// try again
@@ -4502,7 +4506,7 @@ void Bake_schedule::now_what() {
 		                                    377, 0, 0);
 		if (t.tx != -1 && t.tz == spot_on_table.tz) {
 			npc->set_action(new Sequence_actor_action(pact,
-			                new Pickup_actor_action(dough_in_oven_obj,
+			                new Pickup_actor_action(dough_in_oven_obj.get(),
 			                                        spot_on_table, 250)));
 			dough_in_oven = Game_object_weak();
 			state = get_dough;
@@ -4523,7 +4527,7 @@ void Bake_schedule::now_what() {
 		npc->find_nearby(food, npcpos, 377, 4, 0, c_any_qual, c_any_framenum, true);
 		if (!food.size() && !clearing) { // none of our food on the table
 			// so we can't clear it
-			Game_object *dough_in_oven_obj = obj_from_weak(dough_in_oven);
+			Game_object_shared dough_in_oven_obj = dough_in_oven.lock();
 			if (dough_in_oven_obj)
 				dough_in_oven_obj->remove_this();
 			state = get_dough;
@@ -4550,7 +4554,7 @@ void Bake_schedule::now_what() {
 		break;
 	}
 	case get_dough: {   // Walk to work table and pick up dough
-	    Game_object *dough_obj = obj_from_weak(dough);
+	    Game_object_shared dough_obj = dough.lock();
 		if (!dough_obj) {
 			// try again
 			delay = 2500;
@@ -4575,17 +4579,17 @@ void Bake_schedule::now_what() {
 		if (pact) {
 			npc->set_action(new Sequence_actor_action(
 			                    pact,
-			                    new Pickup_actor_action(dough_obj, 250)));
+			                    new Pickup_actor_action(dough_obj.get(), 250)));
 		} else {
 			// just pick it up
-			npc->set_action(new Pickup_actor_action(dough_obj, 250));
+			npc->set_action(new Pickup_actor_action(dough_obj.get(), 250));
 		}
 
 		state = put_in_oven;
 		break;
 	}
 	case put_in_oven: { // Walk to oven and put dough on in.
-	    Game_object *dough_obj = obj_from_weak(dough);
+	    Game_object_shared dough_obj = dough.lock();
 		if (!dough_obj) {
 			// try again
 			delay = 2500;
@@ -4622,8 +4626,8 @@ void Bake_schedule::now_what() {
 
 		if (pact) {
 			npc->set_action(new Sequence_actor_action(
-			                    pact,
-			                    new Pickup_actor_action(dough_obj, cpos, 250)));
+			             pact,
+			             new Pickup_actor_action(dough_obj.get(), cpos, 250)));
 
 			dough_obj->set_quality(51); // doesn't save okay_to_take
 			dough_in_oven = dough;
@@ -4648,8 +4652,8 @@ void Bake_schedule::now_what() {
 
 void Bake_schedule::ending(int new_type) {
 	ignore_unused_variable_warning(new_type);
-    Game_object *dough_obj = obj_from_weak(dough),
-				*dough_in_oven_obj = obj_from_weak(dough_in_oven);
+    Game_object_shared dough_obj = dough.lock(),
+				dough_in_oven_obj = dough_in_oven.lock();
 	if (dough_obj) {
 		dough_obj->remove_this();
 	}
@@ -4677,18 +4681,18 @@ void Forge_schedule::now_what(
 
 	switch (state) {
 	case put_sword_on_firepit: {
-	    Game_object *blank_obj = obj_from_weak(blank);
+	    Game_object_shared blank_obj = blank.lock();
 		if (!blank_obj) {
-			blank_obj = npc->find_closest(668);
+		    Game_object *found = npc->find_closest(668);
+		    if (found)
+			    blank_obj = found->shared_from_this();
 			//TODO: go and get it...
 
 		}
-		Game_object_shared newobj;
 		if (!blank_obj) {
-			newobj = std::make_shared<Ireg_game_object>(668, 0, 0, 0);
-			blank_obj = newobj.get();
+			blank_obj = std::make_shared<Ireg_game_object>(668, 0, 0, 0);
 		}
-		blank = weak_from_obj(blank_obj);
+		blank = Game_object_weak(blank_obj);
 		Game_object *firepit_obj = npc->find_closest(739);
 		firepit = weak_from_obj(firepit_obj);
 		if (!firepit_obj) {
@@ -4706,10 +4710,10 @@ void Forge_schedule::now_what(
 		                firepit_obj->get_lift() + info.get_3d_height());
 		if (pact) {
 			npc->set_action(new Sequence_actor_action(pact,
-			                new Pickup_actor_action(blank_obj, bpos, 250)));
+		                new Pickup_actor_action(blank_obj.get(), bpos, 250)));
 		} else {
 			npc->set_action(
-			    new Pickup_actor_action(blank_obj, bpos, 250));
+			    new Pickup_actor_action(blank_obj.get(), bpos, 250));
 		}
 
 		state = use_bellows;
@@ -4718,7 +4722,7 @@ void Forge_schedule::now_what(
 	case use_bellows: {
 		Game_object *bellows_obj = npc->find_closest(431);
 		Game_object *firepit_obj = npc->find_closest(739);
-		Game_object *blank_obj = obj_from_weak(blank);
+		Game_object_shared blank_obj = blank.lock();
 		bellows = weak_from_obj(bellows_obj);
 		firepit = weak_from_obj(firepit_obj);
 		if (!bellows_obj || !firepit_obj || !blank_obj) {
@@ -4740,21 +4744,21 @@ void Forge_schedule::now_what(
 		a[3] = new Object_animate_actor_action(bellows_obj, 3, 1, 300);
 		a[4] = new Frames_actor_action(0x20 | Actor::standing, 0);
 		a[5] = new Frames_actor_action(0x01, 0, firepit_obj);
-		a[6] = new Frames_actor_action(0x01, 0, blank_obj);
+		a[6] = new Frames_actor_action(0x01, 0, blank_obj.get());
 		a[7] = new Frames_actor_action(0x20 | Actor::bow_frame, 0);
 		a[8] = new Object_animate_actor_action(bellows_obj, 3, 1, 300);
 		a[9] = new Frames_actor_action(0x20 | Actor::standing, 0);
-		a[10] = new Frames_actor_action(0x02, 0, blank_obj);
+		a[10] = new Frames_actor_action(0x02, 0, blank_obj.get());
 		a[11] = new Frames_actor_action(0x20 | Actor::bow_frame, 0);
 		a[12] = new Object_animate_actor_action(bellows_obj, 3, 1, 300);
 		a[13] = new Frames_actor_action(0x20 | Actor::standing, 0);
 		a[14] = new Frames_actor_action(0x02, 0, firepit_obj);
-		a[15] = new Frames_actor_action(0x03, 0, blank_obj);
+		a[15] = new Frames_actor_action(0x03, 0, blank_obj.get());
 		a[16] = new Frames_actor_action(0x20 | Actor::bow_frame, 0);
 		a[17] = new Object_animate_actor_action(bellows_obj, 3, 1, 300);
 		a[18] = new Frames_actor_action(0x20 | Actor::standing, 0);
 		a[19] = new Frames_actor_action(0x03, 0, firepit_obj);
-		a[20] = new Frames_actor_action(0x04, 0, blank_obj);
+		a[20] = new Frames_actor_action(0x04, 0, blank_obj.get());
 		a[21] = new Frames_actor_action(0x20 | Actor::bow_frame, 0);
 		a[22] = new Object_animate_actor_action(bellows_obj, 3, 1, 300);
 		a[23] = new Frames_actor_action(0x20 | Actor::standing, 0);
@@ -4782,15 +4786,13 @@ void Forge_schedule::now_what(
 			//TODO: go and get it...
 		}
 #endif
-		Game_object_shared newobj;
-		Game_object *tongs_obj = obj_from_weak(tongs);
+		Game_object_shared tongs_obj = tongs.lock();
 		if (!tongs_obj) {
-			newobj = std::make_shared<Ireg_game_object>(994, 0, 0, 0);
-			tongs_obj = newobj.get();
-			tongs = Game_object_weak(newobj);
+			tongs_obj = std::make_shared<Ireg_game_object>(994, 0, 0, 0);
+			tongs = Game_object_weak(tongs_obj);
 		}
 		npc->empty_hands(); // make sure the tongs can be equipped
-		npc->add_readied(tongs_obj, lhand);
+		npc->add_readied(tongs_obj.get(), lhand);
 		npc->add_dirty();
 
 		state = sword_on_anvil;
@@ -4801,7 +4803,7 @@ void Forge_schedule::now_what(
 		Game_object *firepit_obj = npc->find_closest(739);
 		anvil = weak_from_obj(anvil_obj);
 		firepit = weak_from_obj(firepit_obj);
-		Game_object *blank_obj = obj_from_weak(blank);
+		Game_object_shared blank_obj = blank.lock();
 		if (!anvil_obj || !firepit_obj || !blank_obj) {
 			// uh-oh... try again in a few second
 			npc->start(250, 2500);
@@ -4823,16 +4825,16 @@ void Forge_schedule::now_what(
 		                anvil_obj->get_lift() + info.get_3d_height());
 		if (pact && pact2) {
 			npc->set_action(new Sequence_actor_action(pact,
-			                new Pickup_actor_action(blank_obj, 250),
-			                pact2,
-			                new Pickup_actor_action(blank_obj, bpos, 250)));
+			             new Pickup_actor_action(blank_obj.get(), 250),
+			             pact2,
+			             new Pickup_actor_action(blank_obj.get(), bpos, 250)));
 		} else {
 			// Don't leak the paths
 			delete pact;
 			delete pact2;
 			npc->set_action(new Sequence_actor_action(
-			                    new Pickup_actor_action(blank_obj, 250),
-			                    new Pickup_actor_action(blank_obj, bpos, 250)));
+		                 new Pickup_actor_action(blank_obj.get(), 250),
+		                 new Pickup_actor_action(blank_obj.get(), bpos, 250)));
 		}
 		state = get_hammer;
 		break;
@@ -4844,21 +4846,19 @@ void Forge_schedule::now_what(
 			//TODO: go and get it...
 		}
 #endif
-	    Game_object_shared newobj;
-		Game_object *hammer_obj = obj_from_weak(hammer);
+		Game_object_shared hammer_obj = hammer.lock();
 		if (!hammer_obj) {
-			newobj = std::make_shared<Ireg_game_object>(623, 0, 0, 0);
-			hammer_obj = newobj.get();
-			hammer = Game_object_weak(newobj);
+			hammer_obj = std::make_shared<Ireg_game_object>(623, 0, 0, 0);
+			hammer = Game_object_weak(hammer_obj);
 		}
 		npc->add_dirty();
-		Game_object *tongs_obj = obj_from_weak(tongs);
+		Game_object_shared tongs_obj = tongs.lock();
 		if (tongs_obj) {
 			tongs_obj->remove_this();
 			tongs = Game_object_weak();
 		}
 		npc->empty_hands(); // make sure the hammer can be equipped
-		npc->add_readied(hammer_obj, lhand);
+		npc->add_readied(hammer_obj.get(), lhand);
 		npc->add_dirty();
 
 		state = use_hammer;
@@ -4869,7 +4869,7 @@ void Forge_schedule::now_what(
 		Game_object *firepit_obj = npc->find_closest(739);
 		anvil = weak_from_obj(anvil_obj);
 		firepit = weak_from_obj(firepit_obj);
-		Game_object *blank_obj = obj_from_weak(blank);
+		Game_object_shared blank_obj = blank.lock();
 		if (!anvil_obj || !firepit_obj || !blank_obj) {
 			// uh-oh... try again in a few seconds
 			npc->start(250, 2500);
@@ -4884,13 +4884,13 @@ void Forge_schedule::now_what(
 
 		Actor_action **a = new Actor_action*[10];
 		a[0] = new Frames_actor_action(frames, cnt);
-		a[1] = new Frames_actor_action(0x03, 0, blank_obj);
+		a[1] = new Frames_actor_action(0x03, 0, blank_obj.get());
 		a[2] = new Frames_actor_action(0x02, 0, firepit_obj);
 		a[3] = new Frames_actor_action(frames, cnt);
-		a[4] = new Frames_actor_action(0x02, 0, blank_obj);
+		a[4] = new Frames_actor_action(0x02, 0, blank_obj.get());
 		a[5] = new Frames_actor_action(0x01, 0, firepit_obj);
 		a[6] = new Frames_actor_action(frames, cnt);
-		a[7] = new Frames_actor_action(0x01, 0, blank_obj);
+		a[7] = new Frames_actor_action(0x01, 0, blank_obj.get());
 		a[8] = new Frames_actor_action(0x00, 0, firepit_obj);
 		a[9] = 0;
 		npc->set_action(new Sequence_actor_action(a));
@@ -4900,7 +4900,7 @@ void Forge_schedule::now_what(
 	}
 	case walk_to_trough: {
 		npc->add_dirty();
-		Game_object *hammer_obj = obj_from_weak(hammer);
+		Game_object_shared hammer_obj = hammer.lock();
 		if (hammer_obj) {
 			hammer_obj->remove_this();
 		}
@@ -4952,15 +4952,13 @@ void Forge_schedule::now_what(
 			//TODO: go and get it...
 		}
 #endif
-		Game_object_shared newobj;
-		Game_object *tongs_obj = obj_from_weak(tongs);
+		Game_object_shared tongs_obj = tongs.lock();
 		if (!tongs_obj) {
-			newobj = std::make_shared<Ireg_game_object>(994, 0, 0, 0);
-			tongs_obj = newobj.get();
-			tongs = Game_object_weak(newobj);
+			tongs_obj = std::make_shared<Ireg_game_object>(994, 0, 0, 0);
+			tongs = Game_object_weak(tongs_obj);
 		}
 		npc->empty_hands(); // make sure the tongs can be equipped
-		npc->add_readied(tongs_obj, lhand);
+		npc->add_readied(tongs_obj.get(), lhand);
 		npc->add_dirty();
 
 		state = use_trough;
@@ -4971,7 +4969,7 @@ void Forge_schedule::now_what(
 		Game_object *anvil_obj = npc->find_closest(991);
 		trough = weak_from_obj(trough_obj);
 		anvil = weak_from_obj(anvil_obj);
-		Game_object *blank_obj = obj_from_weak(blank);
+		Game_object_shared blank_obj = blank.lock();
 		if (!trough_obj || !anvil_obj || !blank_obj) {
 			// uh-oh... try again in a few seconds
 			npc->start(250, 2500);
@@ -4998,11 +4996,11 @@ void Forge_schedule::now_what(
 
 			Actor_action **a = new Actor_action*[7];
 			a[0] = pact;
-			a[1] = new Pickup_actor_action(blank_obj, 250);
+			a[1] = new Pickup_actor_action(blank_obj.get(), 250);
 			a[2] = pact2;
 			a[3] = new Frames_actor_action(&npcframe, 1, 250);
 			a[4] = new Frames_actor_action(&troughframe, 1, 0, trough_obj);
-			a[5] = new Frames_actor_action(0x00, 0, blank_obj);
+			a[5] = new Frames_actor_action(0x00, 0, blank_obj.get());
 			a[6] = 0;
 			npc->set_action(new Sequence_actor_action(a));
 		} else {
@@ -5011,8 +5009,8 @@ void Forge_schedule::now_what(
 			delete pact2;
 			// no path found, just pick up sword blank
 			npc->set_action(new Sequence_actor_action(
-			                    new Pickup_actor_action(blank_obj, 250),
-			                    new Frames_actor_action(0, 0, blank_obj)));
+			                    new Pickup_actor_action(blank_obj.get(), 250),
+			                    new Frames_actor_action(0, 0, blank_obj.get())));
 		}
 
 		state = done;
@@ -5020,7 +5018,7 @@ void Forge_schedule::now_what(
 	}
 	case done: {
 		npc->add_dirty();
-		Game_object *tongs_obj = obj_from_weak(tongs);
+		Game_object_shared tongs_obj = tongs.lock();
 		if (tongs_obj) {
 			tongs_obj->remove_this();
 		}
@@ -5040,18 +5038,18 @@ void Forge_schedule::ending(
 ) {
 	ignore_unused_variable_warning(new_type);
 	// Remove any tools.
-	Game_object *tongs_obj = obj_from_weak(tongs);
+	Game_object_shared tongs_obj = tongs.lock();
 	if (tongs_obj) {
 		tongs_obj->remove_this();
 	}
-	Game_object *hammer_obj = obj_from_weak(hammer);
+	Game_object_shared hammer_obj = hammer.lock();
 	if (hammer_obj) {
 		hammer_obj->remove_this();
 	}
 
 	Game_object *firepit_obj = npc->find_closest(739);
 	Game_object *bellows_obj = npc->find_closest(431);
-	Game_object *blank_obj = obj_from_weak(blank);
+	Game_object_shared blank_obj = blank.lock();
 
 	if (firepit_obj && firepit_obj->get_framenum() != 0)
 		firepit_obj->change_frame(0);
@@ -5137,7 +5135,7 @@ void Eat_schedule::now_what() {
 	}
 	case serve_food: {
 		state = eat;
-		Game_object *plate_obj = obj_from_weak(plate);
+		Game_object_shared plate_obj = plate.lock();
 		if (!plate_obj) {
 			state = find_plate;
 			break;

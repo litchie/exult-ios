@@ -128,7 +128,7 @@ class Schedule_with_objects : public Schedule {
 	Game_object_weak current_item;		// One we're using/walking to.
 protected:
     Game_object *get_current_item() {
-	    return obj_from_weak(current_item);
+	  return current_item.lock().get();
 	}
 	void set_current_item(Game_object *obj) {
 	    current_item = weak_from_obj(obj);

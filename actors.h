@@ -380,7 +380,7 @@ public:
 	// Set combat opponent.
 	void set_target(Game_object *obj, bool start_combat = false);
 	Game_object *get_target() { // Get who/what we're attacking.
-	  return obj_from_weak(target);
+	  return target.lock().get();
 	}
 	// Works out if an object fits in a spot
 	bool fits_in_spot(Game_object *obj, int spot);
@@ -453,7 +453,8 @@ public:
 	void fight_back(Game_object *attacker);
 	bool get_attack_target(Game_object *&obj, Tile_coord &t) {
 		static Tile_coord invalidloc(-1, -1, 0);
-		obj = obj_from_weak(target_object);
+		Game_object_shared tobj = target_object.lock();
+		obj = tobj.get();
 		t = target_tile;
 		return (obj || target_tile != invalidloc);
 	}
