@@ -239,7 +239,7 @@ void Palette_edit::color_okay(
 	ignore_unused_variable_warning(dlg);
 	Palette_edit *paled = static_cast<Palette_edit *>(data);
 	if (paled->colorsel) {
-		gdouble rgb[3];
+		gdouble rgb[4];
 		gtk_color_selection_get_color(
 		    GTK_COLOR_SELECTION(paled->colorsel->colorsel), rgb);
 		unsigned char r = static_cast<unsigned char>(rgb[0] * 256),

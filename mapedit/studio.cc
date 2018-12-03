@@ -2305,7 +2305,7 @@ void ExultStudio::background_color_okay(
 ) {
 	ignore_unused_variable_warning(data);
 	GtkColorSelectionDialog *colorsel = GTK_COLOR_SELECTION_DIALOG(dlg);
-	gdouble rgb[3];
+	gdouble rgb[4];
 	gtk_color_selection_get_color(
 	    GTK_COLOR_SELECTION(colorsel->colorsel), rgb);
 	unsigned char r = static_cast<unsigned char>(rgb[0] * 256),
