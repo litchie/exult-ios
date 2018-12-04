@@ -97,7 +97,6 @@ MIDI_DRV_OBJS=\
 	audio/midi_drivers/KMIDI.o \
 	audio/midi_drivers/LowLevelMidiDriver.o \
 	audio/midi_drivers/MidiDriver.o \
-	audio/midi_drivers/mixer_midiout.o \
 	audio/midi_drivers/MT32EmuMidiDriver.o \
 	audio/midi_drivers/TimidityMidiDriver.o \
 	audio/midi_drivers/UnixSeqMidiDriver.o \

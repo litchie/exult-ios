@@ -752,14 +752,6 @@
 								RelativePath="..\audio\midi_drivers\KMIDI.h"
 								>
 							</File>
-							<File
-								RelativePath="..\audio\midi_drivers\mixer_midiout.cc"
-								>
-							</File>
-							<File
-								RelativePath="..\audio\midi_drivers\mixer_midiout.h"
-								>
-							</File>
 						</Filter>
 						<Filter
 							Name="mt32emu"

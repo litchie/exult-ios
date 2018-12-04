@@ -38,8 +38,6 @@ libmididrv_la_SOURCES =	\
 	LowLevelMidiDriver.h	\
 	MidiDriver.cpp		\
 	MidiDriver.h		\
-	mixer_midiout.cc	\
-	mixer_midiout.h		\
 	$(MT32EMUDRV)	\
 	TimidityMidiDriver.cpp	\
 	TimidityMidiDriver.h	\
