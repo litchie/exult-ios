@@ -623,14 +623,6 @@
 								RelativePath="..\audio\midi_drivers\forked_player.h"
 								>
 							</File>
-							<File
-								RelativePath="..\audio\midi_drivers\KMIDI.cc"
-								>
-							</File>
-							<File
-								RelativePath="..\audio\midi_drivers\KMIDI.h"
-								>
-							</File>
 						</Filter>
 						<Filter
 							Name="mt32emu"
