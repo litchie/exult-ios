@@ -30,8 +30,6 @@ libmididrv_la_SOURCES =	\
 	fmopl.h			\
 	FMOplMidiDriver.cpp	\
 	FMOplMidiDriver.h	\
-	forked_player.cc	\
-	forked_player.h		\
 	LowLevelMidiDriver.cpp	\
 	LowLevelMidiDriver.h	\
 	MidiDriver.cpp		\

@@ -33,7 +33,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Legacy Exult Midi Drivers
 #ifdef PENTAGRAM_IN_EXULT
 #include "MT32EmuMidiDriver.h"
-#include "forked_player.h"
 #endif
 
 
@@ -80,9 +79,6 @@ static void InitMidiDriverVector()
 #endif
 #ifdef USE_FLUIDSYNTH_MIDI
 	midi_drivers.push_back(FluidSynthMidiDriver::getDesc());
-#endif
-#ifdef USE_FORKED_PLAYER_MIDI
-	midi_drivers.push_back(forked_player::getDesc());
 #endif
 
 	midi_drivers.push_back(&Disabled_desc);

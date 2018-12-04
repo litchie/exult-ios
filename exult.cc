@@ -264,19 +264,6 @@ static unsigned int show_items_time = 0;
 static bool show_items_clicked = false;
 static int left_down_x = 0, left_down_y = 0;
 
-#if (defined(XWIN) && HAVE_SIGNAL_H && HAVE_SYS_WAIT_H)
-
-// a SIGCHLD handler to properly clean up forked playmidi processes (if any)
-
-#include <sys/wait.h>
-#include <signal.h>
-void sigchld_handler(int sig) {
-	ignore_unused_variable_warning(sig);
-	waitpid(-1, nullptr, WNOHANG);
-}
-
-#endif
-
 #if defined(_WIN32) && defined(main) && defined(_MSC_VER)
 #undef main
 #endif
@@ -290,12 +277,6 @@ int main(
     int argc,
     char *argv[]
 ) {
-
-#if (defined(XWIN) && HAVE_SIGNAL_H && HAVE_SYS_WAIT_H)
-	signal(SIGCHLD, sigchld_handler);
-#endif
-
-
 	bool    needhelp = false;
 	bool    showversion = false;
 	int     result;
