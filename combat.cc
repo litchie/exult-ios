@@ -1105,11 +1105,13 @@ bool Combat_schedule::attack_target(
 			Tile_coord offset(0, 0, target->get_info().get_3d_height() / 2);
 			eman->add_effect(new Explosion_effect(target->get_tile() + offset,
 			                                      target, 0, weapon, -1, attacker));
-		} else
+		} else {
+		    Game_object_weak trg_check = weak_from_obj(trg);
 			target->attacked(attacker, weapon,
 			                 ammo ? ammo->get_shapenum() : -1, false);
-            if (trg)
+            if (trg && !trg_check.expired())
 			    back_off(trg, attacker);
+		}
 		return true;
 	}
 	return false;
@@ -1361,7 +1363,8 @@ void Combat_schedule::now_what(
 		state = approach;
 		// Back into queue.
 		npc->start_std();
-		Actor *safenpc = npc;
+		Actor_shared safenpc = std::static_pointer_cast<Actor>(
+											npc->shared_from_this());
 		// Change back to ready frame.
 		int delay = gwin->get_std_delay();
 		// Neither slime nor BG sea serpent?
