@@ -545,7 +545,7 @@ gint Shape_chooser::win32_drag_motion(
 
 		// This call allows us to recycle the data transfer initialization code.
 		//  It's clumsy, but far easier to maintain.
-		drag_data_get(nullptr, nullptr, (GtkSelectionData *) &wdata,
+		drag_data_get(nullptr, nullptr, reinterpret_cast<GtkSelectionData*>(&wdata),
 		              U7_TARGET_SHAPEID, 0, data);
 
 		POINT pnt;
@@ -1725,7 +1725,7 @@ void Shape_chooser::drag_data_get(
 	cout << "Setting selection data (" << shinfo.shapenum <<
 	     '/' << shinfo.framenum << ')' << endl;
 #ifdef WIN32
-	windragdata *wdata = (windragdata *)seldata;
+	windragdata *wdata = reinterpret_cast<windragdata*>(seldata);
 	wdata->assign(info, len, buf);
 #else
 	// Make us owner of xdndselection.
