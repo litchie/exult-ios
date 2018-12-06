@@ -230,7 +230,7 @@ void ExultStudio::open_cont_window(
 	gtk_widget_show(contwin);
 #ifdef WIN32
 	if (first_time || !contdnd)
-		Windnd::CreateStudioDropDest(contdnd, conthwnd, Drop_dragged_shape, nullptr, nullptr, (void *) this);
+		Windnd::CreateStudioDropDest(contdnd, conthwnd, Drop_dragged_shape, nullptr, nullptr, this);
 #endif
 }
 

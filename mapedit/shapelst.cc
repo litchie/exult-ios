@@ -552,7 +552,7 @@ gint Shape_chooser::win32_drag_motion(
 		GetCursorPos(&pnt);
 
 		Windropsource idsrc(nullptr, pnt.x, pnt.y);
-		LPDATAOBJECT idobj = (LPDATAOBJECT) new Winstudioobj(wdata);
+		LPDATAOBJECT idobj = new Winstudioobj(wdata);
 		DWORD dndout;
 
 		HRESULT res = DoDragDrop(idobj, &idsrc, DROPEFFECT_COPY, &dndout);

@@ -216,7 +216,7 @@ void ExultStudio::open_egg_window(
 
 #ifdef WIN32
 	if (first_time || !eggdnd)
-		Windnd::CreateStudioDropDest(eggdnd, egghwnd, Drop_dragged_shape, nullptr, nullptr, (void *) this);
+		Windnd::CreateStudioDropDest(eggdnd, egghwnd, Drop_dragged_shape, nullptr, nullptr, this);
 #endif
 }
 

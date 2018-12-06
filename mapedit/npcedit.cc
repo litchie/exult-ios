@@ -351,7 +351,7 @@ void ExultStudio::open_npc_window(
 	gtk_widget_show(npcwin);
 #ifdef WIN32
 	if (first_time || !npcdnd)
-		Windnd::CreateStudioDropDest(npcdnd, npchwnd, Drop_dragged_shape, nullptr, Drop_dragged_face, (void *) this);
+		Windnd::CreateStudioDropDest(npcdnd, npchwnd, Drop_dragged_shape, nullptr, Drop_dragged_face, this);
 
 #endif
 }
