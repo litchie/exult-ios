@@ -776,8 +776,7 @@ struct ExCineEvent {
 
 	ExCineEvent(uint32 t, const char *f, const char *p, int i) :
 		time(t), file(f), patch(p), index(i)  { }
-
-	virtual ~ExCineEvent() { }
+	virtual ~ExCineEvent() noexcept = default;
 };
 
 //
@@ -811,10 +810,6 @@ public:
 	ExCineFlic(uint32 time) : ExCineEvent(time, nullptr, nullptr, 0), start(0), count(0),
 		repeat(false), cur(0), speed(0),
 		player(nullptr) { }
-
-	virtual ~ExCineFlic() {
-		free_flic();
-	}
 };
 
 void ExCineFlic::load_flic() {
@@ -869,8 +864,6 @@ public:
 
 	ExCineVoc(uint32 time, const char *file, const char *patch, int index)
 		: ExCineEvent(time, file, patch, index), played(false) { }
-
-	virtual ~ExCineVoc() { }
 };
 
 bool ExCineVoc::play_it(Image_window *win, uint32 t) {
