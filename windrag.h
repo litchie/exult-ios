@@ -3,6 +3,12 @@
 
 #if defined(WIN32) && defined(USE_EXULTSTUDIO)
 
+#ifdef __GNUC__
+// COM sucks.
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wnon-virtual-dtor"
+#endif
+
 #include "u7drag.h"
 #include <ole2.h>
 #include "utils.h"
@@ -230,6 +236,10 @@ public:
 	    IEnumSTATDATA **ppenumAdvise
 	);
 };
+
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif
 
 #endif
 
