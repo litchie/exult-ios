@@ -25,14 +25,14 @@ public:
 	}
 
 	// Default constructor
-	inline windragdata() : size(0), data(0) {
+	inline windragdata() : size(0), data(nullptr) {
 	}
 	// Copy constructor
 	inline windragdata(const windragdata &o) : id(o.id), size(o.size), data(new unsigned char [o.size]) {
 		std::memcpy(data, o.data, size);
 	}
 	// Read from buffer
-	inline windragdata(const unsigned char *buf) : data(0) {
+	inline windragdata(const unsigned char *buf) : data(nullptr) {
 		operator = (buf);
 	}
 	inline windragdata(sint32 i, uint32 s, const unsigned char *d) :

@@ -34,8 +34,8 @@ void Windnd::CreateStudioDropDest(Windnd  *&windnd, HWND &hWnd,
 void Windnd::DestroyStudioDropDest(Windnd  *&windnd, HWND &hWnd) {
 	RevokeDragDrop(hWnd);
 	delete windnd;
-	windnd = 0;
-	hWnd = 0;
+	windnd = nullptr;
+	hWnd = nullptr;
 }
 
 // IDropTarget implementation
@@ -48,9 +48,9 @@ Windnd::Windnd(
     Drop_chunk_handler_fun cfun,
     Drop_npc_handler_fun npcfun,
     Drop_combo_handler_fun combfun
-) : gamewin(hgwnd), udata(0), move_shape_handler(movefun),
+) : gamewin(hgwnd), udata(nullptr), move_shape_handler(movefun),
 	move_combo_handler(movecmbfun), shape_handler(shapefun),
-	chunk_handler(cfun), npc_handler(npcfun), face_handler(0),
+	chunk_handler(cfun), npc_handler(npcfun), face_handler(nullptr),
 	combo_handler(combfun), drag_id(-1) {
 	std::memset(&data, 0, sizeof(data));
 	m_cRef = 1;
@@ -59,9 +59,9 @@ Windnd::Windnd(
 Windnd::Windnd(HWND hgwnd, Drop_shape_handler_fun shapefun,
                Drop_chunk_handler_fun cfun, Drop_shape_handler_fun ffun, void *d
               )
-	: gamewin(hgwnd), udata(d), move_shape_handler(0), move_combo_handler(0),
+	: gamewin(hgwnd), udata(d), move_shape_handler(nullptr), move_combo_handler(nullptr),
 	  shape_handler(shapefun), chunk_handler(cfun),
-	  face_handler(ffun), combo_handler(0), drag_id(-1) {
+	  face_handler(ffun), combo_handler(nullptr), drag_id(-1) {
 	std::memset(&data, 0, sizeof(data));
 	m_cRef = 1;
 }
@@ -245,7 +245,7 @@ Windnd::Drop(IDataObject *pDataObject,
 	} else if (id == U7_TARGET_NPCID) {
 		int npcnum;
 		Get_u7_npcid(wdd.get_data(), npcnum);
-		if (npc_handler) (*npc_handler)(npcnum, pnt.x, pnt.y, 0);
+		if (npc_handler) (*npc_handler)(npcnum, pnt.x, pnt.y, nullptr);
 	} else if (id == U7_TARGET_CHUNKID) {
 		int chunknum;
 		Get_u7_chunkid(wdd.get_data(), chunknum);
@@ -282,7 +282,7 @@ bool Windnd::is_valid(IDataObject *pDataObject) {
 Windropsource::Windropsource(HBITMAP pdrag_bitmap, int x0, int y0)
 	: drag_bitmap(pdrag_bitmap) {
 	m_cRef = 1;
-	drag_shape = 0;
+	drag_shape = nullptr;
 
 #if 0
 	// doesn't work yet
@@ -377,7 +377,7 @@ Windropsource::GiveFeedback(
 Winstudioobj::Winstudioobj(windragdata pdata)
 	: data(pdata) {
 	m_cRef = 1;
-	drag_image = 0;
+	drag_image = nullptr;
 }
 
 Winstudioobj::~Winstudioobj() {

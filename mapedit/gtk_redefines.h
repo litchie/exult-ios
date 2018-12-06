@@ -97,4 +97,21 @@ inline T1 *gtk_cast(T2 *obj) {
 #define g_utf8_next_char(p)   ((p) + g_utf8_skip[*reinterpret_cast<const guchar *>((p))])
 #endif /* g_utf8_next_char */
 
+#ifdef G_LOG_DOMAIN
+#  undef G_LOG_DOMAIN
+#  define G_LOG_DOMAIN    nullptr
+#endif
+
+#ifdef	gtk_signal_connect
+#  undef gtk_signal_connect
+#  define gtk_signal_connect(object,name,func,func_data)                                 \
+    gtk_signal_connect_full((object), (name), (func), nullptr, (func_data), nullptr, 0, 0)
+#endif
+
+#ifdef gtk_signal_connect_object
+#undef gtk_signal_connect_object
+#  define gtk_signal_connect_object(object,name,func,slot_object)                        \
+    gtk_signal_connect_full ((object), (name), (func), nullptr, (slot_object), nullptr, 1, 0)
+#endif
+
 #endif

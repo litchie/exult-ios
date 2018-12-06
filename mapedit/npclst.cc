@@ -352,7 +352,7 @@ gint Npc_chooser::win32_drag_motion(
 		POINT pnt;
 		GetCursorPos(&pnt);
 
-		Windropsource idsrc(0, pnt.x, pnt.y);
+		Windropsource idsrc(nullptr, pnt.x, pnt.y);
 		LPDATAOBJECT idobj = (LPDATAOBJECT) new Winstudioobj(wdata);
 		DWORD dndout;
 

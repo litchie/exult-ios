@@ -98,7 +98,7 @@ static bool Gen_font_shape_win32(
 		// Get each glyph.
 		GLYPHMETRICS metrics;
 
-		unsigned int buffsize = GetGlyphOutline(dc, chr, GGO_BITMAP, &metrics, 0, 0, &matrix);
+		unsigned int buffsize = GetGlyphOutline(dc, chr, GGO_BITMAP, &metrics, 0, nullptr, &matrix);
 		int offset = 0;     // Starting row, col.
 
 		if (buffsize == GDI_ERROR || buffsize == 0) {
@@ -197,7 +197,7 @@ static bool Gen_font_shape_win32(
 ) {
 	HDC dc = CreateCompatibleDC(nullptr);
 
-	HFONT font = 0;
+	HFONT font = nullptr;
 
 	LOGFONT logfont;
 
@@ -215,27 +215,27 @@ static bool Gen_font_shape_win32(
 	logfont.lfQuality = DEFAULT_QUALITY;
 	logfont.lfPitchAndFamily = DEFAULT_PITCH;
 
-	if (font == 0 && stylename) {
+	if (font == nullptr && stylename) {
 		snprintf(logfont.lfFaceName, LF_FACESIZE - 1, "%s %s", famname, stylename);
 		logfont.lfFaceName[LF_FACESIZE - 1] = 0;
 
 		if (!EnumFontFamilies(dc, logfont.lfFaceName, (FONTENUMPROC)&EnumFontFamProc, 0))
 			font = CreateFontIndirect(&logfont);
 	}
-	if (font == 0 && stylename) {
+	if (font == nullptr && stylename) {
 		snprintf(logfont.lfFaceName, LF_FACESIZE - 1, "%s%s", famname, stylename);
 		logfont.lfFaceName[LF_FACESIZE - 1] = 0;
 		if (!EnumFontFamilies(dc, logfont.lfFaceName, (FONTENUMPROC)&EnumFontFamProc, 0))
 			font = CreateFontIndirect(&logfont);
 	}
-	if (font  == 0) {
+	if (font  == nullptr) {
 		strncpy(logfont.lfFaceName, famname, LF_FACESIZE - 1);
 		logfont.lfFaceName[LF_FACESIZE - 1] = 0;
 		if (!EnumFontFamilies(dc, logfont.lfFaceName, (FONTENUMPROC)&EnumFontFamProc, (LPARAM)stylename))
 			font = CreateFontIndirect(&logfont);
 	}
 
-	if (font == 0) {
+	if (font == nullptr) {
 		DeleteDC(dc);
 		return false;
 	}
@@ -293,7 +293,7 @@ bool Gen_font_shape(
 
 		// Try to get windows to load it for us
 #if defined(WIN32) && defined(USE_WIN32_FONTGEN)
-		return Gen_font_shape_win32(shape, fontfile, 0, nframes, pixels_ht, fg, bg, shadow);
+		return Gen_font_shape_win32(shape, fontfile, nullptr, nframes, pixels_ht, fg, bg, shadow);
 #else
 		return false;
 #endif
@@ -301,12 +301,12 @@ bool Gen_font_shape(
 
 #if defined(WIN32) && defined(USE_WIN32_FONTGEN)
 	static HANDLE(WINAPI * AddFontResourceExA)(LPCSTR, DWORD, PVOID);
-	if (AddFontResourceExA == 0) {
+	if (AddFontResourceExA == nullptr) {
 		AddFontResourceExA = (HANDLE(WINAPI *)(LPCSTR, DWORD, PVOID))
 		                     GetProcAddress(LoadLibrary("GDI32"), "AddFontResourceExA");
 
 	}
-	if (AddFontResourceExA && AddFontResourceExA(fontfile, FR_PRIVATE, 0) != 0) {
+	if (AddFontResourceExA && AddFontResourceExA(fontfile, FR_PRIVATE, nullptr) != nullptr) {
 		//if (face->family_name) MessageBox(nullptr,face->family_name,"face->family_name",MB_OK);
 		//if (face->style_name) MessageBox(nullptr,face->style_name,"face->style_name",MB_OK);
 		if (Gen_font_shape_win32(shape, face->family_name, face->style_name, nframes, pixels_ht, fg, bg, shadow)) {

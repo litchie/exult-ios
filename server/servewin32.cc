@@ -170,7 +170,7 @@ bool try_connect_to_client(const char *path) {
 	TIMEVAL tv;
 	tv.tv_sec = 0;
 	tv.tv_usec = 20000;
-	if (!select(0, &rfds, 0, 0, &tv)) return false;
+	if (!select(0, &rfds, nullptr, nullptr, &tv)) return false;
 
 	// Does accept
 	gDataSocket = accept(gServerSocket, nullptr, nullptr);
@@ -256,7 +256,7 @@ int peek_pipe() {
 	TIMEVAL tv;
 	tv.tv_sec = 0;
 	tv.tv_usec = 20000;
-	if (select(0, &rfds, 0, 0, &tv)) {
+	if (select(0, &rfds, nullptr, nullptr, &tv)) {
 		char c;
 		int to_get = recv(gDataSocket, &c, 1, MSG_PEEK);
 		if (to_get == 0 || to_get == SOCKET_ERROR) {

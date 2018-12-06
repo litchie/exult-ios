@@ -40,8 +40,8 @@ using std::endl;
 #include <cstdlib>
 
 WindowsMidiDriver::WindowsMidiDriver() : 
-	LowLevelMidiDriver(), dev_num(-1), midi_port(0), 
-	_streamBuffer(0), _streamBufferSize(0), _streamEvent(0)
+	LowLevelMidiDriver(), dev_num(-1), midi_port(nullptr),
+	_streamBuffer(nullptr), _streamBufferSize(0), _streamEvent(nullptr)
 {
 #ifdef WIN32_USE_DUAL_MIDIDRIVERS
 	midi_port2 = 0;
@@ -126,7 +126,7 @@ int WindowsMidiDriver::open()
 	{
 		perr << "Error: Unable to open win32 midi device" << endl;
 		CloseHandle(_streamEvent);
-		_streamEvent = 0;
+		_streamEvent = nullptr;
 		return 1;
 	}
 
@@ -143,11 +143,11 @@ void WindowsMidiDriver::close()
 	midi_port2 = 0;
 #endif
 	midiOutClose(midi_port);
-	midi_port = 0;
+	midi_port = nullptr;
 	CloseHandle(_streamEvent);
-	_streamEvent = 0;
+	_streamEvent = nullptr;
 	delete [] _streamBuffer;
-	_streamBuffer = 0;
+	_streamBuffer = nullptr;
 	_streamBufferSize = 0;
 }
 
