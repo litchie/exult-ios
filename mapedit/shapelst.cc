@@ -27,7 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #ifdef WIN32
-#include "Windrag.h"
+#include "windrag.h"
 #include <windows.h>
 #endif
 
