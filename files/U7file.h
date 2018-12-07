@@ -130,7 +130,7 @@ public:
 		}
 	}
 	/// This destructor simply closes the file.
-	~U7DataFile() override final {}
+	~U7DataFile() final {}
 };
 
 /**
@@ -176,7 +176,7 @@ public:
 		this->index_file();
 	}
 	/// This destructor simply deletes the buffer if non-null.
-	~U7DataBuffer() override final {}
+	~U7DataBuffer() final {}
 };
 
 // Not yet.

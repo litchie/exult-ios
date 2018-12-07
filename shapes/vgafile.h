@@ -229,7 +229,7 @@ public:
 	Shape_file();
 	Shape_file(Shape_file&& other) noexcept = default;
 	Shape_file& operator=(Shape_file&& other) noexcept = default;
-	~Shape_file() noexcept override final = default;
+	~Shape_file() noexcept final = default;
 	void load(const char *nm);
 	void load(IDataSource *shape_source) {
 		Shape::load(shape_source);

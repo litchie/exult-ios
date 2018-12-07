@@ -96,50 +96,50 @@ public:
 	IStreamDataSource& operator=(IStreamDataSource&&) noexcept = default;
 	~IStreamDataSource() noexcept override = default;
 
-	uint32 peek() override final {
+	uint32 peek() final {
 		return in->peek();
 	}
 
-	uint32 read1() override final {
+	uint32 read1() final {
 		return Read1(in);
 	}
 
-	uint16 read2() override final {
+	uint16 read2() final {
 		return Read2(in);
 	}
 
-	uint16 read2high() override final {
+	uint16 read2high() final {
 		return Read2high(in);
 	}
 
-	uint32 read4() override final {
+	uint32 read4() final {
 		return Read4(in);
 	}
 
-	uint32 read4high() override final {
+	uint32 read4high() final {
 		return Read4high(in);
 	}
 
-	void read(void *b, size_t len) override final {
+	void read(void *b, size_t len) final {
 		in->read(static_cast<char *>(b), len);
 	}
 
-	void read(std::string& s, size_t len) override final {
+	void read(std::string& s, size_t len) final {
 		s.resize(len);
 		in->read(&s[0], len);
 	}
 
-	std::unique_ptr<IDataSource> makeSource(size_t len) override final;
+	std::unique_ptr<IDataSource> makeSource(size_t len) final;
 
-	void seek(size_t pos) override final {
+	void seek(size_t pos) final {
 		in->seekg(pos);
 	}
 
-	void skip(std::streamoff pos) override final {
+	void skip(std::streamoff pos) final {
 		in->seekg(pos, std::ios::cur);
 	}
 
-	size_t getSize() override final {
+	size_t getSize() final {
 		size_t pos = in->tellg();
 		in->seekg(0, std::ios::end);
 		size_t len = in->tellg();
@@ -147,17 +147,17 @@ public:
 		return len;
 	}
 
-	size_t getPos() override final {
+	size_t getPos() final {
 		return in->tellg();
 	}
 
-	bool eof() override final {
+	bool eof() final {
 		return in->eof();
 	}
-	bool good() override final {
+	bool good() final {
 		return in->good();
 	}
-	void clear_error() override final {
+	void clear_error() final {
 		in->clear();
 	}
 };
@@ -193,7 +193,7 @@ public:
 		return *this;
 	}
 
-	~IFileDataSource() override final {
+	~IFileDataSource() final {
 		delete in;
 	}
 };
@@ -218,55 +218,55 @@ public:
 	IBufferDataView& operator=(IBufferDataView&&) noexcept = default;
 	~IBufferDataView() noexcept override = default;
 
-	uint32 peek() override final {
+	uint32 peek() final {
 		return *buf_ptr;
 	}
 
-	uint32 read1() override final {
+	uint32 read1() final {
 		return Read1(buf_ptr);
 	}
 
-	uint16 read2() override final {
+	uint16 read2() final {
 		return Read2(buf_ptr);
 	}
 
-	uint16 read2high() override final {
+	uint16 read2high() final {
 		return Read2high(buf_ptr);
 	}
 
-	uint32 read4() override final {
+	uint32 read4() final {
 		return Read4(buf_ptr);
 	}
 
-	uint32 read4high() override final {
+	uint32 read4high() final {
 		return Read4high(buf_ptr);
 	}
 
-	void read(void *b, size_t len) override final {
+	void read(void *b, size_t len) final {
 		std::memcpy(b, buf_ptr, len);
 		buf_ptr += len;
 	}
 
-	void read(std::string& s, size_t len) override final {
+	void read(std::string& s, size_t len) final {
 		s = std::string(reinterpret_cast<const char *>(buf_ptr), len);
 		buf_ptr += len;
 	}
 
-	std::unique_ptr<IDataSource> makeSource(size_t len) override final;
+	std::unique_ptr<IDataSource> makeSource(size_t len) final;
 
-	void seek(size_t pos) override final {
+	void seek(size_t pos) final {
 		buf_ptr = buf + pos;
 	}
 
-	void skip(std::streamoff pos) override final {
+	void skip(std::streamoff pos) final {
 		buf_ptr += pos;
 	}
 
-	size_t getSize() override final {
+	size_t getSize() final {
 		return size;
 	}
 
-	size_t getPos() override final {
+	size_t getPos() final {
 		return buf_ptr - buf;
 	}
 
@@ -274,11 +274,11 @@ public:
 		return buf_ptr;
 	}
 
-	bool eof() override final {
+	bool eof() final {
 		return buf_ptr >= buf + size;
 	}
 
-	bool good() override final {
+	bool good() final {
 		return buf && size;
 	}
 };
@@ -396,43 +396,43 @@ public:
 	OStreamDataSource& operator=(OStreamDataSource&&) noexcept = default;
 	~OStreamDataSource() noexcept override = default;
 
-	void write1(uint32 val) override final {
+	void write1(uint32 val) final {
 		Write1(out, static_cast<uint16>(val));
 	}
 
-	void write2(uint16 val) override final {
+	void write2(uint16 val) final {
 		Write2(out, val);
 	}
 
-	void write2high(uint16 val) override final {
+	void write2high(uint16 val) final {
 		Write2high(out, val);
 	}
 
-	void write4(uint32 val) override final {
+	void write4(uint32 val) final {
 		Write4(out, val);
 	}
 
-	void write4high(uint32 val) override final {
+	void write4high(uint32 val) final {
 		Write4high(out, val);
 	}
 
-	void write(const void *b, size_t len) override final {
+	void write(const void *b, size_t len) final {
 		out->write(static_cast<const char *>(b), len);
 	}
 
-	void write(const std::string &s) override final {
+	void write(const std::string &s) final {
 		out->write(&s[0], s.size());
 	}
 
-	void seek(size_t pos) override final {
+	void seek(size_t pos) final {
 		out->seekp(pos);
 	}
 
-	void skip(std::streamoff pos) override final {
+	void skip(std::streamoff pos) final {
 		out->seekp(pos, std::ios::cur);
 	}
 
-	size_t getSize() override final {
+	size_t getSize() final {
 		size_t pos = out->tellp();
 		out->seekp(0, std::ios::end);
 		size_t len = out->tellp();
@@ -440,17 +440,17 @@ public:
 		return len;
 	}
 
-	size_t getPos() override final {
+	size_t getPos() final {
 		return out->tellp();
 	}
 
-	void flush() override final {
+	void flush() final {
 		out->flush();
 	}
-	bool good() override final {
+	bool good() final {
 		return out->good();
 	}
-	void clear_error() override final {
+	void clear_error() final {
 		out->clear();
 	}
 };
@@ -484,7 +484,7 @@ public:
 		return *this;
 	}
 
-	~OFileDataSource() override final {
+	~OFileDataSource() final {
 		delete out;
 	}
 };
@@ -509,48 +509,48 @@ public:
 	OBufferDataSpan& operator=(OBufferDataSpan&&) noexcept = default;
 	~OBufferDataSpan() noexcept override = default;
 
-	void write1(uint32 val) override final {
+	void write1(uint32 val) final {
 		Write1(buf_ptr, val);
 	}
 
-	void write2(uint16 val) override final {
+	void write2(uint16 val) final {
 		Write2(buf_ptr, val);
 	}
 
-	void write2high(uint16 val) override final {
+	void write2high(uint16 val) final {
 		Write2high(buf_ptr, val);
 	}
 
-	void write4(uint32 val) override final {
+	void write4(uint32 val) final {
 		Write4(buf_ptr, val);
 	}
 
-	void write4high(uint32 val) override final {
+	void write4high(uint32 val) final {
 		Write4high(buf_ptr, val);
 	}
 
-	void write(const void *b, size_t len) override final {
+	void write(const void *b, size_t len) final {
 		std::memcpy(buf_ptr, b, len);
 		buf_ptr += len;
 	}
 
-	void write(const std::string &s) override final {
+	void write(const std::string &s) final {
 		write(&s[0], s.size());
 	}
 
-	void seek(size_t pos) override final {
+	void seek(size_t pos) final {
 		buf_ptr = buf + pos;
 	}
 
-	void skip(std::streamoff pos) override final {
+	void skip(std::streamoff pos) final {
 		buf_ptr += pos;
 	}
 
-	size_t getSize() override final {
+	size_t getSize() final {
 		return size;
 	}
 
-	size_t getPos() override final {
+	size_t getPos() final {
 		return buf_ptr - buf;
 	}
 
@@ -583,7 +583,7 @@ public:
 	OBufferDataSource(OBufferDataSource&& other) noexcept = default;
 	OBufferDataSource& operator=(OBufferDataSource&& other) noexcept = default;
 
-	~OBufferDataSource() override final = default;
+	~OBufferDataSource() final = default;
 };
 
 #endif
