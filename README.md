@@ -1,4 +1,5 @@
-[![Build Status](https://www.travis-ci.org/exult/exult.svg?branch=master)](https://www.travis-ci.org/exult/exult)
+[![License: GPL v2](https://img.shields.io/badge/License-GPL%20v2-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
+[![Travis CI Build Status](https://img.shields.io/travis/exult/exult/master.svg?label=Travis+CI+Build)](https://www.travis-ci.org/exult/exult)
 [![Coverity Scan Build Status](https://scan.coverity.com/projects/10872/badge.svg)](https://scan.coverity.com/projects/exult-exult)
 [![CodeFactor](https://www.codefactor.io/repository/github/exult/exult/badge)](https://www.codefactor.io/repository/github/exult/exult)
 
