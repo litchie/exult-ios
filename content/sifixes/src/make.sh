@@ -12,7 +12,7 @@ do
 	if [[ -e "graphics/$f.in" ]] ; then
 		echo "Generating $f..."
 		expack -i graphics/$f.in
-		rm ../data/$f\_*.h
+		rm ../data/${f}_*.h
 	fi
 done
 
