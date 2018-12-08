@@ -515,7 +515,7 @@ void ExultStudio::setup_groups(
 	                         glade_xml_get_widget(app_xml, "group_list"));
 	GtkTreeModel *oldmod = gtk_tree_view_get_model(tview);
 	GtkTreeStore *model;
-	gulong addsig = 0, delsig = 0, chgsig = 0;
+	uintptr addsig = 0, delsig = 0, chgsig = 0;
 	if (!oldmod) {          // Create model first time.
 		model = gtk_tree_store_new(GRP_NUM_COLUMNS,
 		                           G_TYPE_STRING, G_TYPE_POINTER);
@@ -547,17 +547,17 @@ void ExultStudio::setup_groups(
 		                  reinterpret_cast<gpointer>(delsig));
 	} else {
 		model = GTK_TREE_STORE(oldmod);
-		addsig = reinterpret_cast<gulong>(g_object_get_data(G_OBJECT(model),
+		addsig = reinterpret_cast<uintptr>(g_object_get_data(G_OBJECT(model),
 		                                    "row-inserted"));
-		delsig = reinterpret_cast<gulong>(g_object_get_data(G_OBJECT(model),
+		delsig = reinterpret_cast<uintptr>(g_object_get_data(G_OBJECT(model),
 		                                    "row-deleted"));
-		chgsig = reinterpret_cast<gulong>(g_object_get_data(G_OBJECT(model),
+		chgsig = reinterpret_cast<uintptr>(g_object_get_data(G_OBJECT(model),
 		                                    "row-changed"));
 	}
 	// Block this signal during creation.
-	g_signal_handler_block(model, addsig);
-	g_signal_handler_block(model, delsig);
-	g_signal_handler_block(model, chgsig);
+	g_signal_handler_block(model, static_cast<gulong>(addsig));
+	g_signal_handler_block(model, static_cast<gulong>(delsig));
+	g_signal_handler_block(model, static_cast<gulong>(chgsig));
 	gtk_tree_store_clear(model);
 	set_visible("groups_frame", TRUE);
 	// Show builtins for shapes.vga.
