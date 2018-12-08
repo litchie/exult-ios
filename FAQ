@@ -1,5 +1,5 @@
 Exult F.A.Q. (frequently asked questions)
-last changed: 13 March 2016(GMT)
+last changed: 08 December 2018(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/faq.php
 
@@ -18,7 +18,8 @@ The latest version of this document can be found at http://exult.sourceforge.net
 1.11. How do I compile a source code snapshot for my OS?
 1.12. What is the latest version of Exult?
 1.13. On what platform does Exult run?
-1.14. Will there be a port of Exult for <insert platform here>?
+1.14. Platforms Exult used to run on
+1.15. Will there be a port of Exult for <insert platform here>?
 
 2. Exult and Ultima 7
 2.1. Do I need Ultima 7?
@@ -55,9 +56,8 @@ The latest version of this document can be found at http://exult.sourceforge.net
 4.3. Broken by Design
 4.4. Known Issues
 4.5. Known Compile Issues
-4.6. Problems with Windows 9x
-4.7. Problems with Mac OS X
-4.8. Why do I hear strange, noisy effects in Linux?
+4.6. Problems with Mac OS X
+4.7. Why do I hear strange, noisy effects in Linux?
 
 5. Gameplay FAQ
 5.1. Why is there a gameplay FAQ?
@@ -94,32 +94,33 @@ The latest version of this document can be found at http://exult.sourceforge.net
 7.2. Thanks
 
 8. Changes to the FAQ
-8.1. - 13 March 2016
-8.2. - 19 March 2015
-8.3. - 17 July 2014
-8.4. - 21 April 2014
-8.5. - 21 November 2013
-8.6. - 28 October 2012
-8.7. - 01 December 2011
-8.8. - 19 February 2011
-8.9. - 19 January 2011
-8.10. - 18 December 2010
-8.11. - 13 October 2010
-8.12. - 23 August 2010
-8.13. - 15 August 2010
-8.14. - 12 March 2010
-8.15. - 10 March 2010
-8.16. - 16 July 2009
-8.17. - 03 June 2009
-8.18. - 20 May 2009
-8.19. - 30 April 2009
-8.20. - 21 October 2007
-8.21. - 08 April 2006
-8.22. - 04 October 2004
-8.23. - 14 August 2004
-8.24. - 23 May 2004
-8.25. - 27 January 2004
-8.26. - 12 December 2003
+8.1. - 08 December 2018
+8.2. - 13 March 2016
+8.3. - 19 March 2015
+8.4. - 17 July 2014
+8.5. - 21 April 2014
+8.6. - 21 November 2013
+8.7. - 28 October 2012
+8.8. - 01 December 2011
+8.9. - 19 February 2011
+8.10. - 19 January 2011
+8.11. - 18 December 2010
+8.12. - 13 October 2010
+8.13. - 23 August 2010
+8.14. - 15 August 2010
+8.15. - 12 March 2010
+8.16. - 10 March 2010
+8.17. - 16 July 2009
+8.18. - 03 June 2009
+8.19. - 20 May 2009
+8.20. - 30 April 2009
+8.21. - 21 October 2007
+8.22. - 08 April 2006
+8.23. - 04 October 2004
+8.24. - 14 August 2004
+8.25. - 23 May 2004
+8.26. - 27 January 2004
+8.27. - 12 December 2003
 
 
 --------------------------------------------------------------------------------
@@ -170,7 +171,7 @@ Note however that Exult is open source. If you want a multiplayer U7 no one hold
 
 
 1.9. Where do I find Exult?
-The latest official version is found on http://exult.sourceforge.net/ The source code of Exult is hosted on GitHub's GIT server which you can browse and download at https://github.com/exult. Daily snapshots (by Travis Howell) of the Windows binary and of the GIT master can be found at http://exult.sourceforge.net/download.php. Dominus provides snapshots for OS X 10.4 and upwards whenever he manages to at http://exult.sourceforge.net/download.php. Paulo started a PPA for Ubuntu at https://launchpad.net/~exult-team/+archive/exult-daily.
+The latest official version is found on http://exult.sourceforge.net/ The source code of Exult is hosted on GitHub's GIT server which you can browse and download at https://github.com/exult. Daily snapshots (by Travis Howell) of the Windows binary and of the GIT master can be found at http://exult.sourceforge.net/download.php. Dominus provides snapshots for OS X 10.7 and upwards whenever he manages to at http://exult.sourceforge.net/download.php. Paulo started a PPA for Ubuntu at https://launchpad.net/~exult-team/+archive/exult-daily.
 To use the PPA for Ubuntu folllow these steps in terminal: $ sudo apt-add-repository ppa:exult-team/exult-daily #Adds the repository - you will be required to accept the key file. Just press 'Enter' $ sudo apt-get update #Updates your cache. $ sudo apt-get install exult exult-audiopack #Installs Exult itself and audio files
 
 
@@ -190,20 +191,27 @@ At the moment we recommend that people use the latest snapshot rather than our l
 
 
 1.13. On what platform does Exult run?
-Exult should be able to be compiled (with minor modifications) on any platform that SDL supports. Right now the source can be compiled in Linux, Mac OS X, OpenBSD, FreeBSD, and Windows (Windows 9x/ME/NT4/2000/XP/Vista/7).
+Exult should be able to be compiled (with minor modifications) on any platform that SDL supports. Right now the source can be compiled in Linux, Mac OS X, OpenBSD, FreeBSD, and Windows (XP/Vista/7, 10).
 * iOS (iPhone and iPad) After initial porting by our member Lanica Dragon, Chaoji Li (aka Litchie) successfully ported Exult to iOS. On the iPad Exult really shines and is very enjoyable. However Ultima VII's item management makes it much harder to use on the smaller iPhone screens. To follow Chaoji's progress go to https://github.com/litchie/exult-ios.
-* Android, Java Jeff, Dr.Code, is currently porting Exult to Android by rewriting it in Java. If you want to follow the progress of the port take a look at our forum.
+* Android, Java Jeff, Dr.Code, is started porting Exult to Android by rewriting it in Java. If you want to follow the progress of the port take a look at our forum.
 * Android, native KenC ported Exult directly to Android, without rewriting it in Java. He has posted about it in our forum.
+
+
+
+1.14. Platforms Exult used to run on
+Exult used to run on many more platforms but these are mostly devices and operating systems that have not been in use for ages now. Support for these has been removed from the Exult source to streamline our code. Or the 3rd party ports have been inactive for years.
+* Windows 9X, 2k Since we needed to go forward with our code we decided to no longer support the old Windows versions.
 * Zaurus Artaxerxes developed the port to Zaurus, a Linux/ARM based PDA. It is already fully playable (Artaxerxes played through SI). Pictures of the Zaurus running SI can be found at http://exult.sourceforge.net/images/screenshots/zaurus/ and an IPK package at http://exult.sourceforge.net/download.php.
 * PocketPC Lanica Dragon successfully ported Exult to the PocketPC and made snapshots available on our download page
+* Amiga/MorphOS Ruediger Hanke's ported Exult to MorphOS and AmigaOS. Unfortunately the port has been abandoned for quite some time now. But you can only find the archived homepage for this port at http://web.archive.org/web/20070927190600/http://www.muenster.de/~tomjoad/exult.html. Unfortunately the download is no longer available.
 * Dingoo Exult has been ported to Dingoo (see our forum and this Announcement) by SiENcE.
 * Sony PSP Phantom Fighter ported Exult 1.2 to Sony PSP
 * XBox 360 And Cancerous1 is in the progress of porting Exult to XBox 360.
 
-A long time ago Exult used to compile on MacOS 8.5 (or higher), Solaris and BeOS. We have no idea if this is still the case.
+A long time ago Exult used to compile on MacOS 8.5 (or higher), Solaris and BeOS.
 
 
-1.14. Will there be a port of Exult for <insert platform here>?
+1.15. Will there be a port of Exult for <insert platform here>?
 That depends on a great many things. For one, it requires a developer that (1) has the necessary free time, (2) the necessary knowledge about programming for the platform in question, (3) the necessary motivation to do the port and (4) access to the platform in question. Any of the Exult developers may lack one or more of the items above, but it will probably the fourth (and, by consequence, the third) item. This is likely fatal for the port: programming using an emulator (if one is even available) may result in a port that works on the emulator but not on the original (unless the emulator is that good), and programming without any access at all to the platform in question is a pointless and frustrating exercise in futility.
 Moreover, some platforms might require U7 and/or SI to come bundled with Exult; that alone would disqualify any official builds for legal reasons.
 
@@ -272,11 +280,9 @@ Please be aware that if you play by using a walkthrough you may accidentaly skip
 You can find exult.cfg in specific directories:
 * On UNIX systems you can expect to find it in $HOME/.exult.cfg
 * Mac OS X saves it to ~/Library/Preferences/exult.cfg
-* Windows 95, 98, 98 SE and NT4.0 save the exult.cfg to the folder where you installed Exult to (by default C:\Program Files\Exult)
-* Windows ME saves exult.cfg to C:\Windows\Application Data\Exult
-* Windows 2000 and XP save exult.cfg to LOCAL_APPDATA\Exult, which translates to C:\Documents and Settings\YourUsername\Local Settings\Application Data\Exult for an English version of Windows
+* Windows XP save exult.cfg to LOCAL_APPDATA\Exult, which translates to C:\Documents and Settings\YourUsername\Local Settings\Application Data\Exult for an English version of Windows
 * Windows Vista, 7 and newer Windows versions also save exult.cfg to LOCAL_APPDATA\Exult, but on these this translates to "C:\Users\YourUsername\AppData\Local\Exult"
-* On Windows 2000, XP, Vista, 7 and newer you can quickly access this folder by executing "shell:Local AppData\Exult" in the "Run" entry of the Startmenu (or the "Run or Search" entry of the Windows Vista and 7 Startmenu)
+* On Windows XP, Vista, 7 and newer you can quickly access this folder by executing "shell:Local AppData\Exult" in the "Run" entry of the Startmenu (or the "Run or Search" entry of the Windows Vista and 7 Startmenu)
 
 
 
@@ -421,7 +427,6 @@ Exult often behaves and works differently than the original Ultima 7. These beha
 * Movement is sometimes jerky or slow.
 * If you run a resolution higher than the original (320x200) some NPCs that are further away from the Avatar may seem to disappear and reappear when you get away or closer to them.
 * With scalers enabled you might encounter slow downs of the game.
-* Nvidia 40.x reference drivers have issues with all SDL based programs. Use either a later or earlier version of the Nvidia reference drivers. If you are still using these drivers you should really update.
 
 
 
@@ -432,21 +437,12 @@ Exult often behaves and works differently than the original Ultima 7. These beha
 
 
 
-4.6. Problems with Windows 9x
-All Windows 9x versions (95, 98, 98SE, Millennium Edition) have had problems with the 1.4x snapshot versions of Exult, all of which are caused by the SDL library. At the moment we do not know for sure whether these bugs still occur with the version 1.4.9 RC1.
-* Some users have reported problems when using Exult in fullscreen mode. Either it crashed or was unplayable.
-* There are reported problems with digital sound effects or speech when using Vortex series sound cards (like the Diamond MX 300). Exult is triggering a bug in the drivers.
-* There is also a problem involving C-Media sound card chipsets and MIDI music. We suggest you first upgrade your drivers to the newest ones. Get them at http://www.cmedia.com.tw/. If that doesn't help, please contact us.
-
-To fix these problems open notepad and write the following in there: SET SDL_VIDEODRIVER=directx SET SDL_AUDIODRIVER=waveout exult.exe Save this text file to your Exult folder with the name runexult.bat. When you want to play Exult double click this file and it should play fine. Be aware that when you have no problem with the audio of Exult you don't need the SET SDL_AUDIODRIVER=waveout line and vice versa, if you only have problems with the Audio and not with fullscreen, you don't need the SET SDL_VIDEODRIVER=directx line.
-
-
-4.7. Problems with Mac OS X
+4.6. Problems with Mac OS X
 On OS X something in our audio code might crash Exult unexpectedly. For example the famous scene in SI with Frigidazi has been reported as a trigger. To circumvent this disable all audio before a scene that crashes and enable it later on in the game.
 This should be fixed since the 1.2 version but we are not sure, so if you still experience this with later versions, please notify us!
 
 
-4.8. Why do I hear strange, noisy effects in Linux?
+4.7. Why do I hear strange, noisy effects in Linux?
 This is due to a bug with OSS. We advice installing ALSA. Please read this chapter in the ReadMe.txt for a little more extensive explanation.
 
 
@@ -611,12 +607,20 @@ Thanks go to Matt0 who really got me thinking about doing this FAQ (though he ju
 --------------------------------------------------------------------------------
 
 8. Changes to the FAQ
-8.1. - 13 March 2016
+8.1. - 08 December 2018
+* 1.14. Platforms Exult used to run on added as we removed some ports from source.
+* 3.2. Where do I find the configuration file? old Windows versions references deleted.
+* 4.4. Known Issues old issue with Nvidia 40.x reference drivers removed.
+* "Problems with Windows 9x" removed.
+
+
+
+8.2. - 13 March 2016
 * 1.9. Where do I find Exult? Switched to GIT on GitHub.
 
 
 
-8.2. - 19 March 2015
+8.3. - 19 March 2015
 * 1.5. Does Origin or EA support Exult? Origin is long gone.
 * 1.13. On what platform does Exult run? added the iOS port and moved the PocketPC mention in there.
 * 3.2. Where do I find the configuration file? there are newer Windows versions.
@@ -625,17 +629,17 @@ Thanks go to Matt0 who really got me thinking about doing this FAQ (though he ju
 
 
 
-8.3. - 17 July 2014
+8.4. - 17 July 2014
 * Fixed links to our bug tracker.
 
 
 
-8.4. - 21 April 2014
+8.5. - 21 April 2014
 * 5.24. Left or right on the Altar of Discipline (SI-SS) the altar is now bug free.
 
 
 
-8.5. - 21 November 2013
+8.6. - 21 November 2013
 * 1.9. Where do I find Exult? added the Ubuntu PPA and deleted the PocketPC one.
 * 1.12. What is the latest version of Exult? use snapshots rather than release.
 * 4.2. How do I submit a proper bug report? some little changes since the tracker changed.
@@ -643,30 +647,30 @@ Thanks go to Matt0 who really got me thinking about doing this FAQ (though he ju
 
 
 
-8.6. - 28 October 2012
+8.7. - 28 October 2012
 * 2.8. Where do I find Ultima 7 on the net to download? at GOG.com.
 * 3.17. Are there patches or Mods for Exult link to the Ultima 6 remake added.
 
 
 
-8.7. - 01 December 2011
+8.8. - 01 December 2011
 * 1.9. Where do I find Exult? Link to our SVN added.
 
 
 
-8.8. - 19 February 2011
+8.9. - 19 February 2011
 * 1.13. On what platform does Exult run? added native Android port and restructured it.
 
 
 
-8.9. - 19 January 2011
+8.10. - 19 January 2011
 * 8. Changes to the FAQ moved to the bottom.
 * 1.13. On what platform does Exult run? news about ports for Android, Dingoo, XBox 360 and PSP.
 * 3.3. I updated Exult to the new version. Where have my savegames gone? added hint about copying the saves to the new location.
 
 
 
-8.10. - 18 December 2010
+8.11. - 18 December 2010
 * 1.1. Exult Version back to snapshot.
 * 3.3. I updated Exult to the new version. Where have my savegames gone? since 1.4.9rc1 savegames location changed.
 * 3.9. Why can't I hear the speech in the intro? if introsnd.dat becomes corrupt.
@@ -675,7 +679,7 @@ Thanks go to Matt0 who really got me thinking about doing this FAQ (though he ju
 
 
 
-8.11. - 13 October 2010
+8.12. - 13 October 2010
 * 1.1. Exult Version new official version.
 * 1.10. What is a snapshot? Are these screenshots or what? this FAQis not mainly about the snapshot atm.
 * 1.12. What is the latest version of Exult? 1.4.9 RC1 is the latest version and we recommend this one.
@@ -685,7 +689,7 @@ Thanks go to Matt0 who really got me thinking about doing this FAQ (though he ju
 
 
 
-8.12. - 23 August 2010
+8.13. - 23 August 2010
 * 1.12. What is the latest version of Exult? better use the snapshots than the ooooold version.
 * 2.2. Does Exult work on all versions of the game? cleaned up a bit.
 * 3.5. Why is the party formation different? Recently was a couple of years ago.
@@ -695,39 +699,39 @@ Thanks go to Matt0 who really got me thinking about doing this FAQ (though he ju
 
 
 
-8.13. - 15 August 2010
+8.14. - 15 August 2010
 * 1.9. Where do I find Exult? also OS X snapshots available.
 * 1.13. On what platform does Exult run? The Amiga port homepage is only available in the Wayback Machine these days.
 * 4.2. How do I submit a proper bug report? name and location of log files.
 * 1.1. workaround added.
-* 4.7. Problems with Mac OS X should be fixed but if not we need to know.
+* 4.6. Problems with Mac OS X should be fixed but if not we need to know.
 
 
 
-8.14. - 12 March 2010
+8.15. - 12 March 2010
 * 1.1. No more 8bit scaler issues.
 
 
 
-8.15. - 10 March 2010
+8.16. - 10 March 2010
 * 3.2. Where do I find the configuration file? On Windows this changed.
 * 1.1. added.
 * 5.14. How to break the game by closing Capt. Hawk's gangplank (SI)? added.
 
 
 
-8.16. - 16 July 2009
+8.17. - 16 July 2009
 * 4.4. Known Issues re-added some things that are fixed in snapshots.
 
 
 
-8.17. - 03 June 2009
+8.18. - 03 June 2009
 * Spell checked the whole FAQ
-* 1.14. Will there be a port of Exult for <insert platform here>? added.
+* 1.15. Will there be a port of Exult for <insert platform here>? added.
 
 
 
-8.18. - 20 May 2009
+8.19. - 20 May 2009
 * 1.1. Exult Version leveled up.
 * 2.3. Can you play through U7 yet? yes you can.
 * 2.4. How about Serpent Isle? has been working for ages.
@@ -743,13 +747,13 @@ Thanks go to Matt0 who really got me thinking about doing this FAQ (though he ju
 * 4.4. Known Issues also cleaned up.
 * 4.5. Known Compile Issues added Ubuntu issue.
 * removed "Not yet implemented" as the only issue is stealing and killing and that is mentioned in 4.4. Known Issues.
-* 4.6. Problems with Windows 9x added and moved the sound issue to that.
-* 4.7. Problems with Mac OS X added because of the audio crashes.
+* 1.1. added and moved the sound issue to that.
+* 4.6. Problems with Mac OS X added because of the audio crashes.
 * 6.1. How can I get answers concerning Ultima 7/Exult? the #exult logs have moved ages ago.
 
 
 
-8.19. - 30 April 2009
+8.20. - 30 April 2009
 * 3.17. Are there patches or Mods for Exult eguides disappeared, but Marzo's Seven Towers takes its place (as well as TFL url fix).
 * 4.4. Known Issues added that we were wrong with spell requirements and costs.
 * 5.3. Why do spells require different reagents than the manual lists (BG+SI)? added.
@@ -757,7 +761,7 @@ Thanks go to Matt0 who really got me thinking about doing this FAQ (though he ju
 
 
 
-8.20. - 21 October 2007
+8.21. - 21 October 2007
 * 1.9. Where do I find Exult? neither the BeOS nor the Amiga port are available anymore, but we do have the PocketPC snapshots.
 * 1.11. How do I compile a source code snapshot for my OS? compile instructions for Linux are in INSTALL.
 * 1.13. On what platform does Exult run? Amiga port is not downloadable.
@@ -768,21 +772,21 @@ Thanks go to Matt0 who really got me thinking about doing this FAQ (though he ju
 
 
 
-8.21. - 08 April 2006
+8.22. - 08 April 2006
 * 3.17. Are there patches or Mods for Exult a list of where to find those.
 * 5.1. Why is there a gameplay FAQ? explained the mark in the questions.
 * 5.10. Why is Alagnar not dead (BG)? a bug that also exists in the original.
 
 
 
-8.22. - 04 October 2004
+8.23. - 04 October 2004
 * 5.1. Why is there a gameplay FAQ? walkthroughs, the source of evil.
 * 5.9. Multiple problems with the tetrahedron generator and prism (BG)? two issues come up from time to time.
 * 5.16. Why won't Pothos take the blood moss and talk about the mad mage (SI)? needed to be added.
 
 
 
-8.23. - 14 August 2004
+8.24. - 14 August 2004
 * 1.3. Is Exult free ? contact us via the forum.
 * 1.7. But isn't Pentagram some kind of Exult for U8? the homepage is actually informative now.
 * 1.1. time to have this answered.
@@ -792,7 +796,7 @@ Thanks go to Matt0 who really got me thinking about doing this FAQ (though he ju
 
 
 
-8.24. - 23 May 2004
+8.25. - 23 May 2004
 * 1.12. What is the latest version of Exult? 1.2 now.
 * 1.4. Do you accept donations? No we don't but SF would be happy.
 * 1.12. What is the latest version of Exult? 1.2 now.
@@ -800,7 +804,7 @@ Thanks go to Matt0 who really got me thinking about doing this FAQ (though he ju
 
 
 
-8.25. - 27 January 2004
+8.26. - 27 January 2004
 * 1.12. What is the latest version of Exult? 1.1.9rc1 now.
 * 4.4. Known Issues Items descriptions in SI-only work now.
 * 5.18. Why won't Xenka speak about sacrifice (SI)? added.
@@ -808,7 +812,7 @@ Thanks go to Matt0 who really got me thinking about doing this FAQ (though he ju
 
 
 
-8.26. - 12 December 2003
+8.27. - 12 December 2003
 * 5.7. Why can't I get the sacrifice in Skara Brae to work (BG)? Stuart told me another workaround.
 * 6.1. How can I get answers concerning Ultima 7/Exult? still used the old invalid address for irc and #exultlog (thanks Lars).
 

@@ -362,7 +362,11 @@
 
 
 <xsl:template match="kbd">
-	<font color="maroon"><kbd><xsl:value-of select="."/></kbd></font>
+	<font color="maroon"><kbd><xsl:apply-templates/></kbd></font>
+</xsl:template>
+
+<xsl:template match="TM">
+	<xsl:text disable-output-escaping="yes">&amp;trade;&amp;nbsp;</xsl:text>
 </xsl:template>
 
 

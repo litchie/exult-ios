@@ -20,7 +20,7 @@
 <xsl:output
 	method="text"
 	indent="no"
-	encoding="iso-8859-1"/>
+	encoding="UTF-8"/>
 
 <!-- Keys -->
 <xsl:key name="sub_ref" match="sub" use="@name"/>
@@ -271,6 +271,9 @@
 	<xsl:text>Pentagram</xsl:text>
 </xsl:template>
 
+<xsl:template match="TM">
+	<xsl:text>™&#160;</xsl:text>
+</xsl:template>
 <!--=======================-->
 <!-- Key Command Templates -->
 <!--=======================-->
