@@ -3,12 +3,6 @@
 
 #if defined(_WIN32) && defined(USE_EXULTSTUDIO)
 
-#ifdef __GNUC__
-// COM sucks.
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wnon-virtual-dtor"
-#endif
-
 #include "u7drag.h"
 #include <ole2.h>
 #include "utils.h"
@@ -89,7 +83,7 @@ public:
 /*
  * The 'IDropTarget' implementation
  */
-class FAR Windnd : public IDropTarget {
+class FAR Windnd final : protected IDropTarget {
 private:
 	HWND gamewin;
 
@@ -165,7 +159,7 @@ public:
  * The IDropSource implementation
  */
 
-class FAR Windropsource :  public IDropSource {
+class FAR Windropsource final : protected IDropSource {
 private:
 	DWORD m_cRef;
 
@@ -189,7 +183,7 @@ public:
 /*
  * The IDataObject implementation
  */
-class FAR Winstudioobj :  public IDataObject {
+class FAR Winstudioobj final : protected IDataObject {
 private:
 	DWORD m_cRef;
 
@@ -236,10 +230,6 @@ public:
 	    IEnumSTATDATA **ppenumAdvise
 	);
 };
-
-#ifdef __GNUC__
-#pragma GCC diagnostic pop
-#endif
 
 #endif
 
