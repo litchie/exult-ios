@@ -106,9 +106,10 @@ void Game_window::restore_flex_files(
 	int baselen = strlen(basepath);
 	for (i = 0; i < numfiles; i++) { // Now read each file.
 		// Get file length.
-		size_t len = finfo[2 * i + 1] - 13;
-		if (len <= 0)
+		size_t len = finfo[2 * i + 1];
+		if (len <= 13)
 			continue;
+		len -= 13;
 		in.seek(finfo[2 * i]);  // Get to it.
 		char fname[50];     // Set up name.
 		strcpy(fname, basepath);
