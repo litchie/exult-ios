@@ -1794,9 +1794,9 @@ bool BG_Game::new_game(Vga_file &shapes) {
 	Palette *pal = gwin->get_pal();
 	// This should work because the palette in exult_bg.flx is
 	// a single-file object.
-	pal->load(INTROPAL_DAT,
+	pal->load(File_spec(INTROPAL_DAT, 6),
 	          File_spec(get_resource("files/gameflx").str, EXULT_BG_FLX_U7MENUPAL_PAL),
-	          PATCH_INTROPAL, 6);
+	          File_spec(PATCH_INTROPAL, 6), 0);
 	Palette *oldpal = new Palette();
 	oldpal->load(INTROPAL_DAT, PATCH_INTROPAL, 6);
 

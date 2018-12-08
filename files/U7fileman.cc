@@ -59,14 +59,16 @@ U7file *U7FileManager::get_file_object(const File_spec &s, bool allow_errors) {
 	U7file *uf = nullptr;
 	if (s.index >= 0) {
 		auto data = make_unique<IExultDataSource>(s.name, s.index);
-		if (IFF::is_iff(data.get())) {
-			uf = new IFFBuffer(s, std::move(data));
-		} else if (Flex::is_flex(data.get())) {
-			uf = new FlexBuffer(s, std::move(data));
-		} else if (Table::is_table(data.get())) {
-			uf = new TableBuffer(s, std::move(data));
-		} else if (Flat::is_flat(data.get())) {
-			uf = new FlatBuffer(s, std::move(data));
+		if (data->good()) {
+			if (IFF::is_iff(data.get())) {
+				uf = new IFFBuffer(s, std::move(data));
+			} else if (Flex::is_flex(data.get())) {
+				uf = new FlexBuffer(s, std::move(data));
+			} else if (Table::is_table(data.get())) {
+				uf = new TableBuffer(s, std::move(data));
+			} else if (Flat::is_flat(data.get())) {
+				uf = new FlatBuffer(s, std::move(data));
+			}
 		}
 	} else {
 		if (IFF::is_iff(s.name)) {
