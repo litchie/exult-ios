@@ -50,18 +50,6 @@ struct File_spec {
 	File_spec(const std::string& n, int i = -1)
 		: name(n), index(i)
 	{  }
-	File_spec(const File_spec &other)
-		: name(other.name), index(other.index)
-	{  }
-	~File_spec()
-	{  }
-	File_spec &operator=(const File_spec &other) {
-		if (this != &other) {
-			name = other.name;
-			index = other.index;
-		}
-		return *this;
-	}
 	bool operator<(const File_spec &other) const {
 		int cmp = name.compare(other.name);
 		return cmp < 0 || (cmp == 0 && index < other.index);
@@ -73,12 +61,12 @@ struct File_spec {
  *  a given object contained in said file.
  */
 class U7object {
-	friend class U7multiobject;
 protected:
 	/// Name of desired file.
 	File_spec identifier;
 	/// Number of object to retrieve.
 	int objnumber;
+
 public:
 	/// Setups to load an object from a buffer or file.
 	/// @param spec Specification of the data source.
@@ -94,6 +82,11 @@ public:
 	U7object(U7object&&) = default;
 	U7object& operator=(U7object&&) = default;
 
+	File_spec get_identifier() const {
+		return identifier;
+	}
+	// TODO: This may need to be overriden by U7multiobject, in case the
+	// patching files have more objects than the base.
 	size_t number_of_objects();
 	virtual std::unique_ptr<unsigned char[]> retrieve(std::size_t &len) const;
 };
@@ -110,10 +103,11 @@ public:
  *  in a buffer.
  */
 class U7multiobject : public U7object {
-protected:
+private:
 	std::unique_ptr<unsigned char[]> buffer;
 	size_t length;
 	void set_object(const std::vector<U7object> &objects);
+
 public:
 	U7multiobject(const File_spec &file0, int objnum);
 	U7multiobject(const File_spec &file0, const File_spec &file1, int objnum);
@@ -122,7 +116,7 @@ public:
 	U7multiobject(const File_spec &file0, const File_spec &file1,
 	              const File_spec &file2, const File_spec &file3, int objnum);
 	U7multiobject(const std::vector<File_spec> &files, int objnum);
-	virtual ~U7multiobject() noexcept final = default;
+	~U7multiobject() noexcept final = default;
 	U7multiobject(const U7multiobject&) = delete;
 	U7multiobject& operator=(const U7multiobject&) = delete;
 	U7multiobject(U7multiobject&&) = default;

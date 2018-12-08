@@ -71,7 +71,7 @@ void U7multiobject::set_object(const std::vector<U7object> &objects) {
 		if (buf && len > 0) {
 			buffer = std::move(buf);   // Gets deleted with class.
 			length = len;
-			identifier = it->identifier;
+			identifier = it->get_identifier();
 			break;
 		}
 	}
