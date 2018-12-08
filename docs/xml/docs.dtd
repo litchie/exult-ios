@@ -1,6 +1,6 @@
 <!-- block and inline elements -->
 
-<!ENTITY % inline "#PCDATA|br|em|extref|Exult|kbd|key|q|ref|ref1|section_ref|strong|Studio|Pentagram|img" >
+<!ENTITY % inline "#PCDATA|br|em|extref|Exult|kbd|key|q|ref|ref1|section_ref|strong|Studio|Pentagram|img|TM" >
 
 <!ENTITY % lists "ul|ol" >
 
@@ -23,7 +23,7 @@
 <!ELEMENT li ( %inline; )*>
 
 <!ELEMENT key (#PCDATA)>
-<!ELEMENT kbd (#PCDATA)>
+<!ELEMENT kbd (#PCDATA|TM)*>
 <!ELEMENT strong (#PCDATA)>
 <!ELEMENT em (#PCDATA)>
 
@@ -41,6 +41,7 @@
 <!ELEMENT Exult (#PCDATA)>
 <!ELEMENT Studio (#PCDATA)>
 <!ELEMENT Pentagram (#PCDATA)>
+<!ELEMENT TM (#PCDATA)>
 
 <!ELEMENT configdesc (configtag*)>
 <!ELEMENT comment (#PCDATA|ref|key|q|Exult|extref)*>
