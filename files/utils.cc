@@ -576,8 +576,10 @@ public:
 #ifdef USE_CONSOLE
 // ++++ TODO: Need to check if this actually works.
 void redirect_output(const char *prefix) {
+	ignore_unused_variable_warning(prefix);
 }
 void cleanup_output(const char *prefix) {
+	ignore_unused_variable_warning(prefix);
 }
 #else
 #include <cstdio>
