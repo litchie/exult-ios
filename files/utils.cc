@@ -574,7 +574,6 @@ public:
 };
 
 #ifdef USE_CONSOLE
-// ++++ TODO: Need to check if this actually works.
 void redirect_output(const char *prefix) {
 	ignore_unused_variable_warning(prefix);
 }
@@ -782,8 +781,6 @@ void setup_program_paths() {
 
 /*
  *  Change the current directory
- *
- *  TODO: Make this work in WinCE - Colourless
  */
 
 int U7chdir(
@@ -800,8 +797,6 @@ int U7chdir(
 
 /*
  *  Copy a file. May throw an exception.
- *
- *  TODO: Make this work in WinCE - Colourless
  */
 void U7copy(
     const char *src,
