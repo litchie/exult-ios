@@ -26,7 +26,13 @@
 <xsl:key name="sub_ref" match="sub" use="@name"/>
 <xsl:key name="section_ref" match="section" use="@title"/>
 
-
+<!-- br Line Break trickery Templates 
+ |   Because we achieve proper formatting through using normalize-space we strip all line breaks.
+ |   By changing the ones we really want to Ä first, we can change them back after normalizing
+ +-->
+<xsl:template match="br">
+	<xsl:text>Ä</xsl:text>
+</xsl:template>
 
 <!-- Faq Templates -->
 <xsl:template name="TOC">
@@ -41,7 +47,7 @@
 						format="1."
 						value="count(ancestor::section/preceding-sibling::section)+1"/>
 			<xsl:number format="1. "/>
-			<xsl:apply-templates select="header"/><xsl:text>&#xA;</xsl:text>
+			<xsl:apply-templates select="header"/>
 		</xsl:for-each>
 		<xsl:text>&#xA;</xsl:text>
 	</xsl:for-each>
@@ -135,11 +141,14 @@
 	<!-- In order to do proper formatting, we have to apply a little trick -
 	 |   we first store the result tree fragment (RTF) in a variable, then
 	 |   we can apply normalize-space to this variable. Nifty, hu? ;)
+	 |   In order to get our wanted line breaks back we translate 
+	 |   Ä to line breaks *after* the normalization. see "br" template on top
 	 +-->
-	<xsl:variable name = "spaced_text">
+	<xsl:variable name = "data">
 		<xsl:apply-templates/>
 	</xsl:variable>
-	<xsl:value-of select="normalize-space($spaced_text)"/>
+	<xsl:value-of select="translate(normalize-space($data), 'Ä', '&#xA;')"/>
+	<xsl:text>&#xA;</xsl:text>
 </xsl:template>
 
 
@@ -206,7 +215,7 @@
 	<xsl:variable name = "data">
 		<xsl:apply-templates/>
 	</xsl:variable>
-	<xsl:value-of select="normalize-space($data)"/>
+	<xsl:value-of select="translate(normalize-space($data), 'Ä', '&#xA;')"/>
 	<xsl:text>&#xA;</xsl:text>
 </xsl:template>
 
@@ -220,7 +229,7 @@
 	<xsl:variable name = "data">
 		<xsl:apply-templates/>
 	</xsl:variable>
-	<xsl:value-of select="normalize-space($data)"/>
+	<xsl:value-of select="translate(normalize-space($data), 'Ä', '&#xA;')"/>
 	<xsl:text>&#xA;</xsl:text>
 </xsl:template>
 
@@ -232,7 +241,7 @@
 		<xsl:variable name = "data">
 			<xsl:apply-templates/>
 		</xsl:variable>
-		<xsl:value-of select="normalize-space($data)"/>
+		<xsl:value-of select="translate(normalize-space($data), 'Ä', '&#xA;')"/>
 		<xsl:text>&#xA;</xsl:text>
 	</xsl:for-each>
 	<xsl:text>&#xA;</xsl:text>
@@ -244,17 +253,11 @@
 		<xsl:variable name = "data">
 			<xsl:apply-templates/>
 		</xsl:variable>
-		<xsl:value-of select="normalize-space($data)"/>
+		<xsl:value-of select="translate(normalize-space($data), 'Ä', '&#xA;')"/>
 		<xsl:text>&#xA;</xsl:text>
 	</xsl:for-each>
 	<xsl:text>&#xA;</xsl:text>
 </xsl:template>
-
-
-<xsl:template match="br">
-	<xsl:text>&#xA;</xsl:text>
-</xsl:template>
-
 
 <xsl:template match="key">'<xsl:value-of select="."/>'</xsl:template>
 

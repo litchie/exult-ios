@@ -2791,7 +2791,7 @@
 				<li><ref1 target="midi_music"/> forked midi and kmid (kmidi) are no longer supported</li>
 				<li><ref1 target="screenshots"/> PCX format is out of date.</li>
 				<li><ref1 target="ios_controls"/> mentioned long touch pathfind</li>
-				<li><ref1 target="ios_settings"/> long touch pathfind added and the HighDPI Video Option.</li>gog_mac
+				<li><ref1 target="ios_settings"/> long touch pathfind added and the HighDPI Video Option.</li>
 				<li><ref1 target="gog_windows"/> adapted to GOG changes of the Windows installer</li>
 				<li><ref1 target="gog_mac"/> adapted to GOG changes of the Mac installer.</li>
 				</ul>
