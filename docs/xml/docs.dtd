@@ -18,14 +18,14 @@
 
 <!ELEMENT para ( %inline; )*>
 <!ELEMENT cite ( %inline; )*>
-<!ELEMENT ol (li*)>
-<!ELEMENT ul (li*)>
+<!ELEMENT ol (li)*>
+<!ELEMENT ul (li)*>
 <!ELEMENT li ( %inline; )*>
 
 <!ELEMENT key (#PCDATA)>
 <!ELEMENT kbd (#PCDATA|TM)*>
 <!ELEMENT strong (#PCDATA)>
-<!ELEMENT em (#PCDATA)>
+<!ELEMENT em (#PCDATA)*>
 
 <!ELEMENT ref (#PCDATA)>
 <!ELEMENT ref1 (#PCDATA)>
@@ -45,9 +45,10 @@
 
 <!ELEMENT configdesc (configtag*)>
 <!ELEMENT comment (#PCDATA|ref|key|q|Exult|extref)*>
-<!ELEMENT configtag (#PCDATA|configtag|manual|comment)*>
+<!ENTITY % manual "">
+<!ELEMENT configtag (#PCDATA|configtag|comment %manual;)*>
 
-<!ELEMENT keytable (keydesc*)>
+<!ELEMENT keytable (keydesc)*>
 <!ELEMENT keydesc (#PCDATA)>
 
 <!-- ****************** attributes ****************** -->
