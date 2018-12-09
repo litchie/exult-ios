@@ -585,6 +585,21 @@ const std::string Get_home();
 
 // Pulled from exult_studio.cc.
 void redirect_output(const char *prefix) {
+	if (GetFileType(GetStdHandle(STD_OUTPUT_HANDLE)) == FILE_TYPE_PIPE) {
+		// If we are at a msys/msys2 shell, do not redirect the output, and
+		// print it to console instead.
+		return;
+	}
+	// Starting from GUI, or from cmd.exe, we will need to redirect the output.
+	// It is possible to connect to the parent cmd.exe console using WinAPI
+	// (namely, AttachConsole(ATTACH_PARENT_PROCESS)). However, cmd.exe detaches
+	// the program since it (correctly) thinks we are a GUI application, and
+	// returns to the prompt. Thus, when we exit, it seems like we are stuck.
+	// Another possibility is to compile as a console application. We will
+	// always have an attached terminal in this case, even when starting from
+	// Windows Explorer. This console can be destroyed, but it will cause it
+	// to flash into view, then disappear right away.
+
 	// Flush the output in case anything is queued
 	fclose(stdout);
 	fclose(stderr);
@@ -622,7 +637,7 @@ void redirect_output(const char *prefix) {
 #endif
 	}
 	setvbuf(stdout, nullptr, _IOLBF, BUFSIZ);  // Line buffered
-	setbuf(stderr, nullptr);           // No buffering
+	setbuf(stderr, nullptr);                   // No buffering
 }
 
 void cleanup_output(const char *prefix) {
