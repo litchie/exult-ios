@@ -525,15 +525,19 @@ protected:
     );
 	SHGetKnownFolderPathFunc SHGetKnownFolderPath;
 	*/
+
+	template <typename Dest>
+	Dest get_function(const char *func) {
+		return reinterpret_cast<Dest>(reinterpret_cast<void (*)(void)>(GetProcAddress(hLib, func)));
+	}
+
 public:
 	shell32_wrapper() {
 		hLib = LoadLibrary("shell32.dll");
 		if (hLib != nullptr) {
-			SHGetFolderPath      = reinterpret_cast<SHGetFolderPathFunc>(
-			                          GetProcAddress(hLib, "SHGetFolderPathA"));
+			SHGetFolderPath      = get_function<SHGetFolderPathFunc>("SHGetFolderPathA");
 			/*
-			SHGetKnownFolderPath = reinterpret_cast<SHGetKnownFolderPathFunc>(
-			                GetProcAddress(hLib, "SHGetKnownFolderPath"));
+			SHGetKnownFolderPath = get_function<SHGetKnownFolderPathFunc>("SHGetKnownFolderPath");
 			*/
 		} else {
 			SHGetFolderPath      = nullptr;
@@ -554,14 +558,14 @@ public:
 			HRESULT code = SHGetFolderPath(nullptr, CSIDL_LOCAL_APPDATA,
 			                               nullptr, 0, szPath);
 			if (code == E_INVALIDARG)
-				return string("");
+				return string();
 			else if (code == S_FALSE)   // E_FAIL for Unicode version.
 				// Lets try creating it through the API flag:
 				code = SHGetFolderPath(nullptr,
 				                       CSIDL_LOCAL_APPDATA | CSIDL_FLAG_CREATE,
 				                       nullptr, 0, szPath);
 			if (code == E_INVALIDARG)
-				return string("");
+				return string();
 			else if (code == S_OK)
 				return string(reinterpret_cast<const char *>(szPath));
 			// We don't have a folder yet at this point. This means we have
@@ -569,7 +573,7 @@ public:
 			// Just to be sure, we fall back to the old behaviour.
 			// Is anyone still needing this?
 		}
-		return string("");
+		return string();
 	}
 };
 
