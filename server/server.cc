@@ -435,7 +435,7 @@ static void Handle_client_message(
 	}
 	case Exult_server::edit_selected: {
 		unsigned char basic = *ptr;
-		const Game_object_vector &sel = cheat.get_selected();
+		const Game_object_shared_vector &sel = cheat.get_selected();
 		if (!sel.empty()) {
 			if (basic)      // Basic obj. props?
 				sel.back()->Game_object::edit();

@@ -738,7 +738,7 @@ void Container_game_object::remove_this(
 		// First remove from owner.
 		Ireg_game_object::remove_this(&tmp_keep);
 		if (keep) {      // Not deleting?  Then done.
-		    *keep = tmp_keep;
+		    *keep = std::move(tmp_keep);
 			return;
 		}
 	}

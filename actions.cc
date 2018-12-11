@@ -554,7 +554,7 @@ int Approach_actor_action::handle_event(
 #ifdef DEBUG
 		cout << actor->get_name() <<
 		     " approach: Dist. to dest is " <<
-		     actor->distance(dest_ptr) <<
+		     actor->distance(dest_ptr.get()) <<
 		     endl;
 #endif
 		if (dest_ptr->distance(orig_dest_pos) > 2)

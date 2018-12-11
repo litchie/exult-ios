@@ -34,7 +34,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 class Barge_object : public Container_game_object, public Time_sensitive {
 	static Barge_object *editing;   // Egg being edited by ExultStudio.
-    vector<Game_object_shared> objects; // All objects in/on barge.
+    std::vector<Game_object_shared> objects; // All objects in/on barge.
 	int perm_count;         // Counts permanent parts of barge,
 	//   which proceed those placed on it.
 	unsigned char xtiles, ytiles;   // Tiles covered (when vertical).
