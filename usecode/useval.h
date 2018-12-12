@@ -67,6 +67,14 @@ private:
 	template <typename Op>
 	Usecode_value operate(const Usecode_value &v2);
 
+	void destroy() noexcept {
+		if (type == array_type) {
+			delete [] arrayval.elems;
+		} else if (type == string_type) {
+			using std::string;
+			delete [] strval;
+		}
+	}
 
 public:
 	inline Usecode_value() : type(int_type), intval(0), undefined(true) {}

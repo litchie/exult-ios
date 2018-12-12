@@ -59,10 +59,7 @@ using std::strlen;
  */
 
 Usecode_value::~Usecode_value() {
-	if (type == array_type)
-		delete [] arrayval.elems;
-	else if (type == string_type)
-		delete [] strval;
+	destroy();
 }
 
 /*
@@ -74,10 +71,7 @@ Usecode_value &Usecode_value::operator=(
 ) {
 	if (&v2 == this)
 		return *this;
-	if (type == array_type)
-		delete [] arrayval.elems;
-	else if (type == string_type)
-		delete [] strval;
+	destroy();
 	type = v2.type;         // Assign new values.
 	switch (type) {
 	case int_type:
@@ -117,10 +111,7 @@ Usecode_value &Usecode_value::operator=(
  */
 
 void Usecode_value::steal_array(Usecode_value &v2) {
-	if (type == array_type)
-		delete [] arrayval.elems;
-	else if (type == string_type)
-		delete [] strval;
+	destroy();
 	undefined = false;
 	type = array_type;
 	if (v2.type == array_type) {
@@ -149,10 +140,7 @@ void Usecode_value::steal_array(Usecode_value &v2) {
 Usecode_value &Usecode_value::operator=(
     const char *str
 ) {
-	if (type == array_type)
-		delete [] arrayval.elems;
-	else if (type == string_type)
-		delete [] strval;
+	destroy();
 	type = string_type;
 	strval = str ? newstrdup(str) : 0;
 	return *this;
