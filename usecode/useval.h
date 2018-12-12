@@ -52,8 +52,6 @@ public:
 
 private:
 	Val_type type;      // Type stored here.
-	Game_object_shared keep_ptr;
-	struct empty {};
     union {
 		long intval;
 		std::string strval;
@@ -61,7 +59,7 @@ private:
 			Usecode_value *elems;
 			short cnt;
 		} arrayval;
-		Game_object *ptrval;
+		Game_object_shared ptrval;
 		Usecode_class_symbol *clssym;
 	};	// Anonymous union member
 	bool undefined;
@@ -70,11 +68,19 @@ private:
 	Usecode_value operate(const Usecode_value &v2);
 
 	void destroy() noexcept {
-		if (type == array_type) {
+		switch (type) {
+		case array_type:
 			delete [] arrayval.elems;
-		} else if (type == string_type) {
+			break;
+		case string_type:
 			using std::string;
 			strval.~string();
+			break;
+		case pointer_type:
+			ptrval.~Game_object_shared();
+			break;
+		default:
+			break;
 		}
 	}
 
@@ -90,14 +96,14 @@ public:
 		if (elem0)
 			arrayval.elems[0] = *elem0;
 	}
-	Usecode_value(Game_object *ptr) : type(pointer_type), undefined(false) {
-	    ptrval = ptr;
-	    keep_ptr = ptr ? ptr->shared_from_this() : nullptr;
+	explicit Usecode_value(Game_object *ptr) : type(pointer_type), undefined(false) {
+		if (ptr != nullptr) {
+			new (&ptrval) Game_object_shared(ptr->shared_from_this());
+		} else {
+			new (&ptrval) Game_object_shared;
+		}
 	}
-    Usecode_value(Game_object_shared ptr) : type(pointer_type), undefined(false) {
-	    ptrval = ptr.get();
-	    keep_ptr = ptr;
-	}
+    explicit Usecode_value(Game_object_shared ptr) : type(pointer_type), ptrval(std::move(ptr)), undefined(false) {}
 	Usecode_value(Usecode_class_symbol *ptr) : type(class_sym_type),
 		undefined(false) {
 		clssym = ptr;
@@ -111,6 +117,24 @@ public:
 			destroy();
 			type = string_type;
 			new (&strval) std::string(std::move(str));
+		}
+		return *this;
+	}
+	Usecode_value &operator=(Game_object *ptr) noexcept {
+		if (ptr != nullptr) {
+			*this = ptr->shared_from_this();
+		} else {
+			*this = Game_object_shared();
+		}
+		return *this;
+	}
+	Usecode_value &operator=(Game_object_shared ptr) noexcept {
+		if (type == pointer_type) {
+			ptrval = std::move(ptr);
+		} else {
+			destroy();
+			type = pointer_type;
+			new (&ptrval) Game_object_shared(std::move(ptr));
 		}
 		return *this;
 	}
@@ -155,7 +179,7 @@ public:
 		return ((type == int_type) ? intval : 0);
 	}
 	Game_object *get_ptr_value() const { // Get pointer value.
-		return ((type == pointer_type) ? ptrval : 0);
+		return ((type == pointer_type) ? ptrval.get() : nullptr);
 	}
 	// Get string value.
 	const char *get_str_value() const {
@@ -171,7 +195,7 @@ public:
 		       : ((type == array_type && get_array_size())
 		          ? arrayval.elems[0].need_int_value()
 		          // Pointer = ref.
-		          : (type == pointer_type ? (reinterpret_cast<uintptr>(ptrval) & 0x7ffffff)
+		          : (type == pointer_type ? (reinterpret_cast<uintptr>(ptrval.get()) & 0x7ffffff)
 		             : get_int_value()));
 	}
 	// Add array element. (No checking!)

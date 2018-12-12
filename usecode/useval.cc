@@ -74,9 +74,15 @@ Usecode_value &Usecode_value::operator=(
 	if (&v2 == this)
 		return *this;
 	if (type == v2.type) {
-		if (type == string_type) {
+		switch (type) {
+		case string_type:
 			strval = v2.strval;
 			return *this;
+		case pointer_type:
+			ptrval = v2.ptrval;
+			return *this;
+		default:
+			break;
 		}
 	}
 	destroy();
@@ -86,8 +92,7 @@ Usecode_value &Usecode_value::operator=(
 		intval = v2.intval;
 		break;
 	case pointer_type:
-		ptrval = v2.ptrval;
-		keep_ptr = v2.keep_ptr;
+		new (&ptrval) Game_object_shared(v2.ptrval);
 		break;
 	case string_type:
 		new (&strval) string(v2.strval);
@@ -363,7 +368,7 @@ void Usecode_value::print(
 		break;
 	case pointer_type:
 		out << hex << setfill('0') << setw(8);
-		out << reinterpret_cast<uintptr>(ptrval);
+		out << reinterpret_cast<uintptr>(ptrval.get());
 		break;
 	case string_type:
 		out << '"' << strval << '"';
@@ -538,6 +543,7 @@ bool Usecode_value::save(
 		out->write4(intval);
 		break;
 	case pointer_type:
+		// TODO: proper serialization.
 		out->write4(0);
 		break;
 	case class_sym_type: {
@@ -584,8 +590,9 @@ bool Usecode_value::restore(
 		intval = in->read4();
 		return true;
 	case pointer_type:
+		// TODO: proper deserialization.
 		in->read4();
-		ptrval = 0; //DON'T dereference this pointer!
+		new (&ptrval) Game_object_shared; //DON'T dereference this pointer!
 		// Maybe add a new type "serialized_pointer" to prevent "accidents"?
 		return true;
 	case class_sym_type: {
