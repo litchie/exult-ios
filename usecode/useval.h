@@ -49,6 +49,7 @@ public:
 	    class_sym_type = 4, // ->Usecode_class_symbol
 	    class_obj_type = 5  // An 'array_type' for a class obj.
 	};
+
 private:
 	Val_type type;      // Type stored here.
 	Game_object_shared keep_ptr;
@@ -66,6 +67,7 @@ private:
 	Usecode_value operate(const Usecode_value &v2);
 
 	bool undefined;
+
 public:
 	inline Usecode_value() : type(int_type), undefined(true) {
 		value.intval = 0;
@@ -110,7 +112,7 @@ public:
 	Usecode_value operator/(const Usecode_value &v2);
 	Usecode_value operator%(const Usecode_value &v2);
 	// Comparator.
-	void    push_back(int);
+	void push_back(int);
 	bool operator==(const Usecode_value &v2) const;
 	bool operator!=(const Usecode_value &v2) const {
 		return !(*this == v2);
@@ -155,7 +157,7 @@ public:
 		       : ((type == array_type && get_array_size())
 		          ? value.array.elems[0].need_int_value()
 		          // Pointer = ref.
-		          : (type == pointer_type ? (value.intval & 0x7ffffff)
+		          : (type == pointer_type ? (reinterpret_cast<uintptr>(value.ptr) & 0x7ffffff)
 		             : get_int_value()));
 	}
 	// Add array element. (No checking!)

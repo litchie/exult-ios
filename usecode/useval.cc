@@ -213,51 +213,78 @@ bool Usecode_value::operator==(
 ) const {
 	if (&v2 == this)
 		return true;        // Same object.
-	if (type == int_type)       // Might be ptr==0.
-		return (v2.type == int_type || v2.type == pointer_type) ?
-		       (value.intval == v2.value.intval)
-		       // Okay if 0==empty array.
-		       : v2.type == array_type &&
-		       // Happens in blacksword usecode:
-		       (v2.get_array_size() ?
-		        v2.get_elem(0).value.intval == value.intval :
-		        !value.intval);
-	else if (type == pointer_type) { // Might be ptr==0.
-		// Or ptr == array.  Test elem. 0.
-		if (v2.type == pointer_type || v2.type == int_type)
-			return (value.ptr == v2.value.ptr);
-		else if (v2.type == array_type && v2.get_array_size()) {
-			const Usecode_value &val2 = v2.value.array.elems[0];
-			return (value.ptr == val2.value.ptr);
-		} else
+	switch (type) {
+	case int_type:
+		switch (v2.type) {
+		case int_type:
+			return value.intval == v2.value.intval;
+		case pointer_type:
+			// Allow 0 == ptr
+			return value.intval == 0 && v2.value.ptr == nullptr;
+		case array_type:
+			// Okay if 0 == empty array.
+			// Otherwise, compare first element of array versus value
+			// (happens in blacksword usecode).
+			return v2.get_array_size()
+			       ? *this == v2.get_elem(0)
+				   : value.intval == 0;
+		default:
 			return false;
-	} else if (type == array_type) {
-		if (v2.type == int_type)
-			// Making it symetric just in case:
-			return (get_array_size() ?
-			        get_elem(0).value.intval == v2.value.intval :
-			        !v2.value.intval);
-		else if (v2.type == pointer_type && get_array_size()) {
-			Usecode_value &v = get_elem(0);
-			return v2.value.ptr == v.value.ptr;
 		}
-		if (v2.type != array_type)
+	case pointer_type:
+		switch (v2.type) {
+		case int_type:
+			// Allow ptr == 0
+			return value.ptr == nullptr && v2.value.intval == 0;
+		case pointer_type:
+			return value.ptr == v2.value.ptr;
+		case array_type:
+			// On pointer == array, compare pointer to first element of array.
+			return v2.get_array_size() && *this == v2.get_elem(0);
+		default:
 			return false;
-		int cnt = get_array_size();
-		if (cnt != v2.get_array_size())
-			return false;
-		for (int i = 0; i < cnt; i++) {
-			Usecode_value &e1 = get_elem(i);
-			const Usecode_value &e2 = v2.get_elem(i);
-			if (!(e1 == e2))
+		}
+	case array_type:
+		switch (v2.type) {
+		case int_type:
+			// Allow empty array == 0
+			// Otherwise, compare first element of array versus value
+			// (makes it symmetric).
+			return get_array_size()
+			       ? get_elem(0) == v2
+				   : v2.value.intval == 0;
+		case pointer_type:
+			// On array == pointer, compare first element of array to pointer.
+			return get_array_size() && get_elem(0) == v2;
+		case array_type: {
+			// On array == array, arrays must be equal.
+			int cnt = get_array_size();
+			if (cnt != v2.get_array_size()) {
 				return false;
+			}
+			for (int i = 0; i < cnt; i++) {
+				const Usecode_value &e1 = get_elem(i);
+				const Usecode_value &e2 = v2.get_elem(i);
+				if (!(e1 == e2)) {
+					return false;
+				}
+			}
+			// Arrays matched.
+			return true;
 		}
-		return true;        // Arrays matched.
-	} else if (type == string_type)
+		default:
+			return false;
+		}
+	case string_type:
 		return (v2.type == string_type &&
 		        strcmp(value.str, v2.value.str) == 0);
-	else
+	case class_sym_type:
+		return v2.type == class_sym_type && value.cptr == v2.value.cptr;
+	case class_obj_type:
+		return v2.type == class_obj_type && value.ptr == v2.value.ptr;
+	default:
 		return false;
+	}
 }
 
 /*
