@@ -67,7 +67,7 @@ private:
 	bool undefined;
 
 	template <typename Op>
-	Usecode_value operate(const Usecode_value &v2);
+	Usecode_value& operate(const Usecode_value &v2);
 
 	void destroy() noexcept {
 		switch (type) {
@@ -150,11 +150,11 @@ public:
 		*this = std::move(v2);
 	}
 
-	Usecode_value operator+(const Usecode_value &v2);
-	Usecode_value operator-(const Usecode_value &v2);
-	Usecode_value operator*(const Usecode_value &v2);
-	Usecode_value operator/(const Usecode_value &v2);
-	Usecode_value operator%(const Usecode_value &v2);
+	Usecode_value& operator+=(const Usecode_value &v2);
+	Usecode_value& operator-=(const Usecode_value &v2);
+	Usecode_value& operator*=(const Usecode_value &v2);
+	Usecode_value& operator/=(const Usecode_value &v2);
+	Usecode_value& operator%=(const Usecode_value &v2);
 	// Comparator.
 	void push_back(int);
 	bool operator==(const Usecode_value &v2) const;
@@ -284,6 +284,21 @@ public:
 	}
 };
 
+inline Usecode_value operator+(Usecode_value v1, const Usecode_value &v2) {
+	return v1 += v2;
+}
+inline Usecode_value operator-(Usecode_value v1, const Usecode_value &v2) {
+	return v1 -= v2;
+}
+inline Usecode_value operator*(Usecode_value v1, const Usecode_value &v2) {
+	return v1 *= v2;
+}
+inline Usecode_value operator/(Usecode_value v1, const Usecode_value &v2) {
+	return v1 /= v2;
+}
+inline Usecode_value operator%(Usecode_value v1, const Usecode_value &v2) {
+	return v1 %= v2;
+}
 
 std::ostream &operator<<(std::ostream &out, Usecode_value &val);
 

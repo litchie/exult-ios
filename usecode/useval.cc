@@ -423,59 +423,42 @@ void Usecode_value::print(
 	}
 }
 
-Usecode_value Usecode_value::operator+(const Usecode_value &v2) {
+Usecode_value& Usecode_value::operator+=(const Usecode_value &v2) {
 	Usecode_value &v1 = *this;
-	Usecode_value sum(0);
 
 	if (v1.is_undefined()) {
-		sum = v2;
+		v1 = v2;
+		return v1;
 	} else if (v2.is_undefined()) {
-		sum = v1;
+		return v1;
 	} else if (v1.get_type() == Usecode_value::int_type) {
 		if (v2.get_type() == Usecode_value::int_type) {
-			sum = v1.get_int_value() + v2.get_int_value();
+			v1.intval += v2.intval;
 		} else if (v2.get_type() == Usecode_value::string_type) {
 #if 0
 			// This seems to be how addition of int + string was done in the
 			// original, but I won't do it here.
-			sum = v1.get_int_value() + v2.need_int_value();
+			sum = v1.intval + v2.need_int_value();
 #else
 			// Note: this actually seems wrong compared to the originals,
 			// but I am leaving this the way it is unless it causes a bug.
-			unsigned int newlen = strlen(v2.get_str_value()) + 32;
-			char *buf = new char[newlen];
-			snprintf(buf, newlen, "%ld%s",
-			         v1.get_int_value(),
-			         v2.get_str_value());
-			sum = Usecode_value(buf);
-			delete[] buf;
+			string ret(std::to_string(v1.intval));
+			ret += v2.strval;
+			v1 = std::move(ret);
 #endif
-		} else {
-			sum = v1;
 		}
+		return v1;
 	} else if (v1.get_type() == Usecode_value::string_type) {
 		if (v2.get_type() == Usecode_value::int_type) {
-			unsigned int newlen = strlen(v1.get_str_value()) + 32;
-			char *buf = new char[newlen];
-			snprintf(buf, newlen, "%s%ld",
-			         v1.get_str_value(),
-			         v2.get_int_value());
-			sum = Usecode_value(buf);
-			delete[] buf;
+			v1.strval += std::to_string(v2.intval);
 		} else if (v2.get_type() == Usecode_value::string_type) {
-			unsigned int newlen = strlen(v1.get_str_value()) +
-			                      strlen(v2.get_str_value()) + 32;
-			char *buf = new char[newlen];
-			snprintf(buf, newlen, "%s%s",
-			         v1.get_str_value(),
-			         v2.get_str_value());
-			sum = Usecode_value(buf);
-			delete[] buf;
-		} else {
-			sum = v1;
+			v1.strval += v2.strval;
 		}
+		return v1;
+	} else {
+		v1 = 0;
 	}
-	return sum;
+	return v1;
 }
 
 template <typename T, template <typename> class Op>
@@ -491,23 +474,22 @@ struct safe_divide : Op<T> {
 };
 
 template <typename Op>
-Usecode_value Usecode_value::operate(const Usecode_value &v2) {
+Usecode_value& Usecode_value::operate(const Usecode_value &v2) {
 	Op op;
 	Usecode_value &v1 = *this;
-	Usecode_value result(0);
 
 	if (v1.is_undefined())
 		// Seems correct.
-		result = op(0, v2.need_int_value());
+		v1 = op(0, v2.need_int_value());
 	else if (v2.is_undefined()) {
 		// Just return zero
+		v1 = 0;
 	} else if (v1.get_type() == Usecode_value::int_type) {
-		if (v2.get_type() == Usecode_value::int_type)
-			result = op(v1.get_int_value(), v2.get_int_value());
-		else if (v2.get_type() == Usecode_value::string_type)
-			result = op(v1.get_int_value(), v2.need_int_value());
-		else
-			result = v1;
+		if (v2.get_type() == Usecode_value::int_type) {
+			v1.intval = op(v1.intval, v2.intval);
+		} else if (v2.get_type() == Usecode_value::string_type) {
+			v1.intval = op(v1.intval, v2.need_int_value());
+		}
 	} else if (v1.get_type() == Usecode_value::string_type) {
 		if (v2.get_type() == Usecode_value::string_type) {
 			// Note: SI usecode seems to assume this in two cases: selling
@@ -517,34 +499,30 @@ Usecode_value Usecode_value::operate(const Usecode_value &v2) {
 			// I decided to go the way usecode expects, adding a space along
 			// the way, to "fix" this as it seems to be the only places in
 			// the originals where this matters.
-			unsigned int newlen = strlen(v1.get_str_value()) +
-			                      strlen(v2.get_str_value()) + 32;
-			char *buf = new char[newlen];
-			snprintf(buf, newlen, "%s %s",
-			         v1.get_str_value(),
-			         v2.get_str_value());
-			result = Usecode_value(buf);
-			delete[] buf;
+			v1.strval += ' ';
+			v1.strval += v2.strval;
 		} else
 			// This seems right.
-			result = v1;
+			v1 = v1;
+	} else {
+		v1 = 0;
 	}
-	return result;
+	return v1;
 }
 
-Usecode_value Usecode_value::operator-(const Usecode_value &v2) {
+Usecode_value& Usecode_value::operator-=(const Usecode_value &v2) {
 	return operate<std::minus<long> >(v2);
 }
 
-Usecode_value Usecode_value::operator*(const Usecode_value &v2) {
+Usecode_value& Usecode_value::operator*=(const Usecode_value &v2) {
 	return operate<std::multiplies<long> >(v2);
 }
 
-Usecode_value Usecode_value::operator/(const Usecode_value &v2) {
+Usecode_value& Usecode_value::operator/=(const Usecode_value &v2) {
 	return operate<safe_divide<long, std::divides> >(v2);
 }
 
-Usecode_value Usecode_value::operator%(const Usecode_value &v2) {
+Usecode_value& Usecode_value::operator%=(const Usecode_value &v2) {
 	return operate<safe_divide<long, std::modulus> >(v2);
 }
 
