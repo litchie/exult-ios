@@ -204,10 +204,6 @@ int Usecode_value::resize(
 	return 1;
 }
 
-void Usecode_value::push_back(int i) {
-	arrayval.emplace_back(i);
-}
-
 /*
  *  Comparator.
  *
@@ -231,9 +227,7 @@ bool Usecode_value::operator==(
 			// Okay if 0 == empty array.
 			// Otherwise, compare first element of array versus value
 			// (happens in blacksword usecode).
-			return v2.get_array_size()
-			       ? *this == v2.get_elem(0)
-				   : intval == 0;
+			return *this == v2.get_elem0();
 		default:
 			return false;
 		}
@@ -256,27 +250,13 @@ bool Usecode_value::operator==(
 			// Allow empty array == 0
 			// Otherwise, compare first element of array versus value
 			// (makes it symmetric).
-			return get_array_size()
-			       ? get_elem(0) == v2
-				   : v2.intval == 0;
+			return get_elem0() == v2;
 		case pointer_type:
 			// On array == pointer, compare first element of array to pointer.
 			return get_array_size() && get_elem(0) == v2;
 		case array_type: {
 			// On array == array, arrays must be equal.
-			size_t cnt = get_array_size();
-			if (cnt != v2.get_array_size()) {
-				return false;
-			}
-			for (size_t i = 0; i < cnt; i++) {
-				const Usecode_value &e1 = get_elem(i);
-				const Usecode_value &e2 = v2.get_elem(i);
-				if (!(e1 == e2)) {
-					return false;
-				}
-			}
-			// Arrays matched.
-			return true;
+			return arrayval == v2.arrayval;
 		}
 		default:
 			return false;
@@ -378,7 +358,25 @@ int Usecode_value::add_values(
 
 void Usecode_value::print(
     ostream &out, bool shortformat
-) {
+) const {
+	auto print_array = [&out, shortformat](auto begin, auto count) {
+		auto end = begin;
+		if (shortformat && count > 2) {
+			end += 2;
+		} else {
+			end += count;
+		}
+		out << "[ ";
+		for (auto elem = begin; elem != end; ++elem) {
+			if (elem != begin) {
+				out << ", ";
+			}
+			elem->print(out);
+		}
+		if (shortformat && count > 2)
+			out << ", ... (size " << count << ")";
+		out << " ]";
+	};
 	boost::io::ios_flags_saver flags(out);
 	boost::io::ios_fill_saver fill(out);
 	switch (type) {
@@ -393,31 +391,20 @@ void Usecode_value::print(
 	case string_type:
 		out << '"' << strval << '"';
 		break;
-	case array_type: {
-		out << "[ ";
-		size_t i;
-		for (i = 0; i < arrayval.size(); i++) {
-			if (!shortformat || i < 2) {
-				if (i) {
-					out << ", ";
-				}
-				arrayval[i].print(out);
-			}
-		}
-		if (shortformat && i > 2)
-			out << ", ... (size " << i << ")";
-		out << " ]";
+	case array_type:
+		print_array(arrayval.cbegin(), arrayval.size());
 		break;
-	}
-	case class_obj_type: {
-		Usecode_class_symbol *c = get_class_ptr();
+	case class_sym_type:
+		// TODO: Implement this.
 		out << "->";
-		if (c)
-			out << c->get_name();
+		if (clssym)
+			out << clssym->get_name();
 		else
-			out << "obj?";
+			out << "null obj?";
 		break;
-	}
+	case class_obj_type:
+		print_array(clsrefval.elems, clsrefval.cnt);
+		break;
 	default:
 		break;
 	}
@@ -456,7 +443,7 @@ Usecode_value& Usecode_value::operator+=(const Usecode_value &v2) {
 		}
 		return v1;
 	} else {
-		v1 = 0;
+		v1 = Usecode_value(0);
 	}
 	return v1;
 }
@@ -483,7 +470,7 @@ Usecode_value& Usecode_value::operate(const Usecode_value &v2) {
 		v1 = op(0, v2.need_int_value());
 	else if (v2.is_undefined()) {
 		// Just return zero
-		v1 = 0;
+		v1 = Usecode_value(0);
 	} else if (v1.get_type() == Usecode_value::int_type) {
 		if (v2.get_type() == Usecode_value::int_type) {
 			v1.intval = op(v1.intval, v2.intval);
@@ -505,7 +492,7 @@ Usecode_value& Usecode_value::operate(const Usecode_value &v2) {
 			// This seems right.
 			v1 = v1;
 	} else {
-		v1 = 0;
+		v1 = Usecode_value(0);
 	}
 	return v1;
 }

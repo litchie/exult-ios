@@ -104,10 +104,7 @@ public:
 		}
 	}
     explicit Usecode_value(Game_object_shared ptr) : type(pointer_type), ptrval(std::move(ptr)), undefined(false) {}
-	Usecode_value(Usecode_class_symbol *ptr) : type(class_sym_type),
-		undefined(false) {
-		clssym = ptr;
-	}
+	explicit Usecode_value(Usecode_class_symbol *ptr) : type(class_sym_type), clssym(ptr), undefined(false) {}
 	~Usecode_value();
 	Usecode_value &operator=(const Usecode_value &v2);
 	Usecode_value &operator=(Usecode_value &&v2) noexcept;
@@ -119,6 +116,7 @@ public:
 			type = string_type;
 			new (&strval) std::string(std::move(str));
 		}
+		undefined = false;
 		return *this;
 	}
 	Usecode_value &operator=(Game_object *ptr) noexcept {
@@ -137,6 +135,18 @@ public:
 			type = pointer_type;
 			new (&ptrval) Game_object_shared(std::move(ptr));
 		}
+		undefined = false;
+		return *this;
+	}
+	Usecode_value &operator=(Usecode_class_symbol *ptr) noexcept {
+		if (type == class_sym_type) {
+			clssym = ptr;
+		} else {
+			destroy();
+			type = class_sym_type;
+			clssym = ptr;
+		}
+		undefined = false;
 		return *this;
 	}
 	// Copy ctor.
@@ -155,8 +165,10 @@ public:
 	Usecode_value& operator*=(const Usecode_value &v2);
 	Usecode_value& operator/=(const Usecode_value &v2);
 	Usecode_value& operator%=(const Usecode_value &v2);
+	void push_back(int i) {
+		arrayval.emplace_back(i);
+	}
 	// Comparator.
-	void push_back(int);
 	bool operator==(const Usecode_value &v2) const;
 	bool operator!=(const Usecode_value &v2) const {
 		return !(*this == v2);
@@ -232,6 +244,12 @@ public:
 		return (type == array_type) ? (get_array_size() ? arrayval[0]
 		                               : zval) : *this;
 	}
+	// Get array elem. 0, or this.
+	const Usecode_value &get_elem0() const {
+		static Usecode_value zval(0);
+		return (type == array_type) ? (get_array_size() ? arrayval[0]
+		                               : zval) : *this;
+	}
 	void steal_array(Usecode_value &v2);
 	bool is_false() const {  // Represents a FALSE value?
 		switch (type) {
@@ -261,7 +279,7 @@ public:
 	void append(int *vals, int cnt);// Append integer values.
 	// Add value(s) to an array.
 	int add_values(int index, Usecode_value &val2);
-	void print(std::ostream &out, bool shortformat = false); // Print in ASCII.
+	void print(std::ostream &out, bool shortformat = false) const; // Print in ASCII.
 	// Save/restore.
 	bool save(DataSource *out);
 	bool restore(DataSource *in);
