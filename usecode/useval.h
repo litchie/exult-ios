@@ -27,6 +27,7 @@
 #include <cstring>
 
 #include <iostream>
+#include <new>
 #include <string>   // STL string
 #include <vector>   // STL container
 
@@ -52,9 +53,10 @@ public:
 private:
 	Val_type type;      // Type stored here.
 	Game_object_shared keep_ptr;
+	struct empty {};
     union {
 		long intval;
-		char *strval;
+		std::string strval;
 		struct {
 			Usecode_value *elems;
 			short cnt;
@@ -72,14 +74,14 @@ private:
 			delete [] arrayval.elems;
 		} else if (type == string_type) {
 			using std::string;
-			delete [] strval;
+			strval.~string();
 		}
 	}
 
 public:
 	inline Usecode_value() : type(int_type), intval(0), undefined(true) {}
 	inline Usecode_value(int ival) : type(int_type), intval(ival), undefined(false) {}
-	Usecode_value(const char *s);
+	explicit Usecode_value(std::string s) : type(string_type), strval(std::move(s)), undefined(false) {}
 	// Create array with 1st element.
 	Usecode_value(int size, Usecode_value *elem0)
 		: type(array_type), undefined(false) {
@@ -102,7 +104,16 @@ public:
 	}
 	~Usecode_value();
 	Usecode_value &operator=(const Usecode_value &v2);
-	Usecode_value &operator=(const char *str);
+	Usecode_value &operator=(std::string str) noexcept {
+		if (type == string_type) {
+			strval = std::move(str);
+		} else {
+			destroy();
+			type = string_type;
+			new (&strval) std::string(std::move(str));
+		}
+		return *this;
+	}
 	// Copy ctor.
 	inline Usecode_value(const Usecode_value &v2)
 		: type(int_type) {
@@ -149,7 +160,7 @@ public:
 	// Get string value.
 	const char *get_str_value() const {
 		static char const *emptystr = "";
-		return ((type == string_type) ? strval :
+		return ((type == string_type) ? strval.c_str() :
 		        ((undefined ||
 		          (type == array_type && arrayval.cnt == 0)) ? emptystr : 0));
 	}

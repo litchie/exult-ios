@@ -61,7 +61,7 @@ public:
 	}
 	void add(int v1);       // Append new instructions:
 	void add(int v1, int v2);
-	void add(int v1, const char *str);
+	void add(int v1, std::string str);
 	void add(int *vals, int cnt);
 	Usecode_script &operator<<(int v) {
 		add(v);

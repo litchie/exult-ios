@@ -50,6 +50,8 @@ using std::setfill;
 using std::setw;
 using std::strcmp;
 using std::strlen;
+using std::string;
+using std::vector;
 #endif
 
 
@@ -71,6 +73,12 @@ Usecode_value &Usecode_value::operator=(
 ) {
 	if (&v2 == this)
 		return *this;
+	if (type == v2.type) {
+		if (type == string_type) {
+			strval = v2.strval;
+			return *this;
+		}
+	}
 	destroy();
 	type = v2.type;         // Assign new values.
 	switch (type) {
@@ -82,7 +90,7 @@ Usecode_value &Usecode_value::operator=(
 		keep_ptr = v2.keep_ptr;
 		break;
 	case string_type:
-		strval = v2.strval ? newstrdup(v2.strval) : 0;
+		new (&strval) string(v2.strval);
 		break;
 	case array_type:
 		arrayval.cnt = v2.arrayval.cnt;
@@ -123,37 +131,13 @@ void Usecode_value::steal_array(Usecode_value &v2) {
 		arrayval.cnt = 1;
 		if (v2.type == string_type)
 			// Swipe string.
-			arrayval.elems[0].strval = v2.strval;
+			new (&arrayval.elems[0].strval) string(std::move(v2.strval));
 		else
 			arrayval.elems[0] = v2;
 	}
 	v2.undefined = true;
 	v2.type = int_type;
 	v2.intval = 0;
-}
-
-/*
- *  Set this to (a copy of) a string.
- */
-
-
-Usecode_value &Usecode_value::operator=(
-    const char *str
-) {
-	destroy();
-	type = string_type;
-	strval = str ? newstrdup(str) : 0;
-	return *this;
-}
-
-/*
- *  Create a string value.
- */
-
-Usecode_value::Usecode_value(
-    const char *s
-) : type(string_type), undefined(false) {
-	strval = s ? newstrdup(s) : 0;
 }
 
 /*
@@ -264,8 +248,7 @@ bool Usecode_value::operator==(
 			return false;
 		}
 	case string_type:
-		return (v2.type == string_type &&
-		        strcmp(strval, v2.strval) == 0);
+		return v2.type == string_type && strval == v2.strval;
 	case class_sym_type:
 		return v2.type == class_sym_type && clssym == v2.clssym;
 	case class_obj_type:
@@ -565,9 +548,8 @@ bool Usecode_value::save(
 		break;
 	}
 	case string_type: {
-		int len = std::strlen(strval);
-		out->write2(len);
-		out->write(strval, len);
+		out->write2(strval.size());
+		out->write(strval);
 		break;
 	}
 	case array_type:
@@ -617,9 +599,8 @@ bool Usecode_value::restore(
 	}
 	case string_type: {
 		int len = in->read2();
-		strval = new char[len + 1];
+		new (&strval) string;
 		in->read(strval, len);
-		strval[len] = 0;
 		return true;
 	}
 	case array_type:

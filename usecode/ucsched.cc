@@ -167,11 +167,11 @@ void Usecode_script::add(int v1, int v2) {
 	code->append(vals, 2);
 	cnt += 2;
 }
-void Usecode_script::add(int v1, const char *str) {
+void Usecode_script::add(int v1, std::string str) {
 	int sz = code->get_array_size();
 	code->resize(sz + 2);
 	(*code)[sz] = v1;
-	(*code)[sz + 1] = str;
+	(*code)[sz + 1] = std::move(str);
 	cnt += 2;
 }
 void Usecode_script::add(int *vals, int c) {
