@@ -542,7 +542,7 @@ int Usecode_script::exec(
 			// Get dir.
 			int val = code->get_elem(++i).get_int_value();
 			// Height change (verified).
-			int dz = i < code->get_array_size() ?
+			int dz = size_t(i) < code->get_array_size() ?
 			         code->get_elem(++i).get_int_value() : 0;
 			// Watch for buggy SI usecode!
 			int destz = optr->get_lift() + dz;

@@ -49,18 +49,20 @@ public:
 	    class_sym_type = 4, // ->Usecode_class_symbol
 	    class_obj_type = 5  // An 'array_type' for a class obj.
 	};
+	using Usecode_vector = std::vector<Usecode_value>;
 
 private:
 	Val_type type;      // Type stored here.
     union {
 		long intval;
 		std::string strval;
+		Usecode_vector arrayval;
+		Game_object_shared ptrval;
+		Usecode_class_symbol *clssym;
 		struct {
 			Usecode_value *elems;
 			short cnt;
-		} arrayval;
-		Game_object_shared ptrval;
-		Usecode_class_symbol *clssym;
+		} clsrefval;
 	};	// Anonymous union member
 	bool undefined;
 
@@ -70,7 +72,7 @@ private:
 	void destroy() noexcept {
 		switch (type) {
 		case array_type:
-			delete [] arrayval.elems;
+			arrayval.~Usecode_vector();
 			break;
 		case string_type:
 			using std::string;
@@ -85,16 +87,14 @@ private:
 	}
 
 public:
-	inline Usecode_value() : type(int_type), intval(0), undefined(true) {}
-	inline Usecode_value(int ival) : type(int_type), intval(ival), undefined(false) {}
+	Usecode_value() : type(int_type), intval(0), undefined(true) {}
+	Usecode_value(int ival) : type(int_type), intval(ival), undefined(false) {}
 	explicit Usecode_value(std::string s) : type(string_type), strval(std::move(s)), undefined(false) {}
 	// Create array with 1st element.
 	Usecode_value(int size, Usecode_value *elem0)
-		: type(array_type), undefined(false) {
-		arrayval.elems = new Usecode_value[size];
-		arrayval.cnt = size;
+		: type(array_type), arrayval(size), undefined(false) {
 		if (elem0)
-			arrayval.elems[0] = *elem0;
+			arrayval[0] = *elem0;
 	}
 	explicit Usecode_value(Game_object *ptr) : type(pointer_type), undefined(false) {
 		if (ptr != nullptr) {
@@ -110,6 +110,7 @@ public:
 	}
 	~Usecode_value();
 	Usecode_value &operator=(const Usecode_value &v2);
+	Usecode_value &operator=(Usecode_value &&v2) noexcept;
 	Usecode_value &operator=(std::string str) noexcept {
 		if (type == string_type) {
 			strval = std::move(str);
@@ -139,9 +140,14 @@ public:
 		return *this;
 	}
 	// Copy ctor.
-	inline Usecode_value(const Usecode_value &v2)
+	Usecode_value(const Usecode_value &v2)
 		: type(int_type) {
 		*this = v2;
+	}
+	// Move ctor.
+	Usecode_value(Usecode_value &&v2) noexcept
+		: type(int_type) {
+		*this = std::move(v2);
 	}
 
 	Usecode_value operator+(const Usecode_value &v2);
@@ -156,11 +162,11 @@ public:
 		return !(*this == v2);
 	}
 
-	inline Val_type get_type() const {
+	Val_type get_type() const {
 		return type;
 	}
-	int get_array_size() const {    // Get size of array.
-		return (type == array_type) ? arrayval.cnt : 0;
+	size_t get_array_size() const {    // Get size of array.
+		return (type == array_type) ? arrayval.size() : 0;
 	}
 	bool is_array() const {
 		return (type == array_type);
@@ -186,55 +192,64 @@ public:
 		static char const *emptystr = "";
 		return ((type == string_type) ? strval.c_str() :
 		        ((undefined ||
-		          (type == array_type && arrayval.cnt == 0)) ? emptystr : 0));
+		          (type == array_type && arrayval.empty())) ? emptystr : 0));
 	}
 	long need_int_value() const {
 		// Convert strings.
 		const char *str = get_str_value();
 		return str ? std::atoi(str)
 		       : ((type == array_type && get_array_size())
-		          ? arrayval.elems[0].need_int_value()
+		          ? arrayval[0].need_int_value()
 		          // Pointer = ref.
 		          : (type == pointer_type ? (reinterpret_cast<uintptr>(ptrval.get()) & 0x7ffffff)
 		             : get_int_value()));
 	}
 	// Add array element. (No checking!)
 	void put_elem(int i, Usecode_value &val) {
-		arrayval.elems[i] = val;
+		arrayval[i] = val;
 	}
 	// Get an array element.
-	inline Usecode_value &get_elem(int i) const {
+	Usecode_value &get_elem(int i) {
 		static Usecode_value zval(0);
-		return (type == array_type) ? arrayval.elems[i] : zval;
+		return (type == array_type) ? arrayval[i] : zval;
 	}
-	inline Usecode_value &operator[](int i) {
+	// Get an array element.
+	const Usecode_value &get_elem(int i) const {
+		static const Usecode_value zval(0);
+		return (type == array_type) ? arrayval[i] : zval;
+	}
+	Usecode_value &operator[](int i) {
 		assert(type == array_type);
-		return arrayval.elems[i];
+		return arrayval[i];
+	}
+	const Usecode_value &operator[](int i) const {
+		assert(type == array_type);
+		return arrayval[i];
 	}
 	// Get array elem. 0, or this.
-	inline Usecode_value &get_elem0() {
+	Usecode_value &get_elem0() {
 		static Usecode_value zval(0);
-		return (type == array_type) ? (get_array_size() ? arrayval.elems[0]
+		return (type == array_type) ? (get_array_size() ? arrayval[0]
 		                               : zval) : *this;
 	}
 	void steal_array(Usecode_value &v2);
-	inline bool is_false() const {  // Represents a FALSE value?
+	bool is_false() const {  // Represents a FALSE value?
 		switch (type) {
 		case int_type:
 			return intval == 0;
 		case pointer_type:
 			return ptrval == NULL;
 		case array_type:
-			return arrayval.cnt == 0;
+			return arrayval.empty();
 		default:
 			return false;
 		}
 	}
-	inline bool is_true() const {
+	bool is_true() const {
 		return !is_false();
 	}
 
-	inline bool is_undefined() const {
+	bool is_undefined() const {
 		return undefined;
 	}
 
@@ -256,16 +271,16 @@ public:
 	Usecode_value &nth_class_var(int n) {
 		// Note:  Elem. 0 is the ->class.
 		static Usecode_value zval(0);
-		return (type == class_obj_type && n + 1 < arrayval.cnt) ?
-		       arrayval.elems[n + 1] : zval;
+		return (type == class_obj_type && n + 1 < clsrefval.cnt) ?
+		       clsrefval.elems[n + 1] : zval;
 	}
 	int get_class_var_count() {
 		// Note:  Elem. 0 is the ->class.
-		return type == class_obj_type ? arrayval.cnt - 1 : 0;
+		return type == class_obj_type ? clsrefval.cnt - 1 : 0;
 	}
 	Usecode_class_symbol *get_class_ptr() const {
 		return (type == class_obj_type) ?
-		       arrayval.elems[0].clssym : 0;
+		       clsrefval.elems[0].clssym : 0;
 	}
 };
 

@@ -81,6 +81,9 @@ Usecode_value &Usecode_value::operator=(
 		case pointer_type:
 			ptrval = v2.ptrval;
 			return *this;
+		case array_type:
+			arrayval = v2.arrayval;
+			return *this;
 		default:
 			break;
 		}
@@ -98,17 +101,63 @@ Usecode_value &Usecode_value::operator=(
 		new (&strval) string(v2.strval);
 		break;
 	case array_type:
-		arrayval.cnt = v2.arrayval.cnt;
-		arrayval.elems = new Usecode_value[arrayval.cnt];
-		for (int i = 0; i < arrayval.cnt; ++i)
-			arrayval.elems[i] = v2.arrayval.elems[i];
+		new (&arrayval) Usecode_vector(v2.arrayval);
 		break;
 	case class_sym_type:
 		clssym = v2.clssym;
 		break;
 	case class_obj_type:        // Copy ->.
-		arrayval.cnt = v2.arrayval.cnt;
-		arrayval.elems = v2.arrayval.elems;
+		clsrefval.cnt = v2.clsrefval.cnt;
+		clsrefval.elems = v2.clsrefval.elems;
+		break;
+	}
+	undefined = v2.undefined;
+	return *this;
+}
+
+/*
+ *  Move from another to this.
+ */
+
+Usecode_value &Usecode_value::operator=(
+    Usecode_value &&v2
+) noexcept {
+	if (type == v2.type) {
+		switch (type) {
+		case string_type:
+			strval.swap(v2.strval);
+			return *this;
+		case pointer_type:
+			ptrval.swap(v2.ptrval);
+			return *this;
+		case array_type:
+			arrayval.swap(v2.arrayval);
+			return *this;
+		default:
+			break;
+		}
+	}
+	destroy();
+	type = v2.type;         // Assign new values.
+	switch (type) {
+	case int_type:
+		intval = v2.intval;
+		break;
+	case pointer_type:
+		new (&ptrval) Game_object_shared(std::move(v2.ptrval));
+		break;
+	case string_type:
+		new (&strval) string(std::move(v2.strval));
+		break;
+	case array_type:
+		new (&arrayval) Usecode_vector(std::move(v2.arrayval));
+		break;
+	case class_sym_type:
+		clssym = v2.clssym;
+		break;
+	case class_obj_type:        // Copy ->.
+		clsrefval.cnt = v2.clsrefval.cnt;
+		clsrefval.elems = v2.clsrefval.elems;
 		break;
 	}
 	undefined = v2.undefined;
@@ -129,20 +178,11 @@ void Usecode_value::steal_array(Usecode_value &v2) {
 	type = array_type;
 	if (v2.type == array_type) {
 		// Swipe array.
-		arrayval.cnt = v2.arrayval.cnt;
-		arrayval.elems = v2.arrayval.elems;
+		new (&arrayval) Usecode_vector(std::move(v2.arrayval));
 	} else {
-		arrayval.elems = new Usecode_value[1];
-		arrayval.cnt = 1;
-		if (v2.type == string_type)
-			// Swipe string.
-			new (&arrayval.elems[0].strval) string(std::move(v2.strval));
-		else
-			arrayval.elems[0] = v2;
+		new (&arrayval) Usecode_vector();
+		arrayval.emplace_back(std::move(v2));
 	}
-	v2.undefined = true;
-	v2.type = int_type;
-	v2.intval = 0;
 }
 
 /*
@@ -158,25 +198,14 @@ int Usecode_value::resize(
 	if (type != array_type) { // Turn it into an array.
 		Usecode_value elem(*this);
 		*this = Usecode_value(new_size, &elem);
-		return (1);
+		return 1;
 	}
-	int size = arrayval.cnt; // Get current size.
-	if (new_size == size)
-		return (1);     // Nothing to do.
-	Usecode_value *newvals = new Usecode_value[new_size];
-	// Move old values over.
-	int cnt = new_size < size ? new_size : size;
-	for (int i = 0; i < cnt; i++)
-		newvals[i] = arrayval.elems[i];
-	delete [] arrayval.elems;
-	arrayval.elems = newvals;        // Store new.
-	arrayval.cnt = new_size;
-	return (1);
+	arrayval.resize(new_size);
+	return 1;
 }
 
-void    Usecode_value::push_back(int i) {
-	resize(arrayval.cnt + 1);
-	arrayval.elems[arrayval.cnt - 1] = Usecode_value(i);
+void Usecode_value::push_back(int i) {
+	arrayval.emplace_back(i);
 }
 
 /*
@@ -235,11 +264,11 @@ bool Usecode_value::operator==(
 			return get_array_size() && get_elem(0) == v2;
 		case array_type: {
 			// On array == array, arrays must be equal.
-			int cnt = get_array_size();
+			size_t cnt = get_array_size();
 			if (cnt != v2.get_array_size()) {
 				return false;
 			}
-			for (int i = 0; i < cnt; i++) {
+			for (size_t i = 0; i < cnt; i++) {
 				const Usecode_value &e1 = get_elem(i);
 				const Usecode_value &e2 = v2.get_elem(i);
 				if (!(e1 == e2)) {
@@ -273,12 +302,11 @@ int Usecode_value::find_elem(
     const Usecode_value &val
 ) {
 	if (type != array_type)
-		return (-1);        // Not an array.
-	int i;
-	for (i = 0; i < arrayval.cnt; i++)
-		if (arrayval.elems[i] == val)
-			return (i);
-	return (-1);
+		return -1;        // Not an array.
+	for (size_t i = 0; i < arrayval.size(); i++)
+		if (arrayval[i] == val)
+			return i;
+	return -1;
 }
 
 /*
@@ -290,24 +318,17 @@ int Usecode_value::find_elem(
 Usecode_value &Usecode_value::concat(
     Usecode_value &val2     // Concat. val2 onto end.
 ) {
-	int size;           // Size of result.
 	if (type != array_type) {   // Not an array?  Create one.
 		// Current value becomes 1st elem.
 		Usecode_value tmp(1, this);
-		*this = tmp;
-		size = 1;
-	} else
-		size = get_array_size();
-	if (val2.type != array_type) {  // Appending a single value?
-		resize(size + 1);
-		put_elem(size, val2);
-	} else {            // Appending an array.
-		int size2 = val2.get_array_size();
-		resize(size + size2);
-		for (int i = 0; i < size2; i++)
-			put_elem(size + i, val2.get_elem(i));
+		*this = std::move(tmp);
 	}
-	return (*this);
+	if (val2.type != array_type) {  // Appending a single value?
+		arrayval.push_back(val2);
+	} else {            // Appending an array.
+		arrayval.insert(arrayval.end(), val2.arrayval.cbegin(), val2.arrayval.cend());
+	}
+	return *this;
 }
 
 /*
@@ -319,10 +340,7 @@ void Usecode_value::append(
     int cnt
 ) {
 	assert(type == array_type);
-	int sz = get_array_size();
-	resize(sz + cnt);
-	for (int i = 0; i < cnt; i++)
-		arrayval.elems[sz + i].intval = vals[i];
+	arrayval.insert(arrayval.end(), vals, vals + cnt);
 }
 
 /*
@@ -338,18 +356,20 @@ int Usecode_value::add_values(
 ) {
 	int size = get_array_size();
 	if (!val2.is_array()) {     // Simple case?
-		if (index >= size)
-			resize(index + 1);
-		put_elem(index, val2);
-		return (1);
+		if (index >= size) {
+			arrayval.push_back(val2);
+		} else {
+			arrayval[index] = val2;
+		}
+		return 1;
 	}
 	// Add each element.
 	int size2 = val2.get_array_size();
-	if (index + size2 > size)
-		resize(index + size2);
-	for (int i = 0; i < size2; i++)
-		put_elem(index++, val2.get_elem(i));
-	return (size2);         // Return # added.
+	if (index + size2 > size) {
+		arrayval.resize(index + size2);
+	}
+	std::copy(val2.arrayval.cbegin(), val2.arrayval.cend(), arrayval.begin() + index);
+	return size2;         // Return # added.
 }
 
 /*
@@ -375,20 +395,20 @@ void Usecode_value::print(
 		break;
 	case array_type: {
 		out << "[ ";
-		int i;
-		for (i = 0; i < arrayval.cnt; i++) {
+		size_t i;
+		for (i = 0; i < arrayval.size(); i++) {
 			if (!shortformat || i < 2) {
-				if (i)
+				if (i) {
 					out << ", ";
-
-				arrayval.elems[i].print(out);
+				}
+				arrayval[i].print(out);
 			}
 		}
 		if (shortformat && i > 2)
 			out << ", ... (size " << i << ")";
 		out << " ]";
+		break;
 	}
-	break;
 	case class_obj_type: {
 		Usecode_class_symbol *c = get_class_ptr();
 		out << "->";
@@ -559,11 +579,20 @@ bool Usecode_value::save(
 		break;
 	}
 	case array_type:
+		out->write2(arrayval.size()); // first length, then length Usecode_values
+		for (auto& elem : arrayval) {
+			if (!elem.save(out))
+				return false;
+		}
+		break;
 	case class_obj_type: {
-		int len = arrayval.cnt;
+		// TODO: This creates many copies without need, as every class
+		// instance points to the same array.
+		// Need to serialize this properly.
+		int len = clsrefval.cnt;
 		out->write2(len); // first length, then length Usecode_values
 		for (int i = 0; i < len; i++) {
-			if (!arrayval.elems[i].save(out))
+			if (!clsrefval.elems[i].save(out))
 				return false;
 		}
 		break;
@@ -611,12 +640,24 @@ bool Usecode_value::restore(
 		return true;
 	}
 	case array_type:
+		new (&arrayval) Usecode_vector(in->read2());
+		for (size_t i = 0; i < arrayval.size(); i++) {
+			if (!arrayval[i].restore(in)) {
+				return false;
+			}
+		}
+		return true;
 	case class_obj_type: {
+		// TODO: Because every copy of an instance was independently
+		// serialized, every copy will also be independently deserialized.
+		// This will duplicate the instance variables, and they will no
+		// longer point to the same instance.
+		// Need to deserialize this properly.
 		int len = in->read2();
-		arrayval.cnt = len;  // Stores class, class vars.
-		arrayval.elems = new Usecode_value[arrayval.cnt];
+		clsrefval.cnt = len;  // Stores class, class vars.
+		clsrefval.elems = new Usecode_value[clsrefval.cnt];
 		for (int i = 0; i < len; i++)
-			if (!arrayval.elems[i].restore(in))
+			if (!clsrefval.elems[i].restore(in))
 				return false;
 		return true;
 	}
@@ -637,13 +678,13 @@ ostream &operator<<(ostream &out, Usecode_value &val) {
 void Usecode_value::class_new(Usecode_class_symbol *cls, int nvars) {
 	assert(type == int_type);
 	type = class_obj_type;
-	arrayval.cnt = nvars + 1;    // Stores class, class vars.
-	arrayval.elems = new Usecode_value[arrayval.cnt];
-	arrayval.elems[0] = Usecode_value(cls);
+	clsrefval.cnt = nvars + 1;    // Stores class, class vars.
+	clsrefval.elems = new Usecode_value[clsrefval.cnt];
+	clsrefval.elems[0] = Usecode_value(cls);
 }
 
 void Usecode_value::class_delete() {
 	assert(type == class_obj_type);
-	delete [] arrayval.elems;
+	delete [] clsrefval.elems;
 	*this = Usecode_value(0);
 }

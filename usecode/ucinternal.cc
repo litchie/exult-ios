@@ -2336,7 +2336,7 @@ int Usecode_internal::run() {
 					pushi(0);
 					break;
 				}
-				if (val->is_array() && sval >= val->get_array_size())
+				if (val->is_array() && size_t(sval) >= val->get_array_size())
 					pushi(0);   // Matches originals.
 				else if (sval == 0) // needed for SS keyring (among others)
 					push(val->get_elem0());
