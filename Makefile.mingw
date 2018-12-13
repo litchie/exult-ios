@@ -9,7 +9,7 @@ GIMPPATH:=C:/GimpPlugin
 # Base of the exult source
 SRC=.
 
-ifeq ($(MSYSTEM_PREFIX),/mingw64)
+ifneq (,$(findstring /mingw64,$(MSYSTEM_PREFIX)))
 	ARCHFLAGS=-m64
 	EH_LIB=libgcc_s_seh-1.dll
 	INT_SIZES=-DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -DSIZEOF_LONG=4 -DSIZEOF_LONG_LONG=8 -DSIZEOF_INTP=8
@@ -158,11 +158,11 @@ ifdef DEBUG_SYMBOLS
 	OPT_LEVEL=-Og
 endif
 
-CXXFLAGS=$(ARCHFLAGS) $(strip $(OPT_LEVEL) -Wall -Wextra -pedantic -Walloc-zero -Walloca -Wc++14-compat -Wc++17-compat -Wcast-align -Wcast-qual -Wconditionally-supported -Wctor-dtor-privacy -Wdisabled-optimization -Wduplicated-branches -Wduplicated-cond -Wformat-nonliteral -Wformat-security -Wlogical-not-parentheses -Wlogical-op -Wmissing-include-dirs -Wnon-virtual-dtor -Wold-style-cast -Woverloaded-virtual -Wplacement-new -Wredundant-decls -Wshift-negative-value -Wshift-overflow -Wtrigraphs -Wundef -Wuninitialized -Wuseless-cast -Wwrite-strings -Wzero-as-null-pointer-constant -mms-bitfields)
-CXX=g++ -std=c++14
+CXXFLAGS=-MMD -std=c++14 $(ARCHFLAGS) $(strip $(OPT_LEVEL) -Wall -Wextra -pedantic -Walloc-zero -Walloca -Wc++14-compat -Wc++17-compat -Wcast-align -Wcast-qual -Wconditionally-supported -Wctor-dtor-privacy -Wdisabled-optimization -Wduplicated-branches -Wduplicated-cond -Wformat-nonliteral -Wformat-security -Wlogical-not-parentheses -Wlogical-op -Wmissing-include-dirs -Wnon-virtual-dtor -Wold-style-cast -Woverloaded-virtual -Wplacement-new -Wredundant-decls -Wshift-negative-value -Wshift-overflow -Wtrigraphs -Wundef -Wuninitialized -Wuseless-cast -Wwrite-strings -Wzero-as-null-pointer-constant -mms-bitfields)
+CXX?=g++
 
-CFLAGS=$(ARCHFLAGS) $(strip $(OPT_LEVEL) -Wall -Wextra -pedantic -mms-bitfields)
-CC=gcc
+CFLAGS=-MMD $(ARCHFLAGS) $(strip $(OPT_LEVEL) -Wall -Wextra -pedantic -mms-bitfields)
+CC?=gcc
 
 LDFLAGS=$(ARCHFLAGS)
 LIBS=-lmingw32 $(SDL_LIBS) $(ZIP_LIBS) $(OGG_LIBS) $(FLUIDSYNTH_LIBS) -ldsound -luuid -lole32 -lwinmm -lws2_32 $(SUBSYSTEM) $(MTHREADS)
@@ -286,6 +286,8 @@ STUDIO_DLLS:=libatk-1.0-0.dll libbz2-1.dll libcairo-2.dll libdatrie-1.dll libexp
 
 include Makefile.common
 
+OBJECTS=$(OBJS) $(TOOL_OBJS) $(ES_OBJS) mapedit/u7shp.o
+
 exultico.o: win32/exultico.rc win32/exult.ico
 	windres --include-dir win32 win32/exultico.rc exultico.o
 
@@ -379,7 +381,7 @@ toolsdist: tools toolsinstall
 	cp win32/exult_tools_installer.iss $(U7PATH)
 
 studioclean:
-	rm -f $(ES_OBJS) $(EXP_FILE) exult_studio$(EXEEXT)
+	rm -f $(ES_OBJS) $(ES_OBJS:%.o=%.d) $(EXP_FILE) exult_studio$(EXEEXT)
 
 studioinstall: exult_studio$(EXEEXT)
 	mkdir -p $(U7PATH)
@@ -405,7 +407,7 @@ studiodist: exult_studio$(EXEEXT) studioinstall
 	cp win32/exult_studio_installer.iss $(U7PATH)
 
 pluginclean:
-	rm -f u7shp$(EXEEXT) mapedit/u7shp.o
+	rm -f u7shp$(EXEEXT) mapedit/u7shp.o mapedit/u7shp.d
 
 plugin: u7shp$(EXEEXT)
 
@@ -426,3 +428,5 @@ allinstall: install toolsinstall studioinstall
 
 run:
 	start $(EXEC)
+
+-include $(OBJECTS:%.o=%.d)

@@ -594,6 +594,13 @@ CONFREGRESS_OBJS=$(CONF_OBJS) conf/xmain.o files/utils.o
 confregress$(EXEEXT)  : $(CONFREGRESS_OBJS)
 	$(CXX) $(LDFLAGS) -o $(@) $(CONFREGRESS_OBJS)
 
+TOOL_OBJS=tools/expack.o $(FILE_OBJS) tools/cmanip.o tools/ipack.o $(IPACK_OBJS) \
+	mapedit/tools/mockup/main.o tools/mklink.o tools/rip.o tools/shp2pcx.o \
+	tools/splitshp.o $(SMOOTH_OBJS) mapedit/tools/smooth/plugins/plugin_smooth.o \
+	mapedit/tools/smooth/plugins/plugin_randomize.o mapedit/tools/smooth/plugins/plugin_stream.o \
+	tools/textpack.o tools/u7voice2syx.o tools/wuc.o $(UCXT_OBJS) $(UCC_OBJS) \
+	$(CONFREGRESS_OBJS) usecode/ucxt/head2data.o
+
 head2data.o : usecode/ucxt/head2data.cc usecode/bgintrinsics.h usecode/siintrinsics.h usecode/sibetaintrinsics.h
 
 head2data$(EXEEXT) : usecode/ucxt/head2data.o $(FILE_OBJS) usecode/bgintrinsics.h usecode/siintrinsics.h usecode/sibetaintrinsics.h
@@ -603,12 +610,13 @@ head2data.test: head2data$(EXEEXT)
 	$(SRC)/head2data$(EXEEXT) data/u7bgintrinsics.data data/u7siintrinsics.data data/u7sibetaintrinsics.data
 
 clean:
-	rm -f $(OBJS) tools/expack.o $(EXEC) expack$(EXEEXT) tools/ipack.o ipack$(EXEEXT) data/exult.flx data/exult_flx.h data/exult_bg.flx data/exult_bg_flx.h data/exult_si.flx data/exult_si_flx.h data/bg/bg_paperdol.vga data/bg/bg_mr_faces.vga data/bg/bg_paperdol_vga.h data/bg/bg_mr_faces_vga.h
+	rm -f $(OBJS) $(OBJS:%.o=%.d) tools/expack.o $(EXEC) expack$(EXEEXT) tools/ipack.o ipack$(EXEEXT) data/exult.flx data/exult_flx.h data/exult_bg.flx data/exult_bg_flx.h data/exult_si.flx data/exult_si_flx.h data/bg/bg_paperdol.vga data/bg/bg_mr_faces.vga data/bg/bg_paperdol_vga.h data/bg/bg_mr_faces_vga.h
 
 tools:  expack$(EXEEXT) cmanip$(EXEEXT) ipack$(EXEEXT) mklink$(EXEEXT) mockup$(EXEEXT) rip$(EXEEXT) shp2pcx$(EXEEXT) smooth$(EXEEXT) splitshp$(EXEEXT) textpack$(EXEEXT) wuc$(EXEEXT) u7voice2syx$(EXEEXT) ucc$(EXEEXT) ucxt$(EXEEXT)  \
 	 $(SRC)/head2data$(EXEEXT) head2data.test libsmooth_randomize$(LIBEXT) libsmooth_smooth$(LIBEXT) libsmooth_stream$(LIBEXT)
 
 toolsclean:
+	rm -f $(TOOL_OBJS:%.o=%.d)
 	rm -f tools/expack.o expack$(EXEEXT) $(FILE_OBJS)
 	rm -f tools/cmanip.o cmanip$(EXEEXT)
 	rm -f tools/ipack.o ipack$(EXEEXT) $(IPACK_OBJS)
