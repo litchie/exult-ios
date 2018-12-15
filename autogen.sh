@@ -74,15 +74,12 @@ rm -f audio/midi_drivers/Makefile audio/Makefile conf/Makefile data/Makefile \
       usecode/ucxt/include/Makefile usecode/ucxt/src/Makefile \
       usecode/ucxt/Makefile usecode/Makefile gamemgr/Makefile Makefile
 
-
-# touch the configure.ac file to force rebuilding configure
-touch configure.ac
-
 # Regenerate everything
 aclocal $aclocalincludes
-$libtoolize --force --copy
+$libtoolize --copy
+autoconf
 autoheader
 automake --add-missing --copy --gnu
-autoconf
 
 echo "You are now ready to run ./configure"
+
