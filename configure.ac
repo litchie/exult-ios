@@ -814,16 +814,6 @@ if test x$enable_pedantic_errors = xyes; then
 	CHK_WARN="-pedantic-errors $CHK_WARN"
 fi
 
-# Ignore long-long warnings (for SDL header files...)
-AC_ARG_ENABLE(long-long-warnings, AS_HELP_STRING([--enable-long-long-warnings], [Enable long long warnings (for Compaq cxx with GNU ld) @<:@default no@:>@]),,enable_long_long_warnings=no)
-AC_MSG_CHECKING([if we should disable long-long warnings])
-if test x$enable_long_long_warnings = xyes; then
-	AC_MSG_RESULT(no)
-else
-	AC_MSG_RESULT(yes)
-	CHK_WARN="$CHK_WARN -Wno-long-long"
-fi
-
 WARNINGS=""
 for cxx_flag in $CHK_WARN
 do
