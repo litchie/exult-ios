@@ -65,106 +65,6 @@ Usecode_value::~Usecode_value() {
 }
 
 /*
- *  Copy another to this.
- */
-
-Usecode_value &Usecode_value::operator=(
-    const Usecode_value &v2
-) {
-	if (&v2 == this)
-		return *this;
-	if (type == v2.type) {
-		switch (type) {
-		case string_type:
-			strval = v2.strval;
-			return *this;
-		case pointer_type:
-			ptrval = v2.ptrval;
-			return *this;
-		case array_type:
-			arrayval = v2.arrayval;
-			return *this;
-		default:
-			break;
-		}
-	}
-	destroy();
-	type = v2.type;         // Assign new values.
-	switch (type) {
-	case int_type:
-		intval = v2.intval;
-		break;
-	case pointer_type:
-		new (&ptrval) Game_object_shared(v2.ptrval);
-		break;
-	case string_type:
-		new (&strval) string(v2.strval);
-		break;
-	case array_type:
-		new (&arrayval) Usecode_vector(v2.arrayval);
-		break;
-	case class_sym_type:
-		clssym = v2.clssym;
-		break;
-	case class_obj_type:        // Copy ->.
-		clsrefval.cnt = v2.clsrefval.cnt;
-		clsrefval.elems = v2.clsrefval.elems;
-		break;
-	}
-	undefined = v2.undefined;
-	return *this;
-}
-
-/*
- *  Move from another to this.
- */
-
-Usecode_value &Usecode_value::operator=(
-    Usecode_value &&v2
-) noexcept {
-	if (type == v2.type) {
-		switch (type) {
-		case string_type:
-			strval.swap(v2.strval);
-			return *this;
-		case pointer_type:
-			ptrval.swap(v2.ptrval);
-			return *this;
-		case array_type:
-			arrayval.swap(v2.arrayval);
-			return *this;
-		default:
-			break;
-		}
-	}
-	destroy();
-	type = v2.type;         // Assign new values.
-	switch (type) {
-	case int_type:
-		intval = v2.intval;
-		break;
-	case pointer_type:
-		new (&ptrval) Game_object_shared(std::move(v2.ptrval));
-		break;
-	case string_type:
-		new (&strval) string(std::move(v2.strval));
-		break;
-	case array_type:
-		new (&arrayval) Usecode_vector(std::move(v2.arrayval));
-		break;
-	case class_sym_type:
-		clssym = v2.clssym;
-		break;
-	case class_obj_type:        // Copy ->.
-		clsrefval.cnt = v2.clsrefval.cnt;
-		clsrefval.elems = v2.clsrefval.elems;
-		break;
-	}
-	undefined = v2.undefined;
-	return *this;
-}
-
-/*
  *  Steals an array from another usecode value. If the other
  *  usecode value is not an array, it will be converted into
  *  one and then its data will be stolen.
@@ -178,10 +78,9 @@ void Usecode_value::steal_array(Usecode_value &v2) {
 	type = array_type;
 	if (v2.type == array_type) {
 		// Swipe array.
-		new (&arrayval) Usecode_vector(std::move(v2.arrayval));
+		construct(arrayval, std::move(v2.arrayval));
 	} else {
-		new (&arrayval) Usecode_vector();
-		arrayval.emplace_back(std::move(v2));
+		construct(arrayval, 1, std::move(v2));
 	}
 }
 
@@ -492,7 +391,7 @@ Usecode_value& Usecode_value::operate(const Usecode_value &v2) {
 			// This seems right.
 			v1 = v1;
 	} else {
-		v1 = Usecode_value(0);
+		v1 = 0;
 	}
 	return v1;
 }
@@ -586,7 +485,7 @@ bool Usecode_value::restore(
 	case pointer_type:
 		// TODO: proper deserialization.
 		in->read4();
-		new (&ptrval) Game_object_shared; //DON'T dereference this pointer!
+		construct(ptrval); //DON'T dereference this pointer!
 		// Maybe add a new type "serialized_pointer" to prevent "accidents"?
 		return true;
 	case class_sym_type: {
@@ -600,12 +499,12 @@ bool Usecode_value::restore(
 	}
 	case string_type: {
 		int len = in->read2();
-		new (&strval) string;
+		construct(strval);
 		in->read(strval, len);
 		return true;
 	}
 	case array_type:
-		new (&arrayval) Usecode_vector(in->read2());
+		construct(arrayval, Usecode_vector(in->read2()));
 		for (size_t i = 0; i < arrayval.size(); i++) {
 			if (!arrayval[i].restore(in)) {
 				return false;

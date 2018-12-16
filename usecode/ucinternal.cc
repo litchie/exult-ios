@@ -1169,7 +1169,7 @@ Usecode_value Usecode_internal::count_objects(
 	int framenum = frameval.get_int_value();
 	if (oval != -357) {
 		Game_object *obj = get_item(objval);
-		return (!obj ? 0 : obj->count_objects(
+		return Usecode_value(!obj ? 0 : obj->count_objects(
 		            shapenum, qualnum, framenum));
 	}
 	// Look through whole party.
@@ -1182,7 +1182,7 @@ Usecode_value Usecode_internal::count_objects(
 			total += obj->count_objects(shapenum, qualnum,
 			                            framenum);
 	}
-	return (total);
+	return Usecode_value(total);
 }
 
 /*
@@ -2921,8 +2921,7 @@ int Usecode_internal::run() {
 					Usecode_value thisptr = peek();
 					c = thisptr.get_class_ptr();
 				} else {
-					Usecode_value thisptr = Read2(frame->ip);
-					c = get_class(thisptr.get_int_value());
+					c = get_class(Read2(frame->ip));
 				}
 				if (!c) {
 					THIS_ERROR();

@@ -85,10 +85,52 @@ private:
 			break;
 		}
 	}
+	template <typename T, typename... U>
+	void construct(T& var, U&&... newval) {
+		new (&var) T(std::forward<U>(newval)...);
+	}
+	template <typename T, typename U>
+	void replace(T& var, U&& newval, Val_type newtype, bool newundefined = false) {
+		if (type == newtype) {
+			var = std::forward<U>(newval);
+		} else {
+			destroy();
+			type = newtype;
+			construct(var, std::forward<U>(newval));
+		}
+		undefined = newundefined;
+	}
+	template <typename T, typename U>
+	void replaceFrom(T var, U&& newval, Val_type newtype) {
+		replace(this->*var, std::forward<U>(newval).*var, newtype, newval.undefined);
+	}
+	template <typename T>
+	void copy_internal(T&& v2) noexcept(std::is_rvalue_reference<T>::value) {
+		switch (v2.type) {
+		case int_type:
+			replaceFrom(&Usecode_value::intval, std::forward<T>(v2), v2.type);
+			break;
+		case pointer_type:
+			replaceFrom(&Usecode_value::ptrval, std::forward<T>(v2), v2.type);
+			break;
+		case string_type:
+			replaceFrom(&Usecode_value::strval, std::forward<T>(v2), v2.type);
+			break;
+		case array_type:
+			replaceFrom(&Usecode_value::arrayval, std::forward<T>(v2), v2.type);
+			break;
+		case class_sym_type:
+			replaceFrom(&Usecode_value::clssym, std::forward<T>(v2), v2.type);
+			break;
+		case class_obj_type:
+			replaceFrom(&Usecode_value::clsrefval, std::forward<T>(v2), v2.type);
+			break;
+		}
+	}
 
 public:
 	Usecode_value() : type(int_type), intval(0), undefined(true) {}
-	Usecode_value(int ival) : type(int_type), intval(ival), undefined(false) {}
+	explicit Usecode_value(int ival) : type(int_type), intval(ival), undefined(false) {}
 	explicit Usecode_value(std::string s) : type(string_type), strval(std::move(s)), undefined(false) {}
 	// Create array with 1st element.
 	Usecode_value(int size, Usecode_value *elem0)
@@ -96,67 +138,48 @@ public:
 		if (elem0)
 			arrayval[0] = *elem0;
 	}
-	explicit Usecode_value(Game_object *ptr) : type(pointer_type), undefined(false) {
-		if (ptr != nullptr) {
-			new (&ptrval) Game_object_shared(ptr->shared_from_this());
-		} else {
-			new (&ptrval) Game_object_shared;
-		}
-	}
+	explicit Usecode_value(Game_object *ptr)
+		: type(pointer_type), ptrval(ptr != nullptr ? ptr->shared_from_this() : Game_object_shared()),
+		  undefined(false) {}
     explicit Usecode_value(Game_object_shared ptr) : type(pointer_type), ptrval(std::move(ptr)), undefined(false) {}
 	explicit Usecode_value(Usecode_class_symbol *ptr) : type(class_sym_type), clssym(ptr), undefined(false) {}
 	~Usecode_value();
-	Usecode_value &operator=(const Usecode_value &v2);
-	Usecode_value &operator=(Usecode_value &&v2) noexcept;
-	Usecode_value &operator=(std::string str) noexcept {
-		if (type == string_type) {
-			strval = std::move(str);
-		} else {
-			destroy();
-			type = string_type;
-			new (&strval) std::string(std::move(str));
+	Usecode_value &operator=(const Usecode_value &v2) {
+		if (&v2 != this) {
+			copy_internal(v2);
 		}
-		undefined = false;
+		return *this;
+	}
+	Usecode_value &operator=(Usecode_value &&v2) noexcept {
+		copy_internal(std::move(v2));
+		return *this;
+	}
+	Usecode_value &operator=(int val) noexcept {
+		replace(intval, val, int_type);
+		return *this;
+	}
+	Usecode_value &operator=(std::string str) noexcept {
+		replace(strval, str, string_type);
 		return *this;
 	}
 	Usecode_value &operator=(Game_object *ptr) noexcept {
-		if (ptr != nullptr) {
-			*this = ptr->shared_from_this();
-		} else {
-			*this = Game_object_shared();
-		}
+		replace(ptrval, ptr != nullptr ? ptr->shared_from_this() : Game_object_shared(), pointer_type);
 		return *this;
 	}
 	Usecode_value &operator=(Game_object_shared ptr) noexcept {
-		if (type == pointer_type) {
-			ptrval = std::move(ptr);
-		} else {
-			destroy();
-			type = pointer_type;
-			new (&ptrval) Game_object_shared(std::move(ptr));
-		}
-		undefined = false;
+		replace(ptrval, ptr, pointer_type);
 		return *this;
 	}
 	Usecode_value &operator=(Usecode_class_symbol *ptr) noexcept {
-		if (type == class_sym_type) {
-			clssym = ptr;
-		} else {
-			destroy();
-			type = class_sym_type;
-			clssym = ptr;
-		}
-		undefined = false;
+		replace(clssym, ptr, class_sym_type);
 		return *this;
 	}
 	// Copy ctor.
-	Usecode_value(const Usecode_value &v2)
-		: type(int_type) {
+	Usecode_value(const Usecode_value &v2) : type(int_type) {
 		*this = v2;
 	}
 	// Move ctor.
-	Usecode_value(Usecode_value &&v2) noexcept
-		: type(int_type) {
+	Usecode_value(Usecode_value &&v2) noexcept : type(int_type) {
 		*this = std::move(v2);
 	}
 

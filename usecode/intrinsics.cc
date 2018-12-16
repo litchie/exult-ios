@@ -101,7 +101,7 @@ USECODE_INTRINSIC(get_random) {
 		Usecode_value u(0);
 		return(u);
 	}
-	Usecode_value u = (1 + (rand() % range));
+	Usecode_value u(1 + (rand() % range));
 	return(u);
 }
 
