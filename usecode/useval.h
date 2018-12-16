@@ -131,7 +131,8 @@ private:
 public:
 	Usecode_value() : type(int_type), intval(0), undefined(true) {}
 	explicit Usecode_value(int ival) : type(int_type), intval(ival), undefined(false) {}
-	explicit Usecode_value(std::string s) : type(string_type), strval(std::move(s)), undefined(false) {}
+	explicit Usecode_value(const std::string& s) : type(string_type), strval(s), undefined(false) {}
+	explicit Usecode_value(std::string&& s) noexcept : type(string_type), strval(std::move(s)), undefined(false) {}
 	// Create array with 1st element.
 	Usecode_value(int size, Usecode_value *elem0)
 		: type(array_type), arrayval(size), undefined(false) {
@@ -158,8 +159,12 @@ public:
 		replace(intval, val, int_type);
 		return *this;
 	}
-	Usecode_value &operator=(std::string str) noexcept {
+	Usecode_value &operator=(const std::string& str) {
 		replace(strval, str, string_type);
+		return *this;
+	}
+	Usecode_value &operator=(std::string&& str) noexcept {
+		replace(strval, std::move(str), string_type);
 		return *this;
 	}
 	Usecode_value &operator=(Game_object *ptr) noexcept {
