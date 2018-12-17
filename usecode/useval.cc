@@ -387,11 +387,9 @@ Usecode_value& Usecode_value::operate(const Usecode_value &v2) {
 			// the originals where this matters.
 			v1.strval += ' ';
 			v1.strval += v2.strval;
-		} else
-			// This seems right.
-			v1 = v1;
+		}
 	} else {
-		v1 = 0;
+		v1 = Usecode_value(0);
 	}
 	return v1;
 }
