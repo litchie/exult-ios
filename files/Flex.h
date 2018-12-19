@@ -29,8 +29,6 @@
 #include "U7file.h"
 #include "exceptions.h"
 
-class DataSource;
-
 /**
  *  The Flex class is an data reader which reads data in the flex
  *  file format. The actual data need not be in a file, however.
@@ -43,6 +41,7 @@ public:
 	    orig = 0,       ///<    Original file version.
 	    exult_v2 = 1    ///<    Exult extension for IFIX objects.
 	};
+
 protected:
 	static const unsigned short EXULT_FLEX_MAGIC2 = 0x0000cc00;
 	char    title[80];
@@ -56,6 +55,7 @@ protected:
 	Reference get_object_reference(uint32 objnum) const override {
 		return object_list[objnum];
 	}
+
 public:
 	/// Basic constructor.
 	/// @param spec File name and object index pair.
@@ -86,6 +86,7 @@ public:
 
 	static bool is_flex(IDataSource *in);
 	static bool is_flex(const std::string& fname);
+
 private:
 	/// No default constructor.
 	Flex();
@@ -100,20 +101,17 @@ typedef U7DataBuffer<Flex> FlexBuffer;
  *  This is for writing out a whole Flex file.
  */
 class Flex_writer {
-	std::ofstream *out;     // What we're writing to.
-	ODataSource *dout;       // Or this, if non-0.
+	OStreamDataSource& dout;       // Or this, if non-0.
 	size_t count;           // # entries.
 	long cur_start;         // Start of cur. entry being written.
-	uint8 *table;           // Table of offsets & lengths.
+	std::unique_ptr<uint8[]> table;           // Table of offsets & lengths.
 	uint8 *tptr;            // ->into table.
+
 public:
-	Flex_writer(std::ofstream &o, const char *title, size_t cnt,
-	            Flex::Flex_vers vers = Flex::orig);
-	Flex_writer(ODataSource *o, const char *title, size_t cnt,
+	Flex_writer(OStreamDataSource& o, const char *title, size_t cnt,
 	            Flex::Flex_vers vers = Flex::orig);
 	~Flex_writer();
 	void mark_section_done();   // Finished writing out a section.
-	bool close();           // All done.
 };
 
 #endif

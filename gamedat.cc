@@ -196,17 +196,14 @@ void Game_window::restore_gamedat(
 	U7mkdir("<GAMEDAT>", 0755);     // Create dir. if not already there. Don't
 	// use GAMEDAT define cause that's got a
 	// trailing slash
-	try {
-		U7open(in_stream, fname);   // Open file; throws an exception
-	} catch (const file_exception &f) {
+	IFileDataSource in(fname);
+	if (!in.good()) {
 		if (!Game::is_editing())    // Ok if map-editing.
-			throw;
+			throw file_read_exception(fname);
 		std::cerr << "Warning (map-editing): Couldn't open '" <<
 		          fname << "'" << endl;
 		return;
 	}
-
-	IStreamDataSource in(&in_stream);
 
 	U7remove(USEDAT);
 	U7remove(USEVARS);
@@ -285,20 +282,17 @@ static const int sinumsavefiles = array_size(sisavefiles);
  *      Errors reported.
  */
 
-static long Savefile(
-    ostream &out,           // Write here.
+static size_t Savefile(
+    OStreamDataSource& out,           // Write here.
     const char *fname           // Name of file to save.
 ) {
-	ifstream in_stream;
-	try {
-		U7open(in_stream, fname);
-	} catch (exult_exception &e) {
+	IFileDataSource in(fname);
+	if (!in.good()) {
 		if (Game::is_editing())
 			return 0;   // Newly developed game.
-		throw;
+		throw file_read_exception(fname);
 	}
-	IStreamDataSource in(&in_stream);
-	long len = in.getSize();
+	size_t len = in.getSize();
 	in.seek(0);
 	char namebuf[13];       // First write 13-byte name.
 	memset(namebuf, 0, sizeof(namebuf));
@@ -311,21 +305,17 @@ static long Savefile(
 		base = fname;
 	strncpy(namebuf, base, sizeof(namebuf));
 	out.write(namebuf, sizeof(namebuf));
-	char *buf = new char[len];  // Get it all at once.
-	in.read(buf, len);
-	out.write(buf, len);
-	delete [] buf;
-	if (!in_stream.good())
-		throw file_read_exception(fname);
+	auto buf = in.readN(len);
+	out.write(buf.get(), len);
 	return len + 13;        // Include filename.
 }
 
-static long SavefileFromDataSource(
-    ostream &out,       // write here
+static size_t SavefileFromDataSource(
+    OStreamDataSource& out,       // write here
     IDataSource &source, // read from here
     const char *fname   // store data using this filename
 ) {
-	long len = source.getSize();
+	size_t len = source.getSize();
 	char namebuf[13];
 	memset(namebuf, 0, sizeof(namebuf));
 	const char *base = strrchr(fname, '/');// Want the base name.
@@ -337,16 +327,14 @@ static long SavefileFromDataSource(
 		base = fname;
 	strncpy(namebuf, base, sizeof(namebuf));
 	out.write(namebuf, sizeof(namebuf));
-	char *buf = new char[len];
-	source.read(buf, len);
-	out.write(buf, len);
-	delete [] buf;
+	auto buf = source.readN(len);
+	out.write(buf.get(), len);
 	return len + 13;
 }
 
 inline static void save_gamedat_chunks(
     Game_map *map,
-    ostream &out,
+    OStreamDataSource& out,
     Flex_writer &flex) {
 	for (int schunk = 0; schunk < 12 * 12; schunk++) {
 		char iname[128];
@@ -370,7 +358,6 @@ void Game_window::save_gamedat(
     const char *fname,          // File to create.
     const char *savename            // User's savegame name.
 ) {
-
 	// First check for compressed save game
 #ifdef HAVE_ZIP_SUPPORT
 	if (save_compression > 0 && save_gamedat_zip(fname, savename) != false)
@@ -383,8 +370,7 @@ void Game_window::save_gamedat(
 	const char **savefiles = (Game::get_game_type() == BLACK_GATE) ?
 	                         bgsavefiles : sisavefiles;
 
-	ofstream out;
-	U7open(out, fname);
+	OFileDataSource out(fname);
 	vector<Game_map *>::iterator it;
 	int count = numsavefiles;   // Count up #files to write.
 	count += 12 * 12 - 1; // First map outputs IREG's directly to
@@ -413,14 +399,15 @@ void Game_window::save_gamedat(
 			char dname[128];
 			// Need to have read/write access here.
 			std::stringstream outbuf(std::ios::in | std::ios::out | std::ios::binary);
-			OStreamDataSource outds(dynamic_cast<std::ostream *>(&outbuf));
-			Flex_writer flexbuf(&outds,
-			                    (*it)->get_mapped_name(GAMEDAT, dname), 12 * 12);
-			// Save chunks to memory flex...
-			save_gamedat_chunks(*it, outbuf, flexbuf);
-			// ... and then close it.
-			flexbuf.close();
-			IStreamDataSource inds(dynamic_cast<std::istream *>(&outbuf));
+			OStreamDataSource outds(&outbuf);
+			{
+				Flex_writer flexbuf(outds,
+			                        (*it)->get_mapped_name(GAMEDAT, dname), 12 * 12);
+				// Save chunks to memory flex
+				save_gamedat_chunks(*it, outds, flexbuf);
+			}
+			outbuf.seekg(0);
+			IStreamDataSource inds(&outbuf);
 			int len = strlen(dname);
 			if (dname[len - 1] == '/' || dname[len - 1] == '\\')
 				dname[len - 1] = 0; // Should always be the case.
@@ -428,9 +415,6 @@ void Game_window::save_gamedat(
 			flex.mark_section_done();
 		}
 	}
-	bool result = flex.close(); // Write it all out.
-	if (!result)            // ++++Better error system needed??
-		throw file_write_exception(fname);
 }
 
 /*
@@ -487,106 +471,102 @@ void Game_window::write_saveinfo() {
 
 	int save_count = 1;
 
-	try {
-		ifstream in;
-		U7open(in, GSAVEINFO);      // Open file; throws an exception
-
-		IStreamDataSource ds(&in);
-		ds.skip(10);    // Skip 10 bytes.
-		save_count += ds.read2();
-
-		in.close();
-	} catch (const file_exception & /*f*/) {
+	{
+		IFileDataSource ds(GSAVEINFO);
+		if (ds.good()) {
+			ds.skip(10);    // Skip 10 bytes.
+			save_count += ds.read2();
+		}
 	}
 
 	int party_size = party_man->get_count() + 1;
 
-	time_t t = time(nullptr);
-	struct tm *timeinfo = localtime(&t);
+	{
+		OFileDataSource out(GSAVEINFO);   // Open file; throws an exception - Don't care
 
-	U7open(out_stream, GSAVEINFO);      // Open file; throws an exception - Don't care
-	OStreamDataSource out(&out_stream);
+		time_t t = time(nullptr);
+		tm *timeinfo = localtime(&t);
 
-	// This order must match struct SaveGame_Details
+		// This order must match struct SaveGame_Details
 
-	// Time that the game was saved
-	out.write1(timeinfo->tm_min);
-	out.write1(timeinfo->tm_hour);
-	out.write1(timeinfo->tm_mday);
-	out.write1(timeinfo->tm_mon + 1);
-	out.write2(timeinfo->tm_year + 1900);
+		// Time that the game was saved
+		out.write1(timeinfo->tm_min);
+		out.write1(timeinfo->tm_hour);
+		out.write1(timeinfo->tm_mday);
+		out.write1(timeinfo->tm_mon + 1);
+		out.write2(timeinfo->tm_year + 1900);
 
-	// The Game Time that the save was done at
-	out.write1(clock->get_minute());
-	out.write1(clock->get_hour());
-	out.write2(clock->get_day());
+		// The Game Time that the save was done at
+		out.write1(clock->get_minute());
+		out.write1(clock->get_hour());
+		out.write2(clock->get_day());
 
-	out.write2(save_count);
-	out.write1(party_size);
+		out.write2(save_count);
+		out.write1(party_size);
 
-	out.write1(0);          // Unused
+		out.write1(0);          // Unused
 
-	out.write1(timeinfo->tm_sec);   // 15
-
-	// Packing for the rest of the structure
-	for (size_t j = offsetof(SaveGame_Details, reserved0);
-	        j < sizeof(SaveGame_Details); j++)
-		out.write1(0);
-
-	for (i = 0; i < party_size ; i++) {
-		Actor *npc;
-		if (i == 0)
-			npc = main_actor;
-		else
-			npc = get_npc(party_man->get_member(i - 1));
-
-		char name[18];
-		std::string namestr = npc->get_npc_name();
-		strncpy(name, namestr.c_str(), 18);
-		out.write(name, 18);
-		out.write2(npc->get_shapenum());
-
-		out.write4(npc->get_property(Actor::exp));
-		out.write4(npc->get_flags());
-		out.write4(npc->get_flags2());
-
-		out.write1(npc->get_property(Actor::food_level));
-		out.write1(npc->get_property(Actor::strength));
-		out.write1(npc->get_property(Actor::combat));
-		out.write1(npc->get_property(Actor::dexterity));
-		out.write1(npc->get_property(Actor::intelligence));
-		out.write1(npc->get_property(Actor::magic));
-		out.write1(npc->get_property(Actor::mana));
-		out.write1(npc->get_property(Actor::training));
-
-		out.write2(npc->get_property(Actor::health));
-		out.write2(npc->get_shapefile());
+		out.write1(timeinfo->tm_sec);   // 15
 
 		// Packing for the rest of the structure
-		for (size_t j = offsetof(SaveGame_Party, reserved1);
-		        j < sizeof(SaveGame_Party); j++)
+		for (size_t j = offsetof(SaveGame_Details, reserved0);
+		        j < sizeof(SaveGame_Details); j++)
 			out.write1(0);
+
+		for (i = 0; i < party_size ; i++) {
+			Actor *npc;
+			if (i == 0)
+				npc = main_actor;
+			else
+				npc = get_npc(party_man->get_member(i - 1));
+
+			char name[18];
+			std::string namestr = npc->get_npc_name();
+			strncpy(name, namestr.c_str(), 18);
+			out.write(name, 18);
+			out.write2(npc->get_shapenum());
+
+			out.write4(npc->get_property(Actor::exp));
+			out.write4(npc->get_flags());
+			out.write4(npc->get_flags2());
+
+			out.write1(npc->get_property(Actor::food_level));
+			out.write1(npc->get_property(Actor::strength));
+			out.write1(npc->get_property(Actor::combat));
+			out.write1(npc->get_property(Actor::dexterity));
+			out.write1(npc->get_property(Actor::intelligence));
+			out.write1(npc->get_property(Actor::magic));
+			out.write1(npc->get_property(Actor::mana));
+			out.write1(npc->get_property(Actor::training));
+
+			out.write2(npc->get_property(Actor::health));
+			out.write2(npc->get_shapefile());
+
+			// Packing for the rest of the structure
+			for (size_t j = offsetof(SaveGame_Party, reserved1);
+			        j < sizeof(SaveGame_Party); j++)
+				out.write1(0);
+		}
 	}
 
-	out_stream.close();
+	{
+		// Save Shape
+		std::unique_ptr<Shape_file> map = create_mini_screenshot();
+		OFileDataSource out(GSCRNSHOT);     // Open file; throws an exception - Don't care
+		map->save(&out);
+	}
 
-	// Save Shape
-	std::unique_ptr<Shape_file> map = create_mini_screenshot();
-	U7open(out_stream, GSCRNSHOT);      // Open file; throws an exception - Don't care
-	map->save(&out);
-	out_stream.close();
-
-	// Current Exult version
-
-	U7open(out_stream, GEXULTVER);
-	getVersionInfo(out_stream);
-	out_stream.close();
+	{
+		// Current Exult version
+		OFileDataSource out(GEXULTVER);     // Open file; throws an exception - Don't care
+		getVersionInfo(out_stream);
+	}
 
 	// Exult version that started this game
 	if (!U7exists(GNEWGAMEVER)) {
-		U7open(out_stream, GNEWGAMEVER);
-		out_stream << "Unknown" << endl;
-		out_stream.close();
+		OFileDataSource out(GNEWGAMEVER);
+		const string unkver("Unknown");
+		out.write(unkver);
 	}
 }
 
@@ -659,9 +639,10 @@ bool Game_window::get_saveinfo(int num, char *&name, std::unique_ptr<Shape_file>
 		return true;
 #endif
 
-	ifstream in_stream;
-	U7open(in_stream, fname);       // Open file; throws an exception
-	IStreamDataSource in(&in_stream);
+	IFileDataSource in(fname);
+	if (!in.good()) {
+		throw file_read_exception(fname);
+	}
 	// in case of an error.
 	// Always try to Read Name
 	char buf[0x50];
@@ -675,22 +656,22 @@ bool Game_window::get_saveinfo(int num, char *&name, std::unique_ptr<Shape_file>
 
 	// Now get dir info
 	in.seek(0x54);          // Get to where file count sits.
-	int numfiles = in.read4();
+	size_t numfiles = in.read4();
 	in.seek(0x80);          // Get to file info.
 	// Read pos., length of each file.
-	long *finfo = new long[2 * numfiles];
-	int i;
-	for (i = 0; i < numfiles; i++) {
+	auto finfo = std::make_unique<uint32[]>(2 * numfiles);
+	for (size_t i = 0; i < numfiles; i++) {
 		finfo[2 * i] = in.read4();  // The position, then the length.
 		finfo[2 * i + 1] = in.read4();
 	}
 
 	// Always first two entires
-	for (i = 0; i < 2; i++) { // Now read each file.
+	for (size_t i = 0; i < 2; i++) { // Now read each file.
 		// Get file length.
-		size_t len = finfo[2 * i + 1] - 13;
-		if (len <= 0)
+		size_t len = finfo[2 * i + 1];
+		if (len <= 13)
 			continue;
+		len -= 13;
 		in.seek(finfo[2 * i]);  // Get to it.
 		char fname[50];     // Set up name.
 		strcpy(fname, GAMEDAT);
@@ -701,42 +682,34 @@ bool Game_window::get_saveinfo(int num, char *&name, std::unique_ptr<Shape_file>
 			fname[namelen - 1] = 0;
 
 		if (!strcmp(fname, GSCRNSHOT)) {
-			char *buf = new char[len];
-			in.read(buf, len);
-			IBufferDataSource ds(buf, len);
-			map = std::make_unique<Shape_file>(&ds);
+			auto ds = in.makeSource(len);
+			map = std::make_unique<Shape_file>(ds.get());
 		} else if (!strcmp(fname, GSAVEINFO)) {
 			read_saveinfo(&in, details, party);
 		}
 
 	}
-	in_stream.close();
-
-	delete [] finfo;
-
 	return true;
 }
 
 void Game_window::get_saveinfo(std::unique_ptr<Shape_file> &map, SaveGame_Details *&details, SaveGame_Party  *&party) {
-	try {
-		ifstream in;
-		U7open(in, GSAVEINFO);      // Open file; throws an exception
-		IStreamDataSource ds(&in);
-		read_saveinfo(&ds, details, party);
-		in.close();
-	} catch (const file_exception & /*f*/) {
-		details = nullptr;
-		party = nullptr;
+	{
+		IFileDataSource ds(GSAVEINFO);
+		if (ds.good()) {
+			read_saveinfo(&ds, details, party);
+		} else {
+			details = nullptr;
+			party = nullptr;
+		}
 	}
 
-	try {
-		ifstream in;
-		U7open(in, GSCRNSHOT);      // Open file; throws an exception
-		IStreamDataSource ds(&in);
-		map = std::make_unique<Shape_file>(&ds);
-		in.close();
-	} catch (const file_exception & /*f*/) {
-		map.reset();
+	{
+		IFileDataSource ds(GSCRNSHOT);
+		if (ds.good()) {
+			map = std::make_unique<Shape_file>(&ds);
+		} else {
+			map.reset();
+		}
 	}
 }
 
@@ -1029,28 +1002,20 @@ bool Game_window::restore_gamedat_zip(
 
 // Level 1 Compression
 static bool Save_level1(zipFile zipfile, const char *fname) {
-	ifstream in;
-	try {
-		U7open(in, fname);
-	} catch (exult_exception &e) {
+	IFileDataSource ds(fname);
+	if (!ds.good()) {
 		if (Game::is_editing())
 			return false;   // Newly developed game.
-		throw;
+		throw file_read_exception(fname);
 	}
 
-
-	IStreamDataSource ds(&in);
-
 	unsigned int size = ds.getSize();
-	char *buf = new char[size];
-	ds.read(buf, size);
-
+	auto buf = ds.readN(size);
 
 	zipOpenNewFileInZip(zipfile, remove_dir(fname), nullptr, nullptr, 0,
 	                    nullptr, 0, nullptr, Z_DEFLATED, Z_BEST_COMPRESSION);
 
-	zipWriteInFileInZip(zipfile, buf, size);
-	delete [] buf;
+	zipWriteInFileInZip(zipfile, buf.get(), size);
 
 	return zipCloseFileInZip(zipfile) == ZIP_OK;
 }
@@ -1073,26 +1038,28 @@ static bool Begin_level2(zipFile zipfile, int mapnum) {
 }
 
 static bool Save_level2(zipFile zipfile, const char *fname) {
-	ifstream in;
-	try {
-		U7open(in, fname);
-	} catch (exult_exception &e) {
+	IFileDataSource ds(fname);
+	if (!ds.good()) {
 		if (Game::is_editing())
 			return false;   // Newly developed game.
-		throw;
+		throw file_read_exception(fname);
 	}
 
-	IStreamDataSource ds(&in);
-
-	uint32 size = ds.getSize();
+	size_t size = ds.getSize();
 	char *buf = new char[size < 13 ? 13 : size]; // We want at least 13 bytes
 
 	// Filename first
 	memset(buf, 0, 13);
-	const char *fname2 = strrchr(fname, '/') + 1;
-	if (!fname2)
-		fname2 = strchr(fname, '\\') + 1;
-	strncpy(buf, fname2 ? fname2 : fname, 13);
+	const char *fname2 = strrchr(fname, '/');
+	if (!fname2) {
+		fname2 = strchr(fname, '\\');
+	}
+	if (fname2) {
+		fname2++;
+	} else {
+		fname2 = fname;
+	}
+	strncpy(buf, fname2, 13);
 	int err = zipWriteInFileInZip(zipfile, buf, 12);
 
 	// Size of the file

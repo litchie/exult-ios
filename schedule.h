@@ -744,7 +744,7 @@ public:
  *  An NPC schedule change:
  */
 class Schedule_change {
-	static vector<char *> script_names; // For Scripted_schedule's.
+	static vector<std::string> script_names; // For Scripted_schedule's.
 	unsigned char time;     // Time*3hours when this takes effect.
 	unsigned char type;     // Schedule_type value.
 	unsigned char days;     // A bit for each day (0-6).  We don't
@@ -754,7 +754,7 @@ public:
 	Schedule_change() : time(0), type(0), days(0x7f)
 	{  }
 	static void clear();
-	static vector<char *> &get_script_names() {
+	static vector<std::string> &get_script_names() {
 		return script_names;
 	}
 	void set4(const unsigned char *ent);  // Create from 4-byte entry.
@@ -771,9 +771,9 @@ public:
 	Tile_coord get_pos() const {
 		return pos;
 	}
-	static char *get_script_name(int ty) {
+	static const char *get_script_name(int ty) {
 		return ty >= Schedule::first_scripted_schedule ?
-		       script_names[ty - Schedule::first_scripted_schedule] : nullptr;
+		       script_names[ty - Schedule::first_scripted_schedule].c_str() : nullptr;
 	}
 };
 

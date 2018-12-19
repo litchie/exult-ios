@@ -1354,9 +1354,7 @@ void Shape_chooser::import_shape(
 		Shape_chooser *ed = static_cast<Shape_chooser *>(user_data);
 		if (ed->selected < 0)
 			return;         // Shouldn't happen.
-		ifstream file;
-		U7open(file, fname);
-		IStreamDataSource ds(&file);
+		IFileDataSource ds(fname);
 		// Check to see if it is a valid shape file.
 		// We never get here through a flat, so we don't deal
 		// with that case. These tests aren't perfect!

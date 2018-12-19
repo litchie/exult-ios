@@ -411,7 +411,7 @@ class Usecode_internal : public Usecode_machine {
 	const char *get_user_choice();  // Get user's choice.
 	int get_user_choice_num();
 	void clear_usevars();
-	void read_usevars(std::istream &in);    // Read static variables.
+	void read_usevars();    // Read static variables.
 	Usecode_function *find_function(int funcid);
 
 	Game_object *intercept_item;
@@ -472,6 +472,7 @@ public:
 	Usecode_value *peek_stack(int depth) const;
 	void poke_stack(int depth, Usecode_value &val);
 #endif
+
 public:
 	friend class Usecode_script;
 	Usecode_internal();
@@ -524,6 +525,5 @@ public:
 		intercept_tile = t;
 	}
 };
-
 
 #endif

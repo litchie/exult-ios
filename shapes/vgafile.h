@@ -37,7 +37,6 @@
 
 class IDataSource;
 class ODataSource;
-class IStreamDataSource;
 class Shape;
 class Image_buffer8;
 class Palette;
@@ -80,7 +79,7 @@ public:
 	bool is_rle() const {
 		return rle;
 	}
-	void write(std::ostream &out) const;  // Write out.
+	void write(ODataSource& out) const;  // Write out.
 	void save(ODataSource *shape_source) const;
 	// Convert raw image to RLE.
 	static std::unique_ptr<unsigned char[]> encode_rle(unsigned char *pixels, int w, int h,
@@ -171,6 +170,7 @@ protected:
 	                  int frnum, std::vector<int> const &counts, int src = -1);
 	// Store shape that was read.
 	Shape_frame *store_frame(std::unique_ptr<Shape_frame> frame, int framenum);
+
 public:
 	Shape() : num_frames(0), modified(false), from_patch(false)	{}
 	explicit Shape(std::unique_ptr<Shape_frame> fr);
@@ -182,7 +182,7 @@ public:
 	virtual ~Shape() noexcept = default;
 	void reset();
 	void load(IDataSource *shape_source);
-	void write(std::ostream &out) const;  // Write out.
+	void write(ODataSource& out) const;  // Write out.
 	void set_modified() {
 		modified = true;
 	}
@@ -261,6 +261,7 @@ protected:
 	//   single shape, like 'pointers.shp'.
 	// In this case, all frames are pre-
 	//   loaded.
+
 public:
 	explicit Vga_file(const char *nm, int u7drag = -1, const char *nm2 = nullptr);
 	explicit Vga_file(std::vector<std::pair<std::string, int>> const &sources, int u7drag = -1);

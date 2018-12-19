@@ -116,14 +116,18 @@ void Image_file_info::flush(
 	modified = false;
 	int nshapes = ifile->get_num_shapes();
 	int shnum;          // First read all entries.
-	Shape **shapes = new Shape *[nshapes];
+	vector<Shape*> shapes(nshapes);
 	for (shnum = 0; shnum < nshapes; shnum++)
 		shapes[shnum] = ifile->extract_shape(shnum);
 	string filestr("<PATCH>/"); // Always write to 'patch'.
 	filestr += basename;
 	// !flex means single-shape.
-	write_file(filestr.c_str(), shapes, nshapes, !ifile->is_flex());
-	delete [] shapes;
+	try {
+		write_file(filestr.c_str(), shapes.data(), nshapes, !ifile->is_flex());
+	} catch (exult_exception &e) {
+		EStudio::Alert("Error writing '%s'", filestr.c_str());
+		return;
+	}
 	// Tell Exult to reload this file.
 	unsigned char buf[Exult_server::maxlength];
 	unsigned char *ptr = &buf[0];
@@ -158,15 +162,11 @@ void Image_file_info::write_file(
     int nshapes,            // # shapes.
     bool single         // Don't write a FLEX file.
 ) {
-	ofstream out;
-	U7open(out, pathname);      // May throw exception.
+	OFileDataSource out(pathname);      // May throw exception.
 	if (single) {
 		if (nshapes)
 			shapes[0]->write(out);
 		out.flush();
-		if (!out.good())
-			throw file_write_exception(pathname);
-		out.close();
 		return;
 	}
 	Flex_writer writer(out, "Written by ExultStudio", nshapes);
@@ -176,8 +176,6 @@ void Image_file_info::write_file(
 			shapes[shnum]->write(out);
 		writer.mark_section_done();
 	}
-	if (!writer.close())
-		throw file_write_exception(pathname);
 }
 
 /*
@@ -452,27 +450,20 @@ void Flex_file_info::flush(
 		if (!entries[i])
 			get(i, len);
 	}
-	ofstream out;
 	string filestr("<PATCH>/"); // Always write to 'patch'.
 	filestr += basename;
-	OStreamDataSource ds(&out);
-	U7open(out, filestr.c_str());   // May throw exception.
+	OFileDataSource ds(filestr.c_str());	// Throws exception on failure
 	if (cnt <= 1 && write_flat) { // Write flat file.
 		if (cnt)
 			ds.write(entries[0].get(), lengths[0]);
-		out.close();
-		if (!out.good())
-			throw file_write_exception(filestr);
 		return;
 	}
-	Flex_writer writer(out, "Written by ExultStudio", cnt);
+	Flex_writer writer(ds, "Written by ExultStudio", cnt);
 	// Write all out.
 	for (int i = 0; i < cnt; i++) {
 		ds.write(entries[i].get(), lengths[i]);
 		writer.mark_section_done();
 	}
-	if (!writer.close())
-		throw file_write_exception(filestr);
 }
 
 /*
@@ -530,23 +521,24 @@ static bool Create_file(
     const char *basename,       // Base file name.
     const string &pathname      // Full name.
 ) {
-	int namelen = strlen(basename);
-	if (strcasecmp(".flx", basename + namelen - 4) == 0) {
-		// We can create an empty flx.
-		ofstream out;
-		U7open(out, pathname.c_str());  // May throw exception.
-		Flex_writer writer(out, "Written by ExultStudio", 0);
-		if (!writer.close())
-			throw file_write_exception(pathname);
-		return true;
-	} else if (strcasecmp(".pal", basename + namelen - 4) == 0) {
-		// Empty 1-palette file.
-		ofstream out;
-		U7open(out, pathname.c_str());  // May throw exception.
-		out.close();        // Empty file.
-		return true;
-	} else if (strcasecmp("npcs", basename) == 0)
-		return true;        // Don't need file.
+	try {
+		int namelen = strlen(basename);
+		if (strcasecmp(".flx", basename + namelen - 4) == 0) {
+			// We can create an empty flx.
+			OFileDataSource out(pathname.c_str());  // May throw exception.
+			Flex_writer writer(out, "Written by ExultStudio", 0);
+			return true;
+		} else if (strcasecmp(".pal", basename + namelen - 4) == 0) {
+			// Empty 1-palette file.
+			ofstream out;
+			U7open(out, pathname.c_str());  // May throw exception.
+			out.close();        // Empty file.
+			return true;
+		} else if (strcasecmp("npcs", basename) == 0)
+			return true;        // Don't need file.
+	} catch (exult_exception &e) {
+		EStudio::Alert("Error writing '%s'", pathname.c_str());
+	}
 	return false;           // Might add more later.
 }
 

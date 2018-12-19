@@ -112,16 +112,6 @@ bool IFF::is_iff(IDataSource *in) {
  *  the file does not exist.
  */
 bool IFF::is_iff(const std::string& fname) {
-	if (!U7exists(fname))
-		return false;
-
-	std::ifstream in;
-	U7open(in, fname.c_str());
-	IStreamDataSource ds(&in);
-
-	if (in.good())
-		return is_iff(&ds);
-
-	in.close();
-	return false;
+	IFileDataSource ds(fname.c_str());
+	return ds.good() && is_iff(&ds);
 }

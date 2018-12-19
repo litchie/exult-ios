@@ -77,7 +77,6 @@ bool is_null_entry(const string &fname) {
 		return true;
 
 	return false;
-
 }
 
 void set_mode(Arch_mode &mode, Arch_mode new_mode) {
@@ -317,60 +316,48 @@ int main(int argc, char **argv)
 	}
 	break;
 	case RESPONSE:
-	case CREATE: {
-		ofstream flex;
+	case CREATE:
 		try {
-			U7open(flex, fname.c_str());
-		} catch (const file_open_exception &e) {
-			cerr << e.what() << endl;
-			exit(1);
-		}
+			OFileDataSource flex(fname.c_str());
 
-		ofstream header;
-		if (hname.empty()) {    // Need header name.
-			hprefix = fname;
-			make_header_name(hprefix);
-			hname = hprefix + ".h";
-			strip_path(hprefix);
-			make_uppercase(hprefix);
-		}
-		try {
-			U7open(header, hname.c_str(), true);
-		} catch (const file_open_exception &e) {
-			cerr << e.what() << endl;
-			exit(1);
-		}
+			ofstream header;
+			if (hname.empty()) {    // Need header name.
+				hprefix = fname;
+				make_header_name(hprefix);
+				hname = hprefix + ".h";
+				strip_path(hprefix);
+				make_uppercase(hprefix);
+			}
+			try {
+				U7open(header, hname.c_str(), true);
+			} catch (const file_open_exception &e) {
+				cerr << e.what() << endl;
+				exit(1);
+			}
 
-		// The FLEX title
-		Flex_writer writer(flex, "Exult Archive", file_names.size());
+			// The FLEX title
+			Flex_writer writer(flex, "Exult Archive", file_names.size());
 
-		// The beginning of the header
-		string temp = fname;
-		strip_path(temp);
-		header << "// Header for \"" << temp << "\" Created by expack" << std::endl << std::endl;
-		header << "// DO NOT MODIFY" << std::endl << std::endl;
-		header << "#ifndef " << hprefix << "_INCLUDED" << std::endl;
-		header << "#define " << hprefix << "_INCLUDED" << std::endl << std::endl;
+			// The beginning of the header
+			string temp = fname;
+			strip_path(temp);
+			header << "// Header for \"" << temp << "\" Created by expack" << std::endl << std::endl;
+			header << "// DO NOT MODIFY" << std::endl << std::endl;
+			header << "#ifndef " << hprefix << "_INCLUDED" << std::endl;
+			header << "#define " << hprefix << "_INCLUDED" << std::endl << std::endl;
 
-		// The files
-		{
+			// The files
 			for (unsigned int i = 0; i < file_names.size(); i++) {
 				if (!file_names[i].empty()) {
 					size_t fsize = get_file_size(file_names[i]);
 					if (fsize) {
-						ifstream infile;
-						try {
-							U7open(infile, file_names[i].c_str(), is_text_file(file_names[i]));
-						} catch (const file_open_exception &e) {
-							cerr << e.what() << endl;
+						IFileDataSource ifs(file_names[i].c_str(), is_text_file(file_names[i]));
+						if (!ifs.good()) {
+							cerr << "Error reading from file " << file_names[i] << endl;
 							exit(1);
 						}
-						IStreamDataSource ifs(&infile);
-						char *buf = new char[fsize];
-						ifs.read(buf, fsize);
-						flex.write(buf, fsize);
-						delete [] buf;
-						infile.close();
+						auto buf = ifs.readN(fsize);
+						flex.write(buf.get(), fsize);
 
 						string hline = file_names[i];
 						strip_path(hline);
@@ -381,18 +368,18 @@ int main(int argc, char **argv)
 				}
 				writer.mark_section_done();
 			}
+
+			uint32 crc32val = crc32_syspath(fname.c_str());
+			header << std::endl << "#define\t" << hprefix << "_CRC32\t0x";
+			header << std::hex << crc32val << std::dec << "U" << std::endl;
+
+			header << std::endl << "#endif" << std::endl << std::endl;
+			header.close();
+
+		} catch (const file_open_exception &e) {
+			cerr << e.what() << endl;
+			exit(1);
 		}
-		if (!writer.close())
-			cerr << "Error writing " << fname << endl;
-
-		uint32 crc32val = crc32_syspath(fname.c_str());
-		header << std::endl << "#define\t" << hprefix << "_CRC32\t0x";
-		header << std::hex << crc32val << std::dec << "U" << std::endl;
-
-		header << std::endl << "#endif" << std::endl << std::endl;
-		header.close();
-
-	}
 	break;
 	default:
 		cout << "Usage:" << endl

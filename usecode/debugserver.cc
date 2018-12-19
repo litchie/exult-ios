@@ -60,7 +60,6 @@ void Handle_client_debug_message(int &fd) {
 		// maybe reply something like "unable to handle message" ?
 		break;
 	}
-
 }
 
 void Handle_debug_message(unsigned char *data, int datalen) {
@@ -121,8 +120,7 @@ void Handle_debug_message(unsigned char *data, int datalen) {
 		case Exult_server::dbg_get_stack: {
 			Usecode_value zeroval(0);
 			stringstream dataio(ios::in|ios::out|ios::binary);
-			std::ostream *dataout = &dataio;
-			OStreamDataSource ds(dataout);
+			OStreamDataSource ds(&dataio);
 			ds.write1(static_cast<unsigned char>(Exult_server::dbg_stack));
 			int stacksize = uci->get_stack_size();
 			ds.write2(stacksize);
@@ -213,8 +211,6 @@ void Handle_debug_message(unsigned char *data, int datalen) {
 	default:
 		break;
 	}
-
 }
-
 
 #endif

@@ -359,33 +359,27 @@ Shape_group *Shape_group_file::get_builtin(
 
 void Shape_group_file::write(
 ) {
-	std::ofstream out;
 	std::string patchname = "<PATCH>/" + name;
-	U7open(out, patchname.c_str());
-	int cnt = groups.size();    // # groups.
-	Flex_writer gfile(out, "ExultStudio shape groups", cnt);
-	int i;              // Write each group.
-	for (i = 0; i < cnt; i++) {
-		Shape_group *grp = groups[i];
-		const char *nm = grp->get_name();
-		int sz = grp->size();
-		// Name, #entries, entries(2-bytes).
-		long len = strlen(nm) + 1 + 2 + 2 * sz;
-		unsigned char *buf = new unsigned char[len];
-		strcpy(reinterpret_cast<char *>(buf), nm);
-		unsigned char *ptr = buf + strlen(nm) + 1;
-		Write2(ptr, sz);    // # entries.
-		for (vector<int>::iterator it = grp->begin();
-		        it != grp->end(); ++it)
-			Write2(ptr, *it);
-		assert(ptr - buf == len);
-		// Write out to file.
-		out.write(reinterpret_cast<char *>(buf), len);
-		delete [] buf;
-		gfile.mark_section_done();
-	}
-	if (!gfile.close())
+	try {
+		OFileDataSource out(patchname.c_str());
+		int cnt = groups.size();    // # groups.
+		Flex_writer gfile(out, "ExultStudio shape groups", cnt);
+		// Write each group.
+		for (int i = 0; i < cnt; i++) {
+			Shape_group *grp = groups[i];
+			const char *nm = grp->get_name();
+			// Name, #entries, entries(2-bytes).
+			out.write(nm, strlen(nm) + 1);
+			int sz = grp->size();
+			out.write2(sz);    // # entries.
+			for (vector<int>::iterator it = grp->begin();
+					it != grp->end(); ++it)
+				out.write2(*it);
+			gfile.mark_section_done();
+		}
+	} catch (exult_exception &e) {
 		Alert("Error writing '%s'", patchname.c_str());
+	}
 	modified = false;
 }
 

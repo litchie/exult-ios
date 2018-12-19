@@ -22,6 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #ifdef PENTAGRAM_IN_EXULT
 #include "fnames.h"
+#include "exceptions.h"
 #else
 #include "FileSystem.h"
 #endif
@@ -90,13 +91,13 @@ void FileMidiDriver::finishSequence(int seq_num)
 	stop_track();
 }
 
-bool	FileMidiDriver::isSequencePlaying(int seq_num)
+bool FileMidiDriver::isSequencePlaying(int seq_num)
 {
 	if (seq_num != 0) return false;
 	return is_playing();
 }
 
-void	FileMidiDriver::startSequence(int seq_num, XMidiEventList *list, bool repeat, int vol, int branch)
+void FileMidiDriver::startSequence(int seq_num, XMidiEventList *list, bool repeat, int vol, int branch)
 {
 	ignore_unused_variable_warning(branch);
 	if (seq_num != 0) return;
@@ -105,15 +106,12 @@ void	FileMidiDriver::startSequence(int seq_num, XMidiEventList *list, bool repea
 
 	std::string filename = get_temp_name();
 
-#ifdef PENTAGRAM_IN_EXULT
-	ODataSource *file = FileSystem::WriteFile(filename, false);
-#else
-	ODataSource *file = FileSystem::get_instance()->WriteFile(filename, false);
-#endif
-	if (!file) return;
-
-	list->write(file);
-	delete file;
+	try {
+		OFileDataSource file(filename);
+		list->write(&file);
+	} catch (exult_exception&) {
+		return;
+	}
 
 #ifdef DEBUG
 	perr << "Starting midi sequence with FileMidiDriver" << endl;

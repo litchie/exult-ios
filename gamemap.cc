@@ -284,7 +284,6 @@ void Game_map::clear(
 	memset(schunk_modified, 0, sizeof(schunk_modified));
 	memset(schunk_cache, 0, sizeof(schunk_cache));
 	memset(schunk_cache_sizes, -1, sizeof(schunk_cache_sizes));
-
 }
 
 /*
@@ -512,18 +511,16 @@ void Game_map::write_ifix_objects(
     int schunk          // Superchunk # (0-143).
 ) {
 	char fname[128];        // Set up name.
-	ofstream ifix_stream;   // There it is.
-	U7open(ifix_stream, get_schunk_file_name(PATCH_U7IFIX, schunk, fname));
-	OStreamDataSource ifix(&ifix_stream);
+	OFileDataSource ifix(get_schunk_file_name(PATCH_U7IFIX, schunk, fname));
 	// +++++Use game title.
 	const int count = c_chunks_per_schunk * c_chunks_per_schunk;
 	Flex::Flex_vers vers = !New_shapes() ? Flex::orig : Flex::exult_v2;
 	bool v2 = vers == Flex::exult_v2;
-	Flex_writer writer(&ifix, "Exult",  count, vers);
+	Flex_writer writer(ifix, "Exult",  count, vers);
 	int scy = 16 * (schunk / 12); // Get abs. chunk coords.
 	int scx = 16 * (schunk % 12);
 	// Go through chunks.
-	for (int cy = 0; cy < 16; cy++)
+	for (int cy = 0; cy < 16; cy++) {
 		for (int cx = 0; cx < 16; cx++) {
 			Map_chunk *chunk = get_chunk(scx + cx,
 			                             scy + cy);
@@ -534,8 +531,7 @@ void Game_map::write_ifix_objects(
 				obj->write_ifix(&ifix, v2);
 			writer.mark_section_done();
 		}
-	if (!writer.close())
-		throw file_write_exception(fname);
+	}
 	schunk_modified[schunk] = false;
 }
 
@@ -547,26 +543,23 @@ void Game_map::get_ifix_objects(
     int schunk          // Superchunk # (0-143).
 ) {
 	char fname[128];        // Set up name.
-	ifstream ifix_stream;   // There it is.
-	if (is_system_path_defined("<PATCH>") &&
+	if (!is_system_path_defined("<PATCH>") ||
 	        // First check for patch.
-	        U7exists(get_schunk_file_name(PATCH_U7IFIX, schunk, fname)))
-		U7open(ifix_stream, fname);
-	else try {
-			U7open(ifix_stream, get_schunk_file_name(U7IFIX, schunk, fname));
-		} catch (const file_exception & /*f*/) {
-			if (!Game::is_editing())    // Ok if map-editing.
-				cerr << "Ifix file '" << fname << "' not found." <<
-				     endl;
-			return;
-		}
+	        !U7exists(get_schunk_file_name(PATCH_U7IFIX, schunk, fname))) {
+		get_schunk_file_name(U7IFIX, schunk, fname);
+	}
+	IFileDataSource ifix(fname);
+	if (!ifix.good()) {
+		if (!Game::is_editing())    // Ok if map-editing.
+			cerr << "Ifix file '" << fname << "' not found." << endl;
+		return;
+	}
 	FlexFile flex(fname);
 	int vers = static_cast<int>(flex.get_vers());
-	IStreamDataSource ifix(&ifix_stream);
 	int scy = 16 * (schunk / 12); // Get abs. chunk coords.
 	int scx = 16 * (schunk % 12);
 	// Go through chunks.
-	for (int cy = 0; cy < 16; cy++)
+	for (int cy = 0; cy < 16; cy++) {
 		for (int cx = 0; cx < 16; cx++) {
 			// Get to index entry for chunk.
 			int chunk_num = cy * 16 + cx;
@@ -576,6 +569,7 @@ void Game_map::get_ifix_objects(
 				get_ifix_chunk_objects(&ifix, vers, offset,
 				                       len, scx + cx, scy + cy);
 		}
+	}
 }
 
 /*
@@ -716,7 +710,6 @@ int Game_map::write_string(
 
 void Game_map::write_ireg(
 ) {
-
 	// Write each superchunk to Iregxx.
 	for (int schunk = 0; schunk < c_num_schunks * c_num_schunks; schunk++)
 		// Only write what we've read.
@@ -742,13 +735,9 @@ void Game_map::write_ireg_objects(
     int schunk          // Superchunk # (0-143).
 ) {
 	char fname[128];        // Set up name.
-	ofstream ireg_stream;           // There it is.
-	U7open(ireg_stream, get_schunk_file_name(U7IREG, schunk, fname));
-	OStreamDataSource ireg(&ireg_stream);
+	OFileDataSource ireg(get_schunk_file_name(U7IREG, schunk, fname));
 	write_ireg_objects(schunk, &ireg);
-	ireg_stream.flush();
-	int result = ireg_stream.good();
-	if (!result) throw file_write_exception(fname);
+	ireg.flush();
 }
 
 
@@ -787,27 +776,26 @@ void Game_map::get_ireg_objects(
     int schunk          // Superchunk # (0-143).
 ) {
 	char fname[128];        // Set up name.
-	ifstream ireg_stream;           // There it is.
-	IDataSource *ireg = nullptr;
+	std::unique_ptr<IDataSource> ireg;
 
 	if (schunk_cache[schunk] && schunk_cache_sizes[schunk] >= 0) {
 		// No items
-		if (schunk_cache_sizes[schunk] == 0) return;
-		ireg = new IBufferDataView(schunk_cache[schunk], schunk_cache_sizes[schunk]);
+		if (schunk_cache_sizes[schunk] == 0) {
+			return;
+		}
+		ireg = std::make_unique<IBufferDataView>(schunk_cache[schunk], schunk_cache_sizes[schunk]);
 #ifdef DEBUG
 		std::cout << "Reading " << get_schunk_file_name(U7IREG, schunk, fname) << " from memory" << std::endl;
 #endif
 	} else {
-		try {
-			U7open(ireg_stream, get_schunk_file_name(U7IREG, schunk, fname));
-		} catch (const file_exception & /*f*/) {
+		ireg = std::make_unique<IFileDataSource>(get_schunk_file_name(U7IREG, schunk, fname));
+		if (!ireg->good()) {
 			return;         // Just don't show them.
 		}
-		ireg = new IStreamDataSource(&ireg_stream);
 	}
 	int scy = 16 * (schunk / 12); // Get abs. chunk coords.
 	int scx = 16 * (schunk % 12);
-	read_ireg_objects(ireg, scx, scy);
+	read_ireg_objects(ireg.get(), scx, scy);
 	// A fixup:
 	if (schunk == 10 * 12 + 11 && Game::get_game_type() == SERPENT_ISLE) {
 		// Lever in SilverSeed:
@@ -816,13 +804,11 @@ void Game_map::get_ireg_objects(
 		                             787, 0, 0, c_any_qual, 5))
 			vec[0]->move(2937, 2727, 2);
 	}
-	delete ireg;
 	if (schunk_cache[schunk]) {
 		delete [] schunk_cache[schunk];
 		schunk_cache[schunk] = nullptr;
 		schunk_cache_sizes[schunk] = -1;
 	}
-
 }
 
 /*
@@ -1646,8 +1632,8 @@ bool Game_map::write_minimap() {
 	char msg[80];
 	// A pixel for each possible chunk.
 	int num_chunks = chunk_terrains->size();
-	unsigned char *chunk_pixels = new unsigned char[num_chunks];
-	unsigned char *ptr = chunk_pixels;
+	auto chunk_pixels = std::make_unique<unsigned char[]>(num_chunks);
+	unsigned char *ptr = chunk_pixels.get();
 	Game_window *gwin = Game_window::get_instance();
 	Palette pal;
 	// Ensure that all terrain is loaded:
@@ -1680,25 +1666,21 @@ bool Game_map::write_minimap() {
 	eman->remove_text_effects();
 	const vector<Game_map *> &maps = gwin->get_maps();
 	int nmaps = maps.size();
-	Shape *shape = new Shape;
+	Shape shape;
 	for (int i = 0; i < nmaps; ++i) {
 		snprintf(msg, sizeof(msg), "Creating minimap %d", i);
 		eman->center_text(msg);
 		gwin->paint();
 		gwin->show();
-		maps[i]->create_minimap(shape, chunk_pixels);
+		maps[i]->create_minimap(&shape, chunk_pixels.get());
 		eman->remove_text_effects();
 	}
-	ofstream mfile;
-	U7open(mfile, PATCH_MINIMAPS);  // May throw exception.
+	OFileDataSource mfile(PATCH_MINIMAPS);  // May throw exception.
 	Flex_writer writer(mfile, "Written by Exult", 1);
-	shape->write(mfile);
+	shape.write(mfile);
 	writer.mark_section_done();
-	bool ok = writer.close();
-	delete [] chunk_pixels;
-	delete shape;
 	gwin->set_all_dirty();
-	return ok;
+	return true;
 }
 
 /*
@@ -1737,11 +1719,11 @@ void Game_map::cache_out(int cx, int cy) {
 		chunk_flags[(sy + 1) % 12][(sx + 1) % 12] = true;
 	}
 	for (sy = 0; sy < 12; sy++) for (sx = 0; sx < 12; sx++) {
-			if (chunk_flags[sy][sx]) continue;
+		if (chunk_flags[sy][sx]) continue;
 
-			int schunk = sy * 12 + sx;
-			if (schunk_read[schunk] && !schunk_modified[schunk]) cache_out_schunk(schunk);
-		}
+		int schunk = sy * 12 + sx;
+		if (schunk_read[schunk] && !schunk_modified[schunk]) cache_out_schunk(schunk);
+	}
 }
 
 void Game_map::cache_out_schunk(int schunk) {
@@ -1765,18 +1747,17 @@ void Game_map::cache_out_schunk(int schunk) {
 #endif
 	// Go through chunks and get all the items
 	for (cy = 0; cy < 16; cy++) for (cx = 0; cx < 16; cx++) {
+		int size = objects[scx + cx][scy + cy]->get_obj_actors(removes, actors);
 
-			int size = objects[scx + cx][scy + cy]->get_obj_actors(removes, actors);
-
-			if (size < 0) {
+		if (size < 0) {
 #ifdef DEBUG
-				std::cerr << "Failed attempting to kill superchunk" << std::endl;
+			std::cerr << "Failed attempting to kill superchunk" << std::endl;
 #endif
-				return;
-			}
-
-			buf_size += size + 2;
+			return;
 		}
+
+		buf_size += size + 2;
+	}
 
 	schunk_read[schunk] = false;
 	++caching_out;
@@ -1817,9 +1798,8 @@ void Game_map::cache_out_schunk(int schunk) {
 
 	// Go through chunks and finish up
 	for (cy = 0; cy < 16; cy++) for (cx = 0; cx < 16; cx++) {
-
-			objects[scx + cx][scy + cy]->kill_cache();
-		}
+		objects[scx + cx][scy + cy]->kill_cache();
+	}
 	// Removing objs. sets these flags.
 	schunk_modified[schunk] = false;
 	map_modified = save_map_modified;

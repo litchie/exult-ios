@@ -88,13 +88,10 @@ public:
 class IStreamDataSource: public IDataSource {
 protected:
 	std::istream *in;
+
 public:
 	explicit IStreamDataSource(std::istream *data_stream)
 		: in(data_stream) {}
-
-	IStreamDataSource(IStreamDataSource&&) noexcept = default;
-	IStreamDataSource& operator=(IStreamDataSource&&) noexcept = default;
-	~IStreamDataSource() noexcept override = default;
 
 	uint32 peek() final {
 		return in->peek();
@@ -167,34 +164,17 @@ public:
  */
 
 class IFileDataSource : public IStreamDataSource {
-public:
-	explicit IFileDataSource(std::ifstream *data_stream)
-		: IStreamDataSource(data_stream) {}
+	std::ifstream fin;
 
-	explicit IFileDataSource(const File_spec &spec)
-		: IStreamDataSource(nullptr) {
-		std::ifstream *fin = new std::ifstream();
-		in = fin;
+public:
+	explicit IFileDataSource(const File_spec &spec, bool is_text = false)
+		: IStreamDataSource(&fin) {
 		if (U7exists(spec.name)) {
-			U7open(*fin, spec.name.c_str());
+			U7open(fin, spec.name.c_str(), is_text);
 		} else {
 			// Set fail bit
-			fin->seekg(0);
+			fin.seekg(0);
 		}
-	}
-
-	IFileDataSource(IFileDataSource&& other) noexcept
-		: IStreamDataSource(other.in) {
-		other.in = nullptr;
-	}
-
-	IFileDataSource& operator=(IFileDataSource&& other) noexcept {
-		std::swap(in, other.in);
-		return *this;
-	}
-
-	~IFileDataSource() final {
-		delete in;
 	}
 };
 
@@ -206,6 +186,7 @@ protected:
 	const unsigned char *buf;
 	const unsigned char *buf_ptr;
 	std::size_t size;
+
 public:
 	IBufferDataView(const void *data, size_t len) {
 		// data can be nullptr if len is also 0
@@ -213,10 +194,6 @@ public:
 		buf_ptr = buf = static_cast<const unsigned char *>(data);
 		size = len;
 	}
-
-	IBufferDataView(IBufferDataView&&) noexcept = default;
-	IBufferDataView& operator=(IBufferDataView&&) noexcept = default;
-	~IBufferDataView() noexcept override = default;
 
 	uint32 peek() final {
 		return *buf_ptr;
@@ -289,6 +266,7 @@ public:
 class IBufferDataSource: public IBufferDataView {
 protected:
 	std::unique_ptr<unsigned char[]> data;
+
 public:
 	IBufferDataSource(void *data_, size_t len)
 		: IBufferDataView(nullptr, 0), data(static_cast<unsigned char*>(data_)) {
@@ -388,13 +366,10 @@ public:
 class OStreamDataSource: public ODataSource {
 protected:
 	std::ostream *out;
+
 public:
 	explicit OStreamDataSource(std::ostream *data_stream)
 		: out(data_stream) {}
-
-	OStreamDataSource(OStreamDataSource&&) noexcept = default;
-	OStreamDataSource& operator=(OStreamDataSource&&) noexcept = default;
-	~OStreamDataSource() noexcept override = default;
 
 	void write1(uint32 val) final {
 		Write1(out, static_cast<uint16>(val));
@@ -459,33 +434,12 @@ public:
  * File-based output data source which owns the stream.
  */
 class OFileDataSource : public OStreamDataSource {
+	std::ofstream fout;
+
 public:
-	explicit OFileDataSource(std::ofstream *data_stream)
-		: OStreamDataSource(data_stream) {}
-
-	explicit OFileDataSource(const File_spec &spec)
-		: OStreamDataSource(nullptr) {
-		std::ofstream *fout = new std::ofstream();
-		out = fout;
-		if (U7exists(spec.name)) {
-			U7open(*fout, spec.name.c_str());
-		} else {
-			// Set fail bit
-			fout->seekp(0);
-		}
-	}
-
-	OFileDataSource(OFileDataSource&& other) noexcept
-		: OStreamDataSource(std::move(other)) {
-		other.out = nullptr;
-	}
-	OFileDataSource& operator=(OFileDataSource&& other) noexcept {
-		std::swap(out, other.out);
-		return *this;
-	}
-
-	~OFileDataSource() final {
-		delete out;
+	explicit OFileDataSource(const File_spec &spec, bool is_text = false)
+		: OStreamDataSource(&fout) {
+		U7open(fout, spec.name.c_str(), is_text);
 	}
 };
 
@@ -497,6 +451,7 @@ protected:
 	unsigned char *buf;
 	unsigned char *buf_ptr;
 	std::size_t size;
+
 public:
 	OBufferDataSpan(void *data, size_t len) {
 		// data can be nullptr if len is also 0
@@ -564,6 +519,7 @@ public:
  */
 class OBufferDataSource: public OBufferDataSpan {
 	std::unique_ptr<unsigned char[]> data;
+
 public:
 	OBufferDataSource(size_t len)
 		: OBufferDataSpan(nullptr, 0), data(std::make_unique<unsigned char[]>(len)) {

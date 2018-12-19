@@ -218,14 +218,14 @@ unsigned char Shape_frame::get_topleft_pix(
  *  Writes the frame to the given stream.
  */
 
-void Shape_frame::write(std::ostream &out) const {
+void Shape_frame::write(ODataSource& out) const {
 	if (rle) {
-		Write2(out, xright);
-		Write2(out, xleft);
-		Write2(out, yabove);
-		Write2(out, ybelow);
+		out.write2(xright);
+		out.write2(xleft);
+		out.write2(yabove);
+		out.write2(ybelow);
 	}
-	out.write(reinterpret_cast<char*>(data.get()), datalen);   // The frame data.
+	out.write(data.get(), datalen);   // The frame data.
 }
 
 void Shape_frame::save(ODataSource *shape_source) const {
@@ -877,21 +877,21 @@ Shape_frame *Shape::read(
  */
 
 void Shape::write(
-    ostream &out            // What to write to.
+    ODataSource& out            // What to write to.
 ) const {
 	if (!num_frames)
 		return;         // Empty.
 	assert(!frames.empty() && frames[0]);
 	bool flat = !frames[0]->is_rle();
 	// Save starting position.
-	unsigned long startpos = out.tellp();
+	size_t startpos = out.getPos();
 
 	size_t frnum;
 	if (!flat) {
-		Write4(out, 0);     // Place-holder for total length.
+		out.write4(0);     // Place-holder for total length.
 		// Also for frame locations.
 		for (frnum = 0; frnum < num_frames; frnum++)
-			Write4(out, 0);
+			out.write4(0);
 	}
 	for (frnum = 0; frnum < num_frames; frnum++) {
 		Shape_frame *frame = frames[frnum].get();
@@ -899,18 +899,18 @@ void Shape::write(
 		assert(flat == !frame->is_rle());
 		if (frame->is_rle()) {
 			// Get position of frame.
-			unsigned long pos = out.tellp();
-			out.seekp(startpos + (frnum + 1) * 4);
-			Write4(out, pos - startpos);    // Store pos.
-			out.seekp(pos);         // Get back.
+			size_t pos = out.getPos();
+			out.seek(startpos + (frnum + 1) * 4);
+			out.write4(pos - startpos);    // Store pos.
+			out.seek(pos);         // Get back.
 		}
 		frame->write(out);
 	}
 	if (!flat) {
-		unsigned long pos = out.tellp();// Ending position.
-		out.seekp(startpos);        // Store total length.
-		Write4(out, pos - startpos);
-		out.seekp(pos);         // And get back to end.
+		size_t pos = out.getPos();// Ending position.
+		out.seek(startpos);        // Store total length.
+		out.write4(pos - startpos);
+		out.seek(pos);         // And get back to end.
 	}
 }
 
@@ -1056,9 +1056,7 @@ Shape_file::Shape_file(
 void Shape_file::load(
     const char *nm          // Path to file.
 ) {
-	ifstream file;
-	U7open(file, nm);
-	IStreamDataSource shape_source(&file);
+	IFileDataSource shape_source(nm);
 	Shape::load(&shape_source);
 }
 

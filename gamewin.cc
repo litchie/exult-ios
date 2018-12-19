@@ -1214,7 +1214,6 @@ void Game_window::init_actors(
 		schedule_npcs(6, false);
 		write_npcs();
 	}
-
 }
 
 // In gamemgr/modmgr.cc because it is also needed by ES.
@@ -1337,9 +1336,7 @@ void Game_window::read(
 
 void Game_window::write_gwin(
 ) {
-	ofstream gout_stream;
-	U7open(gout_stream, GWINDAT);   // Gamewin.dat.
-	OStreamDataSource gout(&gout_stream);
+	OFileDataSource gout(GWINDAT);
 	// Start with scroll coords (in tiles).
 	gout.write2(get_scrolltx());
 	gout.write2(get_scrollty());
@@ -1359,8 +1356,7 @@ void Game_window::write_gwin(
 	gout.write1(armageddon ? 1 : 0);
 	gout.write1(ambient_light ? 1 : 0);
 	gout.write1(combat ? 1 : 0);
-	gout_stream.flush();
-	if (!gout_stream.good())
+	if (!gout.good())
 		throw file_write_exception(GWINDAT);
 }
 
@@ -1374,14 +1370,11 @@ void Game_window::read_gwin(
 ) {
 	if (!clock->in_queue())     // Be sure clock is running.
 		tqueue->add(Game::get_ticks(), clock, this);
-	ifstream gin_stream;
-	try {
-		U7open(gin_stream, GWINDAT);    // Gamewin.dat.
-	} catch (const file_open_exception &) {
+
+	IFileDataSource gin(GWINDAT);
+	if (!gin.good()) {
 		return;
 	}
-
-	IStreamDataSource gin(&gin_stream);
 
 	// Start with scroll coords (in tiles).
 	scrolltx_lp = scrolltx_l = scrolltx = gin.read2();
@@ -1393,19 +1386,19 @@ void Game_window::read_gwin(
 	clock->set_day(gin.read2());
 	clock->set_hour(gin.read2());
 	clock->set_minute(gin.read2());
-	if (!gin_stream.good())     // Next ones were added recently.
+	if (!gin.good())     // Next ones were added recently.
 		throw file_read_exception(GWINDAT);
 	special_light = gin.read4();
 	armageddon = false;     // Old saves may not have this yet.
 
-	if (!gin_stream.good()) {
+	if (!gin.good()) {
 		special_light = 0;
 		return;
 	}
 
 	int track_num = gin.read4();
 	int repeat = gin.read4();
-	if (!gin_stream.good()) {
+	if (!gin.good()) {
 		Audio::get_ptr()->stop_music();
 		return;
 	}
@@ -1413,15 +1406,15 @@ void Game_window::read_gwin(
 	if(!is_bg_track(track_num) || (midi && (midi->get_ogg_enabled() || midi->is_mt32())))
 		Audio::get_ptr()->start_music(track_num, repeat != 0);
 	armageddon = gin.read1() == 1 ? true : false;
-	if (!gin_stream.good())
+	if (!gin.good())
 		armageddon = false;
 
 	ambient_light = gin.read1() == 1 ? true : false;
-	if (!gin_stream.good())
+	if (!gin.good())
 		ambient_light = false;
 
 	combat = gin.read1() == 1 ? true : false;
-	if (!gin_stream.good())
+	if (!gin.good())
 		combat = false;
 }
 
@@ -2039,7 +2032,6 @@ void Game_window::show_items(
 #endif
 	// Map-editing?
 	if (obj && cheat.in_map_editor()) {
-
 		if (ctrl)       // Control?  Toggle.
 			cheat.toggle_selected(obj);
 		else {

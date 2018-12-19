@@ -398,7 +398,6 @@ static void Convert_palette63(
 	for (i = 0; i < 3 * palsize; i++)
 		to[i] = from[i] / 4;
 	memset(to + i, 0, 3 * 256 - i); // 0-fill the rest.
-
 }
 
 /*
@@ -541,8 +540,7 @@ void Write_palettes(
 	unsigned char palbuf[3 * 256];  // We always write 256 colors.
 	if (palsize > 256)      // Shouldn't happen.
 		palsize = 256;
-	ofstream out;
-	U7open(out, palname);       // May throw exception.
+	OFileDataSource out(palname);      // May throw exception.
 	Flex_writer writer(out, "Exult palette by Ipack", 11);
 	// Entry 0 (DAY):
 	char const *palptr = reinterpret_cast<const char *>(palbuf);
@@ -597,8 +595,6 @@ void Write_palettes(
 	Convert_palette63(palbuf, palbuf, palsize);
 	out.write(palptr, sizeof(palbuf));
 	writer.mark_section_done();
-	if (!writer.close())
-		throw file_write_exception(palname);
 	// Write out in Gimp format.
 	Write_text_palette(palname, palette, palsize);
 }
@@ -608,7 +604,7 @@ void Write_palettes(
  */
 
 static void Write_exult_from_tiles(
-    ostream &out,           // What to write to.
+    OFileDataSource& out,           // What to write to.
     char *filename,         // Filename to read.
     int nframes,            // # frames.
     bool bycol,         // If true, go down each column first,
@@ -652,7 +648,7 @@ static void Write_exult_from_tiles(
 		unsigned char *src = pixels + w * 8 * y + 8 * x;
 		for (int row = 0; row < 8; row++) {
 			// Write it out.
-			out.write(reinterpret_cast<char *>(src), 8);
+			out.write(src, 8);
 			src += w;
 		}
 	}
@@ -667,7 +663,7 @@ static void Write_exult_from_tiles(
  */
 
 static void Write_exult(
-    ostream &out,           // What to write to.
+    OFileDataSource& out,           // What to write to.
     char *basename,         // Base filename for files to read.
     int nframes,            // # frames.
     bool flat,          // Store as 8x8 flats.
@@ -725,8 +721,7 @@ static void Create(
 		     "' exists, so we won't overwrite it" << endl;
 		palname = nullptr;
 	}
-	ofstream out;
-	U7open(out, imagename);     // May throw exception.
+	OFileDataSource out(imagename);     // May throw exception.
 	Flex_writer writer(out, title, specs.size());
 	for (Shape_specs::const_iterator it = specs.begin();
 	        it != specs.end();  ++it) {
@@ -744,8 +739,6 @@ static void Create(
 		}
 		writer.mark_section_done();
 	}
-	if (!writer.close())
-		throw file_write_exception(imagename);
 }
 
 /*
@@ -778,8 +771,7 @@ static void Update(
 			data[i].reset();
 		}
 	}
-	ofstream out;
-	U7open(out, imagename);     // May throw exception.
+	OFileDataSource out(imagename);     // May throw exception.
 	size_t newcnt = oldcnt > specs.size() ? oldcnt : specs.size();
 	Flex_writer writer(out, title, newcnt);
 	for (i = 0; i < newcnt; i++) {  // Write out new entries.
@@ -791,11 +783,9 @@ static void Update(
 		}
 		// Write old entry.
 		else if (i < oldcnt && data[i])
-			out.write(reinterpret_cast<char*>(data[i].get()), lengths[i]);
+			out.write(data[i].get(), lengths[i]);
 		writer.mark_section_done();
 	}
-	if (!writer.close())
-		throw file_write_exception(imagename);
 }
 
 /*

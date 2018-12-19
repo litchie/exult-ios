@@ -117,38 +117,4 @@
 
 #include "databuf.h"
 
-//
-// FileSystem
-//
-
-#include "utils.h"
-#include "singles.h"
-
-class FileSystem : protected Game_singletons {
-public:
-	static FileSystem *get_instance() {
-		if (!pent_filesys) pent_filesys = new FileSystem;
-		return pent_filesys;
-	}
-
-	static IDataSource *ReadFile(const std::string &vfn, bool is_text) {
-		std::ifstream *f = new std::ifstream();
-		if (!U7open(*f, vfn.c_str(), is_text)) {
-			delete f;
-			return nullptr;
-		}
-		return new IFileDataSource(f);
-	}
-
-	// Open a streaming file as readable. Streamed (0 on failure)
-	static ODataSource *WriteFile(const std::string &vfn, bool is_text) {
-		std::ofstream *f = new std::ofstream();
-		if (!U7open(*f, vfn.c_str(), is_text)) {
-			delete f;
-			return nullptr;
-		}
-		return new OFileDataSource(f);
-	}
-};
-
 #endif //PENT_INCLUDE_H

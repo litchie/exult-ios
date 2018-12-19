@@ -122,12 +122,9 @@ void    initialise_usecode_debugger(void) {
 	// a number (which might be hex. Convert from that.
 
 	// push them all onto the list
-
-
 }
 
 #endif
-
 
 void Usecode_internal::stack_trace(ostream &out) {
 	if (call_stack.empty())
@@ -269,7 +266,6 @@ bool Usecode_internal::call_function(int funcid,
 	// add new stack frame to top of stack
 	call_stack.push_front(frame);
 
-
 #ifdef DEBUG
 	Usecode_symbol *fsym = symtbl ? (*symtbl)[funcid] : nullptr;
 	cout << "Running usecode ";
@@ -333,7 +329,6 @@ void Usecode_internal::return_from_function(Usecode_value &retval) {
 	// push the return value
 	push(retval);
 
-
 #ifdef DEBUG
 	Stack_frame *parent_frame = call_stack.front();
 
@@ -347,7 +342,6 @@ void Usecode_internal::return_from_function(Usecode_value &retval) {
 		cout << hex << setw(4) <<
 		     setfill('0') << oldfunction << dec << setfill(' ');
 	cout << endl;
-
 
 	if (parent_frame) {
 		int newfunction = call_stack.front()->function->id;
@@ -373,7 +367,6 @@ void Usecode_internal::return_from_procedure() {
 
 	// back up a stack frame
 	previous_stack_frame();
-
 
 #ifdef DEBUG
 	Stack_frame *parent_frame = call_stack.front();
@@ -747,7 +740,6 @@ void Usecode_internal::show_npc_face(
 	conv->show_face(shape, frame, slot);
 //	user_choice = 0;     // Seems like a good idea.
 // Also seems to create a conversation bug in Test of Love :-(
-
 }
 
 /*
@@ -1005,7 +997,6 @@ Usecode_value Usecode_internal::find_nearby(
 			     << endl;
 	} else
 		shapenum = shapeval.get_int_value();
-
 
 	// It might be (tx, ty, tz).
 	int arraysize = objval.get_array_size();
@@ -1605,7 +1596,6 @@ Usecode_value Usecode_internal::Execute_Intrinsic(UsecodeIntrinsicFn func, const
 	return ((*this).*func)(num_parms, parms);
 }
 
-
 typedef Usecode_value(Usecode_internal::*UsecodeIntrinsicFn)(int num_parms, Usecode_value parms[12]);
 
 // missing from mingw32 header files, so included manually
@@ -1637,7 +1627,6 @@ struct Usecode_internal::IntrinsicTableEntry
 		Usecode_internal::serpentbeta_table[] = {
 #include "sibetaintrinsics.h"
 };
-
 
 int max_bundled_intrinsics = 0x3ff; // Index of the last intrinsic in this table
 /*
@@ -1879,7 +1868,6 @@ void Clearbreak() {
 }
 #endif
 
-
 #define CERR_CURRENT_IP()\
 	cerr << " (at function = " << hex << setw(4) << setfill('0')\
 	     << frame->function->id << ", ip = " \
@@ -1929,8 +1917,6 @@ int Usecode_internal::run() {
 		 *  Main loop.
 		 */
 		while (!frame_changed) {
-
-
 			if ((frame->ip >= frame->endp) ||
 			        (frame->ip < frame->code)) {
 				cerr << "Usecode: jumped outside of code segment of "
@@ -1953,7 +1939,6 @@ int Usecode_internal::run() {
 				CERR_CURRENT_IP();
 				continue;
 			}
-
 
 #ifdef DEBUG
 			if (usecode_trace == 2) {
@@ -1983,7 +1968,6 @@ int Usecode_internal::run() {
 #ifdef XWIN
 				raise(SIGUSR1); // to allow trapping it in gdb too
 #endif
-
 
 #ifdef USECODE_CONSOLE_DEBUGGER
 				// little console mode "debugger" (if you can call it that...)
@@ -2020,7 +2004,6 @@ int Usecode_internal::run() {
 				}
 #endif
 
-
 				c = static_cast<unsigned char>(Exult_server::dbg_continuing);
 				if (client_socket >= 0)
 					Exult_server::Send_data(client_socket,
@@ -2029,9 +2012,7 @@ int Usecode_internal::run() {
 				// disable extra debugging messages again
 				on_breakpoint = false;
 			}
-
 #endif
-
 
 			frame->ip++;
 
@@ -2383,7 +2364,6 @@ int Usecode_internal::run() {
 				else
 					offset = Read2s(frame->ip);
 
-
 				if (local1 < 0 || local1 >= num_locals) {
 					LOCAL_VAR_ERROR(local1);
 					break;
@@ -2463,7 +2443,6 @@ int Usecode_internal::run() {
 				int cnt = arr.is_array() ? arr.get_array_size() : 1;
 
 				if (cnt != frame->locals[local2].get_int_value()) {
-
 					// update new total count
 					frame->locals[local2] = Usecode_value(cnt);
 
@@ -2494,7 +2473,6 @@ int Usecode_internal::run() {
 				}
 
 				if (cnt != frame->locals[local2].get_int_value()) {
-
 					// update new total count
 					frame->locals[local2] = Usecode_value(cnt);
 
@@ -3050,7 +3028,6 @@ bool Usecode_internal::call_method(
 	// add new stack frame to top of stack
 	call_stack.push_front(frame);
 
-
 #ifdef DEBUG
 	Usecode_class_symbol *cls = inst->get_class_ptr();
 	Usecode_symbol *fsym = cls ? (*cls)[id] : nullptr;
@@ -3151,43 +3128,40 @@ void Usecode_internal::write(
 	if (Game::get_game_type() != BLACK_GATE && !Game::is_si_beta())
 		keyring->write();   // write keyring data
 
-	ofstream out;
-	U7open(out, FLAGINIT);  // Write global flags.
-	out.write(reinterpret_cast<char *>(gflags), sizeof(gflags));
-	out.close();
-	U7open(out, USEDAT);
-	Write2(out, partyman->get_count()); // Write party.
-	int i;  // Blame MSVC
-	for (i = 0; i < EXULT_PARTY_MAX; i++)
-		Write2(out, partyman->get_member(i));
-	// Timers.
-	Write4(out, 0xffffffffU);
-	for (std::map<int, uint32>::iterator it = timers.begin();
-	        it != timers.end(); ++it) {
-		if (!it->second)    // Don't write unused timers.
-			continue;
-		Write2(out, it->first);
-		Write4(out, it->second);
+	{
+		OFileDataSource out(FLAGINIT);
+		out.write(gflags, sizeof(gflags));
 	}
-	Write2(out, 0xffff);
-	Write2(out, saved_pos.tx);  // Write saved pos.
-	Write2(out, saved_pos.ty);
-	Write2(out, saved_pos.tz);
-	Write2(out, saved_map);     // Write saved map.
-	out.flush();
-	if (!out.good())
-		throw file_write_exception(USEDAT);
-	out.close();
-	U7open(out, USEVARS);       // Static variables. 1st, globals.
-	OStreamDataSource *nfile = new OStreamDataSource(&out);
-	nfile->write4(statics.size());  // # globals.
+	{
+		OFileDataSource out(USEDAT);
+		out.write2(partyman->get_count()); // Write party.
+		for (int i = 0; i < EXULT_PARTY_MAX; i++)
+			out.write2(partyman->get_member(i));
+		// Timers.
+		out.write4(0xffffffffU);
+		for (std::map<int, uint32>::iterator it = timers.begin();
+				it != timers.end(); ++it) {
+			if (!it->second)    // Don't write unused timers.
+				continue;
+			out.write2(it->first);
+			out.write4(it->second);
+		}
+		out.write2(0xffff);
+		out.write2(saved_pos.tx);  // Write saved pos.
+		out.write2(saved_pos.ty);
+		out.write2(saved_pos.tz);
+		out.write2(saved_map);     // Write saved map.
+	}
+	// Static variables. 1st, globals.
+	OFileDataSource nfile(USEVARS);
+	nfile.write4(statics.size());  // # globals.
 	vector<Usecode_value>::iterator it;
 	for (it = statics.begin(); it != statics.end(); ++it)
-		if (!(*it).save(nfile))
+		if (!(*it).save(&nfile))
 			throw file_exception("Could not write static usecode value");
 	// Now do the local statics.
 	int num_slots = funs.size();
-	for (i = 0; i < num_slots; i++) {
+	for (int i = 0; i < num_slots; i++) {
 		Funs256 &slot = funs[i];
 		for (std::vector<Usecode_function *>::iterator fit =
 		            slot.begin(); fit != slot.end(); ++fit) {
@@ -3197,24 +3171,20 @@ void Usecode_internal::write(
 			Usecode_symbol *fsym = symtbl ? (*symtbl)[fun->id] : nullptr;
 			if (fsym) {
 				const char *nm = fsym->get_name();
-				nfile->write4(0xfffffffeU);
-				nfile->write2(strlen(nm));
-				nfile->write(nm, strlen(nm));
+				nfile.write4(0xfffffffeU);
+				nfile.write2(strlen(nm));
+				nfile.write(nm, strlen(nm));
 			} else
-				nfile->write4(fun->id);
-			nfile->write4(fun->statics.size());
+				nfile.write4(fun->id);
+			nfile.write4(fun->statics.size());
 			for (it = fun->statics.begin();
 			        it != fun->statics.end(); ++it) {
-				if (!(*it).save(nfile))
+				if (!(*it).save(&nfile))
 					throw file_exception("Could not write static usecode value");
 			}
 		}
 	}
-	nfile->write4(0xffffffffU); // End with -1.
-	out.flush();
-	if (!out.good())
-		throw file_write_exception(USEVARS);
-	out.close();
+	nfile.write4(0xffffffffU); // End with -1.
 }
 
 /*
@@ -3228,7 +3198,6 @@ void Usecode_internal::read(
 ) {
 	if (Game::get_game_type() != BLACK_GATE && !Game::is_si_beta())
 		keyring->read();    // read keyring data
-
 
 	ifstream in;
 	try {
@@ -3249,11 +3218,9 @@ void Usecode_internal::read(
 
 	clear_usevars(); // first clear all statics
 	try {
-		U7open(in, USEVARS);
-		read_usevars(in);
-		in.close();
+		read_usevars();
 	} catch (exult_exception &/*e*/) {
-		;           // Okay if this doesn't exist.
+		// Okay if this doesn't exist.
 	}
 	try {
 		U7open(in, USEDAT);
@@ -3295,11 +3262,9 @@ void Usecode_internal::read(
  *  Read in static variables from USEVARS.
  */
 
-void Usecode_internal::read_usevars(
-    std::istream &in
-) {
-	int cnt = Read4(in);        // Global statics.
-	IStreamDataSource nfile(&in);
+void Usecode_internal::read_usevars() {
+	IFileDataSource nfile(USEVARS);
+	int cnt = nfile.read4();        // Global statics.
 	statics.resize(cnt);
 	int i;
 	for (i = 0; i < cnt; i++)
@@ -3353,7 +3318,6 @@ Stack_frame *Usecode_internal::get_stackframe(int i) {
 		return nullptr;
 }
 
-
 // return current size of the stack
 int Usecode_internal::get_stack_size() const {
 	return static_cast<int>(sp - stack);
@@ -3374,7 +3338,6 @@ void Usecode_internal::poke_stack(int depth, Usecode_value &val) {
 
 	*(sp - depth) = val;
 }
-
 
 void Usecode_internal::set_breakpoint() {
 	breakpoints.add(new AnywhereBreakpoint());

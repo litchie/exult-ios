@@ -72,7 +72,6 @@ Game_clock *Game_singletons::gclock = nullptr;
 Palette *Game_singletons::pal = nullptr;
 Gump_manager *Game_singletons::gumpman = nullptr;
 Party_manager *Game_singletons::partyman = nullptr;
-class FileSystem *Game_singletons::pent_filesys = nullptr;
 
 void Game_singletons::init(
     Game_window *g
@@ -501,7 +500,6 @@ Shape_frame *ShapeID::cache_shape() const {
 		return nullptr;
 	}
 	return shape;
-
 }
 
 int ShapeID::get_num_frames() const {

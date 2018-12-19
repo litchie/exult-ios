@@ -52,7 +52,7 @@ using std::cerr;
 using std::endl;
 using std::rand;
 
-vector<char *> Schedule_change::script_names;
+vector<std::string> Schedule_change::script_names;
 int Patrol_schedule::num_path_eggs = -1;
 
 /*
@@ -426,7 +426,7 @@ Scripted_schedule::Scripted_schedule(
     Actor *n,
     int type
 ) : Schedule(n) {
-	char *nm = Schedule_change::get_script_name(type);
+	const char *nm = Schedule_change::get_script_name(type);
 	Usecode_class_symbol *cls = ucmachine->get_class(nm);
 	if (!cls) {
 		cerr << "Could not find scripted schedule '" << nm <<
@@ -5345,10 +5345,7 @@ int Walk_to_schedule::get_actual_type(
 
 void Schedule_change::clear(
 ) {
-	for (vector<char *>::iterator it = script_names.begin();
-	        it != script_names.end(); ++it)
-		delete *it;
-	script_names.resize(0);
+	script_names.clear();
 }
 
 /*

@@ -240,7 +240,6 @@ ModInfo::ModInfo(
  */
 string get_game_identity(const char *savename, const string &title) {
 	char *game_identity = nullptr;
-	ifstream in_stream;
 	if (!U7exists(savename))
 		return title;
 	if (!Flex::is_flex(savename))
@@ -275,24 +274,23 @@ string get_game_identity(const char *savename, const string &title) {
 		return title.c_str();
 #endif
 	else {
-		U7open(in_stream, savename);        // Open file.
-		IStreamDataSource in(&in_stream);
+		IFileDataSource in(savename);
 
 		in.seek(0x54);          // Get to where file count sits.
-		int numfiles = in.read4();
+		size_t numfiles = in.read4();
 		in.seek(0x80);          // Get to file info.
 		// Read pos., length of each file.
-		int *finfo = new int[2 * numfiles];
-		int i;
-		for (i = 0; i < numfiles; i++) {
+		auto finfo = std::make_unique<uint32[]>(2 * numfiles);
+		for (size_t i = 0; i < numfiles; i++) {
 			finfo[2 * i] = in.read4();  // The position, then the length.
 			finfo[2 * i + 1] = in.read4();
 		}
-		for (i = 0; i < numfiles; i++) { // Now read each file.
+		for (size_t i = 0; i < numfiles; i++) { // Now read each file.
 			// Get file length.
-			int len = finfo[2 * i + 1] - 13;
-			if (len <= 0)
+			size_t len = finfo[2 * i + 1];
+			if (len <= 13)
 				continue;
+			len -= 13;
 			in.seek(finfo[2 * i]);  // Get to it.
 			char fname[50];     // Set up name.
 			in.read(fname, 13);
@@ -302,8 +300,6 @@ string get_game_identity(const char *savename, const string &title) {
 				break;
 			}
 		}
-		in_stream.close();
-		delete [] finfo;
 	}
 	if (!game_identity)
 		return title;
@@ -696,7 +692,6 @@ void GameManager::print_found(
 		cout << flex << " : not found ("
 		     << get_system_path(path)
 		     << ")" << endl;
-
 }
 
 ModManager *GameManager::find_game(const string &name) {

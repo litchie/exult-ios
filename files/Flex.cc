@@ -155,51 +155,25 @@ bool Flex::is_flex(IDataSource *in) {
  *  the file does not exist.
  */
 bool Flex::is_flex(const std::string& fname) {
-	if (!U7exists(fname))
-		return false;
-
-	std::ifstream in;
-	U7open(in, fname.c_str());
-	IStreamDataSource ds(&in);
-
-	if (in.good())
-		return is_flex(&ds);
-
-	in.close();
-	return false;
+	IFileDataSource ds(fname.c_str());
+	return ds.good() && is_flex(&ds);
 }
 
 /**
  *  Start writing out a new Flex file.
  */
 Flex_writer::Flex_writer(
-    std::ofstream &o,           ///< Where to write.
+    OStreamDataSource& o,        ///< Where to write.
     const char *title,          ///< Flex title.
     size_t cnt,             ///< Number of entries we'll write.
     Flex::Flex_vers vers    ///< Version of flex file.
-) : out(&o), dout(nullptr), count(cnt) {
+) : dout(o), count(cnt) {
 	// Write out header.
-	OStreamDataSource ds(out);
-	Flex::write_header(&ds, title, count, vers);
+	Flex::write_header(&dout, title, count, vers);
 	// Create table.
-	tptr = table = new uint8[2 * count * 4];
-	cur_start = out->tellp();   // Store start of 1st entry.
-}
-
-/**
- *  Start writing out a new Flex file.
- */
-Flex_writer::Flex_writer(
-    ODataSource *o,              ///< Where to write.
-    const char *title,          ///< Flex title.
-    size_t cnt,             ///< Number of entries we'll write.
-    Flex::Flex_vers vers    ///< Version of flex file.
-) : out(nullptr), dout(o), count(cnt) {
-	// Write out header.
-	Flex::write_header(dout, title, count, vers);
-	// Create table.
-	tptr = table = new uint8[2 * count * 4];
-	cur_start = dout->getPos(); // Store start of 1st entry.
+	table = std::make_unique<uint8[]>(2 * count * 4);
+	tptr = table.get();
+	cur_start = dout.getPos(); // Store start of 1st entry.
 }
 
 /**
@@ -208,7 +182,9 @@ Flex_writer::Flex_writer(
 
 Flex_writer::~Flex_writer(
 ) {
-	close();
+	dout.seek(0x80);       // Write table.
+	dout.write(table.get(), 2 * count * 4);
+	dout.flush();
 }
 
 /**
@@ -218,37 +194,9 @@ Flex_writer::~Flex_writer(
 void Flex_writer::mark_section_done(
 ) {
 	// Location past end of section.
-	size_t pos = out ? static_cast<size_t>(out->tellp()) : dout->getPos();
+	size_t pos = dout.getPos();
 	Write4(tptr, static_cast<uint32>(cur_start));   // Store start of section.
 	Write4(tptr, static_cast<uint32>(pos - cur_start)); // Store length.
 	cur_start = pos;
-}
-
-/**
- *  All done.
- *
- *  @return False if error.
- */
-
-bool Flex_writer::close(
-) {
-	if (!table)
-		return true;        // Already done.
-	bool ok;
-	if (out) {
-		out->seekp(0x80, ios::beg); // Write table.
-		out->write(reinterpret_cast<char *>(table), 2 * count * 4);
-		out->flush();
-		ok = out->good();
-		out->close();
-	} else {
-		dout->seek(0x80);       // Write table.
-		dout->write(reinterpret_cast<char *>(table), 2 * count * 4);
-		dout->flush();
-		ok = dout->good();
-	}
-	delete [] table;
-	table = nullptr;
-	return ok;
 }
 
