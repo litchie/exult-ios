@@ -18,8 +18,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __FLEX_H_
-#define __FLEX_H_
+#ifndef FLEX_H_
+#define FLEX_H_
 
 #include <vector>
 #include <string>
@@ -62,22 +62,19 @@ public:
 	Flex(const File_spec &spec)
 		: U7file(spec)
 	{  }
-	~Flex() override
-	{   }
-
 
 	/// Inspect the version of a flex file.
 	/// @return The flex version.
 	Flex_vers get_vers() const {
-		return (magic2&~0xff) == EXULT_FLEX_MAGIC2 ?
-		       static_cast<Flex_vers>(magic2 & 0xff) : orig;
+		return (magic2&~0xffu) == EXULT_FLEX_MAGIC2 ?
+		       static_cast<Flex_vers>(magic2 & 0xffu) : orig;
 	}
 	/// Gets the number of objects in the flex.
 	/// @return Number of objects.
-	size_t  number_of_objects() override {
+	size_t number_of_objects() override {
 		return object_list.size();
 	}
-	uint32  get_entry_info(uint32 objnum, size_t &len);
+	size_t get_entry_info(uint32 objnum, size_t &len);
 	const char *get_archive_type() override {
 		return "FLEX";
 	}
@@ -86,11 +83,6 @@ public:
 
 	static bool is_flex(IDataSource *in);
 	static bool is_flex(const std::string& fname);
-
-private:
-	/// No default constructor.
-	Flex();
-	UNREPLICATABLE_CLASS_I(Flex, U7file(""))
 	void IndexFlexFile(void);
 };
 
@@ -103,7 +95,7 @@ typedef U7DataBuffer<Flex> FlexBuffer;
 class Flex_writer {
 	OStreamDataSource& dout;       // Or this, if non-0.
 	size_t count;           // # entries.
-	long cur_start;         // Start of cur. entry being written.
+	size_t cur_start;         // Start of cur. entry being written.
 	std::unique_ptr<uint8[]> table;           // Table of offsets & lengths.
 	uint8 *tptr;            // ->into table.
 

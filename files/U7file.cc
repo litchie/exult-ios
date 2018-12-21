@@ -65,9 +65,6 @@ U7multifile::U7multifile(const std::vector<File_spec> &specs) {
 		files.push_back(File_data(*it));
 }
 
-U7multifile::~U7multifile() {
-}
-
 uint32 U7multifile::number_of_objects(void) const {
 	int num = 0;
 	for (std::vector<File_data>::const_iterator it = files.begin();

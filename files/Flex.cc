@@ -81,7 +81,7 @@ void Flex::index_file() {
  *  @param len  Receives the length of the object, or zero in any failure.
  *  @return Offset of object from the beginning of the file.
  */
-uint32  Flex::get_entry_info(uint32 objnum, size_t &len) {
+size_t Flex::get_entry_info(uint32 objnum, size_t &len) {
 	if (!data || objnum >= object_list.size()) {
 		len = 0;
 		return 0;
@@ -118,9 +118,9 @@ void Flex::write_header(
 	if (vers == orig)       // 2nd magic #:  use for version.
 		out->write4(0x000000CC);
 	else
-		out->write4(EXULT_FLEX_MAGIC2 + static_cast<int>(vers));
-	long pos = out->getPos();       // Fill to data (past table at 0x80).
-	long fill = 0x80 + 8 * count - pos;
+		out->write4(EXULT_FLEX_MAGIC2 + static_cast<uint32>(vers));
+	size_t pos = out->getPos();       // Fill to data (past table at 0x80).
+	size_t fill = 0x80 + 8 * count - pos;
 	while (fill--)
 		out->write1(0);
 }
@@ -131,8 +131,8 @@ void Flex::write_header(
  *  @return Whether or not the DataSource is a FLEX file.
  */
 bool Flex::is_flex(IDataSource *in) {
-	long pos = in->getPos();        // Fill to data (past table at 0x80).
-	long len = in->getSize();   // Check length.
+	size_t pos = in->getPos();        // Fill to data (past table at 0x80).
+	size_t len = in->getSize();   // Check length.
 	uint32 magic = 0;
 	if (len >= 0x80) {      // Has to be at least this long.
 		in->seek(0x50);

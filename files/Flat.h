@@ -18,8 +18,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _FLAT_H_
-#define _FLAT_H_
+#ifndef FLAT_H_
+#define FLAT_H_
 
 #include <string>
 #include "U7file.h"
@@ -34,10 +34,6 @@ class DataSource;
  *  undefined data origin, and may well be a buffer in memory.
  */
 class Flat : public U7file {
-private:
-	/// No default constructor.
-	Flat();
-	UNREPLICATABLE_CLASS_I(Flat, U7file(""))
 protected:
 	Reference get_object_reference(uint32) const override {
 		return Reference{0, data->getSize()};

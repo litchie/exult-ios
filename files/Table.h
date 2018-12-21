@@ -18,8 +18,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _TABLE_H_
-#define _TABLE_H_
+#ifndef TABLE_H_
+#define TABLE_H_
 
 #include <vector>
 #include <string>
@@ -48,8 +48,6 @@ public:
 	Table(const File_spec &spec)
 		: U7file(spec)
 	{  }
-	~Table() override
-	{   }
 
 	size_t number_of_objects() override {
 		return object_list.size();
@@ -60,10 +58,6 @@ public:
 
 	static bool is_table(IDataSource *in);
 	static bool is_table(const std::string& fname);
-private:
-	/// No default constructor.
-	Table();
-	UNREPLICATABLE_CLASS_I(Table, U7file(""))
 };
 
 typedef U7DataFile<Table> TableFile;

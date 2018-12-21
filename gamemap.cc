@@ -159,7 +159,7 @@ void Game_map::init_chunks(
 		U7open(*chunks, PATCH_U7CHUNKS);
 	else try {
 			U7open(*chunks, U7CHUNKS);
-		} catch (const file_exception &f) {
+		} catch (const file_exception &) {
 			if (!Game::is_editing() ||  // Ok if map-editing.
 			        !patch_exists)  // But only if patch exists.
 				throw;
@@ -1076,8 +1076,8 @@ void Game_map::read_ireg_objects(
 		} else {
 			// Just to shut up spurious warnings by compilers and static
 			// analyzers.
-			boost::io::ios_flags_saver flags(cerr);
-			boost::io::ios_fill_saver fill(cerr);
+			boost::io::ios_flags_saver sflags(cerr);
+			boost::io::ios_fill_saver sfill(cerr);
 			std::cerr << "Error: Invalid IREG entry on chunk (" << scx << ", "
 			          << scy << "): extended = " << extended << ", entlen = "
 			          << entlen << ", shnum = " << shnum << ", frnum = "

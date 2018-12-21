@@ -39,17 +39,13 @@ struct File_spec {
 	/// If >= 0, this means we want to read from the object with the
 	/// given index inside the file.
 	int index;
-	File_spec()
-		: name(), index(-1)
-	{  }
+	File_spec() : index(-1) {}
 	/// Constructs a File_spec from a c-string.
 	File_spec(const char *n, int i = -1)
-		: name(n), index(i)
-	{  }
+		: name(n), index(i) {}
 	/// Constructs a File_spec from a string.
-	File_spec(const std::string& n, int i = -1)
-		: name(n), index(i)
-	{  }
+	File_spec(std::string n, int i = -1)
+		: name(std::move(n)), index(i) {}
 	bool operator<(const File_spec &other) const {
 		int cmp = name.compare(other.name);
 		return cmp < 0 || (cmp == 0 && index < other.index);

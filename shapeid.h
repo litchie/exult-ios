@@ -186,8 +186,11 @@ public:
 		shapefile(SF_SHAPES_VGA), shape(nullptr), info(nullptr)
 	{  }
 
-	virtual ~ShapeID()
-	{  }
+	ShapeID(const ShapeID&) = default;
+	ShapeID& operator=(const ShapeID&) = default;
+	ShapeID(ShapeID&&) noexcept = default;
+	ShapeID& operator=(ShapeID&&) noexcept = default;
+	virtual ~ShapeID() = default;
 	// End-of-list or invalid?
 	int is_invalid() const {
 		return shapenum == -1;

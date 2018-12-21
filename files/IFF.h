@@ -18,8 +18,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __IFF_H_
-#define __IFF_H_
+#ifndef IFF_H_
+#define IFF_H_
 
 #include <vector>
 #include <string>
@@ -69,8 +69,6 @@ public:
 	IFF(const File_spec &spec)
 		: U7file(spec)
 	{  }
-	~IFF() override
-	{   }
 
 	size_t number_of_objects() override {
 		return object_list.size();
@@ -81,10 +79,6 @@ public:
 
 	static bool is_iff(IDataSource *in);
 	static bool is_iff(const std::string& fname);
-private:
-	/// No default constructor
-	IFF();
-	UNREPLICATABLE_CLASS_I(IFF, U7file(""))
 };
 
 typedef U7DataFile<IFF> IFFFile;

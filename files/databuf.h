@@ -29,8 +29,6 @@
 #include "U7obj.h"
 #include "utils.h"
 
-typedef char *charptr;
-
 /**
  * Abstract input base class.
  */
