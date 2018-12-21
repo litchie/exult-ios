@@ -23,8 +23,6 @@
 #  include <config.h>
 #endif
 
-#include <string>
-
 //
 // {s,u}int{8,16,32,ptr}
 //
@@ -44,12 +42,6 @@ using sint16 = int16_t;
 using sint32 = int32_t;
 using sint64 = int64_t;
 using sintptr = intptr_t;
-
-/*
- * Empty string
- */
-extern const std::string c_empty_string;
-
 
 // Debug
 #ifdef DEBUG

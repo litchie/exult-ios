@@ -155,8 +155,6 @@ bool combat_trace = false; // show combat messages?
 int save_compression = 1;
 bool ignore_crc = false;
 
-const std::string c_empty_string;
-
 #ifdef __IPHONEOS__
 KeyboardButton_gump *gkeybb;
 SDL_Joystick *sdl_joy;

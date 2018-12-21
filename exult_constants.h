@@ -21,8 +21,6 @@
 #ifndef EXULT_CONSTANTS_H
 #define EXULT_CONSTANTS_H
 
-#include <string>
-
 /*
  *  Sizes:
  */
@@ -55,12 +53,6 @@ const int c_occsize = c_max_shapes / 8 + (c_max_shapes % 8 ? 1 : 0);
 
 // Maximum number of global flags:
 const int c_last_gflag = 2047;
-
-/*
- * Empty string
- */
-extern const std::string c_empty_string;
-
 
 #define MOVE_NODROP (1<<3)
 #define MOVE_FLY (1<<4)

@@ -40,8 +40,6 @@
 #define MessageBoxDebug(a,b,c,d)
 #endif
 
-const std::string c_empty_string;
-
 const char *config_defaults[] = {
 	"config/disk/game/blackgate/keys",  "(default)",
 	"config/disk/game/serpentisle/keys",    "(default)",

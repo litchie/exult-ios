@@ -30,8 +30,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <vector>
 #include <cassert>
 
-const std::string c_empty_string;
-
 using std::cout;
 using std::cerr;
 using std::endl;

@@ -55,7 +55,6 @@
 // include xml configuration stuff
 #include "Configuration.h"
 #include "exult_constants.h"
-const std::string c_empty_string; // Ob for exult_constants.h
 
 /* Functions */
 void usage();

@@ -60,6 +60,7 @@ const string    &XMLnode::reference(const string &h, bool &exists) {
 	}
 
 	exists = false;
+	static const std::string c_empty_string;
 	return c_empty_string;
 }
 

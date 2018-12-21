@@ -93,7 +93,6 @@ using std::make_unique;
 ExultStudio *ExultStudio::self = nullptr;
 Configuration *config = nullptr;
 GameManager *gamemanager = nullptr;
-const std::string c_empty_string;   // Used by config. library.
 
 // Mode menu items:
 static const char *mode_names[5] = {"move1", "paint1", "paint_with_chunks1",
