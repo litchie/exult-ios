@@ -40,8 +40,6 @@ public:
 		char    form_magic[4];
 		uint32  size;
 		char    data_type[4];
-		IFFhdr()
-		{  }
 	};
 	struct  IFFobject {
 		char    type[4];
@@ -63,10 +61,11 @@ protected:
 	Reference get_object_reference(uint32 objnum) const override {
 		return object_list[objnum];
 	}
+
 public:
 	/// Basic constructor.
 	/// @param spec File name and object index pair.
-	IFF(const File_spec &spec)
+	explicit IFF(const File_spec &spec)
 		: U7file(spec)
 	{  }
 
@@ -81,7 +80,7 @@ public:
 	static bool is_iff(const std::string& fname);
 };
 
-typedef U7DataFile<IFF> IFFFile;
-typedef U7DataBuffer<IFF> IFFBuffer;
+using IFFFile = U7DataFile<IFF>;
+using IFFBuffer = U7DataBuffer<IFF>;
 
 #endif

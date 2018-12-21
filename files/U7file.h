@@ -23,6 +23,7 @@
 
 #include <fstream>
 #include <string>
+#include <utility>
 #include "databuf.h"
 #include "U7obj.h"
 #include "exceptions.h"
@@ -53,19 +54,20 @@ protected:
 	virtual Reference get_object_reference(uint32) const {
 		return Reference{0, 0};
 	}
+
 public:
 	/// Initializes from a file spec. Needed by some constructors.
 	/// @param spec A file specification.
-	U7file(const File_spec &spec)
-		: identifier(spec), data(nullptr) {}
-	U7file(const U7file&) = delete;
-	U7file& operator=(const U7file&) = delete;
-	U7file(U7file&&) noexcept = default;
-	U7file& operator=(U7file&&) noexcept = default;
+	explicit U7file(File_spec spec)
+		: identifier(std::move(spec)), data(nullptr) {}
 	/// Deletes the data source. The destructors of derived classes
 	/// should delete anything else that is needed by the datasource
 	/// (e.g. buffers) but NOT the datadource.
 	virtual ~U7file() noexcept = default;
+	U7file(const U7file&) = delete;
+	U7file& operator=(const U7file&) = delete;
+	U7file(U7file&&) = default;
+	U7file& operator=(U7file&&) = default;
 
 	virtual size_t number_of_objects() = 0;
 	/**
@@ -119,7 +121,7 @@ public:
 	/// opens the file if it exists. It also creates and initializes
 	/// the data source, or sets it to null if the file is not there.
 	/// @param spec Name of file to open. Ignores the index portion.
-	U7DataFile(const File_spec &spec)
+	explicit U7DataFile(const File_spec &spec)
 		: T(spec) {
 		this->data = std::make_unique<IFileDataSource>(this->identifier.name);
 		if (this->data->good()) {
@@ -162,7 +164,7 @@ public:
 	/// file/number pair.
 	/// @param spec Unique identifier for this data object. The 'name'
 	/// member **MUST** be a valid file name.
-	U7DataBuffer(const File_spec &spec)
+	explicit U7DataBuffer(const File_spec &spec)
 		: T(spec) {
 		this->data = std::make_unique<IExultDataSource>(spec.name, spec.index);
 		this->index_file();
@@ -182,8 +184,9 @@ protected:
 	bool patch;
 	/// Number of objects in the file.
 	int cnt;
+
 public:
-	File_data(const File_spec &spec);
+	explicit File_data(const File_spec &spec);
 	File_data(const File_data &other) noexcept = default;
 	bool from_patch() const {
 		return patch;
@@ -209,10 +212,11 @@ class U7multifile {
 protected:
 	/// This is the list of contained files.
 	std::vector<File_data> files;
+
 public:
 	U7multifile(const U7multifile&) = delete;
 	U7multifile& operator=(const U7multifile&) = delete;
-	U7multifile(const File_spec &spec);
+	explicit U7multifile(const File_spec &spec);
 	U7multifile(const File_spec &spec0, const File_spec &spec1);
 	U7multifile(const File_spec &spec0, const File_spec &spec1,
 	            const File_spec &spec2);

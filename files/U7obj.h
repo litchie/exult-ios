@@ -25,6 +25,7 @@
 
 #include <memory>
 #include <string>
+#include <utility>
 #include <vector>
 #include "common_types.h"
 
@@ -38,8 +39,8 @@ struct File_spec {
 	/// If -1, this indicates that we are reading from the file itself.
 	/// If >= 0, this means we want to read from the object with the
 	/// given index inside the file.
-	int index;
-	File_spec() : index(-1) {}
+	int index{-1};
+	File_spec() = default;
 	/// Constructs a File_spec from a c-string.
 	File_spec(const char *n, int i = -1)
 		: name(n), index(i) {}
@@ -69,8 +70,8 @@ public:
 	/// @param objnum   Index of object in the data object.
 	/// @param p    Optional, defaults to false. If true, indicates
 	/// the object comes from the patch dir.
-	U7object(const File_spec &spec, int objnum)
-		: identifier(spec), objnumber(objnum)
+	U7object(File_spec spec, int objnum)
+		: identifier(std::move(spec)), objnumber(objnum)
 	{  }
 	virtual ~U7object() noexcept = default;
 	U7object(const U7object&) = delete;

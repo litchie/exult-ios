@@ -71,10 +71,12 @@ public:
 		str.erase();
 		while (!eof()) {
 			char character =  static_cast<char>(read1());
-
-			if (character == '\r') continue;        // Skip cr
-			else if (character == '\n') break;      // break on line feed
-
+			if (character == '\r') {
+				continue;        // Skip cr
+			}
+			if (character == '\n') {
+				break;      // break on line feed
+			}
 			str += character;
 		}
 	}
@@ -254,7 +256,7 @@ public:
 	}
 
 	bool good() final {
-		return buf && size;
+		return (buf != nullptr) && (size != 0U);
 	}
 };
 
@@ -312,9 +314,7 @@ public:
 };
 
 inline std::unique_ptr<IDataSource> IStreamDataSource::makeSource(size_t len) {
-	char *buf = new char[len];
-	read(buf, len);
-	return std::make_unique<IBufferDataSource>(buf, len);
+	return std::make_unique<IBufferDataSource>(readN(len), len);
 }
 
 inline std::unique_ptr<IDataSource> IBufferDataView::makeSource(size_t len) {
@@ -458,10 +458,6 @@ public:
 		size = len;
 	}
 
-	OBufferDataSpan(OBufferDataSpan&&) noexcept = default;
-	OBufferDataSpan& operator=(OBufferDataSpan&&) noexcept = default;
-	~OBufferDataSpan() noexcept override = default;
-
 	void write1(uint32 val) final {
 		Write1(buf_ptr, val);
 	}
@@ -519,7 +515,7 @@ class OBufferDataSource: public OBufferDataSpan {
 	std::unique_ptr<unsigned char[]> data;
 
 public:
-	OBufferDataSource(size_t len)
+	explicit OBufferDataSource(size_t len)
 		: OBufferDataSpan(nullptr, 0), data(std::make_unique<unsigned char[]>(len)) {
 		assert(len != 0);
 		buf_ptr = buf = data.get();
@@ -533,11 +529,6 @@ public:
 	}
 	OBufferDataSource(void *data_, size_t len)
 		: OBufferDataSpan(data_, len), data(static_cast<unsigned char*>(data_)) {}
-
-	OBufferDataSource(OBufferDataSource&& other) noexcept = default;
-	OBufferDataSource& operator=(OBufferDataSource&& other) noexcept = default;
-
-	~OBufferDataSource() final = default;
 };
 
 #endif

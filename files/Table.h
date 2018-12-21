@@ -42,10 +42,11 @@ protected:
 	Reference get_object_reference(uint32 objnum) const override {
 		return object_list[objnum];
 	}
+
 public:
 	/// Basic constructor.
 	/// @param spec File name and object index pair.
-	Table(const File_spec &spec)
+	explicit Table(const File_spec &spec)
 		: U7file(spec)
 	{  }
 
@@ -60,7 +61,7 @@ public:
 	static bool is_table(const std::string& fname);
 };
 
-typedef U7DataFile<Table> TableFile;
-typedef U7DataBuffer<Table> TableBuffer;
+using TableFile = U7DataFile<Table>;
+using TableBuffer = U7DataBuffer<Table>;
 
 #endif

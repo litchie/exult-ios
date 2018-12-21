@@ -38,10 +38,11 @@ protected:
 	Reference get_object_reference(uint32) const override {
 		return Reference{0, data->getSize()};
 	}
+
 public:
 	/// Basic constructor.
 	/// @param spec File name and object index pair.
-	Flat(const File_spec &spec)
+	explicit Flat(const File_spec &spec)
 		: U7file(spec)
 	{  }
 
@@ -56,7 +57,7 @@ public:
 	static bool is_flat(const std::string& fname);
 };
 
-typedef U7DataFile<Flat> FlatFile;
-typedef U7DataBuffer<Flat> FlatBuffer;
+using FlatFile = U7DataFile<Flat>;
+using FlatBuffer = U7DataBuffer<Flat>;
 
 #endif

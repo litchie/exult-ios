@@ -34,21 +34,21 @@ using std::string;
 using std::FILE;
 using std::size_t;
 
-void Table::index_file(void) {
-	if (!data)
+void Table::index_file() {
+	if (!data) {
 		throw file_read_exception(identifier.name);
-
-	if (!is_table(data.get()))    // Not a table file we recognise
+	}
+	if (!is_table(data.get())) {    // Not a table file we recognise
 		throw wrong_file_type_exception(identifier.name, "TABLE");
-
+	}
 	unsigned int i = 0;
 	while (true) {
 		Reference f;
 		f.size = data->read2();
 
-		if (f.size == 65535)
+		if (f.size == 65535) {
 			break;
-
+		}
 		f.offset = data->read4();
 
 #if 0
@@ -78,9 +78,9 @@ bool Table::is_table(IDataSource *in) {
 		uint16 size = in->read2();
 
 		// End of table marker.
-		if (size == 65535)
+		if (size == 65535) {
 			break;
-
+		}
 		uint32 offset = in->read4();
 		if (size > file_size || offset > file_size) {
 			in->seek(pos);

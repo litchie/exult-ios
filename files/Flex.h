@@ -43,7 +43,7 @@ public:
 	};
 
 protected:
-	static const unsigned short EXULT_FLEX_MAGIC2 = 0x0000cc00;
+	static const uint32 EXULT_FLEX_MAGIC2 = 0x0000cc00U;
 	char    title[80];
 	uint32  magic1;
 	uint32  count;
@@ -59,15 +59,15 @@ protected:
 public:
 	/// Basic constructor.
 	/// @param spec File name and object index pair.
-	Flex(const File_spec &spec)
+	explicit Flex(const File_spec &spec)
 		: U7file(spec)
 	{  }
 
 	/// Inspect the version of a flex file.
 	/// @return The flex version.
 	Flex_vers get_vers() const {
-		return (magic2&~0xffu) == EXULT_FLEX_MAGIC2 ?
-		       static_cast<Flex_vers>(magic2 & 0xffu) : orig;
+		return (magic2&~0xffU) == EXULT_FLEX_MAGIC2 ?
+		       static_cast<Flex_vers>(magic2 & 0xffU) : orig;
 	}
 	/// Gets the number of objects in the flex.
 	/// @return Number of objects.
@@ -83,11 +83,11 @@ public:
 
 	static bool is_flex(IDataSource *in);
 	static bool is_flex(const std::string& fname);
-	void IndexFlexFile(void);
+	void IndexFlexFile();
 };
 
-typedef U7DataFile<Flex> FlexFile;
-typedef U7DataBuffer<Flex> FlexBuffer;
+using FlexFile = U7DataFile<Flex>;
+using FlexBuffer = U7DataBuffer<Flex>;
 
 /*
  *  This is for writing out a whole Flex file.
@@ -102,6 +102,10 @@ class Flex_writer {
 public:
 	Flex_writer(OStreamDataSource& o, const char *title, size_t cnt,
 	            Flex::Flex_vers vers = Flex::orig);
+	Flex_writer(const Flex_writer&) noexcept = delete;
+	Flex_writer& operator=(const Flex_writer&) noexcept = delete;
+	Flex_writer(Flex_writer&&) noexcept = default;
+	Flex_writer& operator=(Flex_writer&&) noexcept = delete;
 	~Flex_writer();
 	void mark_section_done();   // Finished writing out a section.
 };

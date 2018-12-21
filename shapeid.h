@@ -71,6 +71,7 @@ class Shape_manager : public Game_singletons {
 	bool got_si_shapes; // Set true if the SI shapes file
 	//   is found when playing BG
 	void read_shape_info();
+
 public:
 	friend class ShapeID;
 	Shape_manager();

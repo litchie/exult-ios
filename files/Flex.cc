@@ -43,20 +43,21 @@ using std::ios;
  *  Reads the header from a flex and builds an object index.
  */
 void Flex::index_file() {
-	if (!data)
+	if (!data) {
 		throw file_read_exception(identifier.name);
-
+	}
 	data->read(title, sizeof(title));
 	magic1 = data->read4();
 	count = data->read4();
 	magic2 = data->read4();
 
-	if (magic1 != 0xffff1a00UL)
+	if (magic1 != 0xffff1a00U) {
 		// Not a flex file.
 		throw wrong_file_type_exception(identifier.name, "FLEX");
-
-	for (int i = 0; i < 9; i++)
+	}
+	for (int i = 0; i < 9; i++) {
 		padding[i] = data->read4();
+	}
 #if DEBUGFLEX
 	cout << "Title: " << title << endl;
 	cout << "Count: " << count << endl;
@@ -113,16 +114,18 @@ void Flex::write_header(
 	memset(titlebuf, 0, sizeof(titlebuf));
 	strncpy(titlebuf, title, sizeof(titlebuf) - 1);
 	out->write(titlebuf, sizeof(titlebuf));
-	out->write4(0xFFFF1A00);    // Magic number.
+	out->write4(0xFFFF1A00U);    // Magic number.
 	out->write4(static_cast<uint32>(count));
-	if (vers == orig)       // 2nd magic #:  use for version.
-		out->write4(0x000000CC);
-	else
+	if (vers == orig) {       // 2nd magic #:  use for version.
+		out->write4(0x000000CCU);
+	} else {
 		out->write4(EXULT_FLEX_MAGIC2 + static_cast<uint32>(vers));
+	}
 	size_t pos = out->getPos();       // Fill to data (past table at 0x80).
 	size_t fill = 0x80 + 8 * count - pos;
-	while (fill--)
+	while (fill--) {
 		out->write1(0);
+	}
 }
 
 /**
@@ -140,11 +143,8 @@ bool Flex::is_flex(IDataSource *in) {
 	}
 	in->seek(pos);
 
-	// Is a flex
-	if (magic == 0xffff1a00UL) return true;
-
-	// Isn't a flex
-	return false;
+	// Is a flex?
+	return magic == 0xffff1a00U;
 }
 
 

@@ -22,26 +22,28 @@
 #define _U7FILEMAN_H_
 
 #include <map>
+#include <memory>
 #include <string>
-#include "U7obj.h"
+#include "U7file.h"
 #include "exceptions.h"
-
-class U7file;
 
 /**
  *  This class manages "files". These "files" are managed by an
  *  unique identifier which is the actual file name for real files.
  */
 class U7FileManager {
-	UNREPLICATABLE_CLASS(U7FileManager)
 protected:
 	/// The actual "file" list.
-	std::map<File_spec, U7file *> file_list;
+	std::map<File_spec, std::unique_ptr<U7file>> file_list;
 	/// Static pointer to self.
 	static U7FileManager *self;
+
 public:
-	U7FileManager()
-	{  }
+	U7FileManager() = default;
+	U7FileManager(const U7FileManager&) = delete;
+	U7FileManager& operator=(const U7FileManager&) = delete;
+	U7FileManager(U7FileManager&&) = default;
+	U7FileManager& operator=(U7FileManager&&) = default;
 	~U7FileManager() {
 		reset();
 	}
