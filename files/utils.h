@@ -31,7 +31,6 @@
 #include <dirent.h>
 
 #include "common_types.h"
-#include "rect.h"
 
 #ifndef ATTR_PRINTF
 #ifdef __GNUC__
@@ -229,27 +228,6 @@ inline void WriteInt(
 		out << std::endl;
 	else
 		out << '/';
-}
-
-inline void ReadRect(
-    std::istream &in,
-    Rectangle &rect
-) {
-	rect.x = ReadInt(in);
-	rect.y = ReadInt(in);
-	rect.w = ReadInt(in);
-	rect.h = ReadInt(in);
-}
-
-inline void WriteRect(
-    std::ostream &out,
-    const Rectangle &rect,
-    bool final = false
-) {
-	WriteInt(out, rect.x);
-	WriteInt(out, rect.y);
-	WriteInt(out, rect.w);
-	WriteInt(out, rect.h, final);
 }
 
 inline std::string ReadStr(
