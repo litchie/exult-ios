@@ -136,12 +136,6 @@ void getVersionInfo(std::ostream &out) {
 	out << "HAVE_ZIP_SUPPORT";
 #endif
 
-#ifdef HAVE_OPENGL
-	if (!firstoption) out << ", ";
-	firstoption = false;
-	out << "HAVE_OPENGL";
-#endif
-
 #ifdef ENABLE_MIDISFX
 	if (!firstoption) out << ", ";
 	firstoption = false;

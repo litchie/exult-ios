@@ -86,7 +86,7 @@ void    Configuration::value(const string &key, int &ret, int defaultvalue) cons
 
 bool    Configuration::key_exists(const string &key) const {
 	const XMLnode *sub = xmltree->subtree(key);
-	return sub != 0;
+	return sub != nullptr;
 }
 
 void    Configuration::set(const string &key, const string &value, bool write_out) {

@@ -301,8 +301,8 @@ void Gump_text::lose_focus(
  */
 
 File_gump::File_gump(
-) : Modal_gump(0, game->get_shape("gumps/fileio")),
-	pushed_text(0), focus(0), restored(0) {
+) : Modal_gump(nullptr, game->get_shape("gumps/fileio")),
+	pushed_text(nullptr), focus(nullptr), restored(0) {
 	set_object_area(Rectangle(0, 0, 0, 0), 8, 150);
 
 	size_t i;
@@ -314,7 +314,7 @@ File_gump::File_gump(
 		names[i]->set_text(gwin->get_save_name(i));
 	}
 	// First row of buttons:
-	buttons[0] = buttons[1] = 0;    // No load/save until name chosen.
+	buttons[0] = buttons[1] = nullptr;    // No load/save until name chosen.
 	buttons[2] = new Quit_button(this, btn_cols[2], btn_rows[0]);
 	// 2nd row.
 	buttons[3] = new Sound_button(this, btn_cols[0], btn_rows[1],
@@ -365,11 +365,11 @@ void File_gump::remove_focus(
 	if (!focus)
 		return;
 	focus->lose_focus();
-	focus = 0;
+	focus = nullptr;
 	delete buttons[0];      // Remove load/save buttons.
-	buttons[0] = 0;
+	buttons[0] = nullptr;
 	delete buttons[1];
-	buttons[1] = 0;
+	buttons[1] = nullptr;
 	paint();
 }
 
@@ -495,8 +495,8 @@ bool File_gump::mouse_down(
 ) {
 	if (button != 1) return false;
 
-	pushed = 0;
-	pushed_text = 0;
+	pushed = nullptr;
+	pushed_text = nullptr;
 	// First try checkmark.
 	Gump_button *btn = Gump::on_button(mx, my);
 	if (btn)
@@ -534,7 +534,7 @@ bool File_gump::mouse_up(
 		pushed->unpush(button);
 		if (pushed->on_button(mx, my))
 			pushed->activate(button);
-		pushed = 0;
+		pushed = nullptr;
 	}
 	if (!pushed_text)
 		return true;
@@ -542,7 +542,7 @@ bool File_gump::mouse_up(
 	if (!pushed_text->mouse_clicked(mx, my) ||
 	        pushed_text == focus) { // Same field already selected?
 		pushed_text->paint();
-		pushed_text = 0;
+		pushed_text = nullptr;
 		return true;
 	}
 	if (focus) {        // Another had focus.
@@ -550,7 +550,7 @@ bool File_gump::mouse_up(
 		focus->lose_focus();
 	}
 	focus = pushed_text;        // Switch focus to new field.
-	pushed_text = 0;
+	pushed_text = nullptr;
 	if (focus->get_length()) {  // Need load/save buttons?
 		if (!buttons[0])
 			buttons[0] = new Load_save_button(this,
@@ -562,7 +562,7 @@ bool File_gump::mouse_up(
 		// No name yet.
 		delete buttons[0];
 		delete buttons[1];
-		buttons[0] = buttons[1] = 0;
+		buttons[0] = buttons[1] = nullptr;
 	}
 	paint();            // Repaint.
 	gwin->set_painted();
@@ -593,13 +593,13 @@ void File_gump::text_input(int chr, int unicode) {
 		if (focus->delete_left()) {
 			// Can't restore now.
 			delete buttons[0];
-			buttons[0] = 0;
+			buttons[0] = nullptr;
 		}
 		if (!focus->get_length()) {
 			// Last char.?
 			delete buttons[0];
 			delete buttons[1];
-			buttons[0] = buttons[1] = 0;
+			buttons[0] = buttons[1] = nullptr;
 			paint();
 		}
 		return;
@@ -607,13 +607,13 @@ void File_gump::text_input(int chr, int unicode) {
 		if (focus->delete_right()) {
 			// Can't restore now.
 			delete buttons[0];
-			buttons[0] = 0;
+			buttons[0] = nullptr;
 		}
 		if (!focus->get_length()) {
 			// Last char.?
 			delete buttons[0];
 			delete buttons[1];
-			buttons[0] = buttons[1] = 0;
+			buttons[0] = buttons[1] = nullptr;
 			paint();
 		}
 		return;
@@ -650,7 +650,7 @@ void File_gump::text_input(int chr, int unicode) {
 		}
 		if (buttons[0]) {   // Can't load now.
 			delete buttons[0];
-			buttons[0] = 0;
+			buttons[0] = nullptr;
 			paint();
 		}
 		gwin->set_painted();

@@ -27,7 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #ifdef WIN32
-#include "Windrag.h"
+#include "windrag.h"
 #endif
 
 #ifdef __GNUC__
@@ -368,14 +368,14 @@ gint Chunk_chooser::win32_drag_motion(
 
 		// This call allows us to recycle the data transfer initialization code.
 		//  It's clumsy, but far easier to maintain.
-		drag_data_get(NULL, NULL, (GtkSelectionData *) &wdata,
+		drag_data_get(nullptr, nullptr, reinterpret_cast<GtkSelectionData*>(&wdata),
 		              U7_TARGET_CHUNKID, 0, data);
 
 		POINT pnt;
 		GetCursorPos(&pnt);
 
-		Windropsource idsrc(0, pnt.x, pnt.y);
-		LPDATAOBJECT idobj = (LPDATAOBJECT) new Winstudioobj(wdata);
+		Windropsource idsrc(nullptr, pnt.x, pnt.y);
+		LPDATAOBJECT idobj = new Winstudioobj(wdata);
 		DWORD dndout;
 
 		HRESULT res = DoDragDrop(idobj, &idsrc, DROPEFFECT_COPY, &dndout);
@@ -450,7 +450,7 @@ gint Chunk_chooser::mouse_press(
 	if (i == chooser->info_cnt && event->button == 1)
 		chooser->unselect(true);// Nothing under mouse.
 	else if (event->button == 3)
-		gtk_menu_popup(GTK_MENU(chooser->create_popup()), 0, 0, 0, 0,
+		gtk_menu_popup(GTK_MENU(chooser->create_popup()), nullptr, nullptr, nullptr, nullptr,
 		               event->button, event->time);
 	return (TRUE);
 }
@@ -491,7 +491,7 @@ void Chunk_chooser::drag_data_get(
 	int len = Store_u7_chunkid(buf, shinfo.num);
 	cout << "Setting selection data (" << shinfo.num << ')' << endl;
 #ifdef WIN32
-	windragdata *wdata = (windragdata *)seldata;
+	windragdata *wdata = reinterpret_cast<windragdata*>(seldata);
 	wdata->assign(info, len, buf);
 #else
 	// Make us owner of xdndselection.
@@ -733,7 +733,7 @@ static void on_delete(
 GtkWidget *Chunk_chooser::create_popup(
 ) {
 	create_popup_internal(true); // Create popup with groups, files.
-	if (group != 0)         // Filtering?  Skip the rest.
+	if (group != nullptr)         // Filtering?  Skip the rest.
 		return popup;
 	GtkWidget *mitem = Add_menu_item(popup, "New...");
 	GtkWidget *new_menu = gtk_menu_new();
@@ -762,8 +762,8 @@ Chunk_chooser::Chunk_chooser(
     Shape_group *g          // Filter, or null.
 ) : Object_browser(g), Shape_draw(i, palbuf, gtk_drawing_area_new()),
 	chunkfile(cfile), chunksz(c_tiles_per_chunk *c_tiles_per_chunk * 2),
-	headersz(0), info(0), info_cnt(0), locate_cx(-1), locate_cy(-1),
-	drop_enabled(false), to_del(-1), sel_changed(0) {
+	headersz(0), info(nullptr), info_cnt(0), locate_cx(-1), locate_cy(-1),
+	drop_enabled(false), to_del(-1), sel_changed(nullptr) {
 	static char v2hdr[] = { -1, -1, -1, -1, 'e', 'x', 'l', 't',
 	                        0, 0
 	                      };
@@ -789,7 +789,7 @@ Chunk_chooser::Chunk_chooser(
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, TRUE, TRUE, 0);
 
 	// A frame looks nice.
-	GtkWidget *frame = gtk_frame_new(NULL);
+	GtkWidget *frame = gtk_frame_new(nullptr);
 	gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_IN);
 	gtk_widget_show(frame);
 	gtk_box_pack_start(GTK_BOX(hbox), frame, TRUE, TRUE, 0);
@@ -915,7 +915,7 @@ void Chunk_chooser::end_terrain_editing(
 	// Clear out cache of chunks.
 	for (int i = 0; i < num_chunks; i++) {
 		delete chunklist[i];
-		chunklist[i] = 0;
+		chunklist[i] = nullptr;
 	}
 	render();
 	show();

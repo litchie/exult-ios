@@ -164,7 +164,7 @@ void ActionCloseOrMenu(int const *params) {
 	if (gwin->get_gump_man()->showing_gumps(true))
 		gwin->get_gump_man()->close_all_gumps();
 	else
-		ActionMenuGump(0);
+		ActionMenuGump(nullptr);
 }
 
 //  { ActionScreenshot, 0, "Take screenshot", normal_keys, NONE },
@@ -248,7 +248,7 @@ void ActionUseFood(int const *params) {
 // params[1] = event id.
 void ActionCallUsecode(int const *params) {
 	Usecode_machine *usecode = Game_window::get_instance()->get_usecode();
-	usecode->call_usecode(params[0], static_cast<Game_object *>(0),
+	usecode->call_usecode(params[0], nullptr,
 	                      static_cast<Usecode_machine::Usecode_events>(params[1]));
 
 	Mouse::mouse->set_speed_cursor();
@@ -326,7 +326,7 @@ void ActionTryKeys(int const *params) {
 	ignore_unused_variable_warning(params);
 	Game_window *gwin = Game_window::get_instance();
 	int x, y;           // Allow dragging.
-	if (!Get_click(x, y, Mouse::greenselect, 0, true))
+	if (!Get_click(x, y, Mouse::greenselect, nullptr, true))
 		return;
 	// Look for obj. in open gump.
 	Gump *gump = gwin->get_gump_man()->find_gump(x, y);
@@ -404,7 +404,7 @@ void ActionCombatStats(int const *params) {
 	ignore_unused_variable_warning(params);
 	Game_window *gwin = Game_window::get_instance();
 	int cnt = gwin->get_party_man()->get_count();
-	gwin->get_gump_man()->add_gump(0, game->get_shape("gumps/cstats/1") + cnt);
+	gwin->get_gump_man()->add_gump(nullptr, game->get_shape("gumps/cstats/1") + cnt);
 }
 
 //  { ActionFaceStats, 0, "Change Face Stats State", normal_keys, NONE }

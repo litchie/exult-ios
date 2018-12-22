@@ -35,7 +35,7 @@ class Gump_widget : public ShapeID {
 	UNREPLICATABLE_CLASS_I(Gump_widget, ShapeID())
 
 protected:
-	Gump_widget() : parent(0) {  }
+	Gump_widget() : parent(nullptr) {  }
 	Gump *parent;       // Who this is in.
 	short x, y;         // Coords. relative to parent.
 
@@ -48,7 +48,7 @@ public:
 	{  }
 	virtual Gump_widget *clone(Gump *par) {
 		ignore_unused_variable_warning(par);
-		return 0;
+		return nullptr;
 	}
 	virtual ~Gump_widget() {  }
 	// Is a given point on the widget?

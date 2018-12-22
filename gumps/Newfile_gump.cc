@@ -184,13 +184,13 @@ bool Newfile_Textbutton::activate(int button) {
 
 
 Newfile_gump::Newfile_gump(
-) : Modal_gump(0, gwin->get_width() / 2 - 160,
+) : Modal_gump(nullptr, gwin->get_width() / 2 - 160,
 	               gwin->get_height() / 2 - 100,
 	               EXULT_FLX_SAVEGUMP_SHP, SF_EXULT_FLX),
-	restored(0), games(0), num_games(0), first_free(0),
-	cur_shot(0), cur_details(0), cur_party(0),
-	gd_shot(0), gd_details(0), gd_party(0),
-	screenshot(0), details(0), party(0), is_readable(false), filename(0),
+	restored(0), games(nullptr), num_games(0), first_free(0),
+	cur_details(nullptr), cur_party(nullptr),
+	gd_details(nullptr), gd_party(nullptr),
+	screenshot(nullptr), details(nullptr), party(nullptr), is_readable(false), filename(nullptr),
 	list_position(-2), selected(-3), cursor(0), slide_start(-1)
 
 {
@@ -203,7 +203,7 @@ Newfile_gump::Newfile_gump(
 	gwin->get_win()->get(back, 0, 0);
 
 	// Load/Save/Delete
-	buttons[0] = buttons[1] = buttons[2] = 0;
+	buttons[0] = buttons[1] = buttons[2] = nullptr;
 
 	// Cancel
 	buttons[3] = new Newfile_Textbutton(this, canceltext,
@@ -258,11 +258,11 @@ void Newfile_gump::load() {
 	selected = -3;
 
 	delete buttons[0];
-	buttons[0] = 0;
+	buttons[0] = nullptr;
 	delete buttons[1];
-	buttons[1] = 0;
+	buttons[1] = nullptr;
 	delete buttons[2];
-	buttons[2] = 0;
+	buttons[2] = nullptr;
 
 	//Reread save game details (quick save gets overwritten)
 	//FreeSaveGameDetails();
@@ -298,11 +298,11 @@ void Newfile_gump::save() {
 	selected = -3;
 
 	delete buttons[0];
-	buttons[0] = 0;
+	buttons[0] = nullptr;
 	delete buttons[1];
-	buttons[1] = 0;
+	buttons[1] = nullptr;
 	delete buttons[2];
-	buttons[2] = 0;
+	buttons[2] = nullptr;
 
 	FreeSaveGameDetails();
 	LoadSaveGameDetails();
@@ -326,7 +326,7 @@ void Newfile_gump::delete_file() {
 		return;
 
 	U7remove(games[selected].filename);
-	filename = 0;
+	filename = nullptr;
 	is_readable = false;
 
 	cout << "Deleted Save game #" << selected << " (" << games[selected].filename << ") successfully." << endl;
@@ -335,11 +335,11 @@ void Newfile_gump::delete_file() {
 	selected = -3;
 
 	delete buttons[0];
-	buttons[0] = 0;
+	buttons[0] = nullptr;
 	delete buttons[1];
-	buttons[1] = 0;
+	buttons[1] = nullptr;
 	delete buttons[2];
-	buttons[2] = 0;
+	buttons[2] = nullptr;
 
 	FreeSaveGameDetails();
 	LoadSaveGameDetails();
@@ -554,7 +554,7 @@ bool Newfile_gump::mouse_down(
 			}
 
 	if (pushed) {       // On a button?
-		if (!pushed->push(button)) pushed = 0;
+		if (!pushed->push(button)) pushed = nullptr;
 		return true;
 	}
 
@@ -620,24 +620,24 @@ bool Newfile_gump::mouse_down(
 		want_load = false;
 		want_delete = false;
 		want_save = false;
-		screenshot = cur_shot;
+		screenshot = cur_shot.get();
 		details = cur_details;
 		party = cur_party;
 		newname[0] = 0;
 		cursor = 0;
 		is_readable = true;
-		filename = 0;
+		filename = nullptr;
 	} else if (selected == -1) {
 		want_delete = false;
-		screenshot = gd_shot;
+		screenshot = gd_shot.get();
 		details = gd_details;
 		party = gd_party;
 		strcpy(newname, "Quick Save");
 		cursor = -1; // No cursor
 		is_readable = true;
-		filename = 0;
+		filename = nullptr;
 	} else {
-		screenshot = games[selected].screenshot;
+		screenshot = games[selected].screenshot.get();
 		details = games[selected].details;
 		party = games[selected].party;
 		strcpy(newname, games[selected].savename);
@@ -651,7 +651,7 @@ bool Newfile_gump::mouse_down(
 		                                    btn_cols[1], btn_rows[0], 39);
 	else if (buttons[0] && !want_load) {
 		delete buttons[0];
-		buttons[0] = 0;
+		buttons[0] = nullptr;
 	}
 
 	if (!buttons[1] && want_save)
@@ -659,7 +659,7 @@ bool Newfile_gump::mouse_down(
 		                                    btn_cols[0], btn_rows[0], 40);
 	else if (buttons[1] && !want_save) {
 		delete buttons[1];
-		buttons[1] = 0;
+		buttons[1] = nullptr;
 	}
 
 	if (!buttons[2] && want_delete)
@@ -667,7 +667,7 @@ bool Newfile_gump::mouse_down(
 		                                    btn_cols[2], btn_rows[0], 59);
 	else if (buttons[2] && !want_delete) {
 		delete buttons[2];
-		buttons[2] = 0;
+		buttons[2] = nullptr;
 	}
 
 	paint();            // Repaint.
@@ -691,7 +691,7 @@ bool Newfile_gump::mouse_up(
 		pushed->unpush(button);
 		if (pushed->on_button(mx, my))
 			pushed->activate(button);
-		pushed = 0;
+		pushed = nullptr;
 	}
 
 	return true;
@@ -785,12 +785,12 @@ void Newfile_gump::text_input(int chr, int unicode) {
 			// Can't restore/delete now.
 			delete buttons[0];
 			delete buttons[2];
-			buttons[0] = buttons[2] = 0;
+			buttons[0] = buttons[2] = nullptr;
 
 			// If no chars cant save either
 			if (!newname[0]) {
 				delete buttons[1];
-				buttons[1] = 0;
+				buttons[1] = nullptr;
 			}
 			update_details = true;
 		}
@@ -802,12 +802,12 @@ void Newfile_gump::text_input(int chr, int unicode) {
 			// Can't restore/delete now.
 			delete buttons[0];
 			delete buttons[2];
-			buttons[0] = buttons[2] = 0;
+			buttons[0] = buttons[2] = nullptr;
 
 			// If no chars cant save either
 			if (!newname[0]) {
 				delete buttons[1];
-				buttons[1] = 0;
+				buttons[1] = nullptr;
 			}
 			update_details = true;
 		}
@@ -851,7 +851,7 @@ void Newfile_gump::text_input(int chr, int unicode) {
 				if (buttons[0] || buttons[2]) {
 					delete buttons[0];
 					delete buttons[2];
-					buttons[0] = buttons[2] = 0;
+					buttons[0] = buttons[2] = nullptr;
 				}
 				update_details = true;
 			}
@@ -861,7 +861,7 @@ void Newfile_gump::text_input(int chr, int unicode) {
 
 	// This sets the game details to the cur set
 	if (update_details) {
-		screenshot = cur_shot;
+		screenshot = cur_shot.get();
 		details = cur_details;
 		party = cur_party;
 		repaint = true;
@@ -916,7 +916,6 @@ int Newfile_gump::AddCharacter(char c) {
 void Newfile_gump::LoadSaveGameDetails() {
 	int     i;
 
-
 	// Gamedat Details
 	gwin->get_saveinfo(gd_shot, gd_details, gd_party);
 
@@ -937,7 +936,7 @@ void Newfile_gump::LoadSaveGameDetails() {
 	cur_details->game_hour = gclock->get_hour();
 	cur_details->game_minute = gclock->get_minute();
 
-	time_t t = time(0);
+	time_t t = time(nullptr);
 	struct tm *timeinfo = localtime(&t);
 
 	cur_details->real_day = timeinfo->tm_mday;
@@ -976,7 +975,7 @@ void Newfile_gump::LoadSaveGameDetails() {
 	}
 
 	party = cur_party;
-	screenshot = cur_shot;
+	screenshot = cur_shot.get();
 	details = cur_details;
 
 	// Now read save game details
@@ -1029,33 +1028,31 @@ void Newfile_gump::LoadSaveGameDetails() {
 }
 
 void Newfile_gump::FreeSaveGameDetails() {
-	delete cur_shot;
-	cur_shot = 0;
+	cur_shot.reset();
 	delete cur_details;
-	cur_details = 0;
+	cur_details = nullptr;
 	delete [] cur_party;
-	cur_party = 0;
+	cur_party = nullptr;
 
-	delete gd_shot;
-	gd_shot = 0;
+	gd_shot.reset();
 	delete gd_details;
-	gd_details = 0;
+	gd_details = nullptr;
 	delete [] gd_party;
-	gd_party = 0;
+	gd_party = nullptr;
 
-	filename = 0;
+	filename = nullptr;
 
 	// The SaveInfo struct will delete everything that it's got allocated
 	// So we don't need to worry about that
 	delete [] games;
-	games = 0;
+	games = nullptr;
 }
 
 // Save Info Methods
 
 // Constructor
-Newfile_gump::SaveInfo::SaveInfo() : num(0), filename(0), savename(0), readable(true),
-	details(0), party(0), screenshot(0) {
+Newfile_gump::SaveInfo::SaveInfo() : num(0), filename(nullptr), savename(nullptr), readable(true),
+	details(nullptr), party(nullptr) {
 
 }
 
@@ -1065,7 +1062,6 @@ Newfile_gump::SaveInfo::~SaveInfo() {
 	delete [] savename;
 	delete details;
 	delete [] party;
-	delete screenshot;
 }
 
 // Set Sequence Number

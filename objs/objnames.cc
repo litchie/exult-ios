@@ -148,7 +148,7 @@ string Game_object::get_name(
 	int shnum = get_shapenum();
 	const char *name;
 	const char *shpname = (shnum >= 0 && shnum < get_num_item_names()) ?
-	                      get_item_name(shnum) : 0;
+	                      get_item_name(shnum) : nullptr;
 	int type = nminf ? nminf->get_type() : -255;
 	int msgid;
 	if (type < 0 && type != -255)   // This is a "catch all" default.
@@ -200,7 +200,7 @@ string Game_object::get_name(
 	}
 	int quantity;
 	string display_name;
-	if (name == 0)
+	if (name == nullptr)
 		return "";
 
 	if (ShapeID::get_info(shnum).has_quantity())
@@ -209,7 +209,7 @@ string Game_object::get_name(
 		quantity = 1;
 
 	// If there are no slashes then it is simpler
-	if (strchr(name, '/') == 0) {
+	if (strchr(name, '/') == nullptr) {
 		if (quantity <= 1)
 			display_name = name;
 		else {

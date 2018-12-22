@@ -131,9 +131,9 @@ Shape_draw::Shape_draw(
     Vga_file *i,            // Where they're kept.
     unsigned char *palbuf,      // Palette, 3*256 bytes (rgb triples).
     GtkWidget *drw          // Drawing area to use.
-) : ifile(i), draw(drw), drawgc(0),
-	iwin(0), palette(0),
-	drop_callback(0), drop_user_data(0), dragging(false) {
+) : ifile(i), draw(drw), drawgc(nullptr),
+	iwin(nullptr), palette(nullptr),
+	drop_callback(nullptr), drop_user_data(nullptr), dragging(false) {
 	guint32 colors[256];
 	for (int i = 0; i < 256; i++)
 		colors[i] = (palbuf[3 * i] << 16) * 4 + (palbuf[3 * i + 1] << 8) * 4 +

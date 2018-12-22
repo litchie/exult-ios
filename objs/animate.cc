@@ -124,7 +124,7 @@ void Object_sfx::handle_event(
 		outer = obj_ptr->get_outermost();
 		last_pos = outer->get_center_tile();
 	} else
-		outer = 0;
+		outer = nullptr;
 
 	/*
 	if (outer->is_pos_invalid())// || (distance >= 0 && !active))
@@ -272,9 +272,9 @@ Animator *Animator::create(
 
 Animator::~Animator(
 ) {
-    if (gwin->get_tqueue()) {
-	    while (gwin->get_tqueue()->remove(this))
-		    ;
+	if (gwin->get_tqueue()) {
+		while (gwin->get_tqueue()->remove(this))
+			;
 	}
 	if (objsfx) {
 		objsfx->stop();

@@ -232,7 +232,7 @@ public:
 		static char const *emptystr = "";
 		return ((type == string_type) ? strval.c_str() :
 		        ((undefined ||
-		          (type == array_type && arrayval.empty())) ? emptystr : 0));
+		          (type == array_type && arrayval.empty())) ? emptystr : nullptr));
 	}
 	long need_int_value() const {
 		// Convert strings.
@@ -284,7 +284,7 @@ public:
 		case int_type:
 			return intval == 0;
 		case pointer_type:
-			return ptrval == NULL;
+			return ptrval == nullptr;
 		case array_type:
 			return arrayval.empty();
 		default:
@@ -326,7 +326,7 @@ public:
 	}
 	Usecode_class_symbol *get_class_ptr() const {
 		return (type == class_obj_type) ?
-		       clsrefval.elems[0].clssym : 0;
+		       clsrefval.elems[0].clssym : nullptr;
 	}
 };
 

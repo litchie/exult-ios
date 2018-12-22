@@ -26,7 +26,7 @@ class Actor;
 class Portrait_button;
 
 class Face_stats : public Gump {
-	UNREPLICATABLE_CLASS_I(Face_stats, Gump(0, 0, 0, 0, SF_GUMPS_VGA))
+	UNREPLICATABLE_CLASS_I(Face_stats, Gump(nullptr, 0, 0, 0, SF_GUMPS_VGA))
 	// Only allow for one to be made
 	static Face_stats   *self;
 	static int      mode;

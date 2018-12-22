@@ -54,7 +54,7 @@ using std::vector;
 /*
  *  Recursively look for a barge that an object is a part of, or on.
  *
- *  Output: ->barge if found, else 0.
+ *  Output: ->barge if found, else nullptr.
  */
 
 Barge_object *Get_barge(
@@ -412,14 +412,14 @@ class Usecode_internal : public Usecode_machine {
 	const char *get_user_choice();  // Get user's choice.
 	int get_user_choice_num();
 	void clear_usevars();
-	void read_usevars(std::istream &in);    // Read static variables.
+	void read_usevars();    // Read static variables.
 	Usecode_function *find_function(int funcid);
 
 	Game_object *intercept_item;
 	Tile_coord *intercept_tile;
 
 	// execution functions
-	bool call_function(int funcid, int event, Game_object *caller = 0,
+	bool call_function(int funcid, int event, Game_object *caller = nullptr,
 	                   bool entrypoint = false, bool orig = false, int givenargs = 0);
 	void previous_stack_frame();
 	void return_from_function(Usecode_value &retval);
@@ -472,6 +472,7 @@ public:
 	Usecode_value *peek_stack(int depth) const;
 	void poke_stack(int depth, Usecode_value &val);
 #endif
+
 public:
 	friend class Usecode_script;
 	Usecode_internal();
@@ -499,13 +500,13 @@ public:
 	virtual void intercept_click_on_item(Game_object *obj) {
 		intercept_item = obj;
 		delete intercept_tile;
-		intercept_tile = 0;
+		intercept_tile = nullptr;
 	}
 	virtual Game_object *get_intercept_click_on_item() const {
 		return intercept_item;
 	}
 	virtual void intercept_click_on_tile(Tile_coord *t) {
-		intercept_item = 0;
+		intercept_item = nullptr;
 		delete intercept_tile;
 		intercept_tile = t;
 	}
@@ -515,8 +516,8 @@ public:
 	virtual void save_intercept(Game_object *&obj, Tile_coord *&t) {
 		obj = intercept_item;
 		t = intercept_tile;
-		intercept_item = 0;
-		intercept_tile = 0;
+		intercept_item = nullptr;
+		intercept_tile = nullptr;
 	}
 	virtual void restore_intercept(Game_object *obj, Tile_coord *t) {
 		intercept_item = obj;
@@ -524,6 +525,5 @@ public:
 		intercept_tile = t;
 	}
 };
-
 
 #endif

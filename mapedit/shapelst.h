@@ -119,7 +119,7 @@ class Shape_chooser: public Object_browser, public Shape_draw {
 	virtual GtkWidget *create_popup();  // Popup menu.
 public:
 	Shape_chooser(Vga_file *i, unsigned char *palbuf, int w, int h,
-	              Shape_group *g = 0, Shape_file_info *fi = 0);
+	              Shape_group *g = nullptr, Shape_file_info *fi = nullptr);
 	virtual ~Shape_chooser();
 	void set_shapes_file(Shapes_vga_file *sh) {
 		shapes_file = sh;

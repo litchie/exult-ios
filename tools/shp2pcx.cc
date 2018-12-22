@@ -147,7 +147,7 @@ u7shape *load_shape(char *filename) {
 	fp = fopen(filename, "rb");
 	if (!fp) {
 		cerr << "Can't open " << filename << endl;
-		return 0;
+		return nullptr;
 	}
 	fseek(fp, 0, SEEK_END);
 	file_size = ftell(fp);
@@ -297,7 +297,7 @@ uint8 *load_palette(char *filename) {
 	fp = fopen(filename, "rb");
 	if (!fp) {
 		cerr << "Can't open " << filename << endl;
-		return 0;
+		return nullptr;
 	}
 
 	uint8 *palette = new uint8[768];
@@ -324,7 +324,7 @@ uint8 *load_palette(char *filename) {
 		cerr << "Not a valid palette file: " << filename << endl;
 		delete [] palette;
 		fclose(fp);
-		return 0;
+		return nullptr;
 	}
 	fclose(fp);
 

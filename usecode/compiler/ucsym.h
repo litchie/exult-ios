@@ -95,17 +95,17 @@ public:
 	// Generate function/procedure call.
 	virtual int gen_call(Basic_block *out, Uc_function *fun, bool orig,
 	                     Uc_expression *item, Uc_array_expression *parms,
-	                     bool retvalue, Uc_class *scope_vtbl = 0);
+	                     bool retvalue, Uc_class *scope_vtbl = nullptr);
 	virtual int get_string_offset() { // Get offset in text_data.
 		return -1;
 	}
 	// Return var/int expression.
 	virtual Uc_expression *create_expression();
 	virtual Uc_class *get_cls() const {
-		return 0;
+		return nullptr;
 	}
 	virtual Uc_struct_symbol *get_struct() const {
-		return 0;
+		return nullptr;
 	}
 	virtual bool is_static() const {
 		return false;
@@ -285,10 +285,10 @@ public:
 		return Uc_symbol::Variable;
 	}
 	virtual Uc_struct_symbol *get_struct() const {
-		return 0;
+		return nullptr;
 	}
 	virtual Uc_class *get_cls() const {
-		return 0;
+		return nullptr;
 	}
 };
 
@@ -495,7 +495,7 @@ public:
 	// Generate function/procedure call.
 	virtual int gen_call(Basic_block *out, Uc_function *fun, bool orig,
 	                     Uc_expression *item, Uc_array_expression *parms,
-	                     bool retvalue, Uc_class *scope_vtbl = 0);
+	                     bool retvalue, Uc_class *scope_vtbl = nullptr);
 };
 
 /*
@@ -545,7 +545,7 @@ public:
 	                   int shp = 0, Function_kind kind = utility_fun);
 	static Uc_function_symbol *create(char *nm, int num,
 	                                  std::vector<Uc_var_symbol *> &p, bool is_extern = false,
-	                                  Uc_scope *scope = 0, Function_kind kind = utility_fun);
+	                                  Uc_scope *scope = nullptr, Function_kind kind = utility_fun);
 	const std::vector<Uc_var_symbol *> &get_parms() {
 		return parms;
 	}
@@ -587,7 +587,7 @@ public:
 	// Generate function/procedure call.
 	virtual int gen_call(Basic_block *out, Uc_function *fun, bool orig,
 	                     Uc_expression *item, Uc_array_expression *parms,
-	                     bool retvalue, Uc_class *scope_vtbl = 0);
+	                     bool retvalue, Uc_class *scope_vtbl = nullptr);
 	static void set_last_num(int n) {
 		last_num = n;
 		new_auto_num = true;
@@ -595,7 +595,7 @@ public:
 	static Uc_function_symbol *search_num(int ucnum) {
 		Sym_nums::const_iterator it = nums_used.find(ucnum);
 		if (it == nums_used.end())  // Unused?  That's good.
-			return 0;
+			return nullptr;
 		return (*it).second;
 	}
 	virtual bool has_ret() const {
@@ -616,10 +616,10 @@ public:
 		ret_sym.str = s;
 	}
 	virtual Uc_class *get_cls() const {
-		return ret_type == class_ret ? ret_sym.cls : 0;
+		return ret_type == class_ret ? ret_sym.cls : nullptr;
 	}
 	virtual Uc_struct_symbol *get_struct() const {
-		return ret_type == struct_ret ? ret_sym.str : 0;
+		return ret_type == struct_ret ? ret_sym.str : nullptr;
 	}
 	virtual Function_kind get_function_type() const {
 		return type;
@@ -645,7 +645,7 @@ public:
 	Uc_symbol *search(const char *nm) { // Look in this scope.
 		Sym_map::const_iterator it = symbols.find(nm);
 		if (it == symbols.end())
-			return 0;
+			return nullptr;
 		else
 			return (*it).second;
 	}
@@ -660,7 +660,7 @@ public:
 		return newscope;
 	}
 	// Add a function decl.
-	int add_function_symbol(Uc_function_symbol *fun, Uc_scope *parent = 0);
+	int add_function_symbol(Uc_function_symbol *fun, Uc_scope *parent = nullptr);
 	bool is_dup(const char *nm);      // Already declared?
 };
 

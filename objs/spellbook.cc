@@ -281,7 +281,7 @@ void Spellbook_object::execute_spell(
 	if (in_combat)  // Use caster's target if for combat.
 		ucmachine->intercept_click_on_item(act->get_target());
 	else    // Otherwise, disable intercept for gump casting.
-		ucmachine->intercept_click_on_item(0);
+		ucmachine->intercept_click_on_item(nullptr);
 
 	ucmachine->call_usecode(Get_usecode(spell), act,
 	                        in_combat ? Usecode_machine::weapon :

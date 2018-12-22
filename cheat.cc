@@ -88,9 +88,9 @@ Cheat::Cheat() {
 	npc_numbers = false;
 	hack_mover = false;
 
-	browser = NULL;
-	tester = NULL;
-	cscreen = NULL;
+	browser = nullptr;
+	tester = nullptr;
+	cscreen = nullptr;
 	chunksel_left = chunksel_top = c_num_chunks;
 	chunksel_right = chunksel_bottom = -1;
 }
@@ -207,9 +207,9 @@ void Cheat::toggle_map_editor(void) {
 			std::memset(&si, 0, sizeof(si));
 			si.cb = sizeof(si);
 
-			int ret = CreateProcess(NULL, const_cast<char*>(cmnd.c_str()), NULL, NULL,
+			int ret = CreateProcess(nullptr, const_cast<char*>(cmnd.c_str()), nullptr, nullptr,
 			                        FALSE, 0,
-			                        NULL, NULL, &si, &pi);
+			                        nullptr, nullptr, &si, &pi);
 			if (!ret) cout << "Couldn't run Exult Studio" << endl;
 #endif
 		}
@@ -278,7 +278,7 @@ void Cheat::move_chunk(Map_chunk *chunk, int dx, int dy) {
 	{
 		// Iterator needs its own scope.
 		Object_iterator toiter(tochunk->get_objects());
-		while ((obj = toiter.get_next()) != 0)
+		while ((obj = toiter.get_next()) != nullptr)
 			if (!obj->as_npc())
 				tmplist.push_back(obj->shared_from_this());
 	}
@@ -290,7 +290,7 @@ void Cheat::move_chunk(Map_chunk *chunk, int dx, int dy) {
 	tochunk->set_terrain(chunk->get_terrain());
 	{
 		Object_iterator fromiter(chunk->get_objects());
-		while ((obj = fromiter.get_next()) != 0)
+		while ((obj = fromiter.get_next()) != nullptr)
 			if (!obj->as_terrain())
 				tmplist.push_back(obj->shared_from_this());
 	}
@@ -769,7 +769,7 @@ void Cheat::paste() {
 	if (clipboard.empty())
 		return;
 	int x, y;       // Allow dragging while here:
-	if (Get_click(x, y, Mouse::greenselect, 0, true))
+	if (Get_click(x, y, Mouse::greenselect, nullptr, true))
 		paste(x, y);
 }
 
@@ -785,7 +785,7 @@ public:
 	int w, h;
 	Shape_frame *map;
 	Vga_file *mini;         // If "minimaps.vga" is found.
-	Cheat_map(int mapnum = 0) : map(0), mini(0) {
+	Cheat_map(int mapnum = 0) : map(nullptr), mini(nullptr) {
 		if (U7exists(PATCH_MINIMAPS)) {
 			mini = new Vga_file(PATCH_MINIMAPS);
 			if (!(map = mini->get_shape(0, mapnum)))
@@ -826,7 +826,7 @@ void Cheat::map_teleport(void) const {
 	if (!enabled) return;
 	Cheat_map map(gwin->get_map()->get_num());
 	int xx, yy;
-	if (!Get_click(xx, yy, Mouse::greenselect, 0, false, &map)) {
+	if (!Get_click(xx, yy, Mouse::greenselect, nullptr, false, &map)) {
 		gwin->paint();
 		return;
 	}

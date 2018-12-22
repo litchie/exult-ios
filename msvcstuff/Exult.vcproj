@@ -70,7 +70,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="odbc32.lib odbccp32.lib SDL.lib winmm.lib zlib_libcmt.lib opengl32.lib ws2_32.lib ole32.lib user32.lib libogg_static.lib libvorbis_static.lib libvorbisfile_static.lib freetype.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib SDL.lib winmm.lib zlib_libcmt.lib ws2_32.lib ole32.lib user32.lib libogg_static.lib libvorbis_static.lib libvorbisfile_static.lib freetype.lib"
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				Version="1.1"
 				LinkIncremental="2"
@@ -160,7 +160,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="odbc32.lib odbccp32.lib SDL.lib winmm.lib zlib_libcmt.lib opengl32.lib ws2_32.lib libogg_static.lib libvorbis_static.lib libvorbisfile_static.lib freetype.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib SDL.lib winmm.lib zlib_libcmt.lib ws2_32.lib libogg_static.lib libvorbis_static.lib libvorbisfile_static.lib freetype.lib"
 				Version="1.1"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -733,34 +733,6 @@
 							RelativePath="..\audio\midi_drivers\WindowsMidiDriver.h"
 							>
 						</File>
-						<Filter
-							Name="Legacy midi Drivers"
-							>
-							<File
-								RelativePath="..\audio\midi_drivers\forked_player.cc"
-								>
-							</File>
-							<File
-								RelativePath="..\audio\midi_drivers\forked_player.h"
-								>
-							</File>
-							<File
-								RelativePath="..\audio\midi_drivers\KMIDI.cc"
-								>
-							</File>
-							<File
-								RelativePath="..\audio\midi_drivers\KMIDI.h"
-								>
-							</File>
-							<File
-								RelativePath="..\audio\midi_drivers\mixer_midiout.cc"
-								>
-							</File>
-							<File
-								RelativePath="..\audio\midi_drivers\mixer_midiout.h"
-								>
-							</File>
-						</Filter>
 						<Filter
 							Name="mt32emu"
 							>
@@ -1606,10 +1578,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\imagewin\scale_gl.cc"
-						>
-					</File>
-					<File
 						RelativePath="..\imagewin\scale_hq2x.cc"
 						>
 					</File>
@@ -1955,14 +1923,6 @@
 				</File>
 				<File
 					RelativePath="..\shapes\fontvga.h"
-					>
-				</File>
-				<File
-					RelativePath="..\shapes\glshape.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\shapes\glshape.h"
 					>
 				</File>
 				<File

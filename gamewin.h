@@ -29,9 +29,9 @@
 #include "vgafile.h"
 #include "shapeid.h"
 
+#include <memory>
 #include <string>   // STL string
 #include <vector>
-#include <memory>
 
 #define RED_PLASMA  1
 
@@ -459,7 +459,7 @@ public:
 	Actor *find_witness(Actor  *&closest_npc, int align);
 	void theft();           // Handle thievery.
 	static int get_guard_shape();
-	void call_guards(Actor *witness = 0, bool theft = false);
+	void call_guards(Actor *witness = nullptr, bool theft = false);
 	void stop_arresting();
 	void attack_avatar(int num_guards = 0, int align = 0);
 	bool is_hostile_nearby(); // detects if hostiles are nearby for movement speed
@@ -537,7 +537,7 @@ public:
 #endif
 	// Get screen area of shape at pt.
 	Rectangle get_shape_rect(const Shape_frame *s, int x, int y) const {
-		return Rectangle(x - s->xleft, y - s->yabove,
+		return Rectangle(x - s->get_xleft(), y - s->get_yabove(),
 		                 s->get_width(), s->get_height());
 	}
 	// Get screen area used by object.
@@ -561,12 +561,12 @@ public:
 	void init_files(bool cycle = true); // Load all files
 
 	// From Gamedat
-	void get_saveinfo(Shape_file *&map,
+	void get_saveinfo(std::unique_ptr<Shape_file> &map,
 	                  SaveGame_Details *&details,
 	                  SaveGame_Party  *&party);
 	// From Savegame
 	bool get_saveinfo(int num, char *&name,
-	                  Shape_file *&map,
+	                  std::unique_ptr<Shape_file> &map,
 	                  SaveGame_Details *&details,
 	                  SaveGame_Party  *&party);
 	void read_saveinfo(IDataSource *in,
@@ -575,7 +575,7 @@ public:
 #ifdef HAVE_ZIP_SUPPORT
 private:
 	bool get_saveinfo_zip(const char *fname, char *&name,
-	                      Shape_file *&map,
+	                      std::unique_ptr<Shape_file> &map,
 	                      SaveGame_Details *&details,
 	                      SaveGame_Party  *&party);
 	void restore_flex_files(IDataSource &ds, const char *basepath);
@@ -637,7 +637,7 @@ public:
 	Game_object *find_object(int x, int y);
 #ifdef __IPHONEOS__
 	typedef std::map<Game_object *, int *> Game_object_map_xy;
-	void find_nearby_objects(Game_object_map_xy *mobjxy, int x, int y, Gump *gump = NULL);
+	void find_nearby_objects(Game_object_map_xy *mobjxy, int x, int y, Gump *gump = nullptr);
 #endif
 
 	// Show names of items clicked on.
@@ -653,12 +653,12 @@ public:
 	bool drop_dragged(int x, int y, bool moved);// Done dragging.
 	void stop_dragging();
 	bool is_dragging() const {
-		return dragging != 0;
+		return dragging != nullptr;
 	}
 	int drop_at_lift(Game_object *to_drop, int x, int y, int at_lift);
 	Gump *get_dragging_gump();
 	// Create a mini-screenshot (96x60)
-	Shape_file *create_mini_screenshot();
+	std::unique_ptr<Shape_file> create_mini_screenshot();
 	/*
 	 *  Chunk-caching:
 	 */
@@ -711,8 +711,5 @@ public:
 		lerping_enabled = e;
 	}
 };
-
-void Set_renderer(Image_window8 *win, Palette *pal = 0, bool resize = false);
-bool Set_glpalette(Palette *pal = 0, bool rotation = false);
 
 #endif

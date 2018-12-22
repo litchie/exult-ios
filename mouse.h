@@ -25,7 +25,6 @@
 #include "dir.h"
 #include "iwin8.h"
 #include "vgafile.h"
-#include "glshape.h"
 #include "gamewin.h"
 
 /*
@@ -104,10 +103,7 @@ public:
 	void hide() {       // Restore area under mouse.
 		if (onscreen) {
 			onscreen = false;
-#ifdef HAVE_OPENGL
-			if (!GL_manager::get_instance())
-#endif
-				iwin->put(backup, box.x, box.y);
+			iwin->put(backup, box.x, box.y);
 			dirty = box;    // Init. dirty to box.
 		}
 	}
@@ -123,10 +119,8 @@ public:
 	}
 	void move(int x, int y);    // Move to new location (mouse motion).
 	void blit_dirty() {     // Blit dirty area.
-		// But not in OpenGL.
-		if (!GL_manager::get_instance())
-			iwin->show(dirty.x - 1, dirty.y - 1, dirty.w + 2,
-			           dirty.h + 2);
+		iwin->show(dirty.x - 1, dirty.y - 1, dirty.w + 2,
+					dirty.h + 2);
 	}
 	void set_location(int x, int y);// Set to given location.
 	// Flash desired shape for 1/2 sec.

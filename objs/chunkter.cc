@@ -27,13 +27,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 #include "chunkter.h"
 #include "gamewin.h"
-#ifdef INCL_OPENGL
-#include "glshape.h"
-#endif
 
 #include <cstring>
 
-Chunk_terrain *Chunk_terrain::render_queue = 0;
+Chunk_terrain *Chunk_terrain::render_queue = nullptr;
 int Chunk_terrain::queue_size = 0;
 
 /*
@@ -70,14 +67,14 @@ void Chunk_terrain::remove_from_queue(
 		return;         // Not in queue.
 	queue_size--;
 	if (render_queue_next == this)  // Only element?
-		render_queue = 0;
+		render_queue = nullptr;
 	else {
 		if (render_queue == this)
 			render_queue = render_queue_next;
 		render_queue_next->render_queue_prev = render_queue_prev;
 		render_queue_prev->render_queue_next = render_queue_next;
 	}
-	render_queue_next = render_queue_prev = 0;
+	render_queue_next = render_queue_prev = nullptr;
 }
 
 /*
@@ -101,9 +98,9 @@ inline void Chunk_terrain::paint_tile(
 Chunk_terrain::Chunk_terrain(
     unsigned char *data,        // Chunk data.
     bool v2_chunks          // 3 bytes/shape.
-) : undo_shapes(0),
-	num_clients(0), modified(false), rendered_flats(0), glflats(0),
-	render_queue_next(0), render_queue_prev(0) {
+) : undo_shapes(nullptr),
+	num_clients(0), modified(false), rendered_flats(nullptr),
+	render_queue_next(nullptr), render_queue_prev(nullptr) {
 	for (int tiley = 0; tiley < c_tiles_per_chunk; tiley++)
 		for (int tilex = 0; tilex < c_tiles_per_chunk; tilex++) {
 			int shnum, frnum;
@@ -127,9 +124,9 @@ Chunk_terrain::Chunk_terrain(
 
 Chunk_terrain::Chunk_terrain(
     const Chunk_terrain &c2
-) : undo_shapes(0),
-	num_clients(0), modified(true), rendered_flats(0), glflats(0),
-	render_queue_next(0), render_queue_prev(0) {
+) : undo_shapes(nullptr),
+	num_clients(0), modified(true), rendered_flats(nullptr),
+	render_queue_next(nullptr), render_queue_prev(nullptr) {
 	for (int tiley = 0; tiley < c_tiles_per_chunk; tiley++)
 		for (int tilex = 0; tilex < c_tiles_per_chunk; tilex++)
 			shapes[16 * tiley + tilex] = c2.shapes[16 * tiley + tilex];
@@ -143,9 +140,6 @@ Chunk_terrain::~Chunk_terrain(
 ) {
 	delete [] undo_shapes;
 	delete rendered_flats;
-#ifdef HAVE_OPENGL
-	delete glflats;
-#endif
 	remove_from_queue();
 }
 
@@ -180,7 +174,7 @@ bool Chunk_terrain::commit_edits(
 	if (!undo_shapes)
 		return false;
 	delete [] undo_shapes;
-	undo_shapes = 0;
+	undo_shapes = nullptr;
 	render_flats();         // Update with new data.
 	return true;
 }
@@ -197,7 +191,7 @@ void Chunk_terrain::abort_edits(
 		            reinterpret_cast<char *>(undo_shapes),
 		            sizeof(shapes));
 		delete [] undo_shapes;
-		undo_shapes = 0;
+		undo_shapes = nullptr;
 	}
 }
 
@@ -225,12 +219,12 @@ Image_buffer8 *Chunk_terrain::render_flats(
 		if (queue_size > Figure_queue_size()) {
 			// Grown too big.  Remove last.
 			Chunk_terrain *last = render_queue->render_queue_prev;
-			last->free_rendered_flats(false);
+			last->free_rendered_flats();
 			render_queue->render_queue_prev =
 			    last->render_queue_prev;
 			last->render_queue_prev->render_queue_next =
 			    render_queue;
-			last->render_queue_next = last->render_queue_prev = 0;
+			last->render_queue_next = last->render_queue_prev = nullptr;
 			queue_size--;
 		}
 		rendered_flats = new Image_buffer8(c_chunksize, c_chunksize);
@@ -239,13 +233,6 @@ Image_buffer8 *Chunk_terrain::render_flats(
 	for (int tiley = 0; tiley < c_tiles_per_chunk; tiley++)
 		for (int tilex = 0; tilex < c_tiles_per_chunk; tilex++)
 			paint_tile(tilex, tiley);
-#ifdef HAVE_OPENGL
-	delete glflats;
-	glflats = 0;
-	GL_manager *glman = GL_manager::get_instance();
-	if (glman)          // Using OpenGL?
-		glflats = glman->create(rendered_flats);
-#endif
 	return rendered_flats;
 }
 
@@ -253,21 +240,9 @@ Image_buffer8 *Chunk_terrain::render_flats(
  *  Free pre-rendered landscape.
  */
 
-void Chunk_terrain::free_rendered_flats(
-    bool rotation
-) {
-#ifdef HAVE_OPENGL
-	if (rotation && glflats && !glflats->has_palette_rotation())
-		return;
-#else
-	ignore_unused_variable_warning(rotation);
-#endif
+void Chunk_terrain::free_rendered_flats() {
 	delete rendered_flats;
-	rendered_flats = 0;
-#ifdef HAVE_OPENGL
-	delete glflats;
-	glflats = 0;
-#endif
+	rendered_flats = nullptr;
 }
 
 /*

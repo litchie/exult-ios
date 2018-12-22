@@ -122,12 +122,9 @@ void    initialise_usecode_debugger(void) {
 	// a number (which might be hex. Convert from that.
 
 	// push them all onto the list
-
-
 }
 
 #endif
-
 
 void Usecode_internal::stack_trace(ostream &out) {
 	if (call_stack.empty())
@@ -156,11 +153,11 @@ Usecode_function *Usecode_internal::find_function(int funcid) {
 	// locate function
 	unsigned int slotnum = funcid / 0x100;
 	if (slotnum >= funs.size())
-		fun = 0;
+		fun = nullptr;
 	else {
 		Funs256 &slot = funs[slotnum];
 		size_t index = funcid % 0x100;
-		fun = index < slot.size() ? slot[index] : 0;
+		fun = index < slot.size() ? slot[index] : nullptr;
 	}
 	if (!fun) {
 #ifdef DEBUG
@@ -226,7 +223,7 @@ bool Usecode_internal::call_function(int funcid,
 
 		chain = parent->call_chain;
 
-		if (caller == 0)
+		if (caller == nullptr)
 			caller = parent->caller_item.get(); // use parent's
 	}
 
@@ -269,9 +266,8 @@ bool Usecode_internal::call_function(int funcid,
 	// add new stack frame to top of stack
 	call_stack.push_front(frame);
 
-
 #ifdef DEBUG
-	Usecode_symbol *fsym = symtbl ? (*symtbl)[funcid] : 0;
+	Usecode_symbol *fsym = symtbl ? (*symtbl)[funcid] : nullptr;
 	cout << "Running usecode ";
 	if (fsym)
 		cout << fsym->get_name() << " [";
@@ -312,10 +308,10 @@ void Usecode_internal::previous_stack_frame() {
 
 	if (frame->call_depth == 0) {
 		// this was the function called from 'the outside'
-		// push a marker (NULL) for the interpreter onto the call stack,
+		// push a marker (nullptr) for the interpreter onto the call stack,
 		// so it knows it has to return instead of continuing
 		// further up the call stack
-		call_stack.push_front(0);
+		call_stack.push_front(nullptr);
 	}
 
 	delete frame;
@@ -333,14 +329,13 @@ void Usecode_internal::return_from_function(Usecode_value &retval) {
 	// push the return value
 	push(retval);
 
-
 #ifdef DEBUG
 	Stack_frame *parent_frame = call_stack.front();
 
 	cout << "Returning (";
 	retval.print(cout);
 	cout << ") from usecode ";
-	Usecode_symbol *fsym = symtbl ? (*symtbl)[oldfunction] : 0;
+	Usecode_symbol *fsym = symtbl ? (*symtbl)[oldfunction] : nullptr;
 	if (fsym)
 		cout << fsym->get_name();
 	else
@@ -348,10 +343,9 @@ void Usecode_internal::return_from_function(Usecode_value &retval) {
 		     setfill('0') << oldfunction << dec << setfill(' ');
 	cout << endl;
 
-
 	if (parent_frame) {
 		int newfunction = call_stack.front()->function->id;
-		Usecode_symbol *fsym = symtbl ? (*symtbl)[newfunction] : 0;
+		Usecode_symbol *fsym = symtbl ? (*symtbl)[newfunction] : nullptr;
 
 		cout << "...back into usecode ";
 		if (fsym)
@@ -374,10 +368,9 @@ void Usecode_internal::return_from_procedure() {
 	// back up a stack frame
 	previous_stack_frame();
 
-
 #ifdef DEBUG
 	Stack_frame *parent_frame = call_stack.front();
-	Usecode_symbol *fsym = symtbl ? (*symtbl)[oldfunction] : 0;
+	Usecode_symbol *fsym = symtbl ? (*symtbl)[oldfunction] : nullptr;
 
 	cout << "Returning from usecode ";
 	if (fsym)
@@ -389,7 +382,7 @@ void Usecode_internal::return_from_procedure() {
 
 	if (parent_frame) {
 		int newfunction = call_stack.front()->function->id;
-		Usecode_symbol *fsym = symtbl ? (*symtbl)[newfunction] : 0;
+		Usecode_symbol *fsym = symtbl ? (*symtbl)[newfunction] : nullptr;
 
 		cout << "...back into usecode ";
 		if (fsym)
@@ -412,7 +405,7 @@ void Usecode_internal::abort_function(Usecode_value &retval) {
 #endif
 
 	// clear the entire call stack up to either a catch or the entry point
-	while (call_stack.front() != 0) {
+	while (call_stack.front() != nullptr) {
 		previous_stack_frame();
 		Stack_frame *frame = call_stack.front();
 		std::map<Stack_frame *, const uint8 *>::iterator it = except_stack.find(frame);
@@ -519,12 +512,12 @@ Game_object *Usecode_internal::get_item(
 
 	long val = elemval.get_int_value();
 	if (!val)
-		return NULL;
-	Game_object *obj = NULL;
+		return nullptr;
+	Game_object *obj = nullptr;
 	if (val == -356)        // Avatar.
 		return gwin->get_main_actor();
 	else if (val < -356 && val > -360)  // Special cases.
-		return NULL;
+		return nullptr;
 	if (val < 0 && val > -gwin->get_num_npcs())
 		obj = gwin->get_npc(-val);
 	else if (val >= 0) {
@@ -541,7 +534,7 @@ Game_object *Usecode_internal::get_item(
 		}
 #endif
 		else
-			return NULL;
+			return nullptr;
 	}
 	return obj;
 }
@@ -554,7 +547,7 @@ Actor *Usecode_internal::as_actor(
     Game_object *obj
 ) {
 	if (!obj)
-		return 0;
+		return nullptr;
 	return (obj->as_actor());
 }
 
@@ -593,7 +586,7 @@ void Usecode_internal::show_pending_text(
 	if (book) {         // Book mode?
 		int x, y;
 		while (book->show_next_page() &&
-		        Get_click(x, y, Mouse::hand, 0, false, book, true))
+		        Get_click(x, y, Mouse::hand, nullptr, false, book, true))
 			;
 		gwin->paint();
 	}
@@ -611,7 +604,7 @@ void Usecode_internal::show_book(
 	char *str = String;
 	book->add_text(str);
 	delete [] String;
-	String = 0;
+	String = nullptr;
 }
 
 /*
@@ -649,7 +642,7 @@ void Usecode_internal::say_string(
 			str++;      // 2 in a row.
 	}
 	delete [] String;
-	String = 0;
+	String = nullptr;
 }
 
 /*
@@ -694,7 +687,7 @@ int Usecode_internal::get_face_shape(
 		//   (But don't mess up Guardian.)
 		Actor *iact;
 		if (shape == 296 && this->frame->caller_item &&
-		        (iact = this->frame->caller_item->as_actor()) != 0 &&
+		        (iact = this->frame->caller_item->as_actor()) != nullptr &&
 		        iact->get_npc_num() == 277)
 			shape = 277;
 	}
@@ -753,7 +746,6 @@ void Usecode_internal::show_npc_face(
 	conv->show_face(shape, frame, slot);
 //	user_choice = 0;     // Seems like a good idea.
 // Also seems to create a conversation bug in Test of Love :-(
-
 }
 
 /*
@@ -895,12 +887,12 @@ void Usecode_internal::remove_item(
 			for (Egg_vector::const_iterator it = vec.begin(); it != vec.end();
 					++it) {
 				Egg_object *egg = *it;
-				egg->remove_this(0);
+				egg->remove_this(nullptr);
 			}
 		}
 	}
     Game_object_shared keep;
-    obj->remove_this(obj->as_actor() ? &keep : NULL);
+    obj->remove_this(obj->as_actor() ? &keep : nullptr);
 }
 
 /*
@@ -910,7 +902,7 @@ void Usecode_internal::remove_item(
 Usecode_value Usecode_internal::get_party(
 ) {
 	int cnt = partyman->get_count();
-	Usecode_value arr(1 + cnt, 0);
+	Usecode_value arr(1 + cnt, nullptr);
 	// Add avatar.
 	Usecode_value aval(gwin->get_main_actor());
 	arr.put_elem(0, aval);
@@ -1014,7 +1006,6 @@ Usecode_value Usecode_internal::find_nearby(
 	} else
 		shapenum = shapeval.get_int_value();
 
-
 	// It might be (tx, ty, tz).
 	int arraysize = objval.get_array_size();
 	if (arraysize == 4) {   // Passed result of click_on_item.
@@ -1041,7 +1032,7 @@ Usecode_value Usecode_internal::find_nearby(
 	} else {
 		Game_object *obj = get_item(objval);
 		if (!obj)
-			return Usecode_value(0, 0);
+			return Usecode_value(0, nullptr);
 		obj = obj->get_outermost(); // Might be inside something.
 		obj->find_nearby(vec, shapenum,
 		                 distval.get_int_value(), mval.get_int_value());
@@ -1049,7 +1040,7 @@ Usecode_value Usecode_internal::find_nearby(
 	if (vec.size() > 1)     // Sort right-left, near-far to fix
 		//   SI/SS cask bug.
 		std::sort(vec.begin(), vec.end(), Object_reverse_sorter());
-	Usecode_value nearby(vec.size(), 0);    // Create return array.
+	Usecode_value nearby(vec.size(), nullptr);    // Create return array.
 	int i = 0;
 	for (Game_object_vector::const_iterator it = vec.begin();
 	        it != vec.end(); ++it) {
@@ -1081,7 +1072,7 @@ Barge_object *Get_barge(
 		std::sort(vec.begin(), vec.end(), Object_reverse_sorter());
 	// Object must be inside it.
 	Tile_coord pos = obj->get_tile();
-	Barge_object *best = 0;
+	Barge_object *best = nullptr;
 	for (Game_object_vector::const_iterator it = vec.begin();
 	        it != vec.end(); it++) {
 		barge = (*it)->as_barge();
@@ -1109,7 +1100,7 @@ Usecode_value Usecode_internal::find_nearest(
 ) {
 	Game_object *obj = get_item(objval);
 	if (!obj)
-		return Usecode_value(static_cast<Game_object *>(NULL));
+		return Usecode_value(static_cast<Game_object *>(nullptr));
 	Game_object_vector vec;         // Gets list.
 	obj = obj->get_outermost(); // Might be inside something.
 	int dist = distval.get_int_value();
@@ -1118,7 +1109,7 @@ Usecode_value Usecode_internal::find_nearest(
 	if (frame->function->id == 0x70a && shnum == 0x9a && dist == 0)
 		dist = 16;      // Mage may have wandered.
 	obj->find_nearby(vec, shnum, dist, 0);
-	Game_object *closest = 0;
+	Game_object *closest = nullptr;
 	uint32 bestdist = 100000;// Distance-squared in tiles.
 	Tile_coord t1 = obj->get_tile();
 	for (Game_object_vector::const_iterator it = vec.begin();
@@ -1195,7 +1186,7 @@ Usecode_value Usecode_internal::get_objects(
 ) {
 	Game_object *obj = get_item(objval);
 	if (!obj)
-		return Usecode_value(static_cast<Game_object *>(NULL));
+		return Usecode_value(static_cast<Game_object *>(nullptr));
 	int shapenum = shapeval.get_int_value();
 	int framenum = frameval.get_int_value();
 	int qual = qualval.get_int_value();
@@ -1203,7 +1194,7 @@ Usecode_value Usecode_internal::get_objects(
 	obj->get_objects(vec, shapenum, qual, framenum);
 
 //	cout << "Container objects found:  " << cnt << << endl;
-	Usecode_value within(vec.size(), 0);    // Create return array.
+	Usecode_value within(vec.size(), nullptr);    // Create return array.
 	int i = 0;
 	for (Game_object_vector::const_iterator it = vec.begin(); it != vec.end(); ++it) {
 		Game_object *each = *it;
@@ -1275,7 +1266,7 @@ Usecode_value Usecode_internal::add_party_items(
 	// Look through whole party.
 	Usecode_value party = get_party();
 	int cnt = party.get_array_size();
-	Usecode_value result(0, 0); // Start with empty array.
+	Usecode_value result(0, nullptr); // Start with empty array.
 	for (int i = 0; i < cnt && quantity > 0; i++) {
 		Game_object *obj = get_item(party.get_elem(i));
 		if (!obj)
@@ -1509,9 +1500,9 @@ bool Usecode_internal::is_dest_reachable(
 	if (npc->distance(dest) <= 1)   // Already OK.
 		return true;
 	Path_walking_actor_action *action =
-	    new Path_walking_actor_action(0, 6);
+	    new Path_walking_actor_action(nullptr, 6);
 
-	bool ret = action->walk_to_tile(npc, npc->get_tile(), dest, 1) != 0;
+	bool ret = action->walk_to_tile(npc, npc->get_tile(), dest, 1) != nullptr;
 	delete action;
 	return ret;
 }
@@ -1540,7 +1531,7 @@ void Usecode_internal::create_script(
 		}
 	}
 	if (!obj) {
-		cerr << "Can't create script for NULL object" << endl;
+		cerr << "Can't create script for nullptr object" << endl;
 		return;
 	}
 	Usecode_value *code = new Usecode_value();
@@ -1615,7 +1606,6 @@ Usecode_value Usecode_internal::Execute_Intrinsic(UsecodeIntrinsicFn func, const
 	return ((*this).*func)(num_parms, parms);
 }
 
-
 typedef Usecode_value(Usecode_internal::*UsecodeIntrinsicFn)(int num_parms, Usecode_value parms[12]);
 
 // missing from mingw32 header files, so included manually
@@ -1647,7 +1637,6 @@ struct Usecode_internal::IntrinsicTableEntry
 		Usecode_internal::serpentbeta_table[] = {
 #include "sibetaintrinsics.h"
 };
-
 
 int max_bundled_intrinsics = 0x3ff; // Index of the last intrinsic in this table
 /*
@@ -1718,7 +1707,7 @@ void Usecode_internal::set_book(
 const char *Usecode_internal::get_user_choice(
 ) {
 	if (!conv->get_num_answers())
-		return (0);     // This does happen (Emps-honey).
+		return nullptr;     // This does happen (Emps-honey).
 
 	//  if (!user_choice)       // May have already been done.
 	// (breaks conversation with Cyclops on Dagger Isle ('foul magic' option))
@@ -1737,7 +1726,7 @@ const char *Usecode_internal::get_user_choice(
 int Usecode_internal::get_user_choice_num(
 ) {
 	delete [] user_choice;
-	user_choice = 0;
+	user_choice = nullptr;
 	conv->show_avatar_choices();
 	int x, y;           // Get click.
 	int choice_num;
@@ -1778,13 +1767,13 @@ Usecode_machine *Usecode_machine::create(
  */
 
 Usecode_internal::Usecode_internal(
-) : symtbl(0), frame(0), modified_map(false), speech_track(-1),
-	book(0), caller_item(0),
-	path_npc(0), user_choice(0), found_answer(false),
+) : symtbl(nullptr), frame(nullptr), modified_map(false), speech_track(-1),
+	book(nullptr), caller_item(nullptr),
+	path_npc(nullptr), user_choice(nullptr), found_answer(false),
 	saved_pos(-1, -1, -1),
 	saved_map(-1),
-	String(0), telekenesis_fun(-1), stack(new Usecode_value[1024]),
-	intercept_item(0), intercept_tile(0)
+	String(nullptr), telekenesis_fun(-1), stack(new Usecode_value[1024]),
+	intercept_item(nullptr), intercept_tile(nullptr)
 #ifdef USECODE_DEBUGGER
 	, on_breakpoint(false), breakpoint_action(-1)
 #endif
@@ -1889,7 +1878,6 @@ void Clearbreak() {
 }
 #endif
 
-
 #define CERR_CURRENT_IP()\
 	cerr << " (at function = " << hex << setw(4) << setfill('0')\
 	     << frame->function->id << ", ip = " \
@@ -1912,7 +1900,7 @@ void Clearbreak() {
 	CERR_CURRENT_IP()
 
 #define THIS_ERROR()\
-	cerr << "NULL class pointer!";\
+	cerr << "nullptr class pointer!";\
 	CERR_CURRENT_IP()
 
 /*
@@ -1939,8 +1927,6 @@ int Usecode_internal::run() {
 		 *  Main loop.
 		 */
 		while (!frame_changed) {
-
-
 			if ((frame->ip >= frame->endp) ||
 			        (frame->ip < frame->code)) {
 				cerr << "Usecode: jumped outside of code segment of "
@@ -1963,7 +1949,6 @@ int Usecode_internal::run() {
 				CERR_CURRENT_IP();
 				continue;
 			}
-
 
 #ifdef DEBUG
 			if (usecode_trace == 2) {
@@ -1993,7 +1978,6 @@ int Usecode_internal::run() {
 #ifdef XWIN
 				raise(SIGUSR1); // to allow trapping it in gdb too
 #endif
-
 
 #ifdef USECODE_CONSOLE_DEBUGGER
 				// little console mode "debugger" (if you can call it that...)
@@ -2030,7 +2014,6 @@ int Usecode_internal::run() {
 				}
 #endif
 
-
 				c = static_cast<unsigned char>(Exult_server::dbg_continuing);
 				if (client_socket >= 0)
 					Exult_server::Send_data(client_socket,
@@ -2039,9 +2022,7 @@ int Usecode_internal::run() {
 				// disable extra debugging messages again
 				on_breakpoint = false;
 			}
-
 #endif
-
 
 			frame->ip++;
 
@@ -2221,7 +2202,7 @@ int Usecode_internal::run() {
 				// Get # values to pop into array.
 				int num = Read2(frame->ip);
 				int cnt = num;
-				Usecode_value arr(num, 0);
+				Usecode_value arr(num, nullptr);
 				int to = 0; // Store at this index.
 				while (cnt--) {
 					Usecode_value val = pop();
@@ -2393,7 +2374,6 @@ int Usecode_internal::run() {
 				else
 					offset = Read2s(frame->ip);
 
-
 				if (local1 < 0 || local1 >= num_locals) {
 					LOCAL_VAR_ERROR(local1);
 					break;
@@ -2473,7 +2453,6 @@ int Usecode_internal::run() {
 				int cnt = arr.is_array() ? arr.get_array_size() : 1;
 
 				if (cnt != frame->locals[local2].get_int_value()) {
-
 					// update new total count
 					frame->locals[local2] = Usecode_value(cnt);
 
@@ -2504,7 +2483,6 @@ int Usecode_internal::run() {
 				}
 
 				if (cnt != frame->locals[local2].get_int_value()) {
-
 					// update new total count
 					frame->locals[local2] = Usecode_value(cnt);
 
@@ -2968,8 +2946,8 @@ int Usecode_internal::run() {
 		}
 	}
 
-	if (call_stack.front() == 0) {
-		// pop the NULL frame from the stack
+	if (call_stack.front() == nullptr) {
+		// pop the nullptr frame from the stack
 		call_stack.pop_front();
 	}
 	if (aborted)
@@ -2999,7 +2977,7 @@ int Usecode_internal::call_usecode(
 	else
 		ret = -1; // failed to call the function
 
-	set_book(0);
+	set_book(nullptr);
 
 	// Left hanging (BG)?
 	if (conv->get_num_faces_on_screen() > 0) {
@@ -3023,7 +3001,7 @@ int Usecode_internal::call_usecode(
  */
 
 bool Usecode_internal::call_method(
-    Usecode_value *inst,        // Instance, or NULL.
+    Usecode_value *inst,        // Instance, or nullptr.
     int id,                     // Function # or -1 for free inst.
     Game_object *item           // Item ref.
 ) {
@@ -3058,10 +3036,9 @@ bool Usecode_internal::call_method(
 	// add new stack frame to top of stack
 	call_stack.push_front(frame);
 
-
 #ifdef DEBUG
 	Usecode_class_symbol *cls = inst->get_class_ptr();
-	Usecode_symbol *fsym = cls ? (*cls)[id] : 0;
+	Usecode_symbol *fsym = cls ? (*cls)[id] : nullptr;
 	cout << "Running usecode " << setw(4);
 	if (cls)
 		cout << cls->get_name();
@@ -3093,7 +3070,7 @@ int Usecode_internal::find_function(
     const char *nm,
     bool noerr
 ) {
-	Usecode_symbol *ucsym = symtbl ? (*symtbl)[nm] : 0;
+	Usecode_symbol *ucsym = symtbl ? (*symtbl)[nm] : nullptr;
 	if (!ucsym) {
 		if (!noerr)
 			cerr << "Failed to find Usecode symbol '" << nm
@@ -3110,9 +3087,9 @@ int Usecode_internal::find_function(
 const char *Usecode_internal::find_function_name(
     int funcid
 ) {
-	Usecode_symbol *ucsym = symtbl ? (*symtbl)[funcid] : 0;
+	Usecode_symbol *ucsym = symtbl ? (*symtbl)[funcid] : nullptr;
 	if (!ucsym)
-		return 0;
+		return nullptr;
 	return ucsym->get_name();
 }
 
@@ -3126,7 +3103,7 @@ void Usecode_internal::do_speech(
 	speech_track = num;     // Used in Usecode function.
 	if (!Audio::get_ptr()->start_speech(num))
 		// No speech?  Call text function.
-		call_usecode(SpeechUsecode, 0, double_click);
+		call_usecode(SpeechUsecode, nullptr, double_click);
 }
 
 /*
@@ -3159,70 +3136,63 @@ void Usecode_internal::write(
 	if (Game::get_game_type() != BLACK_GATE && !Game::is_si_beta())
 		keyring->write();   // write keyring data
 
-	ofstream out;
-	U7open(out, FLAGINIT);  // Write global flags.
-	out.write(reinterpret_cast<char *>(gflags), sizeof(gflags));
-	out.close();
-	U7open(out, USEDAT);
-	Write2(out, partyman->get_count()); // Write party.
-	int i;  // Blame MSVC
-	for (i = 0; i < EXULT_PARTY_MAX; i++)
-		Write2(out, partyman->get_member(i));
-	// Timers.
-	Write4(out, 0xffffffffU);
-	for (std::map<int, uint32>::iterator it = timers.begin();
-	        it != timers.end(); ++it) {
-		if (!it->second)    // Don't write unused timers.
-			continue;
-		Write2(out, it->first);
-		Write4(out, it->second);
+	{
+		OFileDataSource out(FLAGINIT);
+		out.write(gflags, sizeof(gflags));
 	}
-	Write2(out, 0xffff);
-	Write2(out, saved_pos.tx);  // Write saved pos.
-	Write2(out, saved_pos.ty);
-	Write2(out, saved_pos.tz);
-	Write2(out, saved_map);     // Write saved map.
-	out.flush();
-	if (!out.good())
-		throw file_write_exception(USEDAT);
-	out.close();
-	U7open(out, USEVARS);       // Static variables. 1st, globals.
-	OStreamDataSource *nfile = new OStreamDataSource(&out);
-	nfile->write4(statics.size());  // # globals.
+	{
+		OFileDataSource out(USEDAT);
+		out.write2(partyman->get_count()); // Write party.
+		for (int i = 0; i < EXULT_PARTY_MAX; i++)
+			out.write2(partyman->get_member(i));
+		// Timers.
+		out.write4(0xffffffffU);
+		for (std::map<int, uint32>::iterator it = timers.begin();
+				it != timers.end(); ++it) {
+			if (!it->second)    // Don't write unused timers.
+				continue;
+			out.write2(it->first);
+			out.write4(it->second);
+		}
+		out.write2(0xffff);
+		out.write2(saved_pos.tx);  // Write saved pos.
+		out.write2(saved_pos.ty);
+		out.write2(saved_pos.tz);
+		out.write2(saved_map);     // Write saved map.
+	}
+	// Static variables. 1st, globals.
+	OFileDataSource nfile(USEVARS);
+	nfile.write4(statics.size());  // # globals.
 	vector<Usecode_value>::iterator it;
 	for (it = statics.begin(); it != statics.end(); ++it)
-		if (!(*it).save(nfile))
+		if (!(*it).save(&nfile))
 			throw file_exception("Could not write static usecode value");
 	// Now do the local statics.
 	int num_slots = funs.size();
-	for (i = 0; i < num_slots; i++) {
+	for (int i = 0; i < num_slots; i++) {
 		Funs256 &slot = funs[i];
 		for (std::vector<Usecode_function *>::iterator fit =
 		            slot.begin(); fit != slot.end(); ++fit) {
 			Usecode_function *fun = *fit;
 			if (!fun || fun->statics.empty())
 				continue;
-			Usecode_symbol *fsym = symtbl ? (*symtbl)[fun->id] : 0;
+			Usecode_symbol *fsym = symtbl ? (*symtbl)[fun->id] : nullptr;
 			if (fsym) {
 				const char *nm = fsym->get_name();
-				nfile->write4(0xfffffffeU);
-				nfile->write2(strlen(nm));
-				nfile->write(nm, strlen(nm));
+				nfile.write4(0xfffffffeU);
+				nfile.write2(strlen(nm));
+				nfile.write(nm, strlen(nm));
 			} else
-				nfile->write4(fun->id);
-			nfile->write4(fun->statics.size());
+				nfile.write4(fun->id);
+			nfile.write4(fun->statics.size());
 			for (it = fun->statics.begin();
 			        it != fun->statics.end(); ++it) {
-				if (!(*it).save(nfile))
+				if (!(*it).save(&nfile))
 					throw file_exception("Could not write static usecode value");
 			}
 		}
 	}
-	nfile->write4(0xffffffffU); // End with -1.
-	out.flush();
-	if (!out.good())
-		throw file_write_exception(USEVARS);
-	out.close();
+	nfile.write4(0xffffffffU); // End with -1.
 }
 
 /*
@@ -3236,7 +3206,6 @@ void Usecode_internal::read(
 ) {
 	if (Game::get_game_type() != BLACK_GATE && !Game::is_si_beta())
 		keyring->read();    // read keyring data
-
 
 	ifstream in;
 	try {
@@ -3257,11 +3226,9 @@ void Usecode_internal::read(
 
 	clear_usevars(); // first clear all statics
 	try {
-		U7open(in, USEVARS);
-		read_usevars(in);
-		in.close();
+		read_usevars();
 	} catch (exult_exception &/*e*/) {
-		;           // Okay if this doesn't exist.
+		// Okay if this doesn't exist.
 	}
 	try {
 		U7open(in, USEDAT);
@@ -3303,11 +3270,9 @@ void Usecode_internal::read(
  *  Read in static variables from USEVARS.
  */
 
-void Usecode_internal::read_usevars(
-    std::istream &in
-) {
-	int cnt = Read4(in);        // Global statics.
-	IStreamDataSource nfile(&in);
+void Usecode_internal::read_usevars() {
+	IFileDataSource nfile(USEVARS);
+	int cnt = nfile.read4();        // Global statics.
 	statics.resize(cnt);
 	int i;
 	for (i = 0; i < cnt; i++)
@@ -3321,7 +3286,7 @@ void Usecode_internal::read_usevars(
 			char *nm = new char[len + 1];
 			nfile.read(nm, len);
 			nm[len] = 0;
-			Usecode_symbol *fsym = symtbl ? (*symtbl)[nm] : 0;
+			Usecode_symbol *fsym = symtbl ? (*symtbl)[nm] : nullptr;
 			if (fsym)
 				funid = fsym->get_val();
 			delete [] nm;
@@ -3358,9 +3323,8 @@ Stack_frame *Usecode_internal::get_stackframe(int i) {
 	if (i >= 0 && static_cast<unsigned>(i) < call_stack.size())
 		return call_stack[i];
 	else
-		return 0;
+		return nullptr;
 }
-
 
 // return current size of the stack
 int Usecode_internal::get_stack_size() const {
@@ -3370,7 +3334,7 @@ int Usecode_internal::get_stack_size() const {
 // get an(y) element from the stack. (depth == 0 is top element)
 Usecode_value *Usecode_internal::peek_stack(int depth) const {
 	if (depth < 0 || depth >= get_stack_size())
-		return 0;
+		return nullptr;
 
 	return (sp - depth - 1);
 }
@@ -3382,7 +3346,6 @@ void Usecode_internal::poke_stack(int depth, Usecode_value &val) {
 
 	*(sp - depth) = val;
 }
-
 
 void Usecode_internal::set_breakpoint() {
 	breakpoints.add(new AnywhereBreakpoint());

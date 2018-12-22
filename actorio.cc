@@ -752,7 +752,7 @@ void Actor::write_contents(
 		Game_object *obj;
 		Object_iterator next(objects);
 
-		while ((obj = next.get_next()) != 0) {
+		while ((obj = next.get_next()) != nullptr) {
 			for (i = 0; i < num_spots; ++i)
 				if (spots[i] == obj)
 					break;

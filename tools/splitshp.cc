@@ -101,7 +101,7 @@ char *framefilename(char *shapefilename, int frame) {
 #endif
 	int dotpos;
 
-	if (dot == 0 || slash > dot)
+	if (dot == nullptr || slash > dot)
 		dotpos = strlen(shapefilename);
 	else
 		dotpos = dot - shapefilename;

@@ -3,6 +3,12 @@
 
 #if defined(WIN32) && defined(USE_EXULTSTUDIO)
 
+#ifdef __GNUC__
+// COM sucks.
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wnon-virtual-dtor"
+#endif
+
 #include "u7drag.h"
 #include <ole2.h>
 #include "utils.h"
@@ -25,14 +31,14 @@ public:
 	}
 
 	// Default constructor
-	inline windragdata() : size(0), data(0) {
+	inline windragdata() : size(0), data(nullptr) {
 	}
 	// Copy constructor
 	inline windragdata(const windragdata &o) : id(o.id), size(o.size), data(new unsigned char [o.size]) {
 		std::memcpy(data, o.data, size);
 	}
 	// Read from buffer
-	inline windragdata(const unsigned char *buf) : data(0) {
+	inline windragdata(const unsigned char *buf) : data(nullptr) {
 		operator = (buf);
 	}
 	inline windragdata(sint32 i, uint32 s, const unsigned char *d) :
@@ -230,6 +236,10 @@ public:
 	    IEnumSTATDATA **ppenumAdvise
 	);
 };
+
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif
 
 #endif
 

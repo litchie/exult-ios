@@ -36,6 +36,7 @@
 #include "ucmachine.h"
 #include "actors.h"
 #include "ignore_unused_variable_warning.h"
+#include "array_size.h"
 
 using std::rand;
 
@@ -52,7 +53,7 @@ public:
 	// Step onto an (adjacent) tile.
 	virtual int step(Tile_coord t, int frame, bool force = false);
 	// Remove/delete this object.
-	virtual void remove_this(Game_object_shared *keep = 0);
+	virtual void remove_this(Game_object_shared *keep = nullptr);
 	// Move to new abs. location.
 	virtual void move(int newtx, int newty, int newlift, int newmap = -1);
 	virtual void lay_down(bool die) {
@@ -98,7 +99,7 @@ void Monster_actor::link_out(
 		if (in_world.get() == this)
 			in_world = next_monster;
 	next_monster = nullptr;
-	prev_monster = 0;
+	prev_monster = nullptr;
 }
 
 /*
@@ -110,8 +111,8 @@ Monster_actor::Monster_actor(
     int shapenum,
     int num,            // Generally -1.
     int uc
-) : Npc_actor(nm, shapenum, num, uc), next_monster(0), prev_monster(0),
-	animator(0) {
+) : Npc_actor(nm, shapenum, num, uc), next_monster(nullptr), prev_monster(nullptr),
+	animator(nullptr) {
 	// Check for animated shape.
 	const Shape_info &info = get_info();
 	if (info.is_animated() || info.has_sfx())
@@ -141,9 +142,7 @@ void Monster_actor::equip(
 	if (!equip_offset || equip_offset - 1 >= inf->get_equip_cnt())
 		return;
 	Equip_record &rec = equip[equip_offset - 1];
-	for (size_t i = 0;
-	        i < sizeof(equip[0].elements) / sizeof(equip[0].elements[0]);
-	        i++) {
+	for (size_t i = 0; i < array_size(equip[0].elements); i++) {
 		// Give equipment.
 		Equip_element &elem = rec.elements[i];
 		if (!elem.shapenum || 1 + rand() % 100 > elem.probability)
@@ -331,7 +330,7 @@ int Monster_actor::step(
 	Map_chunk *nlist = gmap->get_chunk(cx, cy);
 	nlist->setup_cache();       // Setup cache if necessary.
 	// Blocked?
-	if (is_blocked(t, 0, force ? MOVE_ALL : 0)) {
+	if (is_blocked(t, nullptr, force ? MOVE_ALL : 0)) {
 		if (schedule)       // Tell scheduler.
 			schedule->set_blocked(t);
 		stop();

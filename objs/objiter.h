@@ -58,7 +58,7 @@ protected:
 public:
 	void reset() {
 		cur = first;
-		stop = 0;
+		stop = nullptr;
 	}
 	T_Object_iterator(T_Object_list<T> &objects)
 		: T_Safe_object_iterator<T>(objects), first(objects.get_first()) {
@@ -66,7 +66,7 @@ public:
 	}
 	T *get_next() {
 		if (cur == stop)
-			return 0;
+			return nullptr;
 		T *ret = cur;
 		cur = cur->next.get();
 		stop = first;
@@ -85,7 +85,7 @@ class T_Nonflat_object_iterator : public T_Object_iterator<T> {
 public:
 	void reset() {
 		this->cur = nonflats;
-		this->stop = 0;
+		this->stop = nullptr;
 	}
 	T_Nonflat_object_iterator(L chunk)
 		: T_Object_iterator<T>(chunk->get_objects()), nonflats(chunk->get_first_nonflat()) {
@@ -107,11 +107,11 @@ class T_Flat_object_iterator : public T_Safe_object_iterator<T> {
 public:
 	void reset() {
 		cur = first;
-		stop = 0;
+		stop = nullptr;
 	}
 	T_Flat_object_iterator(L chunk)
 		: T_Safe_object_iterator<T>(chunk->get_objects()) {
-		first = chunk->get_objects().get_first() == chunk->get_first_nonflat() ? 0 :
+		first = chunk->get_objects().get_first() == chunk->get_first_nonflat() ? nullptr :
 		        chunk->get_objects().get_first();
 		stop_at = chunk->get_first_nonflat() ? chunk->get_first_nonflat()
 		          : chunk->get_objects().get_first();
@@ -119,7 +119,7 @@ public:
 	}
 	T *get_next() {
 		if (cur == stop)
-			return 0;
+			return nullptr;
 		T *ret = cur;
 		cur = cur->get_next();
 		stop = stop_at;
@@ -140,7 +140,7 @@ class T_Object_iterator_backwards : public T_Safe_object_iterator<T> {
 public:
 	void reset() {
 		cur = first;
-		stop = 0;
+		stop = nullptr;
 	}
 	T_Object_iterator_backwards(L chunk)
 		: T_Safe_object_iterator<T>(chunk->get_objects()),
@@ -154,7 +154,7 @@ public:
 	}
 	T *get_next() {
 		if (cur == stop)
-			return 0;
+			return nullptr;
 		cur = cur->prev;
 		stop = first;
 		return cur;
@@ -167,12 +167,12 @@ typedef T_Object_iterator_backwards<Game_object, Map_chunk *> Object_iterator_ba
  *  Iterate through a list of objects (recursively).
  */
 template<class D> class D_Recursive_object_iterator {
-	// Child we're going through, or 0.
+	// Child we're going through, or nullptr.
 	D_Recursive_object_iterator<D> *child;
 	D elems;            // Goes through our elements.
 public:
 	D_Recursive_object_iterator(Object_list &objs)
-		: child(0), elems(objs)
+		: child(nullptr), elems(objs)
 	{  }
 	// Start at given object.
 	D_Recursive_object_iterator(Game_object *obj);

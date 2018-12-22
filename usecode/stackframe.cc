@@ -38,10 +38,10 @@ Stack_frame::Stack_frame(Usecode_function *fun,
                          int event,
                          Game_object *caller,
                          int chain, int depth)
-	: function(fun), ip(0), data(0), externs(0), code(0), endp(0),
+	: function(fun), ip(nullptr), data(nullptr), externs(nullptr), code(nullptr), endp(nullptr),
 	  line_number(-1), call_chain(chain), call_depth(depth),
-	  num_externs(0), num_args(0), num_vars(0), locals(0), eventid(event),
-	  caller_item(shared_from_obj(caller)), save_sp(0) {
+	  num_externs(0), num_args(0), num_vars(0), locals(nullptr), eventid(event),
+	  caller_item(shared_from_obj(caller)), save_sp(nullptr) {
 	ip = function->code;
 	endp = ip + function->len;
 

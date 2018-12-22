@@ -199,11 +199,11 @@ Paperdoll_gump::Paperdoll_gump(
 
 		cmode_button = new Combat_mode_button(this, cmodex, cmodey,
 		                                      actor);
-		cstats_button = NULL;
+		cstats_button = nullptr;
 	} else {
 		cstats_button = new Cstats_button(this, cstatx, cstaty);
-		halo_button = NULL;
-		cmode_button = NULL;
+		halo_button = nullptr;
+		cmode_button = nullptr;
 	}
 
 
@@ -212,14 +212,14 @@ Paperdoll_gump::Paperdoll_gump(
 	if (actor->get_npc_num() == 0)
 		disk_button = new Disk_button(this, diskx, disky);
 	else
-		disk_button = NULL;
+		disk_button = nullptr;
 
 
 	// If Avatar create Combat Button
 	if (actor->get_npc_num() == 0)
 		combat_button = new Combat_button(this, combatx, combaty);
 	else
-		combat_button = NULL;
+		combat_button = nullptr;
 
 
 	// Put all the objects in the right place
@@ -268,7 +268,7 @@ Gump_button *Paperdoll_gump::on_button(
 		return halo_button;
 	else if (cmode_button && cmode_button->on_button(mx, my))
 		return cmode_button;
-	return 0;
+	return nullptr;
 }
 
 /*
@@ -429,7 +429,7 @@ void Paperdoll_gump::paint(
 			item1 = inf.get_item_paperdoll(obj->get_framenum(), cloak);
 			item2 = inf.get_item_paperdoll(obj->get_framenum(), cloak_clasp);
 		} else
-			item1 = item2 = 0;
+			item1 = item2 = nullptr;
 		if (!item1 && !item2)
 			paint_object(box, info, amulet,          neckx,  necky);
 	} else
@@ -452,7 +452,7 @@ void Paperdoll_gump::paint(
 			const Shape_info &inf = obj->get_info();
 			item1 = inf.get_item_paperdoll(obj->get_framenum(), gloves);
 		} else
-			item1 = 0;
+			item1 = nullptr;
 		if (!item1)
 			paint_object_arms(box, info, lfinger,         rhandx, rhandy);
 		else
@@ -470,10 +470,11 @@ void Paperdoll_gump::paint(
 #endif
 
 #ifdef SHOW_NONREADIED_OBJECTS
+	Game_object *itm;
 	Object_iterator iter(actor->get_objects());
-	while ((obj = iter.get_next()) != 0)
-		if (actor->find_readied(obj) == -1)
-			obj->paint(box.x, box.y);
+	while ((itm = iter.get_next()) != nullptr)
+		if (actor->find_readied(itm) == -1)
+			itm->paint();
 #endif
 
 
@@ -621,7 +622,7 @@ void Paperdoll_gump::paint_head(
 ) {
 	const Game_object *obj = container->get_readied(head);
 
-	const Paperdoll_item *item = NULL;
+	const Paperdoll_item *item = nullptr;
 	if (obj)
 		item = obj->get_info().get_item_paperdoll(
 		           obj->get_framenum(), head);
@@ -730,7 +731,7 @@ Game_object *Paperdoll_gump::find_object(
 
 	// if debugging show usecode container
 #ifdef SHOW_USECODE_CONTAINER
-	if (obj = check_object(mx, my, info, ucont,  20,      20))
+	if ((obj = check_object(mx, my, info, ucont,  20,      20)) != nullptr)
 		return obj;
 #endif
 
@@ -750,7 +751,7 @@ Game_object *Paperdoll_gump::find_object(
 			const Shape_info &inf = obj->get_info();
 			item1 = inf.get_item_paperdoll(obj->get_framenum(), gloves);
 		} else
-			item1 = 0;
+			item1 = nullptr;
 		if (!item1 && (obj = check_object_arms(mx, my, info, lfinger,     rhandx, rhandy,   0)))
 			return obj;
 		else if ((obj = check_object_arms(mx, my, info, lfinger,     handsx, handsy, 0, gloves)))
@@ -774,7 +775,7 @@ Game_object *Paperdoll_gump::find_object(
 	if ((obj = check_object_arms(mx, my, info, torso,       bodyx,   bodyy,  1, torso)))
 		return obj;
 	if (check_arms(mx, my, info))
-		return NULL;
+		return nullptr;
 	if (!actor->is_scabbard_used())
 		if ((obj = check_object(mx, my, info, belt,        beltx,   belty)))
 			return obj;
@@ -786,15 +787,15 @@ Game_object *Paperdoll_gump::find_object(
 			item1 = inf.get_item_paperdoll(obj->get_framenum(), cloak);
 			item2 = inf.get_item_paperdoll(obj->get_framenum(), cloak_clasp);
 		} else
-			item1 = item2 = 0;
+			item1 = item2 = nullptr;
 		if (!item1 && !item2 && (obj = check_object(mx, my, info, amulet,      neckx,   necky)))
 			return obj;
 	} else if ((obj = check_object(mx, my, info, amulet,      neckx,   necky)))
 		return obj;
 	if (check_head(mx, my, info))
-		return NULL;
+		return nullptr;
 	if (check_belt(mx, my, info))
-		return NULL;
+		return nullptr;
 	if ((obj = check_object(mx, my, info, torso,       bodyx,   bodyy)))
 		return obj;
 	if ((obj = check_object(mx, my, info, quiver,      ammox,   ammoy,   0, -1)))
@@ -804,7 +805,7 @@ Game_object *Paperdoll_gump::find_object(
 	if ((obj = check_object(mx, my, info, legs,        legsx,   legsy)))
 		return obj;
 	if (check_body(mx, my, info))
-		return NULL;
+		return nullptr;
 	if (actor->is_neck_used()) {
 		if ((obj = check_object(mx, my, info, amulet,      bodyx,   bodyy,   0, cloak)))
 			return obj;
@@ -825,7 +826,7 @@ Game_object *Paperdoll_gump::find_object(
 		if ((obj = check_object(mx, my, info, back_shield, shieldx, shieldy)))
 			return obj;
 	}
-	return NULL;
+	return nullptr;
 }
 
 /*
@@ -841,7 +842,7 @@ Game_object *Paperdoll_gump::check_object(
     int itemtype
 ) {
 	Game_object *obj = container->get_readied(spot);
-	if (!obj) return NULL;
+	if (!obj) return nullptr;
 
 	int old_it = itemtype;
 	if (itemtype == -1) itemtype = spot;
@@ -849,7 +850,7 @@ Game_object *Paperdoll_gump::check_object(
 	const Paperdoll_item *item = obj->get_info().get_item_paperdoll(obj->get_framenum(), itemtype);
 	if (!item || item->get_paperdoll_baseframe() == -1 ||
 	        item->get_paperdoll_shape() == -1) {
-		if ((old_it != -1 && !item) || (spot == quiver && frame == 2)) return 0;
+		if ((old_it != -1 && !item) || (spot == quiver && frame == 2)) return nullptr;
 
 		if (!obj->get_tx() && !obj->get_ty()) set_to_spot(obj, spot);
 
@@ -858,9 +859,9 @@ Game_object *Paperdoll_gump::check_object(
 			return obj;
 		}
 
-		return NULL;
+		return nullptr;
 	} else if (spot == quiver && !Get_ammo_frame(obj, container, frame))
-		return NULL;
+		return nullptr;
 
 
 	int f = item->get_paperdoll_frame(frame);
@@ -877,7 +878,7 @@ Game_object *Paperdoll_gump::check_object(
 		return obj;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 /*
@@ -929,7 +930,7 @@ bool Paperdoll_gump::check_head(
 ) {
 	const Game_object *obj = container->get_readied(head);
 
-	const Paperdoll_item *item = NULL;
+	const Paperdoll_item *item = nullptr;
 	if (obj)
 		item = obj->get_info().get_item_paperdoll(
 		           obj->get_framenum(), head);

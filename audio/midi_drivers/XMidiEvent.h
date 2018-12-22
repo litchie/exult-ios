@@ -1,3 +1,4 @@
+
 /*
 Copyright (C) 2003  The Pentagram Team
 
@@ -147,7 +148,7 @@ struct XMidiEvent
 		for (XMidiEvent *e = next; e; e = next)
 		{
 			next = e->next;
-			e->next = 0;
+			e->next = nullptr;
 			e->FreeThis();
 		}
 

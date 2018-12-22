@@ -39,7 +39,7 @@ Game_object *Map_patch::find(
 	Game_object_vector vec;     // Pass mask=0xb0 to get any object.
 	Game_object::find_nearby(vec, spec.loc, spec.shapenum, 0, 0xb0,
 	                         spec.quality, spec.framenum);
-	return vec.empty() ? 0 : vec.front();
+	return vec.empty() ? nullptr : vec.front();
 }
 
 /*
@@ -52,7 +52,7 @@ bool Map_patch_remove::apply(
 ) {
 	bool found = false;
 	Game_object *obj;
-	while ((obj = find()) != 0) {
+	while ((obj = find()) != nullptr) {
 		obj->remove_this();
 		found = true;
 		if (!all)       // Just one?

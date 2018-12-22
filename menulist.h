@@ -86,7 +86,7 @@ public:
 	Font *font;
 	Font *font_on;
 	const char *text;
-	MenuTextObject() : text(0) {}
+	MenuTextObject() : text(nullptr) {}
 	virtual ~MenuTextObject() {
 		delete [] text;
 	}
@@ -155,12 +155,11 @@ public:
 
 class MenuList {
 private:
-	Shape_frame *bg;    // For OpenGL.
 	std::vector<MenuObject *> *entries;
 	bool selected;
 	int selection;
 public:
-	MenuList(): bg(0), selected(false), selection(0) {
+	MenuList(): selected(false), selection(0) {
 		entries = new std::vector<MenuObject *>();
 	}
 	~MenuList();
@@ -170,9 +169,6 @@ public:
 	}
 	void paint(Game_window *gwin);
 	int handle_events(Game_window *gwin, Mouse *mouse);
-	void set_background(Shape_frame *b) {
-		bg = b;
-	}
 	int get_selection() {
 		return selection;
 	}

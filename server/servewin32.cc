@@ -72,10 +72,10 @@ bool OpenPortFile(const char *path, bool writing) {
 	                filename,
 	                writing ? GENERIC_WRITE : GENERIC_READ,
 	                FILE_SHARE_READ | sharedel | (!writing ? FILE_SHARE_WRITE : 0),
-	                NULL,
+	                nullptr,
 	                writing ? CREATE_ALWAYS : OPEN_EXISTING,
 	                FILE_ATTRIBUTE_TEMPORARY | (writing ? FILE_FLAG_DELETE_ON_CLOSE : 0),
-	                NULL
+	                nullptr
 	            );
 	if (hPortFile == INVALID_HANDLE_VALUE) return false;
 	return true;
@@ -150,7 +150,7 @@ bool create_pipe(const char *path) {
 	}
 
 	DWORD numWriten;
-	WriteFile(hPortFile, &service.sin_port, 2, &numWriten, NULL);
+	WriteFile(hPortFile, &service.sin_port, 2, &numWriten, nullptr);
 
 	cout << "Opened socket for Exult Server on port " << ntohs(service.sin_port) << endl;
 
@@ -170,10 +170,10 @@ bool try_connect_to_client(const char *path) {
 	TIMEVAL tv;
 	tv.tv_sec = 0;
 	tv.tv_usec = 20000;
-	if (!select(0, &rfds, 0, 0, &tv)) return false;
+	if (!select(0, &rfds, nullptr, nullptr, &tv)) return false;
 
 	// Does accept
-	gDataSocket = accept(gServerSocket, NULL, NULL);
+	gDataSocket = accept(gServerSocket, nullptr, nullptr);
 	if (gDataSocket == INVALID_SOCKET) return false;
 
 	return true;
@@ -222,7 +222,7 @@ int try_connect_to_server(const char *path) {
 	}
 
 	DWORD numRead;
-	ReadFile(hPortFile, &service.sin_port, 2, &numRead, NULL);
+	ReadFile(hPortFile, &service.sin_port, 2, &numRead, nullptr);
 	CloseHandle(hPortFile);
 	hPortFile = INVALID_HANDLE_VALUE;
 	if (numRead != 2) {
@@ -256,7 +256,7 @@ int peek_pipe() {
 	TIMEVAL tv;
 	tv.tv_sec = 0;
 	tv.tv_usec = 20000;
-	if (select(0, &rfds, 0, 0, &tv)) {
+	if (select(0, &rfds, nullptr, nullptr, &tv)) {
 		char c;
 		int to_get = recv(gDataSocket, &c, 1, MSG_PEEK);
 		if (to_get == 0 || to_get == SOCKET_ERROR) {

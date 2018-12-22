@@ -37,6 +37,7 @@ extern int Stack_frame_out(
     int num_vars,
     Usecode_value *locals
 );
+
 extern bool Stack_frame_in(
     const unsigned char *data,        // Data that was read.
     int datalen,            // Length of data.
@@ -50,6 +51,5 @@ extern bool Stack_frame_in(
     int &num_vars,
     Usecode_value *&locals
 );
-
 
 #endif

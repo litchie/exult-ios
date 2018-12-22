@@ -37,16 +37,16 @@ public:
 	Ireg_game_object(int shapenum, int framenum, unsigned int tilex,
 	                 unsigned int tiley, unsigned int lft = 0)
 		: Game_object(shapenum, framenum, tilex, tiley, lft),
-		  owner(0), flags(0), flags2(0), lowlift(-1),
+		  owner(nullptr), flags(0), flags2(0), lowlift(-1),
 		  highshape(-1)
 	{  }
 	// Copy constructor.
 	Ireg_game_object(const Ireg_game_object &obj2)
-		: Game_object(obj2), owner(0), flags(0), flags2(0),
+		: Game_object(obj2), owner(nullptr), flags(0), flags2(0),
 		  lowlift(-1), highshape(-1)
 	{  }
 	// Create fake entry.
-	Ireg_game_object() : owner(0), flags(0), flags2(0), lowlift(-1),
+	Ireg_game_object() : owner(nullptr), flags(0), flags2(0), lowlift(-1),
 		highshape(-1)
 	{  }
 	virtual ~Ireg_game_object()
@@ -63,7 +63,7 @@ public:
 		move(t.tx, t.ty, t.tz, newmap);
 	}
 	// Remove/delete this object.
-	virtual void remove_this(Game_object_shared *keep = 0);
+	virtual void remove_this(Game_object_shared *keep = nullptr);
 	virtual Container_game_object *get_owner() const {
 		return owner;
 	}

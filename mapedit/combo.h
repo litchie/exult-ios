@@ -25,6 +25,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+#include <memory>
 #include <string>
 #include <vector>
 #include "objbrowse.h"
@@ -71,7 +72,7 @@ public:
 	Combo(const Combo &c2);     // Copy.
 	~Combo();
 	Combo_member *get(int i) {
-		return i >= 0 && static_cast<unsigned>(i) < members.size() ? members[i] : 0;
+		return i >= 0 && static_cast<unsigned>(i) < members.size() ? members[i] : nullptr;
 	}
 	// Add a new object.
 	void add(int tx, int ty, int tz, int shnum, int frnum, bool toggle);
@@ -81,7 +82,7 @@ public:
 	          int xoff = 0, int yoff = 0);
 	int find(int mx, int my);   // Find at mouse position.
 	// Serialize:
-	unsigned char *write(int &datalen);
+	std::unique_ptr<unsigned char[]> write(int &datalen);
 	const unsigned char *read(const unsigned char *buf, int bufsize);
 };
 
@@ -104,7 +105,7 @@ public:
 	void show(bool tf);     // Show/hide.
 	void render_area(GdkRectangle *area);
 	virtual void render() {
-		render_area(0);
+		render_area(nullptr);
 	}
 	void set_controls();        // Set controls to selected entry.
 	// Handle mouse.
@@ -173,7 +174,7 @@ class Combo_chooser: public Object_browser, public Shape_draw {
 public:
 	Combo_chooser(Vga_file *i, Flex_file_info *flinfo,
 	              unsigned char *palbuf, int w, int h,
-	              Shape_group *g = 0);
+	              Shape_group *g = nullptr);
 	virtual ~Combo_chooser();
 	// Turn off selection.
 	void unselect(bool need_render = true);

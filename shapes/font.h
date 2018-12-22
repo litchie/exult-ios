@@ -18,6 +18,7 @@
 #define FONT_H
 
 #include "hash_utils.h"
+#include <memory>
 
 class Image_buffer8;
 class Shape_file;
@@ -47,21 +48,20 @@ class Font {
 private:
 	int hor_lead;
 	int ver_lead;
-	Shape_file *font_shapes;
-	IDataSource *font_data;
-	char *font_buf;
-	char *orig_font_buf;
+	std::unique_ptr<Shape_file> font_shapes;
 	int  highest, lowest;
 
 	void calc_highlow();
 	void clean_up();
-	int load_internal(const U7multiobject &font_obj, int hlead, int vlead);
+	int load_internal(IDataSource& data, int hlead, int vlead);
 public:
 	Font();
 	Font(const File_spec &fname0, int index, int hlead = 0, int vlead = 1);
 	Font(const File_spec &fname0, const File_spec &fname1, int index,
 	     int hlead = 0, int vlead = 1);
-	~Font();
+	Font(Font&&) noexcept = default;
+	Font& operator=(Font&&) noexcept = default;
+	~Font() noexcept = default;
 	int load(const File_spec &fname0, int index, int hlead = 0, int vlead = 1);
 	int load(const File_spec &fname0, const File_spec &fname1, int index,
 	         int hlead = 0, int vlead = 1);
@@ -69,10 +69,10 @@ public:
 	int paint_text_box(Image_buffer8 *win,
 	                   const char *text, int x, int y, int w,
 	                   int h, int vert_lead = 0, bool pbreak = false,
-	                   bool center = false, Cursor_info *cursor = 0);
+	                   bool center = false, Cursor_info *cursor = nullptr);
 	int paint_text(Image_buffer8 *win,
 	               const char *text, int xoff, int yoff,
-	               unsigned char *trans = 0);
+	               unsigned char *trans = nullptr);
 	int paint_text(Image_buffer8 *win,
 	               const char *text, int textlen, int xoff, int yoff);
 	int paint_text_box_fixedwidth(Image_buffer8 *win,
@@ -93,7 +93,7 @@ public:
 	int find_xcursor(const char *text, int textlen, int cx);
 
 	int draw_text(Image_buffer8 *win, int x, int y, const char *s,
-	              unsigned char *trans = 0) {
+	              unsigned char *trans = nullptr) {
 		return paint_text(win, s, x, y, trans);
 	}
 	int draw_text_box(Image_buffer8 *win,

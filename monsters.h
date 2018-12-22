@@ -59,7 +59,7 @@ public:
 	}
 	static void delete_all();   // Delete all monsters.
 	static void give_up() {     // For file errors only!
-		in_world = 0;
+		in_world = nullptr;
 	}
 	virtual int move_aside(Actor *for_actor, int dir) {
 		ignore_unused_variable_warning(for_actor, dir);
@@ -70,7 +70,7 @@ public:
 	// Step onto an (adjacent) tile.
 	virtual int step(Tile_coord t, int frame, bool force = false);
 	// Remove/delete this object.
-	virtual void remove_this(Game_object_shared *keep = 0);
+	virtual void remove_this(Game_object_shared *keep = nullptr);
 	// Move to new abs. location.
 	virtual void move(int newtx, int newty, int newlift, int newmap = -1);
 	// Add an object.

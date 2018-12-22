@@ -93,11 +93,8 @@ MIDI_DRV_OBJS=\
 	audio/midi_drivers/FluidSynthMidiDriver.o \
 	audio/midi_drivers/fmopl.o \
 	audio/midi_drivers/FMOplMidiDriver.o \
-	audio/midi_drivers/forked_player.o \
-	audio/midi_drivers/KMIDI.o \
 	audio/midi_drivers/LowLevelMidiDriver.o \
 	audio/midi_drivers/MidiDriver.o \
-	audio/midi_drivers/mixer_midiout.o \
 	audio/midi_drivers/MT32EmuMidiDriver.o \
 	audio/midi_drivers/TimidityMidiDriver.o \
 	audio/midi_drivers/UnixSeqMidiDriver.o \
@@ -191,7 +188,6 @@ IMAGEWIN_OBJS=\
 	imagewin/imagewin.o \
 	imagewin/iwin8.o \
 	imagewin/savepcx.o \
-	imagewin/scale_gl.o \
 	imagewin/scale_2x.o \
 	imagewin/scale_2xSaI.o \
 	imagewin/scale_bilinear.o \
@@ -213,15 +209,10 @@ IMAGEWIN_OBJS=\
 #NMake Line\
 !if 0
 
-ifndef OPENGL_OBJS
-	OPENGL_OBJS= 
-endif
-
 #NMake Line\
 !else
 
 #NMake Line\
-OPENGL_OBJS= $(OPENGL_OBJS)
 
 #NMake Line\
 !endif
@@ -250,8 +241,7 @@ SHAPES_OBJS= \
 	shapes/shapeinf/objdollinf.o \
 	shapes/shapeinf/sfxinf.o \
 	shapes/shapeinf/warminf.o \
-	shapes/shapeinf/weaponinf.o \
-	$(OPENGL_OBJS)
+	shapes/shapeinf/weaponinf.o
 
 OBJS_OBJS= \
 	objs/animate.o \

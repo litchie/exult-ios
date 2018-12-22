@@ -463,12 +463,12 @@ class Sit_schedule : public Schedule {
 	bool sat;           // True if we already sat down.
 	bool did_barge_usecode;     // So we only call it once.
 public:
-	Sit_schedule(Actor *n, Game_object *ch = 0);
+	Sit_schedule(Actor *n, Game_object *ch = nullptr);
 	virtual void now_what();    // Now what should NPC do?
 	virtual void im_dormant();  // Just went dormant.
 	static bool is_occupied(Game_object *chairobj, Actor *actor);
-	static bool set_action(Actor *actor, Game_object *chairobj = 0,
-	                       int delay = 0, Game_object **chair_found = 0);
+	static bool set_action(Actor *actor, Game_object *chairobj = nullptr,
+	                       int delay = 0, Game_object **chair_found = nullptr);
 };
 
 /*
@@ -727,7 +727,7 @@ public:
  *  An NPC schedule change:
  */
 class Schedule_change {
-	static vector<char *> script_names; // For Scripted_schedule's.
+	static vector<std::string> script_names; // For Scripted_schedule's.
 	unsigned char time;     // Time*3hours when this takes effect.
 	unsigned char type;     // Schedule_type value.
 	unsigned char days;     // A bit for each day (0-6).  We don't
@@ -737,7 +737,7 @@ public:
 	Schedule_change() : time(0), type(0), days(0x7f)
 	{  }
 	static void clear();
-	static vector<char *> &get_script_names() {
+	static vector<std::string> &get_script_names() {
 		return script_names;
 	}
 	void set4(const unsigned char *ent);  // Create from 4-byte entry.
@@ -754,9 +754,9 @@ public:
 	Tile_coord get_pos() const {
 		return pos;
 	}
-	static char *get_script_name(int ty) {
+	static const char *get_script_name(int ty) {
 		return ty >= Schedule::first_scripted_schedule ?
-		       script_names[ty - Schedule::first_scripted_schedule] : 0;
+		       script_names[ty - Schedule::first_scripted_schedule].c_str() : nullptr;
 	}
 };
 

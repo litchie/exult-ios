@@ -61,6 +61,7 @@ using   std::ostream;
 using   std::ofstream;
 using   std::setw;
 using   std::ifstream;
+using   std::make_unique;
 using   EStudio::Prompt;
 using   EStudio::Alert;
 
@@ -134,8 +135,7 @@ void Palette_edit::load(
 	else {
 		for (unsigned pnum = 0; pnum < cnt; pnum++) {
 			size_t len;
-			unsigned char *buf = reinterpret_cast<unsigned char *>(
-			                     flex_info->get(pnum, len));
+			unsigned char *buf = flex_info->get(pnum, len);
 			guint32 colors[256];
 			for (size_t i = 0; i < len / 3; i++)
 				colors[i] = (buf[3 * i] << 16) * 4 +
@@ -209,7 +209,7 @@ int Palette_edit::color_closed(
 	ignore_unused_variable_warning(dlg, event);
 	cout << "color_closed" << endl;
 	Palette_edit *paled = static_cast<Palette_edit *>(data);
-	paled->colorsel = 0;
+	paled->colorsel = nullptr;
 	return FALSE;
 }
 
@@ -225,7 +225,7 @@ void Palette_edit::color_cancel(
 	Palette_edit *paled = static_cast<Palette_edit *>(data);
 	if (paled->colorsel)
 		gtk_widget_destroy(GTK_WIDGET(paled->colorsel));
-	paled->colorsel = 0;
+	paled->colorsel = nullptr;
 }
 
 /*
@@ -239,7 +239,7 @@ void Palette_edit::color_okay(
 	ignore_unused_variable_warning(dlg);
 	Palette_edit *paled = static_cast<Palette_edit *>(data);
 	if (paled->colorsel) {
-		gdouble rgb[3];
+		gdouble rgb[4];
 		gtk_color_selection_get_color(
 		    GTK_COLOR_SELECTION(paled->colorsel->colorsel), rgb);
 		unsigned char r = static_cast<unsigned char>(rgb[0] * 256),
@@ -255,7 +255,7 @@ void Palette_edit::color_okay(
 		paled->render();
 		paled->show();
 	}
-	paled->colorsel = 0;
+	paled->colorsel = nullptr;
 }
 
 /*
@@ -373,7 +373,7 @@ gint Palette_edit::mouse_press(
 	}
 	if (event->button == 3)
 		gtk_menu_popup(GTK_MENU(paled->create_popup()),
-		               0, 0, 0, 0, event->button, event->time);
+		               nullptr, nullptr, nullptr, nullptr, event->button, event->time);
 	return (TRUE);
 }
 
@@ -524,7 +524,7 @@ on_down_btn_clicked(GtkButton       *button,
 GtkWidget *Palette_edit::create_controls(
 ) {
 	// Create main box.
-	GtkWidget *topframe = gtk_frame_new(NULL);
+	GtkWidget *topframe = gtk_frame_new(nullptr);
 	gtk_widget_show(topframe);
 	GtkWidget *vbox = gtk_vbox_new(FALSE, 0);
 	gtk_widget_show(vbox);
@@ -654,7 +654,7 @@ void Palette_edit::setup(
 	gtk_widget_show(vbox);
 	set_widget(vbox);
 	// A frame looks nice.
-	GtkWidget *frame = gtk_frame_new(NULL);
+	GtkWidget *frame = gtk_frame_new(nullptr);
 	gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_IN);
 	gtk_widget_show(frame);
 	gtk_box_pack_start(GTK_BOX(vbox), frame, TRUE, TRUE, 0);
@@ -735,10 +735,10 @@ void Palette_edit::new_palette(
 void Palette_edit::update_flex(
     int pnum            // Palette # to send to file.
 ) {
-	unsigned char *buf = new unsigned char[3 * 256];
-	Write_palette(buf, palettes[pnum]);
+	auto buf = make_unique<unsigned char[]>(3 * 256);
+	Write_palette(buf.get(), palettes[pnum]);
 	// Update or append file data.
-	flex_info->set(pnum, reinterpret_cast<char *>(buf), 3 * 256);
+	flex_info->set(pnum, std::move(buf), 3 * 256);
 	flex_info->set_modified();
 }
 
@@ -748,9 +748,9 @@ void Palette_edit::update_flex(
 
 Palette_edit::Palette_edit(
     Flex_file_info *flinfo      // Flex-file info.
-) : Object_browser(0, flinfo),
-	flex_info(flinfo), image(0), width(0), height(0),
-	cur_pal(0), colorsel(0) {
+) : Object_browser(nullptr, flinfo),
+	flex_info(flinfo), image(nullptr), width(0), height(0),
+	cur_pal(0), colorsel(nullptr) {
 	load();             // Load from file.
 	setup();
 }

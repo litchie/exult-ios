@@ -71,7 +71,7 @@ int Actor_action::handle_event_safely(
 /**
  *  Set to walk from one point to another the dumb way.
  *
- *  @return     this, or 0 if unsuccessful.
+ *  @return     this, or nullptr if unsuccessful.
  */
 
 Actor_action *Actor_action::walk_to_tile(
@@ -84,11 +84,11 @@ Actor_action *Actor_action::walk_to_tile(
 	Zombie *path = new Zombie();
 	get_party = false;
 	// Set up new path.
-	if (path->NewPath(src, dest, 0))
+	if (path->NewPath(src, dest, nullptr))
 		return new Path_walking_actor_action(path);
 	else {
 		delete path;
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -152,7 +152,7 @@ Path_walking_actor_action::Path_walking_actor_action(
     int maxblk,         // Max. retries when blocked.
     int pers            // Keeps retrying this many times.
 ) : reached_end(false), path(p), deleted(false), speed(0),
-	from_offscreen(false), subseq(0), blocked(0), max_blocked(maxblk),
+	from_offscreen(false), subseq(nullptr), blocked(0), max_blocked(maxblk),
 	blocked_frame(0), persistence(pers) {
 	if (!path)
 		path = new Astar();
@@ -169,7 +169,7 @@ Path_walking_actor_action::~Path_walking_actor_action(
 ) {
 	delete path;
 	delete subseq;
-	subseq = 0;         // (Debugging).
+	subseq = nullptr;         // (Debugging).
 	original_dir = -1;
 }
 
@@ -177,7 +177,7 @@ Path_walking_actor_action::~Path_walking_actor_action(
  *  Create action for walking to given destination using Astar.
  *  Note:  This is a static method.
  *
- *  @return     Action if successful, else 0.
+ *  @return     Action if successful, else nullptr.
  */
 
 Path_walking_actor_action *Path_walking_actor_action::create_path(
@@ -191,7 +191,7 @@ Path_walking_actor_action *Path_walking_actor_action::create_path(
 		return new Path_walking_actor_action(path);
 	else {
 		delete path;
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -208,7 +208,7 @@ int Path_walking_actor_action::handle_event(
 		int delay = subseq->handle_event(actor);
 		if (delay)
 			return delay;   // Still going.
-		set_subseq(0);
+		set_subseq(nullptr);
 		// He was stopped, so restore speed.
 		actor->set_frame_time(speed);
 		return speed;       // Come back in a moment.
@@ -237,7 +237,7 @@ int Path_walking_actor_action::handle_event(
 			Game_object *block = Game_object::find_blocking(blocked_tile);
 			Actor *blk;
 			// Being blocked by an NPC?
-			if (block && (blk = block->as_actor()) != 0) {
+			if (block && (blk = block->as_actor()) != nullptr) {
 				// Try to create a new path -- the old one might be blocked
 				// due to (say) the previously 'non-blocking' NPC now being
 				// in a blocking state.
@@ -313,7 +313,7 @@ int Path_walking_actor_action::handle_event(
 	        !cheat.in_map_editor() &&   // And NOT map-editing?
 	        actor->is_sentient()) {
 		Game_object *door = Game_object::find_door(tile);
-		if (door != 0 && door->is_closed_door() &&
+		if (door != nullptr && door->is_closed_door() &&
 		        // Make sure it's not locked!
 		        door->get_framenum() % 4 < 2)
 
@@ -412,7 +412,7 @@ void Path_walking_actor_action::stop(
 /**
  *  Set to walk from one point to another, using the same pathfinder.
  *
- *  @return     this, or 0 if unsuccessful.
+ *  @return     this, or nullptr if unsuccessful.
  */
 
 Actor_action *Path_walking_actor_action::walk_to_tile(
@@ -433,11 +433,11 @@ Actor_action *Path_walking_actor_action::walk_to_tile(
 		if (dest.tx == dest.ty) { // Completely off-screen?
 			Offscreen_pathfinder_client cost(npc, ignnpc);
 			if (!path->NewPath(src, dest, &cost))
-				return 0;
+				return nullptr;
 		} else {
 			Onecoord_pathfinder_client cost(npc, ignnpc);
 			if (!path->NewPath(src, dest, &cost))
-				return 0;
+				return nullptr;
 		}
 	}
 	// How about from source?
@@ -447,20 +447,20 @@ Actor_action *Path_walking_actor_action::walk_to_tile(
 			// Aim from NPC's current pos.
 			Offscreen_pathfinder_client cost(npc, npc->get_tile(), ignnpc);
 			if (!path->NewPath(dest, src, &cost))
-				return 0;
+				return nullptr;
 		} else {
 			Onecoord_pathfinder_client cost(npc, ignnpc);
 			if (!path->NewPath(dest, src, &cost))
-				return 0;
+				return nullptr;
 		}
 		from_offscreen = true;
 		// Set to go backwards.
 		if (!path->set_backwards())
-			return 0;
+			return nullptr;
 	} else {
 		Actor_pathfinder_client cost(npc, dist, ignnpc);
 		if (!path->NewPath(src, dest, &cost))
-			return 0;
+			return nullptr;
 	}
 	// Reset direction (but not index).
 	original_dir = static_cast<int>(Get_direction4(
@@ -487,7 +487,7 @@ int Path_walking_actor_action::get_dest(
 
 int Path_walking_actor_action::following_smart_path(
 ) const {
-	return path != 0 && path->following_smart_path();
+	return path != nullptr && path->following_smart_path();
 }
 
 /**
@@ -515,7 +515,7 @@ Approach_actor_action::Approach_actor_action(
  *  Create action for walking towards a given (moving) object using Astar.
  *  Note:  This is a static method.
  *
- *  @return     Action if successful, else 0.
+ *  @return     Action if successful, else nullptr.
  */
 
 Approach_actor_action *Approach_actor_action::create_path(
@@ -530,7 +530,7 @@ Approach_actor_action *Approach_actor_action::create_path(
 		return new Approach_actor_action(path, dest, gdist);
 	else {
 		delete path;
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -580,7 +580,7 @@ If_else_path_actor_action::If_else_path_actor_action(
     Tile_coord const &dest,
     Actor_action *s,
     Actor_action *f
-) : Path_walking_actor_action(0, 6),    // Maxblk = 6.
+) : Path_walking_actor_action(nullptr, 6),    // Maxblk = 6.
 	succeeded(false), failed(false), done(false),
 	success(s), failure(f) {
 	if (!walk_to_tile(actor, actor->get_tile(), dest)) {
@@ -803,7 +803,7 @@ Sequence_actor_action::Sequence_actor_action(
 	actions[1] = a1;
 	actions[2] = a2;
 	actions[3] = a3;
-	actions[4] = 0;         // 0-delimit.
+	actions[4] = nullptr;         // 0-delimit.
 }
 
 /**

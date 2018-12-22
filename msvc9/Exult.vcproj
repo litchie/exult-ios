@@ -84,7 +84,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="SDL.lib SDLMain.lib winmm.lib zdll.lib SDL_mixer.lib opengl32.lib ws2_32.lib"
+				AdditionalDependencies="SDL.lib SDLMain.lib winmm.lib zdll.lib SDL_mixer.lib ws2_32.lib"
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				Version="1.1"
 				LinkIncremental="1"
@@ -178,7 +178,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="msvcrt.lib msvcrtd.lib SDL.lib SDLmain.lib SDL_mixer.lib odbc32.lib odbccp32.lib winmm.lib zdll.lib opengl32.lib ws2_32.lib ole32.lib user32.lib"
+				AdditionalDependencies="msvcrt.lib msvcrtd.lib SDL.lib SDLmain.lib SDL_mixer.lib odbc32.lib odbccp32.lib winmm.lib zdll.lib ws2_32.lib ole32.lib user32.lib"
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				Version="1.1"
 				LinkIncremental="2"
@@ -279,7 +279,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="SDL.lib SDLMain.lib odbc32.lib odbccp32.lib winmm.lib zdll.lib SDL_mixer.lib opengl32.lib ws2_32.lib"
+				AdditionalDependencies="SDL.lib SDLMain.lib odbc32.lib odbccp32.lib winmm.lib zdll.lib SDL_mixer.lib ws2_32.lib"
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				Version="1.1"
 				LinkIncremental="1"
@@ -377,7 +377,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="odbc32.lib odbccp32.lib SDL.lib winmm.lib zdll.lib SDL_mixer.lib opengl32.lib SDLmain.lib ws2_32.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib SDL.lib winmm.lib zdll.lib SDL_mixer.lib SDLmain.lib ws2_32.lib"
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				Version="1.1"
 				LinkIncremental="2"
@@ -612,34 +612,6 @@
 							RelativePath="..\audio\midi_drivers\WindowsMidiDriver.h"
 							>
 						</File>
-						<Filter
-							Name="Legacy midi Drivers"
-							>
-							<File
-								RelativePath="..\audio\midi_drivers\forked_player.cc"
-								>
-							</File>
-							<File
-								RelativePath="..\audio\midi_drivers\forked_player.h"
-								>
-							</File>
-							<File
-								RelativePath="..\audio\midi_drivers\KMIDI.cc"
-								>
-							</File>
-							<File
-								RelativePath="..\audio\midi_drivers\KMIDI.h"
-								>
-							</File>
-							<File
-								RelativePath="..\audio\midi_drivers\mixer_midiout.cc"
-								>
-							</File>
-							<File
-								RelativePath="..\audio\midi_drivers\mixer_midiout.h"
-								>
-							</File>
-						</Filter>
 						<Filter
 							Name="mt32emu"
 							>
@@ -1635,10 +1607,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\imagewin\scale_gl.cc"
-					>
-				</File>
-				<File
 					RelativePath="..\imagewin\scale_hq2x.cc"
 					>
 				</File>
@@ -1907,10 +1875,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\shapes\glshape.cc"
-					>
-				</File>
-				<File
 					RelativePath="..\shapes\items.cc"
 					>
 				</File>
@@ -1975,10 +1939,6 @@
 					</File>
 					<File
 						RelativePath="..\shapes\fontvga.h"
-						>
-					</File>
-					<File
-						RelativePath="..\shapes\glshape.h"
 						>
 					</File>
 					<File

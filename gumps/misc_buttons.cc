@@ -210,6 +210,6 @@ bool Cstats_button::activate(
 ) {
 	if (button != 1) return false;
 	int cnt = partyman->get_count();
-	gumpman->add_gump(0, game->get_shape("gumps/cstats/1") + cnt);
+	gumpman->add_gump(nullptr, game->get_shape("gumps/cstats/1") + cnt);
 	return true;
 }

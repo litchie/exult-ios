@@ -72,6 +72,7 @@ tools/rip
 tools/shp2pcx
 tools/splitshp
 tools/textpack
+tools/u7voice2syx
 tools/wuc
 usecode/compiler/ucc
 usecode/compiler/ucparse.output

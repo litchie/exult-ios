@@ -78,7 +78,7 @@ bool Yesno_button::activate(
 
 Yesno_gump::Yesno_gump(
     const std::string &txt, const char *font
-) : Modal_gump(0, game->get_shape("gumps/yesnobox")), text(txt), fontname(font), answer(-1) {
+) : Modal_gump(nullptr, game->get_shape("gumps/yesnobox")), text(txt), fontname(font), answer(-1) {
 	set_object_area(Rectangle(6, 5, 116, 32));
 	add_elem(new Yesno_button(this, yesx, yesnoy, 1));
 	add_elem(new Yesno_button(this, nox, yesnoy, 0));
@@ -134,7 +134,7 @@ bool Yesno_gump::mouse_up(
 		pushed->unpush(button);
 		if (pushed->on_button(mx, my))
 			pushed->activate(button);
-		pushed = 0;
+		pushed = nullptr;
 	}
 	return true;
 }

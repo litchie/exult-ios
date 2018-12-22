@@ -107,7 +107,7 @@ class Npc_chooser: public Object_browser, public Shape_draw {
 	virtual GtkWidget *create_popup();  // Popup menu.
 public:
 	Npc_chooser(Vga_file *i, unsigned char *palbuf, int w, int h,
-	            Shape_group *g = 0, Shape_file_info *fi = 0);
+	            Shape_group *g = nullptr, Shape_file_info *fi = nullptr);
 	virtual ~Npc_chooser();
 	int get_count();        // Get # shapes we can display.
 	std::vector<Estudio_npc> &get_npcs();

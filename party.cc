@@ -309,8 +309,8 @@ void Party_manager::move_followers(
 	if (lnum == -1 && rnum == -1)
 		return;         // Nothing to do.
 	int dir4 = dir / 2;     // 0-3 now.
-	Actor *lnpc = (lnum == -1 || lnum >= validcnt) ? 0 : valid[lnum];
-	Actor *rnpc = (rnum == -1 || rnum >= validcnt) ? 0 : valid[rnum];
+	Actor *lnpc = (lnum == -1 || lnum >= validcnt) ? nullptr : valid[lnum];
+	Actor *rnpc = (rnum == -1 || rnum >= validcnt) ? nullptr : valid[rnum];
 	int ldir = -1, rdir = -1;
 	// Have each take a step.
 	if (lnpc)
@@ -365,12 +365,13 @@ static Actor *Find_member_blocking(
 
 	for (int i = first; i < count; i++) {
 		Actor *npc = gwin->get_npc(pman->get_member(i));
+		assert(npc != nullptr);
 		pos.tz = npc->get_lift();// Use NPC's, since it might be up/dn
 		//   by a step.
 		if (npc->blocks(pos))
 			return npc; // Found.
 	}
-	return 0;
+	return nullptr;
 }
 
 /*
@@ -425,11 +426,11 @@ static int Get_cost(
     Actor *npc,         // NPC to take the step.
     Actor *leader,          // NPC he's following.
     Tile_coord to,          // Tile to step to.
-    Actor **find_blocking = 0   // Returns blocking party member.
+    Actor **find_blocking = nullptr   // Returns blocking party member.
 ) {
 	int cost = 0;
 	if (find_blocking)
-		*find_blocking = 0;
+		*find_blocking = nullptr;
 	if (npc->is_blocked(to)) {  // (To.tz is updated.)
 		// Can't go there.
 		if (find_blocking) {
@@ -476,7 +477,7 @@ static bool Take_best_step(
 
 	int best_cost = max_cost + 8;
 	Tile_coord best(-1, -1, -1);
-	Actor *best_in_way = 0;
+	Actor *best_in_way = nullptr;
 	for (int i = 0; i < cnt; i++) {
 		int diri = (dir + deltadir[i]) % 8;
 		Tile_coord to = pos.get_neighbor(diri);

@@ -39,10 +39,10 @@ public:
 	                      unsigned int tiley, unsigned int lft,
 	                      char res = 0)
 		: Ireg_game_object(shapenum, framenum, tilex, tiley, lft),
-		  volume_used(0), resistance(res), objects(0)
+		  volume_used(0), resistance(res), objects(nullptr)
 	{  }
 	Container_game_object() : volume_used(0), resistance(0),
-		objects(0) {  }
+		objects(nullptr) {  }
 	virtual ~Container_game_object();
 	Object_list &get_objects() {
 		return objects;
@@ -70,7 +70,7 @@ public:
 	}
 	virtual Game_object *get_readied(int index) const {
 		ignore_unused_variable_warning(index);
-		return 0;
+		return nullptr;
 	}
 	virtual void call_readied_usecode(int index,
 	                                  Game_object *obj, int eventid) {
@@ -122,7 +122,7 @@ public:
 
 	virtual void delete_contents();
 
-	virtual void remove_this(Game_object_shared *keep = 0);
+	virtual void remove_this(Game_object_shared *keep = nullptr);
 
 	virtual Container_game_object *as_container() {
 		return this;

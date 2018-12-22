@@ -48,7 +48,7 @@ using std::vector;
 using std::map;
 using std::pair;
 
-Uc_scope Uc_function::globals(0);   // Stores intrinic symbols.
+Uc_scope Uc_function::globals(nullptr);   // Stores intrinic symbols.
 vector<Uc_intrinsic_symbol *> Uc_function::intrinsics;
 int Uc_function::num_global_statics = 0;
 int Uc_function::add_answer = -1, Uc_function::remove_answer = -1,
@@ -66,8 +66,8 @@ Uc_function::Uc_function(
     Uc_function_symbol *p,
     Uc_scope *parent
 ) : top(parent), proto(p), cur_scope(&top), num_parms(0),
-	num_locals(0), num_statics(0), text_data(0), text_data_size(0),
-	statement(0) {
+	num_locals(0), num_statics(0), text_data(nullptr), text_data_size(0),
+	statement(nullptr) {
 	add_global_function_symbol(proto, parent);// Add prototype to globals.
 #if 0
 	const char *nm = proto->get_name();
@@ -102,14 +102,14 @@ Uc_function::~Uc_function(
 /*
  *  Add a new variable to the current scope.
  *
- *  Output: New sym, or 0 if already declared.
+ *  Output: New sym, or nullptr if already declared.
  */
 
 Uc_var_symbol *Uc_function::add_symbol(
     char *nm
 ) {
 	if (cur_scope->is_dup(nm))
-		return 0;
+		return nullptr;
 	// Create & assign slot.
 	Uc_var_symbol *var = new Uc_var_symbol(nm, num_parms + num_locals++);
 	cur_scope->add(var);
@@ -119,7 +119,7 @@ Uc_var_symbol *Uc_function::add_symbol(
 /*
  *  Add a new variable to the current scope.
  *
- *  Output: New sym, or 0 if already declared.
+ *  Output: New sym, or nullptr if already declared.
  */
 
 Uc_var_symbol *Uc_function::add_symbol(
@@ -127,7 +127,7 @@ Uc_var_symbol *Uc_function::add_symbol(
     Uc_class *c
 ) {
 	if (cur_scope->is_dup(nm))
-		return 0;
+		return nullptr;
 	// Create & assign slot.
 	Uc_var_symbol *var = new Uc_class_inst_symbol(nm, c, num_parms + num_locals++);
 	cur_scope->add(var);
@@ -137,7 +137,7 @@ Uc_var_symbol *Uc_function::add_symbol(
 /*
  *  Add a new variable to the current scope.
  *
- *  Output: New sym, or 0 if already declared.
+ *  Output: New sym, or nullptr if already declared.
  */
 
 Uc_var_symbol *Uc_function::add_symbol(
@@ -145,7 +145,7 @@ Uc_var_symbol *Uc_function::add_symbol(
     Uc_struct_symbol *s
 ) {
 	if (cur_scope->is_dup(nm))
-		return 0;
+		return nullptr;
 	// Create & assign slot.
 	Uc_var_symbol *var = new Uc_struct_var_symbol(nm, s, num_parms + num_locals++);
 	cur_scope->add(var);
@@ -155,14 +155,14 @@ Uc_var_symbol *Uc_function::add_symbol(
 /*
  *  Add a new variable to the current scope.
  *
- *  Output: New sym, or 0 if already declared.
+ *  Output: New sym, or nullptr if already declared.
  */
 
 Uc_var_symbol *Uc_function::add_symbol(
     Uc_var_symbol *var
 ) {
 	if (cur_scope->is_dup(var->get_name()))
-		return 0;
+		return nullptr;
 	// Create & assign slot.
 	var->set_offset(num_parms + num_locals++);
 	cur_scope->add(var);
@@ -172,7 +172,7 @@ Uc_var_symbol *Uc_function::add_symbol(
 /*
  *  Add an alias to variable to the current scope.
  *
- *  Output: New sym, or 0 if already declared.
+ *  Output: New sym, or nullptr if already declared.
  */
 
 Uc_var_symbol *Uc_function::add_alias(
@@ -180,7 +180,7 @@ Uc_var_symbol *Uc_function::add_alias(
     Uc_var_symbol *var
 ) {
 	if (cur_scope->is_dup(nm))
-		return 0;
+		return nullptr;
 	// Create & assign slot.
 	Uc_alias_symbol *alias = new Uc_alias_symbol(nm, var);
 	cur_scope->add(alias);
@@ -190,7 +190,7 @@ Uc_var_symbol *Uc_function::add_alias(
 /*
  *  Add an alias to variable to the current scope.
  *
- *  Output: New sym, or 0 if already declared.
+ *  Output: New sym, or nullptr if already declared.
  */
 
 Uc_var_symbol *Uc_function::add_alias(
@@ -199,7 +199,7 @@ Uc_var_symbol *Uc_function::add_alias(
     Uc_struct_symbol *struc
 ) {
 	if (cur_scope->is_dup(nm))
-		return 0;
+		return nullptr;
 	// Create & assign slot.
 	Uc_var_symbol *var = static_cast<Uc_var_symbol *>(v->get_sym());
 	Uc_alias_symbol *alias = new Uc_struct_alias_symbol(nm, var, struc);
@@ -210,7 +210,7 @@ Uc_var_symbol *Uc_function::add_alias(
 /*
  *  Add an alias to variable to the current scope.
  *
- *  Output: New sym, or 0 if already declared.
+ *  Output: New sym, or nullptr if already declared.
  */
 
 Uc_var_symbol *Uc_function::add_alias(
@@ -219,7 +219,7 @@ Uc_var_symbol *Uc_function::add_alias(
     Uc_class *c
 ) {
 	if (cur_scope->is_dup(nm))
-		return 0;
+		return nullptr;
 	// Create & assign slot.
 	Uc_var_symbol *var = static_cast<Uc_var_symbol *>(v->get_sym());
 	Uc_alias_symbol *alias = new Uc_class_alias_symbol(nm, var, c);
@@ -280,7 +280,7 @@ Uc_symbol *Uc_function::add_string_symbol(
     char *text
 ) {
 	if (cur_scope->is_dup(nm))
-		return 0;
+		return nullptr;
 	// Create & assign slot.
 	Uc_symbol *sym = new Uc_string_symbol(nm, add_string(text));
 	cur_scope->add(sym);
@@ -290,7 +290,7 @@ Uc_symbol *Uc_function::add_string_symbol(
 /*
  *  Add a new integer constant variable to the current scope.
  *
- *  Output: New sym, or 0 if already declared.
+ *  Output: New sym, or nullptr if already declared.
  */
 
 Uc_symbol *Uc_function::add_int_const_symbol(
@@ -299,7 +299,7 @@ Uc_symbol *Uc_function::add_int_const_symbol(
     int opcode
 ) {
 	if (cur_scope->is_dup(nm))
-		return 0;
+		return nullptr;
 	// Create & assign slot.
 	Uc_const_int_symbol *var = new Uc_const_int_symbol(nm, value, static_cast<UsecodeOps>(opcode));
 	cur_scope->add(var);
@@ -309,7 +309,7 @@ Uc_symbol *Uc_function::add_int_const_symbol(
 /*
  *  Add a new integer constant variable to the global scope.
  *
- *  Output: New sym, or 0 if already declared.
+ *  Output: New sym, or nullptr if already declared.
  */
 
 Uc_symbol *Uc_function::add_global_int_const_symbol(
@@ -318,7 +318,7 @@ Uc_symbol *Uc_function::add_global_int_const_symbol(
     int opcode
 ) {
 	if (globals.is_dup(nm))
-		return 0;
+		return nullptr;
 	// Create & assign slot.
 	Uc_const_int_symbol *var = new Uc_const_int_symbol(nm, value, static_cast<UsecodeOps>(opcode));
 	globals.add(var);
@@ -734,7 +734,7 @@ void Uc_function::gen(
 			// Remove it from map and unlink references to it.
 			label->unlink_descendants();
 			label->unlink_predecessors();
-			it->second = 0;
+			it->second = nullptr;
 			delete label;
 		}
 	}

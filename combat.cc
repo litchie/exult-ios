@@ -86,7 +86,7 @@ bool In_ammo_family(int shnum, int family) {
 	if (shnum == family)
 		return true;
 	const Ammo_info *ainf = ShapeID::get_info(shnum).get_ammo_info();
-	return (ainf != 0 && ainf->get_family_shape() == family);
+	return (ainf != nullptr && ainf->get_family_shape() == family);
 }
 
 /*
@@ -156,7 +156,7 @@ void Combat_schedule::stop_attacking_npc(
 	        it != nearby.end(); ++it) {
 		Actor *actor = *it;
 		if (actor->get_target() == npc)
-			actor->set_target(0);
+			actor->set_target(nullptr);
 	}
 }
 
@@ -174,7 +174,7 @@ void Combat_schedule::stop_attacking_invisible(
 	        it != nearby.end(); ++it) {
 		Actor *actor = *it;
 		if (actor->get_target() == npc && !actor->can_see_invisible())
-			actor->set_target(0);
+			actor->set_target(nullptr);
 	}
 }
 
@@ -368,6 +368,7 @@ void Combat_schedule::find_opponents(
 			if (oppressor < 0)
 				continue;
 			Actor *oppr = gwin->get_npc(oppressor);
+			assert(oppr != nullptr);
 			// Is actor being attacked by a party member?
 			if ((oppr->get_flag(Obj_flags::in_party) || oppr == avatar) &&
 			        is_enemy(npc_align, oppr->get_effective_alignment())) {
@@ -381,7 +382,7 @@ void Combat_schedule::find_opponents(
 	if (opponents.empty() && in_party &&
 	        avatar->get_effective_alignment() == npc_align) {
 		Game_object *opp = avatar->get_target();
-		Actor *oppnpc = opp ? opp->as_actor() : 0;
+		Actor *oppnpc = opp ? opp->as_actor() : nullptr;
 		if (oppnpc && oppnpc != npc
 		        && oppnpc->get_schedule_type() == Schedule::combat) {
 			opponents.push_back(oppnpc->weak_from_this());
@@ -414,7 +415,7 @@ list<Game_object_weak>::iterator Combat_schedule::find_protected_attacker(
 	Game_window *gwin = Game_window::get_instance();
 	Actor *party[9];        // Get entire party, including Avatar.
 	int cnt = gwin->get_party(party, 1);
-	Actor *prot_actor = 0;
+	Actor *prot_actor = nullptr;
 	for (int i = 0; i < cnt; i++)
 		if (party[i]->is_combat_protected()) {
 			prot_actor = party[i];
@@ -548,7 +549,7 @@ Game_object *Combat_schedule::find_foe(
 		new_opponent = std::static_pointer_cast<Actor>((*new_opp_link).lock());
 		opponents.erase(new_opp_link);
 	}
-	return new_opponent ? new_opponent.get() : NULL;
+	return new_opponent ? new_opponent.get() : nullptr;
 }
 
 /*
@@ -560,7 +561,7 @@ Game_object *Combat_schedule::find_foe(
 inline Game_object *Combat_schedule::find_foe(
 ) {
 	if (npc->get_attack_mode() == Actor::manual)
-		return 0;       // Find it yourself.
+		return nullptr;       // Find it yourself.
 	return find_foe(static_cast<int>(npc->get_attack_mode()));
 }
 
@@ -670,14 +671,14 @@ void Combat_schedule::approach_foe(
 				if (combat_trace)
 					cout << npc->get_name() << " has no opponents nearby."
 					     << endl;
-				npc->set_target(0);
+				npc->set_target(nullptr);
 				retry_ok = false;
 			} else if (closest != opponent) {
 				opponent = closest;
 				npc->set_target(opponent);
 				Monster_pathfinder_client cost(npc, dist,
 				                               opponent);
-				retry_ok = (opponent != 0 && path->NewPath(
+				retry_ok = (opponent != nullptr && path->NewPath(
 				                pos, opponent->get_tile(), &cost));
 			}
 		}
@@ -736,11 +737,11 @@ static Game_object *Get_usable_weapon(
 ) {
 	Game_object *bobj = npc->get_readied(index);
 	if (!bobj)
-		return 0;
+		return nullptr;
 	const Shape_info &info = bobj->get_info();
 	const Weapon_info *winf = info.get_weapon_info();
 	if (!winf)
-		return 0;       // Not a weapon.
+		return nullptr;       // Not a weapon.
 	Game_object *aobj;  // Check ranged first.
 	int need_ammo = npc->get_weapon_ammo(bobj->get_shapenum(),
 	                                     winf->get_ammo_consumed(), winf->get_projectile(),
@@ -751,11 +752,11 @@ static Game_object *Get_usable_weapon(
 			                                 winf->get_ammo_consumed(), winf->get_projectile(),
 			                                 false, &aobj);
 		if (need_ammo && !aobj)
-			return 0;
+			return nullptr;
 	}
 	if (info.get_ready_type() == both_hands &&
-	        npc->get_readied(rhand) != 0)
-		return 0;       // Needs two free hands.
+	        npc->get_readied(rhand) != nullptr)
+		return nullptr;       // Needs two free hands.
 	return bobj;
 }
 
@@ -825,7 +826,7 @@ void Combat_schedule::start_strike(
 	bool check_lof = !no_blocking;
 	// Get difference in lift.
 	const Weapon_info *winf = weapon_shape >= 0 ?
-	                    ShapeID::get_info(weapon_shape).get_weapon_info() : 0;
+	                    ShapeID::get_info(weapon_shape).get_weapon_info() : nullptr;
 	int dist = npc->distance(opponent);
 	int reach;
 	if (!winf) {
@@ -845,7 +846,7 @@ void Combat_schedule::start_strike(
 			weapon_dead = !spellbook->can_do_spell(npc);
 		else if (winf) {
 			// See if we can fire spell/projectile.
-			Game_object *ammo = 0;
+			Game_object *ammo = nullptr;
 			int need_ammo = npc->get_weapon_ammo(weapon_shape,
 			                                     winf->get_ammo_consumed(), winf->get_projectile(),
 			                                     ranged, &ammo);
@@ -865,7 +866,7 @@ void Combat_schedule::start_strike(
 				npc->change_frame(npc->get_dir_framenum(
 				                      Actor::standing));
 			state = approach;
-			npc->set_target(0);
+			npc->set_target(nullptr);
 			npc->start(200, 500);
 			return;
 		}
@@ -947,7 +948,7 @@ bool Combat_schedule::attack_target(
 	                   && att->get_attack_mode() != Actor::manual;
 
 	const Shape_info &info = ShapeID::get_info(weapon);
-	const Weapon_info *winf = weapon >= 0 ? info.get_weapon_info() : 0;
+	const Weapon_info *winf = weapon >= 0 ? info.get_weapon_info() : nullptr;
 
 	int reach;
 	int family = -1;    // Ammo, is needed, is the weapon itself.
@@ -971,7 +972,7 @@ bool Combat_schedule::attack_target(
 	}
 
 	// See if we need ammo.
-	Game_object *ammo = 0;
+	Game_object *ammo = nullptr;
 	int need_ammo = attacker->get_weapon_ammo(weapon, family,
 	                proj, ranged, &ammo);
 	Game_object_shared ammo_keep = shared_from_obj(ammo);
@@ -1056,7 +1057,7 @@ bool Combat_schedule::attack_target(
 		}
 	}
 
-	Actor *trg = target ? target->as_actor() : 0;
+	Actor *trg = target ? target->as_actor() : nullptr;
 	bool trg_party = trg ? trg->is_in_party() : false;
 	bool att_party = att ? att->is_in_party() : false;
 	int attval = att ? att->get_effective_prop(static_cast<int>(Actor::combat)) : 0;
@@ -1153,12 +1154,12 @@ void Combat_schedule::run_away(
  *  See if a spellbook is readied with a spell
  *  available.
  *
- *  Output: ->spellbook if so, else 0.
+ *  Output: ->spellbook if so, else nullptr.
  */
 
 Spellbook_object *Combat_schedule::readied_spellbook(
 ) {
-	Spellbook_object *book = 0;
+	Spellbook_object *book = nullptr;
 	// Check both hands.
 	Game_object *obj = npc->get_readied(lhand);
 	if (obj && obj->get_info().get_shape_class() == Shape_info::spellbook) {
@@ -1172,7 +1173,7 @@ Spellbook_object *Combat_schedule::readied_spellbook(
 		if (book->can_do_spell(npc))
 			return book;
 	}
-	return 0;
+	return nullptr;
 }
 
 /*
@@ -1183,7 +1184,7 @@ void Combat_schedule::set_weapon(
     bool removed            // The weapon was just removed.
 ) {
 	int points;
-	spellbook = 0;
+	spellbook = nullptr;
 	const Weapon_info *info = npc->get_weapon(points, weapon_shape, weapon);
 	if (!removed &&
 	        // Not dragging?
@@ -1229,7 +1230,7 @@ void Combat_schedule::set_weapon(
 
 void Combat_schedule::set_hand_to_hand(
 ) {
-	weapon = 0;
+	weapon = nullptr;
 	weapon_shape = -1;
 	no_blocking = false;
 	// Put aside weapon.
@@ -1259,7 +1260,7 @@ inline int Need_new_opponent(
 	bool see_invisible = npc->can_see_invisible();
 	// Nonexistent or dead?
 	if (!opponent ||
-	        ((act = opponent->as_actor()) != 0 && act->is_dead()) ||
+	        ((act = opponent->as_actor()) != nullptr && act->is_dead()) ||
 	        // Or invisible?
 	        (!see_invisible && opponent->get_flag(Obj_flags::invisible)
 	         && rand() % 4 == 0))
@@ -1277,7 +1278,7 @@ Combat_schedule::Combat_schedule(
     Schedule_types
     prev_sched
 ) : Schedule(n), state(initial), prev_schedule(prev_sched),
-	practice_target(0), weapon(0), weapon_shape(-1), spellbook(0),
+	practice_target(nullptr), weapon(nullptr), weapon_shape(-1), spellbook(nullptr),
 	no_blocking(false), yelled(0), started_battle(false), fleed(0),
 	failures(0), teleport_time(0), summon_time(0),
 	dex_points(0), alignment(n->get_effective_alignment()) {
@@ -1328,7 +1329,7 @@ void Combat_schedule::now_what(
 	}
 	// Check if opponent still breathes.
 	if (Need_new_opponent(gwin, npc)) {
-		npc->set_target(0);
+		npc->set_target(nullptr);
 		state = approach;
 	}
 	Game_object *opponent = npc->get_target();
@@ -1383,7 +1384,7 @@ void Combat_schedule::now_what(
 			// Strike but once at objects.
 			Game_object *newtarg = safenpc->get_target();
 			if (newtarg && !newtarg->as_actor())
-				safenpc->set_target(0);
+				safenpc->set_target(nullptr);
 			return;     // We may no longer exist!
 		}
 		break;
@@ -1425,7 +1426,7 @@ void Combat_schedule::now_what(
 		// Strike but once at objects.
 		Game_object *newtarg = npc->get_target();
 		if (newtarg && !newtarg->as_actor()) {
-			npc->set_target(0);
+			npc->set_target(nullptr);
 			return;     // We may no longer exist!
 		}
 		break;
@@ -1575,7 +1576,7 @@ void Duel_schedule::find_opponents(
 ) {
 	opponents.clear();
 	attacks = 0;
-	practice_target = 0;
+	practice_target = nullptr;
 	int r = rand() % 3;
 	if (r == 0) {       // First look for practice targets.
 		// Archery target:
@@ -1626,7 +1627,7 @@ void Duel_schedule::now_what(
 		return;
 	}
 	if (attacks % 8 == 0) { // Time to break off.
-		npc->set_target(0);
+		npc->set_target(nullptr);
 		Tile_coord pos = start;
 		pos.tx += rand() % 24 - 12;
 		pos.ty += rand() % 24 - 12;

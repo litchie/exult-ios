@@ -21,8 +21,6 @@
 #ifndef EXULT_CONSTANTS_H
 #define EXULT_CONSTANTS_H
 
-#include <string>
-
 /*
  *  Sizes:
  */
@@ -55,12 +53,6 @@ const int c_occsize = c_max_shapes / 8 + (c_max_shapes % 8 ? 1 : 0);
 
 // Maximum number of global flags:
 const int c_last_gflag = 2047;
-
-/*
- * Empty string
- */
-extern const std::string c_empty_string;
-
 
 #define MOVE_NODROP (1<<3)
 #define MOVE_FLY (1<<4)
@@ -98,8 +90,8 @@ inline int SUB_TILE(int x, int y) {
 // Two very useful macros that one should use instead of pure delete; they will additionally
 // set the old object pointer to 0, thus helping prevent double deletes (not that "delete 0"
 // is a no-op.
-#define FORGET_OBJECT(x) do { delete x; x = 0; } while(0)
-#define FORGET_ARRAY(x) do { delete [] x; x = 0; } while(0)
+#define FORGET_OBJECT(x) do { delete x; x = nullptr; } while(0)
+#define FORGET_ARRAY(x) do { delete [] x; x = nullptr; } while(0)
 
 enum Exult_Game {
     NONE,

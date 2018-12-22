@@ -124,9 +124,9 @@ public:
 				break;
 			case 'n':
 				if (k->first == "name")                name = strip_backticks(k->second);
-				else if (k->first == "num_bytes")      num_bytes = static_cast<unsigned int>(strtol(k->second.c_str(), 0, 0));
-				else if (k->first == "num_pop")        num_pop = static_cast<unsigned int>(strtol(k->second.c_str(), 0, 0));
-				else if (k->first == "num_push")       num_push = static_cast<unsigned int>(strtol(k->second.c_str(), 0, 0));
+				else if (k->first == "num_bytes")      num_bytes = static_cast<unsigned int>(strtol(k->second.c_str(), nullptr, 0));
+				else if (k->first == "num_pop")        num_pop = static_cast<unsigned int>(strtol(k->second.c_str(), nullptr, 0));
+				else if (k->first == "num_push")       num_push = static_cast<unsigned int>(strtol(k->second.c_str(), nullptr, 0));
 				else if (k->first == "nosemicolon/")   flag_nosemicolon = true;
 				else if (k->first == "new_effect/")    flag_new_effect = true;
 				else if (k->first == "not_param/")     flag_not_param = true;

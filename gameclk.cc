@@ -97,16 +97,11 @@ void Game_clock::set_time_palette(
 	if (invis && !old_invisible) {
 		if (transition) {
 			delete transition;
-			transition = 0;
+			transition = nullptr;
 		}
 		gwin->get_pal()->set(PALETTE_INVISIBLE);
-#ifdef HAVE_OPENGL
-		if (GL_manager::get_instance() && !gwin->get_pal()->is_faded_out())
-			gwin->get_pal()->apply(true);
-		else
-#endif
-			if (!gwin->get_pal()->is_faded_out())
-				gwin->get_pal()->apply(false);
+		if (!gwin->get_pal()->is_faded_out())
+			gwin->get_pal()->apply(false);
 		return;
 	}
 	old_invisible = invis;
@@ -114,17 +109,12 @@ void Game_clock::set_time_palette(
 	if (!main_actor || (cheat.in_infravision() && !old_infravision)) {
 		if (transition) {
 			delete transition;
-			transition = 0;
+			transition = nullptr;
 		}
 		gwin->get_pal()->set(PALETTE_DAY);
-// As far as I can tell from testing in Direct X and Windib with OpenGL and other scalers, this palette apply isn't even needed.
-#ifdef HAVE_OPENGL
-		if (GL_manager::get_instance() && !gwin->get_pal()->is_faded_out())
-			gwin->get_pal()->apply(true);
-		else
-#endif
-			if (!gwin->get_pal()->is_faded_out())
-				gwin->get_pal()->apply(false);
+// As far as I can tell from testing in Direct X and Windib and other scalers, this palette apply isn't even needed.
+		if (!gwin->get_pal()->is_faded_out())
+			gwin->get_pal()->apply(false);
 		return;
 	}
 	old_infravision = cheat.in_infravision();
@@ -150,7 +140,7 @@ void Game_clock::set_time_palette(
 	if (gwin->get_pal()->is_faded_out()) {
 		if (transition) {
 			delete transition;
-			transition = 0;
+			transition = nullptr;
 		}
 		gwin->get_pal()->set(old_palette);
 		if (!gwin->get_pal()->is_faded_out())
@@ -175,7 +165,7 @@ void Game_clock::set_time_palette(
 	} else if (light_change) {
 		if (transition) {
 			delete transition;
-			transition = 0;
+			transition = nullptr;
 		}
 		gwin->get_pal()->set(new_palette);
 		if (!gwin->get_pal()->is_faded_out())
@@ -186,7 +176,7 @@ void Game_clock::set_time_palette(
 		if (transition->set_step(hour, minute))
 			return;
 		delete transition;
-		transition = 0;
+		transition = nullptr;
 	}
 
 	if (old_palette != new_palette) { // Do we have a transition?
@@ -333,7 +323,7 @@ void Game_clock::handle_event(
 
 	if (transition && !transition->set_step(hour, minute)) {
 		delete transition;
-		transition = 0;
+		transition = nullptr;
 		set_time_palette();
 	} else if (hour != hour_old)
 		set_time_palette();

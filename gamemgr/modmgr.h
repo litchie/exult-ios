@@ -188,7 +188,7 @@ public:
 	ModInfo *get_mod(int i) {
 		if (i >= 0 && static_cast<unsigned>(i) < modlist.size())
 			return &(modlist[i]);
-		return 0;
+		return nullptr;
 	}
 	BaseGameInfo *get_mod(const string &name, bool checkversion = true);
 	void add_mod(const string &mod, const string &modconfig);
@@ -231,22 +231,22 @@ public:
 	ModManager *get_game(int i) {
 		if (i >= 0 && static_cast<unsigned>(i) < games.size())
 			return &(games[i]);
-		return 0;
+		return nullptr;
 	}
 	bool is_bg_installed() const {
-		return bg != 0;
+		return bg != nullptr;
 	}
 	bool is_fov_installed() const {
-		return fov != 0;
+		return fov != nullptr;
 	}
 	bool is_si_installed() const {
-		return si != 0;
+		return si != nullptr;
 	}
 	bool is_ss_installed() const {
-		return ss != 0;
+		return ss != nullptr;
 	}
 	bool is_sib_installed() const {
-		return sib != 0;
+		return sib != nullptr;
 	}
 	ModManager *find_game(const string &name);
 	ModManager *get_bg() {

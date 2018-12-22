@@ -54,7 +54,7 @@ ToneBank
 *drumset[128]={&standard_drumset};
 
 /* This is a special instrument, used for all melodic programs */
-Instrument *default_instrument=0;
+Instrument *default_instrument=nullptr;
 
 /* This is only used for tracks that don't specify a program */
 int default_program=DEFAULT_PROGRAM;
@@ -90,7 +90,7 @@ static void free_bank(int dr, int b)
 			/* Not that this could ever happen, of course */
 			if (bank->tone[i].instrument != MAGIC_LOAD_INSTRUMENT)
 				free_instrument(bank->tone[i].instrument);
-			bank->tone[i].instrument=0;
+			bank->tone[i].instrument=nullptr;
 		}
 }
 
@@ -195,10 +195,10 @@ static Instrument *load_instrument(char *name, int percussion,
 	static const char *patch_ext[] = PATCH_EXT_LIST;
 #endif
 
-	if (!name) return 0;
+	if (!name) return nullptr;
 
 	/* Open patch file */
-	if ((fp=open_file(name, 1, OF_NORMAL)) == NULL)
+	if ((fp=open_file(name, 1, OF_NORMAL)) == nullptr)
 	{
 		noluck=1;
 #ifdef PATCH_EXT_LIST
@@ -210,7 +210,7 @@ static Instrument *load_instrument(char *name, int percussion,
 				char path[1024];
 				strcpy(path, name);
 				strcat(path, patch_ext[i]);
-				if ((fp=open_file(path, 1, OF_NORMAL)) != NULL)
+				if ((fp=open_file(path, 1, OF_NORMAL)) != nullptr)
 				{
 					noluck=0;
 					break;
@@ -224,7 +224,7 @@ static Instrument *load_instrument(char *name, int percussion,
 	{
 		ctl->cmsg(CMSG_ERROR, VERB_NORMAL,
 		          "Instrument `%s' can't be found.", name);
-		return 0;
+		return nullptr;
 	}
 
 	ctl->cmsg(CMSG_INFO, VERB_NOISY, "Loading instrument %s", current_filename);
@@ -239,7 +239,7 @@ static Instrument *load_instrument(char *name, int percussion,
 	{
 		ctl->cmsg(CMSG_ERROR, VERB_NORMAL, "%s: not an instrument", name);
 		close_file(fp);
-		return 0;
+		return nullptr;
 	}
 
 	if (tmp[82] != 1 && tmp[82] != 0) /* instruments. To some patch makers,
@@ -248,7 +248,7 @@ static Instrument *load_instrument(char *name, int percussion,
 		ctl->cmsg(CMSG_ERROR, VERB_NORMAL,
 		          "Can't handle patches with %d instruments", tmp[82]);
 		close_file(fp);
-		return 0;
+		return nullptr;
 	}
 
 	if (tmp[151] != 1 && tmp[151] != 0) /* layers. What's a layer? */
@@ -256,7 +256,7 @@ static Instrument *load_instrument(char *name, int percussion,
 		ctl->cmsg(CMSG_ERROR, VERB_NORMAL,
 		          "Can't handle instruments with %d layers", tmp[151]);
 		close_file(fp);
-		return 0;
+		return nullptr;
 	}
 
 	ip=safe_Malloc<Instrument>();
@@ -291,7 +291,7 @@ static Instrument *load_instrument(char *name, int percussion,
 			free(ip->sample);
 			free(ip);
 			close_file(fp);
-			return 0;
+			return nullptr;
 		}
 
 		sp=&(ip->sample[i]);
@@ -607,7 +607,7 @@ static int fill_bank(int dr, int b)
 							MAGIC_LOAD_INSTRUMENT;
 					}
 				}
-				bank->tone[i].instrument=0;
+				bank->tone[i].instrument=nullptr;
 				errors++;
 			}
 			else if (!(bank->tone[i].instrument=

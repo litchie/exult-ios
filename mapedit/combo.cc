@@ -41,6 +41,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 using std::cout;
 using std::endl;
+using std::unique_ptr;
+using std::make_unique;
 
 class Game_object;
 
@@ -70,7 +72,7 @@ void ExultStudio::open_combo_window(
 	}
 	Shapes_vga_file *svga = static_cast<Shapes_vga_file *>(vgafile->get_ifile());
 	delete combowin;        // Delete old (svga may have changed).
-	combowin = new Combo_editor(svga, palbuf);
+	combowin = new Combo_editor(svga, palbuf.get());
 	combowin->show(true);
 	// Set edit-mode to pick.
 	GtkWidget *mitem = glade_xml_get_widget(app_xml, "pick_for_combo1");
@@ -446,15 +448,15 @@ int Combo::find(
  *  Output: Allocated buffer containing result.
  */
 
-unsigned char *Combo::write(
+unique_ptr<unsigned char[]> Combo::write(
     int &datalen            // Actual length of data in buf. is
     //   returned here.
 ) {
 	int namelen = name.length();    // Name length.
 	// Room for our data + members.
-	unsigned char *buf = new unsigned char[namelen + 1 +
-	                                       7 * 4 + members.size() * (5 * 4)];
-	unsigned char *ptr = buf;
+	auto buf = make_unique<unsigned char[]>(namelen + 1 +
+	                                       7 * 4 + members.size() * (5 * 4));
+	unsigned char *ptr = buf.get();
 	Serial_out out(ptr);
 	out << name;
 	out << hot_index << starttx << startty;
@@ -465,7 +467,7 @@ unsigned char *Combo::write(
 		out << m->tx << m->ty << m->tz << m->shapenum <<
 		    m->framenum;
 	}
-	datalen = ptr - buf;        // Return actual length.
+	datalen = ptr - buf.get();        // Return actual length.
 	return buf;
 }
 
@@ -740,10 +742,9 @@ void Combo_editor::save(
 	}
 	flex_info->set_modified();
 	int len;            // Serialize.
-	unsigned char *newbuf = combo->write(len);
+	auto newbuf = combo->write(len);
 	// Update or append file data.
-	flex_info->set(file_index == -1 ? flex_info->size() : file_index,
-	               reinterpret_cast<char *>(newbuf), len);
+	flex_info->set(file_index == -1 ? flex_info->size() : file_index, std::move(newbuf), len);
 	Combo_chooser *browser = dynamic_cast<Combo_chooser *>(
 	                             studio->get_browser());
 	if (browser)            // Browser open?
@@ -836,14 +837,14 @@ void Combo_chooser::load(
 	Shape_file_info *svga_info =
 	    ExultStudio::get_instance()->get_vgafile();
 	Shapes_vga_file *svga = svga_info ?
-	                        static_cast<Shapes_vga_file *>(svga_info->get_ifile()) : 0;
+	                        static_cast<Shapes_vga_file *>(svga_info->get_ifile()) : nullptr;
 	combos.resize(num_combos);  // Set size of list.
 	if (!svga)
 		num_combos = 0;
 	// Read them all in.
 	for (unsigned i = 0; i < num_combos; i++) {
 		size_t len;
-		unsigned char *buf = reinterpret_cast<unsigned char *>(flex_info->get(i, len));
+		unsigned char *buf = flex_info->get(i, len);
 		Combo *combo = new Combo(svga);
 		combo->read(buf, len);
 		combos[i] = combo;  // Store in list.
@@ -975,7 +976,7 @@ void Combo_chooser::drag_data_get(
 	                           foot.y + foot.h - 1 - hot->ty, cnt, ents);
 	assert(len <= buflen);
 #ifdef WIN32
-	windragdata *wdata = (windragdata *)seldata;
+	windragdata *wdata = reinterpret_cast<windragdata*>(seldata);
 	wdata->assign(info, len, buf);
 #else
 	// Make us owner of xdndselection.
@@ -1099,7 +1100,7 @@ Combo_chooser::Combo_chooser(
 ) : Object_browser(g, flinfo),
 	Shape_draw(i, palbuf, gtk_drawing_area_new()),
 	flex_info(flinfo), index0(0),
-	info(0), info_cnt(0), sel_changed(0) {
+	info(nullptr), info_cnt(0), sel_changed(nullptr) {
 	load();             // Init. from file data.
 	// Put things in a vert. box.
 	GtkWidget *vbox = gtk_vbox_new(FALSE, 0);
@@ -1111,7 +1112,7 @@ Combo_chooser::Combo_chooser(
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, TRUE, TRUE, 0);
 
 	// A frame looks nice.
-	GtkWidget *frame = gtk_frame_new(NULL);
+	GtkWidget *frame = gtk_frame_new(nullptr);
 	gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_IN);
 	gtk_widget_show(frame);
 	gtk_box_pack_start(GTK_BOX(hbox), frame, TRUE, TRUE, 0);
@@ -1346,14 +1347,14 @@ gint Combo_chooser::win32_drag_motion(
 
 		// This call allows us to recycle the data transfer initialization code.
 		//  It's clumsy, but far easier to maintain.
-		drag_data_get(NULL, NULL, (GtkSelectionData *) &wdata,
+		drag_data_get(nullptr, nullptr, reinterpret_cast<GtkSelectionData*>(&wdata),
 		              U7_TARGET_COMBOID, 0, data);
 
 		POINT pnt;
 		GetCursorPos(&pnt);
 
-		Windropsource idsrc(0, pnt.x, pnt.y);
-		LPDATAOBJECT idobj = (LPDATAOBJECT) new Winstudioobj(wdata);
+		Windropsource idsrc(nullptr, pnt.x, pnt.y);
+		LPDATAOBJECT idobj = new Winstudioobj(wdata);
 		DWORD dndout;
 
 		HRESULT res = DoDragDrop(idobj, &idsrc, DROPEFFECT_COPY, &dndout);
@@ -1434,7 +1435,7 @@ gint Combo_chooser::mouse_press(
 	}
 	if (event->button == 3)
 		gtk_menu_popup(GTK_MENU(chooser->create_popup()),
-		               0, 0, 0, 0, event->button, event->time);
+		               nullptr, nullptr, nullptr, nullptr, event->button, event->time);
 	return (TRUE);
 }
 

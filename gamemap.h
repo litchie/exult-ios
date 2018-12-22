@@ -146,8 +146,8 @@ public:
 		Map_chunk *list;
 		return (cx >= 0 && cx < c_num_chunks &&
 		        cy >= 0 && cy < c_num_chunks ?
-		        ((list = objects[cx][cy]) != 0 ? list :
-		         create_chunk(cx, cy)) : 0);
+		        ((list = objects[cx][cy]) != nullptr ? list :
+		         create_chunk(cx, cy)) : nullptr);
 	}
 	// Get "map" superchunk objs/scenery.
 	void get_map_objects(int schunk);
@@ -192,7 +192,7 @@ public:
 	// Read scheduled script(s) for obj.
 	void read_special_ireg(IDataSource *ireg, Game_object *obj);
 	void read_ireg_objects(IDataSource *ireg, int scx, int scy,
-	                       Game_object *container = 0,
+	                       Game_object *container = nullptr,
 	                       unsigned long flags = (1 << Obj_flags::okay_to_take));
 	Ireg_game_object_shared create_ireg_object(const Shape_info &info, int shnum,
 	                                     int frnum, int tilex, int tiley, int lift);

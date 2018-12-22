@@ -44,14 +44,6 @@ else
 	ZIP_LIBS:=-L$(SRC)/zlib -Wl,-Bstatic -lz -Wl,-Bdynamic
 endif
 
-### OpenGL mode support
-### OpenGL doesn't support SDL2 yet
-ifdef SDL1
-	OPENGL_LIBS:=-lopengl32
-	OPENGL_OBJS:=shapes/glshape.o
-	OPENGL_CFLAGS:=-DHAVE_OPENGL
-endif
-
 ### FLUIDSYNTH libs, for Exult.
 # If this doesn't work, insert output of `pkg-config --libs fluidsynth` manually
 FLUIDSYNTH_LIBS:=$(shell pkg-config --libs fluidsynth)
@@ -82,7 +74,7 @@ GIMP_LIBS:=$(shell pkg-config --libs gimpui-2.0)
 
 ### Combined Exult Studio includes and libs.
 ES_INCLUDES:=$(GTK_INCLUDES) $(LIBGLADE_INCLUDES) $(FREETYPE2_INCLUDES) $(GIMP_INCLUDES)
-ES_LIBS:=$(GTK_LIBS) $(LIBGLADE_LIBS) $(FREETYPE2_LIBS) $(ZIP_LIBS) $(OPENGL_LIBS) -liberty -lole32 -lpng -luuid -lws2_32 -mwindows
+ES_LIBS:=$(GTK_LIBS) $(LIBGLADE_LIBS) $(FREETYPE2_LIBS) $(ZIP_LIBS) -liberty -lole32 -lpng -luuid -lws2_32 -mwindows
 
 ### Ogg vorbis inclides
 OGG_INCLUDES:=$(shell pkg-config --cflags ogg vorbis vorbisfile)
@@ -132,7 +124,7 @@ CPPFLAGS=$(strip -DVERSION=\"$(VERSION)\" -DEXULT_DATADIR=\"data\" \
 	-I$(SRC)/imagewin -I$(SRC)/objs -I$(SRC)/pathfinder -I$(SRC)/server -I$(SRC)/shapes \
 	-I$(SRC)/tools -I$(SRC)/usecode -I$(SRC)/usecode/compiler -I$(SRC)/usecode/ucxt/include \
 	-I$(SRC)/mapedit -I$(SRC)/shapes/shapeinf $(SDL_CFLAGS) \
-	$(ZIP_CFLAGS) $(OPENGL_CFLAGS) $(MT32EMU_CFLAGS) $(ES_INCLUDES) \
+	$(ZIP_CFLAGS) $(MT32EMU_CFLAGS) $(ES_INCLUDES) \
 	$(EXTRA_OPTIONS))
 
 ifndef OPT_LEVEL
@@ -150,7 +142,7 @@ CFLAGS=$(strip $(OPT_LEVEL) -mms-bitfields)
 CC=gcc
 
 LDFLAGS=-static-libgcc -static-libstdc++
-LIBS=-lmingw32 $(SDL_LIBS) $(ZIP_LIBS) $(OPENGL_LIBS) $(OGG_LIBS) $(FLUIDSYNTH_LIBS) -ldsound -lwinmm -lole32 -luuid -lws2_32 -mwindows $(MTHREADS)
+LIBS=-lmingw32 $(SDL_LIBS) $(ZIP_LIBS) $(OGG_LIBS) $(FLUIDSYNTH_LIBS) -ldsound -lwinmm -lole32 -luuid -lws2_32 -mwindows $(MTHREADS)
 
 EXEC=Exult.exe
 EXEEXT=.exe
@@ -240,8 +232,7 @@ ES_SHAPES_OBJS=\
 	shapes/shapeinf/objdollinf.o \
 	shapes/shapeinf/sfxinf.o \
 	shapes/shapeinf/warminf.o \
-	shapes/shapeinf/weaponinf.o \
-	$(OPENGL_OBJS)
+	shapes/shapeinf/weaponinf.o
 
 MISC_OBJS=exultstudioico.o windrag.o
 

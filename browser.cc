@@ -46,7 +46,7 @@ ShapeBrowser::ShapeBrowser() {
 	current_frame = 0;
 	num_files = game->get_resource("files/shapes/count").num;
 	current_file = 0;
-	shapes = 0;
+	shapes = nullptr;
 	num_palettes = game->get_resource("palettes/count").num;
 	current_palette = 0;
 	num_xforms = game->get_resource("xforms/count").num;
@@ -113,8 +113,7 @@ void ShapeBrowser::browse_shapes() {
 			} else
 				pal.load(pal_tuple.str, patch_tuple.str, pal_tuple.num);
 
-			if (GL_manager::get_instance())
-				pal.apply();
+			pal.apply();
 			font->paint_text_fixedwidth(ibuf, "Show [K]eys", 2, maxy - 50, 8);
 
 			snprintf(buf, 255, "VGA File: '%s'", fname);
@@ -175,11 +174,7 @@ void ShapeBrowser::browse_shapes() {
 			} else
 				font->draw_text(ibuf, centerx - 20, centery - 5, "No Shape");
 
-
-			if (GL_manager::get_instance())
-				gwin->get_win()->show();
-			else
-				pal.apply();
+			pal.apply();
 			redraw = false;
 		}
 		SDL_WaitEvent(&event);

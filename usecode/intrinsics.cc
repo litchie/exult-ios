@@ -74,7 +74,7 @@ using std::strchr;
 
 extern Usecode_value no_ret;
 
-static Game_object *sailor = 0;     // The current barge captain.  Maybe
+static Game_object *sailor = nullptr;     // The current barge captain.  Maybe
 //   this needs to be saved/restored.
 
 #define PARTY_MAX (array_size(party))
@@ -167,7 +167,7 @@ USECODE_INTRINSIC(pop_answers) {
 	if (!conv->stack_empty()) {
 		conv->pop_answers();
 		delete [] user_choice;
-		user_choice = 0;    // Added 7/24/2000.
+		user_choice = nullptr;    // Added 7/24/2000.
 	}
 	return(no_ret);
 }
@@ -181,10 +181,10 @@ USECODE_INTRINSIC(clear_answers) {
 USECODE_INTRINSIC(select_from_menu) {
 	ignore_unused_variable_warning(num_parms, parms);
 	delete [] user_choice;
-	user_choice = 0;
+	user_choice = nullptr;
 	Usecode_value u(get_user_choice());
 	delete [] user_choice;
-	user_choice = 0;
+	user_choice = nullptr;
 	return(u);
 }
 
@@ -192,10 +192,10 @@ USECODE_INTRINSIC(select_from_menu2) {
 	ignore_unused_variable_warning(num_parms, parms);
 	// Return index (1-n) of choice.
 	delete [] user_choice;
-	user_choice = 0;
+	user_choice = nullptr;
 	Usecode_value val(get_user_choice_num() + 1);
 	delete [] user_choice;
-	user_choice = 0;
+	user_choice = nullptr;
 	return(val);
 }
 
@@ -243,7 +243,7 @@ USECODE_INTRINSIC(get_item_shape) {
 	Game_object *item = get_item(parms[0]);
 	// Want the actual, not polymorph'd.
 	Actor *act = as_actor(item);
-	return Usecode_value(item == 0 ? 0 :
+	return Usecode_value(item == nullptr ? 0 :
 	                     (act ? act->get_shape_real() : item->get_shapenum()));
 }
 
@@ -252,7 +252,7 @@ USECODE_INTRINSIC(get_item_frame) {
 	// Returns frame without rotated bit.
 	Game_object *item = get_item(parms[0]);
 	// Don't count rotated frames.
-	return Usecode_value(item == 0 ? 0 : item->get_framenum() & 31);
+	return Usecode_value(item == nullptr ? 0 : item->get_framenum() & 31);
 }
 
 USECODE_INTRINSIC(set_item_frame) {
@@ -360,7 +360,7 @@ USECODE_INTRINSIC(get_npc_object) {
 	Usecode_value &v = parms[0];
 	if (v.is_array()) {     // Do it for each element of array.
 		int sz = v.get_array_size();
-		Usecode_value ret(sz, 0);
+		Usecode_value ret(sz, nullptr);
 		for (int i = 0; i < sz; i++) {
 			Usecode_value elem(get_item(v.get_elem(i)));
 			ret.put_elem(i, elem);
@@ -551,7 +551,7 @@ USECODE_INTRINSIC(update_last_created) {
 	//   ??guessing??
 	modified_map = true;
 	if (last_created.empty()) {
-		Usecode_value u(static_cast<Game_object *>(NULL));
+		Usecode_value u(static_cast<Game_object *>(nullptr));
 		return(u);
 	}
 	Game_object_shared obj = last_created.back();
@@ -599,7 +599,7 @@ USECODE_INTRINSIC(get_npc_name) {
 	int cnt = parms[0].get_array_size();
 	if (cnt) {
 		// Do array.
-		Usecode_value arr(cnt, 0);
+		Usecode_value arr(cnt, nullptr);
 		for (int i = 0; i < cnt; i++) {
 			Game_object *obj = get_item(parms[0].get_elem(i));
 			npc = as_actor(obj);
@@ -657,7 +657,7 @@ USECODE_INTRINSIC(find_object) {
 		                                    parms[0].get_elem(2).get_int_value()),
 		                         shnum, 1, 0, qual, frnum);
 		if (vec.empty())
-			return Usecode_value(static_cast<Game_object *>(NULL));
+			return Usecode_value(static_cast<Game_object *>(nullptr));
 		else
 			return Usecode_value(vec.front());
 	}
@@ -668,14 +668,14 @@ USECODE_INTRINSIC(find_object) {
 		Game_object::find_nearby(vec,
 		                         Tile_coord(scr.x + scr.w / 2, scr.y + scr.h / 2, 0),
 		                         shnum, scr.h / 2, 0, qual, frnum);
-		return vec.empty() ? Usecode_value(static_cast<Game_object *>(NULL))
+		return vec.empty() ? Usecode_value(static_cast<Game_object *>(nullptr))
 		       : Usecode_value(vec[0]);
 	}
 	if (oval != -357) {     // Not the whole party?
 		// Find inside owner.
 		Game_object *obj = get_item(parms[0]);
 		if (!obj)
-			return Usecode_value(static_cast<Game_object *>(NULL));
+			return Usecode_value(static_cast<Game_object *>(nullptr));
 		Game_object *f = obj->find_item(shnum, qual, frnum);
 		return Usecode_value(f);
 	}
@@ -690,7 +690,7 @@ USECODE_INTRINSIC(find_object) {
 				return Usecode_value(f);
 		}
 	}
-	return Usecode_value(static_cast<Game_object *>(NULL));
+	return Usecode_value(static_cast<Game_object *>(nullptr));
 }
 
 USECODE_INTRINSIC(get_cont_items) {
@@ -779,7 +779,7 @@ USECODE_INTRINSIC(npc_nearby) {
 	Actor *npc;
 	int is_near = gwin->get_win_tile_rect().has_world_point(pos.tx, pos.ty) &&
 	              // Guessing: true if non-NPC, false if NPC is dead, asleep or paralyzed.
-	              ((npc = as_actor(obj)) == 0 || npc->can_act());
+	              ((npc = as_actor(obj)) == nullptr || npc->can_act());
 	Usecode_value u(is_near);
 	return(u);
 }
@@ -790,7 +790,7 @@ USECODE_INTRINSIC(npc_nearby2) {
 	//   companions are a fair distance away.
 
 	Game_object *npc = get_item(parms[0]);
-	int is_near = (npc != 0 &&
+	int is_near = (npc != nullptr &&
 #if 1
 	               // Guessing; being asleep, paralyzed or dead doesn't seem to affect this.
 	               npc->distance(gwin->get_main_actor()) < 40);
@@ -817,7 +817,7 @@ USECODE_INTRINSIC(is_npc) {
 	ignore_unused_variable_warning(num_parms);
 	// Is item an NPC?
 	Actor *npc = as_actor(get_item(parms[0]));
-	Usecode_value u(npc != 0);
+	Usecode_value u(npc != nullptr);
 	return(u);
 }
 
@@ -837,7 +837,7 @@ USECODE_INTRINSIC(display_runes) {
 		sign->add_text(i, str);
 	}
 	int x, y;           // Paint it, and wait for click.
-	Get_click(x, y, Mouse::hand, 0, false, sign);
+	Get_click(x, y, Mouse::hand, nullptr, false, sign);
 	delete sign;
 	gwin->paint();
 	return(no_ret);
@@ -853,17 +853,17 @@ USECODE_INTRINSIC(click_on_item) {
 	// intercept this click?
 	if (intercept_item) {
 		obj = intercept_item;
-		intercept_item = 0;
+		intercept_item = nullptr;
 		if (intercept_tile) {
 			delete intercept_tile;
-			intercept_tile = 0;
+			intercept_tile = nullptr;
 		}
 		t = obj->get_tile();
 	} else if (intercept_tile) {
-		obj = 0;
+		obj = nullptr;
 		t = *intercept_tile;
 		delete intercept_tile;
-		intercept_tile = 0;
+		intercept_tile = nullptr;
 	}
 	// Special case for weapon hit:
 	else if (frame->eventid == weapon && caller_item) {
@@ -877,7 +877,7 @@ USECODE_INTRINSIC(click_on_item) {
 		t = obj->get_tile();
 	} else {
 		int x, y;       // Allow dragging while here:
-		if (!Get_click(x, y, Mouse::greenselect, 0, true))
+		if (!Get_click(x, y, Mouse::greenselect, nullptr, true))
 			return Usecode_value(0);
 		// Get abs. tile coords. clicked on.
 		t = Tile_coord(gwin->get_scrolltx() + x / c_tilesize,
@@ -910,7 +910,7 @@ USECODE_INTRINSIC(set_intercept_item) {
 	intercept_item = get_item(parms[0]);
 	if (intercept_item) {
 		delete intercept_tile;
-		intercept_tile = 0;
+		intercept_tile = nullptr;
 	} else {
 		// Not an item, or null item.
 		int sz = parms[0].get_array_size();
@@ -1029,7 +1029,7 @@ USECODE_INTRINSIC(set_alignment) {
 		npc->set_effective_alignment(val);
 		if (oldalign != val) {  // Changed? Force search for new opp.
 			Combat_schedule::stop_attacking_npc(npc);
-			npc->set_target(0);
+			npc->set_target(nullptr);
 		}
 		// For fixing List Field fleeing:
 		if (npc->get_attack_mode() == Actor::flee)
@@ -1061,7 +1061,7 @@ USECODE_INTRINSIC(move_object) {
 	obj->move(tile.tx, tile.ty, tile.tz, map);
 	Actor *act = as_actor(obj);
 	if (act) {
-		act->set_action(0);
+		act->set_action(nullptr);
 		if (act == ava) {
 			// Teleported Avatar?
 			// Make new loc. visible, test eggs.
@@ -1115,8 +1115,8 @@ USECODE_INTRINSIC(clear_item_say) {
 		gwin->get_effects()->remove_text_effect(item);
 		// Seems to be right (e.g., the avatar's barks after
 		// the teleport storm/Karnax vs Thoxa battle).
-		Usecode_script *scr = 0;
-		while ((scr = Usecode_script::find(item, scr)) != 0)
+		Usecode_script *scr = nullptr;
+		while ((scr = Usecode_script::find(item, scr)) != nullptr)
 			scr->kill_barks();
 	}
 	return(no_ret);
@@ -1298,7 +1298,7 @@ USECODE_INTRINSIC(display_map) {
 	Paint_map map(&msid, loc);
 
 	int xx, yy;
-	Get_click(xx, yy, Mouse::hand, 0, false, &map);
+	Get_click(xx, yy, Mouse::hand, nullptr, false, &map);
 	gwin->paint();
 	return(no_ret);
 }
@@ -1335,7 +1335,7 @@ USECODE_INTRINSIC(si_display_map) {
 	ShapeID msid(shapenum, 0, SF_SPRITES_VGA);
 	Paint_centered map(&msid);
 	int xx, yy;
-	Get_click(xx, yy, Mouse::hand, 0, false, &map);
+	Get_click(xx, yy, Mouse::hand, nullptr, false, &map);
 	gwin->paint();
 
 	return no_ret;
@@ -1351,7 +1351,7 @@ USECODE_INTRINSIC(display_map_ex) {
 	Paint_map map(&msid, loc);
 
 	int xx, yy;
-	Get_click(xx, yy, Mouse::hand, 0, false, &map);
+	Get_click(xx, yy, Mouse::hand, nullptr, false, &map);
 	gwin->paint();
 	return(no_ret);
 }
@@ -1362,7 +1362,7 @@ USECODE_INTRINSIC(kill_npc) {
 	Game_object *item = get_item(parms[0]);
 	Actor *npc = as_actor(item);
 	if (npc)
-		npc->die(0);
+		npc->die(nullptr);
 	modified_map = true;
 	return (no_ret);
 }
@@ -1452,39 +1452,6 @@ USECODE_INTRINSIC(get_weapon) {
 	return Usecode_value(0);
 }
 
-/*
- *  Class to paint a specific shape frame centered.
- */
-class Paint_rgba_centered : public Paintable, public Game_singletons {
-protected:
-	unsigned char *pixels;
-	int x, y;           // Where to paint.
-	int w, h;           // Dimensions
-public:
-	Paint_rgba_centered(unsigned char *rgbapix, int alpha,
-	                    int w0, int h0, int scale)
-		: pixels(rgbapix), x(0), y(0), w(w0), h(h0) {
-#ifdef HAVE_OPENGL
-		if (alpha >= 0 && alpha < 256)
-			for (int i = 0; i < w * h; i++)
-				pixels[4 * i + 3] = alpha;
-		// Get coords. for centered view.
-		x = (scale * gwin->get_win()->get_full_width() - w) / 2;
-		y = (scale * gwin->get_win()->get_full_height() - h) / 2;
-#else
-	ignore_unused_variable_warning(alpha, scale);
-#endif
-	}
-	virtual ~Paint_rgba_centered() {
-		delete [] pixels;
-	}
-	virtual void paint() {
-#ifdef HAVE_OPENGL
-		gl_paint_rgba_bitmap(pixels, x, y, w, h, 1);
-#endif
-	}
-};
-
 USECODE_INTRINSIC(display_area) {
 	ignore_unused_variable_warning(num_parms);
 	// display_area(tilepos) - used for crystal balls.
@@ -1524,20 +1491,8 @@ USECODE_INTRINSIC(display_area) {
 		                  topy + sprite->get_yabove(), sprite, 1);
 		gwin->set_in_dungeon(save_dungeon);
 		gwin->show();
-		Paint_rgba_centered *paint = 0;
-#ifdef HAVE_OPENGL
-		GL_manager *glman = GL_manager::get_instance();
-		if (glman) {
-			int scale = gwin->get_win()->get_scale_factor();
-			int w = gwin->get_game_width(), h = gwin->get_game_height();
-			unsigned char *rgba_pixels = glman->get_screen_rgba(w, h);
-			paint = new Paint_rgba_centered(rgba_pixels, -1,
-			                                scale * w, scale * h, scale);
-		}
-#endif
 		// Wait for click.
-		Get_click(x, y, Mouse::hand, 0, false, paint);
-		delete paint;
+		Get_click(x, y, Mouse::hand, nullptr, false, nullptr);
 
 		// BG orrery viewer needs this because it also calls UI_view_tile:
 		gwin->center_view(gwin->get_main_actor()->get_tile());
@@ -1563,7 +1518,7 @@ USECODE_INTRINSIC(resurrect) {
 	Game_object *body = get_item(parms[0]);
 	int npc_num = body ? body->get_live_npc_num() : -1;
 	if (npc_num < 0)
-		return Usecode_value(static_cast<Game_object *>(NULL));
+		return Usecode_value(static_cast<Game_object *>(nullptr));
 	Actor *actor = gwin->get_npc(npc_num);
 	if (actor) {
 		// Want to resurrect after returning.
@@ -1582,7 +1537,7 @@ USECODE_INTRINSIC(resurrect_npc) {
 	Actor *actor = as_actor(get_item(parms[0]));
 	if (actor) {
 		// Want to resurrect after returning.
-		actor->resurrect(0);
+		actor->resurrect(nullptr);
 		modified_map = true;
 	}
 	return no_ret;
@@ -1751,7 +1706,7 @@ USECODE_INTRINSIC(get_barge) {
 
 	Game_object *obj = get_item(parms[0]);
 	if (!obj)
-		return Usecode_value(static_cast<Game_object *>(NULL));
+		return Usecode_value(static_cast<Game_object *>(nullptr));
 	return Usecode_value(Get_barge(obj));
 }
 
@@ -1885,7 +1840,7 @@ USECODE_INTRINSIC(apply_damage) {
 	int hps = parms[1].get_int_value();
 	int type = parms[2].get_int_value();
 
-	obj->apply_damage(0, base, hps, type);
+	obj->apply_damage(nullptr, base, hps, type);
 	return Usecode_value(1);
 }
 
@@ -2078,7 +2033,7 @@ USECODE_INTRINSIC(get_container) {
 	ignore_unused_variable_warning(num_parms);
 	// Takes itemref, returns container.
 	Game_object *obj = get_item(parms[0]);
-	Usecode_value u(static_cast<Game_object *>(NULL));
+	Usecode_value u(static_cast<Game_object *>(nullptr));
 	if (obj)
 		u = Usecode_value(obj->get_owner());
 	return(u);
@@ -2206,7 +2161,7 @@ USECODE_INTRINSIC(start_speech) {
 			if (obj && obj->get_shapenum() == 0x377 &&
 			        obj->get_framenum() == 1)
 				face = 295; // Solid.
-			else if ((obj = ava->get_readied(rfinger)) != 0 &&
+			else if ((obj = ava->get_readied(rfinger)) != nullptr &&
 			         obj->get_shapenum() == 0x377 &&
 			         obj->get_framenum() == 1)
 				face = 295; // Solid.
@@ -2334,7 +2289,7 @@ USECODE_INTRINSIC(in_usecode) {
 	Game_object *obj = get_item(parms[0]);
 	if (!obj)
 		return Usecode_value(0);
-	return Usecode_value(Usecode_script::find(obj) != 0);
+	return Usecode_value(Usecode_script::find(obj) != nullptr);
 }
 
 USECODE_INTRINSIC(call_guards) {
@@ -2479,12 +2434,12 @@ USECODE_INTRINSIC(get_item_flag) {
 	} else if (fnum == static_cast<int>(Obj_flags::immunities)) {
 		const Actor *npc = obj->as_actor();
 		const Monster_info *inf = obj->get_info().get_monster_info();
-		return Usecode_value((inf != 0 && inf->power_safe()) ||
+		return Usecode_value((inf != nullptr && inf->power_safe()) ||
 		                     (npc && npc->check_gear_powers(Frame_flags::power_safe)));
 	} else if (fnum == static_cast<int>(Obj_flags::cant_die)) {
 		const Actor *npc = obj->as_actor();
 		const Monster_info *inf = obj->get_info().get_monster_info();
-		return Usecode_value((inf != 0 && inf->death_safe()) ||
+		return Usecode_value((inf != nullptr && inf->death_safe()) ||
 		                     (npc && npc->check_gear_powers(Frame_flags::death_safe)));
 	}
 	// +++++0x18 is used in testing for
@@ -2562,9 +2517,9 @@ USECODE_INTRINSIC(clear_item_flag) {
 			// Stop barge object is on or part of.
 			Barge_object *barge = Get_barge(obj);
 			if (barge && barge == gwin->get_moving_barge())
-				gwin->set_moving_barge(0);
+				gwin->set_moving_barge(nullptr);
 		} else if (flag == 0x14)    // Handles Ferryman
-			sailor = 0;
+			sailor = nullptr;
 	}
 	return(no_ret);
 }
@@ -2580,7 +2535,7 @@ USECODE_INTRINSIC(set_path_failure) {
 	if (path_npc && item) {     // Set in path_run_usecode().
 		If_else_path_actor_action *action =
 		    path_npc->get_action() ?
-		    path_npc->get_action()->as_usecode_path() : 0;
+		    path_npc->get_action()->as_usecode_path() : nullptr;
 		if (action)     // Set in in path action.
 			action->set_failure(
 			    new Usecode_actor_action(fun, item, eventid));
@@ -2665,7 +2620,7 @@ USECODE_INTRINSIC(get_dead_party) {
 	if (!obj)
 		return no_ret;
 	int cnt = partyman->get_dead_count();
-	Usecode_value ret(cnt, 0);
+	Usecode_value ret(cnt, nullptr);
 	for (int i = 0; i < cnt; i++) {
 		Game_object *body = gwin->get_body(
 		                        partyman->get_dead_member(i));
@@ -3128,7 +3083,7 @@ USECODE_INTRINSIC(set_barge_dir) {
 	// set_barge_dir(barge, dir (0-7)).
 	Game_object *obj = get_item(parms[0]);
 	int dir = parms[1].get_int_value();
-	Barge_object *barge = obj ? obj->as_barge() : 0;
+	Barge_object *barge = obj ? obj->as_barge() : nullptr;
 	if (barge)
 		barge->face_direction(dir);
 	return no_ret;
@@ -3147,7 +3102,7 @@ USECODE_INTRINSIC(a_or_an) {
 	// return a/an depending on 'word'
 
 	const char *str = parms[0].get_str_value();
-	if (str && strchr("aeiouyAEIOUY", str[0]) == 0)
+	if (str && strchr("aeiouyAEIOUY", str[0]) == nullptr)
 		return (Usecode_value("a"));
 	else
 		return (Usecode_value("an"));
@@ -3357,8 +3312,8 @@ USECODE_INTRINSIC(set_usecode_fun) {
 	if (!obj)
 		return (no_ret);
 	int usefun = parms[1].get_int_value();
-	Usecode_symbol *ucsym = symtbl ? (*symtbl)[usefun] : 0;
-	obj->set_usecode(usefun, ucsym ? ucsym->get_name() : 0);
+	Usecode_symbol *ucsym = symtbl ? (*symtbl)[usefun] : nullptr;
+	obj->set_usecode(usefun, ucsym ? ucsym->get_name() : nullptr);
 	return (no_ret);
 }
 

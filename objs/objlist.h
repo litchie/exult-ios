@@ -42,7 +42,7 @@ class T_Object_list {
 	TShared first;        // ->first in (circular) chain.
 	unsigned short iter_count;  // # of iterators.
 public:
-	T_Object_list(T *f = 0) : first(f), iter_count(0)
+	T_Object_list(T *f = nullptr) : first(f), iter_count(0)
 	{  }
 	// Delete the chain.
 	~T_Object_list() {
@@ -57,7 +57,7 @@ public:
 		std::cerr.flush();
 	}
 	int is_empty() const {
-		return first == 0;
+		return first == nullptr;
 	}
 	void add_iterator() {
 		iter_count++;

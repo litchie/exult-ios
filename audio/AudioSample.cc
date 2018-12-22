@@ -39,7 +39,7 @@ AudioSample::~AudioSample(void)
 
 AudioSample *AudioSample::createAudioSample(uint8 *data, uint32 size)
 {
-	IBufferDataSource ds(data,size);
+	IBufferDataView ds(data,size);
 
 	if (VocAudioSample::isThis(&ds))
 	{
@@ -58,7 +58,7 @@ AudioSample *AudioSample::createAudioSample(uint8 *data, uint32 size)
 		delete [] data;
 	}
 
-	return 0;
+	return nullptr;
 }
 
 }

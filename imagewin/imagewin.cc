@@ -49,15 +49,6 @@ Boston, MA  02111-1307, USA.
 #include "BilinearScaler.h"
 #include "PointScaler.h"
 
-#ifdef HAVE_OPENGL
-#ifdef MACOSX
-#include <OpenGL/gl.h>
-#else
-#include <GL/gl.h>
-#endif
-#include "shapes/glshape.h"
-#endif
-
 #include "SDL.h"
 
 #include "Configuration.h"
@@ -86,8 +77,7 @@ const Image_window::ScalerConst Image_window::Hq4x("Hq4x");
 const Image_window::ScalerConst Image_window::_2xBR("2xBR");
 const Image_window::ScalerConst Image_window::_3xBR("3xBR");
 const Image_window::ScalerConst Image_window::_4xBR("4xBR");
-const Image_window::ScalerConst Image_window::OpenGL("OpenGL");
-const Image_window::ScalerConst Image_window::NumScalers(0);
+const Image_window::ScalerConst Image_window::NumScalers(nullptr);
 
 Image_window::ScalerVector Image_window::p_scalers;
 const Image_window::ScalerVector &Image_window::Scalers = Image_window::p_scalers;
@@ -116,12 +106,12 @@ Image_window::ScalerVector::ScalerVector() {
 // This is all the names of the scalers. It needs to match the ScalerType enum
 	const ScalerInfo point = {
 		"Point", 0xFFFFFFFF, new Pentagram::PointScaler(),
-		0, 0, 0, 0, 0
+		nullptr, nullptr, nullptr, nullptr, nullptr
 	};
 	push_back(point);
 
 	const ScalerInfo Interlaced = {
-		"Interlaced", 0xFFFFFFFE, 0,
+		"Interlaced", 0xFFFFFFFE, nullptr,
 		&Image_window::show_scaled8to565_interlace,
 		&Image_window::show_scaled8to555_interlace,
 		&Image_window::show_scaled8to16_interlace,
@@ -132,52 +122,52 @@ Image_window::ScalerVector::ScalerVector() {
 
 	const ScalerInfo Bilinear = {
 		"Bilinear", 0xFFFFFFFF, new Pentagram::BilinearScaler(),
-		0, 0, 0, 0, 0
+		nullptr, nullptr, nullptr, nullptr, nullptr
 	};
 	push_back(Bilinear);
 
 	const ScalerInfo BilinearPlus = {
-		"BilinearPlus", SCALE_BIT(2), 0,
+		"BilinearPlus", SCALE_BIT(2), nullptr,
 		&Image_window::show_scaled8to565_BilinearPlus,
 		&Image_window::show_scaled8to555_BilinearPlus,
 		&Image_window::show_scaled8to16_BilinearPlus,
 		&Image_window::show_scaled8to32_BilinearPlus,
-		0
+		nullptr
 	};
 	push_back(BilinearPlus);
 
 	const ScalerInfo _2xSaI = {
-		"2xSaI", SCALE_BIT(2), 0,
+		"2xSaI", SCALE_BIT(2), nullptr,
 		&Image_window::show_scaled8to565_2xSaI,
 		&Image_window::show_scaled8to555_2xSaI,
 		&Image_window::show_scaled8to16_2xSaI,
 		&Image_window::show_scaled8to32_2xSaI,
-		0
+		nullptr
 	};
 	push_back(_2xSaI);
 
 	const ScalerInfo SuperEagle = {
-		"SuperEagle", SCALE_BIT(2), 0,
+		"SuperEagle", SCALE_BIT(2), nullptr,
 		&Image_window::show_scaled8to565_SuperEagle,
 		&Image_window::show_scaled8to555_SuperEagle,
 		&Image_window::show_scaled8to16_SuperEagle,
 		&Image_window::show_scaled8to32_SuperEagle,
-		0
+		nullptr
 	};
 	push_back(SuperEagle);
 
 	const ScalerInfo Super2xSaI = {
-		"Super2xSaI", SCALE_BIT(2), 0,
+		"Super2xSaI", SCALE_BIT(2), nullptr,
 		&Image_window::show_scaled8to565_Super2xSaI,
 		&Image_window::show_scaled8to555_Super2xSaI,
 		&Image_window::show_scaled8to16_Super2xSaI,
 		&Image_window::show_scaled8to32_Super2xSaI,
-		0
+		nullptr
 	};
 	push_back(Super2xSaI);
 
 	const ScalerInfo Scale2X = {
-		"Scale2X", SCALE_BIT(2), 0,
+		"Scale2X", SCALE_BIT(2), nullptr,
 		&Image_window::show_scaled8to565_2x_noblur,
 		&Image_window::show_scaled8to555_2x_noblur,
 		&Image_window::show_scaled8to16_2x_noblur,
@@ -188,80 +178,68 @@ Image_window::ScalerVector::ScalerVector() {
 
 #ifdef USE_HQ2X_SCALER
 	const ScalerInfo Hq2x = {
-		"Hq2x", SCALE_BIT(2), 0,
+		"Hq2x", SCALE_BIT(2), nullptr,
 		&Image_window::show_scaled8to565_Hq2x,
 		&Image_window::show_scaled8to555_Hq2x,
 		&Image_window::show_scaled8to16_Hq2x,
 		&Image_window::show_scaled8to32_Hq2x,
-		0
+		nullptr
 	};
 	push_back(Hq2x);
 #endif
 
 #ifdef USE_HQ3X_SCALER
 	const ScalerInfo Hq3x = {
-		"Hq3x", SCALE_BIT(3), 0,
+		"Hq3x", SCALE_BIT(3), nullptr,
 		&Image_window::show_scaled8to565_Hq3x,
 		&Image_window::show_scaled8to555_Hq3x,
 		&Image_window::show_scaled8to16_Hq3x,
 		&Image_window::show_scaled8to32_Hq3x,
-		0
+		nullptr
 	};
 	push_back(Hq3x);
 #endif
 
 #ifdef USE_HQ4X_SCALER
 	const ScalerInfo Hq4x = {
-		"Hq4x", SCALE_BIT(4), 0,
+		"Hq4x", SCALE_BIT(4), nullptr,
 		&Image_window::show_scaled8to565_Hq4x,
 		&Image_window::show_scaled8to555_Hq4x,
 		&Image_window::show_scaled8to16_Hq4x,
 		&Image_window::show_scaled8to32_Hq4x,
-		0
+		nullptr
 	};
 	push_back(Hq4x);
 #endif
 
 #ifdef USE_XBR_SCALER
 	const ScalerInfo _2xbr = {
-		"2xBR", SCALE_BIT(2), 0,
+		"2xBR", SCALE_BIT(2), nullptr,
 		&Image_window::show_scaled8to565_2xBR,
 		&Image_window::show_scaled8to555_2xBR,
 		&Image_window::show_scaled8to16_2xBR,
 		&Image_window::show_scaled8to32_2xBR,
-		0
+		nullptr
 	};
 	push_back(_2xbr);
 	const ScalerInfo _3xbr = {
-		"3xBR", SCALE_BIT(3), 0,
+		"3xBR", SCALE_BIT(3), nullptr,
 		&Image_window::show_scaled8to565_3xBR,
 		&Image_window::show_scaled8to555_3xBR,
 		&Image_window::show_scaled8to16_3xBR,
 		&Image_window::show_scaled8to32_3xBR,
-		0
+		nullptr
 	};
 	push_back(_3xbr);
 	const ScalerInfo _4xbr = {
-		"4xBR", SCALE_BIT(4), 0,
+		"4xBR", SCALE_BIT(4), nullptr,
 		&Image_window::show_scaled8to565_4xBR,
 		&Image_window::show_scaled8to555_4xBR,
 		&Image_window::show_scaled8to16_4xBR,
 		&Image_window::show_scaled8to32_4xBR,
-		0
+		nullptr
 	};
 	push_back(_4xbr);
-#endif
-
-#ifdef HAVE_OPENGL
-	const ScalerInfo opengl = {
-		"OpenGL", 0xFFFFFFFF, 0,
-		&Image_window::show_scaledOpenGL,
-		&Image_window::show_scaledOpenGL,
-		&Image_window::show_scaledOpenGL,
-		&Image_window::show_scaledOpenGL,
-		&Image_window::show_scaledOpenGL
-	};
-	push_back(opengl);
 #endif
 }
 
@@ -386,7 +364,7 @@ void Image_window::static_init() {
 			}
 		}
 #else
-		SDL_PixelFormat *pformat = 0;
+		SDL_PixelFormat *pformat = nullptr;
 		if (bpps[i]) {
 			format.BitsPerPixel = bpps[i];
 			pformat = &format;
@@ -394,7 +372,7 @@ void Image_window::static_init() {
 		SDL_Rect **modes = SDL_ListModes(pformat, SDL_FULLSCREEN | SDL_SWSURFACE | ((bpps[i] == 8) ? SDL_HWPALETTE : 0));
 
 		// No mode for this bpp
-		if (modes == 0) {
+		if (modes == nullptr) {
 			continue;
 		}
 		// In theory this should never happen in fullscreen mode
@@ -538,7 +516,7 @@ void Image_window::create_surface(
     unsigned int h
 ) {
 	uses_palette = true;
-	draw_surface = paletted_surface = inter_surface = display_surface = 0;
+	draw_surface = paletted_surface = inter_surface = display_surface = nullptr;
 
 	if (!Scalers[fill_scaler].arb) {
 		if (Scalers[scaler].arb)
@@ -569,18 +547,18 @@ void Image_window::create_surface(
 		flags |= (ibuf->depth == 8 ? SDL_HWPALETTE : 0);
 #endif
 #if SDL_VERSION_ATLEAST(2, 0, 0)
-		if (screen_window != NULL) {
+		if (screen_window != nullptr) {
 			SDL_SetWindowSize(screen_window, w / scale, h / scale);
 			SDL_SetWindowFullscreen(screen_window, flags);
 			SDL_DestroyTexture(screen_texture);
 			SDL_DestroyRenderer(screen_renderer);
 		} else
 			screen_window = SDL_CreateWindow("", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w / scale, h / scale, flags);
-		if (screen_window == NULL)
+		if (screen_window == nullptr)
 			cout << "Couldn't create window: " << SDL_GetError() << std::endl;
 
 		screen_renderer = SDL_CreateRenderer(screen_window, -1, 0);
-		if (screen_renderer == NULL)
+		if (screen_renderer == nullptr)
 			cout << "Couldn't create renderer: " << SDL_GetError() << std::endl;
 
 		// Do an initial draw/fill
@@ -594,13 +572,13 @@ void Image_window::create_surface(
 		display_surface = SDL_CreateRGBSurface(0,
 				(w / scale), (h / scale), sbpp,
                                 sRmask, sGmask, sBmask, sAmask);
-		if (display_surface == NULL)
+		if (display_surface == nullptr)
 			cout << "Couldn't create display surface: " << SDL_GetError() << std::endl;
 		screen_texture = SDL_CreateTexture(screen_renderer,
                                 desktop_displaymode.format,
                                 SDL_TEXTUREACCESS_STREAMING,
                                 (w / scale), (h / scale));
-		if (screen_texture == NULL)
+		if (screen_texture == nullptr)
 			cout << "Couldn't create texture: " << SDL_GetError() << std::endl;
 
 		inter_surface = draw_surface = paletted_surface = display_surface;
@@ -627,7 +605,7 @@ void Image_window::create_surface(
 	ibuf->width = draw_surface->w;
 	ibuf->height = draw_surface->h;
 
-	if (draw_surface != display_surface && scaler != OpenGL) {
+	if (draw_surface != display_surface) {
 		ibuf->width -= guard_band * 2;
 		ibuf->height -= guard_band * 2;
 	}
@@ -640,7 +618,8 @@ void Image_window::create_surface(
 	ibuf->offset_y = (get_full_height() - get_game_height()) / 2;
 	ibuf->bits = static_cast<unsigned char *>(draw_surface->pixels) - get_start_x() - get_start_y() * ibuf->line_width;
 	// Scaler guardband is in effect
-	if (draw_surface != display_surface && scaler != OpenGL) ibuf->bits += guard_band + ibuf->line_width * guard_band;
+	if (draw_surface != display_surface)
+		ibuf->bits += guard_band + ibuf->line_width * guard_band;
 }
 
 /*
@@ -670,17 +649,17 @@ bool Image_window::create_scale_surfaces(int w, int h, int bpp) {
 	if (!hwdepth) return false;
 
 #if SDL_VERSION_ATLEAST(2, 0, 0)
-	if (screen_window != NULL) {
+	if (screen_window != nullptr) {
 		SDL_SetWindowSize(screen_window, w, h);
 		SDL_SetWindowFullscreen(screen_window, flags);
 		SDL_DestroyTexture(screen_texture);
 		SDL_DestroyRenderer(screen_renderer);
 	} else
 		screen_window = SDL_CreateWindow("", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h, flags);
-	if (screen_window == NULL)
+	if (screen_window == nullptr)
 		cout << "Couldn't create window: " << SDL_GetError() << std::endl;
 	screen_renderer = SDL_CreateRenderer(screen_window, -1, 0);
-	if (screen_renderer == NULL)
+	if (screen_renderer == nullptr)
 		cout << "Couldn't create renderer: " << SDL_GetError() << std::endl;
 
 	if (fullscreen) {
@@ -709,13 +688,13 @@ bool Image_window::create_scale_surfaces(int w, int h, int bpp) {
 	display_surface = SDL_CreateRGBSurface(0,
 			w, h, sbpp,
                         sRmask, sGmask, sBmask, sAmask);
-	if (display_surface == NULL)
+	if (display_surface == nullptr)
 		cout << "Couldn't create display surface: " << SDL_GetError() << std::endl;
 	screen_texture = SDL_CreateTexture(screen_renderer,
                         desktop_displaymode.format,
                         SDL_TEXTUREACCESS_STREAMING,
                         w, h);
-	if (screen_texture == NULL)
+	if (screen_texture == nullptr)
 		cout << "Couldn't create texture: " << SDL_GetError() << std::endl;
 #else
 	display_surface = SDL_SetVideoMode(w, h, hwdepth, flags);
@@ -771,56 +750,6 @@ bool Image_window::create_scale_surfaces(int w, int h, int bpp) {
 */
 
 bool Image_window::try_scaler(int w, int h) {
-	// OpenGL
-	if (scaler == OpenGL) {
-#ifdef HAVE_OPENGL
-		// Get info. about video.
-		const SDL_VideoInfo *vinfo = SDL_GetVideoInfo();
-		if (!vinfo) {
-			cout << "SDL_GetVideoInfo() failed: " << SDL_GetError()
-			     << endl;
-			return false;
-		}
-		// Set up SDL video flags.
-		int video_flags = SDL_OPENGL | SDL_GL_DOUBLEBUFFER |
-		                  SDL_HWPALETTE | SDL_RESIZABLE |
-		                  (fullscreen ? SDL_FULLSCREEN : 0);
-		// Can surface be in video RAM?
-		if (vinfo->hw_available)
-			video_flags |= SDL_HWSURFACE;
-		else
-			video_flags |= SDL_SWSURFACE;
-		if (vinfo->blit_hw) // Hardware blits?
-			video_flags |= SDL_HWACCEL;
-		// Want double-buffering.
-		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-		// Allocate surface.
-		int hwdepth = vinfo->vfmt->BitsPerPixel;
-		// +++++For now create 8-bit surface
-		//   to avoid crashing places we
-		//   haven't converted yet.
-		if ((display_surface = inter_surface = SDL_SetVideoMode(w, h,
-		                                       hwdepth, video_flags)) != 0 &&
-		        (draw_surface = paletted_surface = SDL_CreateRGBSurface(
-		                            SDL_SWSURFACE, w / scale, h / scale,
-		                            8, 0, 0, 0, 0)) != 0) {
-			inter_width = w;
-			inter_height = h;
-			game_width = draw_surface->w;
-			game_height = draw_surface->h;
-			//show_scaled = &Image_window::show_scaledOpenGL;
-			return true;
-		} else {
-			cerr << "Couldn't allocate surface: " <<  SDL_GetError() << endl;
-			free_surface();
-		}
-#else
-		cerr << "OpenGL not supported" << endl;
-
-#endif
-		scaler = point;
-	}
-
 #if SDL_VERSION_ATLEAST(2, 0, 0)
 	if (true) {
 #else
@@ -871,13 +800,13 @@ bool Image_window::try_scaler(int w, int h) {
 */
 
 void Image_window::free_surface() {
-	if (draw_surface != 0 && draw_surface != display_surface && draw_surface != inter_surface) SDL_FreeSurface(draw_surface);
-	if (inter_surface != 0 && inter_surface != display_surface) SDL_FreeSurface(inter_surface);
-	paletted_surface = 0;
-	inter_surface = 0;
-	draw_surface = 0;
-	display_surface = 0;
-	ibuf->bits = 0;
+	if (draw_surface != nullptr && draw_surface != display_surface && draw_surface != inter_surface) SDL_FreeSurface(draw_surface);
+	if (inter_surface != nullptr && inter_surface != display_surface) SDL_FreeSurface(inter_surface);
+	paletted_surface = nullptr;
+	inter_surface = nullptr;
+	draw_surface = nullptr;
+	display_surface = nullptr;
+	ibuf->bits = nullptr;
 }
 
 /*
@@ -938,11 +867,6 @@ void Image_window::show(
 	x -= get_start_x();
 	y -= get_start_y();
 
-	if (scaler == OpenGL) {
-		Image_window::show_scaledOpenGL(x, y, w, h);
-		return;
-	}
-
 	// Increase the area by 4 pixels
 	increase_area(x, y, w, h, 4, 4, 4, 4, get_full_width(), get_full_height());
 
@@ -983,9 +907,9 @@ void Image_window::show(
 
 				show_scaled =
 				    (r == 0xf800 && g == 0x7e0 && b == 0x1f) || (b == 0xf800 && g == 0x7e0 && r == 0x1f) ?
-				    (sel_scaler.fun8to565 != 0 ? sel_scaler.fun8to565 : sel_scaler.fun8to16) :
+				    (sel_scaler.fun8to565 != nullptr ? sel_scaler.fun8to565 : sel_scaler.fun8to16) :
 					    (r == 0x7c00 && g == 0x3e0 && b == 0x1f) || (b == 0x7c00 && g == 0x3e0 && r == 0x1f) ?
-					    (sel_scaler.fun8to555 != 0 ? sel_scaler.fun8to555 : sel_scaler.fun8to16) :
+					    (sel_scaler.fun8to555 != nullptr ? sel_scaler.fun8to555 : sel_scaler.fun8to16) :
 					    sel_scaler.fun8to16 ;
 			} else if (inter_surface->format->BitsPerPixel == 32) {
 				show_scaled = sel_scaler.fun8to32;
@@ -1039,7 +963,6 @@ void Image_window::show(
 #endif
 }
 
-
 /*
 *   Toggle fullscreen.
 */
@@ -1067,19 +990,6 @@ void Image_window::toggle_fullscreen() {
 
 bool Image_window::screenshot(SDL_RWops *dst) {
 	if (!paletted_surface) return false;
-#ifdef HAVE_OPENGL
-	if (GL_manager::get_instance()) {
-		int width = ibuf->width, height = ibuf->height;
-		GL_manager *glman = GL_manager::get_instance();
-		unsigned char *bits = glman->get_unscaled_rgb(width, height, false, true);
-		SDL_Surface *screenshot_surface = SDL_CreateRGBSurfaceFrom(bits,
-		                                  width, height, 24, 3 * width, 0, 0, 0, 0);
-		bool ret = SavePCX_RW(screenshot_surface, dst, true);
-		SDL_FreeSurface(screenshot_surface);
-		delete [] bits;
-		return ret;
-	}
-#endif
 	return SavePCX_RW(draw_surface, dst, true);
 }
 
@@ -1087,64 +997,9 @@ void Image_window::set_title(const char *title) {
 #if SDL_VERSION_ATLEAST(2, 0, 0)
 	SDL_SetWindowTitle(screen_window, title);
 #else
-	SDL_WM_SetCaption(title, 0);
+	SDL_WM_SetCaption(title, nullptr);
 #endif
 }
-
-#ifdef HAVE_OPENGL
-/*
-*   Fill a rectangle with an 8-bit value.
-*/
-
-void Image_window::opengl_fill8(
-    unsigned char pix,
-    int srcw, int srch,
-    int destx, int desty
-) {
-	SDL_Color *colors = paletted_surface->format->palette->colors;
-	SDL_Color &color = colors[pix];
-	glDisable(GL_TEXTURE_2D);   // Disable texture-mapping.
-	glPushMatrix();
-	int x = destx;          // Left edge.
-	int y = -(desty + srch);
-	glTranslatef(static_cast<float>(x), static_cast<float>(y), 0);
-	glBegin(GL_QUADS);
-	{
-		glColor3ub(color.r, color.g, color.b);
-		glVertex3i(0, 0, 0);
-		glVertex3i(srcw, 0, 0);
-		glVertex3i(srcw, srch, 0);
-		glVertex3i(0, srch, 0);
-	}
-	glEnd();
-	glPopMatrix();
-}
-
-/*
-*   Apply a translucency table to a rectangle.
-*/
-
-void Image_window::opengl_fill_translucent8(
-    const unsigned char /* val */,    // Not used.
-    int srcw, int srch,
-    int destx, int desty,
-    const Xform_palette &xform        // Transform table.
-) {
-	glDisable(GL_TEXTURE_2D);   // Disable texture-mapping.
-	int x = destx;          // Left edge.
-	int y = -(desty + srch);
-	glBegin(GL_QUADS);
-	{
-		glColor4ub(xform.r, xform.g, xform.b, xform.a);
-		glVertex2i(x, y);
-		glVertex2i(x + srcw, y);
-		glVertex2i(x + srcw, y + srch);
-		glVertex2i(x, y + srch);
-	}
-	glEnd();
-}
-
-#endif
 
 int Image_window::get_display_width() {
 	return display_surface->w;
@@ -1366,10 +1221,10 @@ void Image_window::UpdateRect(SDL_Surface *surf, int x, int y, int w, int h)
 	// TODO: Only update the necessary portion of the screen.
 	// Seem to get flicker like crazy or some other ill effect no matter
 	// what I try. -Lanica 08/28/2013
-	SDL_UpdateTexture(screen_texture, NULL, surf->pixels, surf->pitch);
+	SDL_UpdateTexture(screen_texture, nullptr, surf->pixels, surf->pitch);
 	ignore_unused_variable_warning(x, y, w, h);
 	//SDL_Rect destRect = {x, y, w, h};
-	SDL_RenderCopy(screen_renderer, screen_texture, NULL, NULL);
+	SDL_RenderCopy(screen_renderer, screen_texture, nullptr, nullptr);
 	SDL_RenderPresent(screen_renderer);
 }
 int Image_window::VideoModeOK(int width, int height, int bpp, Uint32 flags)

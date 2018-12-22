@@ -70,7 +70,7 @@ class Game_object : public ShapeID,
 	  			  public std::enable_shared_from_this<Game_object> {
 protected:
 	static Game_object *editing;    // Obj. being edited by ExultStudio.
-	Map_chunk *chunk;       // Chunk we're in, or NULL.
+	Map_chunk *chunk;       // Chunk we're in, or nullptr.
 	unsigned char tx, ty;       // (X,Y) of shape within chunk, or if
 	//   in a container, coords. within
 	//   gump's rectangle.
@@ -101,7 +101,7 @@ public:
 	friend class Map_chunk;
 	Game_object(int shapenum, int framenum, unsigned int tilex,
 	            unsigned int tiley, unsigned int lft = 0)
-		: ShapeID(shapenum, framenum), chunk(0), tx(tilex), ty(tiley),
+		: ShapeID(shapenum, framenum), chunk(nullptr), tx(tilex), ty(tiley),
 		  lift(lft), quality(0), render_seq(0)
 	{  }
 	// Copy constructor.
@@ -110,7 +110,7 @@ public:
 		  chunk(obj2.chunk), tx(obj2.tx), ty(obj2.ty),
 		  lift(obj2.lift), quality(obj2.quality), render_seq(0)
 	{  }
-	Game_object() : ShapeID(), chunk(0), render_seq(0)  // Create fake entry.
+	Game_object() : ShapeID(), chunk(nullptr), render_seq(0)  // Create fake entry.
 	{  }
 	virtual ~Game_object()
 	{  }
@@ -157,7 +157,7 @@ public:
 	virtual void set_obj_hp(int hp);
 	int get_volume() const;     // Get space taken.
 	// Add/remove to/from quantity.
-	int modify_quantity(int delta, bool *del = 0);
+	int modify_quantity(int delta, bool *del = nullptr);
 	// Set shape coord. in chunk/gump.
 	void set_shape_pos(unsigned int shapex, unsigned int shapey) {
 		tx = shapex;
@@ -176,10 +176,10 @@ public:
 	static int compare(class Ordering_info &inf1, Game_object *obj2);
 	int lt(Game_object &obj2);  // Is this less than another in pos.?
 	void set_invalid() {    // Set to invalid position.
-		chunk = 0;
+		chunk = nullptr;
 	}
 	bool is_pos_invalid() const {
-		return chunk == 0;
+		return chunk == nullptr;
 	}
 	bool inside_locked() const;
 	void set_chunk(Map_chunk *c) {
@@ -294,9 +294,9 @@ public:
 	static void update_from_studio(unsigned char *data, int datalen);
 	virtual std::string get_name() const;
 	// Remove/delete this object.
-	virtual void remove_this(Game_object_shared *keep = 0);
+	virtual void remove_this(Game_object_shared *keep = nullptr);
 	virtual Container_game_object *get_owner() const {
-		return 0;
+		return nullptr;
 	}
 	virtual void set_owner(Container_game_object *o) {
 		ignore_unused_variable_warning(o);
@@ -327,22 +327,22 @@ public:
 	}
 
 	virtual Actor *as_actor() {
-		return 0;
+		return nullptr;
 	}
 	virtual Npc_actor *as_npc() {
-		return 0;
+		return nullptr;
 	}
 	virtual Barge_object *as_barge() {
-		return 0;
+		return nullptr;
 	}
 	virtual Terrain_game_object *as_terrain() {
-		return 0;
+		return nullptr;
 	}
 	virtual Container_game_object *as_container() {
-		return 0;
+		return nullptr;
 	}
 	virtual Egg_object *as_egg() {
-		return 0;
+		return nullptr;
 	}
 	virtual int is_egg() const { // An egg?
 		return 0;
@@ -388,7 +388,7 @@ public:
 	}
 	virtual Game_object *find_item(int shapenum, int qual, int framenum) {
 		ignore_unused_variable_warning(shapenum, qual, framenum);
-		return 0;
+		return nullptr;
 	}
 	// Get coord. where this was placed.
 	virtual Tile_coord get_original_tile_coord() const {
@@ -412,11 +412,11 @@ public:
 	virtual Game_object *find_weapon_ammo(int weapon, int needed = 1,
 	                                      bool recursive = false) {
 		ignore_unused_variable_warning(weapon, needed, recursive);
-		return 0;
+		return nullptr;
 	}
-	virtual int get_effective_range(const Weapon_info *winf = 0, int reach = -1);
+	virtual int get_effective_range(const Weapon_info *winf = nullptr, int reach = -1);
 	int get_weapon_ammo(int weapon, int family, int proj, bool ranged,
-	                    Game_object **ammo = 0, bool recursive = false);
+	                    Game_object **ammo = nullptr, bool recursive = false);
 	void play_hit_sfx(int weapon, bool ranged);
 	virtual bool try_to_hit(Game_object *attacker, int attval) {
 		ignore_unused_variable_warning(attacker, attval);
@@ -429,9 +429,9 @@ public:
 	virtual int figure_hit_points(Game_object *attacker, int weapon_shape = -1,
 	                              int ammo_shape = -1, bool explosion = false);
 	virtual int apply_damage(Game_object *attacker, int str,
-	                         int wpoints, int type, int bias = 0, int *exp = 0);
-	virtual int reduce_health(int delta, int damage_type, Game_object *attacker = 0,
-	                          int *exp = 0);
+	                         int wpoints, int type, int bias = 0, int *exp = nullptr);
+	virtual int reduce_health(int delta, int damage_type, Game_object *attacker = nullptr,
+	                          int *exp = nullptr);
 	// Write out to IREG file.
 	virtual void write_ireg(ODataSource *out) {
 		ignore_unused_variable_warning(out);
@@ -455,7 +455,7 @@ public:
 	// Return's the object's usecode for the shape number
 	virtual int get_usecode() const;
 	// Default:  Can't set it.
-	virtual bool set_usecode(int funid, const char *nm = 0);
+	virtual bool set_usecode(int funid, const char *nm = nullptr);
 };
 
 inline Game_object_weak weak_from_obj(Game_object *obj) {
@@ -483,7 +483,7 @@ public:
 	// Move to new abs. location.
 	virtual void move(int newtx, int newty, int newlift, int newmap = -1);
 	// Remove/delete this object.
-	virtual void remove_this(Game_object_shared *keep = 0);
+	virtual void remove_this(Game_object_shared *keep = nullptr);
 	virtual void paint_terrain();
 };
 
@@ -500,7 +500,7 @@ public:
 	// Move to new abs. location.
 	virtual void move(int newtx, int newty, int newlift, int newmap = -1);
 	// Remove/delete this object.
-	virtual void remove_this(Game_object_shared *keep = 0);
+	virtual void remove_this(Game_object_shared *keep = nullptr);
 	virtual void paint_terrain() {  }
 	virtual void write_ifix(ODataSource *ifix, bool v2);
 };

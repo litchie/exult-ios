@@ -44,7 +44,7 @@ using std::cout;
 vector<One_note *> Notebook_gump::notes;
 bool Notebook_gump::initialized = false;    // Set when read in.
 bool Notebook_gump::initialized_auto_text = false;
-Notebook_gump *Notebook_gump::instance = 0;
+Notebook_gump *Notebook_gump::instance = nullptr;
 vector<Notebook_top> Notebook_gump::page_info;
 vector<string> Notebook_gump::auto_text;
 
@@ -92,7 +92,7 @@ public:
 		gflag = gf;
 		is_new = isnew;
 	}
-	One_note(int d, int h, int m, int x, int y, const string &txt = 0, int gf = -1, bool isnew = false) {
+	One_note(int d, int h, int m, int x, int y, const string &txt = "", int gf = -1, bool isnew = false) {
 		set(d, h, m, x, y, txt, gf, isnew);
 	}
 	// Insert text.
@@ -238,7 +238,7 @@ void Notebook_gump::add_new(
  */
 
 Notebook_gump::Notebook_gump(
-) : Gump(0, EXULT_FLX_NOTEBOOK_SHP, SF_EXULT_FLX), curnote(0),
+) : Gump(nullptr, EXULT_FLX_NOTEBOOK_SHP, SF_EXULT_FLX), curnote(0),
 	curpage(0), updnx(0) {
 	handles_kbd = true;
 	cursor.offset = 0;
@@ -281,7 +281,7 @@ Notebook_gump::~Notebook_gump(
 	delete leftpage;
 	delete rightpage;
 	if (this == instance)
-		instance = 0;
+		instance = nullptr;
 }
 
 /*
@@ -324,7 +324,7 @@ bool Notebook_gump::paint_page(
 	cursor.offset -= offset;
 	int endoff = sman->paint_text_box(font, str, x + box.x,
 	                                  y + box.y, box.w, box.h, vlead,
-	                                  false, false, -1, find_cursor ? &cursor : 0);
+	                                  false, false, -1, find_cursor ? &cursor : nullptr);
 	cursor.offset += offset;
 	if (endoff > 0) {       // All painted?
 		// Value returned is height.
@@ -387,7 +387,7 @@ Gump_button *Notebook_gump::on_button(
 	int topleft = curpage & ~1;
 	int notenum = page_info[topleft].notenum;
 	if (notenum < 0)
-		return 0;
+		return nullptr;
 	int offset = page_info[topleft].offset;
 	Rectangle box = Get_text_area(false, offset == 0);  // Left page.
 	One_note *note = notes[notenum];
@@ -403,7 +403,7 @@ Gump_button *Notebook_gump::on_button(
 		offset += -coff;        // New offset.
 		if (offset >= static_cast<int>(note->text.length())) {
 			if (notenum == static_cast<int>(notes.size()) - 1)
-				return 0;   // No more.
+				return nullptr;   // No more.
 			note = notes[++notenum];
 			offset = 0;
 		}
@@ -421,7 +421,7 @@ Gump_button *Notebook_gump::on_button(
 			updnx = cursor.x - x - rpagex;
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 /*
@@ -744,7 +744,7 @@ void Notebook_gump::read(
 	Configuration::KeyTypeList note_nds;
 	string basekey = "notebook";
 	conf.getsubkeys(note_nds, basekey);
-	One_note *note = 0;
+	One_note *note = nullptr;
 	for (Configuration::KeyTypeList::iterator it = note_nds.begin();
 	        it != note_nds.end(); ++it) {
 		Configuration::KeyType notend = *it;
@@ -811,15 +811,11 @@ void Notebook_gump::read_auto_text(
 			notesfile.close();
 		} else {
 			const str_int_pair &resource = game->get_resource("config/autonotes");
-			U7object txtobj(resource.str, resource.num);
-			size_t len;
-			char *txt = txtobj.retrieve(len);
-			if (txt && len > 0) {
-				IBufferDataSource buf(txt, len);
+			IExultDataSource buf(resource.str, resource.num);
+			if (buf.good()) {
 				cout << "Loading default autonotes" << endl;
 				Read_text_msg_file(&buf, auto_text);
 			}
-			delete[] txt;
 		}
 	}
 }

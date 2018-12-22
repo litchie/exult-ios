@@ -153,7 +153,7 @@ C_EXPORT gint on_loc_draw_motion_notify_event(
  */
 
 Locator::Locator(
-) : drawgc(0), tx(0), ty(0), txs(40), tys(25), //scale(1),
+) : drawgc(nullptr), tx(0), ty(0), txs(40), tys(25), //scale(1),
 	dragging(false), send_location_timer(-1) {
 	GladeXML *app_xml = ExultStudio::get_instance()->get_xml();
 	win = glade_xml_get_widget(app_xml, "loc_window");
@@ -224,7 +224,7 @@ void Locator::configure(
  */
 
 void Locator::render(
-    GdkRectangle *area      // 0 for whole draw area.
+    GdkRectangle *area      // nullptr for whole draw area.
 ) {
 	// Get dims.
 	int draww = draw->allocation.width,

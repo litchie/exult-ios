@@ -58,7 +58,7 @@ using std::rand;
 using std::ostream;
 using std::string;
 
-Egg_object *Egg_object::editing = 0;
+Egg_object *Egg_object::editing = nullptr;
 
 /*
  *  Timer for a missile egg (type-6 egg).
@@ -108,7 +108,7 @@ void Missile_launcher::handle_event(
 			return;
 		}
 	}
-	Projectile_effect *proj = 0;
+	Projectile_effect *proj = nullptr;
 	if (dir < 8) {          // Direction given?
 		// Get adjacent tile in direction.
 		Tile_coord adj = src.get_neighbor(dir % 8);
@@ -267,7 +267,7 @@ public:
 	virtual int get_usecode() const {
 	    return fun;
 	}
-	virtual bool set_usecode(int funid, const char *nm = 0) {
+	virtual bool set_usecode(int funid, const char *nm = nullptr) {
 	    fun = funid;
 		fun_name = nm;
 		return true;
@@ -301,7 +301,7 @@ public:
 	            unsigned int tz, unsigned short itype,
 	            unsigned char prob, uint16 d1, uint16 d2)
 		: Egg_object(shnum, frnum, tx, ty, tz, itype, prob, d1, d2),
-		  weapon(d1), dir(d2 & 0xff), delay(d2 >> 8), launcher(0)
+		  weapon(d1), dir(d2 & 0xff), delay(d2 >> 8), launcher(nullptr)
 	{  }
 	virtual ~Missile_egg() {
 		if (launcher) {
@@ -313,7 +313,7 @@ public:
 		if (launcher) {     // Stop missiles.
 			gwin->get_tqueue()->remove(launcher);
 			delete launcher;
-			launcher = 0;
+			launcher = nullptr;
 		}
 		Egg_object::remove_this(keep);
 	}
@@ -328,7 +328,7 @@ public:
 		if (crit == external_criteria && launcher) {    // Cancel trap.
 			gwin->get_tqueue()->remove(launcher);
 			delete launcher;
-			launcher = 0;
+			launcher = nullptr;
 		}
 		Egg_object::set(crit, dist);
 	}
@@ -568,7 +568,7 @@ Egg_object::Egg_object(
     short d1, short d2, short d3
 ) : Egglike_game_object(shapenum, framenum, tilex, tiley, lft),
 	probability(prob), data1(d1), data2(d2), data3(d3),
-	area(Rectangle(0, 0, 0, 0)), animator(0) {
+	area(Rectangle(0, 0, 0, 0)), animator(nullptr) {
 	type = itype & 0xf;
 	// Teleport destination?
 	if (type == teleport && framenum == 6 && shapenum == 275)
@@ -605,7 +605,7 @@ inline void Egg_object::init_field(
 	criteria = party_footpad;
 	distance = 0;
 	solid_area = 0;
-	animator = 0;
+	animator = nullptr;
 	flags = (1 << auto_reset);
 }
 
@@ -841,7 +841,7 @@ void Egg_object::activate(
     int /* event */
 ) {
 	if (!edit())
-		hatch(0, 0);
+		hatch(nullptr, 0);
 	if (animator)
 		flags &= ~(1 << static_cast<int>(hatched)); // Moongate:  reset always.
 }
@@ -857,7 +857,7 @@ bool Egg_object::edit(
 #ifdef USE_EXULTSTUDIO
 	if (client_socket >= 0 &&   // Talking to ExultStudio?
 	        cheat.in_map_editor()) {
-		editing = 0;
+		editing = nullptr;
 		Tile_coord t = get_tile();
 		// Usecode function name.
 		string str1 = get_str1();
@@ -909,9 +909,9 @@ void Egg_object::update_from_studio(
 		cout << "Egg from ExultStudio is not being edited" << endl;
 		return;
 	}
-	editing = 0;
+	editing = nullptr;
 	if (!oldegg) {          // Creating a new one?  Get loc.
-		if (!Get_click(x, y, Mouse::hand, 0)) {
+		if (!Get_click(x, y, Mouse::hand, nullptr)) {
 			if (client_socket >= 0)
 				Exult_server::Send_data(client_socket,
 				                        Exult_server::cancel);
@@ -1046,7 +1046,7 @@ void Egg_object::hatch(
 		hatch_now(obj, must);
 		if (flags & (1 << static_cast<int>(once))) {
 		    if (!watch.expired())
-			    remove_this(0);
+			    remove_this(nullptr);
 			return;
 		}
 	}
@@ -1200,7 +1200,7 @@ int Egg_object::get_ireg_size() {
 		return -1;
 	const char *str1 = get_str1();
 	return 8 + get_common_ireg_size() + ((data3 > 0) ? 2 : 0)
-	       + (*str1 ? Game_map::write_string(0, str1) : 0);
+	       + (*str1 ? Game_map::write_string(nullptr, str1) : 0);
 }
 
 /*
@@ -1260,7 +1260,7 @@ bool Field_object::field_effect(
 	}
 
 	Field_frame_animator *ani;
-	if (!del && (ani = dynamic_cast<Field_frame_animator *>(animator)) != 0)
+	if (!del && (ani = dynamic_cast<Field_frame_animator *>(animator)) != nullptr)
 		// Tell animator to keep checking.
 		ani->activated = true;
 	return del;
@@ -1316,7 +1316,7 @@ void Field_object::hatch(
     bool /* must */         // If 1, skip dice roll.
 ) {
 	if (field_effect(obj->as_actor()))// Apply field.
-		remove_this(0);     // Delete sleep/poison if applied.
+		remove_this(nullptr);     // Delete sleep/poison if applied.
 }
 
 /*

@@ -130,13 +130,12 @@ public:
 	virtual void show_journey_failed() = 0;
 	virtual Shape_frame *get_menu_shape() = 0;
 
-	void play_flic(const char *archive, int index);
 	void add_shape(const char *name, int shapenum);
 	int get_shape(const char *name);
 	void add_resource(const char *name, const char *str, int num);
 	const str_int_pair &get_resource(const char *name);
 	void write_game_xml();
-	bool read_game_xml(const char *name1 = 0);
+	bool read_game_xml(const char *name1 = nullptr);
 
 	bool show_menu(bool skip = false);
 	void journey_failed_text();
@@ -153,10 +152,6 @@ public:
 	inline static void set_ticks(unsigned int t) {
 		ticks = t;
 	}
-	void disable_direct_gl_render();
-	void enable_direct_gl_render();
-	void non_gl_blit();
-	void gl_clear_win();
 };
 
 extern Game *game;

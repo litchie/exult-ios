@@ -47,7 +47,7 @@ class Usecode_script : public Time_sensitive {
 	Usecode_script(Game_object *item, Usecode_value *cd, int findex,
 	               int nhalt, int del);
 public:
-	Usecode_script(Game_object *o, Usecode_value *cd = 0);
+	Usecode_script(Game_object *o, Usecode_value *cd = nullptr);
 	virtual ~Usecode_script();
 	void start(long delay = 1); // Start after 'delay' msecs.
 	long get_delay() const {
@@ -75,9 +75,9 @@ public:
 	}
 	// Find for given item.
 	static Usecode_script *find(const Game_object *srch,
-	                            Usecode_script *last_found = 0);
+	                            Usecode_script *last_found = nullptr);
 	static Usecode_script *find_active(const Game_object *srch,
-	                                   Usecode_script *last_found = 0);
+	                                   Usecode_script *last_found = nullptr);
 	static void terminate(const Game_object *obj);
 	static void clear();        // Delete all.
 	// Remove all whose objs. are too far.
