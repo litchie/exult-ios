@@ -53,13 +53,12 @@ matrix:
       compiler: gcc
       env: MATRIX_EVAL="export CXX=g++ && export CC=gcc" EXTRA_OPT="--with-sdl=sdl2" DO_COVERITY=1
       addons:
-          addons:
-            apt:
-              sources: *common_sources
-              packages:
-                - *common_depends
-                - libsdl2-dev
-                - g++-7
+        apt:
+          sources: *common_sources
+          packages:
+            - *common_depends
+            - libsdl2-dev
+            - g++-7
         coverity_scan:
           project:
             name: "exult/exult"
