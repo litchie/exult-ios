@@ -134,13 +134,13 @@ matrix:
 
     - os: linux
       compiler: gcc
-      env: MATRIX_EVAL="export CXX=g++ && export CC=gcc" EXTRA_OPT="--with-debug=messages --with-sdl=sdl12" DO_COVERITY=0
+      env: MATRIX_EVAL="export CXX=g++ && export CC=gcc" EXTRA_OPT="--with-debug=messages --with-sdl=sdl2" DO_COVERITY=0
       addons:
         apt:
           sources: *common_sources
           packages:
             - *common_depends
-            - libsdl1.2-dev
+            - libsdl2-dev
             - g++-8
       before_script:
         - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-8 1000
@@ -168,7 +168,7 @@ matrix:
           sources: *common_sources
           packages:
             - *common_depends
-            - libsdl1.2-dev
+            - libsdl2-dev
             - g++-8
       before_script:
         - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-8 1000
