@@ -2329,7 +2329,7 @@ void Sleep_schedule::ending(
 		return;         // ++++Does this leave NPC's stuck?++++
 
 	bool makebed = false;
-	int dir;
+	int dir = 0;
 	Game_object_shared bed_obj = bed.lock();
 	if (bed_obj &&          // Still in bed?
 	        (npc->get_framenum() & 0xf) == Actor::sleep_frame &&
