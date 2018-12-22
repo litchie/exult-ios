@@ -493,6 +493,13 @@ enum {
     GRP_NUM_COLUMNS
 };
 
+extern "C" {
+	void gulong_deleter(gpointer data) {
+		gulong *ptr = static_cast<gulong*>(data);
+		delete ptr;
+	}
+}
+
 /*
  *  Initialize the list of shape groups for the file being shown in the
  *  browser.
@@ -509,7 +516,7 @@ void ExultStudio::setup_groups(
 	                         glade_xml_get_widget(app_xml, "group_list"));
 	GtkTreeModel *oldmod = gtk_tree_view_get_model(tview);
 	GtkTreeStore *model;
-	uintptr addsig = 0, delsig = 0, chgsig = 0;
+	gulong addsig = 0, delsig = 0, chgsig = 0;
 	if (!oldmod) {          // Create model first time.
 		model = gtk_tree_store_new(GRP_NUM_COLUMNS,
 		                           G_TYPE_STRING, G_TYPE_POINTER);
@@ -529,29 +536,26 @@ void ExultStudio::setup_groups(
 		addsig = g_signal_connect(G_OBJECT(model), "row-inserted",
 		                          GTK_SIGNAL_FUNC(on_group_list_row_inserted), this);
 		// Store signal id with model.
-		g_object_set_data(G_OBJECT(model), "row-inserted",
-		                  reinterpret_cast<gpointer>(addsig));
+		g_object_set_data_full(G_OBJECT(model), "row-inserted",
+		                  new gulong(addsig), gulong_deleter);
 		delsig = g_signal_connect(G_OBJECT(model), "row-deleted",
 		                          GTK_SIGNAL_FUNC(on_group_list_row_deleted), this);
-		g_object_set_data(G_OBJECT(model), "row-deleted",
-		                  reinterpret_cast<gpointer>(delsig));
+		g_object_set_data_full(G_OBJECT(model), "row-deleted",
+		                  new gulong(delsig), gulong_deleter);
 		chgsig = g_signal_connect(G_OBJECT(model), "row-changed",
 		                          GTK_SIGNAL_FUNC(on_group_list_row_changed), this);
-		g_object_set_data(G_OBJECT(model), "row-changed",
-		                  reinterpret_cast<gpointer>(delsig));
+		g_object_set_data_full(G_OBJECT(model), "row-changed",
+		                  new gulong(delsig), gulong_deleter);
 	} else {
 		model = GTK_TREE_STORE(oldmod);
-		addsig = reinterpret_cast<uintptr>(g_object_get_data(G_OBJECT(model),
-		                                    "row-inserted"));
-		delsig = reinterpret_cast<uintptr>(g_object_get_data(G_OBJECT(model),
-		                                    "row-deleted"));
-		chgsig = reinterpret_cast<uintptr>(g_object_get_data(G_OBJECT(model),
-		                                    "row-changed"));
+		addsig = *static_cast<gulong*>(g_object_get_data(G_OBJECT(model), "row-inserted"));
+		delsig = *static_cast<gulong*>(g_object_get_data(G_OBJECT(model), "row-deleted"));
+		chgsig = *static_cast<gulong*>(g_object_get_data(G_OBJECT(model), "row-changed"));
 	}
 	// Block this signal during creation.
-	g_signal_handler_block(model, static_cast<gulong>(addsig));
-	g_signal_handler_block(model, static_cast<gulong>(delsig));
-	g_signal_handler_block(model, static_cast<gulong>(chgsig));
+	g_signal_handler_block(model, addsig);
+	g_signal_handler_block(model, delsig);
+	g_signal_handler_block(model, chgsig);
 	gtk_tree_store_clear(model);
 	set_visible("groups_frame", TRUE);
 	// Show builtins for shapes.vga.
