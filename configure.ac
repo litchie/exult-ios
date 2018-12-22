@@ -49,14 +49,16 @@ case "$host_os" in
 		AC_MSG_RESULT([X11 (GNU/Linux)])
 		;;
 	mingw32* )
-		WINDOWING_SYSTEM="-DWIN32"
+		WINDOWING_SYSTEM="-D_WIN32"
+		AC_DEFINE(MINGW, 1, [Using MinGW])
 		AC_MSG_RESULT([Win32 (mingw32)])
-		SYSLIBS="-lwinmm -lstdc++"
+		CXXFLAGS="$CXXFLAGS -D_USE_MATH_DEFINES"
+		SYSLIBS="-luuid -lole32 -lwinmm -lstdc++ -lws2_32"
 		ICON_FILE="win32/exultico.o"
 		enable_timidity="no"
 		;;
 	cygwin* )
-		WINDOWING_SYSTEM="-DWIN32"
+		WINDOWING_SYSTEM="-D_WIN32"
 		AC_DEFINE(CYGWIN, 1, [Using Cygwin])
 		AC_MSG_RESULT([Win32 (cygwin)])
 		CXXFLAGS="$CXXFLAGS -mno-cygwin"
@@ -560,7 +562,7 @@ fi
 # ---------------------------------------------------------------------
 AC_MSG_CHECKING([whether to enable support for Exult Studio])
 AC_ARG_ENABLE(exult-studio-support, AS_HELP_STRING([--enable-exult-studio-support], [Enable ExultStudio support @<:@default no@:>@]),,enable_exult_studio_support=no)
-if test "$WINDOWING_SYSTEM" != -DXWIN ; then
+if test "$WINDOWING_SYSTEM" != -DXWIN -a "$WINDOWING_SYSTEM" != -D_WIN32 ; then
 	enable_exult_studio_support=no
 fi
 

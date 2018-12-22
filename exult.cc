@@ -40,7 +40,7 @@
 #if HAVE_SYS_TIME_H
 #include <sys/time.h>
 #endif
-#ifdef WIN32
+#ifdef _WIN32
 #include "windrag.h"
 #elif defined(XWIN)
 #include "xdrag.h"
@@ -114,7 +114,7 @@ using std::toupper;
 using std::string;
 using std::vector;
 
-#if SDL_VERSION_ATLEAST(2, 0, 0) && (defined(WIN32) || (defined(MACOSX) && defined(USE_EXULTSTUDIO)))
+#if SDL_VERSION_ATLEAST(2, 0, 0) && (defined(_WIN32) || (defined(MACOSX) && defined(USE_EXULTSTUDIO)))
 
 static int SDLCALL SDL_putenv(const char *_var) {
     char *ptr = nullptr;
@@ -204,7 +204,7 @@ static class Xdnd *xdnd = nullptr;
 #  pragma GCC diagnostic pop
 #  endif  // __GNUC__
 
-#elif defined(WIN32)
+#elif defined(_WIN32)
 static HWND hgwin;
 static class Windnd *windnd = nullptr;
 #endif
@@ -262,10 +262,11 @@ static unsigned int show_items_time = 0;
 static bool show_items_clicked = false;
 static int left_down_x = 0, left_down_y = 0;
 
-#if defined(_WIN32) && defined(main) && defined(_MSC_VER)
-#undef main
+#if defined _WIN32
+void do_cleanup_output() {
+	cleanup_output("std");
+}
 #endif
-
 
 /*
  *  Main program.
@@ -302,18 +303,19 @@ int main(
 	parameters.declare("--edit", &arg_edit_mode, true);
 	parameters.declare("--write-xml", &arg_write_xml, true);
 	parameters.declare("--reset-video", &arg_reset_video, true);
-#if defined WIN32
+#if defined _WIN32
 	bool portable = false;
 	parameters.declare("-p", &portable, true);
 #endif
 	// Process the args
 	parameters.process(argc, argv);
 	add_system_path("<alt_cfg>", arg_configfile);
-#if defined WIN32
+#if defined _WIN32
 	if (portable)
 		add_system_path("<HOME>", ".");
 	setup_program_paths();
 	redirect_output("std");
+	std::atexit(do_cleanup_output);
 #endif
 
 	if (needhelp) {
@@ -344,7 +346,7 @@ int main(
 		     << "\t\t(for multimap games or mods) whose map is desired" << endl
 		     << "--nocrc\t\tDon't check crc's of .flx files" << endl
 		     << "--edit\t\tStart in map-edit mode" << endl
-#if defined WIN32
+#if defined _WIN32
 		     << " -p\t\tMakes the home path the Exult directory (old Windows way)" << endl
 #endif
 		     << "--write-xml\tWrite 'patch/exultgame.xml'" << endl
@@ -412,116 +414,6 @@ int main(
 	return result;
 }
 
-#ifdef _WIN32
-#include <windows.h>
-#include <cstdio>
-// From Pentagram:
-PCHAR *CommandLineToArgvA(
-    PCHAR CmdLine,
-    int *_argc
-) {
-	PCHAR *argv;
-	PCHAR  _argv;
-	ULONG   len;
-	ULONG   argc;
-	CHAR   a;
-	ULONG   i, j;
-
-	BOOLEAN  in_QM;
-	BOOLEAN  in_TEXT;
-	BOOLEAN  in_SPACE;
-
-	len = strlen(CmdLine);
-	i = ((len + 2) / 2) * sizeof(PVOID) + sizeof(PVOID);
-
-	argv = reinterpret_cast<PCHAR *>(GlobalAlloc(GMEM_FIXED, i + (len + 2) * sizeof(CHAR)));
-
-	_argv = reinterpret_cast<PCHAR>(reinterpret_cast<PUCHAR>(argv) + i);
-
-	argc = 0;
-	argv[argc] = _argv;
-	in_QM = FALSE;
-	in_TEXT = FALSE;
-	in_SPACE = TRUE;
-	i = 0;
-	j = 0;
-
-	while ((a = CmdLine[i]) != 0) {
-		if (in_QM) {
-			if (a == '\"')
-				in_QM = FALSE;
-			else {
-				_argv[j] = a;
-				j++;
-			}
-		} else {
-			switch (a) {
-			case '\"':
-				in_QM = TRUE;
-				in_TEXT = TRUE;
-				if (in_SPACE) {
-					argv[argc] = _argv + j;
-					argc++;
-				}
-				in_SPACE = FALSE;
-				break;
-			case ' ':
-			case '\t':
-			case '\n':
-			case '\r':
-				if (in_TEXT) {
-					_argv[j] = '\0';
-					j++;
-				}
-				in_TEXT = FALSE;
-				in_SPACE = TRUE;
-				break;
-			default:
-				in_TEXT = TRUE;
-				if (in_SPACE) {
-					argv[argc] = _argv + j;
-					argc++;
-				}
-				_argv[j] = a;
-				j++;
-				in_SPACE = FALSE;
-				break;
-			}
-		}
-		i++;
-	}
-	_argv[j] = '\0';
-	argv[argc] = nullptr;
-
-	(*_argc) = argc;
-	return argv;
-}
-
-
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd) {
-	/* Pulled from SDL_win32_main.c; this comment is also theirs:
-	   Start up DDHELP.EXE before opening any files, so DDHELP doesn't
-	   keep them open.  This is a hack.. hopefully it will be fixed
-	   someday.  DDHELP.EXE starts up the first time DDRAW.DLL is loaded.
-	 */
-	HMODULE hLib = LoadLibrary(TEXT("DDRAW.DLL"));
-	if (hLib != nullptr)
-		FreeLibrary(hLib);
-
-	int argc;
-	char **argv = CommandLineToArgvA(GetCommandLineA(), &argc);
-
-	int res = main(argc, argv);
-
-	cleanup_output("std");
-
-	GlobalFree(reinterpret_cast<HGLOBAL>(argv));
-	ignore_unused_variable_warning(hInstance, hPrevInstance, lpCmdLine, nShowCmd);
-
-	return  res;
-}
-#endif
-
 /*
  *  Main program.
  */
@@ -531,7 +423,7 @@ int exult_main(const char *runpath) {
 	// output version info
 	getVersionInfo(cout);
 
-#ifndef WIN32
+#ifndef _WIN32
 	setup_program_paths();
 #endif
 	// Read in configuration file
@@ -697,7 +589,7 @@ int exult_main(const char *runpath) {
 	//  main menu and select another scenario". Becaule DnD isn't registered until
 	//  you really enter the game, we remove it here to prevent possible bugs
 	//  invilved with registering DnD a second time over an old variable.
-#if defined(WIN32)
+#if defined(_WIN32)
 	RevokeDragDrop(hgwin);
 	delete windnd;
 #else
@@ -770,15 +662,16 @@ static void Init(
 #ifdef NO_SDL_PARACHUTE
 	init_flags |= SDL_INIT_NOPARACHUTE;
 #endif
-#ifdef WIN32
+#ifdef _WIN32
 	// Due to the new menu size, the window can sometimes
 	// be partially offscreen in Windows. SDL currently
 	// offers no better way of doing this, so...
 	// I don't know if this will be problem in other OSes,
 	// so I leave it Windows-specific for now.
-	// Maybe it would be best to use SDL_putenv instead?
 	SDL_putenv(const_cast<char *>("SDL_VIDEO_CENTERED=center"));
-	// Yes, SDL_putenv is GOOD.  putenv does NOT work with wince. -PTG 2007/06/11
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+	SDL_putenv(const_cast<char *>("SDL_AUDIODRIVER=DirectSound"));
+#endif
 #elif defined(MACOSX) && defined(USE_EXULTSTUDIO)
 	// Just in case:
 #ifndef XWIN
@@ -984,7 +877,7 @@ static void Init(
 	gwin->setup_game(arg_edit_mode);    // This will start the scene.
 	// Get scale factor for mouse.
 #ifdef USE_EXULTSTUDIO
-#ifndef WIN32
+#ifndef _WIN32
 #if SDL_VERSION_ATLEAST(2, 0, 0)
 	SDL_GetWindowWMInfo(gwin->get_win()->get_screen_window(), &info);
 #else
@@ -1213,7 +1106,7 @@ static void Handle_events(
 
 		// Get current time.
 		uint32 ticks = SDL_GetTicks();
-#if defined(WIN32) && defined(USE_EXULTSTUDIO)
+#if defined(_WIN32) && defined(USE_EXULTSTUDIO)
 		if (ticks - Game::get_ticks() < 10) {
 			// Reducing processor usage with a slight delay.
 			SDL_Delay(10 - (ticks - Game::get_ticks()));
@@ -1683,7 +1576,7 @@ static void Handle_event(
 			keybinder->HandleEvent(event);
 		break;
 #ifdef USE_EXULTSTUDIO
-#ifndef WIN32
+#ifndef _WIN32
 	case SDL_SYSWMEVENT: {
 #if SDL_VERSION_ATLEAST(2, 0, 0)
 		XEvent &ev = event.syswm.msg->msg.x11.event;
@@ -1699,7 +1592,7 @@ static void Handle_event(
 #endif
 #endif
 #if 0
-//#ifdef WIN32
+//#ifdef _WIN32
 	case SDL_SYSWMEVENT:
 //		printf("SYSWMEVENT received, %x\n", event.syswm.msg->msg);
 		if (event.syswm.msg->msg == MM_MCINOTIFY) {

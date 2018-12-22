@@ -126,6 +126,9 @@ TAGS
 *.obj
 *.elf
 
+# Dependencies
+*.d
+
 # Precompiled Headers
 *.gch
 *.pch
@@ -259,3 +262,10 @@ Makecache
 
 # vscode
 .vscode
+
+# Win32 build
+data/u7bgintrinsics.data
+data/u7sibetaintrinsics.data
+data/u7siintrinsics.data
+exult_studio.exp
+msys2.patch

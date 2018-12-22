@@ -36,7 +36,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 using std::cout;
 using std::endl;
 
-#ifndef WIN32
+#ifndef _WIN32
 
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>

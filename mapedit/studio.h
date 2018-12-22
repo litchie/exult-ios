@@ -22,8 +22,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #ifdef __GNUC__
 #pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wold-style-cast"
 #pragma GCC diagnostic ignored "-Wcast-qual"
+#pragma GCC diagnostic ignored "-Wold-style-cast"
+#pragma GCC diagnostic ignored "-Wparentheses"
+#pragma GCC diagnostic ignored "-Wuseless-cast"
 #endif  // __GNUC__
 #include <gtk/gtk.h>
 #include <glade/glade.h>
@@ -69,7 +71,7 @@ class BaseGameInfo;
 typedef void (*Msg_callback)(Exult_server::Msg_type id,
                              const unsigned char *data, int datalen, void *client);
 
-#ifndef WIN32
+#ifndef _WIN32
 #define C_EXPORT extern "C"
 #else
 #ifndef WIN32_LEAN_AND_MEAN
@@ -148,7 +150,7 @@ private:
 	int curr_mod;   // Which mod is loaded, or -1 for none
 	std::string game_encoding;  // Character set for current game/mod.
 	// For Win32 DND
-#ifdef WIN32
+#ifdef _WIN32
 	HWND            egghwnd;
 	Windnd          *eggdnd;
 	HWND            npchwnd;

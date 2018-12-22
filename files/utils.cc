@@ -34,7 +34,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#ifdef WIN32
+#ifdef _WIN32
 #include <windows.h>
 #include <shlobj.h>
 #include <direct.h> // For mkdir and chdir
@@ -83,7 +83,7 @@ void reset_system_paths() {
 static const string remove_trainling_slash(const string &value) {
 	string new_path = value;
 	if (*(new_path.end() - 1) == '/'
-#ifdef WIN32
+#ifdef _WIN32
 	        || *(new_path.end() - 1) == '\\'
 #endif
 	   ) {
@@ -167,7 +167,7 @@ string get_system_path(const string &path) {
 	}
 
 	switch_slashes(new_path);
-#ifdef WIN32
+#ifdef _WIN32
 	if (*(new_path.end() - 1) == '/' || *(new_path.end() - 1) == '\\') {
 		//std::cerr << "Trailing slash in path: \"" << new_path << "\"" << std::endl << "...compensating, but go complain to Colourless anyway" << std::endl;
 		std::cerr << "Warning, trailing slash in path: \"" << new_path << "\"" << std::endl;
@@ -254,7 +254,7 @@ static bool base_to_uppercase(string &str, int count) {
 static void switch_slashes(
     string &name
 ) {
-#ifdef WIN32
+#ifdef _WIN32
 	for (string::iterator X = name.begin(); X != name.end(); ++X) {
 		if (*X == '/')
 			*X = '\\';
@@ -401,7 +401,7 @@ void U7remove(
 ) {
 	string name = get_system_path(fname);
 
-#if defined(WIN32) && defined(UNICODE)
+#if defined(_WIN32) && defined(UNICODE)
 	const char *n = name.c_str();
 	int nLen = std::strlen(n) + 1;
 	LPTSTR lpszT = (LPTSTR) alloca(nLen * 2);
@@ -488,14 +488,14 @@ int U7mkdir(
 	if (pos != string::npos)
 		name.resize(pos + 1);
 #endif
-#if defined(WIN32) && defined(UNICODE)
+#if defined(_WIN32) && defined(UNICODE)
 	const char *n = name.c_str();
 	int nLen = std::strlen(n) + 1;
 	LPTSTR lpszT = (LPTSTR) alloca(nLen * 2);
 	MultiByteToWideChar(CP_ACP, 0, n, -1, lpszT, nLen);
 	ignore_unused_variable_warning(mode);
 	return CreateDirectory(lpszT, nullptr);
-#elif defined(WIN32)
+#elif defined(_WIN32)
 	ignore_unused_variable_warning(mode);
 	return mkdir(name.c_str());
 #else
@@ -503,7 +503,7 @@ int U7mkdir(
 #endif
 }
 
-#ifdef WIN32
+#ifdef _WIN32
 class shell32_wrapper {
 protected:
 	HMODULE hLib;
@@ -525,15 +525,19 @@ protected:
     );
 	SHGetKnownFolderPathFunc SHGetKnownFolderPath;
 	*/
+
+	template <typename Dest>
+	Dest get_function(const char *func) {
+		return reinterpret_cast<Dest>(reinterpret_cast<void (*)(void)>(GetProcAddress(hLib, func)));
+	}
+
 public:
 	shell32_wrapper() {
 		hLib = LoadLibrary("shell32.dll");
 		if (hLib != nullptr) {
-			SHGetFolderPath      = reinterpret_cast<SHGetFolderPathFunc>(
-			                          GetProcAddress(hLib, "SHGetFolderPathA"));
+			SHGetFolderPath      = get_function<SHGetFolderPathFunc>("SHGetFolderPathA");
 			/*
-			SHGetKnownFolderPath = reinterpret_cast<SHGetKnownFolderPathFunc>(
-			                GetProcAddress(hLib, "SHGetKnownFolderPath"));
+			SHGetKnownFolderPath = get_function<SHGetKnownFolderPathFunc>("SHGetKnownFolderPath");
 			*/
 		} else {
 			SHGetFolderPath      = nullptr;
@@ -554,14 +558,14 @@ public:
 			HRESULT code = SHGetFolderPath(nullptr, CSIDL_LOCAL_APPDATA,
 			                               nullptr, 0, szPath);
 			if (code == E_INVALIDARG)
-				return string("");
+				return string();
 			else if (code == S_FALSE)   // E_FAIL for Unicode version.
 				// Lets try creating it through the API flag:
 				code = SHGetFolderPath(nullptr,
 				                       CSIDL_LOCAL_APPDATA | CSIDL_FLAG_CREATE,
 				                       nullptr, 0, szPath);
 			if (code == E_INVALIDARG)
-				return string("");
+				return string();
 			else if (code == S_OK)
 				return string(reinterpret_cast<const char *>(szPath));
 			// We don't have a folder yet at this point. This means we have
@@ -569,15 +573,16 @@ public:
 			// Just to be sure, we fall back to the old behaviour.
 			// Is anyone still needing this?
 		}
-		return string("");
+		return string();
 	}
 };
 
 #ifdef USE_CONSOLE
-// ++++ TODO: Need to check if this actually works.
 void redirect_output(const char *prefix) {
+	ignore_unused_variable_warning(prefix);
 }
 void cleanup_output(const char *prefix) {
+	ignore_unused_variable_warning(prefix);
 }
 #else
 #include <cstdio>
@@ -585,6 +590,21 @@ const std::string Get_home();
 
 // Pulled from exult_studio.cc.
 void redirect_output(const char *prefix) {
+	if (GetFileType(GetStdHandle(STD_OUTPUT_HANDLE)) == FILE_TYPE_PIPE) {
+		// If we are at a msys/msys2 shell, do not redirect the output, and
+		// print it to console instead.
+		return;
+	}
+	// Starting from GUI, or from cmd.exe, we will need to redirect the output.
+	// It is possible to connect to the parent cmd.exe console using WinAPI
+	// (namely, AttachConsole(ATTACH_PARENT_PROCESS)). However, cmd.exe detaches
+	// the program since it (correctly) thinks we are a GUI application, and
+	// returns to the prompt. Thus, when we exit, it seems like we are stuck.
+	// Another possibility is to compile as a console application. We will
+	// always have an attached terminal in this case, even when starting from
+	// Windows Explorer. This console can be destroyed, but it will cause it
+	// to flash into view, then disappear right away.
+
 	// Flush the output in case anything is queued
 	fclose(stdout);
 	fclose(stderr);
@@ -622,7 +642,7 @@ void redirect_output(const char *prefix) {
 #endif
 	}
 	setvbuf(stdout, nullptr, _IOLBF, BUFSIZ);  // Line buffered
-	setbuf(stderr, nullptr);           // No buffering
+	setbuf(stderr, nullptr);                   // No buffering
 }
 
 void cleanup_output(const char *prefix) {
@@ -639,11 +659,11 @@ void cleanup_output(const char *prefix) {
 	}
 }
 #endif // USE_CONSOLE
-#endif  // WIN32
+#endif  // _WIN32
 
 const string Get_home() {
 	std::string home_dir;
-#ifdef WIN32
+#ifdef _WIN32
 #ifdef PORTABLE_EXULT_WIN32
 	home_dir = ".";
 #else
@@ -751,7 +771,7 @@ void setup_program_paths() {
 	savehome_dir += "/.exult";
 	gamehome_dir = EXULT_DATADIR;
 #endif
-#ifdef WIN32
+#ifdef _WIN32
 	if (get_system_path("<HOME>") != ".")
 #endif
 		add_system_path("<HOME>", home_dir);
@@ -765,8 +785,6 @@ void setup_program_paths() {
 
 /*
  *  Change the current directory
- *
- *  TODO: Make this work in WinCE - Colourless
  */
 
 int U7chdir(
@@ -783,8 +801,6 @@ int U7chdir(
 
 /*
  *  Copy a file. May throw an exception.
- *
- *  TODO: Make this work in WinCE - Colourless
  */
 void U7copy(
     const char *src,

@@ -27,7 +27,7 @@
 #define USE_MT32EMU_MIDI
 #define USE_TIMIDITY_MIDI
 
-#ifndef WIN32
+#ifndef _WIN32
 #error WTF!
 #endif
 

@@ -6,8 +6,7 @@
 * but instead at
 *  http://ftp.se.kde.org/pub/vendor/microsoft/Softlib/MSLFILES/
 */
-
-#if defined(WIN32) && defined(USE_EXULTSTUDIO)
+#if defined(_WIN32) && defined(USE_EXULTSTUDIO)
 
 #include <iostream>
 

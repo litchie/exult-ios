@@ -27,8 +27,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #ifdef __GNUC__
 #pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wold-style-cast"
 #pragma GCC diagnostic ignored "-Wcast-qual"
+#pragma GCC diagnostic ignored "-Wold-style-cast"
+#pragma GCC diagnostic ignored "-Wparentheses"
+#pragma GCC diagnostic ignored "-Wuseless-cast"
 #endif  // __GNUC__
 #include <gtk/gtk.h>
 #ifdef __GNUC__
@@ -42,7 +44,7 @@ typedef void (*Exec_done_fun)(int exit_code, Exec_box *box,
                               gpointer user_data);
 
 
-#ifndef WIN32
+#ifndef _WIN32
 
 /*
  *  A class for executing a child process and capturing its output in a

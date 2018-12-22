@@ -40,7 +40,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "npclst.h"
 #include "ignore_unused_variable_warning.h"
 
-#ifdef WIN32
+#ifdef _WIN32
 #include "windrag.h"
 #endif
 
@@ -287,7 +287,7 @@ static bool Get_schedule_line(
  *  Open the npc-editing window.
  */
 
-#ifdef WIN32
+#ifdef _WIN32
 
 static void Drop_dragged_shape(int shape, int frame, int x, int y, void *data) {
 	ignore_unused_variable_warning(x, y);
@@ -310,11 +310,11 @@ void ExultStudio::open_npc_window(
     unsigned char *data,        // Serialized npc, or null.
     int datalen
 ) {
-#ifdef WIN32
+#ifdef _WIN32
 	bool first_time = false;
 #endif
 	if (!npcwin) {          // First time?
-#ifdef WIN32
+#ifdef _WIN32
 		first_time = true;
 #endif
 		npcwin = glade_xml_get_widget(app_xml, "npc_window");
@@ -349,7 +349,7 @@ void ExultStudio::open_npc_window(
 	} else
 		init_new_npc();
 	gtk_widget_show(npcwin);
-#ifdef WIN32
+#ifdef _WIN32
 	if (first_time || !npcdnd)
 		Windnd::CreateStudioDropDest(npcdnd, npchwnd, Drop_dragged_shape, nullptr, Drop_dragged_face, this);
 
@@ -364,7 +364,7 @@ void ExultStudio::close_npc_window(
 ) {
 	if (npcwin) {
 		gtk_widget_hide(npcwin);
-#ifdef WIN32
+#ifdef _WIN32
 		Windnd::DestroyStudioDropDest(npcdnd, npchwnd);
 #endif
 	}

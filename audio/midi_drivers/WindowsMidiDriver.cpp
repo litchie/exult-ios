@@ -241,4 +241,4 @@ void WindowsMidiDriver::yield()
 	Sleep(1);
 }
 
-#endif //WIN32
+#endif //USE_WINDOWS_MIDI

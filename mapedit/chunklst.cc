@@ -26,14 +26,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include <config.h>
 #endif
 
-#ifdef WIN32
+#ifdef _WIN32
 #include "windrag.h"
 #endif
 
 #ifdef __GNUC__
 #pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wold-style-cast"
 #pragma GCC diagnostic ignored "-Wcast-qual"
+#pragma GCC diagnostic ignored "-Wold-style-cast"
+#pragma GCC diagnostic ignored "-Wparentheses"
+#pragma GCC diagnostic ignored "-Wuseless-cast"
 #endif  // __GNUC__
 #include <gtk/gtk.h>
 #ifdef XWIN
@@ -350,7 +352,7 @@ gint Chunk_chooser::expose(
  *  Handle a mouse button press event.
  */
 
-#ifdef WIN32
+#ifdef _WIN32
 
 static bool win32_button = false;
 
@@ -429,7 +431,7 @@ gint Chunk_chooser::mouse_press(
 //			if (i == old_selected)
 //				return TRUE;
 			// Indicate we can dra.
-#ifdef WIN32
+#ifdef _WIN32
 // Here, we have to override GTK+'s Drag and Drop, which is non-OLE and
 // usually stucks outside the program window. I think it's because
 // the dragged shape only receives mouse motion events when the new mouse pointer
@@ -490,7 +492,7 @@ void Chunk_chooser::drag_data_get(
 	Chunk_info &shinfo = chooser->info[chooser->selected];
 	int len = Store_u7_chunkid(buf, shinfo.num);
 	cout << "Setting selection data (" << shinfo.num << ')' << endl;
-#ifdef WIN32
+#ifdef _WIN32
 	windragdata *wdata = reinterpret_cast<windragdata*>(seldata);
 	wdata->assign(info, len, buf);
 #else
@@ -612,7 +614,7 @@ void Chunk_chooser::enable_drop(
 		return;
 	drop_enabled = true;
 	gtk_widget_realize(draw);//???????
-#ifndef WIN32
+#ifndef _WIN32
 	GtkTargetEntry tents[1];
 	tents[0].target = const_cast<char *>(U7_TARGET_CHUNKID_NAME);
 	tents[0].flags = 0;
@@ -813,7 +815,7 @@ Chunk_chooser::Chunk_chooser(
 	// Mouse motion.
 	gtk_signal_connect(GTK_OBJECT(draw), "drag_begin",
 	                   GTK_SIGNAL_FUNC(drag_begin), this);
-#ifdef WIN32
+#ifdef _WIN32
 // required to override GTK+ Drag and Drop
 	gtk_signal_connect(GTK_OBJECT(draw), "motion_notify_event",
 	                   GTK_SIGNAL_FUNC(win32_drag_motion), this);

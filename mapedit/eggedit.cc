@@ -160,7 +160,7 @@ static void Egg_monster_dropped(
 		static_cast<ExultStudio *>(udata)->set_egg_monster(shape, frame);
 }
 
-#ifdef WIN32
+#ifdef _WIN32
 
 static void Drop_dragged_shape(int shape, int frame, int x, int y, void *data) {
 	ignore_unused_variable_warning(x, y);
@@ -214,7 +214,7 @@ void ExultStudio::open_egg_window(
 	}
 	gtk_widget_show(eggwin);
 
-#ifdef WIN32
+#ifdef _WIN32
 	if (first_time || !eggdnd)
 		Windnd::CreateStudioDropDest(eggdnd, egghwnd, Drop_dragged_shape, nullptr, nullptr, this);
 #endif
@@ -228,7 +228,7 @@ void ExultStudio::close_egg_window(
 ) {
 	if (eggwin) {
 		gtk_widget_hide(eggwin);
-#ifdef WIN32
+#ifdef _WIN32
 		Windnd::DestroyStudioDropDest(eggdnd, egghwnd);
 #endif
 	}

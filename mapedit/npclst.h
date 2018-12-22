@@ -151,7 +151,7 @@ public:
 	void enable_drop();
 	// Handle scrollbar.
 	static void vscrolled(GtkAdjustment *adj, gpointer data);
-#ifdef WIN32
+#ifdef _WIN32
 	static gint win32_drag_motion(GtkWidget *widget, GdkEventMotion *event,
 	                              gpointer data);
 #else

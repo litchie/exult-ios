@@ -94,7 +94,7 @@ void write4(FILE *f, unsigned int b) {
 char *framefilename(char *shapefilename, int frame) {
 	char *fn = new char[strlen(shapefilename) + 5]; //_xxx\0
 	char *dot = strrchr(shapefilename, '.');
-#ifdef WIN32
+#ifdef _WIN32
 	char *slash = strrchr(shapefilename, '\\');
 #else
 	char *slash = strrchr(shapefilename, '/');

@@ -6,7 +6,7 @@
  */
 
 
-#ifndef WIN32
+#ifndef _WIN32
 #include <dlfcn.h>
 #endif
 #include <stdio.h>
@@ -18,7 +18,7 @@
 char *plug_error() {
 
 	// Colourless: Unix specific part. Add your #def here
-#ifdef WIN32
+#ifdef _WIN32
 	HRESULT hRes;
 
 	hRes = GetLastError();
@@ -47,7 +47,7 @@ libhandle_t plug_load(char *plug_name) {
 	libhandle_t a_hdl;
 
 	// Colourless: Unix specific part. Add your #def here
-#ifdef WIN32
+#ifdef _WIN32
 	a_hdl = LoadLibrary(plug_name);
 #else
 	a_hdl = dlopen(plug_name, RTLD_LAZY);
@@ -65,7 +65,7 @@ int plug_unload(libhandle_t a_hdl) {
 	// in linux, dlclose return 0 when success and non-zero on error, so let's invert that to be consistant with the rest
 	// in Windows, FreeLibrary returns 0 on failure, non zero on success
 	// Colourless: Unix specific part. Add your #def here
-#ifdef WIN32
+#ifdef _WIN32
 	return FreeLibrary(a_hdl);
 #else
 	return(!dlclose(a_hdl));
@@ -74,7 +74,7 @@ int plug_unload(libhandle_t a_hdl) {
 
 void *plug_load_func(libhandle_t a_hdl, char *func_name) {
 	// Colourless: Unix specific part. Add your #def here
-#ifdef WIN32
+#ifdef _WIN32
 	// Need to add _ to the start of the function names in windows
 //	TCHAR strProcName[256] = "_";
 //	strncat(strProcName, func_name, 256);

@@ -22,7 +22,7 @@
 
 #include <iostream>
 
-#ifdef WIN32
+#ifdef _WIN32
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
 #endif
@@ -207,7 +207,7 @@ void getVersionInfo(std::ostream &out) {
 	out << ver;
 #elif (defined(__sun__) || defined(__sun))
 	out << "Solaris";
-#elif (defined(WIN32))
+#elif (defined(_WIN32))
 	out << "Windows ";
 	{
 		// Get the version

@@ -26,15 +26,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include <config.h>
 #endif
 
-#ifdef WIN32
+#ifdef _WIN32
 #include "windrag.h"
 #include <windows.h>
 #endif
 
 #ifdef __GNUC__
 #pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wold-style-cast"
 #pragma GCC diagnostic ignored "-Wcast-qual"
+#pragma GCC diagnostic ignored "-Wold-style-cast"
+#pragma GCC diagnostic ignored "-Wparentheses"
+#pragma GCC diagnostic ignored "-Wuseless-cast"
 #endif  // __GNUC__
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
@@ -328,7 +330,7 @@ gint Npc_chooser::expose(
  *  Handle a mouse drag event.
  */
 
-#ifdef WIN32
+#ifdef _WIN32
 
 static bool win32_button = false;
 
@@ -406,7 +408,7 @@ gint Npc_chooser::mouse_press(
 		if (info[i].box.has_point(absx, absy)) {
 			// Found the box?
 			// Indicate we can drag.
-#ifdef WIN32
+#ifdef _WIN32
 // Here, we have to override GTK+'s Drag and Drop, which is non-OLE and
 // usually stucks outside the program window. I think it's because
 // the dragged shape only receives mouse motion events when the new mouse pointer
@@ -541,7 +543,7 @@ void Npc_chooser::drag_data_get(
 	int npcnum = chooser->info[chooser->selected].npcnum;
 	int len = Store_u7_npcid(buf, npcnum);
 	cout << "Setting selection data (" << npcnum << ')' << endl;
-#ifdef WIN32
+#ifdef _WIN32
 	windragdata *wdata = reinterpret_cast<windragdata*>(seldata);
 	wdata->assign(info, len, buf);
 #else
@@ -630,7 +632,7 @@ void Npc_chooser::enable_drop(
 		return;
 	drop_enabled = true;
 	gtk_widget_realize(draw);//???????
-#ifndef WIN32
+#ifndef _WIN32
 	GtkTargetEntry tents[1];
 	tents[0].target = const_cast<char *>(U7_TARGET_NPCID_NAME);
 	tents[0].flags = 0;
@@ -896,7 +898,7 @@ Npc_chooser::Npc_chooser(
 	// Mouse motion.
 	gtk_signal_connect(GTK_OBJECT(draw), "drag_begin",
 	                   GTK_SIGNAL_FUNC(drag_begin), this);
-#ifdef WIN32
+#ifdef _WIN32
 // required to override GTK+ Drag and Drop
 	gtk_signal_connect(GTK_OBJECT(draw), "motion_notify_event",
 	                   GTK_SIGNAL_FUNC(win32_drag_motion), this);
