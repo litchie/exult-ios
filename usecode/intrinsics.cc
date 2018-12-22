@@ -99,7 +99,7 @@ USECODE_INTRINSIC(get_random) {
 		Usecode_value u(0);
 		return(u);
 	}
-	Usecode_value u = (1 + (rand() % range));
+	Usecode_value u(1 + (rand() % range));
 	return(u);
 }
 
@@ -505,8 +505,8 @@ USECODE_INTRINSIC(create_new_object) {
 	ignore_unused_variable_warning(num_parms);
 	// create_new_object(shapenum).   Stores it in 'last_created'.
 	int shapenum = parms[0].get_int_value();
-	Game_object *obj = create_object(shapenum, false);
-	Usecode_value u(obj);
+	Game_object_shared obj = create_object(shapenum, false);
+	Usecode_value u(obj.get());
 	return(u);
 }
 
@@ -517,7 +517,7 @@ USECODE_INTRINSIC(create_new_object2) {
 
 	int shapenum = parms[0].get_int_value();
 	// Create, and equip if monster.
-	Game_object *obj = create_object(shapenum, true);
+	Game_object_shared obj = create_object(shapenum, true);
 	if (obj)
 		UI_update_last_created(1, &parms[1]);
 	Usecode_value u(obj);
@@ -529,15 +529,16 @@ USECODE_INTRINSIC(set_last_created) {
 	// Take itemref off map and set last_created to it.
 	Game_object *obj = get_item(parms[0]);
 	// Don't do it for same object if already there.
-	for (vector<Game_object *>::const_iterator it = last_created.begin();
+	for (vector<Game_object_shared>::const_iterator it = last_created.begin();
 	        it != last_created.end(); ++it)
-		if (*it == obj)
+		if ((*it).get() == obj)
 			return Usecode_value(0);
 	modified_map = true;
+	Game_object_shared keep;
 	if (obj) {
 		add_dirty(obj);     // Set to repaint area.
-		last_created.push_back(obj);
-		obj->remove_this(1);    // Remove, but don't delete.
+		last_created.push_back(obj->shared_from_this());
+		obj->remove_this(&keep);    // Remove, but don't delete.
 	}
 	Usecode_value u(obj);
 	return(u);
@@ -553,7 +554,7 @@ USECODE_INTRINSIC(update_last_created) {
 		Usecode_value u(static_cast<Game_object *>(NULL));
 		return(u);
 	}
-	Game_object *obj = last_created.back();
+	Game_object_shared obj = last_created.back();
 	last_created.pop_back();
 	obj->set_invalid();     // It's already been removed.
 	Usecode_value &arr = parms[0];
@@ -872,7 +873,7 @@ USECODE_INTRINSIC(click_on_item) {
 		// changed to use the intercept_item instead, setting it
 		// to the caster's target and restoring the old value after
 		// it is used.
-		obj = caller_item;
+		obj = caller_item.get();
 		t = obj->get_tile();
 	} else {
 		int x, y;       // Allow dragging while here:
@@ -953,7 +954,7 @@ USECODE_INTRINSIC(give_last_created) {
 	int ret = 0;
 	if (cont && !last_created.empty()) {
 		// Get object, but don't pop yet.
-		Game_object *obj = last_created.back();
+		Game_object *obj = last_created.back().get();
 		// Might not have been removed from world yet.
 		if (!obj->get_owner() && obj->is_pos_invalid())
 			// Don't check vol.  Causes failures.
@@ -1092,7 +1093,8 @@ USECODE_INTRINSIC(remove_npc) {
 		if (npc->get_ident() == Schedule::follow_avatar)
 			npc->set_ident(0);
 		gwin->add_dirty(npc);
-		npc->remove_this(1);    // Remove, but don't delete.
+		Game_object_shared keep;
+		npc->remove_this(&keep);    // Remove, but don't delete.
 	}
 	return (no_ret);
 }
@@ -1223,13 +1225,13 @@ USECODE_INTRINSIC(summon) {
 	                                       Map_chunk::inside : Map_chunk::outside);
 	if (dest.tx == -1)
 		return Usecode_value(0);
-	Actor *npc = as_actor(caller_item);
+	Actor *npc = as_actor(caller_item.get());
 	int align = Actor::good;
 	if (npc && !npc->is_in_party())
 		align = npc->get_effective_alignment();
-	Monster_actor *monst = Monster_actor::create(shapenum, dest,
+	Game_object_shared monst = Monster_actor::create(shapenum, dest,
 	                       Schedule::combat, align);
-	return Usecode_value(monst);
+	return Usecode_value(monst.get());
 }
 
 /*
@@ -1407,7 +1409,8 @@ USECODE_INTRINSIC(clone) {
 	Actor *npc = as_actor(get_item(parms[0]));
 	if (npc) {
 		modified_map = true;
-		Actor *clonednpc = npc->clone();
+		Game_object_shared new_npc = npc->clone();
+		Actor *clonednpc = static_cast<Actor *>(new_npc.get());
 		clonednpc->set_alignment(Actor::good);
 		clonednpc->set_schedule_type(Schedule::combat);
 		return Usecode_value(clonednpc);
@@ -1844,13 +1847,14 @@ USECODE_INTRINSIC(mark_virtue_stone) {
 
 USECODE_INTRINSIC(recall_virtue_stone) {
 	Game_object *obj = get_item(parms[0]);
+	Game_object_shared keep;
 	Virtue_stone_object *vs = dynamic_cast<Virtue_stone_object *>(obj);
 	if (vs) {
 		gumpman->close_all_gumps();
 		// Pick it up if necessary.
 		if (!obj->get_owner()) {
 			// Go through whole party.
-			obj->remove_this(1);
+			obj->remove_this(&keep);
 			Usecode_value party = get_party();
 			int cnt = party.get_array_size();
 			int i;
@@ -1950,7 +1954,7 @@ USECODE_INTRINSIC(set_orrery) {
 				p->remove_this();
 		}
 		for (int frame = 0; frame <= 7; ++frame) {
-			Game_object *p = gmap->create_ireg_object(988, frame);
+			Game_object_shared p = gmap->create_ireg_object(988, frame);
 			p->move(pos.tx + offsets[state][frame][0],
 			        pos.ty + offsets[state][frame][1], pos.tz);
 		}
@@ -2826,7 +2830,7 @@ USECODE_INTRINSIC(error_message) {
 		if (parms[i].is_int()) std::cout << parms[i].get_int_value() ;
 		else if (parms[i].is_ptr()) std::cout << parms[i].get_ptr_value();
 		else if (!parms[i].is_array()) std::cout << parms[i].get_str_value();
-		else for (int j = 0; j < parms[i].get_array_size(); j++) {
+		else for (size_t j = 0; j < parms[i].get_array_size(); j++) {
 				if (parms[i].get_elem(j).is_int()) std::cout << parms[i].get_elem(j).get_int_value() ;
 				else if (parms[i].get_elem(j).is_ptr()) std::cout << parms[i].get_elem(j).get_ptr_value();
 				else if (!parms[i].get_elem(j).is_array()) std::cout << parms[i].get_elem(j).get_str_value();
@@ -3168,7 +3172,7 @@ USECODE_INTRINSIC(remove_from_area) {
 	        it != vec.end(); ++it) {
 		Game_object *obj = *it;
 		gwin->add_dirty(obj);
-		obj->remove_this(0);
+		obj->remove_this();
 	}
 	return no_ret;
 }
@@ -3420,7 +3424,7 @@ USECODE_INTRINSIC(create_barge_object) {
 
 	b->set_invalid();       // Not in world yet.
 	b->set_flag(Obj_flags::okay_to_take);
-	last_created.push_back(b);
+	last_created.push_back(b->shared_from_this());
 
 	Usecode_value u(b);
 	return(u);

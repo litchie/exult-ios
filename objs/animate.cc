@@ -84,8 +84,7 @@ void Object_sfx::Play(Game_object *obj, int sfx, int delay) {
 }
 
 Object_sfx::Object_sfx(Game_object *o, int s)
-	: obj(o), sfx(s), channel(-1) {
-	add_client(obj);
+	: obj(weak_from_obj(o)), sfx(s), channel(-1) {
 }
 
 void Object_sfx::stop_playing() {
@@ -99,7 +98,6 @@ void Object_sfx::stop() {
 	while (gwin->get_tqueue()->remove(this))
 		;
 	stop_playing();
-	remove_clients();
 	delete this;
 }
 
@@ -107,21 +105,7 @@ void Object_sfx::dequeue() {
 	Time_sensitive::dequeue();
 	if (!in_queue()) {
 		stop_playing();
-		remove_clients();
 		delete this;
-	}
-}
-
-void Object_sfx::notify_object_gone(Game_object *o) {
-	if (obj == o) {
-		kill_client_list();
-		Game_object *outer = obj->get_outermost();
-		if (outer == obj)
-			obj = 0;    // Use last_pos.
-		else {
-			obj = outer;
-			add_client(obj);
-		}
 	}
 }
 
@@ -135,8 +119,9 @@ void Object_sfx::handle_event(
 	//bool active = channel != -1 ? mixer->isPlaying(channel) : false;
 
 	Game_object *outer;
-	if (obj) {
-		outer = obj->get_outermost();
+	Game_object_shared obj_ptr = obj.lock();
+	if (obj_ptr) {
+		outer = obj_ptr->get_outermost();
 		last_pos = outer->get_center_tile();
 	} else
 		outer = 0;
@@ -287,8 +272,10 @@ Animator *Animator::create(
 
 Animator::~Animator(
 ) {
-	while (gwin->get_tqueue()->remove(this))
-		;
+    if (gwin->get_tqueue()) {
+	    while (gwin->get_tqueue()->remove(this))
+		    ;
+	}
 	if (objsfx) {
 		objsfx->stop();
 		delete objsfx;

@@ -2560,7 +2560,7 @@ static void Move_dragged_combo(
  *  Create an object as moveable (IREG) or fixed.
  */
 
-static Game_object *Create_object(
+static Game_object_shared Create_object(
     int shape, int frame,       // What to create.
     bool &ireg          // Rets. TRUE if ireg (moveable).
 ) {
@@ -2569,7 +2569,7 @@ static Game_object *Create_object(
 	// Is it an ireg (changeable) obj?
 	ireg = (sclass != Shape_info::unusable &&
 	        sclass != Shape_info::building);
-	Game_object *newobj;
+	Game_object_shared newobj;
 	if (ireg)
 		newobj = gwin->get_map()->create_ireg_object(
 		             info, shape, frame, 0, 0, 0);
@@ -2618,7 +2618,7 @@ static void Drop_dragged_shape(
 	cout << "Create shape (" << shape << '/' << frame << ')' <<
 	     endl;
 	bool ireg;          // Create object.
-	Game_object *newobj = Create_object(shape, frame, ireg);
+	Game_object_shared newobj = Create_object(shape, frame, ireg);
 	Dragging_info drag(newobj);
 	drag.drop(x, y, true);      // (Dels if it fails.)
 }
@@ -2664,11 +2664,13 @@ static void Drop_dragged_npc(
 	Actor *npc = gwin->get_npc(npcnum);
 	if (!npc)
 		return;
+	Game_object_shared safe_npc = npc->shared_from_this();
+	Game_object_shared npckeep;
 	if (npc->is_pos_invalid())  // Brand new?
 		npc->clear_flag(Obj_flags::dead);
 	else
-		npc->remove_this(true); // Remove if already on map.
-	Dragging_info drag(npc);
+		npc->remove_this(&npckeep); // Remove if already on map.
+	Dragging_info drag(safe_npc);
 	if (drag.drop(x, y))
 		npc->set_unused(false);
 	gwin->paint();
@@ -2717,12 +2719,12 @@ void Drop_dragged_combo(
 			continue;
 		}
 		bool ireg;      // Create object.
-		Game_object *newobj = Create_object(elem.shape,
+		Game_object_shared newobj = Create_object(elem.shape,
 		                                    elem.frame, ireg);
 		newobj->set_invalid();  // Not in world.
 		newobj->move(ntx, nty, ntz);
 		// Add to selection.
-		cheat.append_selected(newobj);
+		cheat.append_selected(newobj.get());
 	}
 	gwin->set_all_dirty();      // For now, until we clear out grid.
 }

@@ -111,7 +111,7 @@ void Handle_debug_message(unsigned char *data, int datalen) {
 				                frame->call_chain,
 				                frame->call_depth,
 				                frame->eventid,
-				                reinterpret_cast<uintptr>(frame->caller_item),
+				                reinterpret_cast<uintptr>(frame->caller_item.get()),
 				                frame->num_args,
 				                frame->num_vars,
 				                frame->locals);

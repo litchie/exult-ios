@@ -27,7 +27,7 @@
  *  Data needed when dragging an object.
  */
 class Dragging_info : public Game_singletons {
-	Game_object *obj;       // What's being dragged.
+	Game_object_shared obj; // What's being dragged.
 	bool is_new;            // Object was newly created.
 	Gump *gump;
 	Gump_button *button;
@@ -52,7 +52,7 @@ class Dragging_info : public Game_singletons {
 public:
 	friend class Game_window;
 	// Create for dropping new object.
-	Dragging_info(Game_object *newobj);
+	Dragging_info(Game_object_shared newobj);
 	Dragging_info(int x, int y);    // Create for given mouse position.
 	~Dragging_info();
 	bool moved(int x, int y);   // Mouse moved.

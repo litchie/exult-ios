@@ -227,7 +227,7 @@ bool Usecode_internal::call_function(int funcid,
 		chain = parent->call_chain;
 
 		if (caller == 0)
-			caller = parent->caller_item; // use parent's
+			caller = parent->caller_item.get(); // use parent's
 	}
 
 	Stack_frame *frame = new Stack_frame(fun, eventid, caller, chain, depth);
@@ -467,6 +467,7 @@ inline Usecode_value Usecode_internal::pop() {
 		cerr << "Stack underflow" << endl;
 		return Usecode_value(0);
 	}
+	// +++++SHARED:  Shouldn't we reset *sp.
 	return *--sp;
 }
 
@@ -475,6 +476,11 @@ inline Usecode_value Usecode_internal::peek() {
 }
 
 inline void Usecode_internal::pushref(Game_object *obj) {
+	Usecode_value v(obj);
+	push(v);
+}
+
+inline void Usecode_internal::pushref(Game_object_shared obj) {
 	Usecode_value v(obj);
 	push(v);
 }
@@ -525,7 +531,7 @@ Game_object *Usecode_internal::get_item(
 		// Special case:  palace guards, Time Lord.
 		if (val < 0x400 && !itemref.is_array() &&
 		        caller_item && ((GAME_BG && val == 0x269) || val == caller_item->get_shapenum()))
-			obj = caller_item;
+			obj = caller_item.get();
 #if 0
 		// NO! BAD! Causes weird bug with Celia & slain wolf (and maybe others).
 		else if (val < gwin->get_num_npcs() &&  // Try as NPC.
@@ -796,6 +802,7 @@ void Usecode_internal::set_item_shape(
 	gwin->add_dirty(item);
 	// Get chunk it's in.
 	Map_chunk *chunk = item->get_chunk();
+	Game_object_shared keep = item->shared_from_this();
 	chunk->remove(item);        // Remove and add to update cache.
 	item->set_shape(shape);
 	chunk->add(item);
@@ -873,7 +880,7 @@ void Usecode_internal::remove_item(
 ) {
 	if (!obj)
 		return;
-	if (!last_created.empty() && obj == last_created.back())
+	if (!last_created.empty() && obj == last_created.back().get())
 		last_created.pop_back();
 	add_dirty(obj);
 	if (GAME_SI && frame && frame->function->id == 0x70e
@@ -892,7 +899,8 @@ void Usecode_internal::remove_item(
 			}
 		}
 	}
-	obj->remove_this(obj->as_actor() != 0);
+    Game_object_shared keep;
+    obj->remove_this(obj->as_actor() ? &keep : NULL);
 }
 
 /*
@@ -1159,7 +1167,7 @@ Usecode_value Usecode_internal::count_objects(
 	int framenum = frameval.get_int_value();
 	if (oval != -357) {
 		Game_object *obj = get_item(objval);
-		return (!obj ? 0 : obj->count_objects(
+		return Usecode_value(!obj ? 0 : obj->count_objects(
 		            shapenum, qualnum, framenum));
 	}
 	// Look through whole party.
@@ -1172,7 +1180,7 @@ Usecode_value Usecode_internal::count_objects(
 			total += obj->count_objects(shapenum, qualnum,
 			                            framenum);
 	}
-	return (total);
+	return Usecode_value(total);
 }
 
 /*
@@ -1291,7 +1299,7 @@ Usecode_value Usecode_internal::add_party_items(
 			break;
 		const Shape_info &info = ShapeID::get_info(shapenum);
 		// Create and place.
-		Game_object *newobj = gmap->create_ireg_object(
+		Game_object_shared newobj = gmap->create_ireg_object(
 		                          info, shapenum, framenum, 0, 0, 0);
 		if (quality != c_any_qual)
 			newobj->set_quality(quality); // set quality
@@ -1380,30 +1388,32 @@ Usecode_value Usecode_internal::remove_cont_items(
  *  Create a new object and push it onto the last_created stack.
  */
 
-Game_object *Usecode_internal::create_object(
+Game_object_shared Usecode_internal::create_object(
     int shapenum,
     bool equip          // Equip monsters.
 ) {
-	Game_object *obj;       // Create to be written to Ireg.
+	Game_object_shared obj;       // Create to be written to Ireg.
 	const Shape_info &info = ShapeID::get_info(shapenum);
 	modified_map = true;
 	// +++Not sure if 1st test is needed.
 	if (info.get_monster_info() || info.is_npc()) {
 		// (Wait sched. added for FOV.)
 		// don't add equipment (Erethian's transform sequence)
-		Monster_actor *monster = Monster_actor::create(shapenum,
+		Game_object_shared new_monster = Monster_actor::create(shapenum,
 		                         Tile_coord(-1, -1, -1), Schedule::wait,
 		                         static_cast<int>(Actor::neutral), true, equip);
+		Monster_actor *monster = static_cast<Monster_actor *>(
+					  		   	 				new_monster.get());
 		// FORCE it to be neutral (dec04,01).
 		monster->set_alignment(static_cast<int>(Actor::neutral));
 		gwin->add_dirty(monster);
 		gwin->add_nearby_npc(monster);
 		gwin->show();
-		last_created.push_back(monster);
-		return monster;
+		last_created.push_back(monster->shared_from_this());
+		return new_monster;
 	} else {
 		if (info.is_body_shape())
-			obj = new Dead_body(shapenum, 0, 0, 0, 0, -1);
+			obj = std::make_shared<Dead_body>(shapenum, 0, 0, 0, 0, -1);
 		else {
 			obj = gmap->create_ireg_object(shapenum, 0);
 			// Be liberal about taking stuff.
@@ -1412,7 +1422,7 @@ Game_object *Usecode_internal::create_object(
 	}
 	obj->set_invalid();     // Not in world yet.
 	obj->set_flag(Obj_flags::okay_to_take);
-	last_created.push_back(obj);
+	last_created.push_back(obj->shared_from_this());
 	return obj;
 }
 
@@ -1774,7 +1784,7 @@ Usecode_internal::Usecode_internal(
 	saved_pos(-1, -1, -1),
 	saved_map(-1),
 	String(0), telekenesis_fun(-1), stack(new Usecode_value[1024]),
-	intercept_item(0), intercept_tile(0), temp_to_be_deleted(0)
+	intercept_item(0), intercept_tile(0)
 #ifdef USECODE_DEBUGGER
 	, on_breakpoint(false), breakpoint_action(-1)
 #endif
@@ -2324,7 +2334,7 @@ int Usecode_internal::run() {
 					pushi(0);
 					break;
 				}
-				if (val->is_array() && sval >= val->get_array_size())
+				if (val->is_array() && size_t(sval) >= val->get_array_size())
 					pushi(0);   // Matches originals.
 				else if (sval == 0) // needed for SS keyring (among others)
 					push(val->get_elem0());
@@ -2909,8 +2919,7 @@ int Usecode_internal::run() {
 					Usecode_value thisptr = peek();
 					c = thisptr.get_class_ptr();
 				} else {
-					Usecode_value thisptr = Read2(frame->ip);
-					c = get_class(thisptr.get_int_value());
+					c = get_class(Read2(frame->ip));
 				}
 				if (!c) {
 					THIS_ERROR();
@@ -2963,7 +2972,6 @@ int Usecode_internal::run() {
 		// pop the NULL frame from the stack
 		call_stack.pop_front();
 	}
-
 	if (aborted)
 		return 0;
 
@@ -3132,7 +3140,7 @@ bool Usecode_internal::in_usecode_for(
 	for (std::deque<Stack_frame *>::iterator iter = call_stack.begin();
 	        iter != call_stack.end(); ++iter) {
 		Stack_frame *frame = *iter;
-		if (frame->eventid == event && frame->caller_item == item)
+		if (frame->eventid == event && frame->caller_item.get() == item)
 			return true;
 	}
 	return false;

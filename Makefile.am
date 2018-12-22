@@ -38,8 +38,6 @@ exult_SOURCES =	\
 	combat.h	\
 	combat_opts.h	\
 	common_types.h	\
-	delobjs.cc	\
-	delobjs.h	\
 	dir.cc		\
 	dir.h		\
 	drag.cc		\
@@ -300,5 +298,5 @@ else
 install-exec-local:
 
 clean-local:
-	
+
 endif

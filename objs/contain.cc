@@ -94,8 +94,8 @@ void Container_game_object::remove(
 	int shapenum = obj->get_shapenum();
 	volume_used -= obj->get_volume();
 	obj->set_owner(0);
-	objects.remove(obj);
 	obj->set_invalid();     // No longer part of world.
+	objects.remove(obj);
 	if(g_shortcutBar)
 		g_shortcutBar->check_for_updates(shapenum);
 }
@@ -163,7 +163,7 @@ bool Container_game_object::add(
 	}
 	volume_used += objvol;
 	obj->set_owner(this);       // Set us as the owner.
-	objects.append(obj);        // Append to chain.
+	objects.append(obj->shared_from_this());        // Append to chain.
 	// Guessing:
 	if (get_flag(Obj_flags::okay_to_take))
 		obj->set_flag(Obj_flags::okay_to_take);
@@ -297,10 +297,10 @@ int Container_game_object::create_quantity(
 	if (!shp_info.has_quality())    // Not a quality object?
 		qual = c_any_qual;  // Then don't set it.
 	while (delta) {         // Create them here first.
-		Game_object *newobj = gmap->create_ireg_object(
+		Game_object_shared newobj = gmap->create_ireg_object(
 		                          shp_info, shnum, frnum, 0, 0, 0);
-		if (!add(newobj)) {
-			delete newobj;
+		if (!add(newobj.get())) {
+			newobj.reset();
 			break;
 		}
 
@@ -689,6 +689,7 @@ bool Container_game_object::extract_contents(Container_game_object *targ) {
 	Game_object *obj;
 
 	while ((obj = objects.get_first())) {
+	    Game_object_shared keep = obj->shared_from_this();
 		remove(obj);
 
 		if (targ) {
@@ -713,28 +714,33 @@ void Container_game_object::delete_contents() {
 
 	Game_object *obj;
 	while ((obj = objects.get_first())) {
-		remove(obj);
-
+	    Game_object_shared keep = obj->shared_from_this();
+	    remove(obj);
 		obj->delete_contents(); // recurse into contained containers
 		obj->remove_this(0);
 	}
 }
 
-void Container_game_object::remove_this(int nodel) {
+void Container_game_object::remove_this(
+    Game_object_shared *keep     // Non-null to not delete.
+	) {
 	// Needs to be saved, as it is invalidated below but needed
 	// shortly after.
+	Game_object_shared tmp_keep;
 	Container_game_object *safe_owner = Container_game_object::get_owner();
 	// Special case to avoid recursion.
 	if (safe_owner) {
 		// First remove from owner.
-		Ireg_game_object::remove_this(1);
-		if (nodel)      // Not deleting?  Then done.
+		Ireg_game_object::remove_this(&tmp_keep);
+		if (keep) {      // Not deleting?  Then done.
+		    *keep = std::move(tmp_keep);
 			return;
+		}
 	}
-	if (!nodel)
+	if (!keep)
 		extract_contents(safe_owner);
 
-	Ireg_game_object::remove_this(nodel);
+	Ireg_game_object::remove_this(keep);
 }
 
 /*

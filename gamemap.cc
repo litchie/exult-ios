@@ -588,7 +588,7 @@ void Game_map::get_ifix_chunk_objects(
     int len,            // Length of data.
     int cx, int cy          // Absolute chunk #'s.
 ) {
-	Ifix_game_object *obj;
+	Game_object_shared obj;
 	ifix->seek(filepos);        // Get to actual shape.
 	// Get buffer to hold entries' indices.
 	unsigned char *entries = new unsigned char[len];
@@ -604,9 +604,10 @@ void Game_map::get_ifix_chunk_objects(
 			int shnum = ent[2] + 256 * (ent[3] & 3), frnum = ent[3] >> 2;
 			const Shape_info &info = ShapeID::get_info(shnum);
 			obj = (info.is_animated() || info.has_sfx()) ?
-			      new Animated_ifix_object(shnum, frnum, tx, ty, tz)
-			      : new Ifix_game_object(shnum, frnum, tx, ty, tz);
-			olist->add(obj);
+			     std::make_shared<Animated_ifix_object>(shnum, frnum, 
+				  												tx, ty, tz)
+			     : std::make_shared<Ifix_game_object>(shnum, frnum, tx, ty, tz);
+			olist->add(obj.get());
 		}
 	} else if (static_cast<Flex::Flex_vers>(vers) == Flex::exult_v2) {
 		// b0 = tx,ty, b1 = lift, b2-3 = shnum, b4=frnum
@@ -617,9 +618,9 @@ void Game_map::get_ifix_chunk_objects(
 			int shnum = ent[2] + 256 * ent[3], frnum = ent[4];
 			const Shape_info &info = ShapeID::get_info(shnum);
 			obj = (info.is_animated() || info.has_sfx()) ?
-			      new Animated_ifix_object(shnum, frnum, tx, ty, tz)
-			      : new Ifix_game_object(shnum, frnum, tx, ty, tz);
-			olist->add(obj);
+			   std::make_shared<Animated_ifix_object>(shnum, frnum, tx, ty, tz)
+			   : std::make_shared<Ifix_game_object>(shnum, frnum, tx, ty, tz);
+			olist->add(obj.get());
 		}
 	} else
 		assert(0);
@@ -966,7 +967,7 @@ void Game_map::read_ireg_objects(
 		}
 		const Shape_info &info = ShapeID::get_info(shnum);
 		unsigned int lift, quality, type;
-		Ireg_game_object *obj;
+		Ireg_game_object_shared obj;
 		int is_egg = 0;     // Fields are eggs.
 
 		// Has flag byte(s)
@@ -979,10 +980,10 @@ void Game_map::read_ireg_objects(
 		if (info.get_shape_class() == Shape_info::hatchable) {
 			bool anim = info.is_animated() || info.has_sfx();
 			lift = entry[9] >> 4;
-			Egg_object *egg = Egg_object::create_egg(entry, entlen,
+			Egg_object_shared egg = Egg_object::create_egg(entry, entlen,
 			                  anim, shnum, frnum, tilex, tiley, lift);
-			get_chunk(scx + cx, scy + cy)->add_egg(egg);
-			last_obj = egg;
+			get_chunk(scx + cx, scy + cy)->add_egg(egg.get());
+			last_obj = egg.get();
 			continue;
 		} else if (testlen == 6 || testlen == 10) { // Simple entry?
 			type = 0;
@@ -1021,14 +1022,14 @@ void Game_map::read_ireg_objects(
 				npc_num = -1;
 			if (!npc_num)   // Avatar has no body.
 				npc_num = -1;
-			Dead_body *b = new Dead_body(shnum, frnum,
+			Dead_body_shared b = std::make_shared<Dead_body>(shnum, frnum,
 			                             tilex, tiley, lift, npc_num);
 			obj = b;
 			if (npc_num > 0)
-				gwin->set_body(npc_num, b);
+				gwin->set_body(npc_num, b.get());
 			if (type) { // (0 if empty.)
 				// Don't pass along invisibility!
-				read_ireg_objects(ireg, scx, scy, obj,
+				read_ireg_objects(ireg, scx, scy, obj.get(),
 				                  oflags & ~(1 << Obj_flags::invisible));
 				obj->elements_read();
 			}
@@ -1040,8 +1041,8 @@ void Game_map::read_ireg_objects(
 			    Get_quality_flags(entry[11]);
 			if (info.get_shape_class() == Shape_info::virtue_stone) {
 				// Virtue stone?
-				Virtue_stone_object *v =
-				    new Virtue_stone_object(shnum, frnum, tilex,
+				std::shared_ptr<Virtue_stone_object> v =
+				    std::make_shared<Virtue_stone_object>(shnum, frnum, tilex,
 				                            tiley, lift);
 				v->set_target_pos(entry[4], entry[5], entry[6],
 				                  entry[7]);
@@ -1049,25 +1050,26 @@ void Game_map::read_ireg_objects(
 				obj = v;
 				type = 0;
 			} else if (info.get_shape_class() == Shape_info::barge) {
-				Barge_object *b = new Barge_object(
-				    shnum, frnum, tilex, tiley, lift,
-				    entry[4], entry[5],
-				    (quality >> 1) & 3);
+				std::shared_ptr<Barge_object> b = 
+					std::make_shared<Barge_object>(
+				        shnum, frnum, tilex, tiley, lift,
+				    	entry[4], entry[5],
+				    	(quality >> 1) & 3);
 				obj = b;
 				if (!gwin->get_moving_barge() &&
 				        (quality & (1 << 3)))
-					gwin->set_moving_barge(b);
+					gwin->set_moving_barge(b.get());
 			} else if (info.is_jawbone()) { // serpent jawbone
-				obj = new Jawbone_object(shnum, frnum,
+				obj = std::make_shared<Jawbone_object>(shnum, frnum,
 				                         tilex, tiley, lift, entry[10]);
 			} else
-				obj = new Container_game_object(
+				obj = std::make_shared<Container_game_object>(
 				    shnum, frnum, tilex, tiley, lift,
 				    entry[10]);
 			// Read container's objects.
 			if (type) { // (0 if empty.)
 				// Don't pass along invisibility!
-				read_ireg_objects(ireg, scx, scy, obj,
+				read_ireg_objects(ireg, scx, scy, obj.get(),
 				                  oflags & ~(1 << Obj_flags::invisible));
 				obj->elements_read();
 			}
@@ -1082,7 +1084,7 @@ void Game_map::read_ireg_objects(
 			uint8 *ptr = &entry[14];
 			// 3 unknowns, then bookmark.
 			unsigned char bmark = ptr[3];
-			obj = new Spellbook_object(
+			obj = std::make_shared<Spellbook_object>(
 			    shnum, frnum, tilex, tiley, lift,
 			    &circles[0], bmark);
 		} else {
@@ -1104,13 +1106,13 @@ void Game_map::read_ireg_objects(
 		}
 		obj->set_quality(quality);
 		obj->set_flags(oflags);
-		last_obj = obj;     // Save as last read.
+		last_obj = obj.get();     // Save as last read.
 		// Add, but skip volume check.
 		if (container) {
 			if (index_id != -1 &&
-			        container->add_readied(obj, index_id, 1, 1))
+			        container->add_readied(obj.get(), index_id, 1, 1))
 				continue;
-			else if (container->add(obj, 1))
+			else if (container->add(obj.get(), 1))
 				continue;
 			else        // Fix tx, ty.
 				obj->set_shape_pos(obj->get_tx() & 0xf,
@@ -1120,7 +1122,7 @@ void Game_map::read_ireg_objects(
 		if (is_egg)
 			chunk->add_egg(obj->as_egg());
 		else
-			chunk->add(obj);
+			chunk->add(obj.get());
 	}
 }
 
@@ -1128,55 +1130,61 @@ void Game_map::read_ireg_objects(
  *  Create non-container IREG objects.
  */
 
-Ireg_game_object *Game_map::create_ireg_object(
+Ireg_game_object_shared Game_map::create_ireg_object(
     const Shape_info &info,       // Info. about shape.
     int shnum, int frnum,       // Shape, frame.
     int tilex, int tiley,       // Tile within chunk.
     int lift            // Desired lift.
 ) {
+    Ireg_game_object_shared newobj;
 	// (These are all animated.)
 	if (info.is_field() && info.get_field_type() >= 0)
-		return new Field_object(shnum, frnum, tilex, tiley,
-		                        lift, Egg_object::fire_field + info.get_field_type());
+		newobj = std::make_shared<Field_object>(shnum, frnum, tilex, tiley,
+		               lift, Egg_object::fire_field + info.get_field_type());
 	else if (info.is_animated() || info.has_sfx())
-		return new Animated_ireg_object(
+		newobj = std::make_shared<Animated_ireg_object>(
 		           shnum, frnum, tilex, tiley, lift);
 	else if (shnum == 607)      // Path.
-		return new Egglike_game_object(
+		newobj = std::make_shared<Egglike_game_object>(
 		           shnum, frnum, tilex, tiley, lift);
 	else if (info.is_mirror())  // Mirror
-		return new Mirror_object(shnum, frnum, tilex, tiley, lift);
+		newobj = std::make_shared<Mirror_object>(shnum, frnum, 
+			   	 									   tilex, tiley, lift);
 	else if (info.is_body_shape())
-		return new Dead_body(shnum, frnum, tilex, tiley, lift, -1);
+		newobj = std::make_shared<Dead_body>(shnum, frnum, 
+			   	 								   	tilex, tiley, lift, -1);
 	else if (info.get_shape_class() == Shape_info::virtue_stone)
-		return new Virtue_stone_object(
+		newobj = std::make_shared<Virtue_stone_object>(
 		           shnum, frnum, tilex, tiley, lift);
 	else if (info.get_shape_class() == Shape_info::spellbook) {
 		static unsigned char circles[9] = {0};
-		return new Spellbook_object(
+		newobj = std::make_shared<Spellbook_object>(
 		           shnum, frnum, tilex, tiley, lift,
 		           &circles[0], 0);
 	} else if (info.get_shape_class() == Shape_info::barge) {
-		return new Barge_object(
+		newobj = std::make_shared<Barge_object>(
 				    shnum, frnum, tilex, tiley, lift,
 					// FOR NOW: 8x16 tiles, North.
 				    8, 16, 0);
 	} else if (info.get_shape_class() == Shape_info::container) {
 		if (info.is_jawbone())
-			return new Jawbone_object(shnum, frnum, tilex, tiley,
-			                          lift);
+			newobj = std::make_shared<Jawbone_object>(shnum, frnum, 
+				   	 								tilex, tiley, lift);
 		else
-			return new Container_game_object(shnum, frnum,
+			newobj = std::make_shared<Container_game_object>(shnum, frnum,
 			                                 tilex, tiley, lift);
-	} else
-		return new Ireg_game_object(shnum, frnum, tilex, tiley, lift);
+	} else {
+	    newobj = std::make_shared<Ireg_game_object>(shnum, frnum, 
+														  tilex, tiley, lift);
+	}
+    return newobj;
 }
 
 /*
  *  Create non-container IREG objects.
  */
 
-Ireg_game_object *Game_map::create_ireg_object(
+Ireg_game_object_shared Game_map::create_ireg_object(
     int shnum, int frnum        // Shape, frame.
 ) {
 	return create_ireg_object(ShapeID::get_info(shnum),
@@ -1187,13 +1195,13 @@ Ireg_game_object *Game_map::create_ireg_object(
  *  Create 'fixed' (landscape, building) objects.
  */
 
-Ifix_game_object *Game_map::create_ifix_object(
+Ifix_game_object_shared Game_map::create_ifix_object(
     int shnum, int frnum        // Shape, frame.
 ) {
 	const Shape_info &info = ShapeID::get_info(shnum);
 	return (info.is_animated() || info.has_sfx())
-	       ? new Animated_ifix_object(shnum, frnum, 0, 0, 0)
-	       : new Ifix_game_object(shnum, frnum, 0, 0, 0);
+	       ? std::make_shared<Animated_ifix_object>(shnum, frnum, 0, 0, 0)
+	       : std::make_shared<Ifix_game_object>(shnum, frnum, 0, 0, 0);
 }
 
 /*

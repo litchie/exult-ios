@@ -63,11 +63,11 @@ protected:
 	unsigned char temperature;  // Measure of coldness (0-63).
 	short shape_save;       // Our old shape, or -1.
 	short oppressor;        // NPC ID (>= 0) of oppressor, or -1.
-	Game_object *target;        // Who/what we're attacking.
+	Game_object_weak target;        // Who/what we're attacking.
 	short casting_mode;     //For displaying casting frames.
 	int casting_shape;  //Shape of casting frames.
 	// These 2 are set by the Usecode function 'set_to_attack':
-	Game_object *target_object;
+	Game_object_weak target_object;
 	Tile_coord target_tile;
 	int attack_weapon;
 public:
@@ -146,7 +146,8 @@ protected:
 	void movef(Map_chunk *old_chunk, Map_chunk *new_chunk,
 	           int new_sx, int new_sy, int new_frame, int new_lift);
 	bool is_really_blocked(Tile_coord &t, bool force);
-	bool empty_hand(Game_object *obj);      // Empty one hand
+    // Empty one hand
+    bool empty_hand(Game_object *obj, Game_object_shared *keep);
 public:
 	friend class Clear_casting;
 	friend class Clear_hit;
@@ -349,8 +350,6 @@ public:
 	// Set new action.
 	void set_action(Actor_action *newact);
 	void purge_deleted_actions();
-	// Notify scheduler obj. disappeared.
-	void notify_object_gone(Game_object *obj);
 	Tile_coord get_dest();      // Get destination.
 	// Walk to a desired spot.
 	void walk_to_tile(Tile_coord const &dest, int speed = 250, int delay = 0,
@@ -381,7 +380,7 @@ public:
 	// Set combat opponent.
 	void set_target(Game_object *obj, bool start_combat = false);
 	Game_object *get_target() { // Get who/what we're attacking.
-		return target;
+	  return target.lock().get();
 	}
 	// Works out if an object fits in a spot
 	bool fits_in_spot(Game_object *obj, int spot);
@@ -454,17 +453,18 @@ public:
 	void fight_back(Game_object *attacker);
 	bool get_attack_target(Game_object *&obj, Tile_coord &t) {
 		static Tile_coord invalidloc(-1, -1, 0);
-		obj = target_object;
+		Game_object_shared tobj = target_object.lock();
+		obj = tobj.get();
 		t = target_tile;
-		return (target_object || target_tile != invalidloc);
+		return (obj || target_tile != invalidloc);
 	}
 	void set_attack_target(Game_object *t, int w) {
 		target_tile = Tile_coord(-1, -1, 0);
-		target_object = t;
+		target_object = weak_from_obj(t);
 		attack_weapon = w;
 	}
 	void set_attack_target(Tile_coord const &t, int w) {
-		target_object = 0;
+	    target_object = Game_object_weak();
 		target_tile = t;
 		target_tile.fixme();
 		attack_weapon = w;
@@ -638,7 +638,7 @@ public:
 	virtual void lay_down(bool die);
 	virtual void die(Game_object *attacker);        // We're dead.
 	Actor *resurrect(Dead_body *body);// Bring back to life.
-	Monster_actor *clone();     // Create another nearby to this.
+	Game_object_shared clone();     // Create another nearby to this.
 	void mend_wounds(bool mendmana);        // Restore HP's and MP's.
 	// Read from file.
 	void read(IDataSource *nfile, int num, bool has_usecode,
@@ -701,6 +701,7 @@ public:
 	bool in_usecode_control() const;
 	bool quake_on_walk();
 };
+typedef std::shared_ptr<Actor> Actor_shared;
 
 /*
  *  Actor frame descriptions:
@@ -742,6 +743,7 @@ public:
 	virtual void move(int newtx, int newty, int newlift, int newmap = -1);
 	virtual void die(Game_object *attacker);        // We're dead.
 };
+typedef std::shared_ptr<Main_actor> Main_actor_shared;
 
 /*
  *  A non-player-character that one can converse (or fight) with:
@@ -788,7 +790,7 @@ public:
 	// Step onto an (adjacent) tile.
 	virtual int step(Tile_coord t, int frame, bool force = false);
 	// Remove/delete this object.
-	virtual void remove_this(int nodel = 0);
+	virtual void remove_this(Game_object_shared *keep = 0);
 	// Update chunks after NPC moved.
 	virtual void switched_chunks(Map_chunk *olist,
 	                             Map_chunk *nlist);
@@ -799,6 +801,7 @@ public:
 		return this;
 	}
 };
+typedef std::shared_ptr<Npc_actor> Npc_actor_shared;
 
 /*
  *  An actor's dead body:
@@ -822,5 +825,6 @@ public:
 	virtual void write_ireg(ODataSource *out);
 	virtual int get_ireg_size();
 };
+typedef std::shared_ptr<Dead_body> Dead_body_shared;
 
 #endif

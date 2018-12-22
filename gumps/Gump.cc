@@ -375,10 +375,10 @@ void Gump::paint(
 		obj = obj->get_next();
 	}
 	// Outline selections in this gump.
-	const Game_object_vector &sel = cheat.get_selected();
-	for (Game_object_vector::const_iterator it = sel.begin();
+	const Game_object_shared_vector &sel = cheat.get_selected();
+	for (Game_object_shared_vector::const_iterator it = sel.begin();
 	        it != sel.end(); ++it) {
-		Game_object *obj = *it;
+		Game_object *obj = (*it).get();
 		if (container == obj->get_owner()) {
 			int x, y;
 			get_shape_location(obj, x, y);

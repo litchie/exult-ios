@@ -86,20 +86,18 @@ void Ireg_game_object::move(
  */
 
 void Ireg_game_object::remove_this(
-    int nodel           // 1 to not delete.
+    Game_object_shared *keep     // Non-null to not delete.
 ) {
 	// Do this before all else.
-	if (!nodel)
-		remove_clients();
+	if (!keep) {
+		cheat.clear_this_grabbed_actor(this->as_actor());   // Could be an actor
+	} else
+	    *keep = shared_from_this();
 	if (owner)          // In a bag, box, or person.
 		owner->remove(this);
 	else {              // In the outside world.
 		if (chunk)
 			chunk->remove(this);
-	}
-	if (!nodel) {
-		cheat.clear_this_grabbed_actor(this->as_actor());   // Could be an actor
-		gwin->delete_object(this);
 	}
 }
 

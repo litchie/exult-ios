@@ -52,12 +52,13 @@ public:
 	// Step onto an (adjacent) tile.
 	virtual int step(Tile_coord t, int frame, bool force = false);
 	// Remove/delete this object.
-	virtual void remove_this(int nodel = 0);
+	virtual void remove_this(Game_object_shared *keep = 0);
 	// Move to new abs. location.
 	virtual void move(int newtx, int newty, int newlift, int newmap = -1);
 	virtual void lay_down(bool die) {
 		ignore_unused_variable_warning(die);
-		remove_this(1);         // Remove (but don't delete this).
+		Game_object_shared keep;
+		remove_this(&keep);         // Remove (but don't delete this).
 		set_invalid();
 	}
 	virtual bool is_slime() const {
@@ -66,7 +67,7 @@ public:
 };
 
 
-Monster_actor *Monster_actor::in_world = 0;
+Game_object_shared Monster_actor::in_world;
 
 /*
  *  Add to global list (if not already there).
@@ -74,12 +75,12 @@ Monster_actor *Monster_actor::in_world = 0;
 
 void Monster_actor::link_in(
 ) {
-	if (prev_monster || in_world == this)
+	if (prev_monster || in_world.get() == this)
 		return;         // Already in list.
 	if (in_world)           // Add to head.
-		in_world->prev_monster = this;
+		(static_cast<Monster_actor *>(in_world.get()))->prev_monster = this;
 	next_monster = in_world;
-	in_world = this;
+	in_world = shared_from_this();
 }
 
 /*
@@ -89,13 +90,15 @@ void Monster_actor::link_in(
 void Monster_actor::link_out(
 ) {
 	if (next_monster)
-		next_monster->prev_monster = prev_monster;
+		(static_cast<Monster_actor *>(next_monster.get()))->prev_monster =
+								   								prev_monster;
 	if (prev_monster)
 		prev_monster->next_monster = next_monster;
 	else                // We're at start of list.
-		if (in_world == this)
+		if (in_world.get() == this)
 			in_world = next_monster;
-	next_monster = prev_monster = 0;
+	next_monster = nullptr;
+	prev_monster = 0;
 }
 
 /*
@@ -122,7 +125,6 @@ Monster_actor::Monster_actor(
 Monster_actor::~Monster_actor(
 ) {
 	delete animator;
-	link_out();         // Remove from chain.
 }
 
 /*
@@ -169,15 +171,15 @@ void Monster_actor::equip(
  *  Create an instance of a monster.
  */
 
-Monster_actor *Monster_actor::create(
+Game_object_shared Monster_actor::create(
     int shnum           // Shape to use.
 ) {
 	// Get usecode for shape.
 	int ucnum = ucmachine->get_shape_fun(shnum);
 	if (shnum == 529)       // Slime?
-		return new Slime_actor("", shnum, -1, ucnum);
+		return std::make_shared<Slime_actor>("", shnum, -1, ucnum);
 	else
-		return new Monster_actor("", shnum, -1, ucnum);
+		return std::make_shared<Monster_actor>("", shnum, -1, ucnum);
 }
 
 static inline int Randomize_initial_stat(int val) {
@@ -193,7 +195,7 @@ static inline int Randomize_initial_stat(int val) {
  *  Create an instance of a monster and initialize from monstinf.dat.
  */
 
-Monster_actor *Monster_actor::create(
+Game_object_shared Monster_actor::create(
     int shnum,          // Shape to use.
     Tile_coord pos,         // Where to place it.  If pos.tx < 0,
     //   it's not placed in the world.
@@ -206,7 +208,8 @@ Monster_actor *Monster_actor::create(
 	const Monster_info *inf = ShapeID::get_info(shnum).get_monster_info();
 	if (!inf)
 		inf = Monster_info::get_default();
-	Monster_actor *monster = create(shnum);
+	Game_object_shared new_monster = create(shnum);
+	Monster_actor *monster = static_cast<Monster_actor *>(new_monster.get());
 	monster->set_alignment(align == static_cast<int>(Actor::neutral)
 	                       ? inf->alignment : align);
 	// Movement flags
@@ -271,7 +274,7 @@ Monster_actor *Monster_actor::create(
 	if (sched < 0)          // Set sched. AFTER equipping.
 		sched = static_cast<int>(Schedule::loiter);
 	monster->set_schedule_type(sched);
-	return (monster);
+	return (new_monster);
 }
 
 /*
@@ -280,8 +283,14 @@ Monster_actor *Monster_actor::create(
 
 void Monster_actor::delete_all(
 ) {
-	while (in_world)
-		delete in_world;
+#if 0
+	while (in_world) {
+	    Monster_actor *m = static_cast<Monster_actor *>(in_world.get());
+		m->link_out();         // Remove from chain.
+	}
+#else
+    in_world = nullptr;
+#endif
 }
 
 /*
@@ -355,10 +364,11 @@ int Monster_actor::step(
  */
 
 void Monster_actor::remove_this(
-    int nodel           // 1 to not delete.
+    Game_object_shared *keep     // Non-null to not delete.
 ) {
-	link_out();         // Remove from list.
-	Npc_actor::remove_this(nodel);
+    if (!keep)			// +++++Experiment
+	    link_out();         // Remove from list.
+	Npc_actor::remove_this(keep);
 }
 
 /*
@@ -562,7 +572,8 @@ int Slime_actor::step(
 	if (newpos != oldpos && rand() % 9 == 0 &&
 	        !find_nearby(blood, oldpos, 912, 1, 0)) {
 		// Frames 4-11 are green.
-		Game_object *b = get_map()->create_ireg_object(912, 4 + rand() % 8);
+		Game_object_shared b = get_map()->create_ireg_object(
+											912, 4 + rand() % 8);
 		b->set_flag(Obj_flags::is_temporary);
 		b->move(oldpos);
 	}
@@ -575,10 +586,10 @@ int Slime_actor::step(
  */
 
 void Slime_actor::remove_this(
-    int nodel           // 1 to not delete.
+    Game_object_shared *keep     // Non-null to not delete.
 ) {
 	Tile_coord pos = get_tile();
-	Monster_actor::remove_this(nodel);
+	Monster_actor::remove_this(keep);
 	// Update surrounding slimes.
 	update_frames(pos, Tile_coord(-1, -1, -1));
 }

@@ -72,7 +72,8 @@ bool Map_patch_modify::apply(
 	Game_object *obj = find();
 	if (!obj)
 		return false;
-	obj->remove_this(1);        // Remove but don't delete.
+	Game_object_shared keep;
+	obj->remove_this(&keep);        // Remove but don't delete.
 	if (mod.shapenum != c_any_shapenum)
 		obj->set_shape(mod.shapenum);
 	if (mod.framenum != c_any_framenum)
