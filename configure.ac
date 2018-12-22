@@ -182,10 +182,6 @@ AC_CHECK_HEADERS(sys/types.h sys/socket.h netdb.h)
 AC_CHECK_HEADERS(sys/wait.h signal.h)
 AC_CHECK_HEADERS(png.h, AM_CONDITIONAL(HAVE_PNG,true), AM_CONDITIONAL(HAVE_PNG, false))
 
-AC_CHECK_HEADERS(sstream)
-AC_CHECK_HEADERS(unordered_map, [], AC_DEFINE(DONT_HAVE_HASH_MAP, 1, [Doesn't have hash map]))
-AC_CHECK_HEADERS(unordered_set, [], AC_DEFINE(DONT_HAVE_HASH_SET, 1, [Doesn't have hash set]))
-
 # ---------------------------------------------------------------------
 # Checks for typedefs, structures, and compiler characteristics.
 # ---------------------------------------------------------------------

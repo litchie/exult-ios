@@ -54,6 +54,7 @@ private:
 	void calc_highlow();
 	void clean_up();
 	int load_internal(IDataSource& data, int hlead, int vlead);
+
 public:
 	Font();
 	Font(const File_spec &fname0, int index, int hlead = 0, int vlead = 1);
@@ -108,11 +109,8 @@ public:
  */
 class FontManager {
 private:
-#ifndef DONT_HAVE_HASH_MAP
-	unordered_map<const char *, Font *, hashstr, eqstr> fonts;
-#else
-	std::map<const char *, Font *, ltstr> fonts;
-#endif
+	std::unordered_map<const char *, Font *, hashstr, eqstr> fonts;
+
 public:
 	FontManager();
 	~FontManager();

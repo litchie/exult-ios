@@ -32,9 +32,7 @@
 #include <cstdlib>
 #include <cctype>
 #include <fstream>
-#ifdef HAVE_SSTREAM
 #include <sstream>
-#endif
 
 using std::atoi;
 using std::endl;

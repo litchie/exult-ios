@@ -27,11 +27,7 @@
 #include <iomanip>
 #include <fstream>
 #include <stack>
-#ifdef HAVE_SSTREAM
 #include <sstream>
-using std::stringstream;
-#endif
-
 
 /*** head2data
 #ifndef __STRING
@@ -51,6 +47,7 @@ using std::string;
 using std::cerr;
 using std::pair;
 using std::map;
+using std::stringstream;
 
 #define MAX_NO_OPCODES 512
 vector<UCOpcodeData> opcode_table_data(MAX_NO_OPCODES);

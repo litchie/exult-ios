@@ -23,11 +23,7 @@
 #include "ucdata.h"
 #include "ucfunc.h"
 #include <set>
-#ifdef HAVE_SSTREAM
 #include <sstream>
-#else
-#include <strstream>
-#endif
 #include <algorithm>
 #include <iomanip>
 #include <cctype>
@@ -804,11 +800,7 @@ static void print_number(char c, std::stringstream &str, const vector<unsigned i
 }
 
 string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmstr, const map<unsigned int, string> &intrinsics, const UCc &op, bool ucs_output, Usecode_symbol_table *symtbl) {
-#ifdef HAVE_SSTREAM
 	std::stringstream str;
-#else
-	std::strstream str;
-#endif
 	str << std::setfill('0') << std::setbase(16);
 	str.setf(ios::uppercase);
 	size_t  len = asmstr.length();

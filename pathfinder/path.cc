@@ -212,8 +212,6 @@ public:
 	}
 };
 
-#ifndef DONT_HAVE_HASH_SET
-
 /*
  *  Hash function for nodes:
  */
@@ -236,29 +234,6 @@ public:
 	}
 };
 
-#else
-
-/*
- *  "Less than" relation for nodes
- */
-class Less_nodes {
-public:
-	bool operator()(const Search_node *a, const Search_node *b) const {
-		Tile_coord ta = a->get_tile(), tb = b->get_tile();
-		uint32 apos = ta.tx << 16, bpos = tb.tx << 16;
-		apos |= ta.ty << 4;
-		bpos |= tb.ty << 4;
-		apos |= ta.tz;
-		bpos |= tb.tz;
-		/* Because #(short x short) is <= #int, we can define an injective projection,
-		** which is all we need. */
-		return apos < bpos;
-	}
-};
-
-#endif
-
-
 /*
  *  The priority queue for the A* algorithm:
  */
@@ -267,19 +242,11 @@ class A_star_queue {
 	//   is a ->last node in chain.
 	int best;           // Index of 1st non-null ent. in open.
 	// For finding each tile's node:
-#ifndef DONT_HAVE_HASH_SET
-	typedef unordered_set<Search_node *, Hash_node, Equal_nodes> Lookup_set;
-#else
-	typedef std::set<Search_node *, Less_nodes> Lookup_set;
-#endif
+	typedef std::unordered_set<Search_node *, Hash_node, Equal_nodes> Lookup_set;
 	Lookup_set lookup;
+
 public:
-#ifndef DONT_HAVE_HASH_SET
-	A_star_queue() : open(256), lookup(1000)
-#else
-	A_star_queue() : open(256), lookup()
-#endif
-	{
+	A_star_queue() : open(256), lookup(1000) {
 		open.insert(open.begin(), 256, nullptr);
 		best = open.size(); // Best is past end.
 	}
@@ -358,13 +325,8 @@ public:
 	// Find node for given tile.
 	Search_node *find(const Tile_coord& tile) {
 		Search_node key(tile);
-#ifndef DONT_HAVE_HASH_SET
-		unordered_set<Search_node *, Hash_node, Equal_nodes>::iterator it =
+		std::unordered_set<Search_node *, Hash_node, Equal_nodes>::iterator it =
 		    lookup.find(&key);
-#else
-		std::set<Search_node *, Less_nodes>::iterator it =
-		    lookup.find(&key);
-#endif
 		if (it != lookup.end())
 			return *it;
 		else
