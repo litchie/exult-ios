@@ -851,10 +851,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\delobjs.cc"
-					>
-				</File>
-				<File
 					RelativePath="..\dir.cc"
 					>
 				</File>
@@ -1003,10 +999,6 @@
 					</File>
 					<File
 						RelativePath="..\combat.h"
-						>
-					</File>
-					<File
-						RelativePath="..\delobjs.h"
 						>
 					</File>
 					<File

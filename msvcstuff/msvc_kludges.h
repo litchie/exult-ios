@@ -231,7 +231,6 @@ using std::getline;
 #include "../cheat.h"
 #include "../cheat_screen.h"
 #include "../combat.h"
-#include "../delobjs.h"
 #include "../dir.h"
 #include "../effects.h"
 #include "../headers/exceptions.h"

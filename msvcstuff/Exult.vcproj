@@ -265,14 +265,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\delobjs.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\delobjs.h"
-				>
-			</File>
-			<File
 				RelativePath="..\dir.cc"
 				>
 			</File>

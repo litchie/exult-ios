@@ -8,7 +8,6 @@ MAIN_OBJS=actions.o \
 	cheat.o \
 	cheat_screen.o \
 	combat.o \
-	delobjs.o \
 	dir.o \
 	drag.o \
 	effects.o \
@@ -253,8 +252,6 @@ OBJS_OBJS= \
 	objs/iregobjs.o \
 	objs/jawbone.o \
 	objs/mappatch.o \
-	objs/objclient.o \
-	objs/objiter.o \
 	objs/objnames.o \
 	objs/objs.o \
 	objs/spellbook.o \
