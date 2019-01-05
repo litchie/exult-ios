@@ -307,8 +307,12 @@ if test "x$PKG_CONFIG" != "x"; then
 	PKG_CHECK_MODULES(OGG, ogg >= 1.0 vorbis >= 1.0.1 vorbisfile, , AC_MSG_ERROR([*** must have Ogg/Vorbis installed!]))
 else
 	dnl old school test
-	XIPH_PATH_OGG(, AC_MSG_ERROR([*** must have Ogg installed!]))
-	XIPH_PATH_VORBIS(, AC_MSG_ERROR([*** must have Vorbis installed!]))
+	m4_ifdef([XIPH_PATH_OGG], [
+		XIPH_PATH_OGG(, AC_MSG_ERROR([*** must have Ogg installed!]))
+		], AC_MSG_ERROR([*** must have Ogg installed!]))
+	m4_ifdef([XIPH_PATH_VORBIS], [
+		XIPH_PATH_VORBIS(, AC_MSG_ERROR([*** must have Vorbis installed!]))
+	], AC_MSG_ERROR([*** must have Vorbis installed!]))
 fi
 
 # ---------------------------------------------------------------------
