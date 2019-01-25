@@ -3225,11 +3225,7 @@ void Usecode_internal::read(
 	}
 
 	clear_usevars(); // first clear all statics
-	try {
-		read_usevars();
-	} catch (exult_exception &/*e*/) {
-		// Okay if this doesn't exist.
-	}
+	read_usevars();
 	try {
 		U7open(in, USEDAT);
 	} catch (exult_exception &/*e*/) {
@@ -3272,6 +3268,10 @@ void Usecode_internal::read(
 
 void Usecode_internal::read_usevars() {
 	IFileDataSource nfile(USEVARS);
+	if (!nfile.good()) {
+		// Okay if this doesn't exist.
+		return;
+	}
 	int cnt = nfile.read4();        // Global statics.
 	statics.resize(cnt);
 	int i;

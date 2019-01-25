@@ -240,19 +240,16 @@ void Read_a_schedule(
 
 void Game_window::read_schedules(
 ) {
-	std::unique_ptr<IFileDataSource> sfile;
-	try {
-		sfile = std::make_unique<IFileDataSource>(GSCHEDULE);
-	} catch (exult_exception const &) {
+	std::unique_ptr<IFileDataSource> sfile = std::make_unique<IFileDataSource>(GSCHEDULE);
+	if (!sfile->good()) {
 #ifdef DEBUG
 		cerr << "Couldn't open " << GSCHEDULE << ". Falling back to "
 		     << SCHEDULE_DAT << "." << endl;
 #endif
-		try {
-			sfile = std::make_unique<IFileDataSource>(SCHEDULE_DAT);
-		} catch (exult_exception const &) {
+		sfile = std::make_unique<IFileDataSource>(SCHEDULE_DAT);
+		if (!sfile->good()) {
 			if (!Game::is_editing())
-				throw;
+				throw file_open_exception(get_system_path(SCHEDULE_DAT));
 			else
 				return;
 		}
