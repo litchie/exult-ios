@@ -389,14 +389,15 @@ void MyMidiPlayer::load_timbres()
 
 	if (index == -1) {
 		ds = std::make_unique<IFileDataSource>(filename);
+		if (!ds->good()) {
+			return;
+		}
 	} else if (index >= 0) {
 		ds = std::make_unique<IExultDataSource>(filename, index);
 	}
 
-	if (!ds->good()) {
-		return;
-	}
-
+	// Note: ds can be null here if inde == -2. In this case, the pointer
+	// will never be used inside loadTimbreLibrary.
 	midi_driver->loadTimbreLibrary(ds.get(), type);
 }
 
