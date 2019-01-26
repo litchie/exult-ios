@@ -896,10 +896,12 @@ void Newfile_gump::text_input(int chr, int unicode) {
 		break;
 
 	default:
+#if 1 && !SDL_VERSION_ATLEAST(2, 0, 0)   /* Assumes unicode is enabled. */
 		if ((unicode & 0xFF80) == 0)
 			chr = unicode & 0x7F;
 		else
 			chr = 0;
+#endif
 		if (chr < ' ')
 			return;         // Ignore other special chars.
 

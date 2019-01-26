@@ -561,6 +561,7 @@ int Gump_manager::handle_modal_gump_event(
 #else
 		keysym_unicode = event.key.keysym.unicode;
 #endif
+		translate_numpad(event.key.keysym.sym, keysym_unicode, event.key.keysym.mod);
 		gump->key_down(event.key.keysym.sym);
 		gump->text_input(event.key.keysym.sym, keysym_unicode);
 
@@ -583,6 +584,91 @@ int Gump_manager::handle_modal_gump_event(
 	}
 	return (1);
 }
+
+void Gump_manager::translate_numpad(SDL_Keycode& code, uint16& unicode, uint16 mod) {
+	bool numlock_active = (mod & KMOD_NUM) != 0;
+	unicode = 0;
+	switch (code) {
+	case SDLK_KP_0:
+		if (numlock_active) {
+			code = SDLK_0;
+			unicode = '0';
+		}
+		break;
+	case SDLK_KP_1:
+		if (numlock_active) {
+			code = SDLK_1;
+			unicode = '1';
+		} else {
+			code = SDLK_END;
+		}
+		break;
+	case SDLK_KP_2:
+		if (numlock_active) {
+			code = SDLK_2;
+			unicode = '2';
+		} else {
+			code = SDLK_DOWN;
+		}
+		break;
+	case SDLK_KP_3:
+		if (numlock_active) {
+			code = SDLK_3;
+			unicode = '3';
+		} else {
+			code = SDLK_PAGEDOWN;
+		}
+		break;
+	case SDLK_KP_4:
+		if (numlock_active) {
+			code = SDLK_4;
+			unicode = '4';
+		} else {
+			code = SDLK_LEFT;
+		}
+		break;
+	case SDLK_KP_5:
+		if (numlock_active) {
+			code = SDLK_5;
+			unicode = '5';
+		}
+		break;
+	case SDLK_KP_6:
+		if (numlock_active) {
+			code = SDLK_6;
+			unicode = '6';
+		} else {
+			code = SDLK_RIGHT;
+		}
+		break;
+	case SDLK_KP_7:
+		if (numlock_active) {
+			code = SDLK_7;
+			unicode = '7';
+		} else {
+			code = SDLK_HOME;
+		}
+		break;
+	case SDLK_KP_8:
+		if (numlock_active) {
+			code = SDLK_8;
+		} else {
+			code = SDLK_UP;
+		}
+		break;
+	case SDLK_KP_9:
+		if (numlock_active) {
+			code = SDLK_9;
+			unicode = '9';
+		} else {
+			code = SDLK_PAGEUP;
+		}
+		break;
+	default:
+		break;
+	}
+}
+
 
 /*
  *  Handle a modal gump, like the range slider or the save box, until

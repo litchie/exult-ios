@@ -22,6 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "Notebook_gump.h"
 #include "Gump_button.h"
+#include "Gump_manager.h"
 #include "exult_flx.h"
 #include "game.h"
 #include "gamewin.h"
@@ -629,12 +630,13 @@ bool Notebook_gump::handle_kbd_event(
     void *vev
 ) {
 	SDL_Event &ev = *static_cast<SDL_Event *>(vev);
-	int chr = ev.key.keysym.sym;
 #if SDL_VERSION_ATLEAST(2, 0, 0)
-	//int unicode = 0; // Unicode is way different in SDL2
+	uint16 unicode = 0; // Unicode is way different in SDL2
 #else
-	int unicode = ev.key.keysym.unicode;
+	uint16 unicode = ev.key.keysym.unicode;
 #endif
+	Gump_manager::translate_numpad(ev.key.keysym.sym, unicode, ev.key.keysym.mod);
+	int chr = ev.key.keysym.sym;
 
 	if (ev.type == SDL_KEYUP)
 		return true;        // Ignoring key-up at present.
