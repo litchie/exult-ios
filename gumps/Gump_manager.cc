@@ -548,7 +548,7 @@ int Gump_manager::handle_modal_gump_event(
 	return (1);
 }
 
-void Gump_manager::translate_numpad(SDL_Keycode& code, uint16& unicode, uint16 mod) {
+void Gump_manager::translate_numpad(SDLKey& code, uint16& unicode, uint16 mod) {
 	bool numlock_active = (mod & KMOD_NUM) != 0;
 	unicode = 0;
 	switch (code) {

@@ -24,7 +24,6 @@
 #include "singles.h"
 #include "mouse.h"
 #include "SDL_events.h"
-#include "SDL_keyboard.h"
 
 class Gump;
 class Game_object;
@@ -77,7 +76,7 @@ public:
 
 	bool double_clicked(int x, int y, Game_object *&obj);
 	bool handle_kbd_event(void *ev);
-	static void translate_numpad(SDL_Keycode& code, uint16& unicode, uint16 mod);
+	static void translate_numpad(SDLKey& code, uint16& unicode, uint16 mod);
 
 	inline bool can_right_click_close() {
 		return right_click_close;
