@@ -87,7 +87,7 @@ bool Flex_header::is_flex(IDataSource *in) {
 	size_t len = in->getSize();   // Check length.
 	uint32 magic = 0;
 	if (len >= FLEX_HEADER_LEN) {      // Has to be at least this long.
-		in->seek(pos + FLEX_TITLE_LEN);
+		in->seek(FLEX_TITLE_LEN);
 		magic = in->read4();
 	}
 	in->seek(pos);
