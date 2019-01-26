@@ -831,12 +831,12 @@ bool MyMidiPlayer::ogg_play_track(const std::string& filename, int num, bool rep
 	cout << "OGG audio: Music track " << ogg_name << endl;
 #endif
 
-	IFileDataSource ds(ogg_name.c_str());
-	if (!ds.good()) {
+	auto ds = std::make_unique<IFileDataSource>(ogg_name.c_str());
+	if (!ds->good()) {
 		return false;
 	}
 
-	if (!Pentagram::OggAudioSample::isThis(&ds)) {
+	if (!Pentagram::OggAudioSample::isThis(ds.get())) {
 		std::cerr << "Failed to play OGG Music Track " << ogg_name << ". Reason: " << "Unknown" << std::endl;
 		return false;
 	}
@@ -848,8 +848,8 @@ bool MyMidiPlayer::ogg_play_track(const std::string& filename, int num, bool rep
 		ogg_instance_id = -1;
 	}
 
-	ds.seek(0);
-	Pentagram::AudioSample *ogg_sample = new Pentagram::OggAudioSample(&ds);
+	ds->seek(0);
+	Pentagram::AudioSample *ogg_sample = new Pentagram::OggAudioSample(std::move(ds));
 
 	ogg_instance_id = mixer->playSample(ogg_sample, repeat?-1:0, INT_MAX);
 

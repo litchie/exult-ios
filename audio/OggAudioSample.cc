@@ -31,8 +31,8 @@ ov_callbacks OggAudioSample::callbacks = {
 	&tell_func
 };
 
-OggAudioSample::OggAudioSample(IDataSource *oggdata_)
-	: AudioSample(nullptr, 0), oggdata(oggdata_)
+OggAudioSample::OggAudioSample(std::unique_ptr<IDataSource> oggdata_)
+	: AudioSample(nullptr, 0), oggdata(std::move(oggdata_))
 {
 	frame_size = 4096;
 	decompressor_size = sizeof(OggDecompData);
@@ -49,12 +49,6 @@ OggAudioSample::OggAudioSample(uint8 *buffer, uint32 size)
 	decompressor_size = sizeof(OggDecompData);
 	bits = 16;
 	locked = false;
-}
-
-OggAudioSample::~OggAudioSample()
-{
-	delete oggdata;
-	oggdata = nullptr;
 }
 
 size_t OggAudioSample::read_func  (void *ptr, size_t size, size_t nmemb, void *datasource)
@@ -111,7 +105,7 @@ void OggAudioSample::initDecompressor(void *DecompData) const
 	if (this->oggdata)
 	{
 		*const_cast<bool*>(&locked) = true;
-		decomp->datasource = this->oggdata;
+		decomp->datasource = this->oggdata.get();
 	}
 	else
 	{
