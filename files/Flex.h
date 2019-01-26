@@ -94,20 +94,22 @@ using FlexBuffer = U7DataBuffer<Flex>;
  */
 class Flex_writer {
 	OStreamDataSource& dout;       // Or this, if non-0.
-	size_t count;           // # entries.
+	const size_t count;           // # entries.
+	const size_t start_pos;
 	size_t cur_start;         // Start of cur. entry being written.
 	std::unique_ptr<uint8[]> table;           // Table of offsets & lengths.
 	uint8 *tptr;            // ->into table.
 
 public:
 	Flex_writer(OStreamDataSource& o, const char *title, size_t cnt,
-	            Flex::Flex_vers vers = Flex::orig);
+	            Flex_header::Flex_vers vers = Flex_header::orig);
 	Flex_writer(const Flex_writer&) noexcept = delete;
 	Flex_writer& operator=(const Flex_writer&) noexcept = delete;
 	Flex_writer(Flex_writer&&) noexcept = default;
 	Flex_writer& operator=(Flex_writer&&) noexcept = delete;
 	~Flex_writer();
 	void mark_section_done();   // Finished writing out a section.
+	void flush();
 };
 
 #endif

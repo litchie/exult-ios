@@ -182,9 +182,17 @@ Flex_writer::Flex_writer(
 
 Flex_writer::~Flex_writer(
 ) {
-	dout.seek(0x80);       // Write table.
-	dout.write(table.get(), 2 * count * 4);
-	dout.flush();
+	flush();
+}
+
+void Flex_writer::flush(
+) {
+	if (table) {
+		dout.seek(0x80);       // Write table.
+		dout.write(table.get(), 2 * count * 4);
+		dout.flush();
+		table.reset();
+	}
 }
 
 /**

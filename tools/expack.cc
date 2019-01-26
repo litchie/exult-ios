@@ -368,6 +368,7 @@ int main(int argc, char **argv)
 				}
 				writer.mark_section_done();
 			}
+			writer.flush();
 
 			uint32 crc32val = crc32_syspath(fname.c_str());
 			header << std::endl << "#define\t" << hprefix << "_CRC32\t0x";
