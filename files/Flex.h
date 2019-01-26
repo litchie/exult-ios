@@ -29,27 +29,45 @@
 #include "U7file.h"
 #include "exceptions.h"
 
-/**
- *  The Flex class is an data reader which reads data in the flex
- *  file format. The actual data need not be in a file, however.
- */
-class Flex : public U7file {
-public:
+struct Flex_header {
+	static constexpr const uint32 FLEX_MAGIC1 = 0xffff1a00U;
+	static constexpr const uint32 FLEX_MAGIC2 = 0x000000ccU;
+	static constexpr const uint32 EXULT_FLEX_MAGIC2 = 0x0000cc00U;
+	static constexpr const uint32 FLEX_TITLE_LEN = 80;
+	static constexpr const uint32 FLEX_HEADER_LEN = 128;
+	static constexpr const uint32 FLEX_HEADER_PADDING = 9;
+	static constexpr const uint32 FLEX_VERSION_MASK = 0xffU;
 	/// Exult has an extended flex file format to support
 	/// extended shape numbers in IFIX objects.
 	enum Flex_vers {
 	    orig = 0,       ///<    Original file version.
 	    exult_v2 = 1    ///<    Exult extension for IFIX objects.
 	};
-
-protected:
-	static const uint32 EXULT_FLEX_MAGIC2 = 0x0000cc00U;
-	char    title[80];
+	char    title[FLEX_TITLE_LEN];
 	uint32  magic1;
 	uint32  count;
 	uint32  magic2;
-	uint32  padding[9];
+	uint32  padding[FLEX_HEADER_PADDING];
+	Flex_vers get_vers() const {
+		return (magic2 & ~FLEX_VERSION_MASK) == EXULT_FLEX_MAGIC2 ?
+		       static_cast<Flex_vers>(magic2 & FLEX_VERSION_MASK) : orig;
+	}
+	bool read(IDataSource *in);
+	static void write(ODataSource *out, const char *title, size_t count,
+	                  Flex_vers vers = orig);
+	static bool is_flex(IDataSource *in);
+};
+/**
+ *  The Flex class is an data reader which reads data in the flex
+ *  file format. The actual data need not be in a file, however.
+ */
+class Flex : public U7file {
+public:
+
+protected:
+	Flex_header hdr;
 	std::vector<Reference> object_list;
+	size_t start_pos;
 
 	void index_file() override;
 	Reference get_object_reference(uint32 objnum) const override {
@@ -65,9 +83,8 @@ public:
 
 	/// Inspect the version of a flex file.
 	/// @return The flex version.
-	Flex_vers get_vers() const {
-		return (magic2&~0xffU) == EXULT_FLEX_MAGIC2 ?
-		       static_cast<Flex_vers>(magic2 & 0xffU) : orig;
+	Flex_header::Flex_vers get_vers() const {
+		return hdr.get_vers();
 	}
 	/// Gets the number of objects in the flex.
 	/// @return Number of objects.
@@ -78,10 +95,9 @@ public:
 	const char *get_archive_type() override {
 		return "FLEX";
 	}
-	static void write_header(ODataSource *out, const char *title, size_t count,
-	                         Flex_vers vers = orig);
-
-	static bool is_flex(IDataSource *in);
+	static bool is_flex(IDataSource *in) {
+		return Flex_header::is_flex(in);
+	}
 	static bool is_flex(const std::string& fname);
 	void IndexFlexFile();
 };

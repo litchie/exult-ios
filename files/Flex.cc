@@ -27,17 +27,74 @@
 #include "Flex.h"
 
 #include <fstream>
-#include <iostream>
+#if DEBUGFLEX
+#	include <iostream>
+#endif
 #include "exceptions.h"
 #include "utils.h"
 #include "databuf.h"
 
-using std::memset;
 using std::size_t;
 using std::string;
-using std::strncpy;
-using std::ofstream;
-using std::ios;
+
+bool Flex_header::read(IDataSource* in) {
+	in->read(title, FLEX_TITLE_LEN);
+	magic1 = in->read4();
+	count = in->read4();
+	magic2 = in->read4();
+	for (uint32& elem : padding) {
+		elem = in->read4();
+	}
+	return magic1 == FLEX_MAGIC1;
+}
+
+/**
+ *  Write out a FLEX header.  Note that this is a STATIC method.
+ *  @param out  DataSource to which the data is written.
+ *  @param title    Flex file title.
+ *  @param count    Number of entries in the flex.
+ *  @param vers Version of the flex file.
+ */
+
+void Flex_header::write(
+    ODataSource *out,            // File to write to.
+    const char *title,
+    size_t count,           // # entries.
+    Flex_header::Flex_vers vers
+) {
+	string titlebuf(title);        // Use savename for title.
+	titlebuf.resize(FLEX_TITLE_LEN, '\0');
+	out->write(titlebuf);
+	out->write4(FLEX_MAGIC1);    // Magic number.
+	out->write4(static_cast<uint32>(count));
+	if (vers == orig) {       // 2nd magic #:  use for version.
+		out->write4(FLEX_MAGIC2);
+	} else {
+		out->write4(EXULT_FLEX_MAGIC2 + static_cast<uint32>(vers));
+	}
+	for (size_t ii = 0; ii < FLEX_HEADER_PADDING + 2 * count; ii++) {
+		out->write4(0);
+	}
+}
+
+/**
+ *  Verify if a file is a FLEX.  Note that this is a STATIC method.
+ *  @param in   DataSource to verify.
+ *  @return Whether or not the DataSource is a FLEX file.
+ */
+bool Flex_header::is_flex(IDataSource *in) {
+	size_t pos = in->getPos();        // Fill to data (past table at 0x80).
+	size_t len = in->getSize();   // Check length.
+	uint32 magic = 0;
+	if (len >= FLEX_HEADER_LEN) {      // Has to be at least this long.
+		in->seek(pos + FLEX_TITLE_LEN);
+		magic = in->read4();
+	}
+	in->seek(pos);
+
+	// Is a flex?
+	return magic == Flex_header::FLEX_MAGIC1;
+}
 
 /**
  *  Reads the header from a flex and builds an object index.
@@ -46,28 +103,21 @@ void Flex::index_file() {
 	if (!data) {
 		throw file_read_exception(identifier.name);
 	}
-	data->read(title, sizeof(title));
-	magic1 = data->read4();
-	count = data->read4();
-	magic2 = data->read4();
-
-	if (magic1 != 0xffff1a00U) {
+	start_pos = data->getPos();
+	if (!hdr.read(data.get())) {
 		// Not a flex file.
 		throw wrong_file_type_exception(identifier.name, "FLEX");
 	}
-	for (int i = 0; i < 9; i++) {
-		padding[i] = data->read4();
-	}
 #if DEBUGFLEX
-	cout << "Title: " << title << endl;
-	cout << "Count: " << count << endl;
+	cout << "Title: " << hdr.title << endl;
+	cout << "Count: " << hdr.count << endl;
 #endif
 
 	// We should already be there.
-	data->seek(128);
-	for (uint32 c = 0; c < count; c++) {
+	data->seek(start_pos + Flex_header::FLEX_HEADER_LEN);
+	for (uint32 c = 0; c < hdr.count; c++) {
 		Reference f;
-		f.offset = data->read4();
+		f.offset = data->read4() + start_pos;
 		f.size = data->read4();
 #if DEBUGFLEX
 		cout << "Item " << c << ": " << f.size << " bytes @ " << f.offset << endl;
@@ -89,64 +139,13 @@ size_t Flex::get_entry_info(uint32 objnum, size_t &len) {
 	}
 #if 0
 	// Trying to avoid exceptions.
-	if (objnum >= object_list.size())
+	if (objnum >= object_list.size()) {
 		throw exult_exception("objnum too large in Flex::get_entry_info()");
+	}
 #endif
 	len = object_list[objnum].size;
 	return object_list[objnum].offset;
 }
-
-/**
- *  Write out a FLEX header.  Note that this is a STATIC method.
- *  @param out  DataSource to which the data is written.
- *  @param title    Flex file title.
- *  @param count    Number of entries in the flex.
- *  @param vers Version of the flex file.
- */
-
-void Flex::write_header(
-    ODataSource *out,            // File to write to.
-    const char *title,
-    size_t count,           // # entries.
-    Flex_vers vers
-) {
-	char titlebuf[0x50];        // Use savename for title.
-	memset(titlebuf, 0, sizeof(titlebuf));
-	strncpy(titlebuf, title, sizeof(titlebuf) - 1);
-	out->write(titlebuf, sizeof(titlebuf));
-	out->write4(0xFFFF1A00U);    // Magic number.
-	out->write4(static_cast<uint32>(count));
-	if (vers == orig) {       // 2nd magic #:  use for version.
-		out->write4(0x000000CCU);
-	} else {
-		out->write4(EXULT_FLEX_MAGIC2 + static_cast<uint32>(vers));
-	}
-	size_t pos = out->getPos();       // Fill to data (past table at 0x80).
-	size_t fill = 0x80 + 8 * count - pos;
-	while (fill--) {
-		out->write1(0);
-	}
-}
-
-/**
- *  Verify if a file is a FLEX.  Note that this is a STATIC method.
- *  @param in   DataSource to verify.
- *  @return Whether or not the DataSource is a FLEX file.
- */
-bool Flex::is_flex(IDataSource *in) {
-	size_t pos = in->getPos();        // Fill to data (past table at 0x80).
-	size_t len = in->getSize();   // Check length.
-	uint32 magic = 0;
-	if (len >= 0x80) {      // Has to be at least this long.
-		in->seek(0x50);
-		magic = in->read4();
-	}
-	in->seek(pos);
-
-	// Is a flex?
-	return magic == 0xffff1a00U;
-}
-
 
 /**
  *  Verify if a file is a FLEX.  Note that this is a STATIC method.
@@ -166,10 +165,10 @@ Flex_writer::Flex_writer(
     OStreamDataSource& o,        ///< Where to write.
     const char *title,          ///< Flex title.
     size_t cnt,             ///< Number of entries we'll write.
-    Flex::Flex_vers vers    ///< Version of flex file.
-) : dout(o), count(cnt) {
+    Flex_header::Flex_vers vers    ///< Version of flex file.
+) : dout(o), count(cnt), start_pos(dout.getPos()) {
 	// Write out header.
-	Flex::write_header(&dout, title, count, vers);
+	Flex_header::write(&dout, title, count, vers);
 	// Create table.
 	table = std::make_unique<uint8[]>(2 * count * 4);
 	tptr = table.get();
@@ -188,7 +187,7 @@ Flex_writer::~Flex_writer(
 void Flex_writer::flush(
 ) {
 	if (table) {
-		dout.seek(0x80);       // Write table.
+		dout.seek(Flex_header::FLEX_HEADER_LEN);       // Write table.
 		dout.write(table.get(), 2 * count * 4);
 		dout.flush();
 		table.reset();
@@ -203,7 +202,7 @@ void Flex_writer::mark_section_done(
 ) {
 	// Location past end of section.
 	size_t pos = dout.getPos();
-	Write4(tptr, static_cast<uint32>(cur_start));   // Store start of section.
+	Write4(tptr, static_cast<uint32>(cur_start - start_pos));   // Store start of section.
 	Write4(tptr, static_cast<uint32>(pos - cur_start)); // Store length.
 	cur_start = pos;
 }

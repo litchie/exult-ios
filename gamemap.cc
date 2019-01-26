@@ -514,8 +514,8 @@ void Game_map::write_ifix_objects(
 	OFileDataSource ifix(get_schunk_file_name(PATCH_U7IFIX, schunk, fname));
 	// +++++Use game title.
 	const int count = c_chunks_per_schunk * c_chunks_per_schunk;
-	Flex::Flex_vers vers = !New_shapes() ? Flex::orig : Flex::exult_v2;
-	bool v2 = vers == Flex::exult_v2;
+	Flex_header::Flex_vers vers = !New_shapes() ? Flex_header::orig : Flex_header::exult_v2;
+	bool v2 = vers == Flex_header::exult_v2;
 	Flex_writer writer(ifix, "Exult",  count, vers);
 	int scy = 16 * (schunk / 12); // Get abs. chunk coords.
 	int scx = 16 * (schunk % 12);
@@ -591,7 +591,7 @@ void Game_map::get_ifix_chunk_objects(
 	ifix->read(reinterpret_cast<char *>(entries), len);
 	// Get object list for chunk.
 	Map_chunk *olist = get_chunk(cx, cy);
-	if (static_cast<Flex::Flex_vers>(vers) == Flex::orig) {
+	if (static_cast<Flex_header::Flex_vers>(vers) == Flex_header::orig) {
 		int cnt = len / 4;
 		for (int i = 0; i < cnt; i++, ent += 4) {
 			int tx = (ent[0] >> 4) & 0xf, ty = ent[0] & 0xf,
@@ -604,7 +604,7 @@ void Game_map::get_ifix_chunk_objects(
 			     : std::make_shared<Ifix_game_object>(shnum, frnum, tx, ty, tz);
 			olist->add(obj.get());
 		}
-	} else if (static_cast<Flex::Flex_vers>(vers) == Flex::exult_v2) {
+	} else if (static_cast<Flex_header::Flex_vers>(vers) == Flex_header::exult_v2) {
 		// b0 = tx,ty, b1 = lift, b2-3 = shnum, b4=frnum
 		int cnt = len / 5;
 		for (int i = 0; i < cnt; i++, ent += 5) {
