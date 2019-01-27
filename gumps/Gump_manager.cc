@@ -476,10 +476,12 @@ int Gump_manager::handle_modal_gump_event(
 		} else if (event.button.button == 3) {
 			rightclick = true;
 			gump->mouse_down(gx, gy, event.button.button);
+#if !(SDL_VERSION_ATLEAST(2, 0, 0))
 		} else if (event.button.button == 4) { // mousewheel up
 			if (!gump->mouse_down(gx, gy, event.button.button)) gump->mousewheel_up();
 		} else if (event.button.button == 5) { // mousewheel down
 			if (!gump->mouse_down(gx, gy, event.button.button)) gump->mousewheel_down();
+#endif
 		} else {
 			gump->mouse_down(gx, gy, event.button.button);
 		}
@@ -500,6 +502,18 @@ int Gump_manager::handle_modal_gump_event(
 			        gumpman->can_right_click_close()) return 0;
 		}
 		break;
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+	// Mousewheel scrolling of view port with SDL2.
+	case SDL_MOUSEWHEEL: {
+		if(event.wheel.y > 0) {
+			if (!gump->mouse_down(gx, gy, event.button.button)) gump->mousewheel_up();
+		}
+		else if(event.wheel.y < 0) {
+			if (!gump->mouse_down(gx, gy, event.button.button)) gump->mousewheel_down();
+		}
+		break;
+	}
+#endif
 	case SDL_MOUSEMOTION:
 		gwin->get_win()->screen_to_game(event.motion.x, event.motion.y, gwin->get_fastmouse(), gx, gy);
 
