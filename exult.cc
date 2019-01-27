@@ -1535,6 +1535,32 @@ static void Handle_event(
 		}
 		break;
 	}
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+	// two-finger scrolling of view port with SDL2.
+	case SDL_FINGERMOTION: {
+		if (!cheat() || !gwin->can_scroll_with_mouse()) break;
+		static int numFingers = 0;
+		SDL_Finger* finger0 = SDL_GetTouchFinger(event.tfinger.touchId, 0);
+		if (finger0) {
+			numFingers = SDL_GetNumTouchFingers(event.tfinger.touchId);
+		}
+		if (numFingers > 1) {
+			if(event.tfinger.dy < 0) {
+				ActionScrollUp(nullptr);
+			}
+			else if(event.tfinger.dy > 0) {
+				ActionScrollDown(nullptr);
+			}
+			if(event.tfinger.dx > 0) {
+				ActionScrollRight(nullptr);
+			}
+			else if(event.tfinger.dx < 0) {
+				ActionScrollLeft(nullptr);
+			}
+		}
+		break;
+	}
+#endif
 	case SDL_MOUSEBUTTONUP: {
 		if (dont_move_mode)
 			break;
@@ -2097,10 +2123,29 @@ void Wizard_eye(
 
 		Mouse::mouse->hide();       // Turn off mouse.
 		Mouse::mouse_update = false;
-
+#ifdef __IPHONEOS__
+		touchui->hideGameControls();
+#endif
 		SDL_Event event;
 		while (SDL_PollEvent(&event))
 			switch (event.type) {
+#ifdef __IPHONEOS__
+			case SDL_FINGERMOTION: {
+				if(event.tfinger.dy > 0) {
+					gwin->view_down();
+				}
+				else if(event.tfinger.dy < 0) {
+					gwin->view_up();
+				}
+				if(event.tfinger.dx > 0) {
+					gwin->view_right();
+				}
+				else if(event.tfinger.dx < 0) {
+					gwin->view_left();
+				}
+				break;
+			}
+#endif
 			case SDL_MOUSEMOTION: {
 				int mx, my;
 				gwin->get_win()->screen_to_game(event.motion.x, event.motion.y, gwin->get_fastmouse(), mx, my);
@@ -2120,20 +2165,6 @@ void Wizard_eye(
 						case SDLK_ESCAPE:
 							timeout = true;
 							break;
-#ifdef __IPHONEOS__
-						case SDLK_LEFT:
-							gwin->view_left();
-							break;
-						case SDLK_UP:
-							gwin->view_up();
-							break;
-						case SDLK_DOWN:
-							gwin->view_down();
-							break;
-						case SDLK_RIGHT:
-							gwin->view_right();
-							break;
-#endif
 					}
 			break;
 			}
@@ -2181,6 +2212,9 @@ void Wizard_eye(
 		if (!gwin->show() &&    // Blit to screen if necessary.
 		        Mouse::mouse_update)    // If not, did mouse change?
 			Mouse::mouse->blit_dirty();
+#ifdef __IPHONEOS__
+		touchui->showGameControls();
+#endif
 	}
 
 	if (!os)

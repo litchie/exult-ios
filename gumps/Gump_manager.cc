@@ -505,6 +505,24 @@ int Gump_manager::handle_modal_gump_event(
 			        gumpman->can_right_click_close()) return 0;
 		}
 		break;
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+	case SDL_FINGERMOTION: {
+		static int numFingers = 0;
+		SDL_Finger* finger0 = SDL_GetTouchFinger(event.tfinger.touchId, 0);
+		if (finger0) {
+			numFingers = SDL_GetNumTouchFingers(event.tfinger.touchId);
+		}
+		if (numFingers > 1) {
+			if(event.tfinger.dy < 0) {
+				if (!gump->mouse_down(gx, gy, event.button.button)) gump->mousewheel_up();
+			}
+			else if(event.tfinger.dy > 0) {
+				if (!gump->mouse_down(gx, gy, event.button.button)) gump->mousewheel_down();
+			}
+		}
+		break;
+	}
+#endif
 	case SDL_MOUSEMOTION:
 		gwin->get_win()->screen_to_game(event.motion.x, event.motion.y, gwin->get_fastmouse(), gx, gy);
 
