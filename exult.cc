@@ -1519,7 +1519,8 @@ static void Handle_event(
 			}
 		}
 
-		// Mousewheel scrolling of view port.
+#if !(SDL_VERSION_ATLEAST(2, 0, 0))
+		// Mousewheel scrolling of view port with SDL 1.2x.
 		if (event.button.button == 4 || event.button.button == 5) {
 			if (!cheat() || !gwin->can_scroll_with_mouse()) break;
 			SDLMod mod = SDL_GetModState();
@@ -1557,6 +1558,32 @@ static void Handle_event(
 			else if(event.tfinger.dx < 0) {
 				ActionScrollLeft(nullptr);
 			}
+		}
+#endif
+		break;
+	}
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+	// Mousewheel scrolling of view port with SDL2.
+	case SDL_MOUSEWHEEL: {
+		if (!cheat() || !gwin->can_scroll_with_mouse()) break;
+		SDLMod mod = SDL_GetModState();
+		if(event.wheel.y > 0) {
+			if (mod & KMOD_ALT)
+				ActionScrollLeft(nullptr);
+			else
+				ActionScrollUp(nullptr);
+		}
+		else if(event.wheel.y < 0) {
+			if (mod & KMOD_ALT)
+				ActionScrollRight(nullptr);
+			else
+				ActionScrollDown(nullptr);
+		}
+		if(event.wheel.x > 0) {
+			ActionScrollRight(nullptr);
+		}
+		else if(event.wheel.x < 0) {
+			ActionScrollLeft(nullptr);
 		}
 		break;
 	}
