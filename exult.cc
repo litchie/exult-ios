@@ -1535,7 +1535,7 @@ static void Handle_event(
 		}
 		break;
 	}
-#if SDL_VERSION_ATLEAST(2, 0, 0)
+#ifdef __IPHONEOS__
 	// two-finger scrolling of view port with SDL2.
 	case SDL_FINGERMOTION: {
 		if (!cheat() || !gwin->can_scroll_with_mouse()) break;

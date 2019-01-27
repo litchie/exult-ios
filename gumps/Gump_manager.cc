@@ -505,7 +505,7 @@ int Gump_manager::handle_modal_gump_event(
 			        gumpman->can_right_click_close()) return 0;
 		}
 		break;
-#if SDL_VERSION_ATLEAST(2, 0, 0)
+#ifdef __IPHONEOS__
 	case SDL_FINGERMOTION: {
 		static int numFingers = 0;
 		SDL_Finger* finger0 = SDL_GetTouchFinger(event.tfinger.touchId, 0);
