@@ -503,7 +503,7 @@ int Gump_manager::handle_modal_gump_event(
 		}
 		break;
 #if SDL_VERSION_ATLEAST(2, 0, 0)
-	// Mousewheel scrolling of view port with SDL2.
+	// Mousewheel scrolling with SDL2.
 	case SDL_MOUSEWHEEL: {
 		if(event.wheel.y > 0) {
 			if (!gump->mouse_down(gx, gy, event.button.button)) gump->mousewheel_up();
