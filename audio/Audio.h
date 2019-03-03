@@ -59,7 +59,7 @@ private:
 	static	const int *bg2si_songs;	// Converts BG songs to SI songs.
 	static	const int *bg2si_sfxs;	// Converts BG sfx's to SI sfx's.
 	bool truthful_;
-	bool speech_enabled, music_enabled, effects_enabled;
+	bool speech_enabled, music_enabled, effects_enabled, speech_with_subs;
 	bool allow_music_looping;
 	SFX_cache_manager *sfxs;		// SFX and voice cache manager
 	bool initialized;
@@ -126,6 +126,7 @@ public:
 	void	stop_speech();
 	bool	is_speech_enabled() const { return speech_enabled; }
 	void	set_speech_enabled(bool ena) { speech_enabled = ena; }
+	bool	is_speech_with_subs() const { return speech_with_subs; }
 	bool	is_music_enabled() const { return music_enabled; }
 	void	set_music_enabled(bool ena) { music_enabled = ena; }
 	bool	are_effects_enabled() const { return effects_enabled; }
