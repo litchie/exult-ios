@@ -927,13 +927,14 @@ void BG_Game::scene_guardian() {
 
 		bool speech = Audio::get_ptr()->is_audio_enabled() &&
 		              Audio::get_ptr()->is_speech_enabled();
+		bool speech_n_subs = Audio::get_ptr()->is_speech_with_subs();
 		bool need_to_play_speech = speech; // speech timing can screw up due
 
 #define ERASE_TEXT() do { \
 		win->put(backup3, win->get_start_x(), txt_ypos); \
 	} while(0)
 
-#define DRAW_TEXT() if (!speech) \
+#define DRAW_TEXT() if (!speech || speech_n_subs) \
 		do { \
 			font->center_text(win->get_ib8(), centerx, txt_ypos, txt_ptr); \
 		} while (0)
@@ -1526,6 +1527,7 @@ void BG_Game::end_game(bool success) {
 
 	bool speech = Audio::get_ptr()->is_audio_enabled() &&
 	              Audio::get_ptr()->is_speech_enabled();
+	bool speech_n_subs = Audio::get_ptr()->is_speech_with_subs();
 
 	// Fli Buffers
 	size_t  flisize;
@@ -1599,7 +1601,7 @@ void BG_Game::end_game(bool success) {
 		disable_direct_gl_render();
 		for (unsigned int i = 150; i < 204; i++) {
 			next = fli1.play(win, i, i, next);
-			if (!speech)
+			if (!speech || speech_n_subs)
 				endfont2->draw_text(ibuf, width, height, message);
 			non_gl_blit();
 			if (wait_delay(0, 0, 1)) {
@@ -1621,7 +1623,7 @@ void BG_Game::end_game(bool success) {
 
 		for (unsigned int i = 0; i < 100; i++) {
 			next = fli2.play(win, i, i, next);
-			if (!speech)
+			if (!speech  || speech_n_subs)
 				endfont2->draw_text(ibuf, width, height, message);
 			non_gl_blit();
 			if (wait_delay(0, 0, 1)) {
@@ -1743,7 +1745,7 @@ void BG_Game::end_game(bool success) {
 		for (unsigned int i = next + 28000; i > next;) {
 			for (unsigned int j = 0; j < static_cast<unsigned>(finfo.frames); j++) {
 				next = fli3.play(win, j, j, next);
-				if (!speech) {
+				if (!speech || speech_n_subs) {
 					for (m = 0; m < 8; m++)
 						endfont3->center_text(ibuf, centerx, starty + endfont3->get_text_height()*m, get_text_msg(txt_screen0 + m));
 				}

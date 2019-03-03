@@ -253,7 +253,7 @@ Audio	*Audio::get_ptr(void)
 
 
 Audio::Audio() :
-truthful_(false),speech_enabled(true), music_enabled(true),
+truthful_(false),speech_enabled(true), speech_with_subs(false), music_enabled(true),
 effects_enabled(true), initialized(false), mixer(0), sfx_file(0)
 {
 	assert(self == NULL);
@@ -266,6 +266,8 @@ effects_enabled(true), initialized(false), mixer(0), sfx_file(0)
 
 	config->value("config/audio/speech/enabled",s,"yes");
 	speech_enabled = (s!="no");
+	config->value("config/audio/speech/with_subs",s,"no");
+	speech_with_subs = (s!="no");
 	config->value("config/audio/midi/enabled",s,"---");
 	music_enabled = (s!="no");
 	config->value("config/audio/effects/enabled",s,"---");
