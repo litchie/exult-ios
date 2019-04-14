@@ -72,7 +72,9 @@ static inline int get_final_palette(
 	if ((light || special) && is_dark_palette(pal)) {
 		int light_palette = PALETTE_SINGLE_LIGHT;
 		// Gump mode, or light spell?
-		if (special || (light > 1))
+		if (special)
+			light_palette = PALETTE_SPELL;
+		else if (light > 1)
 			light_palette = PALETTE_MANY_LIGHTS;
 
 		return light_palette;
