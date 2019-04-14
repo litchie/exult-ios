@@ -33,8 +33,8 @@ const int PALETTE_NIGHT = 2;
 const int PALETTE_INVISIBLE = 3;    // When Avatar is invisible.
 const int PALETTE_OVERCAST = 4;     // When raining or overcast during daytime
 const int PALETTE_FOG = 5;
-// 6 looks a little brighter than #2.
-// 7 is somewhat warmer.  Torch?
+const int PALETTE_SPELL = 6; // light spell.
+//const int PALETTE_CANDLE = 7; // is somewhat warmer, candles. unused in code yet.
 const int PALETTE_RED = 8;      // Used when hit in combat.
 // 9 has lots of black.
 const int PALETTE_LIGHTNING = 10;
