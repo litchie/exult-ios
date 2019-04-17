@@ -1534,6 +1534,7 @@ static void Handle_event(
 			else
 				ActionScrollDown(0);
 		}
+#endif
 		break;
 	}
 #ifdef __IPHONEOS__
