@@ -199,12 +199,13 @@
 					};
 				};
 			};
-			buildConfigurationList = E700E05F1A6E4341006C8BE4 /* Build configuration list for PBXProject "vorbis" */;
+			buildConfigurationList = E700E05F1A6E4341006C8BE4 /* Build configuration list for PBXProject "libvorbis" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = E700E05B1A6E4341006C8BE4;
 			productRefGroup = E700E0651A6E4341006C8BE4 /* Products */;
@@ -360,7 +361,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		E700E05F1A6E4341006C8BE4 /* Build configuration list for PBXProject "vorbis" */ = {
+		E700E05F1A6E4341006C8BE4 /* Build configuration list for PBXProject "libvorbis" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E700E0761A6E4341006C8BE4 /* Debug */,

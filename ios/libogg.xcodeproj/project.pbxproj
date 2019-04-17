@@ -101,10 +101,11 @@
 			};
 			buildConfigurationList = E700E0301A6E41C5006C8BE4 /* Build configuration list for PBXProject "libogg" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = E700E02C1A6E41C5006C8BE4;
 			productRefGroup = E700E0361A6E41C5006C8BE4 /* Products */;

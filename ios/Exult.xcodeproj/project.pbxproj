@@ -915,8 +915,8 @@
 		E71BBD911A725E1E0003F662 /* dpadglass-southwest.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dpadglass-southwest.png"; sourceTree = "<group>"; };
 		E71BBD921A725E1E0003F662 /* dpadglass-west.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dpadglass-west.png"; sourceTree = "<group>"; };
 		E71BBD931A725E1E0003F662 /* dpadglass.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = dpadglass.png; sourceTree = "<group>"; };
-		E738C8491A6FFF58003A950D /* libogg.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = libogg.xcodeproj; path = "libogg.xcodeproj"; sourceTree = "<group>"; };
-		E738C84F1A6FFF65003A950D /* libvorbis.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = libvorbis.xcodeproj; path = "libvorbis.xcodeproj"; sourceTree = "<group>"; };
+		E738C8491A6FFF58003A950D /* libogg.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = libogg.xcodeproj; sourceTree = "<group>"; };
+		E738C84F1A6FFF65003A950D /* libvorbis.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = libvorbis.xcodeproj; sourceTree = "<group>"; };
 		E738C85F1A71DEA1003A950D /* touchui.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = touchui.cc; path = ../touchui.cc; sourceTree = "<group>"; };
 		E738C8601A71DEA1003A950D /* touchui.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = touchui.h; path = ../touchui.h; sourceTree = "<group>"; };
 		FD779EDD0E26BA1200F39101 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
@@ -1885,13 +1885,11 @@
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Exult" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 1;
 			knownRegions = (
-				English,
-				Japanese,
-				French,
-				German,
+				en,
+				Base,
 			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* CustomTemplate */;
 			projectDirPath = "";
@@ -1901,12 +1899,12 @@
 					ProjectRef = E738C8491A6FFF58003A950D /* libogg.xcodeproj */;
 				},
 				{
-					ProductGroup = E700E1281A6F839E006C8BE4 /* Products */;
-					ProjectRef = E700E1271A6F839E006C8BE4 /* SDL.xcodeproj */;
-				},
-				{
 					ProductGroup = E738C8501A6FFF65003A950D /* Products */;
 					ProjectRef = E738C84F1A6FFF65003A950D /* libvorbis.xcodeproj */;
+				},
+				{
+					ProductGroup = E700E1281A6F839E006C8BE4 /* Products */;
+					ProjectRef = E700E1271A6F839E006C8BE4 /* SDL.xcodeproj */;
 				},
 			);
 			projectRoot = "";
