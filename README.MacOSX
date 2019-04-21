@@ -5,27 +5,13 @@ Exult instructions for Mac OS X
 To play
 -------
 First you need to get Ultima 7 or Serpent Isle. Either you own
-it already, or you buy it somewhere. Then you must install it
-on a DOS/Windows machine in order to get the data file.
-A good way is to use a PC emulator for this, e.g. Virtual PC,
-Real PC or SoftWindows.
-Note that the Ultima Collection already contains an installed
-copy of Ultima 7 (In the Ultima7/ directory) and of Serpent Isle
-(In the Serpent/ directory).
+it already, or you buy it somewhere. 
 
 In the documentation of Exult (ReadMe, ReadMe.html) we describe 
 several ways of how to install the original games and where to
 put the files on your Mac so Exult finds them automatically.
 
-Now run Exult, and have fun!
-
-
-Possible issue
---------------
-Something in our audio code might crash Exult unexpectedly on OSX.
-For example the famous scene in SI with Frigidazi has been reported 
-as a trigger. To circumvent this disable all audio before a scene 
-that crashes and enable it later on in the game.
+Now download Exult, and have fun!
 
 
 More Information
@@ -37,6 +23,10 @@ http://exult.sourceforge.net
 
 How to compile on Mac OS X
 --------------------------
+
+The following guide is only for people that want to compile Exult on their own. 
+This is not needed if there is a current snapshot for OS X available on our 
+download page.
 
 Make sure you have the Apple developer tools installed. They ship with
 Mac OS X, but have to be installed separately. You can also download the
