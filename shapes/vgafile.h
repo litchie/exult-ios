@@ -34,9 +34,8 @@
 #include <string>
 #include <map>
 
-class IDataSource;
-class ODataSource;
-class IStreamDataSource;
+class DataSource;
+class StreamDataSource;
 class Shape;
 class Image_buffer8;
 class GL_texshape;
@@ -83,7 +82,7 @@ class Shape_frame {
 	// Create RLE data & store in frame.
 	void create_rle(unsigned char *pixels, int w, int h);
 	// Create from RLE entry.
-	void get_rle_shape(IDataSource *shapes, long filepos, long len);
+	void get_rle_shape(DataSource *shapes, long filepos, long len);
 
 public:
 	friend class Game_window;
@@ -117,7 +116,7 @@ public:
 	static unsigned char *encode_rle(unsigned char *pixels, int w, int h,
 	                                 int xoff, int yoff, int &datalen);
 	// Read in shape/frame.
-	unsigned int read(IDataSource *shapes, uint32 shapeoff,
+	unsigned int read(DataSource *shapes, uint32 shapeoff,
 	                  uint32 shapelen, int frnum);
 	// Paint into given buffer.
 	void paint_rle(Image_buffer8 *win, int px, int py);
@@ -200,12 +199,12 @@ protected:
 	bool modified;
 	bool from_patch;
 	// Create reflected frame.
-	Shape_frame *reflect(std::vector<std::pair<IDataSource *, bool> > const &shapes, int shnum,
+	Shape_frame *reflect(std::vector<std::pair<DataSource *, bool> > const &shapes, int shnum,
 	                     int frnum, std::vector<int> const &counts);
 	void enlarge(int newsize);  // Increase 'frames'.
 	void create_frames_list(int nframes);
 	// Read in shape/frame.
-	Shape_frame *read(std::vector<std::pair<IDataSource *, bool> > const &shapes, int shnum,
+	Shape_frame *read(std::vector<std::pair<DataSource *, bool> > const &shapes, int shnum,
 	                  int frnum, std::vector<int> const &counts, int src = -1);
 	// Store shape that was read.
 	Shape_frame *store_frame(Shape_frame *frame, int framenum);
@@ -220,7 +219,7 @@ public:
 	virtual ~Shape();
 	void reset();
 	void take(Shape *s2);       // Take frames from another shape.
-	void load(IDataSource *shape_source);
+	void load(DataSource *shape_source);
 	void write(std::ostream &out);  // Write out.
 	void set_modified() {
 		modified = true;
@@ -234,7 +233,7 @@ public:
 	bool get_from_patch() {
 		return from_patch;
 	}
-	Shape_frame *get(std::vector<std::pair<IDataSource *, bool> > const &shapes, int shnum,
+	Shape_frame *get(std::vector<std::pair<DataSource *, bool> > const &shapes, int shnum,
 	                 int frnum, std::vector<int> const &counts, int src = -1) {
 		return (frames && frnum < static_cast<int>(frames_size) &&
 		        frames[frnum]) ? frames[frnum] :
@@ -264,15 +263,15 @@ class Shape_file : public Shape {
 public:
 	Shape_file(const char *nm);
 	Shape_file(Shape_frame *fr): Shape(fr) {}
-	Shape_file(IDataSource *shape_source);
+	Shape_file(DataSource *shape_source);
 	Shape_file();
 	virtual ~Shape_file() {}
 	void load(const char *nm);
-	void load(IDataSource *shape_source) {
+	void load(DataSource *shape_source) {
 		Shape::load(shape_source);
 	}
 	int get_size();
-	void save(ODataSource *shape_source);
+	void save(DataSource *shape_source);
 };
 
 /*
@@ -287,10 +286,10 @@ protected:
 	};
 	std::vector<std::ifstream *> files;
 	std::vector<char *> buffers;
-	std::vector<std::pair<IDataSource *, bool> > shape_sources;
+	std::vector<std::pair<DataSource *, bool> > shape_sources;
 	std::vector<std::ifstream *> imported_files;
 	std::vector<char *> imported_buffers;
-	std::vector<std::pair<IDataSource *, bool> > imported_sources;
+	std::vector<std::pair<DataSource *, bool> > imported_sources;
 	std::map<int, imported_map> imported_shape_table;
 	int u7drag_type;        // # from u7drag.h, or -1.
 	int num_shapes;         // Total # of shapes.
@@ -310,11 +309,11 @@ public:
 	int get_u7drag_type() const {
 		return u7drag_type;
 	}
-	IDataSource *U7load(
+	DataSource *U7load(
 	    std::pair<std::string, int> const &resource,
 	    std::vector<std::ifstream *> &fs,
 	    std::vector<char *> &bs,
-	    std::vector<std::pair<IDataSource *, bool> > &shps);
+	    std::vector<std::pair<DataSource *, bool> > &shps);
 	bool load(const char *nm, const char *nm2 = 0, bool resetimports = false);
 	bool load(std::vector<std::pair<std::string, int> > const &sources, bool resetimports = false);
 	bool import_shapes(std::pair<std::string, int> const &source,

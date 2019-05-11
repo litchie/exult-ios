@@ -155,7 +155,7 @@ unsigned char *Ireg_game_object::write_common_ireg(
  */
 
 void Ireg_game_object::write_ireg(
-    ODataSource *out
+    DataSource *out
 ) {
 	unsigned char buf[20];      // 10-byte entry;
 	uint8 *ptr = write_common_ireg(10, buf);

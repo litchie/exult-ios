@@ -87,8 +87,8 @@ public:
 	// Move object in given direction.
 	void step(Usecode_internal *usecode, int dir, int dz);
 	// Save/restore.
-	int save(ODataSource *out) const;
-	static Usecode_script *restore(Game_object *item, IDataSource *in);
+	int save(DataSource *out) const;
+	static Usecode_script *restore(Game_object *item, DataSource *in);
 	void print(std::ostream &out) const;    // Print values.
 	void kill_barks() {
 		killed_barks = true;

@@ -571,7 +571,7 @@ public:
 	                  Shape_file *&map,
 	                  SaveGame_Details *&details,
 	                  SaveGame_Party  *&party);
-	void read_saveinfo(IDataSource *in,
+	void read_saveinfo(DataSource *in,
 	                   SaveGame_Details *&details,
 	                   SaveGame_Party  *&party);
 #ifdef HAVE_ZIP_SUPPORT
@@ -580,7 +580,7 @@ private:
 	                      Shape_file *&map,
 	                      SaveGame_Details *&details,
 	                      SaveGame_Party  *&party);
-	void restore_flex_files(IDataSource &ds, const char *basepath);
+	void restore_flex_files(DataSource &ds, const char *basepath);
 public:
 #endif
 	void write_saveinfo();      // Write the save info to gamedat

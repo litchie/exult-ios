@@ -307,7 +307,7 @@ void Spellbook_object::activate(
  */
 
 void Spellbook_object::write_ireg(
-    ODataSource *out
+    DataSource *out
 ) {
 	unsigned char buf[24];      // 18-byte entry.
 	uint8 *ptr = write_common_ireg(18, buf);

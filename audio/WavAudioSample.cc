@@ -33,7 +33,7 @@ WavAudioSample::WavAudioSample(uint8* buffer, uint32 size) : RawAudioSample(buff
 	uint32 pos_data = 0;
 	uint32 size_data = 0;
 
-	IBufferDataSource ds (buffer,size);
+	BufferDataSource ds (buffer,size);
 
 	char buf[4];
 

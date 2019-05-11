@@ -70,7 +70,7 @@ int Stack_frame_out(
 	Serial_out io(ptr);
 	Stack_frame_io<Serial_out>(io, functionid, ip, call_chain, call_depth,
 	                           eventid, caller_item, num_args, num_vars);
-	OBufferDataSource ds(buf, Exult_server::maxlength);
+	BufferDataSource ds(buf, Exult_server::maxlength);
 	ds.seek(ptr - buf);
 	for (int i = 0; i < num_args + num_vars; i++) {
 		(void)locals[i].save(&ds);
@@ -100,7 +100,7 @@ bool Stack_frame_in(
 	Stack_frame_io<Serial_in>(io, functionid, ip, call_chain, call_depth,
 	                          eventid, caller_item, num_args, num_vars);
 
-	IBufferDataSource ds(data, datalen);
+	BufferDataSource ds(data, datalen);
 	ds.seek(ptr - data);
 	locals = new Usecode_value[num_args + num_vars];
 	for (int i = 0; i < num_args + num_vars; i++) {

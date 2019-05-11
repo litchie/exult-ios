@@ -84,10 +84,10 @@ public:
 	virtual const char *get_archive_type() {
 		return "FLEX";
 	}
-	static void write_header(ODataSource *out, const char *title, size_t count,
+	static void write_header(DataSource *out, const char *title, size_t count,
 	                         Flex_vers vers = orig);
 
-	static bool is_flex(IDataSource *in);
+	static bool is_flex(DataSource *in);
 	static bool is_flex(const std::string& fname);
 private:
 	/// No default constructor.
@@ -104,7 +104,7 @@ typedef U7DataBuffer<Flex> FlexBuffer;
  */
 class Flex_writer {
 	std::ofstream *out;     // What we're writing to.
-	ODataSource *dout;       // Or this, if non-0.
+	DataSource *dout;       // Or this, if non-0.
 	size_t count;           // # entries.
 	long cur_start;         // Start of cur. entry being written.
 	uint8 *table;           // Table of offsets & lengths.
@@ -112,7 +112,7 @@ class Flex_writer {
 public:
 	Flex_writer(std::ofstream &o, const char *title, size_t cnt,
 	            Flex::Flex_vers vers = Flex::orig);
-	Flex_writer(ODataSource *o, const char *title, size_t cnt,
+	Flex_writer(DataSource *o, const char *title, size_t cnt,
 	            Flex::Flex_vers vers = Flex::orig);
 	~Flex_writer();
 	void mark_section_done();   // Finished writing out a section.

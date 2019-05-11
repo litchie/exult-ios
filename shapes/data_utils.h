@@ -535,7 +535,7 @@ static void Read_text_data_file(
 		U7object txtobj(flexfile, resource);
 		std::size_t len;
 		char *txt = txtobj.retrieve(len);
-		IBufferDataSource ds(txt, len);
+		BufferDataSource ds(txt, len);
 		static_version = Read_text_msg_file_sections(&ds,
 		                 static_strings, sections, numsections);
 		delete [] txt;

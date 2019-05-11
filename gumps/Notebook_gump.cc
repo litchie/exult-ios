@@ -815,7 +815,7 @@ void Notebook_gump::read_auto_text(
 			size_t len;
 			char *txt = txtobj.retrieve(len);
 			if (txt && len > 0) {
-				IBufferDataSource buf(txt, len);
+				BufferDataSource buf(txt, len);
 				cout << "Loading default autonotes" << endl;
 				Read_text_msg_file(&buf, auto_text);
 			}

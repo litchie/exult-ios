@@ -36,7 +36,7 @@ public:
 		int speed;
 	};
 private:
-	IDataSource *fli_data;
+	DataSource *fli_data;
 	int fli_size;
 	int fli_magic;
 	int fli_frames;

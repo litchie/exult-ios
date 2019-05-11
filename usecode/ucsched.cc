@@ -718,7 +718,7 @@ void Usecode_script::step(
  */
 
 int Usecode_script::save(
-    ODataSource *out
+    DataSource *out
 ) const {
 	// Get delay to when due.
 	long when = Game_window::get_instance()->get_tqueue()->find_delay(
@@ -747,7 +747,7 @@ int Usecode_script::save(
 
 Usecode_script *Usecode_script::restore(
     Game_object *item,      // Object this is executed for.
-    IDataSource *in
+    DataSource *in
 ) {
 	int cnt = in->read2();      // Get # instructions.
 	int curindex = in->read2(); // Where it is.
