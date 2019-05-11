@@ -151,7 +151,7 @@ void	MyMidiPlayer::start_music(int num,bool repeat,std::string flex)
 		else if (flex == MAINSHP_FLX) num--;
 	}
 
-	IDataSource *mid_data = 0;
+	DataSource  *mid_data = 0;
 
 	// Try in patch dir first.
 	string pflex("<PATCH>/");
@@ -173,9 +173,9 @@ void	MyMidiPlayer::start_music(int num,bool repeat,std::string flex)
 	mid_data =
 #if defined(MACOSX) || defined(__IPHONEOS__)
 		is_system_path_defined("<BUNDLE>") ?
-			new IExultDataSource(flex, bflex, pflex, num):
+			new ExultDataSource(flex, bflex, pflex, num):
 #endif
-			new IExultDataSource(flex, pflex, num);
+			new ExultDataSource(flex, pflex, num);
 
 	// Extra safety.
 	if (!mid_data->getSize())
@@ -242,7 +242,7 @@ void	MyMidiPlayer::start_music(std::string fname,int num,bool repeat)
 	std::ifstream mid_file;
 	U7open(mid_file, fname.c_str());
 	if (!mid_file.good()) return;
-	IDataSource *mid_data = new IStreamDataSource(&mid_file);
+	DataSource *mid_data = new StreamDataSource(&mid_file);
 
 	XMidiFile midfile(mid_data, setup_timbre_for_track(fname));
 
@@ -397,17 +397,17 @@ void MyMidiPlayer::load_timbres()
 	timbre_lib_game = Game::get_game_type();
 
 	std::ifstream file;
-	IDataSource *ds = 0;
+	DataSource *ds = 0;
 
 	if (index == -1)
 	{
 		U7open(file, filename);
 		if (!file.good()) return;
-		ds = new IStreamDataSource(&file);
+		ds = new StreamDataSource(&file);
 	}
 	else if (index >= 0)
 	{
-		ds = new IExultDataSource(filename,index);
+		ds = new ExultDataSource(filename,index);
 	}
 
 	midi_driver->loadTimbreLibrary(ds,type);
@@ -726,7 +726,7 @@ void    MyMidiPlayer::start_sound_effect(int num)
 
 	char		*buffer;
 	size_t		size;
-	IDataSource *mid_data;
+	DataSource  *mid_data;
 
 	U7object	*track =
 #if defined(MACOSX) || defined(__IPHONEOS__)
@@ -745,7 +745,7 @@ void    MyMidiPlayer::start_sound_effect(int num)
 		}
 
 	// Read the data into the XMIDI class
-	mid_data = new IBufferDataSource(buffer, size);
+	mid_data = new BufferDataSource(buffer, size);
 
 	// It's already GM, so dont convert
 	XMidiFile		midfile(mid_data, effects_conversion);

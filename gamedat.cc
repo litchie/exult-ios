@@ -91,7 +91,7 @@ extern int save_compression;
  *  each flex object are an 8.3 filename.
  */
 void Game_window::restore_flex_files(
-    IDataSource &in,
+    DataSource &in,
     const char *basepath
 ) {
 	in.seek(0x54);          // Get to where file count sits.
@@ -128,7 +128,7 @@ void Game_window::restore_flex_files(
 			namelen = baselen + 5;
 			fname[namelen] = 0;
 
-			IBufferDataSource ds(buf, len);
+			BufferDataSource ds(buf, len);
 			if (!Flex::is_flex(&ds))
 				// Save is most likely corrupted. Ignore the file but keep
 				// reading the savegame.
@@ -207,7 +207,7 @@ void Game_window::restore_gamedat(
 		return;
 	}
 
-	IStreamDataSource in(&in_stream);
+	StreamDataSource in(&in_stream);
 
 	U7remove(USEDAT);
 	U7remove(USEVARS);
@@ -298,7 +298,7 @@ static long Savefile(
 			return 0;   // Newly developed game.
 		throw;
 	}
-	IStreamDataSource in(&in_stream);
+	StreamDataSource in(&in_stream);
 	long len = in.getSize();
 	in.seek(0);
 	char namebuf[13];       // First write 13-byte name.
@@ -323,7 +323,7 @@ static long Savefile(
 
 static long SavefileFromDataSource(
     ostream &out,       // write here
-    IDataSource &source, // read from here
+    DataSource &source, // read from here
     const char *fname   // store data using this filename
 ) {
 	long len = source.getSize();
@@ -414,14 +414,14 @@ void Game_window::save_gamedat(
 			char dname[128];
 			// Need to have read/write access here.
 			std::stringstream outbuf(std::ios::in | std::ios::out | std::ios::binary);
-			OStreamDataSource outds(dynamic_cast<std::ostream *>(&outbuf));
+			StreamDataSource outds(dynamic_cast<std::ostream *>(&outbuf));
 			Flex_writer flexbuf(&outds,
 			                    (*it)->get_mapped_name(GAMEDAT, dname), 12 * 12);
 			// Save chunks to memory flex...
 			save_gamedat_chunks(*it, outbuf, flexbuf);
 			// ... and then close it.
 			flexbuf.close();
-			IStreamDataSource inds(dynamic_cast<std::istream *>(&outbuf));
+			StreamDataSource inds(dynamic_cast<std::istream *>(&outbuf));
 			int len = strlen(dname);
 			if (dname[len - 1] == '/' || dname[len - 1] == '\\')
 				dname[len - 1] = 0; // Should always be the case.
@@ -492,7 +492,7 @@ void Game_window::write_saveinfo() {
 		ifstream in;
 		U7open(in, GSAVEINFO);      // Open file; throws an exception
 
-		IStreamDataSource ds(&in);
+		StreamDataSource ds(&in);
 		ds.skip(10);    // Skip 10 bytes.
 		save_count += ds.read2();
 
@@ -506,7 +506,7 @@ void Game_window::write_saveinfo() {
 	struct tm *timeinfo = localtime(&t);
 
 	U7open(out_stream, GSAVEINFO);      // Open file; throws an exception - Don't care
-	OStreamDataSource out(&out_stream);
+	StreamDataSource out(&out_stream);
 
 	// This order must match struct SaveGame_Details
 
@@ -593,7 +593,7 @@ void Game_window::write_saveinfo() {
 }
 
 
-void Game_window::read_saveinfo(IDataSource *in,
+void Game_window::read_saveinfo(DataSource *in,
                                 SaveGame_Details *&details,
                                 SaveGame_Party  *&party) {
 	int i;
@@ -663,7 +663,7 @@ bool Game_window::get_saveinfo(int num, char *&name, Shape_file *&map, SaveGame_
 
 	ifstream in_stream;
 	U7open(in_stream, fname);       // Open file; throws an exception
-	IStreamDataSource in(&in_stream);
+	StreamDataSource in(&in_stream);
 	// in case of an error.
 	// Always try to Read Name
 	char buf[0x50];
@@ -705,7 +705,7 @@ bool Game_window::get_saveinfo(int num, char *&name, Shape_file *&map, SaveGame_
 		if (!strcmp(fname, GSCRNSHOT)) {
 			char *buf = new char[len];
 			in.read(buf, len);
-			IBufferDataSource ds(buf, len);
+			BufferDataSource ds(buf, len);
 			map = new Shape_file(&ds);
 			delete [] buf;
 		} else if (!strcmp(fname, GSAVEINFO)) {
@@ -724,7 +724,7 @@ void Game_window::get_saveinfo(Shape_file *&map, SaveGame_Details *&details, Sav
 	try {
 		ifstream in;
 		U7open(in, GSAVEINFO);      // Open file; throws an exception
-		IStreamDataSource ds(&in);
+		StreamDataSource ds(&in);
 		read_saveinfo(&ds, details, party);
 		in.close();
 	} catch (const file_exception & /*f*/) {
@@ -735,7 +735,7 @@ void Game_window::get_saveinfo(Shape_file *&map, SaveGame_Details *&details, Sav
 	try {
 		ifstream in;
 		U7open(in, GSCRNSHOT);      // Open file; throws an exception
-		IStreamDataSource ds(&in);
+		StreamDataSource ds(&in);
 		map = new Shape_file(&ds);
 		in.close();
 	} catch (const file_exception & /*f*/) {
@@ -790,7 +790,7 @@ bool Game_window::get_saveinfo_zip(const char *fname, char *&name, Shape_file *&
 		unzOpenCurrentFile(unzipfile);
 		unzReadCurrentFile(unzipfile, buf, file_info.uncompressed_size);
 		if (unzCloseCurrentFile(unzipfile) == UNZ_OK) {
-			IBufferDataSource ds(buf, file_info.uncompressed_size);
+			BufferDataSource ds(buf, file_info.uncompressed_size);
 			map = new Shape_file(&ds);
 		}
 
@@ -805,7 +805,7 @@ bool Game_window::get_saveinfo_zip(const char *fname, char *&name, Shape_file *&
 		unzOpenCurrentFile(unzipfile);
 		unzReadCurrentFile(unzipfile, buf, file_info.uncompressed_size);
 		if (unzCloseCurrentFile(unzipfile) == UNZ_OK) {
-			IBufferDataSource ds(buf, file_info.uncompressed_size);
+			BufferDataSource ds(buf, file_info.uncompressed_size);
 			read_saveinfo(&ds, details, party);
 		}
 
@@ -853,7 +853,7 @@ bool Game_window::Restore_level2(
 			std::cerr << "Couldn't read for size" << std::endl;
 			return false;
 		}
-		IBufferDataSource ds(size_buffer, 4);
+		BufferDataSource ds(size_buffer, 4);
 		size = ds.read4();
 
 		if (size) {
@@ -1045,7 +1045,7 @@ static bool Save_level1(zipFile zipfile, const char *fname) {
 	}
 
 
-	IStreamDataSource ds(&in);
+	StreamDataSource ds(&in);
 
 	unsigned int size = ds.getSize();
 	char *buf = new char[size];
@@ -1088,7 +1088,7 @@ static bool Save_level2(zipFile zipfile, const char *fname) {
 		throw;
 	}
 
-	IStreamDataSource ds(&in);
+	StreamDataSource ds(&in);
 
 	uint32 size = ds.getSize();
 	char *buf = new char[size < 13 ? 13 : size]; // We want at least 13 bytes
@@ -1104,7 +1104,7 @@ static bool Save_level2(zipFile zipfile, const char *fname) {
 	// Size of the file
 	if (err == ZIP_OK) {
 		// Must be platform independant
-		OBufferDataSource bds(buf, 4);
+		BufferDataSource bds(buf, 4);
 		bds.write4(size);
 		err = zipWriteInFileInZip(zipfile, buf, 4);
 	}

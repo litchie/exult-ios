@@ -11,10 +11,10 @@ using std::istream;
 using std::ostream;
 using std::vector;
 using std::string;
-class IDataSource;
+class DataSource;
 
 int Read_text_msg_file(
-    IDataSource *in,
+    DataSource *in,
     vector<string> &strings,    // Strings returned here, each
     //   allocated on heap.
     const char *section = 0
@@ -26,11 +26,11 @@ int Read_text_msg_file(
     const char *section = 0
 );
 bool Search_text_msg_section(
-    IDataSource *in,
+    DataSource *in,
     const char *section = 0
 );
 int Read_text_msg_file_sections(
-    IDataSource *in,
+    DataSource *in,
     vector<vector<string> > &strings,   // Strings returned here
     const char *sections[],         // Section names
     int numsections

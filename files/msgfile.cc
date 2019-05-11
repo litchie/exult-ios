@@ -58,7 +58,7 @@ using std::string;
  *      error.
  */
 
-int Read_text_msg_file(IDataSource *in, vector<string> &strings,
+int Read_text_msg_file(DataSource *in, vector<string> &strings,
                        const char *section) {
 	strings.resize(0);      // Initialize.
 	strings.reserve(1000);
@@ -131,7 +131,7 @@ int Read_text_msg_file(IDataSource *in, vector<string> &strings,
  *  be just before the section start.
  */
 
-bool Search_text_msg_section(IDataSource *in, const char *section) {
+bool Search_text_msg_section(DataSource *in, const char *section) {
 	static const string sectionStart("%%section");
 	while (!in->eof()) {
 		std::string line;
@@ -164,12 +164,12 @@ int Read_text_msg_file(
     const char *section         // Section name, or NULL.  If given
     //   the section must be next infile.
 ) {
-	IStreamDataSource ds(&in);
+	StreamDataSource ds(&in);
 	return Read_text_msg_file(&ds, strings, section);
 }
 
 int Read_text_msg_file_sections(
-    IDataSource *in,
+    DataSource *in,
     vector<vector<string> > &strings,   // Strings returned here
     const char *sections[],         // Section names
     int numsections
@@ -203,7 +203,7 @@ int Read_text_msg_file_sections(
     int numsections
 ) {
 
-	IStreamDataSource ds(&in);
+	StreamDataSource ds(&in);
 	return Read_text_msg_file_sections(&ds, strings, sections, numsections);
 }
 

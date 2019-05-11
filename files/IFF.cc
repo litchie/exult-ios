@@ -122,7 +122,7 @@ char *IFF::retrieve(uint32 objnum, size_t &len) {
  *  @param in   DataSource to verify.
  *  @return Whether or not the DataSource is an IFF file.
  */
-bool IFF::is_iff(IDataSource *in) {
+bool IFF::is_iff(DataSource *in) {
 	char ckid[4];
 	long pos = in->getPos();
 	in->seek(0);
@@ -143,7 +143,7 @@ bool IFF::is_iff(const std::string& fname) {
 
 	std::ifstream in;
 	U7open(in, fname.c_str());
-	IStreamDataSource ds(&in);
+	StreamDataSource ds(&in);
 
 	if (in.good())
 		return is_iff(&ds);

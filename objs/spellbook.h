@@ -72,7 +72,7 @@ public:
 	// Run usecode function.
 	virtual void activate(int event = 1);
 	// Write out to IREG file.
-	virtual void write_ireg(ODataSource *out);
+	virtual void write_ireg(DataSource *out);
 	// Get size of IREG.
 	// Returns -1 if can't write to buffer
 	virtual int get_ireg_size();

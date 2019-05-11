@@ -102,11 +102,11 @@ public:
 	                        int qual, int framenum);
 	virtual void set_flag_recursively(int flag);
 	// Write out to IREG file.
-	virtual void write_ireg(ODataSource *out);
+	virtual void write_ireg(DataSource *out);
 	// Get size of IREG. Returns -1 if can't write to buffer
 	virtual int get_ireg_size();
 	// Write contents in IREG format.
-	virtual void write_contents(ODataSource *out);
+	virtual void write_contents(DataSource *out);
 
 	virtual int get_obj_hp() const {
 		return resistance;

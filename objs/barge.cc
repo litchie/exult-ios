@@ -868,7 +868,7 @@ int Barge_object::step(
  */
 
 void Barge_object::write_ireg(
-    ODataSource *out
+    DataSource *out
 ) {
 	unsigned char buf[20];      // 13-byte entry + length-byte.
 	unsigned char *ptr = write_common_ireg(12, buf);

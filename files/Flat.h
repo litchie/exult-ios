@@ -53,7 +53,7 @@ public:
 		return "FLAT";
 	}
 
-	static bool is_flat(IDataSource *in);
+	static bool is_flat(DataSource *in);
 	static bool is_flat(const std::string& fname);
 };
 

@@ -21,7 +21,7 @@
 
 class Image_buffer8;
 class Shape_file;
-class IDataSource;
+class DataSource;
 struct File_spec;
 class U7multiobject;
 
@@ -48,7 +48,7 @@ private:
 	int hor_lead;
 	int ver_lead;
 	Shape_file *font_shapes;
-	IDataSource *font_data;
+	DataSource *font_data;
 	char *font_buf;
 	char *orig_font_buf;
 	int  highest, lowest;

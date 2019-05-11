@@ -39,7 +39,7 @@ AudioSample::~AudioSample(void)
 
 AudioSample *AudioSample::createAudioSample(uint8 *data, uint32 size)
 {
-	IBufferDataSource ds(data,size);
+	BufferDataSource ds(data,size);
 
 	if (VocAudioSample::isThis(&ds))
 	{

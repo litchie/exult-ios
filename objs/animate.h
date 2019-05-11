@@ -215,7 +215,7 @@ public:
 	}
 
 	// Write out to IREG file.
-	virtual void write_ireg(ODataSource *out);
+	virtual void write_ireg(DataSource *out);
 };
 
 /*
@@ -237,7 +237,7 @@ public:
 		                  -animator->get_deltay(), 0);
 	}
 
-	virtual void write_ifix(ODataSource *ifix, bool v2);
+	virtual void write_ifix(DataSource *ifix, bool v2);
 };
 #endif
 

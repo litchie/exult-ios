@@ -79,7 +79,7 @@ public:
 		return 1;
 	}
 	virtual void die(Game_object *attacker);        // We're dead.
-	void write(ODataSource *nfile);// Write out (to 'monsnpc.dat').
+	void write(DataSource *nfile);// Write out (to 'monsnpc.dat').
 };
 
 #endif

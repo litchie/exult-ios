@@ -276,7 +276,7 @@ string get_game_identity(const char *savename, const string &title) {
 #endif
 	else {
 		U7open(in_stream, savename);        // Open file.
-		IStreamDataSource in(&in_stream);
+		StreamDataSource in(&in_stream);
 
 		in.seek(0x54);          // Get to where file count sits.
 		int numfiles = in.read4();
