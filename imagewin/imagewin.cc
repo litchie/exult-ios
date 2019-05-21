@@ -682,7 +682,8 @@ bool Image_window::create_scale_surfaces(int w, int h, int bpp) {
 	if (fullscreen) {
 		//grabbing the full HighDPi resolution
 		int dw, dh;
-		SDL_GL_GetDrawableSize(screen_window, &dw, &dh);
+		//with HighDPi this returns the higher resolutions
+		SDL_GetRendererOutputSize(screen_renderer, &dw, &dh);
 		w=dw;
 		h=dh;
 		Resolution res = { w, h, false, false, false};
