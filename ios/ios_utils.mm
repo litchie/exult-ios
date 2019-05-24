@@ -89,10 +89,10 @@ extern "C" int SDL_SendKeyboardKey(Uint8 state, SDL_Scancode scancode);
 	UIViewController *controller = window.rootViewController;
 	CGRect rcScreen = controller.view.bounds;
 	CGSize sizeDpad = CGSizeMake(180, 180);
-	float margin_bottom = 30;
+	float margin = 30;
 
 	std::string str;
-	float left = rcScreen.size.width - sizeDpad.width;
+	float left = rcScreen.size.width - sizeDpad.width - margin;
 	config->value("config/iphoneos/dpad_location", str, "right");
 	if (str == "no") {
 		return CGRectZero;
@@ -101,7 +101,7 @@ extern "C" int SDL_SendKeyboardKey(Uint8 state, SDL_Scancode scancode);
 	}
 	CGRect rcDpad = CGRectMake(
 		left,
-		rcScreen.size.height-sizeDpad.height-margin_bottom,
+		rcScreen.size.height - sizeDpad.height - margin,
 		sizeDpad.width,
 		sizeDpad.height);
 	return rcDpad;
