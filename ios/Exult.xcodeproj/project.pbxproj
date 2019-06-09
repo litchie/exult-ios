@@ -50,7 +50,8 @@
 		8A8728D91DD8AEFF005AC3FC /* TVF.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A8728C41DD8AEFF005AC3FC /* TVF.cpp */; };
 		8A8728DA1DD8AEFF005AC3FC /* TVP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A8728C61DD8AEFF005AC3FC /* TVP.cpp */; };
 		8A8728EA1DD8BAA3005AC3FC /* sha1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A8728E81DD8BAA3005AC3FC /* sha1.cpp */; };
-		8A93BD6A1F8901E3001850AA /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8A93BC931F869000001850AA /* Media.xcassets */; };
+		8AB479F822AD1A5500BB3562 /* iOS Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8AB479E422AD1A5500BB3562 /* iOS Launch Screen.storyboard */; };
+		8AB47A1922AD4D5D00BB3562 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 8AB47A1822AD4D5D00BB3562 /* Icon.png */; };
 		8AB53D8C1C9CA0A90084C69D /* ShortcutBar_gump.cc in Sources */ = {isa = PBXBuildFile; fileRef = 8AB53D8A1C9CA0A90084C69D /* ShortcutBar_gump.cc */; };
 		8AC797C71C8D0E4F001AF014 /* unzip.cc in Sources */ = {isa = PBXBuildFile; fileRef = 8AC797C51C8D0E4F001AF014 /* unzip.cc */; };
 		8AC797C81C8D0E4F001AF014 /* zip.cc in Sources */ = {isa = PBXBuildFile; fileRef = 8AC797C61C8D0E4F001AF014 /* zip.cc */; };
@@ -319,6 +320,34 @@
 			remoteGlobalIDString = FAB598141BB5C1B100BE72C5;
 			remoteInfo = "libSDL-tv";
 		};
+		8AB479F022AD1A5500BB3562 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E700E1271A6F839E006C8BE4 /* SDL.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 52ED1E5C222889500061FCE0;
+			remoteInfo = "libSDL-iOS-dylib";
+		};
+		8AB479F222AD1A5500BB3562 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E700E1271A6F839E006C8BE4 /* SDL.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = F3E3C7572241389A007D243C;
+			remoteInfo = "libSDL-tvOS-dylib";
+		};
+		8AB479F422AD1A5500BB3562 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E700E1271A6F839E006C8BE4 /* SDL.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = F3E3C65222406928007D243C;
+			remoteInfo = "libSDLmain-iOS";
+		};
+		8AB479F622AD1A5500BB3562 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E700E1271A6F839E006C8BE4 /* SDL.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = F3E3C75F224138AE007D243C;
+			remoteInfo = "libSDLmain-tvOS";
+		};
 		E700E12C1A6F839F006C8BE4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = E700E1271A6F839E006C8BE4 /* SDL.xcodeproj */;
@@ -406,8 +435,9 @@
 		8A8728C81DD8AEFF005AC3FC /* Types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Types.h; sourceTree = "<group>"; };
 		8A8728E81DD8BAA3005AC3FC /* sha1.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sha1.cpp; sourceTree = "<group>"; };
 		8A8728E91DD8BAA3005AC3FC /* sha1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sha1.h; sourceTree = "<group>"; };
-		8A93BC931F869000001850AA /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		8AB0AE1B1CBEF522001DBB16 /* ignore_unused_variable_warning.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ignore_unused_variable_warning.h; sourceTree = "<group>"; };
+		8AB479E422AD1A5500BB3562 /* iOS Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "iOS Launch Screen.storyboard"; sourceTree = "<group>"; };
+		8AB47A1822AD4D5D00BB3562 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = Images/Icon.png; sourceTree = "<group>"; };
 		8AB53D8A1C9CA0A90084C69D /* ShortcutBar_gump.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ShortcutBar_gump.cc; path = ../gumps/ShortcutBar_gump.cc; sourceTree = "<group>"; };
 		8AB53D8B1C9CA0A90084C69D /* ShortcutBar_gump.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShortcutBar_gump.h; path = ../gumps/ShortcutBar_gump.h; sourceTree = "<group>"; };
 		8AC797C51C8D0E4F001AF014 /* unzip.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = unzip.cc; sourceTree = "<group>"; };
@@ -971,7 +1001,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
-				8A93BC931F869000001850AA /* Media.xcassets */,
+				8AB479E422AD1A5500BB3562 /* iOS Launch Screen.storyboard */,
 				E71BBD881A725E1E0003F662 /* Images */,
 				29B97315FDCFA39411CA2CEA /* Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
@@ -1009,6 +1039,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				8AB47A1822AD4D5D00BB3562 /* Icon.png */,
 				E700E0E31A6E6665006C8BE4 /* data */,
 				8D1107310486CEB800E47090 /* Info.plist */,
 			);
@@ -1758,7 +1789,11 @@
 			isa = PBXGroup;
 			children = (
 				E700E12D1A6F839F006C8BE4 /* libSDL2.a */,
+				8AB479F122AD1A5500BB3562 /* libSDL2.dylib */,
 				8A8340C51F8977FB000696C7 /* libSDL2.a */,
+				8AB479F322AD1A5500BB3562 /* libSDL2.dylib */,
+				8AB479F522AD1A5500BB3562 /* libSDLmain.a */,
+				8AB479F722AD1A5500BB3562 /* libSDLmain.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1872,7 +1907,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1000;
+				LastUpgradeCheck = 1100;
 				TargetAttributes = {
 					1D6058900D05DD3D006BFB54 = {
 						DevelopmentTeam = 5PRK96AWD5;
@@ -1923,6 +1958,34 @@
 			remoteRef = 8A8340C41F8977FB000696C7 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		8AB479F122AD1A5500BB3562 /* libSDL2.dylib */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libSDL2.dylib;
+			remoteRef = 8AB479F022AD1A5500BB3562 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		8AB479F322AD1A5500BB3562 /* libSDL2.dylib */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libSDL2.dylib;
+			remoteRef = 8AB479F222AD1A5500BB3562 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		8AB479F522AD1A5500BB3562 /* libSDLmain.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libSDLmain.a;
+			remoteRef = 8AB479F422AD1A5500BB3562 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		8AB479F722AD1A5500BB3562 /* libSDLmain.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libSDLmain.a;
+			remoteRef = 8AB479F622AD1A5500BB3562 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		E700E12D1A6F839F006C8BE4 /* libSDL2.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1960,7 +2023,7 @@
 				8AF2AFE52016708100696E08 /* joypad-glass-west.png in Resources */,
 				8AF2AFE62016708100696E08 /* joypad-glass-northwest.png in Resources */,
 				8AF2AFE72016708100696E08 /* joypad-glass-south.png in Resources */,
-				8A93BD6A1F8901E3001850AA /* Media.xcassets in Resources */,
+				8AB47A1922AD4D5D00BB3562 /* Icon.png in Resources */,
 				E71BBD941A725E1E0003F662 /* btn.png in Resources */,
 				E71BBD951A725E1E0003F662 /* btnpressed.png in Resources */,
 				E71BBD9E1A725E1E0003F662 /* dpadglass.png in Resources */,
@@ -1972,6 +2035,7 @@
 				E71BBD981A725E1E0003F662 /* dpadglass-northeast.png in Resources */,
 				E71BBD9C1A725E1E0003F662 /* dpadglass-southwest.png in Resources */,
 				E71BBD9B1A725E1E0003F662 /* dpadglass-southeast.png in Resources */,
+				8AB479F822AD1A5500BB3562 /* iOS Launch Screen.storyboard in Resources */,
 				E700E0E41A6E6665006C8BE4 /* data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2274,8 +2338,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = NO;
 				DEVELOPMENT_TEAM = 5PRK96AWD5;
@@ -2311,8 +2373,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
@@ -2347,6 +2407,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_IDENTITY = "-";
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -2374,6 +2435,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_IDENTITY = "-";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
