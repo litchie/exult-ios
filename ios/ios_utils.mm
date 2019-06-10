@@ -58,7 +58,7 @@ extern "C" int SDL_SendKeyboardKey(Uint8 state, SDL_Scancode scancode);
 {
 	UIWindow *alertWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
 	alertWindow.windowLevel = UIWindowLevelAlert;
-    alertWindow.rootViewController = [UIViewController new];
+	alertWindow.rootViewController = [UIViewController new];
 	[alertWindow makeKeyAndVisible];
 
 	UIAlertController *alert = [UIAlertController 
@@ -82,8 +82,8 @@ extern "C" int SDL_SendKeyboardKey(Uint8 state, SDL_Scancode scancode);
 	[alert addAction:cancel];
 	[alert addTextFieldWithConfigurationHandler:^(UITextField *textField) {
 		textField.placeholder = @"";
-        if (name)
-            [textField setText:name];
+		if (name)
+			[textField setText:name];
 	}];
 
 	[alertWindow.rootViewController presentViewController:alert animated:YES completion:nil];
