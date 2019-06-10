@@ -56,20 +56,27 @@ extern "C" int SDL_SendKeyboardKey(Uint8 state, SDL_Scancode scancode);
 
 - (void)promptForName:(NSString*)name
 {
-	UIAlertController *alert = 	[UIAlertController 
-											alertControllerWithTitle:@"" 
-											message:@"" 
-											preferredStyle:UIAlertControllerStyleAlert
+	UIWindow *alertWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+	alertWindow.windowLevel = UIWindowLevelAlert;
+    alertWindow.rootViewController = [UIViewController new];
+	[alertWindow makeKeyAndVisible];
+
+	UIAlertController *alert = [UIAlertController 
+										alertControllerWithTitle:@"" 
+										message:@"" 
+										preferredStyle:UIAlertControllerStyleAlert
 	];
 	UIAlertAction* ok = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault 
 										handler:^(UIAlertAction *action) {
 											UITextField *textField = alert.textFields.firstObject;
 											TouchUI::onTextInput(textField.text.UTF8String);
+											alertWindow.hidden = YES;
 											[alert dismissViewControllerAnimated:YES completion:nil];
 	}];
 	UIAlertAction* cancel = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault
-											handler:^(UIAlertAction * action) {
-												[alert dismissViewControllerAnimated:YES completion:nil];
+										handler:^(UIAlertAction * action) {
+											alertWindow.hidden = YES;
+											[alert dismissViewControllerAnimated:YES completion:nil];
 	}];
 	[alert addAction:ok];
 	[alert addAction:cancel];
@@ -79,8 +86,7 @@ extern "C" int SDL_SendKeyboardKey(Uint8 state, SDL_Scancode scancode);
             [textField setText:name];
 	}];
 
-	UIWindow *window = [[[UIApplication sharedApplication] delegate] window];
-	[window.rootViewController presentViewController:alert animated:YES completion:nil];
+	[alertWindow.rootViewController presentViewController:alert animated:YES completion:nil];
 }
 
 - (CGRect)calcRectForDPad
