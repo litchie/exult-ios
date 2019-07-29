@@ -19,6 +19,8 @@ AlwaysUsePersonalGroup=true
 
 [Files]
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
+Source: Exult\COPYING.txt; DestDir: {app}; Flags: onlyifdoesntexist
+Source: Exult\AUTHORS.txt; DestDir: {app}; Flags: onlyifdoesntexist
 Source: Studio\images\back.gif; DestDir: {app}\images\; Flags: ignoreversion
 Source: Studio\images\exult_logo.gif; DestDir: {app}\images\; Flags: ignoreversion
 Source: Studio\images\studio01.png; DestDir: {app}\images\; Flags: ignoreversion
