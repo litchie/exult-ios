@@ -34,15 +34,35 @@ class Container_game_object : public Ireg_game_object {
 protected:
 	Object_list objects;        // ->first object.
 	int get_max_volume() const;
+	int  gumpX;
+	int  gumpY;
+	bool gumpInit;
 public:
+	virtual void setGumpXY(int x, int y) { 
+		gumpX = x; 
+		gumpY = y;	
+		gumpInit = true;
+	}
+	virtual int  getGumpX() {
+		return gumpX;
+	}
+	virtual int  getGumpY() {
+		return gumpY;
+	}
+	virtual bool validGumpXY() {
+		return gumpInit;
+	}
 	Container_game_object(int shapenum, int framenum, unsigned int tilex,
 	                      unsigned int tiley, unsigned int lft,
 	                      char res = 0)
 		: Ireg_game_object(shapenum, framenum, tilex, tiley, lft),
-		  volume_used(0), resistance(res), objects(0)
-	{  }
+		  volume_used(0), resistance(res), objects(0) {
+			gumpInit = false;
+	}
 	Container_game_object() : volume_used(0), resistance(0),
-		objects(0) {  }
+		objects(0) {
+			gumpInit = false;
+	}
 	virtual ~Container_game_object();
 	Object_list &get_objects() {
 		return objects;
