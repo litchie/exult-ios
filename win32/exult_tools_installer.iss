@@ -19,6 +19,8 @@ AlwaysUsePersonalGroup=true
 
 [Files]
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
+Source: Exult\COPYING.txt; DestDir: {app}; Flags: onlyifdoesntexist
+Source: Exult\AUTHORS.txt; DestDir: {app}; Flags: onlyifdoesntexist
 Source: Tools\ucxt.exe; DestDir: {app}; Flags: ignoreversion
 Source: Tools\data\bginclude.uc; DestDir: {app}\data\; Flags: ignoreversion
 Source: Tools\data\events.data; DestDir: {app}\data\; Flags: ignoreversion
