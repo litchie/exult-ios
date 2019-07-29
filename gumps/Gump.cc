@@ -42,6 +42,12 @@ Gump::Gump(
     ShapeFile shfile
 ) : ShapeID(shnum, 0, shfile), container(cont), x(initx), y(inity),
 	handles_kbd(false) {
+	if (container){
+		if (container->validGumpXY()){
+			x = container->getGumpX();
+			y = container->getGumpY();
+		}
+	}
 }
 
 /*
@@ -84,6 +90,8 @@ Gump::Gump(
 Gump::~Gump() {
 	for (Gump_elems::iterator it = elems.begin(); it != elems.end(); ++it)
 		delete *it;
+	if (container) // Probabbly dont need to check.. but would crash the game if it was NULL.
+		container->setGumpXY(x, y);
 }
 
 /*
