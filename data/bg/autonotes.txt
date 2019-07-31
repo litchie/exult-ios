@@ -94,7 +94,7 @@
 0x310:An exiled and blind man named Erethian lives on the Isle of Fire.
 0x313:On the Isle of Fire, I met a demon called Arcadion, trapped in a mirror. He wants me to free him.
 0x032F:With the gem I broke the mirror to free the demon Arcadion, but instead he is now imprisoned in the gem.
-0x030:I bound the demon Arcadion to the blackrock sword
+0x330:I bound the demon Arcadion to the blackrock sword
 0x331:I'm not helping a demon!
 0x332:I mistrust Erethian and have agreed to help the demon Arcadion.
 0x32D:Improved the blackrock sword.
