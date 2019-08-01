@@ -493,6 +493,7 @@ static inline void Reset_gl_rotates() {
 // and 2 if user pressed Return/Enter
 int wait_delay(int ms, int startcol, int ncol, int rotspd) {
 	SDL_Event event;
+	static uint32 last_b3_click = 0;
 	unsigned long delay;
 	int loops;
 
@@ -556,6 +557,9 @@ int wait_delay(int ms, int startcol, int ncol, int rotspd) {
 					        (event.key.keysym.mod & KMOD_CTRL))
 						make_screenshot(true);
 					break;
+				case SDLK_ESCAPE:
+					return 1;
+				case SDLK_SPACE:
 				case SDLK_RETURN:
 				case SDLK_KP_ENTER:
 #ifdef HAVE_OPENGL
@@ -564,21 +568,25 @@ int wait_delay(int ms, int startcol, int ncol, int rotspd) {
 #endif
 					return 2;
 				default:
-#ifdef HAVE_OPENGL
-					delete screen;
-					Reset_gl_rotates();
-#endif
-					return 1;
+					break;
 				}
 				break;
-			case SDL_MOUSEBUTTONDOWN:
+				case SDL_MOUSEBUTTONDOWN:
 				break;
-			case SDL_MOUSEBUTTONUP:
+			case SDL_MOUSEBUTTONUP: {
 #ifdef HAVE_OPENGL
 				delete screen;
 				Reset_gl_rotates();
 #endif
-				return 1;
+				if (event.button.button == 3 || event.button.button == 1) {
+					if (ticks1 - last_b3_click < 500)
+						return 1;
+					else
+						last_b3_click = ticks1;
+						break;
+					last_b3_click = ticks1;
+				}
+			}
 			default:
 				break;
 			}
