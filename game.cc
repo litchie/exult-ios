@@ -574,7 +574,7 @@ int wait_delay(int ms, int startcol, int ncol, int rotspd) {
 				delete screen;
 				Reset_gl_rotates();
 #endif
-				if (event.button.button == 3 || event.button.button == 1) {
+				if (event.button.button == 3 || event.button.button == 1) {
 					if (ticks1 - last_b3_click < 500)
 						return 1;
 					else
