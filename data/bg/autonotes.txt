@@ -15,16 +15,15 @@
 0x44:I finished the investigation of the gruesome murder in Trinsic.
 0x40:There is a ship named Crown Jewel which was anchored in Trinsic when the murder happened.
 0x43:A man with a hook was in Trinsic.
-
-0x5A:EXPECTED_TO_LOOK_IN_STABLES
-0x3E:UNLOCKED_CHRISTOPHERS_CHEST
-0x3F:KNOWS_ABOUT_CHRISTOPERS_ARGUMENT
-0x59:REFUSED_MURDER_INVESTIGATION
-0x48:REPORTED_CHRISTOPHERS_KEY
-0x5B:CAN_GIVE_MURDER_REPORT
-0x5D:STARTED_MURDER_REPORT
-0x45:WAITING_FOR_INVESTIGATION_PAYMENT
-0x57:LEFT_TRINSIC
+0x5A:I just arrived and already have a quest: Investigate the stables.
+0x3E:Searched Christopher's house, the key I found unlocked a chest with a medallion, a scroll, and gold inside.
+0x3F:Christopher had an argument with Klog!
+0x59:I refused the mayor and will not investigate the murder.
+0x48:I told the mayor Finnigan about the key I found on the body
+0x5B:I found enough clues to report to Finnigan!
+0x5D:I've reported some clues, but apparently need to find out more.
+0x45:I received half the payment for the murder investigation, the rest will come when I catch the culprit.
+0x57:Off we go exploring outside Trinsic.
 
 
 # Who the player has met.
@@ -33,17 +32,16 @@
 0x99:My old friend Nystul seems to have lost his marbles.
 0x9A:Chuckles, Lord British's court jester, wants to play a silly game with me.
 0xAA:Candice, a nice woman, works at the royal museum.
-0x1B:Julia, my old friend, is living in Minoc. Perhaps she will join me.
-0xB5:MET_WILLY
-0xBB:MET_GORDON
-0xA4:MET_CSIL
-0x110:MET_GLADSTONE
-0x22A:MET_CAMILLE
-0x269:MET_MENION
-0x204:MET_ELAD
-0x247:MET_INMANILEM
-0x52:MET_CHANTU
-0x01FB:MET_MARIAH
+0xB5:Willy is the baker of Britain and makes the sweetest bread.
+0xBB:Gordon sells fish and chips from his wagon in Britain.
+0xA4:Csil aka Abrams is a wise and honest healer in Britain.
+0x110:Gladstone of Mino is a glassblower and sculptor.
+0x22A:Camille is a hard working farm woman and widow. She runs her farm in Paws with her son Tobias.
+0x269:Menion is a blacksmith I met in Serpent's Hold.
+0x204:Elad is the healer of Moonglow with a yearning for adventures.
+0x247:In Terfin I met Inmalinem.
+0x52:Chantu of Trinsic is a solemn fellow in healer's robes.
+0x01FB:I've met my old friend Mariah in Moonglow.
 
 # Talking to LB
 
@@ -60,21 +58,22 @@
 
 # Flags used in conversation with Julia
 
-0x101:ASKED_JULIA_TO_LEAVE
-0x108:JULIA_IN_PARTY
-0x121:ASKED_JULIA_ABOUT_SPARK
+0x1B:Julia, my old friend, is living in Minoc. Perhaps she will join me.
+0x101:Unfortunately I had to leave Julia behind. She's no longer in my party.
+0x108:I've asked Julia to join my party and it was her pleasure!
+0x121:Julia thinks Spark is cute and well mannered.
 
 
 # serpents hold flags
 
 0x26E:In Serpent's Hold, I met Horffe who is head of security. He reminds me of someone else.
 0x271:Lady Tory of Serpent's Hold reminds of someone named Deanna.
-0x272:Lady Leigh, the healer of Serpent's Hold, reminds me of a certain doctor.
+0x272:Lady Leigh of Serpent's Hold, reminds me of a certain doctor.
 0x25E:Someone defaced the statue of my friend Lord British in Serpent's Hold. Sir John-Paul wants me to find out who it was.
 0x261:Sir Pendaran was the one who defaced the statue of Lord British in Serpent's Hold.
 0x277:Lady Tory's baby son Riky was kidnapped by harpies. I must save him.
 0x278:I saved baby Riky from the harpies!
-0x27A:KNOWS_LEIGH_IS_HEALER
+0x27A:Lady Leigh told me that she's a healer.
 0x259:CAN_EXAMINE_STONE_CHIPS
 0x25E:DOING_STATUE_QUEST
 0x25F:EXAMINED_CHIPS
@@ -112,7 +111,7 @@
 
 
 # Broken the tetrahedron generator that screws up magic. This affects most conversations with wizards.
-0x03:BROKE_TETRAHEDRON
+0x03:I've broken the tetrahedron generator.
 0x04:BROKE_CUBE
 0x134:ORB_FIXED_TIMELORD
 
@@ -126,20 +125,20 @@
 
 # Miscellaneous flags for NPCs in Paws
 
-0x212:HEARD_ABOUT_PAWS_THEFT - Heard from an NPC about the theft
-0x213:TOBIAS_ACCUSED - Feridwyn accused Tobias of the theft
-0x218:SOLVED_PAWS_THEFT - Found Garritt was the thief
-0x234:HEARD_CAMILLES_DEFENSE - Camille has run out to say that her son is innocent of the theft.
-0x21A:GOT_CAMILLES_WHEAT - Given the wheat by Camille
-0x21D:DELIVERED_CAMILLES_WHEAT- Delivered the wheat to Thurston
+0x212:I've been told that there was a theft in Paws.
+0x213:Feridwyn accused Tobias of the theft in Paws.
+0x218:Found Garritt was the thief in Paws.
+0x234:Camille has run out to say that her son is innocent of the theft in Paws.
+0x21A:Camille gave me wheat to deliver to Thurston.
+0x21D:I delivered the Camille's wheat to Thurston.
 
 
 #Some Cove flags:
 
-0x18:MET_JAANA
-0xEF:ASKED_JAANA_NAME
+0x18:In Cove I met my former companion Jaana.
+0xEF:I don't know why I did it but I asked Jaana for her name. I must be getting old.
 0xE4:KNOWS_COVE_GOSSIP
-0x28:KNOWS_JAANA_IS_HEALER
+0x28:Jaana is the healer of Cove.
 0xE0:HEARD_ABOUT_NATASSIA
 0x6A:HAS_MIRANDAS_BILL
 0xEA:MET_LORD_HEATHER
@@ -183,11 +182,11 @@
 0x133:The wisps won't help me for free. They have asked me to deliver them the notebook of Alagner, the wisest Britannian, who lives on the island of New Magincia.
 0x157:Delivered the cursed notebook to the wisps. In return they delivered me the message from the Time Lord, and told me how to reach him at the Shrine of Spirituality.
 0x127:The Time Lord told me about the evil Guardian and his plan to enter Britannia through a black moongate at the time of the Astronomical Alignment.
-0xDA:BATLIN_MISSING - Batlin has buggered off (after you talk to him with the cube in your possession)
-0x80:HEARD_ABOUT_PATTERSONS_AFFAIR - Heard that Patterson is having an affair
-0x8C:HEARD_ABOUT_VOICE - Heard about the Inner Voice
-0x85:JEANETTE_LOVES_WILLY - heard about Jeanette's crush on Willy the Baker
-0xCB:HIRED_BY_WILLY -hired by Willy to bake bread
-0x2ED:MAGIC_STORM_SPELL - Set when the Magic Storm spell is cast
-0x39:INSIDE_GENERATOR - Prevents casting of spells because the Avatar is inside one of the generators
+0xDA:Batlin has gone missing after I talked to him with the cube in my belongings.
+0x80:I heard that Patterson is having an affair.
+0x8C:I was told about the Inner Voice.
+0x85:Jeanette has a crush on Willy the Baker.
+0xCB:Willy hired me to bake bread.
+0x2ED:I've cast Magic Storm.
+0x39:I am inside the Generator and suddenly can'T cast spells anymore.
 0x2C0:Met Mama
