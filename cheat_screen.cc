@@ -162,6 +162,14 @@ const char *CheatScreen::alignments[4] = {
 	"Chaotic"
 };
 
+static int Find_highest_map(
+) {
+	int n = 0, next;
+	while ((next = Find_next_map(n + 1, 10)) != -1)
+		n = next;
+	return n;
+}
+
 CheatScreen::CheatScreen()
  : grabbed(NULL), gwin(NULL), ibuf(NULL), font(NULL), clock(NULL),
    maxx(0), maxy(0), centerx(0), centery(0) {
@@ -574,6 +582,7 @@ void CheatScreen::NormalLoop() {
 
 void CheatScreen::NormalDisplay() {
 	char    buf[512];
+	int curmap = gwin->get_map()->get_num(); 
 	Tile_coord t = gwin->get_main_actor()->get_tile();
 #ifdef __IPHONEOS__
 	font->paint_text_fixedwidth(ibuf, "Colourless' Advanced Option Cheat Screen", 0, 108, 8);
@@ -614,9 +623,9 @@ void CheatScreen::NormalDisplay() {
 	
 	int longi = ((t.tx - 0x3A5) / 10);
 	int lati = ((t.ty - 0x46E) / 10);
-	snprintf(buf, 512, "Coords geo    %d %s %d %s",
+	snprintf(buf, 512, "Coordinates   %d %s %d %s, Map #%d",
 		abs(lati), (lati < 0 ? "North" : "South"),
-		abs(longi), (longi < 0 ? "West" : "East"));
+		abs(longi), (longi < 0 ? "West" : "East"), curmap);
 #ifdef __IPHONEOS__
 	font->paint_text_fixedwidth(ibuf, buf, 0, 9, 8);
 #else
@@ -2996,6 +3005,8 @@ void CheatScreen::TeleportLoop() {
 void CheatScreen::TeleportDisplay() {
 	char    buf[512];
 	Tile_coord t = gwin->get_main_actor()->get_tile();
+	int curmap = gwin->get_map()->get_num();
+	int highest = Find_highest_map(); 
 
 	font->paint_text_fixedwidth(ibuf, "Teleport Menu", 0, 0, 8);
 #ifndef __IPHONEOS__
@@ -3027,6 +3038,13 @@ void CheatScreen::TeleportDisplay() {
 	font->paint_text_fixedwidth(ibuf, buf, 0, 27, 8);
 #else
 	font->paint_text_fixedwidth(ibuf, buf, 0, 81, 8);
+#endif
+	snprintf(buf, 512, "On Map #%d of %d",
+	         curmap, highest);
+ #ifdef __IPHONEOS__
+	font->paint_text_fixedwidth(ibuf, buf, 0, 36, 8);
+#else
+	font->paint_text_fixedwidth(ibuf, buf, 0, 90, 8);
 #endif
 }
 
@@ -3062,6 +3080,9 @@ void CheatScreen::TeleportMenu() {
 	font->paint_text_fixedwidth(ibuf, "[N]PC Number", 0, maxy - 72, 8);
 #endif
 
+	// Map
+		font->paint_text_fixedwidth(ibuf, "[M]ap Number", 0, maxy - 63, 8);
+
 	// eXit
 #ifdef __IPHONEOS__
 	font->paint_text_fixedwidth(ibuf, "[X]it", 0, 72, 8);
@@ -3076,6 +3097,7 @@ void CheatScreen::TeleportActivate(char *input, int &command, Cheat_Prompt &mode
 	int npc = std::atoi(input);
 	static int lat;
 	Tile_coord t = gwin->get_main_actor()->get_tile();
+	int highest = Find_highest_map();
 
 	mode = CP_Command;
 	switch (command) {
@@ -3208,6 +3230,13 @@ void CheatScreen::TeleportActivate(char *input, int &command, Cheat_Prompt &mode
 		}
 		break;
 
+	case 'm':   // map
+		if ((i < 0 || i > 255) || i > highest) mode = CP_InvalidValue;
+		else if (i == -1) mode = CP_Canceled;
+		else
+			gwin->teleport_party(gwin->get_main_actor()->get_tile(), true, i);
+		break;
+
 	default:
 		break;
 	}
@@ -3233,6 +3262,10 @@ bool CheatScreen::TeleportCheck(char *input, int &command, Cheat_Prompt &mode, b
 
 	case 'n':   // NPC teleport
 		mode = CP_ChooseNPC;
+		break;
+
+	case 'm':   // NPC teleport
+		mode = CP_EnterValue;
 		break;
 
 		// X and Escape leave
