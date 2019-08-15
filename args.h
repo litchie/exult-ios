@@ -16,8 +16,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _ARGS_H_
-#define _ARGS_H_
+#ifndef ARGS_H
+#define ARGS_H
 
 // Handy argument processor. I'm certain the implementation could be better
 // but it suffices quite well at the moment.

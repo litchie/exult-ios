@@ -22,8 +22,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _UCINTERNAL_H
-#define _UCINTERNAL_H
+#ifndef UCINTERNAL_H
+#define UCINTERNAL_H
 
 #include <iosfwd>
 

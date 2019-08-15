@@ -18,8 +18,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef FLAT_H_
-#define FLAT_H_
+#ifndef FLAT_H
+#define FLAT_H
 
 #include <string>
 #include "U7file.h"

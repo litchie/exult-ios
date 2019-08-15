@@ -837,18 +837,18 @@ void Uc_function::gen(
 	out.flush();
 }
 
-#ifndef __STRING
+#ifndef TO_STRING
 #if defined __STDC__ && __STDC__
-#define __STRING(x) #x
+#define TO_STRING(x) #x
 #else
-#define __STRING(x) "x"
+#define TO_STRING(x) "x"
 #endif
 #endif
 
 /*
  *  Tables of usecode intrinsics:
  */
-#define USECODE_INTRINSIC_PTR(NAME) __STRING(UI_##NAME)
+#define USECODE_INTRINSIC_PTR(NAME) TO_STRING(UI_##NAME)
 
 const char *bg_intrinsic_table[] = {
 #include "../bgintrinsics.h"

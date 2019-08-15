@@ -194,7 +194,7 @@ using std::getline;
 #define NEAR
 
 // We need this defined
-#define __STRING(x) #x
+#define TO_STRING(x) #x
 
 #ifdef DEBUG
 #define STRICTUNZIP

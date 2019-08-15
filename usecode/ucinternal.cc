@@ -1609,15 +1609,15 @@ Usecode_value Usecode_internal::Execute_Intrinsic(UsecodeIntrinsicFn func, const
 typedef Usecode_value(Usecode_internal::*UsecodeIntrinsicFn)(int num_parms, Usecode_value parms[12]);
 
 // missing from mingw32 header files, so included manually
-#ifndef __STRING
+#ifndef TO_STRING
 #if defined __STDC__ && __STDC__
-#define __STRING(x) #x
+#define TO_STRING(x) #x
 #else
-#define __STRING(x) "x"
+#define TO_STRING(x) "x"
 #endif
 #endif
 
-#define USECODE_INTRINSIC_PTR(NAME) { &Usecode_internal::UI_ ## NAME, __STRING(NAME) }
+#define USECODE_INTRINSIC_PTR(NAME) { &Usecode_internal::UI_ ## NAME, TO_STRING(NAME) }
 
 struct Usecode_internal::IntrinsicTableEntry
 		Usecode_internal::intrinsic_table[] = {

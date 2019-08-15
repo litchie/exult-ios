@@ -16,8 +16,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#ifndef _SIGN_GUMP_H_
-#define _SIGN_GUMP_H_
+#ifndef SIGN_GUMP_H
+#define SIGN_GUMP_H
 
 #include <string>
 #include "Gump.h"

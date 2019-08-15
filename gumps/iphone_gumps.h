@@ -16,8 +16,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#ifndef _IPHONE_GUMPS_H
-#define _IPHONE_GUMPS_H
+#ifndef IPHONE_GUMPS_H
+#define IPHONE_GUMPS_H
 
 #ifdef __IPHONEOS__
 

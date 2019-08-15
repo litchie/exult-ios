@@ -30,11 +30,11 @@
 #include <sstream>
 
 /*** head2data
-#ifndef __STRING
+#ifndef TO_STRING
     #if defined __STDC__ && __STDC__
-        #define __STRING(x) #x
+        #define TO_STRING(x) #x
     #else
-        #define __STRING(x) "x"
+        #define TO_STRING(x) "x"
     #endif
 #endif
 */

@@ -18,8 +18,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _UCDEBUGGING_H
-#define _UCDEBUGGING_H
+#ifndef UCDEBUGGING_H
+#define UCDEBUGGING_H
 
 #include <list>
 #include "ignore_unused_variable_warning.h"

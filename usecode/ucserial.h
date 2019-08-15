@@ -18,8 +18,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _UCSERIAL_H
-#define _UCSERIAL_H
+#ifndef UCSERIAL_H
+#define UCSERIAL_H
 
 #include "objserial.h"
 

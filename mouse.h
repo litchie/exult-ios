@@ -18,8 +18,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _MOUSE_H_
-#define _MOUSE_H_
+#ifndef MOUSE_H
+#define MOUSE_H
 
 #include "rect.h"
 #include "dir.h"

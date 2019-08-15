@@ -16,8 +16,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _MIDI_H_
-#define _MIDI_H_
+#ifndef MIDI_H
+#define MIDI_H
 
 #include <vector>
 #include <string>

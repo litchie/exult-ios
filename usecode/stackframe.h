@@ -18,8 +18,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _STACKFRAME_H
-#define _STACKFRAME_H
+#ifndef STACKFRAME_H
+#define STACKFRAME_H
 
 #include "common_types.h"
 #include <iosfwd>

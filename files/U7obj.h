@@ -20,8 +20,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _U7OBJ_H_
-#define _U7OBJ_H_
+#ifndef U7OBJ_H
+#define U7OBJ_H
 
 #include <memory>
 #include <string>

@@ -18,8 +18,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef FLEX_H_
-#define FLEX_H_
+#ifndef FLEX_H
+#define FLEX_H
 
 #include <vector>
 #include <string>

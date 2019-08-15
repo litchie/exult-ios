@@ -16,8 +16,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _UCSCHED_H
-#define _UCSCHED_H
+#ifndef UCSCHED_H
+#define UCSCHED_H
 
 class Game_object;
 class Usecode_value;

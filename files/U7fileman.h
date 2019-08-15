@@ -18,8 +18,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _U7FILEMAN_H_
-#define _U7FILEMAN_H_
+#ifndef U7FILEMAN_H
+#define U7FILEMAN_H
 
 #include <map>
 #include <memory>

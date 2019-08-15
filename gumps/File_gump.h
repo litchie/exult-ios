@@ -16,8 +16,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _FILE_GUMP_H_
-#define _FILE_GUMP_H_
+#ifndef FILE_GUMP_H
+#define FILE_GUMP_H
 
 #include "Modal_gump.h"
 

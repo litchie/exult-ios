@@ -16,8 +16,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#ifndef _GAMEMENU_GUMP_H
-#define _GAMEMENU_GUMP_H
+#ifndef GAMEMENU_GUMP_H
+#define GAMEMENU_GUMP_H
 
 #include "Modal_gump.h"
 
