@@ -25,7 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *  A scroll:
  */
 class Scroll_gump : public Text_gump {
-	UNREPLICATABLE_CLASS_I(Scroll_gump, Text_gump(0))
+	UNREPLICATABLE_CLASS(Scroll_gump)
 
 public:
 	Scroll_gump(int fnt = 4, int gump = -1);

@@ -29,7 +29,7 @@ class Actor;
  *  A rectangular area showing a character's statistics:
  */
 class Stats_gump : public Gump {
-	UNREPLICATABLE_CLASS_I(Stats_gump, Gump())
+	UNREPLICATABLE_CLASS(Stats_gump)
 
 protected:
 	Actor *get_actor() {

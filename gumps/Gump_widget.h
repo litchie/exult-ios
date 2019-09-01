@@ -32,7 +32,7 @@ class Game_window;
  *  A gump widget, such as a button or text field:
  */
 class Gump_widget : public ShapeID {
-	UNREPLICATABLE_CLASS_I(Gump_widget, ShapeID())
+	UNREPLICATABLE_CLASS(Gump_widget)
 
 protected:
 	Gump_widget() : parent(nullptr) {  }

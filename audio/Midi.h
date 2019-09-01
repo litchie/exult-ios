@@ -25,6 +25,7 @@
 #include <vorbis/codec.h>
 
 #include "common_types.h"
+#include "exceptions.h"
 
 #include "fnames.h"
 
@@ -51,6 +52,8 @@ public:
 
 	MyMidiPlayer();
 	~MyMidiPlayer();
+
+	UNREPLICATABLE_CLASS(MyMidiPlayer)
 
 	void			destroyMidiDriver();
 
@@ -86,9 +89,6 @@ public:
 	bool			is_adlib(); // Check for adlib
 
 private:
-
-	MyMidiPlayer(const MyMidiPlayer &m); // Cannot call
-	MyMidiPlayer &operator=(const MyMidiPlayer &); // Cannot call
 
 	bool			repeating;
 	int				current_track;
