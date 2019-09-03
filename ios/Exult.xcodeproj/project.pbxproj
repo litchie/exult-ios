@@ -321,6 +321,34 @@
 			remoteGlobalIDString = FAB598141BB5C1B100BE72C5;
 			remoteInfo = "libSDL-tv";
 		};
+		8AB479F022AD1A5500BB3562 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E700E1271A6F839E006C8BE4 /* SDL.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 52ED1E5C222889500061FCE0;
+			remoteInfo = "libSDL-iOS-dylib";
+		};
+		8AB479F222AD1A5500BB3562 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E700E1271A6F839E006C8BE4 /* SDL.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = F3E3C7572241389A007D243C;
+			remoteInfo = "libSDL-tvOS-dylib";
+		};
+		8AB479F422AD1A5500BB3562 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E700E1271A6F839E006C8BE4 /* SDL.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = F3E3C65222406928007D243C;
+			remoteInfo = "libSDLmain-iOS";
+		};
+		8AB479F622AD1A5500BB3562 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E700E1271A6F839E006C8BE4 /* SDL.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = F3E3C75F224138AE007D243C;
+			remoteInfo = "libSDLmain-tvOS";
+		};
 		E700E12C1A6F839F006C8BE4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = E700E1271A6F839E006C8BE4 /* SDL.xcodeproj */;
@@ -1764,7 +1792,11 @@
 			isa = PBXGroup;
 			children = (
 				E700E12D1A6F839F006C8BE4 /* libSDL2.a */,
+				8AB479F122AD1A5500BB3562 /* libSDL2.dylib */,
 				8A8340C51F8977FB000696C7 /* libSDL2.a */,
+				8AB479F322AD1A5500BB3562 /* libSDL2.dylib */,
+				8AB479F522AD1A5500BB3562 /* libSDLmain.a */,
+				8AB479F722AD1A5500BB3562 /* libSDLmain.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1929,6 +1961,34 @@
 			remoteRef = 8A8340C41F8977FB000696C7 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		8AB479F122AD1A5500BB3562 /* libSDL2.dylib */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libSDL2.dylib;
+			remoteRef = 8AB479F022AD1A5500BB3562 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		8AB479F322AD1A5500BB3562 /* libSDL2.dylib */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libSDL2.dylib;
+			remoteRef = 8AB479F222AD1A5500BB3562 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		8AB479F522AD1A5500BB3562 /* libSDLmain.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libSDLmain.a;
+			remoteRef = 8AB479F422AD1A5500BB3562 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		8AB479F722AD1A5500BB3562 /* libSDLmain.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libSDLmain.a;
+			remoteRef = 8AB479F622AD1A5500BB3562 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		E700E12D1A6F839F006C8BE4 /* libSDL2.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1966,6 +2026,7 @@
 				8AF2AFE52016708100696E08 /* joypad-glass-west.png in Resources */,
 				8AF2AFE62016708100696E08 /* joypad-glass-northwest.png in Resources */,
 				8AF2AFE72016708100696E08 /* joypad-glass-south.png in Resources */,
+				8AB47A1922AD4D5D00BB3562 /* Icon.png in Resources */,
 				8A93BD6A1F8901E3001850AA /* Media.xcassets in Resources */,
 				E71BBD941A725E1E0003F662 /* btn.png in Resources */,
 				E71BBD951A725E1E0003F662 /* btnpressed.png in Resources */,
@@ -1978,6 +2039,7 @@
 				E71BBD981A725E1E0003F662 /* dpadglass-northeast.png in Resources */,
 				E71BBD9C1A725E1E0003F662 /* dpadglass-southwest.png in Resources */,
 				E71BBD9B1A725E1E0003F662 /* dpadglass-southeast.png in Resources */,
+				8AB479F822AD1A5500BB3562 /* iOS Launch Screen.storyboard in Resources */,
 				E700E0E41A6E6665006C8BE4 /* data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2353,6 +2415,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_IDENTITY = "-";
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -2380,6 +2443,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_IDENTITY = "-";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
