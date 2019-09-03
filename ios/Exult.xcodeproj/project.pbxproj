@@ -50,6 +50,8 @@
 		8A8728D91DD8AEFF005AC3FC /* TVF.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A8728C41DD8AEFF005AC3FC /* TVF.cpp */; };
 		8A8728DA1DD8AEFF005AC3FC /* TVP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A8728C61DD8AEFF005AC3FC /* TVP.cpp */; };
 		8A8728EA1DD8BAA3005AC3FC /* sha1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A8728E81DD8BAA3005AC3FC /* sha1.cpp */; };
+		8AB479F822AD1A5500BB3562 /* iOS Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8AB479E422AD1A5500BB3562 /* iOS Launch Screen.storyboard */; };
+		8AB47A1922AD4D5D00BB3562 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 8AB47A1822AD4D5D00BB3562 /* Icon.png */; };
 		8A93BD6A1F8901E3001850AA /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8A93BC931F869000001850AA /* Media.xcassets */; };
 		8AB53D8C1C9CA0A90084C69D /* ShortcutBar_gump.cc in Sources */ = {isa = PBXBuildFile; fileRef = 8AB53D8A1C9CA0A90084C69D /* ShortcutBar_gump.cc */; };
 		8AC797C71C8D0E4F001AF014 /* unzip.cc in Sources */ = {isa = PBXBuildFile; fileRef = 8AC797C51C8D0E4F001AF014 /* unzip.cc */; };
@@ -408,6 +410,8 @@
 		8A8728E91DD8BAA3005AC3FC /* sha1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sha1.h; sourceTree = "<group>"; };
 		8A93BC931F869000001850AA /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		8AB0AE1B1CBEF522001DBB16 /* ignore_unused_variable_warning.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ignore_unused_variable_warning.h; sourceTree = "<group>"; };
+		8AB479E422AD1A5500BB3562 /* iOS Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "iOS Launch Screen.storyboard"; sourceTree = "<group>"; };
+		8AB47A1822AD4D5D00BB3562 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = Images/Icon.png; sourceTree = "<group>"; };
 		8AB53D8A1C9CA0A90084C69D /* ShortcutBar_gump.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ShortcutBar_gump.cc; path = ../gumps/ShortcutBar_gump.cc; sourceTree = "<group>"; };
 		8AB53D8B1C9CA0A90084C69D /* ShortcutBar_gump.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShortcutBar_gump.h; path = ../gumps/ShortcutBar_gump.h; sourceTree = "<group>"; };
 		8AC797C51C8D0E4F001AF014 /* unzip.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = unzip.cc; sourceTree = "<group>"; };
@@ -971,6 +975,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				8AB479E422AD1A5500BB3562 /* iOS Launch Screen.storyboard */,
 				8A93BC931F869000001850AA /* Media.xcassets */,
 				E71BBD881A725E1E0003F662 /* Images */,
 				29B97315FDCFA39411CA2CEA /* Sources */,
@@ -1009,6 +1014,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				8AB47A1822AD4D5D00BB3562 /* Icon.png */,
 				E700E0E31A6E6665006C8BE4 /* data */,
 				8D1107310486CEB800E47090 /* Info.plist */,
 			);
