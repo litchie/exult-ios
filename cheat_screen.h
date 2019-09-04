@@ -30,6 +30,14 @@ class CheatScreen {
 	static const char   *schedules[33];
 	static const char   *flag_names[64];
 	static const char   *alignments[4];
+#ifdef __IPHONEOS__
+	static const int offsetx = 15;
+#else
+	static const int offsetx = 0;
+#endif
+	static const int offsety1 = 0;
+	static const int offsety2 = 0;
+	
 public:
 	CheatScreen();
 	~CheatScreen();
