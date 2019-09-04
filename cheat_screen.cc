@@ -1357,12 +1357,12 @@ void CheatScreen::NPCActivate(char *input, int &command, Cheat_Prompt &mode, Act
 
 
 		case 'e':   // Experience
-			if (i < 0) mode = CP_InvalidNPC;
+			if (i < 0) mode = CP_Canceled;
 			else actor->set_property(Actor::exp, i);
 			break;
 
 		case '2':   // Training Points
-			if (i < 0) mode = CP_InvalidNPC;
+			if (i < 0) mode = CP_Canceled;
 			else actor->set_property(Actor::training, i);
 			break;
 
