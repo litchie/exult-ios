@@ -83,141 +83,123 @@ int const *Audio::bg2si_songs = nullptr;
 
 //----- SFX ----------------------------------------------------------
 
-
-/*
-*	This is a resource-management class for SFX. Maybe make it a
-*	template class and use for other resources also?
-*	Based on code by Sam Lantinga et al on:
-*	http://www.ibm.com/developerworks/library/l-pirates2/
-*/
-class SFX_cache_manager
+// Tries to locate a sfx in the cache based on sfx num.
+SFX_cache_manager::SFX_cached *SFX_cache_manager::find_sfx(int id)
 {
-protected:
-	typedef std::pair<int,AudioSample*> SFX_cached;
-	typedef std::map<int, SFX_cached>::iterator cache_iterator;
+	cache_iterator found = cache.find(id);
+	if (found  == cache.end()) return nullptr;
+	return &(found->second);
+}
 
-	std::map<int, SFX_cached> cache;
+SFX_cache_manager::~SFX_cache_manager() {
+	flush();
+}
 
-	// Tries to locate a sfx in the cache based on sfx num.
-	SFX_cached *find_sfx(int id)
-	{
-		cache_iterator found = cache.find(id);
-		if (found  == cache.end()) return nullptr;
-		return &(found->second);
+// For SFX played through 'play_wave_sfx'. Searched cache for
+// the sfx first, then loads from the sfx file if needed.
+AudioSample *SFX_cache_manager::request(Flex *sfx_file, int id)
+{
+	SFX_cached *loaded = find_sfx(id);
+	if (!loaded) {
+		SFX_cached new_sfx;
+		new_sfx.first = 0;
+		new_sfx.second = nullptr;
+		loaded = &(cache[id] = new_sfx);
 	}
 
-public:
-	SFX_cache_manager()
-	{ }
-	~SFX_cache_manager()
-	{ flush(); }
-
-	// For SFX played through 'play_wave_sfx'. Searched cache for
-	// the sfx first, then loads from the sfx file if needed.
-	AudioSample *request(Flex *sfx_file, int id)
+	if (!loaded->second)
 	{
-		SFX_cached *loaded = find_sfx(id);
-		if (!loaded) {
-			SFX_cached new_sfx;
-			new_sfx.first = 0;
-			new_sfx.second = nullptr;
-			loaded = &(cache[id] = new_sfx);
-		}
+		garbage_collect();
 
-		if (!loaded->second)
-		{
-			garbage_collect();
-
-			size_t wavlen;			// Read .wav file.
-			auto wavbuf = sfx_file->retrieve(id, wavlen);
-			loaded->second = AudioSample::createAudioSample(wavbuf.release(), wavlen);
-		}
-
-		if (!loaded->second) return nullptr;
-
-		// Increment counter
-		++loaded->first;
-
-		return loaded->second;
+		size_t wavlen;			// Read .wav file.
+		auto wavbuf = sfx_file->retrieve(id, wavlen);
+		loaded->second = AudioSample::createAudioSample(wavbuf.release(), wavlen);
 	}
 
-	// Empties the cache.
-	void flush(AudioMixer *mixer = nullptr)
+	if (!loaded->second) return nullptr;
+
+	// Increment counter
+	++loaded->first;
+
+	return loaded->second;
+}
+
+// Empties the cache.
+void SFX_cache_manager::flush(AudioMixer *mixer)
+{
+	for (cache_iterator it = cache.begin() ; it != cache.end(); it = cache.begin())
 	{
-		for (cache_iterator it = cache.begin() ; it != cache.end(); it = cache.begin())
+		if (it->second.second) 
 		{
-			if (it->second.second) 
+			if (it->second.second->getRefCount() != 1 && mixer)
+				mixer->stopSample(it->second.second);
+			it->second.second->Release();
+		}
+		it->second.second = nullptr;
+		cache.erase(it);
+	}
+}
+
+// Remove unused sounds from the cache.
+void SFX_cache_manager::garbage_collect()
+{
+	// Maximum 'stable' number of sounds we will cache (actual
+	// count may be higher if all of the cached sounds are
+	// being played).
+	const int max_fixed = 6;
+
+	std::multiset <int> sorted;
+
+	for (cache_iterator it = cache.begin(); it != cache.end(); ++it)
+	{
+		if (it->second.second && it->second.second->getRefCount() == 1) 
+			sorted.insert(it->second.first); 
+	}
+
+	if (sorted.empty()) return;
+
+	int threshold = INT_MAX;
+	int count = 0;
+
+	for ( std::multiset <int>::reverse_iterator it = sorted.rbegin( ) ; it != sorted.rend( ); ++it )
+	{
+		if (count < max_fixed)
+		{
+			threshold = *it;
+			count++;
+		}
+		else if (*it == threshold)
+		{
+			count++;
+		}
+		else
+		{
+			break;
+		}
+	}
+
+	if (count <= max_fixed) 
+		return;
+
+	for (cache_iterator it = cache.begin(); it != cache.end(); ++it)
+	{
+		if (it->second.second)
+		{
+			if (it->second.first < threshold) 
 			{
-				if (it->second.second->getRefCount() != 1 && mixer)
-					mixer->stopSample(it->second.second);
 				it->second.second->Release();
+				it->second.second = nullptr;
 			}
-			it->second.second = nullptr;
-			cache.erase(it);
+			else if (it->second.first == threshold && count > max_fixed) 
+			{
+				it->second.second->Release();
+				it->second.second = nullptr;
+				count--;
+			}
 		}
 	}
 
-	// Remove unused sounds from the cache.
-	void garbage_collect()
-	{
-		// Maximum 'stable' number of sounds we will cache (actual
-		// count may be higher if all of the cached sounds are
-		// being played).
-		const int max_fixed = 6;
-
-		std::multiset <int> sorted;
-
-		for (cache_iterator it = cache.begin(); it != cache.end(); ++it)
-		{
-			if (it->second.second && it->second.second->getRefCount() == 1) 
-				sorted.insert(it->second.first); 
-		}
-
-		if (sorted.empty()) return;
-
-		int threshold = INT_MAX;
-		int count = 0;
-
-		for ( std::multiset <int>::reverse_iterator it = sorted.rbegin( ) ; it != sorted.rend( ); ++it )
-		{
-			if (count < max_fixed)
-			{
-				threshold = *it;
-				count++;
-			}
-			else if (*it == threshold)
-			{
-				count++;
-			}
-			else
-			{
-				break;
-			}
-		}
-
-		if (count <= max_fixed) 
-			return;
-
-		for (cache_iterator it = cache.begin(); it != cache.end(); ++it)
-		{
-			if (it->second.second)
-			{
-				if (it->second.first < threshold) 
-				{
-					it->second.second->Release();
-					it->second.second = nullptr;
-				}
-				else if (it->second.first == threshold && count > max_fixed) 
-				{
-					it->second.second->Release();
-					it->second.second = nullptr;
-					count--;
-				}
-			}
-		}
-
-	}
-};
+}
 
 //---- Audio ---------------------------------------------------------
 void Audio::Init(void)
@@ -254,7 +236,7 @@ Audio	*Audio::get_ptr(void)
 
 Audio::Audio() :
 truthful_(false),speech_enabled(true), speech_with_subs(false), music_enabled(true),
-effects_enabled(true), initialized(false), mixer(nullptr), sfx_file(nullptr)
+effects_enabled(true), initialized(false)
 {
 	assert(self == nullptr);
 
@@ -275,17 +257,15 @@ effects_enabled(true), initialized(false), mixer(nullptr), sfx_file(nullptr)
 	config->value("config/audio/midi/looping",s,"yes");
 	allow_music_looping = (s!="no");
 
-	mixer = nullptr;
-	sfxs = new SFX_cache_manager();
+	mixer.reset();
+	sfxs = std::make_unique<SFX_cache_manager>();
 }
 
 void Audio::Init(int _samplerate,int _channels)	
 {
 	if (!audio_enabled) return;
 
-	FORGET_OBJECT(mixer);
-
-	mixer = new AudioMixer(_samplerate,_channels==2,MIXER_CHANNELS);
+	mixer = std::make_unique<AudioMixer>(_samplerate,_channels==2,MIXER_CHANNELS);
 
 	COUT("Audio initialisation OK");
 
@@ -367,11 +347,11 @@ bool Audio::have_config_sfx(const std::string &game, std::string *out)
 	
 void	Audio::Init_sfx()
 {
-	FORGET_OBJECT(sfx_file);
+	sfx_file.reset();
 
 	if (sfxs)
 		{
-		sfxs->flush(mixer);
+		sfxs->flush(mixer.get());
 		sfxs->garbage_collect();
 		}
 
@@ -394,7 +374,7 @@ void	Audio::Init_sfx()
 	if (have_midi_sfx(&flex) && v != "no")
 		{
 		cout << "Opening midi SFX's file: \"" << flex << "\"" << endl;
-		sfx_file = new FlexFile(flex.c_str());
+		sfx_file = std::make_unique<FlexFile>(std::move(flex));
 		return;
 		}
 	else if (!have_midi_sfx(&flex))
@@ -424,15 +404,13 @@ void	Audio::Init_sfx()
 			}
 		}
 	cout << "Opening digital SFX's file: \"" << flex << "\"" << endl;
-	sfx_file = new FlexFile(flex.c_str());
+	sfx_file = std::make_unique<FlexFile>(std::move(flex));
 }
 
 Audio::~Audio()
 { 
 	if (!initialized)
 	{
-		delete sfxs;
-		delete sfx_file;
 		self = nullptr;
 		//SDL_open = false;
 		return;
@@ -440,11 +418,6 @@ Audio::~Audio()
 
 	CERR("~Audio:  about to stop_music()");
 	stop_music();
-
-	FORGET_OBJECT(mixer);
-
-	delete sfxs;
-	delete sfx_file;
 
 	CERR("~Audio:  about to quit subsystem");
 	self = nullptr;
@@ -676,7 +649,7 @@ int Audio::play_wave_sfx
 		cerr << "SFX " << num << " is out of range" << endl;
 		return -1;
 	}
-	AudioSample *wave = sfxs->request(sfx_file, num);
+	AudioSample *wave = sfxs->request(sfx_file.get(), num);
 	if (!wave)
 	{
 		cerr << "Couldn't play sfx '" << num << "'" << endl;
@@ -783,7 +756,7 @@ void Audio::stop_sound_effect(int chan)
 
 void Audio::stop_sound_effects()
 {
-	if (sfxs) sfxs->flush(mixer);
+	if (sfxs) sfxs->flush(mixer.get());
 
 #ifdef ENABLE_MIDISFX
 	if (mixer && mixer->getMidiPlayer())

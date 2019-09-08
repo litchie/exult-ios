@@ -19,20 +19,24 @@
 #ifndef AUDIO_H
 #define AUDIO_H
 
+#include <map>
+#include <memory>
 #include <vector>
 #include <SDL.h>
 #include <SDL_audio.h>
-#include "Midi.h"
-#include "exceptions.h"
 #include "AudioMixer.h"
+#include "exceptions.h"
 #include "exult_constants.h"
+#include "Flex.h"
+#include "Midi.h"
 
-class SFX_cached;
-class SFX_cache_manager;
-class Flex;
-class MyMidiPlayer;
-class Tile_coord;
+namespace Pentagram {
+	class AudioSample;
+}
 class Game_object;
+class MyMidiPlayer;
+class SFX_cached;
+class Tile_coord;
 
 #define MAX_SOUND_FALLOFF	24
 /*
@@ -49,6 +53,38 @@ enum Combat_song
 	CSHidden_Danger
 };
 
+/*
+ *	This is a resource-management class for SFX. Maybe make it a
+ *	template class and use for other resources also?
+ *	Based on code by Sam Lantinga et al on:
+ *	http://www.ibm.com/developerworks/library/l-pirates2/
+ */
+class SFX_cache_manager {
+	using SFX_cached = std::pair<int,Pentagram::AudioSample*>;
+	using cache_iterator = std::map<int, SFX_cached>::iterator;
+
+	std::map<int, SFX_cached> cache;
+
+	// Tries to locate a sfx in the cache based on sfx num.
+	SFX_cached *find_sfx(int id);
+
+public:
+	SFX_cache_manager() = default;
+	~SFX_cache_manager();
+	SFX_cache_manager(const SFX_cache_manager&) = default;
+	SFX_cache_manager(SFX_cache_manager&&) = default;
+	SFX_cache_manager& operator=(const SFX_cache_manager&) = default;
+	SFX_cache_manager& operator=(SFX_cache_manager&&) = default;
+	// For SFX played through 'play_wave_sfx'. Searched cache for
+	// the sfx first, then loads from the sfx file if needed.
+	Pentagram::AudioSample *request(Flex *sfx_file, int id);
+	// Empties the cache.
+	void flush(Pentagram::AudioMixer *mixer = nullptr);
+	// Remove unused sounds from the cache.
+	void garbage_collect();
+};
+
+
 //---- Audio -----------------------------------------------------------
 
 class Audio 
@@ -61,12 +97,12 @@ private:
 	bool truthful_;
 	bool speech_enabled, music_enabled, effects_enabled, speech_with_subs;
 	bool allow_music_looping;
-	SFX_cache_manager *sfxs;		// SFX and voice cache manager
+	std::unique_ptr<SFX_cache_manager> sfxs;		// SFX and voice cache manager
 	bool initialized;
 	SDL_AudioSpec wanted;
-	Pentagram::AudioMixer *mixer;
+	std::unique_ptr<Pentagram::AudioMixer> mixer;
 	bool audio_enabled;
-	Flex *sfx_file;			// Holds .wav sound effects.
+	std::unique_ptr<Flex> sfx_file;			// Holds .wav sound effects.
 	// You never allocate an Audio object directly, you rather access it using get_ptr()
 	Audio();
 	~Audio();
@@ -141,9 +177,9 @@ public:
 	bool	is_track_playing(int num);
 
 	Flex *get_sfx_file()                   
-		{ return sfx_file; }
+		{ return sfx_file.get(); }
 	SFX_cache_manager *get_sfx_cache() const
-		{ return sfxs; }
+		{ return sfxs.get(); }
 
 	MyMidiPlayer *get_midi();
 };

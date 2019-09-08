@@ -19,6 +19,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef AUDIOMIXER_H_INCLUDED
 #define AUDIOMIXER_H_INCLUDED
 
+#include "common_types.h"
+
 class MyMidiPlayer;
 
 #define AUDIO_MAX_VOLUME 256
