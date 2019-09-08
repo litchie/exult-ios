@@ -49,6 +49,7 @@ using namespace Pentagram;
 using std::rand;
 using std::string;
 using std::strlen;
+using std::vector;
 
 int Cloud::randcnt = 0;
 int Lightning_effect::active = 0;

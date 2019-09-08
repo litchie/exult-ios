@@ -7,21 +7,21 @@
 #ifndef INCL_MSGFILE_H
 #define INCL_MSGFILE_H 1
 
-using std::istream;
-using std::ostream;
-using std::vector;
-using std::string;
+#include <iosfwd>
+#include <string>
+#include <vector>
+
 class IDataSource;
 
 int Read_text_msg_file(
     IDataSource *in,
-    vector<string> &strings,    // Strings returned here, each
+    std::vector<std::string> &strings,    // Strings returned here, each
     //   allocated on heap.
     const char *section = nullptr
 );
 int Read_text_msg_file(
-    istream &in,
-    vector<string> &strings,    // Strings returned here, each
+    std::istream &in,
+    std::vector<std::string> &strings,    // Strings returned here, each
     //   allocated on heap.
     const char *section = nullptr
 );
@@ -31,20 +31,20 @@ bool Search_text_msg_section(
 );
 int Read_text_msg_file_sections(
     IDataSource *in,
-    vector<vector<string> > &strings,   // Strings returned here
+    std::vector<std::vector<std::string> > &strings,   // Strings returned here
     const char *sections[],         // Section names
     int numsections
 );
 int Read_text_msg_file_sections(
-    istream &in,
-    vector<vector<string> > &strings,   // Strings returned here
+    std::istream &in,
+    std::vector<std::vector<std::string> > &strings,   // Strings returned here
     const char *sections[],         // Section names
     int numsections
 );
 void Write_msg_file_section(
-    ostream &out,
+    std::ostream &out,
     const char *section,
-    vector<string> &items
+    std::vector<std::string> &items
 );
 
 #endif

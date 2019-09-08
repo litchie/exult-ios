@@ -24,9 +24,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string>
 #include <vector>
 
-using std::string;
-using std::vector;
-
 class One_note;
 
 /*
@@ -46,13 +43,13 @@ public:
  */
 class Notebook_gump : public Gump {
 	UNREPLICATABLE_CLASS_I(Notebook_gump, Gump())
-	static vector<One_note *> notes;// The text.
+	static std::vector<One_note *> notes;// The text.
 	// Indexed by page#.
-	static vector<Notebook_top> page_info;
+	static std::vector<Notebook_top> page_info;
 	static Notebook_gump *instance;
 	static bool initialized;
 	static bool initialized_auto_text;
-	static vector<string> auto_text;// Auto-text for global flags.
+	static std::vector<std::string> auto_text;// Auto-text for global flags.
 	int curnote;            // Current note # being edited.
 	int curpage;            // Current page # (from 0).
 	Cursor_info cursor;     // Cursor loc. within current note.
@@ -87,7 +84,7 @@ public:
 	virtual Gump_button *on_button(int mx, int my);
 	virtual void paint();       // Paint it and its contents.
 	virtual bool handle_kbd_event(void *ev);
-	static void add_gflag_text(int gflag, const string &text);
+	static void add_gflag_text(int gflag, const std::string &text);
 	static void add_gflag_text(int gflag) {
 		if (!initialized_auto_text)
 			read_auto_text();

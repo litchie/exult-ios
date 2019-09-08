@@ -53,6 +53,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 using std::ostream;
 using std::cout;
 using std::endl;
+using std::vector;
 
 Barge_object *Barge_object::editing = nullptr;
 

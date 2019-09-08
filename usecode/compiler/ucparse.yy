@@ -45,6 +45,7 @@ using std::strcpy;
 using std::strcat;
 using std::strlen;
 using std::string;
+using std::vector;
 
 void yyerror(const char *);
 void yywarning(const char *);

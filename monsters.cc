@@ -39,6 +39,7 @@
 #include "array_size.h"
 
 using std::rand;
+using std::vector;
 
 /*
  *  Slimes move differently.

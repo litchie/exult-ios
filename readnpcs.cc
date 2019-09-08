@@ -42,6 +42,7 @@ using std::endl;
 using std::ifstream;
 using std::ios;
 using std::ofstream;
+using std::vector;
 
 /*
  *  Read in the NPC's, plus the monster info.

@@ -23,11 +23,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef INCL_DATA_UTILS
 #define INCL_DATA_UTILS 1
 
-#include <sstream>
+#include <algorithm>
 #include <map>
+#include <sstream>
 #include <string>
 #include <vector>
-#include <algorithm>
 #include "exult_constants.h"
 #include "utils.h"
 #include "U7obj.h"
@@ -35,16 +35,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "msgfile.h"
 #include "fnames.h"
 #include "ignore_unused_variable_warning.h"
-using std::istream;
-using std::ifstream;
-using std::istringstream;
-using std::ostream;
-using std::ofstream;
-using std::string;
-using std::vector;
-using std::map;
-using std::endl;
-using std::ios;
 
 /*
  *  Generic vector data handler routines.
@@ -106,7 +96,7 @@ void clean_vector(std::vector<T> &vec) {
 
 template <class T, typename U>
 static const T *Search_vector_data_single_wildcard(
-    const vector<T> &vec,
+    const std::vector<T> &vec,
     int src,
     U T::*dat
 ) {
@@ -114,7 +104,7 @@ static const T *Search_vector_data_single_wildcard(
 		return nullptr;
 	T inf;
 	inf.*dat = src;
-	typename vector<T>::const_iterator it;
+	typename std::vector<T>::const_iterator it;
 	// Try finding exact match first.
 	it = std::lower_bound(vec.begin(), vec.end(), inf);
 	if (it == vec.end())    // Nowhere to be found.
@@ -133,7 +123,7 @@ static const T *Search_vector_data_single_wildcard(
 
 template <class T>
 static const T *Search_vector_data_double_wildcards(
-    const vector<T> &vec,
+    const std::vector<T> &vec,
     int frame, int quality,
     short T::*fr, short T::*qual
 ) {
@@ -142,7 +132,7 @@ static const T *Search_vector_data_double_wildcards(
 	T inf;
 	inf.*fr = frame;
 	inf.*qual = quality;
-	typename vector<T>::const_iterator it;
+	typename std::vector<T>::const_iterator it;
 	// Try finding exact match first.
 	it = std::lower_bound(vec.begin(), vec.end(), inf);
 	if (it == vec.end())    // Nowhere to be found.

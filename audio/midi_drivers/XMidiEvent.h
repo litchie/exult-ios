@@ -60,9 +60,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #ifdef _WIN32
 #include <cstdlib>
-using std::malloc;
-using std::calloc;
-using std::free;
 #endif
 
 // Maximum number of for loops we'll allow (used by LowLevelMidiDriver)

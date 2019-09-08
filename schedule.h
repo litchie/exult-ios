@@ -23,8 +23,8 @@
 
 #include "tiles.h"
 #include "singles.h"
-#include <vector>
 #include <memory>
+#include <vector>
 #include "ignore_unused_variable_warning.h"
 
 #ifdef _WIN32
@@ -38,7 +38,6 @@ class Rectangle;
 class Actor_action;
 class Usecode_value;
 
-using std::vector;
 typedef std::weak_ptr<Game_object> Game_object_weak;
 
 /*
@@ -124,7 +123,7 @@ public:
  *	A schedule that creates objects that need to be cleaned up after.
  */
 class Schedule_with_objects : public Schedule {
-	vector<Game_object_weak> created;	// Items we created.
+	std::vector<Game_object_weak> created;	// Items we created.
 	Game_object_weak current_item;		// One we're using/walking to.
 protected:
     Game_object *get_current_item() {
@@ -274,7 +273,7 @@ public:
 class Patrol_schedule : public Schedule {
 	enum {PATH_SHAPE = 607};
 	static int num_path_eggs;
-	vector<Game_object *> paths; // Each 'path' object.
+	std::vector<Game_object *> paths; // Each 'path' object.
 	int pathnum;            // # of next we're heading towards.
 	int dir;                // 1 or -1;
 	int state;              // The patrol state.
@@ -345,7 +344,7 @@ public:
  *  Kid games.
  */
 class Kid_games_schedule : public Loiter_schedule {
-	vector<Actor *> kids;           // Other kids playing.
+	std::vector<Actor *> kids;           // Other kids playing.
 public:
 	Kid_games_schedule(Actor *n) : Loiter_schedule(n, 10)
 	{  }
@@ -477,7 +476,7 @@ public:
 class Desk_schedule : public Schedule_with_objects {
 	Game_object_weak chair;     // What to sit in.
 	Game_object_weak desk, table;
-	vector<Game_object_weak> tables;	// Other tables to work at.
+	std::vector<Game_object_weak> tables;	// Other tables to work at.
 	enum {
 	    desk_setup,
 	    sit_at_desk,
@@ -509,7 +508,7 @@ public:
  *  Lab work.
  */
 class Lab_schedule : public Schedule {
-	vector<Game_object_weak> tables;
+	std::vector<Game_object_weak> tables;
 	Game_object_weak chair;     // Chair to sit in.
 	Game_object_weak book;      // Book to read.
 	Game_object_weak cauldron;
@@ -550,12 +549,12 @@ class Waiter_schedule : public Schedule_with_objects {
 	Actor *customer;        // Current customer.
 	Game_object_weak prep_table;    // Table we're working at.
 	bool cooking;
-	vector<Actor *> customers;  // List of customers.
-	vector<Actor *> customers_ordered;  // Taken orders from these.
-	vector<Game_object_weak > prep_tables; // Prep. tables.
-	vector<Game_object_weak > counters;    // Places to hang out.
-	vector<Game_object_weak > eating_tables; // Tables with chairs around them.
-	vector<Game_object_weak > unattended_plates;
+	std::vector<Actor *> customers;  // List of customers.
+	std::vector<Actor *> customers_ordered;  // Taken orders from these.
+	std::vector<Game_object_weak > prep_tables; // Prep. tables.
+	std::vector<Game_object_weak > counters;    // Places to hang out.
+	std::vector<Game_object_weak > eating_tables; // Tables with chairs around them.
+	std::vector<Game_object_weak > unattended_plates;
 	enum {
 	    waiter_setup,
 	    get_customer,
@@ -727,7 +726,7 @@ public:
  *  An NPC schedule change:
  */
 class Schedule_change {
-	static vector<std::string> script_names; // For Scripted_schedule's.
+	static std::vector<std::string> script_names; // For Scripted_schedule's.
 	unsigned char time;     // Time*3hours when this takes effect.
 	unsigned char type;     // Schedule_type value.
 	unsigned char days;     // A bit for each day (0-6).  We don't
@@ -737,7 +736,7 @@ public:
 	Schedule_change() : time(0), type(0), days(0x7f)
 	{  }
 	static void clear();
-	static vector<std::string> &get_script_names() {
+	static std::vector<std::string> &get_script_names() {
 		return script_names;
 	}
 	void set4(const unsigned char *ent);  // Create from 4-byte entry.

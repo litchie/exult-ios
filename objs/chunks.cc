@@ -51,6 +51,7 @@ using std::endl;
 
 using std::memset;
 using std::rand;
+using std::vector;
 
 /*
  *  Create the cached data storage for a chunk.

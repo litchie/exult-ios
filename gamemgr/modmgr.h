@@ -27,21 +27,20 @@
 #include "exceptions.h"
 #include "Configuration.h"
 
-using std::string;
 extern Configuration *config;
 
 class BaseGameInfo {
 protected:
-	Exult_Game type;    // Game type
-	string cfgname;     // What the game is called in Exult.cfg
-	string path_prefix; // System path prefix for the game/mod.
-	string mod_title;   // Internal mod name, the mod's title
-	string menustring;  // Text displayed in mods menu
-	bool expansion;     // For FoV/SS ONLY.
-	bool sibeta;        // For beta version of SI.
-	bool found;         // If the game/mod is found.
-	bool editing;       // Game is being edited and may have missing files.
-	string codepage;    // Game/mod codepage (mainly for ES).
+	Exult_Game type;         // Game type
+	std::string cfgname;     // What the game is called in Exult.cfg
+	std::string path_prefix; // System path prefix for the game/mod.
+	std::string mod_title;   // Internal mod name, the mod's title
+	std::string menustring;  // Text displayed in mods menu
+	bool expansion;          // For FoV/SS ONLY.
+	bool sibeta;             // For beta version of SI.
+	bool found;              // If the game/mod is found.
+	bool editing;            // Game is being edited and may have missing files.
+	std::string codepage;    // Game/mod codepage (mainly for ES).
 public:
 	BaseGameInfo() : type(NONE), cfgname(""), path_prefix(""), mod_title(""),
 		menustring(""), expansion(false), sibeta(false), found(false), editing(false),
@@ -61,22 +60,22 @@ public:
 	{  }
 	virtual ~BaseGameInfo() {  }
 
-	const string get_cfgname() const {
+	const std::string get_cfgname() const {
 		return cfgname;
 	}
-	const string get_path_prefix() const {
+	const std::string get_path_prefix() const {
 		return path_prefix;
 	}
-	const string get_mod_title() const {
+	const std::string get_mod_title() const {
 		return mod_title;
 	}
-	const string get_menu_string() const {
+	const std::string get_menu_string() const {
 		return menustring;
 	}
 	Exult_Game get_game_type() const {
 		return type;
 	}
-	const string get_codepage() const {
+	const std::string get_codepage() const {
 		return codepage;
 	}
 	// For FoV/SS ONLY.
@@ -92,16 +91,16 @@ public:
 	bool being_edited() const {
 		return editing;
 	}
-	void set_cfgname(const string &name) {
+	void set_cfgname(const std::string &name) {
 		cfgname = name;
 	}
-	void set_path_prefix(const string &pt) {
+	void set_path_prefix(const std::string &pt) {
 		path_prefix = pt;
 	}
-	void set_mod_title(const string &mod) {
+	void set_mod_title(const std::string &mod) {
 		mod_title = mod;
 	}
-	void set_menu_string(const string &menu) {
+	void set_menu_string(const std::string &menu) {
 		menustring = menu;
 	}
 	void set_game_type(Exult_Game game) {
@@ -120,22 +119,22 @@ public:
 	void set_editing(bool tf) {
 		editing = tf;
 	}
-	void set_codepage(const string &cp) {
+	void set_codepage(const std::string &cp) {
 		codepage = cp;
 	}
 
 	void setup_game_paths();
 
-	virtual bool get_config_file(Configuration *&cfg, string &root) = 0;
+	virtual bool get_config_file(Configuration *&cfg, std::string &root) = 0;
 };
 
 class ModInfo : public BaseGameInfo {
 protected:
 	bool compatible;
-	string configfile;
+	std::string configfile;
 public:
-	ModInfo(Exult_Game game, const string &name, const string &mod,
-	        const string &path, bool exp, bool sib, bool ed, const string &cfg);
+	ModInfo(Exult_Game game, const std::string &name, const std::string &mod,
+	        const std::string &path, bool exp, bool sib, bool ed, const std::string &cfg);
 	ModInfo(const ModInfo &other)
 		: BaseGameInfo(other.type, other.cfgname.c_str(),
 		               other.mod_title.c_str(), other.path_prefix.c_str(),
@@ -149,7 +148,7 @@ public:
 		return compatible;
 	}
 
-	virtual bool get_config_file(Configuration *&cfg, string &root) {
+	virtual bool get_config_file(Configuration *&cfg, std::string &root) {
 		cfg = new Configuration(configfile, "modinfo");
 		root = "mod_info/";
 		return true;
@@ -160,7 +159,7 @@ class ModManager : public BaseGameInfo {
 protected:
 	std::vector<ModInfo> modlist;
 public:
-	ModManager(const string &name, const string &menu, bool needtitle,
+	ModManager(const std::string &name, const std::string &menu, bool needtitle,
 	           bool silent = false);
 	ModManager() {  }
 	ModManager(const ModManager &other)
@@ -179,8 +178,8 @@ public:
 	std::vector<ModInfo> &get_mod_list() {
 		return modlist;
 	}
-	ModInfo *find_mod(const string &name);
-	int find_mod_index(const string &name);
+	ModInfo *find_mod(const std::string &name);
+	int find_mod_index(const std::string &name);
 
 	bool has_mods() const {
 		return modlist.size() > 0;
@@ -190,13 +189,13 @@ public:
 			return &(modlist[i]);
 		return nullptr;
 	}
-	BaseGameInfo *get_mod(const string &name, bool checkversion = true);
-	void add_mod(const string &mod, const string &modconfig);
+	BaseGameInfo *get_mod(const std::string &name, bool checkversion = true);
+	void add_mod(const std::string &mod, const std::string &modconfig);
 
-	void get_game_paths(const string &game_path);
+	void get_game_paths(const std::string &game_path);
 	void gather_mods();
 
-	virtual bool get_config_file(Configuration *&cfg, string &root) {
+	virtual bool get_config_file(Configuration *&cfg, std::string &root) {
 		cfg = config;
 		root = "config/disk/game/" + cfgname + "/";
 		return false;
@@ -248,7 +247,7 @@ public:
 	bool is_sib_installed() const {
 		return sib != nullptr;
 	}
-	ModManager *find_game(const string &name);
+	ModManager *find_game(const std::string &name);
 	ModManager *get_bg() {
 		return bg ? bg : fov;
 	}
@@ -264,8 +263,8 @@ public:
 	ModManager *get_sib() {
 		return sib;
 	}
-	int find_game_index(const string &name);
-	void add_game(const string &name, const string &menu);
+	int find_game_index(const std::string &name);
+	void add_game(const std::string &name, const std::string &menu);
 };
 
 #endif

@@ -40,7 +40,7 @@ class Uc_statement;
 class Uc_function : public Uc_design_unit {
 	static Uc_scope globals;    // For finding intrinsics, funs.
 	// Intrinsics, indexed by number:
-	static vector<Uc_intrinsic_symbol *> intrinsics;
+	static std::vector<Uc_intrinsic_symbol *> intrinsics;
 	// Some intrinsic numbers:
 	static int add_answer, remove_answer, push_answers, pop_answers,
 	       show_face, remove_face, get_item_shape, get_usecode_fun;

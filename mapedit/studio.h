@@ -50,9 +50,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 #endif
 
-using std::string;
-using std::map;
-
 class Shape_info;
 class Shapes_vga_file;
 struct Equip_row_widgets;
@@ -167,7 +164,7 @@ private:
 	gint            server_input_tag;
 	Msg_callback        waiting_for_server;
 	void            *waiting_client;
-	map<string, int> misc_name_map;
+	std::map<std::string, int> misc_name_map;
 public:
 	ExultStudio(int argc, char **argv);
 	~ExultStudio();
@@ -217,7 +214,7 @@ public:
 	void create_new_game(const char *dir);
 	void new_game();
 	Object_browser  *create_browser(const char *fname);
-	void set_game_path(const string& gamename, const string& modname = "");
+	void set_game_path(const std::string& gamename, const std::string& modname = "");
 	void setup_file_list();
 	void save_all();        // Write out everything.
 	bool need_to_save();        // Anything modified?
@@ -386,10 +383,10 @@ public:
 	void set_npc_modified() {
 		npc_modified = true;
 	}
-	const string &get_encoding() const {
+	const std::string &get_encoding() const {
 		return game_encoding;
 	}
-	void set_encoding(const string &enc) {
+	void set_encoding(const std::string &enc) {
 		game_encoding = enc;
 	}
 	BaseGameInfo *get_game() const;

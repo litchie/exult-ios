@@ -48,8 +48,6 @@ class Shape;
 typedef std::shared_ptr<Ireg_game_object> Ireg_game_object_shared;
 typedef std::shared_ptr<Ifix_game_object> Ifix_game_object_shared;
 
-using std::vector;
-
 #define IREG_EXTENDED   254     // For shape #'s > 1023.
 
 /*
@@ -58,7 +56,7 @@ using std::vector;
 class Game_map {
 	int num;            // Map #.  Index in gwin->maps.
 	// Flat chunk areas:
-	static vector<Chunk_terrain *> *chunk_terrains;
+	static std::vector<Chunk_terrain *> *chunk_terrains;
 	static std::ifstream *chunks;   // "u7chunks" file.
 	static bool v2_chunks;      // True if 3 bytes/entry.
 	static bool read_all_terrain;   // True if we've read them all.

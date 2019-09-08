@@ -71,6 +71,7 @@ using std::cout;
 using std::endl;
 using std::rand;
 using std::strchr;
+using std::vector;
 
 extern Usecode_value no_ret;
 

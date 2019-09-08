@@ -25,13 +25,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef INCL_UCEXPR
 #define INCL_UCEXPR 1
 
-#include <vector>
 #include <string>
+#include <vector>
 #include "ucloc.h"
 #include "opcodes.h"
 #include "ignore_unused_variable_warning.h"
-
-using std::vector;
 
 class Uc_symbol;
 class Uc_var_symbol;
@@ -477,10 +475,10 @@ public:
  *  Write a byte value to the end/position of a character stream.
  */
 
-inline void Write1(vector<char> &out, unsigned short val) {
+inline void Write1(std::vector<char> &out, unsigned short val) {
 	out.push_back(static_cast<char>(val & 0xff));
 }
-inline void Write1(vector<char> &out, int pos, unsigned short val) {
+inline void Write1(std::vector<char> &out, int pos, unsigned short val) {
 	out[pos] = static_cast<char>(val & 0xff);
 }
 
@@ -488,11 +486,11 @@ inline void Write1(vector<char> &out, int pos, unsigned short val) {
  *  Write a 2-byte value to the end/position of a character stream.
  */
 
-inline void Write2(vector<char> &out, unsigned short val) {
+inline void Write2(std::vector<char> &out, unsigned short val) {
 	out.push_back(static_cast<char>(val & 0xff));
 	out.push_back(static_cast<char>((val >> 8) & 0xff));
 }
-inline void Write2(vector<char> &out, int pos, unsigned short val) {
+inline void Write2(std::vector<char> &out, int pos, unsigned short val) {
 	out[pos] = static_cast<char>(val & 0xff);
 	out[pos + 1] = static_cast<char>((val >> 8) & 0xff);
 }
@@ -501,13 +499,13 @@ inline void Write2(vector<char> &out, int pos, unsigned short val) {
  *  Write a 4-byte value to the end/position of a character stream.
  */
 
-inline void Write4(vector<char> &out, unsigned int val) {
+inline void Write4(std::vector<char> &out, unsigned int val) {
 	out.push_back(static_cast<char>(val & 0xff));
 	out.push_back(static_cast<char>((val >> 8) & 0xff));
 	out.push_back(static_cast<char>((val >> 16) & 0xff));
 	out.push_back(static_cast<char>((val >> 24) & 0xff));
 }
-inline void Write4(vector<char> &out, int pos, unsigned int val) {
+inline void Write4(std::vector<char> &out, int pos, unsigned int val) {
 	out[pos] = static_cast<char>(val & 0xff);
 	out[pos + 1] = static_cast<char>((val >> 8) & 0xff);
 	out[pos + 3] = static_cast<char>((val >> 16) & 0xff);

@@ -81,6 +81,7 @@ using std::time_t;
 using std::tm;
 using std::localtime;
 using std::time;
+using std::vector;
 
 // Save game compression level
 extern int save_compression;

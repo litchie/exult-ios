@@ -33,6 +33,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ignore_unused_variable_warning.h"
 
 using std::ifstream;
+using std::string;
+using std::vector;
 
 /*  Columns in our table. */
 enum { NAME_COL, NUM_COL, TYPE_COL, N_COLS };

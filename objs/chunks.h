@@ -43,8 +43,6 @@ class Npc_actor;
 class Image_buffer8;
 class Chunk_terrain;
 
-using std::vector;
-
 /*
  *  Data cached for a chunk to speed up processing, but which doesn't need
  *  to be saved to disk:
@@ -54,8 +52,8 @@ class Chunk_cache : public Game_singletons {
 	typedef uint16 *blocked8z;  // For each tile, 2 bits for each lift
 	//   level for #objs blocking there, so
 	//   8 lifts are represented.
-	vector<blocked8z> blocked;  // One for each 8 lifts.
-	vector<Egg_object *> egg_objects; // ->eggs which influence this chunk.
+	std::vector<blocked8z> blocked;  // One for each 8 lifts.
+	std::vector<Egg_object *> egg_objects; // ->eggs which influence this chunk.
 	unsigned short eggs[256];   // Bit #i (0-14) set means that the
 	//   tile is within egg_object[i]'s
 	//   influence.  Bit 15 means it's 1 or
@@ -281,7 +279,7 @@ public:
 	Game_object *find_door(Tile_coord const &t) {
 		return need_cache()->find_door(t);
 	}
-	static int find_in_area(vector<Game_object *> &vec, Rectangle const &area,
+	static int find_in_area(std::vector<Game_object *> &vec, Rectangle const &area,
 	                        int shapenum, int framenum);
 	// Use this when teleported in.
 	static void try_all_eggs(Game_object *obj, int tx, int ty, int tz,
@@ -308,8 +306,8 @@ public:
 	void kill_cache();
 	// Get all objects and actors for use when writing memory cache.
 	// returns size require to save
-	int get_obj_actors(vector<Game_object *> &removes,
-	                   vector<Actor *> &actors);
+	int get_obj_actors(std::vector<Game_object *> &removes,
+	                   std::vector<Actor *> &actors);
 
 };
 

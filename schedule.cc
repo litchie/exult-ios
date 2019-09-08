@@ -51,6 +51,7 @@ using std::cout;
 using std::cerr;
 using std::endl;
 using std::rand;
+using std::vector;
 
 vector<std::string> Schedule_change::script_names;
 int Patrol_schedule::num_path_eggs = -1;

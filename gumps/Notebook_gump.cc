@@ -41,6 +41,7 @@ using std::ostream;
 using std::endl;
 using std::string;
 using std::cout;
+using std::vector;
 
 vector<One_note *> Notebook_gump::notes;
 bool Notebook_gump::initialized = false;    // Set when read in.

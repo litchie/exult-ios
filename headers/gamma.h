@@ -24,8 +24,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <cmath>
 
-using std::pow;
-
 template <class T> class GammaTable {
 private:
 	unsigned    size;
@@ -48,7 +46,7 @@ public:
 		gamma = g;
 
 		for (unsigned i = 0; i < size; i++)
-			table[i] = static_cast<T>(pow(i / sizef, 1 / gamma) * sizef);
+			table[i] = static_cast<T>(std::pow(i / sizef, 1 / gamma) * sizef);
 	}
 
 	GammaTable(unsigned int s, float g = 1) : sizef(-1), gamma(-1) {
