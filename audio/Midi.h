@@ -87,7 +87,7 @@ public:
 
 private:
 
-	MyMidiPlayer(const MyMidiPlayer &m) ; // Cannot call
+	MyMidiPlayer(const MyMidiPlayer &m); // Cannot call
 	MyMidiPlayer &operator=(const MyMidiPlayer &); // Cannot call
 
 	bool			repeating;

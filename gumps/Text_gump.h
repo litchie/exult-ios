@@ -38,7 +38,7 @@ public:
 	Text_gump(int shapenum, int fnt = 4) : Gump(nullptr, shapenum),
 		text(nullptr), textlen(0), curtop(0), curend(0), font(fnt)
 	{  }
-	virtual ~Text_gump() {
+	~Text_gump() override {
 		delete [] text;
 	}
 	void add_text(const char *str); // Append text.

@@ -133,10 +133,10 @@ public:
 		gwin(gw), laststate(Invalid) {
 		gwin->get_tqueue()->add(5000, this);
 	}
-	virtual ~Background_noise() {
+	~Background_noise() override {
 		gwin->get_tqueue()->remove(this);
 	}
-	virtual void handle_event(unsigned long curtime, uintptr udata);
+	void handle_event(unsigned long curtime, uintptr udata) override;
 	static bool is_combat_music(int num) {
 		// Lumping music 16 as if it were a combat music in order to simplify
 		// the check.

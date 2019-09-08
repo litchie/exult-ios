@@ -32,11 +32,9 @@ public:
 		init();
 	}
 
-	virtual ~Enabled_button()
-	{ }
-	virtual bool push(int button);
-	virtual void unpush(int button);
-	virtual bool activate(int button = 1);
+	bool push(int button) override;
+	void unpush(int button) override;
+	bool activate(int button = 1) override;
 
 	int getselection() const {
 		return get_framenum();

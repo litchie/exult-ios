@@ -105,21 +105,21 @@ public:
 	Paperdoll_gump(Container_game_object *cont, int initx, int inity,
 	               int shnum);
 
-	virtual ~Paperdoll_gump();
+	~Paperdoll_gump() override;
 
 	// Is a given point on a button?
-	virtual Gump_button *on_button(int mx, int my);
+	Gump_button *on_button(int mx, int my) override;
 
 	// Find the object the mouse is over
-	virtual Game_object *find_object(int mx, int my);
+	Game_object *find_object(int mx, int my) override;
 
 	// Add object.
-	virtual int add(Game_object *obj, int mx = -1, int my = -1,
+	int add(Game_object *obj, int mx = -1, int my = -1,
 	                int sx = -1, int sy = -1, bool dont_check = false,
-	                bool combine = false);
+	                bool combine = false) override;
 
 	// Paint it and its contents.
-	virtual void paint();
+	void paint() override;
 
 
 	//
@@ -166,7 +166,7 @@ public:
 	// Generic Method to check a shape
 	bool check_shape(int px, int py, int shape, int frame, ShapeFile file);
 
-	virtual Container_game_object *find_actor(int mx, int my);
+	Container_game_object *find_actor(int mx, int my) override;
 };
 
 #endif

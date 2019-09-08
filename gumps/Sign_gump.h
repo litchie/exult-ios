@@ -35,11 +35,11 @@ protected:
 
 public:
 	Sign_gump(int shapenum, int nlines);
-	virtual ~Sign_gump();
+	~Sign_gump() override;
 	// Set a line of text.
 	void add_text(int line, const std::string &txt);
 	// Paint it and its contents.
-	virtual void paint();
+	void paint() override;
 };
 
 #endif

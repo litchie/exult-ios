@@ -23,7 +23,7 @@
 #include "PathFinder.h"
 
 
-class   Zombie: public virtual PathFinder {
+class   Zombie: public PathFinder {
 	int major_distance;     // Distance in tiles to go.
 	int major_frame_incr;       // # steps to take in faster dir.
 	Tile_coord cur;         // Current pos. within world.
@@ -45,15 +45,15 @@ public:
 	// Find a path from sx,sy,sz to dx,dy,dz
 	// Return 0 if no path can be traced.
 	// Return !0 if path found
-	virtual int NewPath(Tile_coord const &s, Tile_coord const &d,
-	                    Pathfinder_client *client);
+	int NewPath(Tile_coord const &s, Tile_coord const &d,
+	            Pathfinder_client *client) override;
 
 	// Retrieve the coordinates of the next step on the path
-	virtual int GetNextStep(Tile_coord &n, bool &done);
-	virtual int get_num_steps() { // # of steps left to take.
+	int GetNextStep(Tile_coord &n, bool &done) override;
+	int get_num_steps() override { // # of steps left to take.
 		return major_distance / major_frame_incr;
 	}
-	virtual ~Zombie();
+	~Zombie() override;
 };
 
 #endif

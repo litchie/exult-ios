@@ -92,7 +92,7 @@ public:
 	                     Symbol_kind k = table_scope, int v = -1)
 		: Usecode_symbol(nm, k, v)
 	{  }
-	virtual ~Usecode_scope_symbol();
+	~Usecode_scope_symbol() override;
 	void read(std::istream &in);
 	void write(std::ostream &out);
 	void add_sym(Usecode_symbol *sym);
@@ -121,7 +121,7 @@ public:
 	                     int v, int nvars = 0)
 		: Usecode_scope_symbol(nm, k, v), num_vars(nvars)
 	{  }
-	virtual ~Usecode_class_symbol() {  }
+	~Usecode_class_symbol() override {  }
 	void add_method_num(int val) {
 		methods.push_back(val);
 	}

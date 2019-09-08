@@ -31,16 +31,16 @@ private:
 
 public:
 	Gamemenu_gump();
-	virtual ~Gamemenu_gump();
+	~Gamemenu_gump() override;
 
 	// Paint it and its contents.
-	virtual void paint();
-	virtual void close() {
+	void paint() override;
+	void close() override {
 		done = 1;
 	}
 	// Handle events:
-	virtual bool mouse_down(int mx, int my, int button);
-	virtual bool mouse_up(int mx, int my, int button);
+	bool mouse_down(int mx, int my, int button) override;
+	bool mouse_up(int mx, int my, int button) override;
 
 	void quit(bool return_to_menu = false);
 	void loadsave();

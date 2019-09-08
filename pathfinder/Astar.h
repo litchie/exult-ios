@@ -23,7 +23,7 @@
 #include <vector>
 
 
-class   Astar: public virtual PathFinder {
+class   Astar: public PathFinder {
 	std::vector<Tile_coord> path;       // Coords. to goal.
 	int pathlen;            // Length of path.
 	int dir;            // 1 or -1.
@@ -35,18 +35,18 @@ public:
 	// Find a path from sx,sy,sz to dx,dy,dz
 	// Return 0 if no path can be traced.
 	// Return !0 if path found
-	virtual int NewPath(Tile_coord const &s, Tile_coord const &d,
-	                    Pathfinder_client *client);
+	int NewPath(Tile_coord const &s, Tile_coord const &d,
+	            Pathfinder_client *client) override;
 
 	// Retrieve the coordinates of the next step on the path
-	virtual int GetNextStep(Tile_coord &n, bool &done);
+	int GetNextStep(Tile_coord &n, bool &done) override;
 	// Set to retrieve in opposite order.
-	virtual int set_backwards();
-	virtual int following_smart_path() { // Astar?
+	int set_backwards() override;
+	int following_smart_path() override { // Astar?
 		return 1;
 	}
-	virtual int get_num_steps();    // # of steps left to take.
-	virtual ~Astar();
+	int get_num_steps() override;    // # of steps left to take.
+	~Astar() override;
 };
 
 #endif

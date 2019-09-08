@@ -138,7 +138,7 @@ public:
 	Schedule_with_objects(Actor *n) : Schedule(n), current_item(),
 									items_in_hand(0) {
 	}
-	~Schedule_with_objects();
+	~Schedule_with_objects() override;
 	void add_object(Game_object *obj) {
 	    created.push_back(obj->weak_from_this());
 	}
@@ -158,22 +158,22 @@ class Scripted_schedule : public Schedule {
 	void run(int id);
 public:
 	Scripted_schedule(Actor *n, int type);
-	virtual ~Scripted_schedule();
-	virtual void now_what() {
+	~Scripted_schedule() override;
+	void now_what() override {
 		run(now_what_id);
 	}
-	virtual void im_dormant() {
+	void im_dormant() override {
 		run(im_dormant_id);
 	}
-	virtual void ending(int newtype) {
+	void ending(int newtype) override {
 		ignore_unused_variable_warning(newtype);
 		run(ending_id);
 	}
-	virtual void set_weapon(bool removed = false) {
+	void set_weapon(bool removed = false) override {
 		ignore_unused_variable_warning(removed);
 		run(set_weapon_id);
 	}
-	virtual void set_bed(Game_object *b) {
+	void set_bed(Game_object *b) override {
 		ignore_unused_variable_warning(b);
 		run(set_bed_id);
 	}
@@ -189,10 +189,10 @@ class Street_maintenance_schedule : public Schedule {
 	Tile_coord oldloc;
 public:
 	Street_maintenance_schedule(Actor *n, Actor_action *p, Game_object *o);
-	virtual void now_what();
+	void now_what() override;
 	// For Usecode intrinsic.
-	virtual int get_actual_type(Actor *npc) const;
-	virtual void ending(int newtype);
+	int get_actual_type(Actor *npc) const override;
+	void ending(int newtype) override;
 };
 
 /*
@@ -204,7 +204,7 @@ class Follow_avatar_schedule : public Schedule {
 public:
 	Follow_avatar_schedule(Actor *n) : Schedule(n), next_path_time(0)
 	{  }
-	virtual void now_what();    // Now what should NPC do?
+	void now_what() override;    // Now what should NPC do?
 };
 
 /*
@@ -214,7 +214,7 @@ class Wait_schedule : public Schedule {
 public:
 	Wait_schedule(Actor *n) : Schedule(n)
 	{  }
-	virtual void now_what();    // Now what should NPC do?
+	void now_what() override;    // Now what should NPC do?
 };
 
 /*
@@ -232,7 +232,7 @@ public:
 	static Pace_schedule *create_horiz(Actor *n);
 	static Pace_schedule *create_vert(Actor *n);
 	static void pace(Actor *npc, char &which, int &phase, Tile_coord &blocked, int delay);
-	virtual void now_what();    // Now what should NPC do?
+	void now_what() override;    // Now what should NPC do?
 };
 
 /*
@@ -243,9 +243,9 @@ class Eat_at_inn_schedule : public Schedule {
 public:
 	Eat_at_inn_schedule(Actor *n) : Schedule(n), sitting_at_chair(false)
 	{  }
-	virtual void now_what();    // Now what should NPC do?
-	virtual void ending(int newtype); // Switching to another schedule
-	virtual void im_dormant();  // Just went dormant.
+	void now_what() override;    // Now what should NPC do?
+	void ending(int newtype) override; // Switching to another schedule
+	void im_dormant() override;  // Just went dormant.
 };
 
 /*
@@ -264,7 +264,7 @@ class Preach_schedule : public Schedule {
 public:
 	Preach_schedule(Actor *n) : Schedule(n), state(find_podium)
 	{  }
-	virtual void now_what();    // Now what should NPC do?
+	void now_what() override;    // Now what should NPC do?
 };
 
 /*
@@ -287,8 +287,8 @@ class Patrol_schedule : public Schedule {
 	bool forever;           // If should keep executing last path egg.
 public:
 	Patrol_schedule(Actor *n);
-	virtual void now_what();    // Now what should NPC do?
-	virtual void ending(int newtype); // Switching to another schedule
+	void now_what() override;    // Now what should NPC do?
+	void ending(int newtype) override; // Switching to another schedule
 };
 
 /*
@@ -302,7 +302,7 @@ protected:
 	Talk_schedule(Actor *n, int fb, int lb, int eid);
 public:
 	Talk_schedule(Actor *n);
-	virtual void now_what();    // Now what should NPC do?
+	void now_what() override;    // Now what should NPC do?
 };
 
 /*
@@ -312,8 +312,8 @@ class Arrest_avatar_schedule : public Talk_schedule {
 public:
 	Arrest_avatar_schedule(Actor *n);
 	// For Usecode intrinsic.
-	virtual int get_actual_type(Actor *npc) const;
-	virtual void ending(int newtype);// Switching to another schedule.
+	int get_actual_type(Actor *npc) const override;
+	void ending(int newtype) override;// Switching to another schedule.
 };
 
 /*
@@ -326,7 +326,7 @@ protected:
 	//   dir.
 public:
 	Loiter_schedule(Actor *n, int d = 12);
-	virtual void now_what();    // Now what should NPC do?
+	void now_what() override;    // Now what should NPC do?
 };
 
 /*
@@ -337,7 +337,7 @@ protected:
 	int phase;
 public:
 	Graze_schedule(Actor *n, int d = 12) : Loiter_schedule(n, d), phase(0) {  }
-	virtual void now_what();    // Now what should NPC do?
+	void now_what() override;    // Now what should NPC do?
 };
 
 /*
@@ -348,7 +348,7 @@ class Kid_games_schedule : public Loiter_schedule {
 public:
 	Kid_games_schedule(Actor *n) : Loiter_schedule(n, 10)
 	{  }
-	virtual void now_what();    // Now what should NPC do?
+	void now_what() override;    // Now what should NPC do?
 };
 
 /*
@@ -358,7 +358,7 @@ class Dance_schedule : public Loiter_schedule {
 public:
 	Dance_schedule(Actor *n) : Loiter_schedule(n, 4)
 	{  }
-	virtual void now_what();    // Now what should NPC do?
+	void now_what() override;    // Now what should NPC do?
 };
 
 /*
@@ -373,8 +373,8 @@ public:
 	Tool_schedule(Actor *n, int shnum) : Loiter_schedule(n, 12),
 		toolshape(shnum), tool()
 	{  }
-	virtual void now_what() = 0;    // Now what should NPC do?
-	virtual void ending(int newtype);// Switching to another schedule.
+	void now_what() override = 0;    // Now what should NPC do?
+	void ending(int newtype) override;// Switching to another schedule.
 };
 
 /*
@@ -394,7 +394,7 @@ public:
 	Farmer_schedule(Actor *n) : Tool_schedule(n, 618),
 		crop(), grow_cnt(0), state(start)
 	{  }
-	virtual void now_what();    // Now what should NPC do?
+	void now_what() override;    // Now what should NPC do?
 };
 
 /*
@@ -412,7 +412,7 @@ public:
 	Miner_schedule(Actor *n) : Tool_schedule(n, 624),
 		ore(), state(find_ore)
 	{  }
-	virtual void now_what();    // Now what should NPC do?
+	void now_what() override;    // Now what should NPC do?
 };
 
 /*
@@ -422,7 +422,7 @@ class Hound_schedule : public Schedule {
 public:
 	Hound_schedule(Actor *n) : Schedule(n)
 	{  }
-	virtual void now_what();    // Now what should NPC do?
+	void now_what() override;    // Now what should NPC do?
 };
 
 /*
@@ -432,7 +432,7 @@ class Wander_schedule : public Loiter_schedule {
 public:
 	Wander_schedule(Actor *n) : Loiter_schedule(n, 128)
 	{  }
-	virtual void now_what();    // Now what should NPC do?
+	void now_what() override;    // Now what should NPC do?
 };
 
 /*
@@ -446,11 +446,11 @@ class Sleep_schedule : public Schedule {
 	bool for_nap_time;
 public:
 	Sleep_schedule(Actor *n);
-	virtual void now_what();    // Now what should NPC do?
-	virtual void ending(int newtype);// Switching to another schedule.
+	void now_what() override;    // Now what should NPC do?
+	void ending(int newtype) override;// Switching to another schedule.
 	// Set where to sleep.
-	virtual void set_bed(Game_object *b);
-	virtual void im_dormant();  // Just went dormant.
+	void set_bed(Game_object *b) override;
+	void im_dormant() override;  // Just went dormant.
 	static bool is_bed_occupied(Game_object *bed, Actor *npc);
 };
 
@@ -463,8 +463,8 @@ class Sit_schedule : public Schedule {
 	bool did_barge_usecode;     // So we only call it once.
 public:
 	Sit_schedule(Actor *n, Game_object *ch = nullptr);
-	virtual void now_what();    // Now what should NPC do?
-	virtual void im_dormant();  // Just went dormant.
+	void now_what() override;    // Now what should NPC do?
+	void im_dormant() override;  // Just went dormant.
 	static bool is_occupied(Game_object *chairobj, Actor *actor);
 	static bool set_action(Actor *actor, Game_object *chairobj = nullptr,
 	                       int delay = 0, Game_object **chair_found = nullptr);
@@ -484,14 +484,14 @@ class Desk_schedule : public Schedule_with_objects {
 	    picked_up_item,
 	    work_at_table
 	} state;
-	virtual int find_items(Game_object_vector& vec, int dist);
+	int find_items(Game_object_vector& vec, int dist) override;
 	void find_tables(int shapenum);
 	bool walk_to_table();
 public:
 	Desk_schedule(Actor *n);
-	virtual void now_what();    // Now what should NPC do?
-	virtual void ending(int newtype);// Switching to another schedule.
-	virtual void im_dormant();  // Just went dormant.
+	void now_what() override;    // Now what should NPC do?
+	void ending(int newtype) override;// Switching to another schedule.
+	void im_dormant() override;  // Just went dormant.
 };
 
 /*
@@ -501,7 +501,7 @@ class Shy_schedule : public Schedule {
 public:
 	Shy_schedule(Actor *n) : Schedule(n)
 	{  }
-	virtual void now_what();    // Now what should NPC do?
+	void now_what() override;    // Now what should NPC do?
 };
 
 /*
@@ -526,7 +526,7 @@ class Lab_schedule : public Schedule {
 	void init();
 public:
 	Lab_schedule(Actor *n);
-	virtual void now_what();    // Now what should NPC do?
+	void now_what() override;    // Now what should NPC do?
 };
 
 /*
@@ -538,7 +538,7 @@ class Thief_schedule : public Schedule {
 public:
 	Thief_schedule(Actor *n) : Schedule(n), next_steal_time(0)
 	{  }
-	virtual void now_what();
+	void now_what() override;
 };
 
 /*
@@ -571,7 +571,7 @@ class Waiter_schedule : public Schedule_with_objects {
 	    walk_to_cleanup_food,
 	    cleanup_food
 	} state;
-	virtual int find_items(Game_object_vector& vec, int dist);
+	int find_items(Game_object_vector& vec, int dist) override;
 	bool find_unattended_plate();
 	bool find_customer();
 	void find_tables(int shapenum, int dist, bool is_prep = false);
@@ -588,8 +588,8 @@ class Waiter_schedule : public Schedule_with_objects {
 	Game_object *find_serving_spot(Tile_coord &spot);
 public:
 	Waiter_schedule(Actor *n);
-	virtual void now_what();    // Now what should NPC do?
-	virtual void ending(int newtype);// Switching to another schedule.
+	void now_what() override;    // Now what should NPC do?
+	void ending(int newtype) override;// Switching to another schedule.
 };
 
 /*
@@ -620,8 +620,8 @@ class Sew_schedule : public Schedule {
 	} state;
 public:
 	Sew_schedule(Actor *n);
-	virtual void now_what();    // Now what should NPC do?
-	virtual void ending(int newtype);// Switching to another schedule.
+	void now_what() override;    // Now what should NPC do?
+	void ending(int newtype) override;// Switching to another schedule.
 };
 
 /*
@@ -651,8 +651,8 @@ class Bake_schedule : public Schedule {
 	} state;
 public:
 	Bake_schedule(Actor *n);
-	virtual void now_what();
-	virtual void ending(int newtype);
+	void now_what() override;
+	void ending(int newtype) override;
 };
 
 /*
@@ -681,8 +681,8 @@ class Forge_schedule : public Schedule {
 	} state;
 public:
 	Forge_schedule(Actor *n);
-	virtual void now_what();    // Now what should NPC do?
-	virtual void ending(int newtype); // Switching to another schedule
+	void now_what() override;    // Now what should NPC do?
+	void ending(int newtype) override; // Switching to another schedule
 };
 
 /*
@@ -697,9 +697,9 @@ class Eat_schedule : public Schedule {
 	} state;
 public:
 	Eat_schedule(Actor *n);
-	virtual void now_what();    // Now what should NPC do?
-	virtual void ending(int newtype); // Switching to another schedule
-	virtual void im_dormant();  // Just went dormant.
+	void now_what() override;    // Now what should NPC do?
+	void ending(int newtype) override; // Switching to another schedule
+	void im_dormant() override;  // Just went dormant.
 };
 
 /*
@@ -716,10 +716,10 @@ class Walk_to_schedule : public Schedule {
 public:
 	Walk_to_schedule(Actor *n, Tile_coord const &d, int new_sched,
 	                 int delay = -1);
-	virtual void now_what();    // Now what should NPC do?
-	virtual void im_dormant();  // Just went dormant.
+	void now_what() override;    // Now what should NPC do?
+	void im_dormant() override;  // Just went dormant.
 	// For Usecode intrinsic.
-	virtual int get_actual_type(Actor *npc) const;
+	int get_actual_type(Actor *npc) const override;
 };
 
 /*

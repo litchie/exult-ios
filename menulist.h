@@ -75,10 +75,10 @@ class MenuEntry: public MenuObject {
 public:
 	Shape_frame *frame_on, *frame_off;
 	MenuEntry(Shape_frame *on, Shape_frame *off, int xpos, int ypos);
-	virtual ~MenuEntry() { }
+	~MenuEntry() override { }
 
-	virtual void paint(Game_window *gwin);
-	virtual bool handle_event(SDL_Event &event);
+	void paint(Game_window *gwin) override;
+	bool handle_event(SDL_Event &event) override;
 };
 
 class MenuTextObject: public MenuObject {
@@ -87,15 +87,15 @@ public:
 	Font *font_on;
 	const char *text;
 	MenuTextObject() : text(nullptr) {}
-	virtual ~MenuTextObject() {
+	~MenuTextObject() override {
 		delete [] text;
 	}
 
 	virtual int get_height() {
 		return (y2 - y1);
 	}
-	virtual void paint(Game_window *gwin) = 0;
-	virtual bool handle_event(SDL_Event &event) = 0;
+	void paint(Game_window *gwin) override = 0;
+	bool handle_event(SDL_Event &event) override = 0;
 };
 
 class MenuTextEntry: public MenuTextObject {
@@ -103,10 +103,10 @@ private:
 	bool enabled;
 public:
 	MenuTextEntry(Font *fnton, Font *fnt, const char *txt, int xpos, int ypos);
-	virtual ~MenuTextEntry() { }
+	~MenuTextEntry() override { }
 
-	virtual void paint(Game_window *gwin);
-	virtual bool handle_event(SDL_Event &event);
+	void paint(Game_window *gwin) override;
+	bool handle_event(SDL_Event &event) override;
 	void set_enabled(bool en) {
 		enabled = en;
 	}
@@ -119,10 +119,10 @@ private:
 public:
 	MenuGameEntry(Font *fnton, Font *fnt, const char *txt, Shape_frame *sfx,
 	              int xpos, int ypos);
-	virtual ~MenuGameEntry() { }
+	~MenuGameEntry() override { }
 
-	virtual void paint(Game_window *gwin);
-	virtual bool handle_event(SDL_Event &event);
+	void paint(Game_window *gwin) override;
+	bool handle_event(SDL_Event &event) override;
 	bool is_enabled() const {
 		return enabled;
 	}
@@ -138,7 +138,7 @@ private:
 	int max_choice_width;
 public:
 	MenuTextChoice(Font *fnton, Font *fnt, const char *txt, int xpos, int ypos);
-	virtual ~MenuTextChoice() {
+	~MenuTextChoice() override {
 		delete choices;
 	}
 	void add_choice(const char *s);
@@ -149,8 +149,8 @@ public:
 		choice = c;
 	}
 
-	virtual void paint(Game_window *gwin);
-	virtual bool handle_event(SDL_Event &event);
+	void paint(Game_window *gwin) override;
+	bool handle_event(SDL_Event &event) override;
 };
 
 class MenuList {

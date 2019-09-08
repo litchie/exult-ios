@@ -54,15 +54,15 @@ protected:
 public:
 	Actor_gump(Container_game_object *cont, int initx, int inity,
 	           int shnum);
-	~Actor_gump();
+	~Actor_gump() override;
 	// Add object.
-	virtual int add(Game_object *obj, int mx = -1, int my = -1,
-	                int sx = -1, int sy = -1, bool dont_check = false,
-	                bool combine = false);
+	int add(Game_object *obj, int mx = -1, int my = -1,
+	        int sx = -1, int sy = -1, bool dont_check = false,
+	        bool combine = false) override;
 	// Paint it and its contents.
-	virtual void paint();
+	void paint() override;
 
-	virtual Container_game_object *find_actor(int mx, int my);
+	Container_game_object *find_actor(int mx, int my) override;
 };
 
 #endif

@@ -72,7 +72,7 @@ public:
 		: Text_button(par, text, px, py, width, 11)
 	{  }
 	// What to do when 'clicked':
-	virtual bool activate(int button = 1);
+	bool activate(int button = 1) override;
 };
 
 bool VideoOptions_button::activate(int button) {
@@ -90,7 +90,7 @@ public:
 		: Gump_ToggleTextButton(par, s, selectionnum, numsel, px, py, width) {}
 
 	friend class VideoOptions_gump;
-	virtual void toggle(int state) {
+	void toggle(int state) override {
 		static_cast<VideoOptions_gump *>(parent)->toggle(this, state);
 	}
 };

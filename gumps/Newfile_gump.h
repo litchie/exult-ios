@@ -180,7 +180,7 @@ protected:
 
 public:
 	Newfile_gump();
-	virtual ~Newfile_gump();
+	~Newfile_gump() override;
 
 	void load();            // 'Load' was clicked.
 	void save();            // 'Save' was clicked.
@@ -193,18 +193,18 @@ public:
 		return restored;
 	}
 	// Paint it and its contents.
-	virtual void paint();
-	virtual void close() {
+	void paint() override;
+	void close() override {
 		done = 1;
 	}
 	// Handle events:
-	virtual bool mouse_down(int mx, int my, int button);
-	virtual bool mouse_up(int mx, int my, int button);
-	virtual void mouse_drag(int mx, int my);
-	virtual void text_input(int chr, int unicode); // Character typed.
+	bool mouse_down(int mx, int my, int button) override;
+	bool mouse_up(int mx, int my, int button) override;
+	void mouse_drag(int mx, int my) override;
+	void text_input(int chr, int unicode) override; // Character typed.
 
-	virtual void mousewheel_up();
-	virtual void mousewheel_down();
+	void mousewheel_up() override;
+	void mousewheel_down() override;
 };
 
 #endif //NEWFILE_GUMP_H

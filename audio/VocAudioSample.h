@@ -27,11 +27,11 @@ class VocAudioSample : public AudioSample
 {
 public:
 	VocAudioSample(uint8* buffer, uint32 size);
-	virtual ~VocAudioSample();
+	~VocAudioSample() override;
 
-	virtual void initDecompressor(void *DecompData) const;
-	virtual uint32 decompressFrame(void *DecompData, void *samples) const;
-	virtual void rewind(void *DecompData) const;
+	void initDecompressor(void *DecompData) const override;
+	uint32 decompressFrame(void *DecompData, void *samples) const override;
+	void rewind(void *DecompData) const override;
 
 	static bool isThis(IDataSource *ds);
 protected:

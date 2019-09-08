@@ -100,21 +100,21 @@ public:
 	Uc_var_expression(Uc_var_symbol *v) : var(v)
 	{  }
 	// Gen. code to put result on stack.
-	virtual void gen_value(Basic_block *out);
+	void gen_value(Basic_block *out) override;
 	// Gen. to assign from stack.
-	virtual void gen_assign(Basic_block *out);
-	virtual int get_string_offset();// Get offset in text_data.
-	virtual Uc_var_symbol *need_var(Basic_block *, Uc_function *) {
+	void gen_assign(Basic_block *out) override;
+	int get_string_offset() override;// Get offset in text_data.
+	Uc_var_symbol *need_var(Basic_block *, Uc_function *) override {
 		return var;
 	}
-	virtual Uc_var_symbol *get_var() const {
+	Uc_var_symbol *get_var() const override {
 		return var;
 	}
-	virtual bool is_struct() const;
-	virtual Uc_struct_symbol *get_struct() const;
-	virtual int is_object_function(bool error = true) const;
-	virtual void set_is_obj_fun(int s);
-	virtual int get_type() const;
+	bool is_struct() const override;
+	Uc_struct_symbol *get_struct() const override;
+	int is_object_function(bool error = true) const override;
+	void set_is_obj_fun(int s) override;
+	int get_type() const override;
 };
 
 /*
@@ -127,9 +127,9 @@ public:
 	Uc_fun_name_expression(Uc_function_symbol *f) : fun(f)
 	{  }
 	// Gen. code to put result on stack.
-	virtual void gen_value(Basic_block *out);
-	virtual int is_object_function(bool error = true) const;
-	virtual bool eval_const(int &val);
+	void gen_value(Basic_block *out) override;
+	int is_object_function(bool error = true) const override;
+	bool eval_const(int &val) override;
 };
 
 /*
@@ -143,13 +143,13 @@ public:
 	Uc_arrayelem_expression(Uc_var_symbol *a, Uc_expression *i)
 		: array(a), index(i)
 	{  }
-	virtual ~Uc_arrayelem_expression() {
+	~Uc_arrayelem_expression() override {
 		delete index;
 	}
 	// Gen. code to put result on stack.
-	virtual void gen_value(Basic_block *out);
+	void gen_value(Basic_block *out) override;
 	// Gen. to assign from stack.
-	virtual void gen_assign(Basic_block *out);
+	void gen_assign(Basic_block *out) override;
 };
 
 /*
@@ -164,9 +164,9 @@ public:
 		delete index;
 	}
 	// Gen. code to put result on stack.
-	virtual void gen_value(Basic_block *out);
+	void gen_value(Basic_block *out) override;
 	// Gen. to assign from stack.
-	virtual void gen_assign(Basic_block *out);
+	void gen_assign(Basic_block *out) override;
 };
 
 /*
@@ -181,9 +181,9 @@ public:
 		delete index;
 	}
 	// Gen. code to put result on stack.
-	virtual void gen_value(Basic_block *out);
+	void gen_value(Basic_block *out) override;
 	// Gen. to assign from stack.
-	virtual void gen_assign(Basic_block *out);
+	void gen_assign(Basic_block *out) override;
 };
 
 /*
@@ -196,9 +196,9 @@ public:
 		: flag(f)
 	{  }
 	// Gen. code to put result on stack.
-	virtual void gen_value(Basic_block *out);
+	void gen_value(Basic_block *out) override;
 	// Gen. to assign from stack.
-	virtual void gen_assign(Basic_block *out);
+	void gen_assign(Basic_block *out) override;
 };
 
 /*
@@ -214,9 +214,9 @@ public:
 		: opcode(o), left(l), right(r), intop(iop)
 	{  }
 	// Gen. code to put result on stack.
-	virtual void gen_value(Basic_block *out);
+	void gen_value(Basic_block *out) override;
 	// Evaluate constant.
-	virtual bool eval_const(int &val);
+	bool eval_const(int &val) override;
 };
 
 /*
@@ -230,8 +230,8 @@ public:
 		: opcode(o), operand(r)
 	{  }
 	// Gen. code to put result on stack.
-	virtual void gen_value(Basic_block *out);
-	virtual bool eval_const(int &val);
+	void gen_value(Basic_block *out) override;
+	bool eval_const(int &val) override;
 };
 
 /*
@@ -250,10 +250,10 @@ public:
 			value = static_cast<int>(v & 0xffffffff);
 	}
 	// Gen. code to put result on stack.
-	virtual void gen_value(Basic_block *out);
+	void gen_value(Basic_block *out) override;
 	// Evaluate constant.
-	virtual bool eval_const(int &val);
-	virtual int is_object_function(bool error = true) const;
+	bool eval_const(int &val) override;
+	int is_object_function(bool error = true) const override;
 };
 
 /*
@@ -265,8 +265,8 @@ public:
 	Uc_bool_expression(bool t) : tf(t)
 	{  }
 	// Gen. code to put result on stack.
-	virtual void gen_value(Basic_block *out);
-	virtual bool eval_const(int &val) {
+	void gen_value(Basic_block *out) override;
+	bool eval_const(int &val) override {
 		val = static_cast<int>(tf);
 		return true;
 	}
@@ -279,9 +279,9 @@ class Uc_event_expression : public Uc_expression {
 public:
 	Uc_event_expression() {  }
 	// Gen. code to put result on stack.
-	virtual void gen_value(Basic_block *out);
+	void gen_value(Basic_block *out) override;
 	// Gen. to assign from stack.
-	virtual void gen_assign(Basic_block *out);
+	void gen_assign(Basic_block *out) override;
 };
 
 /*
@@ -291,7 +291,7 @@ class Uc_item_expression : public Uc_expression {
 public:
 	Uc_item_expression() {  }
 	// Gen. code to put result on stack.
-	virtual void gen_value(Basic_block *out);
+	void gen_value(Basic_block *out) override;
 };
 
 /*
@@ -303,8 +303,8 @@ public:
 	Uc_string_expression(int o) : offset(o)
 	{  }
 	// Gen. code to put result on stack.
-	virtual void gen_value(Basic_block *out);
-	virtual int get_string_offset() { // Get offset in text_data.
+	void gen_value(Basic_block *out) override;
+	int get_string_offset() override { // Get offset in text_data.
 		return offset;
 	}
 };
@@ -322,8 +322,8 @@ public:
 		: fun(f), prefix(pre), offset(-1)
 	{  }
 	// Gen. code to put result on stack.
-	virtual void gen_value(Basic_block *out);
-	virtual int get_string_offset();// Get offset in text_data.
+	void gen_value(Basic_block *out) override;
+	int get_string_offset() override;// Get offset in text_data.
 };
 
 /*
@@ -333,7 +333,7 @@ class Uc_choice_expression : public Uc_expression {
 public:
 	Uc_choice_expression() {  }
 	// Gen. code to put result on stack.
-	virtual void gen_value(Basic_block *out);
+	void gen_value(Basic_block *out) override;
 };
 
 /*
@@ -362,9 +362,9 @@ public:
 		return exprs;
 	}
 	// Gen. code to put result on stack.
-	virtual void gen_value(Basic_block *out);
+	void gen_value(Basic_block *out) override;
 	// Gen code to push value(s).
-	virtual int gen_values(Basic_block *out);
+	int gen_values(Basic_block *out) override;
 };
 
 /*
@@ -403,16 +403,16 @@ public:
 		return_value = false;
 	}
 	// Gen. code to put result on stack.
-	virtual void gen_value(Basic_block *out);
+	void gen_value(Basic_block *out) override;
 	void set_call_scope(Uc_class *s) {
 		meth_scope = s;
 	}
 	void check_params();
-	virtual bool is_class() const;
-	virtual Uc_class *get_cls() const;
-	virtual bool is_struct() const;
-	virtual Uc_struct_symbol *get_struct() const;
-	virtual int is_object_function(bool error = true) const;
+	bool is_class() const override;
+	Uc_class *get_cls() const override;
+	bool is_struct() const override;
+	Uc_struct_symbol *get_struct() const override;
+	int is_object_function(bool error = true) const override;
 };
 
 class Uc_class_expression : public Uc_var_expression {
@@ -420,20 +420,20 @@ public:
 	Uc_class_expression(Uc_var_symbol *v)
 		: Uc_var_expression(v)
 	{  }
-	virtual ~Uc_class_expression() {  }
-	virtual void gen_value(Basic_block *out);
-	virtual void gen_assign(Basic_block *out);
-	virtual Uc_var_symbol *need_var(Basic_block *, Uc_function *) {
+	~Uc_class_expression() override {  }
+	void gen_value(Basic_block *out) override;
+	void gen_assign(Basic_block *out) override;
+	Uc_var_symbol *need_var(Basic_block *, Uc_function *) override {
 		return nullptr;
 	}
-	virtual bool is_class() const {
+	bool is_class() const override {
 		return true;
 	}
-	virtual Uc_class *get_cls() const;
-	virtual bool is_struct() const {
+	Uc_class *get_cls() const override;
+	bool is_struct() const override {
 		return false;
 	}
-	virtual Uc_struct_symbol *get_struct() const {
+	Uc_struct_symbol *get_struct() const override {
 		return nullptr;
 	}
 };
@@ -450,11 +450,11 @@ public:
 		delete parms;
 	}
 	// Gen. code to put result on stack.
-	virtual void gen_value(Basic_block *out);
-	virtual bool is_class() const {
+	void gen_value(Basic_block *out) override;
+	bool is_class() const override {
 		return true;
 	}
-	virtual Uc_class *get_cls() const;
+	Uc_class *get_cls() const override;
 };
 
 /*
@@ -468,7 +468,7 @@ public:
 	~Uc_del_expression()
 	{  }
 	// Gen. code to put result on stack.
-	virtual void gen_value(Basic_block *out);
+	void gen_value(Basic_block *out) override;
 };
 
 /*

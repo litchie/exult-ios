@@ -45,7 +45,7 @@ class Uc_class : public Uc_design_unit {
 public:
 	Uc_class(char *nm);
 	Uc_class(char *nm, Uc_class *base);
-	~Uc_class();
+	~Uc_class() override;
 	Uc_scope *get_scope() {
 		return &scope;
 	}
@@ -63,9 +63,9 @@ public:
 	Uc_var_symbol *add_alias(char *nm, Uc_var_symbol *var, Uc_class *c);
 #endif
 	void add_method(Uc_function *m);
-	void gen(std::ostream &out);    // Generate Usecode.
-	virtual Usecode_symbol *create_sym();
-	virtual bool is_class() const {
+	void gen(std::ostream &out) override;    // Generate Usecode.
+	Usecode_symbol *create_sym() override;
+	bool is_class() const override {
 		return true;
 	}
 	const char *get_name() const {

@@ -45,7 +45,7 @@ protected:
 	uint32 get_minute();    // Get game minutes.
 public:
 	Npc_timer(Npc_timer_list *l, int start_delay = 0);
-	virtual ~Npc_timer();
+	~Npc_timer() override;
 };
 
 /*
@@ -57,9 +57,9 @@ public:
 	Npc_hunger_timer(Npc_timer_list *l) : Npc_timer(l, 5000) {
 		last_time = get_minute();
 	}
-	virtual ~Npc_hunger_timer();
+	~Npc_hunger_timer() override;
 	// Handle events:
-	void handle_event(unsigned long curtime, uintptr udata);
+	void handle_event(unsigned long curtime, uintptr udata) override;
 };
 
 /*
@@ -69,9 +69,9 @@ class Npc_poison_timer : public Npc_timer {
 	uint32 end_time;        // Time when it wears off.
 public:
 	Npc_poison_timer(Npc_timer_list *l);
-	virtual ~Npc_poison_timer();
+	~Npc_poison_timer() override;
 	// Handle events:
-	void handle_event(unsigned long curtime, uintptr udata);
+	void handle_event(unsigned long curtime, uintptr udata) override;
 };
 
 /*
@@ -84,11 +84,11 @@ public:
 		// Lasts 5-10 seconds..
 		end_time = Game::get_ticks() + 5000 + rand() % 5000;
 	}
-	virtual ~Npc_sleep_timer() {
+	~Npc_sleep_timer() override {
 		list->sleep = nullptr;
 	}
 	// Handle events:
-	void handle_event(unsigned long curtime, uintptr udata);
+	void handle_event(unsigned long curtime, uintptr udata) override;
 };
 
 /*
@@ -101,11 +101,11 @@ public:
 		// Lasts 60-80 seconds..
 		end_time = Game::get_ticks() + 60000 + rand() % 20000;
 	}
-	virtual ~Npc_invisibility_timer() {
+	~Npc_invisibility_timer() override {
 		list->invisibility = nullptr;
 	}
 	// Handle events:
-	void handle_event(unsigned long curtime, uintptr udata);
+	void handle_event(unsigned long curtime, uintptr udata) override;
 };
 
 /*
@@ -118,11 +118,11 @@ public:
 		// Lasts 60-80 seconds..
 		end_time = Game::get_ticks() + 60000 + rand() % 20000;
 	}
-	virtual ~Npc_protection_timer() {
+	~Npc_protection_timer() override {
 		list->protection = nullptr;
 	}
 	// Handle events:
-	void handle_event(unsigned long curtime, uintptr udata);
+	void handle_event(unsigned long curtime, uintptr udata) override;
 };
 
 /*
@@ -138,11 +138,11 @@ public:
 		// Lasts 60-120 seconds..
 		end_time = Game::get_ticks() + 60000 + rand() % 60000;
 	}
-	virtual ~Npc_flag_timer() {
+	~Npc_flag_timer() override {
 		*listloc = nullptr;
 	}
 	// Handle events:
-	void handle_event(unsigned long curtime, uintptr udata);
+	void handle_event(unsigned long curtime, uintptr udata) override;
 };
 
 

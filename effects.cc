@@ -1271,8 +1271,8 @@ static inline void set_frame(Particle &drop) {
 template<int fra0, int fraN, int delta, bool randomize>
 class Basicdrop : public Particledrop {
 protected:
-	virtual void do_move(Particle &drop, int x, int y, int w, int h,
-	                     int ascrollx, int ascrolly) {
+	void do_move(Particle &drop, int x, int y, int w, int h,
+	                     int ascrollx, int ascrolly) override {
 		set_frame<fra0, fraN, randomize>(drop);
 		// Time to restart?
 		if (x < 0 || x >= w || y < 0 || y >= h) {
@@ -1323,11 +1323,11 @@ public:
 		  num_drops(ndrops), gradual(ndrops == 0)
 	{  }
 	// Execute when due.
-	virtual void handle_event
+	void handle_event
 	(
 	    unsigned long curtime,      // Current time of day.
 	    uintptr udata
-	) {
+	) override {
 		Game_window *gwin = Game_window::get_instance();
 
 		// Gradual start/end.
@@ -1354,9 +1354,9 @@ public:
 		gwin->get_tqueue()->add(curtime + 100, this, udata);
 	}
 	// Render.
-	virtual void paint
+	void paint
 	(
-	) {
+	) override {
 		if (gwin->is_main_actor_inside())
 			return;         // Inside.
 		// Get transform table.

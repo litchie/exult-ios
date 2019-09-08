@@ -2469,7 +2469,7 @@ class Clear_casting : public Time_sensitive {
 public:
 	Clear_casting(Actor *a) : actor(weak_from_obj(a))
 	{  }
-	virtual void handle_event(unsigned long curtime, uintptr udata);
+	void handle_event(unsigned long curtime, uintptr udata) override;
 };
 
 void Clear_casting::handle_event(unsigned long curtime, uintptr) {
@@ -2496,7 +2496,7 @@ class Clear_hit : public Time_sensitive {
 public:
 	Clear_hit(Actor *a) : actor(weak_from_obj(a))
 	{  }
-	virtual void handle_event(unsigned long curtime, uintptr udata);
+	void handle_event(unsigned long curtime, uintptr udata) override;
 };
 
 void Clear_hit::handle_event(unsigned long curtime, uintptr) {

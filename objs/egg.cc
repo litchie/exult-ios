@@ -86,7 +86,7 @@ public:
 			chk_range = false;
 		}
 	}
-	virtual void handle_event(unsigned long curtime, uintptr udata);
+	void handle_event(unsigned long curtime, uintptr udata) override;
 };
 
 /*
@@ -150,7 +150,7 @@ public:
 		: Egg_object(shnum, frnum, tx, ty, tz, itype, prob, d1, 0),
 		  score(d1 & 0xff), continuous(((d1 >> 8) & 1) != 0)
 	{  }
-	virtual void hatch_now(Game_object *obj, bool must) {
+	void hatch_now(Game_object *obj, bool must) override {
 		ignore_unused_variable_warning(obj, must);
 #ifdef DEBUG
 		cout << "Audio parameters might be: " << (data1 & 0xff) <<
@@ -167,7 +167,7 @@ public:
 	             unsigned char prob, uint16 d1)
 		: Jukebox_egg(shnum, frnum, tx, ty, tz, itype, prob, d1)
 	{  }
-	virtual void hatch_now(Game_object *obj, bool must) {
+	void hatch_now(Game_object *obj, bool must) override {
 		ignore_unused_variable_warning(obj, must);
 		Audio::get_ptr()->play_sound_effect(score, this, AUDIO_MAX_VOLUME,
 		                                    continuous);
@@ -181,7 +181,7 @@ public:
 	          unsigned char prob, uint16 d1)
 		: Egg_object(shnum, frnum, tx, ty, tz, itype, prob, d1, 0)
 	{  }
-	virtual void hatch_now(Game_object *obj, bool must) {
+	void hatch_now(Game_object *obj, bool must) override {
 		ignore_unused_variable_warning(obj, must);
 		ucmachine->do_speech(data1 & 0xff);
 	}
@@ -218,7 +218,7 @@ public:
 			mframe = d2 >> 10;
 		}
 	}
-	virtual void hatch_now(Game_object *obj, bool must) {
+	void hatch_now(Game_object *obj, bool must) override {
 		ignore_unused_variable_warning(obj, must);
 		const Shape_info &info = ShapeID::get_info(mshape);
 		if (info.is_npc()) {
@@ -256,23 +256,23 @@ public:
 		set_quality(d1 & 0xff);
 		Usecode_egg::set_str1(fnm);
 	}
-	virtual void set_str1(const char *s) {
+	void set_str1(const char *s) override {
 		fun_name = s ? s : "";
 		if (s && *s)
 			fun = 0;    // Want to look this up.
 	}
-	virtual const char *get_str1() {
+	const char *get_str1() override {
 		return fun_name.c_str();
 	}
-	virtual int get_usecode() const {
+	int get_usecode() const override {
 	    return fun;
 	}
-	virtual bool set_usecode(int funid, const char *nm = nullptr) {
+	bool set_usecode(int funid, const char *nm = nullptr) override {
 	    fun = funid;
 		fun_name = nm;
 		return true;
 	}
-	virtual void hatch_now(Game_object *obj, bool must) {
+	void hatch_now(Game_object *obj, bool must) override {
 		ignore_unused_variable_warning(obj);
 		if (!fun && !fun_name.empty())
 			fun = ucmachine->find_function(fun_name.c_str());
@@ -303,13 +303,13 @@ public:
 		: Egg_object(shnum, frnum, tx, ty, tz, itype, prob, d1, d2),
 		  weapon(d1), dir(d2 & 0xff), delay(d2 >> 8), launcher(nullptr)
 	{  }
-	virtual ~Missile_egg() {
+	~Missile_egg() override {
 		if (launcher) {
 			gwin->get_tqueue()->remove(launcher);
 			delete launcher;
 		}
 	}
-	virtual void remove_this(Game_object_shared *keep) {
+	void remove_this(Game_object_shared *keep) override {
 		if (launcher) {     // Stop missiles.
 			gwin->get_tqueue()->remove(launcher);
 			delete launcher;
@@ -317,14 +317,14 @@ public:
 		}
 		Egg_object::remove_this(keep);
 	}
-	virtual void paint() {
+	void paint() override {
 		// Make sure launcher is active.
 		if (launcher && !launcher->in_queue() &&
 		    (criteria == party_near || criteria == avatar_near))
 			gwin->get_tqueue()->add(0L, launcher);
 		Egg_object::paint();
 	}
-	virtual void set(int crit, int dist) {
+	void set(int crit, int dist) override {
 		if (crit == external_criteria && launcher) {    // Cancel trap.
 			gwin->get_tqueue()->remove(launcher);
 			delete launcher;
@@ -332,7 +332,7 @@ public:
 		}
 		Egg_object::set(crit, dist);
 	}
-	virtual void hatch_now(Game_object *obj, bool must) {
+	void hatch_now(Game_object *obj, bool must) override {
 		ignore_unused_variable_warning(obj, must);
 		const Shape_info &info = ShapeID::get_info(weapon);
 		const Weapon_info *winf = info.get_weapon_info();
@@ -368,7 +368,7 @@ public:
 		desty = (schunk / 12) * c_tiles_per_schunk + (d2 >> 8);
 		destz = d3 & 0xff;
 	}
-	virtual void hatch_now(Game_object *obj, bool must) {
+	void hatch_now(Game_object *obj, bool must) override {
 		ignore_unused_variable_warning(must);
 		Tile_coord pos(-1, -1, -1); // Get position to jump to.
 		int eggnum = 255;
@@ -404,7 +404,7 @@ public:
 		if (!len)       // Means continuous.
 			len = 120;  // How about a couple game hours?
 	}
-	virtual void hatch_now(Game_object *obj, bool must) {
+	void hatch_now(Game_object *obj, bool must) override {
 		ignore_unused_variable_warning(obj, must);
 		set_weather(weather, len, this);
 	}
@@ -419,7 +419,7 @@ public:
 		: Egg_object(shnum, frnum, tx, ty, tz, itype, prob, d1, d2),
 		  dist(d1 & 0xff)
 	{  }
-	virtual void hatch_now(Game_object *obj, bool must) {
+	void hatch_now(Game_object *obj, bool must) override {
 		ignore_unused_variable_warning(must);
 		Egg_vector eggs;
 		find_nearby_eggs(eggs, 275, dist);

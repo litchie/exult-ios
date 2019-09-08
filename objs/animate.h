@@ -40,14 +40,14 @@ class Object_sfx : public Time_sensitive, public Game_singletons {
 	void stop_playing();
 	Object_sfx(Game_object *o, int sfx);
 protected:
-	virtual void dequeue();
+	void dequeue() override;
 public:
 	static void Play(Game_object *o, int sfx, int delay = 20);
 	void stop();
 	int get_sfxnum() {
 		return sfx;
 	}
-	virtual void handle_event(unsigned long time, uintptr udata);
+	void handle_event(unsigned long time, uintptr udata) override;
 };
 
 /*
@@ -99,7 +99,7 @@ public:
 		objsfx = new Shape_sfx(obj);
 	}
 	static Animator *create(Game_object *ob);
-	virtual ~Animator();
+	~Animator() override;
 	void want_animation() {     // Want animation on.
 		if (!animating)
 			start_animation();
@@ -133,8 +133,8 @@ public:
 	Frame_animator(Game_object *o);
 	int get_next_frame();
 	// For Time_sensitive:
-	virtual void handle_event(unsigned long time, uintptr udata);
-	virtual int get_framenum() {
+	void handle_event(unsigned long time, uintptr udata) override;
+	int get_framenum() override {
 		return obj->get_framenum();
 	}
 };
@@ -146,7 +146,7 @@ class Sfx_animator : public Animator {
 public:
 	Sfx_animator(Game_object *o);
 	// For Time_sensitive:
-	virtual void handle_event(unsigned long time, uintptr udata);
+	void handle_event(unsigned long time, uintptr udata) override;
 };
 
 /*
@@ -158,7 +158,7 @@ public:
 	friend class Field_object;
 	Field_frame_animator(Game_object *o);
 	// For Time_sensitive:
-	virtual void handle_event(unsigned long time, uintptr udata);
+	void handle_event(unsigned long time, uintptr udata) override;
 };
 
 /*
@@ -169,7 +169,7 @@ public:
 	Wiggle_animator(Game_object *o) : Animator(o)
 	{  }
 	// For Time_sensitive:
-	virtual void handle_event(unsigned long time, uintptr udata);
+	void handle_event(unsigned long time, uintptr udata) override;
 };
 
 /*
@@ -181,12 +181,12 @@ class Animated_object : public Terrain_game_object {
 public:
 	Animated_object(int shapenum, int framenum, unsigned int tilex,
 	                unsigned int tiley, unsigned int lft = 0);
-	virtual ~Animated_object();
+	~Animated_object() override;
 	// Render.
-	virtual void paint();
+	void paint() override;
 	// +++++Needed on this one:
 	// Get coord. where this was placed.
-	virtual Tile_coord get_original_tile_coord() const {
+	Tile_coord get_original_tile_coord() const override {
 		return get_tile() +
 		       Tile_coord(-animator->get_deltax(),
 		                  -animator->get_deltay(), 0);
@@ -202,18 +202,18 @@ class Animated_ireg_object : public Ireg_game_object {
 public:
 	Animated_ireg_object(int shapenum, int framenum, unsigned int tilex,
 	                     unsigned int tiley, unsigned int lft = 0);
-	virtual ~Animated_ireg_object();
+	~Animated_ireg_object() override;
 	// Render.
-	virtual void paint();
+	void paint() override;
 	// Get coord. where this was placed.
-	virtual Tile_coord get_original_tile_coord() const {
+	Tile_coord get_original_tile_coord() const override {
 		return get_tile() +
 		       Tile_coord(-animator->get_deltax(),
 		                  -animator->get_deltay(), 0);
 	}
 
 	// Write out to IREG file.
-	virtual void write_ireg(ODataSource *out);
+	void write_ireg(ODataSource *out) override;
 };
 
 /*
@@ -225,17 +225,17 @@ class Animated_ifix_object : public Ifix_game_object {
 public:
 	Animated_ifix_object(int shapenum, int framenum, unsigned int tilex,
 	                     unsigned int tiley, unsigned int lft = 0);
-	virtual ~Animated_ifix_object();
+	~Animated_ifix_object() override;
 	// Render.
-	virtual void paint();
+	void paint() override;
 	// Get coord. where this was placed.
-	virtual Tile_coord get_original_tile_coord() const {
+	Tile_coord get_original_tile_coord() const override {
 		return get_tile() +
 		       Tile_coord(-animator->get_deltax(),
 		                  -animator->get_deltay(), 0);
 	}
 
-	virtual void write_ifix(ODataSource *ifix, bool v2);
+	void write_ifix(ODataSource *ifix, bool v2) override;
 };
 #endif
 

@@ -91,7 +91,7 @@ public:
 class Null_action : public Actor_action {
 public:
 	Null_action() {  }
-	virtual int handle_event(Actor *actor);
+	int handle_event(Actor *actor) override;
 };
 
 /*
@@ -118,24 +118,24 @@ private:
 	}
 public:
 	Path_walking_actor_action(PathFinder *p = nullptr, int maxblk = 3, int pers = 0);
-	virtual ~Path_walking_actor_action();
+	~Path_walking_actor_action() override;
 	static Path_walking_actor_action *create_path(Tile_coord const &src,
 	        Tile_coord const &dest, Pathfinder_client &cost);
 	// Handle time event.
-	virtual int handle_event(Actor *actor);
+	int handle_event(Actor *actor) override;
 	int open_door(Actor *actor, Game_object *door);
-	virtual void stop(Actor *actor);// Stop moving.
+	void stop(Actor *actor) override;// Stop moving.
 	// Set simple path to destination.
-	virtual Actor_action *walk_to_tile(Actor *npc, Tile_coord const &src,
-	                                   Tile_coord const &dest, int dist = 0, bool persistant = false);
+	Actor_action *walk_to_tile(Actor *npc, Tile_coord const &src,
+	                           Tile_coord const &dest, int dist = 0, bool persistant = false) override;
 	// Get destination, or ret. 0.
-	virtual int get_dest(Tile_coord &dest) const;
+	int get_dest(Tile_coord &dest) const override;
 	// Check for Astar.
-	virtual int following_smart_path() const;
-	virtual int get_speed() const {
+	int following_smart_path() const override;
+	int get_speed() const override {
 		return speed;
 	}
-	virtual Actor_action *kill() {
+	Actor_action *kill() override {
 		deleted = true;
 		return this;
 	}
@@ -158,7 +158,7 @@ public:
 	static Approach_actor_action *create_path(Tile_coord const &src,
 	        Game_object *dest, int gdist, Pathfinder_client &cost);
 	// Handle time event.
-	virtual int handle_event(Actor *actor);
+	int handle_event(Actor *actor) override;
 };
 
 /*
@@ -171,7 +171,7 @@ class If_else_path_actor_action : public Path_walking_actor_action {
 public:
 	If_else_path_actor_action(Actor *actor, Tile_coord const &dest,
 	                          Actor_action *s, Actor_action *f = nullptr);
-	~If_else_path_actor_action();
+	~If_else_path_actor_action() override;
 	void set_failure(Actor_action *f);
 	bool done_and_failed() const {      // Happens if no path found in ctor.
 		return done && failed;
@@ -180,8 +180,8 @@ public:
 		return done;
 	}
 	// Handle time event.
-	virtual int handle_event(Actor *actor);
-	virtual If_else_path_actor_action *as_usecode_path() {
+	int handle_event(Actor *actor) override;
+	If_else_path_actor_action *as_usecode_path() override {
 		return this;
 	}
 };
@@ -195,7 +195,7 @@ public:
 	Move_actor_action(Tile_coord const &d) : dest(d)
 	{  }
 	// Handle time event.
-	virtual int handle_event(Actor *actor);
+	int handle_event(Actor *actor) override;
 };
 
 /*
@@ -206,7 +206,7 @@ class Activate_actor_action : public Actor_action {
 public:
 	Activate_actor_action(Game_object *o);
 	// Handle time event.
-	virtual int handle_event(Actor *actor);
+	int handle_event(Actor *actor) override;
 };
 
 /*
@@ -223,15 +223,15 @@ class Frames_actor_action : public Actor_action {
 public:
 	Frames_actor_action(signed char *f, int c, int spd = 200, Game_object *o = nullptr);
 	Frames_actor_action(char f, int spd = 200, Game_object *o = nullptr);
-	virtual ~Frames_actor_action() {
+	~Frames_actor_action() override {
 		delete [] frames;
 	}
 	// Handle time event.
-	virtual int handle_event(Actor *actor);
+	int handle_event(Actor *actor) override;
 	int get_index() const {
 		return index;
 	}
-	virtual int get_speed() const {
+	int get_speed() const override {
 		return speed;
 	}
 };
@@ -246,7 +246,7 @@ class Usecode_actor_action : public Actor_action {
 public:
 	Usecode_actor_action(int f, Game_object *i, int ev);
 	// Handle time event.
-	virtual int handle_event(Actor *actor);
+	int handle_event(Actor *actor) override;
 };
 
 /*
@@ -265,15 +265,15 @@ public:
 	// Create with up to 4.
 	Sequence_actor_action(Actor_action *a0, Actor_action *a1,
 	                      Actor_action *a2 = nullptr, Actor_action *a3 = nullptr);
-	virtual int get_speed() const {
+	int get_speed() const override {
 		return speed;
 	}
 	void set_speed(int spd) {
 		speed = spd;
 	}
-	virtual ~Sequence_actor_action();
+	~Sequence_actor_action() override;
 	// Handle time event.
-	virtual int handle_event(Actor *actor);
+	int handle_event(Actor *actor) override;
 };
 
 //
@@ -292,8 +292,8 @@ public:
 	Object_animate_actor_action(Game_object *o, int cy, int spd);
 	Object_animate_actor_action(Game_object *o, int nframes, int cy, int spd);
 	// Handle time event.
-	virtual int handle_event(Actor *actor);
-	virtual int get_speed() const {
+	int handle_event(Actor *actor) override;
+	int get_speed() const override {
 		return speed;
 	}
 };
@@ -316,8 +316,8 @@ public:
 	Pickup_actor_action(Game_object *o, int spd, bool del = false);
 	// To put down an object:
 	Pickup_actor_action(Game_object *o, Tile_coord const &opos, int spd, bool t = false);
-	virtual int handle_event(Actor *actor);
-	virtual int get_speed() const {
+	int handle_event(Actor *actor) override;
+	int get_speed() const override {
 		return speed;
 	}
 };
@@ -334,8 +334,8 @@ public:
 	Face_pos_actor_action(Tile_coord const &p, int spd);
 	// To pick up an object:
 	Face_pos_actor_action(Game_object *o, int spd);
-	virtual int handle_event(Actor *actor);
-	virtual int get_speed() const {
+	int handle_event(Actor *actor) override;
+	int get_speed() const override {
 		return speed;
 	}
 };
@@ -350,7 +350,7 @@ class Change_actor_action : public Actor_action {
 	int shnum, frnum, qual; // New shape, frame and quality.
 public:
 	Change_actor_action(Game_object *o, int sh, int fr, int ql);
-	virtual int handle_event(Actor *actor);
+	int handle_event(Actor *actor) override;
 };
 
 

@@ -105,14 +105,14 @@ public:
 	                Shape_group_file *g)
 		: Shape_file_info(bnm, pnm, g), ifile(i)
 	{  }
-	virtual ~Image_file_info();
-	virtual Vga_file *get_ifile() {
+	~Image_file_info() override;
+	Vga_file *get_ifile() override {
 		return ifile;
 	}
-	virtual Object_browser *create_browser(Shape_file_info *vgafile,
-	                                       unsigned char *palbuf, Shape_group *g = nullptr);
-	virtual void flush();       // Write if modified.
-	virtual bool revert();
+	Object_browser *create_browser(Shape_file_info *vgafile,
+	                                       unsigned char *palbuf, Shape_group *g = nullptr) override;
+	void flush() override;       // Write if modified.
+	bool revert() override;
 	static void write_file(const char *pathname, Shape **shapes,
 	                       int nshapes, bool single);
 };
@@ -128,13 +128,13 @@ public:
 	                 std::ifstream *f, Shape_group_file *g)
 		: Shape_file_info(bnm, pnm, g), file(f)
 	{  }
-	virtual ~Chunks_file_info();
-	virtual std::ifstream *get_file() {
+	~Chunks_file_info() override;
+	std::ifstream *get_file() override {
 		return file;
 	}
-	virtual Object_browser *create_browser(Shape_file_info *vgafile,
-	                                       unsigned char *palbuf, Shape_group *g = nullptr);
-	virtual void flush();       // Write if modified.
+	Object_browser *create_browser(Shape_file_info *vgafile,
+	                                       unsigned char *palbuf, Shape_group *g = nullptr) override;
+	void flush() override;       // Write if modified.
 };
 
 /*
@@ -161,8 +161,8 @@ public:
 		: Shape_file_info(bnm, pnm, g) {
 		setup();
 	}
-	virtual Object_browser *create_browser(Shape_file_info *vgafile,
-	                                       unsigned char *palbuf, Shape_group *g = nullptr);
+	Object_browser *create_browser(Shape_file_info *vgafile,
+	                                       unsigned char *palbuf, Shape_group *g = nullptr) override;
 	std::vector<Estudio_npc> &get_npcs() {
 		return npcs;
 	}
@@ -193,14 +193,14 @@ public:
 	void set(unsigned i, std::unique_ptr<unsigned char[]> newentry, int entlen);
 	void swap(unsigned i);       // Swap entries i, i+1.
 	void remove(unsigned i);     // Remove i'th entry.
-	virtual ~Flex_file_info();
-	virtual Object_browser *create_browser(Shape_file_info *vgafile,
-	                                       unsigned char *palbuf, Shape_group *g = nullptr);
-	virtual Flex *get_flex() {
+	~Flex_file_info() override;
+	Object_browser *create_browser(Shape_file_info *vgafile,
+	                                       unsigned char *palbuf, Shape_group *g = nullptr) override;
+	Flex *get_flex() override {
 		return flex;
 	}
-	virtual void flush();       // Write if modified.
-	virtual bool revert();
+	void flush() override;       // Write if modified.
+	bool revert() override;
 };
 
 /*

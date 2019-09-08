@@ -61,7 +61,7 @@ public:
 		: Text_button(par, text, px, py, 59, 11)
 	{  }
 	// What to do when 'clicked':
-	virtual bool activate(int button) {
+	bool activate(int button) override {
 		if (button != 1) return false;
 
 		if (text == canceltext) {
@@ -81,7 +81,7 @@ public:
 	{ }
 
 	friend class AudioOptions_gump;
-	virtual void toggle(int state) {
+	void toggle(int state) override {
 		static_cast<AudioOptions_gump *>(parent)->toggle(this, state);
 	}
 };
@@ -94,7 +94,7 @@ public:
 	{ }
 
 	friend class AudioOptions_gump;
-	virtual void toggle(int state) {
+	void toggle(int state) override {
 		static_cast<AudioOptions_gump *>(parent)->toggle(this, state);
 	}
 };

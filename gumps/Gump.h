@@ -63,7 +63,7 @@ public:
 	     ShapeFile shfile = SF_GUMPS_VGA);
 	// Clone.
 	Gump(Container_game_object *cont, int initx, int inity, Gump *from);
-	virtual ~Gump();
+	~Gump() override;
 	virtual Gump *clone(Container_game_object *obj, int initx, int inity) {
 		ignore_unused_variable_warning(obj, initx, inity);
 		return nullptr;
@@ -111,7 +111,7 @@ public:
 	virtual void remove(Game_object *obj);
 	// Paint it and its contents.
 	void paint_elems();
-	virtual void paint();
+	void paint() override;
 	// Close (and delete).
 	virtual void close();
 	// update the gump, if required
@@ -166,8 +166,8 @@ public:
 		: Gump(cont, initx, inity, this) {
 		ignore_unused_variable_warning(from);
 	}
-	virtual ~Container_gump() {  }
-	virtual Gump *clone(Container_game_object *cont, int initx, int inity) {
+	~Container_gump() override {  }
+	Gump *clone(Container_game_object *cont, int initx, int inity) override {
 		return new Container_gump(cont, initx, inity, this);
 	}
 };

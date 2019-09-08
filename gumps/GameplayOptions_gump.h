@@ -66,15 +66,15 @@ private:
 
 public:
 	GameplayOptions_gump();
-	virtual ~GameplayOptions_gump();
+	~GameplayOptions_gump() override;
 
 	// Paint it and its contents.
-	virtual void paint();
-	virtual void close();
+	void paint() override;
+	void close() override;
 
 	// Handle events:
-	virtual bool mouse_down(int mx, int my, int button);
-	virtual bool mouse_up(int mx, int my, int button);
+	bool mouse_down(int mx, int my, int button) override;
+	bool mouse_up(int mx, int my, int button) override;
 
 	void toggle(Gump_button *btn, int state);
 	void build_buttons();

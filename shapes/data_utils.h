@@ -317,8 +317,8 @@ protected:
 	Functor reader;
 	Transform postread;
 	ReadID idread;
-	virtual void read_data(std::istream &in, size_t index, int version,
-	                       bool patch, Exult_Game game, bool binary) {
+	void read_data(std::istream &in, size_t index, int version,
+	               bool patch, Exult_Game game, bool binary) override {
 		int id = idread(in, index, version, binary);
 		if (id >= 0) {
 			Info &inf = info[id];
@@ -330,7 +330,7 @@ public:
 	Functor_multidata_reader(std::map<int, Info> &nfo, bool h = false)
 		:   Base_reader(h), info(nfo)
 	{  }
-	virtual ~Functor_multidata_reader()
+	~Functor_multidata_reader() override
 	{  }
 };
 
@@ -343,8 +343,8 @@ protected:
 	Info &info;
 	Functor reader;
 	Transform postread;
-	virtual void read_data(std::istream &in, size_t index, int version,
-	                       bool patch, Exult_Game game, bool binary) {
+	void read_data(std::istream &in, size_t index, int version,
+	               bool patch, Exult_Game game, bool binary) override {
 		ignore_unused_variable_warning(index, binary);
 		reader(in, version, patch, game, info);
 		postread(in, version, patch, game, info);
@@ -353,7 +353,7 @@ public:
 	Functor_data_reader(Info &nfo, bool h = false)
 		:   Base_reader(h), info(nfo)
 	{  }
-	virtual ~Functor_data_reader()
+	~Functor_data_reader() override
 	{  }
 };
 
@@ -618,7 +618,7 @@ protected:
 	std::map<int, Info> &info;
 	const int numshapes;
 	Functor writer;
-	virtual int check_write() {
+	int check_write() override {
 		int num = 0;
 		for (typename std::map<int, Info>::iterator it = info.begin();
 		        it != info.end(); ++it)
@@ -626,7 +626,7 @@ protected:
 				num++;
 		return num;
 	}
-	virtual void write_data(std::ostream &out, Exult_Game game) {
+	void write_data(std::ostream &out, Exult_Game game) override {
 		for (typename std::map<int, Info>::iterator it = info.begin();
 		        it != info.end(); ++it)
 			if (writer(it->second))
@@ -638,7 +638,7 @@ public:
 		:   Base_writer(s, v), info(nfo), numshapes(n) {
 		check();
 	}
-	virtual ~Functor_multidata_writer() {  }
+	~Functor_multidata_writer() override {  }
 };
 
 /*
@@ -649,10 +649,10 @@ class Functor_data_writer : public Base_writer {
 protected:
 	Info &info;
 	Functor writer;
-	virtual int check_write() {
+	int check_write() override {
 		return writer(info) ? 1 : 0;
 	}
-	virtual void write_data(std::ostream &out, Exult_Game game) {
+	void write_data(std::ostream &out, Exult_Game game) override {
 		if (writer(info))
 			writer(out, -1, game, info);
 	}
@@ -661,7 +661,7 @@ public:
 		:   Base_writer(s, v), info(nfo) {
 		check();
 	}
-	virtual ~Functor_data_writer() {  }
+	~Functor_data_writer() override {  }
 };
 
 

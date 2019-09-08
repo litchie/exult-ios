@@ -34,16 +34,16 @@ class CombatStats_gump : public Gump {
 
 public:
 	CombatStats_gump(int initx, int inity);
-	virtual ~CombatStats_gump();
+	~CombatStats_gump() override;
 	// Add object.
-	virtual int add(Game_object *obj, int mx = -1, int my = -1,
-	                int sx = -1, int sy = -1, bool dont_check = false,
-	                bool combine = false) {
+	int add(Game_object *obj, int mx = -1, int my = -1,
+	        int sx = -1, int sy = -1, bool dont_check = false,
+	        bool combine = false) override {
 		ignore_unused_variable_warning(obj, mx, my, sx, sy, dont_check, combine);
 		return 0;    // Can't drop onto it.
 	}
 	// Paint it and its contents.
-	virtual void paint();
+	void paint() override;
 
 private:
 	Actor *party[9];

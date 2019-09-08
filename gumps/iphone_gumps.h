@@ -43,16 +43,16 @@ public:
 
 	Itemmenu_gump(Game_object_map_xy *mobjxy, int cx, int cy);
 	Itemmenu_gump(Game_object *obj, int ox, int oy, int cx, int cy);
-	virtual ~Itemmenu_gump();
+	~Itemmenu_gump() override;
 
 	// Paint it and its contents.
-	virtual void paint();
-	virtual void close() {
+	void paint() override;
+	void close() override {
 		done = 1;
 	}
 	// Handle events:
-	virtual bool mouse_down(int mx, int my, int button);
-	virtual bool mouse_up(int mx, int my, int button);
+	bool mouse_down(int mx, int my, int button) override;
+	bool mouse_up(int mx, int my, int button) override;
 
 	void postCloseActions();
 

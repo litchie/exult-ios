@@ -101,10 +101,10 @@ class Combo_editor : public Shape_draw {
 public:
 	friend class Combo_chooser;
 	Combo_editor(Shapes_vga_file *svga, unsigned char *palbuf);
-	~Combo_editor();
+	~Combo_editor() override;
 	void show(bool tf);     // Show/hide.
 	void render_area(GdkRectangle *area);
-	virtual void render() {
+	void render() override {
 		render_area(nullptr);
 	}
 	void set_controls();        // Set controls to selected entry.
@@ -153,18 +153,18 @@ class Combo_chooser: public Object_browser, public Shape_draw {
 	int info_cnt;           // # entries in info.
 	void (*sel_changed)();      // Called when selection changes.
 	// Blit onto screen.
-	virtual void show(int x, int y, int w, int h);
-	virtual void show() {
+	void show(int x, int y, int w, int h) override;
+	void show() override {
 		Combo_chooser::show(0, 0,
 		                    draw->allocation.width, draw->allocation.height);
 	}
 	void select(int new_sel);   // Show new selection.
-	virtual void load();        // Load from file data.
-	virtual void render();      // Draw list.
-	virtual void set_background_color(guint32 c) {
+	void load() override;        // Load from file data.
+	void render() override;      // Draw list.
+	void set_background_color(guint32 c) override {
 		Shape_draw::set_background_color(c);
 	}
-	virtual int get_selected_id() {
+	int get_selected_id() override {
 		return selected < 0 ? -1 : info[selected].num;
 	}
 	void scroll(int newindex);  // Scroll.
@@ -175,7 +175,7 @@ public:
 	Combo_chooser(Vga_file *i, Flex_file_info *flinfo,
 	              unsigned char *palbuf, int w, int h,
 	              Shape_group *g = nullptr);
-	virtual ~Combo_chooser();
+	~Combo_chooser() override;
 	// Turn off selection.
 	void unselect(bool need_render = true);
 	int is_selected() {     // Is a combo selected?
@@ -207,8 +207,8 @@ public:
 	                       gpointer data);
 	// Handle scrollbar.
 	static void scrolled(GtkAdjustment *adj, gpointer data);
-	virtual void move(bool upwards);// Move current selected combo.
-	virtual void search(const char *srch, int dir);
+	void move(bool upwards) override;// Move current selected combo.
+	void search(const char *srch, int dir) override;
 #ifdef _WIN32
 	static gint win32_drag_motion(GtkWidget *widget, GdkEventMotion *event,
 	                              gpointer data);

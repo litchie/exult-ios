@@ -55,7 +55,7 @@ public:
 		                isyes(yes)
 	{  }
 	// What to do when 'clicked':
-	virtual bool activate(int button = 1);
+	bool activate(int button = 1) override;
 };
 
 

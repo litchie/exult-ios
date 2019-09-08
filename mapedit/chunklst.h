@@ -68,18 +68,18 @@ class Chunk_chooser: public Object_browser, public Shape_draw {
 	int to_del;         // Terrain # to delete, or -1.
 	void (*sel_changed)();      // Called when selection changes.
 	// Blit onto screen.
-	virtual void show(int x, int y, int w, int h);
-	virtual void show() {
+	void show(int x, int y, int w, int h) override;
+	void show() override {
 		Chunk_chooser::show(0, 0,
 		                    draw->allocation.width, draw->allocation.height);
 	}
 	void tell_server();
 	void select(int new_sel);   // Show new selection.
-	virtual void render();      // Draw list.
-	virtual void set_background_color(guint32 c) {
+	void render() override;      // Draw list.
+	void set_background_color(guint32 c) override {
 		Shape_draw::set_background_color(c);
 	}
-	virtual int get_selected_id() {
+	int get_selected_id() override {
 		return selected < 0 ? -1 : info[selected].num;
 	}
 	unsigned char *get_chunk(int chunknum);
@@ -90,13 +90,13 @@ class Chunk_chooser: public Object_browser, public Shape_draw {
 	void scroll(bool upwards);
 	void enable_controls();     // Enable/disable controls after sel.
 	//   has changed.
-	virtual GtkWidget *create_popup();  // Popup menu.
+	GtkWidget *create_popup() override;  // Popup menu.
 public:
 	Chunk_chooser(Vga_file *i, std::istream &cfile, unsigned char *palbuf,
 	              int w, int h, Shape_group *g = nullptr);
-	virtual ~Chunk_chooser();
-	virtual bool server_response(int id, unsigned char *data, int datalen);
-	virtual void end_terrain_editing();
+	~Chunk_chooser() override;
+	bool server_response(int id, unsigned char *data, int datalen) override;
+	void end_terrain_editing() override;
 	// Turn off selection.
 	void unselect(bool need_render = true);
 	int is_selected() {     // Is a chunk selected?
@@ -132,13 +132,13 @@ public:
 	// Handle scrollbar.
 	static void scrolled(GtkAdjustment *adj, gpointer data);
 	void locate(int dir);       // Locate terrain on game map.
-	virtual void locate(bool upwards);
+	void locate(bool upwards) override;
 	void locate_response(const unsigned char *data, int datalen);
 	void insert(bool dup);      // Insert new chunk.
 	void del();         // Delete current chunk.
 	void insert_response(const unsigned char *data, int datalen);
 	void delete_response(const unsigned char *data, int datalen);
-	virtual void move(bool upwards);    // Move current selected chunk.
+	void move(bool upwards) override;    // Move current selected chunk.
 	void swap_response(const unsigned char *data, int datalen);
 #ifdef _WIN32
 	static gint win32_drag_motion(GtkWidget *widget, GdkEventMotion *event,

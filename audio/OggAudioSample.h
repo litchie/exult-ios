@@ -34,10 +34,10 @@ public:
 	OggAudioSample(std::unique_ptr<IDataSource> oggdata);
 	OggAudioSample(uint8 *buffer, uint32 size);
 
-	virtual void initDecompressor(void *DecompData) const;
-	virtual uint32 decompressFrame(void *DecompData, void *samples) const;
-	virtual void rewind(void *DecompData) const;
-	virtual void freeDecompressor(void *DecompData) const;
+	void initDecompressor(void *DecompData) const override;
+	uint32 decompressFrame(void *DecompData, void *samples) const override;
+	void rewind(void *DecompData) const override;
+	void freeDecompressor(void *DecompData) const override;
 
 	static ov_callbacks callbacks;
 	

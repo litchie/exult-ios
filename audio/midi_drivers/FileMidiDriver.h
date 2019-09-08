@@ -30,23 +30,23 @@ class	FileMidiDriver : public MidiDriver
 
 public:
 	// MidiDriver Implementation
-	virtual int			initMidiDriver(uint32 sample_rate, bool stereo);
-	virtual void		destroyMidiDriver();
-	virtual int			maxSequences();
-	virtual void		setGlobalVolume(int vol);
+	int			initMidiDriver(uint32 sample_rate, bool stereo) override;
+	void		destroyMidiDriver() override;
+	int			maxSequences() override;
+	void		setGlobalVolume(int vol) override;
 
-	virtual void		startSequence(int seq_num, XMidiEventList *list, bool repeat, int vol, int branch = -1);
-	virtual void		finishSequence(int seq_num);
-	virtual void		pauseSequence(int seq_num);
-	virtual void		unpauseSequence(int seq_num);
-	virtual void		setSequenceVolume(int seq_num, int vol);
-	virtual void		setSequenceSpeed(int seq_num, int speed);
-	virtual bool		isSequencePlaying(int seq_num);
+	void		startSequence(int seq_num, XMidiEventList *list, bool repeat, int vol, int branch = -1) override;
+	void		finishSequence(int seq_num) override;
+	void		pauseSequence(int seq_num) override;
+	void		unpauseSequence(int seq_num) override;
+	void		setSequenceVolume(int seq_num, int vol) override;
+	void		setSequenceSpeed(int seq_num, int speed) override;
+	bool		isSequencePlaying(int seq_num) override;
 
-	virtual bool		noTimbreSupport() { return true; }
+	bool		noTimbreSupport() override { return true; }
 
 	FileMidiDriver();
-	virtual ~FileMidiDriver();
+	~FileMidiDriver() override;
 
 protected:
 

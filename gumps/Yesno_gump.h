@@ -47,16 +47,16 @@ protected:
 public:
 	friend class Yesno_button;
 	Yesno_gump(const std::string &txt, const char *font = "SMALL_BLACK_FONT");
-	virtual ~Yesno_gump();
+	~Yesno_gump() override;
 	int get_answer() {
 		return answer;
 	}
 	// Paint it and its contents.
-	virtual void paint();
+	void paint() override;
 	// Handle events:
-	virtual bool mouse_down(int mx, int my, int button);
-	virtual bool mouse_up(int mx, int my, int button);
-	virtual void key_down(int chr); // Character typed.
+	bool mouse_down(int mx, int my, int button) override;
+	bool mouse_up(int mx, int my, int button) override;
+	void key_down(int chr) override; // Character typed.
 	static int ask(const char *txt, const char *font = "SMALL_BLACK_FONT"); // Ask question, get answer.
 };
 
@@ -67,7 +67,7 @@ class Countdown_gump : public Yesno_gump {
 public:
 	Countdown_gump(const std::string &txt, int timeout, const char *font);
 
-	virtual bool run();
+	bool run() override;
 
 	static int ask(const char *txt, int timeout, const char *font = "SMALL_BLACK_FONT"); // Ask question, get answer, timeout to no after timeout seconds
 };

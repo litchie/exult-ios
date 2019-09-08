@@ -46,20 +46,20 @@ class Image_window8 : public Image_window {
 public:
 	Image_window8(unsigned int w, unsigned int h, unsigned int gw, unsigned int gh, int scl = 1,
 	              bool fs = false, int sclr = point, Image_window::FillMode fillmode = CentreAspectCorrect, unsigned int fillsclr = point);
-	~Image_window8();
+	~Image_window8() override;
 
 	Image_buffer8 *get_ib8() const {
 		return ib8;
 	}
 	// Set palette.
-	virtual void set_palette(const unsigned char *rgbs, int maxval,
-	                         int brightness = 100);
+	void set_palette(const unsigned char *rgbs, int maxval,
+	                 int brightness = 100) override;
 	// Get palette.
 	virtual const unsigned char *get_palette() const {
 		return colors;
 	}
 	// Rotate palette colors.
-	virtual void rotate_colors(int first, int num, int upd);
+	void rotate_colors(int first, int num, int upd) override;
 	/*
 	 *  8-bit color methods:
 	 */

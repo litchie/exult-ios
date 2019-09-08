@@ -43,13 +43,13 @@ public:
 //		{ set_move_flags(mf); }
 	Actor_pathfinder_client(Actor *npc, int d = 0, bool ign = false);
 	// Figure when to give up.
-	virtual int get_max_cost(int cost_to_goal);
+	int get_max_cost(int cost_to_goal) override;
 	// Figure cost for a single step.
-	virtual int get_step_cost(Tile_coord const &from, Tile_coord &to);
+	int get_step_cost(Tile_coord const &from, Tile_coord &to) override;
 	// Estimate cost between two points.
-	virtual int estimate_cost(Tile_coord const &from, Tile_coord const &to);
+	int estimate_cost(Tile_coord const &from, Tile_coord const &to) override;
 	// Is tile at the goal?
-	virtual int at_goal(Tile_coord const &tile, Tile_coord const &goal);
+	int at_goal(Tile_coord const &tile, Tile_coord const &goal) override;
 	bool ignores_npcs() const {
 		return ignore_npcs;
 	}
@@ -64,9 +64,9 @@ public:
 	Onecoord_pathfinder_client(Actor *n, bool ign = false) : Actor_pathfinder_client(n, 0, ign)
 	{  }
 	// Estimate cost between two points.
-	virtual int estimate_cost(Tile_coord const &from, Tile_coord const &to);
+	int estimate_cost(Tile_coord const &from, Tile_coord const &to) override;
 	// Is tile at the goal?
-	virtual int at_goal(Tile_coord const &tile, Tile_coord const &goal);
+	int at_goal(Tile_coord const &tile, Tile_coord const &goal) override;
 };
 
 /*
@@ -80,11 +80,11 @@ public:
 	Offscreen_pathfinder_client(Actor *n, bool ign = false);
 	Offscreen_pathfinder_client(Actor *n, Tile_coord const &b, bool ign = false);
 	// Figure cost for a single step.
-	virtual int get_step_cost(Tile_coord const &from, Tile_coord &to);
+	int get_step_cost(Tile_coord const &from, Tile_coord &to) override;
 	// Estimate cost between two points.
-	virtual int estimate_cost(Tile_coord const &from, Tile_coord const &to);
+	int estimate_cost(Tile_coord const &from, Tile_coord const &to) override;
 	// Is tile at the goal?
-	virtual int at_goal(Tile_coord const &tile, Tile_coord const &goal);
+	int at_goal(Tile_coord const &tile, Tile_coord const &goal) override;
 };
 
 /*
@@ -97,7 +97,7 @@ public:
 	                                  int dist);
 	Approach_object_pathfinder_client(Actor *from, Game_object *to, int dist);
 	// Is tile at the goal?
-	virtual int at_goal(Tile_coord const &tile, Tile_coord const &goal);
+	int at_goal(Tile_coord const &tile, Tile_coord const &goal) override;
 };
 
 /*
@@ -117,13 +117,13 @@ public:
 	Fast_pathfinder_client(Actor *from, Tile_coord const &dest, int dist);
 	Fast_pathfinder_client(Actor *from, Game_object *to, int dist);
 	// Figure when to give up.
-	virtual int get_max_cost(int cost_to_goal);
+	int get_max_cost(int cost_to_goal) override;
 	// Figure cost for a single step.
-	virtual int get_step_cost(Tile_coord const &from, Tile_coord &to);
+	int get_step_cost(Tile_coord const &from, Tile_coord &to) override;
 	// Estimate cost between two points.
-	virtual int estimate_cost(Tile_coord const &from, Tile_coord const &to);
+	int estimate_cost(Tile_coord const &from, Tile_coord const &to) override;
 	// Is tile at the goal?
-	virtual int at_goal(Tile_coord const &tile, Tile_coord const &goal);
+	int at_goal(Tile_coord const &tile, Tile_coord const &goal) override;
 	int get_axtiles() const {
 		return axtiles;
 	}
@@ -153,9 +153,9 @@ public:
 	Monster_pathfinder_client(Actor *attacker, int reach,
 	                          Game_object *opponent);
 	// Figure when to give up.
-	virtual int get_max_cost(int cost_to_goal);
+	int get_max_cost(int cost_to_goal) override;
 	// Figure cost for a single step.
-	virtual int get_step_cost(Tile_coord const &from, Tile_coord &to);
+	int get_step_cost(Tile_coord const &from, Tile_coord &to) override;
 };
 
 

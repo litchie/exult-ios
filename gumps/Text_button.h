@@ -34,12 +34,12 @@ protected:
 
 public:
 	Text_button(Gump *p, const std::string &str, int x, int y, int w = 0, int h = 0);
-	virtual ~Text_button() {  }
-	virtual void paint();
+	~Text_button() override {  }
+	void paint() override;
 
-	virtual int on_widget(int mx, int my) const;
+	int on_widget(int mx, int my) const override;
 
-	virtual int on_button(int mx, int my) const {
+	int on_button(int mx, int my) const override {
 		return on_widget(mx, my);
 	}
 

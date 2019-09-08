@@ -142,13 +142,13 @@ public:
 		               other.editing, other.codepage.c_str()),
 		compatible(other.compatible), configfile(other.configfile)
 	{  }
-	virtual ~ModInfo() {}
+	~ModInfo() override {}
 
 	bool is_mod_compatible() const {
 		return compatible;
 	}
 
-	virtual bool get_config_file(Configuration *&cfg, std::string &root) {
+	bool get_config_file(Configuration *&cfg, std::string &root) override {
 		cfg = new Configuration(configfile, "modinfo");
 		root = "mod_info/";
 		return true;
@@ -171,7 +171,7 @@ public:
 		        it != other.modlist.end(); ++it)
 			modlist.push_back(*it);
 	}
-	virtual ~ModManager() {
+	~ModManager() override {
 		modlist.clear();
 	}
 
@@ -195,7 +195,7 @@ public:
 	void get_game_paths(const std::string &game_path);
 	void gather_mods();
 
-	virtual bool get_config_file(Configuration *&cfg, std::string &root) {
+	bool get_config_file(Configuration *&cfg, std::string &root) override {
 		cfg = config;
 		root = "config/disk/game/" + cfgname + "/";
 		return false;

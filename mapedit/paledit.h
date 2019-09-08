@@ -52,14 +52,14 @@ class Palette_edit: public Object_browser {
 	Rectangle selected_box;     // Location of selected color.
 	GtkWidget *insert_btn, *remove_btn, *up_btn, *down_btn;
 	// Blit onto screen.
-	virtual void show(int x, int y, int w, int h);
-	virtual void show() {
+	void show(int x, int y, int w, int h) override;
+	void show() override {
 		Palette_edit::show(0, 0,
 		                   draw->allocation.width, draw->allocation.height);
 	}
 	void select(int new_sel);   // Show new selection.
-	virtual void load();        // Load from file data.
-	virtual void render();      // Draw list.
+	void load() override;        // Load from file data.
+	void render() override;      // Draw list.
 	// Handle color-selector buttons.
 	static int color_closed(GtkWidget *widget, GdkEvent *event,
 	                        gpointer data);
@@ -74,7 +74,7 @@ class Palette_edit: public Object_browser {
 	void update_flex(int pnum); // Update flex_info data.
 public:
 	Palette_edit(Flex_file_info *flinfo);
-	~Palette_edit();
+	~Palette_edit() override;
 	void show_palette(int palnum);  // Show desired palette.
 	// Turn off selection.
 	void unselect(bool need_render = true);

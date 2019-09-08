@@ -42,7 +42,7 @@ protected:
 
 public:
 	File_gump();
-	virtual ~File_gump();
+	~File_gump() override;
 	// Find savegame index of text field.
 	int get_save_index(Gump_text *txt);
 	void remove_focus();        // Unfocus text.
@@ -55,14 +55,14 @@ public:
 		return restored;
 	}
 	// Paint it and its contents.
-	virtual void paint();
-	virtual void close() {
+	void paint() override;
+	void close() override {
 		done = 1;
 	}
 	// Handle events:
-	virtual bool mouse_down(int mx, int my, int button);
-	virtual bool mouse_up(int mx, int my, int button);
-	virtual void text_input(int chr, int unicode); // Character typed.
+	bool mouse_down(int mx, int my, int button) override;
+	bool mouse_up(int mx, int my, int button) override;
+	void text_input(int chr, int unicode) override; // Character typed.
 };
 
 #endif

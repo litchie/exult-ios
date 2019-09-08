@@ -86,18 +86,18 @@ private:
 
 public:
 	VideoOptions_gump();
-	virtual ~VideoOptions_gump();
+	~VideoOptions_gump() override;
 	static VideoOptions_gump *get_instance() {
 		return video_options_gump;
 	}
 
 	// Paint it and its contents.
-	virtual void paint();
-	virtual void close();
+	void paint() override;
+	void close() override;
 
 	// Handle events:
-	virtual bool mouse_down(int mx, int my, int button);
-	virtual bool mouse_up(int mx, int my, int button);
+	bool mouse_down(int mx, int my, int button) override;
+	bool mouse_up(int mx, int my, int button) override;
 
 	void toggle(Gump_button *btn, int state);
 	void rebuild_buttons();

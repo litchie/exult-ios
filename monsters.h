@@ -42,7 +42,7 @@ class Monster_actor : public Npc_actor {
 public:
 	Monster_actor(const std::string &nm, int shapenum, int num = -1,
 	              int uc = -1);
-	virtual ~Monster_actor();
+	~Monster_actor() override;
 	// Create an instance.
 	static Game_object_shared create(int shnum);
 	static Game_object_shared create(int shnum, Tile_coord pos,
@@ -61,29 +61,29 @@ public:
 	static void give_up() {     // For file errors only!
 		in_world = nullptr;
 	}
-	virtual int move_aside(Actor *for_actor, int dir) {
+	int move_aside(Actor *for_actor, int dir) override {
 		ignore_unused_variable_warning(for_actor, dir);
 		return 0;    // Monsters don't move aside.
 	}
 	// Render.
-	virtual void paint();
+	void paint() override;
 	// Step onto an (adjacent) tile.
-	virtual int step(Tile_coord t, int frame, bool force = false);
+	int step(Tile_coord t, int frame, bool force = false) override;
 	// Remove/delete this object.
-	virtual void remove_this(Game_object_shared *keep = nullptr);
+	void remove_this(Game_object_shared *keep = nullptr) override;
 	// Move to new abs. location.
-	virtual void move(int newtx, int newty, int newlift, int newmap = -1);
+	void move(int newtx, int newty, int newlift, int newmap = -1) override;
 	// Add an object.
-	virtual bool add(Game_object *obj, bool dont_check = false,
-	                 bool combine = false, bool noset = false);
-	virtual int get_armor_points(); // Get total armor value.
+	bool add(Game_object *obj, bool dont_check = false,
+	                 bool combine = false, bool noset = false) override;
+	int get_armor_points() override; // Get total armor value.
 	// Get total weapon value.
-	virtual const Weapon_info *get_weapon(int &points, int &shape,
-	                                Game_object  *&obj);
-	virtual int is_monster() {
+	const Weapon_info *get_weapon(int &points, int &shape,
+	                                Game_object  *&obj) override;
+	int is_monster() override {
 		return 1;
 	}
-	virtual void die(Game_object *attacker);        // We're dead.
+	void die(Game_object *attacker) override;        // We're dead.
 	void write(ODataSource *nfile);// Write out (to 'monsnpc.dat').
 };
 

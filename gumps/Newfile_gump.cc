@@ -133,7 +133,7 @@ public:
 		: Gump_button(par, shapenum, px, py, SF_EXULT_FLX)
 	{ }
 	// What to do when 'clicked':
-	virtual bool activate(int button = 1);
+	bool activate(int button = 1) override;
 };
 
 class Newfile_Textbutton : public Text_button {
@@ -142,7 +142,7 @@ public:
 		: Text_button(par, text, px, py, width)
 	{ }
 
-	virtual bool activate(int button = 1);
+	bool activate(int button = 1) override;
 };
 
 /*

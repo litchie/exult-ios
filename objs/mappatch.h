@@ -72,7 +72,7 @@ class Map_patch_remove : public Map_patch {
 public:
 	Map_patch_remove(Object_spec s, bool a = false) : Map_patch(s), all(a)
 	{  }
-	virtual bool apply();       // Perform action.
+	bool apply() override;       // Perform action.
 };
 
 /*
@@ -83,7 +83,7 @@ class Map_patch_modify : public Map_patch {
 public:
 	Map_patch_modify(Object_spec s, Object_spec m) : Map_patch(s), mod(m)
 	{  }
-	virtual bool apply();       // Perform action.
+	bool apply() override;       // Perform action.
 };
 
 /*

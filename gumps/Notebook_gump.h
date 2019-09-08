@@ -73,7 +73,7 @@ class Notebook_gump : public Gump {
 	void down_arrow();
 public:
 	Notebook_gump();
-	virtual ~Notebook_gump();
+	~Notebook_gump() override;
 	static void clear();
 	static Notebook_gump *create();
 	static Notebook_gump *get_instance() {
@@ -81,9 +81,9 @@ public:
 	}
 	void change_page(int delta);    // Page forward/backward.
 	// Is a given point on a button?
-	virtual Gump_button *on_button(int mx, int my);
-	virtual void paint();       // Paint it and its contents.
-	virtual bool handle_kbd_event(void *ev);
+	Gump_button *on_button(int mx, int my) override;
+	void paint() override;       // Paint it and its contents.
+	bool handle_kbd_event(void *ev) override;
 	static void add_gflag_text(int gflag, const std::string &text);
 	static void add_gflag_text(int gflag) {
 		if (!initialized_auto_text)
@@ -91,7 +91,7 @@ public:
 		if (gflag < static_cast<int>(auto_text.size()) && auto_text[gflag].size())
 			add_gflag_text(gflag, auto_text[gflag]);
 	}
-	virtual bool is_draggable() const {
+	bool is_draggable() const override {
 		return false;
 	}
 	static void initialize();

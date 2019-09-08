@@ -30,18 +30,18 @@ class Jawbone_gump : public Gump {
 public:
 	Jawbone_gump(Jawbone_object *cont, int initx, int inity);
 
-	virtual ~Jawbone_gump() {}
+	~Jawbone_gump() override {}
 
 	// Find the object the mouse is over
-	virtual Game_object *find_object(int mx, int my);
+	Game_object *find_object(int mx, int my) override;
 
 	// Add object.
-	virtual int add(Game_object *obj, int mx = -1, int my = -1,
-	                int sx = -1, int sy = -1, bool dont_check = false,
-	                bool combine = false);
+	int add(Game_object *obj, int mx = -1, int my = -1,
+	        int sx = -1, int sy = -1, bool dont_check = false,
+	        bool combine = false) override;
 
 	// Paint it and its contents.
-	virtual void paint();
+	void paint() override;
 
 private:
 	void set_to_spot(Game_object *obj, int sx, int sy);

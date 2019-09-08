@@ -33,17 +33,17 @@ public:
 	{ }
 	Jawbone_object() : Container_game_object() {  }
 
-	//virtual ~Jawbone_object() { }
+	//~Jawbone_object() override { }
 
 	// Add an object.
-	virtual bool add(Game_object *obj, bool dont_check = false,
-	                 bool combine = false, bool noset = false);
+	bool add(Game_object *obj, bool dont_check = false,
+	         bool combine = false, bool noset = false) override;
 	// Remove an object.
-	virtual void remove(Game_object *obj);
+	void remove(Game_object *obj) override;
 
 	// Under attack. -> do nothing
-	virtual Game_object *attacked(Game_object *attacker, int weapon_shape = -1,
-	                              int ammo_shape = -1, bool explosion = false) {
+	Game_object *attacked(Game_object *attacker, int weapon_shape = -1,
+	                      int ammo_shape = -1, bool explosion = false) override {
 		ignore_unused_variable_warning(attacker, weapon_shape, ammo_shape, explosion);
 		return this;
 	}

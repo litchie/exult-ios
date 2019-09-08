@@ -49,48 +49,48 @@ public:
 	Ireg_game_object() : owner(nullptr), flags(0), flags2(0), lowlift(-1),
 		highshape(-1)
 	{  }
-	virtual ~Ireg_game_object()
+	~Ireg_game_object() override
 	{  }
 	void set_flags(uint32 f) {  // For initialization.
 		flags = f;
 	}
 	// Render.
-	virtual void paint();
-	virtual void paint_terrain() {  }
+	void paint() override;
+	void paint_terrain() override {  }
 	// Move to new abs. location.
-	virtual void move(int newtx, int newty, int newlift, int newmap = -1);
+	void move(int newtx, int newty, int newlift, int newmap = -1) override;
 	void move(Tile_coord const &t, int newmap = -1) {
 		move(t.tx, t.ty, t.tz, newmap);
 	}
 	// Remove/delete this object.
-	virtual void remove_this(Game_object_shared *keep = nullptr);
-	virtual Container_game_object *get_owner() const {
+	void remove_this(Game_object_shared *keep = nullptr) override;
+	Container_game_object *get_owner() const override {
 		return owner;
 	}
-	virtual void set_owner(Container_game_object *o) {
+	void set_owner(Container_game_object *o) override {
 		owner = o;
 	}
-	virtual int is_dragable() const;// Can this be dragged?
-	virtual void set_flag(int flag) {
+	int is_dragable() const override;// Can this be dragged?
+	void set_flag(int flag) override {
 		if (flag >= 0 && flag < 32)
 			flags |= (static_cast<uint32>(1) << flag);
 		else if (flag >= 32 && flag < 64)
 			flags2 |= (static_cast<uint32>(1) << (flag - 32));
 	}
-	virtual void clear_flag(int flag) {
+	void clear_flag(int flag) override {
 		if (flag >= 0 && flag < 32)
 			flags &= ~(static_cast<uint32>(1) << flag);
 		else if (flag >= 32 && flag < 64)
 			flags2 &= ~(static_cast<uint32>(1) << (flag - 32));
 	}
-	virtual int get_flag(int flag) const {
+	int get_flag(int flag) const override {
 		if (flag >= 0 && flag < 32)
 			return flags & (static_cast<uint32>(1) << flag);
 		else if (flag >= 32 && flag < 64)
 			return flags2 & (static_cast<uint32>(1) << (flag - 32));
 		return 0;
 	}
-	virtual void set_flag_recursively(int flag) {
+	void set_flag_recursively(int flag) override {
 		set_flag(flag);
 	}
 	uint32 get_flags() const {
@@ -107,9 +107,9 @@ public:
 		       ? 7 : 5;
 	}
 	// Write out to IREG file.
-	virtual void write_ireg(ODataSource *out);
+	void write_ireg(ODataSource *out) override;
 	// Get size of IREG. Returns -1 if can't write to buffer
-	virtual int get_ireg_size();
+	int get_ireg_size() override;
 	int lowlift;
 	int highshape;
 	virtual int get_high_shape() const {

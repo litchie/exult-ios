@@ -88,11 +88,11 @@ public:
 		  leftright(lr)
 	{  }
 	// What to do when 'clicked':
-	virtual bool activate(int button = 1);
-	virtual bool push(int button) {
+	bool activate(int button = 1) override;
+	bool push(int button) override {
 		return button == 1;
 	}
-	virtual void unpush(int button) {
+	void unpush(int button) override {
 		ignore_unused_variable_warning(button);
 	}
 };
@@ -119,11 +119,11 @@ public:
 	{  }
 	void set();         // Call this to set properly.
 	// What to do when 'clicked':
-	virtual bool activate(int button = 1);
-	virtual bool push(int button) {
+	bool activate(int button = 1) override;
+	bool push(int button) override {
 		return button == 1;
 	}
-	virtual void unpush(int button) {
+	void unpush(int button) override {
 		ignore_unused_variable_warning(button);
 	}
 };
@@ -183,12 +183,12 @@ public:
 		set_frame(frnum);   // Frame # is circle.
 	}
 	// What to do when 'clicked':
-	virtual bool activate(int button = 1);
-	virtual void double_clicked(int x, int y);
-	virtual bool push(int button) {
+	bool activate(int button = 1) override;
+	void double_clicked(int x, int y) override;
+	bool push(int button) override {
 		return button == 1;
 	}
-	virtual void unpush(int button) {
+	void unpush(int button) override {
 		ignore_unused_variable_warning(button);
 	}
 };

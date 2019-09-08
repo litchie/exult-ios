@@ -52,13 +52,13 @@ public:
 	Shapes_vga_file() : info_read(false) {  }
 	Shapes_vga_file(const char *nm, int u7drag = -1, const char *nm2 = nullptr);
 	void init();
-	virtual ~Shapes_vga_file();
+	~Shapes_vga_file() override;
 	// Read additional data files.
 	void reload_info(Exult_Game game);
 	void fix_old_shape_info(Exult_Game game);
 	void read_info(Exult_Game game, bool editing = false);
 	void write_info(Exult_Game game);   // Write them back out.
-	virtual Shape *new_shape(int shapenum);
+	Shape *new_shape(int shapenum) override;
 	Shape_info &get_info(int shapenum) {
 		std::map<int, Shape_info>::iterator it = info.find(shapenum);
 		if (it != info.end())

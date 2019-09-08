@@ -60,7 +60,7 @@ public:
 		: Gump_button(par, shapenum, px, py)
 	{  }
 	// What to do when 'clicked':
-	virtual bool activate(int button = 1);
+	bool activate(int button = 1) override;
 };
 
 /*
@@ -73,7 +73,7 @@ public:
 		              game->get_shape("gumps/quitbtn"), px, py)
 	{  }
 	// What to do when 'clicked':
-	virtual bool activate(int button = 1);
+	bool activate(int button = 1) override;
 };
 
 /*
@@ -87,7 +87,7 @@ public:
 		set_pushed(enabled);
 	}
 	// What to do when 'clicked':
-	virtual bool activate(int button = 1);
+	bool activate(int button = 1) override;
 };
 
 /*
@@ -155,7 +155,7 @@ public:
 		textx -= shape->get_xleft();
 		texty -= shape->get_yabove();
 	}
-	~Gump_text() {
+	~Gump_text() override {
 		delete [] text;
 	}
 	int get_length() {
@@ -177,7 +177,7 @@ public:
 			refresh();
 		}
 	}
-	void paint();           // Paint.
+	void paint() override;           // Paint.
 	// Handle mouse click.
 	int mouse_clicked(int mx, int my);
 	void insert(int chr);       // Insert a character.

@@ -64,10 +64,10 @@ public:
 		for (int i = first; i < cnt; ++i)
 			atts[i] = allatts[first + i];
 	}
-	virtual ~Stats_extra_gump()
+	~Stats_extra_gump() override
 	{  }
 
-	virtual void paint();
+	void paint() override;
 };
 
 /*

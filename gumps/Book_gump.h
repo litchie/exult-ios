@@ -29,9 +29,9 @@ class Book_gump : public Text_gump {
 
 public:
 	Book_gump(int fnt = 4, int gump = -1);
-	virtual ~Book_gump() {  }
+	~Book_gump() override {  }
 	// Paint it and its contents.
-	virtual void paint();
+	void paint() override;
 };
 
 #endif

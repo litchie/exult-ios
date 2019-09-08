@@ -71,7 +71,7 @@ public:
 		: Text_button(par, text, px, py, 59, 11)
 	{ }
 	// What to do when 'clicked':
-	virtual bool activate(int button = 1);
+	bool activate(int button = 1) override;
 };
 
 bool GameplayOptions_button::activate(int button) {
@@ -92,7 +92,7 @@ public:
 	{ }
 
 	friend class GameplayOptions_gump;
-	virtual void toggle(int state) {
+	void toggle(int state) override {
 		static_cast<GameplayOptions_gump *>(parent)->toggle(this, state);
 	}
 };
@@ -105,7 +105,7 @@ public:
 	{ }
 
 	friend class GameplayOptions_gump;
-	virtual void toggle(int state) {
+	void toggle(int state) override {
 		static_cast<GameplayOptions_gump *>(parent)->toggle(this, state);
 	}
 };

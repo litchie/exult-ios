@@ -45,26 +45,26 @@ class	LowLevelMidiDriver : public MidiDriver, private XMidiSequenceHandler
 {
 public:
 	LowLevelMidiDriver();
-	virtual ~LowLevelMidiDriver();
+	~LowLevelMidiDriver() override;
 
 	// MidiDriver Implementation
-	virtual int			initMidiDriver(uint32 sample_rate, bool stereo);
-	virtual void		destroyMidiDriver();
-	virtual int			maxSequences();
-	virtual void		setGlobalVolume(int vol);
+	int			initMidiDriver(uint32 sample_rate, bool stereo) override;
+	void		destroyMidiDriver() override;
+	int			maxSequences() override;
+	void		setGlobalVolume(int vol) override;
 
-	virtual void		startSequence(int seq_num, XMidiEventList *list, bool repeat, int vol, int branch = -1);
-	virtual void		finishSequence(int seq_num);
-	virtual void		pauseSequence(int seq_num);
-	virtual void		unpauseSequence(int seq_num);
-	virtual void		setSequenceVolume(int seq_num, int vol);
-	virtual void		setSequenceSpeed(int seq_num, int speed);
-	virtual bool		isSequencePlaying(int seq_num);
-	virtual uint32		getSequenceCallbackData(int seq_num);
+	void		startSequence(int seq_num, XMidiEventList *list, bool repeat, int vol, int branch = -1) override;
+	void		finishSequence(int seq_num) override;
+	void		pauseSequence(int seq_num) override;
+	void		unpauseSequence(int seq_num) override;
+	void		setSequenceVolume(int seq_num, int vol) override;
+	void		setSequenceSpeed(int seq_num, int speed) override;
+	bool		isSequencePlaying(int seq_num) override;
+	uint32		getSequenceCallbackData(int seq_num) override;
 
-	virtual void		produceSamples(sint16 *samples, uint32 bytes);
+	void		produceSamples(sint16 *samples, uint32 bytes) override;
 
-	virtual void		loadTimbreLibrary(IDataSource*, TimbreLibraryType type);
+	void		loadTimbreLibrary(IDataSource*, TimbreLibraryType type) override;
 
 	static bool			precacheTimbresOnStartup;
 	static bool			precacheTimbresOnPlay;
@@ -271,10 +271,10 @@ private:
 	void					destroySoftwareSynth();
 
 	// XMidiSequenceHandler implementation
-	virtual void			sequenceSendEvent(uint16 sequence_id, uint32 message);
-	virtual void			sequenceSendSysEx(uint16 sequence_id, uint8 status, const uint8 *msg, uint16 length);
-	virtual uint32			getTickCount(uint16 sequence_id);
-	virtual void			handleCallbackTrigger(uint16 sequence_id, uint8 data);
+	void			sequenceSendEvent(uint16 sequence_id, uint32 message) override;
+	void			sequenceSendSysEx(uint16 sequence_id, uint8 status, const uint8 *msg, uint16 length) override;
+	uint32			getTickCount(uint16 sequence_id) override;
+	void			handleCallbackTrigger(uint16 sequence_id, uint8 data) override;
 
 	int						protectChannel(uint16 sequence_id, int chan, bool protect);
 	int						lockChannel(uint16 sequence_id, int chan, bool lock);

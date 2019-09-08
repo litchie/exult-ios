@@ -112,7 +112,7 @@ public:
 	{  }
 	Game_object() : ShapeID(), chunk(nullptr), render_seq(0)  // Create fake entry.
 	{  }
-	virtual ~Game_object()
+	~Game_object() override
 	{  }
     Game_object_weak weak_from_this() {
 	    return std::weak_ptr<Game_object>(shared_from_this());
@@ -476,15 +476,15 @@ public:
 		: Game_object(shapenum, framenum, tilex, tiley, lft),
 		  prev_flat(ShapeID(12, 0))
 	{  }
-	virtual ~Terrain_game_object() {  }
-	virtual Terrain_game_object *as_terrain() {
+	~Terrain_game_object() override {  }
+	Terrain_game_object *as_terrain() override {
 		return this;
 	}
 	// Move to new abs. location.
-	virtual void move(int newtx, int newty, int newlift, int newmap = -1);
+	void move(int newtx, int newty, int newlift, int newmap = -1) override;
 	// Remove/delete this object.
-	virtual void remove_this(Game_object_shared *keep = nullptr);
-	virtual void paint_terrain();
+	void remove_this(Game_object_shared *keep = nullptr) override;
+	void paint_terrain() override;
 };
 
 /*
@@ -496,13 +496,13 @@ public:
 	                 unsigned int tiley, unsigned int lft = 0)
 		: Game_object(shapenum, framenum, tilex, tiley, lft)
 	{  }
-	virtual ~Ifix_game_object() {  }
+	~Ifix_game_object() override {  }
 	// Move to new abs. location.
-	virtual void move(int newtx, int newty, int newlift, int newmap = -1);
+	void move(int newtx, int newty, int newlift, int newmap = -1) override;
 	// Remove/delete this object.
-	virtual void remove_this(Game_object_shared *keep = nullptr);
-	virtual void paint_terrain() {  }
-	virtual void write_ifix(ODataSource *ifix, bool v2);
+	void remove_this(Game_object_shared *keep = nullptr) override;
+	void paint_terrain() override {  }
+	void write_ifix(ODataSource *ifix, bool v2) override;
 };
 
 #endif

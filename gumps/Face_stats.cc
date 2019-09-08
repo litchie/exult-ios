@@ -50,22 +50,22 @@ class Stat_bar : public Gump_button {
 	int     max_val;
 public:
 	Stat_bar(Gump *par, int px, int py, Actor *a, int s, int m, unsigned char c);
-	virtual void double_clicked(int x, int y);
-	virtual void paint();
+	void double_clicked(int x, int y) override;
+	void paint() override;
 
-	virtual bool activate(int button) {
+	bool activate(int button) override {
 		return button == 1;
 	}
-	virtual bool push(int button) {
+	bool push(int button) override {
 		return button == 1;
 	}
-	virtual void unpush(int button) {
+	void unpush(int button) override {
 		ignore_unused_variable_warning(button);
 	}
 	// update dirty region, if required
-	virtual void update_widget();
+	void update_widget() override;
 
-	virtual bool is_draggable() {
+	bool is_draggable() override {
 		return false;
 	}
 };
@@ -139,18 +139,18 @@ protected:
 	int     curse;
 public:
 	Portrait_button(Gump *par, int px, int py, Actor *a);
-	virtual ~Portrait_button();
-	virtual void double_clicked(int x, int y);
-	virtual void paint();
+	~Portrait_button() override;
+	void double_clicked(int x, int y) override;
+	void paint() override;
 
 	// update dirty region, if required
-	virtual void update_widget();
+	void update_widget() override;
 
-	virtual int on_button(int mx, int my) const;
+	int on_button(int mx, int my) const override;
 
-	virtual Rectangle get_rect();
+	Rectangle get_rect() override;
 
-	virtual bool is_draggable() {
+	bool is_draggable() override {
 		return false;
 	}
 };

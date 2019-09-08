@@ -48,7 +48,7 @@ class Usecode_script : public Time_sensitive {
 	               int nhalt, int del);
 public:
 	Usecode_script(Game_object *o, Usecode_value *cd = nullptr);
-	virtual ~Usecode_script();
+	~Usecode_script() override;
 	void start(long delay = 1); // Start after 'delay' msecs.
 	long get_delay() const {
 		return delay;
@@ -82,7 +82,7 @@ public:
 	static void clear();        // Delete all.
 	// Remove all whose objs. are too far.
 	static void purge(Tile_coord const &pos, int dist);
-	virtual void handle_event(unsigned long curtime, uintptr udata);
+	void handle_event(unsigned long curtime, uintptr udata) override;
 	int exec(Usecode_internal *usecode, bool finish);
 	// Move object in given direction.
 	void step(Usecode_internal *usecode, int dir, int dz);

@@ -70,12 +70,12 @@ public:
 	static void execute_spell(Actor *act, int spell,
 	                          bool in_combat = false);
 	// Run usecode function.
-	virtual void activate(int event = 1);
+	void activate(int event = 1) override;
 	// Write out to IREG file.
-	virtual void write_ireg(ODataSource *out);
+	void write_ireg(ODataSource *out) override;
 	// Get size of IREG.
 	// Returns -1 if can't write to buffer
-	virtual int get_ireg_size();
+	int get_ireg_size() override;
 };
 
 #endif

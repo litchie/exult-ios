@@ -52,18 +52,18 @@ public:
 		: Monster_actor(nm, shapenum, num, uc)
 	{  }
 	// Step onto an (adjacent) tile.
-	virtual int step(Tile_coord t, int frame, bool force = false);
+	int step(Tile_coord t, int frame, bool force = false) override;
 	// Remove/delete this object.
-	virtual void remove_this(Game_object_shared *keep = nullptr);
+	void remove_this(Game_object_shared *keep = nullptr) override;
 	// Move to new abs. location.
-	virtual void move(int newtx, int newty, int newlift, int newmap = -1);
-	virtual void lay_down(bool die) {
+	void move(int newtx, int newty, int newlift, int newmap = -1) override;
+	void lay_down(bool die) override {
 		ignore_unused_variable_warning(die);
 		Game_object_shared keep;
 		remove_this(&keep);         // Remove (but don't delete this).
 		set_invalid();
 	}
-	virtual bool is_slime() const {
+	bool is_slime() const override {
 		return true;
 	}
 };

@@ -796,7 +796,7 @@ private:
 	std::unique_ptr<playfli> player;
 
 public:
-	virtual bool play_it(Image_window *win, uint32 t);
+	bool play_it(Image_window *win, uint32 t) override;
 
 	void load_flic();
 	void free_flic();
@@ -861,7 +861,7 @@ private:
 	bool played;
 
 public:
-	virtual bool play_it(Image_window *win, uint32 t);
+	bool play_it(Image_window *win, uint32 t) override;
 
 	ExCineVoc(uint32 time, const char *file, const char *patch, int index)
 		: ExCineEvent(time, file, patch, index), played(false) { }

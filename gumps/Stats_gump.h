@@ -42,20 +42,20 @@ public:
 	Stats_gump(Container_game_object *cont, int initx, int inity);
 	Stats_gump(Container_game_object *cont, int initx, int inity,
 	           int shnum, ShapeFile shfile);
-	virtual ~Stats_gump()
+	~Stats_gump() override
 	{  }
 	static Stats_gump *create(Game_object *npc_obj, int x, int y);
 	// Add object.
-	virtual int add(Game_object *obj, int mx = -1, int my = -1,
+	int add(Game_object *obj, int mx = -1, int my = -1,
 	                int sx = -1, int sy = -1, bool dont_check = false,
-	                bool combine = false) {
+	                bool combine = false) override {
 		ignore_unused_variable_warning(obj, mx, my, sx, sy, dont_check, combine);
 		return 0;    // Can't drop onto it.
 	}
 	// Paint it and its contents.
-	virtual void paint();
+	void paint() override;
 
-	virtual Game_object *find_object(int mx, int my) {
+	Game_object *find_object(int mx, int my) override {
 		ignore_unused_variable_warning(mx, my);
 		return nullptr;
 	}

@@ -76,8 +76,8 @@ public:
 	// Remove an object.
 	virtual void remove(Game_object *obj);
 	// Add an object.
-	virtual bool add(Game_object *obj, bool dont_check = false,
-	                 bool combine = false, bool noset = false);
+	bool add(Game_object *obj, bool dont_check = false,
+	         bool combine = false, bool noset = false) override;
 	// Change member shape.
 	virtual void change_member_shape(Game_object *obj, int newshape);
 	// Find object's spot.
@@ -94,54 +94,54 @@ public:
 		ignore_unused_variable_warning(index, obj, eventid);
 	}
 	// Add/remove quantities of objs.
-	virtual int add_quantity(int delta, int shapenum,
-	                         int qual = c_any_qual,
-	                         int framenum = c_any_framenum, bool dontcreate = false, bool temporary = false);
-	virtual int create_quantity(int delta, int shapenum, int qual,
-	                            int framenum, bool temporary = false);
-	virtual int remove_quantity(int delta, int shapenum, int qual,
-	                            int framenum);
-	virtual Game_object *find_item(int shapenum, int qual, int framenum);
+	int add_quantity(int delta, int shapenum,
+	                 int qual = c_any_qual,
+	                 int framenum = c_any_framenum, bool dontcreate = false, bool temporary = false) override;
+	int create_quantity(int delta, int shapenum, int qual,
+	                    int framenum, bool temporary = false) override;
+	int remove_quantity(int delta, int shapenum, int qual,
+	                    int framenum) override;
+	Game_object *find_item(int shapenum, int qual, int framenum) override;
 	bool show_gump(int event = 1);
 	// Run usecode function.
-	virtual void activate(int event = 1);
-	virtual bool edit();        // Edit in ExultStudio.
+	void activate(int event = 1) override;
+	bool edit() override;        // Edit in ExultStudio.
 	// Saved from ExultStudio.
 	static void update_from_studio(unsigned char *data, int datalen);
-	virtual int get_weight();
+	int get_weight() override;
 	// Drop another onto this.
-	virtual int drop(Game_object *obj);
+	int drop(Game_object *obj) override;
 	// Count contained objs.
-	virtual int count_objects(int shapenum, int qual = c_any_qual,
-	                          int framenum = c_any_framenum);
+	int count_objects(int shapenum, int qual = c_any_qual,
+	                          int framenum = c_any_framenum) override;
 	// Get contained objs.
-	virtual int get_objects(Game_object_vector &vec, int shapenum,
-	                        int qual, int framenum);
-	virtual void set_flag_recursively(int flag);
+	int get_objects(Game_object_vector &vec, int shapenum,
+	                int qual, int framenum) override;
+	void set_flag_recursively(int flag) override;
 	// Write out to IREG file.
-	virtual void write_ireg(ODataSource *out);
+	void write_ireg(ODataSource *out) override;
 	// Get size of IREG. Returns -1 if can't write to buffer
-	virtual int get_ireg_size();
+	int get_ireg_size() override;
 	// Write contents in IREG format.
 	virtual void write_contents(ODataSource *out);
 
-	virtual int get_obj_hp() const {
+	int get_obj_hp() const override {
 		return resistance;
 	}
-	virtual void set_obj_hp(int hp) {
+	void set_obj_hp(int hp) override {
 		resistance = static_cast<char>(hp);
 	}
 
-	virtual Game_object *find_weapon_ammo(int weapon, int needed = 1,
-	                                      bool recursive = false);
+	Game_object *find_weapon_ammo(int weapon, int needed = 1,
+	                              bool recursive = false) override;
 
 	bool extract_contents(Container_game_object *targ);
 
-	virtual void delete_contents();
+	void delete_contents() override;
 
-	virtual void remove_this(Game_object_shared *keep = nullptr);
+	void remove_this(Game_object_shared *keep = nullptr) override;
 
-	virtual Container_game_object *as_container() {
+	Container_game_object *as_container() override {
 		return this;
 	}
 

@@ -51,7 +51,7 @@ public:
 		: Text_button(par, text, px, py, 59, 20)
 	{ }
 	// What to do when 'clicked':
-	virtual bool activate(int button) {
+	bool activate(int button) override {
 		if (button != 1) return false;
 		Itemmenu_gump *par = (Itemmenu_gump *)parent;
 		if (text == "Cancel") {

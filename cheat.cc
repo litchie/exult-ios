@@ -801,11 +801,11 @@ public:
 		x = (gwin->get_width() - w) / 2 + map->get_xleft();
 		y = (gwin->get_height() - h) / 2 + map->get_yabove();
 	}
-	virtual ~Cheat_map() {
+	~Cheat_map() override {
 		delete mini;
 	}
 
-	virtual void paint() {
+	void paint() override {
 		sman->paint_shape(x, y, map, true);
 
 		// mark current location

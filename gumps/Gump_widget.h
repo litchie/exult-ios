@@ -50,7 +50,7 @@ public:
 		ignore_unused_variable_warning(par);
 		return nullptr;
 	}
-	virtual ~Gump_widget() {  }
+	~Gump_widget() override {  }
 	// Is a given point on the widget?
 	virtual int on_widget(int mx, int my) const;
 	virtual int on_button(int mx, int my) const {

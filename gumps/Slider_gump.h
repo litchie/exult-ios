@@ -46,7 +46,7 @@ protected:
 
 public:
 	Slider_gump(int mival, int mxval, int step, int defval);
-	virtual ~Slider_gump();
+	~Slider_gump() override;
 	int get_val() {         // Get last value set.
 		return val;
 	}
@@ -56,18 +56,18 @@ public:
 	void move_diamond(int dir);
 
 	// Paint it and its contents.
-	virtual void paint();
-	virtual void close() {
+	void paint() override;
+	void close() override {
 		done = 1;
 	}
 	// Handle events:
-	virtual bool mouse_down(int mx, int my, int button);
-	virtual bool mouse_up(int mx, int my, int button);
-	virtual void mouse_drag(int mx, int my);
-	virtual void key_down(int chr); // Character typed.
+	bool mouse_down(int mx, int my, int button) override;
+	bool mouse_up(int mx, int my, int button) override;
+	void mouse_drag(int mx, int my) override;
+	void key_down(int chr) override; // Character typed.
 
-	virtual void mousewheel_up();
-	virtual void mousewheel_down();
+	void mousewheel_up() override;
+	void mousewheel_down() override;
 };
 
 #endif

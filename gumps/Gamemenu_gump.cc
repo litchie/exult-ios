@@ -60,7 +60,7 @@ public:
 		: Text_button(par, text, px, py, 108, 11)
 	{  }
 	// What to do when 'clicked':
-	virtual bool activate(int button);
+	bool activate(int button) override;
 };
 
 bool Gamemenu_button::activate(int button) {

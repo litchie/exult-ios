@@ -158,12 +158,12 @@ public:
 		  leftright(lr)
 	{  }
 	// What to do when 'clicked':
-	virtual bool activate(int button = 1);
-	virtual bool push(int button) {
+	bool activate(int button = 1) override;
+	bool push(int button) override {
 		ignore_unused_variable_warning(button);
 		return false;
 	}
-	virtual void unpush(int button) {
+	void unpush(int button) override {
 		ignore_unused_variable_warning(button);
 	}
 };

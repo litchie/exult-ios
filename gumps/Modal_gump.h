@@ -40,7 +40,7 @@ public:
 		: Gump(cont, initx, inity, shnum, shfile), done(false),
 		  pushed(nullptr)
 	{  }
-	virtual ~Modal_gump() {  }
+	~Modal_gump() override {  }
 	// Create centered.
 	Modal_gump(Container_game_object *cont, int shnum,
 	           ShapeFile shfile = SF_GUMPS_VGA)
@@ -63,7 +63,7 @@ public:
 	virtual void text_input(int chr, int unicode) { // Character typed (unicode)
 		ignore_unused_variable_warning(chr, unicode);
 	}
-	virtual bool is_modal() const {
+	bool is_modal() const override {
 		return true;
 	}
 

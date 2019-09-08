@@ -37,7 +37,7 @@ public:
 		: Gump_widget(par, shnum, px, py, shfile), pushed_button(0)
 	{  }
 	// Is a given point on the checkmark?
-	virtual int on_button(int mx, int my) const {
+	int on_button(int mx, int my) const override {
 		return on_widget(mx, my);
 	}
 	// What to do when 'clicked':
@@ -46,7 +46,7 @@ public:
 	virtual void double_clicked(int x, int y);
 	virtual bool push(int button);  // Redisplay as pushed.
 	virtual void unpush(int button);
-	virtual void paint();
+	void paint() override;
 	int get_pushed() {
 		return pushed_button;
 	}

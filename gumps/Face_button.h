@@ -33,21 +33,21 @@ protected:
 	bool translucent;
 public:
 	Face_button(Gump *par, int px, int py, Actor *a);
-	virtual ~Face_button() {  }
-	virtual Actor *get_actor() {
+	~Face_button() override {  }
+	Actor *get_actor() {
 		return actor;
 	}
-	virtual void double_clicked(int x, int y);
-	virtual bool activate(int button) {
+	void double_clicked(int x, int y) override;
+	bool activate(int button) override {
 		return button == 1;
 	}
 
-	virtual void paint();
-	virtual bool push(int button) {
+	void paint() override;
+	bool push(int button) override {
 		return button == 1;
 	}
-	virtual void unpush(int) {}
-	virtual void update_widget();
+	void unpush(int) override {}
+	void update_widget() override;
 };
 
 #endif

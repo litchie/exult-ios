@@ -92,35 +92,35 @@ class Shape_chooser: public Object_browser, public Shape_draw {
 	static std::vector<Editing_file *> editing_files;
 	static int check_editing_timer; // For monitoring files being edited.
 	// Blit onto screen.
-	virtual void show(int x, int y, int w, int h);
-	virtual void show() {
+	void show(int x, int y, int w, int h) override;
+	void show() override {
 		Shape_chooser::show(0, 0,
 		                    draw->allocation.width, draw->allocation.height);
 	}
 	void tell_server_shape();   // Tell Exult what shape is selected.
 	void select(int new_sel);   // Show new selection.
-	virtual void render();      // Draw list.
-	virtual void set_background_color(guint32 c) {
+	void render() override;      // Draw list.
+	void set_background_color(guint32 c) override {
 		Shape_draw::set_background_color(c);
 	}
-	virtual void setup_info(bool savepos = true);
+	void setup_info(bool savepos = true) override;
 	void setup_shapes_info();
 	void setup_frames_info();
 	void scroll_to_frame();     // Scroll so sel. frame is visible.
 	int find_shape(int shnum);  // Find index for given shape.
 	void goto_index(unsigned index); // Get desired index in view.
-	virtual int get_selected_id() {
+	int get_selected_id() override {
 		return selected < 0 ? -1 : info[selected].shapenum;
 	}
 	void scroll_row_vertical(unsigned newrow);
 	void scroll_vertical(int newindex); // Scroll.
 	void setup_vscrollbar();    // Set new scroll amounts.
 	void setup_hscrollbar(int newmax);
-	virtual GtkWidget *create_popup();  // Popup menu.
+	GtkWidget *create_popup() override;  // Popup menu.
 public:
 	Shape_chooser(Vga_file *i, unsigned char *palbuf, int w, int h,
 	              Shape_group *g = nullptr, Shape_file_info *fi = nullptr);
-	virtual ~Shape_chooser();
+	~Shape_chooser() override;
 	void set_shapes_file(Shapes_vga_file *sh) {
 		shapes_file = sh;
 	}
@@ -129,8 +129,8 @@ public:
 	}
 	void shape_dropped_here(int file, int shapenum, int framenum);
 	int get_count();        // Get # shapes we can display.
-	virtual void search(const char *srch, int dir);
-	virtual void locate(bool upwards);  // Locate shape on game map.
+	void search(const char *srch, int dir) override;
+	void locate(bool upwards) override;  // Locate shape on game map.
 	// Turn off selection.
 	void unselect(bool need_render = true);
 	void update_statusbar();
