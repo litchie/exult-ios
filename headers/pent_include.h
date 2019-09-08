@@ -76,13 +76,6 @@
 #  define PERR(x)       do { } while(0)
 #endif
 
-// Two very useful macros that one should use instead of pure delete; they
-// will additionally set the old object pointer to 0, thus helping prevent
-// double deletes (note that "delete 0" is a no-op).
-#define FORGET_OBJECT(x) do { delete x; x = nullptr; } while(0)
-#define FORGET_ARRAY(x) do { delete [] x; x = nullptr; } while(0)
-
-
 //
 // Can't happen.
 // For things that really can't happen. Or shouldn't anyway.
