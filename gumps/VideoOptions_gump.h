@@ -20,6 +20,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define VIDEOOPTIONS_GUMP_H
 
 #include "Modal_gump.h"
+#include <array>
+#include <memory>
 #include <string>
 #include "imagewin/imagewin.h"
 
@@ -80,7 +82,7 @@ private:
 	    id_has_ac,
 	    id_count
 	};
-	Gump_button *buttons[id_count];
+	std::array<std::unique_ptr<Gump_button>, id_count> buttons;
 
 public:
 	VideoOptions_gump();
