@@ -20,6 +20,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define AUDIOOPTIONS_GUMP_H
 
 #include "Modal_gump.h"
+#include <array>
+#include <memory>
 #include <string>
 
 class Gump_button;
@@ -47,7 +49,7 @@ private:
 	    id_speech_enabled,
 	    id_count
 	};
-	Gump_button *buttons[id_count];
+	std::array<std::unique_ptr<Gump_button>, id_count> buttons;
 
 	bool speaker_type; // only mono and stereo atm
 	bool o_speaker_type;
@@ -86,7 +88,6 @@ private:
 
 public:
 	AudioOptions_gump();
-	virtual ~AudioOptions_gump();
 
 	// Paint it and its contents.
 	virtual void paint();
