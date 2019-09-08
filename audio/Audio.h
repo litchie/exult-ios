@@ -65,12 +65,8 @@ private:
 	bool initialized;
 	SDL_AudioSpec wanted;
 	Pentagram::AudioMixer *mixer;
-
-public:
 	bool audio_enabled;
 	Flex *sfx_file;			// Holds .wav sound effects.
-
-private:
 	// You never allocate an Audio object directly, you rather access it using get_ptr()
 	Audio();
 	~Audio();

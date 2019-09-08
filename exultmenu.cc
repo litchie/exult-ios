@@ -467,7 +467,7 @@ BaseGameInfo *ExultMenu::run() {
 
 	//Must check this or it will crash as midi
 	//may not be initialised
-	if (Audio::get_ptr()->audio_enabled) {
+	if (Audio::get_ptr()->is_audio_enabled()) {
 		// Make sure timbre library is correct!
 		//Audio::get_ptr()->get_midi()->set_timbre_lib(MyMidiPlayer::TIMBRE_LIB_GM);
 		Audio::get_ptr()->start_music(EXULT_FLX_MEDITOWN_MID, true, EXULT_FLX);
@@ -504,7 +504,7 @@ BaseGameInfo *ExultMenu::run() {
 			gpal->fade_out(c_fade_out_time);
 			setup();
 			delete menu;
-			if (Audio::get_ptr()->audio_enabled) {
+			if (Audio::get_ptr()->is_audio_enabled()) {
 				// Make sure timbre library is correct!
 				//Audio::get_ptr()->get_midi()->set_timbre_lib(MyMidiPlayer::TIMBRE_LIB_GM);
 				Audio::get_ptr()->start_music(EXULT_FLX_MEDITOWN_MID, true, EXULT_FLX);
