@@ -58,15 +58,15 @@ class AnywhereBreakpoint : public Breakpoint {
 public:
 	AnywhereBreakpoint();
 
-	virtual Breakpoint_type get_type() const {
+	Breakpoint_type get_type() const override {
 		return BP_anywhere;
 	}
-	virtual bool check(Stack_frame *frame) const {
+	bool check(Stack_frame *frame) const override {
 		ignore_unused_variable_warning(frame);
 		return true;
 	}
 
-	virtual void serialize(int fd) const {
+	void serialize(int fd) const override {
 		ignore_unused_variable_warning(fd);
 	} // +++++ implement this?
 };
@@ -75,12 +75,12 @@ class LocationBreakpoint : public Breakpoint {
 public:
 	LocationBreakpoint(int functionid, int ip, bool once = false);
 
-	virtual Breakpoint_type get_type() const {
+	Breakpoint_type get_type() const override {
 		return BP_location;
 	}
-	virtual bool check(Stack_frame *frame) const;
+	bool check(Stack_frame *frame) const override;
 
-	virtual void serialize(int fd) const;
+	void serialize(int fd) const override;
 
 private:
 
@@ -92,12 +92,12 @@ class StepoverBreakpoint : public Breakpoint {
 public:
 	StepoverBreakpoint(Stack_frame *frame);
 
-	virtual Breakpoint_type get_type() const {
+	Breakpoint_type get_type() const override {
 		return BP_stepover;
 	}
-	virtual bool check(Stack_frame *frame) const;
+	bool check(Stack_frame *frame) const override;
 
-	virtual void serialize(int fd) const {
+	void serialize(int fd) const override {
 		ignore_unused_variable_warning(fd);
 	} // +++++ implement this?
 
@@ -111,12 +111,12 @@ class FinishBreakpoint : public Breakpoint {
 public:
 	FinishBreakpoint(Stack_frame *frame);
 
-	virtual Breakpoint_type get_type() const {
+	Breakpoint_type get_type() const override {
 		return BP_finish;
 	}
-	virtual bool check(Stack_frame *frame) const;
+	bool check(Stack_frame *frame) const override;
 
-	virtual void serialize(int fd) const {
+	void serialize(int fd) const override {
 		ignore_unused_variable_warning(fd);
 	} // +++++ implement this?
 

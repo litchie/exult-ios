@@ -339,7 +339,7 @@ class Uc_converse_statement : public Uc_statement {
 public:
 	Uc_converse_statement(Uc_expression *a,
 	                      std::vector<Uc_statement *> *cs, bool n);
-	~Uc_converse_statement();
+	~Uc_converse_statement() override;
 	// Generate code.
 	void gen(Uc_function *fun, std::vector<Basic_block *> &blocks,
 	         Basic_block *&curr, Basic_block *end,

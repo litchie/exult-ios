@@ -159,7 +159,7 @@ public:
 	Uc_static_arrayelem_expression(Uc_var_symbol *a, Uc_expression *i)
 		: Uc_arrayelem_expression(a, i)
 	{  }
-	~Uc_static_arrayelem_expression() {
+	~Uc_static_arrayelem_expression() override {
 		delete index;
 	}
 	// Gen. code to put result on stack.
@@ -176,7 +176,7 @@ public:
 	Uc_class_arrayelem_expression(Uc_var_symbol *a, Uc_expression *i)
 		: Uc_arrayelem_expression(a, i)
 	{  }
-	~Uc_class_arrayelem_expression() {
+	~Uc_class_arrayelem_expression() override {
 		delete index;
 	}
 	// Gen. code to put result on stack.
@@ -346,7 +346,7 @@ public:
 		add(e0);
 		add(e1);
 	}
-	~Uc_array_expression();
+	~Uc_array_expression() override;
 	void add(Uc_expression *e) { // Append an expression.
 		exprs.push_back(e);
 	}
@@ -388,7 +388,7 @@ public:
 		: sym(nullptr), ind(i), original(false), itemref(nullptr), parms(prms),
 		  function(fun), return_value(true), meth_scope(nullptr)
 	{  }
-	~Uc_call_expression() {
+	~Uc_call_expression() override {
 		delete parms;
 		delete itemref;
 	}
@@ -441,7 +441,7 @@ protected:
 	Uc_array_expression *parms;     // Parameters passed to constructor.
 public:
 	Uc_new_expression(Uc_var_symbol *v, Uc_array_expression *p);
-	~Uc_new_expression() {
+	~Uc_new_expression() override {
 		delete parms;
 	}
 	// Gen. code to put result on stack.

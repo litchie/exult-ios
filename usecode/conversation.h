@@ -33,7 +33,7 @@ class Game_window;
 class Conversation : public Game_singletons, public Paintable {
 public:
 	Conversation();
-	virtual ~Conversation();
+	~Conversation() override;
 
 private:
 
@@ -68,7 +68,7 @@ public:
 	void set_slot(int i) {
 		last_face_shown = i;    // SI.
 	}
-	virtual void paint();           // Paint entire conversation.
+	void paint() override;           // Paint entire conversation.
 	void paint_faces(bool text = false);
 
 	void add_answer(Usecode_value &val);

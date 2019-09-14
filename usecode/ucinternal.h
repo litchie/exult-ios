@@ -475,50 +475,50 @@ public:
 public:
 	friend class Usecode_script;
 	Usecode_internal();
-	~Usecode_internal();
+	~Usecode_internal() override;
 	// Read in usecode functions.
-	virtual void read_usecode(std::istream &file, bool patch = false);
+	void read_usecode(std::istream &file, bool patch = false) override;
 	// Call desired function.
-	virtual int call_usecode(int id, Game_object *item,
-	                         Usecode_events event);
-	virtual bool call_method(Usecode_value *inst, int id,
-	                         Game_object *item);
-	virtual int find_function(const char *nm, bool noerr = false);
-	virtual const char *find_function_name(int funcid);
-	virtual void do_speech(int num);// Start speech, or show text.
-	virtual bool in_usecode() { // Currently in a usecode function?
+	int call_usecode(int id, Game_object *item,
+	                 Usecode_events event) override;
+	bool call_method(Usecode_value *inst, int id,
+	                 Game_object *item) override;
+	int find_function(const char *nm, bool noerr = false) override;
+	const char *find_function_name(int funcid) override;
+	void do_speech(int num) override;// Start speech, or show text.
+	bool in_usecode() override { // Currently in a usecode function?
 		return !call_stack.empty();
 	}
-	virtual bool in_usecode_for(Game_object *item, Usecode_events event);
-	virtual Usecode_class_symbol *get_class(int n);
-	virtual Usecode_class_symbol *get_class(const char *nm);
-	virtual int get_shape_fun(int n);
-	virtual void write();       // Write out 'gamedat/usecode.dat'.
-	virtual void read();        // Read in 'gamedat/usecode.dat'.
+	bool in_usecode_for(Game_object *item, Usecode_events event) override;
+	Usecode_class_symbol *get_class(int n) override;
+	Usecode_class_symbol *get_class(const char *nm) override;
+	int get_shape_fun(int n) override;
+	void write() override;       // Write out 'gamedat/usecode.dat'.
+	void read() override;        // Read in 'gamedat/usecode.dat'.
 
-	virtual void intercept_click_on_item(Game_object *obj) {
+	void intercept_click_on_item(Game_object *obj) override {
 		intercept_item = obj;
 		delete intercept_tile;
 		intercept_tile = nullptr;
 	}
-	virtual Game_object *get_intercept_click_on_item() const {
+	Game_object *get_intercept_click_on_item() const override {
 		return intercept_item;
 	}
-	virtual void intercept_click_on_tile(Tile_coord *t) {
+	void intercept_click_on_tile(Tile_coord *t) override {
 		intercept_item = nullptr;
 		delete intercept_tile;
 		intercept_tile = t;
 	}
-	virtual Tile_coord *get_intercept_click_on_tile() const {
+	Tile_coord *get_intercept_click_on_tile() const override {
 		return intercept_tile;
 	}
-	virtual void save_intercept(Game_object *&obj, Tile_coord *&t) {
+	void save_intercept(Game_object *&obj, Tile_coord *&t) override {
 		obj = intercept_item;
 		t = intercept_tile;
 		intercept_item = nullptr;
 		intercept_tile = nullptr;
 	}
-	virtual void restore_intercept(Game_object *obj, Tile_coord *t) {
+	void restore_intercept(Game_object *obj, Tile_coord *t) override {
 		intercept_item = obj;
 		delete intercept_tile;
 		intercept_tile = t;

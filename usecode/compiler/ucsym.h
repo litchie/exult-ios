@@ -345,7 +345,7 @@ public:
 	Uc_class_symbol(const char *nm, Uc_class *c) : Uc_symbol(nm), cls(c)
 	{  }
 	static Uc_class_symbol *create(char *nm, Uc_class *c);
-	Uc_class *get_cls() const {
+	Uc_class *get_cls() const override {
 		return cls;
 	}
 };
@@ -363,7 +363,7 @@ public:
 	Uc_struct_symbol(const char *nm)
 		: Uc_symbol(nm), num_vars(0)
 	{  }
-	~Uc_struct_symbol();
+	~Uc_struct_symbol() override;
 	int add(const char *nm) {
 		if (is_dup(nm))
 			return 0;
