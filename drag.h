@@ -21,7 +21,15 @@
 #ifndef INCL_DRAG_H
 #define INCL_DRAG_H
 
+#include "mouse.h"
+#include "objs.h"
+#include "rect.h"
 #include "singles.h"
+#include "tiles.h"
+
+class Gump;
+class Gump_button;
+class Image_buffer;
 
 /*
  *  Data needed when dragging an object.

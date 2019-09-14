@@ -22,11 +22,13 @@
 #define STACKFRAME_H
 
 #include "common_types.h"
+#include "useval.h"
 #include <iosfwd>
+#include <memory>
 
-class Usecode_function;
 class Game_object;
-class Usecode_value;
+class Usecode_function;
+typedef std::shared_ptr<Game_object> Game_object_shared;
 
 class Stack_frame {
 public:

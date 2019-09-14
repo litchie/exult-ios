@@ -62,6 +62,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cstdlib>
 #endif
 
+#include "common_types.h"
+
 // Maximum number of for loops we'll allow (used by LowLevelMidiDriver)
 // The specs say 4, so that is what we;ll use
 #define XMIDI_MAX_FOR_LOOP_COUNT	4

@@ -24,6 +24,8 @@
 #include <cstdlib>
 #include <cstring>
 
+#include "common_types.h"
+
 class color_8 {
 public:
 	typedef uint8 T;

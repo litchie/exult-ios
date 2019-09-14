@@ -27,6 +27,8 @@
 #ifdef USE_XBR_SCALER
 
 #include "ignore_unused_variable_warning.h"
+#include <cstddef>
+#include <cstdlib>
 
 #define XBR_VARIANT 4   // Tweaked xBR-z (Zenju's version)
 //#define XBR_VARIANT 3  // xBR-C: Hyllian's "squared flavor" version
@@ -98,14 +100,14 @@ struct RGBColor {
 	}
 	// See http://www.compuphase.com/cmetric.htm
 	int dist(RGBColor<Manip_pixels, tol> const &other) const {
-		return abs(static_cast<int>(dr - other.dr)) +
-		       abs(static_cast<int>(dg - other.dg)) +
-		       abs(static_cast<int>(db - other.db));
+		return std::abs(static_cast<int>(dr - other.dr)) +
+		       std::abs(static_cast<int>(dg - other.dg)) +
+		       std::abs(static_cast<int>(db - other.db));
 	}
 	bool equals(RGBColor<Manip_pixels, tol> const &other) const {
-		return abs(static_cast<int>(dr - other.dr)) <= (tol *  9)
-		       && abs(static_cast<int>(dg - other.dg)) <= (tol * 16)
-		       && abs(static_cast<int>(db - other.db)) <= (tol *  4);
+		return std::abs(static_cast<int>(dr - other.dr)) <= (tol *  9)
+		       && std::abs(static_cast<int>(dg - other.dg)) <= (tol * 16)
+		       && std::abs(static_cast<int>(db - other.db)) <= (tol *  4);
 	}
 	template <unsigned int N, unsigned int M>
 	inline void blend(RGBColor<Manip_pixels, tol> const &other) {

@@ -22,6 +22,11 @@
 #define FIND_NEARBY_H
 
 #include "citerate.h"
+#include "chunks.h"
+#include "gamemap.h"
+#include "gamewin.h"
+#include "objs.h"
+#include "objiter.h"
 #include "ignore_unused_variable_warning.h"
 
 /*

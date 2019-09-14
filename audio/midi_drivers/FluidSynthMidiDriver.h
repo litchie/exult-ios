@@ -20,6 +20,7 @@
 #ifdef USE_FLUIDSYNTH_MIDI
 
 #include "LowLevelMidiDriver.h"
+#include "common_types.h"
 #include <fluidsynth.h>
 #include <stack>
 

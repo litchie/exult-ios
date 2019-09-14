@@ -28,6 +28,8 @@
 
 #ifdef USE_FMOPL_MIDI
 
+#include "common_types.h"
+
 namespace FMOpl_Pentagram {
 
 enum {

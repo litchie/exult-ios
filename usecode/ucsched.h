@@ -19,12 +19,16 @@
 #ifndef UCSCHED_H
 #define UCSCHED_H
 
+#include <memory>
+
+#include "databuf.h"
+#include "tqueue.h"
+#include "tiles.h"
+
 class Game_object;
 class Usecode_value;
 class Usecode_internal;
-
-#include "tqueue.h"
-#include "databuf.h"
+typedef std::weak_ptr<Game_object> Game_object_weak;
 
 /*
  *  A class for executing usecode at a scheduled time:

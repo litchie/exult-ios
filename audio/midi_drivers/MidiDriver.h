@@ -19,7 +19,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef MIDIDRIVER_H_INCLUDED
 #define MIDIDRIVER_H_INCLUDED
 
+#include "common_types.h"
 #include "ignore_unused_variable_warning.h"
+#include <string>
 
 class XMidiEventList;
 class IDataSource;

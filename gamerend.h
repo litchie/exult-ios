@@ -22,6 +22,8 @@
 #ifndef GAMEREND_H
 #define GAMEREND_H 1
 
+class Game_object;
+
 /*
  *  A helper-class for rendering.
  */

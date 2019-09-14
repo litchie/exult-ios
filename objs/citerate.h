@@ -25,6 +25,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef INCL_CITERATE
 #define INCL_CITERATE   1
 
+#include "rect.h"
+
 /*
  *  Here's an iterator that takes a rectangle of tiles, and sequentially
  *  returns the interesection of that rectangle with each chunk that it

@@ -28,6 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream>
 #include <set>
 #include <vector>
+#include "common_types.h"
 #include "ucexpr.h"
 
 class Basic_block;

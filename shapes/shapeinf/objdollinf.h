@@ -28,6 +28,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "baseinf.h"
 #include "exult_constants.h"
 
+#include <cstring>
+#include <iosfwd>
+
 class Shape_info;
 
 /*
@@ -175,7 +178,7 @@ public:
 			set_translucent(other.translucent);
 			set_gender(other.gender);
 			set_paperdoll_shape(other.shape);
-			if (memcmp(frame, other.frame, sizeof(frame))) {
+			if (std::memcmp(frame, other.frame, sizeof(frame))) {
 				set_modified(true);
 				memcpy(frame, other.frame, sizeof(frame));
 			}

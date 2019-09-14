@@ -24,6 +24,8 @@
 
 #if defined(USE_HQ2X_SCALER) || defined(USE_HQ3X_SCALER) || defined(USE_HQ4X_SCALER)
 
+#include <cstdlib>
+
 /**
  ** Note: This file should only be included by source files that use the
  ** templates below; the templates will only be instantiated when they
@@ -148,9 +150,9 @@ static int RGBtoYUV(unsigned int r, unsigned int g, unsigned int b) {
 }
 
 inline bool Diff(int YUV1, int YUV2) {
-	return ((abs((YUV1 & Ymask) - (YUV2 & Ymask)) > trY) ||
-	        (abs((YUV1 & Umask) - (YUV2 & Umask)) > trU) ||
-	        (abs((YUV1 & Vmask) - (YUV2 & Vmask)) > trV));
+	return ((std::abs((YUV1 & Ymask) - (YUV2 & Ymask)) > trY) ||
+	        (std::abs((YUV1 & Umask) - (YUV2 & Umask)) > trU) ||
+	        (std::abs((YUV1 & Vmask) - (YUV2 & Vmask)) > trV));
 }
 
 template<class Manip_pixels>

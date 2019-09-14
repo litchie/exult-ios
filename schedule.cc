@@ -324,6 +324,13 @@ void Schedule_with_objects::cleanup()
 	}
 }
 
+void Schedule_with_objects::set_current_item(Game_object *obj) {
+	current_item = weak_from_obj(obj);
+}
+void Schedule_with_objects::add_object(Game_object *obj) {
+	created.push_back(obj->weak_from_this());
+}
+
 Schedule_with_objects::~Schedule_with_objects()
 {
 	cleanup();

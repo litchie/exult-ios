@@ -23,9 +23,11 @@
 
 #include <string>
 
+#include "singles.h"
+#include "shapeid.h"
+#include "rect.h"
 #include "tqueue.h"
 #include "tiles.h"
-#include "singles.h"
 
 class Xform_palette;
 class PathFinder;
@@ -36,6 +38,8 @@ class Shape_frame;
 class Actor;
 class Special_effect;
 class Text_effect;
+
+typedef std::weak_ptr<Game_object> Game_object_weak;
 
 /*
  *  Manage special effects.

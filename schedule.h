@@ -39,6 +39,7 @@ class Actor_action;
 class Usecode_value;
 
 typedef std::weak_ptr<Game_object> Game_object_weak;
+typedef std::vector<Game_object *> Game_object_vector;
 
 /*
  *  A Schedule controls the NPC it is assigned to.
@@ -128,9 +129,7 @@ protected:
     Game_object *get_current_item() {
 	  return current_item.lock().get();
 	}
-	void set_current_item(Game_object *obj) {
-	    current_item = weak_from_obj(obj);
-	}
+	void set_current_item(Game_object *obj);
     int items_in_hand; 	  	// # NPC's desk items.
 	void cleanup();				// Remove items we created.
 public:
@@ -138,9 +137,7 @@ public:
 									items_in_hand(0) {
 	}
 	~Schedule_with_objects() override;
-	void add_object(Game_object *obj) {
-	    created.push_back(obj->weak_from_this());
-	}
+	void add_object(Game_object *obj);
 	// Find desk or waiter items.
 	virtual int find_items(Game_object_vector& vec, int dist) = 0;
 	bool walk_to_random_item(int dist = 16);

@@ -21,7 +21,9 @@
 #ifndef ACTIONS_H
 #define ACTIONS_H   1
 
+#include "ignore_unused_variable_warning.h"
 #include "tiles.h"
+#include <memory>
 
 class Actor;
 class Game_object;

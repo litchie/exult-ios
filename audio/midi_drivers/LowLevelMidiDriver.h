@@ -25,9 +25,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class XMidiEventList;
 class XMidiSequence;
 
+#include <cstring>
 #include <queue>
 #include <SDL.h>
 #include <SDL_thread.h>
+#include "common_types.h"
 #include "ignore_unused_variable_warning.h"
 
 //! Specifies the max number of simultaneous playing sequences supported

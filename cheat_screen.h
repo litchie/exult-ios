@@ -19,6 +19,8 @@
 #ifndef CHEAT_SCREEN_H
 #define CHEAT_SCREEN_H
 
+#include "palette.h"
+
 class Game_window;
 class Image_buffer8;
 class Font;

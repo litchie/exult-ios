@@ -22,12 +22,13 @@
 #include "palette.h"
 #include "game.h"
 
-class Mouse;
-class Image_buffer8;
-class Game_window;
 class BaseGameInfo;
-class ModManager;
+class Font;
+class Game_window;
+class Image_buffer8;
 class MenuList;
+class ModManager;
+class Mouse;
 class Shape_frame;
 
 class ExultMenu {
