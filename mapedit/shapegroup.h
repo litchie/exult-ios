@@ -42,7 +42,7 @@ class Shape_group : std::vector<int> {      // Not public on purpose.
 public:
 	friend class Shape_group_file;
 	Shape_group(const char *nm, Shape_group_file *f, int built = -1);
-	~Shape_group() {  }
+	~Shape_group() = default;
 	bool is_builtin() const {
 		return builtin != -1;
 	}

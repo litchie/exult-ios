@@ -74,14 +74,6 @@ int Container_game_object::get_max_volume() const {
 }
 
 /*
- *  Delete all contents.
- */
-
-Container_game_object::~Container_game_object(
-) {
-}
-
-/*
  *  Remove an object.  The object's (cx, cy) fields are set to invalid
  *  #'s (255, 255).
  */

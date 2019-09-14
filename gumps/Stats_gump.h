@@ -42,8 +42,6 @@ public:
 	Stats_gump(Container_game_object *cont, int initx, int inity);
 	Stats_gump(Container_game_object *cont, int initx, int inity,
 	           int shnum, ShapeFile shfile);
-	~Stats_gump() override
-	{  }
 	static Stats_gump *create(Game_object *npc_obj, int x, int y);
 	// Add object.
 	int add(Game_object *obj, int mx = -1, int my = -1,

@@ -48,12 +48,9 @@ class   Args {
 		};
 		enum { no_type = 0, type_bool, type_string, type_int, type_unsigned } valuetype;
 		Opts() : option(""), sval(nullptr), dsval(nullptr), valuetype(no_type) {}
-		~Opts() {}
 	};
 	std::vector<Opts> options;
 public:
-	Args() {}
-	~Args() {}
 	void    declare(const char *s, bool *b, bool defval = true);
 	void    declare(const char *s, std::string *b, const char *defval = nullptr);
 	void    declare(const char *s, int *b, int defval = 0);

@@ -174,10 +174,6 @@ CheatScreen::CheatScreen()
    maxx(0), maxy(0), centerx(0), centery(0) {
 }
 
-CheatScreen::~CheatScreen() {
-}
-
-
 void CheatScreen::show_screen() {
 	gwin = Game_window::get_instance();
 	ibuf = gwin->get_win()->get_ib8();

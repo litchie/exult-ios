@@ -45,7 +45,6 @@ class Uc_class : public Uc_design_unit {
 public:
 	Uc_class(char *nm);
 	Uc_class(char *nm, Uc_class *base);
-	~Uc_class() override;
 	Uc_scope *get_scope() {
 		return &scope;
 	}

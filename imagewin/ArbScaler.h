@@ -128,7 +128,7 @@ public:
 		return false;
 	}
 
-	virtual ~ArbScaler() { }
+	virtual ~ArbScaler() = default;
 };
 
 }

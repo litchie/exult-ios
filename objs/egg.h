@@ -41,7 +41,6 @@ public:
 	                    unsigned int tiley, unsigned int lft = 0)
 		: Ireg_game_object(shapenum, framenum, tilex, tiley, lft)
 	{  }
-	~Egglike_game_object() override {  }
 	// Render.
 	void paint() override;
 	// Can this be clicked on?

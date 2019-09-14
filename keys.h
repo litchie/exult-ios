@@ -59,7 +59,6 @@ private:
 	KeyMap::const_iterator TranslateEvent(SDL_Event const &ev) const;
 public:
 	KeyBinder();
-	~KeyBinder();
 	/* Add keybinding */
 	void AddKeyBinding(SDLKey sym, int mod, const Action *action,
 	                   int nparams, int *params);

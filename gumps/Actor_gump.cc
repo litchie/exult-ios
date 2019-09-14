@@ -109,14 +109,6 @@ Actor_gump::Actor_gump(
 }
 
 /*
- *  Delete actor display.
- */
-
-Actor_gump::~Actor_gump(
-) {
-}
-
-/*
  *  Add an object.
  *
  *  Output: 0 if cannot add it.

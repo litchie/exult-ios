@@ -27,20 +27,6 @@
 #include <SDL_timer.h>
 
 /*
- *  Be sure no copies are still in queue when deleted.
- */
-
-Time_sensitive::~Time_sensitive(
-) {
-#if 0   /*+++++++For finding bugs. */
-	if (queue_cnt > 0) {
-		char *p = 0;
-		char c = *p;        // Force crash.
-	}
-#endif
-}
-
-/*
  *  Remove all entries.
  */
 

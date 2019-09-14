@@ -44,7 +44,6 @@ class Shape_entry {
 	short shapenum, framenum;   // The given shape/frame.
 	Rectangle box;          // Box where drawn.
 public:
-	Shape_entry() {  }
 	void set(int shnum, int frnum, int rx, int ry, int rw, int rh) {
 		shapenum = static_cast<short>(shnum);
 		framenum = static_cast<short>(frnum);

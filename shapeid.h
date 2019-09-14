@@ -276,7 +276,7 @@ public:
 class Paintable {
 public:
 	virtual void paint() = 0;
-	virtual ~Paintable() {  }
+	virtual ~Paintable() = default;
 };
 
 #endif

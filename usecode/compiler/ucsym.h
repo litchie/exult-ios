@@ -82,8 +82,7 @@ public:
 	friend class Uc_scope;
 	Uc_symbol(const char *nm) : name(nm)
 	{  }
-	virtual ~Uc_symbol()
-	{  }
+	virtual ~Uc_symbol() = default;
 	const char *get_name() {
 		return name.c_str();
 	}
@@ -668,7 +667,7 @@ public:
  */
 class Uc_design_unit {
 public:
-	virtual ~Uc_design_unit() { }
+	virtual ~Uc_design_unit() = default;
 	virtual void gen(std::ostream &out) = 0;    // Generate Usecode.
 	virtual Usecode_symbol *create_sym() = 0;
 	virtual bool is_class() const {

@@ -239,9 +239,6 @@ SI_Game::SI_Game() {
 
 }
 
-SI_Game::~SI_Game() {
-}
-
 // Little weighted random function for lightning on the castle
 static int get_frame(void) {
 	int num = rand() % 9;

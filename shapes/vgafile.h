@@ -226,7 +226,7 @@ public:
 	explicit Shape_file(const char *nm);
 	explicit Shape_file(std::unique_ptr<Shape_frame> fr): Shape(std::move(fr)) {}
 	explicit Shape_file(IDataSource *shape_source);
-	Shape_file();
+	Shape_file() = default;
 	Shape_file(Shape_file&& other) noexcept = default;
 	Shape_file& operator=(Shape_file&& other) noexcept = default;
 	~Shape_file() noexcept final = default;

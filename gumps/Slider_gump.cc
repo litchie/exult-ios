@@ -119,14 +119,6 @@ Slider_gump::Slider_gump(
 }
 
 /*
- *  Delete slider.
- */
-
-Slider_gump::~Slider_gump(
-) {
-}
-
-/*
  *  An arrow on the slider was clicked.
  */
 

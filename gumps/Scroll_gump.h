@@ -29,7 +29,6 @@ class Scroll_gump : public Text_gump {
 
 public:
 	Scroll_gump(int fnt = 4, int gump = -1);
-	~Scroll_gump() override {  }
 	// Paint it and its contents.
 	void paint() override;
 };

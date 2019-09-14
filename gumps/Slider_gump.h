@@ -46,7 +46,6 @@ protected:
 
 public:
 	Slider_gump(int mival, int mxval, int step, int defval);
-	~Slider_gump() override;
 	int get_val() {         // Get last value set.
 		return val;
 	}

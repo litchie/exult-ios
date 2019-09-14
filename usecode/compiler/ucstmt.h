@@ -48,7 +48,7 @@ class Uc_statement : public Uc_location {
 public:
 	Uc_statement() : Uc_location()
 	{  }
-	virtual ~Uc_statement() {  }
+	virtual ~Uc_statement() = default;
 	// Generate code.
 	virtual void gen(Uc_function *fun, std::vector<Basic_block *> &blocks,
 	                 Basic_block *&curr, Basic_block *end,
@@ -62,8 +62,6 @@ public:
 class Uc_block_statement : public Uc_statement {
 	std::vector<Uc_statement *> statements;
 public:
-	Uc_block_statement()
-	{  }
 	~Uc_block_statement() override;
 	void add(Uc_statement *stmt) {
 		statements.push_back(stmt);
@@ -257,7 +255,6 @@ public:
  */
 class Uc_break_statement : public Uc_statement {
 public:
-	Uc_break_statement() {  }
 	// Generate code.
 	void gen(Uc_function *fun, std::vector<Basic_block *> &blocks,
 	         Basic_block *&curr, Basic_block *end,
@@ -270,7 +267,6 @@ public:
  */
 class Uc_continue_statement : public Uc_statement {
 public:
-	Uc_continue_statement() {  }
 	// Generate code.
 	void gen(Uc_function *fun, std::vector<Basic_block *> &blocks,
 	         Basic_block *&curr, Basic_block *end,
@@ -384,8 +380,6 @@ class Uc_switch_default_case_statement : public Uc_switch_case_statement {
 public:
 	Uc_switch_default_case_statement(Uc_statement *stmts)
 		: Uc_switch_case_statement(stmts)
-	{  }
-	~Uc_switch_default_case_statement() override
 	{  }
 	bool is_default() const override {
 		return true;

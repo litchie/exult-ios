@@ -54,8 +54,7 @@ public:
 	Usecode_symbol(const char *nm, Symbol_kind k, int v, int e = -1)
 		: name(nm), kind(k), value(v), extra(e)
 	{  }
-	virtual ~Usecode_symbol()
-	{  }
+	virtual ~Usecode_symbol() = default;
 	const char *get_name() const {
 		return name.c_str();
 	}
@@ -121,7 +120,6 @@ public:
 	                     int v, int nvars = 0)
 		: Usecode_scope_symbol(nm, k, v), num_vars(nvars)
 	{  }
-	~Usecode_class_symbol() override {  }
 	void add_method_num(int val) {
 		methods.push_back(val);
 	}
@@ -145,7 +143,6 @@ public:
  */
 class Usecode_symbol_table : public Usecode_scope_symbol {
 public:
-	Usecode_symbol_table() {  }
 	static bool has_symbol_table(std::istream &in);
 };
 

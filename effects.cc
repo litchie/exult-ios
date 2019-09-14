@@ -1208,7 +1208,7 @@ protected:
 		ignore_unused_variable_warning(drop, x, y, w, h, ascrollx, ascrolly);
 	}
 public:
-	virtual ~Particledrop() {  }
+	virtual ~Particledrop() = default;
 	void move
 	(
 	    Particle &drop,

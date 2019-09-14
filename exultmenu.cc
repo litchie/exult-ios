@@ -139,9 +139,6 @@ ExultMenu::ExultMenu(Game_window *gw)
 	exult_flx.load(fname);
 }
 
-ExultMenu::~ExultMenu() {
-}
-
 void ExultMenu::calc_win() {
 	centerx = gwin->get_width() / 2;
 	centery = gwin->get_height() / 2;

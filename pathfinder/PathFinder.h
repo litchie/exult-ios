@@ -29,7 +29,7 @@ private:
 	int     move_flags;
 public:
 	Pathfinder_client(int mf) : move_flags(mf) {  }
-	virtual ~Pathfinder_client() {  }
+	virtual ~Pathfinder_client() = default;
 	// Figure when to give up.
 	virtual int get_max_cost(int cost_to_goal);
 	// Figure cost for a single step.
@@ -58,8 +58,7 @@ public:
 	// Find a path from sx,sy,sz to dx,dy,dz
 	// Return 0 if no path can be traced.
 	// Return !0 if path found
-	PathFinder() : src(), dest()
-	{  }
+	PathFinder() = default;
 	virtual int NewPath(Tile_coord const &s, Tile_coord const &d,
 	                    Pathfinder_client *client) = 0;
 	// Retrieve starting point (set by subclasses).
@@ -85,7 +84,7 @@ public:
 		return 0;
 	}
 	virtual int get_num_steps() = 0;// # of steps left to take.
-	virtual ~PathFinder();
+	virtual ~PathFinder() = default;
 };
 
 #endif

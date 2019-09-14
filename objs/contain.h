@@ -38,18 +38,18 @@ protected:
 	int  gumpY;
 	bool gumpInit;
 public:
-	virtual void setGumpXY(int x, int y) { 
+	void setGumpXY(int x, int y) { 
 		gumpX = x; 
 		gumpY = y;	
 		gumpInit = true;
 	}
-	virtual int  getGumpX() {
+	int  getGumpX() {
 		return gumpX;
 	}
-	virtual int  getGumpY() {
+	int  getGumpY() {
 		return gumpY;
 	}
-	virtual bool validGumpXY() {
+	bool validGumpXY() {
 		return gumpInit;
 	}
 	Container_game_object(int shapenum, int framenum, unsigned int tilex,
@@ -60,7 +60,6 @@ public:
 	{  }
 	Container_game_object() : volume_used(0), resistance(0),
 		objects(nullptr), gumpInit(false) {  }
-	virtual ~Container_game_object();
 	Object_list &get_objects() {
 		return objects;
 	}

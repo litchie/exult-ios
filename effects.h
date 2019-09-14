@@ -78,8 +78,6 @@ public:
 	friend class Effects_manager;
 	Special_effect() : next(nullptr), prev(nullptr)
 	{  }
-	~Special_effect() override
-	{  }
 	// Render.
 	virtual void paint();
 	virtual int is_weather() {  // Need to distinguish weather.
@@ -242,8 +240,6 @@ protected:
 	Tile_coord eggloc;      // Location of egg that started this.
 public:
 	Weather_effect(int duration, int delay, int n, Game_object *egg = nullptr);
-	~Weather_effect() override
-	{  }
 	// Avatar out of range?
 	int out_of_range(Tile_coord &avpos, int dist);
 	int is_weather() override {

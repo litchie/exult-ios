@@ -2519,7 +2519,7 @@ public:
 		                   Tile_coord(offsets[dir], offsets[dir + 1], 0), actor);
 	}
 	// Handle time event.
-	virtual int handle_event(Actor *actor);
+	int handle_event(Actor *actor) override;
 };
 
 // Offsets where NPC should sit:

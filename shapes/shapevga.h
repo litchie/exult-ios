@@ -52,7 +52,6 @@ public:
 	Shapes_vga_file() : info_read(false) {  }
 	Shapes_vga_file(const char *nm, int u7drag = -1, const char *nm2 = nullptr);
 	void init();
-	~Shapes_vga_file() override;
 	// Read additional data files.
 	void reload_info(Exult_Game game);
 	void fix_old_shape_info(Exult_Game game);

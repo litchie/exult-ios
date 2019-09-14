@@ -31,9 +31,6 @@ private:
 	T           *table;
 	float       gamma;
 
-	// No
-	GammaTable() { }
-
 public:
 
 	inline const float &get_gamma() {
@@ -48,6 +45,8 @@ public:
 		for (unsigned i = 0; i < size; i++)
 			table[i] = static_cast<T>(std::pow(i / sizef, 1 / gamma) * sizef);
 	}
+
+	GammaTable() = delete;
 
 	GammaTable(unsigned int s, float g = 1) : sizef(-1), gamma(-1) {
 		sizef += size = s > 2 ? s : 2;

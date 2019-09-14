@@ -53,7 +53,6 @@ public:
 	int get_num_steps() override { // # of steps left to take.
 		return major_distance / major_frame_incr;
 	}
-	~Zombie() override;
 };
 
 #endif

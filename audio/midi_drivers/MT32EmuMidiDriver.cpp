@@ -43,10 +43,6 @@ using namespace MT32Emu;
 const MidiDriver::MidiDriverDesc MT32EmuMidiDriver::desc =
 		MidiDriver::MidiDriverDesc ("MT32Emu", createInstance);
 
-MT32EmuMidiDriver::MT32EmuMidiDriver()
-{
-}
-
 /*
  *	This file open proc redirects writes to a writable directory
  *	and looks in this and other directories for the MT32 data.

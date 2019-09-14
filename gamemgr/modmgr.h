@@ -52,13 +52,8 @@ public:
 		: type(ty), cfgname(cf), path_prefix(pt), mod_title(mt), menustring(ms),
 		  expansion(exp), sibeta(sib), found(f), editing(ed), codepage(cp)
 	{  }
-	BaseGameInfo(const BaseGameInfo &other)
-		: type(other.type), cfgname(other.cfgname),
-		  path_prefix(other.path_prefix), mod_title(other.mod_title),
-		  menustring(other.menustring), expansion(other.expansion), sibeta(other.sibeta),
-		  found(other.found), editing(other.editing), codepage(other.codepage)
-	{  }
-	virtual ~BaseGameInfo() {  }
+	BaseGameInfo(const BaseGameInfo &) = default;
+	virtual ~BaseGameInfo() = default;
 
 	const std::string get_cfgname() const {
 		return cfgname;
@@ -135,14 +130,6 @@ protected:
 public:
 	ModInfo(Exult_Game game, const std::string &name, const std::string &mod,
 	        const std::string &path, bool exp, bool sib, bool ed, const std::string &cfg);
-	ModInfo(const ModInfo &other)
-		: BaseGameInfo(other.type, other.cfgname.c_str(),
-		               other.mod_title.c_str(), other.path_prefix.c_str(),
-		               other.menustring.c_str(), other.expansion, other.sibeta, other.found,
-		               other.editing, other.codepage.c_str()),
-		compatible(other.compatible), configfile(other.configfile)
-	{  }
-	~ModInfo() override {}
 
 	bool is_mod_compatible() const {
 		return compatible;
@@ -161,19 +148,7 @@ protected:
 public:
 	ModManager(const std::string &name, const std::string &menu, bool needtitle,
 	           bool silent = false);
-	ModManager() {  }
-	ModManager(const ModManager &other)
-		: BaseGameInfo(other.type, other.cfgname.c_str(),
-		               other.mod_title.c_str(), other.path_prefix.c_str(),
-		               other.menustring.c_str(), other.expansion, other.sibeta, other.found,
-		               other.editing, other.codepage.c_str()) {
-		for (std::vector<ModInfo>::const_iterator it = other.modlist.begin();
-		        it != other.modlist.end(); ++it)
-			modlist.push_back(*it);
-	}
-	~ModManager() override {
-		modlist.clear();
-	}
+	ModManager() = default;
 
 	std::vector<ModInfo> &get_mod_list() {
 		return modlist;
@@ -217,9 +192,6 @@ protected:
 	                 bool silent);
 public:
 	GameManager(bool silent = false);
-	virtual ~GameManager() {
-		games.clear();
-	}
 
 	std::vector<ModManager> &get_game_list() {
 		return games;

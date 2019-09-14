@@ -55,7 +55,7 @@ public:
 	friend class Map_patch_collection;
 	Map_patch(Object_spec s) : spec(s)
 	{  }
-	virtual ~Map_patch() {  }
+	virtual ~Map_patch() = default;
 	Game_object *find();        // Find matching object.
 	virtual bool apply() = 0;   // Perform action.
 };
@@ -92,8 +92,6 @@ public:
 class Map_patch_collection {
 	Map_patch_map patches;
 public:
-	Map_patch_collection()
-	{  }
 	~Map_patch_collection();
 	void add(Map_patch *p);     // Add a patch.
 	void apply(int schunk);     // Apply for given superchunk.

@@ -65,9 +65,6 @@ Windnd::Windnd(HWND hgwnd, Drop_shape_handler_fun shapefun,
 	m_cRef = 1;
 }
 
-Windnd::~Windnd() {
-}
-
 STDMETHODIMP
 Windnd::QueryInterface(REFIID iid, void **ppvObject) {
 	*ppvObject = nullptr;
@@ -378,10 +375,6 @@ Winstudioobj::Winstudioobj(windragdata pdata)
 	m_cRef = 1;
 	drag_image = nullptr;
 }
-
-Winstudioobj::~Winstudioobj() {
-}
-
 
 STDMETHODIMP
 Winstudioobj::QueryInterface(REFIID iid, void **ppvObject) {

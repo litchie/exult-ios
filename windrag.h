@@ -131,7 +131,7 @@ public:
 	       Drop_npc_handler_fun npcfun, Drop_combo_handler_fun);
 	Windnd(HWND hgwnd, Drop_shape_handler_fun shapefun,
 	       Drop_chunk_handler_fun cfun, Drop_shape_handler_fun facefun, void *d);
-	virtual ~Windnd();
+	virtual ~Windnd() = default;
 
 	STDMETHOD(QueryInterface)(REFIID iid, void **ppvObject);
 	STDMETHOD_(ULONG, AddRef)(void);
@@ -199,7 +199,7 @@ private:
 
 public:
 	Winstudioobj(windragdata pdata);
-	virtual ~Winstudioobj();
+	virtual ~Winstudioobj() = default;
 
 	STDMETHOD(QueryInterface)(REFIID iid, void **ppvObject);
 	STDMETHOD_(ULONG, AddRef)(void);

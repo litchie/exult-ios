@@ -166,7 +166,6 @@ public:
 		: Gump(cont, initx, inity, this) {
 		ignore_unused_variable_warning(from);
 	}
-	~Container_gump() override {  }
 	Gump *clone(Container_game_object *cont, int initx, int inity) override {
 		return new Container_gump(cont, initx, inity, this);
 	}

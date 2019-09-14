@@ -25,7 +25,6 @@
 class SI_Game: public Game {
 public:
 	SI_Game();
-	~SI_Game() override;
 
 	void play_intro() override;
 	void end_game(bool success) override;

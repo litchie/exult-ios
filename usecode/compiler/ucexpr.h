@@ -46,9 +46,8 @@ class Basic_block;
 class Uc_expression : public Uc_location {
 public:
 	// Use current location.
-	Uc_expression() : Uc_location()
-	{  }
-	virtual ~Uc_expression() {  }
+	Uc_expression() = default;
+	virtual ~Uc_expression() = default;
 	// Gen. code to put result on stack.
 	virtual void gen_value(Basic_block *out) = 0;
 	// Gen code to push value(s).
@@ -277,7 +276,6 @@ public:
  */
 class Uc_event_expression : public Uc_expression {
 public:
-	Uc_event_expression() {  }
 	// Gen. code to put result on stack.
 	void gen_value(Basic_block *out) override;
 	// Gen. to assign from stack.
@@ -289,7 +287,6 @@ public:
  */
 class Uc_item_expression : public Uc_expression {
 public:
-	Uc_item_expression() {  }
 	// Gen. code to put result on stack.
 	void gen_value(Basic_block *out) override;
 };
@@ -331,7 +328,6 @@ public:
  */
 class Uc_choice_expression : public Uc_expression {
 public:
-	Uc_choice_expression() {  }
 	// Gen. code to put result on stack.
 	void gen_value(Basic_block *out) override;
 };
@@ -342,7 +338,7 @@ public:
 class Uc_array_expression : public Uc_expression {
 	std::vector<Uc_expression *> exprs;
 public:
-	Uc_array_expression() {  }
+	Uc_array_expression() = default;
 	Uc_array_expression(Uc_expression *e0) {
 		add(e0);    // Create with 1st expression.
 	}
@@ -420,7 +416,6 @@ public:
 	Uc_class_expression(Uc_var_symbol *v)
 		: Uc_var_expression(v)
 	{  }
-	~Uc_class_expression() override {  }
 	void gen_value(Basic_block *out) override;
 	void gen_assign(Basic_block *out) override;
 	Uc_var_symbol *need_var(Basic_block *, Uc_function *) override {
@@ -464,8 +459,6 @@ class Uc_del_expression : public Uc_expression {
 	Uc_class_inst_symbol *cls;
 public:
 	Uc_del_expression(Uc_class_inst_symbol *v) : cls(v)
-	{  }
-	~Uc_del_expression()
 	{  }
 	// Gen. code to put result on stack.
 	void gen_value(Basic_block *out) override;

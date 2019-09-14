@@ -37,11 +37,6 @@ RawAudioSample::RawAudioSample(uint8* buffer_, uint32 size_, uint32 rate_,
 	byte_swap = false;
 }
 
-RawAudioSample::~RawAudioSample()
-{
-
-}
-
 void RawAudioSample::initDecompressor(void *DecompData) const
 {
 	RawDecompData *decomp = static_cast<RawDecompData *>(DecompData);

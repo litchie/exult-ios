@@ -35,7 +35,6 @@ class FMOplMidiDriver : public LowLevelMidiDriver
 
 public:
 	const static MidiDriverDesc* getDesc() { return &desc; }
-	FMOplMidiDriver();
 
 protected:
 	// LowLevelMidiDriver implementation

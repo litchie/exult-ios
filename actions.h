@@ -45,7 +45,7 @@ public:
 	Actor_action() : get_party(false) {
 		seq = ++seqcnt;
 	}
-	virtual ~Actor_action() { }
+	virtual ~Actor_action() = default;
 	void set_get_party(bool tf = true) {
 		ignore_unused_variable_warning(tf);
 		get_party = true;
@@ -90,7 +90,7 @@ public:
  */
 class Null_action : public Actor_action {
 public:
-	Null_action() {  }
+	Null_action() = default;
 	int handle_event(Actor *actor) override;
 };
 

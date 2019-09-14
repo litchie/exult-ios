@@ -25,7 +25,6 @@
 class BG_Game: public Game {
 public:
 	BG_Game();
-	~BG_Game() override;
 
 	void play_intro() override;
 	void end_game(bool success) override;

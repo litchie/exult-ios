@@ -1033,14 +1033,6 @@ void Shape::del_frame(
 }
 
 /*
- * Empty constructor
- */
-
-Shape_file::Shape_file() {
-	// Nothing to see here
-}
-
-/*
  *  Read in all shapes from a single-shape file.
  */
 
@@ -1269,8 +1261,7 @@ void Vga_file::reset_imports() {
 }
 
 // Out-of-line definition to avoid more dependencies on databuf.h.
-Vga_file::~Vga_file() noexcept {
-}
+Vga_file::~Vga_file() noexcept = default;
 
 /*
  *  Make a spot for a new shape, and delete frames in existing shape.

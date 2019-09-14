@@ -91,9 +91,6 @@ bool FinishBreakpoint::check(Stack_frame *frame) const {
 
 int Breakpoints::lastID = 0;
 
-Breakpoints::Breakpoints() {
-}
-
 Breakpoints::~Breakpoints() {
 	std::list<Breakpoint *>::iterator iter;
 

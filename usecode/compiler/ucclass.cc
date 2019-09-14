@@ -62,13 +62,6 @@ Uc_class::Uc_class(
 }
 
 /*
- *  Cleanup.
- */
-Uc_class::~Uc_class(
-) {
-}
-
-/*
  *  Add a new class variable.
  *
  *  Output: New sym, or nullptr if already declared.

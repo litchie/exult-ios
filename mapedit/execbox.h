@@ -82,8 +82,6 @@ class Exec_process {
 public:
 	typedef void (*Reader_fun)(char *data, int datalen, int exit_code,
 	                           gpointer user_data);
-	Exec_process() {}
-	~Exec_process() {}
 	void kill_child() {}
 	void read_from_child(int id) {
 		ignore_unused_variable_warning(id);

@@ -53,8 +53,7 @@ protected:
 	long street_maintenance_time;   // Time (msecs) when last tried.
 public:
 	Schedule(Actor *n);
-	virtual ~Schedule() {
-	}
+	virtual ~Schedule() = default;
 	int get_prev_type() const {
 		return prev_type;
 	}

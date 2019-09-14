@@ -38,7 +38,7 @@ public:
 	bool dirty;
 
 	MenuObject() : has_id(false), id(0) { }
-	virtual ~MenuObject() { }
+	virtual ~MenuObject() = default;
 
 	void set_selected(bool sel) {
 		dirty |= (selected != sel);
@@ -75,7 +75,6 @@ class MenuEntry: public MenuObject {
 public:
 	Shape_frame *frame_on, *frame_off;
 	MenuEntry(Shape_frame *on, Shape_frame *off, int xpos, int ypos);
-	~MenuEntry() override { }
 
 	void paint(Game_window *gwin) override;
 	bool handle_event(SDL_Event &event) override;
@@ -103,7 +102,6 @@ private:
 	bool enabled;
 public:
 	MenuTextEntry(Font *fnton, Font *fnt, const char *txt, int xpos, int ypos);
-	~MenuTextEntry() override { }
 
 	void paint(Game_window *gwin) override;
 	bool handle_event(SDL_Event &event) override;
@@ -119,7 +117,6 @@ private:
 public:
 	MenuGameEntry(Font *fnton, Font *fnt, const char *txt, Shape_frame *sfx,
 	              int xpos, int ypos);
-	~MenuGameEntry() override { }
 
 	void paint(Game_window *gwin) override;
 	bool handle_event(SDL_Event &event) override;

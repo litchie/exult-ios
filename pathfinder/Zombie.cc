@@ -140,10 +140,3 @@ int Zombie::GetNextStep(Tile_coord &n, bool &done) {
 	done = (major_distance <= 0);   // Indicate if this is the last one.
 	return (1);
 }
-
-/*
- *  Delete.
- */
-Zombie::~Zombie(
-) {
-}

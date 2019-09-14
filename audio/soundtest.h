@@ -26,7 +26,6 @@ class SoundTester
 	bool repeat;
 public:
 		SoundTester();
-		~SoundTester();
 		void test_sound();
 	};
 	

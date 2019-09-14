@@ -112,7 +112,6 @@ private:
 	std::unordered_map<const char *, Font *, hashstr, eqstr> fonts;
 
 public:
-	FontManager();
 	~FontManager();
 	void add_font(const char *name, const File_spec &fname0,
 	              int index, int hlead = 0, int vlead = 1);

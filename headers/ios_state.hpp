@@ -45,6 +45,7 @@ public:
         {}
     ~ios_flags_saver()
         { this->restore(); }
+    ios_flags_saver& operator=(const ios_flags_saver&) = delete;
 
     void  restore()
         { s_save_.flags( a_save_ ); }
@@ -52,8 +53,6 @@ public:
 private:
     state_type &       s_save_;
     aspect_type const  a_save_;
-
-    ios_flags_saver& operator=(const ios_flags_saver&);
 };
 
 class ios_precision_saver
@@ -70,6 +69,7 @@ public:
         {}
     ~ios_precision_saver()
         { this->restore(); }
+    ios_precision_saver& operator=(const ios_precision_saver&) = delete;
 
     void  restore()
         { s_save_.precision( a_save_ ); }
@@ -78,7 +78,6 @@ private:
     state_type &       s_save_;
     aspect_type const  a_save_;
 
-    ios_precision_saver& operator=(const ios_precision_saver&);
 };
 
 class ios_width_saver
@@ -95,6 +94,7 @@ public:
         {}
     ~ios_width_saver()
         { this->restore(); }
+    ios_width_saver& operator=(const ios_width_saver&) = delete;
 
     void  restore()
         { s_save_.width( a_save_ ); }
@@ -102,7 +102,6 @@ public:
 private:
     state_type &       s_save_;
     aspect_type const  a_save_;
-    ios_width_saver& operator=(const ios_width_saver&);
 };
 
 
@@ -123,6 +122,7 @@ public:
         { s.clear(a); }
     ~basic_ios_iostate_saver()
         { this->restore(); }
+    basic_ios_iostate_saver& operator=(const basic_ios_iostate_saver&) = delete;
 
     void  restore()
         { s_save_.clear( a_save_ ); }
@@ -130,7 +130,6 @@ public:
 private:
     state_type &       s_save_;
     aspect_type const  a_save_;
-    basic_ios_iostate_saver& operator=(const basic_ios_iostate_saver&);
 };
 
 template < typename Ch, class Tr >
@@ -148,6 +147,7 @@ public:
         { s.exceptions(a); }
     ~basic_ios_exception_saver()
         { this->restore(); }
+    basic_ios_exception_saver& operator=(const basic_ios_exception_saver&) = delete;
 
     void  restore()
         { s_save_.exceptions( a_save_ ); }
@@ -155,7 +155,6 @@ public:
 private:
     state_type &       s_save_;
     aspect_type const  a_save_;
-    basic_ios_exception_saver& operator=(const basic_ios_exception_saver&);
 };
 
 template < typename Ch, class Tr >
@@ -173,6 +172,7 @@ public:
         {}
     ~basic_ios_tie_saver()
         { this->restore(); }
+    basic_ios_tie_saver& operator=(const basic_ios_tie_saver&) = delete;
 
     void  restore()
         { s_save_.tie( a_save_ ); }
@@ -180,7 +180,6 @@ public:
 private:
     state_type &       s_save_;
     aspect_type const  a_save_;
-    basic_ios_tie_saver& operator=(const basic_ios_tie_saver&);
 };
 
 template < typename Ch, class Tr >
@@ -198,6 +197,7 @@ public:
         {}
     ~basic_ios_rdbuf_saver()
         { this->restore(); }
+    basic_ios_rdbuf_saver& operator=(const basic_ios_rdbuf_saver&) = delete;
 
     void  restore()
         { s_save_.rdbuf( a_save_ ); }
@@ -205,7 +205,6 @@ public:
 private:
     state_type &       s_save_;
     aspect_type const  a_save_;
-    basic_ios_rdbuf_saver& operator=(const basic_ios_rdbuf_saver&);
 };
 
 template < typename Ch, class Tr >
@@ -223,6 +222,7 @@ public:
         {}
     ~basic_ios_fill_saver()
         { this->restore(); }
+    basic_ios_fill_saver& operator=(const basic_ios_fill_saver&) = delete;
 
     void  restore()
         { s_save_.fill( a_save_ ); }
@@ -230,7 +230,6 @@ public:
 private:
     state_type &       s_save_;
     aspect_type const  a_save_;
-    basic_ios_fill_saver& operator=(const basic_ios_fill_saver&);
 };
 
 typedef basic_ios_fill_saver<char, std::char_traits<char> > ios_fill_saver;
@@ -251,6 +250,7 @@ public:
         {}
     ~basic_ios_locale_saver()
         { this->restore(); }
+    basic_ios_locale_saver& operator=(const basic_ios_locale_saver&) = delete;
 
     void  restore()
         { s_save_.imbue( a_save_ ); }
@@ -258,7 +258,6 @@ public:
 private:
     state_type &       s_save_;
     aspect_type const  a_save_;
-    basic_ios_locale_saver& operator=(const basic_ios_locale_saver&);
 };
 #endif
 
@@ -280,6 +279,7 @@ public:
         { s.iword(i) = a; }
     ~ios_iword_saver()
         { this->restore(); }
+    ios_iword_saver& operator=(const ios_iword_saver&) = delete;
 
     void  restore()
         { s_save_.iword( i_save_ ) = a_save_; }
@@ -288,8 +288,6 @@ private:
     state_type &       s_save_;
     aspect_type const  a_save_;
     index_type const   i_save_;
-
-    ios_iword_saver& operator=(const ios_iword_saver&);
 };
 
 class ios_pword_saver
@@ -307,6 +305,7 @@ public:
         { s.pword(i) = a; }
     ~ios_pword_saver()
         { this->restore(); }
+    ios_pword_saver operator=(const ios_pword_saver&) = delete;
 
     void  restore()
         { s_save_.pword( i_save_ ) = a_save_; }
@@ -315,8 +314,6 @@ private:
     state_type &       s_save_;
     aspect_type const  a_save_;
     index_type const   i_save_;
-
-    ios_pword_saver operator=(const ios_pword_saver&);
 };
 
 
@@ -334,6 +331,7 @@ public:
 
     ~ios_base_all_saver()
         { this->restore(); }
+    ios_base_all_saver& operator=(const ios_base_all_saver&) = delete;
 
     void  restore()
     {
@@ -347,8 +345,6 @@ private:
     state_type::fmtflags const  a1_save_;
     ::std::streamsize const     a2_save_;
     ::std::streamsize const     a3_save_;
-
-    ios_base_all_saver& operator=(const ios_base_all_saver&);
 };
 
 template < typename Ch, class Tr >
@@ -369,6 +365,7 @@ public:
 
     ~basic_ios_all_saver()
         { this->restore(); }
+    basic_ios_all_saver& operator=(const basic_ios_all_saver&) = delete;
 
     void  restore()
     {
@@ -398,8 +395,6 @@ private:
     #ifndef BOOST_NO_STD_LOCALE
     ::std::locale const                     a9_save_;
     #endif
-
-    basic_ios_all_saver& operator=(const basic_ios_all_saver&);
 };
 
 class ios_all_word_saver
@@ -415,6 +410,7 @@ public:
 
     ~ios_all_word_saver()
         { this->restore(); }
+    ios_all_word_saver& operator=(const ios_all_word_saver&) = delete;
 
     void  restore()
     {
@@ -427,8 +423,6 @@ private:
     index_type const  i_save_;
     long const        a1_save_;
     void * const      a2_save_;
-
-    ios_all_word_saver& operator=(const ios_all_word_saver&);
 };
 
 

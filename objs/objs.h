@@ -112,8 +112,7 @@ public:
 	{  }
 	Game_object() : ShapeID(), chunk(nullptr), render_seq(0)  // Create fake entry.
 	{  }
-	~Game_object() override
-	{  }
+	~Game_object() override = default;
     Game_object_weak weak_from_this() {
 	    return std::weak_ptr<Game_object>(shared_from_this());
 	}
@@ -476,7 +475,7 @@ public:
 		: Game_object(shapenum, framenum, tilex, tiley, lft),
 		  prev_flat(ShapeID(12, 0))
 	{  }
-	~Terrain_game_object() override {  }
+	~Terrain_game_object() override = default;
 	Terrain_game_object *as_terrain() override {
 		return this;
 	}
@@ -496,7 +495,7 @@ public:
 	                 unsigned int tiley, unsigned int lft = 0)
 		: Game_object(shapenum, framenum, tilex, tiley, lft)
 	{  }
-	~Ifix_game_object() override {  }
+	~Ifix_game_object() override = default;
 	// Move to new abs. location.
 	void move(int newtx, int newty, int newlift, int newmap = -1) override;
 	// Remove/delete this object.

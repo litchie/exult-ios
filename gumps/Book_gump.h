@@ -29,7 +29,6 @@ class Book_gump : public Text_gump {
 
 public:
 	Book_gump(int fnt = 4, int gump = -1);
-	~Book_gump() override {  }
 	// Paint it and its contents.
 	void paint() override;
 };

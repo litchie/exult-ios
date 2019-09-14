@@ -621,10 +621,6 @@ Shapes_vga_file::Shapes_vga_file(
 ) : Vga_file(nm, u7drag, nm2), info_read(false) {
 }
 
-Shapes_vga_file::~Shapes_vga_file() {
-}
-
-
 void Shapes_vga_file::init() {
 	if (is_system_path_defined("<PATCH>") && U7exists(PATCH_SHAPES))
 		load(SHAPES_VGA, PATCH_SHAPES);

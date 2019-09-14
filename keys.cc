@@ -374,9 +374,6 @@ KeyBinder::KeyBinder() {
 	FillParseMaps();
 }
 
-KeyBinder::~KeyBinder() {
-}
-
 void KeyBinder::AddKeyBinding(SDLKey key, int mod, const Action *action,
                               int nparams, int *params) {
 	SDL_keysym k;

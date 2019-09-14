@@ -71,8 +71,6 @@ class Equip_record {
 public:
 	friend class Monster_info;
 	friend class Monster_actor;
-	Equip_record()
-	{  }
 	// Set i'th element.
 	void set(int i, int shnum, int prob, int quant) {
 		elements[i].set(shnum, prob, quant);
@@ -127,7 +125,6 @@ class Monster_info : public Base_info {
 public:
 	friend class Shape_info;
 	friend class Monster_actor;
-	Monster_info() {  }
 	// Read in from file.
 	bool read(std::istream &in, int version, Exult_Game game);
 	// Write out.

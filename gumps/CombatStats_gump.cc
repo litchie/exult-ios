@@ -61,9 +61,6 @@ CombatStats_gump::CombatStats_gump(int initx, int inity) :
 	}
 }
 
-CombatStats_gump::~CombatStats_gump() {
-}
-
 /*
  *  Paint on screen.
  */

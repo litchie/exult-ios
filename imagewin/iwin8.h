@@ -46,7 +46,6 @@ class Image_window8 : public Image_window {
 public:
 	Image_window8(unsigned int w, unsigned int h, unsigned int gw, unsigned int gh, int scl = 1,
 	              bool fs = false, int sclr = point, Image_window::FillMode fillmode = CentreAspectCorrect, unsigned int fillsclr = point);
-	~Image_window8() override;
 
 	Image_buffer8 *get_ib8() const {
 		return ib8;

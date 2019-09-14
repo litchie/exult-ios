@@ -49,8 +49,7 @@ public:
 	Ireg_game_object() : owner(nullptr), flags(0), flags2(0), lowlift(-1),
 		highshape(-1)
 	{  }
-	~Ireg_game_object() override
-	{  }
+	~Ireg_game_object() override = default;
 	void set_flags(uint32 f) {  // For initialization.
 		flags = f;
 	}

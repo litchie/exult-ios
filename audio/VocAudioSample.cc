@@ -156,11 +156,6 @@ VocAudioSample::VocAudioSample(uint8* buffer_, uint32 size_)
 	length = size_;
 }
 
-VocAudioSample::~VocAudioSample()
-{
-
-}
-
 void VocAudioSample::initDecompressor(void *DecompData) const
 {
 	VocDecompData *decomp = static_cast<VocDecompData *>(DecompData);

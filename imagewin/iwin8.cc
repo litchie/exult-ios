@@ -52,10 +52,6 @@ Image_window8::Image_window8(unsigned int w, unsigned int h, unsigned int gwidth
 	ib8 = static_cast<Image_buffer8 *>(ibuf);
 }
 
-Image_window8::~Image_window8() {
-}
-
-
 void Image_window8::get_gamma(float &r, float &g, float &b) {
 	r = GammaRed.get_gamma();
 	g = GammaGreen.get_gamma();

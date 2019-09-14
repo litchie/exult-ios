@@ -47,7 +47,6 @@ protected:
 public:
 	friend class Yesno_button;
 	Yesno_gump(const std::string &txt, const char *font = "SMALL_BLACK_FONT");
-	~Yesno_gump() override;
 	int get_answer() {
 		return answer;
 	}

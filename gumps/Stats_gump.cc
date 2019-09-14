@@ -64,8 +64,6 @@ public:
 		for (int i = first; i < cnt; ++i)
 			atts[i] = allatts[first + i];
 	}
-	~Stats_extra_gump() override
-	{  }
 
 	void paint() override;
 };

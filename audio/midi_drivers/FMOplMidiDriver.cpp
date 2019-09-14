@@ -204,13 +204,6 @@ const unsigned char FMOplMidiDriver::adlib_opadd[9] = {
 };
 
 //
-// Constructor
-//
-FMOplMidiDriver::FMOplMidiDriver()
-{
-}
-
-//
 // Open the device
 //
 int FMOplMidiDriver::open()

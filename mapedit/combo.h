@@ -132,7 +132,6 @@ class Combo_info {
 	friend class Combo_chooser;
 	int num;
 	Rectangle box;          // Box where drawn.
-	Combo_info() {  }
 	void set(int n, int rx, int ry, int rw, int rh) {
 		num = n;
 		box = Rectangle(rx, ry, rw, rh);

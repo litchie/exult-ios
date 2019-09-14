@@ -46,7 +46,3 @@ int Pathfinder_client::at_goal(
 	return (tile.tx == goal.tx && tile.ty == goal.ty &&
 	        (goal.tz == -1 || tile.tz == goal.tz));
 }
-
-
-PathFinder::~PathFinder()
-{}

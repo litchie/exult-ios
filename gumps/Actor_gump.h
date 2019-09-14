@@ -54,7 +54,6 @@ protected:
 public:
 	Actor_gump(Container_game_object *cont, int initx, int inity,
 	           int shnum);
-	~Actor_gump() override;
 	// Add object.
 	int add(Game_object *obj, int mx = -1, int my = -1,
 	        int sx = -1, int sy = -1, bool dont_check = false,

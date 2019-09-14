@@ -321,9 +321,6 @@ BG_Game::BG_Game()
 		                                     Tile_coord(811, 955, 5), 874, 0, 0)));
 }
 
-BG_Game::~BG_Game() {
-}
-
 class UserSkipException : public UserBreakException {
 };
 
@@ -1313,8 +1310,6 @@ public:
 
 	ExVoiceBuffer(const char *f, const char *p, int i)
 		: file(f), patch(p), index(i), played(false)
-	{ }
-	~ExVoiceBuffer()
 	{ }
 	bool can_play() const {
 		return file || patch;

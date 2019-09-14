@@ -60,7 +60,6 @@ private:
 	typedef std::map<int, Gump *> Lookup_map;
 	Lookup_map table;       // Lookup by shape.
 public:
-	Gump_factory();
 	~Gump_factory();
 	Gump *open_container(Game_object *obj, int initx, int inity);
 };

@@ -136,7 +136,7 @@ public:
 	}
 
 	//! Destructor
-	virtual ~MidiDriver() { }
+	virtual ~MidiDriver() = default;
 
 	//
 	// Statics to Initialize Midi Drivers and to get info

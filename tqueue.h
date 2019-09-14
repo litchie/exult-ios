@@ -43,7 +43,7 @@ public:
 	friend class Time_queue;
 	Time_sensitive() : queue_cnt(0), always(false)
 	{  }
-	virtual ~Time_sensitive();
+	virtual ~Time_sensitive() = default;
 	int in_queue() const {
 		return queue_cnt > 0;
 	}

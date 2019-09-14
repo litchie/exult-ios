@@ -64,9 +64,6 @@ void Palette::take(Palette *pal) {
 	memcpy(pal2, pal->pal2, 768);
 }
 
-Palette::~Palette() {
-}
-
 /*
  *  Fade the current palette in or out.
  *  Note:  If pal_num != -1, the current palette is set to it.

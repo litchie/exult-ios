@@ -35,7 +35,6 @@ int sign(T val) {
 class Spelltype_gump : public Gump {
 public:
 	Spelltype_gump(int shnum) : Gump(nullptr, shnum) {  }
-	~Spelltype_gump() override {  }
 	// Perform spell.
 	virtual void do_spell(int spell) = 0;
 	// Set bookmark.

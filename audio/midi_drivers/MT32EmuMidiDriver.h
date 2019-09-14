@@ -38,7 +38,6 @@ class MT32EmuMidiDriver : public LowLevelMidiDriver
 
 public:
 	static const MidiDriverDesc* getDesc() { return &desc; }
-	MT32EmuMidiDriver();
 
 protected:
 	// LowLevelMidiDriver implementation

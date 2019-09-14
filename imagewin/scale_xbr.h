@@ -66,8 +66,7 @@ template <class Manip_pixels, int tol>
 struct RGBColor {
 	unsigned int  r,  g,  b;
 	unsigned int dr, dg, db;
-	RGBColor()
-	{       }
+	RGBColor() = default;
 	RGBColor(unsigned char c, const Manip_pixels &manip) {
 		set(c, manip);
 	}

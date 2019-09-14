@@ -50,7 +50,6 @@ private:
 
 public:
 	ExultMenu(Game_window *gw);
-	~ExultMenu();
 	BaseGameInfo *run();
 	void setup();
 };

@@ -46,7 +46,6 @@ class Npc_entry {
 	short npcnum;
 	Rectangle box;          // Box where drawn.
 public:
-	Npc_entry() {  }
 	void set(int num, int rx, int ry, int rw, int rh) {
 		npcnum = num;
 		box = Rectangle(rx, ry, rw, rh);

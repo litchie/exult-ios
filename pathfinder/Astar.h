@@ -46,7 +46,6 @@ public:
 		return 1;
 	}
 	int get_num_steps() override;    // # of steps left to take.
-	~Astar() override;
 };
 
 #endif

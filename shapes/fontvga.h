@@ -35,8 +35,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class Fonts_vga_file : public Vga_file {
 	std::vector<Font> fonts;            // Fonts from fonts.vga file.
 public:
-	Fonts_vga_file()
-	{  }
 	void init();
 	// Text rendering:
 	int paint_text_box(Image_buffer8 *win, int fontnum,

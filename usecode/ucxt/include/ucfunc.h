@@ -35,7 +35,6 @@ public:
 		: funcid(new_funcid), num_args(new_num_args), return_var(new_return_var), aborts(new_aborts),
 		  class_fun(new_class_fun), funcname(new_funcname), kind(new_kind),
 		  varmap(new_varmap) {}
-	~UCFuncSet() {}
 
 	unsigned int funcid;      // the id of the function
 	unsigned int num_args;    // the number of arguments
@@ -124,7 +123,6 @@ class UCNode;
 class UCNode {
 public:
 	UCNode(UCc *newucc = nullptr) : ucc(newucc) { }
-	~UCNode() { }
 
 	UCc *ucc;
 	std::vector<UCNode *> nodelist;

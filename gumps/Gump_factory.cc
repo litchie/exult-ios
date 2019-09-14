@@ -29,13 +29,6 @@ using std::cout;
 using std::endl;
 
 /*
- *  Create.
- */
-Gump_factory::Gump_factory(
-) {
-}
-
-/*
  *  Cleanup.
  */
 Gump_factory::~Gump_factory() {

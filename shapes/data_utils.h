@@ -232,7 +232,7 @@ public:
 	Base_reader(bool h)
 		:   haveversion(h)
 	{  }
-	virtual ~Base_reader() {  }
+	virtual ~Base_reader() = default;
 	// Text data file.
 	void parse(std::vector<std::string> &strings, int version, bool patch, Exult_Game game) {
 		for (size_t j = 0; j < strings.size(); j++) {
@@ -330,8 +330,6 @@ public:
 	Functor_multidata_reader(std::map<int, Info> &nfo, bool h = false)
 		:   Base_reader(h), info(nfo)
 	{  }
-	~Functor_multidata_reader() override
-	{  }
 };
 
 /*
@@ -352,8 +350,6 @@ protected:
 public:
 	Functor_data_reader(Info &nfo, bool h = false)
 		:   Base_reader(h), info(nfo)
-	{  }
-	~Functor_data_reader() override
 	{  }
 };
 
@@ -576,7 +572,7 @@ public:
 	Base_writer(const char *s, int v = -1)
 		:   name(s), version(v), cnt(-1)
 	{  }
-	virtual ~Base_writer() {  }
+	virtual ~Base_writer() = default;
 	int check() {
 		// Return cached value, if any.
 		return cnt > -1 ? cnt : cnt = check_write();
@@ -638,7 +634,6 @@ public:
 		:   Base_writer(s, v), info(nfo), numshapes(n) {
 		check();
 	}
-	~Functor_multidata_writer() override {  }
 };
 
 /*
@@ -661,7 +656,6 @@ public:
 		:   Base_writer(s, v), info(nfo) {
 		check();
 	}
-	~Functor_data_writer() override {  }
 };
 
 

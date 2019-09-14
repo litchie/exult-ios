@@ -25,7 +25,7 @@ struct XMidiEvent;
 class XMidiSequenceHandler
 {
 public:
-	virtual ~XMidiSequenceHandler() { }
+	virtual ~XMidiSequenceHandler() = default;
 
 	//! An event sent from a sequence to play
 	//! \param sequence_id The id of the sequence that is attempting to send the event

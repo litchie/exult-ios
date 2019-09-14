@@ -59,8 +59,7 @@ class Palette {
 	static unsigned char border[3];
 public:
 	Palette();
-	Palette(Palette *pal);      // Copy constructor.
-	~Palette();
+	Palette(Palette *pal);      // "Copy" constructor.
 	void take(Palette *pal);    // Copies a palette into another.
 	// Fade palette in/out.
 	void fade(int cycles, int inout, int pal_num = -1);

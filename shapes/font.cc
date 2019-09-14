@@ -780,9 +780,6 @@ void Font::calc_highlow() {
 	}
 }
 
-FontManager::FontManager() {
-}
-
 FontManager::~FontManager() {
 	reset();
 }

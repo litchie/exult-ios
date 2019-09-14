@@ -32,7 +32,6 @@ class CheatScreen {
 	static const char   *alignments[4];
 public:
 	CheatScreen();
-	~CheatScreen();
 	void    show_screen();
 	void    SetGrabbedActor(Actor *g) {
 		grabbed = g;

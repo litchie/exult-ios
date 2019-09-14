@@ -147,7 +147,6 @@ class Estudio_npc {
 	bool unused;
 	std::string name;
 public:
-	Estudio_npc() {  }
 };
 
 /*
@@ -213,7 +212,6 @@ class Shape_file_set {
 		return fi;
 	}
 public:
-	Shape_file_set() {  }
 	~Shape_file_set();
 	// Create, or return existing one.
 	Shape_file_info *create(const char *basename);

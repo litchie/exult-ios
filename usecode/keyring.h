@@ -23,8 +23,6 @@
 
 class Keyring {
 public:
-	Keyring() { }
-
 	void read();  // read from KEYRING.DAT
 	void write(); // write to KEYRING.DAT
 

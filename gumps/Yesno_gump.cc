@@ -85,14 +85,6 @@ Yesno_gump::Yesno_gump(
 }
 
 /*
- *  Done with yes/no box.
- */
-
-Yesno_gump::~Yesno_gump(
-) {
-}
-
-/*
  *  Paint on screen.
  */
 

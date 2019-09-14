@@ -33,7 +33,6 @@ protected:
 	bool translucent;
 public:
 	Face_button(Gump *par, int px, int py, Actor *a);
-	~Face_button() override {  }
 	Actor *get_actor() {
 		return actor;
 	}
