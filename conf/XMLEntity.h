@@ -36,17 +36,12 @@ public:
 	{  }
 	XMLnode(const std::string &i) : id(i), no_close(false)
 	{  }
-	XMLnode(const XMLnode &n) : id(n.id), content(n.content), nodelist(n.nodelist), no_close(false)
-	{  }
+	XMLnode(const XMLnode &) = delete;
+	XMLnode(XMLnode &&) = default;
 	~XMLnode();
 
-	XMLnode &operator=(const XMLnode &n) {
-		id = n.id;
-		content = n.content;
-		nodelist = n.nodelist;
-		no_close = n.no_close;
-		return *this;
-	}
+	XMLnode &operator=(const XMLnode &) = delete;
+	XMLnode &operator=(XMLnode &&) = default;
 	const std::string &reference(const std::string &, bool &);
 	const XMLnode *subtree(const std::string &) const;
 
