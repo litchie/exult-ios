@@ -784,7 +784,7 @@ FontManager::FontManager() {
 }
 
 FontManager::~FontManager() {
-	fonts.clear();
+	reset();
 }
 
 /**
