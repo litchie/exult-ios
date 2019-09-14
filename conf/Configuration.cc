@@ -248,7 +248,7 @@ bool Configuration::read_abs_config_file(const string &input_filename, const str
 }
 
 
-string  Configuration::dump(void) {
+string  Configuration::dump() {
 	return xmltree->dump();
 }
 
@@ -257,7 +257,7 @@ ostream &Configuration::dump(ostream &o, const string &indentstr) {
 	return o;
 }
 
-void Configuration::write_back(void) {
+void Configuration::write_back() {
 	if (!is_file)
 		return; // Don't write back if not from a file
 

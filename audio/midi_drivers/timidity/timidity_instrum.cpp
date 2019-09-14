@@ -637,7 +637,7 @@ static int fill_bank(int dr, int b)
 	return errors;
 }
 
-int load_missing_instruments(void)
+int load_missing_instruments()
 {
 	int i=128,errors=0;
 	while (i--)
@@ -650,7 +650,7 @@ int load_missing_instruments(void)
 	return errors;
 }
 
-void free_instruments(void)
+void free_instruments()
 {
 	int i=128;
 	while(i--)

@@ -43,7 +43,7 @@ Configuration *config;
 SEQ_DEFINEBUF(2048);
 
 
-int	main(void)
+int	main()
 {
 	config->read_config_file(USER_CONFIGURATION_FILE);
 	string  data_directory;

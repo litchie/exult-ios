@@ -48,7 +48,7 @@ void    dump_stringvec(std::vector<std::string> &vs, int expect = -2) {
 	assert(static_cast<int>(vs.size()) == expect);
 }
 
-void    test1(void) {
+void    test1() {
 	cerr << "Reading config file: ./config.xml" << endl;
 
 	config->read_config_file("./config.xml");
@@ -124,7 +124,7 @@ void    test1(void) {
 
 }
 
-void test2(void) {
+void test2() {
 	setup_program_paths();
 	config->read_config_file("exult.cfg");
 	config->dump(cout, "\t") << endl;

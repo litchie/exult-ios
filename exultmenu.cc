@@ -50,9 +50,9 @@ using std::unique_ptr;
 using std::make_unique;
 
 #if 0
-static bool get_play_intro(void);
+static bool get_play_intro();
 static void set_play_intro(bool);
-static bool get_play_1st_scene(void);
+static bool get_play_1st_scene();
 static void set_play_1st_scene(bool);
 #endif
 

@@ -45,7 +45,7 @@ public:
 	const std::string &reference(const std::string &, bool &);
 	const XMLnode *subtree(const std::string &) const;
 
-	const std::string &value(void) const {
+	const std::string &value() const {
 		return content;
 	}
 

@@ -12,9 +12,9 @@ using namespace std;
 #endif
 #endif
 
-void rebuild(void) ATTR_NORET;
+void rebuild() ATTR_NORET;
 
-void rebuild(void) {
+void rebuild() {
 	unsigned int c;
 	char s[10];
 	char filename[18];

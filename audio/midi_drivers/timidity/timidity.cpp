@@ -503,7 +503,7 @@ void Timidity_DeInit()
 
 
 char timidity_error[1024] = "";
-char *Timidity_Error(void)
+char *Timidity_Error()
 {
 	return(timidity_error);
 }

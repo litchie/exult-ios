@@ -61,10 +61,10 @@ class   CoreAudioException : public exult_exception {
 public:
 	CoreAudioException(OSStatus err, unsigned long line):
 		exult_exception("CoreAudio initialization failed"), _err(err), _line(line) {  }
-	OSStatus get_err(void) const {
+	OSStatus get_err() const {
 		return _err;
 	}
-	unsigned long get_line(void) const {
+	unsigned long get_line() const {
 		return _line;
 	}
 };

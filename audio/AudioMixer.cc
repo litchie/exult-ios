@@ -83,7 +83,7 @@ num_channels(num_channels_), channels(nullptr), id_counter(0)
 	}
 }
 
-AudioMixer::~AudioMixer(void)
+AudioMixer::~AudioMixer()
 {
 	std::cout << "Destroying AudioMixer..." << std::endl;
 

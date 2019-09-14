@@ -34,7 +34,7 @@ class AudioMixer
 {
 public:
 	AudioMixer(int sample_rate, bool stereo, int num_channels);
-	~AudioMixer(void);
+	~AudioMixer();
 
 	static AudioMixer*	get_instance() { return the_audio_mixer; }
 

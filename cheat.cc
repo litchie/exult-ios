@@ -101,7 +101,7 @@ Cheat::~Cheat() {
 	delete cscreen;
 }
 
-void Cheat::init(void) {
+void Cheat::init() {
 	std::string cheating;
 	config->value("config/gameplay/cheat", cheating, "no");
 	if (cheating == "yes")
@@ -110,7 +110,7 @@ void Cheat::init(void) {
 		enabled = false;
 }
 
-void Cheat::finish_init(void) {
+void Cheat::finish_init() {
 
 	browser = new ShapeBrowser();
 	tester = new SoundTester();
@@ -131,7 +131,7 @@ void Cheat::set_enabled(bool en) {
 	config->set("config/gameplay/cheat", cheating, true);
 }
 
-void Cheat::toggle_god(void) {
+void Cheat::toggle_god() {
 	if (!enabled) return;
 
 	god_mode = !god_mode;
@@ -145,7 +145,7 @@ void Cheat::toggle_god(void) {
 		eman->center_text("God Mode Disabled");
 }
 
-void Cheat::toggle_wizard(void) {
+void Cheat::toggle_wizard() {
 	if (!enabled) return;
 
 	wizard_mode = !wizard_mode;
@@ -155,7 +155,7 @@ void Cheat::toggle_wizard(void) {
 		eman->center_text("Archwizard Mode Disabled");
 }
 
-void Cheat::toggle_map_editor(void) {
+void Cheat::toggle_map_editor() {
 	if (!enabled) return;
 
 	map_editor = !map_editor;
@@ -222,7 +222,7 @@ void Cheat::toggle_map_editor(void) {
 	}
 }
 
-void Cheat::toggle_tile_grid(void) {
+void Cheat::toggle_tile_grid() {
 	if (!enabled) return;
 	tile_grid = !tile_grid;
 	gwin->set_all_dirty();
@@ -236,7 +236,7 @@ void Cheat::set_edit_mode(Map_editor_mode md) {
 	}
 }
 
-void Cheat::clear_chunksel(void) {
+void Cheat::clear_chunksel() {
 	if (chunksel_right >= 0 && chunksel_bottom >= 0) {
 		int startx = chunksel_left, stopx = chunksel_right + 1;
 		int starty = chunksel_top, stopy = chunksel_bottom + 1;
@@ -356,7 +356,7 @@ void Cheat::set_edit_shape(int sh, int fr) {
 	edit_frame = fr;
 }
 
-void Cheat::toggle_infravision(void) {
+void Cheat::toggle_infravision() {
 	if (!enabled) return;
 
 	infravision = !infravision;
@@ -367,7 +367,7 @@ void Cheat::toggle_infravision(void) {
 	gclock->set_palette();
 }
 
-void Cheat::toggle_pickpocket(void) {
+void Cheat::toggle_pickpocket() {
 	if (!enabled) return;
 
 	pickpocket = !pickpocket;
@@ -378,7 +378,7 @@ void Cheat::toggle_pickpocket(void) {
 		eman->center_text("Pick Pocket Disabled");
 }
 
-void Cheat::toggle_hack_mover(void) {
+void Cheat::toggle_hack_mover() {
 	if (!enabled) return;
 
 	hack_mover = !hack_mover;
@@ -389,7 +389,7 @@ void Cheat::toggle_hack_mover(void) {
 	}
 }
 
-void Cheat::change_gender(void) const {
+void Cheat::change_gender() const {
 	if (!enabled) return;
 
 	if (gwin->get_main_actor()->get_type_flag(Actor::tf_sex)) {
@@ -402,7 +402,7 @@ void Cheat::change_gender(void) const {
 	gwin->set_all_dirty();
 }
 
-void Cheat::toggle_eggs(void) const {
+void Cheat::toggle_eggs() const {
 	if (!enabled) return;
 
 	gwin->paint_eggs = !gwin->paint_eggs;
@@ -413,7 +413,7 @@ void Cheat::toggle_eggs(void) const {
 	gwin->paint();
 }
 
-void Cheat::toggle_Petra(void) const {
+void Cheat::toggle_Petra() const {
 	if (!enabled || (Game::get_game_type() != SERPENT_ISLE)) return;
 
 	if (gwin->get_main_actor()->get_flag(Obj_flags::petra))
@@ -423,7 +423,7 @@ void Cheat::toggle_Petra(void) const {
 	gwin->set_all_dirty();
 }
 
-void Cheat::toggle_naked(void) const {
+void Cheat::toggle_naked() const {
 	if (!enabled) return;
 
 	if (gwin->get_main_actor()->get_flag(Obj_flags::naked))
@@ -433,7 +433,7 @@ void Cheat::toggle_naked(void) const {
 	gwin->set_all_dirty();
 }
 
-void Cheat::change_skin(void) const {
+void Cheat::change_skin() const {
 	if (!enabled)
 		return;
 
@@ -445,7 +445,7 @@ void Cheat::change_skin(void) const {
 	gwin->set_all_dirty();
 }
 
-void Cheat::levelup_party(void) const {
+void Cheat::levelup_party() const {
 	if (!enabled) return;
 
 	Actor *party[9];
@@ -471,7 +471,7 @@ void Cheat::levelup_party(void) const {
 	}
 }
 
-void Cheat::fake_time_period(void) const {
+void Cheat::fake_time_period() const {
 	if (!enabled) return;
 
 	if (!map_editor) {
@@ -483,7 +483,7 @@ void Cheat::fake_time_period(void) const {
 	}
 }
 
-void Cheat::dec_skip_lift(void) const {
+void Cheat::dec_skip_lift() const {
 	if (!enabled) return;
 
 	if (gwin->skip_lift == 16)
@@ -822,7 +822,7 @@ public:
 	}
 };
 
-void Cheat::map_teleport(void) const {
+void Cheat::map_teleport() const {
 	if (!enabled) return;
 	Cheat_map map(gwin->get_map()->get_num());
 	int xx, yy;
@@ -846,7 +846,7 @@ void Cheat::map_teleport(void) const {
 	eman->center_text("Teleport!!!");
 }
 
-void Cheat::cursor_teleport(void) const {
+void Cheat::cursor_teleport() const {
 	if (!enabled) return;
 
 	int x, y;
@@ -880,14 +880,14 @@ void Cheat::next_map_teleport() const {
 	eman->center_text(msg);
 }
 
-void Cheat::create_coins(void) const {
+void Cheat::create_coins() const {
 	if (!enabled) return;
 
 	gwin->get_main_actor()->add_quantity(100, 644);
 	eman->center_text("Added 100 gold coins");
 }
 
-void Cheat::create_last_shape(void) const {
+void Cheat::create_last_shape() const {
 	if (!enabled) return;
 
 	int current_shape = 0;
@@ -907,7 +907,7 @@ void Cheat::create_last_shape(void) const {
 		eman->center_text("Can only create from 'shapes.vga'");
 }
 
-void Cheat::delete_object(void) {
+void Cheat::delete_object() {
 	if (!enabled) return;
 
 	int x, y;
@@ -934,7 +934,7 @@ void Cheat::delete_object(void) {
 	}
 }
 
-void Cheat::heal_party(void) const {
+void Cheat::heal_party() const {
 	if (!enabled) return;
 
 	int i;  // for MSVC
@@ -985,7 +985,7 @@ void Cheat::heal_party(void) const {
 	gwin->paint();
 }
 
-void Cheat::shape_browser(void) const {
+void Cheat::shape_browser() const {
 	if (!enabled) return;
 
 	browser->browse_shapes();
@@ -1000,7 +1000,7 @@ bool Cheat::get_browser_shape(int &shape, int &frame) const {
 	return browser->get_shape(shape, frame);
 }
 
-void Cheat::sound_tester(void) const {
+void Cheat::sound_tester() const {
 	if (!enabled) return;
 
 	tester->test_sound();
@@ -1008,7 +1008,7 @@ void Cheat::sound_tester(void) const {
 }
 
 
-void Cheat::cheat_screen(void) const {
+void Cheat::cheat_screen() const {
 	if (!enabled) return;
 
 	cscreen->show_screen();
@@ -1016,7 +1016,7 @@ void Cheat::cheat_screen(void) const {
 	gwin->paint();
 }
 
-void Cheat::toggle_grab_actor(void) {
+void Cheat::toggle_grab_actor() {
 	if (!enabled) return;
 
 	grab_actor = !grab_actor;
@@ -1038,7 +1038,7 @@ void Cheat::clear_this_grabbed_actor(Actor *actor) const {
 	cscreen->ClearThisGrabbedActor(actor);
 }
 
-void Cheat::toggle_number_npcs(void) {
+void Cheat::toggle_number_npcs() {
 	if (!enabled) return;
 
 	npc_numbers = !npc_numbers;

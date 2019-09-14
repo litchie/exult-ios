@@ -44,7 +44,7 @@ AudioChannel::AudioChannel(uint32 sample_rate_, bool stereo_) :
 {
 }
 
-AudioChannel::~AudioChannel(void)
+AudioChannel::~AudioChannel()
 {
 	if (sample && playdata) sample->freeDecompressor(playdata);
 	if (sample) sample->Release();

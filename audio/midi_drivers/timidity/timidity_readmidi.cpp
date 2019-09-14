@@ -75,7 +75,7 @@ static void compute_sample_increment(sint32 tempo, sint32 divisions)
 }
 
 /* Read variable-length number (7 bits per byte, MSB first) */
-static sint32 getvl(void)
+static sint32 getvl()
 {
 	sint32 l=0;
 	uint8 c;
@@ -121,7 +121,7 @@ static int dumpstring(sint32 len, const char *label)
 
 /* Read a MIDI event, returning a freshly allocated element that can
    be linked to the event list */
-static MidiEventList *read_midi_event(void)
+static MidiEventList *read_midi_event()
 {
 	static uint8 laststatus, lastchan;
 	static uint8 nrpn=0, rpn_msb[16], rpn_lsb[16]; /* one per channel */
@@ -375,7 +375,7 @@ static int read_track(int append)
 }
 
 /* Free the linked event list from memory. */
-static void free_midi_list(void)
+static void free_midi_list()
 {
 	MidiEventList *meep, *next;
 	if (!(meep=evlist)) return;

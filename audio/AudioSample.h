@@ -43,7 +43,7 @@ protected:
 
 public:
 	AudioSample(uint8 *buffer, uint32 size);
-	virtual ~AudioSample(void);
+	virtual ~AudioSample();
 
 	inline uint32 getRate() const { return sample_rate; }
 	inline uint32 getBits() const { return bits; }

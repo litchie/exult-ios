@@ -240,7 +240,7 @@ SI_Game::SI_Game() {
 }
 
 // Little weighted random function for lightning on the castle
-static int get_frame(void) {
+static int get_frame() {
 	int num = rand() % 9;
 
 	if (num >= 8) return 2;

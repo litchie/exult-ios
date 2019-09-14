@@ -77,12 +77,12 @@ Windnd::QueryInterface(REFIID iid, void **ppvObject) {
 }
 
 STDMETHODIMP_(ULONG)
-Windnd::AddRef(void) {
+Windnd::AddRef() {
 	return ++m_cRef;
 }
 
 STDMETHODIMP_(ULONG)
-Windnd::Release(void) {
+Windnd::Release() {
 	if (0 != --m_cRef)
 		return m_cRef;
 	delete this;
@@ -183,7 +183,7 @@ Windnd::DragOver(DWORD grfKeyState,
 }
 
 STDMETHODIMP
-Windnd::DragLeave(void) {
+Windnd::DragLeave() {
 	if (move_shape_handler)
 		move_shape_handler(-1, -1, 0, 0, prevx, prevy, true);
 
@@ -322,14 +322,14 @@ Windropsource::QueryInterface(REFIID iid, void **ppvObject) {
 }
 
 STDMETHODIMP_(ULONG)
-Windropsource::AddRef(void) {
+Windropsource::AddRef() {
 	m_cRef = m_cRef + 1;
 
 	return m_cRef;
 }
 
 STDMETHODIMP_(ULONG)
-Windropsource::Release(void) {
+Windropsource::Release() {
 	if (0 != --m_cRef)
 		return m_cRef;
 	delete this;
@@ -388,12 +388,12 @@ Winstudioobj::QueryInterface(REFIID iid, void **ppvObject) {
 }
 
 STDMETHODIMP_(ULONG)
-Winstudioobj::AddRef(void) {
+Winstudioobj::AddRef() {
 	return ++m_cRef;
 }
 
 STDMETHODIMP_(ULONG)
-Winstudioobj::Release(void) {
+Winstudioobj::Release() {
 	if (0 != --m_cRef)
 		return m_cRef;
 	delete this;

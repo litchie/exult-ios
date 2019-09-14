@@ -202,7 +202,7 @@ void SFX_cache_manager::garbage_collect()
 }
 
 //---- Audio ---------------------------------------------------------
-void Audio::Init(void)
+void Audio::Init()
 {
 	// Crate the Audio singleton object
 	if (!self)
@@ -218,13 +218,13 @@ void Audio::Init(void)
 	}
 }
 
-void Audio::Destroy(void)
+void Audio::Destroy()
 {
 	delete self;
 	self = nullptr;
 }
 
-Audio	*Audio::get_ptr(void)
+Audio	*Audio::get_ptr()
 {
 	// The following assert here might be too harsh, maybe we should leave
 	// it to the caller to handle non-inited audio-system?
@@ -447,7 +447,7 @@ void Audio::play(uint8 *sound_data, uint32 len, bool wait)
 
 }
 
-void Audio::cancel_streams(void)
+void Audio::cancel_streams()
 {
 	if (!audio_enabled)
 		return;
@@ -457,7 +457,7 @@ void Audio::cancel_streams(void)
 
 }
 
-void Audio::pause_audio(void)
+void Audio::pause_audio()
 {
 	if (!audio_enabled)
 		return;
@@ -465,7 +465,7 @@ void Audio::pause_audio(void)
 	mixer->setPausedAll(true);
 }
 
-void 	Audio::resume_audio(void)
+void 	Audio::resume_audio()
 {
 	if (!audio_enabled)
 		return;
@@ -493,7 +493,7 @@ void Audio::playfile(const char *fname, const char *fpatch, bool wait)
 }
 
 
-bool	Audio::playing(void)
+bool	Audio::playing()
 {
 	return false;
 }

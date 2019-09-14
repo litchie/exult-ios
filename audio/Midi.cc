@@ -859,7 +859,7 @@ bool MyMidiPlayer::ogg_play_track(const std::string& filename, int num, bool rep
 	return  true;
 }
 
-void MyMidiPlayer::ogg_stop_track(void)
+void MyMidiPlayer::ogg_stop_track()
 {
 	if (ogg_instance_id != -1) {
 		Pentagram::AudioMixer *mixer = Pentagram::AudioMixer::get_instance();
@@ -868,7 +868,7 @@ void MyMidiPlayer::ogg_stop_track(void)
 	}
 }
 
-bool MyMidiPlayer::ogg_is_playing(void)
+bool MyMidiPlayer::ogg_is_playing()
 {
 	if (ogg_instance_id != -1) {
 		Pentagram::AudioMixer *mixer = Pentagram::AudioMixer::get_instance();

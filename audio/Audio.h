@@ -110,9 +110,9 @@ private:
 
 public:
 	friend class Tired_of_compiler_warnings;
-	static void		Init(void);
-	static void		Destroy(void);
-	static Audio*	get_ptr(void);
+	static void		Init();
+	static void		Destroy();
+	static Audio*	get_ptr();
 
 	// Given BG sfx, get SI if playing SI.
 	static	int game_sfx(int sfx)
@@ -122,18 +122,18 @@ public:
 	static	int game_music(int mus)
 		{ return bg2si_songs ? bg2si_songs[mus] : mus; }
 
-	void	Init_sfx(void);
+	void	Init_sfx();
 
-	void	honest_sample_rates(void) { truthful_=true; }
-	void	cancel_streams(void);	// Dump any audio streams
+	void	honest_sample_rates() { truthful_=true; }
+	void	cancel_streams();	// Dump any audio streams
 
-	void	pause_audio(void);
-	void    resume_audio(void);
+	void	pause_audio();
+	void    resume_audio();
 
 	void	copy_and_play(const uint8 *sound_data,uint32 len,bool);
 	void	play(uint8 *sound_data,uint32 len,bool);
 	void	playfile(const char *,const char *,bool);
-	bool	playing(void);
+	bool	playing();
 	void	start_music(int num,bool continuous=false,const std::string& flex=MAINMUS);
 	void	start_music(const std::string& fname,int num,bool continuous=false);
 	void	start_music_combat(Combat_song song,bool continuous);

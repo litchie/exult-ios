@@ -40,8 +40,8 @@ public:
 	Cheat();
 	~Cheat();
 
-	void init(void);
-	void finish_init(void);
+	void init();
+	void finish_init();
 	enum Map_editor_mode {
 	    move = 0,           // Normal dragging.
 	    paint = 1,          // Left-mouse dragging paints shapes.
@@ -76,58 +76,58 @@ private:
 
 	void send_select_status();
 public:
-	bool operator()(void) const {
+	bool operator()() const {
 		return enabled;
 	}
 	void set_enabled(bool en);
 
-	bool in_god_mode(void) const {
+	bool in_god_mode() const {
 		return god_mode;
 	}
-	bool in_wizard_mode(void) const {
+	bool in_wizard_mode() const {
 		return wizard_mode;
 	}
-	bool in_map_editor(void) const {
+	bool in_map_editor() const {
 		return map_editor;
 	}
-	bool show_tile_grid(void) const {
+	bool show_tile_grid() const {
 		return map_editor && tile_grid;
 	}
-	Map_editor_mode get_edit_mode(void) const {
+	Map_editor_mode get_edit_mode() const {
 		return edit_mode;
 	}
-	int  get_edit_lift(void) const {
+	int  get_edit_lift() const {
 		return edit_lift;
 	}
-	int  get_edit_shape(void) const {
+	int  get_edit_shape() const {
 		return edit_shape;
 	}
-	int  get_edit_frame(void) const {
+	int  get_edit_frame() const {
 		return edit_frame;
 	}
-	int  get_edit_chunknum(void) const {
+	int  get_edit_chunknum() const {
 		return edit_chunknum;
 	}
-	bool in_infravision(void) const {
+	bool in_infravision() const {
 		return infravision;
 	}
-	bool in_pickpocket(void) const {
+	bool in_pickpocket() const {
 		return pickpocket;
 	}
-	bool in_hack_mover(void) const {
+	bool in_hack_mover() const {
 		return (hack_mover || map_editor);
 	}
 
-	void toggle_god(void);
+	void toggle_god();
 	void set_god(bool god) {
 		god_mode = god;
 	}
-	void toggle_wizard(void);
+	void toggle_wizard();
 	void set_wizard(bool wizard) {
 		wizard_mode = wizard;
 	}
-	void toggle_map_editor(void);
-	void toggle_tile_grid(void);
+	void toggle_map_editor();
+	void toggle_tile_grid();
 	void set_edit_mode(Map_editor_mode md);
 	void clear_chunksel();
 	void add_chunksel(Map_chunk *chunk, bool extend = false);
@@ -142,31 +142,31 @@ public:
 		if (map_editor != map)
 			toggle_map_editor();
 	}
-	void toggle_infravision(void);
+	void toggle_infravision();
 	void set_infravision(bool infra) {
 		infravision = infra;
 	}
-	void toggle_pickpocket(void);
+	void toggle_pickpocket();
 	void set_pickpocket(bool pick) {
 		pickpocket = pick;
 	}
-	void toggle_hack_mover(void);
+	void toggle_hack_mover();
 	void set_hack_mover(bool hm) {
 		hack_mover = hm;
 	}
 
-	void toggle_eggs(void) const;
-	void change_gender(void) const;
+	void toggle_eggs() const;
+	void change_gender() const;
 
-	void toggle_Petra(void) const;
-	void toggle_naked(void) const;
-	void change_skin(void) const;
+	void toggle_Petra() const;
+	void toggle_naked() const;
+	void change_skin() const;
 
-	void levelup_party(void) const;
-	void heal_party(void) const;
+	void levelup_party() const;
+	void heal_party() const;
 
-	void fake_time_period(void) const;
-	void dec_skip_lift(void) const;
+	void fake_time_period() const;
+	void dec_skip_lift() const;
 	void set_skip_lift(int skip) const;
 
 	void append_selected(Game_object *obj);
@@ -187,33 +187,33 @@ public:
 		return clipboard;
 	}
 
-	void map_teleport(void) const;
-	void cursor_teleport(void) const;
-	void next_map_teleport(void) const;
+	void map_teleport() const;
+	void cursor_teleport() const;
+	void next_map_teleport() const;
 
-	void create_coins(void) const;
-	void create_last_shape(void) const;
-	void delete_object(void);
-	void shape_browser(void) const;
+	void create_coins() const;
+	void create_last_shape() const;
+	void delete_object();
+	void shape_browser() const;
 	bool get_browser_shape(int &shape, int &frame) const;
-	void sound_tester(void) const;
+	void sound_tester() const;
 
-	void cheat_screen(void) const;
+	void cheat_screen() const;
 
-	bool grabbing_actor(void) const {
+	bool grabbing_actor() const {
 		return grab_actor;
 	}
-	void toggle_grab_actor(void);
+	void toggle_grab_actor();
 	void set_grab_actor(bool grab) {
 		grab_actor = grab;
 	}
 	void set_grabbed_actor(Actor *actor) const;
 	void clear_this_grabbed_actor(Actor *actor) const;
 
-	bool number_npcs(void) const {
+	bool number_npcs() const {
 		return npc_numbers;
 	}
-	void toggle_number_npcs(void);
+	void toggle_number_npcs();
 	void set_number_npcs(bool num) {
 		npc_numbers = num;
 	}

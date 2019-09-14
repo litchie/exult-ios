@@ -654,7 +654,7 @@ void Paperdoll_gump::paint_arms(
  *  Gets which arm frame to use
  */
 
-int Paperdoll_gump::get_arm_type(void) {
+int Paperdoll_gump::get_arm_type() {
 	const Game_object *obj = container->get_readied(lhand);
 	if (!obj)
 		return 0;   // Nothing in hand; normal arms.

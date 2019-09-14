@@ -56,7 +56,7 @@ class AudioChannel
 
 public:
 	AudioChannel(uint32 sample_rate, bool stereo);
-	~AudioChannel(void);
+	~AudioChannel();
 
 	void stop()
 	{

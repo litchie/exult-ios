@@ -88,7 +88,7 @@ void add_label() {
 	offsets[lindex++] = offset;
 }
 
-int get_label(void) {
+int get_label() {
 	unsigned i;
 	for (i = 0; i < lindex; i++) {
 		if (!strcasecmp(token, labels[i]))

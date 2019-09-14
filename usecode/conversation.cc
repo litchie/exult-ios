@@ -73,7 +73,7 @@ Conversation::~Conversation() {
 }
 
 
-void Conversation::clear_answers(void) {
+void Conversation::clear_answers() {
 	answers.clear();
 }
 

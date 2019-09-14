@@ -164,7 +164,7 @@ ShortcutBar_gump *g_shortcutBar = nullptr;
 
 #ifdef USECODE_DEBUGGER
 bool    usecode_debugging = false;  // Do we enable the usecode debugger?
-extern void initialise_usecode_debugger(void);
+extern void initialise_usecode_debugger();
 #endif
 
 struct resolution {

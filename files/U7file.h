@@ -222,7 +222,7 @@ public:
 	            const File_spec &spec2);
 	U7multifile(const std::vector<File_spec> &specs);
 
-	size_t number_of_objects(void) const;
+	size_t number_of_objects() const;
 	char *retrieve(uint32 objnum, std::size_t &len, bool &patch) const;
 };
 #endif

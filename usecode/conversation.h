@@ -73,7 +73,7 @@ public:
 
 	void add_answer(Usecode_value &val);
 	void remove_answer(Usecode_value &val);
-	void clear_answers(void);
+	void clear_answers();
 	int locate_answer(const char *str);
 	const char *get_answer(int num) {
 		return answers[num].c_str();

@@ -33,13 +33,13 @@ namespace NS_TIMIDITY {
 struct MidiSong;
 
 //extern int Timidity_Init(int rate, int format, int channels, int samples);
-extern char *Timidity_Error(void);
+extern char *Timidity_Error();
 extern void Timidity_SetVolume(int volume);
 extern int Timidity_PlaySome(void *stream, int samples);
 extern MidiSong *Timidity_LoadSong(char *midifile);
 extern void Timidity_Start(MidiSong *song);
-extern int Timidity_Active(void);
-extern void Timidity_Stop(void);
+extern int Timidity_Active();
+extern void Timidity_Stop();
 extern void Timidity_FreeSong(MidiSong *song);
 
 

@@ -113,7 +113,7 @@ extern int usecode_trace;
 extern bool usecode_debugging;
 std::vector<int> intrinsic_breakpoints;
 
-void    initialise_usecode_debugger(void) {
+void    initialise_usecode_debugger() {
 	// Summon up the configuration file
 
 	// List all the keys.

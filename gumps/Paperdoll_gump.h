@@ -141,7 +141,7 @@ public:
 	void paint_arms(const Rectangle &box, const Paperdoll_npc *info);
 
 	// What are we holding?
-	int get_arm_type(void);
+	int get_arm_type();
 
 
 	//

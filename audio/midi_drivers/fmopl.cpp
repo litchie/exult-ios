@@ -632,7 +632,7 @@ static void init_timetables(FM_OPL *OPL, int ARRATE, int DRRATE) {
 }
 
 /* ---------- generic table initialize ---------- */
-static int OPLOpenTable(void) {
+static int OPLOpenTable() {
 	uint32 s, t, i;
 	double rate;
 	int j;
@@ -701,7 +701,7 @@ static int OPLOpenTable(void) {
 	return 1;
 }
 
-static void OPLCloseTable( void ) {
+static void OPLCloseTable() {
 	delete [] TL_TABLE;
 	delete [] SIN_TABLE;
 	delete [] AMS_TABLE;
@@ -936,7 +936,7 @@ void OPLWriteReg(FM_OPL *OPL, int r, int v) {
 }
 
 /* lock/unlock for common table */
-static int OPL_LockTable(void) {
+static int OPL_LockTable() {
 	num_lock++;
 	if (num_lock>1)
 		return 0;
@@ -950,7 +950,7 @@ static int OPL_LockTable(void) {
 	return 0;
 }
 
-static void OPL_UnLockTable(void) {
+static void OPL_UnLockTable() {
 	if (num_lock)
 		num_lock--;
 	if (num_lock)

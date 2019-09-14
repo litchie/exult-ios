@@ -134,8 +134,8 @@ public:
 	virtual ~Windnd() = default;
 
 	STDMETHOD(QueryInterface)(REFIID iid, void **ppvObject);
-	STDMETHOD_(ULONG, AddRef)(void);
-	STDMETHOD_(ULONG, Release)(void);
+	STDMETHOD_(ULONG, AddRef)();
+	STDMETHOD_(ULONG, Release)();
 
 	STDMETHOD(DragEnter)(IDataObject *pDataObject,
 	                     DWORD grfKeyState,
@@ -144,7 +144,7 @@ public:
 	STDMETHOD(DragOver)(DWORD grfKeyState,
 	                    POINTL pt,
 	                    DWORD *pdwEffect);
-	STDMETHOD(DragLeave)(void);
+	STDMETHOD(DragLeave)();
 	STDMETHOD(Drop)(IDataObject *pDataObject,
 	                DWORD grfKeyState,
 	                POINTL pt,
@@ -178,8 +178,8 @@ public:
 	virtual ~Windropsource();
 
 	STDMETHOD(QueryInterface)(REFIID iid, void **ppvObject);
-	STDMETHOD_(ULONG, AddRef)(void);
-	STDMETHOD_(ULONG, Release)(void);
+	STDMETHOD_(ULONG, AddRef)();
+	STDMETHOD_(ULONG, Release)();
 
 	STDMETHOD(QueryContinueDrag)(BOOL fEscapePressed, DWORD grfKeyState);
 	STDMETHOD(GiveFeedback)(DWORD dwEffect);
@@ -202,8 +202,8 @@ public:
 	virtual ~Winstudioobj() = default;
 
 	STDMETHOD(QueryInterface)(REFIID iid, void **ppvObject);
-	STDMETHOD_(ULONG, AddRef)(void);
-	STDMETHOD_(ULONG, Release)(void);
+	STDMETHOD_(ULONG, AddRef)();
+	STDMETHOD_(ULONG, Release)();
 
 	STDMETHOD(GetData)(FORMATETC *pFormatetc, STGMEDIUM *pmedium);
 	STDMETHOD(GetDataHere)(FORMATETC *pFormatetc, STGMEDIUM *pmedium);

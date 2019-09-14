@@ -71,10 +71,10 @@ public:
 	std::vector<std::string>    listkeys(const std::string &key, bool longformat = true);
 	std::vector<std::string>    listkeys(const char *key, bool longformat = true);
 
-	std::string dump(void); // Assembles a readable representation
+	std::string dump(); // Assembles a readable representation
 	std::ostream &dump(std::ostream &o, const std::string &indentstr);
 
-	void    write_back(void);
+	void    write_back();
 
 	void clear(const std::string &new_root = std::string());
 

@@ -32,7 +32,7 @@ AudioSample::AudioSample(uint8 *buffer_, uint32 size_) :
 {
 }
 
-AudioSample::~AudioSample(void)
+AudioSample::~AudioSample()
 {
 	delete [] buffer;
 }

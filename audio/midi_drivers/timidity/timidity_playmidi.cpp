@@ -72,12 +72,12 @@ extern sint32 *common_buffer;
 static MidiEvent *event_list, *current_event;
 static sint32 sample_count, current_sample;
 
-static void adjust_amplification(void)
+static void adjust_amplification()
 { 
 	master_volume = static_cast<float>(amplification) / static_cast<float>(100.0);
 }
 
-static void reset_voices(void)
+static void reset_voices()
 {
 	int i;
 	for (i=0; i<MAX_VOICES; i++)
@@ -102,7 +102,7 @@ static void redraw_controllers(int c)
 	ctl->pitch_bend(c, channel[c].pitchbend);
 }
 
-static void reset_midi(void)
+static void reset_midi()
 {
 	int i;
 	for (i=0; i<16; i++)
@@ -636,7 +636,7 @@ static void skip_to(sint32 until_time)
 	ctl->reset();
 }
 
-static int apply_controls(void)
+static int apply_controls()
 {
 	int rc, i, did_skip=0;
 	sint32 val;
@@ -946,12 +946,12 @@ void Timidity_Start(MidiSong *song)
 	midi_playing = 1;
 }
 
-int Timidity_Active(void)
+int Timidity_Active()
 {
 	return(midi_playing);
 }
 
-void Timidity_Stop(void)
+void Timidity_Stop()
 {
 	midi_playing = 0;
 }
