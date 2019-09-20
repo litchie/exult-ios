@@ -293,7 +293,7 @@ protected:
 	static int windowed_8;
 	static int windowed_16;
 	static int windowed_32;
-#if SDL_VERSION_ATLEAST(2, 0, 0) && (defined(MACOSX) || defined(__IPHONEOS__))
+#if SDL_VERSION_ATLEAST(2, 0, 1) && (defined(MACOSX) || defined(__IPHONEOS__))
 	static float nativescale;
 #endif
 
@@ -337,8 +337,12 @@ public:
 			gy = (sy * inter_height) / (scale * get_display_height()) + get_start_y();
 		}
 	}
-#if SDL_VERSION_ATLEAST(2, 0, 0) && (defined(MACOSX) || defined(__IPHONEOS__))
+#if SDL_VERSION_ATLEAST(2, 0, 1) && (defined(MACOSX) || defined(__IPHONEOS__))
 	void screen_to_game_hdpi(int sx, int sy, bool fast, int &gx, int &gy) {
+		if (!fullscreen)
+			// reset nativescale to 1.0 for windowed gaming or toggling
+			// fullscreen/windowed mode uses the wrong nativescale
+			nativescale = 1.0;
 		if (fast) {
 			gx = (sx + get_start_x())* nativescale;
 			gy = (sy + get_start_y())* nativescale;

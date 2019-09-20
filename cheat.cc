@@ -854,7 +854,7 @@ void Cheat::cursor_teleport(void) const {
 
 	int x, y;
 	SDL_GetMouseState(&x, &y);
-#if SDL_VERSION_ATLEAST(2, 0, 0) && (defined(MACOSX) || defined(__IPHONEOS__))
+#if SDL_VERSION_ATLEAST(2, 0, 1) && (defined(MACOSX) || defined(__IPHONEOS__))
 	gwin->get_win()->screen_to_game_hdpi(x, y, gwin->get_fastmouse(), x, y);
 #else
 	gwin->get_win()->screen_to_game(x, y, gwin->get_fastmouse(), x, y);
@@ -915,7 +915,11 @@ void Cheat::delete_object(void) {
 
 	int x, y;
 	SDL_GetMouseState(&x, &y);
+#if SDL_VERSION_ATLEAST(2, 0, 1) && (defined(MACOSX) || defined(__IPHONEOS__))
+	gwin->get_win()->screen_to_game_hdpi(x, y, gwin->get_fastmouse(), x, y);
+#else
 	gwin->get_win()->screen_to_game(x, y, gwin->get_fastmouse(), x, y);
+#endif
 
 	Game_object *obj;
 	Gump *gump = gwin->get_gump_man()->find_gump(x, y);
