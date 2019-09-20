@@ -293,6 +293,9 @@ protected:
 	static int windowed_8;
 	static int windowed_16;
 	static int windowed_32;
+#if SDL_VERSION_ATLEAST(2, 0, 1) && (defined(MACOSX) || defined(__IPHONEOS__))
+	static float nativescale;
+#endif
 
 public:
 #if SDL_VERSION_ATLEAST(2, 0, 0)
@@ -334,6 +337,21 @@ public:
 			gy = (sy * inter_height) / (scale * get_display_height()) + get_start_y();
 		}
 	}
+#if SDL_VERSION_ATLEAST(2, 0, 1) && (defined(MACOSX) || defined(__IPHONEOS__))
+	void screen_to_game_hdpi(int sx, int sy, bool fast, int &gx, int &gy) {
+		if (!fullscreen)
+			// reset nativescale to 1.0 for windowed gaming or toggling
+			// fullscreen/windowed mode uses the wrong nativescale
+			nativescale = 1.0;
+		if (fast) {
+			gx = (sx + get_start_x())* nativescale;
+			gy = (sy + get_start_y())* nativescale;
+		} else {
+			gx = ((sx * inter_width) / (scale * get_display_width()) + get_start_x()) * nativescale;
+			gy = ((sy * inter_height) / (scale * get_display_height()) + get_start_y()) * nativescale;
+		}
+	}
+#endif
 	void game_to_screen(int gx, int gy, bool fast, int &sx, int &sy) {
 		if (fast) {
 			sx = gx - get_start_x();
