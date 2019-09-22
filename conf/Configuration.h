@@ -25,10 +25,10 @@
 class   Configuration {
 public:
 	Configuration()
-		: xmltree(new XMLnode("config")), rootname("config"), filename(), is_file(false)
+		: xmltree(new XMLnode("config")), rootname("config"), is_file(false)
 	{ }
 	Configuration(const std::string &fname, const std::string &root)
-		: xmltree(new XMLnode(root)), rootname(root), filename(), is_file(false) {
+		: xmltree(new XMLnode(root)), rootname(root), is_file(false) {
 		if (fname.size()) read_config_file(fname);
 	}
 

@@ -40,9 +40,6 @@ class Body_info : public Base_info {
 	int     bframe;         // Body frame.
 public:
 	friend class Shape_info;
-	Body_info()
-		: Base_info()
-	{  }
 	// Read in from file.
 	bool read(std::istream &in, int version, Exult_Game game);
 	// Write out.

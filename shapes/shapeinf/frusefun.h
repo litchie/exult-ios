@@ -45,9 +45,7 @@ class Frame_usecode_info : public Base_info {
 	std::string usecode_name;       // Name of usecode fun explicitly assigned.
 public:
 	friend class Shape_info;
-	Frame_usecode_info()
-		: Base_info()
-	{  }
+	Frame_usecode_info() = default;
 	Frame_usecode_info(short f, short q, int ui, const char *nm, bool p = false,
 	                   bool m = false, bool s = false, bool inv = false) {
 		set(f, q, ui, nm, p, m, s, inv);

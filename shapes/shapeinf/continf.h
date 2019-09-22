@@ -41,9 +41,7 @@ class Content_rules : public Base_info {
 	bool    accept;
 public:
 	friend class Shape_info;
-	Content_rules()
-		: Base_info()
-	{  }
+	Content_rules() = default;
 	Content_rules(int sh, bool a, bool p = false, bool m = false,
 	              bool st = false, bool inv = false) {
 		set(sh, a, p, m, st, inv);

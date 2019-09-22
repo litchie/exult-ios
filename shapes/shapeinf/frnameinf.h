@@ -44,9 +44,7 @@ class Frame_name_info : public Base_info {
 	int     othermsg;   // Suffix/prefix or default message, depending on type
 public:
 	friend class Shape_info;
-	Frame_name_info()
-		: Base_info()
-	{  }
+	Frame_name_info() = default;
 	Frame_name_info(short f, short q, short ty, int msg, int ot, bool p = false,
 	                bool m = false, bool s = false, bool inv = false) {
 		set(f, q, ty, msg, ot, p, m, s, inv);

@@ -51,9 +51,7 @@ private:
 	short   frame[4];           // The paperdoll frame and alternates.
 public:
 	friend class Shape_info;
-	Paperdoll_item()
-		: Base_info()
-	{  }
+	Paperdoll_item() = default;
 	Paperdoll_item(short w, short sp, short ty, bool tr, bool g,
 	               short sh, short fr0, short fr1, short fr2, short fr3,
 	               bool p = false, bool m = false, bool s = false,

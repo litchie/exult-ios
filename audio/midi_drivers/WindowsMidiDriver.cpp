@@ -40,7 +40,7 @@ using std::endl;
 #include <cstdlib>
 
 WindowsMidiDriver::WindowsMidiDriver() : 
-	LowLevelMidiDriver(), dev_num(-1), midi_port(nullptr),
+	dev_num(-1), midi_port(nullptr),
 	_streamBuffer(nullptr), _streamBufferSize(0), _streamEvent(nullptr)
 {
 #ifdef WIN32_USE_DUAL_MIDIDRIVERS

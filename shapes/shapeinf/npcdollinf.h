@@ -53,9 +53,6 @@ class Paperdoll_npc : public Base_info {
 public:
 	friend class Shape_info;
 	friend class Paperdoll_npc_functor;
-	Paperdoll_npc()
-		: Base_info()
-	{  }
 	// Read in from file.
 	bool read(std::istream &in, int version, Exult_Game game);
 	// Write out.

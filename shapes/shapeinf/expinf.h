@@ -40,9 +40,6 @@ class Explosion_info : public Base_info {
 	int     sfxnum;         // SFX to play or 255 for none.
 public:
 	friend class Shape_info;
-	Explosion_info()
-		: Base_info()
-	{  }
 	// Read in from file.
 	bool read(std::istream &in, int version, Exult_Game game);
 	// Write out.

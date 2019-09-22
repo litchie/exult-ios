@@ -57,9 +57,6 @@ public:
 	    always_drop = 2
 	};
 	friend class Shapes_vga_file;
-	Ammo_info()
-		: Base_info()
-	{  }
 	// Read in from file.
 	bool read(std::istream &in, int version, Exult_Game game);
 	// Write out.

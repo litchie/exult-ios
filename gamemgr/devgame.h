@@ -26,10 +26,9 @@
  */
 class DEV_Game: public SI_Game {
 public:
-	DEV_Game() : SI_Game()
-	{  }
-//	~DEV_Game() override;
 #if 0
+	DEV_Game() = default;
+	~DEV_Game() override;
 	void play_intro() override;
 	void end_game(bool success) override;
 	void top_menu() override;

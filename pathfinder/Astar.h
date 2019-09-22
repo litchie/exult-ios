@@ -30,7 +30,7 @@ class   Astar: public PathFinder {
 	int stop;           // Index to stop at.
 	int next_index;         // Index of next tile to return.
 public:
-	Astar() : PathFinder(), path(), pathlen(0), dir(0), stop(0), next_index(0)
+	Astar() : pathlen(0), dir(0), stop(0), next_index(0)
 	{  }
 	// Find a path from sx,sy,sz to dx,dy,dz
 	// Return 0 if no path can be traced.

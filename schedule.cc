@@ -1005,8 +1005,8 @@ void Preach_schedule::now_what(
 Patrol_schedule::Patrol_schedule(
     Actor *n
 ) : Schedule(n), pathnum(-1), dir(1), state(-1),
-	center(0, 0, 0), whichdir(0), phase(1), pace_count(0), hammer(),
-	book(), seek_combat(false), forever(false) {
+	center(0, 0, 0), whichdir(0), phase(1), pace_count(0),
+	seek_combat(false), forever(false) {
 	if (num_path_eggs < 0) {
 		Shapes_vga_file &shapes = Shape_manager::get_instance()->get_shapes();
 		num_path_eggs = shapes.get_num_frames(PATH_SHAPE) - 1;

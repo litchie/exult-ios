@@ -133,8 +133,7 @@ protected:
     int items_in_hand; 	  	// # NPC's desk items.
 	void cleanup();				// Remove items we created.
 public:
-	Schedule_with_objects(Actor *n) : Schedule(n), current_item(),
-									items_in_hand(0) {
+	Schedule_with_objects(Actor *n) : Schedule(n), items_in_hand(0) {
 	}
 	~Schedule_with_objects() override;
 	void add_object(Game_object *obj);
@@ -367,7 +366,7 @@ protected:
 	void get_tool();
 public:
 	Tool_schedule(Actor *n, int shnum) : Loiter_schedule(n, 12),
-		toolshape(shnum), tool()
+		toolshape(shnum)
 	{  }
 	void now_what() override = 0;    // Now what should NPC do?
 	void ending(int newtype) override;// Switching to another schedule.
@@ -388,7 +387,7 @@ class Farmer_schedule : public Tool_schedule {
 	} state;
 public:
 	Farmer_schedule(Actor *n) : Tool_schedule(n, 618),
-		crop(), grow_cnt(0), state(start)
+		grow_cnt(0), state(start)
 	{  }
 	void now_what() override;    // Now what should NPC do?
 };
@@ -405,8 +404,7 @@ class Miner_schedule : public Tool_schedule {
 	    wander
 	} state;
 public:
-	Miner_schedule(Actor *n) : Tool_schedule(n, 624),
-		ore(), state(find_ore)
+	Miner_schedule(Actor *n) : Tool_schedule(n, 624), state(find_ore)
 	{  }
 	void now_what() override;    // Now what should NPC do?
 };

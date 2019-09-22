@@ -46,8 +46,6 @@ class Basic_block;
  */
 class Uc_statement : public Uc_location {
 public:
-	Uc_statement() : Uc_location()
-	{  }
 	virtual ~Uc_statement() = default;
 	// Generate code.
 	virtual void gen(Uc_function *fun, std::vector<Basic_block *> &blocks,

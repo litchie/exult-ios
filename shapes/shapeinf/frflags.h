@@ -76,9 +76,7 @@ class Frame_flags_info : public Base_info {
 	unsigned int    m_flags;    // Bit field with the relevant flags.
 public:
 	friend class Shape_info;
-	Frame_flags_info()
-		: Base_info()
-	{  }
+	Frame_flags_info() = default;
 	Frame_flags_info(short fr, short q, unsigned int fl, bool p = false,
 	                 bool m = false, bool s = false, bool inv = false) {
 		set(fr, q, fl, p, m, s, inv);

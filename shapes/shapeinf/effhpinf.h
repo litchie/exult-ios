@@ -42,9 +42,7 @@ class Effective_hp_info : public Base_info {
 	char    hps;
 public:
 	friend class Shape_info;
-	Effective_hp_info()
-		: Base_info()
-	{  }
+	Effective_hp_info() = default;
 	Effective_hp_info(short f, short q, char h, bool p = false, bool m = false,
 	                  bool s = false, bool inv = false) {
 		set(f, q, h, p, m, s, inv);

@@ -89,7 +89,6 @@ private:
 	short sfx, hitsfx;      // Sound when using/hit, or -1.
 public:
 	friend class Shape_info;
-	Weapon_info() : Base_info() {  }
 	// Read in from file.
 	bool read(std::istream &in, int version, Exult_Game game);
 	// Write out.

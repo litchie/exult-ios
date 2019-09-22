@@ -31,9 +31,7 @@ public:
 	               char res = 0)
 		: Container_game_object(shapenum, framenum, tilex, tiley, lft, res), toothcount(0)
 	{ }
-	Jawbone_object() : Container_game_object() {  }
-
-	//~Jawbone_object() override { }
+	Jawbone_object() = default;
 
 	// Add an object.
 	bool add(Game_object *obj, bool dont_check = false,

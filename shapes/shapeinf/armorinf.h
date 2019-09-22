@@ -40,7 +40,6 @@ class Armor_info : public Base_info {
 	unsigned char immune;       // Weapon_data::damage_type bits.
 public:
 	friend class Shape_info;
-	Armor_info() : Base_info() {  }
 	// Read in from file.
 	bool read(std::istream &in, int version, Exult_Game game);
 	// Write out.

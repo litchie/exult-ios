@@ -40,7 +40,7 @@ class Gump : public ShapeID, public Paintable {
 	UNREPLICATABLE_CLASS(Gump)
 
 protected:
-	Gump() : ShapeID() {   }
+	Gump() = default;
 	Container_game_object *container;// What this gump shows.
 	int x, y;           // Location on screen.
 	Rectangle object_area;      // Area to paint objects in, rel. to

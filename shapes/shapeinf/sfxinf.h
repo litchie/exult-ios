@@ -44,9 +44,6 @@ class SFX_info : public Base_info {
 
 public:
 	friend class Shape_info;
-	SFX_info()
-		: Base_info()
-	{  }
 	// Read in from file.
 	bool read(std::istream &in, int version, Exult_Game game);
 	// Write out.

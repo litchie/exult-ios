@@ -41,9 +41,7 @@ class Warmth_info : public Base_info {
 	char    warmth;
 public:
 	friend class Shape_info;
-	Warmth_info()
-		: Base_info()
-	{  }
+	Warmth_info() = default;
 	Warmth_info(short f, char w, bool p = false, bool m = false,
 	            bool s = false, bool inv = false)
 		: Base_info(m, p, inv, s), frame(f), warmth(w)
