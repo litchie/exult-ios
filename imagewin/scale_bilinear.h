@@ -26,7 +26,7 @@
  ** are used anyway.
  **/
 
-typedef unsigned int COMPONENT;
+using COMPONENT = unsigned int;
 
 
 // fill `row' with the the disassembled color components from the original

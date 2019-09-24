@@ -28,7 +28,7 @@ class   Missile_launcher;
 #include "iregobjs.h"
 #include "ignore_unused_variable_warning.h"
 
-typedef std::shared_ptr<Egg_object> Egg_object_shared;
+using Egg_object_shared = std::shared_ptr<Egg_object>;
 
 /*
  *  Here's a class for eggs and paths; i.e., objects that generally aren't

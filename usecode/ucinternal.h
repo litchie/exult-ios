@@ -68,7 +68,7 @@ Barge_object *Get_barge(
 class Usecode_internal : public Usecode_machine {
 	// I'th entry contains funs for ID's
 	//    256*i + n.
-	typedef std::vector<Usecode_function *> Funs256;
+	using Funs256 = std::vector<Usecode_function *>;
 	std::vector<Funs256> funs;
 	std::vector<Usecode_value> statics;  // Global persistent vars.
 	Usecode_symbol_table *symtbl = nullptr;   // (optional) symbol table.
@@ -121,7 +121,7 @@ class Usecode_internal : public Usecode_machine {
 	/*
 	 *  Built-in usecode functions:
 	 */
-	typedef Usecode_value(Usecode_internal::*UsecodeIntrinsicFn)(
+	using UsecodeIntrinsicFn = Usecode_value (Usecode_internal::*)(
 	    int num_parms, Usecode_value parms[12]);
 
 	int get_face_shape(Usecode_value &arg1, Actor *&npc, int &frame);

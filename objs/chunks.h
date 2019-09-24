@@ -49,7 +49,7 @@ class Chunk_terrain;
  */
 class Chunk_cache : public Game_singletons {
 	Map_chunk *obj_list;
-	typedef uint16 *blocked8z;  // For each tile, 2 bits for each lift
+	using blocked8z = uint16 *;  // For each tile, 2 bits for each lift
 	//   level for #objs blocking there, so
 	//   8 lifts are represented.
 	std::vector<blocked8z> blocked;  // One for each 8 lifts.

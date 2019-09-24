@@ -31,8 +31,8 @@ class ArbScaler {
 protected:
 
 	// Basic scaler function template
-	typedef bool (*ScalerFunc)(SDL_Surface *tex, sint32 sx, sint32 sy, sint32 sw, sint32 sh,
-	                           uint8 *pixel, sint32 dw, sint32 dh, sint32 pitch, bool clamp_src);
+	using ScalerFunc = bool (*)(SDL_Surface *tex, sint32 sx, sint32 sy, sint32 sw, sint32 sh,
+	                            uint8 *pixel, sint32 dw, sint32 dh, sint32 pitch, bool clamp_src);
 
 	//
 	// Basic scaler functions (filled in by the scalers constructor)

@@ -69,8 +69,8 @@ class Combo_editor;
 class Exec_box;
 class BaseGameInfo;
 // Callback for msgs.
-typedef void (*Msg_callback)(Exult_server::Msg_type id,
-                             const unsigned char *data, int datalen, void *client);
+using Msg_callback = void (*)(Exult_server::Msg_type id,
+                              const unsigned char *data, int datalen, void *client);
 
 #ifndef _WIN32
 #define C_EXPORT extern "C"
@@ -449,7 +449,7 @@ public:
 	}
 };
 
-typedef strCodepageConvert<convertToUTF8> utf8Str;
-typedef strCodepageConvert<convertFromUTF8> codepageStr;
+using utf8Str = strCodepageConvert<convertToUTF8>;
+using codepageStr = strCodepageConvert<convertFromUTF8>;
 
 #endif

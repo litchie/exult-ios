@@ -46,8 +46,8 @@ public:
 	std::map<unsigned int, std::string>& varmap;	// Variable names
 };
 
-typedef std::map<unsigned int, UCFuncSet> FuncMap;
-typedef std::pair<unsigned int, UCFuncSet> FuncMapPair;
+using FuncMap = std::map<unsigned int, UCFuncSet>;
+using FuncMapPair = std::pair<unsigned int, UCFuncSet>;
 
 //#define DEBUG_GOTOSET
 const unsigned int SIZEOF_USHORT = 2;
@@ -196,7 +196,7 @@ public:
 		return _offset;
 	}
 
-	typedef std::vector<std::pair<UCc *, bool> >::iterator iterator;
+	using iterator = std::vector<std::pair<UCc *, bool>>::iterator;
 
 private:
 	unsigned int _offset = 0;

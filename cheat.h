@@ -33,7 +33,7 @@ class Tile_coord;
 class Effects_manager;
 class Map_chunk;
 
-typedef std::shared_ptr<Game_object> Game_object_shared;
+using Game_object_shared = std::shared_ptr<Game_object>;
 
 class Cheat : public Game_singletons {
 public:

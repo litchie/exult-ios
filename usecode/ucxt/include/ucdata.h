@@ -96,7 +96,7 @@ private:
 	FuncMap _funcmap;
 
 	/* Usecode class inheritance map. */
-	typedef std::map<Usecode_class_symbol *, Usecode_class_symbol *> InheritMap;
+	using InheritMap = std::map<Usecode_class_symbol *, Usecode_class_symbol *>;
 	InheritMap _clsmap;
 
 	long _search_opcode = -1;
@@ -105,4 +105,3 @@ private:
 };
 
 #endif
-

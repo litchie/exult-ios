@@ -28,7 +28,7 @@
 
 class Game_object;
 class Usecode_function;
-typedef std::shared_ptr<Game_object> Game_object_shared;
+using Game_object_shared = std::shared_ptr<Game_object>;
 
 class Stack_frame {
 public:

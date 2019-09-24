@@ -78,8 +78,8 @@ public:
 
 	void clear(const std::string &new_root = std::string());
 
-	typedef XMLnode::KeyType     KeyType;
-	typedef XMLnode::KeyTypeList KeyTypeList;
+	using KeyType = XMLnode::KeyType;
+	using KeyTypeList = XMLnode::KeyTypeList;
 
 	void getsubkeys(KeyTypeList &ktl, const std::string &basekey);
 

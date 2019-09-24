@@ -28,8 +28,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string>
 
 class Gump_button;
-typedef std::vector<Gump_button *> Gump_button_vector;
-typedef std::map<Game_object *, int *> Game_object_map_xy;
+using Gump_button_vector = std::vector<Gump_button *>;
+using Game_object_map_xy = std::map<Game_object *, int *>;
 
 enum ITEMMENU_ACTIONS { ITEMMENU_ACTION_NONE, ITEMMENU_ACTION_MENU, ITEMMENU_ACTION_USE, ITEMMENU_ACTION_PICKUP, ITEMMENU_ACTION_MOVE, ITEMMENU_ACTION_COUNT };
 class Itemmenu_gump : public Modal_gump {

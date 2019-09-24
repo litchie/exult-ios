@@ -28,12 +28,12 @@
 
 class color_8 {
 public:
-	typedef uint8 T;
+	using T = uint8;
 };
 
 class color_16 {
 public:
-	typedef uint16 T;
+	using T = uint16;
 };
 
 class color_555 : public color_16 {
@@ -44,7 +44,7 @@ class color_565 : public color_16 {
 
 class color_32 {
 public:
-	typedef uint32 T;
+	using T = uint32;
 };
 
 class ManipBase {
@@ -66,7 +66,7 @@ template<typename color_d> class ManipBaseDest : public ManipBase {
 protected:
 	ManipBaseDest(SDL_Color *c, SDL_PixelFormat *f) : ManipBase(c, f) { }
 public:
-	typedef typename color_d::T uintD;
+	using uintD = typename color_d::T;
 
 	static uintD rgb(unsigned int r, unsigned int g,
 	                 unsigned int b) {
@@ -103,7 +103,7 @@ protected:
 		}
 	}
 public:
-	typedef color_555::T uintD;
+	using uintD = color_555::T;
 
 	static uintD rgb(unsigned int r, unsigned int g,
 	                 unsigned int b) {
@@ -138,7 +138,7 @@ protected:
 		}
 	}
 public:
-	typedef color_565::T uintD;
+	using uintD = color_565::T;
 
 	static uintD rgb(unsigned int r, unsigned int g,
 	                 unsigned int b) {
@@ -157,7 +157,7 @@ template<> class ManipBaseDest<uint8> : public ManipBase {
 protected:
 	ManipBaseDest(SDL_Color *c, SDL_PixelFormat *f) :  ManipBase(c, f) { }
 public:
-	typedef color_8::T uintD;
+	using uintD = color_8::T;
 
 	static int get_error(int r, int g, int b, int index) {
 		SDL_Color &color = colors[index];
@@ -191,7 +191,7 @@ template<typename color_s, typename color_d> class ManipBaseSrc : public ManipBa
 protected:
 	ManipBaseSrc(SDL_Color *c, SDL_PixelFormat *f) : ManipBaseDest<color_d>(c, f) {  }
 public:
-	typedef typename color_s::T uintS;
+	using uintS = typename color_s::T;
 
 	static void split_source(uintS pix, unsigned int &r,
 	                         unsigned int &g, unsigned int &b) {
@@ -212,7 +212,7 @@ template<typename color_d> class ManipBaseSrc<color_555, color_d> : public Manip
 protected:
 	ManipBaseSrc(SDL_Color *c, SDL_PixelFormat *f) : ManipBaseDest<color_d>(c, f) {  }
 public:
-	typedef typename color_555::T uintS;
+	using uintS = typename color_555::T;
 
 	static void split_source(uintS pix, unsigned int &r,
 	                         unsigned int &g, unsigned int &b) {
@@ -234,7 +234,7 @@ template<typename color_d> class ManipBaseSrc<color_565, color_d> : public Manip
 protected:
 	ManipBaseSrc(SDL_Color *c, SDL_PixelFormat *f) : ManipBaseDest<color_d>(c, f) {  }
 public:
-	typedef typename color_565::T uintS;
+	using uintS = typename color_565::T;
 
 	static void split_source(uintS pix, unsigned int &r,
 	                         unsigned int &g, unsigned int &b) {
@@ -255,7 +255,7 @@ template<typename color_d> class ManipBaseSrc<color_8, color_d> : public ManipBa
 protected:
 	ManipBaseSrc(SDL_Color *c, SDL_PixelFormat *f) : ManipBaseDest<color_d>(c, f) {  }
 public:
-	typedef typename color_8::T uintS;
+	using uintS = typename color_8::T;
 
 	static void split_source(uintS pix, unsigned int &r,
 	                         unsigned int &g, unsigned int &b) {
@@ -279,8 +279,8 @@ template<typename color_s, typename color_d> class ManipStoD : public ManipBaseS
 public:
 	ManipStoD(SDL_Color *c, SDL_PixelFormat *f) : ManipBaseSrc<color_s, color_d>(c, f) {  }
 
-	typedef typename color_s::T uintS;
-	typedef typename color_d::T uintD;
+	using uintS = typename color_s::T;
+	using uintD = typename color_d::T;
 
 	static uintD copy(uintS src) {
 		unsigned int r, g, b;
@@ -305,8 +305,8 @@ template<typename colorSD> class ManipStoD<colorSD, colorSD> : public ManipBaseS
 public:
 	ManipStoD(SDL_Color *c, SDL_PixelFormat *f) : ManipBaseSrc<colorSD, colorSD>(c, f) {  }
 
-	typedef typename colorSD::T uintS;
-	typedef typename colorSD::T uintD;
+	using uintS = typename colorSD::T;
+	using uintD = typename colorSD::T;
 
 	static uintD copy(uintS src) {
 		return src;
@@ -316,16 +316,16 @@ public:
 	}
 };
 
-typedef ManipStoD<color_8, color_8> Manip8to8;
-typedef ManipStoD<color_8, color_16> Manip8to16;
-typedef ManipStoD<color_8, color_555> Manip8to555;
-typedef ManipStoD<color_8, color_565> Manip8to565;
-typedef ManipStoD<color_8, color_32> Manip8to32;
+using Manip8to8 = ManipStoD<color_8, color_8>;
+using Manip8to16 = ManipStoD<color_8, color_16>;
+using Manip8to555 = ManipStoD<color_8, color_555>;
+using Manip8to565 = ManipStoD<color_8, color_565>;
+using Manip8to32 = ManipStoD<color_8, color_32>;
 
-typedef ManipStoD<color_16, color_16> Manip16to16;
-typedef ManipStoD<color_555, color_555> Manip555to555;
-typedef ManipStoD<color_565, color_565> Manip565to565;
-typedef ManipStoD<color_32, color_32> Manip32to32;
+using Manip16to16 = ManipStoD<color_16, color_16>;
+using Manip555to555 = ManipStoD<color_555, color_555>;
+using Manip565to565 = ManipStoD<color_565, color_565>;
+using Manip32to32 = ManipStoD<color_32, color_32>;
 
 inline void increase_area(int &x, int &y, int &w, int &h,
                           int left, int right, int top, int bottom,

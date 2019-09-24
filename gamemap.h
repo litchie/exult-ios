@@ -45,8 +45,8 @@ class Shapes_vga_file;
 class IDataSource;
 class ODataSource;
 class Shape;
-typedef std::shared_ptr<Ireg_game_object> Ireg_game_object_shared;
-typedef std::shared_ptr<Ifix_game_object> Ifix_game_object_shared;
+using Ireg_game_object_shared = std::shared_ptr<Ireg_game_object>;
+using Ifix_game_object_shared = std::shared_ptr<Ifix_game_object>;
 
 #define IREG_EXTENDED   254     // For shape #'s > 1023.
 

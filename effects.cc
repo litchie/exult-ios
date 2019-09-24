@@ -1284,10 +1284,10 @@ protected:
 };
 
 // This looks slightly cooler:
-//typedef Basicdrop< 3, 6, 6, false> Raindrop;
-typedef Basicdrop< 3, 7, 6, false> Raindrop;
-typedef Basicdrop<13, 20, 1, false> Snowflake;
-typedef Basicdrop<21, 27, 12, true > Sparkle;
+//using Raindrop = Basicdrop< 3, 6, 6, false>;
+using Raindrop = Basicdrop< 3, 7, 6, false>;
+using Snowflake = Basicdrop<13, 20, 1, false>;
+using Sparkle = Basicdrop<21, 27, 12, true>;
 
 /*
  *  Raining.

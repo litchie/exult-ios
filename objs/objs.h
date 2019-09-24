@@ -55,12 +55,12 @@ class Object_client;
 template<class T>
 class T_Object_list;
 
-typedef std::vector<Game_object *>   Game_object_vector;
-typedef std::vector<Egg_object *>    Egg_vector;
-typedef std::vector<Actor *>     Actor_vector;
-typedef std::shared_ptr<Game_object> Game_object_shared;
-typedef std::weak_ptr<Game_object> Game_object_weak;
-typedef std::vector<Game_object_shared>   Game_object_shared_vector;
+using Game_object_vector = std::vector<Game_object *>;
+using Egg_vector = std::vector<Egg_object *>;
+using Actor_vector = std::vector<Actor *>;
+using Game_object_shared = std::shared_ptr<Game_object>;
+using Game_object_weak = std::weak_ptr<Game_object>;
+using Game_object_shared_vector = std::vector<Game_object_shared>;
 
 /*
  *  A game object is a shape from shapes.vga along with info. about its
@@ -83,7 +83,7 @@ private:
 	Game_object_shared next;   // ->next in chunk list or container.
     Game_object *prev;
 public:
-	typedef std::set<Game_object *> Game_object_set;
+	using Game_object_set = std::set<Game_object *>;
 private:
 	Game_object_set dependencies;   // Objects which must be painted before
 	//   this can be rendered.

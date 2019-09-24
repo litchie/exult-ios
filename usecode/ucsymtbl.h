@@ -71,14 +71,14 @@ public:
 
 class Usecode_scope_symbol : public Usecode_symbol {
 public:
-	typedef std::vector<Usecode_symbol *> Syms_vector;
+	using Syms_vector = std::vector<Usecode_symbol *>;
 private:
 	Syms_vector symbols;        // All symbols.
 	std::vector<Usecode_class_symbol *> classes; // Just the classes.
-	typedef std::map<std::string, Usecode_symbol *> Name_table;
-	typedef std::map<int, Usecode_symbol *> Val_table;
-	typedef std::map<std::string, Usecode_class_symbol *> Class_name_table;
-	typedef std::map<int, int> Shape_table;
+	using Name_table = std::map<std::string, Usecode_symbol *>;
+	using Val_table = std::map<int, Usecode_symbol *>;
+	using Class_name_table = std::map<std::string, Usecode_class_symbol *>;
+	using Shape_table = std::map<int, int>;
 	Name_table by_name;
 	Val_table by_val;
 	Class_name_table class_names;
@@ -112,7 +112,7 @@ public:
 };
 
 class Usecode_class_symbol : public Usecode_scope_symbol {
-	typedef std::vector<int> Ints_vector;
+	using Ints_vector = std::vector<int>;
 	Ints_vector methods;        // List of method usecode #'s.
 	int num_vars;           // # of class variables.
 public:

@@ -77,7 +77,7 @@ bool    operator <(const Queue_entry &q1, const Queue_entry &q2);
  *  by time.
  */
 class Time_queue {
-	typedef std::list<Queue_entry>  Temporal_sequence;
+	using Temporal_sequence = std::list<Queue_entry>;
 	Temporal_sequence data;
 	uint32 pause_time = 0;      // Time when paused.
 	int paused = 0;             // Count of calls to 'pause()'.

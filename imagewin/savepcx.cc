@@ -56,7 +56,7 @@ using std::endl;
 #define htoql(x) qtohl(x)
 #define htoqs(x) qtohs(x)
 
-typedef struct PCX_Header {
+struct PCX_Header {
 	Uint8 manufacturer;
 	Uint8 version;
 	Uint8 compression;
@@ -71,7 +71,7 @@ typedef struct PCX_Header {
 	Sint16 bytesperline;
 	Sint16 color;
 	Uint8 filler[58];
-} PCX_Header;
+};
 
 static void writeline(SDL_RWops *dst, Uint8 *buffer, int bytes) {
 	Uint8 value, count, tmp;

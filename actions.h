@@ -32,7 +32,7 @@ class PathFinder;
 class Pathfinder_client;
 class Path_walking_actor_action;
 class If_else_path_actor_action;
-typedef std::weak_ptr<Game_object> Game_object_weak;
+using Game_object_weak = std::weak_ptr<Game_object>;
 
 /*
  *  This class controls the current actions of an actor:

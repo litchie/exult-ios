@@ -57,7 +57,7 @@ public:
 	}
 } chardata;
 
-typedef void(*ActionFunc)(int const *);
+using ActionFunc = void (*)(int const *);
 
 const struct Action {
 	const char *s;
@@ -363,8 +363,8 @@ const struct {
 };
 
 
-typedef std::map<std::string, SDLKey> ParseKeyMap;
-typedef std::map<std::string, const Action *> ParseActionMap;
+using ParseKeyMap = std::map<std::string, SDLKey>;
+using ParseActionMap = std::map<std::string, const Action *>;
 
 static ParseKeyMap keys;
 static ParseActionMap actions;

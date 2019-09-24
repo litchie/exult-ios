@@ -52,8 +52,8 @@ private:
 	static bool new_game_flag;
 	static Exult_Game game_type;
 	static bool expansion, sibeta;
-	typedef std::unordered_map<const char *, int, hashstr, eqstr> shapes_map;
-	typedef std::unordered_map<const char *, str_int_pair, hashstr, eqstr> rsc_map;
+	using shapes_map = std::unordered_map<const char *, int, hashstr, eqstr>;
+	using rsc_map = std::unordered_map<const char *, str_int_pair, hashstr, eqstr>;
 	shapes_map shapes;
 	rsc_map resources;
 	Configuration *xml = nullptr;     /* Shapes/resources from XML file. */

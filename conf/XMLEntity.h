@@ -48,8 +48,8 @@ public:
 		return content;
 	}
 
-	typedef std::pair<std::string, std::string> KeyType;
-	typedef std::vector<KeyType> KeyTypeList;
+	using KeyType = std::pair<std::string, std::string>;
+	using KeyTypeList = std::vector<KeyType>;
 
 	bool searchpairs(KeyTypeList &ktl, const std::string &basekey, const std::string &currkey, const unsigned int pos);
 	void selectpairs(KeyTypeList &ktl, const std::string &currkey);

@@ -83,7 +83,7 @@ public:
 		delete [] filename;
 	}
 };
-typedef vector<Shape_spec> Shape_specs;
+using Shape_specs = vector<Shape_spec>;
 
 /*
  *  Add all shapes to 'specs'.

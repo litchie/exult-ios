@@ -489,7 +489,7 @@ public:
 	// Get/set generic attribute.
 	void set_attribute(const char *nm, int val);
 	int get_attribute(const char *nm);
-	typedef std::vector<std::pair<const char *, int> > Atts_vector;
+	using Atts_vector = std::vector<std::pair<const char *, int>>;
 	void get_attributes(Atts_vector &attlst);
 	// Set atts. from savegame.
 	void read_attributes(const unsigned char *buf, int len) override;
@@ -701,7 +701,7 @@ public:
 	bool in_usecode_control() const;
 	bool quake_on_walk();
 };
-typedef std::shared_ptr<Actor> Actor_shared;
+using Actor_shared = std::shared_ptr<Actor>;
 
 /*
  *  Actor frame descriptions:
@@ -743,7 +743,7 @@ public:
 	void move(int newtx, int newty, int newlift, int newmap = -1) override;
 	void die(Game_object *attacker) override;        // We're dead.
 };
-typedef std::shared_ptr<Main_actor> Main_actor_shared;
+using Main_actor_shared = std::shared_ptr<Main_actor>;
 
 /*
  *  A non-player-character that one can converse (or fight) with:
@@ -801,7 +801,7 @@ public:
 		return this;
 	}
 };
-typedef std::shared_ptr<Npc_actor> Npc_actor_shared;
+using Npc_actor_shared = std::shared_ptr<Npc_actor>;
 
 /*
  *  An actor's dead body:
@@ -825,6 +825,6 @@ public:
 	void write_ireg(ODataSource *out) override;
 	int get_ireg_size() override;
 };
-typedef std::shared_ptr<Dead_body> Dead_body_shared;
+using Dead_body_shared = std::shared_ptr<Dead_body>;
 
 #endif

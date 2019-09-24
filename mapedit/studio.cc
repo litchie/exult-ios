@@ -120,8 +120,7 @@ enum ExultFileTypes {
     ComboArchive
 };
 
-typedef struct _FileTreeItem FileTreeItem;
-struct _FileTreeItem {
+struct FileTreeItem {
 	const gchar    *label;
 	ExultFileTypes datatype;
 	FileTreeItem   *children;

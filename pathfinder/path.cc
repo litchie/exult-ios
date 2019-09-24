@@ -242,7 +242,7 @@ class A_star_queue {
 	//   is a ->last node in chain.
 	int best;           // Index of 1st non-null ent. in open.
 	// For finding each tile's node:
-	typedef std::unordered_set<Search_node *, Hash_node, Equal_nodes> Lookup_set;
+	using Lookup_set = std::unordered_set<Search_node *, Hash_node, Equal_nodes>;
 	Lookup_set lookup;
 
 public:

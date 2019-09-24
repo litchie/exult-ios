@@ -61,8 +61,8 @@ public:
 };
 
 // Sigh, this is needed to prevent compiler error with MSVC
-typedef std::list<Map_patch *> Map_patch_list;
-typedef std::map<int, Map_patch_list> Map_patch_map;
+using Map_patch_list = std::list<Map_patch *>;
+using Map_patch_map = std::map<int, Map_patch_list>;
 
 /*
  *  Remove an object.

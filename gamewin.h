@@ -86,7 +86,7 @@ class ShapeID;
 class Shape_info;
 class Game_render;
 class Effects_manager;
-typedef std::shared_ptr<Game_object> Game_object_shared;
+using Game_object_shared = std::shared_ptr<Game_object>;
 
 /*
  *  The main game window:
@@ -634,7 +634,7 @@ public:
 	// Find object (x, y) is in.
 	Game_object *find_object(int x, int y);
 #ifdef __IPHONEOS__
-	typedef std::map<Game_object *, int *> Game_object_map_xy;
+	using Game_object_map_xy = std::map<Game_object *, int *>;
 	void find_nearby_objects(Game_object_map_xy *mobjxy, int x, int y, Gump *gump = nullptr);
 #endif
 

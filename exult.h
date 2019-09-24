@@ -81,11 +81,11 @@ enum setup_video_type {
     SET_CONFIG = 3          // sets the config settings (doesn't write)
 };
 
-typedef enum {
+enum quitting_time_enum {
     QUIT_TIME_NO = 0,
     QUIT_TIME_YES = 1,
     QUIT_TIME_RESTART = 2
-} quitting_time_enum;
+} ;
 
 extern KeyBinder *keybinder;
 extern Configuration *config;

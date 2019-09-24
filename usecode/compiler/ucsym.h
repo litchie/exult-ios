@@ -356,7 +356,7 @@ public:
  *  usecode variable -- this is left to Exult.
  */
 class Uc_struct_symbol : public Uc_symbol {
-	typedef std::map<const char *, int, String_compare> Var_map;
+	using Var_map = std::map<const char *, int, String_compare>;
 	Var_map vars;
 	int num_vars;           // # member variables.
 public:
@@ -522,7 +522,7 @@ public:
 		Uc_class *cls;
 	};
 	// Keep track of #'s used.
-	typedef std::map<int, Uc_function_symbol *> Sym_nums;
+	using Sym_nums = std::map<int, Uc_function_symbol *>;
 private:
 	static Sym_nums nums_used;
 	// Note:  offset = Usecode fun. #.
@@ -630,7 +630,7 @@ public:
 class Uc_scope {
 	Uc_scope *parent;       // ->parent.
 	// For finding syms. by name.
-	typedef std::map<const char *, Uc_symbol *, String_compare> Sym_map;
+	using Sym_map = std::map<const char *, Uc_symbol *, String_compare>;
 	Sym_map symbols;
 	std::vector<Uc_scope *> scopes; // Scopes within.
 public:

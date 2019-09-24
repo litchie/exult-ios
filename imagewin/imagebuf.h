@@ -29,7 +29,7 @@ Boston, MA  02111-1307, USA.
 #include "ignore_unused_variable_warning.h"
 
 // Table for translating palette vals.:
-//typedef unsigned char *Xform_palette; // Should be 256-bytes.
+//using Xform_palette = unsigned char *; // Should be 256-bytes.
 
 /*
  *  This class represents a single transparent color by providing a

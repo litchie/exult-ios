@@ -555,7 +555,7 @@ void FMOplMidiDriver::midi_write_adlib(unsigned int reg, unsigned char val)
 
 /*
 
-typedef struct
+struct AD_instrument
 {
    unsigned char mod_avekm;		// 0	(20)
    unsigned char mod_ksl_tl;	// 1	(40)
@@ -570,8 +570,7 @@ typedef struct
    unsigned char car_ad;		// 8	Attack Delay		AR	(63)
    unsigned char car_sr;		// 9	SustainLev Release	DR	(83)
    unsigned char car_ws;		// 10	Waveform				(E0)
-}
-AD_instrument;
+};
 
 case 0x20:	 am,vib,ksr,eg type,mul
 

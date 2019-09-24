@@ -1606,7 +1606,7 @@ Usecode_value Usecode_internal::Execute_Intrinsic(UsecodeIntrinsicFn func, const
 	return ((*this).*func)(num_parms, parms);
 }
 
-typedef Usecode_value(Usecode_internal::*UsecodeIntrinsicFn)(int num_parms, Usecode_value parms[12]);
+using UsecodeIntrinsicFn = Usecode_value(Usecode_internal::*)(int num_parms, Usecode_value parms[12]);
 
 // missing from mingw32 header files, so included manually
 #ifndef TO_STRING

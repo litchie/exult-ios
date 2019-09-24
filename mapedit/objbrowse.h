@@ -140,7 +140,7 @@ public:
 
 // File-selector utility:
 // Callback for file-selector 'ok':
-typedef void (*File_sel_okay_fun)(const char *, gpointer);
+using File_sel_okay_fun = void (*)(const char *, gpointer);
 GtkFileSelection *Create_file_selection(
     const char *title,
     File_sel_okay_fun ok_handler,

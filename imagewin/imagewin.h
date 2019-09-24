@@ -52,8 +52,8 @@ class ArbScaler;
 class Image_window {
 public:
 	// Firstly just some public scaler stuff
-	typedef void (Image_window::*scalefun)(int x, int y, int w, int h);
-	typedef int ScalerType;
+	using scalefun = void (Image_window::*)(int, int, int, int);
+	using ScalerType = int;
 
 	enum FillMode {
 	    Fill = 1,                   ///< Game area fills all of the display surface

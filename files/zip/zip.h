@@ -59,7 +59,7 @@ extern "C" {
 #endif
 
 struct zip_internal;
-typedef zip_internal *zipFile;
+using zipFile = zip_internal *;
 
 #define ZIP_OK                                  (0)
 #define ZIP_ERRNO               (Z_ERRNO)

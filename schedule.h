@@ -38,8 +38,8 @@ class Rectangle;
 class Actor_action;
 class Usecode_value;
 
-typedef std::weak_ptr<Game_object> Game_object_weak;
-typedef std::vector<Game_object *> Game_object_vector;
+using Game_object_weak = std::weak_ptr<Game_object>;
+using Game_object_vector = std::vector<Game_object *>;
 
 /*
  *  A Schedule controls the NPC it is assigned to.

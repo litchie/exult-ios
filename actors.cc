@@ -224,7 +224,7 @@ inline int Get_dir_from_frame(int i) {
 class Actor_attributes {
 	/// The attribute names. These are shared among all actors.
 	static std::set<string> *strings;
-	typedef std::map<const char *, int> Att_map;
+	using Att_map = std::map<const char *, int>;
 	/// The attribute name > value map.
 	Att_map map;
 public:

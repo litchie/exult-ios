@@ -117,6 +117,6 @@ public:
 		lowlift = l;
 	}
 };
-typedef std::shared_ptr<Ireg_game_object> Ireg_game_object_shared;
+using Ireg_game_object_shared = std::shared_ptr<Ireg_game_object>;
 
 #endif

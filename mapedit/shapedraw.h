@@ -47,8 +47,8 @@ class Vga_file;
 class Shape_frame;
 class Image_buffer8;
 
-typedef void (*Drop_callback)(int filenum,
-                              int shapenum, int framenum, void *udata);
+using Drop_callback = void (*)(int filenum,
+                               int shapenum, int framenum, void *udata);
 
 /*
  *  This class can draw shapes from a .vga file.

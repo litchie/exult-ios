@@ -44,7 +44,7 @@ protected:
 	Container_game_object *container;// What this gump shows.
 	int x, y;           // Location on screen.
 	Rectangle object_area;      // Area to paint objects in, rel. to
-	typedef std::vector<Gump_widget *> Gump_elems;
+	using Gump_elems = std::vector<Gump_widget *>;
 	Gump_elems elems;       // Includes 'checkmark'.
 	bool handles_kbd;       // Kbd can be handled by gump.
 	void set_object_area(Rectangle const &area, int checkx, int checky);

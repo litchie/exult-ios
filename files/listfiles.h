@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string>
 #include <vector>
 
-typedef std::vector<std::string> FileList;
+using FileList = std::vector<std::string>;
 
 int U7ListFiles(const std::string &mask, FileList &files);
 

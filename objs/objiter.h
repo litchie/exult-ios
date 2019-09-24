@@ -74,7 +74,7 @@ public:
 	}
 };
 
-typedef T_Object_iterator<Game_object> Object_iterator;
+using Object_iterator = T_Object_iterator<Game_object>;
 
 /*
  *  Iterate through a chunk's nonflat objects.
@@ -93,7 +93,7 @@ public:
 	}
 };
 
-typedef T_Nonflat_object_iterator<Game_object, Map_chunk *> Nonflat_object_iterator;
+using Nonflat_object_iterator = T_Nonflat_object_iterator<Game_object, Map_chunk *>;
 
 /*
  *  Iterate through a chunk's flat objects.
@@ -127,7 +127,7 @@ public:
 	}
 };
 
-typedef T_Flat_object_iterator<Game_object, Map_chunk *> Flat_object_iterator;
+using Flat_object_iterator = T_Flat_object_iterator<Game_object, Map_chunk *>;
 
 /*
  *  Iterate backwards through list of objects.
@@ -161,7 +161,7 @@ public:
 	}
 };
 
-typedef T_Object_iterator_backwards<Game_object, Map_chunk *> Object_iterator_backwards;
+using Object_iterator_backwards = T_Object_iterator_backwards<Game_object, Map_chunk *>;
 
 /*
  *  Iterate through a list of objects (recursively).
@@ -182,9 +182,7 @@ public:
 /*
  *  Iterate forwards/backwards through a list of objects (recursively).
  */
-typedef D_Recursive_object_iterator<Object_iterator_backwards>
-Recursive_object_iterator_backwards;
-typedef D_Recursive_object_iterator<Object_iterator>
-Recursive_object_iterator;
+using Recursive_object_iterator_backwards = D_Recursive_object_iterator<Object_iterator_backwards>;
+using Recursive_object_iterator = D_Recursive_object_iterator<Object_iterator>;
 
 #endif

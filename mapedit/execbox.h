@@ -44,8 +44,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class Exec_box;
 class Exec_process;
 // Called when child is done:
-typedef void (*Exec_done_fun)(int exit_code, Exec_box *box,
-                              gpointer user_data);
+using Exec_done_fun = void (*)(int exit_code, Exec_box *box,
+                               gpointer user_data);
 
 
 #ifndef _WIN32
@@ -59,8 +59,8 @@ public:
 	// Function called when data is read
 	//   from child.  If datalen == 0,
 	//   child is done & exit_code is set.
-	typedef void (*Reader_fun)(char *data, int datalen, int exit_code,
-	                           gpointer user_data);
+	using Reader_fun = void (*)(char *data, int datalen, int exit_code,
+	                            gpointer user_data);
 private:
 	// Pipes for talking to child:
 	int child_stdin, child_stdout, child_stderr;
@@ -84,8 +84,8 @@ public:
 
 class Exec_process {
 public:
-	typedef void (*Reader_fun)(char *data, int datalen, int exit_code,
-	                           gpointer user_data);
+	using Reader_fun = void (*)(char *data, int datalen, int exit_code,
+	                            gpointer user_data);
 	void kill_child() {}
 	void read_from_child(int id) {
 		ignore_unused_variable_warning(id);

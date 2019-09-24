@@ -39,9 +39,9 @@ using std::pair;
 
 enum DoOps { DoAdd, DoRem, DoGet };
 
-typedef pair<DoOps, vector<string> > DoListPair;
+using DoListPair = pair<DoOps, vector<string>>;
 
-typedef vector<DoListPair> DoList;
+using DoList = vector<DoListPair>;
 
 DoList          dolist;
 Configuration   *config = new Configuration();

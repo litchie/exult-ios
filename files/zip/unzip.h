@@ -55,7 +55,7 @@ extern "C" {
 #endif
 
 struct unz_s;
-typedef unz_s *unzFile;
+using unzFile = unz_s *;
 
 #define UNZ_OK                                  (0)
 #define UNZ_END_OF_LIST_OF_FILE (-100)

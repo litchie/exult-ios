@@ -34,8 +34,8 @@ namespace io
 class ios_flags_saver
 {
 public:
-    typedef ::std::ios_base            state_type;
-    typedef ::std::ios_base::fmtflags  aspect_type;
+    using state_type = ::std::ios_base;
+    using aspect_type = ::std::ios_base::fmtflags;
 
     explicit  ios_flags_saver( state_type &s )
         : s_save_( s ), a_save_( s.flags() )
@@ -58,8 +58,8 @@ private:
 class ios_precision_saver
 {
 public:
-    typedef ::std::ios_base    state_type;
-    typedef ::std::streamsize  aspect_type;
+    using state_type = ::std::ios_base;
+    using aspect_type = ::std::streamsize;
 
     explicit  ios_precision_saver( state_type &s )
         : s_save_( s ), a_save_( s.precision() )
@@ -83,8 +83,8 @@ private:
 class ios_width_saver
 {
 public:
-    typedef ::std::ios_base    state_type;
-    typedef ::std::streamsize  aspect_type;
+    using state_type = ::std::ios_base;
+    using aspect_type = ::std::streamsize;
 
     explicit  ios_width_saver( state_type &s )
         : s_save_( s ), a_save_( s.width() )
@@ -111,8 +111,8 @@ template < typename Ch, class Tr >
 class basic_ios_iostate_saver
 {
 public:
-    typedef ::std::basic_ios<Ch, Tr>  state_type;
-    typedef ::std::ios_base::iostate  aspect_type;
+    using state_type = ::std::basic_ios<Ch, Tr>;
+    using aspect_type = ::std::ios_base::iostate;
 
     explicit  basic_ios_iostate_saver( state_type &s )
         : s_save_( s ), a_save_( s.rdstate() )
@@ -136,8 +136,8 @@ template < typename Ch, class Tr >
 class basic_ios_exception_saver
 {
 public:
-    typedef ::std::basic_ios<Ch, Tr>  state_type;
-    typedef ::std::ios_base::iostate  aspect_type;
+    using state_type = ::std::basic_ios<Ch, Tr>;
+    using aspect_type = ::std::ios_base::iostate;
 
     explicit  basic_ios_exception_saver( state_type &s )
         : s_save_( s ), a_save_( s.exceptions() )
@@ -161,8 +161,8 @@ template < typename Ch, class Tr >
 class basic_ios_tie_saver
 {
 public:
-    typedef ::std::basic_ios<Ch, Tr>        state_type;
-    typedef ::std::basic_ostream<Ch, Tr> *  aspect_type;
+    using state_type = ::std::basic_ios<Ch, Tr>;
+    using aspect_type = ::std::basic_ostream<Ch, Tr> *;
 
     explicit  basic_ios_tie_saver( state_type &s )
         : s_save_( s ), a_save_( s.tie() )
@@ -186,8 +186,8 @@ template < typename Ch, class Tr >
 class basic_ios_rdbuf_saver
 {
 public:
-    typedef ::std::basic_ios<Ch, Tr>          state_type;
-    typedef ::std::basic_streambuf<Ch, Tr> *  aspect_type;
+    using state_type = ::std::basic_ios<Ch, Tr>;
+    using aspect_type = ::std::basic_streambuf<Ch, Tr> *;
 
     explicit  basic_ios_rdbuf_saver( state_type &s )
         : s_save_( s ), a_save_( s.rdbuf() )
@@ -211,8 +211,8 @@ template < typename Ch, class Tr >
 class basic_ios_fill_saver
 {
 public:
-    typedef ::std::basic_ios<Ch, Tr>        state_type;
-    typedef typename state_type::char_type  aspect_type;
+    using state_type = ::std::basic_ios<Ch, Tr>;
+    using aspect_type = typename state_type::char_type;
 
     explicit  basic_ios_fill_saver( state_type &s )
         : s_save_( s ), a_save_( s.fill() )
@@ -232,15 +232,15 @@ private:
     aspect_type const  a_save_;
 };
 
-typedef basic_ios_fill_saver<char, std::char_traits<char> > ios_fill_saver;
+using ios_fill_saver = basic_ios_fill_saver<char, std::char_traits<char>>;
 
 #ifndef BOOST_NO_STD_LOCALE
 template < typename Ch, class Tr >
 class basic_ios_locale_saver
 {
 public:
-    typedef ::std::basic_ios<Ch, Tr> state_type;
-    typedef ::std::locale aspect_type;
+    using state_type = ::std::basic_ios<Ch, Tr>;
+    using aspect_type = ::std::locale;
 
     explicit basic_ios_locale_saver( state_type &s )
         : s_save_( s ), a_save_( s.getloc() )
@@ -267,9 +267,9 @@ private:
 class ios_iword_saver
 {
 public:
-    typedef ::std::ios_base  state_type;
-    typedef int              index_type;
-    typedef long             aspect_type;
+    using state_type = ::std::ios_base;
+    using index_type = int;
+    using aspect_type = long;
 
     explicit ios_iword_saver( state_type &s, index_type i )
         : s_save_( s ), a_save_( s.iword(i) ), i_save_( i )
@@ -293,9 +293,9 @@ private:
 class ios_pword_saver
 {
 public:
-    typedef ::std::ios_base  state_type;
-    typedef int              index_type;
-    typedef void *           aspect_type;
+    using state_type = ::std::ios_base;
+    using index_type = int;
+    using aspect_type = void *;
 
     explicit  ios_pword_saver( state_type &s, index_type i )
         : s_save_( s ), a_save_( s.pword(i) ), i_save_( i )
@@ -322,7 +322,7 @@ private:
 class ios_base_all_saver
 {
 public:
-    typedef ::std::ios_base  state_type;
+    using state_type = ::std::ios_base;
 
     explicit  ios_base_all_saver( state_type &s )
         : s_save_( s ), a1_save_( s.flags() ), a2_save_( s.precision() )
@@ -351,7 +351,7 @@ template < typename Ch, class Tr >
 class basic_ios_all_saver
 {
 public:
-    typedef ::std::basic_ios<Ch, Tr>  state_type;
+    using state_type = ::std::basic_ios<Ch, Tr>;
 
     explicit  basic_ios_all_saver( state_type &s )
         : s_save_( s ), a1_save_( s.flags() ), a2_save_( s.precision() )
@@ -400,8 +400,8 @@ private:
 class ios_all_word_saver
 {
 public:
-    typedef ::std::ios_base  state_type;
-    typedef int              index_type;
+    using state_type = ::std::ios_base;
+    using index_type = int;
 
     ios_all_word_saver( state_type &s, index_type i )
         : s_save_( s ), i_save_( i ), a1_save_( s.iword(i) )

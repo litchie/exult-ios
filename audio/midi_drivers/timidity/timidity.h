@@ -243,14 +243,14 @@ extern void Timidity_GenerateSamples(void *stream, int samples);
 #define AMP_BITS (15-GUARD_BITS)
 
 #ifdef LOOKUP_HACK
-   typedef sint8 sample_t;
-   typedef uint8 final_volume_t;
+   using sample_t = sint8;
+   using final_volume_t = uint8;
 #  define FINAL_VOLUME(v) (~_l2u[v])
 #  define MIXUP_SHIFT 5
 #  define MAX_AMP_VALUE 4095
 #else
-   typedef sint16 sample_t;
-   typedef sint32 final_volume_t;
+   using sample_t = sint16;
+   using final_volume_t = sint32;
 #  define FINAL_VOLUME(v) (v)
 #  define MAX_AMP_VALUE ((1<<(AMP_BITS+1))-1)
 #endif

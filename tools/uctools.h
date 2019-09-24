@@ -51,7 +51,7 @@ enum Opcode_flags {
 };
 
 // Opcode descriptor
-typedef struct _opcode_desc {
+struct opcode_desc {
 	// Mnemonic - nullptr if not known yet
 	const char *mnemonic;
 	// Number of operand bytes
@@ -62,7 +62,7 @@ typedef struct _opcode_desc {
 	int num_pop;
 	// Number of elements pushed into stack
 	int num_push;
-} opcode_desc;
+};
 
 // Opcode table
 static opcode_desc opcode_table[] = {

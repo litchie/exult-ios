@@ -28,7 +28,7 @@
 class Game_object;
 class Usecode_value;
 class Usecode_internal;
-typedef std::weak_ptr<Game_object> Game_object_weak;
+using Game_object_weak = std::weak_ptr<Game_object>;
 
 /*
  *  A class for executing usecode at a scheduled time:

@@ -39,7 +39,7 @@ class Actor;
 class Special_effect;
 class Text_effect;
 
-typedef std::weak_ptr<Game_object> Game_object_weak;
+using Game_object_weak = std::weak_ptr<Game_object>;
 
 /*
  *  Manage special effects.

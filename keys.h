@@ -45,7 +45,7 @@ struct ltSDLkeysym {
 	}
 };
 
-typedef std::map<SDL_keysym, ActionType, ltSDLkeysym>   KeyMap;
+using KeyMap = std::map<SDL_keysym, ActionType, ltSDLkeysym>;
 
 class KeyBinder {
 private:
