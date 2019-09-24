@@ -41,10 +41,6 @@ public:
 		: Game_object(shapenum, framenum, tilex, tiley, lft),
 		  flags(0), flags2(0)
 	{  }
-	// Copy constructor.
-	Ireg_game_object(const Ireg_game_object &obj2)
-		: Game_object(obj2), flags(0), flags2(0)
-	{  }
 	// Create fake entry.
 	Ireg_game_object() : flags(0), flags2(0)
 	{  }

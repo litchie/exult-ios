@@ -105,11 +105,7 @@ public:
 		  lift(lft), quality(0)
 	{  }
 	// Copy constructor.
-	Game_object(const Game_object &obj2)
-		: ShapeID(obj2), std::enable_shared_from_this<Game_object>(),
-		  chunk(obj2.chunk), tx(obj2.tx), ty(obj2.ty),
-		  lift(obj2.lift), quality(obj2.quality)
-	{  }
+	Game_object(const Game_object &obj2) = delete;
 	Game_object() = default; // Create fake entry.
 	~Game_object() override = default;
     Game_object_weak weak_from_this() {
