@@ -88,19 +88,18 @@ class Newfile_gump : public Modal_gump {
 public:
 	struct SaveInfo {
 
-		int         num;
-		char            *filename;
-		char            *savename;
-		bool            readable;
-		SaveGame_Details    *details;
-		SaveGame_Party      *party;
+		int         num = 0;
+		char            *filename = nullptr;
+		char            *savename = nullptr;
+		bool            readable = true;
+		SaveGame_Details    *details = nullptr;
+		SaveGame_Party      *party = nullptr;
 		std::unique_ptr<Shape_file> screenshot;
 
 		static int      CompareGames(const void *a, const void *b);
 		int         CompareThis(const SaveInfo *other) const;
 		void            SetSeqNumber();
 
-		SaveInfo();
 		~SaveInfo();
 
 	};
@@ -139,33 +138,33 @@ protected:
 
 	static const char *months[12];  // Names of the months
 
-	unsigned char restored;     // Set to 1 if we restored a game.
+	unsigned char restored = 0;     // Set to 1 if we restored a game.
 
-	Image_buffer    *back;
+	Image_buffer    *back = nullptr;
 
-	SaveInfo    *games;     // The list of savegames
-	int     num_games;  // Number of save games
-	int     first_free; // The number of the first free savegame
+	SaveInfo    *games = nullptr;     // The list of savegames
+	int     num_games = 0;  // Number of save games
+	int     first_free = 0; // The number of the first free savegame
 
-	std::unique_ptr<Shape_file> cur_shot;       // Screenshot for current game
-	SaveGame_Details *cur_details;  // Details of current game
-	SaveGame_Party *cur_party;  // Party of current game
+	std::unique_ptr<Shape_file> cur_shot;     // Screenshot for current game
+	SaveGame_Details *cur_details = nullptr;  // Details of current game
+	SaveGame_Party *cur_party = nullptr;      // Party of current game
 
 	// Gamedat is being used as a 'quicksave'
-	std::unique_ptr<Shape_file> gd_shot;        // Screenshot in Gamedat
-	SaveGame_Details *gd_details;   // Details in Gamedat
-	SaveGame_Party *gd_party;   // Parts in Gamedat
+	std::unique_ptr<Shape_file> gd_shot;      // Screenshot in Gamedat
+	SaveGame_Details *gd_details = nullptr;   // Details in Gamedat
+	SaveGame_Party *gd_party = nullptr;       // Parts in Gamedat
 
-	Shape_file *screenshot;     // The picture to be drawn
-	SaveGame_Details *details;  // The game details to show
-	SaveGame_Party *party;      // The party to show
-	bool is_readable;       // Is the save game readable
-	const char *filename;       // Filename of the savegame, if exists
+	Shape_file *screenshot = nullptr;     // The picture to be drawn
+	SaveGame_Details *details = nullptr;  // The game details to show
+	SaveGame_Party *party = nullptr;      // The party to show
+	bool is_readable = false;             // Is the save game readable
+	const char *filename = nullptr;       // Filename of the savegame, if exists
 
-	int list_position;      // The position in the savegame list (top game)
-	int selected;       // The savegame that has been selected (num in list)
-	int cursor;         // The position of the cursor
-	int slide_start;        // Pixel (v) where a slide started
+	int list_position = -2;      // The position in the savegame list (top game)
+	int selected = -3;           // The savegame that has been selected (num in list)
+	int cursor = 0;              // The position of the cursor
+	int slide_start = -1;        // Pixel (v) where a slide started
 	char    newname[MAX_SAVEGAME_NAME_LEN]; // The new name for the game
 
 	int BackspacePressed();

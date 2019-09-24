@@ -24,7 +24,7 @@
 
 
 class   Zombie: public PathFinder {
-	int major_distance;     // Distance in tiles to go.
+	int major_distance = 0;     // Distance in tiles to go.
 	int major_frame_incr;       // # steps to take in faster dir.
 	Tile_coord cur;         // Current pos. within world.
 	// ->'s to cur.tx, cur.ty.
@@ -39,8 +39,7 @@ class   Zombie: public PathFinder {
 	//   subtract 'major_delta' from sum.
 	int sum1, sum2;         // Sum of 'minor_delta''s.
 public:
-	Zombie(int major_incr = 1) : major_distance(0),
-		major_frame_incr(major_incr)
+	Zombie(int major_incr = 1) : major_frame_incr(major_incr)
 	{  }
 	// Find a path from sx,sy,sz to dx,dy,dz
 	// Return 0 if no path can be traced.

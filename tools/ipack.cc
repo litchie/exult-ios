@@ -64,15 +64,13 @@ using std::unique_ptr;
  */
 class Shape_spec {
 public:
-	char *filename;         // Should be allocated.
-	int nframes;            // # frames in shape.
-	bool flat;          // A 'flat' shape.
-	bool bycol;         // If dim0_tiles > 0, go down first.
-	int dim0_tiles;         // File consists of 8x8 (flat) tiles.
+	char *filename = nullptr;         // Should be allocated.
+	int nframes = 0;            // # frames in shape.
+	bool flat = false;          // A 'flat' shape.
+	bool bycol = false;         // If dim0_tiles > 0, go down first.
+	int dim0_tiles = 0;         // File consists of 8x8 (flat) tiles.
 public:
-	Shape_spec() : filename(nullptr), nframes(0), flat(false), bycol(false),
-		dim0_tiles(0)
-	{  }
+	Shape_spec() = default;
 	Shape_spec(const Shape_spec &other)
 		: nframes(other.nframes),
 		  flat(other.flat), bycol(other.bycol), dim0_tiles(other.dim0_tiles) {

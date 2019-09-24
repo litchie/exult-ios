@@ -77,11 +77,9 @@ public:
  *  Base class for special-effects:
  */
 class Special_effect : public Time_sensitive, public Game_singletons {
-	Special_effect *next, *prev;    // All of them are chained together.
+	Special_effect *next = nullptr, *prev = nullptr;    // All of them are chained together.
 public:
 	friend class Effects_manager;
-	Special_effect() : next(nullptr), prev(nullptr)
-	{  }
 	// Render.
 	virtual void paint();
 	virtual int is_weather() {  // Need to distinguish weather.

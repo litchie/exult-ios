@@ -39,15 +39,6 @@ using std::endl;
 #include <winbase.h>
 #include <cstdlib>
 
-WindowsMidiDriver::WindowsMidiDriver() : 
-	dev_num(-1), midi_port(nullptr),
-	_streamBuffer(nullptr), _streamBufferSize(0), _streamEvent(nullptr)
-{
-#ifdef WIN32_USE_DUAL_MIDIDRIVERS
-	midi_port2 = 0;
-#endif
-}
-
 bool WindowsMidiDriver::doMCIError(MMRESULT mmsys_err)
 {
 	if (mmsys_err != MMSYSERR_NOERROR)
@@ -139,8 +130,8 @@ int WindowsMidiDriver::open()
 void WindowsMidiDriver::close()
 {
 #ifdef WIN32_USE_DUAL_MIDIDRIVERS
-	if (midi_port2 != 0) midiOutClose(midi_port2);
-	midi_port2 = 0;
+	if (midi_port2 != nullptr) midiOutClose(midi_port2);
+	midi_port2 = nullptr;
 #endif
 	midiOutClose(midi_port);
 	midi_port = nullptr;
@@ -154,7 +145,7 @@ void WindowsMidiDriver::close()
 void WindowsMidiDriver::send(uint32 message)
 {
 #ifdef WIN32_USE_DUAL_MIDIDRIVERS
-	if (message & 0x1 && midi_port2 != 0) 
+	if (message & 0x1 && midi_port2 != nullptr) 
 		midiOutShortMsg(midi_port2,  message);
 	else
 		midiOutShortMsg(midi_port,  message);
@@ -167,12 +158,12 @@ void WindowsMidiDriver::send_sysex(uint8 status, const uint8 *msg, uint16 length
 {
 #ifdef WIN32_USE_DUAL_MIDIDRIVERS
 	// Hack for multiple devices. Not exactly 'fast'
-	if (midi_port2 != 0) {
+	if (midi_port2 != nullptr) {
 		HMIDIOUT			orig_midi_port = midi_port;
 		HMIDIOUT			orig_midi_port2 = midi_port2;
 
 		// Send to port 1
-		midi_port2 = 0;
+		midi_port2 = nullptr;
 		send_sysex(status, msg, length);
 
 		// Send to port 2

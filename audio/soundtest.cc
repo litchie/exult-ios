@@ -28,13 +28,8 @@
 #include "font.h"
 #include "tqueue.h"
 
-SoundTester::SoundTester() : song(0), sfx(0), voice(0), active(0), repeat(true)
-	{
-	}
-
 void SoundTester::test_sound()
 {
-		
 	Game_window *gwin = Game_window::get_instance();
 	Image_buffer8 *ibuf = gwin->get_win()->get_ib8();
 	Font *font = Shape_manager::get_instance()->get_font(4);

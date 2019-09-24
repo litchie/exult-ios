@@ -71,25 +71,25 @@ class Usecode_internal : public Usecode_machine {
 	typedef std::vector<Usecode_function *> Funs256;
 	std::vector<Funs256> funs;
 	std::vector<Usecode_value> statics;  // Global persistent vars.
-	Usecode_symbol_table *symtbl;   // (optional) symbol table.
+	Usecode_symbol_table *symtbl = nullptr;   // (optional) symbol table.
 	std::deque<Stack_frame *> call_stack; // the call stack
 	std::map<Stack_frame *, const uint8 *> except_stack; // the exception handling stack
-	Stack_frame *frame;     // One intrinsic uses this for now...
-	bool modified_map;      // We add/deleted/moved an object.
+	Stack_frame *frame = nullptr;     // One intrinsic uses this for now...
+	bool modified_map = false;      // We add/deleted/moved an object.
 	std::map<int, uint32> timers;   // Each has time in hours when set.
-	int speech_track;       // Set/read by some intrinsics.
-	Text_gump *book;        // Book/scroll being displayed.
+	int speech_track = -1;       // Set/read by some intrinsics.
+	Text_gump *book = nullptr;        // Book/scroll being displayed.
 	Game_object_shared caller_item;   // Item this is being called on.
 	std::vector<Game_object_shared> last_created; // Stack of last items created with
 	//   intrins. x24.
-	Actor *path_npc;        // Last NPC in path_run_usecode().
-	const char *user_choice;    // String user clicked on.
-	bool found_answer;      // Did we already handle the
+	Actor *path_npc = nullptr;        // Last NPC in path_run_usecode().
+	const char *user_choice = nullptr;    // String user clicked on.
+	bool found_answer = false;      // Did we already handle the
 	//   conversation option?
-	Tile_coord saved_pos;       // For a couple SI intrinsics.
-	int saved_map;              // Improvements for these intrinsics.
-	char *String;           // The single string register.
-	int telekenesis_fun;        // For next Usecode call from spell.
+	Tile_coord saved_pos = {-1, -1, -1};       // For a couple SI intrinsics.
+	int saved_map = -1;              // Improvements for these intrinsics.
+	char *String = nullptr;           // The single string register.
+	int telekenesis_fun = -1;        // For next Usecode call from spell.
 	void append_string(const uint8 *txt) {
 		append_string(reinterpret_cast<char const *>(txt));
 	}
@@ -414,8 +414,8 @@ class Usecode_internal : public Usecode_machine {
 	void read_usevars();    // Read static variables.
 	Usecode_function *find_function(int funcid);
 
-	Game_object *intercept_item;
-	Tile_coord *intercept_tile;
+	Game_object *intercept_item = nullptr;
+	Tile_coord *intercept_tile = nullptr;
 
 	// execution functions
 	bool call_function(int funcid, int event, Game_object *caller = nullptr,
@@ -440,8 +440,8 @@ class Usecode_internal : public Usecode_machine {
 
 	Breakpoints breakpoints;
 
-	bool on_breakpoint; // are we on a breakpoint?
-	int breakpoint_action; // stay on breakpoint/continue/abort?
+	bool on_breakpoint = false; // are we on a breakpoint?
+	int breakpoint_action = -1; // stay on breakpoint/continue/abort?
 
 public:
 	bool is_on_breakpoint() const {

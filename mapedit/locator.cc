@@ -152,9 +152,7 @@ C_EXPORT gint on_loc_draw_motion_notify_event(
  *  Create locator window.
  */
 
-Locator::Locator(
-) : drawgc(nullptr), tx(0), ty(0), txs(40), tys(25), //scale(1),
-	dragging(false), send_location_timer(-1) {
+Locator::Locator() {
 	GladeXML *app_xml = ExultStudio::get_instance()->get_xml();
 	win = glade_xml_get_widget(app_xml, "loc_window");
 	gtk_object_set_user_data(GTK_OBJECT(win), this);

@@ -16,9 +16,7 @@ using EStudio::Add_menu_item;
 using EStudio::Create_arrow_button;
 
 Object_browser::Object_browser(Shape_group *grp, Shape_file_info *fi)
-	: selected(-1), index0(0), vscroll(nullptr), hscroll(nullptr), group(grp), popup(nullptr),
-	  file_info(fi), find_text(nullptr), loc_down(nullptr), loc_up(nullptr), loc_q(nullptr), loc_f(nullptr),
-	  move_down(nullptr), move_up(nullptr), config_width(0), config_height(0) {
+	: group(grp), file_info(fi) {
 	widget = nullptr;
 }
 

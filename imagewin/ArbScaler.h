@@ -37,24 +37,18 @@ protected:
 	//
 	// Basic scaler functions (filled in by the scalers constructor)
 	//
-	ScalerFunc  Scale8To8;
-	ScalerFunc  Scale8To555;
-	ScalerFunc  Scale8To565;
-	ScalerFunc  Scale8To16;
-	ScalerFunc  Scale8To32;
+	ScalerFunc  Scale8To8 = nullptr;
+	ScalerFunc  Scale8To555 = nullptr;
+	ScalerFunc  Scale8To565 = nullptr;
+	ScalerFunc  Scale8To16 = nullptr;
+	ScalerFunc  Scale8To32 = nullptr;
 
-	ScalerFunc  Scale555To555;
-	ScalerFunc  Scale565To565;
-	ScalerFunc  Scale16To16;
-	ScalerFunc  Scale32To32;
+	ScalerFunc  Scale555To555 = nullptr;
+	ScalerFunc  Scale565To565 = nullptr;
+	ScalerFunc  Scale16To16 = nullptr;
+	ScalerFunc  Scale32To32 = nullptr;
 
 public:
-	ArbScaler()
-		: Scale8To8(nullptr), Scale8To555(nullptr), Scale8To565(nullptr),
-		  Scale8To16(nullptr), Scale8To32(nullptr),	Scale555To555(nullptr),
-		  Scale565To565(nullptr), Scale16To16(nullptr), Scale32To32(nullptr)
-	{ }
-
 	virtual const char     *ScalerName() const = 0;         //< Name Of the Scaler (1 word)
 	virtual const char     *ScalerDesc() const = 0;         //< Desciption of the Scaler
 	virtual const char     *ScalerCopyright() const = 0;    //< Scaler Copyright info

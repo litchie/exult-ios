@@ -32,11 +32,6 @@ const MidiDriver::MidiDriverDesc FluidSynthMidiDriver::desc =
 
 // MidiDriver method implementations
 
-FluidSynthMidiDriver::FluidSynthMidiDriver()
-	: _settings(nullptr), _synth(nullptr) 
-{
-}
-
 void FluidSynthMidiDriver::setInt(const char *name, int val) {
 	//char *name2 = strdup(name);
 	char *name2 = const_cast<char*>(name);

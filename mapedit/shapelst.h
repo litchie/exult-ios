@@ -56,12 +56,9 @@ public:
  */
 class Shape_row {
 	friend class Shape_chooser;
-	short height;           // In pixels.
+	short height = 0;       // In pixels.
 	long y;                 // Absolute y-coord. in pixels.
 	unsigned index0;        // Index of 1st Shape_entry in row.
-public:
-	Shape_row() : height(0)
-	{  }
 };
 
 /*

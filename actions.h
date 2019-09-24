@@ -40,11 +40,11 @@ typedef std::weak_ptr<Game_object> Game_object_weak;
 class Actor_action {
 	static long seqcnt;     // Sequence # to check for deletion.
 protected:
-	bool get_party;         // At each step (of the Avatar), have
+	bool get_party = false;         // At each step (of the Avatar), have
 	//   the party follow.
 	long seq;           // 'unique' sequence #.
 public:
-	Actor_action() : get_party(false) {
+	Actor_action() {
 		seq = ++seqcnt;
 	}
 	virtual ~Actor_action() = default;
@@ -101,17 +101,17 @@ public:
  */
 class Path_walking_actor_action : public Actor_action {
 protected:
-	bool reached_end;       // Reached end of path.
-	PathFinder *path;       // Allocated pathfinder.
-	bool deleted;           // True if the action has been killed.
+	bool reached_end = false;       // Reached end of path.
+	PathFinder *path;               // Allocated pathfinder.
+	bool deleted = false;           // True if the action has been killed.
 private:
 	int original_dir;       // From src. to dest. (0-7).
-	int speed;          // Time between frames.
-	bool from_offscreen;        // Walking from offscreen.
-	Actor_action *subseq;       // For opening doors.
-	unsigned char blocked;      // Blocked-tile retries.
-	unsigned char max_blocked;  // Try this many times.
-	unsigned char blocked_frame;    // Frame for blocked tile.
+	int speed = 0;          // Time between frames.
+	bool from_offscreen = false;        // Walking from offscreen.
+	Actor_action *subseq = nullptr;     // For opening doors.
+	unsigned char blocked = 0;          // Blocked-tile retries.
+	unsigned char max_blocked;          // Try this many times.
+	unsigned char blocked_frame = 0;    // Frame for blocked tile.
 	unsigned char persistence;
 	Tile_coord blocked_tile;    // Tile to retry.
 	void set_subseq(Actor_action *sub) {

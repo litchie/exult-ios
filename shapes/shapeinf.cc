@@ -57,33 +57,12 @@ using std::vector;
 using std::cerr;
 using std::endl;
 
-Shape_info::Shape_info()
-	: modified_flags(), frompatch_flags(), have_static_flags(),
-	  weight(0), volume(0), weapon_offsets(nullptr),
-	  armor(nullptr), weapon(nullptr), ammo(nullptr),
-	  monstinf(nullptr), sfxinf(nullptr), aniinf(nullptr),
-	  explosion(nullptr), body(nullptr), npcpaperdoll(nullptr),
-	  gump_shape(-1), gump_font(-1), monster_food(-1), shape_flags(0),
-	  mountain_top(0), barge_type(0), actor_flags(0), field_type(-1),
-	  ready_type(-1), alt_ready1(-1), alt_ready2(-1), spell_flag(false),
-	  occludes_flag(false) {
-	tfa[0] = tfa[1] = tfa[2] = shpdims[0] = shpdims[1] = 0;
-	dims[0] = dims[1] = dims[2] = 0;
-}
+Shape_info::Shape_info() = default;
 
 /*
  *  Not supported:
  */
-Shape_info::Shape_info(const Shape_info &other)
-	: modified_flags(0), frompatch_flags(0), have_static_flags(0),
-	  weight(0), volume(0), weapon_offsets(nullptr),
-	  armor(nullptr), weapon(nullptr), ammo(nullptr),
-	  monstinf(nullptr), sfxinf(nullptr), aniinf(nullptr),
-	  explosion(nullptr), body(nullptr), npcpaperdoll(nullptr),
-	  gump_shape(-1), gump_font(-1), monster_food(-1), shape_flags(0),
-	  mountain_top(0), barge_type(0), actor_flags(0), field_type(-1),
-	  ready_type(-1), alt_ready1(-1), alt_ready2(-1), spell_flag(false),
-	  occludes_flag(false) {
+Shape_info::Shape_info(const Shape_info &other) {
 	copy(other);
 }
 Shape_info &Shape_info::operator = (const Shape_info &other) {

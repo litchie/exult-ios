@@ -36,9 +36,9 @@ protected:
 	static short btn_cols[3];   // x-coord of each button column.
 	Gump_text *names[10];       // 10 filename slots.
 	Gump_button *buttons[6];    // 2 rows, 3 cols of buttons.
-	Gump_text *pushed_text;     // Text mouse is down on.
-	Gump_text *focus;       // Text line that has focus.
-	unsigned char restored;     // Set to 1 if we restored a game.
+	Gump_text *pushed_text = nullptr;     // Text mouse is down on.
+	Gump_text *focus = nullptr;       // Text line that has focus.
+	unsigned char restored = 0;     // Set to 1 if we restored a game.
 
 public:
 	File_gump();

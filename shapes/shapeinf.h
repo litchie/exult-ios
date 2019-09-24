@@ -148,28 +148,28 @@ enum Data_flag_names {
 class Shape_info {
 protected:
 	// For some non-class data (see Data_flag_names enum).
-	unsigned int modified_flags;
-	unsigned int frompatch_flags;
+	unsigned int modified_flags = 0;
+	unsigned int frompatch_flags = 0;
 	// For class data (to indicate an invalid entry should
 	// be written by ES).
-	unsigned int have_static_flags;
-	unsigned char tfa[3];       // From "tfa.dat".+++++Keep for
+	unsigned int have_static_flags = 0;
+	unsigned char tfa[3] = {0};       // From "tfa.dat".+++++Keep for
 	//   debugging, for now.
 	// 3D dimensions in tiles:
-	unsigned char dims[3];      //   (x, y, z)
-	unsigned char weight, volume;   // From "wgtvol.dat".
-	unsigned char shpdims[2];   // From "shpdims.dat".
-	unsigned char *weapon_offsets;  // From "wihh.dat": pixel offsets
+	unsigned char dims[3] = {0};      //   (x, y, z)
+	unsigned char weight = 0, volume = 0;   // From "wgtvol.dat".
+	unsigned char shpdims[2] = {0};   // From "shpdims.dat".
+	unsigned char *weapon_offsets = nullptr;  // From "wihh.dat": pixel offsets
 	//   for drawing weapon in hand
-	Armor_info *armor;      // From armor.dat.
-	Weapon_info *weapon;        // From weapon.dat, if a weapon.
-	Ammo_info *ammo;        // From ammo.dat, if ammo.
-	Monster_info *monstinf;     // From monster.dat.
-	SFX_info *sfxinf;
-	Animation_info *aniinf;
-	Explosion_info *explosion;
-	Body_info *body;
-	Paperdoll_npc *npcpaperdoll;
+	Armor_info *armor = nullptr;          // From armor.dat.
+	Weapon_info *weapon = nullptr;        // From weapon.dat, if a weapon.
+	Ammo_info *ammo = nullptr;            // From ammo.dat, if ammo.
+	Monster_info *monstinf = nullptr;     // From monster.dat.
+	SFX_info *sfxinf = nullptr;
+	Animation_info *aniinf = nullptr;
+	Explosion_info *explosion = nullptr;
+	Body_info *body = nullptr;
+	Paperdoll_npc *npcpaperdoll = nullptr;
 	// These vectors should be totally ordered by the strict-weak
 	// order operator defined for the classes.
 	std::vector<Paperdoll_item> objpaperdoll;
@@ -179,19 +179,19 @@ protected:
 	std::vector<Frame_usecode_info> frucinf;
 	std::vector<Warmth_info> warminf;
 	std::vector<Content_rules> cntrules;
-	short gump_shape;       // From container.dat.
-	short gump_font;        // From container.dat v2+.
-	short monster_food;
-	unsigned short shape_flags;
-	unsigned char mountain_top;
-	unsigned char barge_type;
-	unsigned char actor_flags;
-	char field_type;
-	char ready_type;    // From "ready.dat": where item can be worn.
-	char alt_ready1;    // Alternate spot where item can be worn.
-	char alt_ready2;    // Second alternate spot where item can be worn.
-	bool spell_flag;        // Flagged as spell in 'ready.dat'.
-	bool occludes_flag;     // Flagged in 'occlude.dat'.  Roof.
+	short gump_shape = -1;       // From container.dat.
+	short gump_font = -1;        // From container.dat v2+.
+	short monster_food = -1;
+	unsigned short shape_flags = 0;
+	unsigned char mountain_top = 0;
+	unsigned char barge_type = 0;
+	unsigned char actor_flags = 0;
+	char field_type = -1;
+	char ready_type = -1;    // From "ready.dat": where item can be worn.
+	char alt_ready1 = -1;    // Alternate spot where item can be worn.
+	char alt_ready2 = -1;    // Second alternate spot where item can be worn.
+	bool spell_flag = false;        // Flagged as spell in 'ready.dat'.
+	bool occludes_flag = false;     // Flagged in 'occlude.dat'.  Roof.
 	void set_tfa_data() {   // Set fields from tfa.
 		dims[0] = static_cast<unsigned char>(1 + (tfa[2] & 7));
 		dims[1] = static_cast<unsigned char>(1 + ((tfa[2] >> 3) & 7));

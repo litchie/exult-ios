@@ -660,10 +660,7 @@ int Font::find_xcursor(
 	return -1;
 }
 
-Font::Font(
-)
-	: hor_lead(0), ver_lead(0), highest(0), lowest(0) {
-}
+Font::Font() = default;
 
 Font::Font(
     const File_spec &fname0,

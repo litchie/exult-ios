@@ -107,11 +107,11 @@ private:
 	//
 	class CubicInterpolator {
 		protected:
-			int x0, x1, x2, x3;
+			int x0 = 0, x1 = 0, x2 = 0, x3 = 0;
 			int a, b, c, d;
 			
 		public:
-			CubicInterpolator() : x0(0), x1(0), x2(0), x3(0)
+			CubicInterpolator()
 			{ 
 				updateCoefficients();
 			}

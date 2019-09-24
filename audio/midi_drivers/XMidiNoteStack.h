@@ -24,13 +24,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "XMidiEvent.h"
 
 class XMidiNoteStack {
-	XMidiEvent		*notes;		// Top of the stack
-	int				polyphony;
-	int				max_polyphony;
+	XMidiEvent		*notes = nullptr;		// Top of the stack
+	int				polyphony = 0;
+	int				max_polyphony = 0;
+
 public:
-
-	XMidiNoteStack() : notes(nullptr), polyphony(0), max_polyphony(0) { }
-
 	// Just clear it. Don't care about what's actually in it
 	inline void clear() {
 		notes=nullptr;

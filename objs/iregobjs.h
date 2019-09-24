@@ -29,25 +29,24 @@
  *  A moveable game object (from 'ireg' files):
  */
 class Ireg_game_object : public Game_object {
-	Container_game_object *owner;   // Container this is in, or 0.
+	Container_game_object *owner = nullptr;   // Container this is in, or 0.
 protected:
 	unsigned flags: 32;     // 32 flags used in 'usecode'.
 	unsigned flags2: 32;    // Another 32 flags used in 'usecode'.
+	int lowlift = -1;
+	int highshape = -1;
 public:
 	Ireg_game_object(int shapenum, int framenum, unsigned int tilex,
 	                 unsigned int tiley, unsigned int lft = 0)
 		: Game_object(shapenum, framenum, tilex, tiley, lft),
-		  owner(nullptr), flags(0), flags2(0), lowlift(-1),
-		  highshape(-1)
+		  flags(0), flags2(0)
 	{  }
 	// Copy constructor.
 	Ireg_game_object(const Ireg_game_object &obj2)
-		: Game_object(obj2), owner(nullptr), flags(0), flags2(0),
-		  lowlift(-1), highshape(-1)
+		: Game_object(obj2), flags(0), flags2(0)
 	{  }
 	// Create fake entry.
-	Ireg_game_object() : owner(nullptr), flags(0), flags2(0), lowlift(-1),
-		highshape(-1)
+	Ireg_game_object() : flags(0), flags2(0)
 	{  }
 	~Ireg_game_object() override = default;
 	void set_flags(uint32 f) {  // For initialization.
@@ -109,8 +108,6 @@ public:
 	void write_ireg(ODataSource *out) override;
 	// Get size of IREG. Returns -1 if can't write to buffer
 	int get_ireg_size() override;
-	int lowlift;
-	int highshape;
 	virtual int get_high_shape() const {
 		return highshape;
 	}

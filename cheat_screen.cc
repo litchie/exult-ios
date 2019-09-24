@@ -169,11 +169,6 @@ static int Find_highest_map(
 	return n;
 }
 
-CheatScreen::CheatScreen()
- : grabbed(nullptr), gwin(nullptr), ibuf(nullptr), font(nullptr), clock(nullptr),
-   maxx(0), maxy(0), centerx(0), centery(0) {
-}
-
 void CheatScreen::show_screen() {
 	gwin = Game_window::get_instance();
 	ibuf = gwin->get_win()->get_ib8();

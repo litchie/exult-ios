@@ -47,23 +47,23 @@ class Object_browser {
 private:
 	GtkWidget *widget;
 protected:
-	int selected;           // Index of user-selected entry,
+	int selected = -1;           // Index of user-selected entry,
 	//   counting from the top-left entry
 	//   currently rendered.
-	int index0;         // Index of top-leftmost in
+	int index0 = 0;         // Index of top-leftmost in
 	//   displayed list.
-	GtkWidget *vscroll;     // Vertical scrollbar.
-	GtkWidget *hscroll;     // Horizontal scrollbar.
-	Shape_group *group;     // Non-null to use filter.
-	GtkWidget *popup;       // Popup menu in draw area.
-	Shape_file_info *file_info; // Our creator (or null).
-	GtkWidget *find_text;       // For searching.
-	GtkWidget *loc_down, *loc_up;   // 'Locate' buttons.
-	GtkWidget *loc_q;       // 'Locate' quality/quantity.
-	GtkWidget *loc_f;       // 'Locate' frame
+	GtkWidget *vscroll = nullptr;         // Vertical scrollbar.
+	GtkWidget *hscroll = nullptr;         // Horizontal scrollbar.
+	Shape_group *group;                   // Non-null to use filter.
+	GtkWidget *popup = nullptr;           // Popup menu in draw area.
+	Shape_file_info *file_info;           // Our creator (or null).
+	GtkWidget *find_text = nullptr;       // For searching.
+	GtkWidget *loc_down = nullptr, *loc_up = nullptr;   // 'Locate' buttons.
+	GtkWidget *loc_q = nullptr;       // 'Locate' quality/quantity.
+	GtkWidget *loc_f = nullptr;       // 'Locate' frame
 	// 'Move' buttons:
-	GtkWidget *move_down, *move_up;
-	int config_width, config_height;// For storing prev. dims.
+	GtkWidget *move_down = nullptr, *move_up = nullptr;
+	int config_width = 0, config_height = 0;// For storing prev. dims.
 
 	void set_widget(GtkWidget *w);
 	static bool search_name(const char *nm, const char *srch);

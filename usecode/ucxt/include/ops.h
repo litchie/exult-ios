@@ -76,24 +76,9 @@ private:
 
 class UCOpcodeData {
 public:
-	UCOpcodeData() : opcode(0x00), num_bytes(0), num_pop(0),
-		num_push(0), flag_call_effect(false), flag_return(false),
-		flag_paren(false), flag_indent_inc(false),
-		flag_indent_dec(false), flag_indent_tmpinc(false),
-		flag_indent_tmpdec(false), flag_debug(false), flag_nosemicolon(false),
-		flag_abort(false), flag_staticref(false), flag_loop(false),
-		flag_new_effect(false), flag_method_effect(false), flag_function_effect(false),
-		flag_not_param(false)
-	{}
+	UCOpcodeData() = default;
 	UCOpcodeData(unsigned int op, const Configuration::KeyTypeList &ktl)
-		: opcode(op), num_bytes(0), num_pop(0),
-		  num_push(0), flag_call_effect(false), flag_return(false),
-		  flag_paren(false), flag_indent_inc(false),
-		  flag_indent_dec(false), flag_indent_tmpinc(false),
-		  flag_indent_tmpdec(false), flag_debug(false) ,flag_nosemicolon(false),
-		  flag_abort(false), flag_staticref(false), flag_loop(false),
-		  flag_new_effect(false), flag_method_effect(false), flag_function_effect(false),
-		  flag_not_param(false) {
+		: opcode(op) {
 		for (Configuration::KeyTypeList::const_iterator k = ktl.begin(); k != ktl.end(); ++k) {
 			switch (k->first[0]) {
 			case 'a':
@@ -184,31 +169,31 @@ public:
 		o << "flag_not_param: " << flag_not_param << std::endl;
 	}
 
-	unsigned int   opcode;
+	unsigned int   opcode = 0;
 	std::string    name;
 	std::string    asm_nmo;
 	std::string    asm_comment;
 	std::string    ucs_nmo;
-	unsigned int   num_bytes;
+	unsigned int   num_bytes = 0;
 
-	unsigned int   num_pop;
-	unsigned int   num_push;
-	bool           flag_call_effect;
-	bool           flag_return;
-	bool           flag_paren;
-	bool           flag_indent_inc;
-	bool           flag_indent_dec;
-	bool           flag_indent_tmpinc;
-	bool           flag_indent_tmpdec;
-	bool           flag_debug;
-	bool           flag_nosemicolon;
-	bool           flag_abort;
-	bool           flag_staticref;
-	bool           flag_loop;
-	bool           flag_new_effect;
-	bool           flag_method_effect;
-	bool           flag_function_effect;
-	bool           flag_not_param;
+	unsigned int   num_pop = 0;
+	unsigned int   num_push = 0;
+	bool           flag_call_effect = false;
+	bool           flag_return = false;
+	bool           flag_paren = false;
+	bool           flag_indent_inc = false;
+	bool           flag_indent_dec = false;
+	bool           flag_indent_tmpinc = false;
+	bool           flag_indent_tmpdec = false;
+	bool           flag_debug = false;
+	bool           flag_nosemicolon = false;
+	bool           flag_abort = false;
+	bool           flag_staticref = false;
+	bool           flag_loop = false;
+	bool           flag_new_effect = false;
+	bool           flag_method_effect = false;
+	bool           flag_function_effect = false;
+	bool           flag_not_param = false;
 
 	std::vector<std::string> param_types;
 	// values caluclated from param_types

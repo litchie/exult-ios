@@ -205,20 +205,20 @@ class Basic_block {
 	friend void WriteJumpParam4(Basic_block *dest, unsigned int val);
 protected:
 	std::set<Basic_block *> predecessors;        // Blocks that came before this.
-	int index;              // Block index in the fun_blocks array *or*
+	int index = 0;              // Block index in the fun_blocks array *or*
 	// -1 for the starting ("phantom") block.
 
-	Basic_block *taken;     // For conditional jumps, block taken to by true
+	Basic_block *taken = nullptr;     // For conditional jumps, block taken to by true
 	// condition (fall-through); for unconditional jumps, block
 	// to jump to; for all others, the next (fall-through) block.
-	int taken_index;        // Index in the fun_blocks array, filled after
+	int taken_index = -1;        // Index in the fun_blocks array, filled after
 	// cleaning up unreachable blocks.
-	Basic_block *ntaken;    // For conditional jumps, block taken to by false
+	Basic_block *ntaken = nullptr;    // For conditional jumps, block taken to by false
 	// condition (jump); for all others, this is zero.
-	int ntaken_index;       // Index in the fun_blocks array, filled after
+	int ntaken_index = -1;       // Index in the fun_blocks array, filled after
 	// cleaning up unreachable blocks.
 
-	Opcode *jmp_op; // 0 for no instruction (fall-through) to taken
+	Opcode *jmp_op = nullptr; // 0 for no instruction (fall-through) to taken
 	// block; otherwise, one of:
 	//  conditional jumps:
 	//      UC_JNE, UC_CMPS, UC_CONVERSE, UC_LOOPTOP, UC_LOOPTOPS, UC_LOOPTOPTHV,
@@ -228,16 +228,13 @@ protected:
 	// or the 32-bit versions of these instructions.
 
 	std::vector<Opcode *> instructions;  // The instructions of the block
-	bool reachable;
+	bool reachable = false;
 public:
-	Basic_block()
-		:   index(0), taken(nullptr), taken_index(-1), ntaken(nullptr), ntaken_index(-1),
-		    jmp_op(nullptr), reachable(false) {
+	Basic_block() {
 		instructions.reserve(100);
 	}
 	Basic_block(int ind, Basic_block *t = nullptr, Basic_block *n = nullptr, UsecodeOps ins = UC_INVALID)
-		:   index(ind), taken(t), taken_index(-1), ntaken(n), ntaken_index(-1),
-		    jmp_op(new Opcode(ins)), reachable(false) {
+		:   index(ind), taken(t), ntaken(n), jmp_op(new Opcode(ins)) {
 		if (index != -1) instructions.reserve(100);
 	}
 	~Basic_block() {

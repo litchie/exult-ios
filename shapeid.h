@@ -60,15 +60,15 @@ class Shape_manager : public Game_singletons {
 	static Shape_manager *instance; // There shall be only one.
 	Shapes_vga_file shapes;     // Main 'shapes.vga' file.
 	Vga_file files[static_cast<int>(SF_COUNT)]; // The files we manage.
-	Fonts_vga_file *fonts;      // "fonts.vga" file.
+	Fonts_vga_file *fonts = nullptr;      // "fonts.vga" file.
 	std::vector<Xform_palette> xforms;  // Transforms translucent colors
 	//   0xf4 through 0xfe.
 	Xform_palette *invis_xform; // For showing invisible NPC's.
 	unsigned char special_pixels[NPIXCOLORS];   // Special colors.
-	bool can_have_paperdolls;   // Set true if the SI paperdoll file
+	bool can_have_paperdolls = false;   // Set true if the SI paperdoll file
 	//   is found when playing BG
-	bool paperdolls_enabled;    // True if paperdolls are on.
-	bool got_si_shapes; // Set true if the SI shapes file
+	bool paperdolls_enabled = false;    // True if paperdolls are on.
+	bool got_si_shapes = false; // Set true if the SI shapes file
 	//   is found when playing BG
 	void read_shape_info();
 
@@ -164,28 +164,25 @@ public:
  *  as a 2-byte quantity.
  */
 class ShapeID : public Game_singletons {
-	short shapenum;         // Shape #.
-	signed char framenum;       // Frame # within shape.
-	mutable char has_trans;
-	ShapeFile shapefile;
-	mutable Shape_frame *shape;
-	mutable Shape_info *info;
+	short shapenum = -1;             // Shape #.
+	signed char framenum = -1;       // Frame # within shape.
+	mutable char has_trans = 0;
+	ShapeFile shapefile = SF_SHAPES_VGA;
+	mutable Shape_frame *shape = nullptr;
+	mutable Shape_info *info = nullptr;
 
 	Shape_frame *cache_shape() const;
 
 public:
 	// Read from buffer & incr. ptr.
-	ShapeID(unsigned char  *&data)
-		: has_trans(0), shapefile(SF_SHAPES_VGA), shape(nullptr), info(nullptr) {
+	ShapeID(unsigned char  *&data) {
 		unsigned char l = *data++;
 		unsigned char h = *data++;
 		shapenum = l + 256 * (h & 0x3);
 		framenum = h >> 2;
 	}
 	// Create "end-of-list"/invalid entry.
-	ShapeID() : shapenum(-1), framenum(-1), has_trans(0),
-		shapefile(SF_SHAPES_VGA), shape(nullptr), info(nullptr)
-	{  }
+	ShapeID() = default;
 
 	ShapeID(const ShapeID&) = default;
 	ShapeID& operator=(const ShapeID&) = default;
@@ -227,8 +224,7 @@ public:
 		info = nullptr;
 	}
 	ShapeID(int shnum, int frnum, ShapeFile shfile = SF_SHAPES_VGA) :
-		shapenum(shnum), framenum(frnum), has_trans(0),
-		shapefile(shfile), shape(nullptr), info(nullptr)
+		shapenum(shnum), framenum(frnum), shapefile(shfile)
 	{  }
 
 	void set_shape(int shnum) { // Set shape, but keep old frame #.

@@ -29,14 +29,14 @@
  *  A container object:
  */
 class Container_game_object : public Ireg_game_object {
-	int volume_used;        // Amount of volume occupied.
-	char resistance;    // Resistance to attack.
+	int volume_used = 0;        // Amount of volume occupied.
+	char resistance = 0;        // Resistance to attack.
 protected:
-	Object_list objects;        // ->first object.
+	Object_list objects = nullptr;        // ->first object.
 	int get_max_volume() const;
 	int  gumpX;
 	int  gumpY;
-	bool gumpInit;
+	bool gumpInit = false;
 public:
 	void setGumpXY(int x, int y) { 
 		gumpX = x; 
@@ -56,10 +56,9 @@ public:
 	                      unsigned int tiley, unsigned int lft,
 	                      char res = 0)
 		: Ireg_game_object(shapenum, framenum, tilex, tiley, lft),
-		  volume_used(0), resistance(res), objects(nullptr), gumpInit(false)
+		  resistance(res), objects(nullptr)
 	{  }
-	Container_game_object() : volume_used(0), resistance(0),
-		objects(nullptr), gumpInit(false) {  }
+	Container_game_object() = default;
 	Object_list &get_objects() {
 		return objects;
 	}

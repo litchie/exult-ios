@@ -50,10 +50,10 @@ class Notebook_gump : public Gump {
 	static bool initialized;
 	static bool initialized_auto_text;
 	static std::vector<std::string> auto_text;// Auto-text for global flags.
-	int curnote;            // Current note # being edited.
-	int curpage;            // Current page # (from 0).
+	int curnote = 0;            // Current note # being edited.
+	int curpage = 0;            // Current page # (from 0).
 	Cursor_info cursor;     // Cursor loc. within current note.
-	int updnx;          // X-coord. for up/down arrows.
+	int updnx = 0;          // X-coord. for up/down arrows.
 	// Page turners:
 	Gump_button *leftpage, *rightpage;
 	// Add new note.

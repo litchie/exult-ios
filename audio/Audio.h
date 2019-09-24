@@ -94,11 +94,11 @@ private:
 	static	Audio	*self;
 	static	const int *bg2si_songs;	// Converts BG songs to SI songs.
 	static	const int *bg2si_sfxs;	// Converts BG sfx's to SI sfx's.
-	bool truthful_;
-	bool speech_enabled, music_enabled, effects_enabled, speech_with_subs;
+	bool truthful_ = false;
+	bool speech_enabled = true, music_enabled = true, effects_enabled = true, speech_with_subs = false;
 	bool allow_music_looping;
 	std::unique_ptr<SFX_cache_manager> sfxs;		// SFX and voice cache manager
-	bool initialized;
+	bool initialized = false;
 	SDL_AudioSpec wanted;
 	std::unique_ptr<Pentagram::AudioMixer> mixer;
 	bool audio_enabled;

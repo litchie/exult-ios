@@ -38,17 +38,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class WindowsMidiDriver : public LowLevelMidiDriver
 {
-	signed int			dev_num;
-	HMIDIOUT			midi_port;
+	signed int			dev_num = -1;
+	HMIDIOUT			midi_port = nullptr;
 #ifdef WIN32_USE_DUAL_MIDIDRIVERS
-	HMIDIOUT			midi_port2;
+	HMIDIOUT			midi_port2 = nullptr;
 #endif
 
 	// SysEx stuff. Borrowed from ScummVM
 	MIDIHDR _streamHeader;
-	uint8 *_streamBuffer;
-	int		_streamBufferSize;
-	HANDLE _streamEvent;
+	uint8 *_streamBuffer = nullptr;
+	int		_streamBufferSize = 0;
+	HANDLE _streamEvent = nullptr;
 
 	const static MidiDriverDesc	desc;
 	static MidiDriver *createInstance() {
@@ -59,7 +59,6 @@ class WindowsMidiDriver : public LowLevelMidiDriver
 
 public:
 	const static MidiDriverDesc* getDesc() { return &desc; }
-	WindowsMidiDriver();
 
 protected:
 	int			open() override;

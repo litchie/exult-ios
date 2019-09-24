@@ -31,21 +31,18 @@ extern Configuration *config;
 
 class BaseGameInfo {
 protected:
-	Exult_Game type;         // Game type
+	Exult_Game type = NONE;  // Game type
 	std::string cfgname;     // What the game is called in Exult.cfg
 	std::string path_prefix; // System path prefix for the game/mod.
 	std::string mod_title;   // Internal mod name, the mod's title
 	std::string menustring;  // Text displayed in mods menu
-	bool expansion;          // For FoV/SS ONLY.
-	bool sibeta;             // For beta version of SI.
-	bool found;              // If the game/mod is found.
-	bool editing;            // Game is being edited and may have missing files.
-	std::string codepage;    // Game/mod codepage (mainly for ES).
+	bool expansion = false;          // For FoV/SS ONLY.
+	bool sibeta = false;             // For beta version of SI.
+	bool found = false;              // If the game/mod is found.
+	bool editing = false;            // Game is being edited and may have missing files.
+	std::string codepage = "CP437";  // Game/mod codepage (mainly for ES).
 public:
-	BaseGameInfo() : type(NONE), cfgname(""), path_prefix(""), mod_title(""),
-		menustring(""), expansion(false), sibeta(false), found(false), editing(false),
-		codepage("CP437")
-	{  }
+	BaseGameInfo() = default;
 	BaseGameInfo(const Exult_Game ty, const char *cf, const char *mt,
 	             const char *pt, const char *ms, bool exp, bool sib, bool f, bool ed,
 	             const char *cp)

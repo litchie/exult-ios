@@ -26,8 +26,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class	FileMidiDriver : public MidiDriver
 {
-	int					global_volume;
-	int					seq_volume;
+	int					global_volume = 255;
+	int					seq_volume = 255;
 
 public:
 	// MidiDriver Implementation
@@ -46,7 +46,6 @@ public:
 
 	bool		noTimbreSupport() override { return true; }
 
-	FileMidiDriver();
 	~FileMidiDriver() override;
 
 protected:

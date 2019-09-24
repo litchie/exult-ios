@@ -56,7 +56,7 @@ private:
 	typedef std::unordered_map<const char *, str_int_pair, hashstr, eqstr> rsc_map;
 	shapes_map shapes;
 	rsc_map resources;
-	Configuration *xml;     /* Shapes/resources from XML file. */
+	Configuration *xml = nullptr;     /* Shapes/resources from XML file. */
 	std::vector<char *> xmlstrings;
 	Mouse *menu_mouse;
 	static std::string gametitle;

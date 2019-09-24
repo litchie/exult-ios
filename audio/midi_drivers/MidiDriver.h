@@ -30,8 +30,7 @@ class IDataSource;
 class	MidiDriver
 {
 protected:
-	bool					initialized;
-	MidiDriver() : initialized(false) { }
+	bool initialized = false;
 
 public:
 	//! Midi driver desription

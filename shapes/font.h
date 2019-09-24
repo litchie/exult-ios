@@ -46,10 +46,10 @@ struct Cursor_info {
  */
 class Font {
 private:
-	int hor_lead;
-	int ver_lead;
+	int hor_lead = 0;
+	int ver_lead = 0;
 	std::unique_ptr<Shape_file> font_shapes;
-	int  highest, lowest;
+	int  highest = 0, lowest = 0;
 
 	void calc_highlow();
 	void clean_up();

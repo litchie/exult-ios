@@ -31,14 +31,13 @@ class Mouse;
 
 class MenuObject {
 private:
-	bool has_id;
-	int id;
+	bool has_id = false;
+	int id = 0;
 public:
 	int x, y, x1, y1, x2, y2;
 	bool selected;
 	bool dirty;
 
-	MenuObject() : has_id(false), id(0) { }
 	virtual ~MenuObject() = default;
 
 	void set_selected(bool sel) {
@@ -116,19 +115,12 @@ public:
 class MenuGameEntry: public MenuTextEntry {
 private:
 	Shape_frame *sfxicon;
-	bool enabled;
 public:
 	MenuGameEntry(Font *fnton, Font *fnt, const char *txt, Shape_frame *sfx,
 	              int xpos, int ypos);
 
 	void paint(Game_window *gwin) override;
 	bool handle_event(SDL_Event &event) override;
-	bool is_enabled() const {
-		return enabled;
-	}
-	void set_enabled(bool en) {
-		enabled = en;
-	}
 };
 
 class MenuTextChoice: public MenuTextObject {
@@ -153,10 +145,9 @@ public:
 class MenuList {
 private:
 	std::vector<std::unique_ptr<MenuObject>> entries;
-	bool selected;
-	int selection;
+	bool selected = false;
+	int selection = 0;
 public:
-	MenuList(): selected(false), selection(0) {     }
 	int add_entry(MenuObject *entry) {
 		entries.emplace_back(entry);
 		return (entries.size() - 1);

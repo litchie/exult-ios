@@ -28,13 +28,12 @@ class   XMLnode {
 protected:
 	std::string             id;
 	std::string             content;
-	std::vector<XMLnode *>   nodelist;
-	bool                    no_close;
+	std::vector<XMLnode *>  nodelist;
+	bool                    no_close = false;
 
 public:
-	XMLnode() : no_close(false)
-	{  }
-	XMLnode(const std::string &i) : id(i), no_close(false)
+	XMLnode() = default;
+	XMLnode(const std::string &i) : id(i)
 	{  }
 	XMLnode(const XMLnode &) = delete;
 	XMLnode(XMLnode &&) = default;

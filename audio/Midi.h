@@ -25,9 +25,10 @@
 #include <vorbis/codec.h>
 
 #include "common_types.h"
+#include "exult_constants.h"
 #include "exceptions.h"
-
 #include "fnames.h"
+#include "XMidiFile.h"
 
 class MidiDriver;
 
@@ -89,27 +90,26 @@ public:
 	bool			is_adlib(); // Check for adlib
 
 private:
+	bool			repeating = false;
+	int				current_track = -1;
 
-	bool			repeating;
-	int				current_track;
-
-	std::string		midi_driver_name;
-	MidiDriver *	midi_driver;
-	bool			initialized;
+	std::string		midi_driver_name = "default";
+	MidiDriver *	midi_driver = nullptr;
+	bool			initialized = false;
 	bool			init_device(bool timbre_load = false);
 
 
-	TimberLibrary	timbre_lib;
+	TimberLibrary	timbre_lib = TIMBRE_LIB_GM;
 	std::string		timbre_lib_filename;
-	int				timbre_lib_index;
-	int				timbre_lib_game;
-	int				music_conversion;
-	int				effects_conversion;
+	int				timbre_lib_index = 0;
+	int				timbre_lib_game = NONE;
+	int				music_conversion = XMIDIFILE_CONVERT_MT32_TO_GM;
+	int				effects_conversion = XMIDIFILE_CONVERT_GS127_TO_GS;
 	int				setup_timbre_for_track(std::string &str);
 	
 	// Ogg Stuff
-	bool			ogg_enabled;
-	sint32			ogg_instance_id;
+	bool			ogg_enabled = false;
+	sint32			ogg_instance_id = -1;
 
 	bool				ogg_play_track(const std::string& filename, int num, bool repeat);
 	bool				ogg_is_playing();

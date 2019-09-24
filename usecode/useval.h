@@ -52,7 +52,7 @@ public:
 	using Usecode_vector = std::vector<Usecode_value>;
 
 private:
-	Val_type type;      // Type stored here.
+	Val_type type = int_type;      // Type stored here.
     union {
 		long intval;
 		std::string strval;
@@ -64,7 +64,7 @@ private:
 			short cnt;
 		} clsrefval;
 	};	// Anonymous union member
-	bool undefined;
+	bool undefined = true;
 
 	template <typename Op>
 	Usecode_value& operate(const Usecode_value &v2);
@@ -129,8 +129,8 @@ private:
 	}
 
 public:
-	Usecode_value() : type(int_type), intval(0), undefined(true) {}
-	explicit Usecode_value(int ival) : type(int_type), intval(ival), undefined(false) {}
+	Usecode_value() : intval(0) {}
+	explicit Usecode_value(int ival) : intval(ival), undefined(false) {}
 	explicit Usecode_value(const std::string& s) : type(string_type), strval(s), undefined(false) {}
 	explicit Usecode_value(std::string&& s) noexcept : type(string_type), strval(std::move(s)), undefined(false) {}
 	// Create array with 1st element.
@@ -180,11 +180,11 @@ public:
 		return *this;
 	}
 	// Copy ctor.
-	Usecode_value(const Usecode_value &v2) : type(int_type) {
+	Usecode_value(const Usecode_value &v2) {
 		*this = v2;
 	}
 	// Move ctor.
-	Usecode_value(Usecode_value &&v2) noexcept : type(int_type) {
+	Usecode_value(Usecode_value &&v2) noexcept {
 		*this = std::move(v2);
 	}
 

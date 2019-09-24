@@ -26,8 +26,8 @@
 
 class FluidSynthMidiDriver : public LowLevelMidiDriver {
 private:
-	fluid_settings_t *_settings;
-	fluid_synth_t *_synth;
+	fluid_settings_t *_settings = nullptr;
+	fluid_synth_t *_synth = nullptr;
 	std::stack<int> _soundFont;
 
 	const static MidiDriverDesc	desc;
@@ -37,7 +37,6 @@ private:
 
 public:
 	static const MidiDriverDesc* getDesc() { return &desc; }
-	FluidSynthMidiDriver();
 
 protected:
 	// Because GCC complains about casting from const to non-const...

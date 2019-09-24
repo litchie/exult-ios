@@ -40,9 +40,9 @@ class T_Object_list {
 	friend class T_Object_iterator_backwards<T *, class L>;
 	typedef std::shared_ptr<T> TShared;
 	TShared first;        // ->first in (circular) chain.
-	unsigned short iter_count;  // # of iterators.
+	unsigned short iter_count = 0;  // # of iterators.
 public:
-	T_Object_list(T *f = nullptr) : first(f), iter_count(0)
+	T_Object_list(T *f = nullptr) : first(f)
 	{  }
 	// Delete the chain.
 	~T_Object_list() {

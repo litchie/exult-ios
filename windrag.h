@@ -16,8 +16,8 @@
 // A useful structure for Winstudioobj
 class windragdata {
 	sint32 id;
-	uint32 size;            // Size of data
-	unsigned char *data;
+	uint32 size = 0;            // Size of data
+	unsigned char *data = nullptr;
 public:
 
 	inline unsigned char *get_data() {
@@ -31,14 +31,13 @@ public:
 	}
 
 	// Default constructor
-	inline windragdata() : size(0), data(nullptr) {
-	}
+	inline windragdata() = default;
 	// Copy constructor
 	inline windragdata(const windragdata &o) : id(o.id), size(o.size), data(new unsigned char [o.size]) {
 		std::memcpy(data, o.data, size);
 	}
 	// Read from buffer
-	inline windragdata(const unsigned char *buf) : data(nullptr) {
+	inline windragdata(const unsigned char *buf) {
 		operator = (buf);
 	}
 	inline windragdata(sint32 i, uint32 s, const unsigned char *d) :

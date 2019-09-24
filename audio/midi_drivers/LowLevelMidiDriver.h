@@ -46,7 +46,6 @@ class XMidiSequence;
 class	LowLevelMidiDriver : public MidiDriver, private XMidiSequenceHandler
 {
 public:
-	LowLevelMidiDriver();
 	~LowLevelMidiDriver() override;
 
 	// MidiDriver Implementation
@@ -180,9 +179,9 @@ private:
 
 	// Communications
 	std::queue<ComMessage>	messages;
-	SDL_mutex				*mutex;
-	SDL_mutex				*cbmutex;
-	SDL_cond                *cond;
+	SDL_mutex				*mutex = nullptr;
+	SDL_mutex				*cbmutex = nullptr;
+	SDL_cond                *cond = nullptr;
 	sint32					peekComMessageType();
 	void					sendComMessage(ComMessage& message);
 	void					waitTillNoComMessages();
@@ -194,7 +193,7 @@ private:
 	sint32					callback_data[LLMD_NUM_SEQ];	// Only set by thread
 
 	// Shared Data
-	int						global_volume;
+	int						global_volume = 255;
 	uint32					xmidi_clock;					// Xmidi clock, returned by getTickCount
 	int						chan_locks[16];					// Which seq a chan has been locked by
 	int						chan_map[LLMD_NUM_SEQ][16];		// Maps from locked logical chan to phyiscal
@@ -207,7 +206,7 @@ private:
 	uint32					samples_per_iteration;
 
 	// Thread Based Only Data
-	SDL_Thread				*thread;
+	SDL_Thread				*thread = nullptr;
 
 	// Timbre Banks
 	struct MT32Timbre {

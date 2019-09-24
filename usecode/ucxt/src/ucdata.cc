@@ -46,8 +46,7 @@ using std::ostream;
 
 const string CLASSNAME = "class";
 
-UCData::UCData() : _symtbl(nullptr), _search_opcode(-1), _search_intrinsic(-1) {
-}
+UCData::UCData() = default;
 
 UCData::~UCData() {
 	_file.close();

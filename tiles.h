@@ -31,10 +31,10 @@
 class Tile_coord {
 	static short neighbors[16]; // Neighboring tiles in each dir.
 public:
-	short tx, ty, tz;       // Coords. within world. tz=lift.
+	short tx = 0, ty = 0, tz = 0;       // Coords. within world. tz=lift.
 	Tile_coord(int x, int y, int z) : tx(x), ty(y), tz(z)
 	{  }
-	Tile_coord(): tx(0), ty(0), tz(0) { }
+	Tile_coord() = default;
 	bool operator==(Tile_coord const &t2) const {
 		return t2.tx == tx && t2.ty == ty && t2.tz == tz;
 	}

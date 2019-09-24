@@ -62,16 +62,15 @@ const int pagey = 10;           // Top of text area of page.
 const int lpagex = 36, rpagex = 174;    // X-coord. of text area of page.
 
 class One_note {
-	int day, hour, minute;      // Game time when note was written.
-	int tx, ty;         // Tile coord. where written.
-	string text;         // Text, 0-delimited.
-	int gflag;          // >=0 if created automatically when
+	int day = 0, hour = 0, minute = 0;      // Game time when note was written.
+	int tx = 0, ty = 0;         // Tile coord. where written.
+	string text;                // Text, 0-delimited.
+	int gflag = -1;             // >=0 if created automatically when
 	//   the global flag was set.
-	bool is_new;            // Newly created at cur. time/place.
+	bool is_new = false;        // Newly created at cur. time/place.
 public:
 	friend class Notebook_gump;
-	One_note() : day(0), hour(0), minute(0), tx(0), ty(0), gflag(-1), is_new(false)
-	{  }
+	One_note() = default;
 	void set_time(int d, int h, int m) {
 		day = d;
 		hour = h;
@@ -240,8 +239,7 @@ void Notebook_gump::add_new(
  */
 
 Notebook_gump::Notebook_gump(
-) : Gump(nullptr, EXULT_FLX_NOTEBOOK_SHP, SF_EXULT_FLX), curnote(0),
-	curpage(0), updnx(0) {
+) : Gump(nullptr, EXULT_FLX_NOTEBOOK_SHP, SF_EXULT_FLX) {
 	handles_kbd = true;
 	cursor.offset = 0;
 	cursor.x = cursor.y = -1;

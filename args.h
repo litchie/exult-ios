@@ -46,8 +46,8 @@ class   Args {
 			int dival;
 			uint32 duval;
 		};
-		enum { no_type = 0, type_bool, type_string, type_int, type_unsigned } valuetype;
-		Opts() : option(""), sval(nullptr), dsval(nullptr), valuetype(no_type) {}
+		enum { no_type = 0, type_bool, type_string, type_int, type_unsigned } valuetype = no_type;
+		Opts() : sval(nullptr), dsval(nullptr) {}
 	};
 	std::vector<Opts> options;
 public:

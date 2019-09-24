@@ -132,12 +132,6 @@ static inline int ConvBaseToActual(uint32 address_base)
 using std::string;
 using std::endl;
 
-LowLevelMidiDriver::LowLevelMidiDriver() :
-    mutex(nullptr), cbmutex(nullptr),cond(nullptr),
-    global_volume(255), thread(nullptr)
-{
-}
-
 LowLevelMidiDriver::~LowLevelMidiDriver()
 {
 	// Just kill it

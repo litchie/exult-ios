@@ -234,9 +234,7 @@ Audio	*Audio::get_ptr()
 }
 
 
-Audio::Audio() :
-truthful_(false),speech_enabled(true), speech_with_subs(false), music_enabled(true),
-effects_enabled(true), initialized(false)
+Audio::Audio()
 {
 	assert(self == nullptr);
 

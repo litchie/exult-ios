@@ -132,7 +132,7 @@ public:
 
 class GotoSet {
 public:
-	GotoSet() : _offset(0) {}
+	GotoSet() = default;
 	GotoSet(const unsigned int offset, UCc *ucc)
 		: _offset(offset) {
 		add(ucc);
@@ -199,7 +199,7 @@ public:
 	typedef std::vector<std::pair<UCc *, bool> >::iterator iterator;
 
 private:
-	unsigned int _offset;
+	unsigned int _offset = 0;
 	std::vector<std::pair<UCc *, bool> > _uccs;
 };
 
@@ -207,10 +207,7 @@ class UCOpcodeData;
 
 class UCFunc {
 public:
-	UCFunc() : _offset(0), _funcid(0), _funcsize(0), _bodyoffset(0), _datasize(0),
-		_codeoffset(0), _num_args(0), _num_locals(0), _num_externs(0), _num_statics(0),
-		return_var(false), aborts(false), debugging_info(false), debugging_offset(0),
-		_sym(nullptr), _cls(nullptr), ext32(false) {}
+	UCFunc() = default;
 
 	bool output_list(std::ostream &o, unsigned int funcno, const UCOptions &options);
 
@@ -241,36 +238,36 @@ public:
 
 	std::vector<GotoSet> gotoset;
 
-	std::streampos _offset;      // offset to start of function
-	unsigned int   _funcid;      // the id of the function
-	unsigned int   _funcsize;    // the size of the function (bytes)
-	std::streampos _bodyoffset;  // the file position after the header is read
+	std::streampos _offset = 0;      // offset to start of function
+	unsigned int   _funcid = 0;      // the id of the function
+	unsigned int   _funcsize = 0;    // the size of the function (bytes)
+	std::streampos _bodyoffset = 0;  // the file position after the header is read
 
-	unsigned int   _datasize;    // the size of the data block
+	unsigned int   _datasize = 0;    // the size of the data block
 
 	std::map<unsigned int, std::string> _data;
 	std::map<unsigned int, std::string> _varmap;
 	// contains the entire data segment in offset from start of segment, and string data pairs
 
-	std::streampos _codeoffset; // the offset to the start of the code segment
+	std::streampos _codeoffset = 0; // the offset to the start of the code segment
 
-	unsigned int   _num_args;    // the number of arguments
-	unsigned int   _num_locals;  // the number of local variables
-	unsigned int   _num_externs; // the number of external function id's
-	int            _num_statics; // the number of static variables defined in the function
+	unsigned int   _num_args = 0;    // the number of arguments
+	unsigned int   _num_locals = 0;  // the number of local variables
+	unsigned int   _num_externs = 0; // the number of external function id's
+	int            _num_statics = 0; // the number of static variables defined in the function
 	std::vector<unsigned int> _externs; // the external function id's
 
 	std::vector<UCc> _opcodes;
 
-	bool           return_var; // does the function return a variable?
-	bool           aborts;     // true if the function may not return.
-	bool           debugging_info;
-	unsigned int   debugging_offset;
+	bool           return_var = false; // does the function return a variable?
+	bool           aborts = false;     // true if the function may not return.
+	bool           debugging_info = false;
+	unsigned int   debugging_offset = 0;
 	std::string    funcname;
-	Usecode_symbol *_sym;
-	Usecode_class_symbol *_cls; // Class member functions
+	Usecode_symbol *_sym = nullptr;
+	Usecode_class_symbol *_cls = nullptr; // Class member functions
 
-	bool           ext32; // is this function an extended function?
+	bool           ext32 = false; // is this function an extended function?
 
 	unsigned int codesize() const {
 		return _funcsize - _datasize;

@@ -1767,17 +1767,7 @@ Usecode_machine *Usecode_machine::create(
  */
 
 Usecode_internal::Usecode_internal(
-) : symtbl(nullptr), frame(nullptr), modified_map(false), speech_track(-1),
-	book(nullptr), caller_item(nullptr),
-	path_npc(nullptr), user_choice(nullptr), found_answer(false),
-	saved_pos(-1, -1, -1),
-	saved_map(-1),
-	String(nullptr), telekenesis_fun(-1), stack(new Usecode_value[1024]),
-	intercept_item(nullptr), intercept_tile(nullptr)
-#ifdef USECODE_DEBUGGER
-	, on_breakpoint(false), breakpoint_action(-1)
-#endif
-{
+) : stack(new Usecode_value[1024]) {
 	sp = stack;
 	ifstream file;                // Read in usecode.
 	std::cout << "Reading usecode file." << std::endl;

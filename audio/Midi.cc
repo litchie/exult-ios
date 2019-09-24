@@ -33,7 +33,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "../files/U7file.h"
 #include "../files/utils.h"
 #include "Midi.h"
-#include "XMidiFile.h"
 #include "MidiDriver.h"
 #include "LowLevelMidiDriver.h"
 #include "conv.h"
@@ -653,14 +652,7 @@ bool MyMidiPlayer::is_adlib()
 	return midi_driver && (midi_driver->isFMSynth());
 }
 
-MyMidiPlayer::MyMidiPlayer()	: repeating(false),current_track(-1),
-				  midi_driver_name("default"), midi_driver(nullptr), initialized(false),
-				  timbre_lib(TIMBRE_LIB_GM),
-				  timbre_lib_index(0), timbre_lib_game(NONE),
-				  music_conversion(XMIDIFILE_CONVERT_MT32_TO_GM),
-				  effects_conversion(XMIDIFILE_CONVERT_GS127_TO_GS),
-				  ogg_enabled(false), ogg_instance_id(-1)
-
+MyMidiPlayer::MyMidiPlayer()
 {
 	init_device(false);
 }

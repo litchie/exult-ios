@@ -35,8 +35,8 @@ class Gump_widget : public ShapeID {
 	UNREPLICATABLE_CLASS(Gump_widget)
 
 protected:
-	Gump_widget() : parent(nullptr) {  }
-	Gump *parent;       // Who this is in.
+	Gump_widget() = default;
+	Gump *parent = nullptr;       // Who this is in.
 	short x, y;         // Coords. relative to parent.
 
 public:

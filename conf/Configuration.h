@@ -25,10 +25,10 @@
 class   Configuration {
 public:
 	Configuration()
-		: xmltree(new XMLnode("config")), rootname("config"), is_file(false)
+		: xmltree(new XMLnode("config")), rootname("config")
 	{ }
 	Configuration(const std::string &fname, const std::string &root)
-		: xmltree(new XMLnode(root)), rootname(root), is_file(false) {
+		: xmltree(new XMLnode(root)), rootname(root) {
 		if (fname.size()) read_config_file(fname);
 	}
 
@@ -87,7 +87,7 @@ private:
 	XMLnode *xmltree;
 	std::string rootname;
 	std::string filename;
-	bool    is_file;
+	bool    is_file = false;
 };
 
 // Global Config

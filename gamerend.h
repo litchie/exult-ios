@@ -28,12 +28,10 @@ class Game_object;
  *  A helper-class for rendering.
  */
 class Game_render {
-	unsigned long render_seq;   // For marking rendered objects.
-	int skip;           // Set for each render.  We skip
+	unsigned long render_seq = 0;   // For marking rendered objects.
+	int skip = 31;                  // Set for each render.  We skip
 	//   painting at or above this.
 public:
-	Game_render() : render_seq(0), skip(31)
-	{  }
 	void paint_terrain_only(int start_chunkx, int start_chunky,
 	                        int stop_chunkx, int stop_chunky);
 	// Render the map & objects.

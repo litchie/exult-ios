@@ -39,14 +39,12 @@ class Shapes_vga_file;
  *  An element from 'equip.dat', describing a monster's equipment:
  */
 class Equip_element {
-	unsigned short shapenum;    // What to create, or 0 for nothing.
-	unsigned char probability;  // 0-100:  probabilit of creation.
-	unsigned char quantity;     // # to create.
+	unsigned short shapenum = 0;    // What to create, or 0 for nothing.
+	unsigned char probability = 0;  // 0-100:  probabilit of creation.
+	unsigned char quantity = 0;     // # to create.
 public:
 	friend class Monster_info;
 	friend class Monster_actor;
-	Equip_element() : shapenum(0), probability(0), quantity(0)
-	{  }
 	void set(int shnum, int prob, int quant) {
 		shapenum = shnum;
 		probability = prob;

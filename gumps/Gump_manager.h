@@ -33,20 +33,20 @@ class Paintable;
 
 class  Gump_manager : public Game_singletons {
 	struct Gump_list {
-		Gump        *gump;
-		Gump_list   *next;
+		Gump        *gump = nullptr;
+		Gump_list   *next = nullptr;
 
-		Gump_list() : gump(nullptr), next(nullptr) { }
-		Gump_list(Gump *g) : gump(g), next(nullptr) { }
+		Gump_list() = default;
+		Gump_list(Gump *g) : gump(g) { }
 	};
 
-	Gump_list   *open_gumps;
-	Gump        *kbd_focus; // This gump gets kbd strokes.
+	Gump_list   *open_gumps = nullptr;
+	Gump        *kbd_focus = nullptr; // This gump gets kbd strokes.
 	// So we can test for 'gump mode' quickly:
-	int     non_persistent_count;
-	int modal_gump_count;
-	bool    right_click_close;
-	bool    dont_pause_game;    // NEVER SET THIS MANUALLY! YOU MUST
+	int     non_persistent_count = 0;
+	int modal_gump_count = 0;
+	bool    right_click_close = true;
+	bool    dont_pause_game = false;    // NEVER SET THIS MANUALLY! YOU MUST
 	// CALL set_gumps_dont_pause_game.
 public:
 	void add_gump(Gump *gump);      // Add a single gump to screen

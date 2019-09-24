@@ -70,7 +70,7 @@ class Game_object : public ShapeID,
 	  			  public std::enable_shared_from_this<Game_object> {
 protected:
 	static Game_object *editing;    // Obj. being edited by ExultStudio.
-	Map_chunk *chunk;       // Chunk we're in, or nullptr.
+	Map_chunk *chunk = nullptr;       // Chunk we're in, or nullptr.
 	unsigned char tx, ty;       // (X,Y) of shape within chunk, or if
 	//   in a container, coords. within
 	//   gump's rectangle.
@@ -91,7 +91,7 @@ private:
 	static unsigned char rotate[8]; // For getting rotated frame #.
 	std::vector <Object_client *> clients; // Notify when deleted.
 public:
-	uint32 render_seq;      // Render sequence #.
+	uint32 render_seq = 0;      // Render sequence #.
 public:
 	friend class T_Object_list<Game_object>;
 	friend class T_Object_iterator<Game_object>;
@@ -101,8 +101,8 @@ public:
 	friend class Map_chunk;
 	Game_object(int shapenum, int framenum, unsigned int tilex,
 	            unsigned int tiley, unsigned int lft = 0)
-		: ShapeID(shapenum, framenum), chunk(nullptr), tx(tilex), ty(tiley),
-		  lift(lft), quality(0), render_seq(0)
+		: ShapeID(shapenum, framenum), tx(tilex), ty(tiley),
+		  lift(lft), quality(0)
 	{  }
 	// Copy constructor.
 	Game_object(const Game_object &obj2)
@@ -110,8 +110,7 @@ public:
 		  chunk(obj2.chunk), tx(obj2.tx), ty(obj2.ty),
 		  lift(obj2.lift), quality(obj2.quality)
 	{  }
-	Game_object() : chunk(nullptr), render_seq(0)  // Create fake entry.
-	{  }
+	Game_object() = default; // Create fake entry.
 	~Game_object() override = default;
     Game_object_weak weak_from_this() {
 	    return std::weak_ptr<Game_object>(shared_from_this());

@@ -45,16 +45,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *  The 'locator' window:
  */
 class Locator {
-	GtkWidget *win;         // Main window.
-	GtkWidget *draw;        // GTK draw area to display.
-	GdkGC *drawgc;          // For drawing in 'draw'.
-	GtkAdjustment *hadj, *vadj; // For horiz., vert. scales.
-	int tx, ty, txs, tys/*, scale*/;    // Current Exult win. info. in tiles.
-	GdkRectangle viewbox;       // Where view box was last drawn.
-	bool dragging;          // True if dragging view box.
-	int drag_relx, drag_rely;   // Mouse pos. rel to view box.
-	int send_location_timer;    // For sending new loc. to Exult.
-	void send_location();       // Send location/size to Exult.
+	GtkWidget *win;                  // Main window.
+	GtkWidget *draw;                 // GTK draw area to display.
+	GdkGC *drawgc = nullptr;         // For drawing in 'draw'.
+	GtkAdjustment *hadj, *vadj;      // For horiz., vert. scales.
+	int tx = 0, ty = 0, txs = 40, tys = 25/*, scale*/;    // Current Exult win. info. in tiles.
+	GdkRectangle viewbox;            // Where view box was last drawn.
+	bool dragging = false;           // True if dragging view box.
+	int drag_relx, drag_rely;        // Mouse pos. rel to view box.
+	int send_location_timer = -1;    // For sending new loc. to Exult.
+	void send_location();            // Send location/size to Exult.
 	void query_location();
 	static gint delayed_send_location(gpointer data);
 	// Set view to mouse location.

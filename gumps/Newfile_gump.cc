@@ -186,13 +186,7 @@ bool Newfile_Textbutton::activate(int button) {
 Newfile_gump::Newfile_gump(
 ) : Modal_gump(nullptr, gwin->get_width() / 2 - 160,
 	               gwin->get_height() / 2 - 100,
-	               EXULT_FLX_SAVEGUMP_SHP, SF_EXULT_FLX),
-	restored(0), games(nullptr), num_games(0), first_free(0),
-	cur_details(nullptr), cur_party(nullptr),
-	gd_details(nullptr), gd_party(nullptr),
-	screenshot(nullptr), details(nullptr), party(nullptr), is_readable(false), filename(nullptr),
-	list_position(-2), selected(-3), cursor(0), slide_start(-1)
-
+	               EXULT_FLX_SAVEGUMP_SHP, SF_EXULT_FLX)
 {
 	set_object_area(Rectangle(0, 0, 320, 200), -22, 190); //+++++ ???
 
@@ -1051,12 +1045,6 @@ void Newfile_gump::FreeSaveGameDetails() {
 }
 
 // Save Info Methods
-
-// Constructor
-Newfile_gump::SaveInfo::SaveInfo() : num(0), filename(nullptr), savename(nullptr), readable(true),
-	details(nullptr), party(nullptr) {
-
-}
 
 // Destructor
 Newfile_gump::SaveInfo::~SaveInfo() {

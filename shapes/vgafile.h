@@ -46,7 +46,7 @@ class Palette;
  */
 class Shape_frame {
 	std::unique_ptr<unsigned char[]> data;        // The actual data.
-	int datalen;
+	int datalen = 0;
 	short xleft;            // Extent to left of origin.
 	short xright;           // Extent to right.
 	short yabove;           // Extent above origin.
@@ -60,9 +60,7 @@ class Shape_frame {
 	void get_rle_shape(IDataSource *shapes, long filepos, long len);
 
 public:
-	Shape_frame()
-		: datalen(0)
-	{  }
+	Shape_frame() = default;
 	// Create frame from data.
 	Shape_frame(unsigned char *pixels, int w, int h, int xoff, int yoff,
 	            bool setrle);
@@ -158,9 +156,9 @@ public:
 class Shape {
 protected:
 	std::vector<std::unique_ptr<Shape_frame>> frames;       // List of ->'s to frames.
-	unsigned int num_frames;    // # of frames (not counting reflects).
-	bool modified;
-	bool from_patch;
+	unsigned int num_frames = 0;    // # of frames (not counting reflects).
+	bool modified = false;
+	bool from_patch = false;
 	// Create reflected frame.
 	Shape_frame *reflect(std::vector<std::pair<std::unique_ptr<IDataSource>, bool>> const &shapes, int shnum,
 	                     int frnum, std::vector<int> const &counts);
@@ -172,7 +170,7 @@ protected:
 	Shape_frame *store_frame(std::unique_ptr<Shape_frame> frame, int framenum);
 
 public:
-	Shape() : num_frames(0), modified(false), from_patch(false)	{}
+	Shape() = default;
 	explicit Shape(std::unique_ptr<Shape_frame> fr);
 	explicit Shape(int n);           // Create with given #frames.
 	Shape(const Shape&) = delete;
@@ -251,12 +249,12 @@ protected:
 	std::vector<std::pair<std::unique_ptr<IDataSource>, bool>> shape_sources;
 	std::vector<std::pair<std::unique_ptr<IDataSource>, bool>> imported_sources;
 	std::map<int, imported_map> imported_shape_table;
-	int u7drag_type;        // # from u7drag.h, or -1.
+	int u7drag_type = -1;           // # from u7drag.h, or -1.
 	std::vector<int> shape_cnts;    // Total # of shapes in each file.
 	std::vector<int> imported_cnts; // Total # of shapes in each file.
 	std::vector<Shape> shapes;              // List of ->'s to shapes' lists
 	std::vector<Shape> imported_shapes;     // List of ->'s to shapes' lists
-	bool flex;          // This is the normal case (all .vga
+	bool flex = true;          // This is the normal case (all .vga
 	//   files).  If false, file is a
 	//   single shape, like 'pointers.shp'.
 	// In this case, all frames are pre-

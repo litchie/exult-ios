@@ -721,14 +721,12 @@ public:
  */
 class Schedule_change {
 	static std::vector<std::string> script_names; // For Scripted_schedule's.
-	unsigned char time;     // Time*3hours when this takes effect.
-	unsigned char type;     // Schedule_type value.
-	unsigned char days;     // A bit for each day (0-6).  We don't
+	unsigned char time = 0;     // Time*3hours when this takes effect.
+	unsigned char type = 0;     // Schedule_type value.
+	unsigned char days = 0x7f;  // A bit for each day (0-6).  We don't
 	//   yet use this.
 	Tile_coord pos;         // Location.
 public:
-	Schedule_change() : time(0), type(0), days(0x7f)
-	{  }
 	static void clear();
 	static std::vector<std::string> &get_script_names() {
 		return script_names;

@@ -946,10 +946,7 @@ Shape_frame *Shape::store_frame(
  *  Create with a single frame.
  */
 
-Shape::Shape(unique_ptr<Shape_frame> fr) {
-	modified = false;
-	from_patch = false;
-	num_frames = 1;
+Shape::Shape(unique_ptr<Shape_frame> fr) : num_frames(1) {
 	frames.push_back(std::move(fr));
 }
 
@@ -960,8 +957,6 @@ Shape::Shape(unique_ptr<Shape_frame> fr) {
 Shape::Shape(
     int n               // # frames.
 ) {
-	modified = false;
-	from_patch = false;
 	create_frames_list(n);
 }
 
@@ -1098,19 +1093,16 @@ Vga_file::Vga_file(
     const char *nm,         // Path to file.
     int u7drag,         // # from u7drag.h, or -1.
     const char *nm2         // Patch file, or null.
-) : u7drag_type(u7drag), flex(true) {
+) : u7drag_type(u7drag) {
 	load(nm, nm2);
 }
 
-Vga_file::Vga_file(
-) : u7drag_type(-1), flex(true) {
-	// Nothing to see here !!!
-}
+Vga_file::Vga_file() = default;
 
 Vga_file::Vga_file(
     vector<pair<string, int>> const &sources,
     int u7drag      // # from u7drag.h, or -1
-) : u7drag_type(u7drag), flex(true) {
+) : u7drag_type(u7drag) {
 	load(sources);
 }
 

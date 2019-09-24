@@ -61,13 +61,6 @@ public:
 	{  }
 };
 
-Conversation::Conversation()
-	: num_faces(0), last_face_shown(0), avatar_face(0, 0, 0, 0), conv_choices(nullptr) {
-	const int max_faces = array_size(face_info);
-	for (int i = 0; i < max_faces; i++)
-		face_info[i] = nullptr;
-}
-
 Conversation::~Conversation() {
 	delete [] conv_choices;
 }

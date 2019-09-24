@@ -40,8 +40,8 @@
  */
 class Shapes_vga_file : public Vga_file {
 	std::map<int, Shape_info> info; // Extra info. about each shape.
-	Shape_info zinfo;       // A fake one (all 0's).
-	bool info_read;         // True when info is set.
+	Shape_info zinfo;               // A fake one (all 0's).
+	bool info_read = false;         // True when info is set.
 	void Read_Shapeinf_text_data_file(bool editing, Exult_Game game_type);
 	void Read_Bodies_text_data_file(bool editing, Exult_Game game_type);
 	void Read_Paperdoll_text_data_file(bool editing, Exult_Game game_type);
@@ -49,7 +49,7 @@ class Shapes_vga_file : public Vga_file {
 	void Write_Bodies_text_data_file(Exult_Game game_type);
 	void Write_Paperdoll_text_data_file(Exult_Game game_type);
 public:
-	Shapes_vga_file() : info_read(false) {  }
+	Shapes_vga_file() = default;
 	Shapes_vga_file(const char *nm, int u7drag = -1, const char *nm2 = nullptr);
 	void init();
 	// Read additional data files.

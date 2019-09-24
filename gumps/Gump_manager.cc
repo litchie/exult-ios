@@ -51,9 +51,7 @@
 using std::cout;
 using std::endl;
 
-Gump_manager::Gump_manager()
-	: open_gumps(nullptr), kbd_focus(nullptr), non_persistent_count(0),
-	  modal_gump_count(0), right_click_close(true), dont_pause_game(false) {
+Gump_manager::Gump_manager() {
 	std::string str;
 	config->value("config/gameplay/right_click_closes_gumps", str, "yes");
 	if (str == "no")

@@ -88,8 +88,8 @@ private:
 	std::vector<UCc> _codes;
 
 	std::vector<UCFunc *> _funcs;
-	Usecode_symbol_table *_symtbl;
-
+	Usecode_symbol_table *_symtbl = nullptr;
+ 
 	/* Just a quick mapping between funcs and basic data on them.
 	   Just something we can quickly pass to the parsing functions
 	   so we don't have to give them an entire function to play with. */
@@ -99,8 +99,8 @@ private:
 	typedef std::map<Usecode_class_symbol *, Usecode_class_symbol *> InheritMap;
 	InheritMap _clsmap;
 
-	long _search_opcode;
-	long _search_intrinsic;
+	long _search_opcode = -1;
+	long _search_intrinsic = -1;
 	std::vector<unsigned int> search_funcs;
 };
 

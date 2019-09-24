@@ -151,9 +151,7 @@ Path_walking_actor_action::Path_walking_actor_action(
     PathFinder *p,          // Pathfinder, or 0 for Astar.
     int maxblk,         // Max. retries when blocked.
     int pers            // Keeps retrying this many times.
-) : reached_end(false), path(p), deleted(false), speed(0),
-	from_offscreen(false), subseq(nullptr), blocked(0), max_blocked(maxblk),
-	blocked_frame(0), persistence(pers) {
+) : path(p), max_blocked(maxblk), persistence(pers) {
 	if (!path)
 		path = new Astar();
 	Tile_coord src = path->get_src(), dest = path->get_dest();
