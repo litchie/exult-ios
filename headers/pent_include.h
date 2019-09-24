@@ -33,25 +33,15 @@
 //
 #include "common_types.h"
 
-
-//
-// p_dynamic_cast support
-//
-//#include "p_dynamic_cast.h"
-
-
 //
 // assert
 //
 #include <cassert>
 
-
 //
 // Strings
 //
 #include "istring.h"
-
-
 
 //
 // The Console
@@ -61,9 +51,6 @@
 #include <iostream>
 #define pout std::cout
 #define perr std::cerr
-
-
-
 
 //
 // Debugging
@@ -75,28 +62,6 @@
 #  define POUT(x)       do { } while(0)
 #  define PERR(x)       do { } while(0)
 #endif
-
-//
-// Can't happen.
-// For things that really can't happen. Or shouldn't anyway.
-//
-#define CANT_HAPPEN() do { assert(false); } while(0)
-
-//
-// Can't happen return.
-// If we're guaranteed to return before this, but we want to shut the
-// compiler warning up.
-//
-#define CANT_HAPPEN_RETURN() do { assert(false); return 0; } while(0)
-
-//
-// Can't happen with a message
-//
-// Allows a message to be supplied.
-// May not work on all compilers or runtimes as expected
-//
-#define CANT_HAPPEN_MSG(msg) do { assert(msg && false); } while(0)
-
 
 ////////////////////
 //                //
