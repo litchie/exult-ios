@@ -19,6 +19,7 @@
 #ifndef MENULIST_H
 #define MENULIST_H
 
+#include <memory>
 #include <string>
 #include <vector>
 #include "SDL_events.h"
@@ -84,10 +85,9 @@ class MenuTextObject: public MenuObject {
 public:
 	Font *font;
 	Font *font_on;
-	const char *text;
-	MenuTextObject() : text(nullptr) {}
-	~MenuTextObject() override {
-		delete [] text;
+	std::string text;
+	MenuTextObject(Font *fnt, Font *fnton, std::string txt)
+		: font(fnt), font_on(fnton), text(std::move(txt)) {
 	}
 
 	virtual int get_height() {
@@ -105,6 +105,9 @@ public:
 
 	void paint(Game_window *gwin) override;
 	bool handle_event(SDL_Event &event) override;
+	bool is_enabled() const {
+		return enabled;
+	}
 	void set_enabled(bool en) {
 		enabled = en;
 	}
@@ -130,14 +133,11 @@ public:
 
 class MenuTextChoice: public MenuTextObject {
 private:
-	std::vector<std::string> *choices;
+	std::vector<std::string> choices;
 	int choice;
 	int max_choice_width;
 public:
 	MenuTextChoice(Font *fnton, Font *fnt, const char *txt, int xpos, int ypos);
-	~MenuTextChoice() override {
-		delete choices;
-	}
 	void add_choice(const char *s);
 	int get_choice() {
 		return choice;
@@ -152,17 +152,14 @@ public:
 
 class MenuList {
 private:
-	std::vector<MenuObject *> *entries;
+	std::vector<std::unique_ptr<MenuObject>> entries;
 	bool selected;
 	int selection;
 public:
-	MenuList(): selected(false), selection(0) {
-		entries = new std::vector<MenuObject *>();
-	}
-	~MenuList();
+	MenuList(): selected(false), selection(0) {     }
 	int add_entry(MenuObject *entry) {
-		entries->push_back(entry);
-		return (entries->size() - 1);
+		entries.emplace_back(entry);
+		return (entries.size() - 1);
 	}
 	void paint(Game_window *gwin);
 	int handle_events(Game_window *gwin, Mouse *mouse);
