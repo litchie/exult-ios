@@ -75,6 +75,7 @@ private:
 #endif
 
 public:
+	XMidiFile() = delete; // No default constructor
 	XMidiFile(IDataSource *source, int pconvert);
 	~XMidiFile();
 
@@ -93,9 +94,7 @@ public:
 	// int apply_patch (int track, DataSource *source);
 
 private:
-	XMidiFile(); // No default constructor
-    
-    struct first_state {			// Status,	Data[0]
+	struct first_state {			// Status,	Data[0]
 		XMidiEvent		*patch[16];	// 0xC
 		XMidiEvent		*bank[16];	// 0xB,		0
 		XMidiEvent		*pan[16];	// 0xB,		7
