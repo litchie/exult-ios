@@ -65,9 +65,15 @@ const int c_last_gflag = 2047;
 #define MOVE_MAPEDIT (1<<8)
 
 //	Wrapping:
-#define INCR_CHUNK(x) (((x) + 1)%c_num_chunks)
-#define DECR_CHUNK(x) (((x) - 1 + c_num_chunks)%c_num_chunks)
-#define INCR_TILE(x) (((x) + 1)%c_num_tiles)
+inline int INCR_CHUNK(int x) {
+	return (x + 1) % c_num_chunks;
+}
+inline int DECR_CHUNK(int x) {
+	return (x - 1 + c_num_chunks) % c_num_chunks;
+}
+inline int INCR_TILE(int x) {
+	return (x + 1) % c_num_tiles;
+}
 inline int DECR_TILE(int x, int amt = 1) {
 	return (x - amt + c_num_tiles) % c_num_tiles;
 }
