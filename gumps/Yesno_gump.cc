@@ -152,13 +152,12 @@ int Yesno_gump::ask(
     const char *txt,            // What to ask.
     const char *font
 ) {
-	Yesno_gump *dlg = new Yesno_gump(txt, font);
+	Yesno_gump dlg(txt, font);
 	int answer;
-	if (!gumpman->do_modal_gump(dlg, Mouse::hand))
+	if (!gumpman->do_modal_gump(&dlg, Mouse::hand))
 		answer = 0;
 	else
-		answer = dlg->get_answer();
-	delete dlg;
+		answer = dlg.get_answer();
 	return (answer);
 }
 
@@ -186,12 +185,11 @@ bool Countdown_gump::run() {
 }
 
 int Countdown_gump::ask(const char *txt, int timeout, const char *font) {
-	Countdown_gump *dlg = new Countdown_gump(txt, timeout, font);
+	Countdown_gump dlg(txt, timeout, font);
 	int answer;
-	if (!gumpman->do_modal_gump(dlg, Mouse::hand))
+	if (!gumpman->do_modal_gump(&dlg, Mouse::hand))
 		answer = 0;
 	else
-		answer = dlg->get_answer();
-	delete dlg;
+		answer = dlg.get_answer();
 	return (answer);
 }
