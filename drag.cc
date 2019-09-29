@@ -73,7 +73,7 @@ Dragging_info::Dragging_info(
 	save(nullptr), okay(false), possible_theft(false) {
 	// First see if it's a gump.
 	gump = gumpman->find_gump(x, y);
-	Game_object *to_drag = NULL;
+	Game_object *to_drag = nullptr;
 	if (gump) {
 		to_drag = gump->find_object(x, y);
 		if (to_drag) {

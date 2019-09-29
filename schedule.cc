@@ -4301,7 +4301,7 @@ void Bake_schedule::now_what() {
 	case to_table: {    // Walk over to worktable and create flour
 		Game_object *table1 = npc->find_closest(1003);
 		Game_object *table2 = npc->find_closest(1018);
-		Game_object *worktable_obj = NULL;
+		Game_object *worktable_obj = nullptr;
 		if (stove) {
 			Game_object_vector table;
 			npc->find_nearby(table, npcpos, 890, -1, 0, c_any_qual, 5);
@@ -5118,7 +5118,7 @@ void Eat_schedule::now_what() {
 		// make sure moved plate doesn't get food sent to it
 		plate = Game_object_weak(); 
 		Game_object_vector plates;  // First look for a nearby plate.
-		Game_object *plate_obj = NULL;
+		Game_object *plate_obj = nullptr;
 		npc->find_nearby(plates, 717, 1, 0);
 		Game_object_vector::const_iterator it;
 		int floor = npc->get_lift() / 5; // Make sure it's on same floor.
@@ -5127,7 +5127,7 @@ void Eat_schedule::now_what() {
 			if (plate_obj->get_lift() / 5 == floor)
 				break;
 			else
-				plate_obj = NULL;
+				plate_obj = nullptr;
 		}
 		plate = weak_from_obj(plate_obj);
 		break;

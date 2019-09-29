@@ -299,7 +299,7 @@ void Usecode_script::handle_event(
     uintptr udata          // ->usecode machine.
 ) {
     Game_object_shared o = obj.lock();
-	Actor *act = o ? o->as_actor() : NULL;
+	Actor *act = o ? o->as_actor() : nullptr;
 	if (act && act->get_casting_mode() == Actor::init_casting)
 		act->display_casting_frames();
 	Usecode_internal *usecode = reinterpret_cast<Usecode_internal *>(udata);

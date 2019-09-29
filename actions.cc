@@ -747,7 +747,7 @@ Frames_actor_action::Frames_actor_action(
 ) : cnt(c), index(0), speed(spd), obj(weak_from_obj(o)) {
 	frames = new signed char[cnt];
 	std::memcpy(frames, f, cnt);
-	use_actor = (o == NULL);
+	use_actor = (o == nullptr);
 }
 
 /**
@@ -761,7 +761,7 @@ Frames_actor_action::Frames_actor_action(
 ) : cnt(1), index(0), speed(spd), obj(weak_from_obj(o)) {
 	frames = new signed char[1];
 	frames[0] = f;
-	use_actor = (o == NULL);
+	use_actor = (o == nullptr);
 }
 
 /**

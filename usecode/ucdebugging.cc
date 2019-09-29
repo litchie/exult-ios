@@ -128,7 +128,7 @@ int Breakpoints::check(Stack_frame *frame) {
 		}
 	}
 
-	breaks.remove(nullptr); // delete all NULLs from the list
+	breaks.remove(nullptr); // delete all nullptr from the list
 
 	return breakID;
 }
@@ -156,7 +156,7 @@ bool Breakpoints::remove(int id) {
 		}
 	}
 
-	breaks.remove(nullptr); // delete all NULLs from the list
+	breaks.remove(nullptr); // delete all nullptr from the list
 
 	return found;
 }
