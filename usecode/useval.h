@@ -52,17 +52,18 @@ public:
 	using Usecode_vector = std::vector<Usecode_value>;
 
 private:
+	struct ClassRef {
+		Usecode_value *elems;
+		short cnt;
+	};
 	Val_type type = int_type;      // Type stored here.
-    union {
+	union {
 		long intval;
 		std::string strval;
 		Usecode_vector arrayval;
 		Game_object_shared ptrval;
 		Usecode_class_symbol *clssym;
-		struct {
-			Usecode_value *elems;
-			short cnt;
-		} clsrefval;
+		ClassRef clsrefval;
 	};	// Anonymous union member
 	bool undefined = true;
 
