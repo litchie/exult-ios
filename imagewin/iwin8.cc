@@ -35,7 +35,7 @@ Boston, MA  02111-1307, USA.
 #include "iwin8.h"
 #include "common_types.h"
 #include "gamma.h"
-#include <limits.h>
+#include <climits>
 #include <algorithm>
 using std::rotate;
 using std::unique_ptr;

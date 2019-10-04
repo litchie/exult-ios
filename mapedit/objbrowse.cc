@@ -2,7 +2,7 @@
 #  include <config.h>
 #endif
 
-#include <ctype.h>
+#include <cctype>
 #include <gdk/gdkkeysyms.h>
 #include "objbrowse.h"
 #include "shapegroup.h"

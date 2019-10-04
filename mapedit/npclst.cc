@@ -53,7 +53,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gtk_redefines.h"
 
 #include <glib.h>
-#include <stdlib.h>
+#include <cstdlib>
 #include <sys/stat.h>
 #include <unistd.h>
 #include "npclst.h"

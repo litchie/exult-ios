@@ -317,12 +317,12 @@
 #endif
 
 #include <sys/types.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdarg.h>
-#include <assert.h>
-#include <errno.h>
+#include <cstring>
+#include <cstdlib>
+#include <cstdio>
+#include <cstdarg>
+#include <cassert>
+#include <cerrno>
 
 #ifdef isdigit
 #undef isdigit

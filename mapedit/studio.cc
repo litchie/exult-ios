@@ -47,7 +47,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <glib.h>
 #include <unistd.h>
-#include <errno.h>
+#include <cerrno>
 
 #include <cstdio>           /* These are for sockets. */
 #ifdef _WIN32

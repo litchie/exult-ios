@@ -26,7 +26,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
-#include <ctype.h>
+#include <cctype>
 #include <iomanip>
 #include <cstdlib>
 #include "utils.h"
