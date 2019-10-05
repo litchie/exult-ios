@@ -3982,7 +3982,7 @@ bool Actor::try_to_hit(
     int attval
 ) {
 	int defval = get_effective_prop(static_cast<int>(combat)) +
-	             get_flag(Obj_flags::protection) ? 3 : 0;
+	             (get_flag(Obj_flags::protection) ? 3 : 0);
 	if (combat_trace) {
 		string name = "<trap>";
 		if (attacker)
