@@ -28,7 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 
 #include <cstring>
-#include <stdio.h>
+#include <cstdio>
 #include "ucsym.h"
 #include "opcodes.h"
 #include "utils.h"
