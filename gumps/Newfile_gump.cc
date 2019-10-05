@@ -829,6 +829,8 @@ void Newfile_gump::text_input(int chr, int unicode) {
 			chr = unicode & 0x7F;
 		else
 			chr = 0;
+#else
+		ignore_unused_variable_warning(unicode);
 #endif
 		if (chr < ' ')
 			return;         // Ignore other special chars.
