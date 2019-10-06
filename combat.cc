@@ -1404,7 +1404,7 @@ void Combat_schedule::now_what(
 			Usecode_script *scr = Usecode_script::find(npc);
 			// Warning: assuming that the most recent script for the
 			// actor is the spellcasting script.
-			delay += (scr ? scr->get_count() : 0) + 2;
+			delay += (scr ? scr->get_length() : 0) + 2;
 		}
 		delay *= gwin->get_std_delay();
 		// Change back to ready frame.

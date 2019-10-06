@@ -77,6 +77,9 @@ public:
 	static int get_count() {
 		return count;
 	}
+	int get_length() {
+		return cnt;
+	}
 	// Find for given item.
 	static Usecode_script *find(const Game_object *srch,
 	                            Usecode_script *last_found = nullptr);
