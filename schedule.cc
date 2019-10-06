@@ -2147,7 +2147,7 @@ static void Stand_up(
 
 Sleep_schedule::Sleep_schedule(
     Actor *n
-) : Schedule(n), bed(), state(0), for_nap_time(false) {
+) : Schedule(n), state(0), for_nap_time(false) {
 	floorloc.tx = -1;       // Set to invalid loc.
 	if (Game::get_game_type() == BLACK_GATE) {
 		spread0 = 3;
@@ -2606,8 +2606,7 @@ bool Sit_schedule::set_action(
 
 Desk_schedule::Desk_schedule(
     Actor *n
-) : Schedule_with_objects(n), chair(), desk(), table(),
-	state(desk_setup) {
+) : Schedule_with_objects(n), state(desk_setup) {
 }
 
 /*
@@ -3214,8 +3213,7 @@ void Thief_schedule::now_what(
 Waiter_schedule::Waiter_schedule(
     Actor *n
 ) : Schedule_with_objects(n), startpos(n->get_tile()), customer(nullptr),
-	prep_table(), cooking(false),
-	state(waiter_setup) {
+	cooking(false), state(waiter_setup) {
 }
 
 static int waiter_shapes[] = {616, 628, 944};
@@ -3863,9 +3861,7 @@ void Waiter_schedule::ending(
 
 Sew_schedule::Sew_schedule(
     Actor *n
-) : Schedule(n), bale(), spinwheel(), chair(), spindle(), loom(),
-	cloth(), work_table(), wares_table(), sew_clothes_cnt(0),
-	state(get_wool) {
+) : Schedule(n), sew_clothes_cnt(0), state(get_wool) {
 }
 
 /*
@@ -4174,8 +4170,7 @@ void Sew_schedule::ending(
  */
 
 Bake_schedule::Bake_schedule(Actor *n) : Schedule(n),
-	oven(), worktable(), displaytable(), flourbag(),
-	dough(), dough_in_oven(), clearing(false), state(find_leftovers)
+	clearing(false), state(find_leftovers)
 { }
 
 void Bake_schedule::now_what() {
@@ -4667,8 +4662,7 @@ void Bake_schedule::ending(int new_type) {
  * Note: the original kept the tongs & hammer, and put them on a nearby table
  */
 
-Forge_schedule::Forge_schedule(Actor *n) : Schedule(n), tongs(), hammer(),
-	blank(), firepit(), anvil(), trough(), bellows(),
+Forge_schedule::Forge_schedule(Actor *n) : Schedule(n),
 	state(put_sword_on_firepit)
 { }
 
@@ -5069,7 +5063,7 @@ void Forge_schedule::ending(
  *  When eating, there are no barks.
  *  TODO: Add plate pathfinding
  */
-Eat_schedule::Eat_schedule(Actor *n): Schedule(n), plate(),
+Eat_schedule::Eat_schedule(Actor *n): Schedule(n),
 	state(find_plate) {}
 
 /*

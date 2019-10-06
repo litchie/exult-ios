@@ -338,7 +338,7 @@ Sprites_effect::Sprites_effect(
     int delay,          // Delay (msecs) before starting.
     int frm,            // Starting frame.
     int rps             // Reps, or <0 to go through frames.
-) : sprite(num, frm, SF_SPRITES_VGA), item(), pos(p),
+) : sprite(num, frm, SF_SPRITES_VGA), pos(p),
 	xoff(0), yoff(0), deltax(dx), deltay(dy), reps(rps) {
 	Game_window *gwin = Game_window::get_instance();
 	frames = sprite.get_num_frames();
@@ -647,7 +647,7 @@ Projectile_effect::Projectile_effect(
     int attpts,         // Attack points of projectile.
     int spd,            // Projectile speed, or -1 to use default.
     bool retpath            // Return of a boomerang.
-) : attacker(weak_from_obj(att)), target(), weapon(weap),
+) : attacker(weak_from_obj(att)), weapon(weap),
 	projectile_shape(proj),
 	sprite(spr, 0), return_path(retpath), skip_render(spr < 0),
 	speed(spd), attval(attpts), autohit(false) {
@@ -667,7 +667,7 @@ Projectile_effect::Projectile_effect(
     int attpts,         // Attack points of projectile.
     int spd,            // Projectile speed, or -1 to use default.
     bool retpath            // Return of a boomerang.
-) : attacker(), target(weak_from_obj(to)),
+) : target(weak_from_obj(to)),
 	weapon(weap), projectile_shape(proj),
 	sprite(spr, 0), return_path(retpath), skip_render(spr < 0),
 	speed(spd), attval(attpts), autohit(false) {
@@ -1082,7 +1082,7 @@ Text_effect::Text_effect(
 Text_effect::Text_effect(
     const string &m,        // A copy is made.
     int t_x, int t_y        // Abs. tile coords.
-) : next(nullptr), prev(nullptr), msg(m), item(), tpos(t_x, t_y, 0), pos(Figure_text_pos()), num_ticks(0) {
+) : next(nullptr), prev(nullptr), msg(m), tpos(t_x, t_y, 0), pos(Figure_text_pos()), num_ticks(0) {
 	init();
 }
 

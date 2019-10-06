@@ -258,6 +258,9 @@ OBJS_OBJS= \
 	objs/virstone.o
 
 USECODE_OBJS= \
+	usecode/debugserver.o \
+	usecode/ucdebugging.o \
+	usecode/ucserial.o \
 	usecode/conversation.o \
 	usecode/intrinsics.o \
 	usecode/keyring.o \
