@@ -305,7 +305,7 @@ bool U7open(
 	} while (base_to_uppercase(name, ++uppercasecount));
 
 	// file not found.
-	throw(file_open_exception(get_system_path(fname)));
+	throw file_open_exception(get_system_path(fname));
 	return false;
 }
 
@@ -346,7 +346,7 @@ bool U7open(
 	} while (base_to_uppercase(name, ++uppercasecount));
 
 	// file not found.
-	throw(file_open_exception(get_system_path(fname)));
+	throw file_open_exception(get_system_path(fname));
 	return false;
 }
 
@@ -372,7 +372,7 @@ std::FILE *U7open(
 	} while (base_to_uppercase(name, ++uppercasecount));
 
 	// file not found.
-	throw(file_open_exception(get_system_path(fname)));
+	throw file_open_exception(get_system_path(fname));
 	return nullptr;
 }
 
@@ -813,7 +813,7 @@ void U7copy(
 	} catch (exult_exception &e) {
 		in.close();
 		out.close();
-		throw(e);
+		throw e;
 	}
 	size_t bufsize = 0x8000;
 	char *buf = new char[0x8000];
@@ -833,9 +833,9 @@ void U7copy(
 	in.close();
 	out.close();
 	if (!inok)
-		throw(file_read_exception(src));
+		throw file_read_exception(src);
 	if (!outok)
-		throw(file_write_exception(dest));
+		throw file_write_exception(dest);
 }
 
 /*
@@ -886,7 +886,7 @@ int fgepow2(uint32 n) {
 
 char *newstrdup(const char *s) {
 	if (!s)
-		throw(std::invalid_argument("nullptr pointer passed to newstrdup"));
+		throw std::invalid_argument("nullptr pointer passed to newstrdup");
 	char *ret = new char[std::strlen(s) + 1];
 	std::strcpy(ret, s);
 	return ret;

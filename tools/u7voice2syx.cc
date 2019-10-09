@@ -273,13 +273,13 @@ int main(int argc, char *argv[]) {
 			// Create us a data source
 			IBufferDataSource ds = f.retrieve(0);
 			if (!ds.good())
-				throw(exult_exception("No data in index 0"));
+				throw exult_exception("No data in index 0");
 
 			uint32 num_timbres = ds.read1();
 			std::cout << num_timbres << " custom timbres..." << std::endl;
 
 			if (ds.getSize() != 247 * num_timbres + 1)
-				throw(exult_exception("File size didn't match timbre count. Wont convert."));
+				throw exult_exception("File size didn't match timbre count. Wont convert.");
 
 			std::cout << "Opening " << outname << " for writing..." << std::endl;
 			std::ofstream sysex_file;
