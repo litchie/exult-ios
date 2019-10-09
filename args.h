@@ -24,10 +24,6 @@
 
 #include "common_types.h"
 
-#ifdef __DECCXX
-#  undef declare
-#endif
-
 #include <string>
 #include <vector>
 
