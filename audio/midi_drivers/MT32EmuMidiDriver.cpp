@@ -30,13 +30,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "XMidiEvent.h"
 #include "XMidiEventList.h"
 
-#ifdef PENTAGRAM_IN_EXULT
 #include "databuf.h"
 #include "utils.h"
-#else
-#include "IDataSource.h"
-#include "FileSystem.h"
-#endif
 
 using namespace MT32Emu;
 

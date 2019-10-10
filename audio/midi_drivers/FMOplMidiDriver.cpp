@@ -26,13 +26,7 @@
 
 #include "XMidiEvent.h"
 
-#ifdef PENTAGRAM_IN_EXULT
 #include "databuf.h"
-#else
-#include "IDataSource.h"
-#include "GameData.h"
-#include "MusicFlex.h"
-#endif
 
 #include <cmath>
 
@@ -240,20 +234,6 @@ int FMOplMidiDriver::open()
 		chp[i][CHP_COUNTER] = 0;
 		chp[i][CHP_VEL] = 0;
 	}
-
-#ifndef PENTAGRAM_IN_EXULT
-	IDataSource *timbres = GameData::get_instance()->getMusic()->getAdlibTimbres();
-	if (timbres)
-	{
-		loadXMIDITimbres(timbres);
-	}
-	else
-	{
-		perr << "FMOplMidiDriver: Error, unable to load Adlib Timbres in open()" << std::endl;
-		return 1;
-	}
-	delete timbres;
-#endif
 
 	opl = FMOpl_Pentagram::makeAdLibOPL(sample_rate);
 

@@ -40,12 +40,7 @@ using std::vector;
 #include "timidity_tables.h"
 
 // we want to use Pentagram's config
-#ifndef PENTAGRAM_IN_EXULT
-#include "SettingManager.h"
-#else
 #include "Configuration.h"
-#endif
-
 
 #ifdef NS_TIMIDITY
 namespace NS_TIMIDITY {
@@ -399,13 +394,7 @@ int Timidity_Init_Simple(int rate, int samples, sint32 encoding)
 {
 	std::string configfile;
 	/* see if the pentagram config file specifies an alternate timidity.cfg */
-#ifndef PENTAGRAM_IN_EXULT
-	SettingManager* settings = SettingManager::get_instance();
-	if (!settings->get("timiditycfg", configfile))
-		configfile = CONFIG_FILE;
-#else
 	config->value("config/audio/midi/timiditycfg", configfile, CONFIG_FILE);
-#endif
 
 	if (read_config_file(configfile.c_str())<0) {
 		return(-1);

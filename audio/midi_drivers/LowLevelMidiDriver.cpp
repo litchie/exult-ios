@@ -20,10 +20,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pent_include.h"
 #include <cstring>
 
-#ifndef PENTAGRAM_IN_EXULT
-#include "IDataSource.h"
-#endif
-
 #include "LowLevelMidiDriver.h"
 #include "XMidiSequence.h"
 #include "XMidiFile.h"

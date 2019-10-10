@@ -20,12 +20,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "FileMidiDriver.h"
 #include "ignore_unused_variable_warning.h"
 
-#ifdef PENTAGRAM_IN_EXULT
 #include "fnames.h"
 #include "exceptions.h"
-#else
-#include "FileSystem.h"
-#endif
 
 #include "XMidiEventList.h"
 
@@ -38,11 +34,7 @@ FileMidiDriver::~FileMidiDriver()
 
 const char *FileMidiDriver::get_temp_name()
 {
-#ifdef PENTAGRAM_IN_EXULT
 	return MIDITMPFILE;
-#else
-	return "pentmidi.mid";
-#endif
 }
 
 int FileMidiDriver::initMidiDriver(uint32 sample_rate, bool stereo)

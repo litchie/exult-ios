@@ -21,8 +21,6 @@
 #ifndef PENT_INCLUDE_H
 #define PENT_INCLUDE_H
 
-#define PENTAGRAM_IN_EXULT
-
 // Include config.h first if we have it
 #ifdef HAVE_CONFIG_H
 #  include <config.h>

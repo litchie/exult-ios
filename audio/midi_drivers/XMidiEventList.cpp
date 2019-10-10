@@ -22,11 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "XMidiEvent.h"
 #include "XMidiEventList.h"
 
-#ifdef PENTAGRAM_IN_EXULT
 #include "databuf.h"
-#else
-#include "ODataSource.h"
-#endif
 
 using std::size_t;
 using std::string;

@@ -31,16 +31,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "FluidSynthMidiDriver.h"
 
 // Legacy Exult Midi Drivers
-#ifdef PENTAGRAM_IN_EXULT
 #include "MT32EmuMidiDriver.h"
-#endif
 
-
-#ifdef PENTAGRAM_IN_EXULT
 #include "Configuration.h"
-#else
-#include "SettingManager.h"
-#endif
 
 static MidiDriver *Disabled_CreateInstance() { return nullptr; }
 
@@ -175,9 +168,6 @@ MidiDriver *MidiDriver::createInstance(const std::string& desired_driver,uint32 
 	return new_driver;
 }
 
-
-#ifdef PENTAGRAM_IN_EXULT
-
 std::string MidiDriver::getConfigSetting(std::string const &name,
 										 std::string const &defaultval)
 {
@@ -189,16 +179,3 @@ std::string MidiDriver::getConfigSetting(std::string const &name,
 	return val;
 }
 
-#else
-
-std::string MidiDriver::getConfigSetting(std::string name,
-										 std::string defaultval)
-{
-	std::string val;
-	if (!SettingManager::get_instance()->get(name,val))
-		val = defaultval;
-
-	return val;
-}
-
-#endif

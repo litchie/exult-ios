@@ -24,14 +24,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "XMidiEventList.h"
 #include "XMidiNoteStack.h"
 
-#ifdef PENTAGRAM_IN_EXULT
 #include "game.h"
 #include "databuf.h"
 #include "Configuration.h"
-#else
-#include "IDataSource.h"
-#include "ODataSource.h"
-#endif
 
 using std::atof;
 using std::atoi;
@@ -455,7 +450,6 @@ static const uint32 display_base = 0x200000;	// Note, these are 7 bit!
 static const uint32 display_mem_size = 0x14;	// Display is 20 ASCII characters (32-127)
 
 // Display messages                         0123456789ABCDEF0123
-#ifdef PENTAGRAM_IN_EXULT
 //static const char display[]              = " Uploading Timbres! ";
 //static const char display_black_gate[]   = "BG Uploading Timbres";
 //static const char display_serpent_isle[] = "SI Uploading Timbres";
@@ -463,11 +457,6 @@ static const uint32 display_mem_size = 0x14;	// Display is 20 ASCII characters (
 static const char display_beginning[] =    "--==|  Exult!  |==--";
 static const char display_beginning_bg[] = " U7: The Black Gate ";
 static const char display_beginning_si[] = "U7: The Serpent Isle";
-#else
-
-//static const char display[]              = " Uploading Timbres! ";
-static const char display_beginning[] =    "--=| Pentagram! |=--";
-#endif
 
 //
 // All Dev Reset
@@ -506,9 +495,7 @@ static RhythmSetupData U7PercussionData[] = {
 	{	4,	0x64,	0x08,	1	}	// 87
 };
 
-#ifdef PENTAGRAM_IN_EXULT
 GammaTable<unsigned char> XMidiFile::VolumeCurve(128);
-#endif
 
 // Constructor
 XMidiFile::XMidiFile(IDataSource *source, int pconvert) : num_tracks(0),
@@ -694,11 +681,7 @@ void XMidiFile::ApplyFirstState(first_state &fs, int chan_mask)
 
 		if (!temp)
 		{
-#ifdef PENTAGRAM_IN_EXULT
 			if (convert_type) vol->data[1] = VolumeCurve[90];
-#else
-			if (convert_type) vol->data[1] = 90;
-#endif
 			else vol->data[1] = 90;
 		}
 		else
@@ -977,11 +960,9 @@ int XMidiFile::ConvertEvent (const int time, const unsigned char status, IDataSo
 
 	current->data[1] = source->read1();
 
-#ifdef PENTAGRAM_IN_EXULT
 	// Volume modify the volume controller, only if converting
 	if (convert_type && (current->status >> 4) == MIDI_STATUS_CONTROLLER && current->data[0] == 7)
 		current->data[1] = VolumeCurve[current->data[1]];
-#endif
 
 	return 2;
 }
@@ -999,11 +980,9 @@ int XMidiFile::ConvertNote (const int time, const unsigned char status, IDataSou
 	current->data[0] = data;
 	current->data[1] = source->read1();
 
-#ifdef PENTAGRAM_IN_EXULT
 	// Volume modify the note on's, only if converting
 	if (convert_type && (current->status >> 4) == MIDI_STATUS_NOTE_ON && current->data[1])
 		current->data[1] = VolumeCurve[current->data[1]];
-#endif
 
 	// Perc track note on
 	if (status == 0x99 && current->data[1] != 0 && convert_type == XMIDIFILE_CONVERT_NOCONVERSION)
@@ -1363,7 +1342,6 @@ int XMidiFile::ExtractTracks (IDataSource *source)
 	if (convert_type >= XMIDIFILE_HINT_U7VOICE_MT_FILE)
 		convert_type = XMIDIFILE_CONVERT_NOCONVERSION;
 
-#ifdef PENTAGRAM_IN_EXULT
 	string s;
 
 	config->value("config/audio/midi/reverb/enabled",s,"no");
@@ -1394,12 +1372,7 @@ int XMidiFile::ExtractTracks (IDataSource *source)
 	int igam = static_cast<int>((VolumeCurve.get_gamma()*10000)+0.5);
 	snprintf (buf, 32, "%d.%04d", igam/10000, igam%10000);
 	config->set("config/audio/midi/volume_curve",buf,true);
-#else
-	do_reverb = false;
-	do_chorus = false;
-	reverb_value = 0;
-	chorus_value = 0;
-#endif
+
 	// Read first 4 bytes of header
 	source->read (buf, 4);
 
@@ -1812,7 +1785,6 @@ void XMidiFile::InsertDisplayEvents()
 
 	//const char *display = ::display;
 	const char *display_beginning = ::display_beginning;
-#ifdef PENTAGRAM_IN_EXULT
 	if (Game::get_game_type() == SERPENT_ISLE)
 	{
 		//display = display_serpent_isle;
@@ -1823,7 +1795,6 @@ void XMidiFile::InsertDisplayEvents()
 		//display = display_black_gate;
 		display_beginning = display_beginning_bg;
 	}
-#endif
 
 	char seventy = 70;
 	CreateMT32SystemMessage(current->time+1, system_base, system_mem_offset(masterVol), 1,&seventy);

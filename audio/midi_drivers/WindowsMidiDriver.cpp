@@ -55,12 +55,7 @@ int WindowsMidiDriver::open()
 {
 	int i;
 	// Get Win32 Midi Device num
-	std::string device;
-#ifdef PENTAGRAM_IN_EXULT
-	device = getConfigSetting("win32_device", "-1");
-#else
-	device = getConfigSetting("windows_midi_device", "-1");
-#endif
+	std::string device = getConfigSetting("win32_device", "-1");
 
 	const char *begin = device.c_str();
 	char *end;
