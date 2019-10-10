@@ -39,12 +39,6 @@
 #endif
 
 using std::string;
-#ifndef HAVE_SNPRINTF
-extern int snprintf(char *, size_t, const char *, /*args*/ ...) ATTR_PRINTF(3,4);
-namespace std {
-using ::snprintf;
-}
-#endif
 using std::strchr;
 
 /*

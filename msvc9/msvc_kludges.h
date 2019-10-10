@@ -146,10 +146,6 @@ using std::strtol;
 
 #endif
 
-// We've got snprintf
-#define HAVE_SNPRINTF
-#define snprintf _snprintf
-
 // When doing a DEBUG compile we will output to the console
 // However, SDL doesn't want us to do that
 #ifdef DEBUG

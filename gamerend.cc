@@ -25,14 +25,6 @@
 
 #include <cstdio>
 
-#ifndef HAVE_SNPRINTF
-extern int snprintf(char *, size_t, const char *, /*args*/ ...);
-namespace std {
-using ::snprintf;
-}
-#else
-#endif
-
 #include "gamewin.h"
 #include "gamerend.h"
 #include "gameclk.h"

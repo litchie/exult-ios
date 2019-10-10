@@ -40,10 +40,6 @@
 #endif
 #endif
 
-#ifndef HAVE_SNPRINTF
-extern int snprintf(char *, size_t, const char *, /*args*/ ...) ATTR_PRINTF(3,4);
-#endif
-
 /*
  *  Read a 1-byte value.
  */

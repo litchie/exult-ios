@@ -31,14 +31,6 @@
 #include "shapeid.h"
 #include "keys.h"
 
-#ifndef HAVE_SNPRINTF
-extern int snprintf(char *, size_t, const char *, /*args*/ ...);
-namespace std {
-using ::snprintf;
-}
-#else
-#endif
-
 ShapeBrowser::ShapeBrowser() {
 	num_shapes = 0;
 	current_shape = 0;

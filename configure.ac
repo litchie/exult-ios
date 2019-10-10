@@ -241,23 +241,6 @@ if test x$ac_cv_func_mkstemp = xyes ; then
 	AC_DEFINE(HAVE_MKSTEMP, 1, [Have mkstemp])
 fi
 
-AC_MSG_CHECKING([for snprintf()])
-AC_TRY_LINK([
-#include <stdio.h>
-],
-[
-	snprintf(0,0,0,0);
-],
-	ac_cv_func_snprintf=yes,
-	ac_cv_func_snprintf=no)
-AC_MSG_RESULT($ac_cv_func_snprintf)
-if test x$ac_cv_func_snprintf = xyes ; then
-	AC_DEFINE(HAVE_SNPRINTF, 1, [Have snprintf])
-	AM_CONDITIONAL(HAVE_SNPRINTF,true)
-else
-	AM_CONDITIONAL(HAVE_SNPRINTF,false)
-fi
-
 # do we need special X11 libraries?
 AC_MSG_CHECKING([for special X11 libraries])
 if test x$x_libraries = xNONE; then

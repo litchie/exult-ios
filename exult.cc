@@ -2117,12 +2117,8 @@ void change_gamma(bool down) {
 	gwin->get_pal()->apply(true);   // So new brightness applies.
 
 	// Message
-#ifdef HAVE_SNPRINTF
 	Image_window8::get_gamma(r, g, b);
 	snprintf(text, 256, "Gamma Set to R: %01.2f G: %01.2f B: %01.2f", r, g, b);
-#else
-	strncpy(text, "Gamma Changed", 256);
-#endif
 	gwin->get_effects()->center_text(text);
 
 	int igam = static_cast<int>((r * 10000) + 0.5);
