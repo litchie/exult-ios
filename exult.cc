@@ -1662,7 +1662,7 @@ static int Get_click(
 	dragging = false;       // Init.
 	uint32 last_rotate = 0;
 	g_waiting_for_click = true;
-	while (1) {
+	while (true) {
 		SDL_Event event;
 		Delay();        // Wait a fraction of a second.
 
@@ -1832,7 +1832,7 @@ int Get_click(
 	if (paint)
 		paint->paint();
 	Mouse::mouse->show();
-	gwin->show(1);          // Want to see new mouse.
+	gwin->show(true);          // Want to see new mouse.
 	gwin->get_tqueue()->pause(Game::get_ticks());
 	int ret = Get_click(x, y, chr, drag_ok, rotate_colors);
 	gwin->get_tqueue()->resume(Game::get_ticks());

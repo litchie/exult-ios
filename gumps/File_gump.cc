@@ -389,7 +389,7 @@ void File_gump::load(
 		return;
 	gwin->restore_gamedat(num); // Aborts if unsuccessful.
 	gwin->read();           // And read the files in.
-	done = 1;
+	done = true;
 	restored = 1;
 }
 
@@ -425,7 +425,7 @@ void File_gump::quit(
 	if (!Yesno_gump::ask("Do you really want to quit?"))
 		return;
 	quitting_time = QUIT_TIME_YES;
-	done = 1;
+	done = true;
 }
 
 /*
@@ -581,9 +581,9 @@ void File_gump::text_input(int chr, int unicode) {
 	case SDLK_KP_ENTER:
 		if (!buttons[0] && buttons[1]) {
 			if (buttons[1]->push(1)) {
-				gwin->show(1);
+				gwin->show(true);
 				buttons[1]->unpush(1);
-				gwin->show(1);
+				gwin->show(true);
 				buttons[1]->activate(1);
 			}
 		}

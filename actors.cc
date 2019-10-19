@@ -443,9 +443,9 @@ void Actor::swap_ammo(
 		aobj->remove_this(&aobj_shared);   // Remove it.
 	}
 	newammo->remove_this(&newammo_shared);
-	add(newammo, 1);        // Should go to the right place.
+	add(newammo, true);        // Should go to the right place.
 	if (aobj)           // Put back old ammo.
-		add(aobj, 1);
+		add(aobj, true);
 }
 
 /**
@@ -571,14 +571,14 @@ bool Actor::ready_best_shield(
 	}
 	if (!best) {
 		if (old_rhand)  // add offhand item back to where it was
-			add(old_rhand, 1);
+			add(old_rhand, true);
 		return false;
 	}
 	// Spot is free already.
 	best->remove_this(&best_keep);
-	add(best, 1);           // Should go to the right place.
+	add(best, true);           // Should go to the right place.
 	if (old_rhand && old_rhand != best) // don't add twice
-		add(old_rhand, 1);
+		add(old_rhand, true);
 	return true;
 }
 
@@ -4196,7 +4196,7 @@ void Actor::die(
 		}
 		if (body) {
 		    item->set_shape_pos(255, 255);	// So it gets placed.
-			body->add(item, 1);// Always succeed at adding.
+			body->add(item, true);// Always succeed at adding.
 		} else {          // No body?  Drop on ground.
 			item->set_flag_recursively(Obj_flags::okay_to_take);
 			Tile_coord pos2 = Map_chunk::find_spot(pos, 5,
@@ -4213,7 +4213,7 @@ void Actor::die(
 	// Put the heavy ones back.
 	for (Game_object_shared_vector::const_iterator it = tooheavy.begin();
 	        it != tooheavy.end(); ++it)
-		add((*it).get(), 1);
+		add((*it).get(), true);
 	if (body)
 		gwin->add_dirty(body);
 	add_dirty();            // Want to repaint area.
@@ -4323,7 +4323,7 @@ Actor *Actor::resurrect(
 		while ((item = body->get_objects().get_first()) != nullptr) {
 		    Game_object_shared keep = item->shared_from_this();
 			body->remove(item);
-			add(item, 1);       // Always succeed at adding.
+			add(item, true);       // Always succeed at adding.
 		}
 		gwin->add_dirty(body);      // Need to repaint here.
 		pos = body->get_tile();

@@ -267,7 +267,7 @@ void Slider_gump::key_down(int chr) {
 	switch (chr) {
 	case SDLK_RETURN:
 	case SDLK_KP_ENTER:
-		done = 1;
+		done = true;
 		break;
 	case SDLK_LEFT:
 		clicked_left_arrow();

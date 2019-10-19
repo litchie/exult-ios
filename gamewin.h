@@ -467,7 +467,7 @@ public:
 	 *  Rendering:
 	 */
 	inline void set_painted() { // Force blit.
-		painted = 1;
+		painted = true;
 	}
 	inline bool was_painted() {
 		return painted;

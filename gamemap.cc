@@ -1100,7 +1100,7 @@ void Game_map::read_ireg_objects(
 			if (index_id != -1 &&
 			        container->add_readied(obj.get(), index_id, 1, 1))
 				continue;
-			else if (container->add(obj.get(), 1))
+			else if (container->add(obj.get(), true))
 				continue;
 			else        // Fix tx, ty.
 				obj->set_shape_pos(obj->get_tx() & 0xf,
@@ -1206,7 +1206,7 @@ void Game_map::get_superchunk_objects(
 //	CYCLE_RED_PLASMA();
 	get_ireg_objects(schunk);   // Get moveable objects.
 //	CYCLE_RED_PLASMA();
-	schunk_read[schunk] = 1;    // Done this one now.
+	schunk_read[schunk] = true;    // Done this one now.
 	map_patches->apply(schunk); // Move/delete objects.
 }
 
@@ -1220,7 +1220,7 @@ bool Game_map::is_tile_occupied(
 	Map_chunk *chunk = get_chunk_safely(
 	                       tile.tx / c_tiles_per_chunk, tile.ty / c_tiles_per_chunk);
 	if (!chunk)         // Outside the world?
-		return 0;       // Then it's not blocked.
+		return false;       // Then it's not blocked.
 	return chunk->is_tile_occupied(tile.tx % c_tiles_per_chunk,
 	                               tile.ty % c_tiles_per_chunk, tile.tz);
 }

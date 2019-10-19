@@ -202,9 +202,9 @@ bool Schedule::seek_foes(
 		// May delete us!
 		safenpc->set_schedule_type(Schedule::combat, nullptr);
 		safenpc->set_target(foe);
-		return 1;
+		return true;
 	}
-	return 0;
+	return false;
 }
 
 /*
@@ -1293,7 +1293,7 @@ void Patrol_schedule::now_what(
 				signed char frames[14];     // Get frames to show.
 				Game_object *weap = npc->get_readied(rhand);
 				int cnt = npc->get_attack_frames(weap ? weap->get_shapenum() : 0,
-				                                 0, dir, frames);
+				                                 false, dir, frames);
 				frames[cnt++] = npc->get_dir_framenum(dir, Actor::ready_frame);
 				frames[cnt++] = npc->get_dir_framenum(dir, Actor::standing);
 				if (cnt)

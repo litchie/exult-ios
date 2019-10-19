@@ -431,7 +431,7 @@ public:
 			        egg->criteria == external_criteria &&
 			        // Attempting to fix problem in Silver Seed
 			        !(egg->flags & (1 << static_cast<int>(hatched))))
-				egg->hatch(obj, 0);
+				egg->hatch(obj, false);
 		}
 	}
 };
@@ -841,7 +841,7 @@ void Egg_object::activate(
     int /* event */
 ) {
 	if (!edit())
-		hatch(nullptr, 0);
+		hatch(nullptr, false);
 	if (animator)
 		flags &= ~(1 << static_cast<int>(hatched)); // Moongate:  reset always.
 }

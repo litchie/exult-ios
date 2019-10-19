@@ -959,7 +959,7 @@ USECODE_INTRINSIC(give_last_created) {
 		// Might not have been removed from world yet.
 		if (!obj->get_owner() && obj->is_pos_invalid())
 			// Don't check vol.  Causes failures.
-			ret = cont->add(obj, 1);
+			ret = cont->add(obj, true);
 		if (ret)        // Pop only if added.  Fixes chest/
 			//   tooth bug in SI.
 			last_created.pop_back();
@@ -1820,7 +1820,7 @@ USECODE_INTRINSIC(recall_virtue_stone) {
 					break;
 			}
 			if (i == cnt)   // Failed?  Force it on Avatar.
-				gwin->get_main_actor()->add(obj, 1);
+				gwin->get_main_actor()->add(obj, true);
 		}
 		Tile_coord t = vs->get_target_pos();
 		if (t.tx > 0 || t.ty > 0)
@@ -2765,7 +2765,7 @@ USECODE_INTRINSIC(si_path_run_usecode) {
 	// exec(npc, loc(x,y,z), eventid, itemref, usecode#, flag_always).
 	// Schedule Npc to walk to loc and then execute usecode.
 	int always = parms[5].get_int_value();
-	path_run_usecode(parms[0], parms[1], parms[4], parms[3], parms[2], 1,
+	path_run_usecode(parms[0], parms[1], parms[4], parms[3], parms[2], true,
 	                 always != 0);
 	return no_ret;
 }
@@ -2775,7 +2775,7 @@ USECODE_INTRINSIC(sib_path_run_usecode) {
 	// exec(npc, loc(x,y,z), usecode#, itemref, eventid).
 	// Schedule Npc to walk to loc and then execute usecode.
 	return Usecode_value(path_run_usecode(parms[0], parms[1], parms[2],
-	                                      parms[3], parms[4], 0, false));
+	                                      parms[3], parms[4], false, false));
 }
 
 USECODE_INTRINSIC(error_message) {

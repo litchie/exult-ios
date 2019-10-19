@@ -165,7 +165,7 @@ void Cheat::toggle_map_editor() {
 		gwin->set_time_stopped(-1);
 #ifdef USE_EXULTSTUDIO          /* Launch ExultStudio! */
 		if (!gwin->paint_eggs) { // Show eggs too.
-			gwin->paint_eggs = 1;
+			gwin->paint_eggs = true;
 			gwin->paint();
 		}
 		if (client_socket < 0 &&

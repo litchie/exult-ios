@@ -57,7 +57,7 @@ public:
 	string cur_text;        // Current text being shown.
 	Npc_face_info(ShapeID &sid, int num)
 		: shape(sid), face_num(num),
-		  text_pending(0), large_face(false)
+		  text_pending(false), large_face(false)
 	{  }
 };
 
@@ -351,7 +351,7 @@ void Conversation::show_npc_message(const char *msg) {
 	// All fit?  Store height painted.
 	info->last_text_height = height;
 	info->cur_text = msg;
-	info->text_pending = 1;
+	info->text_pending = true;
 	gwin->set_painted();
 //	gwin->show();
 }
@@ -377,7 +377,7 @@ void Conversation::clear_text_pending() {
 	const int max_faces = array_size(face_info);
 	for (int i = 0; i < max_faces; i++) // Clear 'pending' flags.
 		if (face_info[i])
-			face_info[i]->text_pending = 0;
+			face_info[i]->text_pending = false;
 }
 
 /*

@@ -99,11 +99,11 @@ void VideoOptions_gump::close() {
 
 	// have to repaint everything in case resolution changed
 	gwin->set_all_dirty();
-	done = 1;
+	done = true;
 }
 
 void VideoOptions_gump::cancel() {
-	done = 1;
+	done = true;
 }
 
 void VideoOptions_gump::toggle(Gump_button *btn, int state) {
@@ -317,7 +317,7 @@ void VideoOptions_gump::load_settings(bool Fullscreen) {
 	}
 	if (startup_fill_mode == 0)
 		startup_fill_mode = fill_mode;
-	has_ac = 0;
+	has_ac = false;
 	int gw = game_resolution >> 16;
 	int gh = game_resolution & 0xFFFF;
 	if (gw == 0 && gh == 0)

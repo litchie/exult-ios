@@ -437,7 +437,7 @@ void Game_window::clear_screen(bool update) {
 
 	// update screen
 	if (update)
-		show(1);
+		show(true);
 }
 
 
@@ -902,7 +902,7 @@ void Game_window::clear_world(
 	camera_actor = nullptr;
 	num_npcs1 = 0;
 	theft_cx = theft_cy = -1;
-	combat = 0;
+	combat = false;
 	npcs.resize(0);         // NPC's already deleted above.
 	bodies.resize(0);
 	moving_barge = nullptr;       // Get out of barge mode.
@@ -2300,7 +2300,7 @@ void Game_window::double_clicked(
 		        !obj->get_info().is_body_shape()) {
 			// In combat mode.
 			// Want everyone to be in combat.
-			combat = 0;
+			combat = false;
 			main_actor->set_target(obj);
 			toggle_combat();
 			return;
@@ -2666,7 +2666,7 @@ void Game_window::get_focus(
 ) {
 	cout << "Game resumed" << endl;
 	Audio::get_ptr()->resume_audio();
-	focus = 1;
+	focus = true;
 	tqueue->resume(Game::get_ticks());
 }
 void Game_window::lose_focus(

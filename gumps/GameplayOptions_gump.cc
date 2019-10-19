@@ -112,11 +112,11 @@ public:
 
 void GameplayOptions_gump::close() {
 	save_settings();
-	done = 1;
+	done = true;
 }
 
 void GameplayOptions_gump::cancel() {
-	done = 1;
+	done = true;
 }
 
 void GameplayOptions_gump::toggle(Gump_button *btn, int state) {

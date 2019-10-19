@@ -1,4 +1,5 @@
-Checks: "-*"
+Checks: "-*\
+,modernize-use-bool-literals"
 CheckOptions:
     - key: bugprone-argument-comment.StrictMode
       value: 1

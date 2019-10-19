@@ -101,11 +101,11 @@ public:
 
 void AudioOptions_gump::close() {
 	save_settings();
-	done = 1;
+	done = true;
 }
 
 void AudioOptions_gump::cancel() {
-	done = 1;
+	done = true;
 }
 
 void AudioOptions_gump::toggle(Gump_button *btn, int state) {
@@ -329,7 +329,7 @@ void AudioOptions_gump::load_settings() {
 	bool sfx_on = (Audio::get_ptr()->are_effects_enabled() ? true : false);
 	speech_enabled = (Audio::get_ptr()->is_speech_enabled() ? 1 : 0);
 	midi_looping = (Audio::get_ptr()->is_music_looping_allowed() ? 1 : 0);
-	speaker_type = 1; // stereo
+	speaker_type = true; // stereo
 	sample_rate = 22050;
 	config->value("config/audio/stereo", speaker_type, speaker_type);
 	config->value("config/audio/sample_rate", sample_rate, sample_rate);

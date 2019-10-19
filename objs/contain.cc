@@ -685,7 +685,7 @@ bool Container_game_object::extract_contents(Container_game_object *targ) {
 		remove(obj);
 
 		if (targ) {
-			targ->add(obj, 1); // add without checking volume
+			targ->add(obj, true); // add without checking volume
 		} else {
 			obj->set_invalid(); // set to invalid chunk so move() doesn't fail
 			if ((get_cx() == 255) && (get_cy() == 255)) {

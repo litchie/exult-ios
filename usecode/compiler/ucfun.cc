@@ -461,7 +461,7 @@ static int Remove_dead_blocks(
     vector<Basic_block *> &blocks
 ) {
 	int niter = 0;
-	while (1) {
+	while (true) {
 		niter++;
 		size_t i = 0;
 		int nremoved = 0;
@@ -500,7 +500,7 @@ static int Optimize_jumps(
     bool returns
 ) {
 	int niter = 0;
-	while (1) {
+	while (true) {
 		niter++;
 		size_t i = 0;
 		int nremoved = 0;
@@ -654,7 +654,7 @@ static int Set_32bit_jump_flags(
     vector<Basic_block *> &blocks
 ) {
 	int niter = 0;
-	while (1) {
+	while (true) {
 		niter++;
 		int nchanged = 0;
 		vector<int> locs;

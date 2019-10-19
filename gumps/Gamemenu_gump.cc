@@ -111,7 +111,7 @@ void Gamemenu_gump::quit(bool return_to_menu) {
 		return;
 	}
 	quitting_time = QUIT_TIME_YES;
-	done = 1;
+	done = true;
 }
 
 //+++++ implement actual functionality and option screens

@@ -94,11 +94,11 @@ public:
 
 void MiscOptions_gump::close() {
 	save_settings();
-	done = 1;
+	done = true;
 }
 
 void MiscOptions_gump::cancel() {
-	done = 1;
+	done = true;
 }
 
 void MiscOptions_gump::toggle(Gump_button *btn, int state) {
@@ -235,7 +235,7 @@ void MiscOptions_gump::load_settings() {
 	mode = static_cast<int>(Combat::mode);
 	if (mode < 0 || mode > 1)
 		mode = 0;
-	charmDiff = Combat::charmed_more_difficult ? 1 : 0;
+	charmDiff = Combat::charmed_more_difficult ? true : false;
 	alternate_drop = gwin->get_alternate_drop();
 	allow_autonotes = gwin->get_allow_autonotes();
 }

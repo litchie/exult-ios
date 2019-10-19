@@ -743,7 +743,7 @@ void BG_Game::scene_guardian() {
 
 			// TODO: have the static sound effect play for every time there's static in the intro
 			ticks = SDL_GetTicks();
-			while (1) {
+			while (true) {
 				win->get_ibuf()->fill_static(0, 7, 15);
 				win->show();
 				WAITDELAYCYCLE1(2);
@@ -756,7 +756,7 @@ void BG_Game::scene_guardian() {
 			WAITDELAYCYCLE1(200);
 
 			ticks = SDL_GetTicks();
-			while (1) {
+			while (true) {
 				win->get_ibuf()->fill_static(0, 7, 15);
 				win->show();
 				WAITDELAYCYCLE1(2);
@@ -769,7 +769,7 @@ void BG_Game::scene_guardian() {
 			WAITDELAYCYCLE1(200);
 
 			ticks = SDL_GetTicks();
-			while (1) {
+			while (true) {
 				win->get_ibuf()->fill_static(0, 7, 15);
 				win->show();
 				WAITDELAYCYCLE1(2);
@@ -1005,7 +1005,7 @@ void BG_Game::scene_guardian() {
 		//
 
 		ticks = SDL_GetTicks();
-		while (1) {
+		while (true) {
 			win->get_ibuf()->fill_static(0, 7, 15);
 			win->show();
 			WAITDELAYCYCLE1(2);

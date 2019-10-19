@@ -291,7 +291,7 @@ void Animator::start_animation(
 	// Clean out old entry if there.
 	gwin->get_tqueue()->remove(this);
 	gwin->get_tqueue()->add(Game::get_ticks() + 20, this, gwin);
-	animating = 1;
+	animating = true;
 }
 
 /*
@@ -429,7 +429,7 @@ void Frame_animator::handle_event(
 		obj->set_frame(last_frame = framenum);
 		if (!dirty_first && !gwin->add_dirty(obj)) {
 			// No longer on screen.
-			animating = 0;
+			animating = false;
 			// Stop playing sound.
 			if (objsfx)
 				objsfx->stop();
@@ -487,7 +487,7 @@ void Sfx_animator::handle_event(
 	Rectangle rect = gwin->clip_to_win(gwin->get_shape_rect(obj));
 	if (rect.w <= 0 || rect.h <= 0) {
 		// No longer on screen.
-		animating = 0;
+		animating = false;
 		// Stop playing sound.
 		if (objsfx)
 			objsfx->stop();
@@ -535,7 +535,7 @@ void Wiggle_animator::handle_event(
 	Game_window *gwin = reinterpret_cast<Game_window *>(udata);
 	if (!gwin->add_dirty(obj)) {
 		// No longer on screen.
-		animating = 0;
+		animating = false;
 		return;
 	}
 	Tile_coord t = obj->get_tile(); // Get current position.

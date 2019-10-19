@@ -190,7 +190,7 @@ int Game_render::paint_map(
 	Game_map *map = gwin->map;
 	Shape_manager *sman = gwin->shape_man;
 	render_seq++;           // Increment sequence #.
-	gwin->painted = 1;
+	gwin->painted = true;
 
 	int scrolltx = gwin->scrolltx, scrollty = gwin->scrollty;
 	int light_sources = 0;      // Count light sources found.

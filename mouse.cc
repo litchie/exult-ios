@@ -207,7 +207,7 @@ void Mouse::flash_shape(
 	hide();
 	set_shape(flash);
 	show();
-	gwin->show(1);
+	gwin->show(true);
 	SDL_Delay(600);
 	hide();
 	gwin->paint();

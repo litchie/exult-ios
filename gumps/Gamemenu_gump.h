@@ -36,7 +36,7 @@ public:
 	// Paint it and its contents.
 	void paint() override;
 	void close() override {
-		done = 1;
+		done = true;
 	}
 	// Handle events:
 	bool mouse_down(int mx, int my, int button) override;

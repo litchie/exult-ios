@@ -1079,7 +1079,7 @@ void SI_Game::end_game(bool success) {
 	int start_time = SDL_GetTicks();
 	bool showing_subs = false;
 
-	while (1) {
+	while (true) {
 		uint32 time = SDL_GetTicks() - start_time;
 
 		// Need to go to the next flic?

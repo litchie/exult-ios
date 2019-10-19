@@ -289,7 +289,7 @@ int MenuList::handle_events(Game_window *gwin, Mouse *mouse) {
 	for (int i = 0; i < count; i++)
 		entries[i]->dirty = true;
 
-	gwin->show(1);
+	gwin->show(true);
 	mouse->show();
 	do {
 		Delay();

@@ -176,7 +176,7 @@ int TextScroller::show_line(Game_window *gwin, int left, int right, int y, int i
 
 bool TextScroller::run(Game_window *gwin) {
 	gwin->clear_screen();
-	gwin->show(1);
+	gwin->show(true);
 
 	int topx = (gwin->get_width() - 320) / 2;
 	int topy = (gwin->get_height() - 200) / 2;
@@ -186,7 +186,7 @@ bool TextScroller::run(Game_window *gwin) {
 	unsigned int maxlines = text->size();
 	if (!maxlines) {
 		gwin->clear_screen();
-		gwin->show(1);
+		gwin->show(true);
 		return false;
 	}
 	bool looping = true;
@@ -216,7 +216,7 @@ bool TextScroller::run(Game_window *gwin) {
 			}
 		} while (ypos < endy);
 //		pal.apply();
-		gwin->show(1);
+		gwin->show(true);
 		do {
 			// this could be a problem when too many events are produced
 			while (SDL_PollEvent(&event)) {
@@ -246,7 +246,7 @@ bool TextScroller::run(Game_window *gwin) {
 		starty--;
 	}
 	gwin->clear_screen();
-	gwin->show(1);
+	gwin->show(true);
 	return complete;
 }
 

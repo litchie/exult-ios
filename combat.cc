@@ -106,7 +106,7 @@ void Combat_schedule::start_battle(
 	if (npc == gwin->get_main_actor() && curtime - battle_time >= 30000 &&
 	        (!opponents.empty() || (npc->get_target() && npc->get_target()->as_actor()))) {
 		Audio::get_ptr()->start_music_combat((rand() % 2) ?
-		                                     CSAttacked1 : CSAttacked2, 0);
+		                                     CSAttacked1 : CSAttacked2, false);
 		battle_time = curtime;
 		battle_end_time = curtime - 1;
 	}
@@ -138,7 +138,7 @@ void Combat_schedule::monster_died(
 	unsigned long len = (battle_end_time - battle_time) / 1000;
 	bool hard = len > 15u && (rand() % 60u < len);
 	Audio::get_ptr()->start_music_combat(hard ? CSBattle_Over
-	                                     : CSVictory, 0);
+	                                     : CSVictory, false);
 }
 
 /*
@@ -786,7 +786,7 @@ static int Swap_weapons(
 	if (oldweap)
 		npc->remove(oldweap);
 	npc->remove(bobj);
-	npc->add(bobj, 1);      // Should go into weapon hand.
+	npc->add(bobj, true);      // Should go into weapon hand.
 	if (oldweap)            // Put old where new one was.
 		npc->add_readied(oldweap, index, 1, 1);
 	return 1;
@@ -1551,9 +1551,9 @@ void Ready_duel_weapon(
 			newweap = gmap->create_ireg_object(wshape, 0);
 		if (weap)       // Remove old item.
 			weap->remove_this(&keep);
-		npc->add(newweap.get(), 1);   // Should go in correct spot.
+		npc->add(newweap.get(), true);   // Should go in correct spot.
 		if (weap)
-			npc->add(weap, 1);
+			npc->add(weap, true);
 	}
 	if (ashape == -1)       // No ammo needed.
 		return;
@@ -1565,7 +1565,7 @@ void Ready_duel_weapon(
 	int extra = rand() % 3;     // Add 1 or 2.
 	if (extra)
 		arrows->modify_quantity(extra);
-	npc->add(arrows.get(), 1);        // Should go to right spot.
+	npc->add(arrows.get(), true);        // Should go to right spot.
 }
 
 /*

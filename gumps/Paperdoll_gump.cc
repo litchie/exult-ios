@@ -301,7 +301,7 @@ int Paperdoll_gump::add(
 			break;
 
 		return 0;
-	} while (0);
+	} while (false);
 
 	// Put all the objects in the right place
 	for (size_t i = 0; i < sizeof(coords) / 2 * sizeof(coords[0]); i++) {

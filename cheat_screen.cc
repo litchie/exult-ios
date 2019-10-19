@@ -387,7 +387,7 @@ void CheatScreen::SharedPrompt(char *input, const Cheat_Prompt &mode) {
 bool CheatScreen::SharedInput(char *input, int len, int &command, Cheat_Prompt &mode, bool &activate) {
 	SDL_Event event;
 
-	while (1) {
+	while (true) {
 		Delay();
 		while (SDL_PollEvent(&event)) {
 			if (event.type != SDL_KEYDOWN)
@@ -845,7 +845,7 @@ CheatScreen::Cheat_Prompt CheatScreen::TimeSetLoop() {
 
 	int day = 0, hour = 0;
 
-	while (1) {
+	while (true) {
 		gwin->clear_screen();
 
 		// First the display

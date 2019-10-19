@@ -41,7 +41,7 @@ protected:
 	int answer;         // 1 for yes, 0 for no.
 	void set_answer(int y) {    // Done from 'yes'/'no' button.
 		answer = (y != 0);
-		done = 1;
+		done = true;
 	}
 
 public:

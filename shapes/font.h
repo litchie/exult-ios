@@ -99,7 +99,7 @@ public:
 	}
 	int draw_text_box(Image_buffer8 *win,
 	                  int x, int y, int w, int h, const char *s) {
-		return paint_text_box(win, s, x, y, w, h, 0, 0);
+		return paint_text_box(win, s, x, y, w, h, 0, false);
 	}
 	int center_text(Image_buffer8 *iwin, int x, int y, const char *s);
 };

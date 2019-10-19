@@ -97,7 +97,7 @@ int main(int argc, char *argv[]) {
 		printf("Can't create index file.\n");
 		exit(0);
 	}
-	while (1) {
+	while (true) {
 		if (fread(&fn, 2, 1, fi) != 1) break;
 		if (fn == 0xFFFF) {
 			extended = 1;
