@@ -1227,6 +1227,30 @@ static void Handle_events(
 	}
 }
 
+static inline bool EnteredWindow(SDL_Event& event) {
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+	return event.window.event == SDL_WINDOWEVENT_ENTER;
+#else
+	return (event.active.state & SDL_APPMOUSEFOCUS) && event.active.gain;
+#endif
+}
+
+static inline bool GainedFocus(SDL_Event& event) {
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+	return event.window.event == SDL_WINDOWEVENT_FOCUS_GAINED;
+#else
+	return (event.active.state & SDL_APPINPUTFOCUS) && event.active.gain;
+#endif
+}
+
+static inline bool LostFocus(SDL_Event& event) {
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+	return event.window.event == SDL_WINDOWEVENT_FOCUS_LOST;
+#else
+	return (event.active.state & SDL_APPINPUTFOCUS) && !event.active.gain;
+#endif
+}
+
 /*
  *  Handle an event.  This should work for all platforms, and should only
  *  be called in 'normal' and 'gump' modes.
@@ -1532,35 +1556,18 @@ static void Handle_event(
 		break;
 	}
 	case SDL_ACTIVEEVENT:
-#if SDL_VERSION_ATLEAST(2, 0, 0)
-		if (event.window.event == SDL_WINDOWEVENT_ENTER) {
-#else
-		if (event.active.state & SDL_APPMOUSEFOCUS) {
-			if (event.active.gain) {
-#endif
-				int x, y;
-				SDL_GetMouseState(&x, &y);
-				gwin->get_win()->screen_to_game(x, y, gwin->get_fastmouse(), x, y);
-				Mouse::mouse->set_location(x, y);
-#if !(SDL_VERSION_ATLEAST(2, 0, 0))
-			}
-#endif
+		if (EnteredWindow(event)) {
+			int x, y;
+			SDL_GetMouseState(&x, &y);
+			gwin->get_win()->screen_to_game(x, y, gwin->get_fastmouse(), x, y);
+			Mouse::mouse->set_location(x, y);
 			gwin->set_painted();
 		}
 
-#if SDL_VERSION_ATLEAST(2, 0, 0)
-		if (event.window.event == SDL_WINDOWEVENT_FOCUS_GAINED)
+		if (GainedFocus(event))
 			gwin->get_focus();
-		else if (event.window.event == SDL_WINDOWEVENT_FOCUS_LOST)
+		else if (LostFocus(event))
 			gwin->lose_focus();
-#else
-		if (event.active.state & SDL_APPINPUTFOCUS) {
-			if (event.active.gain)
-				gwin->get_focus();
-			else
-				gwin->lose_focus();
-		}
-#endif
 #if 0
 		if (event.active.state & SDL_APPACTIVE)
 			// Became active.
@@ -1786,19 +1793,10 @@ static int Get_click(
 				break;
 			}
 			case SDL_ACTIVEEVENT:
-#if SDL_VERSION_ATLEAST(2, 0, 0)
-				if (event.window.event == SDL_WINDOWEVENT_FOCUS_GAINED)
+				if (GainedFocus(event))
 					gwin->get_focus();
-				else if (event.window.event == SDL_WINDOWEVENT_FOCUS_LOST)
+				else if (LostFocus(event))
 					gwin->lose_focus();
-#else
-				if (event.active.state & SDL_APPINPUTFOCUS) {
-					if (event.active.gain)
-						gwin->get_focus();
-					else
-						gwin->lose_focus();
-				}
-#endif
 			}
 		if (dragging)
 			gwin->paint_dirty();

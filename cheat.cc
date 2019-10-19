@@ -170,13 +170,11 @@ void Cheat::toggle_map_editor() {
 		}
 		if (client_socket < 0 &&
 		        !gwin->get_win()->is_fullscreen()) {
-			std::string cmnd;     // Set up command.
+			std::string cmnd("exult_studio -x ");     // Set up command.
 #ifdef _WIN32
 			if (get_system_path("<HOME>") == ".")   // portable
-				cmnd = "exult_studio -p -x ";
-			else
+				cmnd += " -p ";
 #endif
-				cmnd = "exult_studio -x ";
 			std::string data_path = get_system_path("<DATA>");
 			if (data_path.find(' ') != std::string::npos)
 				data_path = "\"" + data_path + "\"";

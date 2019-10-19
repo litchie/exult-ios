@@ -638,7 +638,7 @@ bool Image_window::create_scale_surfaces(int w, int h, int bpp) {
 	// Get best bpp
 	flags = SDL_SWSURFACE | (fullscreen ? SDL_FULLSCREEN : 0);
 #if SDL_VERSION_ATLEAST(2, 0, 1) && (defined(MACOSX) || defined(__IPHONEOS__))
-		flags |= SDL_WINDOW_ALLOW_HIGHDPI;
+	flags |= SDL_WINDOW_ALLOW_HIGHDPI;
 #endif
 #ifdef __IPHONEOS__
 	// Turn on landscape mode if desired
@@ -760,47 +760,46 @@ bool Image_window::create_scale_surfaces(int w, int h, int bpp) {
 */
 
 bool Image_window::try_scaler(int w, int h) {
-#if SDL_VERSION_ATLEAST(2, 0, 0)
-	if (true) {
-#else
-	if (game_width != inter_width || game_height != inter_height ||
-	        w != game_width * scale || h != game_height * scale || force_bpp) {
+#if !SDL_VERSION_ATLEAST(2, 0, 0)
+	if (!(game_width != inter_width || game_height != inter_height ||
+	        w != game_width * scale || h != game_height * scale || force_bpp)) {
+		return false;
+    }
 #endif
-		const ScalerInfo *info;
+	const ScalerInfo *info;
 
-		if (scaler < 0 || scaler >= NumScalers || scale == 1)
-			info = &Scalers[point];
-		else
-			info = &Scalers[scaler];
+	if (scaler < 0 || scaler >= NumScalers || scale == 1)
+		info = &Scalers[point];
+	else
+		info = &Scalers[scaler];
 
-		// Is the size supported, if not, default to point scaler
-		if (!(info->size_mask & SCALE_BIT(scale)))
-			return false;
+	// Is the size supported, if not, default to point scaler
+	if (!(info->size_mask & SCALE_BIT(scale)))
+		return false;
 
-		bool has8 = ibuf->depth == 8 && info->fun8to8 && (force_bpp == 0 || force_bpp == 8);
-		bool has16 = ibuf->depth == 8 && info->fun8to16 && (force_bpp == 0 || force_bpp == 16);
-		bool has32 = ibuf->depth == 8 && info->fun8to32 && (force_bpp == 0 || force_bpp == 32);
+	bool has8 = ibuf->depth == 8 && info->fun8to8 && (force_bpp == 0 || force_bpp == 8);
+	bool has16 = ibuf->depth == 8 && info->fun8to16 && (force_bpp == 0 || force_bpp == 16);
+	bool has32 = ibuf->depth == 8 && info->fun8to32 && (force_bpp == 0 || force_bpp == 32);
 
-		if (info->arb) {
-			has8 |= (force_bpp == 0 || force_bpp == 8) && info->arb->Support8bpp(ibuf->depth);
-			has16 |= (force_bpp == 0 || force_bpp == 16) && info->arb->Support16bpp(ibuf->depth);
-			has32 |= (force_bpp == 0 || force_bpp == 32) && info->arb->Support32bpp(ibuf->depth);
-		}
-
-		// First try best of 16 bit/32 bit scaler
-		if (has16 && has32 && create_scale_surfaces(w, h, 0))
-			return true;
-
-		if (has16 && create_scale_surfaces(w, h, 16))
-			return true;
-
-		if (has32 && create_scale_surfaces(w, h, 32))
-			return true;
-
-		// 8bit display output is mostly deprecated!
-		if (has8 && create_scale_surfaces(w, h, 8))
-			return true;
+	if (info->arb) {
+		has8 |= (force_bpp == 0 || force_bpp == 8) && info->arb->Support8bpp(ibuf->depth);
+		has16 |= (force_bpp == 0 || force_bpp == 16) && info->arb->Support16bpp(ibuf->depth);
+		has32 |= (force_bpp == 0 || force_bpp == 32) && info->arb->Support32bpp(ibuf->depth);
 	}
+
+	// First try best of 16 bit/32 bit scaler
+	if (has16 && has32 && create_scale_surfaces(w, h, 0))
+		return true;
+
+	if (has16 && create_scale_surfaces(w, h, 16))
+		return true;
+
+	if (has32 && create_scale_surfaces(w, h, 32))
+		return true;
+
+	// 8bit display output is mostly deprecated!
+	if (has8 && create_scale_surfaces(w, h, 8))
+		return true;
 
 	return false;
 }

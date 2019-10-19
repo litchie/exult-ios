@@ -770,9 +770,7 @@ void setup_program_paths() {
 	savehome_dir += "/.exult";
 	gamehome_dir = EXULT_DATADIR;
 #endif
-#ifdef _WIN32
 	if (get_system_path("<HOME>") != ".")
-#endif
 		add_system_path("<HOME>", home_dir);
 	add_system_path("<CONFIG>", config_dir);
 	add_system_path("<SAVEHOME>", savehome_dir);
