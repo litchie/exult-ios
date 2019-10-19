@@ -503,7 +503,7 @@ public:
 	void set_type_flag(int flag);
 	void clear_flag(int flag) override;
 	void clear_type_flag(int flag);
-	int get_type_flag(int flag) const override;
+	bool get_type_flag(int flag) const override;
 	void set_type_flags(unsigned short tflags);
 	int get_skin_color() const {
 		return skin_color;

@@ -3248,11 +3248,11 @@ void Actor::clear_type_flag(
  *  Get flags.
  */
 
-int Actor::get_type_flag(
+bool Actor::get_type_flag(
     int flag
 ) const {
 	return (flag >= 0 && flag < 16) ? (type_flags & (static_cast<uint32>(1) << flag))
-	       != 0 : 0;
+	       != 0 : false;
 }
 /*
  *  SetFlags

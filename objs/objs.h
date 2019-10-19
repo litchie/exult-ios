@@ -308,16 +308,16 @@ public:
 	virtual void clear_flag(int flag) {
 		ignore_unused_variable_warning(flag);
 	}
-	virtual int get_flag(int flag) const  {
+	virtual bool get_flag(int flag) const  {
 		ignore_unused_variable_warning(flag);
-		return 0;
+		return false;
 	}
 	virtual void set_flag_recursively(int flag) {
 		ignore_unused_variable_warning(flag);
 	}
-	virtual int get_type_flag(int flag) const {
+	virtual bool get_type_flag(int flag) const {
 		ignore_unused_variable_warning(flag);
-		return 0;
+		return false;
 	}
 
 	virtual Actor *as_actor() {

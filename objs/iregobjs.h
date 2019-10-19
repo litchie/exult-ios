@@ -77,12 +77,12 @@ public:
 		else if (flag >= 32 && flag < 64)
 			flags2 &= ~(static_cast<uint32>(1) << (flag - 32));
 	}
-	int get_flag(int flag) const override {
+	bool get_flag(int flag) const override {
 		if (flag >= 0 && flag < 32)
 			return flags & (static_cast<uint32>(1) << flag);
 		else if (flag >= 32 && flag < 64)
 			return flags2 & (static_cast<uint32>(1) << (flag - 32));
-		return 0;
+		return false;
 	}
 	void set_flag_recursively(int flag) override {
 		set_flag(flag);
