@@ -18,18 +18,12 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif
+
+#include "xdrag.h"
 
 #if defined(USE_EXULTSTUDIO) && !defined(_WIN32)
 
 #include <iostream>         /* Debugging messages */
-#include <X11/X.h>
-#include <X11/Xlib.h>
-#include <X11/Xatom.h>
-#include "xdrag.h"
-#include "u7drag.h"
 
 using std::cout;
 using std::endl;

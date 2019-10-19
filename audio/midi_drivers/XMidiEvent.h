@@ -62,6 +62,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cstdlib>
 #endif
 
+#include <cstring>
+
 #include "common_types.h"
 
 // Maximum number of for loops we'll allow (used by LowLevelMidiDriver)
@@ -107,7 +109,7 @@ struct XMidiEvent
 	// for other platforms.
 
 	template<class T>
-	static inline T* Malloc(size_t num=1)
+	static inline T* Malloc(std::size_t num=1)
 	{
 	#ifdef _WIN32
 		return static_cast<T*>(std::malloc(num));
@@ -117,14 +119,14 @@ struct XMidiEvent
 	}
 
 	template<class T>
-	static inline T* Calloc(size_t num=1,size_t sz=0)
+	static inline T* Calloc(std::size_t num=1,std::size_t sz=0)
 	{
 		if(!sz)
 			sz=sizeof(T);
 	#ifdef _WIN32
 		return static_cast<T*>(std::calloc(num,sz));
 	#else
-		size_t	total=sz*num;
+		std::size_t	total=sz*num;
 		T *tmp=Malloc<T>(total);
 		std::memset(tmp,0,total);
 		return tmp;
