@@ -66,10 +66,7 @@ static bool openROMFile(
 		// may have written something there.
 	}
 	basedir = "<SAVEHOME>/data/" + filename;
-	if (file.open(get_system_path(basedir).c_str()))
-		return true;
-	// Nowhere we know about.
-	return false;
+	return file.open(get_system_path(basedir).c_str());
 }
 
 static const ROMImage *getROM(

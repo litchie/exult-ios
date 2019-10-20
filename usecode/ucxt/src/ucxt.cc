@@ -78,10 +78,10 @@ int main(int argc, char **argv) {
 	if (uc.options.verbose) cout << "Parameters parsed..." << endl;
 
 	// attempt to find an exult.cfg file... _somewhere_
-	if (uc.options.noconf == false) {
+	if (!uc.options.noconf) {
 		if (uc.options.verbose) cout << "Loading exult configuration file..." << endl;
 		setup_program_paths();
-		if (config->read_config_file("exult.cfg") == false) {
+		if (!config->read_config_file("exult.cfg")) {
 			cout << "Failed to locate exult.cfg. Run exult before running ucxt or use the -nc switch. Exiting." << endl;
 			exit(1);
 		}
@@ -135,7 +135,7 @@ int main(int argc, char **argv) {
 void open_usecode_file(UCData &uc, const Configuration &config) {
 	GameManager *gamemanager = nullptr;
 	string u8path;
-	if (uc.options.noconf == false) {
+	if (!uc.options.noconf) {
 		gamemanager = new GameManager(true);
 		config.value("config/disk/game/pagan/path", u8path);
 	}
@@ -263,7 +263,7 @@ void open_usecode_file(UCData &uc, const Configuration &config) {
 	// an icky exception chain for those who don't use .exult.cfg
 	if (!uc.input_usecode_file().empty())
 		uc.open_usecode(uc.input_usecode_file());
-	else if (uc.options.noconf == false) {
+	else if (!uc.options.noconf) {
 		uc.open_usecode(path + mucc_ll);
 		if (uc.fail())
 			uc.open_usecode(path + mucc_cl);

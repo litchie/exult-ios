@@ -452,7 +452,7 @@ void ExultStudio::init_new_npc(
 	set_entry("npc_num_entry", npc_num, true, false);
 	// Usually, usecode = 0x400 + num.
 	set_entry("npc_usecode_entry", 0x400 + npc_num, true,
-	          npc_num >= 256 ? true : false);
+	          npc_num >= 256);
 	// Usually, face = npc_num.
 	set_npc_face(npc_num, 0);
 	set_entry("npc_name_entry", "");

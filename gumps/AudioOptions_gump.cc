@@ -326,7 +326,7 @@ void AudioOptions_gump::load_settings() {
 	std::string s;
 	audio_enabled = (Audio::get_ptr()->is_audio_enabled() ? 1 : 0);
 	midi_enabled = (Audio::get_ptr()->is_music_enabled() ? 1 : 0);
-	bool sfx_on = (Audio::get_ptr()->are_effects_enabled() ? true : false);
+	bool sfx_on = (Audio::get_ptr()->are_effects_enabled());
 	speech_enabled = (Audio::get_ptr()->is_speech_enabled() ? 1 : 0);
 	midi_looping = (Audio::get_ptr()->is_music_looping_allowed() ? 1 : 0);
 	speaker_type = true; // stereo

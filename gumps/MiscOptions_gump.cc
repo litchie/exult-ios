@@ -235,7 +235,7 @@ void MiscOptions_gump::load_settings() {
 	mode = static_cast<int>(Combat::mode);
 	if (mode < 0 || mode > 1)
 		mode = 0;
-	charmDiff = Combat::charmed_more_difficult ? true : false;
+	charmDiff = Combat::charmed_more_difficult;
 	alternate_drop = gwin->get_alternate_drop();
 	allow_autonotes = gwin->get_allow_autonotes();
 }

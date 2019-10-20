@@ -334,11 +334,9 @@ static inline bool IsActorNear(
     Game_object *obj,
     int maxdist
 ) {
-	if (obj->get_tile().distance_2d(avatar->get_tile()) > maxdist ||
+	return !(obj->get_tile().distance_2d(avatar->get_tile()) > maxdist ||
 	        (obj->get_info().get_shape_class() == Shape_info::hatchable &&
-	         obj->get_lift() != avatar->get_lift()))
-		return false;
-	return true;
+	         obj->get_lift() != avatar->get_lift()));
 }
 
 /*

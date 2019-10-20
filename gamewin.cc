@@ -337,7 +337,7 @@ Game_window::Game_window(
 	config->set("config/gameplay/combat/difficulty",
 	            Combat::difficulty, false);
 	config->value("config/gameplay/combat/charmDifficulty", str, "normal");
-	Combat::charmed_more_difficult = (str == "hard" ? true : false);
+	Combat::charmed_more_difficult = (str == "hard");
 	config->set("config/gameplay/combat/charmDifficulty", str, false);
 	config->value("config/gameplay/combat/mode", str, "original");
 	if (str == "keypause")
@@ -490,12 +490,9 @@ void Game_window::abort(
 
 bool Game_window::is_bg_track(int num) { // ripped out of Background_noise
 	// Have to do it this way because of SI.
-	if (num == Audio::game_music(4) || num == Audio::game_music(5) ||
+	return num == Audio::game_music(4) || num == Audio::game_music(5) ||
 			num == Audio::game_music(6) || num == Audio::game_music(7) ||
-			num == Audio::game_music(8) || num == Audio::game_music(52))
-		return true;
-	else
-		return false;
+			num == Audio::game_music(8) || num == Audio::game_music(52);
 }
 
 #if 0
@@ -1417,15 +1414,15 @@ void Game_window::read_gwin(
 	MyMidiPlayer *midi = Audio::get_ptr()->get_midi();
 	if(!is_bg_track(track_num) || (midi && (midi->get_ogg_enabled() || midi->is_mt32())))
 		Audio::get_ptr()->start_music(track_num, repeat != 0);
-	armageddon = gin.read1() == 1 ? true : false;
+	armageddon = gin.read1() == 1;
 	if (!gin.good())
 		armageddon = false;
 
-	ambient_light = gin.read1() == 1 ? true : false;
+	ambient_light = gin.read1() == 1;
 	if (!gin.good())
 		ambient_light = false;
 
-	combat = gin.read1() == 1 ? true : false;
+	combat = gin.read1() == 1;
 	if (!gin.good())
 		combat = false;
 }
@@ -2922,11 +2919,8 @@ bool Game_window::emulate_is_move_allowed(int tx, int ty) {
 	if (dify < 0) dify = -dify;
 
 	// Is it within 1 superchunk range?
-	if ((!difx || difx == 1 || difx == c_num_schunks || difx == c_num_schunks - 1) &&
-	        (!dify || dify == 1 || dify == c_num_schunks || dify == c_num_schunks - 1))
-		return true;
-
-	return false;
+	return (!difx || difx == 1 || difx == c_num_schunks || difx == c_num_schunks - 1) &&
+	        (!dify || dify == 1 || dify == c_num_schunks || dify == c_num_schunks - 1);
 }
 
 //create mini-screenshot (96x60) for use in savegames

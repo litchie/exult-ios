@@ -1654,7 +1654,7 @@ USECODE_INTRINSIC(book_mode) {
 		return(no_ret);
 
 	// check for avatar read here
-	bool do_serp = gwin->get_main_actor()->get_flag(Obj_flags::read) == false;
+	bool do_serp = !gwin->get_main_actor()->get_flag(Obj_flags::read);
 	int fnt = do_serp ? 8 : 4;
 
 	if (obj->get_shapenum() == 707)     // Serpentine Scroll - Make SI only???

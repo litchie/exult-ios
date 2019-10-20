@@ -53,14 +53,14 @@ bool BilinearScalerInternal_Arb(SDL_Surface *tex, sint32 sx, sint32 sy, sint32 s
 //	uint8* pixel_start = pixel;
 
 	bool clip_x = true;
-	if (sw + sx < tpitch && clamp_src == false) {
+	if (sw + sx < tpitch && !clamp_src) {
 		clip_x = false;
 		tline_end = texel + (sw + 1);
 		tex_diff--;
 	}
 
 	bool clip_y = true;
-	if (sh + sy < tex->h && clamp_src == false) {
+	if (sh + sy < tex->h && !clamp_src) {
 		clip_y = false;
 		tex_end = texel + (sh) * tpitch;
 	}

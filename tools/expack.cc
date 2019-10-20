@@ -59,24 +59,17 @@ bool is_text_file(const string &fname) {
 	size_t len = fname.size();
 
 	// only if the filename is greater than 4 chars
-	if (len > 4 && fname[len - 4] == '.' &&
+	return len > 4 && fname[len - 4] == '.' &&
 	        (fname[len - 3] == 't' || fname[len - 3] == 'T') &&
 	        (fname[len - 2] == 'x' || fname[len - 2] == 'X') &&
-	        (fname[len - 1] == 't' || fname[len - 1] == 'T')) {
-		return true;
-	}
-
-	return false;
+	        (fname[len - 1] == 't' || fname[len - 1] == 'T');
 }
 
 bool is_null_entry(const string &fname) {
 	size_t len = fname.size();
 
-	if (len >= 4 && fname[len - 4] == 'N' && fname[len - 3] == 'U' &&
-	        fname[len - 2] == 'L' && fname[len - 1] == 'L')
-		return true;
-
-	return false;
+	return len >= 4 && fname[len - 4] == 'N' && fname[len - 3] == 'U' &&
+	        fname[len - 2] == 'L' && fname[len - 1] == 'L';
 }
 
 void set_mode(Arch_mode &mode, Arch_mode new_mode) {

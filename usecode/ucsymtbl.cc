@@ -196,10 +196,8 @@ bool Usecode_scope_symbol::is_object_fun(int val) {
 	if (it == by_val.end())
 		return (val < 0x800);
 	Usecode_symbol *sym = (*it).second;
-	if (sym &&
-	        (sym->get_kind() == shape_fun || sym->get_kind() == object_fun))
-		return true;
-	return false;
+	return sym &&
+	        (sym->get_kind() == shape_fun || sym->get_kind() == object_fun);
 }
 
 /*

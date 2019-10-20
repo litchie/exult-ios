@@ -156,7 +156,7 @@ void SoundTester::test_sound()
 				break;
 				
 			case SDLK_r:
-				repeat = repeat?false:true;
+				repeat = !repeat;
 				break;
 			case SDLK_s:
 				if ((event.key.keysym.mod & KMOD_ALT) && (event.key.keysym.mod & KMOD_CTRL)) 

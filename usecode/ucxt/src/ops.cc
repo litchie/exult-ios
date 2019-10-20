@@ -96,9 +96,9 @@ string ucxtInit::get_datadir(const Configuration &config, const UCOptions &optio
 
 	// just to handle if people are going to compile with makefile.unix, unsupported, but occasionally useful
 #ifdef HAVE_CONFIG_H
-	if (options.noconf == false) config.value("config/ucxt/root", datadir, EXULT_DATADIR);
+	if (!options.noconf) config.value("config/ucxt/root", datadir, EXULT_DATADIR);
 #else
-	if (options.noconf == false) config.value("config/ucxt/root", datadir, "data/");
+	if (!options.noconf) config.value("config/ucxt/root", datadir, "data/");
 #endif
 
 	if (!datadir.empty() && datadir[datadir.size() - 1] != '/' && datadir[datadir.size() - 1] != '\\') datadir += '/';
@@ -159,7 +159,7 @@ void ucxtInit::opcodes() {
 	    execute a 'jump' statement */
 	for (std::vector<UCOpcodeData>::iterator op = opcode_table_data.begin(); op != opcode_table_data.end(); ++op) {
 		for (unsigned int i = 0; i < op->param_sizes.size(); i++) {
-			if (op->param_sizes[i].second == true) { // this is a calculated offset
+			if (op->param_sizes[i].second) { // this is a calculated offset
 				opcode_jumps.push_back(std::pair<unsigned int, unsigned int>(op->opcode, i + 1)); // parameters are stored as base 1
 			}
 		}

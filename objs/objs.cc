@@ -856,11 +856,9 @@ bool Game_object::blocks(
 		return false;       // Skip if not an obstacle.
 	// Occupies desired tile?
 	int frame = get_framenum();
-	if (tile.tx > t.tx - info.get_3d_xtiles(frame) &&
+	return tile.tx > t.tx - info.get_3d_xtiles(frame) &&
 	        tile.ty > t.ty - info.get_3d_ytiles(frame) &&
-	        tile.tz < t.tz + ztiles)
-		return true;
-	return false;
+	        tile.tz < t.tz + ztiles;
 }
 
 /*

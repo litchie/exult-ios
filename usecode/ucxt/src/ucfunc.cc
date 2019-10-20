@@ -377,7 +377,7 @@ vector<UCc *> UCFunc::parse_ucs_pass2a(vector<pair<UCc *, bool> >::reverse_itera
 		output_asm_opcode(tab_indent(3, cout), *this, funcmap, opcode_table_data, intrinsics, *(current->first));
 #endif
 
-		if (current->second == false) {
+		if (!current->second) {
 			if ((opcode_table_data[current->first->_id].num_pop != 0) || (opcode_table_data[current->first->_id].flag_call_effect) ||
 			        (opcode_table_data[current->first->_id].flag_new_effect) || (opcode_table_data[current->first->_id].flag_method_effect) ||
 			        (opcode_table_data[current->first->_id].flag_function_effect)) {
@@ -504,7 +504,7 @@ vector<UCc *> UCFunc::parse_ucs_pass2a(vector<pair<UCc *, bool> >::reverse_itera
 					}
 				}
 			}
-			if ((opsneeded != 0) && (current->second == false)) {
+			if ((opsneeded != 0) && (!current->second)) {
 				if (opcode_table_data[current->first->_id].flag_not_param) {
 					continue;
 				}
@@ -576,11 +576,11 @@ vector<UCc *> UCFunc::parse_ucs_pass2a(vector<pair<UCc *, bool> >::reverse_itera
 				}
 
 				// if we've found all the ops we were searching for, return them
-				if (opsneeded != 0 && current->second == false) {
+				if (opsneeded != 0 && !current->second) {
 					if (opsneeded >= 0 && opsfound < opsneeded) {
 						cout << "DID NOT FIND ALL OPCODE PARAMETERS." << endl;
 					}
-					while (++current != vec.rend() && current->second == true) {
+					while (++current != vec.rend() && current->second) {
 						current->second = false;
 					}
 					return vucc;
@@ -1264,7 +1264,7 @@ void readbin_U7UCFunc(
 		    which are stored in the file as 16bit shorts, with the exception of
 		    an ext32 function header, where the _datasize is a 32bit structure */
 		unsigned int code_size = ucf._funcsize - ucf._datasize - ((4 + ucf._num_externs) * SIZEOF_USHORT);
-		if (ucf.ext32 == true) code_size -= 2;
+		if (ucf.ext32) code_size -= 2;
 
 		DEBUG_READ_PAIR("Code Size: ", code_size);
 
@@ -1295,12 +1295,12 @@ void readbin_U7UCFunc(
 
 			/* if we're an opcode that sets a return value, we need to mark the
 			    function as one that returns a value */
-			if (otd.flag_return == true)
+			if (otd.flag_return)
 				ucf.return_var = true;
 
 			/* if we're an opcode that causes the function to abort, mark it as
 			    such */
-			if (otd.flag_abort == true)
+			if (otd.flag_abort)
 				ucf.aborts = true;
 
 			/* if we're a function debugging opcode, set the debuging flag, and

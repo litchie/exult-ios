@@ -393,10 +393,7 @@ static bool Is_inaccessible(
     int x, int y
 ) {
 	Game_object *block = gwin->find_object(x, y);
-	if (block && block != obj && !block->is_dragable())
-		return true;
-	else
-		return false;
+	return block && block != obj && !block->is_dragable();
 }
 
 /*

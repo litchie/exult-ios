@@ -1068,7 +1068,7 @@ void Chunk_chooser::insert_response(
 	ignore_unused_variable_warning(datalen);
 	const unsigned char *ptr = data;
 	int tnum = static_cast<short>(Read2(ptr));
-	bool dup = *ptr++ ? true : false;
+	bool dup = *ptr++ != 0;
 	if (!*ptr)
 		EStudio::Alert("Terrain insert failed.");
 	else {

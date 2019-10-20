@@ -77,8 +77,7 @@ bool OpenPortFile(const char *path, bool writing) {
 	                FILE_ATTRIBUTE_TEMPORARY | (writing ? FILE_FLAG_DELETE_ON_CLOSE : 0),
 	                nullptr
 	            );
-	if (hPortFile == INVALID_HANDLE_VALUE) return false;
-	return true;
+	return hPortFile != INVALID_HANDLE_VALUE;
 }
 
 // Hack functions
@@ -174,9 +173,7 @@ bool try_connect_to_client(const char *path) {
 
 	// Does accept
 	gDataSocket = accept(gServerSocket, nullptr, nullptr);
-	if (gDataSocket == INVALID_SOCKET) return false;
-
-	return true;
+	return gDataSocket != INVALID_SOCKET;
 }
 
 void disconnect_from_client() {

@@ -382,7 +382,7 @@ bool XMLnode::searchpairs(KeyTypeList &ktl, const string &basekey, const string 
 		/* Else, keep searching for the key under it's subnodes */
 		else
 			for (std::vector<XMLnode *>::iterator i = nodelist.begin(); i != nodelist.end(); ++i)
-				if ((*i)->searchpairs(ktl, basekey, currkey + id + '/', pos) == true)
+				if ((*i)->searchpairs(ktl, basekey, currkey + id + '/', pos))
 					return true;
 	}
 	return false;

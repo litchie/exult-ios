@@ -104,10 +104,7 @@ Cheat::~Cheat() {
 void Cheat::init() {
 	std::string cheating;
 	config->value("config/gameplay/cheat", cheating, "no");
-	if (cheating == "yes")
-		enabled = true;
-	else
-		enabled = false;
+	enabled = cheating == "yes";
 }
 
 void Cheat::finish_init() {

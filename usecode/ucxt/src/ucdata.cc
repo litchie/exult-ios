@@ -195,7 +195,7 @@ void UCData::disassamble(ostream &o) {
 			}
 
 			// if we haven't printed one by now, we'll print an asm output.
-			if (options.output_asm || (_func_printed == false))
+			if (options.output_asm || (!_func_printed))
 				_funcs[i]->output_asm(o, _funcmap, uc_intrinsics, options, _symtbl);
 		}
 	}

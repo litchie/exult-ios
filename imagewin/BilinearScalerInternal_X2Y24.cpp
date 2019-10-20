@@ -38,14 +38,14 @@ bool BilinearScalerInternal_X2Y24(SDL_Surface *tex, sint32 sx, sint32 sy, sint32
 	uint8 cols[2][12][4];
 
 	bool clip_x = true;
-	if (sw + sx < tpitch && clamp_src == false) {
+	if (sw + sx < tpitch && !clamp_src) {
 		clip_x = false;
 		tline_end = texel + (sw + 1);
 		tex_diff--;
 	}
 
 	bool clip_y = true;
-	if (sh + sy < tex->h && clamp_src == false) {
+	if (sh + sy < tex->h && !clamp_src) {
 		clip_y = false;
 		tex_end = texel + (sh) * tpitch;
 	}

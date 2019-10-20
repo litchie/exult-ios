@@ -555,10 +555,7 @@ bool Palette_transition::set_step(int hour, int min) {
 
 	if (current)
 		current->apply(true);
-	if (step >= max_steps)
-		return false;
-	else
-		return true;
+	return step < max_steps;
 }
 
 Palette_transition::~Palette_transition(

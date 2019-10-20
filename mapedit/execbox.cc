@@ -330,9 +330,7 @@ bool Exec_box::exec(
 ) {
 	GtkTextBuffer *buffer = gtk_text_view_get_buffer(box);
 	gtk_text_buffer_set_text(buffer, "", 0);    // Clear out old text
-	if (!executor->exec(file, argv, Exec_callback, this))
-		return false;
-	return true;
+	return executor->exec(file, argv, Exec_callback, this);
 }
 
 /*

@@ -410,9 +410,7 @@ void Gump::close(
 bool Gump::has_point(int sx, int sy) const {
 	Shape_frame *s = get_shape();
 
-	if (s && s->has_point(sx - x, sy - y)) return true;
-
-	return false;
+	return s && s->has_point(sx - x, sy - y);
 }
 
 /*

@@ -877,7 +877,7 @@ Homing_projectile::Homing_projectile(   // A better name is welcome...
 	pos = sp;
 	dest = tp;
 	target = trg ? trg->as_actor() : nullptr;
-	stationary = target ? false : true; //If true, the sprite will 'park' at dest
+	stationary = target == nullptr; //If true, the sprite will 'park' at dest
 	Game_window *gwin = Game_window::get_instance();
 	frames = sprite.get_num_frames();
 	// Go for 20 seconds.

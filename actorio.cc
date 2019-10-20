@@ -354,7 +354,7 @@ void Actor::read(
 		nfile->skip(1);  // 1 free from old SIFLAGS
 
 		// Flags2   But don't set polymorph.
-		bool polym = get_flag(Obj_flags::polymorph) != false;
+		bool polym = get_flag(Obj_flags::polymorph);
 		f = nfile->read4();
 		flags2 |= f;
 		if (!polym && get_flag(Obj_flags::polymorph))

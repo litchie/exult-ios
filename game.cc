@@ -265,9 +265,7 @@ bool Game::show_menu(bool skip) {
 		bool first = !U7exists(IDENTITY);
 		if (first)
 			set_avname("Newbie");
-		if (!gwin->init_gamedat(first))
-			return false;
-		return true;
+		return gwin->init_gamedat(first);
 	}
 	IExultDataSource mouse_data(MAINSHP_FLX, PATCH_MAINSHP, 19);
 	menu_mouse = new Mouse(gwin, mouse_data);

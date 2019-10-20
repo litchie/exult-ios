@@ -80,11 +80,7 @@ public:
 			range = winfo->get_range();
 		}
 		int crit = e->get_criteria();
-		if (crit == Egg_object::party_near || crit == Egg_object::avatar_near) {
-			chk_range = true;
-		} else {
-			chk_range = false;
-		}
+		chk_range = crit == Egg_object::party_near || crit == Egg_object::avatar_near;
 	}
 	void handle_event(unsigned long curtime, uintptr udata) override;
 };

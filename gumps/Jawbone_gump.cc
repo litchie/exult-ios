@@ -115,11 +115,8 @@ bool Jawbone_gump::on_tooth(int sx, int sy, int index) {
 
 	Rectangle r = gwin->get_shape_rect(shape, 0, 0);
 
-	if (r.has_point(sx - objx, sy - objy) &&
-	        shape->has_point(sx - objx, sy - objy))
-		return true;
-
-	return false;
+	return r.has_point(sx - objx, sy - objy) &&
+	        shape->has_point(sx - objx, sy - objy);
 }
 
 void Jawbone_gump::set_to_spot(Game_object *obj, int sx, int sy) {

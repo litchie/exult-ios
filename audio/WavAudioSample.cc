@@ -100,14 +100,7 @@ WavAudioSample::WavAudioSample(uint8* buffer, uint32 size) : RawAudioSample(buff
 	byte_swap = true;
 #endif
 
-	if (bits == 16) 
-	{
-		signeddata = true;
-	}
-	else
-	{
-		signeddata = false;
-	}
+	signeddata = bits == 16;
 }
 
 bool WavAudioSample::isThis(IDataSource *ds)

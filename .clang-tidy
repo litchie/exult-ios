@@ -1,5 +1,6 @@
 Checks: "-*\
 ,modernize-use-bool-literals\
+,readability-simplify-boolean-expr\
 ,readability-redundant-string-cstr"
 CheckOptions:
     - key: bugprone-argument-comment.StrictMode

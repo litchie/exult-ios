@@ -532,7 +532,7 @@ void Image_window::create_surface(
 	get_draw_dims(w, h, scale, fill_mode, game_width, game_height, inter_width, inter_height);
 
 #if SDL_VERSION_ATLEAST(2, 0, 0)
-	if (try_scaler(w, h) == false) {
+	if (!try_scaler(w, h)) {
 #else
 	if ((game_width != inter_width || game_height != inter_height ||
 	        static_cast<int>(w) != game_width * scale || static_cast<int>(h) != game_height * scale ||

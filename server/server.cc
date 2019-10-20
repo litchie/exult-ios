@@ -264,7 +264,7 @@ static void Handle_client_message(
 		int tnum = Read2(ptr);
 		int cx = Read2s(ptr);
 		int cy = Read2s(ptr);
-		bool up = *ptr++ ? true : false;
+		bool up = *ptr++ != 0;
 		bool okay = gwin->get_map()->locate_terrain(tnum, cx, cy, up);
 		unsigned char *wptr = &data[2];
 		// Set back reply.
@@ -287,7 +287,7 @@ static void Handle_client_message(
 	}
 	case Exult_server::insert_terrain: {
 		int tnum = Read2s(ptr);
-		bool dup = *ptr++ ? true : false;
+		bool dup = *ptr++ != 0;
 		bool okay = gwin->get_map()->insert_terrain(tnum, dup);
 		unsigned char *wptr = &data[3];
 		*wptr++ = okay ? 1 : 0;
@@ -389,7 +389,7 @@ static void Handle_client_message(
 		int shnum = Read2(ptr);
 		int frnum = Read2s(ptr);
 		int qual = Read2s(ptr);
-		bool up = *ptr++ ? true : false;
+		bool up = *ptr++ != 0;
 		bool okay = gwin->locate_shape(shnum, up, frnum, qual);
 		unsigned char *wptr = &data[6];     // Send back reply.
 		wptr++;          // Skip 'up' flag.

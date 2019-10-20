@@ -65,7 +65,7 @@ public:
 		return *this;
 	}
 	Serial_in &operator<<(bool &v) {
-		v = *buf++ ? true : false;
+		v = *buf++ != 0;
 		return *this;
 	}
 	Serial_in &operator<<(std::string &s);

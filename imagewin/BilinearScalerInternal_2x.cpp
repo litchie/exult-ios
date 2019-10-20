@@ -39,14 +39,14 @@ bool BilinearScalerInternal_2x(SDL_Surface *tex, sint32 sx, sint32 sy, sint32 sw
 	int p_diff    = (pitch * 8) - (dw * sizeof(uintX));
 
 	bool clip_x = true;
-	if (sw + sx < tpitch && clamp_src == false) {
+	if (sw + sx < tpitch && !clamp_src) {
 		clip_x = false;
 		tline_end = texel + (sw + 1);
 		tex_diff--;
 	}
 
 	bool clip_y = true;
-	if (sh + sy < tex->h && clamp_src == false) {
+	if (sh + sy < tex->h && !clamp_src) {
 		clip_y = false;
 		tex_end = texel + (sh) * tpitch;
 	}

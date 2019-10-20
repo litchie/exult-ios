@@ -504,11 +504,8 @@ bool Actor::ready_ammo(
 	int ammo = winf->get_ammo_consumed();
 	if (ammo < 0) {
 		// Ammo not needed.
-		if (winf->uses_charges() && info.has_quality() &&
-		        weapon->get_quality() <= 0)
-			return false;   // Uses charges, but none left.
-		else
-			return true;
+		return !(winf->uses_charges() && info.has_quality() &&
+		        weapon->get_quality() <= 0);   // Uses charges, but none left.
 	}
 	Game_object *found = nullptr;
 	// Try non-recursive search for ammo first.
@@ -2250,11 +2247,9 @@ void Actor::update_from_studio(
 		npc->usecode_name = usecodefun;
 		if (!usecodefun.empty())
 			npc->usecode = ucmachine->find_function(usecodefun.c_str(), true);
-		if (npc_num >= 256 && npc->usecode != -1 &&
-		        npc->usecode != 0x400 + npc_num)
-			npc->usecode_assigned = true;
-		else
-			npc->usecode_assigned = false;
+		npc->usecode_assigned = npc_num >= 256 && npc->usecode != -1 &&
+
+		        npc->usecode != 0x400 + npc_num;
 
 		npc->set_invalid(); // Set to invalid position.
 		int lift;       // Try to drop at increasing hts.
@@ -2277,11 +2272,9 @@ void Actor::update_from_studio(
 			npc->usecode = ucmachine->find_function(usecodefun.c_str(), true);
 		else
 			npc->usecode = usecode;
-		if (npc_num >= 256 && npc->usecode != -1 &&
-		        npc->usecode != 0x400 + npc_num)
-			npc->usecode_assigned = true;
-		else
-			npc->usecode_assigned = false;
+		npc->usecode_assigned = npc_num >= 256 && npc->usecode != -1 &&
+
+		        npc->usecode != 0x400 + npc_num;
 
 		npc->set_npc_name(name.c_str());
 	}

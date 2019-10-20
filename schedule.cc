@@ -2497,16 +2497,13 @@ class Sit_actor_action : public Frames_actor_action, public Game_singletons {
 				        frnum == Actor::bow_frame)
 					return true;
 			}
-#if 1   /* Seems to work.  Added Nov. 2, 2001 */
 		if (actor->get_tile() == sitloc)
 			return false;   // We're standing there.
 		// See if spot is blocked.
 		Tile_coord pos = sitloc;// Careful, .tz gets updated.
-		if (Map_chunk::is_blocked(pos,
-		                          actor->get_info().get_3d_height(), MOVE_WALK, 0))
-			return true;
-#endif
-		return false;
+		return Map_chunk::is_blocked(pos,
+
+		                          actor->get_info().get_3d_height(), MOVE_WALK, 0) != 0;
 	}
 public:
 	Sit_actor_action(Game_object *o, Actor *actor)

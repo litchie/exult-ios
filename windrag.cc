@@ -266,11 +266,7 @@ bool Windnd::is_valid(IDataObject *pDataObject) {
 	fetc.lindex = -1;
 	fetc.tymed = TYMED_HGLOBAL;
 
-	if (FAILED(pDataObject->QueryGetData(&fetc))) {
-		return false;
-	} else {
-		return true;
-	}
+	return SUCCEEDED(pDataObject->QueryGetData(&fetc));
 }
 
 // IDropSource implementation

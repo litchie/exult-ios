@@ -66,9 +66,7 @@ public:
 	}
 	bool has_info(int shapenum) {
 		std::map<int, Shape_info>::iterator it = info.find(shapenum);
-		if (it != info.end())
-			return true;
-		return false;
+		return it != info.end();
 	}
 	void set_info(int shapenum, const Shape_info &inf) {
 		info[shapenum] = inf;

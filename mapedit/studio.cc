@@ -1540,7 +1540,7 @@ bool ExultStudio::need_to_save(
 		if (id == Exult_server::info &&
 		        Game_info_in(data, len, vers, edlift, hdlift,
 		                     editing, grid, mod, edmode) &&
-		        mod == true)
+		        mod)
 			return true;
 	}
 	return false;

@@ -183,7 +183,7 @@ void Game_window::restore_gamedat(
 	}
 	// Check for a ZIP file first
 #ifdef HAVE_ZIP_SUPPORT
-	if (restore_gamedat_zip(fname) != false)
+	if (restore_gamedat_zip(fname))
 		return;
 #endif
 
@@ -361,7 +361,7 @@ void Game_window::save_gamedat(
 ) {
 	// First check for compressed save game
 #ifdef HAVE_ZIP_SUPPORT
-	if (save_compression > 0 && save_gamedat_zip(fname, savename) != false)
+	if (save_compression > 0 && save_gamedat_zip(fname, savename))
 		return;
 #endif
 
@@ -636,7 +636,7 @@ bool Game_window::get_saveinfo(int num, char *&name, std::unique_ptr<Shape_file>
 
 	// First check for compressed save game
 #ifdef HAVE_ZIP_SUPPORT
-	if (get_saveinfo_zip(fname, name, map, details, party) != false)
+	if (get_saveinfo_zip(fname, name, map, details, party))
 		return true;
 #endif
 
@@ -938,12 +938,12 @@ bool Game_window::restore_gamedat_zip(
 			// Files for map # > 0; create dir first.
 			U7mkdir(oname, 0755);
 			// Put a final marker in the dir name.
-			if (Restore_level2(unzipfile, oname, filenamelen) == false)
+			if (!Restore_level2(unzipfile, oname, filenamelen))
 				abort("Error reading level2 from zip '%s'.", fname);
 			continue;
 		} else if (!std::strcmp("GAMEDAT", oname2)) {
 			// Put a final marker in the dir name.
-			if (Restore_level2(unzipfile, oname, 0) == false)
+			if (!Restore_level2(unzipfile, oname, 0))
 				abort("Error reading level2 from zip '%s'.", fname);
 			// Flag that this is a level 2 save.
 			level2zip = true;

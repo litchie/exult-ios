@@ -163,7 +163,7 @@ public:
 #ifdef DEBUG_GOTOSET
 			std::cout << "OP: " << opcode_table_data[j->first->_id].ucs_nmo << '\t' << j->second;
 #endif
-			if (j->second == true) {
+			if (j->second) {
 				/* ok, we need to take into consideration that the
 				   iterator we're removing might ==_uccs.begin() */
 				bool begin = false;
@@ -175,11 +175,11 @@ public:
 
 				GotoSet::iterator rem(j);
 
-				if (begin == false) --j;
+				if (!begin) --j;
 
 				_uccs.erase(rem);
 
-				if (begin == true) j = _uccs.begin();
+				if (begin) j = _uccs.begin();
 				else            ++j;
 
 				if (j == _uccs.end()) std::cout << "POTENTIAL PROBLEM" << std::endl;

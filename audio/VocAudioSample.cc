@@ -339,10 +339,7 @@ bool VocAudioSample::isThis(IDataSource *ds)
 	char buffer[19];
 	ds->read(buffer,19);
 
-	if(!strncmp(buffer,"Creative Voice File",19))
-		return true;
-
-	return false;
+	return strncmp(buffer,"Creative Voice File",19) == 0;
 }
 
 
