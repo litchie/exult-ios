@@ -606,7 +606,7 @@ USECODE_INTRINSIC(get_npc_name) {
 			npc = as_actor(obj);
 			std::string namestr = npc ? npc->get_npc_name()
 			                      : obj->get_name();
-			Usecode_value v(namestr.c_str());
+			Usecode_value v(namestr);
 			arr.put_elem(i, v);
 		}
 		return(arr);
@@ -618,7 +618,7 @@ USECODE_INTRINSIC(get_npc_name) {
 		namestr = npc ? npc->get_npc_name() : obj->get_name();
 	} else
 		namestr = unknown;
-	Usecode_value u(namestr.c_str());
+	Usecode_value u(namestr);
 	return(u);
 }
 
