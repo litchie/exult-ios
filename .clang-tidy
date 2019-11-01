@@ -1,7 +1,16 @@
 Checks: "-*\
 ,modernize-use-bool-literals\
+,readability-misleading-indentation\
+,readability-redundant-member-init\
+,readability-redundant-preprocessor\
+,readability-redundant-smartptr-get\
+,readability-redundant-string-cstr\
+,readability-redundant-string-init\
 ,readability-simplify-boolean-expr\
-,readability-redundant-string-cstr"
+,readability-simplify-subscript-expr\
+,readability-static-definition-in-anonymous-namespace\
+,readability-string-compare\
+,readability-uniqueptr-delete-release"
 CheckOptions:
     - key: bugprone-argument-comment.StrictMode
       value: 1

@@ -771,11 +771,11 @@ void Game_window::add_npc(
 /*  Get desired NPD.
  */
 Actor *Game_window::get_npc(long npc_num) const {
-    if (npc_num < 0 || npc_num >= static_cast<int>(npcs.size()))
-	    return nullptr;
+	if (npc_num < 0 || npc_num >= static_cast<int>(npcs.size()))
+		return nullptr;
 	else {
-	    Game_object *npc = npcs[npc_num].get();
-	    return static_cast<Actor *>(npc);
+		Game_object *npc = npcs[npc_num].get();
+		return static_cast<Actor *>(npc);
 	}
 }
 
