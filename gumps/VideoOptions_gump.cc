@@ -393,7 +393,10 @@ void VideoOptions_gump::save_settings() {
 	int gw = game_resolutions[game_resolution] >> 16;
 	int gh = game_resolutions[game_resolution] & 0xFFFF;
 
-	int tgw = gw, tgh = gh, tw, th;
+	int tgw = gw;
+	int tgh = gh;
+	int tw;
+	int th;
 	Image_window::get_draw_dims(resx, resy, scaling + 1, fill_mode, tgw, tgh, tw, th);
 	if (tw / (scaling + 1) < 320 || th / (scaling + 1) < 200) {
 		if (!Yesno_gump::ask("Scaled size less than 320x200.\nExult may be unusable.\nApply anyway?", "TINY_BLACK_FONT"))

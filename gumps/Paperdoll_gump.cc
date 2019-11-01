@@ -150,7 +150,8 @@ int Paperdoll_gump::find_closest(
 	for (size_t i = 0; i < sizeof(coords_hot) / (2 * sizeof(coords_hot[0])); i++) {
 		spot = i;
 
-		int dx = mx - coords_hot[spot * 2], dy = my - coords_hot[spot * 2 + 1];
+		int dx = mx - coords_hot[spot * 2];
+		int dy = my - coords_hot[spot * 2 + 1];
 		long dsquared = dx * dx + dy * dy;
 
 		// Map slots occupied by multi-slot items to the filled slot.
@@ -329,7 +330,8 @@ void Paperdoll_gump::set_to_spot(
 		return;
 
 	// Height and width
-	int w = shape->get_width(), h = shape->get_height();
+	int w = shape->get_width();
+	int h = shape->get_height();
 
 	// Set object's position.
 	obj->set_shape_pos(
@@ -368,11 +370,16 @@ void Paperdoll_gump::paint(
 	}
 
 	// Spots that are female/male specific
-	int shieldx, shieldy,
-	    back2x,  back2y,
-	    backx,   backy,
-	    neckx,   necky,
-	    beltx,   belty;
+	int shieldx;
+	int shieldy;
+	int back2x;
+	int back2y;
+	int backx;
+	int backy;
+	int neckx;
+	int necky;
+	int beltx;
+	int belty;
 
 	if (actor->get_type_flag(Actor::tf_sex) || info->is_npc_female()) {
 		// Set the female spots
@@ -423,7 +430,8 @@ void Paperdoll_gump::paint(
 	paint_head(box, info);
 	if (actor->is_neck_used()) {
 		obj = container->get_readied(amulet);
-		const Paperdoll_item *item1, *item2;
+		const Paperdoll_item *item1;
+		const Paperdoll_item *item2;
 		if (obj) {
 			const Shape_info &inf = obj->get_info();
 			item1 = inf.get_item_paperdoll(obj->get_framenum(), cloak);
@@ -552,7 +560,8 @@ void Paperdoll_gump::paint_object(
 
 		s.paint_shape(box.x + coords_blue[spot * 2],
 		              box.y + coords_blue[spot * 2 + 1]);
-		int ox = box.x + obj->get_tx(), oy = box.y + obj->get_ty();
+		int ox = box.x + obj->get_tx();
+		int oy = box.y + obj->get_ty();
 		obj->paint_shape(ox, oy);
 		if (cheat.is_selected(obj))
 			// Outline selected obj.
@@ -697,11 +706,16 @@ Game_object *Paperdoll_gump::find_object(
 		info = inf.get_npc_paperdoll_safe(actor->get_type_flag(Actor::tf_sex) != 0);
 	}
 
-	int shieldx, shieldy,
-	    back2x,  back2y,
-	    backx,   backy,
-	    neckx,   necky,
-	    beltx,   belty;
+	int shieldx;
+	int shieldy;
+	int back2x;
+	int back2y;
+	int backx;
+	int backy;
+	int neckx;
+	int necky;
+	int beltx;
+	int belty;
 
 	if (actor->get_type_flag(Actor::tf_sex) || info->is_npc_female()) {
 		shieldx = shieldfx;
@@ -781,7 +795,8 @@ Game_object *Paperdoll_gump::find_object(
 			return obj;
 	if (actor->is_neck_used()) {
 		obj = container->get_readied(amulet);
-		const Paperdoll_item *item1, *item2;
+		const Paperdoll_item *item1;
+		const Paperdoll_item *item2;
 		if (obj) {
 			const Shape_info &inf = obj->get_info();
 			item1 = inf.get_item_paperdoll(obj->get_framenum(), cloak);
@@ -870,7 +885,8 @@ Game_object *Paperdoll_gump::check_object(
 
 	if (check_shape(mx - sx, my - sy, item->get_paperdoll_shape(), f, SF_PAPERDOL_VGA)) {
 		Shape_frame *shape = obj->get_shape();
-		int w = shape->get_width(), h = shape->get_height();
+		int w = shape->get_width();
+		int h = shape->get_height();
 		// Set object's position.
 		obj->set_shape_pos(mx + shape->get_xleft() - w / 2,
 		                   my + shape->get_yabove() - h / 2);

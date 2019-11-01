@@ -257,8 +257,8 @@ void Gump_manager::add_gump(
 		return;
 	}
 
-	int x = (1 + cnt) * gwin->get_width() / 10,
-	    y = (1 + cnt) * gwin->get_height() / 10;
+	int x = (1 + cnt) * gwin->get_width() / 10;
+	int y = (1 + cnt) * gwin->get_height() / 10;
 
 	ShapeID s_id(shapenum, 0, paperdoll ? SF_PAPERDOL_VGA : SF_GUMPS_VGA);
 	Shape_frame *shape = s_id.get_shape();
@@ -447,7 +447,8 @@ int Gump_manager::handle_modal_gump_event(
 	//          : gwin->get_win()->get_scale();
 	static bool rightclick;
 
-	int gx, gy;
+	int gx;
+	int gy;
 	Uint16 keysym_unicode = 0;
 
 	switch (event.type) {

@@ -84,7 +84,8 @@ static inline bool handle_menu_click(
 
 int maximum_size(Font *font, const char *options[], int num_choices, int centerx) {
 	ignore_unused_variable_warning(centerx);
-	int max_width = 0, width;
+	int max_width = 0;
+	int width;
 	for (int i = 0; i < num_choices; i++) {
 		width = font->get_text_width(options[i]);
 		if (width > max_width)
@@ -382,15 +383,17 @@ BaseGameInfo *ExultMenu::show_mods_menu(ModManager *selgame) {
 	gpal->load(BUNDLE_CHECK(BUNDLE_EXULT_FLX, EXULT_FLX), EXULT_FLX_EXULT0_PAL);
 	gpal->apply();
 
-	int first_mod = 0, num_choices = selgame->get_mod_list().size() - 1,
-	    last_page = num_choices - num_choices % pagesize;
+	int first_mod = 0;
+	int num_choices = selgame->get_mod_list().size() - 1;
+	int last_page = num_choices - num_choices % pagesize;
 	MenuList *menu = create_mods_menu(selgame, first_mod);
 	menu->set_selection(0);
 	BaseGameInfo *sel_mod = nullptr;
 
 	Shape_frame *exultlogo = exult_flx.get_shape(EXULT_FLX_EXULT_LOGO_SHP, 1);
 	assert(exultlogo != nullptr);
-	int logox, logoy;
+	int logox;
+	int logoy;
 	logox = centerx - exultlogo->get_width() / 2;
 	logoy = centery - exultlogo->get_height() / 2;
 
@@ -472,16 +475,17 @@ BaseGameInfo *ExultMenu::run() {
 
 	Shape_frame *exultlogo = exult_flx.get_shape(EXULT_FLX_EXULT_LOGO_SHP, 0);
 	assert(exultlogo != nullptr);
-	int logox = centerx - exultlogo->get_width() / 2,
-	    logoy = centery - exultlogo->get_height() / 2;
+	int logox = centerx - exultlogo->get_width() / 2;
+	int logoy = centery - exultlogo->get_height() / 2;
 	sman->paint_shape(logox, logoy, exultlogo);
 	gpal->fade_in(c_fade_in_time);
 	wait_delay(2000);
 
 	exultlogo = exult_flx.get_shape(EXULT_FLX_EXULT_LOGO_SHP, 1);
 
-	int first_game = 0, num_choices = gamemanager->get_game_count() - 1,
-	    last_page = num_choices - num_choices % pagesize;
+	int first_game = 0;
+	int num_choices = gamemanager->get_game_count() - 1;
+	int last_page = num_choices - num_choices % pagesize;
 	// Erase the old logo.
 	gwin->clear_screen(true);
 

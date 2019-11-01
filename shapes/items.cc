@@ -195,7 +195,9 @@ static void Setup_item_names(
 	int first_msg;          // First in exultmsg.txt.  Should
 	//   follow those in text.flx.
 	int total_msgs = 0;
-	int num_item_names = 0, num_text_msgs = 0, num_misc_names = 0;
+	int num_item_names = 0;
+	int num_text_msgs = 0;
+	int num_misc_names = 0;
 
 	items.seekg(0x54);
 	int flxcnt = Read4(items);

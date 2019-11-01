@@ -44,7 +44,8 @@ num_channels(num_channels_), channels(nullptr), id_counter(0)
 
 	std::cout << "Creating AudioMixer..." << std::endl;
 
-	SDL_AudioSpec desired, obtained;
+	SDL_AudioSpec desired;
+	SDL_AudioSpec obtained;
 
 	desired.format = AUDIO_S16SYS;
 	desired.freq = sample_rate_;

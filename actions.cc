@@ -154,7 +154,8 @@ Path_walking_actor_action::Path_walking_actor_action(
 ) : path(p), max_blocked(maxblk), persistence(pers) {
 	if (!path)
 		path = new Astar();
-	Tile_coord src = path->get_src(), dest = path->get_dest();
+	Tile_coord src = path->get_src();
+	Tile_coord dest = path->get_dest();
 	original_dir = static_cast<int>(Get_direction4(
 	                                    src.ty - dest.ty, dest.tx - src.tx));
 }

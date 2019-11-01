@@ -169,7 +169,9 @@ bool Exec_process::exec(
 	reader = rfun;          // Store callback.
 	reader_data = udata;
 	// Pipes for talking to child:
-	int stdin_pipe[2], stdout_pipe[2], stderr_pipe[2];
+	int stdin_pipe[2];
+	int stdout_pipe[2];
+	int stderr_pipe[2];
 	stdin_pipe[0] = stdin_pipe[1] = stdout_pipe[0] = stdout_pipe[1] =
 	                                    stderr_pipe[0] = stderr_pipe[1] = -1;
 	kill_child();           // Kill running process.

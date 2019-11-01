@@ -59,7 +59,8 @@ using EStudio::Alert;
 
 static int Find_highest_map(
 ) {
-	int n = 0, next;
+	int n = 0;
+	int next;
 
 	while ((next = Find_next_map(n + 1, 10)) != -1)
 		n = next;
@@ -125,7 +126,8 @@ static bool Copy_static_file(
     int frommap,            // # of map to copy from.
     int tomap           // # of map to copy to.
 ) {
-	char srcname[128], destname[128];
+	char srcname[128];
+	char destname[128];
 	Get_mapped_name(pname, tomap, destname);
 	Get_mapped_name(pname, frommap, srcname);   // Patch?
 	if (U7exists(srcname) && EStudio::Copy_file(srcname, destname))
@@ -144,7 +146,8 @@ C_EXPORT void on_newmap_ok_clicked(
     gpointer         user_data
 ) {
 	ignore_unused_variable_warning(menuitem, user_data);
-	char fname[128], sname[128];
+	char fname[128];
+	char sname[128];
 	ExultStudio *studio = ExultStudio::get_instance();
 	GtkWidget *win = glade_xml_get_widget(studio->get_xml(),
 	                                      "newmap_dialog");
@@ -161,7 +164,8 @@ C_EXPORT void on_newmap_ok_clicked(
 		Copy_static_file(U7MAP, PATCH_U7MAP, frommap, num);
 	if (studio->get_toggle("newmap_copy_fixed")) {
 		for (int schunk = 0; schunk < 12 * 12; schunk++) {
-			char pname[128], sname[128];
+			char pname[128];
+			char sname[128];
 			sprintf(pname, "%s%02x", PATCH_U7IFIX, schunk);
 			sprintf(sname, "%s%02x", U7IFIX, schunk);
 			if (!Copy_static_file(sname, pname, frommap, num))

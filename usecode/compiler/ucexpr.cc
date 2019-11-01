@@ -352,7 +352,8 @@ void Uc_binary_expression::gen_value(
 bool Uc_binary_expression::eval_const(
     int &val            // Value returned here.
 ) {
-	int val1, val2;         // Get each side.
+	int val1;
+	int val2;         // Get each side.
 	if (!left->eval_const(val1) || !right->eval_const(val2)) {
 		val = 0;
 		return false;

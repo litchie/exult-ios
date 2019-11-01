@@ -180,7 +180,8 @@ void Npc_chooser::setup_shapes_info(
 	int x = 0;
 	int curr_y = 0;
 	int row_h = 0;
-	int total_cnt = get_count(), num_shapes = ifile->get_num_shapes();
+	int total_cnt = get_count();
+	int num_shapes = ifile->get_num_shapes();
 	//   filter (group).
 	rows.resize(1);         // Start 1st row.
 	rows[0].index0 = 0;
@@ -195,8 +196,8 @@ void Npc_chooser::setup_shapes_info(
 		Shape_frame *shape = ifile->get_shape(shapenum, 0);
 		if (!shape)
 			continue;
-		int sh = shape->get_height(),
-		    sw = shape->get_width();
+		int sh = shape->get_height();
+		int sw = shape->get_width();
 		// Check if we've exceeded max width
 		if (x + sw > winw && x) {   // But don't leave row empty.
 			// Next line.
@@ -235,7 +236,8 @@ void Npc_chooser::goto_index(
 	Rectangle winrect(0, voffset, config_width, config_height);
 	if (winrect.has_point(midx, midy))
 		return;
-	unsigned start = 0, count = rows.size();
+	unsigned start = 0;
+	unsigned count = rows.size();
 	while (count > 1) {     // Binary search.
 		unsigned mid = start + count / 2;
 		if (index < rows[mid].index0)
@@ -267,7 +269,8 @@ int Npc_chooser::find_npc(
 				return i;
 		return -1;
 	}
-	unsigned start = 0, count = info.size();
+	unsigned start = 0;
+	unsigned count = info.size();
 	while (count > 1) {     // Binary search.
 		unsigned mid = start + count / 2;
 		if (npcnum < info[mid].npcnum)
@@ -404,10 +407,12 @@ gint Npc_chooser::mouse_press(
 		scroll_row_vertical(row0 + 1);
 		return(TRUE);
 	}
-	int old_selected = selected, new_selected = -1;
+	int old_selected = selected;
+	int new_selected = -1;
 	unsigned i;              // Search through entries.
 	unsigned infosz = info.size();
-	int absx = static_cast<int>(event->x), absy = static_cast<int>(event->y) + voffset;
+	int absx = static_cast<int>(event->x);
+	int absy = static_cast<int>(event->y) + voffset;
 	for (i = rows[row0].index0; i < infosz; i++) {
 		if (info[i].box.has_point(absx, absy)) {
 			// Found the box?
@@ -498,7 +503,8 @@ void Npc_chooser::edit_npc(
 	ExultStudio *studio = ExultStudio::get_instance();
 	int npcnum = info[selected].npcnum;
 	//Estudio_npc &npc = get_npcs()[npcnum];
-	unsigned char buf[Exult_server::maxlength], *ptr;
+	unsigned char buf[Exult_server::maxlength];
+	unsigned char *ptr;
 	ptr = &buf[0];
 	Write2(ptr, npcnum);
 	if (!studio->send_to_server(Exult_server::edit_npc, buf, ptr - buf))

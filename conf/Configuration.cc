@@ -103,7 +103,8 @@ void    Configuration::set(const string &key, const string &value, bool write_ou
 }
 
 void    Configuration::set(const char *key, const char *value, bool write_out) {
-	string  k(key), v(value);
+	string  k(key);
+	string  v(value);
 	set(k, v, write_out);
 }
 
@@ -113,7 +114,8 @@ void    Configuration::set(const char *key, const string &value, bool write_out)
 }
 
 void    Configuration::set(const char *key, int value, bool write_out) {
-	string  k(key), v;
+	string  k(key);
+	string  v;
 	char    buf[32];
 
 	snprintf(buf, 32, "%d", value);
@@ -229,7 +231,8 @@ bool Configuration::read_abs_config_file(const string &input_filename, const str
 	if (ifile.fail())
 		return false;
 
-	string  sbuf, line;
+	string  sbuf;
+	string  line;
 	// copies the entire contents of the input file into sbuf
 	getline(ifile, line);
 	while (ifile.good()) {

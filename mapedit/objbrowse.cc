@@ -40,7 +40,8 @@ bool Object_browser::search_name(
 	char first = tolower(*srch);
 	while (*nm) {
 		if (tolower(*nm) == first) {
-			const char *np = nm + 1, *sp = srch + 1;
+			const char *np = nm + 1;
+			const char *sp = srch + 1;
 			while (*sp && tolower(*np) == tolower(*sp)) {
 				sp++;
 				np++;

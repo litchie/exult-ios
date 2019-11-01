@@ -142,7 +142,9 @@ inline void Interp10(Dest_pixel *pc, int c1, int c2, int c3,
 #define PTYPES              Dest_pixel,Manip_pixels
 
 static int RGBtoYUV(unsigned int r, unsigned int g, unsigned int b) {
-	int Y, u, v;
+	int Y;
+	int u;
+	int v;
 	Y = (r + g + b) >> 2;
 	u = 128 + ((r - b) >> 2);
 	v = 128 + ((-r + 2 * g - b) >> 3);
@@ -186,7 +188,9 @@ inline int hqx_init(int *w, int *c, int *yuv, const unsigned char *from,
 	}
 
 	for (k = 1; k <= 9; k++) {
-		unsigned int r, g, b;
+		unsigned int r;
+		unsigned int g;
+		unsigned int b;
 		manip.split_source(w[k], r, g, b);
 		// The following is so the Interp routines work correctly.
 		r &= ~3;

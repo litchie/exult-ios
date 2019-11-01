@@ -202,7 +202,8 @@ const unsigned char FMOplMidiDriver::adlib_opadd[9] = {
 //
 int FMOplMidiDriver::open()
 {
-	int i, j;
+	int i;
+	int j;
 
 	for (i = 0; i < 128; i++) {
 		for (j = 0; j < 11; j++)
@@ -306,8 +307,11 @@ void FMOplMidiDriver::send(uint32 b)
 	case 0x90:{									/*note on */
 			unsigned char note = static_cast<unsigned char>((b >> 8) & 0x7F);
 			unsigned char vel = static_cast<unsigned char>((b >> 16) & 0x7F);
-			int i, j;
-			int onl, on, nv;
+			int i;
+			int j;
+			int onl;
+			int on;
+			int nv;
 			on = -1;
 
 			// First send a note off, if it's found

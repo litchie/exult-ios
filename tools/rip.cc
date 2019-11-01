@@ -20,7 +20,9 @@ void rebuild() {
 	char filename[18];
 	char *pos;
 	char *err;
-	FILE *fi = fopen("index", "r"), *fi2, *fo = fopen("usecode", "wb");
+	FILE *fi = fopen("index", "r");
+	FILE *fi2;
+	FILE *fo = fopen("usecode", "wb");
 	if (fi == nullptr) {
 		printf("Can't open index file.\n");
 		exit(0);
@@ -57,15 +59,20 @@ void rebuild() {
 }
 
 int main(int argc, char *argv[]) {
-	unsigned short fn, fnc;
+	unsigned short fn;
+	unsigned short fnc;
 	unsigned short temp;
-	unsigned fs, fsc;
-	unsigned int i, put = 0;
+	unsigned fs;
+	unsigned fsc;
+	unsigned int i;
+	unsigned int put = 0;
 	int number;
 	int extended;
 	char s[10];
 	char filename[18];
-	FILE *fi, *fo, *fo2;
+	FILE *fi;
+	FILE *fo;
+	FILE *fo2;
 	size_t err;
 
 	printf("Wody's Rip v0.005\nCopyright (c) 1999 Wody Dragon (a.k.a. Wouter Dijkslag)\n");

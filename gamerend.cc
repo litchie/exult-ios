@@ -48,7 +48,8 @@ void Game_window::paint_map_at_tile(
     int toptx, int topty,
     int skip_above          // Don't display above this lift.
 ) {
-	int savescrolltx = scrolltx, savescrollty = scrollty;
+	int savescrolltx = scrolltx;
+	int savescrollty = scrollty;
 	int saveskip = skip_lift;
 	scrolltx = toptx;
 	scrollty = topty;
@@ -106,8 +107,8 @@ static void Paint_grid(
 ) {
 	Image_window8 *win = gwin->get_win();
 	// Paint grid at edit height.
-	int xtiles = gwin->get_width() / c_tilesize,
-	    ytiles = gwin->get_height() / c_tilesize;
+	int xtiles = gwin->get_width() / c_tilesize;
+	int ytiles = gwin->get_height() / c_tilesize;
 	int lift = cheat.get_edit_lift();
 	int liftpixels = lift * (c_tilesize / 2) + 1;
 	for (int y = 0; y < ytiles; y++)
@@ -130,7 +131,8 @@ static void Paint_selected_chunks(
 ) {
 	Game_map *map = gwin->get_map();
 	Image_window8 *win = gwin->get_win();
-	int cx, cy;         // Chunk #'s.
+	int cx;
+	int cy;         // Chunk #'s.
 	// Paint all the flat scenery.
 	for (cy = start_chunky; cy != stop_chunky; cy = INCR_CHUNK(cy)) {
 		int yoff = Figure_screen_offset(cy, gwin->get_scrollty()) - gwin->get_scrollty_lo();
@@ -157,7 +159,8 @@ void Game_render::paint_terrain_only(
 	Game_window *gwin = Game_window::get_instance();
 	Game_map *map = gwin->map;
 	Shape_manager *sman = Shape_manager::get_instance();
-	int cx, cy;         // Chunk #'s.
+	int cx;
+	int cy;         // Chunk #'s.
 	// Paint all the flat scenery.
 	for (cy = start_chunky; cy != stop_chunky; cy = INCR_CHUNK(cy)) {
 		int yoff = Figure_screen_offset(cy, gwin->scrollty) - gwin->get_scrollty_lo();
@@ -192,7 +195,8 @@ int Game_render::paint_map(
 	render_seq++;           // Increment sequence #.
 	gwin->painted = true;
 
-	int scrolltx = gwin->scrolltx, scrollty = gwin->scrollty;
+	int scrolltx = gwin->scrolltx;
+	int scrollty = gwin->scrollty;
 	int light_sources = 0;      // Count light sources found.
 	// Get chunks to start with, starting
 	//   1 tile left/above.
@@ -214,7 +218,8 @@ int Game_render::paint_map(
 		                   stop_chunkx, stop_chunky);
 		return 10;      // Pretend there's lots of light!
 	}
-	int cx, cy;         // Chunk #'s.
+	int cx;
+	int cy;         // Chunk #'s.
 	// Paint all the flat scenery.
 	for (cy = start_chunky; cy != stop_chunky; cy = INCR_CHUNK(cy)) {
 		int yoff = Figure_screen_offset(cy, scrollty) - gwin->get_scrollty_lo();
@@ -294,7 +299,10 @@ void Game_window::paint(
 ) {
 
 	if (!win->ready()) return;
-	int gx = x, gy = y, gw = w, gh = h;
+	int gx = x;
+	int gy = y;
+	int gw = w;
+	int gh = h;
 	if (gx < 0) {
 		gw += x;
 		gx = 0;

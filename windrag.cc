@@ -231,7 +231,9 @@ Windnd::Drop(IDataObject *pDataObject,
 	int id = wdd.get_id();
 
 	if (id == U7_TARGET_SHAPEID) {
-		int file, shape, frame;
+		int file;
+		int shape;
+		int frame;
 		Get_u7_shapeid(wdd.get_data(), file, shape, frame);
 		if (file == U7_SHAPE_SHAPES) {
 			if (shape_handler) (*shape_handler)(shape, frame, pnt.x, pnt.y, udata);
@@ -247,8 +249,11 @@ Windnd::Drop(IDataObject *pDataObject,
 		Get_u7_chunkid(wdd.get_data(), chunknum);
 		if (chunk_handler) (*chunk_handler)(chunknum, pnt.x, pnt.y, udata);
 	} else if (id == U7_TARGET_COMBOID) {
-		int xtiles, ytiles;
-		int right, below, cnt;
+		int xtiles;
+		int ytiles;
+		int right;
+		int below;
+		int cnt;
 		U7_combo_data *combo;
 		Get_u7_comboid(wdd.get_data(), xtiles, ytiles, right, below, cnt, combo);
 		if (combo_handler) (*combo_handler)(cnt, combo, pnt.x, pnt.y, udata);

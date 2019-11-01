@@ -153,7 +153,8 @@ void Shape_chooser::show(
 
 void Shape_chooser::tell_server_shape(
 ) {
-	int shnum = -1, frnum = 0;
+	int shnum = -1;
+	int frnum = 0;
 	if (selected >= 0) {
 		shnum = info[selected].shapenum;
 		frnum = info[selected].framenum;
@@ -296,7 +297,8 @@ void Shape_chooser::setup_info(
 
 void Shape_chooser::setup_shapes_info(
 ) {
-	int selshape = -1, selframe = -1;
+	int selshape = -1;
+	int selframe = -1;
 	if (selected >= 0) {    // Save selection info.
 		selshape = info[selected].shapenum;
 		selframe = info[selected].framenum;
@@ -317,8 +319,8 @@ void Shape_chooser::setup_shapes_info(
 		Shape_frame *shape = ifile->get_shape(shapenum, framenum);
 		if (!shape)
 			continue;
-		int sh = shape->get_height(),
-		    sw = shape->get_width();
+		int sh = shape->get_height();
+		int sw = shape->get_width();
 		// Check if we've exceeded max width
 		if (x + sw > winw && x) {   // But don't leave row empty.
 			// Next line.
@@ -349,7 +351,8 @@ void Shape_chooser::setup_shapes_info(
 void Shape_chooser::setup_frames_info(
 ) {
 	// Get drawing area dimensions.
-	int curr_y = 0, maxw = 0;
+	int curr_y = 0;
+	int maxw = 0;
 	unsigned total_cnt = get_count();
 	//   filter (group).
 	for (unsigned index = index0; index < total_cnt; index++) {
@@ -365,7 +368,8 @@ void Shape_chooser::setup_frames_info(
 		rows.back().y = curr_y;
 		rows.back().height = row_h + border;
 		int x = 0;
-		int sw, sh;
+		int sw;
+		int sh;
 		for (int framenum = 0; framenum < nframes; framenum++,
 		        x += sw + border) {
 			Shape_frame *frame = shape->get_frame(framenum);
@@ -432,7 +436,8 @@ void Shape_chooser::goto_index(
 	Rectangle winrect(hoffset, voffset, config_width, config_height);
 	if (winrect.has_point(midx, midy))
 		return;
-	unsigned start = 0, count = rows.size();
+	unsigned start = 0;
+	unsigned count = rows.size();
 	while (count > 1) {     // Binary search.
 		unsigned mid = start + count / 2;
 		if (index < rows[mid].index0)
@@ -464,7 +469,8 @@ int Shape_chooser::find_shape(
 				return i;
 		return -1;
 	}
-	unsigned start = 0, count = info.size();
+	unsigned start = 0;
+	unsigned count = info.size();
 	while (count > 1) {     // Binary search.
 		unsigned mid = start + count / 2;
 		if (shnum < info[mid].shapenum)
@@ -603,10 +609,12 @@ gint Shape_chooser::mouse_press(
 		scroll_row_vertical(row0 + 1);
 		return(TRUE);
 	}
-	int old_selected = selected, new_selected = -1;
+	int old_selected = selected;
+	int new_selected = -1;
 	unsigned i;              // Search through entries.
 	unsigned infosz = info.size();
-	int absx = static_cast<int>(event->x) + hoffset, absy = static_cast<int>(event->y) + voffset;
+	int absx = static_cast<int>(event->x) + hoffset;
+	int absy = static_cast<int>(event->y) + voffset;
 	for (i = rows[row0].index0; i < infosz; i++) {
 		if (info[i].box.distance(absx, absy) <= 2) {
 			// Found the box?
@@ -697,14 +705,16 @@ const unsigned char transp = 255;
 time_t Shape_chooser::export_png(
     const char *fname       // File to write out.
 ) {
-	int shnum = info[selected].shapenum,
-	    frnum = info[selected].framenum;
+	int shnum = info[selected].shapenum;
+	int frnum = info[selected].framenum;
 	Shape_frame *frame = ifile->get_shape(shnum, frnum);
-	int w = frame->get_width(), h = frame->get_height();
+	int w = frame->get_width();
+	int h = frame->get_height();
 	Image_buffer8 img(w, h);    // Render into a buffer.
 	img.fill8(transp);      // Fill with transparent pixel.
 	frame->paint(&img, frame->get_xleft(), frame->get_yabove());
-	int xoff = 0, yoff = 0;
+	int xoff = 0;
+	int yoff = 0;
 	if (frame->is_rle()) {
 		xoff = -frame->get_xright();
 		yoff = -frame->get_ybelow();
@@ -740,7 +750,8 @@ time_t Shape_chooser::export_png(
 ) {
 	unsigned char pal[3 * 256]; // Set up palette.
 	Get_rgb_palette(palette, pal);
-	int w = img.get_width(), h = img.get_height();
+	int w = img.get_width();
+	int h = img.get_height();
 	struct stat fs;         // Write out to the .png.
 	// (Rotate transp. pixel to 0 for the
 	//   Gimp's sake.)
@@ -777,7 +788,8 @@ time_t Shape_chooser::export_tiled_png(
 	int nframes = shape->get_num_frames();
 	// Figure #tiles in other dim.
 	int dim1_cnt = (nframes + tiles - 1) / tiles;
-	int w, h;
+	int w;
+	int h;
 	if (bycols) {
 		h = tiles * c_tilesize;
 		w = dim1_cnt * c_tilesize;
@@ -799,7 +811,8 @@ time_t Shape_chooser::export_tiled_png(
 			Alert("%s", buf);
 			return 0;
 		}
-		int x, y;
+		int x;
+		int y;
 		if (bycols) {
 			y = f % tiles;
 			x = f / tiles;
@@ -821,8 +834,8 @@ time_t Shape_chooser::export_tiled_png(
 void Shape_chooser::edit_shape_info(
 ) {
 	ExultStudio *studio = ExultStudio::get_instance();
-	int shnum = info[selected].shapenum,
-	    frnum = info[selected].framenum;
+	int shnum = info[selected].shapenum;
+	int frnum = info[selected].framenum;
 	Shape_info *info = nullptr;
 	const char *name = nullptr;
 	if (shapes_file) {
@@ -846,8 +859,8 @@ void Shape_chooser::edit_shape(
     bool bycols         // Write tiles columns-first.
 ) {
 	ExultStudio *studio = ExultStudio::get_instance();
-	int shnum = info[selected].shapenum,
-	    frnum = info[selected].framenum;
+	int shnum = info[selected].shapenum;
+	int frnum = info[selected].framenum;
 	string filestr("<SAVEGAME>");   // Set up filename.
 	filestr += "/itmp";     // "Image tmp" directory.
 	U7mkdir(filestr.c_str(), 0755); // Create if not already there.
@@ -986,8 +999,9 @@ static int Find_closest_color(
 	// Be sure to search rotating colors too.
 	for (int i = 0; i < 0xff; i++) {
 		// Get deltas.
-		long dr = r - pal[3 * i], dg = g - pal[3 * i + 1],
-		     db = b - pal[3 * i + 2];
+		long dr = r - pal[3 * i];
+		long dg = g - pal[3 * i + 1];
+		long db = b - pal[3 * i + 2];
 		// Figure distance-squared.
 		long dist = dr * dr + dg * dg + db * db;
 		if (dist < best_distance) {
@@ -1044,8 +1058,14 @@ static void Import_png(
 	Shape *shape = ifile->extract_shape(shapenum);
 	if (!shape)
 		return;
-	int w, h, rowsize, xoff, yoff, palsize;
-	unsigned char *pixels, *oldpal;
+	int w;
+	int h;
+	int rowsize;
+	int xoff;
+	int yoff;
+	int palsize;
+	unsigned char *pixels;
+	unsigned char *oldpal;
 	// Import, with 255 = transp. index.
 	if (!Import_png8(fname, 255, w, h, rowsize, xoff, yoff,
 	                 pixels, oldpal, palsize))
@@ -1055,7 +1075,8 @@ static void Import_png(
 	delete [] oldpal;
 	// Low shape in 'shapes.vga'?
 	bool flat = IS_FLAT(shapenum) && finfo == studio->get_vgafile();
-	int xleft, yabove;
+	int xleft;
+	int yabove;
 	if (flat) {
 		xleft = yabove = c_tilesize;
 		if (w != c_tilesize || h != c_tilesize || rowsize != c_tilesize) {
@@ -1100,7 +1121,8 @@ static void Import_png_tiles(
 	// Figure #tiles in other dim.
 	int dim0_cnt = tiles;
 	int dim1_cnt = (nframes + dim0_cnt - 1) / dim0_cnt;
-	int needw, needh;       // Figure min. image dims.
+	int needw;
+	int needh;       // Figure min. image dims.
 	if (bycols) {
 		needh = dim0_cnt * c_tilesize;
 		needw = dim1_cnt * c_tilesize;
@@ -1108,8 +1130,14 @@ static void Import_png_tiles(
 		needw = dim0_cnt * c_tilesize;
 		needh = dim1_cnt * c_tilesize;
 	}
-	int w, h, rowsize, xoff, yoff, palsize;
-	unsigned char *pixels, *oldpal;
+	int w;
+	int h;
+	int rowsize;
+	int xoff;
+	int yoff;
+	int palsize;
+	unsigned char *pixels;
+	unsigned char *oldpal;
 	// Import, with 255 = transp. index.
 	if (!Import_png8(fname, 255, w, h, rowsize, xoff, yoff,
 	                 pixels, oldpal, palsize)) {
@@ -1126,7 +1154,8 @@ static void Import_png_tiles(
 		return;
 	}
 	for (int frnum = 0; frnum < nframes; frnum++) {
-		int x, y;
+		int x;
+		int y;
 		if (bycols) {
 			y = frnum % dim0_cnt;
 			x = frnum / dim0_cnt;
@@ -1225,8 +1254,8 @@ void Shape_chooser::import_frame(
 	Shape_chooser *ed = static_cast<Shape_chooser *>(user_data);
 	if (ed->selected < 0)
 		return;         // Shouldn't happen.
-	int shnum = ed->info[ed->selected].shapenum,
-	    frnum = ed->info[ed->selected].framenum;
+	int shnum = ed->info[ed->selected].shapenum;
+	int frnum = ed->info[ed->selected].framenum;
 	unsigned char pal[3 * 256]; // Get current palette.
 	Get_rgb_palette(ed->palette, pal);
 	Import_png(fname, ed->file_info, pal, shnum, frnum);
@@ -1249,11 +1278,13 @@ void Shape_chooser::export_all_pngs(
 		sprintf(fullname, "%s%02d.png", fname, i);
 		cout << "Writing " << fullname << endl;
 		Shape_frame *frame = ifile->get_shape(shnum, i);
-		int w = frame->get_width(), h = frame->get_height();
+		int w = frame->get_width();
+		int h = frame->get_height();
 		Image_buffer8 img(w, h);    // Render into a buffer.
 		img.fill8(transp);      // Fill with transparent pixel.
 		frame->paint(&img, frame->get_xleft(), frame->get_yabove());
-		int xoff = 0, yoff = 0;
+		int xoff = 0;
+		int yoff = 0;
 		if (frame->is_rle()) {
 			xoff = -frame->get_xright();
 			yoff = -frame->get_ybelow();
@@ -1307,8 +1338,14 @@ void Shape_chooser::import_all_pngs(
 	}
 	ExultStudio *studio = ExultStudio::get_instance();
 	while (U7exists(fullname)) {
-		int w, h, rowsize, xoff, yoff, palsize;
-		unsigned char *pixels, *oldpal;
+		int w;
+		int h;
+		int rowsize;
+		int xoff;
+		int yoff;
+		int palsize;
+		unsigned char *pixels;
+		unsigned char *oldpal;
 		// Import, with 255 = transp. index.
 		if (!Import_png8(fullname, 255, w, h, rowsize, xoff, yoff,
 		                 pixels, oldpal, palsize)) {
@@ -1318,7 +1355,8 @@ void Shape_chooser::import_all_pngs(
 		// Convert to game palette.
 		Convert_indexed_image(pixels, h * rowsize, oldpal, palsize, pal);
 		delete [] oldpal;
-		int xleft = w + xoff - 1, yabove = h + yoff - 1;
+		int xleft = w + xoff - 1;
+		int yabove = h + yoff - 1;
 		auto frame = make_unique<Shape_frame>(pixels,
 		                                     w, h, xleft, yabove, true);
 		if (i < ifile->get_num_frames(shnum))
@@ -1364,7 +1402,9 @@ void Shape_chooser::import_shape(
 		// Check to see if it is a valid shape file.
 		// We never get here through a flat, so we don't deal
 		// with that case. These tests aren't perfect!
-		int size = ds.getSize(), len = ds.read4(), first;
+		int size = ds.getSize();
+		int len = ds.read4();
+		int first;
 		if (len != size || (first = ds.read4()) > size || (first % 4) != 0)
 			return;
 		int shnum = ed->info[ed->selected].shapenum;
@@ -1386,8 +1426,8 @@ void Shape_chooser::new_frame(
 ) {
 	if (selected < 0)
 		return;
-	int shnum = info[selected].shapenum,
-	    frnum = info[selected].framenum;
+	int shnum = info[selected].shapenum;
+	int frnum = info[selected].framenum;
 	Vga_file *ifile = file_info->get_ifile();
 	// Read entire shape.
 	Shape *shape = ifile->extract_shape(shnum);
@@ -1398,8 +1438,10 @@ void Shape_chooser::new_frame(
 	// Low shape in 'shapes.vga'?
 	ExultStudio *studio = ExultStudio::get_instance();
 	bool flat = IS_FLAT(shnum) && file_info == studio->get_vgafile();
-	int w = 0, h = 0;
-	int xleft, yabove;
+	int w = 0;
+	int h = 0;
+	int xleft;
+	int yabove;
 	if (flat)
 		w = h = xleft = yabove = c_tilesize;
 	else {              // Find largest frame.
@@ -1648,7 +1690,8 @@ void Shape_chooser::create_new_shape(
 	}
 #endif
 	if (!use_font) {
-		int w = c_tilesize, h = c_tilesize;
+		int w = c_tilesize;
+		int h = c_tilesize;
 		int xleft = flat ? c_tilesize : w - 1;
 		int yabove = flat ? c_tilesize : h - 1;
 		Image_buffer8 img(w, h);
@@ -1679,8 +1722,8 @@ void Shape_chooser::del_frame(
 ) {
 	if (selected < 0)
 		return;
-	int shnum = info[selected].shapenum,
-	    frnum = info[selected].framenum;
+	int shnum = info[selected].shapenum;
+	int frnum = info[selected].framenum;
 	Vga_file *ifile = file_info->get_ifile();
 	// Read entire shape.
 	Shape *shape = ifile->extract_shape(shnum);
@@ -2195,7 +2238,8 @@ void Shape_chooser::search(
 			const std::vector<Frame_name_info> &nminf = info.get_frame_name_info();
 			for (std::vector<Frame_name_info>::const_iterator it = nminf.begin();
 			        it != nminf.end(); ++it) {
-				int type = it->get_type(), msgid = it->get_msgid();
+				int type = it->get_type();
+				int msgid = it->get_msgid();
 				if (type == -255 || type == -1 || msgid >= get_num_misc_names()
 				        || !get_misc_name(msgid))
 					continue;   // Keep looking.
@@ -2480,7 +2524,8 @@ void Shape_chooser::update_statusbar(
 			const Frame_name_info *nminf;
 			if (inf.has_frame_name_info() &&
 			        (nminf = inf.get_frame_name(frnum, -1)) != nullptr) {
-				int type = nminf->get_type(), msgid = nminf->get_msgid();
+				int type = nminf->get_type();
+				int msgid = nminf->get_msgid();
 				if (type >= 0 && msgid < get_num_misc_names()) {
 					const char *msgstr = get_misc_name(msgid);
 					int len = strlen(buf);
@@ -2498,7 +2543,8 @@ void Shape_chooser::update_statusbar(
 							            get_misc_name(otmsg));
 							if (!otmsgstr) otmsgstr = "";
 						}
-						const char *prefix = nullptr, *suffix = nullptr;
+						const char *prefix = nullptr;
+						const char *suffix = nullptr;
 						if (type & 1) {
 							prefix = otmsgstr;
 							suffix = msgstr;

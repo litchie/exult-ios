@@ -33,9 +33,19 @@ bool BilinearScalerInternal_Arb(SDL_Surface *tex, sint32 sx, sint32 sy, sint32 s
 	uintS *tex_end = texel + (sh - 4) * tpitch;
 	int tex_diff = (tpitch * 4) - sw;
 
-	uint8 a[4], b[4], c[4], d[4], e[4], f[4], g[4], h[4], i[4], j[4];
+	uint8 a[4];
+	uint8 b[4];
+	uint8 c[4];
+	uint8 d[4];
+	uint8 e[4];
+	uint8 f[4];
+	uint8 g[4];
+	uint8 h[4];
+	uint8 i[4];
+	uint8 j[4];
 
-	uint32 pos_y = 0, pos_x = 0;
+	uint32 pos_y = 0;
+	uint32 pos_x = 0;
 
 	uint32 add_y = (sh << 16) / dh;
 	uint32 add_x = (sw << 16) / dw;

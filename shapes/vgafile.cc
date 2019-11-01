@@ -84,7 +84,8 @@ unique_ptr<Shape_frame> Shape_frame::reflect(
 ) {
 	if (!data)
 		return nullptr;
-	int w = get_width(), h = get_height();
+	int w = get_width();
+	int h = get_height();
 	if (w < h)
 		w = h;
 	else
@@ -99,7 +100,8 @@ unique_ptr<Shape_frame> Shape_frame::reflect(
 	Image_buffer8 ibuf(h, w);
 	ibuf.fill8(255);       // Fill with 'transparent' pixel.
 	// Figure origin.
-	int xoff = reflected->xleft, yoff = reflected->yabove;
+	int xoff = reflected->xleft;
+	int yoff = reflected->yabove;
 	const uint8 *in = data.get();   // Point to data, and draw.
 	int scanlen;
 	while ((scanlen = Read2(in)) != 0) {
@@ -388,7 +390,8 @@ unsigned int Shape_frame::read(
 		if (framenum >= nframes)// Bug out if bad frame #.
 			return (nframes);
 		// Get frame offset, lengeth.
-		uint32 frameoff, framelen;
+		uint32 frameoff;
+		uint32 framelen;
 		if (framenum == 0) {
 			frameoff = hdrlen;
 			framelen = nframes > 1 ? shapes->read4() - frameoff :
@@ -449,7 +452,8 @@ void Shape_frame::paint_rle(
 ) {
 	assert(rle);
 
-	int w = get_width(), h = get_height();
+	int w = get_width();
+	int h = get_height();
 	if (w >= c_tilesize || h >= c_tilesize)     // Big enough to check?  Off screen?
 		if (!win->is_visible(xoff - xleft, yoff - yabove, w, h))
 			return;
@@ -468,7 +472,8 @@ void Shape_frame::paint_rle_remapped(
 ) {
 	assert(rle);
 
-	int w = get_width(), h = get_height();
+	int w = get_width();
+	int h = get_height();
 	if (w >= c_tilesize || h >= c_tilesize)     // Big enough to check?  Off screen?
 		if (!win->is_visible(xoff - xleft, yoff - yabove, w, h))
 			return;
@@ -503,7 +508,8 @@ void Shape_frame::paint_rle_translucent(
 ) {
 	assert(rle);
 
-	int w = get_width(), h = get_height();
+	int w = get_width();
+	int h = get_height();
 	if (w >= c_tilesize || h >= c_tilesize)     // Big enough to check?  Off screen?
 		if (!win->is_visible(xoff - xleft,
 		                     yoff - yabove, w, h))
@@ -562,7 +568,8 @@ void Shape_frame::paint_rle_transformed(
 ) {
 	assert(rle);
 
-	int w = get_width(), h = get_height();
+	int w = get_width();
+	int h = get_height();
 	if (w >= c_tilesize || h >= c_tilesize)     // Big enough to check?  Off screen?
 		if (!win->is_visible(xoff - xleft,
 		                     yoff - yabove, w, h))
@@ -606,7 +613,8 @@ void Shape_frame::paint_rle_outline(
 ) {
 	assert(rle);
 
-	int w = get_width(), h = get_height();
+	int w = get_width();
+	int h = get_height();
 	if (w >= c_tilesize || h >= c_tilesize)     // Big enough to check?  Off screen?
 		if (!win->is_visible(xoff - xleft,
 		                     yoff - yabove, w, h))
@@ -706,7 +714,8 @@ void Shape_frame::set_offset(
 ) {
 	if (!rle)
 		return;         // Can do it for 8x8 tiles.
-	int w = get_width(), h = get_height();
+	int w = get_width();
+	int h = get_height();
 	if (new_xright > w)     // Limit to left edge.
 		new_xright = w;
 	if (new_ybelow > h)
@@ -1218,7 +1227,8 @@ bool Vga_file::import_shapes(
 		imported_shapes.reserve(imported_shapes.size() + imports.size());
 		for (vector<pair<int, int>>::const_iterator it = imports.begin();
 		        it != imports.end(); ++it) {
-			int shpsize = imported_shapes.size(), srcsize = imported_sources.size() - 1;
+			int shpsize = imported_shapes.size();
+			int srcsize = imported_sources.size() - 1;
 			imported_map data = {
 				(*it).second,   // The real shape
 				shpsize,    // The index of the data pointer.

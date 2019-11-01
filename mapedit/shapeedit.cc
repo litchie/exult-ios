@@ -1186,7 +1186,9 @@ C_EXPORT void on_shinfo_effhps_update_clicked(
 	GtkTreeModel *model = gtk_tree_view_get_model(hptree);
 	GtkTreeStore *store = GTK_TREE_STORE(model);
 	GtkTreeIter *iter;
-	unsigned int newfrnum, newqual, newhps;
+	unsigned int newfrnum;
+	unsigned int newqual;
+	unsigned int newhps;
 	Get_hp_fields(studio, newfrnum, newqual, &newhps);
 	int cmp = Find_binary_iter(model, iter, newfrnum, newqual);
 	if (cmp) {
@@ -1222,7 +1224,8 @@ C_EXPORT void on_shinfo_effhps_remove_clicked(
 	GtkTreeModel *model = gtk_tree_view_get_model(hptree);
 	GtkTreeStore *store = GTK_TREE_STORE(model);
 	GtkTreeIter *iter;
-	unsigned int newfrnum, newqual;
+	unsigned int newfrnum;
+	unsigned int newqual;
 	Get_hp_fields(studio, newfrnum, newqual);
 	if (!Find_binary_iter(model, iter, newfrnum, newqual))
 		gtk_tree_store_remove(store, iter);
@@ -1244,7 +1247,9 @@ C_EXPORT void on_shinfo_effhps_list_cursor_changed(
 		return;
 
 	GtkTreeModel *model = gtk_tree_view_get_model(treeview);
-	int frnum, qual, hps;
+	int frnum;
+	int qual;
+	int hps;
 	gtk_tree_model_get_iter(model, &iter, path);
 	gtk_tree_path_free(path);
 	gtk_tree_model_get(model, &iter, HP_FRAME_COLUMN, &frnum,
@@ -1323,7 +1328,8 @@ C_EXPORT void on_shinfo_warmth_update_clicked(
 ) {
 	ignore_unused_variable_warning(btn, user_data);
 	ExultStudio *studio = ExultStudio::get_instance();
-	unsigned int newfrnum, newwarm;
+	unsigned int newfrnum;
+	unsigned int newwarm;
 	Get_warmth_fields(studio, newfrnum, &newwarm);
 
 	GtkTreeView *warmtree = GTK_TREE_VIEW(
@@ -1386,7 +1392,8 @@ C_EXPORT void on_shinfo_warmth_list_cursor_changed(
 		return;
 
 	GtkTreeModel *model = gtk_tree_view_get_model(treeview);
-	int frnum, warmth;
+	int frnum;
+	int warmth;
 	gtk_tree_model_get_iter(model, &iter, path);
 	gtk_tree_path_free(path);
 	gtk_tree_model_get(model, &iter, WARM_FRAME_COLUMN, &frnum,
@@ -1492,7 +1499,8 @@ C_EXPORT void on_shinfo_cntrules_list_cursor_changed(
 		return;
 
 	GtkTreeModel *model = gtk_tree_view_get_model(treeview);
-	int shnum, accept;
+	int shnum;
+	int accept;
 	gtk_tree_model_get_iter(model, &iter, path);
 	gtk_tree_path_free(path);
 	gtk_tree_model_get(model, &iter, CNT_SHAPE_COLUMN, &shnum,
@@ -1641,7 +1649,9 @@ C_EXPORT void on_shinfo_frameflags_list_cursor_changed(
 
 	GtkTreeModel *model = gtk_tree_view_get_model(treeview);
 
-	int frnum, qual, flags;
+	int frnum;
+	int qual;
+	int flags;
 	gtk_tree_model_get_iter(model, &iter, path);
 	gtk_tree_path_free(path);
 	gtk_tree_model_get(model, &iter, FRFLAG_FRAME_COLUMN, &frnum,
@@ -1772,7 +1782,8 @@ C_EXPORT void on_shinfo_frameusecode_list_cursor_changed(
 		return;
 
 	GtkTreeModel *model = gtk_tree_view_get_model(treeview);
-	int frnum, qual;
+	int frnum;
+	int qual;
 	char *ucfun;
 	gtk_tree_model_get_iter(model, &iter, path);
 	gtk_tree_path_free(path);
@@ -1812,8 +1823,8 @@ static inline void Get_framenames_fields(
 			*type = 0;
 			break;
 		default: {
-			int b0 = studio->get_optmenu("shinfo_framenames_comp_pos") + 1,
-			    b1 = studio->get_optmenu("shinfo_framenames_comp_type") * 2;
+			int b0 = studio->get_optmenu("shinfo_framenames_comp_pos") + 1;
+			int b1 = studio->get_optmenu("shinfo_framenames_comp_type") * 2;
 			*type = b0 + b1;
 			break;
 		}
@@ -1885,9 +1896,12 @@ C_EXPORT void on_shinfo_framenames_update_clicked(
 ) {
 	ignore_unused_variable_warning(btn, user_data);
 	ExultStudio *studio = ExultStudio::get_instance();
-	unsigned int newfrnum, newqual;
-	int newtype, newothertype;
-	const char *newstr, *newothermsg;
+	unsigned int newfrnum;
+	unsigned int newqual;
+	int newtype;
+	int newothertype;
+	const char *newstr;
+	const char *newothermsg;
 	Get_framenames_fields(studio, newfrnum, newqual, &newtype, &newstr,
 	                      &newothertype, &newothermsg);
 
@@ -1909,8 +1923,10 @@ C_EXPORT void on_shinfo_framenames_update_clicked(
 		                   FNAME_OTHERMSG, newothermsg,
 		                   FNAME_FROM_PATCH, 1, FNAME_MODIFIED, 1, -1);
 	} else {
-		int type, othertype;
-		const char *str, *othermsg;
+		int type;
+		int othertype;
+		const char *str;
+		const char *othermsg;
 		gtk_tree_model_get(model, iter, FNAME_MSGTYPE, &type,
 		                   FNAME_MSGSTR, &str, FNAME_OTHERTYPE, &othertype,
 		                   FNAME_OTHERMSG, &othermsg, -1);
@@ -1938,7 +1954,8 @@ C_EXPORT void on_shinfo_framenames_remove_clicked(
 	GtkTreeModel *model = gtk_tree_view_get_model(nametree);
 	GtkTreeStore *store = GTK_TREE_STORE(model);
 	GtkTreeIter *iter;
-	unsigned int newfrnum, newqual;
+	unsigned int newfrnum;
+	unsigned int newqual;
 	Get_framenames_fields(studio, newfrnum, newqual);
 	if (!Find_binary_iter(model, iter, newfrnum, newqual))
 		gtk_tree_store_remove(store, iter);
@@ -1962,8 +1979,12 @@ C_EXPORT void on_shinfo_framenames_list_cursor_changed(
 	GtkTreeModel *model = gtk_tree_view_get_model(treeview);
 	gtk_tree_model_get_iter(model, &iter, path);
 	gtk_tree_path_free(path);
-	int frnum, qual, type, othertype;
-	const char *str, *othermsg;
+	int frnum;
+	int qual;
+	int type;
+	int othertype;
+	const char *str;
+	const char *othermsg;
 	gtk_tree_model_get(model, &iter, FNAME_FRAME, &frnum,
 	                   FNAME_QUALITY, &qual, FNAME_MSGTYPE, &type,
 	                   FNAME_MSGSTR, &str, FNAME_OTHERTYPE, &othertype,
@@ -2101,8 +2122,16 @@ C_EXPORT void on_shinfo_objpaperdoll_list_cursor_changed(
 		return;
 
 	GtkTreeModel *model = gtk_tree_view_get_model(treeview);
-	int frnum, spot, trans, gender, type, shape,
-	    frame0, frame1, frame2, frame3;
+	int frnum;
+	int spot;
+	int trans;
+	int gender;
+	int type;
+	int shape;
+	int frame0;
+	int frame1;
+	int frame2;
+	int frame3;
 	gtk_tree_model_get_iter(model, &iter, path);
 	gtk_tree_path_free(path);
 	gtk_tree_model_get(model, &iter, DOLL_WORLD_FRAME, &frnum,
@@ -2143,8 +2172,15 @@ C_EXPORT void on_shinfo_objpaperdoll_update_clicked(
 	ignore_unused_variable_warning(btn, user_data);
 	ExultStudio *studio = ExultStudio::get_instance();
 	unsigned int newfrnum;
-	int newspot, newshape, newframe0, newframe1, newframe2, newframe3, newtype;
-	bool newtrans, newgender;
+	int newspot;
+	int newshape;
+	int newframe0;
+	int newframe1;
+	int newframe2;
+	int newframe3;
+	int newtype;
+	bool newtrans;
+	bool newgender;
 	Get_objpaperdoll_fields(studio, newfrnum, newspot, &newshape, &newframe0,
 	                        &newframe1, &newframe2, &newframe3, &newtype, &newtrans, &newgender);
 
@@ -2168,8 +2204,16 @@ C_EXPORT void on_shinfo_objpaperdoll_update_clicked(
 		                   DOLL_FRAME_2, newframe2, DOLL_FRAME_3, newframe3,
 		                   DOLL_FROM_PATCH, 1, DOLL_MODIFIED, 1, -1);
 	} else {
-		int trans, gender, type, shape,
-		    frame0, frame1, frame2, frame3, patch, modded;
+		int trans;
+		int gender;
+		int type;
+		int shape;
+		int frame0;
+		int frame1;
+		int frame2;
+		int frame3;
+		int patch;
+		int modded;
 		gtk_tree_model_get(model, iter, DOLL_TRANSLUCENT, &trans,
 		                   DOLL_GENDER_BASED, &gender, DOLL_SPOT_TYPE, &type,
 		                   DOLL_SHAPE, &shape, DOLL_FRAME_0, &frame0,
@@ -2550,7 +2594,8 @@ void ExultStudio::set_shape_notebook_frame(
 		return;
 	set_spin("shinfo_xtiles", info->get_3d_xtiles(frnum));
 	set_spin("shinfo_ytiles", info->get_3d_ytiles(frnum));
-	unsigned char wx, wy;       // Weapon-in-hand offset.
+	unsigned char wx;
+	unsigned char wy;       // Weapon-in-hand offset.
 	info->get_weapon_offset(frnum, wx, wy);
 	set_spin("shinfo_wihx", wx, 0, 255);    // Negative???
 	set_spin("shinfo_wihy", wy, 0, 255);
@@ -3203,7 +3248,8 @@ void ExultStudio::init_shape_notebook(
 				continue;
 			if (!first)
 				first = &*it;
-			int type = nmit.get_type(), msgid = nmit.get_msgid();
+			int type = nmit.get_type();
+			int msgid = nmit.get_msgid();
 			const char *msgstr = type == -255 ? sname :
 			                     (type == -1 || msgid >= get_num_misc_names() ? nullptr : get_misc_name(msgid));
 			int otmsg = nmit.get_othermsg();
@@ -3226,7 +3272,8 @@ void ExultStudio::init_shape_notebook(
 		gtk_tree_view_set_cursor(nametree, path, nullptr, false);
 		gtk_tree_path_free(path);
 		if (first) {
-			int type = first->get_type(), msgid = first->get_msgid();
+			int type = first->get_type();
+			int msgid = first->get_msgid();
 			const char *msgstr = type == -255 ? sname :
 			                     (type == -1 || msgid >= get_num_misc_names() ? "" : get_misc_name(msgid));
 			int otmsg = first->get_othermsg();
@@ -3297,7 +3344,10 @@ void ExultStudio::init_shape_notebook(
 
 struct Update_hps {
 	void operator()(Shape_info &info, GtkTreeModel *model, GtkTreeIter *iter) {
-		unsigned int frnum, hps, patch, modded;
+		unsigned int frnum;
+		unsigned int hps;
+		unsigned int patch;
+		unsigned int modded;
 		int qual;
 		gtk_tree_model_get(model, iter, HP_FRAME_COLUMN, &frnum,
 		                   HP_QUALITY_COLUMN, &qual, HP_HIT_POINTS, &hps,
@@ -3311,7 +3361,10 @@ struct Update_hps {
 
 struct Update_warmth {
 	void operator()(Shape_info &info, GtkTreeModel *model, GtkTreeIter *iter) {
-		unsigned int frnum, warm, patch, modded;
+		unsigned int frnum;
+		unsigned int warm;
+		unsigned int patch;
+		unsigned int modded;
 		gtk_tree_model_get(model, iter, WARM_FRAME_COLUMN, &frnum,
 		                   WARM_VALUE_COLUMN, &warm,
 		                   WARM_FROM_PATCH, &patch, WARM_MODIFIED, &modded, -1);
@@ -3322,7 +3375,10 @@ struct Update_warmth {
 
 struct Update_cntrules {
 	void operator()(Shape_info &info, GtkTreeModel *model, GtkTreeIter *iter) {
-		unsigned int shnum, accept, patch, modded;
+		unsigned int shnum;
+		unsigned int accept;
+		unsigned int patch;
+		unsigned int modded;
 		gtk_tree_model_get(model, iter, CNT_SHAPE_COLUMN, &shnum,
 		                   CNT_ACCEPT_COLUMN, &accept,
 		                   CNT_FROM_PATCH, &patch, CNT_MODIFIED, &modded, -1);
@@ -3333,7 +3389,11 @@ struct Update_cntrules {
 
 struct Update_frflags {
 	void operator()(Shape_info &info, GtkTreeModel *model, GtkTreeIter *iter) {
-		unsigned int frnum, qual, flags, patch, modded;
+		unsigned int frnum;
+		unsigned int qual;
+		unsigned int flags;
+		unsigned int patch;
+		unsigned int modded;
 		gtk_tree_model_get(model, iter, FRFLAG_FRAME_COLUMN, &frnum,
 		                   FRFLAG_QUAL_COLUMN, &qual, FRFLAG_FLAGS_COLUMN, &flags,
 		                   FRFLAG_FROM_PATCH, &patch, FRFLAG_MODIFIED, &modded, -1);
@@ -3344,7 +3404,10 @@ struct Update_frflags {
 
 struct Update_frusecode {
 	void operator()(Shape_info &info, GtkTreeModel *model, GtkTreeIter *iter) {
-		unsigned int frnum, qual, patch, modded;
+		unsigned int frnum;
+		unsigned int qual;
+		unsigned int patch;
+		unsigned int modded;
 		char *ucfun;
 		gtk_tree_model_get(model, iter, FRUC_FRAME_COLUMN, &frnum,
 		                   FRUC_QUAL_COLUMN, &qual, FRUC_USEFUN_COLUMN, &ucfun,
@@ -3361,8 +3424,17 @@ struct Update_frusecode {
 struct Update_paperdolls {
 	void operator()(Shape_info &info, GtkTreeModel *model, GtkTreeIter *iter) {
 		unsigned int frnum;
-		int spot, trans, gender, type, shape,
-		    frame0, frame1, frame2, frame3, patch, modded;
+		int spot;
+		int trans;
+		int gender;
+		int type;
+		int shape;
+		int frame0;
+		int frame1;
+		int frame2;
+		int frame3;
+		int patch;
+		int modded;
 		gtk_tree_model_get(model, iter, DOLL_WORLD_FRAME, &frnum,
 		                   DOLL_SPOT, &spot,
 		                   DOLL_TRANSLUCENT, &trans,
@@ -3408,15 +3480,21 @@ private:
 	}
 public:
 	void operator()(Shape_info &info, GtkTreeModel *model, GtkTreeIter *iter) {
-		unsigned int frnum, qual;
-		int type, othertype, patch, modded;
-		const char *str, *othermsg;
+		unsigned int frnum;
+		unsigned int qual;
+		int type;
+		int othertype;
+		int patch;
+		int modded;
+		const char *str;
+		const char *othermsg;
 		gtk_tree_model_get(model, iter, FNAME_FRAME, &frnum,
 		                   FNAME_QUALITY, &qual, FNAME_MSGTYPE, &type,
 		                   FNAME_MSGSTR, &str, FNAME_OTHERTYPE, &othertype,
 		                   FNAME_OTHERMSG, &othermsg,
 		                   FNAME_FROM_PATCH, &patch, FNAME_MODIFIED, &modded, -1);
-		int msgid, otherid;
+		int msgid;
+		int otherid;
 		msgid = type < 0 ? -1 : Find_name_id(str);
 		otherid = type <= 0 ? -1 :
 		          (othertype < 0 ? othertype : Find_name_id(othermsg));
@@ -4267,8 +4345,8 @@ void ExultStudio::save_shape_window(
 	}
 	// Update origin.
 	Shape_frame *frame = ifile->get_shape(shnum, frnum);
-	int xright = get_spin("shinfo_originx"),
-	    ybelow = get_spin("shinfo_originy");
+	int xright = get_spin("shinfo_originx");
+	int ybelow = get_spin("shinfo_originy");
 	assert(frame != nullptr);
 	if (xright != frame->get_xright() || ybelow != frame->get_ybelow()) {
 		// It changed.

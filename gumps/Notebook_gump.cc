@@ -249,7 +249,9 @@ Notebook_gump::Notebook_gump(
 	if (page_info.empty())
 		page_info.push_back(Notebook_top(0, 0));
 	// Where to paint page marks:
-	const int lpagex = 35, rpagex = 298, lrpagey = 12;
+	const int lpagex = 35;
+	const int rpagex = 298;
+	const int lrpagey = 12;
 	leftpage = new Notebook_page_button(this, lpagex, lrpagey, 0);
 	rightpage = new Notebook_page_button(this, rpagex, lrpagey, 1);
 	add_new("");          // Add new note to end.
@@ -536,7 +538,8 @@ void Notebook_gump::down_arrow(
 		cursor.y = y + box.y - ht;
 	}
 	box.shift(x, y);        // Window coords.
-	int mx = box.x + updnx + 1, my = cursor.y + ht + ht / 2;
+	int mx = box.x + updnx + 1;
+	int my = cursor.y + ht + ht / 2;
 	int notenum = page_info[curpage].notenum;
 	One_note *note = notes[notenum];
 	int coff = sman->find_cursor(font, note->text.c_str() + offset, box.x,
@@ -569,7 +572,8 @@ void Notebook_gump::up_arrow(
 	}
 	Rectangle box = Get_text_area((curpage % 2) != 0, offset == 0);
 	box.shift(x, y);        // Window coords.
-	int mx = box.x + updnx + 1, my = cursor.y - ht / 2;
+	int mx = box.x + updnx + 1;
+	int my = cursor.y - ht / 2;
 	One_note *note = notes[notenum];
 	int coff = sman->find_cursor(font, note->text.c_str() + offset, box.x,
 	                             box.y, box.w, box.h, mx, my, vlead);
@@ -757,12 +761,15 @@ void Notebook_gump::read(
 			note = new One_note();
 			notes.push_back(note);
 		} else if (notend.first == "note/time") {
-			int d, h, m;
+			int d;
+			int h;
+			int m;
 			sscanf(notend.second.c_str(), "%d:%d:%d", &d, &h, &m);
 			if (note)
 				note->set_time(d, h, m);
 		} else if (notend.first == "note/place") {
-			int x, y;
+			int x;
+			int y;
 			sscanf(notend.second.c_str(), "%d:%d", &x, &y);
 			if (note)
 				note->set_loc(x, y);

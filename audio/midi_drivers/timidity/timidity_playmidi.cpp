@@ -119,9 +119,13 @@ static void reset_midi()
 
 static void select_sample(int v, Instrument *ip)
 {
-	sint32 f, cdiff, diff;
-	int s,i;
-	Sample *sp, *closest;
+	sint32 f;
+	sint32 cdiff;
+	sint32 diff;
+	int s;
+	int i;
+	Sample *sp;
+	Sample *closest;
 
 	s=ip->samples;
 	sp=ip->sample;
@@ -167,9 +171,9 @@ static void select_sample(int v, Instrument *ip)
 
 static void recompute_freq(int v)
 {
-	int 
-		sign=(voice[v].sample_increment < 0), /* for bidirectional loops */
-	pb=channel[voice[v].channel].pitchbend;
+	int sign=(voice[v].sample_increment < 0);
+	 /* for bidirectional loops */
+	int pb=channel[voice[v].channel].pitchbend;
 	double a;
 
 	if (!voice[v].sample->sample_rate)
@@ -374,8 +378,10 @@ static void kill_note(int i)
 /* Only one instance of a note can be playing on a single channel. */
 static void note_on(MidiEvent *e)
 {
-	int i=voices, lowest=-1; 
-	sint32 lv=0x7FFFFFFF, v;
+	int i=voices;
+	int lowest=-1; 
+	sint32 lv=0x7FFFFFFF;
+	sint32 v;
 
 	while (i--)
 	{
@@ -638,7 +644,9 @@ static void skip_to(sint32 until_time)
 
 static int apply_controls()
 {
-	int rc, i, did_skip=0;
+	int rc;
+	int i;
+	int did_skip=0;
 	sint32 val;
 	/* ASCII renditions of CD player pictograms indicate approximate effect */
 	do
@@ -724,7 +732,8 @@ static void do_compute_data(sint32 count)
  flush the device itself */
 static int compute_data(void *stream, sint32 count)
 {
-	int rc, channels;
+	int rc;
+	int channels;
 
 	if ( play_mode->encoding & PE_MONO )
 		channels = 1;

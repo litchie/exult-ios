@@ -461,10 +461,15 @@ void Container_game_object::update_from_studio(
 ) {
 #ifdef USE_EXULTSTUDIO
 	Container_game_object *obj;
-	int tx, ty, tz;
-	int shape, frame, quality;
+	int tx;
+	int ty;
+	int tz;
+	int shape;
+	int frame;
+	int quality;
 	unsigned char res;
-	bool invis, can_take;
+	bool invis;
+	bool can_take;
 	std::string name;
 	if (!Container_in(data, datalen, obj, tx, ty, tz, shape, frame,
 	                  quality, name, res, invis, can_take)) {

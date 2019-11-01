@@ -327,7 +327,10 @@ void Image_window::static_init() {
 #if SDL_VERSION_ATLEAST(2, 0, 0)
 	SDL_DisplayMode dispmode;
 	int bpp;
-	Uint32 Rmask, Gmask, Bmask, Amask;
+	Uint32 Rmask;
+	Uint32 Gmask;
+	Uint32 Bmask;
+	Uint32 Amask;
 	if (SDL_GetDesktopDisplayMode(SDL_COMPAT_DISPLAY_INDEX, &dispmode) == 0
 		&& SDL_PixelFormatEnumToMasks(dispmode.format, &bpp, &Rmask, &Gmask, &Bmask, &Amask) == SDL_TRUE) {
 		desktop_displaymode = dispmode;
@@ -571,7 +574,10 @@ void Image_window::create_surface(
 		SDL_RenderPresent(screen_renderer);
 
 		int sbpp;
-        	Uint32 sRmask, sGmask, sBmask, sAmask;
+        	Uint32 sRmask;
+        	Uint32 sGmask;
+        	Uint32 sBmask;
+        	Uint32 sAmask;
 		SDL_PixelFormatEnumToMasks(desktop_displaymode.format, &sbpp, &sRmask, &sGmask, &sBmask, &sAmask);
 		display_surface = SDL_CreateRGBSurface(0,
 				(w / scale), (h / scale), sbpp,
@@ -667,7 +673,8 @@ bool Image_window::create_scale_surfaces(int w, int h, int bpp) {
 		cout << "Couldn't create renderer: " << SDL_GetError() << std::endl;
 
 	if (fullscreen) {
-		int dw, dh;
+		int dw;
+		int dh;
 		//with HighDPi this returns the higher resolutions
 		SDL_GetRendererOutputSize(screen_renderer, &dw, &dh);
 		w=dw;
@@ -692,7 +699,10 @@ bool Image_window::create_scale_surfaces(int w, int h, int bpp) {
 	SDL_RenderPresent(screen_renderer);
 
 	int sbpp;
-       	Uint32 sRmask, sGmask, sBmask, sAmask;
+       	Uint32 sRmask;
+       	Uint32 sGmask;
+       	Uint32 sBmask;
+       	Uint32 sAmask;
 	SDL_PixelFormatEnumToMasks(desktop_displaymode.format, &sbpp, &sRmask, &sGmask, &sBmask, &sAmask);
 
 	display_surface = SDL_CreateRGBSurface(0,
@@ -870,7 +880,8 @@ void Image_window::show(
 	if (!ready())
 		return;
 
-	int srcx = 0, srcy = 0;
+	int srcx = 0;
+	int srcy = 0;
 	if (!ibuf->clip(srcx, srcy, w, h, x, y))
 		return;
 	x -= get_start_x();
@@ -976,7 +987,8 @@ void Image_window::show(
 *   Toggle fullscreen.
 */
 void Image_window::toggle_fullscreen() {
-	int w, h;
+	int w;
+	int h;
 
 	w = display_surface->w;
 	h = display_surface->h;
@@ -1240,7 +1252,10 @@ int Image_window::VideoModeOK(int width, int height, int bpp, Uint32 flags)
 {
 	ignore_unused_variable_warning(bpp, flags);
 	int nbpp;
-	Uint32 Rmask, Gmask, Bmask, Amask;
+	Uint32 Rmask;
+	Uint32 Gmask;
+	Uint32 Bmask;
+	Uint32 Amask;
  	for (int j = 0; j < SDL_GetNumDisplayModes(0); j++)
 	{
 		SDL_DisplayMode dispmode;

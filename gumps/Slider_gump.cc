@@ -152,7 +152,8 @@ void Slider_gump::move_diamond(int dir) {
 
 void Slider_gump::paint(
 ) {
-	const int textx = 128, texty = 7;
+	const int textx = 128;
+	const int texty = 7;
 	// Paint the gump itself.
 	paint_shape(x, y);
 	// Paint red "checkmark".

@@ -113,11 +113,13 @@ MenuGameEntry::MenuGameEntry(
 )
 	: MenuTextEntry(fnton, fnt, txt, xpos, ypos) {
 	sfxicon = sfx;
-	int max_width = 0, width;
+	int max_width = 0;
+	int width;
 	int max_height = font->get_text_height();
 	//For game titles, which may have more than one line:
 	std::string localcopy = txt;
-	char *ptr = &localcopy[0], *lineptr = ptr;
+	char *ptr = &localcopy[0];
+	char *lineptr = ptr;
 	int lines = 1;
 	while (*ptr != 0) {
 		if (*ptr == '\n') {
@@ -284,7 +286,8 @@ int MenuList::handle_events(Game_window *gwin, Mouse *mouse) {
 	int count = entries.size();
 	bool exit_loop = false;
 	//int scale = gwin->get_fastmouse() ? 1 : gwin->get_win()->get_scale();
-	int gx, gy;
+	int gx;
+	int gy;
 	SDL_Event event;
 	for (int i = 0; i < count; i++)
 		entries[i]->dirty = true;

@@ -552,8 +552,8 @@ void Projectile_effect::init(
 		no_blocking = no_blocking || ainfo->no_blocking();
 		autohit = autohit || ainfo->autohits();
 	}
-	Game_object_shared att_obj = attacker.lock(),
-				       tgt_obj = target.lock();
+	Game_object_shared att_obj = attacker.lock();
+	Game_object_shared tgt_obj = target.lock();
 	if (att_obj) {         // Try to set start better.
 		int dir = tgt_obj ?
 		          att_obj->get_direction(tgt_obj.get()) :
@@ -604,7 +604,8 @@ void Projectile_effect::set_sprite_shape(
 	frames = sprite.get_num_frames();
 	if (frames >= 24) {     // Use frames 8-23, for direction
 		//   going clockwise from North.
-		Tile_coord src = path->get_src(), dest = path->get_dest();
+		Tile_coord src = path->get_src();
+		Tile_coord dest = path->get_dest();
 		int dir = Get_dir16(src, dest);
 		sprite.set_frame(8 + dir);
 	}
@@ -815,8 +816,8 @@ void Projectile_effect::handle_event(
 				if (!winf)
 					drop = true;
 				else if (ainf) {
-					int ammo = winf->get_ammo_consumed(),
-					    type = ainf->get_drop_type();
+					int ammo = winf->get_ammo_consumed();
+					int type = ainf->get_drop_type();
 					drop = (ammo >= 0 || ammo == -3) &&
 					       (type == Ammo_info::always_drop ||
 					        (!hit && type != Ammo_info::never_drop));
@@ -918,8 +919,9 @@ void Homing_projectile::handle_event(
 	if ((target && !target->is_dead()) || stationary) {
 		//Move to target/destination if needed
 		Tile_coord tpos = stationary ? dest : target->get_tile();
-		int deltax = tpos.tx - pos.tx, deltay = tpos.ty - pos.ty,
-		    deltaz = tpos.tz +
+		int deltax = tpos.tx - pos.tx;
+		int deltay = tpos.ty - pos.ty;
+		int deltaz = tpos.tz +
 		             (stationary ? 0 : target->get_info().get_3d_height() / 2) - pos.tz;
 		int absx = deltax >= 0 ? deltax : -deltax;
 		int absy = deltay >= 0 ? deltay : -deltay;
@@ -945,7 +947,9 @@ void Homing_projectile::handle_event(
 			if (!npc->is_in_party() && !npc->is_dead() &&
 			        (npc->get_effective_alignment() >= Actor::evil)) {
 				Tile_coord npos = npc->get_tile();
-				int dx = npos.tx - pos.tx, dy = npos.ty - pos.ty, dz = npos.tz - pos.tz;
+				int dx = npos.tx - pos.tx;
+				int dy = npos.ty - pos.ty;
+				int dz = npos.tz - pos.tz;
 				uint32 dist = dx * dx + dy * dy + dz * dz;
 				if (dist < bestdist) {
 					bestdist = dist;
@@ -1023,7 +1027,8 @@ Rectangle Text_effect::Figure_text_pos() {
 			return r;
 		}
 	} else {
-		int x, y;
+		int x;
+		int y;
 		gwin->get_shape_location(tpos, x, y);
 		return Rectangle(x, y, c_tilesize, c_tilesize);
 	}
@@ -1216,10 +1221,12 @@ public:
 	    int w, int h
 	) {
 		int frame = drop.get_framenum();
-		uint32 ascrollx = scrolltx * static_cast<uint32>(c_tilesize),
-		       ascrolly = scrollty * static_cast<uint32>(c_tilesize);
-		int ax = drop.get_ax(), ay = drop.get_ay();
-		int x = ax - ascrollx, y = ay - ascrolly;
+		uint32 ascrollx = scrolltx * static_cast<uint32>(c_tilesize);
+		uint32 ascrolly = scrollty * static_cast<uint32>(c_tilesize);
+		int ax = drop.get_ax();
+		int ay = drop.get_ay();
+		int x = ax - ascrollx;
+		int y = ay - ascrolly;
 		// Still on screen?  Restore pix.
 		if (frame >= 0 && x >= 0 && y >= 0 && x < w && y < h) {
 			Game_window *gwin = Game_window::get_instance();
@@ -1234,10 +1241,12 @@ public:
 	    int scrolltx, int scrollty,
 	    int w, int h
 	) {
-		uint32 ascrollx = scrolltx * static_cast<uint32>(c_tilesize),
-		       ascrolly = scrollty * static_cast<uint32>(c_tilesize);
-		int ax = drop.get_ax(), ay = drop.get_ay();
-		int x = ax - ascrollx, y = ay - ascrolly;
+		uint32 ascrollx = scrolltx * static_cast<uint32>(c_tilesize);
+		uint32 ascrolly = scrollty * static_cast<uint32>(c_tilesize);
+		int ax = drop.get_ax();
+		int ay = drop.get_ay();
+		int x = ax - ascrollx;
+		int y = ay - ascrolly;
 		// Still on screen?  Restore pix.
 		if (x >= 0 && y >= 0 && x < w && y < h) {
 			Game_window *gwin = Game_window::get_instance();
@@ -1337,10 +1346,11 @@ public:
 		        !gumpman->showing_gumps(true)) {
 			// Don't show rain inside buildings!
 			Image_window8 *win = gwin->get_win();
-			int w = win->get_game_width(), h = win->get_game_height();
+			int w = win->get_game_width();
+			int h = win->get_game_height();
 			// Get transform table.
-			int scrolltx = gwin->get_scrolltx(),
-			    scrollty = gwin->get_scrollty();
+			int scrolltx = gwin->get_scrolltx();
+			int scrollty = gwin->get_scrollty();
 			// Move drops.
 			for (int i = 0; i < num_drops; i++)
 				do_drop.move(drops[i], scrolltx, scrollty, w, h);
@@ -1360,10 +1370,11 @@ public:
 		if (gwin->is_main_actor_inside())
 			return;         // Inside.
 		// Get transform table.
-		int scrolltx = gwin->get_scrolltx(),
-		    scrollty = gwin->get_scrollty();
+		int scrolltx = gwin->get_scrolltx();
+		int scrollty = gwin->get_scrollty();
 		Image_window8 *win = gwin->get_win();
-		int w = win->get_game_width(), h = win->get_game_height();
+		int w = win->get_game_width();
+		int h = win->get_game_height();
 		for (int i = 0; i < num_drops; i++)
 			do_drop.paint(drops[i], scrolltx, scrollty, w, h);
 		gwin->set_painted();
@@ -1620,7 +1631,8 @@ inline void Cloud::next(
 		start_time = Game::get_ticks() + 2000 * randcnt + rand() % 500;
 		count = max_count;
 		cloud.set_frame(rand() % cloud.get_num_frames());
-		int x, y;       // Get screen pos.
+		int x;
+		int y;       // Get screen pos.
 		set_start_pos(shape, w, h, x, y);
 		wx = x + scrollx;
 		wy = y + scrolly;
@@ -1675,7 +1687,8 @@ Clouds_effect::Clouds_effect(
 	}
 	for (int i = 0; i < num_clouds; i++) {
 		// Modify speed of some.
-		int deltax = dx, deltay = dy;
+		int deltax = dx;
+		int deltay = dy;
 		if (rand() % 2 == 0) {
 			deltax += deltax / 2;
 			deltay += deltay / 2;
@@ -1700,7 +1713,8 @@ void Clouds_effect::handle_event(
 		gwin->set_all_dirty();
 		return;
 	}
-	int w = gwin->get_width(), h = gwin->get_height();
+	int w = gwin->get_width();
+	int h = gwin->get_height();
 	for (int i = 0; i < num_clouds; i++)
 		clouds[i]->next(gwin, curtime, w, h);
 	gwin->get_tqueue()->add(curtime + delay, this, udata);
@@ -1745,8 +1759,10 @@ void Earthquake::handle_event(
 
 	Game_window *gwin = Game_window::get_instance();
 	Image_window *win = gwin->get_win();
-	int w = win->get_game_width(), h = win->get_game_height();
-	int sx = 0, sy = 0;
+	int w = win->get_game_width();
+	int h = win->get_game_height();
+	int sx = 0;
+	int sy = 0;
 	int dx = rand() % 9 - 4;
 	int dy = rand() % 9 - 4;
 	if (dx > 0)

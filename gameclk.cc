@@ -122,8 +122,8 @@ void Game_clock::set_time_palette(
 	old_infravision = cheat.in_infravision();
 
 	int new_dungeon = gwin->is_in_dungeon();
-	int new_palette = get_time_palette(hour + 1, new_dungeon != 0),
-	    old_palette = get_time_palette(hour, (dungeon != 255 ? dungeon : new_dungeon) != 0);
+	int new_palette = get_time_palette(hour + 1, new_dungeon != 0);
+	int old_palette = get_time_palette(hour, (dungeon != 255 ? dungeon : new_dungeon) != 0);
 	bool cloudy = overcast > 0;
 	bool foggy = fog > 0;
 	bool weather_change = (cloudy != was_overcast) || (foggy != was_foggy);

@@ -164,7 +164,9 @@ void Chunk_cache::set_blocked(
 ) {
 	int z = lift;
 	while (ztiles) {
-		int zlevel = z / 8, thisz = z % 8, zcnt = 8 - thisz;
+		int zlevel = z / 8;
+		int thisz = z % 8;
+		int zcnt = 8 - thisz;
 		if (ztiles < zcnt)
 			zcnt = ztiles;
 		uint16 *block = need_blocked_level(zlevel);
@@ -184,7 +186,8 @@ void Chunk_cache::clear_blocked(
 	int z = lift;
 	while (ztiles) {
 		unsigned int zlevel = z / 8;
-		int thisz = z % 8, zcnt = 8 - thisz;
+		int thisz = z % 8;
+		int zcnt = 8 - thisz;
 		if (zlevel >= blocked.size())
 			break;      // All done.
 		if (ztiles < zcnt)
@@ -242,7 +245,8 @@ void Chunk_cache::update_object(
 	// Go through interesected chunks.
 	Chunk_intersect_iterator next_chunk(footprint);
 	Rectangle tiles;
-	int cx, cy;
+	int cx;
+	int cy;
 	while (next_chunk.get_next(tiles, cx, cy))
 		gmap->get_chunk(cx, cy)->set_blocked(tiles.x, tiles.y,
 		                                     tiles.x + tiles.w - 1, tiles.y + tiles.h - 1, lift,
@@ -260,7 +264,8 @@ void Chunk_cache::set_egged(
     bool add                // 1 to add, 0 to remove.
 ) {
 	// Egg already there?
-	int eggnum = -1, spot = -1;
+	int eggnum = -1;
+	int spot = -1;
 	for (Egg_vector::const_iterator it = egg_objects.begin();
 	        it != egg_objects.end(); ++it) {
 		if (*it == egg) {
@@ -280,7 +285,8 @@ void Chunk_cache::set_egged(
 		if (eggnum > 15)    // We only have 16 bits.
 			eggnum = 15;
 		short mask = (1 << eggnum);
-		int stopx = tiles.x + tiles.w, stopy = tiles.y + tiles.h;
+		int stopx = tiles.x + tiles.w;
+		int stopy = tiles.y + tiles.h;
 		for (int ty = tiles.y; ty < stopy; ++ty)
 			for (int tx = tiles.x; tx < stopx; ++tx)
 				eggs[ty * c_tiles_per_chunk + tx] |= mask;
@@ -299,7 +305,8 @@ void Chunk_cache::set_egged(
 			eggnum = 15;
 		}
 		short mask = ~(1 << eggnum);
-		int stopx = tiles.x + tiles.w, stopy = tiles.y + tiles.h;
+		int stopx = tiles.x + tiles.w;
+		int stopy = tiles.y + tiles.h;
 		for (int ty = tiles.y; ty < stopy; ty++)
 			for (int tx = tiles.x; tx < stopx; tx++)
 				eggs[ty * c_tiles_per_chunk + tx] &= mask;
@@ -321,7 +328,8 @@ void Chunk_cache::update_egg(
 	if (!foot.w)
 		return;         // Empty (probability = 0).
 	Rectangle crect;        // Gets tiles within each chunk.
-	int cx, cy;
+	int cx;
+	int cy;
 	if (egg->is_solid_area()) {
 		// Do solid rectangle.
 		Chunk_intersect_iterator all(foot);
@@ -378,7 +386,8 @@ inline void Chunk_cache::set_tflags(
     int tx, int ty,
     int maxz
 ) {
-	int zlevel = maxz / 8, bsize = blocked.size();
+	int zlevel = maxz / 8;
+	int bsize = blocked.size();
 	if (zlevel >= bsize) {
 		memset(tflags + bsize, 0, (zlevel - bsize + 1)*sizeof(uint16));
 		zlevel = bsize - 1;
@@ -681,8 +690,8 @@ void Map_chunk::set_terrain(
 			ShapeID id = ter->get_flat(tilex, tiley);
 			Shape_frame *shape = id.get_shape();
 			if (shape && shape->is_rle()) {
-				int shapenum = id.get_shapenum(),
-				    framenum = id.get_framenum();
+				int shapenum = id.get_shapenum();
+				int framenum = id.get_framenum();
 				const Shape_info &info = id.get_info();
 				Game_object_shared obj = info.is_animated() ?
 				            std::make_shared<Animated_object>(shapenum,
@@ -845,8 +854,9 @@ void Map_chunk::remove(
 	Game_map *gmap = gwin->get_map();
 	const Shape_info &info = remove->get_info();
 	// See if it extends outside.
-	int frame = remove->get_framenum(), tx = remove->get_tx(),
-	    ty = remove->get_ty();
+	int frame = remove->get_framenum();
+	int tx = remove->get_tx();
+	int ty = remove->get_ty();
 	/* Let's try boundary. YES.  Helps with statues through roofs. */
 	bool ext_left = (tx - info.get_3d_xtiles(frame)) < 0 && cx > 0;
 	bool ext_above = (ty - info.get_3d_ytiles(frame)) < 0 && cy > 0;
@@ -893,15 +903,17 @@ int Map_chunk::is_blocked(
     //   viour (max_drop if FLY, else 1).
 ) {
 	Game_map *gmap = gwin->get_map();
-	int tx, ty;
+	int tx;
+	int ty;
 	new_lift = 0;
 	startx = (startx + c_num_tiles) % c_num_tiles;      // Watch for wrapping.
 	starty = (starty + c_num_tiles) % c_num_tiles;
-	int stopy = (starty + ytiles) % c_num_tiles,
-	    stopx = (startx + xtiles) % c_num_tiles;
+	int stopy = (starty + ytiles) % c_num_tiles;
+	int stopx = (startx + xtiles) % c_num_tiles;
 	for (ty = starty; ty != stopy; ty = INCR_TILE(ty)) {
 		// Get y chunk, tile-in-chunk.
-		int cy = ty / c_tiles_per_chunk, rty = ty % c_tiles_per_chunk;
+		int cy = ty / c_tiles_per_chunk;
+		int rty = ty % c_tiles_per_chunk;
 		for (tx = startx; tx != stopx; tx = INCR_TILE(tx)) {
 			int this_lift;
 			Map_chunk *olist = gmap->get_chunk(
@@ -965,13 +977,17 @@ int Map_chunk::is_blocked(
     int max_rise            // Max. rise, or -1 to use old beha-
     //   viour (max_drop if FLY, else 1).
 ) {
-	int vertx0, vertx1;     // Get x-coords. of vert. block
+	int vertx0;
+	int vertx1;     // Get x-coords. of vert. block
 	//   to right/left.
-	int horizx0, horizx1;       // Get x-coords of horiz. block
+	int horizx0;
+	int horizx1;       // Get x-coords of horiz. block
 	//   above/below.
-	int verty0, verty1;     // Get y-coords of horiz. block
+	int verty0;
+	int verty1;     // Get y-coords of horiz. block
 	//   above/below.
-	int horizy0, horizy1;       // Get y-coords of vert. block
+	int horizy0;
+	int horizy1;       // Get y-coords of vert. block
 	//   to right/left.
 	// !Watch for wrapping.
 	horizx0 = (to.tx + 1 - xtiles + c_num_tiles) % c_num_tiles;
@@ -998,7 +1014,8 @@ int Map_chunk::is_blocked(
 		// Includes top of vert. area.
 		verty0 = INCR_TILE(verty0);
 	}
-	int x, y;           // Go through horiz. part.
+	int x;
+	int y;           // Go through horiz. part.
 	int new_lift = from.tz;
 	int new_lift0 = -1;     // All lift changes must be same.
 #ifdef DEBUG
@@ -1009,7 +1026,8 @@ int Map_chunk::is_blocked(
 #endif
 	for (y = horizy0; y != horizy1; y = INCR_TILE(y)) {
 		// Get y chunk, tile-in-chunk.
-		int cy = y / c_tiles_per_chunk, rty = y % c_tiles_per_chunk;
+		int cy = y / c_tiles_per_chunk;
+		int rty = y % c_tiles_per_chunk;
 		for (x = horizx0; x != horizx1; x = INCR_TILE(x)) {
 			Map_chunk *olist = gmap->get_chunk(
 			                       x / c_tiles_per_chunk, cy);
@@ -1029,7 +1047,8 @@ int Map_chunk::is_blocked(
 	// Do vert. block.
 	for (x = vertx0; x != vertx1; x = INCR_TILE(x)) {
 		// Get x chunk, tile-in-chunk.
-		int cx = x / c_tiles_per_chunk, rtx = x % c_tiles_per_chunk;
+		int cx = x / c_tiles_per_chunk;
+		int rtx = x % c_tiles_per_chunk;
 		for (y = verty0; y != verty1; y = INCR_TILE(y)) {
 			Map_chunk *olist = gmap->get_chunk(
 			                       cx, y / c_tiles_per_chunk);
@@ -1097,7 +1116,8 @@ inline bool Check_spot(
     int tx, int ty, int tz
 ) {
 	Game_map *gmap = Game_window::get_instance()->get_map();
-	int cx = tx / c_tiles_per_chunk, cy = ty / c_tiles_per_chunk;
+	int cx = tx / c_tiles_per_chunk;
+	int cy = ty / c_tiles_per_chunk;
 	Map_chunk *chunk = gmap->get_chunk_safely(cx, cy);
 	if (!chunk)
 		return false;
@@ -1201,7 +1221,8 @@ int Map_chunk::find_in_area(
 	// Go through interesected chunks.
 	Chunk_intersect_iterator next_chunk(area);
 	Rectangle tiles;        // (Tiles within intersected chunk).
-	int eachcx, eachcy;
+	int eachcx;
+	int eachcy;
 	Game_map *gmap = gwin->get_map();
 	while (next_chunk.get_next(tiles, eachcx, eachcy)) {
 		Map_chunk *chunk = gmap->get_chunk_safely(eachcx, eachcy);
@@ -1240,7 +1261,8 @@ void Map_chunk::try_all_eggs(
 	// Go through interesected chunks.
 	Chunk_intersect_iterator next_chunk(area);
 	Rectangle tiles;        // (Ignored).
-	int eachcx, eachcy;
+	int eachcx;
+	int eachcy;
 	Egg_vector eggs;        // Get them here first, as activating
 	eggs.reserve(40);
 	//   an egg could affect chunk's list.
@@ -1280,7 +1302,8 @@ void Map_chunk::add_dungeon_levels(
 		dungeon_levels = new unsigned char[256 / 2];
 		memset(dungeon_levels, 0, 256 / 2);
 	}
-	int endy = tiles.y + tiles.h, endx = tiles.x + tiles.w;
+	int endy = tiles.y + tiles.h;
+	int endx = tiles.x + tiles.w;
 	for (int ty = tiles.y; ty < endy; ty++) {
 		for (int tx = tiles.x; tx < endx; tx++) {
 			int tnum = (ty * c_tiles_per_chunk + tx) / 2;
@@ -1325,7 +1348,8 @@ void Map_chunk::setup_dungeon_levels(
 			// Go through interesected chunks.
 			Chunk_intersect_iterator next_chunk(area);
 			Rectangle tiles;// Rel. tiles.
-			int cx, cy;
+			int cx;
+			int cy;
 			while (next_chunk.get_next(tiles, cx, cy))
 				gmap->get_chunk(cx, cy)->add_dungeon_levels(
 				    tiles, each->get_lift());
@@ -1341,7 +1365,8 @@ void Map_chunk::setup_dungeon_levels(
 			// Go through interesected chunks.
 			Chunk_intersect_iterator next_chunk(area);
 			Rectangle tiles;// Rel. tiles.
-			int cx, cy;
+			int cx;
+			int cy;
 			while (next_chunk.get_next(tiles, cx, cy))
 				gmap->get_chunk(cx, cy)->add_dungeon_levels(
 				    tiles, each->get_lift());
@@ -1374,7 +1399,9 @@ void Map_chunk::gravity(
 	// Go through interesected chunks.
 	Chunk_intersect_iterator next_chunk(area);
 	Rectangle tiles;        // Rel. tiles.  Not used.
-	int cx, cy, new_lift;
+	int cx;
+	int cy;
+	int new_lift;
 	while (next_chunk.get_next(tiles, cx, cy)) {
 		Map_chunk *chunk = gmap->get_chunk(cx, cy);
 		Object_iterator objs(chunk->objects);

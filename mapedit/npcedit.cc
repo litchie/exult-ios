@@ -499,14 +499,20 @@ int ExultStudio::init_npc_window(
     int datalen
 ) {
 	Actor *addr;
-	int tx, ty, tz;
-	int shape, frame, face;
+	int tx;
+	int ty;
+	int tz;
+	int shape;
+	int frame;
+	int face;
 	std::string name;
-	short npc_num, ident;
+	short npc_num;
+	short ident;
 	int usecode;
 	std::string usecodefun;
 	int properties[12];
-	short attack_mode, alignment;
+	short attack_mode;
+	short alignment;
 	unsigned long oflags;       // Object flags.
 	unsigned long xflags;       // Extra object flags.
 	unsigned long type_flags;   // Movement flags.
@@ -620,7 +626,9 @@ int ExultStudio::save_npc_window(
 	cout << "In save_npc_window()" << endl;
 	// Get npc (null if creating new).
 	Actor *addr = static_cast<Actor*>(gtk_object_get_user_data(GTK_OBJECT(npcwin)));
-	int tx = -1, ty = -1, tz = -1;  // +++++For now.
+	int tx = -1;
+	int ty = -1;
+	int tz = -1;  // +++++For now.
 	codepageStr locname(get_text_entry("npc_name_entry"));
 	std::string name(locname);
 	short npc_num = get_num_entry("npc_num_entry");

@@ -256,7 +256,8 @@ void SI_Game::play_intro() {
 
 	int next = 0;
 	size_t  size;
-	int     i, j;
+	int     i;
+	int     j;
 	Font *sifont = fontManager.get_font("SIINTRO_FONT");
 
 	bool speech = audio->is_audio_enabled() &&

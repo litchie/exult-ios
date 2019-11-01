@@ -110,8 +110,8 @@ void Map_patch_collection::add(
     Map_patch *p
 ) {
 	// Get superchunk coords.
-	int sx = p->spec.loc.tx / c_tiles_per_schunk,
-	    sy = p->spec.loc.ty / c_tiles_per_schunk;
+	int sx = p->spec.loc.tx / c_tiles_per_schunk;
+	int sy = p->spec.loc.ty / c_tiles_per_schunk;
 	// Get superchunk # (0-143).
 	int schunk = sy * c_num_schunks + sx;
 	patches[schunk].push_back(p);

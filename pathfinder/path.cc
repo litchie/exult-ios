@@ -229,7 +229,8 @@ public:
 class Equal_nodes {
 public:
 	bool operator()(const Search_node *a, const Search_node *b) const {
-		Tile_coord ta = a->get_tile(), tb = b->get_tile();
+		Tile_coord ta = a->get_tile();
+		Tile_coord tb = b->get_tile();
 		return ta == tb;
 	}
 };

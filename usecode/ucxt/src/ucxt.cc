@@ -178,7 +178,10 @@ void open_usecode_file(UCData &uc, const Configuration &config) {
 	const string mucc_sic("SERPENT");
 	const string mucc_u8l("pagan");
 	const string mucc_u8c("PAGAN");
-	string path, ucspecial, mucc_l, mucc_c;
+	string path;
+	string ucspecial;
+	string mucc_l;
+	string mucc_c;
 
 	if (uc.options.game_bg() || uc.options.game_fov()
 	    || uc.options.game_si() || uc.options.game_ss()

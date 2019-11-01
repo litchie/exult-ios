@@ -722,7 +722,9 @@ static void Init(
 	gamemanager = new GameManager();
 
 	if (arg_buildmap < 0) {
-		string gr, gg, gb;
+		string gr;
+		string gg;
+		string gb;
 		config->value("config/video/gamma/red", gr, "1.0");
 		config->value("config/video/gamma/green", gg, "1.0");
 		config->value("config/video/gamma/blue", gb, "1.0");
@@ -734,7 +736,9 @@ static void Init(
 		bool    fullscreen = (fullscreenstr == "yes");
 		config->set("config/video/fullscreen", fullscreen ? "yes" : "no", false);
 
-		int border_red, border_green, border_blue;
+		int border_red;
+		int border_green;
+		int border_blue;
 		config->value("config/video/game/border/red", border_red, 0);
 		if (border_red < 0) border_red = 0;
 		else if (border_red > 255) border_red = 255;
@@ -953,10 +957,12 @@ static void Paint_with_shape(
     SDL_Event &event,
     bool dragging           // Painting terrain.
 ) {
-	static int lasttx = -1, lastty = -1;
+	static int lasttx = -1;
+	static int lastty = -1;
 	//int scale = gwin->get_win()->get_scale();
 	//int x = event.button.x/scale, y = event.button.y/scale;
-	int x, y;
+	int x;
+	int y;
 	gwin->get_win()->screen_to_game(event.button.x, event.button.y, false, x, y);
 
 	int tx = (gwin->get_scrolltx() + x / c_tilesize);
@@ -991,8 +997,10 @@ static void Paint_with_chunk(
     SDL_Event &event,
     bool dragging           // Painting terrain.
 ) {
-	static int lastcx = -1, lastcy = -1;
-	int x, y;
+	static int lastcx = -1;
+	static int lastcy = -1;
+	int x;
+	int y;
 	gwin->get_win()->screen_to_game(event.button.x, event.button.y, false, x, y);
 	int cx = (gwin->get_scrolltx() + x / c_tilesize) / c_tiles_per_chunk;
 	int cy = (gwin->get_scrollty() + y / c_tilesize) / c_tiles_per_chunk;
@@ -1015,8 +1023,10 @@ static void Select_chunks(
     bool dragging,          // Painting terrain.
     bool toggle
 ) {
-	static int lastcx = -1, lastcy = -1;
-	int x, y;
+	static int lastcx = -1;
+	static int lastcy = -1;
+	int x;
+	int y;
 	gwin->get_win()->screen_to_game(event.button.x, event.button.y, false, x, y);
 	int cx = (gwin->get_scrolltx() + x / c_tilesize) / c_tiles_per_chunk;
 	int cy = (gwin->get_scrollty() + y / c_tilesize) / c_tiles_per_chunk;
@@ -1046,7 +1056,8 @@ static void Select_for_combo(
     bool toggle
 ) {
 	static Game_object *last_obj = nullptr;
-	int x, y;
+	int x;
+	int y;
 	gwin->get_win()->screen_to_game(event.button.x, event.button.y, false, x, y);
 	//int tx = (gwin->get_scrolltx() + x/c_tilesize)%c_num_tiles;
 	//int ty = (gwin->get_scrollty() + y/c_tilesize)%c_num_tiles;
@@ -1090,7 +1101,8 @@ static void Handle_events(
 	/*
 	 *  Main event loop.
 	 */
-	int last_x = -1, last_y = -1;
+	int last_x = -1;
+	int last_y = -1;
 	while (!quitting_time) {
 #ifdef USE_EXULTSTUDIO
 		Server_delay();     // Handle requests.
@@ -1138,7 +1150,8 @@ static void Handle_events(
 		// always check every loop
 		if ((!gwin->is_moving() || gwin->get_step_tile_delta() == 1) &&
 		        gwin->main_actor_can_act_charmed()) {
-			int x, y;// Check for 'stuck' Avatar.
+			int x;
+			int y;// Check for 'stuck' Avatar.
 			int ms = SDL_GetMouseState(&x, &y);
 #if SDL_VERSION_ATLEAST(2, 0, 1) && (defined(MACOSX) || defined(__IPHONEOS__))
 			//mouse movement needs to be adjusted for HighDPI
@@ -1269,7 +1282,8 @@ static void Handle_event(
 	Gump *gump = nullptr;
 
 	// For detecting double-clicks.
-	static uint32 last_b1_click = 0, last_b3_click = 0;
+	static uint32 last_b1_click = 0;
+	static uint32 last_b3_click = 0;
 	//cout << "Event " << (int) event.type << " received"<<endl;
 #ifdef __IPHONEOS__
 #define JOY_LEFT_VAL -1400
@@ -1303,7 +1317,8 @@ static void Handle_event(
 #endif
 		if (g_shortcutBar && g_shortcutBar->handle_event(&event))
 			break;
-		int x, y;
+		int x;
+		int y;
 		gwin->get_win()->screen_to_game(event.button.x, event.button.y, gwin->get_fastmouse(), x, y);
 		if (event.button.button == 1) {
 			Gump_button *button;
@@ -1417,7 +1432,8 @@ static void Handle_event(
 	case SDL_MOUSEBUTTONUP: {
 		if (dont_move_mode)
 			break;
-		int x , y;
+		int x ;
+		int y;
 		gwin->get_win()->screen_to_game(event.button.x, event.button.y, gwin->get_fastmouse(), x, y);
 
 		if (event.button.button == 3) {
@@ -1492,7 +1508,8 @@ static void Handle_event(
 		break;
 	}
 	case SDL_MOUSEMOTION: {
-		int mx , my;
+		int mx ;
+		int my;
 		gwin->get_win()->screen_to_game(event.motion.x, event.motion.y, gwin->get_fastmouse(), mx, my);
 
 		Mouse::mouse->move(mx, my);
@@ -1544,7 +1561,8 @@ static void Handle_event(
 		         cheat.get_edit_shape() >= 0 &&
 		         (cheat.get_edit_mode() == Cheat::paint ||
 		          (SDL_GetModState() & KMOD_SHIFT))) {
-			static int prevx = -1, prevy = -1;
+			static int prevx = -1;
+			static int prevy = -1;
 			Move_dragged_shape(cheat.get_edit_shape(),
 			                   cheat.get_edit_frame(),
 			                   event.motion.x, event.motion.y,
@@ -1557,7 +1575,8 @@ static void Handle_event(
 	}
 	case SDL_ACTIVEEVENT:
 		if (EnteredWindow(event)) {
-			int x, y;
+			int x;
+			int y;
 			SDL_GetMouseState(&x, &y);
 			gwin->get_win()->screen_to_game(x, y, gwin->get_fastmouse(), x, y);
 			Mouse::mouse->set_location(x, y);
@@ -1717,7 +1736,8 @@ static int Get_click(
 					break;
 				if (event.button.button == 1) {
 					gwin->get_win()->screen_to_game(event.button.x, event.button.y, gwin->get_fastmouse(), x, y);
-					bool drg = dragging, drged = dragged;
+					bool drg = dragging;
+					bool drged = dragged;
 					dragging = dragged = false;
 					if (!drg ||
 					        !gwin->drop_dragged(x, y, drged)) {
@@ -1736,7 +1756,8 @@ static int Get_click(
 				}
 				break;
 			case SDL_MOUSEMOTION: {
-				int mx, my;
+				int mx;
+				int my;
 				gwin->get_win()->screen_to_game(event.motion.x, event.motion.y, gwin->get_fastmouse(), mx, my);
 
 				Mouse::mouse->move(mx, my);
@@ -1851,7 +1872,8 @@ void Wait_for_arrival(
     long maxticks           // Max. # msecs. to wait, or 0.
 ) {
 	// Mouse scale factor
-	int mx, my;
+	int mx;
+	int my;
 
 	unsigned char os = Mouse::mouse->is_onscreen();
 	uint32 last_repaint = 0;    // For insuring animation repaints.
@@ -1907,13 +1929,16 @@ static void Shift_wizards_eye(
     int mx, int my
 ) {
 	// Figure dir. from center.
-	int cx = gwin->get_width() / 2, cy = gwin->get_height() / 2;
-	int dy = cy - my, dx = mx - cx;
+	int cx = gwin->get_width() / 2;
+	int cy = gwin->get_height() / 2;
+	int dy = cy - my;
+	int dx = mx - cx;
 	Direction dir = Get_direction_NoWrap(dy, dx);
 	static int deltas[16] = {0, -1, 1, -1, 1, 0, 1, 1, 0, 1,
 	                         -1, 1, -1, 0, -1, -1
 	                        };
-	int dirx = deltas[2 * dir], diry = deltas[2 * dir + 1];
+	int dirx = deltas[2 * dir];
+	int diry = deltas[2 * dir + 1];
 	if (dirx == 1)
 		gwin->view_right();
 	else if (dirx == -1)
@@ -1932,7 +1957,8 @@ void Wizard_eye(
     long msecs          // Length of time in milliseconds.
 ) {
 	// Center of screen.
-	int cx = gwin->get_width() / 2, cy = gwin->get_height() / 2;
+	int cx = gwin->get_width() / 2;
+	int cy = gwin->get_height() / 2;
 
 	unsigned char os = Mouse::mouse->is_onscreen();
 	uint32 last_repaint = 0;    // For insuring animation repaints.
@@ -1948,7 +1974,8 @@ void Wizard_eye(
 		while (SDL_PollEvent(&event))
 			switch (event.type) {
 			case SDL_MOUSEMOTION: {
-				int mx, my;
+				int mx;
+				int my;
 				gwin->get_win()->screen_to_game(event.motion.x, event.motion.y, gwin->get_fastmouse(), mx, my);
 
 				Mouse::mouse->move(mx, my);
@@ -1972,9 +1999,11 @@ void Wizard_eye(
 		// Show animation every 1/20 sec.
 		if (ticks > last_repaint + 50 || gwin->was_painted()) {
 			// Right mouse button down?
-			int x, y;
+			int x;
+			int y;
 			int ms = SDL_GetMouseState(&x, &y);
-			int mx, my;
+			int mx;
+			int my;
 #if SDL_VERSION_ATLEAST(2, 0, 1) && (defined(MACOSX) || defined(__IPHONEOS__))
 			//mouse movement of the eye needs to adjust for HighDPI
 			gwin->get_win()->screen_to_game_hdpi(x, y, gwin->get_fastmouse(), mx, my);
@@ -1989,13 +2018,16 @@ void Wizard_eye(
 			ShapeID eye(10, 0, SF_SPRITES_VGA);
 			Shape_frame *spr = eye.get_shape();
 			// Center it.
-			int w = gwin->get_width(), h = gwin->get_height();
-			int sw = spr->get_width(), sh = spr->get_height();
-			int topx = (w - sw) / 2,
-			    topy = (h - sh) / 2;
+			int w = gwin->get_width();
+			int h = gwin->get_height();
+			int sw = spr->get_width();
+			int sh = spr->get_height();
+			int topx = (w - sw) / 2;
+			int topy = (h - sh) / 2;
 			eye.paint_shape(topx + spr->get_xleft(),
 			                topy + spr->get_yabove());
-			int sizex = (w - 320) / 2, sizey = (h - 200) / 2;
+			int sizex = (w - 320) / 2;
+			int sizey = (h - 200) / 2;
 			if (sizey) { // Black-fill area outside original resolution.
 				gwin->get_win()->fill8(0, w, sizey, 0, 0);
 				gwin->get_win()->fill8(0, w, sizey, 0, h - sizey);
@@ -2055,7 +2087,8 @@ void set_scaleval(int new_scaleval) {
 		config->value("config/video/share_video_settings", share_settings, true);
 		const string &vidStr = (fullscreen || share_settings) ?
 		                       "config/video" : "config/video/window";
-		int resx, resy;
+		int resx;
+		int resy;
 		config->value(vidStr + "/display/width", resx);
 		config->value(vidStr + "/display/height", resy);
 
@@ -2107,7 +2140,9 @@ void make_screenshot(bool silent) {
 }
 
 void change_gamma(bool down) {
-	float r, g, b;
+	float r;
+	float g;
+	float b;
 	char text[256];
 	float delta = down ? 0.05f : -0.05f;
 	Image_window8::get_gamma(r, g, b);
@@ -2148,7 +2183,10 @@ void BuildGameMap(BaseGameInfo *game, int mapnum) {
 			maplift = 5;
 			break;
 		}
-		int w, h, sc, sclr;
+		int w;
+		int h;
+		int sc;
+		int sclr;
 		h = w = c_tilesize * c_tiles_per_schunk;
 		sc = 1, sclr = Image_window::point;
 		Image_window8::set_gamma(1, 1, 1);
@@ -2192,10 +2230,15 @@ void BuildGameMap(BaseGameInfo *game, int mapnum) {
 void setup_video(bool fullscreen, int setup_video_type, int resx, int resy,
                  int gw , int gh, int scaleval, int scaler,
                  Image_window::FillMode fillmode, int fill_scaler) {
-	string fmode_string, sclr, scalerName, fillScalerName;
-	bool video_init = false, set_config = false,
-	     change_gwin = false, menu_init = false,
-	     read_config = false;
+	string fmode_string;
+	string sclr;
+	string scalerName;
+	string fillScalerName;
+	bool video_init = false;
+	bool set_config = false;
+	bool change_gwin = false;
+	bool menu_init = false;
+	bool read_config = false;
 	if (setup_video_type == VIDEO_INIT)
 		read_config = video_init = set_config = true;
 	else if (setup_video_type == TOGGLE_FULLSCREEN)
@@ -2217,8 +2260,11 @@ void setup_video(bool fullscreen, int setup_video_type, int resx, int resy,
 		cout << "Reading video menu adjustable configuration options" << endl;
 #endif
 		// Default resolution is now 320x240 with 2x scaling
-		int w = 320, h = 240, sc = 2;
-		string default_scaler = "2xSaI", fill_scaler_str;
+		int w = 320;
+		int h = 240;
+		int sc = 2;
+		string default_scaler = "2xSaI";
+		string fill_scaler_str;
 		if (video_init) {
 			// Convert from old video dims to new
 			if (config->key_exists("config/video/width")) {
@@ -2377,7 +2423,8 @@ static void Move_grid(
 		gwin->get_win()->screen_to_game(prevx, prevy, false, prevx, prevy);
 		prevx += lift * 4 - 1;  // Take lift into account, round.
 		prevy += lift * 4 - 1;
-		int ptx = prevx / c_tilesize, pty = prevy / c_tilesize;
+		int ptx = prevx / c_tilesize;
+		int pty = prevy / c_tilesize;
 		ptx += tiles_right;
 		pty += tiles_below;
 		if (tx == ptx && ty == pty)
@@ -2430,8 +2477,8 @@ static void Move_dragged_shape(
 	}
 	const Shape_info &info = ShapeID::get_info(shape);
 	// Get footprint in tiles.
-	int xtiles = info.get_3d_xtiles(frame),
-	    ytiles = info.get_3d_ytiles(frame);
+	int xtiles = info.get_3d_xtiles(frame);
+	int ytiles = info.get_3d_ytiles(frame);
 	int sclass = info.get_shape_class();
 	// Is it an ireg (changeable) obj?
 	bool ireg = (sclass != Shape_info::unusable &&
@@ -2500,7 +2547,8 @@ static void Drop_dragged_shape(
 	if (gwin->skip_lift == 0) { // Editing terrain?
 		int tx = (gwin->get_scrolltx() + x / c_tilesize) % c_num_tiles;
 		int ty = (gwin->get_scrollty() + y / c_tilesize) % c_num_tiles;
-		int cx = tx / c_tiles_per_chunk, cy = ty / c_tiles_per_chunk;
+		int cx = tx / c_tiles_per_chunk;
+		int cy = ty / c_tiles_per_chunk;
 		Map_chunk *chunk = gwin->get_map()->get_chunk(cx, cy);
 		Chunk_terrain *ter = chunk->get_terrain();
 		tx %= c_tiles_per_chunk;
@@ -2542,9 +2590,10 @@ static void Drop_dragged_chunk(
 	cout << "Last drag pos: (" << x << ", " << y << ')' << endl;
 	cout << "Set chunk (" << chunknum << ')' << endl;
 	// Need chunk-coordinates.
-	int tx = (gwin->get_scrolltx() + x / c_tilesize) % c_num_tiles,
-	    ty = (gwin->get_scrollty() + y / c_tilesize) % c_num_tiles;
-	int cx = tx / c_tiles_per_chunk, cy = ty / c_tiles_per_chunk;
+	int tx = (gwin->get_scrolltx() + x / c_tilesize) % c_num_tiles;
+	int ty = (gwin->get_scrollty() + y / c_tilesize) % c_num_tiles;
+	int cx = tx / c_tiles_per_chunk;
+	int cy = ty / c_tiles_per_chunk;
 	gwin->get_map()->set_chunk_terrain(cx, cy, chunknum);
 	gwin->paint();
 }
@@ -2598,21 +2647,21 @@ void Drop_dragged_combo(
 	x += at_lift * 4 - 1;   // Take lift into account, round.
 	y += at_lift * 4 - 1;
 	// Figure tile at mouse pos.
-	int tx = (gwin->get_scrolltx() + x / c_tilesize) % c_num_tiles,
-	    ty = (gwin->get_scrollty() + y / c_tilesize) % c_num_tiles;
+	int tx = (gwin->get_scrolltx() + x / c_tilesize) % c_num_tiles;
+	int ty = (gwin->get_scrollty() + y / c_tilesize) % c_num_tiles;
 	for (int i = 0; i < cnt; i++) {
 		// Drop each shape.
 		U7_combo_data &elem = combo[i];
 		// Figure new tile coord.
-		int ntx = (tx + elem.tx) % c_num_tiles,
-		    nty = (ty + elem.ty) % c_num_tiles,
-		    ntz = at_lift + elem.tz;
+		int ntx = (tx + elem.tx) % c_num_tiles;
+		int nty = (ty + elem.ty) % c_num_tiles;
+		int ntz = at_lift + elem.tz;
 		if (ntz < 0)
 			ntz = 0;
 		ShapeID sid(elem.shape, elem.frame);
 		if (gwin->skip_lift == 0) { // Editing terrain?
-			int cx = ntx / c_tiles_per_chunk,
-			    cy = nty / c_tiles_per_chunk;
+			int cx = ntx / c_tiles_per_chunk;
+			int cy = nty / c_tiles_per_chunk;
 			Map_chunk *chunk = gwin->get_map()->get_chunk(cx, cy);
 			Chunk_terrain *ter = chunk->get_terrain();
 			ntx %= c_tiles_per_chunk;

@@ -305,13 +305,15 @@ void Party_manager::move_followers(
 	ignore_unused_variable_warning(vindex);
 	int id = npc->get_party_id();   // (-1 if Avatar).
 	Tile_coord pos = npc->get_tile();
-	int lnum = followers[1 + id][0], rnum = followers[1 + id][1];
+	int lnum = followers[1 + id][0];
+	int rnum = followers[1 + id][1];
 	if (lnum == -1 && rnum == -1)
 		return;         // Nothing to do.
 	int dir4 = dir / 2;     // 0-3 now.
 	Actor *lnpc = (lnum == -1 || lnum >= validcnt) ? nullptr : valid[lnum];
 	Actor *rnpc = (rnum == -1 || rnum >= validcnt) ? nullptr : valid[rnum];
-	int ldir = -1, rdir = -1;
+	int ldir = -1;
+	int rdir = -1;
 	// Have each take a step.
 	if (lnpc)
 		ldir = step(lnpc, npc, dir, pos + Tile_coord(
@@ -336,7 +338,8 @@ inline Tile_coord Get_step_tile(
     int dir             // Dir. party is moving (0-7).
 ) {
 	ignore_unused_variable_warning(dir);
-	int dx = dest.tx - pos.tx, dy = dest.ty - pos.ty;
+	int dx = dest.tx - pos.tx;
+	int dy = dest.ty - pos.ty;
 	if (dx < -1)
 		dx = -1;        // Limit to 1 tile.
 	else if (dx > 1)
@@ -445,9 +448,10 @@ static int Get_cost(
 			return max_cost;
 	}
 	Tile_coord lpos = leader->get_tile();
-	int difftz = to.tz - lpos.tz,   // Measure closeness.
-	    diffty = Tile_coord::delta(to.ty, lpos.ty),
-	    difftx = Tile_coord::delta(to.tx, lpos.tx);
+	int difftz = to.tz - lpos.tz;
+	int // Measure closeness.
+	    diffty = Tile_coord::delta(to.ty, lpos.ty);
+	int difftx = Tile_coord::delta(to.tx, lpos.tx);
 	// Get dist**2 in x-y plane.
 	int xydist2 = diffty * diffty + difftx * difftx;
 	cost += difftz * difftz + xydist2;
@@ -494,7 +498,8 @@ static bool Take_best_step(
 	if (!best_in_way)       // Nobody in way?
 		return npc->step(best, frame) != 0;
 	best = best_in_way->get_tile(); // Swap positions.
-    Game_object_shared npc_keep, best_keep;
+    Game_object_shared npc_keep;
+    Game_object_shared best_keep;
 	npc->remove_this(&npc_keep);
 	best_in_way->remove_this(&best_keep);
 	npc->set_frame(frame);      // Appear to take a step.

@@ -1120,7 +1120,9 @@ int LowLevelMidiDriver::lockChannel(uint16 sequence_id, int chan, bool lock)
 	if (lock)
 	{
 		int notes_on[16] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-		int s, c, phys;
+		int s;
+		int c;
+		int phys;
 
 		for (s = 0; s < LLMD_NUM_SEQ; s++)
 		{
@@ -1233,7 +1235,8 @@ int LowLevelMidiDriver::unlockAndUnprotectChannel(uint16 sequence_id)
 void LowLevelMidiDriver::loadTimbreLibrary(IDataSource *ds, TimbreLibraryType type)
 {
 	// Ensure all sequences are stopped
-	uint32 i,j;
+	uint32 i;
+	uint32 j;
 	for (i = 0 ; i < LLMD_NUM_SEQ; i++) {
 		ComMessage message(LLMD_MSG_FINISH, i);
 		sendComMessage(message);

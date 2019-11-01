@@ -91,7 +91,8 @@ int Game_object::find_nearby(
 	// Stay within world.
 	Chunk_intersect_iterator next_chunk(bounds);
 	Rectangle tiles;
-	int cx, cy;
+	int cx;
+	int cy;
 	while (next_chunk.get_next(tiles, cx, cy)) {
 		// Go through objects.
 		Map_chunk *chunk = gmap->get_chunk(cx, cy);

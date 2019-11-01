@@ -232,8 +232,8 @@ Rectangle Combo::get_member_footprint(
 	Combo_member *m = members[i];
 	// Get tile dims.
 	const Shape_info &info = shapes_file->get_info(m->shapenum);
-	int xtiles = info.get_3d_xtiles(m->framenum),
-	    ytiles = info.get_3d_ytiles(m->framenum);
+	int xtiles = info.get_3d_xtiles(m->framenum);
+	int ytiles = info.get_3d_ytiles(m->framenum);
 	// Get tile footprint.
 	Rectangle box(m->tx - xtiles + 1, m->ty - ytiles + 1,
 	              xtiles, ytiles);
@@ -302,9 +302,9 @@ void Combo::add(
 	}
 	// Get tile dims.
 	const Shape_info &info = shapes_file->get_info(shnum);
-	int xtiles = info.get_3d_xtiles(frnum),
-	    ytiles = info.get_3d_ytiles(frnum),
-	    ztiles = info.get_3d_height();
+	int xtiles = info.get_3d_xtiles(frnum);
+	int ytiles = info.get_3d_ytiles(frnum);
+	int ztiles = info.get_3d_height();
 	// Get tile footprint.
 	Rectangle box(tx - xtiles + 1, ty - ytiles + 1, xtiles, ytiles);
 	if (members.empty())        // First one?
@@ -326,8 +326,8 @@ void Combo::add(
 	members.push_back(memb);
 	// Figure visible top-left tile, with
 	//   1 to spare.
-	int vtx = tx - xtiles - 2 - (tz + ztiles + 1) / 2,
-	    vty = ty - ytiles - 2 - (tz + ztiles + 1) / 2;
+	int vtx = tx - xtiles - 2 - (tz + ztiles + 1) / 2;
+	int vty = ty - ytiles - 2 - (tz + ztiles + 1) / 2;
 	if (vtx < starttx)      // Adjust our starting point.
 		starttx = vtx;
 	if (vty < startty)
@@ -378,7 +378,8 @@ void Combo::draw(
     int selected,           // Index of 'selected' item, or -1.
     int xoff, int yoff      // Offset within draw.
 ) {
-	int selx = -1000, sely = -1000;
+	int selx = -1000;
+	int sely = -1000;
 	bool selfound = false;
 	for (std::vector<Combo_member *>::iterator it = members.begin();
 	        it != members.end(); ++it) {
@@ -386,11 +387,11 @@ void Combo::draw(
 		// Figure pixels up-left for lift.
 		int lft = m->tz * (c_tilesize / 2);
 		// Figure relative tile.
-		int mtx = m->tx - starttx,
-		    mty = m->ty - startty;
+		int mtx = m->tx - starttx;
+		int mty = m->ty - startty;
 		// Hot spot:
-		int x = mtx * c_tilesize - lft,
-		    y = mty * c_tilesize - lft;
+		int x = mtx * c_tilesize - lft;
+		int y = mty * c_tilesize - lft;
 		Shape_frame *shape = shapes_file->get_shape(m->shapenum,
 		                     m->framenum);
 		if (!shape)
@@ -430,10 +431,10 @@ int Combo::find(
 		// Figure pixels up-left for lift.
 		int lft = m->tz * (c_tilesize / 2);
 		// Figure relative tile.
-		int mtx = m->tx - starttx,
-		    mty = m->ty - startty;
-		int x = mtx * c_tilesize - lft,
-		    y = mty * c_tilesize - lft;
+		int mtx = m->tx - starttx;
+		int mty = m->ty - startty;
+		int x = mtx * c_tilesize - lft;
+		int y = mty * c_tilesize - lft;
 		Shape_frame *frame = shapes_file->get_shape(
 		                         m->shapenum, m->framenum);
 		if (frame && frame->has_point(mx - x, my - y))
@@ -489,7 +490,11 @@ const unsigned char *Combo::read(
 	short cnt;
 	in << cnt;          // # members to follow.
 	for (int i = 0; i < cnt; i++) {
-		short tx, ty, tz, shapenum, framenum;
+		short tx;
+		short ty;
+		short tz;
+		short shapenum;
+		short framenum;
 		in << tx << ty << tz << shapenum << framenum;
 		Combo_member *memb = new Combo_member(tx, ty, tz,
 		                                      shapenum, framenum);
@@ -576,8 +581,8 @@ void Combo_editor::render_area(
 ) {
 	Shape_draw::configure();    // Setup the first time.
 	// Get dims.
-	int draww = draw->allocation.width,
-	    drawh = draw->allocation.height;
+	int draww = draw->allocation.width;
+	int drawh = draw->allocation.height;
 	GdkRectangle all;
 	if (!area) {
 		all.x = all.y = 0;
@@ -607,8 +612,8 @@ void Combo_editor::set_controls(
 		studio->set_spin("combo_order", 0, false);
 		studio->set_sensitive("combo_remove", false);
 	} else {
-		int draww = draw->allocation.width,
-		    drawh = draw->allocation.height;
+		int draww = draw->allocation.width;
+		int drawh = draw->allocation.height;
 		studio->set_sensitive("combo_locx", true);
 		studio->set_spin("combo_locx", m->tx - combo->starttx,
 		                 0, draww / c_tilesize);
@@ -635,7 +640,8 @@ gint Combo_editor::mouse_press(
 	if (event->button != 1)
 		return FALSE;       // Handling left-click.
 	// Get mouse position, draw dims.
-	int mx = static_cast<int>(event->x), my = static_cast<int>(event->y);
+	int mx = static_cast<int>(event->x);
+	int my = static_cast<int>(event->y);
 	selected = combo->find(mx, my); // Find it (or -1 if not found).
 	set_controls();
 	render();
@@ -699,8 +705,12 @@ void Combo_editor::add(
     bool toggle
 ) {
 	Game_object *addr;
-	int tx, ty, tz;
-	int shape, frame, quality;
+	int tx;
+	int ty;
+	int tz;
+	int shape;
+	int frame;
+	int quality;
 	std::string name;
 	if (!Object_in(data, datalen, addr, tx, ty, tz, shape, frame,
 	               quality, name)) {
@@ -858,14 +868,16 @@ void Combo_chooser::load(
 void Combo_chooser::render(
 ) {
 	// Look for selected frame.
-	int selcombo = -1, new_selected = -1;
+	int selcombo = -1;
+	int new_selected = -1;
 	if (selected >= 0)      // Save selection info.
 		selcombo = info[selected].num;
 	// Remove "selected" message.
 	//gtk_statusbar_pop(GTK_STATUSBAR(sbar), sbar_sel);
 	delete [] info;         // Delete old info. list.
 	// Get drawing area dimensions.
-	gint winw = draw->allocation.width, winh = draw->allocation.height;
+	gint winw = draw->allocation.width;
+	gint winh = draw->allocation.height;
 	// Provide more than enough room.
 	info = new Combo_info[256];
 	info_cnt = 0;           // Count them.
@@ -873,7 +885,8 @@ void Combo_chooser::render(
 	iwin->fill8(255);       // Background color.
 	int index = index0;
 	// We'll always show 128x128.
-	const int combow = 128, comboh = 128;
+	const int combow = 128;
+	const int comboh = 128;
 	int total_cnt = get_count();
 	int y = border;
 	// Show bottom if at least 1/2 vis.
@@ -1293,7 +1306,8 @@ gint Combo_chooser::configure(
 	chooser->Shape_draw::configure();
 	chooser->render();
 	// Set new scroll amounts.
-	int w = event->width, h = event->height;
+	int w = event->width;
+	int h = event->height;
 	int per_row = (w - border) / (128 + border);
 	int num_rows = (h - border) / (128 + border);
 	int page_size = per_row * num_rows;

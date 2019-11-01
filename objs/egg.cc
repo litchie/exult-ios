@@ -109,7 +109,8 @@ void Missile_launcher::handle_event(
 		// Get adjacent tile in direction.
 		Tile_coord adj = src.get_neighbor(dir % 8);
 		// Make it go (range) tiles.
-		int dx = adj.tx - src.tx, dy = adj.ty - src.ty;
+		int dx = adj.tx - src.tx;
+		int dy = adj.ty - src.ty;
 		Tile_coord dest = src;
 		dest.tx += range * dx;
 		dest.ty += range * dy;
@@ -647,8 +648,8 @@ void Egg_object::set_area(
 	case party_footpad: {
 		const Shape_info &info = get_info();
 		int frame = get_framenum();
-		int xtiles = info.get_3d_xtiles(frame),
-		    ytiles = info.get_3d_ytiles(frame);
+		int xtiles = info.get_3d_xtiles(frame);
+		int ytiles = info.get_3d_ytiles(frame);
 		area = Rectangle(t.tx - xtiles + 1, t.ty - ytiles + 1,
 		                 xtiles, ytiles);
 		break;
@@ -883,16 +884,25 @@ void Egg_object::update_from_studio(
     int datalen
 ) {
 #ifdef USE_EXULTSTUDIO
-	int x, y;           // Mouse click for new egg.
+	int x;
+	int y;           // Mouse click for new egg.
 	Egg_object *oldegg;
-	int tx, ty, tz;
-	int shape, frame;
+	int tx;
+	int ty;
+	int tz;
+	int shape;
+	int frame;
 	int type;
 	int criteria;
 	int probability;
 	int distance;
-	bool nocturnal, once, hatched, auto_reset;
-	int data1, data2, data3;
+	bool nocturnal;
+	bool once;
+	bool hatched;
+	bool auto_reset;
+	int data1;
+	int data2;
+	int data3;
 	string str1;
 	if (!Egg_object_in(data, datalen, oldegg, tx, ty, tz, shape, frame,
 	                   type, criteria, probability, distance,
@@ -1124,7 +1134,8 @@ void Egg_object::move(
     int newmap
 ) {
 	// Figure new chunk.
-	int newcx = newtx / c_tiles_per_chunk, newcy = newty / c_tiles_per_chunk;
+	int newcx = newtx / c_tiles_per_chunk;
+	int newcy = newty / c_tiles_per_chunk;
 	Game_map *eggmap = newmap >= 0 ? gwin->get_map(newmap) : get_map();
 	if (!eggmap) eggmap = gmap;
 	Map_chunk *newchunk = eggmap->get_chunk_safely(newcx, newcy);

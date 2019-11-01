@@ -88,8 +88,11 @@ int Import_png8(
 	// Indicate we already read something.
 	png_set_sig_bytes(png, sizeof(sigbuf));
 	png_read_info(png, info);   // Read in image info.
-	png_uint_32 w, h;
-	int depth, color, interlace;
+	png_uint_32 w;
+	png_uint_32 h;
+	int depth;
+	int color;
+	int interlace;
 	png_get_IHDR(png, info, &w, &h, &depth, &color,
 	             &interlace, nullptr, nullptr);
 	width = static_cast<int>(w);
@@ -114,7 +117,8 @@ int Import_png8(
 		palette[3 * i + 1] = pngpal[i].green;
 		palette[3 * i + 2] = pngpal[i].blue;
 	}
-	png_int_32 pngxoff, pngyoff;    // Get offsets.
+	png_int_32 pngxoff;
+	png_int_32 pngyoff;    // Get offsets.
 	int utype;
 	if (png_get_oFFs(png, info, &pngxoff, &pngyoff, &utype) &&
 	        utype == PNG_OFFSET_PIXEL) {
@@ -296,13 +300,17 @@ int Import_png32(
 	// Indicate we already read something.
 	png_set_sig_bytes(png, sizeof(sigbuf));
 	png_read_info(png, info);   // Read in image info.
-	png_uint_32 w, h;
-	int depth, color, interlace;
+	png_uint_32 w;
+	png_uint_32 h;
+	int depth;
+	int color;
+	int interlace;
 	png_get_IHDR(png, info, &w, &h, &depth, &color,
 	             &interlace, nullptr, nullptr);
 	width = static_cast<int>(w);
 	height = static_cast<int>(h);
-	png_int_32 pngxoff, pngyoff;    // Get offsets.
+	png_int_32 pngxoff;
+	png_int_32 pngyoff;    // Get offsets.
 	int utype;
 	if (png_get_oFFs(png, info, &pngxoff, &pngyoff, &utype) &&
 	        utype == PNG_OFFSET_PIXEL) {

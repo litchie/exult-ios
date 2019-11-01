@@ -61,7 +61,8 @@ TextScroller::TextScroller(const char *archive, int index, Font *fnt, Shape *shp
 	else
 		txtobj = make_unique<U7object>(archive, index);
 	size_t len;
-	const char  CR = '\r', LF = '\n';
+	const char  CR = '\r';
+	const char  LF = '\n';
 
 	unique_ptr<unsigned char[]> txt = txtobj->retrieve(len);
 	if (!txt || len <= 0) {

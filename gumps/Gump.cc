@@ -162,7 +162,8 @@ Game_object *Gump::find_object(
 	Game_object *obj;
 	Shape_frame *s;
 
-	int ox, oy;
+	int ox;
+	int oy;
 
 	while ((obj = next.get_next()) != nullptr) {
 		Rectangle box = get_shape_rect(obj);
@@ -304,12 +305,14 @@ void Gump::paint_elems(
 
 void check_elem_positions(Object_list &objects)
 {
-	int prevx = -1, prevy = -1;
+	int prevx = -1;
+	int prevy = -1;
 	Game_object *obj;
 	Object_iterator next(objects);
 	// See if all have the same position, indicating from a new game.
 	while ((obj = next.get_next()) != nullptr) {
-		int tx = obj->get_tx(), ty = obj->get_ty();
+		int tx = obj->get_tx();
+		int ty = obj->get_ty();
 	    if (prevx == -1) {
 		    prevx = tx;
 			prevy = ty;
@@ -343,8 +346,10 @@ void Gump::paint(
 		return;         // Empty.
 	Rectangle box = object_area;    // Paint objects inside.
 	box.shift(x, y);        // Set box to screen location.
-	int cury = 0, curx = 0;
-	int endy = box.h, endx = box.w;
+	int cury = 0;
+	int curx = 0;
+	int endy = box.h;
+	int endx = box.w;
 	int loop = 0;           // # of times covering container.
 	check_elem_positions(objects);	// Set to place if new game.
 	Game_object *obj;
@@ -362,8 +367,8 @@ void Gump::paint(
 		        !object_area.has_point(objx + shape->get_xright() - 1,
 		                               objy + shape->get_ybelow() - 1)) {
 			// No.
-			int px = curx + shape->get_width(),
-			    py = cury + shape->get_height();
+			int px = curx + shape->get_width();
+			int py = cury + shape->get_height();
 			if (px > endx)
 				px = endx;
 			if (py > endy)
@@ -388,7 +393,8 @@ void Gump::paint(
 	        it != sel.end(); ++it) {
 		Game_object *obj = (*it).get();
 		if (container == obj->get_owner()) {
-			int x, y;
+			int x;
+			int y;
 			get_shape_location(obj, x, y);
 			obj->ShapeID::paint_outline(x, y, HIT_PIXEL);
 		}

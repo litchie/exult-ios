@@ -131,14 +131,16 @@ void Chunk_chooser::select(
 void Chunk_chooser::render(
 ) {
 	// Look for selected frame.
-	int selchunk = -1, new_selected = -1;
+	int selchunk = -1;
+	int new_selected = -1;
 	if (selected >= 0)      // Save selection info.
 		selchunk = info[selected].num;
 	// Remove "selected" message.
 	//gtk_statusbar_pop(GTK_STATUSBAR(sbar), sbar_sel);
 	delete [] info;         // Delete old info. list.
 	// Get drawing area dimensions.
-	gint winw = draw->allocation.width, winh = draw->allocation.height;
+	gint winw = draw->allocation.width;
+	gint winh = draw->allocation.height;
 	// Provide more than enough room.
 	info = new Chunk_info[256];
 	info_cnt = 0;           // Count them.
@@ -146,7 +148,8 @@ void Chunk_chooser::render(
 	iwin->fill8(255);       // Background color.
 	int index = index0;
 	// 16x16 tiles, each 8x8 pixels.
-	const int chunkw = 128, chunkh = 128;
+	const int chunkw = 128;
+	const int chunkh = 128;
 	int total_cnt = get_count();
 	int y = border;
 	// Show bottom if at least 1/4 vis.
@@ -279,7 +282,8 @@ void Chunk_chooser::render_chunk(
 		int x = c_tilesize;
 		for (int tx = 0; tx < c_tiles_per_chunk; tx++,
 		        x += c_tilesize) {
-			int shapenum, framenum;
+			int shapenum;
+			int framenum;
 			unsigned char l = *data++;
 			unsigned char h = *data++;
 			if (!headersz) {
@@ -319,7 +323,8 @@ gint Chunk_chooser::configure(
 	chooser->Shape_draw::configure();
 	chooser->render();
 	// Set new scroll amounts.
-	int w = event->width, h = event->height;
+	int w = event->width;
+	int h = event->height;
 	int per_row = (w - border) / (128 + border);
 	int num_rows = (h - border) / (128 + border);
 	int page_size = per_row * num_rows;
@@ -968,7 +973,8 @@ void Chunk_chooser::locate(
 	unsigned char data[Exult_server::maxlength];
 	unsigned char *ptr = &data[0];
 	int tnum = info[selected].num;  // Terrain #.
-	int cx = locate_cx, cy = locate_cy;
+	int cx = locate_cx;
+	int cy = locate_cy;
 	if (dir == 0) {
 		cx = cy = -1;
 	} else if (dir == -1)

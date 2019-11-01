@@ -48,11 +48,15 @@ int main(int argc, char **argv) {
 	int occ[343]; /* 7*7*7 */
 	int i;
 	int tmp;
-	int c1, c2;
+	int c1;
+	int c2;
 	int found;
 	int diff;
-	int d1, d2, d3;
-	int md2, md3;
+	int d1;
+	int d2;
+	int d3;
+	int md2;
+	int md3;
 
 	if (argc < 3) {
 		printf("You need to specify input and output file.\n");

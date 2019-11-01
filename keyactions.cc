@@ -138,7 +138,8 @@ void ActionAbout(int const *params) {
 
 	scroll->paint();
 	do {
-		int x, y;
+		int x;
+		int y;
 		Get_click(x, y, Mouse::hand);
 	} while (scroll->show_next_page());
 	gwin->paint();
@@ -273,7 +274,8 @@ void ActionCombatPause(int const *params) {
 //  { ActionTarget, 0, "Target mode", normal_keys, NONE },
 void ActionTarget(int const *params) {
 	ignore_unused_variable_warning(params);
-	int x, y;
+	int x;
+	int y;
 	if (!Get_click(x, y, Mouse::greenselect))
 		return;
 	Game_window::get_instance()->double_clicked(x, y);
@@ -325,7 +327,8 @@ void ActionInventory(int const *params) {
 void ActionTryKeys(int const *params) {
 	ignore_unused_variable_warning(params);
 	Game_window *gwin = Game_window::get_instance();
-	int x, y;           // Allow dragging.
+	int x;
+	int y;           // Allow dragging.
 	if (!Get_click(x, y, Mouse::greenselect, nullptr, true))
 		return;
 	// Look for obj. in open gump.
@@ -421,7 +424,8 @@ void ActionUseHealingItems(int const *params) {
 		return;
 
 	// Potions are wasted if at full health so we will check for that
-	int x, y;
+	int x;
+	int y;
 	if (!is_party_item(340, 1) || !Get_click(x, y, Mouse::greenselect))
 		return;
 	Game_object *obj = gwin->find_object(x, y);
@@ -728,7 +732,8 @@ void ActionTeleport(int const *params) {
 
 void ActionTeleportTargetMode(int const *params) {
 	ignore_unused_variable_warning(params);
-	int x, y;
+	int x;
+	int y;
 	if (!Get_click(x, y, Mouse::redx))
 		return;
 	cheat.cursor_teleport();

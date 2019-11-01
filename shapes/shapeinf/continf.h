@@ -80,8 +80,8 @@ public:
 		}
 	}
 	bool operator<(const Content_rules &other) const {
-		unsigned short shp1 = static_cast<unsigned short>(shape),
-		               shp2 = static_cast<unsigned short>(other.shape);
+		unsigned short shp1 = static_cast<unsigned short>(shape);
+		unsigned short shp2 = static_cast<unsigned short>(other.shape);
 		return (shp1 < shp2);
 	}
 	bool operator==(const Content_rules &other) const {

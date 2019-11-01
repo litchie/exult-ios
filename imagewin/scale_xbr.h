@@ -315,7 +315,10 @@ void Scale_xBR(
 		Dest_pixel *out = dest + Scaler::scale * (y * dline_pixels + srcx);
 
 		RGBColor<Manip_pixels, 2> const *sa2 = rgb_row_current + srcx; //center
-		RGBColor<Manip_pixels, 2> const *sa0, *sa1, *sa3, *sa4;
+		RGBColor<Manip_pixels, 2> const *sa0;
+		RGBColor<Manip_pixels, 2> const *sa1;
+		RGBColor<Manip_pixels, 2> const *sa3;
+		RGBColor<Manip_pixels, 2> const *sa4;
 
 		if (y <= 1) {
 			if (y == 1)
@@ -339,7 +342,14 @@ void Scale_xBR(
 
 		for (int x = srcx; x < srcx + srcw; ++x, ++sa0, ++sa1, ++sa2, ++sa3, ++sa4,
 		        out += Scaler::scale) {
-			RGBColor<Manip_pixels, 2> const *a0, *d0, *g0, *a1, *a, *d, *g, *g5;
+			RGBColor<Manip_pixels, 2> const *a0;
+			RGBColor<Manip_pixels, 2> const *d0;
+			RGBColor<Manip_pixels, 2> const *g0;
+			RGBColor<Manip_pixels, 2> const *a1;
+			RGBColor<Manip_pixels, 2> const *a;
+			RGBColor<Manip_pixels, 2> const *d;
+			RGBColor<Manip_pixels, 2> const *g;
+			RGBColor<Manip_pixels, 2> const *g5;
 
 			//all those bounds checks have only insignificant impact on performance!
 			if (x <= 1) {
@@ -376,9 +386,19 @@ void Scale_xBR(
 				g5 = &sa4[-1];
 			}
 
-			RGBColor<Manip_pixels, 2> const *b1 = &sa0[0], *b = &sa1[0],
-			                                 *e = &sa2[0], *h = &sa3[0], *h5 = &sa4[0],
-			                                  *c1, *c, *f, *i, *i5, *c4, *f4, *i4;
+			RGBColor<Manip_pixels, 2> const *b1 = &sa0[0];
+			RGBColor<Manip_pixels, 2> const *b = &sa1[0];
+			RGBColor<Manip_pixels, 2> const *e = &sa2[0];
+			RGBColor<Manip_pixels, 2> const *h = &sa3[0];
+			RGBColor<Manip_pixels, 2> const *h5 = &sa4[0];
+			RGBColor<Manip_pixels, 2> const *c1;
+			RGBColor<Manip_pixels, 2> const *c;
+			RGBColor<Manip_pixels, 2> const *f;
+			RGBColor<Manip_pixels, 2> const *i;
+			RGBColor<Manip_pixels, 2> const *i5;
+			RGBColor<Manip_pixels, 2> const *c4;
+			RGBColor<Manip_pixels, 2> const *f4;
+			RGBColor<Manip_pixels, 2> const *i4;
 
 			if (x >= sline_pixels - 2) {
 				if (x == sline_pixels - 1) {

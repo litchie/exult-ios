@@ -74,7 +74,9 @@ struct PCX_Header {
 };
 
 static void writeline(SDL_RWops *dst, Uint8 *buffer, int bytes) {
-	Uint8 value, count, tmp;
+	Uint8 value;
+	Uint8 count;
+	Uint8 tmp;
 	Uint8 *finish = buffer + bytes;
 
 	while (buffer < finish) {
@@ -111,7 +113,9 @@ static void save_8(SDL_RWops *dst, int width, int height,
 
 static void save_24(SDL_RWops *dst, int width, int height,
                     int pitch, const Uint8 *buffer) {
-	int x, y, c;
+	int x;
+	int y;
+	int c;
 	Uint8 *line;
 
 	line = new Uint8[width];
@@ -132,8 +136,11 @@ static bool save_image(SDL_Surface *surface, SDL_RWops *dst) {
 	Uint8 *cmap = nullptr;
 	Uint8 *pixels;
 	Uint8 tmp;
-	int width, height, pitch;
-	int colors = 0, i;
+	int width;
+	int height;
+	int pitch;
+	int colors = 0;
+	int i;
 	PCX_Header header;
 
 	width = surface->w;

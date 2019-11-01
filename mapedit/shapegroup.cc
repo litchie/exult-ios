@@ -64,7 +64,8 @@ Shape_group::Shape_group(
 	                           es->get_vgafile()->get_ifile());
 	// Read info. the first time.
 	vgafile->read_info(es->get_game_type(), true);
-	int i, cnt = vgafile->get_num_shapes();
+	int i;
+	int cnt = vgafile->get_num_shapes();
 	bool modified = file->modified;
 
 	if (builtin >= 0 && builtin <= 15) {
@@ -516,7 +517,9 @@ void ExultStudio::setup_groups(
 	                         glade_xml_get_widget(app_xml, "group_list"));
 	GtkTreeModel *oldmod = gtk_tree_view_get_model(tview);
 	GtkTreeStore *model;
-	gulong addsig = 0, delsig = 0, chgsig = 0;
+	gulong addsig = 0;
+	gulong delsig = 0;
+	gulong chgsig = 0;
 	if (!oldmod) {          // Create model first time.
 		model = gtk_tree_store_new(GRP_NUM_COLUMNS,
 		                           G_TYPE_STRING, G_TYPE_POINTER);

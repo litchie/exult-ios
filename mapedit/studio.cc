@@ -594,7 +594,8 @@ ExultStudio::ExultStudio(int argc, char **argv): glade_path(nullptr), static_pat
 	string data_path;
 	config->value("config/disk/data_path", data_path, EXULT_DATADIR);
 	setup_data_dir(data_path, argv[0]);
-	string dirstr, datastr;
+	string dirstr;
+	string datastr;
 	config->value("config/disk/data_path", datastr, EXULT_DATADIR);
 	add_system_path("<DATA>", datastr);
 
@@ -619,7 +620,8 @@ ExultStudio::ExultStudio(int argc, char **argv): glade_path(nullptr), static_pat
 	// More setting up...
 	// Connect signals automagically.
 	glade_xml_signal_autoconnect(app_xml);
-	int w, h;           // Get main window dims.
+	int w;
+	int h;           // Get main window dims.
 	config->value("config/estudio/main/width", w, 0);
 	config->value("config/estudio/main/height", h, 0);
 	if (w > 0 && h > 0)
@@ -679,7 +681,8 @@ ExultStudio::~ExultStudio() {
 	OleUninitialize();
 #endif
 	// Store main window size.
-	int w = app->allocation.width, h = app->allocation.height;
+	int w = app->allocation.width;
+	int h = app->allocation.height;
 	// Finish up external edits.
 	Shape_chooser::clear_editing_files();
 	config->set("config/estudio/main/width", w, true);
@@ -958,7 +961,8 @@ C_EXPORT void on_gameselect_ok_clicked(
 	GtkTreePath *path;
 	GtkTreeViewColumn *col;
 	gtk_tree_view_get_cursor(treeview, &path, &col);
-	int gamenum = -1, modnum = -1;
+	int gamenum = -1;
+	int modnum = -1;
 	char *text;
 	GtkTreeIter iter;
 	GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(treeview));
@@ -979,7 +983,8 @@ C_EXPORT void on_gameselect_ok_clicked(
 		//Get the mod's Exult menu string.
 		GtkTextBuffer *buff = gtk_text_view_get_buffer(GTK_TEXT_VIEW(
 		                          glade_xml_get_widget(app_xml, "gameselect_menustring")));
-		GtkTextIter startpos, endpos;
+		GtkTextIter startpos;
+		GtkTextIter endpos;
 		gtk_text_buffer_get_bounds(buff, &startpos, &endpos);
 		gchar *modmenu = gtk_text_iter_get_text(&startpos, &endpos);
 		codepageStr menu(modmenu, "CP437");
@@ -1360,7 +1365,8 @@ void add_to_tree(GtkTreeStore *model, const char *folderName,
 			startpos = commapos + 1;
 		}
 
-		string spath("<STATIC>"), ppath("<PATCH>");
+		string spath("<STATIC>");
+		string ppath("<PATCH>");
 		const char *ext = strstr(pattern, "*");
 		if (!ext)
 			ext = pattern;
@@ -1535,8 +1541,13 @@ bool ExultStudio::need_to_save(
 		Exult_server::wait_for_response(server_socket, 100);
 		int len = Exult_server::Receive_data(server_socket,
 		                                     id, data, sizeof(data));
-		int vers, edlift, hdlift, edmode;
-		bool editing, grid, mod;
+		int vers;
+		int edlift;
+		int hdlift;
+		int edmode;
+		bool editing;
+		bool grid;
+		bool mod;
 		if (id == Exult_server::info &&
 		        Game_info_in(data, len, vers, edlift, hdlift,
 		                     editing, grid, mod, edmode) &&
@@ -1782,7 +1793,8 @@ void ExultStudio::create_shape_file(
 	try {               // Write file.
 		if (oneshape) {         // Single-shape?
 			// Create one here.
-			const int w = c_tilesize, h = c_tilesize;
+			const int w = c_tilesize;
+			const int h = c_tilesize;
 			unsigned char pixels[w * h]; // Create an 8x8 shape.
 			memset(pixels, 1, w * h); // Just use color #1.
 			Shape shape(make_unique<Shape_frame>(pixels,
@@ -2319,9 +2331,9 @@ void ExultStudio::background_color_okay(
 	gdouble rgb[4];
 	gtk_color_selection_get_color(
 	    GTK_COLOR_SELECTION(colorsel->colorsel), rgb);
-	unsigned char r = static_cast<unsigned char>(rgb[0] * 256),
-	              g = static_cast<unsigned char>(rgb[1] * 256),
-	              b = static_cast<unsigned char>(rgb[2] * 256);
+	unsigned char r = static_cast<unsigned char>(rgb[0] * 256);
+	unsigned char g = static_cast<unsigned char>(rgb[1] * 256);
+	unsigned char b = static_cast<unsigned char>(rgb[2] * 256);
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->background_color = (r << 16) + (g << 8) + b;
 	// Show new color.
@@ -2677,8 +2689,13 @@ void ExultStudio::info_received(
     unsigned char *data,        // Message from Exult.
     int len
 ) {
-	int vers, edlift, hdlift, edmode;
-	bool editing, grid, mod;
+	int vers;
+	int edlift;
+	int hdlift;
+	int edmode;
+	bool editing;
+	bool grid;
+	bool mod;
 	Game_info_in(data, len, vers, edlift, hdlift,
 	             editing, grid, mod, edmode);
 	if (vers != Exult_server::version) {
@@ -2735,8 +2752,9 @@ int ExultStudio::find_palette_color(int r, int g, int b) {
 	long best_distance = 0xfffffff;
 	for (int i = 0; i < 256; i++) {
 		// Get deltas.
-		long dr = r - palbuf[3 * i], dg = g - palbuf[3 * i + 1],
-		     db = b - palbuf[3 * i + 2];
+		long dr = r - palbuf[3 * i];
+		long dg = g - palbuf[3 * i + 1];
+		long db = b - palbuf[3 * i + 2];
 		// Figure distance-squared.
 		long dist = dr * dr + dg * dg + db * db;
 		if (dist < best_distance) { // Better than prev?
@@ -2825,7 +2843,8 @@ C_EXPORT void on_gameinfo_apply_clicked(
 
 	GtkTextBuffer *buff = gtk_text_view_get_buffer(GTK_TEXT_VIEW(
 	                          glade_xml_get_widget(studio->get_xml(), "gameinfo_menustring")));
-	GtkTextIter startpos, endpos;
+	GtkTextIter startpos;
+	GtkTextIter endpos;
 	gtk_text_buffer_get_bounds(buff, &startpos, &endpos);
 	gchar *modmenu = gtk_text_iter_get_text(&startpos, &endpos);
 	// Titles need to be displayable in Exult menu, hence should not
@@ -2961,7 +2980,8 @@ void convertFromUTF8::convert(gchar *&_convstr, const char *str, const char *enc
 		return;
 	}
 	GError *error = nullptr;
-	gsize bytes_read, bytes_written;
+	gsize bytes_read;
+	gsize bytes_written;
 
 	// Try lossless encoding to specified codepage.
 	_convstr = g_convert(str, -1, enc, "UTF-8",
@@ -3030,7 +3050,8 @@ void convertToUTF8::convert(gchar *&_convstr, const char *str, const char *enc) 
 		return;
 	}
 	GError *error = nullptr;
-	gsize bytes_read, bytes_written;
+	gsize bytes_read;
+	gsize bytes_written;
 
 	// Try lossless encoding to specified codepage.
 	_convstr = g_convert(str, -1, "UTF-8", enc,

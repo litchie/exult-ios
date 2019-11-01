@@ -229,7 +229,9 @@ std::size_t fill_sysex_buffer(uint32 address_base, uint16 address_offset, uint32
 
 int main(int argc, char *argv[]) {
 	ignore_unused_variable_warning(argc, argv);
-	uint32 i, j, patch_num;
+	uint32 i;
+	uint32 j;
+	uint32 patch_num;
 	std::size_t num_to_write;
 
 	char name[11];

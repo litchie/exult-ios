@@ -123,9 +123,16 @@ static int dumpstring(sint32 len, const char *label)
    be linked to the event list */
 static MidiEventList *read_midi_event()
 {
-	static uint8 laststatus, lastchan;
-	static uint8 nrpn=0, rpn_msb[16], rpn_lsb[16]; /* one per channel */
-	uint8 me, type, a,b,c;
+	static uint8 laststatus;
+	static uint8 lastchan;
+	static uint8 nrpn=0;
+	static uint8 rpn_msb[16];
+	static uint8 rpn_lsb[16]; /* one per channel */
+	uint8 me;
+	uint8 type;
+	uint8 a;
+	uint8 b;
+	uint8 c;
 	sint32 len;
 	MidiEventList *event;
 	size_t err;
@@ -318,7 +325,8 @@ static MidiEventList *read_midi_event()
 static int read_track(int append)
 {
 	MidiEventList *meep;
-	MidiEventList *next, *new_event;
+	MidiEventList *next;
+	MidiEventList *new_event;
 	sint32 len;
 	char tmp[4];
 
@@ -377,7 +385,8 @@ static int read_track(int append)
 /* Free the linked event list from memory. */
 static void free_midi_list()
 {
-	MidiEventList *meep, *next;
+	MidiEventList *meep;
+	MidiEventList *next;
 	if (!(meep=evlist)) return;
 	while (meep)
 	{
@@ -394,12 +403,24 @@ static void free_midi_list()
  Free the linked list. */
 static MidiEvent *groom_list(sint32 divisions,sint32 *eventsp,sint32 *samplesp)
 {
-	MidiEvent *groomed_list, *lp;
+	MidiEvent *groomed_list;
+	MidiEvent *lp;
 	MidiEventList *meep;
-	sint32 i, our_event_count, tempo, skip_this_event, new_value;
-	sint32 sample_cum, samples_to_do, at, st, dt, counting_time;
+	sint32 i;
+	sint32 our_event_count;
+	sint32 tempo;
+	sint32 skip_this_event;
+	sint32 new_value;
+	sint32 sample_cum;
+	sint32 samples_to_do;
+	sint32 at;
+	sint32 st;
+	sint32 dt;
+	sint32 counting_time;
 
-	int current_bank[16], current_set[16], current_program[16];
+	int current_bank[16];
+	int current_set[16];
+	int current_program[16];
 	/* Or should each bank have its own current program? */
 
 	for (i=0; i<16; i++)
@@ -549,8 +570,11 @@ static MidiEvent *groom_list(sint32 divisions,sint32 *eventsp,sint32 *samplesp)
 
 MidiEvent *read_midi_file(FILE *mfp, sint32 *count, sint32 *sp)
 {
-	sint32 len, divisions;
-	sint16 format, tracks, divisions_tmp;
+	sint32 len;
+	sint32 divisions;
+	sint16 format;
+	sint16 tracks;
+	sint16 divisions_tmp;
 	int i;
 	char tmp[4];
 	size_t err;

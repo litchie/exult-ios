@@ -257,7 +257,9 @@ Spellbook_gump::Spellbook_gump(
 	set_object_area(Rectangle(36, 28, 102, 66), 7, 54);
 
 	// Where to paint page marks:
-	const int lpagex = 43, rpagex = 137, lrpagey = 25;
+	const int lpagex = 43;
+	const int rpagex = 137;
+	const int lrpagey = 25;
 	// Get book's top owner.
 	book_owner = book->get_outermost();
 	set_avail();            // Figure spell counts.
@@ -435,7 +437,8 @@ void Spellbook_gump::paint_button(
 
 void Spellbook_gump::paint(
 ) {
-	const int numx = 1, numy = -4;// Where to draw numbers on spells,
+	const int numx = 1;
+	const int numy = -4;// Where to draw numbers on spells,
 	//   with numx being the right edge.
 	Gump::paint();          // Paint outside & checkmark.
 	if (page > 0)           // Not the first?
@@ -484,7 +487,8 @@ void Spellbook_gump::paint(
 	if (book->bookmark >= 0)    // Bookmark?
 		paint_button(bookmark);
 	if (turning_page) {     // Animate turning page.
-		const int TPXOFF = 5, TPYOFF = 3;
+		const int TPXOFF = 5;
+		const int TPYOFF = 3;
 		ShapeID shape(TURNINGPAGE, turning_frame, SF_GUMPS_VGA);
 		Shape_frame *fr = shape.get_shape();
 		int spritex = x + object_area.x + fr->get_xleft() + TPXOFF;

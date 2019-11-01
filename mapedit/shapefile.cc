@@ -274,7 +274,8 @@ void Npcs_file_info::setup(
 	// Should get immediate answer.
 	unsigned char buf[Exult_server::maxlength];
 	Exult_server::Msg_type id;
-	int num_npcs, datalen;
+	int num_npcs;
+	int datalen;
 	if (Send_data(server_socket, Exult_server::npc_unused) == -1 ||
 	        !Exult_server::wait_for_response(server_socket, 100) ||
 	        (datalen = Exult_server::Receive_data(server_socket,
@@ -559,7 +560,8 @@ Shape_file_info *Shape_file_set::create(
 	// Look in 'static', 'patch'.
 	string sstr = string("<STATIC>/") + basename;
 	string pstr = string("<PATCH>/") + basename;
-	const char *spath = sstr.c_str(), *ppath = pstr.c_str();
+	const char *spath = sstr.c_str();
+	const char *ppath = pstr.c_str();
 	bool sexists = U7exists(spath);
 	bool pexists = U7exists(ppath);
 	if (!sexists && !pexists)   // Neither place.  Try to create.

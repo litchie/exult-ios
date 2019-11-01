@@ -490,7 +490,8 @@ extern int ZEXPORT zipWriteInFileInZip(zipFile file, const voidp buf, unsigned l
 			file->ci.pos_in_buffered_data += (file->ci.stream.total_out - uTotalOutBefore) ;
 
 		} else {
-			uInt copy_this, i;
+			uInt copy_this;
+			uInt i;
 			if (file->ci.stream.avail_in < file->ci.stream.avail_out)
 				copy_this = file->ci.stream.avail_in;
 			else

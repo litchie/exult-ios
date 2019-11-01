@@ -327,7 +327,8 @@ void Combat_schedule::find_opponents(
 ) {
 	opponents.clear();
 	Game_window *gwin = Game_window::get_instance();
-	Actor_vector nearby, sleeping;            // Get all nearby NPC's.
+	Actor_vector nearby;
+	Actor_vector sleeping;            // Get all nearby NPC's.
 	gwin->get_nearby_npcs(nearby);
 	Actor *avatar = gwin->get_main_actor();
 	nearby.push_back(avatar);   // Incl. Avatar!
@@ -424,7 +425,8 @@ list<Game_object_weak>::iterator Combat_schedule::find_protected_attacker(
 	if (!prot_actor)        // Not found?
 		return opponents.end();
 	// Find closest attacker.
-	int dist, best_dist = 4 * c_tiles_per_chunk;
+	int dist;
+	int best_dist = 4 * c_tiles_per_chunk;
 	list<Game_object_weak>::iterator best_opp = opponents.end();
 	for (list<Game_object_weak>::iterator it = opponents.begin();
 	        it != opponents.end(); ++it) {
@@ -487,7 +489,8 @@ Game_object *Combat_schedule::find_foe(
 	list<Game_object_weak>::iterator new_opp_link = opponents.end();
 	switch (static_cast<Actor::Attack_mode>(mode)) {
 	case Actor::weakest: {
-		int str, least_str = 100;
+		int str;
+		int least_str = 100;
 		for (list<Game_object_weak>::iterator it = opponents.begin();
 		        it != opponents.end(); ++it) {
 	    	Actor_shared opp = std::static_pointer_cast<Actor>((*it).lock());
@@ -502,7 +505,8 @@ Game_object *Combat_schedule::find_foe(
 		break;
 	}
 	case Actor::strongest: {
-		int str, best_str = -100;
+		int str;
+		int best_str = -100;
 		for (list<Game_object_weak>::iterator it = opponents.begin();
 		        it != opponents.end(); ++it) {
 	    	Actor_shared opp = std::static_pointer_cast<Actor>((*it).lock());
@@ -573,7 +577,8 @@ void Combat_schedule::back_off(
 	Actor *npc,
     Game_object *attacker
 ) {
-	int points, weapon_shape;
+	int points;
+	int weapon_shape;
 	Game_object *weapon;
 	const Weapon_info *winf = npc->get_weapon(points, weapon_shape, weapon);
 	int weapon_dist = winf ? winf->get_range() : 3;
@@ -581,9 +586,10 @@ void Combat_schedule::back_off(
 	Game_object *opponent = npc->get_target();
 	if (opponent == attacker && weapon_dist <= attacker_dist)
 	    return;	 			 			// Stay within our weapon's range.
-	Tile_coord npc_tile = npc->get_tile(), attacker_tile = attacker->get_tile();
-	int dx = npc_tile.tx - attacker_tile.ty,
-	    dy = npc_tile.ty - attacker_tile.ty;
+	Tile_coord npc_tile = npc->get_tile();
+	Tile_coord attacker_tile = attacker->get_tile();
+	int dx = npc_tile.tx - attacker_tile.ty;
+	int dy = npc_tile.ty - attacker_tile.ty;
 	dx = dx < 0 ? -1 : dx > 0 ? 1 : 0;
 	dy = dy < 0 ? -1 : dy > 0 ? 1 : 0;
     Tile_coord spots[3];
@@ -1541,7 +1547,9 @@ void Ready_duel_weapon(
 	Game_object *weap = npc->get_readied(lhand);
 	if (!weap || weap->get_shapenum() != wshape) {
 		// Need a bow.
-		Game_object_shared newweap, keep, newkeep;
+		Game_object_shared newweap;
+		Game_object_shared keep;
+		Game_object_shared newkeep;
 		Game_object *found =
 		    npc->find_item(wshape, c_any_qual, c_any_framenum);
 		if (found) {        // Have it?

@@ -80,9 +80,9 @@ static void Write_palette(
     GdkRgbCmap *pal         // Palette to write.
 ) {
 	for (int i = 0; i < 256; i++) {
-		int r = (pal->colors[i] >> 16) & 255,
-		    g = (pal->colors[i] >> 8) & 255,
-		    b = pal->colors[i] & 255;
+		int r = (pal->colors[i] >> 16) & 255;
+		int g = (pal->colors[i] >> 8) & 255;
+		int b = pal->colors[i] & 255;
 		buf[3 * i] = r / 4; // Range 0-63.
 		buf[3 * i + 1] = g / 4;
 		buf[3 * i + 2] = b / 4;
@@ -159,7 +159,8 @@ void Palette_edit::load(
 
 void Palette_edit::render(
 ) {
-	int neww = draw->allocation.width, newh = draw->allocation.height;
+	int neww = draw->allocation.width;
+	int newh = draw->allocation.height;
 	// Changed size?
 	if (neww != width || newh != height) {
 		delete [] image;
@@ -168,9 +169,11 @@ void Palette_edit::render(
 		image = new guchar[width * height];
 	}
 	// Figure cell size.
-	int eachw = width / 16, eachh = height / 16;
+	int eachw = width / 16;
+	int eachh = height / 16;
 	// Figure extra pixels.
-	int extraw = width % 16, extrah = height % 16;
+	int extraw = width % 16;
+	int extrah = height % 16;
 	int color = 0;          // Color index.
 	int cury = 0;
 	unsigned char *out = image;
@@ -184,7 +187,8 @@ void Palette_edit::render(
 			}
 	}
 	if (selected >= 0) {    // Update selected box.
-		int selx = selected % 16, sely = selected / 16;
+		int selx = selected % 16;
+		int sely = selected / 16;
 		selected_box.x = selx * eachw;
 		selected_box.y = sely * eachh;
 		selected_box.w = eachw;
@@ -248,9 +252,9 @@ void Palette_edit::color_okay(
 		gdouble rgb[4];
 		gtk_color_selection_get_color(
 		    GTK_COLOR_SELECTION(paled->colorsel->colorsel), rgb);
-		unsigned char r = static_cast<unsigned char>(rgb[0] * 256),
-		              g = static_cast<unsigned char>(rgb[1] * 256),
-		              b = static_cast<unsigned char>(rgb[2] * 256);
+		unsigned char r = static_cast<unsigned char>(rgb[0] * 256);
+		unsigned char g = static_cast<unsigned char>(rgb[1] * 256);
+		unsigned char b = static_cast<unsigned char>(rgb[2] * 256);
 		if (paled->selected >= 0)
 			paled->palettes[paled->cur_pal]->colors[
 			    paled->selected] =
@@ -351,15 +355,20 @@ gint Palette_edit::mouse_press(
 	if (paled->colorsel)
 		return (TRUE);      // Already editing a color.
 	int old_selected = paled->selected;
-	int width = paled->width, height = paled->height;
-	int eventx = static_cast<int>(event->x), eventy = static_cast<int>(event->y);
+	int width = paled->width;
+	int height = paled->height;
+	int eventx = static_cast<int>(event->x);
+	int eventy = static_cast<int>(event->y);
 	// Figure cell size.
-	int eachw = width / 16, eachh = height / 16;
+	int eachw = width / 16;
+	int eachh = height / 16;
 	// Figure extra pixels.
-	int extraw = width % 16, extrah = height % 16;
+	int extraw = width % 16;
+	int extrah = height % 16;
 	int extrax = extraw * (eachw + 1); // Total length of extra-sized boxes.
 	int extray = extrah * (eachh + 1);
-	int selx, sely;         // Gets box indices.
+	int selx;
+	int sely;         // Gets box indices.
 	if (eventx < extrax)
 		selx = eventx / (eachw + 1);
 	else
@@ -910,9 +919,9 @@ void Palette_edit::export_palette(
 			break;
 	int last_color = i;
 	for (i = 0; i <= last_color; i++) {
-		int r = (pal->colors[i] >> 16) & 255,
-		    g = (pal->colors[i] >> 8) & 255,
-		    b = pal->colors[i] & 255;
+		int r = (pal->colors[i] >> 16) & 255;
+		int g = (pal->colors[i] >> 8) & 255;
+		int b = pal->colors[i] & 255;
 		out << setw(3) << r << ' ' << setw(3) << g << ' ' <<
 		    setw(3) << b << endl;
 	}
@@ -952,7 +961,9 @@ void Palette_edit::import_palette(
 			ptr++;
 		if (*ptr == '#')
 			continue;   // Comment.
-		int r, g, b;
+		int r;
+		int g;
+		int b;
 		if (sscanf(buf, "%d %d %d", &r, &g, &b) == 3)
 			pal->colors[i++] = (r << 16) + (g << 8) + b;
 	}

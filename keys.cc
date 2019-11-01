@@ -503,7 +503,8 @@ void KeyBinder::ShowHelp() const {
 
 	scroll->paint();
 	do {
-		int x, y;
+		int x;
+		int y;
 		Get_click(x, y, Mouse::hand, nullptr, false, scroll);
 	} while (scroll->show_next_page());
 	Game_window::get_instance()->paint();
@@ -521,7 +522,8 @@ void KeyBinder::ShowCheatHelp() const {
 
 	scroll->paint();
 	do {
-		int x, y;
+		int x;
+		int y;
 		Get_click(x, y, Mouse::hand, nullptr, false, scroll);
 	} while (scroll->show_next_page());
 	Game_window::get_instance()->paint();
@@ -539,7 +541,8 @@ void KeyBinder::ShowMapeditHelp() const {
 
 	scroll->paint();
 	do {
-		int x, y;
+		int x;
+		int y;
 		Get_click(x, y, Mouse::hand, nullptr, false, scroll);
 	} while (scroll->show_next_page());
 	Game_window::get_instance()->paint();
@@ -588,7 +591,8 @@ void KeyBinder::ShowBrowserKeys() const {
 	scroll->add_text(returned_key);
 	scroll->paint();
 	do {
-		int x, y;
+		int x;
+		int y;
 		Get_click(x, y, Mouse::hand, nullptr, false, scroll);
 	} while (scroll->show_next_page());
 	Game_window::get_instance()->paint();
@@ -596,7 +600,8 @@ void KeyBinder::ShowBrowserKeys() const {
 }
 
 void KeyBinder::ParseText(char *text, int len) {
-	char *ptr, *end;
+	char *ptr;
+	char *end;
 	const char LF = '\n';
 
 	ptr = text;
@@ -622,8 +627,11 @@ void KeyBinder::ParseLine(char *line) {
 	ActionType a;
 	k.sym      = SDLK_UNKNOWN;
 	k.mod      = KMOD_NONE;
-	string s = line, u;
-	string d, desc, keycode;
+	string s = line;
+	string u;
+	string d;
+	string desc;
+	string keycode;
 	bool show;
 
 	skipspace(s);

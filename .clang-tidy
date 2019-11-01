@@ -1,5 +1,7 @@
 Checks: "-*\
 ,modernize-use-bool-literals\
+,readability-isolate-declaration\
+,-readability-magic-numbers\
 ,readability-misleading-indentation\
 ,readability-misplaced-array-index\
 ,-readability-named-parameter\

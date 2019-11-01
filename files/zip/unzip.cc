@@ -263,7 +263,8 @@ static uLong unzlocal_SearchCentralDir(FILE *fin) {
 
 	uBackRead = 4;
 	while (uBackRead < uMaxBack) {
-		uLong uReadSize, uReadPos ;
+		uLong uReadSize;
+		uLong uReadPos ;
 		int i;
 		if (uBackRead + BUFREADCOMMENT > uMaxBack)
 			uBackRead = uMaxBack;
@@ -305,7 +306,8 @@ static uLong unzlocal_SearchCentralDir(FILE *fin) {
 extern unzFile ZEXPORT unzOpen(const char *path) {
 	unz_s us;
 	unz_s *s;
-	uLong central_pos, uL;
+	uLong central_pos;
+	uLong uL;
 	FILE *fin ;
 
 	uLong number_disk;          /* number of the current dist, used for
@@ -716,7 +718,9 @@ static int unzlocal_CheckCurrentFileCoherencyHeader(unz_s *s,
         uInt *piSizeVar,
         uLong *poffset_local_extrafield,
         uInt *psize_local_extrafield) {
-	uLong uMagic, uData, uFlags;
+	uLong uMagic;
+	uLong uData;
+	uLong uFlags;
 	uLong size_filename;
 	uLong size_extra_field;
 	int err = UNZ_OK;
@@ -943,7 +947,8 @@ extern int ZEXPORT unzReadCurrentFile(unzFile file, voidp buf, unsigned len) {
 		}
 
 		if (pfile_in_zip_read_info->compression_method == 0) {
-			uInt uDoCopy, i ;
+			uInt uDoCopy;
+			uInt i ;
 			if (pfile_in_zip_read_info->stream.avail_out <
 			        pfile_in_zip_read_info->stream.avail_in)
 				uDoCopy = pfile_in_zip_read_info->stream.avail_out ;
@@ -965,7 +970,8 @@ extern int ZEXPORT unzReadCurrentFile(unzFile file, voidp buf, unsigned len) {
 			pfile_in_zip_read_info->stream.total_out += uDoCopy;
 			iRead += uDoCopy;
 		} else {
-			uLong uTotalOutBefore, uTotalOutAfter;
+			uLong uTotalOutBefore;
+			uLong uTotalOutAfter;
 			const Bytef *bufBefore;
 			uLong uOutThis;
 			int flush = Z_SYNC_FLUSH;

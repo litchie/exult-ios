@@ -97,7 +97,8 @@ int Font::paint_text_box(
 	const char *start = text;   // Remember the start.
 	win->set_clip(x, y, w, h);
 	int endx = x + w;       // Figure where to stop.
-	int curx = x, cury = y;
+	int curx = x;
+	int cury = y;
 	int height = get_text_height() + vert_lead + ver_lead;
 	int space_width = get_text_width(" ", 1);
 	int max_lines = h / height; // # lines that can be shown.
@@ -105,7 +106,8 @@ int Font::paint_text_box(
 	int cur_line = 0;
 	const char *last_punct_end = nullptr;// ->last period, qmark, etc.
 	// Last punct in 'lines':
-	int last_punct_line = -1, last_punct_offset = -1;
+	int last_punct_line = -1;
+	int last_punct_offset = -1;
 	int coff = -1;
 
 	if (cursor) {
@@ -321,14 +323,16 @@ int Font::paint_text_box_fixedwidth(
 	const char *start = text;   // Remember the start.
 	win->set_clip(x, y, w, h);
 	int endx = x + w;       // Figure where to stop.
-	int curx = x, cury = y;
+	int curx = x;
+	int cury = y;
 	int height = get_text_height() + vert_lead + ver_lead;
 	int max_lines = h / height; // # lines that can be shown.
 	string *lines = new string[max_lines + 1];
 	int cur_line = 0;
 	const char *last_punct_end = nullptr;// ->last period, qmark, etc.
 	// Last punct in 'lines':
-	int last_punct_line = -1, last_punct_offset = -1;
+	int last_punct_line = -1;
+	int last_punct_offset = -1;
 
 	while (*text) {
 		switch (*text) {    // Special cases.
@@ -555,7 +559,8 @@ int Font::find_cursor(
 ) {
 	const char *start = text;   // Remember the start.
 	int endx = x + w;       // Figure where to stop.
-	int curx = x, cury = y;
+	int curx = x;
+	int cury = y;
 	int height = get_text_height() + vert_lead + ver_lead;
 	int space_width = get_text_width(" ", 1);
 	int max_lines = h / height; // # lines that can be shown.

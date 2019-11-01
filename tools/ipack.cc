@@ -308,7 +308,8 @@ static void Read_script(
 			specs.resize(shnum + 1);
 		specs[shnum].flat = (strncmp(past_end, "flat", 4) == 0);
 		specs[shnum].nframes = nframes;
-		char fname[300], dir[300];
+		char fname[300];
+		char dir[300];
 		int dim0_cnt;       // See if it's a tiles spec.
 		if (sscanf(ptr, "%[^(](%d %s)", &fname[0], &dim0_cnt, &dir[0])
 		        == 3) {
@@ -422,9 +423,9 @@ static void Write_text_palette(
 			break;
 	int last_color = i;
 	for (i = 0; i <= last_color; i++) {
-		int r = palette[3 * i],
-		    g = palette[3 * i + 1],
-		    b = palette[3 * i + 2];
+		int r = palette[3 * i];
+		int g = palette[3 * i + 1];
+		int b = palette[3 * i + 2];
 		pout << setw(3) << r << ' ' << setw(3) << g << ' ' <<
 		     setw(3) << b << endl;
 	}
@@ -448,11 +449,13 @@ static void Write_frame(
 	char *fullname = new char[strlen(basename) + 30];
 	sprintf(fullname, "%s%02d.png", basename, frnum);
 	cout << "Writing " << fullname << endl;
-	int w = frame->get_width(), h = frame->get_height();
+	int w = frame->get_width();
+	int h = frame->get_height();
 	Image_buffer8 img(w, h);    // Render into a buffer.
 	img.fill8(transp);      // Fill with transparent pixel.
 	frame->paint(&img, frame->get_xleft(), frame->get_yabove());
-	int xoff = 0, yoff = 0;
+	int xoff = 0;
+	int yoff = 0;
 	if (frame->is_rle()) {
 		xoff = -frame->get_xright();
 		yoff = -frame->get_ybelow();
@@ -614,7 +617,8 @@ static void Write_exult_from_tiles(
 	     << (bycol ? ", by cols" : ", by rows") << " first" << endl;
 	// Figure #tiles in other dim.
 	int dim1_cnt = (nframes + dim0_cnt - 1) / dim0_cnt;
-	int needw, needh;       // Figure min. image dims.
+	int needw;
+	int needh;       // Figure min. image dims.
 	if (bycol) {
 		needh = dim0_cnt * 8;
 		needw = dim1_cnt * 8;
@@ -623,8 +627,14 @@ static void Write_exult_from_tiles(
 		needh = dim1_cnt * 8;
 	}
 	// Save starting position.
-	int w, h, rowsize, xoff, yoff, palsize;
-	unsigned char *pixels, *palette;
+	int w;
+	int h;
+	int rowsize;
+	int xoff;
+	int yoff;
+	int palsize;
+	unsigned char *pixels;
+	unsigned char *palette;
 	// Import, with 255 = transp. index.
 	if (!Import_png8(filename, 255, w, h, rowsize, xoff, yoff,
 	                 pixels, palette, palsize))
@@ -635,7 +645,8 @@ static void Write_exult_from_tiles(
 		exit(1);
 	}
 	for (int frnum = 0; frnum < nframes; frnum++) {
-		int x, y;
+		int x;
+		int y;
 		if (bycol) {
 			y = frnum % dim0_cnt;
 			x = frnum / dim0_cnt;
@@ -673,13 +684,20 @@ static void Write_exult(
 	for (frnum = 0; frnum < nframes; frnum++) {
 		sprintf(fullname, "%s%02d.png", basename, frnum);
 		cout << "Reading " << fullname << endl;
-		int w, h, rowsize, xoff, yoff, palsize;
-		unsigned char *pixels, *palette;
+		int w;
+		int h;
+		int rowsize;
+		int xoff;
+		int yoff;
+		int palsize;
+		unsigned char *pixels;
+		unsigned char *palette;
 		// Import, with 255 = transp. index.
 		if (!Import_png8(fullname, 255, w, h, rowsize, xoff, yoff,
 		                 pixels, palette, palsize))
 			throw file_read_exception(fullname);
-		int xleft, yabove;
+		int xleft;
+		int yabove;
 		if (flat) {
 			xleft = yabove = 8;
 			if (w != 8 || h != 8 || rowsize != 8) {
@@ -850,7 +868,8 @@ int main(
 	if (argc < 3 || argv[1][0] != '-')
 		Usage();        // (Exits.)
 	char *scriptname = argv[2];
-	char *imagename = nullptr, *palname = nullptr;
+	char *imagename = nullptr;
+	char *palname = nullptr;
 	Shape_specs specs;      // Shape specs. stored here.
 	ifstream specin;
 	try {

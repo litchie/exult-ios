@@ -149,11 +149,11 @@ Tile_coord Game_object::get_center_tile(
 		                  0);
 	}
 	int frame = get_framenum();
-	int dx = (get_info().get_3d_xtiles(frame) - 1) >> 1,
-	    dy = (get_info().get_3d_ytiles(frame) - 1) >> 1,
-	    dz = (get_info().get_3d_height() * 3) / 4;
-	int x = chunk->cx * c_tiles_per_chunk + tx - dx,
-	    y = chunk->cy * c_tiles_per_chunk + ty - dy;
+	int dx = (get_info().get_3d_xtiles(frame) - 1) >> 1;
+	int dy = (get_info().get_3d_ytiles(frame) - 1) >> 1;
+	int dz = (get_info().get_3d_height() * 3) / 4;
+	int x = chunk->cx * c_tiles_per_chunk + tx - dx;
+	int y = chunk->cy * c_tiles_per_chunk + ty - dy;
 	return Tile_coord(x, y, lift + dz);
 }
 
@@ -170,9 +170,9 @@ Tile_coord Game_object::get_missile_tile(
 		                  0);
 	}
 	int frame = get_framenum();
-	int dx = get_info().get_3d_xtiles(frame) - 1,
-	    dy = get_info().get_3d_ytiles(frame) - 1,
-	    dz = (get_info().get_3d_height() * 3) / 4;
+	int dx = get_info().get_3d_xtiles(frame) - 1;
+	int dy = get_info().get_3d_ytiles(frame) - 1;
+	int dz = (get_info().get_3d_height() * 3) / 4;
 	/*switch (dir)
 	    {
 	    case south:
@@ -191,8 +191,8 @@ Tile_coord Game_object::get_missile_tile(
 	        dy = -1;
 	        break;
 	    }*/
-	int x = chunk->cx * c_tiles_per_chunk + tx - dx / 2,
-	    y = chunk->cy * c_tiles_per_chunk + ty - dy / 2;
+	int x = chunk->cx * c_tiles_per_chunk + tx - dx / 2;
+	int y = chunk->cy * c_tiles_per_chunk + ty - dy / 2;
 	return Tile_coord(x, y, lift + dz);
 }
 
@@ -238,12 +238,15 @@ static inline void delta_wrap_check(
 int Game_object::distance(
     Game_object *o2
 ) const {
-	Tile_coord t1 = get_tile(), t2 = o2->get_tile();
-	const Shape_info &info1 = get_info(), info2 = o2->get_info();
-	int f1 = get_framenum(), f2 = o2->get_framenum();
-	int dx = Tile_coord::delta(t1.tx, t2.tx),
-	    dy = Tile_coord::delta(t1.ty, t2.ty),
-	    dz = t1.tz - t2.tz;
+	Tile_coord t1 = get_tile();
+	Tile_coord t2 = o2->get_tile();
+	const Shape_info &info1 = get_info();
+	const Shape_info info2 = o2->get_info();
+	int f1 = get_framenum();
+	int f2 = o2->get_framenum();
+	int dx = Tile_coord::delta(t1.tx, t2.tx);
+	int dy = Tile_coord::delta(t1.ty, t2.ty);
+	int dz = t1.tz - t2.tz;
 	delta_wrap_check(dx, info1.get_3d_xtiles(f1) - 1,
 	                 info2.get_3d_xtiles(f2) - 1, t1.tx, t2.tx);
 	delta_wrap_check(dy, info1.get_3d_ytiles(f1) - 1,
@@ -263,9 +266,9 @@ int Game_object::distance(
 	Tile_coord t1 = get_tile();
 	const Shape_info &info1 = get_info();
 	int f1 = get_framenum();
-	int dx = Tile_coord::delta(t1.tx, t2.tx),
-	    dy = Tile_coord::delta(t1.ty, t2.ty),
-	    dz = t1.tz - t2.tz;
+	int dx = Tile_coord::delta(t1.tx, t2.tx);
+	int dy = Tile_coord::delta(t1.ty, t2.ty);
+	int dz = t1.tz - t2.tz;
 	delta_wrap_check(dx, info1.get_3d_xtiles(f1) - 1, 0, t1.tx, t2.tx);
 	delta_wrap_check(dy, info1.get_3d_ytiles(f1) - 1, 0, t1.ty, t2.ty);
 	delta_check(dz, info1.get_3d_height(), 0, t1.tz, t2.tz);
@@ -557,7 +560,8 @@ void Game_object::move(
     int newmap
 ) {
 	// Figure new chunk.
-	int newcx = newtx / c_tiles_per_chunk, newcy = newty / c_tiles_per_chunk;
+	int newcx = newtx / c_tiles_per_chunk;
+	int newcy = newty / c_tiles_per_chunk;
 	Game_map *objmap = newmap >= 0 ? gwin->get_map(newmap) : get_map();
 	if (!objmap) objmap = gmap;
 	Map_chunk *newchunk = objmap->get_chunk_safely(newcx, newcy);
@@ -606,7 +610,8 @@ int Game_object::swap_positions(
 		return 0;       // Not the same size.
 	Tile_coord p1 = get_tile();
 	Tile_coord p2 = obj2->get_tile();
-    Game_object_shared keep1, keep2;
+    Game_object_shared keep1;
+    Game_object_shared keep2;
 	remove_this(&keep1);         // Remove (but don't delete) each.
 	set_invalid();
 	obj2->remove_this(&keep2);
@@ -734,8 +739,8 @@ public:
 	Object_closest_sorter(Tile_coord const &p) : pos(p)
 	{  }
 	bool operator()(const Game_object *o1, const Game_object *o2) {
-		Tile_coord t1 = o1->get_tile(),
-		           t2 = o2->get_tile();
+		Tile_coord t1 = o1->get_tile();
+		Tile_coord t2 = o2->get_tile();
 		return t1.distance(pos) < t2.distance(pos);
 	}
 };
@@ -907,10 +912,12 @@ int Game_object::is_closed_door(
 		return 0;
 	// Get door's footprint.
 	int frame = get_framenum();
-	int xtiles = info.get_3d_xtiles(frame), ytiles = info.get_3d_ytiles(frame);
+	int xtiles = info.get_3d_xtiles(frame);
+	int ytiles = info.get_3d_ytiles(frame);
 	// Get its location.
 	Tile_coord doortile = get_tile();
-	Tile_coord before, after;   // Want tiles to both sides.
+	Tile_coord before;
+	Tile_coord after;   // Want tiles to both sides.
 	if (xtiles > ytiles) {      // Horizontal footprint?
 		before = doortile + Tile_coord(-xtiles, 0, 0);
 		after = doortile + Tile_coord(1, 0, 0);
@@ -981,7 +988,8 @@ void Game_object::say(
 
 void Game_object::paint(
 ) {
-	int x, y;
+	int x;
+	int y;
 	gwin->get_shape_location(this, x, y);
 	paint_shape(x, y);
 }
@@ -993,7 +1001,8 @@ void Game_object::paint(
 void Game_object::paint_outline(
     Pixel_colors pix        // Color to use.
 ) {
-	int x, y;
+	int x;
+	int y;
 	gwin->get_shape_location(this, x, y);
 	ShapeID::paint_outline(x, y, pix);
 }
@@ -1052,8 +1061,12 @@ void Game_object::update_from_studio(
 ) {
 #ifdef USE_EXULTSTUDIO
 	Game_object *obj;
-	int tx, ty, tz;
-	int shape, frame, quality;
+	int tx;
+	int ty;
+	int tz;
+	int shape;
+	int frame;
+	int quality;
 	std::string name;
 	if (!Object_in(data, datalen, obj, tx, ty, tz, shape, frame,
 	               quality, name)) {
@@ -1299,10 +1312,14 @@ int Game_object::compare(
 #ifdef DEBUGLT
 	Debug_lt(inf1.tx, inf1.ty, inf2.tx, inf2.ty);
 #endif
-	int xcmp, ycmp, zcmp;       // Comparisons for a given dimension:
+	int xcmp;
+	int ycmp;
+	int zcmp;       // Comparisons for a given dimension:
 	//   -1 if o1<o2, 0 if o1==o2,
 	//    1 if o1>o2.
-	bool xover, yover, zover;   // True if dim's overlap.
+	bool xover;
+	bool yover;
+	bool zover;   // True if dim's overlap.
 	Compare_ranges(inf1.xleft, inf1.xright, inf2.xleft, inf2.xright,
 	               xcmp, xover);
 	Compare_ranges(inf1.yfar, inf1.ynear, inf2.yfar, inf2.ynear,
@@ -1712,7 +1729,8 @@ void Ifix_game_object::remove_this(
     Game_object_shared *keep     // Non-null to not delete.
 ) {
 	if (chunk) {        // Mark superchunk as 'modified'.
-		int cx = get_cx(), cy = get_cy();
+		int cx = get_cx();
+		int cy = get_cy();
 		get_map()->set_ifix_modified(cx, cy);
 	}
 	Game_object::remove_this(keep);
@@ -1729,7 +1747,8 @@ void Ifix_game_object::write_ifix(
 	unsigned char buf[5];
 	buf[0] = (tx << 4) | ty;
 	buf[1] = lift;
-	int shapenum = get_shapenum(), framenum = get_framenum();
+	int shapenum = get_shapenum();
+	int framenum = get_framenum();
 	if (v2) {
 		buf[2] = shapenum & 0xff;
 		buf[3] = (shapenum >> 8) & 0xff;

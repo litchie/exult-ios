@@ -142,8 +142,8 @@ public:
 		set_paperdoll_frame(3, f3);
 	}
 	bool operator<(const Paperdoll_item &other) const {
-		unsigned short wf1 = static_cast<unsigned short>(world_frame),
-		               wf2 = static_cast<unsigned short>(other.world_frame);
+		unsigned short wf1 = static_cast<unsigned short>(world_frame);
+		unsigned short wf2 = static_cast<unsigned short>(other.world_frame);
 		return (wf1 < wf2)
 		       || (world_frame == other.world_frame && spot < other.spot);
 	}

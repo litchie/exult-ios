@@ -326,7 +326,8 @@ int Monster_actor::step(
 	// Get old chunk.
 	Map_chunk *olist = get_chunk();
 	// Get chunk.
-	int cx = t.tx / c_tiles_per_chunk, cy = t.ty / c_tiles_per_chunk;
+	int cx = t.tx / c_tiles_per_chunk;
+	int cy = t.ty / c_tiles_per_chunk;
 	// Get ->new chunk.
 	Map_chunk *nlist = gmap->get_chunk(cx, cy);
 	nlist->setup_cache();       // Setup cache if necessary.
@@ -344,7 +345,8 @@ int Monster_actor::step(
 	add_dirty();            // Set to repaint old area.
 	// Move it.
 	// Get rel. tile coords.
-	int tx = t.tx % c_tiles_per_chunk, ty = t.ty % c_tiles_per_chunk;
+	int tx = t.tx % c_tiles_per_chunk;
+	int ty = t.ty % c_tiles_per_chunk;
 	movef(olist, nlist, tx, ty, frame, t.tz);
 	if (!add_dirty(1) &&
 	        // And > a screenful away?

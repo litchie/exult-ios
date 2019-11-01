@@ -851,7 +851,8 @@ void Eat_at_inn_schedule::ending(int new_type) { // new schedule type
 Actor *Find_congregant(
     Actor *npc
 ) {
-	Actor_vector vec, vec2;
+	Actor_vector vec;
+	Actor_vector vec2;
 	if (!npc->find_nearby_actors(vec, c_any_shapenum, 16))
 		return nullptr;
 	vec2.reserve(vec.size());   // Get list of ones to consider.
@@ -1520,8 +1521,8 @@ void Talk_schedule::now_what(
 				npc->say(firstbark, lastbark);
 		}
 		// Step towards Avatar.
-		Tile_coord pos = npc->get_tile(),
-		           dest = gwin->get_main_actor()->get_tile();
+		Tile_coord pos = npc->get_tile();
+		Tile_coord dest = gwin->get_main_actor()->get_tile();
 		int dx = dest.tx > pos.tx ? 1 : (dest.tx < pos.tx ? -1 : 0);
 		int dy = dest.ty > pos.ty ? 1 : (dest.ty < pos.ty ? -1 : 0);
 		npc->walk_to_tile(pos + Tile_coord(dx, dy, 0), speed, 500);
@@ -1959,7 +1960,9 @@ void Miner_schedule::now_what(
 		static int oreshapes[] = {915, 916};
 		Game_object_vector ores;
 		npc->find_closest(ores, oreshapes, array_size(oreshapes));
-		int from, to, cnt = ores.size();
+		int from;
+		int to;
+		int cnt = ores.size();
 		// Filter out frame #3 (dust).
 		for (from = to = 0; from < cnt; ++from)
 			if (ores[from]->get_framenum() < 3)
@@ -2064,8 +2067,8 @@ void Miner_schedule::now_what(
 void Hound_schedule::now_what(
 ) {
 	Actor *av = gwin->get_main_actor();
-	Tile_coord avpos = av->get_tile(),
-	           npcpos = npc->get_tile();
+	Tile_coord avpos = av->get_tile();
+	Tile_coord npcpos = npc->get_tile();
 	// How far away is Avatar?
 	int dist = npc->distance(av);
 	// Pure guess. Since only some schedules seem to call proximity
@@ -2928,7 +2931,8 @@ void Perimeter::get(
 
 void Lab_schedule::init(
 ) {
-	Game_object *book_obj = nullptr, *chair_obj = nullptr;
+	Game_object *book_obj = nullptr;
+	Game_object *chair_obj = nullptr;
 	cauldron = weak_from_obj(npc->find_closest(995, 20));
 	// Find 'lab' tables.
 	vector<Game_object *> table_objs;
@@ -3106,8 +3110,8 @@ void Lab_schedule::now_what(
 void Shy_schedule::now_what(
 ) {
 	Actor *av = gwin->get_main_actor();
-	Tile_coord avpos = av->get_tile(),
-	           npcpos = npc->get_tile();
+	Tile_coord avpos = av->get_tile();
+	Tile_coord npcpos = npc->get_tile();
 	// How far away is Avatar?
 	int dist = npc->distance(av);
 	if (dist > 10) {        // Far enough?
@@ -3121,7 +3125,8 @@ void Shy_schedule::now_what(
 		return;
 	}
 	// Get deltas.
-	int dx = npcpos.tx - avpos.tx, dy = npcpos.ty - avpos.ty;
+	int dx = npcpos.tx - avpos.tx;
+	int dy = npcpos.ty - avpos.ty;
 	int adx = dx < 0 ? -dx : dx;
 	int ady = dy < 0 ? -dy : dy;
 	// Which is farthest?
@@ -3489,8 +3494,10 @@ Game_object *Waiter_schedule::create_customer_plate(
 
 static void Ready_food(Actor *npc)
 {
-	Game_object *food, *obj = npc->get_readied(lhand);
-	Game_object_shared food_keep, obj_keep;
+	Game_object *food;
+	Game_object *obj = npc->get_readied(lhand);
+	Game_object_shared food_keep;
+	Game_object_shared obj_keep;
 	if (obj) {							// Already something there?
 	    obj_keep = obj->shared_from_this();
 		if (obj->get_shapenum() == 377)
@@ -4606,7 +4613,9 @@ void Bake_schedule::now_what() {
 		                         npcpos, tpos, cost);
 
 		// offsets for oven placement
-		int offX = +1, offY = 0, offZ = 0;
+		int offX = +1;
+		int offY = 0;
+		int offZ = 0;
 		if (stove) // hide dough
 			offX = -3, offY = 0, offZ = -2;
 
@@ -4643,8 +4652,8 @@ void Bake_schedule::now_what() {
 
 void Bake_schedule::ending(int new_type) {
 	ignore_unused_variable_warning(new_type);
-    Game_object_shared dough_obj = dough.lock(),
-				dough_in_oven_obj = dough_in_oven.lock();
+    Game_object_shared dough_obj = dough.lock();
+    Game_object_shared dough_in_oven_obj = dough_in_oven.lock();
 	if (dough_obj) {
 		dough_obj->remove_this();
 	}
@@ -5220,8 +5229,8 @@ void Walk_to_schedule::now_what(
 	Rectangle screen = gwin->get_win_tile_rect();
 	screen.enlarge(6);      // Enlarge in all dirs.
 	// Might do part of it first.
-	Tile_coord from = npc->get_tile(),
-	           to = dest;
+	Tile_coord from = npc->get_tile();
+	Tile_coord to = dest;
 	// Destination off the screen?
 	if (!screen.has_world_point(to.tx, to.ty)) {
 		if (!screen.has_world_point(from.tx, from.ty)) {
@@ -5301,9 +5310,10 @@ void Schedule_change::set4(
 	type = entry[0] >> 3;
 	days = 0x7f;            // All days of the week.
 	unsigned char schunk = entry[3];
-	unsigned char x = entry[1], y = entry[2];
-	int sx = schunk % c_num_schunks,
-	    sy = schunk / c_num_schunks;
+	unsigned char x = entry[1];
+	unsigned char y = entry[2];
+	int sx = schunk % c_num_schunks;
+	int sy = schunk / c_num_schunks;
 	pos = Tile_coord(sx * c_tiles_per_schunk + x,
 	                 sy * c_tiles_per_schunk + y, 0);
 }

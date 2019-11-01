@@ -329,7 +329,9 @@ USECODE_INTRINSIC(get_object_position) {
 	Tile_coord c(0, 0, 0);
 	if (obj)        // (Watch for animated objs' wiggles.)
 		c = obj->get_outermost()->get_original_tile_coord();
-	Usecode_value vx(c.tx), vy(c.ty), vz(c.tz);
+	Usecode_value vx(c.tx);
+	Usecode_value vy(c.ty);
+	Usecode_value vz(c.tz);
 	Usecode_value arr(3, &vx);
 	arr.put_elem(1, vy);
 	arr.put_elem(2, vz);
@@ -646,9 +648,9 @@ USECODE_INTRINSIC(find_object) {
 	ignore_unused_variable_warning(num_parms);
 	// Find_object(container(-357=party) OR loc, shapenum, qual?? (-359=any),
 	//                      frame??(-359=any)).
-	int shnum = parms[1].get_int_value(),
-	    qual  = parms[2].get_int_value(),
-	    frnum = parms[3].get_int_value();
+	int shnum = parms[1].get_int_value();
+	int qual  = parms[2].get_int_value();
+	int frnum = parms[3].get_int_value();
 	if (parms[0].get_array_size() == 3) {
 		// Location (x, y).
 		Game_object_vector vec;
@@ -809,7 +811,8 @@ USECODE_INTRINSIC(find_nearby_avatar) {
 	// Find objs. with given shape near Avatar?
 	Usecode_value av(gwin->get_main_actor());
 	// Try bigger # for Test of Love tree.
-	Usecode_value dist(/* 64 */ 192), mask(0);
+	Usecode_value dist(/* 64 */ 192);
+	Usecode_value mask(0);
 	Usecode_value u(find_nearby(av, parms[0], dist, mask));
 	return(u);
 }
@@ -837,7 +840,8 @@ USECODE_INTRINSIC(display_runes) {
 		const char *str = lval.get_str_value();
 		sign->add_text(i, str);
 	}
-	int x, y;           // Paint it, and wait for click.
+	int x;
+	int y;           // Paint it, and wait for click.
 	Get_click(x, y, Mouse::hand, nullptr, false, sign);
 	delete sign;
 	gwin->paint();
@@ -877,7 +881,8 @@ USECODE_INTRINSIC(click_on_item) {
 		obj = caller_item.get();
 		t = obj->get_tile();
 	} else {
-		int x, y;       // Allow dragging while here:
+		int x;
+		int y;       // Allow dragging while here:
 		if (!Get_click(x, y, Mouse::greenselect, nullptr, true))
 			return Usecode_value(0);
 		// Get abs. tile coords. clicked on.
@@ -896,7 +901,9 @@ USECODE_INTRINSIC(click_on_item) {
 	}
 	Usecode_value oval(obj);    // Ret. array with obj as 1st elem.
 	Usecode_value ret(4, &oval);
-	Usecode_value xval(t.tx), yval(t.ty), zval(t.tz);
+	Usecode_value xval(t.tx);
+	Usecode_value yval(t.ty);
+	Usecode_value zval(t.tz);
 	ret.put_elem(1, xval);
 	ret.put_elem(2, yval);
 	ret.put_elem(3, zval);
@@ -1267,7 +1274,8 @@ public:
 		Paint_centered::paint();
 		if (show_loc) {
 			// mark location
-			int xx, yy;
+			int xx;
+			int yy;
 			Tile_coord t = gwin->get_main_actor()->get_tile();
 			if (Game::get_game_type() == BLACK_GATE) {
 				xx = static_cast<int>(t.tx / 16.05 + 5 + 0.5);
@@ -1291,14 +1299,17 @@ public:
 USECODE_INTRINSIC(display_map) {
 	ignore_unused_variable_warning(num_parms, parms);
 	//count all sextants in party
-	Usecode_value v_357(-357), v650(650), v_359(-359);
+	Usecode_value v_357(-357);
+	Usecode_value v650(650);
+	Usecode_value v_359(-359);
 	long sextants = count_objects(v_357, v650, v_359, v_359).get_int_value();
 	bool loc = !gwin->is_main_actor_inside() && (sextants > 0);
 	// Display map.
 	ShapeID msid(game->get_shape("sprites/map"), 0, SF_SPRITES_VGA);
 	Paint_map map(&msid, loc);
 
-	int xx, yy;
+	int xx;
+	int yy;
 	Get_click(xx, yy, Mouse::hand, nullptr, false, &map);
 	gwin->paint();
 	return(no_ret);
@@ -1335,7 +1346,8 @@ USECODE_INTRINSIC(si_display_map) {
 	// Display map.
 	ShapeID msid(shapenum, 0, SF_SPRITES_VGA);
 	Paint_centered map(&msid);
-	int xx, yy;
+	int xx;
+	int yy;
 	Get_click(xx, yy, Mouse::hand, nullptr, false, &map);
 	gwin->paint();
 
@@ -1351,7 +1363,8 @@ USECODE_INTRINSIC(display_map_ex) {
 	ShapeID msid(map_shp, 0, SF_SPRITES_VGA);
 	Paint_map map(&msid, loc);
 
-	int xx, yy;
+	int xx;
+	int yy;
 	Get_click(xx, yy, Mouse::hand, nullptr, false, &map);
 	gwin->paint();
 	return(no_ret);
@@ -1445,7 +1458,8 @@ USECODE_INTRINSIC(get_weapon) {
 	// get_weapon(npc).  Returns shape.
 	Actor *npc = as_actor(get_item(parms[0]));
 	if (npc) {
-		int shape, points;
+		int shape;
+		int points;
 		Game_object *w;
 		if (npc->get_weapon(points, shape, w))
 			return Usecode_value(shape);
@@ -1464,19 +1478,22 @@ USECODE_INTRINSIC(display_area) {
 		// Figure in tiles.
 		int newmap = size == 3 ? -1 : parms[0].get_elem(3).get_int_value();
 		int oldmap = gwin->get_map()->get_num();
-		int tw = gwin->get_game_width() / c_tilesize,
-		    th = gwin->get_game_height() / c_tilesize;
+		int tw = gwin->get_game_width() / c_tilesize;
+		int th = gwin->get_game_height() / c_tilesize;
 		gwin->clear_screen();   // Fill with black.
 		if ((newmap != -1) && (newmap != oldmap))
 			gwin->set_map(newmap);
 		Shape_frame *sprite = ShapeID(10, 0, SF_SPRITES_VGA).get_shape();
 		// Center it.
-		int topx = (gwin->get_game_width() - sprite->get_width()) / 2,
-		    topy = (gwin->get_game_height() - sprite->get_height()) / 2;
+		int topx = (gwin->get_game_width() - sprite->get_width()) / 2;
+		int topy = (gwin->get_game_height() - sprite->get_height()) / 2;
 		// Get area to show.
-		int x = 0, y = 0;
-		int w = gwin->get_game_width(), h = gwin->get_game_height();
-		int sizex = (w - 320) / 2, sizey = (h - 200) / 2;
+		int x = 0;
+		int y = 0;
+		int w = gwin->get_game_width();
+		int h = gwin->get_game_height();
+		int sizex = (w - 320) / 2;
+		int sizey = (h - 200) / 2;
 		// Show only inside the original resolution.
 		if (w > 320)
 			x = sizex;
@@ -2175,9 +2192,11 @@ USECODE_INTRINSIC(start_speech) {
 		else if (speech_track == 26)
 			face = 294;     // Order serpent.
 		if (face > 0) {
-			Usecode_value sh(face), fr(0);
+			Usecode_value sh(face);
+			Usecode_value fr(0);
 			show_npc_face(sh, fr);
-			int x, y;       // Wait for click.
+			int x;
+			int y;       // Wait for click.
 			Get_click(x, y, Mouse::hand);
 			remove_npc_face(sh);
 		}
@@ -2194,8 +2213,8 @@ USECODE_INTRINSIC(is_water) {
 		             parms[0].get_elem(1).get_int_value(),
 		             parms[0].get_elem(2).get_int_value());
 		// Didn't click on an object?
-		int x = (t.tx - gwin->get_scrolltx()) * c_tilesize,
-		    y = (t.ty - gwin->get_scrollty()) * c_tilesize;
+		int x = (t.tx - gwin->get_scrolltx()) * c_tilesize;
+		int y = (t.ty - gwin->get_scrollty()) * c_tilesize;
 		if (t.tz != 0 || gwin->find_object(x, y))
 			return Usecode_value(0);
 		ShapeID sid = gwin->get_flat(x, y);
@@ -2237,7 +2256,8 @@ USECODE_INTRINSIC(fire_projectile) {
 	Tile_coord pos = attacker->get_missile_tile(dir);
 	Tile_coord adj = pos.get_neighbor(dir % 8);
 	// Make it go dist tiles.
-	int dx = adj.tx - pos.tx, dy = adj.ty - pos.ty;
+	int dx = adj.tx - pos.tx;
+	int dy = adj.ty - pos.ty;
 	Tile_coord dest = pos;
 	int dist = 31;
 	dest.tx += dist * dx;
@@ -2261,7 +2281,8 @@ USECODE_INTRINSIC(nap_time) {
 		int party_cnt = partyman->get_count();
 		int npcnum = party_cnt ? partyman->get_member(
 		                 rand() % party_cnt) : 356;
-		Usecode_value actval(-npcnum), frval(0);
+		Usecode_value actval(-npcnum);
+		Usecode_value frval(0);
 		show_npc_face(actval, frval);
 		conv->show_npc_message(get_text_msg(first_bed_occupied +
 		                                 rand() % num_bed_occupied));
@@ -2530,8 +2551,8 @@ USECODE_INTRINSIC(set_path_failure) {
 	// set_path_failure(fun, itemref, eventid) for the last NPC in
 	//  a path_run_usecode() call.
 
-	int fun = parms[0].get_int_value(),
-	    eventid = parms[2].get_int_value();
+	int fun = parms[0].get_int_value();
+	int eventid = parms[2].get_int_value();
 	Game_object *item = get_item(parms[1]);
 	if (path_npc && item) {     // Set in path_run_usecode().
 		If_else_path_actor_action *action =
@@ -3113,11 +3134,12 @@ USECODE_INTRINSIC(a_or_an) {
 USECODE_INTRINSIC(remove_from_area) {
 	ignore_unused_variable_warning(num_parms);
 	// Remove_from_area(shapenum, framenum, [x,y]from, [x,y]to).
-	int shnum = parms[0].get_int_value(), frnum = parms[1].get_int_value();
-	int fromx = parms[2].get_elem(0).get_int_value(),
-	    fromy = parms[2].get_elem(1).get_int_value(),
-	    tox   = parms[3].get_elem(0).get_int_value(),
-	    toy   = parms[3].get_elem(1).get_int_value();
+	int shnum = parms[0].get_int_value();
+	int frnum = parms[1].get_int_value();
+	int fromx = parms[2].get_elem(0).get_int_value();
+	int fromy = parms[2].get_elem(1).get_int_value();
+	int tox   = parms[3].get_elem(0).get_int_value();
+	int toy   = parms[3].get_elem(1).get_int_value();
 	Rectangle area(fromx, fromy, tox - fromx + 1, toy - fromy + 1);
 	if (area.w <= 0 || area.h <= 0)
 		return no_ret;

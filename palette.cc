@@ -399,8 +399,9 @@ int Palette::find_color(int r, int g, int b, int last) {
 	// But don't search rotating colors.
 	for (int i = 0; i < last; i++) {
 		// Get deltas.
-		long dr = r - pal1[3 * i], dg = g - pal1[3 * i + 1],
-		     db = b - pal1[3 * i + 2];
+		long dr = r - pal1[3 * i];
+		long dg = g - pal1[3 * i + 1];
+		long db = b - pal1[3 * i + 2];
 		// Figure distance-squared.
 		long dist = dr * dr + dg * dg + db * db;
 		if (dist < best_distance) { // Better than prev?

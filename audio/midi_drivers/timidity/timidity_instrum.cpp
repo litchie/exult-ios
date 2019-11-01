@@ -158,7 +158,8 @@ static sint32 convert_vibrato_rate(uint8 rate)
 
 static void reverse_data(sint16 *sp, sint32 ls, sint32 le)
 {
-	sint16 s, *ep=sp+le;
+	sint16 s;
+	sint16 *ep=sp+le;
 	sp+=ls;
 	le-=ls;
 	le/=2;
@@ -190,7 +191,9 @@ static Instrument *load_instrument(char *name, int percussion,
 	Sample *sp;
 	FILE *fp;
 	uint8 tmp[1024];
-	int i,j,noluck=0;
+	int i;
+	int j;
+	int noluck=0;
 #ifdef PATCH_EXT_LIST
 	static const char *patch_ext[] = PATCH_EXT_LIST;
 #endif
@@ -433,7 +436,8 @@ static Instrument *load_instrument(char *name, int percussion,
 		{
 			sint32 i=sp->data_length;
 			uint8 *cp=reinterpret_cast<uint8 *>(sp->data);
-			uint16 *tmp,*new_dat;
+			uint16 *tmp;
+			uint16 *new_dat;
 			tmp=new_dat=safe_Malloc<uint16>(sp->data_length);
 			while (i--)
 				*tmp++ = static_cast<uint16>(*cp++) << 8;
@@ -452,7 +456,8 @@ static Instrument *load_instrument(char *name, int percussion,
 #ifdef LOOKUP_HACK
 			sint16 *tmp=reinterpret_cast<sint16 *>(sp->data), s;
 #else
-			sample_t *tmp=sp->data, s;
+			sample_t *tmp=sp->data;
+			sample_t s;
 #endif
 			while (i--)
 			{
@@ -502,7 +507,8 @@ static Instrument *load_instrument(char *name, int percussion,
 			 This is a very crude adjustment, but things sound more
 			 balanced with it. Still, this should be a runtime option. */
 			sint32 i=sp->data_length/2;
-			sint16 maxamp=0,a;
+			sint16 maxamp=0;
+			sint16 a;
 			sint16 *tmp = sp->data;
 			while (i--)
 			{
@@ -571,7 +577,8 @@ static Instrument *load_instrument(char *name, int percussion,
 
 static int fill_bank(int dr, int b)
 {
-	int i, errors=0;
+	int i;
+	int errors=0;
 	ToneBank *bank=((dr) ? drumset[b] : tonebank[b]);
 	if (!bank)
 	{
@@ -639,7 +646,8 @@ static int fill_bank(int dr, int b)
 
 int load_missing_instruments()
 {
-	int i=128,errors=0;
+	int i=128;
+	int errors=0;
 	while (i--)
 	{
 		if (tonebank[i])

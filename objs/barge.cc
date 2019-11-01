@@ -69,7 +69,8 @@ inline Tile_coord Rotate90r(
     Tile_coord const &c         // Center to rotate around.
 ) {
 	// Get cart. coords. rel. to center.
-	int rx = t.tx - c.tx, ry = c.ty - t.ty;
+	int rx = t.tx - c.tx;
+	int ry = c.ty - t.ty;
 	return Tile_coord(c.tx + ry, c.ty + rx, t.tz);
 }
 
@@ -85,7 +86,8 @@ inline Tile_coord Rotate90l(
     Tile_coord const &c         // Center to rotate around.
 ) {
 	// Get cart. coords. rel. to center.
-	int rx = t.tx - c.tx, ry = c.ty - t.ty;
+	int rx = t.tx - c.tx;
+	int ry = c.ty - t.ty;
 	return Tile_coord(c.tx - ry, c.ty - rx, t.tz);
 }
 
@@ -101,7 +103,8 @@ inline Tile_coord Rotate180(
     Tile_coord const &c         // Center to rotate around.
 ) {
 	// Get cart. coords. rel. to center.
-	int rx = t.tx - c.tx, ry = c.ty - t.ty;
+	int rx = t.tx - c.tx;
+	int ry = c.ty - t.ty;
 	return Tile_coord(c.tx - rx, c.ty + ry, t.tz);
 }
 
@@ -186,7 +189,8 @@ inline void Barge_object::swap_dims(
 Rectangle Barge_object::get_tile_footprint(
 ) {
 	Tile_coord pos = get_tile();
-	int xts = get_xtiles(), yts = get_ytiles();
+	int xts = get_xtiles();
+	int yts = get_ytiles();
 	Rectangle foot((pos.tx - xts + 1 + c_num_tiles) % c_num_tiles,
 	               (pos.ty - yts + 1 + c_num_tiles) % c_num_tiles, xts, yts);
 	return foot;
@@ -216,7 +220,8 @@ int Barge_object::okay_to_rotate(
 	int move_type = (lift > 0) ? (MOVE_LEVITATE) : MOVE_ALL_TERRAIN;
 	// Get footprint in tiles.
 	Rectangle foot = get_tile_footprint();
-	int xts = get_xtiles(), yts = get_ytiles();
+	int xts = get_xtiles();
+	int yts = get_ytiles();
 	// Get where new footprint will be.
 	Rectangle newfoot(pos.tx - yts + 1, pos.ty - xts + 1, yts, xts);
 	int new_lift;
@@ -274,7 +279,8 @@ void Barge_object::gather(
 	// Go through intersected chunks.
 	Chunk_intersect_iterator next_chunk(foot);
 	Rectangle tiles;
-	int cx, cy;
+	int cx;
+	int cy;
 	while (next_chunk.get_next(tiles, cx, cy)) {
 		Map_chunk *chunk = gmap->get_chunk(cx, cy);
 		tiles.x += cx * c_tiles_per_chunk;
@@ -329,9 +335,11 @@ void Barge_object::gather(
 
 void Barge_object::add_dirty(
 ) {
-	int x, y;           // Get lower-right corner.
+	int x;
+	int y;           // Get lower-right corner.
 	gwin->get_shape_location(this, x, y);
-	int w = xtiles * c_tilesize, h = ytiles * c_tilesize;
+	int w = xtiles * c_tilesize;
+	int h = ytiles * c_tilesize;
 	Rectangle box(x - w, y - h, w, h);
 	const int barge_enlarge = (c_tilesize + c_tilesize / 4);
 	const int barge_stretch = (4 * c_tilesize + c_tilesize / 2);
@@ -407,8 +415,8 @@ void Barge_object::travel_to_tile(
 		frame_time = speed;
 		// Figure new direction.
 		Tile_coord cur = get_tile();
-		int dy = Tile_coord::delta(cur.ty, dest.ty),
-		    dx = Tile_coord::delta(cur.tx, dest.tx);
+		int dy = Tile_coord::delta(cur.ty, dest.ty);
+		int dx = Tile_coord::delta(cur.tx, dest.tx);
 		int ndir = Get_direction4(-dy, dx);
 		if (!ice_raft)      // Ice-raft doesn't rotate.
 			face_direction(ndir);
@@ -548,7 +556,8 @@ int Barge_object::okay_to_land(
 	// Go through intersected chunks.
 	Chunk_intersect_iterator next_chunk(foot);
 	Rectangle tiles;
-	int cx, cy;
+	int cx;
+	int cy;
 	while (next_chunk.get_next(tiles, cx, cy)) {
 		// Check each tile.
 		Map_chunk *chunk = gmap->get_chunk(cx, cy);
@@ -614,7 +623,9 @@ void Barge_object::move(
 	Container_game_object::move(newtx, newty, newlift, newmap);
 	set_center();
 	// Get deltas.
-	int dx = newtx - old.tx, dy = newty - old.ty, dz = newlift - old.tz;
+	int dx = newtx - old.tx;
+	int dy = newty - old.ty;
+	int dz = newlift - old.tz;
 	int cnt = objects.size();   // We'll move each object.
 	// But 1st, remove & save new pos.
 	Tile_coord *positions = new Tile_coord[cnt];
@@ -714,7 +725,10 @@ void Barge_object::paint(
 	if (gwin->paint_eggs) {
 		Container_game_object::paint();
 		int pix = sman->get_special_pixel(CURSED_PIXEL);
-		int rx, by, lx, ty; // Right, bottom, left, top.
+		int rx;
+		int by;
+		int lx;
+		int ty; // Right, bottom, left, top.
 		gwin->get_shape_location(this, rx, by);
 		lx = rx - xtiles * c_tilesize + 1;
 		ty = by - ytiles * c_tilesize + 1;
@@ -779,9 +793,14 @@ void Barge_object::update_from_studio(
 ) {
 #ifdef USE_EXULTSTUDIO
 	Barge_object *barge;
-	int tx, ty, tz;
-	int shape, frame;
-	int xtiles, ytiles, dir;
+	int tx;
+	int ty;
+	int tz;
+	int shape;
+	int frame;
+	int xtiles;
+	int ytiles;
+	int dir;
 	if (!Barge_object_in(data, datalen, barge, tx, ty, tz, shape, frame,
 	                     xtiles, ytiles, dir)) {
 		cout << "Error decoding barge" << endl;
@@ -793,7 +812,8 @@ void Barge_object::update_from_studio(
 	}
 	editing = nullptr;
 	if (!barge) {       // Create a new one?
-		int x, y;
+		int x;
+		int y;
 		if (!Get_click(x, y, Mouse::hand, nullptr)) {
 			if (client_socket >= 0)
 				Exult_server::Send_data(client_socket,

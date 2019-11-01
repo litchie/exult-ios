@@ -85,10 +85,10 @@ public:
 		}
 	}
 	bool operator<(const Effective_hp_info &other) const {
-		unsigned short qual1 = static_cast<unsigned short>(quality),
-		               qual2 = static_cast<unsigned short>(other.quality);
-		unsigned short frame1 = static_cast<unsigned short>(frame),
-		               frame2 = static_cast<unsigned short>(other.frame);
+		unsigned short qual1 = static_cast<unsigned short>(quality);
+		unsigned short qual2 = static_cast<unsigned short>(other.quality);
+		unsigned short frame1 = static_cast<unsigned short>(frame);
+		unsigned short frame2 = static_cast<unsigned short>(other.frame);
 		return (frame1 == frame2 && qual1 < qual2) || (frame1 < frame2);
 	}
 	bool operator==(const Effective_hp_info &other) const {

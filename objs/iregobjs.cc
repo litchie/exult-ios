@@ -54,7 +54,8 @@ inline int Game_object::get_cyi() const {
 
 void Ireg_game_object::paint(
 ) {
-	int x, y;
+	int x;
+	int y;
 	gwin->get_shape_location(this, x, y);
 	if (flags & (1L << Obj_flags::invisible))
 		paint_invisible(x, y);
@@ -123,7 +124,8 @@ unsigned char *Ireg_game_object::write_common_ireg(
     unsigned char *buf      // Buffer to be filled.
 ) {
 	unsigned char *endptr;
-	int shapenum = get_shapenum(), framenum = get_framenum();
+	int shapenum = get_shapenum();
+	int framenum = get_framenum();
 	if (shapenum >= 1024 || framenum >= 64) {
 		*buf++ = IREG_EXTENDED;
 		norm_len++;

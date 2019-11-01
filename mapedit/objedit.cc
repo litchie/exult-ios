@@ -237,8 +237,12 @@ int ExultStudio::init_obj_window(
     int datalen
 ) {
 	Game_object *addr;
-	int tx, ty, tz;
-	int shape, frame, quality;
+	int tx;
+	int ty;
+	int tz;
+	int shape;
+	int frame;
+	int quality;
 	std::string name;
 	if (!Object_in(data, datalen, addr, tx, ty, tz, shape, frame,
 	               quality, name)) {
@@ -283,8 +287,9 @@ int ExultStudio::save_obj_window(
 	cout << "In save_obj_window()" << endl;
 	// Get object address.
 	Game_object *addr = static_cast<Game_object*>(gtk_object_get_user_data(GTK_OBJECT(objwin)));
-	int tx = get_spin("obj_x"), ty = get_spin("obj_y"),
-	    tz = get_spin("obj_z");
+	int tx = get_spin("obj_x");
+	int ty = get_spin("obj_y");
+	int tz = get_spin("obj_z");
 	std::string name(get_text_entry("obj_name"));
 //	int shape = get_num_entry("obj_shape");
 //	int frame = get_num_entry("obj_frame");

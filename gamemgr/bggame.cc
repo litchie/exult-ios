@@ -473,7 +473,8 @@ void BG_Game::scene_butterfly() {
 		167, 416, 250, 416, 416, 416, 416, 333
 	};
 
-	int frame, dir = 0;
+	int frame;
+	int dir = 0;
 
 	auto DrawButterfly = [&](int x, int y, int frame, int delay, Image_buffer *backup, Shape_frame *butterfly) {
 		// Draw butterfly
@@ -870,7 +871,9 @@ void BG_Game::scene_guardian() {
 				U7multiobject textobj(MAINSHP_FLX, PATCH_MAINSHP, 0x0D);
 				size_t txt_len;
 				auto txt = textobj.retrieve(txt_len);
-				char *txt_ptr, *txt_end, *next_txt;
+				char *txt_ptr;
+				char *txt_end;
+				char *next_txt;
 				next_txt = txt_ptr = reinterpret_cast<char*>(txt.get());
 
 				int txt_height = font->get_text_height();
@@ -881,10 +884,12 @@ void BG_Game::scene_guardian() {
 				win->get(backup3.get(), win->get_start_x(), txt_ypos);
 
 				// Lipsynching
-				int eye_frame = 3, last_eye_frame = 3;
+				int eye_frame = 3;
+				int last_eye_frame = 3;
 				int mouth_frame = 1;
 				int text_index = -1;
-				int next_time, next_code;
+				int next_time;
+				int next_code;
 				LipSynchReader lipsync;
 				LipSynchReader surfacing(surfacing_data, sizeof(surfacing_data));
 

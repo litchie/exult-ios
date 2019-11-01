@@ -60,8 +60,12 @@ int Zombie::NewPath(Tile_coord const &s, Tile_coord const &d, Pathfinder_client 
 		major_distance = 0;
 		return (0);
 	}
-	unsigned int abs_deltax, abs_deltay, abs_deltaz;
-	int x_dir, y_dir, z_dir;    // Figure directions.
+	unsigned int abs_deltax;
+	unsigned int abs_deltay;
+	unsigned int abs_deltaz;
+	int x_dir;
+	int y_dir;
+	int z_dir;    // Figure directions.
 	Figure_dir(deltax, abs_deltax, x_dir);
 	Figure_dir(deltay, abs_deltay, y_dir);
 	Figure_dir(deltaz, abs_deltaz, z_dir);

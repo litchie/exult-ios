@@ -57,14 +57,16 @@ unsigned int read1(FILE *f) {
 }
 
 unsigned int read2(FILE *f) {
-	unsigned char b0, b1;
+	unsigned char b0;
+	unsigned char b1;
 	b0 = fgetc(f);
 	b1 = fgetc(f);
 	return (b0 + (b1 << 8));
 }
 
 signed int read2signed(FILE *f) {
-	unsigned char b0, b1;
+	unsigned char b0;
+	unsigned char b1;
 	signed int i0;
 	b0 = fgetc(f);
 	b1 = fgetc(f);
@@ -76,7 +78,10 @@ signed int read2signed(FILE *f) {
 }
 
 unsigned int read4(FILE *f) {
-	unsigned char b0, b1, b2, b3;
+	unsigned char b0;
+	unsigned char b1;
+	unsigned char b2;
+	unsigned char b3;
 	b0 = fgetc(f);
 	b1 = fgetc(f);
 	b2 = fgetc(f);
@@ -114,9 +119,13 @@ char *framefilename(char *shapefilename, int frame) {
 }
 
 void split_shape(char *filename) {
-	FILE *shpfile, *framefile;
-	int file_size, shape_size, hdr_size;
-	int frame_offset, next_frame_offset;
+	FILE *shpfile;
+	FILE *framefile;
+	int file_size;
+	int shape_size;
+	int hdr_size;
+	int frame_offset;
+	int next_frame_offset;
 	int num_frames;
 	size_t datalen;
 	uint8 *data;
@@ -192,10 +201,13 @@ void split_shape(char *filename) {
 }
 
 void merge_frames(char *shapefile, char **framefiles, int numframefiles) {
-	FILE *shpfile, *framefile;
+	FILE *shpfile;
+	FILE *framefile;
 	int i;
 	bool tiles = false;
-	int file_size, shape_size, hdr_size;
+	int file_size;
+	int shape_size;
+	int hdr_size;
 	size_t frame_size;
 	int total_size;
 	uint8 *data;

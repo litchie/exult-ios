@@ -233,8 +233,10 @@ void Cheat::set_edit_mode(Map_editor_mode md) {
 
 void Cheat::clear_chunksel() {
 	if (chunksel_right >= 0 && chunksel_bottom >= 0) {
-		int startx = chunksel_left, stopx = chunksel_right + 1;
-		int starty = chunksel_top, stopy = chunksel_bottom + 1;
+		int startx = chunksel_left;
+		int stopx = chunksel_right + 1;
+		int starty = chunksel_top;
+		int stopy = chunksel_bottom + 1;
 		for (int cy = starty; cy != stopy; cy = INCR_CHUNK(cy))
 			for (int cx = startx; cx != stopx;
 			        cx = INCR_CHUNK(cx)) {
@@ -249,7 +251,8 @@ void Cheat::clear_chunksel() {
 void Cheat::add_chunksel(Map_chunk *chunk, bool extend) {
 	ignore_unused_variable_warning(extend);
 	chunk->set_selected(true);
-	int cx = chunk->get_cx(), cy = chunk->get_cy();
+	int cx = chunk->get_cx();
+	int cy = chunk->get_cy();
 	if (cx < chunksel_left)
 		chunksel_left = cx;
 	if (cx > chunksel_right)
@@ -307,7 +310,12 @@ void Cheat::move_chunk(Map_chunk *chunk, int dx, int dy) {
 
 /*  Move all the selected chunks. */
 void Cheat::move_selected_chunks(int dx, int dy) {
-	int startx, stopx, dirx, starty, stopy, diry;
+	int startx;
+	int stopx;
+	int dirx;
+	int starty;
+	int stopy;
+	int diry;
 
 	if (dx <= 0) {
 		startx = chunksel_left;
@@ -444,7 +452,8 @@ void Cheat::levelup_party() const {
 	if (!enabled) return;
 
 	Actor *party[9];
-	int level, newexp;
+	int level;
+	int newexp;
 	bool leveledup = false;
 
 	// get party, including Avatar
@@ -595,7 +604,8 @@ void Cheat::move_selected_objs(int dx, int dy, int dz) {
 	if (selected.empty())
 		return;         // Nothing to do.
 	std::vector<Tile_coord> tiles;  // Store locations here.
-	int lowz = 1000, highz = -1000; // Get min/max lift.
+	int lowz = 1000;
+	int highz = -1000; // Get min/max lift.
 	// Remove & store old locations.
 	Game_object_shared_vector::iterator it;
 	for (it = selected.begin(); it != selected.end(); ++it) {
@@ -652,8 +662,8 @@ bool Cheat::is_selected(Game_object *o) {
 class Clip_compare {
 public:
 	bool operator()(const Game_object_shared o1, const Game_object_shared o2) {
-		Tile_coord t1 = o1->get_tile(),
-		           t2 = o2->get_tile();
+		Tile_coord t1 = o1->get_tile();
+		Tile_coord t2 = o2->get_tile();
 		if (t1.tz != t2.tz)
 			return t1.tz < t2.tz;
 		else if (t1.ty != t2.ty)
@@ -677,7 +687,8 @@ void Cheat::cut(bool copy) {
 		gwin->set_all_dirty();
 	// Go through selected objects.
 	for (it = selected.begin(); it != selected.end(); ++it) {
-		Game_object_shared newobj, keep;
+		Game_object_shared newobj;
+		Game_object_shared keep;
 		Game_object *obj = (*it).get();
 		Tile_coord t = obj->get_outermost()->get_tile();
 		if (copy)
@@ -744,8 +755,8 @@ void Cheat::paste(
 		Tile_coord t = obj->get_tile();
 		// Figure spot rel. to hot-spot.
 		int liftpix = ((t.tz - hot.tz) * c_tilesize) / 2;
-		int x = mx + (t.tx - hot.tx) * c_tilesize - liftpix,
-		    y = my + (t.ty - hot.ty) * c_tilesize - liftpix;
+		int x = mx + (t.tx - hot.tx) * c_tilesize - liftpix;
+		int y = my + (t.ty - hot.ty) * c_tilesize - liftpix;
 		// +++++Use clone().
 		Game_object_shared newobj = Create_object(gwin, obj->get_shapenum(),
 		                    obj->get_framenum());
@@ -763,7 +774,8 @@ void Cheat::paste(
 void Cheat::paste() {
 	if (clipboard.empty())
 		return;
-	int x, y;       // Allow dragging while here:
+	int x;
+	int y;       // Allow dragging while here:
 	if (Get_click(x, y, Mouse::greenselect, nullptr, true))
 		paste(x, y);
 }
@@ -804,7 +816,8 @@ public:
 		sman->paint_shape(x, y, map, true);
 
 		// mark current location
-		int xx, yy;
+		int xx;
+		int yy;
 		Tile_coord t = gwin->get_main_actor()->get_tile();
 
 		xx = ((t.tx * (w - border * 2)) / worldsize);
@@ -820,7 +833,8 @@ public:
 void Cheat::map_teleport() const {
 	if (!enabled) return;
 	Cheat_map map(gwin->get_map()->get_num());
-	int xx, yy;
+	int xx;
+	int yy;
 	if (!Get_click(xx, yy, Mouse::greenselect, nullptr, false, &map)) {
 		gwin->paint();
 		return;
@@ -844,7 +858,8 @@ void Cheat::map_teleport() const {
 void Cheat::cursor_teleport() const {
 	if (!enabled) return;
 
-	int x, y;
+	int x;
+	int y;
 	SDL_GetMouseState(&x, &y);
 #if SDL_VERSION_ATLEAST(2, 0, 1) && (defined(MACOSX) || defined(__IPHONEOS__))
 	gwin->get_win()->screen_to_game_hdpi(x, y, gwin->get_fastmouse(), x, y);
@@ -905,7 +920,8 @@ void Cheat::create_last_shape() const {
 void Cheat::delete_object() {
 	if (!enabled) return;
 
-	int x, y;
+	int x;
+	int y;
 	SDL_GetMouseState(&x, &y);
 #if SDL_VERSION_ATLEAST(2, 0, 1) && (defined(MACOSX) || defined(__IPHONEOS__))
 	gwin->get_win()->screen_to_game_hdpi(x, y, gwin->get_fastmouse(), x, y);

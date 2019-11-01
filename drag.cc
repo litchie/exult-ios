@@ -133,8 +133,8 @@ Dragging_info::~Dragging_info(
 bool Dragging_info::start(
     int x, int y            // Mouse position.
 ) {
-	int deltax = abs(x - mousex),
-	    deltay = abs(y - mousey);
+	int deltax = abs(x - mousex);
+	int deltay = abs(y - mousey);
 	if (deltax <= 2 && deltay <= 2)
 		return (false);     // Wait for greater motion.
 	if (obj) {
@@ -219,7 +219,8 @@ bool Dragging_info::moved(
 	else
 		gwin->add_dirty(gwin->clip_to_win(rect));
 	gwin->set_painted();
-	int deltax = x - mousex, deltay = y - mousey;
+	int deltax = x - mousex;
+	int deltay = y - mousey;
 	mousex = x;
 	mousey = y;
 	// Shift to new position.
@@ -419,7 +420,8 @@ bool Dragging_info::drop_on_map(
 	if (max_lift >= skip)       // Don't drop where we cannot see.
 		max_lift = skip - 1;
 	// Drop where we last painted it.
-	int posx = paintx, posy = painty;
+	int posx = paintx;
+	int posy = painty;
 	if (posx == -1000) {    // Unless we never painted.
 		posx = x;
 		posy = y;
@@ -477,8 +479,8 @@ bool Dragging_info::drop(
     int x, int y            // Mouse position.
 ) {
 	// Get orig. loc. info.
-	int oldcx = old_pos.tx / c_tiles_per_chunk,
-	    oldcy = old_pos.ty / c_tiles_per_chunk;
+	int oldcx = old_pos.tx / c_tiles_per_chunk;
+	int oldcy = old_pos.ty / c_tiles_per_chunk;
 	Game_object *to_drop = obj.get(); // If quantity, split it off.
 	Game_object_shared to_drop_shared;
 	// Being liberal about taking stuff:
@@ -637,8 +639,10 @@ int Game_window::drop_at_lift(
 	int lift;           // Can we put it here?
 	const Shape_info &info = to_drop->get_info();
 	int frame = to_drop->get_framenum();
-	int xtiles = info.get_3d_xtiles(frame), ytiles = info.get_3d_ytiles(frame);
-	int max_drop, move_flags;
+	int xtiles = info.get_3d_xtiles(frame);
+	int ytiles = info.get_3d_ytiles(frame);
+	int max_drop;
+	int move_flags;
 	if (cheat.in_hack_mover()) {
 		max_drop = at_lift - cheat.get_edit_lift();
 //		max_drop = max_drop < 0 ? 0 : max_drop;

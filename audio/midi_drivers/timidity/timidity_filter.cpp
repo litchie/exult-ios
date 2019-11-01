@@ -50,7 +50,10 @@ namespace NS_TIMIDITY {
 /*  bessel  function   */
 static float ino(float x)
 {
-	float y, de, e, sde;
+	float y;
+	float de;
+	float e;
+	float sde;
 	int i;
 
 	y = x / 2;
@@ -68,7 +71,8 @@ static float ino(float x)
 /* Kaiser Window (symetric) */
 static void kaiser(float *w,int n,float beta)
 {
-	float xind, xi;
+	float xind;
+	float xi;
 	int i;
 
 	xind = static_cast<float>((2*n - 1) * (2*n - 1));
@@ -85,7 +89,10 @@ static void kaiser(float *w,int n,float beta)
 static void designfir(float *g , float fc)
 {
 	int i;
-	float xi, omega, att, beta ;
+	float xi;
+	float omega;
+	float att;
+	float beta ;
 	float w[ORDER2];
 
 	for (i =0; i < ORDER2 ;i++) 
@@ -112,7 +119,9 @@ static void designfir(float *g , float fc)
  */
 static void filter(sample_t *result, const sample_t *data, sint32 length, const float coef[])
 {
-	sint32 sample,i,sample_window;
+	sint32 sample;
+	sint32 i;
+	sint32 sample_window;
 	sint16 peak = 0;
 	float sum;
 

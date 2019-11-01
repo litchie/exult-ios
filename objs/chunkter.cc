@@ -103,7 +103,8 @@ Chunk_terrain::Chunk_terrain(
 	render_queue_next(nullptr), render_queue_prev(nullptr) {
 	for (int tiley = 0; tiley < c_tiles_per_chunk; tiley++)
 		for (int tilex = 0; tilex < c_tiles_per_chunk; tilex++) {
-			int shnum, frnum;
+			int shnum;
+			int frnum;
 			if (v2_chunks) {
 				shnum = data[0] + 256 * data[1];
 				frnum = data[2];
@@ -254,8 +255,10 @@ void Chunk_terrain::render_all(
     int cx, int cy          // Chunk rendering too.
 ) {
 	Image_window8 *iwin = gwin->get_win();
-	int ctx = cx * c_tiles_per_chunk, cty = cy * c_tiles_per_chunk;
-	int scrolltx = gwin->get_scrolltx(), scrollty = gwin->get_scrollty();
+	int ctx = cx * c_tiles_per_chunk;
+	int cty = cy * c_tiles_per_chunk;
+	int scrolltx = gwin->get_scrolltx();
+	int scrollty = gwin->get_scrollty();
 	// Go through array of tiles.
 	for (int tiley = 0; tiley < c_tiles_per_chunk; tiley++)
 		for (int tilex = 0; tilex < c_tiles_per_chunk; tilex++) {
@@ -268,7 +271,8 @@ void Chunk_terrain::render_all(
 				            (ctx + tilex - scrolltx)*c_tilesize,
 				            (cty + tiley - scrollty)*c_tilesize);
 			else {      // RLE.
-				int x, y;
+				int x;
+				int y;
 				Tile_coord tile(ctx + tilex, cty + tiley, 0);
 				gwin->get_shape_location(tile, x, y);
 				sman->paint_shape(x, y, shape);
@@ -290,8 +294,8 @@ int Chunk_terrain::write_flats(
 	for (int ty = 0; ty < c_tiles_per_chunk; ty++)
 		for (int tx = 0; tx < c_tiles_per_chunk; tx++) {
 			ShapeID id = get_flat(tx, ty);
-			int shapenum = id.get_shapenum(),
-			    framenum = id.get_framenum();
+			int shapenum = id.get_shapenum();
+			int framenum = id.get_framenum();
 			if (v2_chunks) {
 				*chunk_data++ = shapenum & 0xff;
 				*chunk_data++ = (shapenum >> 8) & 0xff;

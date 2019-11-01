@@ -283,7 +283,9 @@ public:
 	using uintD = typename color_d::T;
 
 	static uintD copy(uintS src) {
-		unsigned int r, g, b;
+		unsigned int r;
+		unsigned int g;
+		unsigned int b;
 		ManipBaseSrc<color_s, color_d>::split_source(src, r, g, b);
 		return ManipBaseDest<color_d>::rgb(r, g, b);
 	}
@@ -292,7 +294,9 @@ public:
 	}
 	template <unsigned int N, unsigned int M>
 	static inline void blend(uintD &dest, unsigned int rs, unsigned int gs, unsigned int bs) {
-		unsigned int rd, gd, bd;
+		unsigned int rd;
+		unsigned int gd;
+		unsigned int bd;
 		ManipBaseDest<color_d>::split_dest(dest, rd, gd, bd);
 		dest = ManipBaseDest<color_d>::rgb((rs * N + rd * (M - N)) / M,
 		                                   (gs * N + gd * (M - N)) / M,

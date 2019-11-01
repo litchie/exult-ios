@@ -37,7 +37,8 @@ static void Get_window_coords(
     Window win,
     int &sx, int &sy        // Coords. returned.
 ) {
-	Window root, parent;        // Get parent window.
+	Window root;
+	Window parent;        // Get parent window.
 	Window *children;
 	unsigned int nchildren;
 	XQueryTree(display, win, &root, &parent, &children, &nchildren);
@@ -131,7 +132,8 @@ void Xdnd::client_msg(
 		if (cev.data.l[1] & 1) { // More than 3 types?
 			Atom type;
 			int format;
-			unsigned long nitems, after;
+			unsigned long nitems;
+			unsigned long after;
 			Atom *data;
 			XGetWindowProperty(display, drag_win,
 			                   xdnd_typelist, 0, 65536,
@@ -244,7 +246,8 @@ void Xdnd::select_msg(
 	combo = nullptr;
 	Atom type = None;       // Get data.
 	int format;
-	unsigned long nitems, after;
+	unsigned long nitems;
+	unsigned long after;
 	unsigned char *data;
 	if (XGetWindowProperty(display, sev.requestor, sev.property,
 	                       0, 65000, False, AnyPropertyType,

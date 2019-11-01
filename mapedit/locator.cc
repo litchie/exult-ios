@@ -225,8 +225,8 @@ void Locator::render(
     GdkRectangle *area      // nullptr for whole draw area.
 ) {
 	// Get dims.
-	int draww = draw->allocation.width,
-	    drawh = draw->allocation.height;
+	int draww = draw->allocation.width;
+	int drawh = draw->allocation.height;
 	GdkRectangle all;
 	if (!area) {
 		all.x = all.y = 0;
@@ -280,11 +280,12 @@ void Locator::render(
 	                           GDK_CAP_BUTT, GDK_JOIN_BEVEL);
 #endif
 	// Figure where to draw box.
-	int cx = tx / c_tiles_per_chunk, cy = ty / c_tiles_per_chunk;
-	int x = (cx * draww) / c_num_chunks,
-	    y = (cy * drawh) / c_num_chunks;
-	int w = (txs * draww) / c_num_tiles,
-	    h = (tys * drawh) / c_num_tiles;
+	int cx = tx / c_tiles_per_chunk;
+	int cy = ty / c_tiles_per_chunk;
+	int x = (cx * draww) / c_num_chunks;
+	int y = (cy * drawh) / c_num_chunks;
+	int w = (txs * draww) / c_num_tiles;
+	int h = (tys * drawh) / c_num_tiles;
 	if (w == 0)
 		w = 1;
 	if (h == 0)
@@ -320,7 +321,8 @@ void Locator::view_changed(
 	tys = Read4(data);
 	// ++++Scale?  Later.
 	// Do things by chunk.
-	int cx = tx / c_tiles_per_chunk, cy = ty / c_tiles_per_chunk;
+	int cx = tx / c_tiles_per_chunk;
+	int cy = ty / c_tiles_per_chunk;
 	tx = cx * c_tiles_per_chunk;
 	ty = cy * c_tiles_per_chunk;
 	// Update scrolls.
@@ -420,12 +422,14 @@ void Locator::goto_mouse(
     bool delay_send         // Delay send_location for a bit.
 ) {
 	GdkRectangle oldbox = viewbox;  // Old location of box.
-	int oldtx = tx, oldty = ty;
+	int oldtx = tx;
+	int oldty = ty;
 	// Set tx,ty here so hscrolled() &
 	//   vscrolled() don't send to Exult.
 	tx = (mx * c_num_tiles) / draw->allocation.width;
 	ty = (my * c_num_tiles) / draw->allocation.height;
-	int cx = tx / c_tiles_per_chunk, cy = ty / c_tiles_per_chunk;
+	int cx = tx / c_tiles_per_chunk;
+	int cy = ty / c_tiles_per_chunk;
 	if (cx > c_num_chunks - 2)
 		cx = c_num_chunks - 2;
 	if (cy > c_num_chunks - 2)
@@ -473,7 +477,8 @@ gint Locator::mouse_press(
 	if (event->button != 1)
 		return FALSE;       // Handling left-click.
 	// Get mouse position, draw dims.
-	int mx = static_cast<int>(event->x), my = static_cast<int>(event->y);
+	int mx = static_cast<int>(event->x);
+	int my = static_cast<int>(event->y);
 	// Double-click?
 	if (reinterpret_cast<GdkEvent *>(event)->type == GDK_2BUTTON_PRESS) {
 		goto_mouse(mx, my);
@@ -509,7 +514,8 @@ gint Locator::mouse_release(
 gint Locator::mouse_motion(
     GdkEventMotion *event
 ) {
-	int mx, my;
+	int mx;
+	int my;
 	GdkModifierType state;
 	if (event->is_hint)
 		gdk_window_get_pointer(event->window, &mx, &my, &state);

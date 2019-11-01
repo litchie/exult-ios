@@ -205,7 +205,9 @@ bool Usecode_internal::call_function(int funcid,
 			return false;
 		}
 
-	int depth, oldstack, chain;
+	int depth;
+	int oldstack;
+	int chain;
 
 	if (entrypoint) {
 		depth = 0;
@@ -584,7 +586,8 @@ Tile_coord Usecode_internal::get_position(
 void Usecode_internal::show_pending_text(
 ) {
 	if (book) {         // Book mode?
-		int x, y;
+		int x;
+		int y;
 		while (book->show_next_page() &&
 		        Get_click(x, y, Mouse::hand, nullptr, false, book, true))
 			;
@@ -964,8 +967,8 @@ void Usecode_internal::activate_cached(
 class Object_reverse_sorter {
 public:
 	bool operator()(const Game_object *o1, const Game_object *o2) {
-		Tile_coord t1 = o1->get_tile(),
-		           t2 = o2->get_tile();
+		Tile_coord t1 = o1->get_tile();
+		Tile_coord t2 = o2->get_tile();
 		if (t1.ty > t2.ty)
 			return true;
 		else if (t1.ty == t2.ty) {
@@ -1116,7 +1119,9 @@ Usecode_value Usecode_internal::find_nearest(
 	        it != vec.end(); ++it) {
 		Game_object *each = *it;
 		Tile_coord t2 = each->get_tile();
-		int dx = t1.tx - t2.tx, dy = t1.ty - t2.ty, dz = t1.tz - t2.tz;
+		int dx = t1.tx - t2.tx;
+		int dy = t1.ty - t2.ty;
+		int dz = t1.tz - t2.tz;
 		uint32 dist = dx * dx + dy * dy + dz * dz;
 		if (dist < bestdist) {
 			bestdist = dist;
@@ -1677,7 +1682,8 @@ Usecode_value Usecode_internal::call_intrinsic(
 void Usecode_internal::click_to_continue(
 ) {
 	if (!gwin->get_pal()->is_faded_out()) { // If black screen, skip!
-		int xx, yy;
+		int xx;
+		int yy;
 		char c;
 		gwin->paint();      // Repaint scenery.
 		Get_click(xx, yy, Mouse::hand, &c, false, conv, true);
@@ -1728,7 +1734,8 @@ int Usecode_internal::get_user_choice_num(
 	delete [] user_choice;
 	user_choice = nullptr;
 	conv->show_avatar_choices();
-	int x, y;           // Get click.
+	int x;
+	int y;           // Get click.
 	int choice_num;
 	do {
 		char chr;       // Allow '1', '2', etc.

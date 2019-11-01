@@ -310,7 +310,8 @@ int ShortcutBar_gump::handle_event(SDL_Event *event) {
 		return 0;
 
 	if (event->type == SDL_MOUSEBUTTONDOWN || event->type == SDL_MOUSEBUTTONUP) {
-		int x, y;
+		int x;
+		int y;
 		gwin->get_win()->screen_to_game(event->button.x, event->button.y,
 		                                gwin->get_fastmouse(), x, y);
 

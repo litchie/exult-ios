@@ -172,7 +172,8 @@ static gint ucbrowser_compare_func(
 ) {
 	gint colnum = *static_cast<gint*>(userdata);
 	gint ret = 0;
-	gchar *name1 = nullptr, *name2 = nullptr;
+	gchar *name1 = nullptr;
+	gchar *name2 = nullptr;
 	gtk_tree_model_get(model, a, colnum, &name1, -1);
 	gtk_tree_model_get(model, b, colnum, &name2, -1);
 
@@ -226,9 +227,9 @@ Usecode_browser::Usecode_browser(
 	gtk_tree_view_set_model(GTK_TREE_VIEW(tree), GTK_TREE_MODEL(model));;
 	// Set up sorting.
 	GtkTreeSortable *sortable = GTK_TREE_SORTABLE(model);
-	gint *iname = new gint(NAME_COL),
-	     *inum = new gint(NUM_COL),
-		 *itype = new gint (TYPE_COL);
+	gint *iname = new gint(NAME_COL);
+	gint *inum = new gint(NUM_COL);
+	gint *itype = new gint (TYPE_COL);
 	gtk_tree_sortable_set_sort_func(sortable, SORTID_NAME,
 	                                ucbrowser_compare_func, iname, gint_deleter);
 	gtk_tree_sortable_set_sort_func(sortable, SORTID_NUM,

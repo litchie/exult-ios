@@ -120,7 +120,8 @@ void Scale2x_noblur(
 
 	// Point to start of dest area.
 	dest += srcy * 2 * dline_pixels + srcx * 2;
-	Dest_pixel *dest0 = dest, *dest1 = dest + dline_pixels;
+	Dest_pixel *dest0 = dest;
+	Dest_pixel *dest1 = dest + dline_pixels;
 
 
 	// These are used for the actual algorithm. They require a pixel to the
@@ -231,7 +232,8 @@ void Scale2x_noblur(
     const Manip_pixels &manip   // Manipulator methods.
 ) {
 	dest += srcy * 2 * dline_pixels + srcx * 2;
-	Pixel *dest0 = dest, *dest1 = dest + dline_pixels;
+	Pixel *dest0 = dest;
+	Pixel *dest1 = dest + dline_pixels;
 	// ->current row.
 	Pixel *src1 = source + srcy * sline_pixels + srcx;
 	Pixel *src0 = src1 - sline_pixels;  // ->prev. row.

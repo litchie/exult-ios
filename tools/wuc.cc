@@ -123,7 +123,8 @@ int find_intrinsic(const char **func_table, unsigned funsize, const char *name) 
 }
 
 void read_token(FILE *fi) {
-	int i = 0, c = 32;
+	int i = 0;
+	int c = 32;
 	while (((c == ' ') || (c == '\t') || (c == '\n') || (c == ',')) && (!feof(fi)))
 		c = fgetc(fi);
 	while (!((c == ' ') || (c == '\t') || (c == '\n') || (c == ',')) && (!feof(fi))) {
@@ -158,10 +159,11 @@ void read_token(FILE *fi) {
 }
 
 int main(int argc,char *argv[]) {
-	unsigned i, opsize = array_size(opcode_table),
-	       pushsize = array_size(push_table),
-	       popsize = array_size(pop_table),
-	       compsize = array_size(compiler_table);
+	unsigned i;
+	unsigned opsize = array_size(opcode_table);
+	unsigned pushsize = array_size(push_table);
+	unsigned popsize = array_size(pop_table);
+	unsigned compsize = array_size(compiler_table);
 	int label;
 	const char **func_table = bg_intrinsic_table;
 	int funsize = bg_intrinsic_size;

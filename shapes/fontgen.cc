@@ -43,13 +43,15 @@ static void Gen_shadow(
     unsigned char fg,       // Foreground color index.
     unsigned char shadow        // Shadow color index
 ) {
-	int r, c;
+	int r;
+	int c;
 
 	for (r = 0; r < h; r++)
 		for (c = 0; c < w; c++) {
 			if (pixels[r * w + c] != fg)
 				continue;
-			int rr, cc; // Fill surrounding pixels;
+			int rr;
+			int cc; // Fill surrounding pixels;
 			for (rr = r - 1; rr <= r + 1; rr++) {
 				if (rr < 0 || rr >= h)
 					continue;
@@ -128,7 +130,8 @@ static bool Gen_font_shape_win32(
 				shape->set_frame(make_unique<Shape_frame>(&bg, 1, 1, 0, 0, true), chr);
 				continue;
 			}
-			int sw = metrics.gmBlackBoxX, sh = metrics.gmBlackBoxY; // Shape width/height.
+			int sw = metrics.gmBlackBoxX;
+			int sh = metrics.gmBlackBoxY; // Shape width/height.
 
 			if (sw < metrics.gmCellIncX) sw = metrics.gmCellIncX;
 			if (sh < metrics.gmCellIncY) sh = metrics.gmCellIncY;
@@ -331,8 +334,10 @@ bool Gen_font_shape(
 			shape->set_frame(make_unique<Shape_frame>(&bg, 1, 1, 0, 0, true), chr);
 			continue;
 		}
-		int w = glyph->bitmap.width, h = glyph->bitmap.rows;
-		int sw = w, sh = h; // Shape width/height.
+		int w = glyph->bitmap.width;
+		int h = glyph->bitmap.rows;
+		int sw = w;
+		int sh = h; // Shape width/height.
 		int offset = 0;     // Starting row, col.
 		if (!sw)        // 0 width (like for a space)?
 			sw = static_cast<int>(glyph->metrics.horiAdvance) / 64; // Guessin...

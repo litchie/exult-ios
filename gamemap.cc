@@ -174,7 +174,8 @@ void Game_map::init_chunks(
 		}
 	char v2buf[V2_CHUNK_HDR_SIZE];  // Check for V2.
 	chunks->read(v2buf, sizeof(v2buf));
-	int hdrsize = 0, chunksz = c_tiles_per_chunk * c_tiles_per_chunk * 2;
+	int hdrsize = 0;
+	int chunksz = c_tiles_per_chunk * c_tiles_per_chunk * 2;
 	if (memcmp(v2hdr, v2buf, sizeof(v2buf)) == 0) {
 		v2_chunks = true;
 		hdrsize = V2_CHUNK_HDR_SIZE;
@@ -293,19 +294,21 @@ void Game_map::clear(
 void Game_map::read_map_data(
 ) {
 	Game_window *gwin = Game_window::get_instance();
-	int scrolltx = gwin->get_scrolltx(), scrollty = gwin->get_scrollty();
-	int w = gwin->get_width(), h = gwin->get_height();
+	int scrolltx = gwin->get_scrolltx();
+	int scrollty = gwin->get_scrollty();
+	int w = gwin->get_width();
+	int h = gwin->get_height();
 	// Start one tile to left.
-	int firstsx = (scrolltx - 1) / c_tiles_per_schunk,
-	    firstsy = (scrollty - 1) / c_tiles_per_schunk;
+	int firstsx = (scrolltx - 1) / c_tiles_per_schunk;
+	int firstsy = (scrollty - 1) / c_tiles_per_schunk;
 	// End 8 tiles to right.
 	int lastsx = (scrolltx + (w + c_tilesize - 2) / c_tilesize +
 	              c_tiles_per_chunk / 2) / c_tiles_per_schunk;
 	int lastsy = (scrollty + (h + c_tilesize - 2) / c_tilesize +
 	              c_tiles_per_chunk / 2) / c_tiles_per_schunk;
 	// Watch for wrapping.
-	int stopsx = (lastsx + 1) % c_num_schunks,
-	    stopsy = (lastsy + 1) % c_num_schunks;
+	int stopsx = (lastsx + 1) % c_num_schunks;
+	int stopsy = (lastsy + 1) % c_num_schunks;
 	// Read in "map", "ifix" objects for
 	//  all visible superchunks.
 	for (int sy = firstsy; sy != stopsy; sy = (sy + 1) % c_num_schunks)
@@ -594,9 +597,11 @@ void Game_map::get_ifix_chunk_objects(
 	if (static_cast<Flex_header::Flex_vers>(vers) == Flex_header::orig) {
 		int cnt = len / 4;
 		for (int i = 0; i < cnt; i++, ent += 4) {
-			int tx = (ent[0] >> 4) & 0xf, ty = ent[0] & 0xf,
-			    tz = ent[1] & 0xf;
-			int shnum = ent[2] + 256 * (ent[3] & 3), frnum = ent[3] >> 2;
+			int tx = (ent[0] >> 4) & 0xf;
+			int ty = ent[0] & 0xf;
+			int tz = ent[1] & 0xf;
+			int shnum = ent[2] + 256 * (ent[3] & 3);
+			int frnum = ent[3] >> 2;
 			const Shape_info &info = ShapeID::get_info(shnum);
 			obj = (info.is_animated() || info.has_sfx()) ?
 			     std::make_shared<Animated_ifix_object>(shnum, frnum, 
@@ -608,9 +613,11 @@ void Game_map::get_ifix_chunk_objects(
 		// b0 = tx,ty, b1 = lift, b2-3 = shnum, b4=frnum
 		int cnt = len / 5;
 		for (int i = 0; i < cnt; i++, ent += 5) {
-			int tx = (ent[0] >> 4) & 0xf, ty = ent[0] & 0xf,
-			    tz = ent[1] & 0xf;
-			int shnum = ent[2] + 256 * ent[3], frnum = ent[4];
+			int tx = (ent[0] >> 4) & 0xf;
+			int ty = ent[0] & 0xf;
+			int tz = ent[1] & 0xf;
+			int shnum = ent[2] + 256 * ent[3];
+			int frnum = ent[4];
 			const Shape_info &info = ShapeID::get_info(shnum);
 			obj = (info.is_animated() || info.has_sfx()) ?
 			   std::make_shared<Animated_ifix_object>(shnum, frnum, tx, ty, tz)
@@ -641,7 +648,8 @@ void Game_map::write_attributes(
     vector<pair<const char *, int> > &attlist
 ) {
 	int len = 0;            // Figure total length.
-	int i, cnt = attlist.size();
+	int i;
+	int cnt = attlist.size();
 	if (!cnt)
 		return;
 	for (i = 0; i < cnt; ++i) {
@@ -936,7 +944,8 @@ void Game_map::read_ireg_objects(
 		int cx = entry[0] >> 4; // Get chunk indices within schunk.
 		int cy = entry[1] >> 4;
 		// Get coord. #'s where shape goes.
-		int tilex, tiley;
+		int tilex;
+		int tiley;
 		if (container) {    // In container?  Get gump coords.
 			tilex = entry[0];
 			tiley = entry[1];
@@ -944,7 +953,8 @@ void Game_map::read_ireg_objects(
 			tilex = entry[0] & 0xf;
 			tiley = entry[1] & 0xf;
 		}
-		int shnum, frnum;   // Get shape #, frame #.
+		int shnum;
+		int frnum;   // Get shape #, frame #.
 		if (extended) {
 			shnum = entry[2] + 256 * entry[3];
 			frnum = entry[4];
@@ -954,7 +964,9 @@ void Game_map::read_ireg_objects(
 			frnum = entry[3] >> 2;
 		}
 		const Shape_info &info = ShapeID::get_info(shnum);
-		unsigned int lift, quality, type;
+		unsigned int lift;
+		unsigned int quality;
+		unsigned int type;
 		Ireg_game_object_shared obj;
 		int is_egg = 0;     // Fields are eggs.
 
@@ -1335,8 +1347,8 @@ bool Game_map::insert_terrain(
 		for (int ty = 0; ty < c_tiles_per_chunk; ty++)
 			for (int tx = 0; tx < c_tiles_per_chunk; tx++) {
 				ShapeID id = ter->get_flat(tx, ty);
-				int shnum = id.get_shapenum(),
-				    frnum = id.get_framenum();
+				int shnum = id.get_shapenum();
+				int frnum = id.get_framenum();
 				if (v2_chunks) {
 					*data++ = shnum & 0xff;
 					*data++ = (shnum >> 8) & 0xff;
@@ -1538,7 +1550,8 @@ Game_object *Game_map::locate_shape(
     int frnum,          // Frame, or c_any_frame
     int qual            // Quality, or c_any_qual
 ) {
-	int cx = -1, cy = 0;        // Before chunk to search.
+	int cx = -1;
+	int cy = 0;        // Before chunk to search.
 	int dir = 1;            // Direction to increment.
 	int stop = c_num_chunks;
 	if (upwards) {
@@ -1612,7 +1625,8 @@ Game_object *Game_map::locate_shape(
  */
 
 void Game_map::create_minimap(Shape *minimaps, const unsigned char *chunk_pixels) {
-	int cx, cy;
+	int cx;
+	int cy;
 	unsigned char *pixels = new unsigned char[c_num_chunks * c_num_chunks];
 
 	for (cy = 0; cy < c_num_chunks; ++cy) {
@@ -1656,8 +1670,11 @@ bool Game_map::write_minimap() {
 		Chunk_terrain *ter = *it;
 		Image_buffer8 *ibuf = ter->get_rendered_flats();
 		unsigned char *terbits = ibuf->get_bits();
-		int w = ibuf->get_width(), h = ibuf->get_height();
-		unsigned long r = 0, g = 0, b = 0;
+		int w = ibuf->get_width();
+		int h = ibuf->get_height();
+		unsigned long r = 0;
+		unsigned long g = 0;
+		unsigned long b = 0;
 		for (int y = 0; y < h; ++y) {
 			for (int x = 0; x < w; ++x) {
 				r += pal.get_red(*terbits);
@@ -1738,9 +1755,10 @@ void Game_map::cache_out_schunk(int schunk) {
 	// Get abs. chunk coords.
 	const int scy = 16 * (schunk / 12);
 	const int scx = 16 * (schunk % 12);
-	int cy, cx;
-	bool save_map_modified = map_modified,
-	     save_terrain_modified = chunk_terrains_modified;
+	int cy;
+	int cx;
+	bool save_map_modified = map_modified;
+	bool save_terrain_modified = chunk_terrains_modified;
 
 	if (schunk_modified[schunk])
 		return;         // NEVER cache out modified chunks.

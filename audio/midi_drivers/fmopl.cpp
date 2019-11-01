@@ -515,7 +515,10 @@ inline void OPL_CALC_CH(OPL_CH *CH) {
 /* ---------- calcrate rythm block ---------- */
 #define WHITE_NOISE_db 6.0
 inline void OPL_CALC_RH(OPL_CH *CH) {
-	uint32 env_tam, env_sd, env_top, env_hh;
+	uint32 env_tam;
+	uint32 env_sd;
+	uint32 env_top;
+	uint32 env_hh;
 	// This code used to do int(OPL->rnd.getRandomBit() * (WHITE_NOISE_db / EG_STEP)),
 	// but EG_STEP = 96.0/EG_ENT, and WHITE_NOISE_db=6.0. So, that's equivalent to
 	// int(OPL->rnd.getRandomBit() * EG_ENT/16). We know that EG_ENT is 4096, or 1024,
@@ -633,7 +636,9 @@ static void init_timetables(FM_OPL *OPL, int ARRATE, int DRRATE) {
 
 /* ---------- generic table initialize ---------- */
 static int OPLOpenTable() {
-	uint32 s, t, i;
+	uint32 s;
+	uint32 t;
+	uint32 i;
 	double rate;
 	int j;
 	double pom;
@@ -972,7 +977,8 @@ void YM3812UpdateOne_Mono(FM_OPL *OPL, sint16 *buffer, int length) {
 	uint32 amsCnt = OPL->amsCnt;
 	uint32 vibCnt = OPL->vibCnt;
 	uint8 rythm = OPL->rythm & 0x20;
-	OPL_CH *CH, *R_CH;
+	OPL_CH *CH;
+	OPL_CH *R_CH;
 
 	if (OPL != cur_chip) {
 		cur_chip = OPL;
@@ -1022,7 +1028,8 @@ void YM3812UpdateOne_Stereo(FM_OPL *OPL, sint16 *buffer, int length) {
 	uint32 amsCnt = OPL->amsCnt;
 	uint32 vibCnt = OPL->vibCnt;
 	uint8 rythm = OPL->rythm & 0x20;
-	OPL_CH *CH, *R_CH;
+	OPL_CH *CH;
+	OPL_CH *R_CH;
 
 	if (OPL != cur_chip) {
 		cur_chip = OPL;
@@ -1085,7 +1092,8 @@ void YM3812UpdateOne_Stereo(FM_OPL *OPL, sint16 *buffer, int length) {
 
 /* ---------- reset a chip ---------- */
 void OPLResetChip(FM_OPL *OPL) {
-	int c,s;
+	int c;
+	int s;
 	int i;
 
 	/* reset chip */

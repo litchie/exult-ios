@@ -111,7 +111,8 @@ void Image_window8::rotate_colors(
 	first *= 3;
 	num *= 3;
 	int cnt = abs(num);
-	unsigned char  *start = colors + first, *finish = start + cnt;
+	unsigned char  *start = colors + first;
+	unsigned char  *finish = start + cnt;
 	if (num > 0) {
 		// Shift upward.
 		rotate(start, finish - 3, finish);
@@ -146,14 +147,17 @@ unique_ptr<unsigned char[]> Image_window8::mini_screenshot() {
 	}
 
 	auto buf = make_unique<Uint8[]>(96 * 60);
-	const int w = 3 * 96, h = 3 * 60;
+	const int w = 3 * 96;
+	const int h = 3 * 60;
 	const unsigned char *pixels = ibuf->get_bits();
 	int pitch = ibuf->get_line_width();
 
 	for (int y = 0; y < h; y += 3)
 		for (int x = 0; x < w; x += 3) {
 			//calculate average colour
-			int r = 0, g = 0, b = 0;
+			int r = 0;
+			int g = 0;
+			int b = 0;
 			for (i = 0; i < 3; i++)
 				for (int j = 0; j < 3; j++) {
 					int pix = pixels[pitch * (j + y + (get_game_height() - h) / 2) +
@@ -167,7 +171,8 @@ unique_ptr<unsigned char[]> Image_window8::mini_screenshot() {
 			b = b / 9;
 
 			//find nearest-colour in non-rotating palette
-			int bestdist = INT_MAX, bestindex = -1;
+			int bestdist = INT_MAX;
+			int bestindex = -1;
 			for (i = 0; i < 224; i++) {
 				int dist = pow2(colors[3 * i + 0] - r)
 				           + pow2(colors[3 * i + 1] - g)

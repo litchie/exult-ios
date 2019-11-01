@@ -82,12 +82,17 @@ Mouse::Mouse(
 
 void Mouse::Init() {
 	int cnt = pointers.get_num_frames();
-	int maxleft = 0, maxright = 0, maxabove = 0, maxbelow = 0;
+	int maxleft = 0;
+	int maxright = 0;
+	int maxabove = 0;
+	int maxbelow = 0;
 	for (int i = 0; i < cnt; i++) {
 		Shape_frame *frame = pointers.get_frame(i);
 		assert(frame != nullptr);
-		int xleft = frame->get_xleft(), xright = frame->get_xright();
-		int yabove = frame->get_yabove(), ybelow = frame->get_ybelow();
+		int xleft = frame->get_xleft();
+		int xright = frame->get_xright();
+		int yabove = frame->get_yabove();
+		int ybelow = frame->get_ybelow();
 		if (xleft > maxleft)
 			maxleft = xleft;
 		if (xright > maxright)
@@ -97,7 +102,8 @@ void Mouse::Init() {
 		if (ybelow > maxbelow)
 			maxbelow = ybelow;
 	}
-	int maxw = maxleft + maxright, maxh = maxabove + maxbelow;
+	int maxw = maxleft + maxright;
+	int maxh = maxabove + maxbelow;
 	// Create backup buffer.
 	backup = iwin->create_buffer(maxw, maxh);
 	box.w = maxw;
@@ -146,7 +152,8 @@ void Mouse::move(int x, int y) {
 		warp = true;
 	}
 	if (warp && gwin->get_fastmouse()) {
-		int wx, wy;
+		int wx;
+		int wy;
 		gwin->get_win()->game_to_screen(x, y, gwin->get_fastmouse(), wx, wy);
 #if SDL_VERSION_ATLEAST(2, 0, 0)
 		SDL_WarpMouseInWindow(gwin->get_win()->get_screen_window(), wx, wy);
@@ -270,7 +277,8 @@ void Mouse::set_speed_cursor() {
 	} else if (Combat::is_paused())
 		cursor = short_combat_arrows[0];    // Short N red arrow.
 	if (cursor == dontchange) {
-		int ax, ay;         // Get Avatar/barge screen location.
+		int ax;
+		int ay;         // Get Avatar/barge screen location.
 		Barge_object *barge = gwin->get_moving_barge();
 		if (barge) {
 			// Use center of barge.
@@ -280,7 +288,8 @@ void Mouse::set_speed_cursor() {
 		} else
 			gwin->get_shape_location(gwin->get_main_actor(), ax, ay);
 
-		int dy = ay - mousey, dx = mousex - ax;
+		int dy = ay - mousey;
+		int dx = mousex - ax;
 		Direction dir = Get_direction_NoWrap(dy, dx);
 		Rectangle gamewin_dims = gwin->get_game_rect();
 		float speed_section = max(max(-static_cast<float>(dx) / ax, static_cast<float>(dx) / (gamewin_dims.w - ax)), max(static_cast<float>(dy) / ay, -static_cast<float>(dy) / (gamewin_dims.h - ay)));

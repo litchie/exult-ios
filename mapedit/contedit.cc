@@ -259,8 +259,12 @@ int ExultStudio::init_cont_window(
     int datalen
 ) {
 	Container_game_object *addr;
-	int tx, ty, tz;
-	int shape, frame, quality;
+	int tx;
+	int ty;
+	int tz;
+	int shape;
+	int frame;
+	int quality;
 	std::string name;
 	unsigned char res;
 	bool invis;
@@ -308,8 +312,9 @@ int ExultStudio::save_cont_window(
 	cout << "In save_cont_window()" << endl;
 	// Get container address.
 	Container_game_object *addr = static_cast<Container_game_object*>(gtk_object_get_user_data(GTK_OBJECT(contwin)));
-	int tx = get_spin("cont_x"), ty = get_spin("cont_y"),
-	    tz = get_spin("cont_z");
+	int tx = get_spin("cont_x");
+	int ty = get_spin("cont_y");
+	int tz = get_spin("cont_z");
 	std::string name(get_text_entry("cont_name"));
 	int shape = get_spin("cont_shape");
 	int frame = get_spin("cont_frame");

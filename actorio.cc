@@ -227,7 +227,11 @@ void Actor::read(
 
 	int unk0 = nfile->read1();  // We set high bit of this value.
 	int unk1 = nfile->read1();
-	int magic = 0, mana = 0, temp, flags3, ident = 0;
+	int magic = 0;
+	int mana = 0;
+	int temp;
+	int flags3;
+	int ident = 0;
 	if (fix_first || unk0 == 0) {   // How U7 stored things.
 		// If NPC 0: MaxMagic (0-4), TempHigh (5-7) and Mana(0-4),
 		//                      TempLow (5-7)
@@ -507,7 +511,8 @@ void Actor::write(
 
 	int old_shape = get_shapenum(); // Backup shape because we might change it
 	set_shape(get_shape_real());     // Change the shape out non polymorph one
-	int shapenum = get_shapenum(), framenum = get_framenum();
+	int shapenum = get_shapenum();
+	int framenum = get_framenum();
 	buf4[0] = ((get_cx() % 16) << 4) | get_tx();
 	buf4[1] = ((get_cy() % 16) << 4) | get_ty();
 	// ++++++Is this even needed anymore? We already save 16-bit shapes below.

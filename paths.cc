@@ -112,13 +112,15 @@ int Actor_pathfinder_client::get_step_cost(
     //   field may be modified.
 ) {
 	Game_window *gwin = Game_window::get_instance();
-	int cx = to.tx / c_tiles_per_chunk, cy = to.ty / c_tiles_per_chunk;
+	int cx = to.tx / c_tiles_per_chunk;
+	int cy = to.ty / c_tiles_per_chunk;
 	Map_chunk *olist = gwin->get_map()->get_chunk(cx, cy);
 	int tx = to.tx % c_tiles_per_chunk; // Get tile within chunk.
 	int ty = to.ty % c_tiles_per_chunk;
 	int cost = 1;
 	olist->setup_cache();       // Make sure cache is valid.
-	int water, poison;      // Get tile info.
+	int water;
+	int poison;      // Get tile info.
 	Actor::get_tile_info(nullptr, gwin, olist, tx, ty, water, poison);
 	int old_lift = to.tz;       // Might climb/descend.
 	Tile_coord from(frm);
@@ -168,7 +170,8 @@ int Actor_pathfinder_client::estimate_cost(
 		dy += c_num_tiles;
 	else if (dy < 0)
 		dy = -dy;
-	int larger, smaller;        // Start with larger.
+	int larger;
+	int smaller;        // Start with larger.
 	if (dy <= dx) {
 		larger = dx;
 		smaller = dy;
@@ -257,7 +260,8 @@ Offscreen_pathfinder_client::Offscreen_pathfinder_client(
 		Rectangle scr =
 		    Game_window::get_instance()->get_win_tile_rect();
 		// Get center.
-		int cx = scr.x + scr.w / 2, cy = scr.y + scr.h / 2;
+		int cx = scr.x + scr.w / 2;
+		int cy = scr.y + scr.h / 2;
 		// More than 4 screens away?
 		if (best.distance_2d(Tile_coord(cx, cy, 0)) > 4 * scr.w) {
 			best.tx = best.ty = -1;
@@ -482,7 +486,8 @@ int Fast_pathfinder_client::get_step_cost(
 ) {
 	ignore_unused_variable_warning(from);
 	Game_window *gwin = Game_window::get_instance();
-	int cx = to.tx / c_tiles_per_chunk, cy = to.ty / c_tiles_per_chunk;
+	int cx = to.tx / c_tiles_per_chunk;
+	int cy = to.ty / c_tiles_per_chunk;
 	Map_chunk *olist = gwin->get_map()->get_chunk(cx, cy);
 	int tx = to.tx % c_tiles_per_chunk; // Get tile within chunk.
 	int ty = to.ty % c_tiles_per_chunk;
@@ -557,7 +562,8 @@ int Fast_pathfinder_client::is_grabable_internal(
 	Game_map *gmap = Game_window::get_instance()->get_map();
 
 	Block fromvol = from->get_block();
-	Tile_coord src = from->get_tile(), dst(dt);
+	Tile_coord src = from->get_tile();
+	Tile_coord dst(dt);
 	Get_closest_edge(fromvol, tovol, src, dst);
 	src.tz = from->get_lift();
 
@@ -708,8 +714,10 @@ int Fast_pathfinder_client::is_straight_path(
 int Fast_pathfinder_client::is_straight_path(
     Game_object *from, Game_object *to
 ) {
-	Block fromvol = from->get_block(), tovol = to->get_block();
-	Tile_coord pos1(from->get_tile()), pos2(to->get_tile());
+	Block fromvol = from->get_block();
+	Block tovol = to->get_block();
+	Tile_coord pos1(from->get_tile());
+	Tile_coord pos2(to->get_tile());
 	Get_closest_edge(fromvol, tovol, pos1, pos2);
 
 	Game_map *gmap = Game_window::get_instance()->get_map();

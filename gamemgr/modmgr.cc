@@ -110,7 +110,13 @@ ModInfo::ModInfo(
 	configfile = cfg;
 	Configuration modconfig(configfile, "modinfo");
 
-	string config_path, default_dir, modversion, savedir, patchdir, sourcedir, gamedatdir;
+	string config_path;
+	string default_dir;
+	string modversion;
+	string savedir;
+	string patchdir;
+	string sourcedir;
+	string gamedatdir;
 
 	config_path = "mod_info/mod_title";
 	default_dir = mod;
@@ -131,9 +137,12 @@ ModInfo::ModInfo(
 		// Required version is missing; assume the mod to be incompatible
 		compatible = false;
 	else {
-		const char *ptrmod = modversion.c_str(), *ptrver = VERSION;
-		char *eptrmod, *eptrver;
-		int modver = strtol(ptrmod, &eptrmod, 0), exver = strtol(ptrver, &eptrver, 0);
+		const char *ptrmod = modversion.c_str();
+		const char *ptrver = VERSION;
+		char *eptrmod;
+		char *eptrver;
+		int modver = strtol(ptrmod, &eptrmod, 0);
+		int exver = strtol(ptrver, &eptrver, 0);
 
 		// Assume compatibility:
 		compatible = true;
@@ -153,7 +162,8 @@ ModInfo::ModInfo(
 				if (modver > exver)
 					compatible = false;
 				else if (modver == exver) {
-					string mver(to_uppercase(eptrmod)), ever(to_uppercase(eptrver));
+					string mver(to_uppercase(eptrmod));
+					string ever(to_uppercase(eptrver));
 					// Release vs CVS:
 					if (mver == "CVS" && ever == "R")
 						compatible = false;
@@ -162,13 +172,14 @@ ModInfo::ModInfo(
 		}
 	}
 
-	string tagstr(to_uppercase(static_cast<const string>(mod_title))),
-	       system_path_tag(path_prefix + "_" + tagstr),
-	       mods_dir("<" + path_prefix + "_MODS>"),
-	       data_directory(mods_dir + "/" + mod_title),
-	       mods_save_dir("<" + path_prefix + "_SAVEGAME>/mods"),
-	       savedata_directory(mods_save_dir + "/" + mod_title),
-	       mods_macro("__MODS__"), mod_path_macro("__MOD_PATH__");
+	string tagstr(to_uppercase(static_cast<const string>(mod_title)));
+	string system_path_tag(path_prefix + "_" + tagstr);
+	string mods_dir("<" + path_prefix + "_MODS>");
+	string data_directory(mods_dir + "/" + mod_title);
+	string mods_save_dir("<" + path_prefix + "_SAVEGAME>/mods");
+	string savedata_directory(mods_save_dir + "/" + mod_title);
+	string mods_macro("__MODS__");
+	string mod_path_macro("__MOD_PATH__");
 
 	// Read codepage first.
 	config_path = "mod_info/codepage";
@@ -321,9 +332,12 @@ ModManager::ModManager(const string &name, const string &menu, bool needtitle,
 
 	// We will NOT trust config with these values.
 	// We MUST NOT use path tags at this point yet!
-	string game_path, static_dir, base_cfg_path("config/disk/game/" + cfgname);
+	string game_path;
+	string static_dir;
+	string base_cfg_path("config/disk/game/" + cfgname);
 	{
-		string default_dir, config_path;
+		string default_dir;
+		string config_path;
 
 		// ++++ These path settings are for that game data which requires only
 		// ++++ read access. They default to a subdirectory of:
@@ -427,7 +441,11 @@ ModManager::ModManager(const string &name, const string &menu, bool needtitle,
 	add_system_path("<" + path_prefix + "_STATIC>", static_dir);
 
 	{
-		string src_dir, patch_dir, mods_dir, default_dir, config_path;
+		string src_dir;
+		string patch_dir;
+		string mods_dir;
+		string default_dir;
+		string config_path;
 
 		// <mods> setting: default is "$game_path/mods".
 		config_path = base_cfg_path + "/mods";
@@ -539,9 +557,13 @@ BaseGameInfo *ModManager::get_mod(const string &name, bool checkversion) {
  *  game is selected.
  */
 void ModManager::get_game_paths(const string &game_path) {
-	string saveprefix(get_system_path("<SAVEHOME>") + "/" + cfgname),
-	       default_dir, config_path, gamedat_dir, static_dir, savegame_dir,
-	       base_cfg_path("config/disk/game/" + cfgname);
+	string saveprefix(get_system_path("<SAVEHOME>") + "/" + cfgname);
+	string default_dir;
+	string config_path;
+	string gamedat_dir;
+	string static_dir;
+	string savegame_dir;
+	string base_cfg_path("config/disk/game/" + cfgname);
 
 	// ++++ All of these are directories with read/write requirements.
 	// ++++ They default to a directory in the current user's profile,
@@ -579,7 +601,8 @@ GameManager::GameManager(bool silent) {
 	bg = fov = si = ss = sib = nullptr;
 
 	// Search for games defined in exult.cfg:
-	string config_path("config/disk/game"), game_title;
+	string config_path("config/disk/game");
+	string game_title;
 	std::vector<string> gamestrs = config->listkeys(config_path, false);
 	std::vector<string> checkgames;
 	checkgames.reserve(checkgames.size()+5);	// +5 in case the four below are not in the cfg.
@@ -599,13 +622,18 @@ GameManager::GameManager(bool silent) {
 	}
 
 	games.reserve(checkgames.size());
-	int bgind = -1, fovind = -1, siind = -1, ssind = -1, sibind = -1;
+	int bgind = -1;
+	int fovind = -1;
+	int siind = -1;
+	int ssind = -1;
+	int sibind = -1;
 
 	for (std::vector<string>::iterator it = checkgames.begin();
 	        it != checkgames.end(); ++it) {
 		string gameentry = *it;
 		// Load the paths for all games found:
-		string base_title = gameentry, new_title;
+		string base_title = gameentry;
+		string new_title;
 		to_uppercase(base_title);
 		base_title += "\nMissing Title";
 		config->value(config_path + "/" + gameentry + "/title",

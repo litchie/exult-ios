@@ -97,7 +97,8 @@ unsigned int read1(FILE *f) {
 }
 
 unsigned int read2(FILE *f) {
-	unsigned char b0, b1;
+	unsigned char b0;
+	unsigned char b1;
 	b0 = fgetc(f);
 	b1 = fgetc(f);
 	return (b0 + (b1 << 8));
@@ -105,7 +106,8 @@ unsigned int read2(FILE *f) {
 
 /* Flauschepelz */
 signed int read2signed(FILE *f) {
-	unsigned char b0, b1;
+	unsigned char b0;
+	unsigned char b1;
 	signed int i0;
 	b0 = fgetc(f);
 	b1 = fgetc(f);
@@ -117,7 +119,10 @@ signed int read2signed(FILE *f) {
 }
 
 unsigned int read4(FILE *f) {
-	unsigned char b0, b1, b2, b3;
+	unsigned char b0;
+	unsigned char b1;
+	unsigned char b2;
+	unsigned char b3;
 	b0 = fgetc(f);
 	b1 = fgetc(f);
 	b2 = fgetc(f);
@@ -128,18 +133,26 @@ unsigned int read4(FILE *f) {
 
 u7shape *load_shape(char *filename) {
 	FILE *fp;
-	int file_size, shape_size, hdr_size;
+	int file_size;
+	int shape_size;
+	int hdr_size;
 	uint8 *pixptr/*, *eod*/;
 	int frame_offset;
 	int slice;
-	int slice_type, slice_length;
-	int block_type, block_length;
-	int max_leftX = -1, max_rightX = -1;
-	int max_leftY = -1, max_rightY = -1;
-	int offsetX, offsetY;
+	int slice_type;
+	int slice_length;
+	int block_type;
+	int block_length;
+	int max_leftX = -1;
+	int max_rightX = -1;
+	int max_leftY = -1;
+	int max_rightY = -1;
+	int offsetX;
+	int offsetY;
 	uint8 block;
 	uint8 pix;
-	int i, j;
+	int i;
+	int j;
 	size_t err;
 
 	int temp_int;
@@ -266,7 +279,10 @@ u7shape *load_shape(char *filename) {
 	shape->width = width;
 	shape->height = height;
 
-	int srcx, srcy, dstx, dsty;
+	int srcx;
+	int srcy;
+	int dstx;
+	int dsty;
 
 	for (i = 0; i < shape->num_frames; i++) {
 		frame = &shape->frames[i];
@@ -332,7 +348,9 @@ uint8 *load_palette(char *filename) {
 }
 
 static void writeline(FILE *dst, uint8 *buffer, int bytes) {
-	uint8 value, count, tmp;
+	uint8 value;
+	uint8 count;
+	uint8 tmp;
 	uint8 *finish = buffer + bytes;
 
 	while (buffer < finish) {
@@ -410,7 +428,8 @@ void save_image(uint8 *pixels, uint8 *palette, int width, int height, char *file
 int main(int argc, char *argv[]) {
 	char *palfilename ;
 	char *infilename;
-	char *outprefix, outfilename[255];
+	char *outprefix;
+	char outfilename[255];
 	u7shape *sh;
 	uint8 *palette;
 

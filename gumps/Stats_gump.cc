@@ -78,7 +78,9 @@ void Stats_extra_gump::paint(
 	Gump_manager *gman = gumpman;
 
 	// Area to print name in.
-	const int namex = 30, namey = 6, namew = 95;
+	const int namex = 30;
+	const int namey = 6;
+	const int namew = 95;
 	Actor *act = get_actor();
 	// Paint the gump itself.
 	paint_shape(x, y);
@@ -171,7 +173,9 @@ void Stats_gump::paint(
 	Gump_manager *gman = gumpman;
 
 	// Area to print name in.
-	const int namex = 30, namey = 6, namew = 95;
+	const int namex = 30;
+	const int namey = 6;
+	const int namew = 95;
 	Actor *act = get_actor();   // Check for freezing (SI).
 	if (gwin->get_main_actor()->get_flag(Obj_flags::freeze)) {
 		int frame = act->get_temperature_zone();
@@ -223,7 +227,8 @@ void Stats_gump::paint(
 		                x + textx, y + texty[9]);
 	}
 	// Now show atts. at bottom.
-	const int attsy = 130, attsx0 = 29;
+	const int attsy = 130;
+	const int attsx0 = 29;
 	int attsx = attsx0;
 	if (act->get_flag(Obj_flags::asleep))
 		attsx += Show_atts(x + attsx, y + attsy, ASLEEP);

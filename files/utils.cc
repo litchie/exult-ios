@@ -755,8 +755,10 @@ void setup_data_dir(
 }
 
 void setup_program_paths() {
-	string home_dir(Get_home()), config_dir(home_dir),
-	       savehome_dir(home_dir), gamehome_dir(".");
+	string home_dir(Get_home());
+	string config_dir(home_dir);
+	string savehome_dir(home_dir);
+	string gamehome_dir(".");
 
 #if defined(__IPHONEOS__)
 	config_dir = "../Library/Preferences";
@@ -826,7 +828,8 @@ void U7copy(
 	}
 	out.flush();
 	delete [] buf;
-	bool inok = in.good(), outok = out.good();
+	bool inok = in.good();
+	bool outok = out.good();
 	in.close();
 	out.close();
 	if (!inok)

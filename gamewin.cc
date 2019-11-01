@@ -246,8 +246,8 @@ void Background_noise::handle_event(
 		        // +++++SI SFX's don't sound right.
 		        Game::get_game_type() == BLACK_GATE) {
 			int sound;      // BG SFX #.
-			static unsigned char bgnight[] = {61, 61, 255},
-			                                 bgday[] = {82, 85, 85};
+			static unsigned char bgnight[] = {61, 61, 255};
+			static unsigned char bgday[] = {82, 85, 85};
 			if (repeats > 0)    // Repeating?
 				sound = last_sound;
 			else {
@@ -541,7 +541,8 @@ void Game_window::init_files(bool cycle) {
 	delete keybinder;
 	keybinder = new KeyBinder();
 
-	std::string d, keyfilename;
+	std::string d;
+	std::string keyfilename;
 	d = "config/disk/game/" + Game::get_gametitle() + "/keys";
 	config->value(d.c_str(), keyfilename, "(default)");
 	if (keyfilename == "(default)") {
@@ -1009,10 +1010,12 @@ void Game_window::set_scrolls(
 		set_moving_barge(b);
 	}
 	// Set where to skip rendering.
-	int cx = camera_actor->get_cx(), cy = camera_actor->get_cy();
+	int cx = camera_actor->get_cx();
+	int cy = camera_actor->get_cy();
 	Map_chunk *nlist = map->get_chunk(cx, cy);
 	nlist->setup_cache();
-	int tx = camera_actor->get_tx(), ty = camera_actor->get_ty();
+	int tx = camera_actor->get_tx();
+	int ty = camera_actor->get_ty();
 	set_above_main_actor(nlist->is_roof(tx, ty,
 	                                    camera_actor->get_lift()));
 	set_in_dungeon(nlist->has_dungeon() ? nlist->is_dungeon(tx, ty) : 0);
@@ -1030,7 +1033,8 @@ void Game_window::set_scrolls(
 ) {
 	// Figure in tiles.
 	// OFFSET HERE
-	int tw = get_width() / c_tilesize, th = (get_height()) / c_tilesize;
+	int tw = get_width() / c_tilesize;
+	int th = (get_height()) / c_tilesize;
 	set_scrolls(DECR_TILE(cent.tx, tw / 2), DECR_TILE(cent.ty, th / 2));
 }
 
@@ -1078,7 +1082,8 @@ bool Game_window::scroll_if_needed(
 ) {
 	bool scrolled = false;
 	// 1 lift = 1/2 tile.
-	int tx = t.tx - t.tz / 2, ty = t.ty - t.tz / 2;
+	int tx = t.tx - t.tz / 2;
+	int ty = t.ty - t.tz / 2;
 	if (Tile_coord::gte(DECR_TILE(scroll_bounds.x), tx)) {
 		view_left();
 		scrolled = true;
@@ -1496,7 +1501,8 @@ void Game_window::reload_usecode(
 
 void Game_window::view_right(
 ) {
-	int w = get_width(), h = get_height();
+	int w = get_width();
+	int h = get_height();
 	// Get current rightmost chunk.
 	int old_rcx = ((scrolltx + (w - 1) / c_tilesize) / c_tiles_per_chunk) %
 	              c_num_chunks;
@@ -1543,7 +1549,8 @@ void Game_window::view_left(
 }
 void Game_window::view_down(
 ) {
-	int w = get_width(), h = get_height();
+	int w = get_width();
+	int h = get_height();
 	// Get current bottomost chunk.
 	int old_bcy = ((scrollty + (h - 1) / c_tilesize) / c_tiles_per_chunk) %
 	              c_num_chunks;
@@ -1603,7 +1610,8 @@ void Game_window::start_actor_alt(
     int winx, int winy, // Mouse position to aim for.
     int speed           // Msecs. between frames.
 ) {
-	int ax, ay;
+	int ax;
+	int ay;
 	int blocked[8];
 	get_shape_location(main_actor, ax, ay);
 
@@ -1695,8 +1703,8 @@ void Game_window::start_actor_alt(
 
 	int lift = main_actor->get_lift();
 	int liftpixels = 4 * lift;  // Figure abs. tile.
-	int tx = get_scrolltx() + (ax + liftpixels) / c_tilesize,
-	    ty = get_scrollty() + (ay + liftpixels) / c_tilesize;
+	int tx = get_scrolltx() + (ax + liftpixels) / c_tilesize;
+	int ty = get_scrollty() + (ay + liftpixels) / c_tilesize;
 	// Wrap:
 	tx = (tx + c_num_tiles) % c_num_tiles;
 	ty = (ty + c_num_tiles) % c_num_tiles;
@@ -1730,13 +1738,13 @@ void Game_window::start_actor(
 		// Want to move center there.
 		int lift = main_actor->get_lift();
 		int liftpixels = 4 * lift;  // Figure abs. tile.
-		int tx = get_scrolltx() + (winx + liftpixels) / c_tilesize,
-		    ty = get_scrollty() + (winy + liftpixels) / c_tilesize;
+		int tx = get_scrolltx() + (winx + liftpixels) / c_tilesize;
+		int ty = get_scrollty() + (winy + liftpixels) / c_tilesize;
 		// Wrap:
 		tx = (tx + c_num_tiles) % c_num_tiles;
 		ty = (ty + c_num_tiles) % c_num_tiles;
-		Tile_coord atile = moving_barge->get_center(),
-		           btile = moving_barge->get_tile();
+		Tile_coord atile = moving_barge->get_center();
+		Tile_coord btile = moving_barge->get_tile();
 		// Go faster than walking.
 		moving_barge->travel_to_tile(
 		    Tile_coord(tx + btile.tx - atile.tx,
@@ -1816,7 +1824,8 @@ void Game_window::teleport_party(
 	main_actor->set_action(nullptr);  // Definitely need this, or you may
 	//   step back to where you came from.
 	moving_barge = nullptr;       // Calling 'done()' could be risky...
-	int i, cnt = party_man->get_count();
+	int i;
+	int cnt = party_man->get_count();
 	if (newmap != -1)
 		set_map(newmap);
 	main_actor->move(t.tx, t.ty, t.tz, newmap); // Move Avatar.
@@ -1848,7 +1857,8 @@ void Game_window::teleport_party(
 		                        oldpos.tx, oldpos.ty);
 //	teleported = 1;
 	// generate mousemotion event
-	int x, y;
+	int x;
+	int y;
 	SDL_GetMouseState(&x, &y);
 #if SDL_VERSION_ATLEAST(2, 0, 0)
 	SDL_WarpMouseInWindow(win->get_screen_window(), x, y);
@@ -1947,7 +1957,8 @@ Game_object *Game_window::find_object(
 					continue;
 				// Check the shape itself.
 				Shape_frame *s = obj->get_shape();
-				int ox, oy;
+				int ox;
+				int oy;
 				get_shape_location(obj, ox, oy);
 				if (!s->has_point(x - ox, y - oy))
 					continue;
@@ -2093,7 +2104,8 @@ void Game_window::show_items(
 		cheat.set_grabbed_actor(npc);
 
 #ifdef DEBUG
-	int shnum, frnum;
+	int shnum;
+	int frnum;
 	if (obj) {
 		shnum = obj->get_shapenum(), frnum = obj->get_framenum();
 		const Shape_info &info = obj->get_info();
@@ -2234,7 +2246,8 @@ ShapeID Game_window::get_flat(
 ) {
 	int tx = (get_scrolltx() + x / c_tilesize) % c_num_tiles;
 	int ty = (get_scrollty() + y / c_tilesize) % c_num_tiles;
-	int cx = tx / c_tiles_per_chunk, cy = ty / c_tiles_per_chunk;
+	int cx = tx / c_tiles_per_chunk;
+	int cy = ty / c_tiles_per_chunk;
 	tx = tx % c_tiles_per_chunk;
 	ty = ty % c_tiles_per_chunk;
 	Map_chunk *chunk = map->get_chunk(cx, cy);
@@ -2470,7 +2483,8 @@ Actor *Game_window::find_witness(
 void Game_window::theft(
 ) {
 	// See if in a new location.
-	int cx = main_actor->get_cx(), cy = main_actor->get_cy();
+	int cx = main_actor->get_cx();
+	int cy = main_actor->get_cy();
 	if (cx != theft_cx || cy != theft_cy) {
 		theft_cx = cx;
 		theft_cy = cy;
@@ -2528,8 +2542,8 @@ void Game_window::call_guards(
 	Actor *closest;
 	if (armageddon || in_dungeon)
 		return;
-	int gshape = get_guard_shape(),
-	    align = witness ? witness->get_effective_alignment() : Actor::neutral;
+	int gshape = get_guard_shape();
+	int align = witness ? witness->get_effective_alignment() : Actor::neutral;
 	if (witness || (witness = find_witness(closest, align)) != nullptr) {
 		if (witness->is_goblin()) {
 			if (gshape < 0)
@@ -2718,7 +2732,8 @@ void Game_window::setup_game(
 	Notebook_gump::initialize();        // Read in journal.
 
 	//read autonotes
-	std::string d, autonotesfilename;
+	std::string d;
+	std::string autonotesfilename;
 	d = "config/disk/game/" + Game::get_gametitle() + "/autonotes";
 	config->value(d.c_str(), autonotesfilename, "(default)");
 	if (autonotesfilename == "(default)") {
@@ -2826,27 +2841,31 @@ void Game_window::emulate_cache(Map_chunk *olist, Map_chunk *nlist) {
 	// Cancel weather from eggs that are
 	// far away.
 	effects->remove_weather_effects(120);
-	int newx = nlist->get_cx(), newy = nlist->get_cy(),
-	    oldx = olist->get_cx(), oldy = olist->get_cy();
-	Game_map *omap = olist->get_map(), *nmap = nlist->get_map();
+	int newx = nlist->get_cx();
+	int newy = nlist->get_cy();
+	int oldx = olist->get_cx();
+	int oldy = olist->get_cy();
+	Game_map *omap = olist->get_map();
+	Game_map *nmap = nlist->get_map();
 	// Cancel scripts 4 chunks from this.
 	Usecode_script::purge(Tile_coord(newx * c_tiles_per_chunk,
 	                                 newy * c_tiles_per_chunk, 0), 4 * c_tiles_per_chunk);
 	int nearby[5][5];       // Chunks within 3.
-	int x, y;
+	int x;
+	int y;
 	// Figure old range.
-	int old_minx = c_num_chunks + oldx - 2,
-	    old_maxx = c_num_chunks + oldx + 2;
-	int old_miny = c_num_chunks + oldy - 2,
-	    old_maxy = c_num_chunks + oldy + 2;
+	int old_minx = c_num_chunks + oldx - 2;
+	int old_maxx = c_num_chunks + oldx + 2;
+	int old_miny = c_num_chunks + oldy - 2;
+	int old_maxy = c_num_chunks + oldy + 2;
 	if (nmap == omap) {     // Same map?
 		// Set to 0
 		memset(nearby, 0, sizeof(nearby));
 		// Figure new range.
-		int new_minx = c_num_chunks + newx - 2,
-		    new_maxx = c_num_chunks + newx + 2;
-		int new_miny = c_num_chunks + newy - 2,
-		    new_maxy = c_num_chunks + newy + 2;
+		int new_minx = c_num_chunks + newx - 2;
+		int new_maxx = c_num_chunks + newx + 2;
+		int new_miny = c_num_chunks + newy - 2;
+		int new_maxy = c_num_chunks + newy + 2;
 		// Now we write what we are now near
 		for (y = new_miny; y <= new_maxy; y++) {
 			if (y > old_maxy)

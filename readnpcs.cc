@@ -255,7 +255,9 @@ void Game_window::read_schedules(
 				return;
 		}
 	}
-	int num_npcs = 0, entsize, num_script_names;
+	int num_npcs = 0;
+	int entsize;
+	int num_script_names;
 	auto offsets = Set_to_read_schedules(*sfile, num_npcs, entsize, num_script_names);
 	Schedule_change::clear();
 	vector<std::string> &script_names = Schedule_change::get_script_names();
@@ -335,7 +337,9 @@ void Game_window::revert_schedules(Actor *npc) {
 		throw file_read_exception(SCHEDULE_DAT);
 	}
 
-	int num_npcs, entsize, num_script_names;
+	int num_npcs;
+	int entsize;
+	int num_script_names;
 	auto offsets = Set_to_read_schedules(sfile, num_npcs, entsize, num_script_names);
 	if (num_script_names) {
 		int sz = sfile.read2();

@@ -51,7 +51,9 @@ int U7ListFiles(const std::string &mask, FileList &files) {
 	WIN32_FIND_DATA fileinfo;
 	HANDLE          handle;
 	char            *stripped_path;
-	int             i, nLen, nLen2;
+	int             i;
+	int             nLen;
+	int             nLen2;
 
 #ifdef UNICODE
 	const char *name = path.c_str();
