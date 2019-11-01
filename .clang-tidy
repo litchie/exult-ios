@@ -1,6 +1,8 @@
 Checks: "-*\
 ,modernize-use-bool-literals\
 ,readability-misleading-indentation\
+,readability-misplaced-array-index\
+,-readability-named-parameter\
 ,readability-non-const-parameter\
 ,readability-redundant-control-flow\
 ,-readability-redundant-declaration\
@@ -12,6 +14,7 @@ Checks: "-*\
 ,readability-redundant-string-init\
 ,readability-simplify-boolean-expr\
 ,readability-simplify-subscript-expr\
+,readability-static-accessed-through-instance\
 ,readability-static-definition-in-anonymous-namespace\
 ,readability-string-compare\
 ,readability-uniqueptr-delete-release"

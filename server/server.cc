@@ -278,7 +278,7 @@ static void Handle_client_message(
 	}
 	case Exult_server::swap_terrain: {
 		int tnum = Read2(ptr);
-		bool okay = gwin->get_map()->swap_terrains(tnum);
+		bool okay = Game_map::swap_terrains(tnum);
 		unsigned char *wptr = &data[2];
 		*wptr++ = okay ? 1 : 0;
 		Exult_server::Send_data(client_socket,
@@ -288,7 +288,7 @@ static void Handle_client_message(
 	case Exult_server::insert_terrain: {
 		int tnum = Read2s(ptr);
 		bool dup = *ptr++ != 0;
-		bool okay = gwin->get_map()->insert_terrain(tnum, dup);
+		bool okay = Game_map::insert_terrain(tnum, dup);
 		unsigned char *wptr = &data[3];
 		*wptr++ = okay ? 1 : 0;
 		Exult_server::Send_data(client_socket,
@@ -297,7 +297,7 @@ static void Handle_client_message(
 	}
 	case Exult_server::delete_terrain: {
 		int tnum = Read2s(ptr);
-		bool okay = gwin->get_map()->delete_terrain(tnum);
+		bool okay = Game_map::delete_terrain(tnum);
 		unsigned char *wptr = &data[2];
 		*wptr++ = okay ? 1 : 0;
 		Exult_server::Send_data(client_socket,
@@ -309,7 +309,7 @@ static void Handle_client_message(
 		int tnum = Read2s(ptr);
 		unsigned char *wptr = &data[2];
 		Write2(wptr, gwin->get_map()->get_num_chunk_terrains());
-		Chunk_terrain *ter = gwin->get_map()->get_terrain(tnum);
+		Chunk_terrain *ter = Game_map::get_terrain(tnum);
 		// Serialize it.
 		wptr += ter->write_flats(wptr, Game_map::is_v2_chunks());
 		Exult_server::Send_data(client_socket,
@@ -326,9 +326,9 @@ static void Handle_client_message(
 		                              "Terrain-Editing Enabled"
 		                             };
 		if (onoff == 0)     // End/commit.
-			gwin->get_map()->commit_terrain_edits();
+			Game_map::commit_terrain_edits();
 		else if (onoff == -1)
-			gwin->get_map()->abort_terrain_edits();
+			Game_map::abort_terrain_edits();
 		if (onoff >= -1 && onoff <= 1)
 			gwin->get_effects()->center_text(msgs[onoff + 1]);
 		gwin->set_all_dirty();

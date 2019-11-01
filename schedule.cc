@@ -4192,7 +4192,7 @@ void Bake_schedule::now_what() {
 			// look for baking dough
 			Game_object_vector baking_dough;
 			int frnum(GAME_SI ? 18 : 2);
-			npc->find_nearby(baking_dough, npcpos, dough_shp, 20, 0, 51, frnum, false);
+			Actor::find_nearby(baking_dough, npcpos, dough_shp, 20, 0, 51, frnum, false);
 			if (!baking_dough.empty() && baking_dough[0] != dough_obj.get()) {
 			    // found dough
 				dough_in_oven_obj = baking_dough[0]->shared_from_this();
@@ -4210,7 +4210,7 @@ void Bake_schedule::now_what() {
 			if (oven_obj) {
 				Game_object_vector food;
 				Tile_coord Opos = oven_obj->get_tile();
-				npc->find_nearby(food, Opos, 377, 2, 0, c_any_qual, c_any_framenum, true);
+				Actor::find_nearby(food, Opos, 377, 2, 0, c_any_qual, c_any_framenum, true);
 				if (!food.empty()) { // found food
 					dough_in_oven_obj = food[0]->shared_from_this();
 					dough_in_oven = Game_object_weak(dough_in_oven_obj);
@@ -4223,11 +4223,11 @@ void Bake_schedule::now_what() {
 		if (!dough_obj) {   // Looking for unused dough on tables
 			Game_object_vector leftovers;
 			if (GAME_SI) {
-				npc->find_nearby(leftovers, npcpos, dough_shp, 20, 0, 50, 16, false);
-				npc->find_nearby(leftovers, npcpos, dough_shp, 20, 0, 50, 17, false);
-				npc->find_nearby(leftovers, npcpos, dough_shp, 20, 0, 50, 18, false);
+				Actor::find_nearby(leftovers, npcpos, dough_shp, 20, 0, 50, 16, false);
+				Actor::find_nearby(leftovers, npcpos, dough_shp, 20, 0, 50, 17, false);
+				Actor::find_nearby(leftovers, npcpos, dough_shp, 20, 0, 50, 18, false);
 			} else
-				npc->find_nearby(leftovers, npcpos, dough_shp, 20, 0, 50, c_any_framenum, false);
+				Actor::find_nearby(leftovers, npcpos, dough_shp, 20, 0, 50, c_any_framenum, false);
 			if (!leftovers.empty() && leftovers[0] != dough_in_oven_obj.get()) {  // found dough
 				dough_obj = leftovers[0]->shared_from_this();
 				dough = Game_object_weak(dough_obj);
@@ -4244,9 +4244,9 @@ void Bake_schedule::now_what() {
 	}
 	case to_flour: {    // Looks for flourbag and walks to it if found
 		Game_object_vector items;
-		npc->find_nearby(items, npcpos, 863, -1, 0, c_any_qual, 0);
-		npc->find_nearby(items, npcpos, 863, -1, 0, c_any_qual, 13);
-		npc->find_nearby(items, npcpos, 863, -1, 0, c_any_qual, 14);
+		Actor::find_nearby(items, npcpos, 863, -1, 0, c_any_qual, 0);
+		Actor::find_nearby(items, npcpos, 863, -1, 0, c_any_qual, 13);
+		Actor::find_nearby(items, npcpos, 863, -1, 0, c_any_qual, 14);
 
 		if (items.empty()) {
 			state = to_table;
@@ -4296,7 +4296,7 @@ void Bake_schedule::now_what() {
 		Game_object *worktable_obj = nullptr;
 		if (stove) {
 			Game_object_vector table;
-			npc->find_nearby(table, npcpos, 890, -1, 0, c_any_qual, 5);
+			Actor::find_nearby(table, npcpos, 890, -1, 0, c_any_qual, 5);
 			if (table.size() == 1)
 				worktable_obj = table[0];
 			else if (table.size() > 1) {
@@ -4462,7 +4462,7 @@ void Bake_schedule::now_what() {
 				table_shp = 1003;
 				table_frm = 2;
 			}
-			npc->find_nearby(table, npcpos, table_shp, -1, 0, c_any_qual, table_frm);
+			Actor::find_nearby(table, npcpos, table_shp, -1, 0, c_any_qual, table_frm);
 			if (table.size() == 1)
 				displaytable_obj = table[0];
 			else if (table.size() > 1) {
@@ -4515,7 +4515,7 @@ void Bake_schedule::now_what() {
 	}
 	case clear_display: {   // Mark food for deletion by remove_food
 		Game_object_vector food;
-		npc->find_nearby(food, npcpos, 377, 4, 0, c_any_qual, c_any_framenum, true);
+		Actor::find_nearby(food, npcpos, 377, 4, 0, c_any_qual, c_any_framenum, true);
 		if (food.empty() && !clearing) { // none of our food on the table
 			// so we can't clear it
 			Game_object_shared dough_in_oven_obj = dough_in_oven.lock();
@@ -4535,7 +4535,7 @@ void Bake_schedule::now_what() {
 	}
 	case remove_food: { // Delete food on display table one by one with a slight delay
 		Game_object_vector food;
-		npc->find_nearby(food, npcpos, 377, 4, 0, c_any_qual, c_any_framenum, true);
+		Actor::find_nearby(food, npcpos, 377, 4, 0, c_any_qual, c_any_framenum, true);
 		if (!food.empty()) {
 			delay = 500;
 			state = clear_display;

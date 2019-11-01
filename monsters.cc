@@ -139,8 +139,8 @@ void Monster_actor::equip(
 ) {
 	// Get equipment.
 	int equip_offset = inf->equip_offset;
-	vector<Equip_record> &equip = inf->equip;
-	if (!equip_offset || equip_offset - 1 >= inf->get_equip_cnt())
+	vector<Equip_record> &equip = Monster_info::equip;
+	if (!equip_offset || equip_offset - 1 >= Monster_info::get_equip_cnt())
 		return;
 	Equip_record &rec = equip[equip_offset - 1];
 	for (size_t i = 0; i < array_size(equip[0].elements); i++) {

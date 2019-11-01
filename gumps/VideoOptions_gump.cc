@@ -288,7 +288,7 @@ void VideoOptions_gump::load_settings(bool Fullscreen) {
 	int h = resolution & 0xFFFF;
 	if (resolutions == nullptr) {
 		fullscreen = gwin->get_win()->is_fullscreen() ? 1 : 0;
-		std::map<uint32, Image_window::Resolution> Resolutions = gwin->get_win()->Resolutions;
+		std::map<uint32, Image_window::Resolution> Resolutions = Image_window::Resolutions;
 		if (fullscreen) Resolutions[(w << 16) | h] = Image_window::Resolution();
 
 		num_resolutions = Resolutions.size();

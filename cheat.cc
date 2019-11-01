@@ -300,7 +300,7 @@ void Cheat::move_chunk(Map_chunk *chunk, int dx, int dy) {
 		          (t.ty + dy + c_num_tiles) % c_num_tiles, t.tz);
 	}
 	// For now, set terrain to #0.
-	chunk->set_terrain(gmap->get_terrain(0));
+	chunk->set_terrain(Game_map::get_terrain(0));
 	chunk->set_selected(false);
 	tochunk->set_selected(true);
 }

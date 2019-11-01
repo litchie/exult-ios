@@ -291,7 +291,7 @@ void UCData::file_open(const string &filename) {
 		_file.clear();
 		U7open(_file, filename.c_str(), false);
 	} catch (const std::exception &err) {
-		_file.setstate(_file.failbit);
+		_file.setstate(std::ifstream::failbit);
 	}
 }
 

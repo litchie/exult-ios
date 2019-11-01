@@ -286,7 +286,7 @@ inline void Usecode_script::activate_egg(Usecode_internal *usecode,
 	// Guess:  Only certain types:
 	if (type == Egg_object::monster || type == Egg_object::button ||
 	        type == Egg_object::missile)
-		egg->hatch(usecode->gwin->get_main_actor(), true);
+		egg->hatch(Usecode_internal::gwin->get_main_actor(), true);
 }
 
 
@@ -311,7 +311,7 @@ void Usecode_script::handle_event(
 #endif
 	int delay = exec(usecode, false);
 	if (i < cnt) {          // More to do?
-		usecode->gwin->get_tqueue()->add(curtime + delay, this, udata);
+		Usecode_internal::gwin->get_tqueue()->add(curtime + delay, this, udata);
 		return;
 	}
 #if 0   /* ++++Might need this for Test of Love!! */
@@ -349,7 +349,7 @@ int Usecode_script::exec(
     Usecode_internal *usecode,
     bool finish         // If set, keep going to end.
 ) {
-	Game_window *gwin = usecode->gwin;
+	Game_window *gwin = Usecode_internal::gwin;
 	int delay = gwin->get_std_delay();  // Start with default delay.
 	bool do_another = true;         // Flag to keep going.
 	int opcode;
