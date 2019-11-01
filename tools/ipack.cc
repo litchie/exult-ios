@@ -331,7 +331,7 @@ static void Read_script(
  */
 
 static void Modify_palette(
-    unsigned char *from,        // Rgb values to start with,
+    const unsigned char *from,        // Rgb values to start with,
     //   each range 0-255.
     unsigned char *to,      // Result stored here.
     int palsize,            // 0-256.
@@ -369,7 +369,7 @@ static void Modify_palette(
  */
 
 static void Greyify_palette(
-    unsigned char *from,        // Rgb values to start with,
+    const unsigned char *from,        // Rgb values to start with,
     //   each range 0-255.
     unsigned char *to,      // Result stored here.
     int palsize         // 0-256.
@@ -387,7 +387,7 @@ static void Greyify_palette(
  */
 
 static void Convert_palette63(
-    unsigned char *from,        // 3*palsize, values 0-255.
+    const unsigned char *from,        // 3*palsize, values 0-255.
     unsigned char *to,      // 3*256.  Values 0-63 returned, with
     //   colors > palsize 0-filled.
     int palsize         // # entries.
@@ -404,7 +404,7 @@ static void Convert_palette63(
 
 static void Write_text_palette(
     char *palname,          // Base name.  '.txt' is appended.
-    unsigned char *palette,     // RGB's, 0-255.
+    const unsigned char *palette,     // RGB's, 0-255.
     int palsize         // # colors in palette
 ) {
 	// Write out as (Gimp) text.

@@ -978,7 +978,7 @@ gint Shape_chooser::check_editing_files(
  */
 
 static int Find_closest_color(
-    unsigned char *pal,     // 3*255 bytes.
+    const unsigned char *pal,     // 3*255 bytes.
     int r, int g, int b     // Color to match.
 ) {
 	int best_index = -1;

@@ -99,7 +99,7 @@ inline void Set_blocked_tile(
     int lift,           // Starting lift to set.
     int ztiles          // # tiles along z-axis.
 ) {
-	uint16 &val = blocked[ty * c_tiles_per_chunk + tx];
+	uint16 val = blocked[ty * c_tiles_per_chunk + tx];
 	// Get mask for the bit0's:
 	uint16 mask0 = static_cast<uint16>(tmasks[ztiles] << 2 * lift);
 	uint16 mask1 = mask0 << 1;  // Mask for the bit1's.
@@ -108,7 +108,7 @@ inline void Set_blocked_tile(
 	uint16 val1s = val & mask1;
 	uint16 newval = val1s | (val0s << 1) | Nval0s | (val1s >> 1);
 	// Replace old values with new.
-	val = (val&~(mask0 | mask1)) | newval;
+	blocked[ty * c_tiles_per_chunk + tx] = (val&~(mask0 | mask1)) | newval;
 }
 
 /*
@@ -124,7 +124,7 @@ inline void Clear_blocked_tile(
     int lift,           // Starting lift to set.
     int ztiles          // # tiles along z-axis.
 ) {
-	uint16 &val = blocked[ty * c_tiles_per_chunk + tx];
+	uint16 val = blocked[ty * c_tiles_per_chunk + tx];
 	// Get mask for the bit0's:
 	uint16 mask0 = static_cast<uint16>(tmasks[ztiles] << 2 * lift);
 	uint16 mask1 = mask0 << 1;  // Mask for the bit1's.
@@ -133,7 +133,7 @@ inline void Clear_blocked_tile(
 	uint16 val1s = val & mask1;
 	uint16 newval = (val1s & (val0s << 1)) | ((val1s >> 1) & Nval0s);
 	// Replace old values with new.
-	val = (val&~(mask0 | mask1)) | newval;
+	blocked[ty * c_tiles_per_chunk + tx] = (val&~(mask0 | mask1)) | newval;
 }
 
 /*

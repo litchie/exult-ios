@@ -64,7 +64,7 @@ protected:
 	void *drop_user_data;
 	bool dragging;          // Dragging from here.
 public:
-	Shape_draw(Vga_file *i, unsigned char *palbuf, GtkWidget *drw);
+	Shape_draw(Vga_file *i, const unsigned char *palbuf, GtkWidget *drw);
 	virtual ~Shape_draw();
 	// Blit onto screen.
 	void show(GdkDrawable *drawable, int x, int y, int w, int h);

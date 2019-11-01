@@ -199,7 +199,7 @@ int Npc_actor_out(
     short ident,
     int usecode,
     std::string usecodefun,
-    int *properties,        // 12 entries.
+    int (&properties)[12],        // 12 entries.
     short attack_mode,
     short alignment,
     unsigned long oflags,       // Object flags.
@@ -219,7 +219,7 @@ int Npc_actor_in(
     short &ident,
     int &usecode,
     std::string &usecodefun,
-    int *properties,        // Must have room for 12.
+    int (&properties)[12],        // Must have room for 12.
     short &attack_mode,
     short &alignment,
     unsigned long &oflags,      // Object flags.

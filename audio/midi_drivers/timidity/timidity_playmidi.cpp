@@ -1101,7 +1101,7 @@ void Timidity_GenerateSamples(void *stream, int samples)
 	}
 }
 
-void Timidity_FinalInit(bool patches[128], bool drums[128])
+void Timidity_FinalInit(const bool patches[128], const bool drums[128])
 {
 	for (int i = 0; i < 128; i++)
 	{

@@ -1706,7 +1706,7 @@ static void Insert_text(
  */
 
 void ExultStudio::show_unused_shapes(
-    unsigned char *data,        // Bits set for unused shapes.
+    const unsigned char *data,        // Bits set for unused shapes.
     int datalen         // #bytes.
 ) {
 	int nshapes = datalen * 8;

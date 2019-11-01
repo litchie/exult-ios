@@ -129,7 +129,7 @@ void Shape_draw::draw_shape_centered(
 
 Shape_draw::Shape_draw(
     Vga_file *i,            // Where they're kept.
-    unsigned char *palbuf,      // Palette, 3*256 bytes (rgb triples).
+    const unsigned char *palbuf,      // Palette, 3*256 bytes (rgb triples).
     GtkWidget *drw          // Drawing area to use.
 ) : ifile(i), draw(drw), drawgc(nullptr),
 	iwin(nullptr), palette(nullptr),

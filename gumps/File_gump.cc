@@ -164,7 +164,7 @@ public:
 	char *get_text() {
 		return text;
 	}
-	void set_text(char *newtxt) { // Set text.
+	void set_text(const char *newtxt) { // Set text.
 		strncpy(text, newtxt ? newtxt : "", max_size);
 		length = strlen(text);
 	}

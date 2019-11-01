@@ -447,7 +447,7 @@ public:
  */
 
 Egg_object_shared Egg_object::create_egg(
-    unsigned char *entry,       // 12+ byte ireg entry.
+    const unsigned char *entry,       // 12+ byte ireg entry.
     int entlen,
     bool animated,
     int shnum,

@@ -79,7 +79,7 @@ class Game_map {
 	static Chunk_terrain *read_terrain(int chunk_num);
 
 	// Create a 192x192 viewable map.
-	void create_minimap(Shape *minimaps, unsigned char *chunk_pixels);
+	void create_minimap(Shape *minimaps, const unsigned char *chunk_pixels);
 	void cache_out_schunk(int schunk);
 public:
 	Game_map(int n);

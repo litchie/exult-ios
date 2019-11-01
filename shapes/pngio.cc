@@ -178,7 +178,7 @@ int Export_png8(
     int xoff, int yoff,     // (X,Y) offsets from top-left of
     //   image.
     unsigned char *pixels,      // ->pixels to write.
-    unsigned char *palette,     // ->palette,
+    const unsigned char *palette,     // ->palette,
     //   each entry 3 bytes (RGB).
     int pal_size,           // # entries in palette,
     bool transp_to_0        // If true, rotate palette so the

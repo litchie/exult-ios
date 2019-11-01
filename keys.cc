@@ -375,7 +375,7 @@ KeyBinder::KeyBinder() {
 }
 
 void KeyBinder::AddKeyBinding(SDLKey key, int mod, const Action *action,
-                              int nparams, int *params) {
+                              int nparams, const int *params) {
 	SDL_keysym k;
 	ActionType a;
 

@@ -110,7 +110,7 @@ static void save_8(SDL_RWops *dst, int width, int height,
 
 
 static void save_24(SDL_RWops *dst, int width, int height,
-                    int pitch, Uint8 *buffer) {
+                    int pitch, const Uint8 *buffer) {
 	int x, y, c;
 	Uint8 *line;
 

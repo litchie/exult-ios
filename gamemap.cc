@@ -1611,7 +1611,7 @@ Game_object *Game_map::locate_shape(
  *  Create a 192x192 map shape.
  */
 
-void Game_map::create_minimap(Shape *minimaps, unsigned char *chunk_pixels) {
+void Game_map::create_minimap(Shape *minimaps, const unsigned char *chunk_pixels) {
 	int cx, cy;
 	unsigned char *pixels = new unsigned char[c_num_chunks * c_num_chunks];
 

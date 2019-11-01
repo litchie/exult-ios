@@ -96,7 +96,7 @@ inline void Chunk_terrain::paint_tile(
  */
 
 Chunk_terrain::Chunk_terrain(
-    unsigned char *data,        // Chunk data.
+    const unsigned char *data,        // Chunk data.
     bool v2_chunks          // 3 bytes/shape.
 ) : undo_shapes(nullptr),
 	num_clients(0), modified(false), rendered_flats(nullptr),

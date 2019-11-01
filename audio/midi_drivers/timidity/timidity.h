@@ -53,7 +53,7 @@ extern void Timidity_FreeSong(MidiSong *song);
 
 int Timidity_Init_Simple(int rate, int samples, sint32 encoding);
 void Timidity_DeInit();
-extern void Timidity_FinalInit(bool patches[128], bool drums[128]);
+extern void Timidity_FinalInit(const bool patches[128], const bool drums[128]);
 extern void Timidity_PlayEvent(unsigned char status, int a, int b);
 extern void Timidity_GenerateSamples(void *stream, int samples);
 

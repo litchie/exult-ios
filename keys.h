@@ -61,7 +61,7 @@ public:
 	KeyBinder();
 	/* Add keybinding */
 	void AddKeyBinding(SDLKey sym, int mod, const Action *action,
-	                   int nparams, int *params);
+	                   int nparams, const int *params);
 
 	/* Delete keybinding */
 	void DelKeyBinding(SDLKey sym, int mod);

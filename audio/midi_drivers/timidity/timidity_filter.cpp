@@ -110,7 +110,7 @@ static void designfir(float *g , float fc)
  * Note that we simulate leading and trailing 0 at the border of the 
  * data buffer
  */
-static void filter(sample_t *result,sample_t *data, sint32 length,float coef[])
+static void filter(sample_t *result, const sample_t *data, sint32 length, const float coef[])
 {
 	sint32 sample,i,sample_window;
 	sint16 peak = 0;

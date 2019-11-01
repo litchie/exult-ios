@@ -109,7 +109,7 @@ public:
 	    external_criteria = 7   // Appears on Isle of Avatar.  Guessing
 	                        //   these set off all nearby.
 	};
-	static Egg_object_shared create_egg(unsigned char *entry, int entlen,
+	static Egg_object_shared create_egg(const unsigned char *entry, int entlen,
 	                              bool animated, int shnum, int frnum, unsigned int tx,
 	                              unsigned int ty, unsigned int tz);
 	// Create normal eggs.

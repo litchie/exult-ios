@@ -212,7 +212,7 @@ void Read_a_schedule(
     int index,
     Actor *npc,
     int entsize,
-    short *offsets
+    const short *offsets
 ) {
 	int cnt = offsets[index] - offsets[index - 1];
 	// Read schedules into this array.

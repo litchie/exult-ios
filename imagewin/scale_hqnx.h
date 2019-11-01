@@ -156,7 +156,7 @@ inline bool Diff(int YUV1, int YUV2) {
 }
 
 template<class Manip_pixels>
-inline int hqx_init(int *w, int *c, int *yuv, unsigned char *from,
+inline int hqx_init(int *w, int *c, int *yuv, const unsigned char *from,
                     int x, int sline_pixels, int prevline, int nextline,
                     Manip_pixels &manip) {
 	int k;
