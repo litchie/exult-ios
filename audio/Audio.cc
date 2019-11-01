@@ -611,9 +611,10 @@ int	Audio::play_sound_effect (int num, int volume, int balance, int repeat, int 
 #ifdef ENABLE_MIDISFX
 	string v; // TODO: should make this check faster
 	config->value("config/audio/effects/midi", v, "no");
-	if (v != "no" && mixer && mixer->getMidiPlayer())
+	if (v != "no" && mixer && mixer->getMidiPlayer()) {
 		mixer->getMidiPlayer()->start_sound_effect(num);
-	else
+		return -1;
+	}
 #endif
 	// Where sort of sfx are we using????
 	if (sfx_file != nullptr)		// Digital .wav's?
