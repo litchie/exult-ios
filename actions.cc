@@ -75,12 +75,13 @@ int Actor_action::handle_event_safely(
  */
 
 Actor_action *Actor_action::walk_to_tile(
-    Actor * /* npc */,
+    Actor *npc,       // Ignored.
     Tile_coord const &src,
     Tile_coord const &dest,
-    int /* dist */,         // Ignored.
-    bool /* ignnpc */       // Ignored
+    int dist,         // Ignored.
+    bool ignnpc       // Ignored.
 ) {
+	ignore_unused_variable_warning(npc, dist, ignnpc);
 	Zombie *path = new Zombie();
 	get_party = false;
 	// Set up new path.
