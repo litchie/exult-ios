@@ -434,11 +434,11 @@ int ExultStudio::save_egg_window(
 	break;
 	case 2:             // Jukebox:
 		data1 = (get_spin("juke_song") & 0xff) +
-		        (get_toggle("juke_cont") << 8);
+		        (get_toggle("juke_cont") ? (1 << 8) : 0);
 		break;
 	case 3:             // Sound effect:
 		data1 = (get_spin("sfx_number") & 0xff) +
-		        (get_toggle("sfx_cont") << 8);
+		        (get_toggle("sfx_cont") ? (1 << 8) : 0);
 		break;
 	case 4:             // Voice:
 		data1 = get_spin("speech_number") & 0xff;

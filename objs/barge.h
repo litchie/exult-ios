@@ -114,7 +114,7 @@ public:
 	         bool combine = false, bool noset = false) override;
 	bool contains(Game_object *obj);
 	// Drop another onto this.
-	int drop(Game_object *obj) override;
+	bool drop(Game_object *obj) override;
 	// Render.
 	void paint() override;
 	void activate(int event = 1) override;
@@ -122,7 +122,7 @@ public:
 	// Saved from ExultStudio.
 	static void update_from_studio(unsigned char *data, int datalen);
 	// Step onto an (adjacent) tile.
-	int step(Tile_coord t, int frame = -1, bool force = false) override;
+	bool step(Tile_coord t, int frame = -1, bool force = false) override;
 	// Write out to IREG file.
 	void write_ireg(ODataSource *out) override;
 	// Get size of IREG. Returns -1 if can't write to buffer

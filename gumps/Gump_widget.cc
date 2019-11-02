@@ -29,7 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *  Is a given screen point on this widget?
  */
 
-int Gump_widget::on_widget(
+bool Gump_widget::on_widget(
     int mx, int my          // Point in window.
 ) const {
 	mx -= parent->get_x() + x;  // Get point rel. to gump.

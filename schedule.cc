@@ -1396,7 +1396,7 @@ void Patrol_schedule::now_what(
 		// For safety, unready weapon first.
 		npc->empty_hands();
 		// Ready the hammer in the weapon hand.
-		npc->add_readied(hammer_obj.get(), lhand, 0, 1);
+		npc->add_readied(hammer_obj.get(), lhand, false, true);
 		npc->add_dirty();
 		// Number of swings.
 		int repcnt = 1 + rand() % 3;
@@ -2295,7 +2295,7 @@ void Sleep_schedule::now_what(
 			bedframe++;
 			bed_obj->change_frame(bedframe);
 		}
-		int bedspread = (bedframe >= spread0 && !(bedframe % 2));
+		bool bedspread = (bedframe >= spread0 && !(bedframe % 2));
 		// Put NPC on top of bed, making sure that children are
 		// not completely covered by sheets.
 		int delta = npc->get_info().get_3d_height();
@@ -2505,8 +2505,7 @@ class Sit_actor_action : public Frames_actor_action, public Game_singletons {
 		// See if spot is blocked.
 		Tile_coord pos = sitloc;// Careful, .tz gets updated.
 		return Map_chunk::is_blocked(pos,
-
-		                          actor->get_info().get_3d_height(), MOVE_WALK, 0) != 0;
+		                          actor->get_info().get_3d_height(), MOVE_WALK, 0);
 	}
 public:
 	Sit_actor_action(Game_object *o, Actor *actor)

@@ -610,7 +610,7 @@ Skin_data *Shapeinfo_lookup::GetSkinInfoSafe(int skin, bool sex, bool sishapes) 
 
 Skin_data *Shapeinfo_lookup::GetSkinInfoSafe(Actor *npc) {
 	int skin = npc->get_skin_color();
-	bool sex = npc->get_type_flag(Actor::tf_sex) != 0;
+	bool sex = npc->get_type_flag(Actor::tf_sex);
 	return GetSkinInfoSafe(skin, sex, Shape_manager::get_instance()->have_si_shapes());
 }
 
@@ -689,7 +689,7 @@ int Shapeinfo_lookup::GetFaceReplacement(int facenum) {
 		setup_avatar_data();
 	}
 	Game_window *gwin = Game_window::get_instance();
-	if (gwin->get_main_actor()->get_flag(Obj_flags::petra) != 0) {
+	if (gwin->get_main_actor()->get_flag(Obj_flags::petra)) {
 		auto it = data->petra_table.find(facenum);
 		if (it != data->petra_table.end())
 			return it->second;

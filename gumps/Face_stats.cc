@@ -132,11 +132,11 @@ protected:
 	Stat_bar    *hp;        // Bar for HP
 	Stat_bar    *mana;      // Bar for MANA
 	bool        hit;
-	int     pois;
-	int     prot;
-	int     para;
-	int     charm;
-	int     curse;
+	bool        pois;
+	bool        prot;
+	bool        para;
+	bool        charm;
+	bool        curse;
 public:
 	Portrait_button(Gump *par, int px, int py, Actor *a);
 	~Portrait_button() override;
@@ -146,7 +146,7 @@ public:
 	// update dirty region, if required
 	void update_widget() override;
 
-	int on_button(int mx, int my) const override;
+	bool on_button(int mx, int my) const override;
 
 	Rectangle get_rect() override;
 
@@ -187,7 +187,7 @@ void Portrait_button::double_clicked(int x, int y) {
 		actor->show_inventory();
 }
 
-int Portrait_button::on_button(int x, int y) const {
+bool Portrait_button::on_button(int x, int y) const {
 	if (hp && hp->on_button(x, y))
 		return true;
 	else if (mana && mana->on_button(x, y))
@@ -320,7 +320,6 @@ Gump_button *Face_stats::on_button(int mx, int my) {
 		if (party[i] && party[i]->on_button(mx, my))
 			return party[i];
 
-
 	return nullptr;
 }
 
@@ -429,10 +428,10 @@ bool Face_stats::has_point(int x, int y) const {
  *  is calculated by 'paint()'.  If they're all -2, it's assumed that
  *  obj->cx, obj->cy are already correct.
  *
- *  Output: 0 if cannot add it.
+ *  Output: false if cannot add it.
  */
 
-int Face_stats::add(
+bool Face_stats::add(
     Game_object *obj,
     int mx, int my,         // Mouse location.
     int sx, int sy,         // Screen location of obj's hotspot.
@@ -441,13 +440,13 @@ int Face_stats::add(
     //   cause obj to be deleted.
 ) {
 	if (sx < 0 && sy < 0 && my < 0 && mx < 0)
-		return 0;
+		return false;
 
 	for (int i = 0; i < 8; i++)
 		if (party[i] && party[i]->on_button(mx, my))
 			return party[i]->get_actor()->add(obj, dont_check, combine);
 
-	return 0;
+	return false;
 }
 
 Container_game_object *Face_stats::find_actor(int mx, int my) {

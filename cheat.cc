@@ -441,7 +441,7 @@ void Cheat::change_skin() const {
 		return;
 
 	int color = gwin->get_main_actor()->get_skin_color();
-	bool sex = gwin->get_main_actor()->get_type_flag(Actor::tf_sex) != 0;
+	bool sex = gwin->get_main_actor()->get_type_flag(Actor::tf_sex);
 	color = Shapeinfo_lookup::GetNextSkin(color, sex, sman->have_si_shapes());
 
 	gwin->get_main_actor()->set_skin_color(color);

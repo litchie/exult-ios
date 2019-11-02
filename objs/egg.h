@@ -44,7 +44,7 @@ public:
 	// Render.
 	void paint() override;
 	// Can this be clicked on?
-	int is_findable() override;
+	bool is_findable() override;
 };
 
 /*
@@ -139,10 +139,10 @@ public:
 		ignore_unused_variable_warning(s);
 	}
 	// Can this be clicked on?
-	int is_findable() override;
+	bool is_findable() override;
 	virtual void set(int crit, int dist);
 	// Can it be activated?
-	virtual int is_active(Game_object *obj,
+	virtual bool is_active(Game_object *obj,
 	                      int tx, int ty, int tz, int from_tx, int from_ty);
 
 	Rectangle get_area() const { // Get active area.
@@ -205,7 +205,7 @@ public:
 	void write_ireg(ODataSource *out) override;
 	// Get size of IREG. Returns -1 if can't write to buffer
 	int get_ireg_size() override;
-	int is_findable() override {
+	bool is_findable() override {
 		return Ireg_game_object::is_findable();
 	}
 	bool edit() override {
@@ -230,7 +230,7 @@ public:
 	void hatch(Game_object *obj, bool must = false) override;
 
 	// Can it be activated?
-	int is_active(Game_object *obj,
+	bool is_active(Game_object *obj,
 	              int tx, int ty, int tz, int from_tx, int from_ty) override;
 
 	void set_area() override;        // Set up active area.
@@ -238,7 +238,7 @@ public:
 	// Render.
 	void paint() override;
 	// Can this be clicked on?
-	int is_findable() override {
+	bool is_findable() override {
 		return Ireg_game_object::is_findable();
 	}
 

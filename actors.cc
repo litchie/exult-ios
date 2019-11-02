@@ -211,7 +211,7 @@ const signed char fast_swing_attack_frames2[] = {3, 8, 9};
 const signed char slow_swing_attack_frames2[] = {3, 7, 8, 9};
 
 // inline int Is_attack_frame(int i) { return i >= 3 && i <= 9; }
-inline int Is_attack_frame(int i) {
+inline bool Is_attack_frame(int i) {
 	return i == 6 || i == 9;
 }
 inline int Get_dir_from_frame(int i) {
@@ -725,13 +725,13 @@ int Actor::get_effective_weapon_shape(
 
 /**
  *  Add dirty rectangle(s).
- *  @return Returns 0 if not on screen.
+ *  @return Returns false if not on screen.
  */
-int Actor::add_dirty(
-    int figure_rect         // Recompute weapon rectangle.
+bool Actor::add_dirty(
+    bool figure_rect         // Recompute weapon rectangle.
 ) {
 	if (!gwin->add_dirty(this))
-		return 0;
+		return false;
 	if (figure_rect || get_casting_mode() == Actor::show_casting_frames) {
 		int weapon_x;
 		int weapon_y;
@@ -758,7 +758,7 @@ int Actor::add_dirty(
 		r.enlarge(c_tilesize / 2);
 		gwin->add_dirty(gwin->clip_to_win(r));
 	}
-	return 1;
+	return true;
 }
 
 /**
@@ -781,7 +781,7 @@ void Actor::change_frame(
 	}
 	rest_time = 0;
 	set_frame(frnum);
-	add_dirty(1);           // Set to repaint new.
+	add_dirty(true);           // Set to repaint new.
 }
 
 /**
@@ -789,10 +789,10 @@ void Actor::change_frame(
  *  @param t Tile to step to. Tz is possibly updated by this function.
  *  @param f Pointer to tile we are stepping from, or null for current tile.
  *  @param move_flags Additional movement flags to consider for step.
- *  @return Returns 1 if so, else 0.
+ *  @return Returns true if so, else false.
  */
 
-int Actor::is_blocked(
+bool Actor::is_blocked(
     Tile_coord &t,          // Tz possibly updated.
     Tile_coord *f,          // Step from here, or curpos if null.
     const int move_flags
@@ -809,7 +809,7 @@ int Actor::is_blocked(
 		                       t.tx / c_tiles_per_chunk, t.ty / c_tiles_per_chunk);
 		nlist->setup_cache();
 		int new_lift;
-		int blocked = nlist->is_blocked(ztiles, t.tz,
+		bool blocked = nlist->is_blocked(ztiles, t.tz,
 		                                t.tx % c_tiles_per_chunk, t.ty % c_tiles_per_chunk,
 		                                new_lift, move_flags | get_type_flags());
 		t.tz = new_lift;
@@ -912,7 +912,7 @@ Actor::Actor(
 	usecode_assigned(false), usecode_name(""), unused(false),
 	npc_num(num), face_num(num), party_id(-1), atts(nullptr), temperature(0),
 	shape_save(-1), oppressor(-1),
-	casting_mode(false), casting_shape(-1),
+	casting_mode(not_casting), casting_shape(-1),
 	target_tile(Tile_coord(-1, -1, 0)), attack_weapon(-1),
 	attack_mode(nearest),
 	schedule_type(Schedule::loiter), next_schedule(255), schedule(nullptr),
@@ -1470,13 +1470,13 @@ void Actor::get_tile_info(
     Game_window *gwin,
     Map_chunk *nlist,   // Chunk.
     int tx, int ty,         // Tile within chunk.
-    int &water,         // Returns 1 if water.
-    int &poison         // Returns 1 if poison.
+    bool &water,         // Returns 1 if water.
+    bool &poison         // Returns 1 if poison.
 ) {
 	ignore_unused_variable_warning(gwin);
 	ShapeID flat = nlist->get_flat(tx, ty);
 	if (flat.get_shapenum() == -1)
-		water = poison = 0;
+		water = poison = false;
 	else {
 		const Shape_info &finfo = flat.get_info();
 		water = finfo.is_water();
@@ -1485,13 +1485,13 @@ void Actor::get_tile_info(
 		if (poison && actor) {
 			if ((actor->gear_powers &
 			        (Frame_flags::swamp_safe | Frame_flags::poison_safe)) != 0)
-				poison = 0;
+				poison = false;
 			else {      // Not protected by gear?
 				// Safe from poisoning?
 				const Monster_info *minf =
 				    actor->get_info().get_monster_info();
 				if (minf && minf->poison_safe())
-					poison = 0;
+					poison = false;
 			}
 		}
 	}
@@ -2046,7 +2046,7 @@ void Actor::paint_weapon(
  *  Figure weapon drawing info.  We need this in advance to set the dirty
  *  rectangle.
  *
- *  Output: 0 if don't need to paint weapon.
+ *  Output: false if don't need to paint weapon.
  */
 /* Weapon frames:
     0 - normal item
@@ -2056,7 +2056,7 @@ void Actor::paint_weapon(
     4 - attacking (pointing south)
 */
 
-int Actor::figure_weapon_pos(
+bool Actor::figure_weapon_pos(
     int &weapon_x, int &weapon_y,   // Pos. rel. to NPC.
     int &weapon_frame
 ) {
@@ -2065,7 +2065,7 @@ int Actor::figure_weapon_pos(
 	unsigned char wx;
 	unsigned char wy;
 	if ((spots[lhand] == nullptr) && (get_casting_mode() != Actor::show_casting_frames))
-		return 0;
+		return false;
 	// Get offsets for actor shape
 	int myframe = get_framenum();
 	get_info().get_weapon_offset(myframe & 0x1f, actor_x,
@@ -2130,9 +2130,9 @@ int Actor::figure_weapon_pos(
 		if ((weapon_frame & 31) >= nframes)
 			weapon_frame = (nframes - 1) | (weapon_frame & 32);
 #endif
-		return 1;
+		return true;
 	} else
-		return 0;
+		return false;
 }
 
 /*
@@ -2374,20 +2374,20 @@ int Actor::inventory_shapenum() {
 /*
  *  Drop another onto this.
  *
- *  Output: 0 to reject, 1 to accept.
+ *  Output: false to reject, true to accept.
  */
 
-int Actor::drop(
+bool Actor::drop(
     Game_object *obj        // MAY be deleted (if combined).
 ) {
 	if (is_in_party()) { // In party?
-		int res = add(obj, false, true);// We'll take it, and combine.
+		bool res = add(obj, false, true);// We'll take it, and combine.
 		int ind = find_readied(obj);
 		if (ind >= 0)
 			call_readied_usecode(ind, obj, Usecode_machine::readied);
 		return res;
 	} else
-		return 0;
+		return false;
 }
 
 /*
@@ -3508,24 +3508,24 @@ bool Actor::add(
 /*
  *  Add to given spot.
  *
- *  Output: 1 if successful, else 0.
+ *  Output: true if successful, else false.
  */
 
-int Actor::add_readied(
+bool Actor::add_readied(
     Game_object *obj,
     int index,          // Spot #.
-    int dont_check,
-    int force_pos,
+    bool dont_check,
+    bool force_pos,
     bool noset
 ) {
 	// Is Out of range?
 	if (index < 0 || index >= static_cast<int>(array_size(spots)))
-		return 0;
+		return false;
 
 	// Already something there? Try to drop into it.
 	// +++++Danger:  drop() can potentially delete the object.
 //	if (spots[index]) return spots[index]->drop(obj);
-	if (spots[index]) return spots[index]->add(obj, dont_check != 0);
+	if (spots[index]) return spots[index]->add(obj, dont_check);
 
 	int prefered;
 	int alt1;
@@ -3535,10 +3535,10 @@ int Actor::add_readied(
 	get_prefered_slots(obj, prefered, alt1, alt2);
 
 	// Check Prefered
-	if (!fits_in_spot(obj, index) && !force_pos) return 0;
+	if (!fits_in_spot(obj, index) && !force_pos) return false;
 
 	// No room, or too heavy.
-	if (!Container_game_object::add(obj, true)) return 0;
+	if (!Container_game_object::add(obj, true)) return false;
 
 	// Set the spot to this object
 	spots[index] = obj;
@@ -3575,7 +3575,7 @@ int Actor::add_readied(
 
 	if (index == lhand && schedule && !noset)
 		schedule->set_weapon(); // Tell combat-schedule about it.
-	return 1;
+	return true;
 }
 
 /*
@@ -3620,10 +3620,10 @@ void Actor::change_member_shape(
 /*
  *  Step aside to a free tile, or try to swap places.
  *
- *  Output: 1 if successful, else 0.
+ *  Output: true if successful, else false.
  */
 
-int Actor::move_aside(
+bool Actor::move_aside(
     Actor *for_actor,       // Moving aside for this one.
     int dir             // Direction to avoid (0-7).
 ) {
@@ -3633,11 +3633,11 @@ int Actor::move_aside(
 	// Also, don't move if the other actor is moving, as this may break
 	// pathfinding.
 	if (get_schedule_type() == Schedule::combat || get_frame_time())
-		return 0;
+		return false;
 	// Do not move aside if sitting, bending over, kneeling or sleeping.
 	int frnum = get_framenum() & 0xf;
 	if (frnum >= sit_frame && frnum <= sleep_frame)
-		return 0;
+		return false;
 
 	Tile_coord cur = get_tile();
 	Tile_coord to(-1, -1, -1);
@@ -4083,7 +4083,7 @@ Game_object *Actor::attacked(
  *  for the dragon Draco.
  */
 
-static int Is_draco(
+static bool Is_draco(
     Actor *dragon
 ) {
 	Game_object_vector vec;     // Gets list.
@@ -4472,10 +4472,10 @@ void Main_actor::get_followers(
 /*
  *  Step onto an adjacent tile.
  *
- *  Output: 0 if blocked.
+ *  Output: false if blocked.
  */
 
-int Main_actor::step(
+bool Main_actor::step(
     Tile_coord t,           // Tile to step onto.
     int frame,          // New frame #.
     bool force
@@ -4489,15 +4489,15 @@ int Main_actor::step(
 	int tx = t.tx % c_tiles_per_chunk;
 	int ty = t.ty % c_tiles_per_chunk;
 	Map_chunk *nlist = gmap->get_chunk(cx, cy);
-	int water;
-	int poison;      // Get tile info.
+	bool water;
+	bool poison;      // Get tile info.
 	get_tile_info(this, gwin, nlist, tx, ty, water, poison);
 	if (is_blocked(t, nullptr, force ? MOVE_ALL : 0)) {
 		if (is_really_blocked(t, force)) {
 			if (schedule)       // Tell scheduler.
 				schedule->set_blocked(t);
 			stop();
-			return 0;
+			return false;
 		}
 	}
 	if (poison && t.tz == 0)
@@ -4510,7 +4510,7 @@ int Main_actor::step(
 	Tile_coord oldtile = get_tile();
 	// Move it.
 	Actor::movef(olist, nlist, tx, ty, frame, t.tz);
-	add_dirty(1);           // Set to update new.
+	add_dirty(true);           // Set to update new.
 	// In a new chunk?
 	if (olist != nlist)
 		Main_actor::switched_chunks(olist, nlist);
@@ -4528,7 +4528,7 @@ int Main_actor::step(
 	nlist->activate_eggs(this, t.tx, t.ty, t.tz,
 	                     oldtile.tx, oldtile.ty);
 	quake_on_walk();
-	return 1;
+	return true;
 }
 
 /*
@@ -5080,17 +5080,17 @@ void Npc_actor::handle_event(
 /*
  *  Step onto an adjacent tile.
  *
- *  Output: 0 if blocked (or paralyzed).
+ *  Output: false if blocked (or paralyzed).
  *      Dormant is set if off screen.
  */
 
-int Npc_actor::step(
+bool Npc_actor::step(
     Tile_coord t,           // Tile to step onto.
     int frame,          // New frame #.
     bool force
 ) {
 	if (get_flag(Obj_flags::paralyzed) || get_map() != gmap)
-		return 0;
+		return false;
 	Tile_coord oldtile = get_tile();
 	// Get old chunk.
 	t.fixme();
@@ -5104,10 +5104,10 @@ int Npc_actor::step(
 	Map_chunk *nlist = gmap->get_chunk_safely(cx, cy);
 	if (!nlist) {       // Shouldn't happen!
 		stop();
-		return 0;
+		return false;
 	}
-	int water;
-	int poison;      // Get tile info.
+	bool water;
+	bool poison;      // Get tile info.
 	get_tile_info(this, gwin, nlist, tx, ty, water, poison);
 	if (is_blocked(t, nullptr, force ? MOVE_ALL : 0)) {
 		if (is_really_blocked(t, force)) {
@@ -5119,7 +5119,7 @@ int Npc_actor::step(
 			        // And > a screenful away?
 			        distance(gwin->get_camera_actor()) > 1 + c_screen_tile_size)
 				dormant = true; // Go dormant.
-			return 0;       // Done.
+			return false;       // Done.
 		}
 	}
 	if (poison && t.tz == 0)
@@ -5136,7 +5136,7 @@ int Npc_actor::step(
 	nlist->activate_eggs(this, t.tx, t.ty, t.tz, oldtile.tx, oldtile.ty);
 
 	// Offscreen, but not in party?
-	if (!add_dirty(1) && party_id < 0 &&
+	if (!add_dirty(true) && party_id < 0 &&
 	        // And > a screenful away?
 	        distance(gwin->get_camera_actor()) > 1 + c_screen_tile_size &&
 	        //++++++++Try getting rid of the 'talk' line:
@@ -5145,10 +5145,10 @@ int Npc_actor::step(
 		// No longer on screen.
 		stop();
 		dormant = true;
-		return 0;
+		return false;
 	}
 	quake_on_walk();
-	return 1;           // Add back to queue for next time.
+	return true;           // Add back to queue for next time.
 }
 
 /*
@@ -5255,8 +5255,8 @@ void Dead_body::write_ireg(
 	*ptr++ = (get_lift() & 15) << 4; // Lift
 	*ptr++ = static_cast<unsigned char>(get_obj_hp());      // Resistance.
 	// Flags:  B0=invis. B3=okay_to_take.
-	*ptr++ = (get_flag(Obj_flags::invisible) != 0) +
-	         ((get_flag(Obj_flags::okay_to_take) != 0) << 3);
+	*ptr++ = (get_flag(Obj_flags::invisible) ? 1 : 0) +
+	         (get_flag(Obj_flags::okay_to_take) ? (1 << 3) : 0);
 	out->write(reinterpret_cast<char *>(buf), ptr - buf);
 	write_contents(out);        // Write what's contained within.
 	// Write scheduled usecode.

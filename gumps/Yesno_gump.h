@@ -38,7 +38,7 @@ protected:
 	std::string text;           // Text of question.  It is drawn in
 	//   object_area.
 	const char *fontname;
-	int answer;         // 1 for yes, 0 for no.
+	bool answer;         // 1 for yes, 0 for no.
 	void set_answer(int y) {    // Done from 'yes'/'no' button.
 		answer = (y != 0);
 		done = true;
@@ -47,7 +47,7 @@ protected:
 public:
 	friend class Yesno_button;
 	Yesno_gump(const std::string &txt, const char *font = "SMALL_BLACK_FONT");
-	int get_answer() {
+	bool get_answer() {
 		return answer;
 	}
 	// Paint it and its contents.
@@ -56,7 +56,7 @@ public:
 	bool mouse_down(int mx, int my, int button) override;
 	bool mouse_up(int mx, int my, int button) override;
 	void key_down(int chr) override; // Character typed.
-	static int ask(const char *txt, const char *font = "SMALL_BLACK_FONT"); // Ask question, get answer.
+	static bool ask(const char *txt, const char *font = "SMALL_BLACK_FONT"); // Ask question, get answer.
 };
 
 class Countdown_gump : public Yesno_gump {
@@ -68,6 +68,6 @@ public:
 
 	bool run() override;
 
-	static int ask(const char *txt, int timeout, const char *font = "SMALL_BLACK_FONT"); // Ask question, get answer, timeout to no after timeout seconds
+	static bool ask(const char *txt, int timeout, const char *font = "SMALL_BLACK_FONT"); // Ask question, get answer, timeout to no after timeout seconds
 };
 #endif

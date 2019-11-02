@@ -668,7 +668,7 @@ void Shape_frame::paint_rle_outline(
  *  shape.
  */
 
-int Shape_frame::has_point(
+bool Shape_frame::has_point(
     int x, int y            // Relative to origin of shape.
 ) const {
 	if (!rle) {         // 8x8 flat?
@@ -685,7 +685,7 @@ int Shape_frame::has_point(
 		short scany = Read2(in);
 		// Be liberal by 1 pixel.
 		if (y == scany && x >= scanx - 1 && x <= scanx + scanlen)
-			return 1;
+			return true;
 		if (!encoded) {     // Raw data?
 			in += scanlen;
 			continue;
@@ -702,7 +702,7 @@ int Shape_frame::has_point(
 			b += bcnt;
 		}
 	}
-	return 0;         // Never found it.
+	return false;         // Never found it.
 }
 
 /*

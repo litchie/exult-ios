@@ -94,7 +94,7 @@ class Chunk_cache : public Game_singletons {
 	int get_lowest_blocked(int lift, int tx, int ty);
 	// Is a spot occupied or inaccessible
 	//   to an NPC?
-	int is_blocked(int height, int lift, int tx, int ty, int &new_lift,
+	bool is_blocked(int height, int lift, int tx, int ty, int &new_lift,
 	               const int move_flags, int max_drop = 1, int max_rise = -1);
 	// Activate eggs nearby.
 	void activate_eggs(Game_object *obj, Map_chunk *chunk,
@@ -115,8 +115,7 @@ public:
 	// Is there something on this tile?
 	inline bool is_tile_occupied(int tx, int ty, int tz) {
 		blocked8z b8 = static_cast<unsigned>(tz / 8) < blocked.size() ? blocked[tz / 8] : nullptr;
-		return (b8 && b8[ty * c_tiles_per_chunk + tx] &
-		        (3 << (2 * (tz % 8)))) != 0;
+		return b8 && (b8[ty * c_tiles_per_chunk + tx] & (3 << (2 * (tz % 8))));
 	}
 };
 
@@ -233,20 +232,20 @@ public:
 	}
 	// Is a spot occupied or inaccessible
 	//  to an NPC?
-	int is_blocked(int height, int lift, int tx, int ty, int &new_lift,
+	bool is_blocked(int height, int lift, int tx, int ty, int &new_lift,
 	               const int move_flags, int max_drop = 1, int max_rise = -1) {
 		return cache->is_blocked(height, lift, tx, ty, new_lift,
 		                         move_flags, max_drop, max_rise);
 	}
 	// Check range.
-	static int is_blocked(int height, int lift, int startx, int starty,
+	static bool is_blocked(int height, int lift, int startx, int starty,
 	                      int xtiles, int ytiles, int &new_lift, const int move_flags,
 	                      int max_drop, int max_rise = -1);
 	// Check absolute tile.
-	static int is_blocked(Tile_coord &tile, int height,
+	static bool is_blocked(Tile_coord &tile, int height,
 	                      const int move_flags, int max_drop = 1, int max_rise = -1);
 	// Check for > 1x1 object.
-	static int is_blocked(int xtiles, int ytiles, int ztiles,
+	static bool is_blocked(int xtiles, int ytiles, int ztiles,
 	                      Tile_coord const &from, Tile_coord &to, const int move_flags,
 	                      int max_drop = 1, int max_rise = -1);
 	// Check tile WITHIN chunk.
@@ -285,7 +284,7 @@ public:
 	static void try_all_eggs(Game_object *obj, int tx, int ty, int tz,
 	                         int from_tx, int from_ty);
 	void setup_dungeon_levels();    // Set up after IFIX objs. read.
-	inline int has_dungeon() {      // Any tiles within dungeon?
+	inline bool has_dungeon() {      // Any tiles within dungeon?
 		return dungeon_levels != nullptr;
 	}
 

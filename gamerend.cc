@@ -339,7 +339,7 @@ void Game_window::paint(
 		// Look for lights.
 		Actor *party[9];    // Get party, including Avatar.
 		int cnt = get_party(party, 1);
-		int carried_light = 0;
+		bool carried_light = false;
 		for (int i = 0; !carried_light && i < cnt; i++)
 			carried_light = party[i]->has_light_source();
 		// Also check light spell.

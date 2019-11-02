@@ -61,14 +61,14 @@ public:
 	static void give_up() {     // For file errors only!
 		in_world = nullptr;
 	}
-	int move_aside(Actor *for_actor, int dir) override {
+	bool move_aside(Actor *for_actor, int dir) override {
 		ignore_unused_variable_warning(for_actor, dir);
-		return 0;    // Monsters don't move aside.
+		return false;    // Monsters don't move aside.
 	}
 	// Render.
 	void paint() override;
 	// Step onto an (adjacent) tile.
-	int step(Tile_coord t, int frame, bool force = false) override;
+	bool step(Tile_coord t, int frame, bool force = false) override;
 	// Remove/delete this object.
 	void remove_this(Game_object_shared *keep = nullptr) override;
 	// Move to new abs. location.

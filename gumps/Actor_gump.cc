@@ -112,10 +112,10 @@ Actor_gump::Actor_gump(
 /*
  *  Add an object.
  *
- *  Output: 0 if cannot add it.
+ *  Output: false if cannot add it.
  */
 
-int Actor_gump::add(
+bool Actor_gump::add(
     Game_object *obj,
     int mx, int my,         // Screen location of mouse.
     int sx, int sy,         // Screen location of obj's hotspot.
@@ -129,17 +129,17 @@ int Actor_gump::add(
 	Game_object *cont = find_object(mx, my);
 
 	if (cont && cont->add(obj, false, combine))
-		return 1;
+		return true;
 
 	int index = find_closest(mx, my, 1);
 
 	if (index != -1 && container->add_readied(obj, index))
-		return 1;
+		return true;
 
 	if (container->add(obj, dont_check, combine))
-		return 1;
+		return true;
 
-	return 0;
+	return false;
 }
 #else
 {

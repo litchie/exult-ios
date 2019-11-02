@@ -61,7 +61,7 @@ public:
 	bool is_no_halt() const {   // Is the 'no_halt' flag set?
 		return no_halt;
 	}
-	int is_activated() const {  // Started already?
+	bool is_activated() const {  // Started already?
 		return i > 0;
 	}
 	void add(int v1);       // Append new instructions:

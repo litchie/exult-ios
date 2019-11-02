@@ -196,7 +196,7 @@ public:
 	}
 	void change_frame(int frnum);   // Change frame & set to repaint.
 	// Swap positions.
-	int swap_positions(Game_object *obj2);
+	bool swap_positions(Game_object *obj2);
 	Game_object_set &get_dependencies() {
 		return dependencies;
 	}
@@ -267,7 +267,7 @@ public:
 	// Find object blocking given tile.
 	static Game_object *find_blocking(Tile_coord tile);
 	static Game_object *find_door(Tile_coord tile);
-	int is_closed_door() const; // Checking for a closed door.
+	bool is_closed_door() const; // Checking for a closed door.
 	Game_object *get_outermost();   // Get top 'owner' of this object.
 	void say(const char *text);     // Put text up by item.
 	void say(int msgnum);       // Show given text msg.
@@ -278,8 +278,8 @@ public:
 	// Make this class abstract.
 	virtual void paint_terrain() = 0;
 	// Can this be clicked on?
-	virtual int is_findable() {
-		return 1;
+	virtual bool is_findable() {
+		return true;
 	}
 	// Run usecode function.
 	virtual void activate(int event = 1);
@@ -298,9 +298,9 @@ public:
 	static int get_weight(int shnum, int quant = 1);
 	virtual int get_weight();
 	virtual int get_max_weight() const;   // Get max. weight allowed.
-	virtual int is_dragable() const;// Can this be dragged?
+	virtual bool is_dragable() const;// Can this be dragged?
 	// Drop another onto this.
-	virtual int drop(Game_object *obj);
+	virtual bool drop(Game_object *obj);
 	// Set/clear/get actor flag.
 	virtual void set_flag(int flag) {
 		ignore_unused_variable_warning(flag);
@@ -360,10 +360,10 @@ public:
 	virtual bool add(Game_object *obj, bool dont_check = false,
 	                 bool combine = false, bool noset = false);
 	// Add to NPC 'ready' spot.
-	virtual int add_readied(Game_object *obj, int index,
-	                        int dont_check = 0, int force_pos = 0, bool noset = false) {
+	virtual bool add_readied(Game_object *obj, int index,
+	                        bool dont_check = false, bool force_pos = false, bool noset = false) {
 		ignore_unused_variable_warning(index, force_pos);
-		return add(obj, dont_check != 0, false, noset);
+		return add(obj, dont_check, false, noset);
 	}
 	virtual int add_quantity(int delta, int shapenum, int qual = c_any_qual,
 	                         int framenum = c_any_framenum, bool dontcreate = false, bool temporary = false) {
@@ -389,16 +389,16 @@ public:
 		return get_tile();
 	}
 	// Move out of the way.
-	virtual int move_aside(Actor *for_actor, int dir) {
+	virtual bool move_aside(Actor *for_actor, int dir) {
 		ignore_unused_variable_warning(for_actor, dir);
-		return 0;    // For now.
+		return false;    // For now.
 	}
 	// Get frame if rotated clockwise.
 	virtual int get_rotated_frame(int quads);
 	// Step onto an (adjacent) tile.
-	virtual int step(Tile_coord t, int frame, bool force = false) {
+	virtual bool step(Tile_coord t, int frame, bool force = false) {
 		ignore_unused_variable_warning(t, frame, force);
-		return 0;
+		return false;
 	}
 	virtual int is_monster() {
 		return 0;

@@ -234,7 +234,7 @@ int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned l
 			continue;
 
 		// Speed related frame skipping detection
-		int skip_frame = Game_window::get_instance()->get_frame_skipping() && SDL_GetTicks() >= ticks;
+		bool skip_frame = Game_window::get_instance()->get_frame_skipping() && SDL_GetTicks() >= ticks;
 
 		win->put(fli_buf.get(), xoffset, yoffset);
 

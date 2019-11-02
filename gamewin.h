@@ -436,7 +436,7 @@ public:
 	}
 	int get_unused_npc();       // Find first unused NPC #.
 	void add_npc(Actor *npc, int num);  // Add new one.
-	inline int in_combat() {    // In combat mode?
+	inline bool in_combat() {    // In combat mode?
 		return combat;
 	}
 	void toggle_combat();

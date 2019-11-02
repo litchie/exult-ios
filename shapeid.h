@@ -111,7 +111,7 @@ public:
 
 	// Paint shape in window.
 	void paint_shape(int xoff, int yoff, Shape_frame *shape,
-	                 int translucent = 0, unsigned char *trans = nullptr) {
+	                 bool translucent = false, unsigned char *trans = nullptr) {
 		if (!shape || !shape->get_data())
 			CERR("nullptr SHAPE!!!");
 		else if (!shape->is_rle())
@@ -166,7 +166,7 @@ public:
 class ShapeID : public Game_singletons {
 	short shapenum = -1;             // Shape #.
 	signed char framenum = -1;       // Frame # within shape.
-	mutable char has_trans = 0;
+	mutable bool has_trans = false;
 	ShapeFile shapefile = SF_SHAPES_VGA;
 	mutable Shape_frame *shape = nullptr;
 	mutable Shape_info *info = nullptr;
@@ -190,10 +190,10 @@ public:
 	ShapeID& operator=(ShapeID&&) noexcept = default;
 	virtual ~ShapeID() = default;
 	// End-of-list or invalid?
-	int is_invalid() const {
+	bool is_invalid() const {
 		return shapenum == -1;
 	}
-	int is_eol() const {
+	bool is_eol() const {
 		return is_invalid();
 	}
 
@@ -209,12 +209,12 @@ public:
 	inline Shape_frame *get_shape() const {
 		return (shape != nullptr) ? shape : cache_shape();
 	}
-	inline void set_translucent(int trans) {
+	inline void set_translucent(bool trans) {
 		has_trans = trans;
 	}
 	inline bool is_translucent() const {
 		if (shape == nullptr) cache_shape();
-		return has_trans != 0;
+		return has_trans;
 	}
 	// Set to given shape.
 	void set_shape(int shnum, int frnum) {

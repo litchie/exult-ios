@@ -328,14 +328,14 @@ int Game_object::get_facing_direction(
 /*
  *  Does a given shape come in quantity.
  */
-static int Has_quantity(
+static bool Has_quantity(
     int shnum           // Shape number.
 ) {
 	const Shape_info &info = ShapeID::get_info(shnum);
 	return info.has_quantity();
 }
 
-static int Has_hitpoints(int shnum) {
+static bool Has_hitpoints(int shnum) {
 	const Shape_info &info = ShapeID::get_info(shnum);
 	return (info.get_shape_class() == Shape_info::has_hp) ||
 	       (info.get_shape_class() == Shape_info::container);
@@ -595,10 +595,10 @@ void Game_object::change_frame(
 /*
  *  Swap positions with another object (of the same footprint).
  *
- *  Output: 1 if successful, else 0.
+ *  Output: true if successful, else false.
  */
 
-int Game_object::swap_positions(
+bool Game_object::swap_positions(
     Game_object *obj2
 ) {
 	const Shape_info &inf1 = get_info();
@@ -607,7 +607,7 @@ int Game_object::swap_positions(
 	int frame2 = obj2->get_framenum();
 	if (inf1.get_3d_xtiles(frame1) != inf2.get_3d_xtiles(frame2) ||
 	        inf1.get_3d_ytiles(frame1) != inf2.get_3d_ytiles(frame2))
-		return 0;       // Not the same size.
+		return false;       // Not the same size.
 	Tile_coord p1 = get_tile();
 	Tile_coord p2 = obj2->get_tile();
     Game_object_shared keep1;
@@ -618,7 +618,7 @@ int Game_object::swap_positions(
 	obj2->set_invalid();
 	move(p2.tx, p2.ty, p2.tz);  // Move to new locations.
 	obj2->move(p1.tx, p1.ty, p1.tz);
-	return 1;
+	return true;
 }
 
 /*
@@ -905,11 +905,11 @@ Game_object *Game_object::find_door(
  *  Is this a closed door?
  */
 
-int Game_object::is_closed_door(
+bool Game_object::is_closed_door(
 ) const {
 	const Shape_info &info = get_info();
 	if (!info.is_door())
-		return 0;
+		return false;
 	// Get door's footprint.
 	int frame = get_framenum();
 	int xtiles = info.get_3d_xtiles(frame);
@@ -1111,9 +1111,9 @@ void Game_object::remove_this(
  *  Can this be dragged?
  */
 
-int Game_object::is_dragable(
+bool Game_object::is_dragable(
 ) const {
-	return 0;         // Default is 'no'.
+	return false;         // Default is 'no'.
 }
 
 /*
@@ -1185,30 +1185,30 @@ bool Game_object::add(
     bool noset      // True to prevent actors from setting sched. weapon.
 ) {
 	ignore_unused_variable_warning(dont_check, noset);
-	return combine ? drop(obj) != 0 : false;
+	return combine ? drop(obj) : false;
 }
 
 /*
  *  Drop another onto this.
  *
- *  Output: 0 to reject, 1 to accept.
+ *  Output: false to reject, true to accept.
  */
 
-int Game_object::drop(
+bool Game_object::drop(
     Game_object *obj        // This may be deleted.
 ) {
 	const Shape_info &inf = get_info();
 	int shapenum = get_shapenum();  // It's possible if shapes match.
 	if (obj->get_shapenum() != shapenum || !inf.has_quantity() ||
 	        (!inf.has_quantity_frames() && get_framenum() != obj->get_framenum()))
-		return 0;
+		return false;
 	int objq = obj->get_quantity();
 	int total_quant = get_quantity() + objq;
 	if (total_quant > MAX_QUANTITY) // Too much?
-		return 0;
+		return false;
 	modify_quantity(objq);      // Add to our quantity.
 	obj->remove_this();     // It's been used up.
-	return 1;
+	return true;
 }
 
 //#define DEBUGLT

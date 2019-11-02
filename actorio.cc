@@ -126,7 +126,7 @@ void Actor::read(
 #endif
 	}
 
-	bool has_contents = fix_first ? (iflag1 && !unused) : (iflag1 & 1);
+	bool has_contents = fix_first ? (iflag1 && !unused) : (iflag1 & 1) != 0;
 	// Read first set of flags
 	const int rflags = nfile->read2();
 

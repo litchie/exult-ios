@@ -177,7 +177,7 @@ public:
 	~Combo_chooser() override;
 	// Turn off selection.
 	void unselect(bool need_render = true);
-	int is_selected() {     // Is a combo selected?
+	bool is_selected() {     // Is a combo selected?
 		return selected >= 0;
 	}
 	void set_selected_callback(void (*fun)()) {

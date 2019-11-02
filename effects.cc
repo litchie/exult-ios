@@ -744,7 +744,7 @@ void Projectile_effect::handle_event(
 	Game_object_shared tgt_obj = target.lock();
 	for (int i = 0; i < speed; i++) {
 		// This speeds up the missile.
-		path_finished = (path->GetNextStep(pos) == 0) ||    // Get next spot.
+		path_finished = !path->GetNextStep(pos) ||    // Get next spot.
 		           // If missile egg, detect target.
 		       (!tgt_obj && !no_blocking &&
 			   			 (tgt_obj = Find_target(gwin, pos)) != nullptr);
@@ -1167,12 +1167,12 @@ Weather_effect::Weather_effect(
  *  @param  dist    Distance in tiles to cancel at.
  */
 
-int Weather_effect::out_of_range(
+bool Weather_effect::out_of_range(
     Tile_coord &avpos,
     int dist
 ) {
 	if (eggloc.tx == -1)        // Not created by an egg?
-		return 0;
+		return false;
 	return eggloc.distance(avpos) >= dist;
 }
 

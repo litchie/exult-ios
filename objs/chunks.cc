@@ -483,12 +483,12 @@ inline void Check_terrain(
 /*
  *  Is a given square occupied at a given lift?
  *
- *  Output: 1 if so, else 0.
- *      If 0 (tile is free), new_lift contains the new height that
+ *  Output: true if so, else false.
+ *      If false (tile is free), new_lift contains the new height that
  *         an actor will be at if he walks onto the tile.
  */
 
-int Chunk_cache::is_blocked(
+bool Chunk_cache::is_blocked(
     int height,         // Height (in tiles) of obj. being
     //   tested.
     int lift,           // Given lift.
@@ -504,7 +504,7 @@ int Chunk_cache::is_blocked(
 	// and can only move horizontally
 	if (move_flags & MOVE_ETHEREAL) {
 		new_lift = lift;
-		return 0;
+		return false;
 	}
 	// Figure max lift allowed.
 	if (max_rise == -1)
@@ -526,10 +526,10 @@ int Chunk_cache::is_blocked(
 		// Look downwards.
 		new_lift = get_highest_blocked(lift) + 1;
 		if (new_lift >= lift)   // Couldn't drop?
-			return 1;
+			return true;
 		int new_high = get_lowest_blocked(new_lift);
 		if (new_high != -1 && new_high < new_lift + height)
-			return 1;   // Still blocked above.
+			return true;   // Still blocked above.
 	}
 	if (new_lift <= lift) {     // Not going up?  See if falling.
 		new_lift = (move_flags & MOVE_LEVITATE) ? lift :
@@ -540,13 +540,13 @@ int Chunk_cache::is_blocked(
 			if (move_flags & MOVE_MAPEDIT)
 				new_lift = lift - max_drop;
 			else
-				return 1;
+				return true;
 		}
 		int new_high = get_lowest_blocked(new_lift);
 
 		// Make sure that where we want to go is tall enough for us
 		if (new_high != -1 && new_high < (new_lift + height))
-			return 1;
+			return true;
 	}
 
 	// Found a new place to go, lets test if we can actually move there
@@ -554,27 +554,21 @@ int Chunk_cache::is_blocked(
 	// Lift 0 tests
 	if (new_lift == 0) {
 		if (move_flags & MOVE_MAPEDIT)
-			return 0;   // Map-editor, so anything is okay.
+			return false;   // Map-editor, so anything is okay.
 		int ter = 0;
 		Check_terrain(obj_list, tx, ty, ter);
 		if (ter & 2) {      // Water
-			if (move_flags & (MOVE_FLY | MOVE_SWIM))
-				return 0;
-			else
-				return 1;
+			return (move_flags & (MOVE_FLY | MOVE_SWIM)) == 0;
 		} else if (ter & 1) { // Land
-			if (move_flags & (MOVE_FLY | MOVE_WALK))
-				return 0;
-			else
-				return 1;
+			return (move_flags & (MOVE_FLY | MOVE_WALK)) == 0;
 		} else if (ter & 4) { // Blocked
-			return 1;
+			return true;
 		} else  // Other
-			return 0;
+			return false;
 	} else if (move_flags & (MOVE_FLY | MOVE_WALK))
-		return 0;
+		return false;
 
-	return 1;
+	return true;
 }
 
 /*
@@ -886,12 +880,12 @@ void Map_chunk::remove(
 /*
  *  Is a given rectangle of tiles blocked at a given lift?
  *
- *  Output: 1 if so, else 0.
- *      If 0 (tile is free), new_lift contains the new height that
+ *  Output: true if so, else false.
+ *      If false (tile is free), new_lift contains the new height that
  *         an actor will be at if he walks onto the tile.
  */
 
-int Map_chunk::is_blocked(
+bool Map_chunk::is_blocked(
     int height,         // Height (along lift) to check.
     int lift,           // Starting lift.
     int startx, int starty,     // Starting tile coords.
@@ -922,23 +916,23 @@ int Map_chunk::is_blocked(
 			if (olist->is_blocked(height, lift,
 			                      tx % c_tiles_per_chunk,
 			                      rty, this_lift, move_flags, max_drop, max_rise))
-				return 1;
+				return true;
 			// Take highest one.
 			new_lift = this_lift > new_lift ?
 			           this_lift : new_lift;
 		}
 	}
-	return 0;
+	return false;
 }
 
 /*
  *  Check an absolute tile position.
  *
- *  Output: 1 if blocked, 0 otherwise.
+ *  Output: true if blocked, false otherwise.
  *      Tile.tz may be updated for stepping onto square.
  */
 
-int Map_chunk::is_blocked(
+bool Map_chunk::is_blocked(
     Tile_coord &tile,
     int height,         // Height in tiles to check.
     const int move_flags,
@@ -951,15 +945,15 @@ int Map_chunk::is_blocked(
 	Map_chunk *chunk = gmap->get_chunk_safely(
 	                       tile.tx / c_tiles_per_chunk, tile.ty / c_tiles_per_chunk);
 	if (!chunk)         // Outside the world?
-		return 0;       // Then it's not blocked.
+		return false;       // Then it's not blocked.
 	chunk->setup_cache();       // Be sure cache is present.
 	int new_lift;           // Check it within chunk.
 	if (chunk->is_blocked(height, tile.tz, tile.tx % c_tiles_per_chunk,
 	                      tile.ty % c_tiles_per_chunk, new_lift, move_flags, max_drop,
 	                      max_rise))
-		return 1;
+		return true;
 	tile.tz = new_lift;
-	return 0;
+	return false;
 }
 
 /*
@@ -967,7 +961,7 @@ int Map_chunk::is_blocked(
  *  step onto an adjacent square.
  */
 
-int Map_chunk::is_blocked(
+bool Map_chunk::is_blocked(
     // Object dims:
     int xtiles, int ytiles, int ztiles,
     Tile_coord const &from,     // Stepping from here.
@@ -1035,12 +1029,12 @@ int Map_chunk::is_blocked(
 			int rtx = x % c_tiles_per_chunk;
 			if (olist->is_blocked(ztiles, from.tz, rtx, rty,
 			                      new_lift, move_flags, max_drop, max_rise))
-				return 1;
+				return true;
 			if (new_lift != from.tz) {
 				if (new_lift0 == -1)
 					new_lift0 = new_lift;
 				else if (new_lift != new_lift0)
-					return 1;
+					return true;
 			}
 		}
 	}
@@ -1056,17 +1050,17 @@ int Map_chunk::is_blocked(
 			int rty = y % c_tiles_per_chunk;
 			if (olist->is_blocked(ztiles, from.tz, rtx, rty,
 			                      new_lift, move_flags, max_drop, max_rise))
-				return 1;
+				return true;
 			if (new_lift != from.tz) {
 				if (new_lift0 == -1)
 					new_lift0 = new_lift;
 				else if (new_lift != new_lift0)
-					return 1;
+					return true;
 			}
 		}
 	}
 	to.tz = new_lift;
-	return 0;         // All clear.
+	return false;         // All clear.
 }
 
 /*

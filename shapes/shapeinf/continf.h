@@ -73,10 +73,10 @@ public:
 	bool accepts_shape() const {
 		return accept;
 	}
-	void set_accept(int tf) {
-		if (accept != (tf != 0)) {
+	void set_accept(bool tf) {
+		if (accept != tf) {
 			set_modified(true);
-			accept = (tf != 0);
+			accept = tf;
 		}
 	}
 	bool operator<(const Content_rules &other) const {

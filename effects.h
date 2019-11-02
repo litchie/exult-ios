@@ -82,8 +82,8 @@ public:
 	friend class Effects_manager;
 	// Render.
 	virtual void paint();
-	virtual int is_weather() {  // Need to distinguish weather.
-		return 0;
+	virtual bool is_weather() {  // Need to distinguish weather.
+		return false;
 	}
 };
 
@@ -226,7 +226,7 @@ public:
 	// Render.
 	virtual void paint();
 	// Check for matching item.
-	int is_text(Game_object *it) {
+	bool is_text(Game_object *it) {
 	    return it == item.lock().get();
 	}
 	virtual void update_dirty();
@@ -243,9 +243,9 @@ protected:
 public:
 	Weather_effect(int duration, int delay, int n, Game_object *egg = nullptr);
 	// Avatar out of range?
-	int out_of_range(Tile_coord &avpos, int dist);
-	int is_weather() override {
-		return 1;
+	bool out_of_range(Tile_coord &avpos, int dist);
+	bool is_weather() override {
+		return true;
 	}
 	int get_num() {
 		return num;

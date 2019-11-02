@@ -216,7 +216,7 @@ static class Windnd *windnd = nullptr;
 static int exult_main(const char * runpath);
 static void Init();
 static int Play();
-static int Get_click(int &x, int &y, char *chr, bool drag_ok, bool rotate_colors = false);
+static bool Get_click(int &x, int &y, char *chr, bool drag_ok, bool rotate_colors = false);
 static int find_resolution(int w, int h, int s);
 static void set_scaleval(int new_scaleval);
 #ifdef USE_EXULTSTUDIO
@@ -1670,9 +1670,9 @@ static void Handle_event(
 /*
  *  Wait for a click, or optionally, a kbd. chr.
  *
- *  Output: 0 if user hit ESC.
+ *  Output: false if user hit ESC.
  */
-static int Get_click(
+static bool Get_click(
     int &x, int &y,
     char *chr,          // Char. returned if not null.
     bool drag_ok,           // Okay to drag/close while here.
@@ -1743,7 +1743,7 @@ static int Get_click(
 					        !gwin->drop_dragged(x, y, drged)) {
 						if (chr) *chr = 0;
 						g_waiting_for_click = false;
-						return 1;
+						return true;
 					}
 				} else if (event.button.button == 3) {
 					// Just stop.  Don't get followers!
@@ -1751,7 +1751,7 @@ static int Get_click(
 					if (gwin->get_mouse3rd() && rightclick) {
 						rightclick = false;
 						g_waiting_for_click = false;
-						return 0;
+						return false;
 					}
 				}
 				break;
@@ -1773,7 +1773,7 @@ static int Get_click(
 				switch (c) {
 				case SDLK_ESCAPE:
 					g_waiting_for_click = false;
-					return 0;
+					return false;
 				case SDLK_RSHIFT:
 				case SDLK_LSHIFT:
 				case SDLK_RCTRL:
@@ -1807,7 +1807,7 @@ static int Get_click(
 						        KMOD_SHIFT)
 						       ? toupper(c) : c;
 						g_waiting_for_click = false;
-						return 1;
+						return true;
 					}
 					break;
 				}
@@ -1827,17 +1827,17 @@ static int Get_click(
 			Mouse::mouse->blit_dirty();
 	}
 	g_waiting_for_click = false;
-	return 0;         // Shouldn't get here.
+	return false;         // Shouldn't get here.
 }
 
 /*
  *  Get a click, or, optionally, a keyboard char.
  *
- *  Output: 0 if user hit ESC.
+ *  Output: false if user hit ESC.
  *      Chr gets keyboard char., or 0 if it's was a mouse click.
  */
 
-int Get_click(
+bool Get_click(
     int &x, int &y,         // Location returned (if not ESC).
     Mouse::Mouse_shapes shape,  // Mouse shape to use.
     char *chr,          // Char. returned if not null.
@@ -1855,7 +1855,7 @@ int Get_click(
 	Mouse::mouse->show();
 	gwin->show(true);          // Want to see new mouse.
 	gwin->get_tqueue()->pause(Game::get_ticks());
-	int ret = Get_click(x, y, chr, drag_ok, rotate_colors);
+	bool ret = Get_click(x, y, chr, drag_ok, rotate_colors);
 	gwin->get_tqueue()->resume(Game::get_ticks());
 	Mouse::mouse->set_shape(saveshape);
 	return ret;
@@ -1875,7 +1875,7 @@ void Wait_for_arrival(
 	int mx;
 	int my;
 
-	unsigned char os = Mouse::mouse->is_onscreen();
+	bool os = Mouse::mouse->is_onscreen();
 	uint32 last_repaint = 0;    // For insuring animation repaints.
 	Actor_action *orig_action = actor->get_action();
 	uint32 stop_time = SDL_GetTicks() + maxticks;
@@ -1960,7 +1960,7 @@ void Wizard_eye(
 	int cx = gwin->get_width() / 2;
 	int cy = gwin->get_height() / 2;
 
-	unsigned char os = Mouse::mouse->is_onscreen();
+	bool os = Mouse::mouse->is_onscreen();
 	uint32 last_repaint = 0;    // For insuring animation repaints.
 	uint32 stop_time = SDL_GetTicks() + msecs;
 	bool timeout = false;

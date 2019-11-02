@@ -106,7 +106,7 @@ void Ireg_game_object::remove_this(
  *  Can this be dragged?
  */
 
-int Ireg_game_object::is_dragable(
+bool Ireg_game_object::is_dragable(
 ) const {
 	// 0 weight means 'too heavy'.
 	return get_info().get_weight() > 0;
@@ -164,14 +164,14 @@ void Ireg_game_object::write_ireg(
 	const Shape_info &info = get_info();
 	if (info.has_quality_flags()) {
 		// Store 'quality_flags'.
-		*ptr = get_flag((Obj_flags::invisible) != 0) +
-		       ((get_flag(Obj_flags::okay_to_take) != 0) << 3);
+		*ptr++ = (get_flag(Obj_flags::invisible) ? 1 : 0) +
+				(get_flag(Obj_flags::okay_to_take) ? (1 << 3) : 0);
 	}
 	// Special case for 'quantity' items:
 	else if (get_flag(Obj_flags::okay_to_take) && info.has_quantity())
 		*ptr |= 0x80;
 	++ptr;
-	*ptr++ = (get_flag(Obj_flags::is_temporary) != 0);
+	*ptr++ = (get_flag(Obj_flags::is_temporary));
 	*ptr++ = 0;         // Filler, I guess.
 	*ptr++ = 0;
 	*ptr++ = 0;

@@ -288,7 +288,7 @@ void MiscOptions_gump::save_settings() {
 	str = Combat::mode == Combat::keypause ? "keypause"
 	                  : "original";
 	config->set("config/gameplay/combat/mode", str, false);
-	Combat::charmed_more_difficult = (charmDiff != 0);
+	Combat::charmed_more_difficult = charmDiff;
 	config->set("config/gameplay/combat/charmDifficulty",
 	            charmDiff ? "hard" : "normal", false);
 	gwin->set_alternate_drop(alternate_drop);

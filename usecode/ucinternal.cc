@@ -701,8 +701,8 @@ int Usecode_internal::get_face_shape(
 		Actor *ava = gwin->get_main_actor();
 		bool sishapes = Shape_manager::get_instance()->have_si_shapes();
 		Skin_data *skin = Shapeinfo_lookup::GetSkinInfoSafe(
-		                      ava->get_skin_color(), npc ? (npc->get_type_flag(Actor::tf_sex) != 0)
-		                      : (ava->get_type_flag(Actor::tf_sex) != 0), sishapes);
+		                      ava->get_skin_color(), npc ? (npc->get_type_flag(Actor::tf_sex))
+		                      : (ava->get_type_flag(Actor::tf_sex)), sishapes);
 		if (gwin->get_main_actor()->get_flag(Obj_flags::tattooed)) {
 			shape = skin->alter_face_shape;
 			frame = skin->alter_face_frame;
@@ -779,7 +779,7 @@ void Usecode_internal::set_item_shape(
 	if (!item)
 		return;
 	// See if light turned on/off.
-	int light_changed = item->get_info().is_light_source() !=
+	bool light_changed = item->get_info().is_light_source() !=
 	                    ShapeID::get_info(shape).is_light_source();
 	if (item->get_owner()) {    // Inside something?
 		item->get_owner()->change_member_shape(item, shape);
@@ -1425,10 +1425,10 @@ Game_object_shared Usecode_internal::create_object(
 /*
  *  Have an NPC walk somewhere and then execute usecode.
  *
- *  Output: 1 if successful, else 0.
+ *  Output: true if successful, else false.
  */
 
-int Usecode_internal::path_run_usecode(
+bool Usecode_internal::path_run_usecode(
     Usecode_value &npcval,      // # or ref.
     Usecode_value &locval,      // Where to walk to.
     Usecode_value &useval,      // Usecode #.
@@ -1440,14 +1440,14 @@ int Usecode_internal::path_run_usecode(
 ) {
 	Actor *npc = as_actor(get_item(npcval));
 	if (!npc)
-		return 0;
+		return false;
 	path_npc = npc;
 	int usefun = useval.get_elem0().get_int_value();
 	Game_object *obj = get_item(itemval);
 	int sz = locval.get_array_size();
 	if (!npc || sz < 2) {
 		CERR("Path_run_usecode: bad inputs");
-		return 0;
+		return false;
 	}
 	Tile_coord src = npc->get_tile();
 	Tile_coord dest(locval.get_elem(0).get_int_value(),
@@ -1467,7 +1467,7 @@ int Usecode_internal::path_run_usecode(
 			dest = d;
 		if (usefun == 0x60a &&  // ++++Added 7/21/01 to fix Iron
 		        src.distance(dest) <= 1)
-			return 1;   // Maiden loop in SI.  Kludge+++++++
+			return true;   // Maiden loop in SI.  Kludge+++++++
 	}
 	if (!obj) {         // Just skip the usecode part.
 		int res = npc->walk_path_to_tile(dest,
@@ -1740,8 +1740,8 @@ int Usecode_internal::get_user_choice_num(
 	do {
 		char chr;       // Allow '1', '2', etc.
 		gwin->paint();      // Paint scenery.
-		int result = Get_click(x, y, Mouse::hand, &chr, false, conv, true);
-		if (result <= 0) {  // ESC pressed, select 'bye' if poss.
+		bool result = Get_click(x, y, Mouse::hand, &chr, false, conv, true);
+		if (!result) {  // ESC pressed, select 'bye' if poss.
 			choice_num = conv->locate_answer("bye");
 		} else if (chr) {       // key pressed
 			if (chr >= '1' && chr <= '0' + conv->get_num_answers()) {
@@ -2118,14 +2118,14 @@ int Usecode_internal::run() {
 			case UC_AND: {    // AND.
 				Usecode_value v1 = pop();
 				Usecode_value v2 = pop();
-				int result = v1.is_true() && v2.is_true();
+				bool result = v1.is_true() && v2.is_true();
 				pushi(result);
 				break;
 			}
 			case UC_OR: {    // OR.
 				Usecode_value v1 = pop();
 				Usecode_value v2 = pop();
-				int result = v1.is_true() || v2.is_true();
+				bool result = v1.is_true() || v2.is_true();
 				pushi(result);
 				break;
 			}

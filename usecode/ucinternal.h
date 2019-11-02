@@ -166,7 +166,7 @@ class Usecode_internal : public Usecode_machine {
 	                                Usecode_value &frameval, Usecode_value &flagval);
 	Game_object_shared create_object(int shapenum, bool equip);
 
-	int path_run_usecode(Usecode_value &npcval, Usecode_value &locval,
+	bool path_run_usecode(Usecode_value &npcval, Usecode_value &locval,
 	                     Usecode_value &useval, Usecode_value &itemval,
 	                     Usecode_value &eventval, bool find_free = false,
 	                     bool always = false, bool companions = false);

@@ -90,10 +90,10 @@ public:
 	}
 	void set_gumps_dont_pause_game(bool p);
 
-	int okay_to_quit();
+	bool okay_to_quit();
 	int prompt_for_number(int minval, int maxval, int step, int def,
 	                      Paintable *paint = nullptr);
-	int do_modal_gump(Modal_gump *, Mouse::Mouse_shapes,
+	bool do_modal_gump(Modal_gump *, Mouse::Mouse_shapes,
 	                  Paintable *paint = nullptr);
 	void paint_num(int num, int x, int y);
 
@@ -103,7 +103,7 @@ public:
 	}
 
 private:
-	int handle_modal_gump_event(Modal_gump *gump, SDL_Event &event);
+	bool handle_modal_gump_event(Modal_gump *gump, SDL_Event &event);
 };
 
 #endif // GUMP_MANAGER_INCLUDED

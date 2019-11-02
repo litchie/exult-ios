@@ -578,11 +578,11 @@ void Weapon_info::write(
 	Write2(ptr, ammo);
 	Write2(ptr, projectile);
 	*ptr++ = damage;
-	unsigned char flags0 = (damage_type << 4) | (m_delete_depleted << 3) |
-	                       (m_no_blocking << 2) | (m_explodes << 1) | m_lucky;
+	unsigned char flags0 = (damage_type << 4) | (m_delete_depleted ? (1 << 3) : 0) |
+	                       (m_no_blocking ? (1 << 2) : 0) | (m_explodes ? (1 << 1) : 0) | (m_lucky ? 1 : 0);
 	*ptr++ = flags0;
-	*ptr++ = (range << 3) | (uses << 1) | m_autohit;
-	unsigned char flags1 = m_returns | (m_need_target << 1) | (rotation_speed << 4) |
+	*ptr++ = (range << 3) | (uses << 1) | (m_autohit ? 1 : 0);
+	unsigned char flags1 = (m_returns ? 1 : 0) | (m_need_target ? (1 << 1) : 0) | (rotation_speed << 4) |
 	                       ((missile_speed == 4 ? 1 : 0) << 2);
 	*ptr++ = flags1;
 	int delay = missile_speed >= 3 ? 0 : (missile_speed == 2 ? 2 : 3);
@@ -617,8 +617,8 @@ void Ammo_info::write(
 	Write2(ptr, sprite);
 	*ptr++ = damage;
 	unsigned char flags0;
-	flags0 = (m_explodes << 6) | ((homing ? 3 : drop_type) << 4) | m_lucky |
-	         (m_autohit << 1) | (m_returns << 2) | (m_no_blocking << 3);
+	flags0 = (m_explodes ? (1 << 6) : 0) | ((homing ? 3 : drop_type) << 4) | (m_lucky ? 1 : 0) |
+	         (m_autohit ? (1<< 1) : 0) | (m_returns ? (1 << 2) : 0) | (m_no_blocking ? (1 << 3) : 0);
 	*ptr++ = flags0;
 	*ptr++ = 0;         // Unknown.
 	*ptr++ = damage_type << 4;

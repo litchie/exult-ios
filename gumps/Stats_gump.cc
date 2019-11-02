@@ -117,7 +117,7 @@ static int Show_atts(
 	ShapeID sid(game->get_shape("gumps/statatts"), framenum, SF_GUMPS_VGA);
 	Shape_frame *s = sid.get_shape();
 	sman->paint_shape(x + s->get_xleft(),
-	                  y + s->get_ybelow(), s, 1);
+	                  y + s->get_ybelow(), s, true);
 	return s->get_width() + 2;
 }
 

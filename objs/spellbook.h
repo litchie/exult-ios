@@ -45,7 +45,7 @@ public:
 	Spellbook_object(int shapenum, int framenum, unsigned int shapex,
 	                 unsigned int shapey, unsigned int lft, unsigned char *c,
 	                 unsigned char bmark);
-	int has_spell(int spell) {  // Has a spell.
+	bool has_spell(int spell) {  // Has a spell.
 		int circle = spell / 8;
 		int num = spell % 8;    // # within circle.
 		return (circles[circle] & (1 << num)) != 0;

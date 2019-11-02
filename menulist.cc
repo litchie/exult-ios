@@ -282,7 +282,7 @@ void MenuList::set_selection(int x, int y) {
 }
 
 int MenuList::handle_events(Game_window *gwin, Mouse *mouse) {
-	unsigned char mouse_visible;
+	bool mouse_visible;
 	int count = entries.size();
 	bool exit_loop = false;
 	//int scale = gwin->get_fastmouse() ? 1 : gwin->get_win()->get_scale();

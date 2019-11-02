@@ -64,7 +64,7 @@ public:
 
 	bool			is_track_playing(int num);
 	int				get_current_track();
-	int				is_repeating() { return repeating; }
+	bool			is_repeating() { return repeating; }
 	
 	void			set_timbre_lib(TimberLibrary lib);
 	TimberLibrary	get_timbre_lib() { return timbre_lib; }

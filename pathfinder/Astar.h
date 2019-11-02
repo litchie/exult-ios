@@ -31,17 +31,17 @@ class   Astar: public PathFinder {
 	int next_index = 0;         // Index of next tile to return.
 public:
 	// Find a path from sx,sy,sz to dx,dy,dz
-	// Return 0 if no path can be traced.
-	// Return !0 if path found
-	int NewPath(Tile_coord const &s, Tile_coord const &d,
+	// Return false if no path can be traced.
+	// Return true if path found
+	bool NewPath(Tile_coord const &s, Tile_coord const &d,
 	            Pathfinder_client *client) override;
 
 	// Retrieve the coordinates of the next step on the path
-	int GetNextStep(Tile_coord &n, bool &done) override;
+	bool GetNextStep(Tile_coord &n, bool &done) override;
 	// Set to retrieve in opposite order.
-	int set_backwards() override;
-	int following_smart_path() override { // Astar?
-		return 1;
+	bool set_backwards() override;
+	bool following_smart_path() override { // Astar?
+		return true;
 	}
 	int get_num_steps() override;    // # of steps left to take.
 };

@@ -780,7 +780,7 @@ USECODE_INTRINSIC(npc_nearby) {
 		return Usecode_value(0);
 	Tile_coord pos = obj->get_tile();
 	Actor *npc;
-	int is_near = gwin->get_win_tile_rect().has_world_point(pos.tx, pos.ty) &&
+	bool is_near = gwin->get_win_tile_rect().has_world_point(pos.tx, pos.ty) &&
 	              // Guessing: true if non-NPC, false if NPC is dead, asleep or paralyzed.
 	              ((npc = as_actor(obj)) == nullptr || npc->can_act());
 	Usecode_value u(is_near);
@@ -793,7 +793,7 @@ USECODE_INTRINSIC(npc_nearby2) {
 	//   companions are a fair distance away.
 
 	Game_object *npc = get_item(parms[0]);
-	int is_near = (npc != nullptr &&
+	bool is_near = (npc != nullptr &&
 #if 1
 	               // Guessing; being asleep, paralyzed or dead doesn't seem to affect this.
 	               npc->distance(gwin->get_main_actor()) < 40);
@@ -959,7 +959,7 @@ USECODE_INTRINSIC(give_last_created) {
 	ignore_unused_variable_warning(num_parms);
 	// Think it's give_last_created(container).
 	Game_object *cont = get_item(parms[0]);
-	int ret = 0;
+	bool ret = false;
 	if (cont && !last_created.empty()) {
 		// Get object, but don't pop yet.
 		Game_object *obj = last_created.back().get();
@@ -1506,7 +1506,7 @@ USECODE_INTRINSIC(display_area) {
 		// Paint sprite #10
 		//   over it, transparently.
 		sman->paint_shape(topx + sprite->get_xleft(),
-		                  topy + sprite->get_yabove(), sprite, 1);
+		                  topy + sprite->get_yabove(), sprite, true);
 		gwin->set_in_dungeon(save_dungeon);
 		gwin->show();
 		// Wait for click.
@@ -2395,7 +2395,7 @@ USECODE_INTRINSIC(is_not_blocked) {
 	    tile.ty - info.get_3d_ytiles(framenum) + 1,
 	    info.get_3d_xtiles(framenum), info.get_3d_ytiles(framenum));
 	int new_lift;
-	int blocked = Map_chunk::is_blocked(
+	bool blocked = Map_chunk::is_blocked(
 	                  info.get_3d_height(), tile.tz,
 	                  footprint.x, footprint.y, footprint.w, footprint.h,
 	                  new_lift, MOVE_ALL_TERRAIN, 1);
@@ -2419,7 +2419,7 @@ USECODE_INTRINSIC(direction_from) {
  *  Test for a 'moving barge' flag.
  */
 
-static int Is_moving_barge_flag(
+static bool Is_moving_barge_flag(
     int fnum
 ) {
 	if (Game::get_game_type() == BLACK_GATE) {
@@ -2474,7 +2474,7 @@ USECODE_INTRINSIC(get_item_flag) {
 	else if (fnum == 0x14)      // Must be the sailor, as this is used
 		//   to check for Ferryman.
 		return Usecode_value(sailor);
-	Usecode_value u(obj->get_flag(fnum) != 0);
+	Usecode_value u(obj->get_flag(fnum));
 	return u;
 }
 

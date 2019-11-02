@@ -2070,8 +2070,8 @@ static void Set_objpaperdoll_fields(
 	studio->set_spin("shinfo_objpaperdoll_wframe",
 	                 frnum == -1 ? 0 : frnum, frnum != -1);
 	studio->set_optmenu("shinfo_objpaperdoll_spot", spot == 102 ? 18 : spot);
-	studio->set_toggle("shinfo_objpaperdoll_trans", trans != 0);
-	studio->set_toggle("shinfo_objpaperdoll_gender", gender != 0);
+	studio->set_toggle("shinfo_objpaperdoll_trans", trans);
+	studio->set_toggle("shinfo_objpaperdoll_gender", gender);
 	studio->set_spin("shinfo_objpaperdoll_spotframe", type, 0, max);
 	studio->set_spin("shinfo_objpaperdoll_shape", shape);
 	studio->set_spin("shinfo_objpaperdoll_frame0", frame0);

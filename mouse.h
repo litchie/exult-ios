@@ -146,7 +146,7 @@ public:
 		return med_combat_arrows[static_cast<int>(dir)];
 	}
 
-	unsigned char is_onscreen() {
+	bool is_onscreen() {
 		return onscreen;
 	}
 

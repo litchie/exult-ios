@@ -275,10 +275,10 @@ Gump_button *Paperdoll_gump::on_button(
 /*
  *  Add an object.
  *
- *  Output: 0 if cannot add it.
+ *  Output: false if cannot add it.
  */
 
-int Paperdoll_gump::add(
+bool Paperdoll_gump::add(
     Game_object *obj,
     int mx, int my,         // Screen location of mouse.
     int sx, int sy,         // Screen location of obj's hotspot.
@@ -301,7 +301,7 @@ int Paperdoll_gump::add(
 		if (container->add(obj, dont_check, combine))
 			break;
 
-		return 0;
+		return false;
 	} while (false);
 
 	// Put all the objects in the right place
@@ -310,7 +310,7 @@ int Paperdoll_gump::add(
 		if (obj) set_to_spot(obj, i);
 	}
 
-	return 1;
+	return true;
 }
 
 /*
@@ -366,7 +366,7 @@ void Paperdoll_gump::paint(
 	}
 	if (!info) {
 		const Shape_info &inf = ShapeID::get_info(actor->get_shape_real());
-		info = inf.get_npc_paperdoll_safe(actor->get_type_flag(Actor::tf_sex) != 0);
+		info = inf.get_npc_paperdoll_safe(actor->get_type_flag(Actor::tf_sex));
 	}
 
 	// Spots that are female/male specific
@@ -703,7 +703,7 @@ Game_object *Paperdoll_gump::find_object(
 	}
 	if (!info) {
 		const Shape_info &inf = ShapeID::get_info(actor->get_shape_real());
-		info = inf.get_npc_paperdoll_safe(actor->get_type_flag(Actor::tf_sex) != 0);
+		info = inf.get_npc_paperdoll_safe(actor->get_type_flag(Actor::tf_sex));
 	}
 
 	int shieldx;

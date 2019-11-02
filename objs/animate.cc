@@ -196,7 +196,7 @@ void Shape_sfx::update(
 
 	AudioMixer *mixer = AudioMixer::get_instance();
 
-	int active[2] = {0, 0};
+	bool active[2] = {false, false};
 	for (size_t i = 0; i < array_size(channel); i++) {
 		if (channel[i] != -1)
 			active[i] = mixer->isPlaying(channel[i]);

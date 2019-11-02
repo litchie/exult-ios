@@ -805,7 +805,7 @@ static int unzlocal_CheckCurrentFileCoherencyHeader(unz_s *s,
 */
 extern int ZEXPORT unzOpenCurrentFile(unzFile file) {
 	int err = UNZ_OK;
-	int Store;
+	bool Store;
 	uInt iSizeVar;
 	file_in_zip_read_info_s *pfile_in_zip_read_info;
 	uLong offset_local_extrafield;  /* offset of the local extra field */

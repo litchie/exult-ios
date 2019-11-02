@@ -429,16 +429,16 @@ void Gump_manager::paint(bool modal) {
 /*
  *  Verify user wants to quit.
  *
- *  Output: 1 to quit.
+ *  Output: true to quit.
  */
-int Gump_manager::okay_to_quit() {
+bool Gump_manager::okay_to_quit() {
 	if (Yesno_gump::ask("Do you really want to quit?"))
 		quitting_time = QUIT_TIME_YES;
-	return quitting_time;
+	return quitting_time != QUIT_TIME_NO;
 }
 
 
-int Gump_manager::handle_modal_gump_event(
+bool Gump_manager::handle_modal_gump_event(
     Modal_gump *gump,
     SDL_Event &event
 ) {
@@ -498,7 +498,7 @@ int Gump_manager::handle_modal_gump_event(
 		else if (rightclick) {
 			rightclick = false;
 			if (!gump->mouse_up(gx, gy, event.button.button) &&
-			        gumpman->can_right_click_close()) return 0;
+			        gumpman->can_right_click_close()) return false;
 		}
 		break;
 #if SDL_VERSION_ATLEAST(2, 0, 0)
@@ -524,7 +524,7 @@ int Gump_manager::handle_modal_gump_event(
 		break;
 	case SDL_QUIT:
 		if (okay_to_quit())
-			return 0;
+			return false;
 		break;
 	case SDL_KEYDOWN:
 #if SDL_VERSION_ATLEAST(2, 0, 0)
@@ -536,12 +536,12 @@ int Gump_manager::handle_modal_gump_event(
 #endif
 	{
 		if (event.key.keysym.sym == SDLK_ESCAPE)
-			return 0;
+			return false;
 		if ((event.key.keysym.sym == SDLK_s) &&
 		        (event.key.keysym.mod & KMOD_ALT) &&
 		        (event.key.keysym.mod & KMOD_CTRL)) {
 			make_screenshot(true);
-			return 1;
+			return true;
 		}
 
 #if SDL_VERSION_ATLEAST(2, 0, 0)
@@ -558,7 +558,7 @@ int Gump_manager::handle_modal_gump_event(
 		break;
 	}
 	}
-	return 1;
+	return true;
 }
 
 void Gump_manager::translate_numpad(SDLKey& code, uint16& unicode, uint16 mod) {
@@ -650,10 +650,10 @@ void Gump_manager::translate_numpad(SDLKey& code, uint16& unicode, uint16 mod) {
  *  Handle a modal gump, like the range slider or the save box, until
  *  the gump self-destructs.
  *
- *  Output: 0 if user hit ESC.
+ *  Output: false if user hit ESC.
  */
 
-int Gump_manager::do_modal_gump(
+bool Gump_manager::do_modal_gump(
     Modal_gump *gump,       // What the user interacts with.
     Mouse::Mouse_shapes shape,  // Mouse shape to use.
     Paintable *paint        // Paint this over everything else.
@@ -674,7 +674,7 @@ int Gump_manager::do_modal_gump(
 	Mouse::Mouse_shapes saveshape = Mouse::mouse->get_shape();
 	if (shape != Mouse::dontchange)
 		Mouse::mouse->set_shape(shape);
-	int escaped = 0;
+	bool escaped = false;
 	add_gump(gump);
 	gump->run();
 	gwin->paint();          // Show everything now.
@@ -738,7 +738,7 @@ int Gump_manager::prompt_for_number(
 ) {
 	Slider_gump *slider = new Slider_gump(minval, maxval,
 	                                      step, defval);
-	int ok = do_modal_gump(slider, Mouse::hand, paint);
+	bool ok = do_modal_gump(slider, Mouse::hand, paint);
 	int ret = !ok ? 0 : slider->get_val();
 	delete slider;
 	return ret;

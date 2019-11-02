@@ -33,12 +33,12 @@ class GameManager;
 /*
  *  Get a click, or, optionally, a keyboard char.
  *
- *  Output: 0 if user hit ESC.
+ *  Output: false if user hit ESC.
  *      Chr gets keyboard char., or 0 if it's was a mouse click.
  */
 extern bool g_waiting_for_click;
 
-extern int Get_click(
+extern bool Get_click(
     int &x, int &y,         // Location returned (if not ESC).
     Mouse::Mouse_shapes shape,  // Mouse shape to use.
     char *chr = nullptr,          // Char. returned if not null.

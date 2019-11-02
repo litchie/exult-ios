@@ -64,7 +64,7 @@ public:
 	void set_owner(Container_game_object *o) override {
 		owner = o;
 	}
-	int is_dragable() const override;// Can this be dragged?
+	bool is_dragable() const override;// Can this be dragged?
 	void set_flag(int flag) override {
 		if (flag >= 0 && flag < 32)
 			flags |= (static_cast<uint32>(1) << flag);

@@ -65,26 +65,26 @@ protected:
 private:
 	int clipx, clipy, clipw, cliph; // Clip rectangle.
 
-	// Clip.  Rets. 0 if nothing to draw.
-	int clip_internal(int &srcx, int &srcw, int &destx,
+	// Clip.  Rets. false if nothing to draw.
+	bool clip_internal(int &srcx, int &srcw, int &destx,
 	                  int clips, int clipl) {
 		if (destx < clips) {
 			if ((srcw += (destx - clips)) <= 0)
-				return 0;
+				return false;
 			srcx -= (destx - clips);
 			destx = clips;
 		}
 		if (destx + srcw > (clips + clipl))
 			if ((srcw = ((clips + clipl) - destx)) <= 0)
-				return 0;
-		return 1;
+				return false;
+		return true;
 	}
 protected:
-	int clip_x(int &srcx, int &srcw, int &destx, int desty) {
-		return desty < clipy || desty >= clipy + cliph ? 0
+	bool clip_x(int &srcx, int &srcw, int &destx, int desty) {
+		return desty < clipy || desty >= clipy + cliph ? false
 		       : clip_internal(srcx, srcw, destx, clipx, clipw);
 	}
-	int clip(int &srcx, int &srcy, int &srcw, int &srch,
+	bool clip(int &srcx, int &srcy, int &srcw, int &srch,
 	         int &destx, int &desty) {
 		// Start with x-dim.
 		return clip_internal(srcx, srcw, destx, clipx, clipw) &&
@@ -144,7 +144,7 @@ public:
 		cliph = h;
 	}
 	// Is rect. visible within clip?
-	int is_visible(int x, int y, int w, int h) {
+	bool is_visible(int x, int y, int w, int h) {
 		return !(x >= clipx + clipw || y >= clipy + cliph ||
 		          x + w <= clipx || y + h <= clipy);
 	}

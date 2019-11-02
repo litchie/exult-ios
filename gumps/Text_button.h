@@ -36,9 +36,9 @@ public:
 	Text_button(Gump *p, const std::string &str, int x, int y, int w = 0, int h = 0);
 	void paint() override;
 
-	int on_widget(int mx, int my) const override;
+	bool on_widget(int mx, int my) const override;
 
-	int on_button(int mx, int my) const override {
+	bool on_button(int mx, int my) const override {
 		return on_widget(mx, my);
 	}
 

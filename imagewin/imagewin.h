@@ -366,7 +366,7 @@ public:
 	}
 
 	// Is rect. visible within clip?
-	int is_visible(int x, int y, int w, int h) {
+	bool is_visible(int x, int y, int w, int h) {
 		return ibuf->is_visible(x, y, w, h);
 	}
 	// Set title.
@@ -416,7 +416,7 @@ public:
 		return draw_surface;
 	}
 
-	int ready() {       // Ready to draw?
+	bool ready() {       // Ready to draw?
 		return ibuf->bits != nullptr;
 	}
 	bool is_fullscreen() {

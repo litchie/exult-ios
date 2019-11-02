@@ -42,7 +42,7 @@ protected:
 public:
 	friend class Time_queue;
 	virtual ~Time_sensitive() = default;
-	int in_queue() const {
+	bool in_queue() const {
 		return queue_cnt > 0;
 	}
 	void set_always(bool tf)    // Should be called before placing in

@@ -635,8 +635,8 @@ bool Game_window::is_moving(
 
 bool Game_window::main_actor_dont_move() {
 	return !cheat.in_map_editor() && main_actor != nullptr && // Not if map-editing.
-	       ((main_actor->get_flag(Obj_flags::dont_move) != 0) ||
-	        (main_actor->get_flag(Obj_flags::dont_render) != 0));
+	       ((main_actor->get_flag(Obj_flags::dont_move)) ||
+	        (main_actor->get_flag(Obj_flags::dont_render)));
 }
 
 /*
@@ -1612,7 +1612,7 @@ void Game_window::start_actor_alt(
 ) {
 	int ax;
 	int ay;
-	int blocked[8];
+	bool blocked[8];
 	get_shape_location(main_actor, ax, ay);
 
 	Tile_coord start = main_actor->get_tile();
@@ -1965,7 +1965,7 @@ Game_object *Game_window::find_object(
 				// Fixes key under rock in BG at [915, 2434, 0]; need to
 				// know if there are side effects.
 				if (!best || best->lt(*obj) != 0 || trans) {
-					bool ftrans = obj->get_info().is_transparent() != 0;
+					bool ftrans = obj->get_info().is_transparent();
 					// TODO: Fix this properly, instead of with an ugly hack.
 					// This fixes clicking the Y shapes instead of the Y
 					// depression in SI. This has the effect of also making

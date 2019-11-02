@@ -78,7 +78,7 @@ public:
 			chance = f;
 		}
 	}
-	int play_horly_ticks() const {
+	bool play_horly_ticks() const {
 		return extra > -1;
 	}
 	int get_extra_sfx() const {

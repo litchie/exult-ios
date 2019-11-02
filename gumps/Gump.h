@@ -105,7 +105,7 @@ public:
 	// Is a given point on a button?
 	virtual Gump_button *on_button(int mx, int my);
 	// Paint button.
-	virtual int add(Game_object *obj, int mx = -1, int my = -1,
+	virtual bool add(Game_object *obj, int mx = -1, int my = -1,
 	                int sx = -1, int sy = -1, bool dont_check = false,
 	                bool combine = false);
 	virtual void remove(Game_object *obj);

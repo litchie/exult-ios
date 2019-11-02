@@ -439,8 +439,8 @@ bool Container_game_object::edit(
 		if (Container_out(client_socket, this, t.tx, t.ty, t.tz,
 		                  get_shapenum(), get_framenum(), get_quality(), name,
 		                  get_obj_hp(),
-		                  get_flag(Obj_flags::invisible) != 0,
-		                  get_flag(Obj_flags::okay_to_take) != 0) != -1) {
+		                  get_flag(Obj_flags::invisible),
+		                  get_flag(Obj_flags::okay_to_take)) != -1) {
 			cout << "Sent object data to ExultStudio" << endl;
 			editing = this;
 		} else
@@ -528,14 +528,14 @@ int Container_game_object::get_weight(
 /*
  *  Drop another onto this.
  *
- *  Output: 0 to reject, 1 to accept.
+ *  Output: false to reject, true to accept.
  */
 
-int Container_game_object::drop(
+bool Container_game_object::drop(
     Game_object *obj        // May be deleted if combined.
 ) {
 	if (!get_owner())       // Only accept if inside another.
-		return 0;
+		return false;
 	return add(obj, false, true); // We'll take it, and try to combine.
 }
 
@@ -627,8 +627,8 @@ void Container_game_object::write_ireg(
 	*ptr++ = (get_lift() & 15) << 4; // Lift
 	*ptr++ = static_cast<unsigned char>(resistance);        // Resistance.
 	// Flags:  B0=invis. B3=okay_to_take.
-	*ptr++ = (get_flag(Obj_flags::invisible) != 0) +
-	         ((get_flag(Obj_flags::okay_to_take) != 0) << 3);
+	*ptr++ = (get_flag(Obj_flags::invisible) ? 1 : 0) +
+	         (get_flag(Obj_flags::okay_to_take) ? (1 << 3) : 0);
 	out->write(reinterpret_cast<char *>(buf), ptr - buf);
 	write_contents(out);        // Write what's contained within.
 	// Write scheduled usecode.

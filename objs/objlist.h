@@ -56,7 +56,7 @@ public:
 		std::cerr << "Danger! Danger! Object list modified while being iterated." << std::endl;
 		std::cerr.flush();
 	}
-	int is_empty() const {
+	bool is_empty() const {
 		return first == nullptr;
 	}
 	void add_iterator() {

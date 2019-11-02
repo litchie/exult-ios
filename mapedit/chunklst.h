@@ -98,7 +98,7 @@ public:
 	void end_terrain_editing() override;
 	// Turn off selection.
 	void unselect(bool need_render = true);
-	int is_selected() {     // Is a chunk selected?
+	bool is_selected() {     // Is a chunk selected?
 		return selected >= 0;
 	}
 	void set_selected_callback(void (*fun)()) {

@@ -108,7 +108,7 @@ public:
 	int get_total_cost() {
 		return total_cost;
 	}
-	int is_open() {         // In 'open' priority queue?
+	bool is_open() {         // In 'open' priority queue?
 		return priority_next != nullptr;
 	}
 	void update(short scost, short gcost, Search_node *p) {

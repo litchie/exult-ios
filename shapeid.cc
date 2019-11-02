@@ -482,18 +482,16 @@ Font *Shape_manager::get_font(int fontnum) {
 Shape_frame *ShapeID::cache_shape() const {
 	if (framenum == -1) return nullptr;
 
-	if (has_trans != 2) has_trans = 0;
+	has_trans = false;
 	if (!shapefile) {
 		// Special case.
 		shape = sman->shapes.get_shape(shapenum, framenum);
-		if (has_trans != 2)
-			has_trans =
-			    sman->shapes.get_info(shapenum).has_translucency();
+		has_trans = sman->shapes.get_info(shapenum).has_translucency();
 	} else if (shapefile < SF_OTHER) {
 		shape = sman->files[static_cast<int>(shapefile)].get_shape(
 		            shapenum, framenum);
 		if (shapefile == SF_SPRITES_VGA)
-			has_trans = 1;
+			has_trans = true;
 	} else {
 		std::cerr << "Error! Wrong ShapeFile!" << std::endl;
 		return nullptr;

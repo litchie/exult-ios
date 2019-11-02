@@ -336,10 +336,10 @@ int Path_walking_actor_action::handle_event(
  *  Open door that's blocking the NPC, and set action to walk past and
  *  close it.
  *
- *  @return     1 if successful.
+ *  @return     true if successful.
  */
 
-int Path_walking_actor_action::open_door(
+bool Path_walking_actor_action::open_door(
     Actor *actor,
     Game_object *door
 ) {
@@ -389,9 +389,9 @@ int Path_walking_actor_action::open_door(
 		                                              sizeof(frames)),
 		                                      new Activate_actor_action(door),
 		                                      new Frames_actor_action(&standframe, 1))));
-		return 1;
+		return true;
 	}
-	return 0;
+	return false;
 }
 
 /**
@@ -474,18 +474,18 @@ Actor_action *Path_walking_actor_action::walk_to_tile(
  *  @return     0 if none.
  */
 
-int Path_walking_actor_action::get_dest(
+bool Path_walking_actor_action::get_dest(
     Tile_coord &dest        // Returned here.
 ) const {
 	dest = path->get_dest();
-	return 1;
+	return true;
 }
 
 /**
  *  Following an Astar path?
  */
 
-int Path_walking_actor_action::following_smart_path(
+bool Path_walking_actor_action::following_smart_path(
 ) const {
 	return path != nullptr && path->following_smart_path();
 }

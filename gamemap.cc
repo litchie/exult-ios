@@ -1110,7 +1110,7 @@ void Game_map::read_ireg_objects(
 		// Add, but skip volume check.
 		if (container) {
 			if (index_id != -1 &&
-			        container->add_readied(obj.get(), index_id, 1, 1))
+			        container->add_readied(obj.get(), index_id, true, true))
 				continue;
 			else if (container->add(obj.get(), true))
 				continue;

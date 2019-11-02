@@ -52,7 +52,7 @@ public:
 		: Monster_actor(nm, shapenum, num, uc)
 	{  }
 	// Step onto an (adjacent) tile.
-	int step(Tile_coord t, int frame, bool force = false) override;
+	bool step(Tile_coord t, int frame, bool force = false) override;
 	// Remove/delete this object.
 	void remove_this(Game_object_shared *keep = nullptr) override;
 	// Move to new abs. location.
@@ -308,11 +308,11 @@ void Monster_actor::paint(
 /*
  *  Step onto an adjacent tile.
  *
- *  Output: 0 if blocked.
+ *  Output: false if blocked.
  *      Dormant is set if off screen.
  */
 
-int Monster_actor::step(
+bool Monster_actor::step(
     Tile_coord t,           // Tile to step onto.
     int frame,          // New frame #.
     bool force
@@ -320,9 +320,9 @@ int Monster_actor::step(
 	// If move not allowed do I remove or change destination?
 	// I'll do nothing for now
 	if (!gwin->emulate_is_move_allowed(t.tx, t.ty))
-		return 0;
+		return false;
 	if (get_flag(Obj_flags::paralyzed) || get_map() != gmap)
-		return 0;
+		return false;
 	// Get old chunk.
 	Map_chunk *olist = get_chunk();
 	// Get chunk.
@@ -338,7 +338,7 @@ int Monster_actor::step(
 		stop();
 		if (!gwin->add_dirty(this))
 			dormant = true; // Off-screen.
-		return 0;     // Done.
+		return false;     // Done.
 	}
 	// Check for scrolling.
 	gwin->scroll_if_needed(this, t);
@@ -348,16 +348,16 @@ int Monster_actor::step(
 	int tx = t.tx % c_tiles_per_chunk;
 	int ty = t.ty % c_tiles_per_chunk;
 	movef(olist, nlist, tx, ty, frame, t.tz);
-	if (!add_dirty(1) &&
+	if (!add_dirty(true) &&
 	        // And > a screenful away?
 	        distance(gwin->get_camera_actor()) > 1 + c_screen_tile_size) {
 		// No longer on screen.
 		stop();
 		dormant = true;
-		return 0;
+		return false;
 	}
 	quake_on_walk();
-	return 1;         // Add back to queue for next time.
+	return true;         // Add back to queue for next time.
 }
 
 /*
@@ -554,11 +554,11 @@ void Slime_actor::update_frames(
 /*
  *  Step onto an adjacent tile.
  *
- *  Output: 0 if blocked.
+ *  Output: false if blocked.
  *      Dormant is set if off screen.
  */
 
-int Slime_actor::step(
+bool Slime_actor::step(
     Tile_coord t,           // Tile to step onto.
     int frame,          // New frame # (ignored).
     bool force
@@ -566,7 +566,7 @@ int Slime_actor::step(
 	ignore_unused_variable_warning(frame);
 	// Save old pos.
 	Tile_coord oldpos = get_tile();
-	int ret = Monster_actor::step(t, -1, force);
+	bool ret = Monster_actor::step(t, -1, force);
 	// Update surrounding frames (& this).
 	Tile_coord newpos = get_tile();
 	update_frames(oldpos, newpos);

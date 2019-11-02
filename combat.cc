@@ -794,7 +794,7 @@ static int Swap_weapons(
 	npc->remove(bobj);
 	npc->add(bobj, true);      // Should go into weapon hand.
 	if (oldweap)            // Put old where new one was.
-		npc->add_readied(oldweap, index, 1, 1);
+		npc->add_readied(oldweap, index, true, true);
 	return 1;
 }
 
@@ -1244,11 +1244,11 @@ void Combat_schedule::set_hand_to_hand(
 	if (weapon) {
 	    Game_object_shared keep = weapon->shared_from_this();
 	    npc->remove(weapon);
-		if (!npc->add_readied(weapon, belt, 1) &&
-		        !npc->add_readied(weapon, back_2h, 1) &&
-		        !npc->add_readied(weapon, back_shield, 1) &&
-		        !npc->add_readied(weapon, rhand, 1) &&
-		        !npc->add_readied(weapon, backpack, 1))
+		if (!npc->add_readied(weapon, belt, true) &&
+		        !npc->add_readied(weapon, back_2h, true) &&
+		        !npc->add_readied(weapon, back_shield, true) &&
+		        !npc->add_readied(weapon, rhand, true) &&
+		        !npc->add_readied(weapon, backpack, true))
 			npc->add(weapon, false, false, true);
 	}
 }

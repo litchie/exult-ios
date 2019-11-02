@@ -46,7 +46,7 @@ Jawbone_gump::Jawbone_gump(
 }
 
 
-int Jawbone_gump::add(Game_object *obj, int mx, int my, int sx, int sy,
+bool Jawbone_gump::add(Game_object *obj, int mx, int my, int sx, int sy,
                       bool dont_check, bool combine) {
 	ignore_unused_variable_warning(mx, my, sx, sy);
 	// Jawbone_object handles all the checks required

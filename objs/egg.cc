@@ -547,7 +547,7 @@ void Egglike_game_object::paint(
  *  Can this be clicked on?
  */
 
-int Egglike_game_object::is_findable(
+bool Egglike_game_object::is_findable(
 ) {
 	return gwin->paint_eggs && Ireg_game_object::is_findable();
 }
@@ -680,7 +680,7 @@ void Egg_object::set_area(
 /*
  *  Can this be clicked on?
  */
-int Egg_object::is_findable() {
+bool Egg_object::is_findable() {
 	if (animator)
 		return Ireg_game_object::is_findable();
 	else
@@ -707,21 +707,21 @@ void Egg_object::set(
  *  on the spot?
  */
 
-int Egg_object::is_active(
+bool Egg_object::is_active(
     Game_object *obj,       // Object placed (or Actor).
     int tx, int ty, int tz,     // Tile stepped onto.
     int from_tx, int from_ty    // Tile stepped from.
 ) {
 	if (cheat.in_map_editor())
-		return 0;       // Disable in map-editor.
+		return false;       // Disable in map-editor.
 	if ((flags & (1 << static_cast<int>(hatched))) &&
 	        !(flags & (1 << static_cast<int>(auto_reset))))
-		return 0;     // For now... Already hatched.
+		return false;     // For now... Already hatched.
 	if (flags & (1 << static_cast<int>(nocturnal))) {
 		// Nocturnal.
 		int hour = gclock->get_hour();
 		if (!(hour >= 21 || hour <= 4))
-			return 0; // It's not night.
+			return false; // It's not night.
 	}
 	Egg_criteria cri = static_cast<Egg_criteria>(get_criteria());
 
@@ -735,45 +735,43 @@ int Egg_object::is_active(
 			// Mark hatched if not auto-reset.
 			if (!(flags & (1 << static_cast<int>(auto_reset))))
 				flags |= (1 << static_cast<int>(hatched));
-			return 0;
+			return false;
 		}
 		if (obj != gwin->get_main_actor() || !area.has_world_point(tx, ty))
-			return 0;   // Not in square.
+			return false;   // Not in square.
 		if (!(flags & (1 << static_cast<int>(hatched))))
-			return 1;   // First time.
+			return true;   // First time.
 		// Must have autoreset.
 		// Just activate when reentering.
 		return !area.has_world_point(from_tx, from_ty);
 	}
 	case avatar_near:
 		if (obj != gwin->get_main_actor())
-			return 0;
+			return false;
 #ifdef DEBUG
 		print_debug();
 #endif
 		// fall through
 	case party_near:        // Avatar or party member.
 		if (!obj->get_flag(Obj_flags::in_party))
-			return 0;
+			return false;
 		if (type == teleport || // Teleports:  Any tile, exact lift.
 		        type == intermap)
 			return deltaz == 0 && area.has_world_point(tx, ty);
 		else if (type == jukebox || type == soundsfx || type == voice)
 			// Guessing. Fixes shrine of Spirituality and Sacrifice.
 			return area.has_world_point(tx, ty);
-		if (!((deltaz / 2 == 0 ||
+		return (deltaz / 2 == 0 ||
 		        // Using trial&error here:
 		        (Game::get_game_type() == SERPENT_ISLE &&
 		         type != missile) ||
 		        (type == missile && deltaz / 5 == 0)) &&
 		        // New tile is in, old is out.
 		        area.has_world_point(tx, ty) &&
-		        !area.has_world_point(from_tx, from_ty)))
-			return 0;
-		return 1;
+		        !area.has_world_point(from_tx, from_ty);
 	case avatar_far: {      // New tile is outside, old is inside.
 		if (obj != gwin->get_main_actor() || !area.has_world_point(tx, ty))
-			return 0;
+			return false;
 		Rectangle inside(area.x + 1, area.y + 1,
 		                 area.w - 2, area.h - 2);
 		return inside.has_world_point(from_tx, from_ty) &&
@@ -795,7 +793,7 @@ int Egg_object::is_active(
 		    deltaz / 4 == 0 && area.has_world_point(tx, ty) && !obj->as_actor();
 	case external_criteria:
 	default:
-		return 0;
+		return false;
 	}
 }
 
@@ -1388,15 +1386,15 @@ void Mirror_object::hatch(Game_object *obj, bool must) {
 }
 
 // Can it be activated?
-int Mirror_object::is_active(Game_object *obj, int tx, int ty, int tz, int from_tx, int from_ty) {
+bool Mirror_object::is_active(Game_object *obj, int tx, int ty, int tz, int from_tx, int from_ty) {
 	ignore_unused_variable_warning(obj, tx, ty, tz, from_tx, from_ty);
 	// These are broken, so dont touch
 	int frnum = get_framenum();
-	if (frnum % 3 == 2)  return 0;
+	if (frnum % 3 == 2)  return false;
 	if (frnum >= 3 && GAME_BG)  // Demon mirror in FOV.
-		return 0;
+		return false;
 
-	return 1;
+	return true;
 }
 
 // Set up active area.

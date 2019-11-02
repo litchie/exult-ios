@@ -98,7 +98,7 @@ void Game_window::read_npcs(
 			// (Won't exist the first time; in this case U7open throws
 			int cnt = nfile.read2();
 			nfile.skip(1);// Read 1 ahead to test.
-			int okay = nfile.good();
+			bool okay = nfile.good();
 			nfile.skip(-1);
 			while (okay && cnt--) {
 				// Read ahead to get shape.

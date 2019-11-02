@@ -39,7 +39,7 @@ int Pathfinder_client::get_max_cost(
  *  Is tile at goal?
  */
 
-int Pathfinder_client::at_goal(
+bool Pathfinder_client::at_goal(
     Tile_coord const &tile,
     Tile_coord const &goal
 ) {

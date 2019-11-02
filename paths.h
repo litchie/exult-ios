@@ -49,7 +49,7 @@ public:
 	// Estimate cost between two points.
 	int estimate_cost(Tile_coord const &from, Tile_coord const &to) override;
 	// Is tile at the goal?
-	int at_goal(Tile_coord const &tile, Tile_coord const &goal) override;
+	bool at_goal(Tile_coord const &tile, Tile_coord const &goal) override;
 	bool ignores_npcs() const {
 		return ignore_npcs;
 	}
@@ -66,7 +66,7 @@ public:
 	// Estimate cost between two points.
 	int estimate_cost(Tile_coord const &from, Tile_coord const &to) override;
 	// Is tile at the goal?
-	int at_goal(Tile_coord const &tile, Tile_coord const &goal) override;
+	bool at_goal(Tile_coord const &tile, Tile_coord const &goal) override;
 };
 
 /*
@@ -84,7 +84,7 @@ public:
 	// Estimate cost between two points.
 	int estimate_cost(Tile_coord const &from, Tile_coord const &to) override;
 	// Is tile at the goal?
-	int at_goal(Tile_coord const &tile, Tile_coord const &goal) override;
+	bool at_goal(Tile_coord const &tile, Tile_coord const &goal) override;
 };
 
 /*
@@ -97,7 +97,7 @@ public:
 	                                  int dist);
 	Approach_object_pathfinder_client(Actor *from, Game_object *to, int dist);
 	// Is tile at the goal?
-	int at_goal(Tile_coord const &tile, Tile_coord const &goal) override;
+	bool at_goal(Tile_coord const &tile, Tile_coord const &goal) override;
 };
 
 /*
@@ -108,7 +108,7 @@ class Fast_pathfinder_client : public Pathfinder_client {
 	Rectangle destbox;      // Got to intersect this box.
 	int axtiles, aytiles, aztiles;  // NPC's dims. in tiles.
 	void init(Game_object *from, Game_object *to, int dist);
-	static int is_grabable_internal(Game_object *from, Tile_coord const &ct,
+	static bool is_grabable_internal(Game_object *from, Tile_coord const &ct,
 	                                Tile_coord const &dt, Block const &tovol,
 	                                Fast_pathfinder_client &client);
 public:
@@ -123,7 +123,7 @@ public:
 	// Estimate cost between two points.
 	int estimate_cost(Tile_coord const &from, Tile_coord const &to) override;
 	// Is tile at the goal?
-	int at_goal(Tile_coord const &tile, Tile_coord const &goal) override;
+	bool at_goal(Tile_coord const &tile, Tile_coord const &goal) override;
 	int get_axtiles() const {
 		return axtiles;
 	}
@@ -133,13 +133,13 @@ public:
 	int get_aztiles() const {
 		return aztiles;
 	}
-	static int is_grabable(Game_object *from, Game_object *to, int mf = 1 << 5);
-	static int is_grabable(Game_object *from, Tile_coord const &to, int mf = 1 << 5);
-	static int is_grabable(Actor *from, Game_object *to);
-	static int is_grabable(Actor *from, Tile_coord const &to);
+	static bool is_grabable(Game_object *from, Game_object *to, int mf = 1 << 5);
+	static bool is_grabable(Game_object *from, Tile_coord const &to, int mf = 1 << 5);
+	static bool is_grabable(Actor *from, Game_object *to);
+	static bool is_grabable(Actor *from, Tile_coord const &to);
 	// Check for unblocked straight path.
-	static int is_straight_path(Tile_coord const &from, Tile_coord const &to);
-	static int is_straight_path(Game_object *from, Game_object *to);
+	static bool is_straight_path(Tile_coord const &from, Tile_coord const &to);
+	static bool is_straight_path(Game_object *from, Game_object *to);
 };
 
 /*

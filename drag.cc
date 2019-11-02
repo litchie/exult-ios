@@ -484,7 +484,7 @@ bool Dragging_info::drop(
 	Game_object *to_drop = obj.get(); // If quantity, split it off.
 	Game_object_shared to_drop_shared;
 	// Being liberal about taking stuff:
-	int okay_to_move = to_drop->get_flag(Obj_flags::okay_to_take);
+	bool okay_to_move = to_drop->get_flag(Obj_flags::okay_to_take);
 	int old_top = old_pos.tz + obj->get_info().get_3d_height();
 	// First see if it's a gump.
 	Gump *on_gump = gumpman->find_gump(x, y);

@@ -148,14 +148,14 @@ void Yesno_gump::key_down(int chr) {
  *  Output: 1 if yes, 0 if no or ESC.
  */
 
-int Yesno_gump::ask(
+bool Yesno_gump::ask(
     const char *txt,            // What to ask.
     const char *font
 ) {
 	Yesno_gump dlg(txt, font);
-	int answer;
+	bool answer;
 	if (!gumpman->do_modal_gump(&dlg, Mouse::hand))
-		answer = 0;
+		answer = false;
 	else
 		answer = dlg.get_answer();
 	return answer;
@@ -165,7 +165,7 @@ int Yesno_gump::ask(
 
 Countdown_gump::Countdown_gump(const std::string &txt, int timeout, const char *font) :
 	Yesno_gump(std::string(), font), text_fmt(txt), timer(timeout) {
-	answer = 0;
+	answer = false;
 	start_time = SDL_GetTicks();
 }
 
@@ -184,11 +184,11 @@ bool Countdown_gump::run() {
 	return true;
 }
 
-int Countdown_gump::ask(const char *txt, int timeout, const char *font) {
+bool Countdown_gump::ask(const char *txt, int timeout, const char *font) {
 	Countdown_gump dlg(txt, timeout, font);
-	int answer;
+	bool answer;
 	if (!gumpman->do_modal_gump(&dlg, Mouse::hand))
-		answer = 0;
+		answer = false;
 	else
 		answer = dlg.get_answer();
 	return answer;

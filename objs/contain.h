@@ -67,7 +67,7 @@ public:
 		volume_used += delta;
 	}
 	// Room for this object?
-	int has_room(Game_object *obj) const {
+	bool has_room(Game_object *obj) const {
 		return get_max_volume() <= 0 ||
 		       obj->get_volume() + volume_used <= get_max_volume();
 	}
@@ -108,7 +108,7 @@ public:
 	static void update_from_studio(unsigned char *data, int datalen);
 	int get_weight() override;
 	// Drop another onto this.
-	int drop(Game_object *obj) override;
+	bool drop(Game_object *obj) override;
 	// Count contained objs.
 	int count_objects(int shapenum, int qual = c_any_qual,
 	                          int framenum = c_any_framenum) override;

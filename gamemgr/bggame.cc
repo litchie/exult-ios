@@ -1462,7 +1462,7 @@ void BG_Game::end_game(bool success) {
 		next = SDL_GetTicks();
 		for (unsigned int i = 1000 + next; next < i; next += 10) {
 			// Speed related frame skipping detection
-			int skip_frame = Game_window::get_instance()->get_frame_skipping() && SDL_GetTicks() >= next;
+			bool skip_frame = Game_window::get_instance()->get_frame_skipping() && SDL_GetTicks() >= next;
 			while (SDL_GetTicks() < next)
 				;
 			if (!skip_frame) {
@@ -1529,7 +1529,7 @@ void BG_Game::end_game(bool success) {
 		next = SDL_GetTicks();
 		for (unsigned int i = 1000 + next; next < i; next += 10) {
 			// Speed related frame skipping detection
-			int skip_frame = Game_window::get_instance()->get_frame_skipping() && SDL_GetTicks() >= next;
+			bool skip_frame = Game_window::get_instance()->get_frame_skipping() && SDL_GetTicks() >= next;
 			while (SDL_GetTicks() < next)
 				;
 			if (!skip_frame) {
@@ -1567,7 +1567,7 @@ void BG_Game::end_game(bool success) {
 		next = SDL_GetTicks();
 		for (unsigned int i = 1000 + next; next < i; next += 10) {
 			// Speed related frame skipping detection
-			int skip_frame = Game_window::get_instance()->get_frame_skipping() && SDL_GetTicks() >= next;
+			bool skip_frame = Game_window::get_instance()->get_frame_skipping() && SDL_GetTicks() >= next;
 			while (SDL_GetTicks() < next)
 				;
 			if (!skip_frame) {
@@ -1821,21 +1821,21 @@ bool BG_Game::new_game(Vga_file &shapes) {
 		Delay();
 		if (redraw) {
 			gwin->clear_screen();
-			sman->paint_shape(topx, topy, shapes.get_shape(0x2, 0), 0, transto);
-			sman->paint_shape(topx + 10, menuy + 10, shapes.get_shape(0xC, selected == 0), 0, transto);
+			sman->paint_shape(topx, topy, shapes.get_shape(0x2, 0), false, transto);
+			sman->paint_shape(topx + 10, menuy + 10, shapes.get_shape(0xC, selected == 0), false, transto);
 			Shape_frame *sex_shape = shapes.get_shape(0xA, selected == 1);
-			sman->paint_shape(topx + 10, menuy + 25, sex_shape, 0, transto);
+			sman->paint_shape(topx + 10, menuy + 25, sex_shape, false, transto);
 			int sex_width = sex_shape->get_width() + 10;
 			if (sex_width > 35) sex_width += 25;
 			else sex_width = 60;
 
-			sman->paint_shape(topx + sex_width, menuy + 25, shapes.get_shape(0xB, skindata->is_female), 0, transto);
+			sman->paint_shape(topx + sex_width, menuy + 25, shapes.get_shape(0xB, skindata->is_female), false, transto);
 
 			Shape_frame *portrait = faces_vga.get_shape(skindata->face_shape, skindata->face_frame);
 			sman->paint_shape(topx + 290, menuy + 61, portrait);
 
-			sman->paint_shape(topx + 10, topy + 180, shapes.get_shape(0x8, selected == 2), 0, transto);
-			sman->paint_shape(centerx + 10, topy + 180, shapes.get_shape(0x7, selected == 3), 0, transto);
+			sman->paint_shape(topx + 10, topy + 180, shapes.get_shape(0x8, selected == 2), false, transto);
+			sman->paint_shape(centerx + 10, topy + 180, shapes.get_shape(0x7, selected == 3), false, transto);
 			if (selected == 0)
 				snprintf(disp_name, max_name_len + 2, "%s_", npc_name);
 			else

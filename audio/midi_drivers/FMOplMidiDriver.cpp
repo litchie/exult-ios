@@ -379,7 +379,7 @@ void FMOplMidiDriver::send(uint32 b)
 			int nv = midi_calc_volume(channel, vel);
 
 			for (int i = 0; i < 9; i++)
-				if ((chp[CHP_CHAN][0] == channel) & (chp[i][CHP_NOTE] == note)) {
+				if ((chp[CHP_CHAN][0] == channel) && (chp[i][CHP_NOTE] == note)) {
 					chp[i][CHP_VEL] = vel;
 					midi_fm_volume(i, nv * 2);
 				}

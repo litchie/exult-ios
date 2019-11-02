@@ -42,13 +42,13 @@ public:
 	Zombie(int major_incr = 1) : major_frame_incr(major_incr)
 	{  }
 	// Find a path from sx,sy,sz to dx,dy,dz
-	// Return 0 if no path can be traced.
-	// Return !0 if path found
-	int NewPath(Tile_coord const &s, Tile_coord const &d,
+	// Return false if no path can be traced.
+	// Return true if path found
+	bool NewPath(Tile_coord const &s, Tile_coord const &d,
 	            Pathfinder_client *client) override;
 
 	// Retrieve the coordinates of the next step on the path
-	int GetNextStep(Tile_coord &n, bool &done) override;
+	bool GetNextStep(Tile_coord &n, bool &done) override;
 	int get_num_steps() override { // # of steps left to take.
 		return major_distance / major_frame_incr;
 	}

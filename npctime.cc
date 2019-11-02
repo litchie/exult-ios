@@ -359,7 +359,7 @@ void Npc_poison_timer::handle_event(
 	ignore_unused_variable_warning(udata);
 	Actor *npc = list->npc;
 	if (curtime >= end_time ||  // Long enough?  Or cured?
-	        npc->get_flag(Obj_flags::poisoned) == 0 ||
+	        !npc->get_flag(Obj_flags::poisoned) ||
 	        npc->is_dead()) {   // Obviously.
 		npc->clear_flag(Obj_flags::poisoned);
 		delete this;
@@ -399,7 +399,7 @@ void Npc_sleep_timer::handle_event(
 	// Don't wake up someone beaten into unconsciousness.
 	if (npc->get_property(static_cast<int>(Actor::health)) >= 1
 	        && (curtime >= end_time ||  // Long enough?  Or cured?
-	            npc->get_flag(Obj_flags::asleep) == 0)
+	            !npc->get_flag(Obj_flags::asleep))
 	   ) {
 		// Avoid waking sleeping people.
 		if (npc->get_schedule_type() == Schedule::sleep)
@@ -458,7 +458,7 @@ void Npc_invisibility_timer::handle_event(
 		return;
 	}
 	if (curtime >= end_time ||  // Long enough?  Or cleared.
-	        npc->get_flag(Obj_flags::invisible) == 0) {
+	        !npc->get_flag(Obj_flags::invisible)) {
 		npc->clear_flag(Obj_flags::invisible);
 		if (!npc->is_dead())
 			gwin->add_dirty(npc);
@@ -485,7 +485,7 @@ void Npc_protection_timer::handle_event(
 		return;
 	}
 	if (curtime >= end_time ||  // Long enough?  Or cleared.
-	        npc->get_flag(Obj_flags::protection) == 0) {
+	        !npc->get_flag(Obj_flags::protection)) {
 		npc->clear_flag(Obj_flags::protection);
 		if (!npc->is_dead())
 			gwin->add_dirty(npc);
@@ -507,7 +507,7 @@ void Npc_flag_timer::handle_event(
 	ignore_unused_variable_warning(udata);
 	Actor *npc = list->npc;
 	if (curtime >= end_time ||  // Long enough?  Or cleared.
-	        npc->get_flag(flag) == 0) {
+	        !npc->get_flag(flag)) {
 		npc->clear_flag(flag);
 		delete this;
 	} else              // Check again in 10 secs.

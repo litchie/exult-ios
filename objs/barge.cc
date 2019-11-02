@@ -299,7 +299,7 @@ void Barge_object::gather(
 				continue;
 			const Shape_info &info = obj->get_info();
 			// Above barge, within 5-tiles up?
-			bool isbarge = info.is_barge_part() != 0 /*+++ || !info.get_weight() */;
+			bool isbarge = info.is_barge_part() /*+++ || !info.get_weight() */;
 			if (t.tz + info.get_3d_height() > lift &&
 			        ((isbarge && t.tz >= lift - 1) ||
 			         (t.tz < lift + 5 && t.tz >= lift /*+++ + 1 */))) {
@@ -707,11 +707,11 @@ bool Barge_object::contains(
  *  Output: 0 to reject, 1 to accept.
  */
 
-int Barge_object::drop(
+bool Barge_object::drop(
     Game_object *obj
 ) {
 	ignore_unused_variable_warning(obj);
-	return 0;           //++++++Later.
+	return false;           //++++++Later.
 }
 
 /*
@@ -854,11 +854,11 @@ void Barge_object::update_from_studio(
 /*
  *  Step onto an adjacent tile.
  *
- *  Output: 0 if blocked.
+ *  Output: false if blocked.
  *      Dormant is set if off screen.
  */
 
-int Barge_object::step(
+bool Barge_object::step(
     Tile_coord t,           // Tile to step onto.
     int frame,              // Frame (ignored).
     bool force              // Forces the step to happen.
@@ -880,13 +880,13 @@ int Barge_object::step(
 	// No rising/dropping.
 	if (Map_chunk::is_blocked(get_xtiles(), get_ytiles(),
 	                          4, cur, t, move_type, 0, 0))
-		return 0;     // Done.
+		return false;     // Done.
 	move(t.tx, t.ty, t.tz);     // Move it & its objects.
 	// Near an egg?
 	Map_chunk *nlist = gmap->get_chunk(get_cx(), get_cy());
 	nlist->activate_eggs(gwin->get_main_actor(), t.tx, t.ty, t.tz,
 	                     cur.tx, cur.ty);
-	return 1;         // Add back to queue for next time.
+	return true;         // Add back to queue for next time.
 }
 
 /*
@@ -904,7 +904,7 @@ void Barge_object::write_ireg(
 	*ptr++ = 0;         // Unknown.
 	// Flags (quality).  Taking B3 to in-
 	//   dicate barge mode.
-	*ptr++ = (dir << 1) | ((gwin->get_moving_barge() == this) << 3);
+	*ptr++ = (dir << 1) | ((gwin->get_moving_barge() == this) ? (1 << 3) : 0);
 	*ptr++ = 0;         // (Quantity).
 	*ptr++ = (get_lift() & 15) << 4;
 	*ptr++ = 0;         // Data2.

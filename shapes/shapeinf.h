@@ -464,7 +464,7 @@ public:
 	void clear_frame_flags();
 	void add_frame_flags(Frame_flags_info &add);
 	int get_object_flags(int frame, int qual) const;
-	int has_object_flag(int frame, int qual, int p) const {
+	bool has_object_flag(int frame, int qual, int p) const {
 		return (get_object_flags(frame, qual) & (1 << p)) != 0;
 	}
 
@@ -654,79 +654,79 @@ public:
 	unsigned char get_tfa(int i) const {  // For debugging:
 		return tfa[i];
 	}
-	int has_sfx() const {         // Has a sound effect (guessing).
+	bool has_sfx() const {         // Has a sound effect (guessing).
 		return (tfa[0] & (1 << 0)) != 0;
 	}
 	void set_sfx(bool tf) {
 		set_tfa(0, 0, tf);
 	}
-	int has_strange_movement() const { // Slimes, sea monsters.
+	bool has_strange_movement() const { // Slimes, sea monsters.
 		return (tfa[0] & (1 << 1)) != 0;
 	}
 	void set_strange_movement(bool tf) {
 		set_tfa(0, 1, tf);
 	}
-	int is_animated() const {
+	bool is_animated() const {
 		return (tfa[0] & (1 << 2)) != 0;
 	}
 	void set_animated(bool tf) {
 		set_tfa(0, 2, tf);
 	}
-	int is_solid() const {        // Guessing.  Means can't walk through.
+	bool is_solid() const {        // Guessing.  Means can't walk through.
 		return (tfa[0] & (1 << 3)) != 0;
 	}
 	void set_solid(bool tf) {
 		set_tfa(0, 3, tf);
 	}
-	int is_water() const {        // Guessing.
+	bool is_water() const {        // Guessing.
 		return (tfa[0] & (1 << 4)) != 0;
 	}
 	void set_water(bool tf) {
 		set_tfa(0, 4, tf);
 	}
-	int is_poisonous() const {    // Swamps.  Applies to tiles.
+	bool is_poisonous() const {    // Swamps.  Applies to tiles.
 		return (tfa[1] & (1 << 4)) != 0;
 	}
-	int is_field() const {        // Applies to Game_objects??
+	bool is_field() const {        // Applies to Game_objects??
 		return (tfa[1] & (1 << 4)) != 0;
 	}
 	void set_field(bool tf) {
 		set_tfa(1, 4, tf);
 	}
-	int is_door() const {
+	bool is_door() const {
 		return (tfa[1] & (1 << 5)) != 0;
 	}
 	void set_door(bool tf) {
 		set_tfa(1, 5, tf);
 	}
-	int is_barge_part() const {
+	bool is_barge_part() const {
 		return (tfa[1] & (1 << 6)) != 0;
 	}
 	void set_barge_part(bool tf) {
 		set_tfa(1, 6, tf);
 	}
-	int is_transparent() const {      // ??
+	bool is_transparent() const {      // ??
 		return (tfa[1] & (1 << 7)) != 0;
 	}
 	void set_transparent(bool tf) {
 		set_tfa(1, 7, tf);
 	}
-	int is_light_source() const {
+	bool is_light_source() const {
 		return (tfa[2] & (1 << 6)) != 0;
 	}
 	void set_light_source(bool tf) {
 		set_tfa(2, 6, tf);
 	}
-	int has_translucency() const {
+	bool has_translucency() const {
 		return (tfa[2] & (1 << 7)) != 0;
 	}
 	void set_translucency(bool tf) {
 		set_tfa(2, 7, tf);
 	}
-	int is_xobstacle() const {    // Obstacle in x-dir.???
+	bool is_xobstacle() const {    // Obstacle in x-dir.???
 		return (shpdims[1] & 1) != 0;
 	}
-	int is_yobstacle() const {    // Obstacle in y-dir.???
+	bool is_yobstacle() const {    // Obstacle in y-dir.???
 		return (shpdims[0] & 1) != 0;
 	}
 	void set_obstacle(bool x, bool y) {

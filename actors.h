@@ -155,7 +155,7 @@ public:
 	Actor(const std::string &nm, int shapenum, int num = -1, int uc = -1);
 	~Actor() override;
 	// Blocked moving onto tile 't'?
-	int is_blocked(Tile_coord &t, Tile_coord *f = nullptr, const int move_flags = 0);
+	bool is_blocked(Tile_coord &t, Tile_coord *f = nullptr, const int move_flags = 0);
 	Game_object *find_blocking(Tile_coord const &tile, int dir);
 
 	void swap_ammo(Game_object *newammo);
@@ -165,9 +165,9 @@ public:
 	void empty_hands();     // Make sure both hands are empty.
 	// Force repaint of area taken.
 	int get_effective_weapon_shape();//For displaying casting frames.
-	int add_dirty(int figure_rect = 0);
+	bool add_dirty(bool figure_rect = false);
 	void change_frame(int frnum);   // Change frame & set to repaint.
-	int figure_weapon_pos(int &weapon_x, int &weapon_y, int &weapon_frame);
+	bool figure_weapon_pos(int &weapon_x, int &weapon_y, int &weapon_frame);
 	void say_hunger_message();
 	void use_food();        // Decrement food level.
 	// Increment/decrement temperature.
@@ -211,7 +211,7 @@ public:
 	inline bool is_neck_used() const {
 		return use_neck;
 	}
-	int has_light_source() const {  // Carrying a torch?
+	bool has_light_source() const {  // Carrying a torch?
 		return light_sources > 0;
 	}
 	void add_light_source() { // Add a torch
@@ -376,7 +376,7 @@ public:
 	// Get info. about tile to step onto.
 	static void get_tile_info(Actor *actor,
 	                          Game_window *gwin, Map_chunk *nlist,
-	                          int tx, int ty, int &water, int &poison);
+	                          int tx, int ty, bool &water, bool &poison);
 	// Set combat opponent.
 	void set_target(Game_object *obj, bool start_combat = false);
 	Game_object *get_target() { // Get who/what we're attacking.
@@ -431,7 +431,7 @@ public:
 	// Saved from ExultStudio.
 	static void update_from_studio(unsigned char *data, int datalen);
 	// Drop another onto this.
-	int drop(Game_object *obj) override;
+	bool drop(Game_object *obj) override;
 	std::string get_name() const override;
 	std::string get_npc_name() const;
 	std::string get_npc_name_string() const {
@@ -596,8 +596,8 @@ public:
 	bool add(Game_object *obj, bool dont_check = false,
 	                 bool combine = false, bool noset = false) override;
 	// Add to NPC 'readied' spot.
-	int add_readied(Game_object *obj, int index,
-	                        int dont_check = 0, int force_pos = 0, bool noset = false) override;
+	bool add_readied(Game_object *obj, int index,
+	                        bool dont_check = false, bool force_pos = false, bool noset = false) override;
 	int find_readied(Game_object *obj) override;
 	Game_object *get_readied(int index) const override;
 	void call_readied_usecode(int index,
@@ -606,7 +606,7 @@ public:
 	// Change member shape.
 	void change_member_shape(Game_object *obj, int newshape) override;
 	// Move out of the way.
-	int move_aside(Actor *for_actor, int dir) override;
+	bool move_aside(Actor *for_actor, int dir) override;
 	// Get frame if rotated clockwise.
 	int get_rotated_frame(int quads) override;
 	virtual int get_armor_points(); // Get total armor value.
@@ -735,7 +735,7 @@ public:
 	void handle_event(unsigned long curtime, uintptr udata) override;
 	void get_followers();       // Get party to follow.
 	// Step onto an (adjacent) tile.
-	int step(Tile_coord t, int frame, bool force = false) override;
+	bool step(Tile_coord t, int frame, bool force = false) override;
 	// Update chunks after NPC moved.
 	void switched_chunks(Map_chunk *olist,
 	                             Map_chunk *nlist) override;
@@ -749,7 +749,7 @@ using Main_actor_shared = std::shared_ptr<Main_actor>;
  *  A non-player-character that one can converse (or fight) with:
  */
 class Npc_actor : public Actor {
-	unsigned char nearby;       // Queued as a 'nearby' NPC.  This is
+	bool nearby;       // Queued as a 'nearby' NPC.  This is
 	//   to avoid being added twice.
 protected:
 	unsigned char num_schedules;    // # entries below.
@@ -766,7 +766,7 @@ public:
 		nearby = false;
 	}
 	bool is_nearby() const {
-		return nearby != 0;
+		return nearby;
 	}
 	// Set schedule list.
 	void set_schedules(Schedule_change *list, int cnt) override;
@@ -788,7 +788,7 @@ public:
 	// For Time_sensitive:
 	void handle_event(unsigned long curtime, uintptr udata) override;
 	// Step onto an (adjacent) tile.
-	int step(Tile_coord t, int frame, bool force = false) override;
+	bool step(Tile_coord t, int frame, bool force = false) override;
 	// Remove/delete this object.
 	void remove_this(Game_object_shared *keep = nullptr) override;
 	// Update chunks after NPC moved.

@@ -226,10 +226,10 @@ Gump_button *Gump::on_button(
  *  is calculated by 'paint()'.  If they're all -2, it's assumed that
  *  obj->tx, obj->ty are already correct.
  *
- *  Output: 0 if cannot add it.
+ *  Output: false if cannot add it.
  */
 
-int Gump::add(
+bool Gump::add(
     Game_object *obj,
     int mx, int my,         // Mouse location.
     int sx, int sy,         // Screen location of obj's hotspot.
@@ -240,16 +240,16 @@ int Gump::add(
 	ignore_unused_variable_warning(combine);
 	if (!container || (!cheat.in_hack_mover() &&
 	                   !dont_check && !container->has_room(obj)))
-		return 0;     // Full.
+		return false;     // Full.
 	// Dropping on same thing?
 	Game_object *onobj = find_object(mx, my);
 	// If possible, combine.
 
 	if (onobj && onobj != obj && onobj->drop(obj))
-		return 1;
+		return true;
 
 	if (!container->add(obj, dont_check))   // DON'T combine here.
-		return 0;
+		return false;
 
 	// Not a valid spot?
 	if (sx == -1 && sy == -1 && mx == -1 && my == -1)
@@ -272,7 +272,7 @@ int Gump::add(
 			sy = object_area.h - shape->get_ybelow();
 		obj->set_shape_pos(sx, sy);
 	}
-	return 1;
+	return true;
 }
 
 /*

@@ -67,13 +67,13 @@ public:
 	        Tile_coord const &dest, Actor_action *when_there,
 	        bool from_off_screen = false, bool persistant = false);
 	// Get destination, or ret. 0.
-	virtual int get_dest(Tile_coord &dest) const {
+	virtual bool get_dest(Tile_coord &dest) const {
 		ignore_unused_variable_warning(dest);
-		return 0;
+		return false;
 	}
 	// Check for Astar.
-	virtual int following_smart_path() const {
-		return 0;
+	virtual bool following_smart_path() const {
+		return false;
 	}
 	virtual If_else_path_actor_action *as_usecode_path() {
 		return nullptr;
@@ -125,15 +125,15 @@ public:
 	        Tile_coord const &dest, Pathfinder_client &cost);
 	// Handle time event.
 	int handle_event(Actor *actor) override;
-	int open_door(Actor *actor, Game_object *door);
+	bool open_door(Actor *actor, Game_object *door);
 	void stop(Actor *actor) override;// Stop moving.
 	// Set simple path to destination.
 	Actor_action *walk_to_tile(Actor *npc, Tile_coord const &src,
 	                           Tile_coord const &dest, int dist = 0, bool ignnpc = false) override;
 	// Get destination, or ret. 0.
-	int get_dest(Tile_coord &dest) const override;
+	bool get_dest(Tile_coord &dest) const override;
 	// Check for Astar.
-	int following_smart_path() const override;
+	bool following_smart_path() const override;
 	int get_speed() const override {
 		return speed;
 	}

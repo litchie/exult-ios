@@ -117,7 +117,7 @@ public:
 		paint_rle_outline(scrwin, px, py, color);
 	}
 
-	int has_point(int x, int y) const;    // Is a point within the shape?
+	bool has_point(int x, int y) const;    // Is a point within the shape?
 	int get_width() const {     // Get dimensions.
 		return xleft + xright + 1;
 	}
@@ -140,7 +140,7 @@ public:
 	int get_size() const {
 		return datalen;
 	}
-	int is_empty() const {
+	bool is_empty() const {
 		return !data || (data[0] == 0 && data[1] == 0);
 	}
 	virtual ~Shape_frame() noexcept = default;
@@ -286,7 +286,7 @@ public:
 	int get_num_shapes() const {
 		return shapes.size();
 	}
-	int is_good() const {
+	bool is_good() const {
 		return !shapes.empty();
 	}
 	bool is_flex() const {

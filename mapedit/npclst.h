@@ -113,7 +113,7 @@ public:
 	void unselect(bool need_render = true);
 	void update_npc(int num);
 	void update_statusbar();
-	int is_selected() {     // Is a shape selected?
+	bool is_selected() {     // Is a shape selected?
 		return selected >= 0;
 	}
 	void set_selected_callback(void (*fun)()) {
