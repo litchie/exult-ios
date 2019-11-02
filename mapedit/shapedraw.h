@@ -89,7 +89,7 @@ public:
 	// Handler for drop.
 	static void drag_data_received(GtkWidget *widget,
 	                               GdkDragContext *context, gint x, gint y,
-	                               GtkSelectionData *selection_data, guint info, guint time,
+	                               GtkSelectionData *seldata, guint info, guint time,
 	                               gpointer udata);
 	void enable_drop(Drop_callback callback, void *udata);
 	void set_drag_icon(GdkDragContext *context, Shape_frame *shape);

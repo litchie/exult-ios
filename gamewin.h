@@ -406,12 +406,12 @@ public:
 		return ambient_light || special_light != 0;
 	}
 	// Light spell.
-	void add_special_light(int minutes);
+	void add_special_light(int units);
 	void toggle_ambient_light(bool state) {
 		ambient_light = state;
 	}
 	// Handle 'stop time' spell.
-	void set_time_stopped(long ticks);
+	void set_time_stopped(long delay);
 	long is_time_stopped() {
 		return !time_stopped ? 0 : check_time_stopped();
 	}
@@ -459,7 +459,7 @@ public:
 	static int get_guard_shape();
 	void call_guards(Actor *witness = nullptr, bool theft = false);
 	void stop_arresting();
-	void attack_avatar(int num_guards = 0, int align = 0);
+	void attack_avatar(int create_guards = 0, int align = 0);
 	bool is_hostile_nearby(); // detects if hostiles are nearby for movement speed
 	bool failed_copy_protection();
 	void got_bad_feeling(int odds);
@@ -576,7 +576,7 @@ private:
 	                      std::unique_ptr<Shape_file> &map,
 	                      SaveGame_Details *&details,
 	                      SaveGame_Party  *&party);
-	void restore_flex_files(IDataSource &ds, const char *basepath);
+	void restore_flex_files(IDataSource &in, const char *basepath);
 public:
 #endif
 	void write_saveinfo();      // Write the save info to gamedat
@@ -599,7 +599,7 @@ public:
 #ifdef HAVE_ZIP_SUPPORT
 private:
 	bool save_gamedat_zip(const char *fname, const char *savename);
-	bool Restore_level2(void *unzipfile, const char *dirname, int dirlen);
+	bool Restore_level2(void *uzf, const char *dirname, int dirlen);
 	bool restore_gamedat_zip(const char *fname);
 public:
 #endif
@@ -628,7 +628,7 @@ public:
 		return allow_right_pathfind;
 	}
 	void teleport_party(Tile_coord const &t, bool skip_eggs = false,
-	                    int new_map = -1, bool no_status_check = true);
+	                    int newmap = -1, bool no_status_check = true);
 	bool activate_item(int shnum, int frnum = c_any_framenum,
 	                   int qual = c_any_qual); // Activate item in party.
 	// Find object (x, y) is in.

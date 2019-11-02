@@ -93,7 +93,7 @@ class Usecode_internal : public Usecode_machine {
 	void append_string(const uint8 *txt) {
 		append_string(reinterpret_cast<char const *>(txt));
 	}
-	void append_string(const char *txt);    // Append to string.
+	void append_string(const char *str);    // Append to string.
 	void show_pending_text();   // Make sure user's seen all text.
 	void show_book();       // "Say" book/scroll text.
 	void say_string();      // "Say" the string.
@@ -117,7 +117,7 @@ class Usecode_internal : public Usecode_machine {
 	// "Safe" cast to Actor and Npc_actor.
 	Actor *as_actor(Game_object *obj);
 	// Get position.
-	Tile_coord get_position(Usecode_value &itemref);
+	Tile_coord get_position(Usecode_value &itemval);
 	/*
 	 *  Built-in usecode functions:
 	 */
@@ -141,10 +141,10 @@ class Usecode_internal : public Usecode_machine {
 	void item_say(Usecode_value &objval, Usecode_value &strval);
 	void activate_cached(Tile_coord const &pos);
 	Usecode_value find_nearby(Usecode_value &objval,
-	                          Usecode_value &shapeval, Usecode_value &qval,
+	                          Usecode_value &shapeval, Usecode_value &distval,
 	                          Usecode_value &mval);
 	Usecode_value find_nearest(Usecode_value &objval,
-	                           Usecode_value &shapeval, Usecode_value &unknown);
+	                           Usecode_value &shapeval, Usecode_value &distval);
 	Usecode_value find_direction(Usecode_value &from, Usecode_value &to);
 	Usecode_value count_objects(Usecode_value &objval,
 	                            Usecode_value &shapeval, Usecode_value &qualval,
@@ -160,7 +160,7 @@ class Usecode_internal : public Usecode_machine {
 	                              Usecode_value &frameval, Usecode_value &temporary);
 	Usecode_value add_cont_items(Usecode_value &container, Usecode_value &quantval,
 	                             Usecode_value &shapeval, Usecode_value &qualval,
-	                             Usecode_value &frameval, Usecode_value &flagval);
+	                             Usecode_value &frameval, Usecode_value &temporary);
 	Usecode_value remove_cont_items(Usecode_value &container, Usecode_value &quantval,
 	                                Usecode_value &shapeval, Usecode_value &qualval,
 	                                Usecode_value &frameval, Usecode_value &flagval);

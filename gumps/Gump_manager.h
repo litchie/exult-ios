@@ -69,7 +69,7 @@ public:
 	Gump *find_gump(int x, int y, bool pers = true);// Find gump x,y is in
 	Gump *find_gump(const Game_object *obj);  // Find gump that object is in
 	// Find gump for object obj:
-	Gump *find_gump(const Game_object *obj, int shapenum);
+	Gump *find_gump(const Game_object *owner, int shapenum);
 
 	void update_gumps();
 	void paint(bool modal);

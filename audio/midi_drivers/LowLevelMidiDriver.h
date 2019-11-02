@@ -49,7 +49,7 @@ public:
 	~LowLevelMidiDriver() override;
 
 	// MidiDriver Implementation
-	int			initMidiDriver(uint32 sample_rate, bool stereo) override;
+	int			initMidiDriver(uint32 samp_rate, bool stereo) override;
 	void		destroyMidiDriver() override;
 	int			maxSequences() override;
 	void		setGlobalVolume(int vol) override;
@@ -247,7 +247,7 @@ private:
 
 	void					loadXMidiTimbreLibrary(IDataSource *ds);
 	void					extractTimbreLibrary(XMidiEventList *eventlist);
-    void					uploadTimbre(int bank, int timbre);
+    void					uploadTimbre(int bank, int patch);
 	void					setPatchBank(int bank, int patch);
 	void					loadRhythm(const MT32Rhythm &rhythm, int note);
 	void					loadRhythmTemp(int temp);

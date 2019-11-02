@@ -47,7 +47,7 @@ public:
 	// Paint an obj. after dependencies.
 	void paint_object(Game_object *obj);
 	// Render dungeon blackness
-	void paint_blackness(int cx, int cy, int stop_chunkx, int stop_chunky,
+	void paint_blackness(int start_chunkx, int start_chunky, int stop_chunkx, int stop_chunky,
 	                     int index = 0);
 };
 

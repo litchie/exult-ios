@@ -129,7 +129,7 @@ public:
 	       Drop_shape_handler_fun, Drop_chunk_handler_fun,
 	       Drop_npc_handler_fun npcfun, Drop_combo_handler_fun);
 	Windnd(HWND hgwnd, Drop_shape_handler_fun shapefun,
-	       Drop_chunk_handler_fun cfun, Drop_shape_handler_fun facefun, void *d);
+	       Drop_chunk_handler_fun cfun, Drop_shape_handler_fun ffun, void *d);
 	virtual ~Windnd() = default;
 
 	STDMETHOD(QueryInterface)(REFIID iid, void **ppvObject);

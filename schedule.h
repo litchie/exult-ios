@@ -239,7 +239,7 @@ public:
 	Eat_at_inn_schedule(Actor *n) : Schedule(n), sitting_at_chair(false)
 	{  }
 	void now_what() override;    // Now what should NPC do?
-	void ending(int newtype) override; // Switching to another schedule
+	void ending(int new_type) override; // Switching to another schedule
 	void im_dormant() override;  // Just went dormant.
 };
 
@@ -283,7 +283,7 @@ class Patrol_schedule : public Schedule {
 public:
 	Patrol_schedule(Actor *n);
 	void now_what() override;    // Now what should NPC do?
-	void ending(int newtype) override; // Switching to another schedule
+	void ending(int new_type) override; // Switching to another schedule
 };
 
 /*
@@ -441,7 +441,7 @@ class Sleep_schedule : public Schedule {
 public:
 	Sleep_schedule(Actor *n);
 	void now_what() override;    // Now what should NPC do?
-	void ending(int newtype) override;// Switching to another schedule.
+	void ending(int new_type) override;// Switching to another schedule.
 	// Set where to sleep.
 	void set_bed(Game_object *b) override;
 	void im_dormant() override;  // Just went dormant.
@@ -484,7 +484,7 @@ class Desk_schedule : public Schedule_with_objects {
 public:
 	Desk_schedule(Actor *n);
 	void now_what() override;    // Now what should NPC do?
-	void ending(int newtype) override;// Switching to another schedule.
+	void ending(int new_type) override;// Switching to another schedule.
 	void im_dormant() override;  // Just went dormant.
 };
 
@@ -583,7 +583,7 @@ class Waiter_schedule : public Schedule_with_objects {
 public:
 	Waiter_schedule(Actor *n);
 	void now_what() override;    // Now what should NPC do?
-	void ending(int newtype) override;// Switching to another schedule.
+	void ending(int new_type) override;// Switching to another schedule.
 };
 
 /*
@@ -615,7 +615,7 @@ class Sew_schedule : public Schedule {
 public:
 	Sew_schedule(Actor *n);
 	void now_what() override;    // Now what should NPC do?
-	void ending(int newtype) override;// Switching to another schedule.
+	void ending(int new_type) override;// Switching to another schedule.
 };
 
 /*
@@ -646,7 +646,7 @@ class Bake_schedule : public Schedule {
 public:
 	Bake_schedule(Actor *n);
 	void now_what() override;
-	void ending(int newtype) override;
+	void ending(int new_type) override;
 };
 
 /*
@@ -676,7 +676,7 @@ class Forge_schedule : public Schedule {
 public:
 	Forge_schedule(Actor *n);
 	void now_what() override;    // Now what should NPC do?
-	void ending(int newtype) override; // Switching to another schedule
+	void ending(int new_type) override; // Switching to another schedule
 };
 
 /*
@@ -692,7 +692,7 @@ class Eat_schedule : public Schedule {
 public:
 	Eat_schedule(Actor *n);
 	void now_what() override;    // Now what should NPC do?
-	void ending(int newtype) override; // Switching to another schedule
+	void ending(int new_type) override; // Switching to another schedule
 	void im_dormant() override;  // Just went dormant.
 };
 

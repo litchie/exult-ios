@@ -232,10 +232,10 @@ public:
 	                              int shapenum, int delta, int mask = 8);
 	static int find_nearby_eggs(Egg_vector &vec, Tile_coord const &pos,
 	                            int shapenum, int delta, int qual = c_any_qual,
-	                            int framenum = c_any_framenum);
+	                            int frnum = c_any_framenum);
 	static int find_nearby(Game_object_vector &vec, Tile_coord const &pos,
 	                       int shapenum, int delta, int mask, int qual = c_any_qual,
-	                       int framenum = c_any_framenum,
+	                       int frnum = c_any_framenum,
 						   bool exclude_okay_to_take = false);
     static void obj_vec_to_weak(std::vector<Game_object_weak> &dest,
 													Game_object_vector &src);
@@ -449,7 +449,7 @@ public:
 	// Return's the object's usecode for the shape number
 	virtual int get_usecode() const;
 	// Default:  Can't set it.
-	virtual bool set_usecode(int funid, const char *nm = nullptr);
+	virtual bool set_usecode(int ui, const char *nm = nullptr);
 };
 
 inline Game_object_weak weak_from_obj(Game_object *obj) {

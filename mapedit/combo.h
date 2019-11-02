@@ -198,7 +198,7 @@ public:
 	                        gpointer data);
 	// Give dragged combo.
 	static void drag_data_get(GtkWidget *widget, GdkDragContext *context,
-	                          GtkSelectionData *selection_data, guint info, guint time, gpointer data);
+	                          GtkSelectionData *seldata, guint info, guint time, gpointer data);
 	// Someone else selected.
 	static gint selection_clear(GtkWidget *widget,
 	                            GdkEventSelection *event, gpointer data);

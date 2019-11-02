@@ -111,7 +111,7 @@ public:
 	static const std::map<uint32, Image_window::Resolution> &Resolutions;
 	static const bool &AnyResAllowed;
 
-	static ScalerType get_scaler_for_name(const char *name);
+	static ScalerType get_scaler_for_name(const char *scaler);
 	inline static const char *get_name_for_scaler(int num) {
 		return Scalers[num].name;
 	}
@@ -425,7 +425,7 @@ public:
 	// Create a compatible image buffer.
 	Image_buffer *create_buffer(int w, int h);
 	// Resize event occurred.
-	void resized(unsigned int neww, unsigned int nehh, bool newfs, unsigned int newgw, unsigned int newgh, int newsc, int newscaler = point, FillMode fmode = AspectCorrectCentre, int fillsclr = point);
+	void resized(unsigned int neww, unsigned int newh, bool newfs, unsigned int newgw, unsigned int newgh, int newsc, int newscaler = point, FillMode fmode = AspectCorrectCentre, int fillsclr = point);
 	void show() {       // Repaint entire window.
 		show(get_start_x(), get_start_y(), get_full_width(), get_full_height());
 	}

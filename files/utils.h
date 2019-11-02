@@ -463,7 +463,7 @@ void U7copy(
     const char *dest
 );
 
-bool is_system_path_defined(const std::string &key);
+bool is_system_path_defined(const std::string &path);
 void store_system_paths();
 void reset_system_paths();
 void clear_system_path(const std::string &key);
@@ -481,7 +481,7 @@ void to_uppercase(std::string &str);
 std::string to_uppercase(const std::string &str);
 
 int Log2(uint32 n);
-uint32 msb32(uint32 n);
+uint32 msb32(uint32 x);
 int fgepow2(uint32 n);
 
 char *newstrdup(const char *s);

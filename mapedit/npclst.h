@@ -98,7 +98,7 @@ class Npc_chooser: public Object_browser, public Shape_draw {
 		return selected;
 	}
 	void scroll_row_vertical(unsigned newrow);
-	void scroll_vertical(int newindex); // Scroll.
+	void scroll_vertical(int newoffset); // Scroll.
 	void setup_vscrollbar();    // Set new scroll amounts.
 	GtkWidget *create_popup() override;  // Popup menu.
 public:
@@ -132,7 +132,7 @@ public:
 	gint mouse_press(GtkWidget *widget, GdkEventButton *event);
 	// Give dragged shape.
 	static void drag_data_get(GtkWidget *widget, GdkDragContext *context,
-	                          GtkSelectionData *selection_data, guint info, guint time, gpointer data);
+	                          GtkSelectionData *seldata, guint info, guint time, gpointer data);
 	void edit_npc();
 	// Someone else selected.
 	static gint selection_clear(GtkWidget *widget,
@@ -142,7 +142,7 @@ public:
 	// Handler for drop.
 	static void drag_data_received(GtkWidget *widget,
 	                               GdkDragContext *context, gint x, gint y,
-	                               GtkSelectionData *selection_data, guint info, guint time,
+	                               GtkSelectionData *seldata, guint info, guint time,
 	                               gpointer udata);
 	void enable_drop();
 	// Handle scrollbar.

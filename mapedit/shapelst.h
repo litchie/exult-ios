@@ -109,7 +109,7 @@ class Shape_chooser: public Object_browser, public Shape_draw {
 		return selected < 0 ? -1 : info[selected].shapenum;
 	}
 	void scroll_row_vertical(unsigned newrow);
-	void scroll_vertical(int newindex); // Scroll.
+	void scroll_vertical(int newoffset); // Scroll.
 	void setup_vscrollbar();    // Set new scroll amounts.
 	void setup_hscrollbar(int newmax);
 	GtkWidget *create_popup() override;  // Popup menu.
@@ -125,7 +125,7 @@ public:
 	}
 	void shape_dropped_here(int file, int shapenum, int framenum);
 	int get_count();        // Get # shapes we can display.
-	void search(const char *srch, int dir) override;
+	void search(const char *search, int dir) override;
 	void locate(bool upwards) override;  // Locate shape on game map.
 	// Turn off selection.
 	void unselect(bool need_render = true);
@@ -189,7 +189,7 @@ public:
 	void del_frame();
 	// Give dragged shape.
 	static void drag_data_get(GtkWidget *widget, GdkDragContext *context,
-	                          GtkSelectionData *selection_data, guint info, guint time, gpointer data);
+	                          GtkSelectionData *seldata, guint info, guint time, gpointer data);
 	// Someone else selected.
 	static gint selection_clear(GtkWidget *widget,
 	                            GdkEventSelection *event, gpointer data);

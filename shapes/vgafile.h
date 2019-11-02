@@ -86,14 +86,14 @@ public:
 	unsigned int read(IDataSource *shapes, uint32 shapeoff,
 	                  uint32 shapelen, int frnum);
 	// Paint into given buffer.
-	void paint_rle(Image_buffer8 *win, int px, int py);
-	void paint_rle_remapped(Image_buffer8 *win, int px, int py, const unsigned char *trans);
-	void paint(Image_buffer8 *win, int px, int py);
-	void paint_rle_translucent(Image_buffer8 *win, int px, int py,
+	void paint_rle(Image_buffer8 *win, int xoff, int yoff);
+	void paint_rle_remapped(Image_buffer8 *win, int xoff, int yoff, const unsigned char *trans);
+	void paint(Image_buffer8 *win, int xoff, int yoff);
+	void paint_rle_translucent(Image_buffer8 *win, int xoff, int yoff,
 	                           const Xform_palette *xforms, int xfcnt);
-	void paint_rle_transformed(Image_buffer8 *win, int px, int py,
+	void paint_rle_transformed(Image_buffer8 *win, int xoff, int yoff,
 	                           const Xform_palette &xform);
-	void paint_rle_outline(Image_buffer8 *win, int px, int py,
+	void paint_rle_outline(Image_buffer8 *win, int xoff, int yoff,
 	                       unsigned char color);
 	// Paint to screen.
 	void paint_rle(int px, int py) {
@@ -160,12 +160,12 @@ protected:
 	bool modified = false;
 	bool from_patch = false;
 	// Create reflected frame.
-	Shape_frame *reflect(std::vector<std::pair<std::unique_ptr<IDataSource>, bool>> const &shapes, int shnum,
-	                     int frnum, std::vector<int> const &counts);
+	Shape_frame *reflect(std::vector<std::pair<std::unique_ptr<IDataSource>, bool>> const &shapes, int shapenum,
+	                     int framenum, std::vector<int> const &counts);
 	void create_frames_list(int nframes);
 	// Read in shape/frame.
-	Shape_frame *read(std::vector<std::pair<std::unique_ptr<IDataSource>, bool>> const &shapes, int shnum,
-	                  int frnum, std::vector<int> const &counts, int src = -1);
+	Shape_frame *read(std::vector<std::pair<std::unique_ptr<IDataSource>, bool>> const &shapes, int shapenum,
+	                  int framenum, std::vector<int> const &counts, int src = -1);
 	// Store shape that was read.
 	Shape_frame *store_frame(std::unique_ptr<Shape_frame> frame, int framenum);
 

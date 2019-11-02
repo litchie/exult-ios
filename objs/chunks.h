@@ -161,7 +161,7 @@ public:
 	void add(Game_object *obj); // Add an object.
 	void add_egg(Egg_object *egg);  // Add/remove an egg.
 	void remove_egg(Egg_object *egg);
-	void remove(Game_object *obj);  // Remove an object.
+	void remove(Game_object *remove);  // Remove an object.
 	// Apply gravity over given area.
 	static void gravity(Rectangle const &area, int lift);
 	// Is there a roof? Returns height

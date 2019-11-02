@@ -95,8 +95,8 @@ public:
 	int add_quantity(int delta, int shapenum,
 	                 int qual = c_any_qual,
 	                 int framenum = c_any_framenum, bool dontcreate = false, bool temporary = false) override;
-	int create_quantity(int delta, int shapenum, int qual,
-	                    int framenum, bool temporary = false) override;
+	int create_quantity(int delta, int shnum, int qual,
+	                    int frnum, bool temporary = false) override;
 	int remove_quantity(int delta, int shapenum, int qual,
 	                    int framenum) override;
 	Game_object *find_item(int shapenum, int qual, int framenum) override;

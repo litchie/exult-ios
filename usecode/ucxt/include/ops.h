@@ -52,7 +52,7 @@ private:
 	std::string get_datadir(const Configuration &config, const UCOptions &options);
 	void misc();
 	void opcodes();
-	void intrinsics(const std::string &intrinsics_data, const std::string &intrinsics_root);
+	void intrinsics(const std::string &intrinsic_data, const std::string &intrinsic_root);
 
 	const std::string ucxtdata;
 	std::string datadir;

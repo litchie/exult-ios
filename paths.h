@@ -37,7 +37,7 @@ class Actor_pathfinder_client : public Pathfinder_client {
 	int dist;           // Distance for success.
 	Actor *npc;         // Who this represents.
 	bool ignore_npcs;   // If NPCs are nonblocking.
-	int check_blocking(Tile_coord const &from, Tile_coord const &tile);
+	int check_blocking(Tile_coord const &from, Tile_coord const &to);
 public:
 //	Actor_pathfinder_client(Actor *npc, int d = 0) : dist(d)
 //		{ set_move_flags(mf); }
@@ -45,7 +45,7 @@ public:
 	// Figure when to give up.
 	int get_max_cost(int cost_to_goal) override;
 	// Figure cost for a single step.
-	int get_step_cost(Tile_coord const &from, Tile_coord &to) override;
+	int get_step_cost(Tile_coord const &frm, Tile_coord &to) override;
 	// Estimate cost between two points.
 	int estimate_cost(Tile_coord const &from, Tile_coord const &to) override;
 	// Is tile at the goal?

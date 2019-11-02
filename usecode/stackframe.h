@@ -68,6 +68,6 @@ public:
 	}
 };
 
-std::ostream &operator<<(std::ostream &out, Stack_frame &val);
+std::ostream &operator<<(std::ostream &out, Stack_frame &frame);
 
 #endif

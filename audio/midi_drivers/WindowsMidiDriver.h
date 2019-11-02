@@ -55,7 +55,7 @@ class WindowsMidiDriver : public LowLevelMidiDriver
 		return new WindowsMidiDriver();
 	}
 
-	static bool			doMCIError(MMRESULT res);
+	static bool			doMCIError(MMRESULT mmsys_err);
 
 public:
 	const static MidiDriverDesc* getDesc() { return &desc; }

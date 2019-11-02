@@ -175,7 +175,7 @@ public:
 		: child(nullptr), elems(objs)
 	{  }
 	// Start at given object.
-	D_Recursive_object_iterator(Game_object *obj);
+	D_Recursive_object_iterator(Game_object *start);
 	Game_object *get_next();    // Get next, going into containers.
 };
 

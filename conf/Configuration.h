@@ -60,12 +60,12 @@ public:
 
 	bool    key_exists(const std::string &key) const;
 
-	void    set(const std::string &key, const std::string &value, bool write_to_file);
-	void    set(const char *key, const char *value, bool write_to_file);
-	void    set(const char *key, const std::string &value, bool write_to_file);
-	void    set(const char *key, int, bool write_to_file);
+	void    set(const std::string &key, const std::string &value, bool write_out);
+	void    set(const char *key, const char *value, bool write_out);
+	void    set(const char *key, const std::string &value, bool write_out);
+	void    set(const char *key, int, bool write_out);
 
-	void    remove(const std::string &key, bool write_to_file);
+	void    remove(const std::string &key, bool write_out);
 
 	// Return a list of keys that are subsidiary to the supplied key
 	std::vector<std::string>    listkeys(const std::string &key, bool longformat = true);

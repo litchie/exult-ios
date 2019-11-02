@@ -490,7 +490,7 @@ public:
 	void set_attribute(const char *nm, int val);
 	int get_attribute(const char *nm);
 	using Atts_vector = std::vector<std::pair<const char *, int>>;
-	void get_attributes(Atts_vector &attlst);
+	void get_attributes(Atts_vector &attlist);
 	// Set atts. from savegame.
 	void read_attributes(const unsigned char *buf, int len) override;
 	Npc_timer_list *need_timers();
@@ -544,7 +544,7 @@ public:
 	int get_temperature() const { // Get/set measure of coldness.
 		return temperature;
 	}
-	void set_temperature(int t);
+	void set_temperature(int v);
 	int get_temperature_zone() const {
 		// SI-verified.
 		if (temperature < 15)

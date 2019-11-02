@@ -47,7 +47,7 @@ public:
 	static Game_object_shared create(int shnum);
 	static Game_object_shared create(int shnum, Tile_coord pos,
 	                             int sched = -1, int align = static_cast<int>(Actor::neutral),
-	                             bool tempoary = true, bool equipment = true);
+	                             bool temporary = true, bool equipment = true);
 	// Methods to retrieve them all:
 	static Monster_actor *get_first_in_world() {
 		return in_world ? static_cast<Monster_actor *>(in_world.get())

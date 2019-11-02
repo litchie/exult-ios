@@ -65,7 +65,7 @@ public:
 	//   exec. another action when there.
 	static Actor_action *create_action_sequence(Actor *actor,
 	        Tile_coord const &dest, Actor_action *when_there,
-	        bool from_off_screen = false, bool ignnpc = false);
+	        bool from_off_screen = false, bool persistant = false);
 	// Get destination, or ret. 0.
 	virtual int get_dest(Tile_coord &dest) const {
 		ignore_unused_variable_warning(dest);
@@ -129,7 +129,7 @@ public:
 	void stop(Actor *actor) override;// Stop moving.
 	// Set simple path to destination.
 	Actor_action *walk_to_tile(Actor *npc, Tile_coord const &src,
-	                           Tile_coord const &dest, int dist = 0, bool persistant = false) override;
+	                           Tile_coord const &dest, int dist = 0, bool ignnpc = false) override;
 	// Get destination, or ret. 0.
 	int get_dest(Tile_coord &dest) const override;
 	// Check for Astar.

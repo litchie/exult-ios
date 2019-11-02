@@ -58,8 +58,8 @@ public:
 
 	void			destroyMidiDriver();
 
-	void			start_music(int num,bool continuous=false,std::string flex=MAINMUS);
-	void			start_music(std::string fname,int num,bool continuous=false);
+	void			start_music(int num,bool repeat=false,std::string flex=MAINMUS);
+	void			start_music(std::string fname,int num,bool repeat=false);
 	void			stop_music();
 
 	bool			is_track_playing(int num);

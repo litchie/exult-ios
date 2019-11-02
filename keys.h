@@ -60,7 +60,7 @@ private:
 public:
 	KeyBinder();
 	/* Add keybinding */
-	void AddKeyBinding(SDLKey sym, int mod, const Action *action,
+	void AddKeyBinding(SDLKey key, int mod, const Action *action,
 	                   int nparams, const int *params);
 
 	/* Delete keybinding */

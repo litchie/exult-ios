@@ -43,7 +43,7 @@ public:
 		pos = t;
 	}
 	void set_target_pos(unsigned char tilex, unsigned char tiley,
-	                    unsigned char schunk, unsigned char lft);
+	                    unsigned char schunk, unsigned char lift);
 	Tile_coord get_target_pos() {
 		return pos;
 	}

@@ -88,7 +88,7 @@ public:
 	static void terminate(const Game_object *obj);
 	static void clear();        // Delete all.
 	// Remove all whose objs. are too far.
-	static void purge(Tile_coord const &pos, int dist);
+	static void purge(Tile_coord const &spot, int dist);
 	void handle_event(unsigned long curtime, uintptr udata) override;
 	int exec(Usecode_internal *usecode, bool finish);
 	// Move object in given direction.

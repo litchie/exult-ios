@@ -234,9 +234,9 @@ public:
 	void set_edit_mode(int md);
 	void show_unused_shapes(const unsigned char *data, int datalen);
 	// Open/create shape files:
-	Shape_file_info *open_shape_file(const char *fname);
+	Shape_file_info *open_shape_file(const char *basename);
 	void new_shape_file(bool single);
-	static void create_shape_file(char *nm, gpointer udata);
+	static void create_shape_file(char *pathname, gpointer udata);
 	// Groups:
 	void setup_groups();
 	void setup_group_controls();
@@ -247,7 +247,7 @@ public:
 	void open_group_window();
 	void open_builtin_group_window();
 	void open_group_window(Shape_group *grp);
-	void close_group_window(GtkWidget *gtkwin);
+	void close_group_window(GtkWidget *grpwin);
 	void save_groups();
 	bool groups_modified();
 	void update_group_windows(Shape_group *grp);
@@ -368,7 +368,7 @@ public:
 	void remove_statusbar(const char *name, int context, guint msgid);
 	void set_button(const char *name, const char *text);
 	void set_visible(const char *name, bool vis);
-	void set_sensitive(const char *name, bool vis);
+	void set_sensitive(const char *name, bool tf);
 	int prompt(const char *msg, const char *choice0,
 	           const char *choice1 = nullptr, const char *choice2 = nullptr);
 	int find_palette_color(int r, int g, int b);

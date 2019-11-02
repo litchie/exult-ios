@@ -61,10 +61,10 @@ class Palette_edit: public Object_browser {
 	void load() override;        // Load from file data.
 	void render() override;      // Draw list.
 	// Handle color-selector buttons.
-	static int color_closed(GtkWidget *widget, GdkEvent *event,
+	static int color_closed(GtkWidget *dlg, GdkEvent *event,
 	                        gpointer data);
-	static void color_cancel(GtkWidget *widget, gpointer data);
-	static void color_okay(GtkWidget *widget, gpointer data);
+	static void color_cancel(GtkWidget *dlg, gpointer data);
+	static void color_okay(GtkWidget *dlg, gpointer data);
 	void double_clicked();      // Handle double-click on a color.
 	GtkWidget *create_controls();   // Controls at bottom of browser.
 	void enable_controls();     // Enable/disable controls after sel.
@@ -92,7 +92,7 @@ public:
 	                        gpointer data);
 	// Give dragged palette.
 	static void drag_data_get(GtkWidget *widget, GdkDragContext *context,
-	                          GtkSelectionData *selection_data, guint info, guint time, gpointer data);
+	                          GtkSelectionData *seldata, guint info, guint time, gpointer data);
 	// Someone else selected.
 	static gint selection_clear(GtkWidget *widget,
 	                            GdkEventSelection *event, gpointer data);

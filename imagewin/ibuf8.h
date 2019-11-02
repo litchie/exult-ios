@@ -58,12 +58,12 @@ public:
 	 *  8-bit color methods:
 	 */
 	// Fill with given (8-bit) value.
-	void fill8(unsigned char val) override;
+	void fill8(unsigned char pix) override;
 	// Fill rect. wth pixel.
-	void fill8(unsigned char val, int srcw, int srch,
+	void fill8(unsigned char pix, int srcw, int srch,
 	           int destx, int desty) override;
 	// Fill line with pixel.
-	void fill_line8(unsigned char val, int srcw,
+	void fill_line8(unsigned char pix, int srcw,
 	                int destx, int desty) override;
 	// Copy rectangle into here.
 	void copy8(const unsigned char *src_pixels,

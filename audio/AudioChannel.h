@@ -193,14 +193,14 @@ private:
 	int					fp_pos;
 	int					fp_speed;
 
-	void resampleFrameM8toS(sint16 *&samples, uint32 &bytes);
-	void resampleFrameM8toM(sint16 *&samples, uint32 &bytes);
-	void resampleFrameS8toM(sint16 *&samples, uint32 &bytes);
-	void resampleFrameS8toS(sint16 *&samples, uint32 &bytes);
-	void resampleFrameM16toS(sint16 *&samples, uint32 &bytes);
-	void resampleFrameM16toM(sint16 *&samples, uint32 &bytes);
-	void resampleFrameS16toM(sint16 *&samples, uint32 &bytes);
-	void resampleFrameS16toS(sint16 *&samples, uint32 &bytes);
+	void resampleFrameM8toS(sint16 *&stream, uint32 &bytes);
+	void resampleFrameM8toM(sint16 *&stream, uint32 &bytes);
+	void resampleFrameS8toM(sint16 *&stream, uint32 &bytes);
+	void resampleFrameS8toS(sint16 *&stream, uint32 &bytes);
+	void resampleFrameM16toS(sint16 *&stream, uint32 &bytes);
+	void resampleFrameM16toM(sint16 *&stream, uint32 &bytes);
+	void resampleFrameS16toM(sint16 *&stream, uint32 &bytes);
+	void resampleFrameS16toS(sint16 *&stream, uint32 &bytes);
 
 
 

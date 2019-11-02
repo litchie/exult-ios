@@ -41,8 +41,8 @@ public:
 protected:
 	// Because GCC complains about casting from const to non-const...
 	void setInt(const char *name, int val);
-	void setNum(const char *name, double num);
-	void setStr(const char *name, const char *str);
+	void setNum(const char *name, double val);
+	void setStr(const char *name, const char *val);
 
 	// LowLevelMidiDriver implementation
 	int open() override;

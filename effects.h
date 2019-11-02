@@ -57,7 +57,7 @@ public:
 	void add_text(const char *msg, int x, int y);
 	void center_text(const char *msg);
 	void add_effect(Special_effect *effect);
-	void add_text_effect(Text_effect *txt);
+	void add_text_effect(Text_effect *effect);
 	void remove_text_effect(Game_object *item);
 	// Remove text item & delete it.
 	void remove_effect(Special_effect *effect);
@@ -151,16 +151,16 @@ class Projectile_effect : public Special_effect {
 	int attval;         // Attack value of projectile.
 	bool autohit;
 	void add_dirty();
-	void init(Tile_coord const &s, Tile_coord const &t);
+	void init(Tile_coord const &s, Tile_coord const &d);
 public:
 	Projectile_effect(Game_object *att, Game_object *to, int weap,
-	                  int proj, int spr, int attpts = 60, int speed = -1);
+	                  int proj, int spr, int attpts = 60, int spd = -1);
 	// For missile traps:
 	Projectile_effect(Game_object *att, Tile_coord const &d, int weap,
-	                  int proj, int spr, int attpts = 60, int speed = -1,
+	                  int proj, int spr, int attpts = 60, int spd = -1,
 	                  bool retpath = false);
 	Projectile_effect(Tile_coord const &s, Game_object *to, int weap,
-	                  int proj, int spr, int attpts = 60, int speed = -1,
+	                  int proj, int spr, int attpts = 60, int spd = -1,
 	                  bool retpath = false);
 	~Projectile_effect() override;
 	// For Time_sensitive:
