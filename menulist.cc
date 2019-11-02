@@ -62,9 +62,9 @@ void MenuEntry::paint(Game_window *gwin) {
 
 bool MenuEntry::handle_event(SDL_Event &event) {
 	SDL_keysym &key = event.key.keysym;
-	return((event.type == SDL_KEYDOWN &&
+	return (event.type == SDL_KEYDOWN &&
 	        (key.sym == SDLK_RETURN || key.sym == SDLK_KP_ENTER)) ||
-	       event.type == SDL_MOUSEBUTTONUP);
+	       event.type == SDL_MOUSEBUTTONUP;
 }
 
 // MenuTextEntry: a selectable menu entry (a button)

@@ -68,10 +68,9 @@ StepoverBreakpoint::StepoverBreakpoint(Stack_frame *frame)
 }
 
 bool StepoverBreakpoint::check(Stack_frame *frame) const {
-	return ((frame->call_chain == call_chain &&
+	return (frame->call_chain == call_chain &&
 	         frame->call_depth <= call_depth) ||
-
-	        (frame->call_chain < call_chain));
+	        (frame->call_chain < call_chain);
 }
 
 FinishBreakpoint::FinishBreakpoint(Stack_frame *frame)
@@ -81,10 +80,9 @@ FinishBreakpoint::FinishBreakpoint(Stack_frame *frame)
 }
 
 bool FinishBreakpoint::check(Stack_frame *frame) const {
-	return ((frame->call_chain == call_chain &&
+	return (frame->call_chain == call_chain &&
 	         frame->call_depth < call_depth) ||
-
-	        (frame->call_chain < call_chain));
+	        (frame->call_chain < call_chain);
 }
 
 

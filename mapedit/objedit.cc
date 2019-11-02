@@ -112,7 +112,7 @@ C_EXPORT gboolean on_obj_draw_expose_event(
 	ExultStudio::get_instance()->show_obj_shape(
 	    event->area.x, event->area.y, event->area.width,
 	    event->area.height);
-	return (TRUE);
+	return TRUE;
 }
 
 /*

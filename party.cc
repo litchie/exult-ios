@@ -527,7 +527,7 @@ inline bool Is_step_okay(
 	// How close in XY?
 	int dist = leader->distance(to);
 	if (dist == 1)
-		return (difftz <= 1);   // 1 tile away, so want dz <= 1.
+		return difftz <= 1;   // 1 tile away, so want dz <= 1.
 	return Clear_to_leader(npc, leader, to);       // Couldn't take a 2nd step.
 }
 

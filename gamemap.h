@@ -142,10 +142,10 @@ public:
 	}
 	Map_chunk *get_chunk_safely(int cx, int cy) {
 		Map_chunk *list;
-		return (cx >= 0 && cx < c_num_chunks &&
-		        cy >= 0 && cy < c_num_chunks ?
-		        ((list = objects[cx][cy]) != nullptr ? list :
-		         create_chunk(cx, cy)) : nullptr);
+		return cx >= 0 && cx < c_num_chunks &&
+		       cy >= 0 && cy < c_num_chunks ?
+		       ((list = objects[cx][cy]) != nullptr ? list :
+		        create_chunk(cx, cy)) : nullptr;
 	}
 	// Get "map" superchunk objs/scenery.
 	void get_map_objects(int schunk);

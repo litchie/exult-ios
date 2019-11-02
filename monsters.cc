@@ -274,7 +274,7 @@ Game_object_shared Monster_actor::create(
 	if (sched < 0)          // Set sched. AFTER equipping.
 		sched = static_cast<int>(Schedule::loiter);
 	monster->set_schedule_type(sched);
-	return (new_monster);
+	return new_monster;
 }
 
 /*
@@ -320,7 +320,7 @@ int Monster_actor::step(
 	// If move not allowed do I remove or change destination?
 	// I'll do nothing for now
 	if (!gwin->emulate_is_move_allowed(t.tx, t.ty))
-		return (0);
+		return 0;
 	if (get_flag(Obj_flags::paralyzed) || get_map() != gmap)
 		return 0;
 	// Get old chunk.
@@ -338,7 +338,7 @@ int Monster_actor::step(
 		stop();
 		if (!gwin->add_dirty(this))
 			dormant = true; // Off-screen.
-		return (0);     // Done.
+		return 0;     // Done.
 	}
 	// Check for scrolling.
 	gwin->scroll_if_needed(this, t);
@@ -354,10 +354,10 @@ int Monster_actor::step(
 		// No longer on screen.
 		stop();
 		dormant = true;
-		return (0);
+		return 0;
 	}
 	quake_on_walk();
-	return (1);         // Add back to queue for next time.
+	return 1;         // Add back to queue for next time.
 }
 
 /*
@@ -404,7 +404,7 @@ bool Monster_actor::add(
 	ignore_unused_variable_warning(dont_check);
 	// Try to add to 'readied' spot.
 	if (Npc_actor::add(obj, true, combine, noset))
-		return (true);      // Successful.
+		return true;      // Successful.
 	// Just add anything.
 	return Container_game_object::add(obj, true, combine);
 }

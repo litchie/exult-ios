@@ -115,7 +115,7 @@ C_EXPORT gboolean on_egg_monster_draw_expose_event(
 	ExultStudio::get_instance()->show_egg_monster(
 	    event->area.x, event->area.y, event->area.width,
 	    event->area.height);
-	return (TRUE);
+	return TRUE;
 }
 
 /*

@@ -48,7 +48,7 @@ public:
 		return selected;
 	}
 	bool is_mouse_over(int mx, int my) {
-		return ((mx >= x1) && (mx <= x2) && (my >= y1) && (my <= y2));
+		return (mx >= x1) && (mx <= x2) && (my >= y1) && (my <= y2);
 	}
 
 	virtual void paint(Game_window *gwin) = 0;
@@ -90,7 +90,7 @@ public:
 	}
 
 	virtual int get_height() {
-		return (y2 - y1);
+		return y2 - y1;
 	}
 	void paint(Game_window *gwin) override = 0;
 	bool handle_event(SDL_Event &event) override = 0;
@@ -150,7 +150,7 @@ private:
 public:
 	int add_entry(MenuObject *entry) {
 		entries.emplace_back(entry);
-		return (entries.size() - 1);
+		return entries.size() - 1;
 	}
 	void paint(Game_window *gwin);
 	int handle_events(Game_window *gwin, Mouse *mouse);

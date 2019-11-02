@@ -62,7 +62,7 @@ public:                 // Let's make it all public.
 	Rectangle() noexcept = default;         // An uninitialized one.
 	// Is this point in it?
 	bool has_point(int px, int py) const noexcept {
-		return (px >= x && px < x + w && py >= y && py < y + h);
+		return px >= x && px < x + w && py >= y && py < y + h;
 	}
 	// Add another to this one to get
 	//  a rect. that encloses both.

@@ -152,9 +152,9 @@ static int RGBtoYUV(unsigned int r, unsigned int g, unsigned int b) {
 }
 
 inline bool Diff(int YUV1, int YUV2) {
-	return ((std::abs((YUV1 & Ymask) - (YUV2 & Ymask)) > trY) ||
-	        (std::abs((YUV1 & Umask) - (YUV2 & Umask)) > trU) ||
-	        (std::abs((YUV1 & Vmask) - (YUV2 & Vmask)) > trV));
+	return (std::abs((YUV1 & Ymask) - (YUV2 & Ymask)) > trY) ||
+	       (std::abs((YUV1 & Umask) - (YUV2 & Umask)) > trU) ||
+	       (std::abs((YUV1 & Vmask) - (YUV2 & Vmask)) > trV);
 }
 
 template<class Manip_pixels>

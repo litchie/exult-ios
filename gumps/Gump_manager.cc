@@ -97,7 +97,7 @@ Gump *Gump_manager::find_gump(
 		if (gump->has_point(x, y) && (pers || !gump->is_persistent()))
 			found = gump;
 	}
-	return (found);
+	return found;
 }
 
 /*
@@ -114,7 +114,7 @@ Gump *Gump_manager::find_gump(
 	// Look for container's gump.
 	for (Gump_list *gmp = open_gumps; gmp; gmp = gmp->next)
 		if (gmp->gump->get_container() == owner)
-			return (gmp->gump);
+			return gmp->gump;
 
 	Gump *dragged = gwin->get_dragging_gump();
 	if (dragged && dragged->get_container() == owner)
@@ -524,7 +524,7 @@ int Gump_manager::handle_modal_gump_event(
 		break;
 	case SDL_QUIT:
 		if (okay_to_quit())
-			return (0);
+			return 0;
 		break;
 	case SDL_KEYDOWN:
 #if SDL_VERSION_ATLEAST(2, 0, 0)
@@ -536,7 +536,7 @@ int Gump_manager::handle_modal_gump_event(
 #endif
 	{
 		if (event.key.keysym.sym == SDLK_ESCAPE)
-			return (0);
+			return 0;
 		if ((event.key.keysym.sym == SDLK_s) &&
 		        (event.key.keysym.mod & KMOD_ALT) &&
 		        (event.key.keysym.mod & KMOD_CTRL)) {
@@ -558,7 +558,7 @@ int Gump_manager::handle_modal_gump_event(
 		break;
 	}
 	}
-	return (1);
+	return 1;
 }
 
 void Gump_manager::translate_numpad(SDLKey& code, uint16& unicode, uint16 mod) {
@@ -720,7 +720,7 @@ int Gump_manager::do_modal_gump(
 	if (!modal_gump_count)
 		SDL_EnableUNICODE(0);
 
-	return (!escaped);
+	return !escaped;
 }
 
 
@@ -741,7 +741,7 @@ int Gump_manager::prompt_for_number(
 	int ok = do_modal_gump(slider, Mouse::hand, paint);
 	int ret = !ok ? 0 : slider->get_val();
 	delete slider;
-	return (ret);
+	return ret;
 }
 
 

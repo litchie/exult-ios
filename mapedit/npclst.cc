@@ -314,7 +314,7 @@ gint Npc_chooser::configure(
 		render();       // Same size?  Just render it.
 	if (group)          // Filtering?
 		enable_drop();      // Can drop NPCs here.
-	return (TRUE);
+	return TRUE;
 }
 
 /*
@@ -330,7 +330,7 @@ gint Npc_chooser::expose(
 	Npc_chooser *chooser = static_cast<Npc_chooser *>(data);
 	chooser->show(event->area.x, event->area.y, event->area.width,
 	              event->area.height);
-	return (TRUE);
+	return TRUE;
 }
 
 /*
@@ -402,10 +402,10 @@ gint Npc_chooser::mouse_press(
 	if (event->button == 4) {
 		if (row0 > 0)
 			scroll_row_vertical(row0 - 1);
-		return(TRUE);
+		return TRUE;
 	} else if (event->button == 5) {
 		scroll_row_vertical(row0 + 1);
-		return(TRUE);
+		return TRUE;
 	}
 	int old_selected = selected;
 	int new_selected = -1;
@@ -447,7 +447,7 @@ gint Npc_chooser::mouse_press(
 	if (event->button == 3)
 		gtk_menu_popup(GTK_MENU(create_popup()),
 		               nullptr, nullptr, nullptr, nullptr, event->button, event->time);
-	return (TRUE);
+	return TRUE;
 }
 
 /*

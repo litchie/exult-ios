@@ -417,7 +417,7 @@ public:
 	}
 
 	int ready() {       // Ready to draw?
-		return (ibuf->bits != nullptr);
+		return ibuf->bits != nullptr;
 	}
 	bool is_fullscreen() {
 		return fullscreen;

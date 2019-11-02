@@ -184,7 +184,7 @@ inline int Usecode_internal::get_shape_fun(int n) {
 
 inline bool Usecode_internal::is_object_fun(int n) {
 	if (!symtbl)
-		return (n < 0x800);
+		return n < 0x800;
 	return symtbl->is_object_fun(n);
 }
 
@@ -550,7 +550,7 @@ Actor *Usecode_internal::as_actor(
 ) {
 	if (!obj)
 		return nullptr;
-	return (obj->as_actor());
+	return obj->as_actor();
 }
 
 /*
@@ -1051,7 +1051,7 @@ Usecode_value Usecode_internal::find_nearby(
 		Usecode_value val(each);
 		nearby.put_elem(i++, val);
 	}
-	return (nearby);
+	return nearby;
 }
 
 /*
@@ -1206,7 +1206,7 @@ Usecode_value Usecode_internal::get_objects(
 		Usecode_value val(each);
 		within.put_elem(i++, val);
 	}
-	return (within);
+	return within;
 }
 
 /*
@@ -1605,7 +1605,7 @@ Usecode_value Usecode_internal::Execute_Intrinsic(UsecodeIntrinsicFn func, const
 		cout.flush();
 		Usecode_value u = ((*this).*func)(num_parms, parms);
 		Usecode_TraceReturn(u);
-		return (u);
+		return u;
 	}
 #endif
 	return ((*this).*func)(num_parms, parms);
@@ -1672,7 +1672,7 @@ Usecode_value Usecode_internal::call_intrinsic(
 		return Execute_Intrinsic(func, name, intrinsic,
 		                         num_parms, parms);
 	}
-	return(no_ret);
+	return no_ret;
 }
 
 /*
@@ -1719,7 +1719,7 @@ const char *Usecode_internal::get_user_choice(
 	// (breaks conversation with Cyclops on Dagger Isle ('foul magic' option))
 
 	get_user_choice_num();
-	return (user_choice);
+	return user_choice;
 }
 
 /*
@@ -1757,7 +1757,7 @@ int Usecode_internal::get_user_choice_num(
 	conv->clear_avatar_choices();
 	// Store ->answer string.
 	user_choice = newstrdup(conv->get_answer(choice_num));
-	return (choice_num);        // Return choice #.
+	return choice_num;        // Return choice #.
 }
 
 /*
@@ -3333,7 +3333,7 @@ Usecode_value *Usecode_internal::peek_stack(int depth) const {
 	if (depth < 0 || depth >= get_stack_size())
 		return nullptr;
 
-	return (sp - depth - 1);
+	return sp - depth - 1;
 }
 
 // modify an(y) element on the stack. (depth == 0 is top element)

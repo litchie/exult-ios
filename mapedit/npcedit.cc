@@ -146,7 +146,7 @@ C_EXPORT gboolean on_npc_draw_expose_event(
 	ExultStudio::get_instance()->show_npc_shape(
 	    event->area.x, event->area.y, event->area.width,
 	    event->area.height);
-	return (TRUE);
+	return TRUE;
 }
 
 /*
@@ -189,7 +189,7 @@ C_EXPORT gboolean on_npc_face_draw_expose_event(
 	ExultStudio::get_instance()->show_npc_face(
 	    event->area.x, event->area.y, event->area.width,
 	    event->area.height);
-	return (TRUE);
+	return TRUE;
 }
 
 /*
@@ -391,7 +391,7 @@ static bool Get_prop_spin(
 	if (strncmp(name, "npc_prop_", 9) != 0)
 		return false;
 	pnum = atoi(name + 9);
-	return (pnum >= 0 && pnum < 12);
+	return pnum >= 0 && pnum < 12;
 }
 
 /*
@@ -428,7 +428,7 @@ static bool Get_flag_cbox(
 	else
 		return false;
 	fnum = atoi(name + 9 + 3);
-	return (fnum >= 0 && fnum < 32);
+	return fnum >= 0 && fnum < 32;
 }
 
 /*

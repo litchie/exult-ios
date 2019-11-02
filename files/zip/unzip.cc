@@ -197,7 +197,7 @@ static int strcmpcasenosensitive_internal(const char *fileName1, const char *fil
 		if ((c2 >= 'a') && (c2 <= 'z'))
 			c2 -= 0x20;
 		if (c1 == '\0')
-			return ((c2 == '\0') ? 0 : -1);
+			return (c2 == '\0') ? 0 : -1;
 		if (c2 == '\0')
 			return 1;
 		if (c1 < c2)

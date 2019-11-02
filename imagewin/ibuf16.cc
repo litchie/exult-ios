@@ -238,7 +238,7 @@ inline unsigned char Get_color16(
 ) {
 	unsigned int c = (static_cast<unsigned int>(val) * brightness * 32) /
 	                 (100 * (maxval + 1));
-	return (c < 32 ? c : 31);
+	return c < 32 ? c : 31;
 }
 
 /*

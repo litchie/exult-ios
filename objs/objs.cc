@@ -337,8 +337,8 @@ static int Has_quantity(
 
 static int Has_hitpoints(int shnum) {
 	const Shape_info &info = ShapeID::get_info(shnum);
-	return ((info.get_shape_class() == Shape_info::has_hp) ||
-	        (info.get_shape_class() == Shape_info::container));
+	return (info.get_shape_class() == Shape_info::has_hp) ||
+	       (info.get_shape_class() == Shape_info::container);
 
 	// containers have hitpoints too ('resistance')
 }
@@ -485,11 +485,11 @@ int Game_object::modify_quantity(
 	if (!Has_quantity(get_shapenum())) {
 		// Can't do quantity here.
 		if (delta > 0)
-			return (delta);
+			return delta;
 		remove_this();      // Remove from container (or world).
 		if (del)
 			*del = true;
-		return (delta + 1);
+		return delta + 1;
 	}
 	int quant = quality & 0x7f; // Get current quantity.
 	if (!quant)
@@ -503,7 +503,7 @@ int Game_object::modify_quantity(
 		remove_this();      // We're done for.
 		if (del)
 			*del = true;
-		return (delta + quant);
+		return delta + quant;
 	}
 	int oldvol = get_volume();  // Get old volume used.
 	quality = static_cast<char>(newquant);  // Store new value.
@@ -524,7 +524,7 @@ int Game_object::modify_quantity(
 	Container_game_object *owner = get_owner();
 	if (owner)          // Update owner's volume.
 		owner->modify_volume_used(get_volume() - oldvol);
-	return (delta - (newquant - quant));
+	return delta - (newquant - quant);
 }
 
 /*
@@ -618,7 +618,7 @@ int Game_object::swap_positions(
 	obj2->set_invalid();
 	move(p2.tx, p2.ty, p2.tz);  // Move to new locations.
 	obj2->move(p1.tx, p1.ty, p1.tz);
-	return (1);
+	return 1;
 }
 
 /*
@@ -804,7 +804,7 @@ Game_object *Game_object::find_closest(
 			best_dist = dist;
 		}
 	}
-	return (closest);
+	return closest;
 }
 
 /*
@@ -926,8 +926,8 @@ int Game_object::is_closed_door(
 		after = doortile + Tile_coord(0, 1, 0);
 	}
 	// Should be blocked before/after.
-	return (gmap->is_tile_occupied(before) &&
-	        gmap->is_tile_occupied(after));
+	return gmap->is_tile_occupied(before) &&
+	       gmap->is_tile_occupied(after);
 }
 
 /*
@@ -1113,7 +1113,7 @@ void Game_object::remove_this(
 
 int Game_object::is_dragable(
 ) const {
-	return (0);         // Default is 'no'.
+	return 0;         // Default is 'no'.
 }
 
 /*
@@ -1201,14 +1201,14 @@ int Game_object::drop(
 	int shapenum = get_shapenum();  // It's possible if shapes match.
 	if (obj->get_shapenum() != shapenum || !inf.has_quantity() ||
 	        (!inf.has_quantity_frames() && get_framenum() != obj->get_framenum()))
-		return (0);
+		return 0;
 	int objq = obj->get_quantity();
 	int total_quant = get_quantity() + objq;
 	if (total_quant > MAX_QUANTITY) // Too much?
-		return (0);
+		return 0;
 	modify_quantity(objq);      // Add to our quantity.
 	obj->remove_this();     // It's been used up.
-	return (1);
+	return 1;
 }
 
 //#define DEBUGLT
@@ -1307,7 +1307,7 @@ int Game_object::compare(
 	// See if there's no overlap.
 	Rectangle r2 = gwin->get_shape_rect(obj2);
 	if (!inf1.area.intersects(r2))
-		return (0);     // No overlap on screen.
+		return 0;     // No overlap on screen.
 	Ordering_info inf2(gwin, obj2, r2);
 #ifdef DEBUGLT
 	Debug_lt(inf1.tx, inf1.ty, inf2.tx, inf2.ty);

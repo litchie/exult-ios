@@ -126,7 +126,7 @@ void clear_system_path(const string &key) {
  *  Has a path been entered?
  */
 bool is_system_path_defined(const string &path) {
-	return (path_map.find(path) != path_map.end());
+	return path_map.find(path) != path_map.end();
 }
 
 /*
@@ -246,7 +246,7 @@ static bool base_to_uppercase(string &str, int count) {
 		todo--; // start of pathname counts as separator too
 
 	// false if it didn't reach 'count' parts
-	return (todo <= 0);
+	return todo <= 0;
 }
 
 
@@ -866,7 +866,7 @@ uint32 msb32(uint32 x) {
 	x |= (x >>  4);
 	x |= (x >>  8);
 	x |= (x >> 16);
-	return (x & ~(x >> 1));
+	return x & ~(x >> 1);
 }
 
 /*

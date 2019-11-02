@@ -836,7 +836,7 @@ Image_buffer *Image_window::create_buffer(
     int w, int h            // Dimensions.
 ) {
 	Image_buffer *newbuf = ibuf->create_another(w, h);
-	return (newbuf);
+	return newbuf;
 }
 
 /*

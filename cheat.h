@@ -115,7 +115,7 @@ public:
 		return pickpocket;
 	}
 	bool in_hack_mover() const {
-		return (hack_mover || map_editor);
+		return hack_mover || map_editor;
 	}
 
 	void toggle_god();

@@ -240,7 +240,7 @@ C_EXPORT gboolean on_equip_draw_expose_event(
 	    static_cast<Equip_row_widgets *>(data),
 	    event->area.x, event->area.y, event->area.width,
 	    event->area.height);
-	return (TRUE);
+	return TRUE;
 }
 /*
  *  Shape # on one of the rows was changed.
@@ -257,7 +257,7 @@ C_EXPORT gboolean on_equip_shape_changed(
 	                GTK_SPIN_BUTTON(eq->shape));
 	const char *nm = studio->get_shape_name(shape);
 	gtk_label_set_text(GTK_LABEL(eq->name), nm ? nm : "");
-	return (TRUE);
+	return TRUE;
 }
 
 /*
@@ -553,7 +553,7 @@ C_EXPORT gboolean on_shinfo_draw_expose_event(
 	ExultStudio::get_instance()->show_shinfo_shape(
 	    event->area.x, event->area.y, event->area.width,
 	    event->area.height);
-	return (TRUE);
+	return TRUE;
 }
 
 /*
@@ -568,7 +568,7 @@ C_EXPORT gboolean on_shinfo_gump_draw_expose_event(
 	ExultStudio::get_instance()->show_shinfo_gump(
 	    event->area.x, event->area.y, event->area.width,
 	    event->area.height);
-	return (TRUE);
+	return TRUE;
 }
 
 /*
@@ -597,7 +597,7 @@ C_EXPORT gboolean on_shinfo_body_draw_expose_event(
 	ExultStudio::get_instance()->show_shinfo_body(
 	    event->area.x, event->area.y, event->area.width,
 	    event->area.height);
-	return (TRUE);
+	return TRUE;
 }
 
 /*
@@ -640,7 +640,7 @@ C_EXPORT gboolean on_shinfo_explosion_draw_expose_event(
 	ExultStudio::get_instance()->show_shinfo_explosion(
 	    event->area.x, event->area.y, event->area.width,
 	    event->area.height);
-	return (TRUE);
+	return TRUE;
 }
 
 /*
@@ -671,7 +671,7 @@ C_EXPORT gboolean on_shinfo_weapon_ammo_changed(
 	bool on = sel == 0;
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->set_sensitive("shinfo_weapon_ammo_shape", on);
-	return (TRUE);
+	return TRUE;
 }
 
 /*
@@ -688,7 +688,7 @@ C_EXPORT gboolean on_shinfo_weapon_sprite_changed(
 	bool on = sel == 0;
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->set_sensitive("shinfo_weapon_proj", on);
-	return (TRUE);
+	return TRUE;
 }
 
 /*
@@ -705,7 +705,7 @@ C_EXPORT gboolean on_shinfo_ammo_sprite_changed(
 	bool on = sel == 0;
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->set_sensitive("shinfo_ammo_proj", on);
-	return (TRUE);
+	return TRUE;
 }
 
 /*
@@ -732,7 +732,7 @@ C_EXPORT gboolean on_shinfo_animation_type_changed(
 	studio->set_sensitive("shinfo_animation_rectype", on);
 	bool recon = studio->get_toggle("shinfo_animation_rectype");
 	studio->set_sensitive("shinfo_animation_recycle", on && !recon);
-	return (TRUE);
+	return TRUE;
 }
 /*
  *  Animation frame count menu changed.
@@ -745,7 +745,7 @@ C_EXPORT gboolean on_shinfo_animation_frtype_toggled(
 	bool on = !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->set_sensitive("shinfo_animation_frcount", on);
-	return (TRUE);
+	return TRUE;
 }
 
 
@@ -760,7 +760,7 @@ C_EXPORT gboolean on_shinfo_animation_rectype_toggled(
 	bool on = !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->set_sensitive("shinfo_animation_recycle", on);
-	return (TRUE);
+	return TRUE;
 }
 
 /*
@@ -774,7 +774,7 @@ C_EXPORT gboolean on_shinfo_animation_sfxsynch_toggled(
 	bool on = !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->set_sensitive("shinfo_animation_sfxdelay", on);
-	return (TRUE);
+	return TRUE;
 }
 
 /*
@@ -790,7 +790,7 @@ C_EXPORT gboolean on_shinfo_animation_freezefirst_changed(
 	int sel = g_list_index(GTK_MENU_SHELL(menu)->children, active);
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->set_sensitive("shinfo_animation_freezechance", sel == 2);
-	return (TRUE);
+	return TRUE;
 }
 
 /*
@@ -804,7 +804,7 @@ C_EXPORT gboolean on_shinfo_effhps_frame_type_toggled(
 	bool on = !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->set_sensitive("shinfo_effhps_frame_num", on);
-	return (TRUE);
+	return TRUE;
 }
 
 /*
@@ -818,7 +818,7 @@ C_EXPORT gboolean on_shinfo_effhps_qual_type_toggled(
 	bool on = !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->set_sensitive("shinfo_effhps_qual_num", on);
-	return (TRUE);
+	return TRUE;
 }
 
 /*
@@ -832,7 +832,7 @@ C_EXPORT gboolean on_shinfo_effhps_hp_type_toggled(
 	bool on = !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->set_sensitive("shinfo_effhps_hp_val", on);
-	return (TRUE);
+	return TRUE;
 }
 
 /*
@@ -846,7 +846,7 @@ C_EXPORT gboolean on_shinfo_frameusecode_frame_type_toggled(
 	bool on = !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->set_sensitive("shinfo_frameusecode_frame_num", on);
-	return (TRUE);
+	return TRUE;
 }
 
 /*
@@ -860,7 +860,7 @@ C_EXPORT gboolean on_shinfo_frameusecode_qual_type_toggled(
 	bool on = !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->set_sensitive("shinfo_frameusecode_qual_num", on);
-	return (TRUE);
+	return TRUE;
 }
 
 /*
@@ -874,7 +874,7 @@ C_EXPORT gboolean on_shinfo_framenames_frame_type_toggled(
 	bool on = !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->set_sensitive("shinfo_framenames_frame_num", on);
-	return (TRUE);
+	return TRUE;
 }
 
 /*
@@ -888,7 +888,7 @@ C_EXPORT gboolean on_shinfo_framenames_qual_type_toggled(
 	bool on = !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->set_sensitive("shinfo_framenames_qual_num", on);
-	return (TRUE);
+	return TRUE;
 }
 
 /*
@@ -926,7 +926,7 @@ C_EXPORT gboolean on_shinfo_framenames_name_type_changed(
 		ot = studio->get_optmenu("shinfo_framenames_comp_msg_type");
 		studio->set_sensitive("shinfo_framenames_comp_msg_text", ot == 2);
 	}
-	return (TRUE);
+	return TRUE;
 }
 
 /*
@@ -942,7 +942,7 @@ C_EXPORT gboolean on_shinfo_framenames_comp_msg_type_changed(
 	int val = g_list_index(GTK_MENU_SHELL(menu)->children, active);
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->set_sensitive("shinfo_framenames_comp_msg_text", val == 2);
-	return (TRUE);
+	return TRUE;
 }
 
 /*
@@ -963,7 +963,7 @@ C_EXPORT gboolean on_shinfo_framenames_comp_type_changed(
 		studio->set_optmenu("shinfo_framenames_comp_msg_type", 0, false);
 	val = studio->get_optmenu("shinfo_framenames_comp_msg_type");
 	studio->set_sensitive("shinfo_framenames_comp_msg_text", val == 2);
-	return (TRUE);
+	return TRUE;
 }
 
 /*
@@ -977,7 +977,7 @@ C_EXPORT gboolean on_shinfo_frameflags_frame_type_toggled(
 	bool on = !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->set_sensitive("shinfo_frameflags_frame_num", on);
-	return (TRUE);
+	return TRUE;
 }
 
 /*
@@ -991,7 +991,7 @@ C_EXPORT gboolean on_shinfo_frameflags_qual_type_toggled(
 	bool on = !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->set_sensitive("shinfo_frameflags_qual_num", on);
-	return (TRUE);
+	return TRUE;
 }
 
 /*
@@ -1005,7 +1005,7 @@ C_EXPORT gboolean on_shinfo_warmth_frame_type_toggled(
 	bool on = !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->set_sensitive("shinfo_warmth_frame_num", on);
-	return (TRUE);
+	return TRUE;
 }
 
 /*
@@ -1019,7 +1019,7 @@ C_EXPORT gboolean on_shinfo_cntrules_shape_type_toggled(
 	bool on = !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->set_sensitive("shinfo_cntrules_shape_num", on);
-	return (TRUE);
+	return TRUE;
 }
 
 /*
@@ -1033,7 +1033,7 @@ C_EXPORT gboolean on_shinfo_explosion_sfx_type_toggled(
 	bool on = !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->set_sensitive("shinfo_explosion_sfx_number", on);
-	return (TRUE);
+	return TRUE;
 }
 
 /*
@@ -1152,7 +1152,7 @@ static inline void Get_hp_fields(
 static inline bool Have_quality() {
 	ExultStudio *studio = ExultStudio::get_instance();
 	int c = studio->get_optmenu("shinfo_shape_class");
-	return (c == 1 || c == 5 || c == 6 || c == 9 || c == 10 || c == 11);
+	return c == 1 || c == 5 || c == 6 || c == 9 || c == 10 || c == 11;
 }
 
 static inline void Set_hp_fields(
@@ -1291,7 +1291,7 @@ C_EXPORT gboolean on_shinfo_shape_class_changed(
 	else
 		studio->set_optmenu("shinfo_mountaintop_type", 0, false);
 
-	return (TRUE);
+	return TRUE;
 }
 
 /*
@@ -2159,7 +2159,7 @@ C_EXPORT gboolean on_shinfo_objpaperdoll_frame_type_toggled(
 	bool on = !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->set_sensitive("shinfo_objpaperdoll_wframe", on);
-	return (TRUE);
+	return TRUE;
 }
 
 /*
@@ -2268,7 +2268,7 @@ C_EXPORT gboolean on_shinfo_objpaperdoll_spot_changed(
 	ExultStudio *studio = ExultStudio::get_instance();
 	int ready = studio->get_optmenu("shinfo_ready_spot");
 	Set_objpaperdoll_sensitivity(studio, spot, ready);
-	return (TRUE);
+	return TRUE;
 }
 
 /*
@@ -2285,7 +2285,7 @@ C_EXPORT gboolean on_shinfo_ready_spot_changed(
 	ExultStudio *studio = ExultStudio::get_instance();
 	int spot = studio->get_optmenu("shinfo_objpaperdoll_spot");
 	Set_objpaperdoll_sensitivity(studio, spot, ready);
-	return (TRUE);
+	return TRUE;
 }
 
 /*

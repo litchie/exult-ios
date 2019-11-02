@@ -530,7 +530,7 @@ Egg_object_shared Egg_object::create_egg(
 	}
 	if (animated)
 		obj->set_animator(new Frame_animator(obj.get()));
-	return (obj);
+	return obj;
 }
 
 /*
@@ -716,12 +716,12 @@ int Egg_object::is_active(
 		return 0;       // Disable in map-editor.
 	if ((flags & (1 << static_cast<int>(hatched))) &&
 	        !(flags & (1 << static_cast<int>(auto_reset))))
-		return (0);     // For now... Already hatched.
+		return 0;     // For now... Already hatched.
 	if (flags & (1 << static_cast<int>(nocturnal))) {
 		// Nocturnal.
 		int hour = gclock->get_hour();
 		if (!(hour >= 21 || hour <= 4))
-			return (0); // It's not night.
+			return 0; // It's not night.
 	}
 	Egg_criteria cri = static_cast<Egg_criteria>(get_criteria());
 
@@ -773,7 +773,7 @@ int Egg_object::is_active(
 		return 1;
 	case avatar_far: {      // New tile is outside, old is inside.
 		if (obj != gwin->get_main_actor() || !area.has_world_point(tx, ty))
-			return (0);
+			return 0;
 		Rectangle inside(area.x + 1, area.y + 1,
 		                 area.w - 2, area.h - 2);
 		return inside.has_world_point(from_tx, from_ty) &&

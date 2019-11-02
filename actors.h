@@ -456,7 +456,7 @@ public:
 		Game_object_shared tobj = target_object.lock();
 		obj = tobj.get();
 		t = target_tile;
-		return (obj || target_tile != invalidloc);
+		return obj || target_tile != invalidloc;
 	}
 	void set_attack_target(Game_object *t, int w) {
 		target_tile = Tile_coord(-1, -1, 0);

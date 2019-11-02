@@ -492,7 +492,7 @@ gint Locator::mouse_press(
 	dragging = true;
 	drag_relx = mx - viewbox.x; // Save rel. pos.
 	drag_rely = my - viewbox.y;
-	return (TRUE);
+	return TRUE;
 }
 
 /*

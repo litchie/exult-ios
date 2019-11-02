@@ -93,7 +93,7 @@ int Time_queue::remove(
 			return 1;
 		}
 	}
-	return (0);         // Not found.
+	return 0;         // Not found.
 }
 
 /*
@@ -116,7 +116,7 @@ int Time_queue::remove(
 			return 1;
 		}
 	}
-	return (0);         // Not found.
+	return 0;         // Not found.
 }
 
 /*
@@ -242,10 +242,10 @@ int Time_queue_iterator::operator()(
 	        (*iter).handler != this_obj)
 		++iter;
 	if (iter == tqueue->data.end())
-		return (0);
+		return 0;
 	obj = (*iter).handler;      // Return fields.
 	data = (*iter).udata;
 	++iter;             // On to the next.
-	return (1);
+	return 1;
 }
 

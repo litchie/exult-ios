@@ -1100,7 +1100,7 @@ bool Game_window::scroll_if_needed(
 		view_down();
 		scrolled = true;
 	}
-	return (scrolled);
+	return scrolled;
 }
 
 /*
@@ -1981,7 +1981,7 @@ Game_object *Game_window::find_object(
 				}
 			}
 		}
-	return (best);
+	return best;
 }
 
 #ifdef __IPHONEOS__
@@ -3044,7 +3044,7 @@ bool Game_window::is_hostile_nearby() {
 bool Game_window::failed_copy_protection() {
 	bool confused = main_actor->get_flag(Obj_flags::confused);
 	bool failureFlag = usecode->get_global_flag(56);
-	return ((GAME_SI && confused) || (GAME_BG && failureFlag));
+	return (GAME_SI && confused) || (GAME_BG && failureFlag);
 }
 
 void Game_window::got_bad_feeling(int odds) {

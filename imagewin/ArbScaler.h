@@ -54,7 +54,7 @@ public:
 	virtual const char     *ScalerCopyright() const = 0;    //< Scaler Copyright info
 
 	bool Support8bpp(int srcfmt) {
-		return (srcfmt == 8 && Scale8To8);
+		return srcfmt == 8 && Scale8To8;
 	}
 
 	bool Support16bpp(int srcfmt) {

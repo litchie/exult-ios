@@ -78,7 +78,7 @@ int Actor_gump::find_closest(
 			closest = i;
 		}
 	}
-	return (closest);
+	return closest;
 }
 
 /*
@@ -129,17 +129,17 @@ int Actor_gump::add(
 	Game_object *cont = find_object(mx, my);
 
 	if (cont && cont->add(obj, false, combine))
-		return (1);
+		return 1;
 
 	int index = find_closest(mx, my, 1);
 
 	if (index != -1 && container->add_readied(obj, index))
-		return (1);
+		return 1;
 
 	if (container->add(obj, dont_check, combine))
-		return (1);
+		return 1;
 
-	return (0);
+	return 0;
 }
 #else
 {
@@ -153,13 +153,13 @@ int Actor_gump::add(
 		if (index < 0 || !container->add_readied(obj, index))
 			// Just try to add it.
 			if (!container->add(obj))
-				return (0);
+				return 0;
 	}
 	// In case it went in another obj:
 	index = container->find_readied(obj);
 	if (index >= 0)
 		set_to_spot(obj, index);// Set obj. coords.
-	return (1);
+	return 1;
 }
 #endif
 

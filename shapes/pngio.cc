@@ -63,26 +63,26 @@ int Import_png8(
 	// Open file.
 	FILE *fp = fopen(pngname, "rb");
 	if (!fp)
-		return (0);
+		return 0;
 	unsigned char sigbuf[8];        // Make sure it's a .png.
 	if (fread(sigbuf, 1, sizeof(sigbuf), fp) != sizeof(sigbuf) ||
 	        png_sig_cmp(sigbuf, 0, sizeof(sigbuf))) {
 		fclose(fp);
-		return (0);
+		return 0;
 	}
 	// Initialize.
 	png_structp png = png_create_read_struct(PNG_LIBPNG_VER_STRING,
 	                  nullptr, nullptr, nullptr);
 	if (!png) {
 		fclose(fp);
-		return (0);
+		return 0;
 	}
 	// Allocate info. structure.
 	png_infop info = png_create_info_struct(png);
 	if (setjmp(png_jmpbuf(png))) {  // Handle errors.
 		png_destroy_read_struct(&png, &info, nullptr);
 		fclose(fp);
-		return (0);
+		return 0;
 	}
 	png_init_io(png, fp);       // Init. for reading.
 	// Indicate we already read something.
@@ -100,7 +100,7 @@ int Import_png8(
 	if (color != PNG_COLOR_TYPE_PALETTE) {
 		png_destroy_read_struct(&png, &info, nullptr);
 		fclose(fp);
-		return (0);
+		return 0;
 	}
 	if (depth < 8)
 		png_set_packing(png);
@@ -163,7 +163,7 @@ int Import_png8(
 	// Clean up.
 	png_destroy_read_struct(&png, &info, nullptr);
 	fclose(fp);
-	return (1);
+	return 1;
 }
 
 
@@ -192,20 +192,20 @@ int Export_png8(
 	// Open file.
 	FILE *fp = fopen(pngname, "wb");
 	if (!fp)
-		return (0);
+		return 0;
 	// Initialize.
 	png_structp png = png_create_write_struct(PNG_LIBPNG_VER_STRING,
 	                  nullptr, nullptr, nullptr);
 	if (!png) {
 		fclose(fp);
-		return (0);
+		return 0;
 	}
 	// Allocate info. structure.
 	png_infop info = png_create_info_struct(png);
 	if (setjmp(png_jmpbuf(png))) {  // Handle errors.
 		png_destroy_write_struct(&png, &info);
 		fclose(fp);
-		return (0);
+		return 0;
 	}
 	png_init_io(png, fp);       // Init. for reading.
 	png_set_IHDR(png, info, width, height, 8, PNG_COLOR_TYPE_PALETTE,
@@ -250,7 +250,7 @@ int Export_png8(
 	// Clean up.
 	png_destroy_write_struct(&png, &info);
 	fclose(fp);
-	return (1);
+	return 1;
 }
 
 /*
@@ -275,26 +275,26 @@ int Import_png32(
 	// Open file.
 	FILE *fp = fopen(pngname, "rb");
 	if (!fp)
-		return (0);
+		return 0;
 	unsigned char sigbuf[8];        // Make sure it's a .png.
 	if (fread(sigbuf, 1, sizeof(sigbuf), fp) != sizeof(sigbuf) ||
 	        png_sig_cmp(sigbuf, 0, sizeof(sigbuf))) {
 		fclose(fp);
-		return (0);
+		return 0;
 	}
 	// Initialize.
 	png_structp png = png_create_read_struct(PNG_LIBPNG_VER_STRING,
 	                  nullptr, nullptr, nullptr);
 	if (!png) {
 		fclose(fp);
-		return (0);
+		return 0;
 	}
 	// Allocate info. structure.
 	png_infop info = png_create_info_struct(png);
 	if (setjmp(png_jmpbuf(png))) {  // Handle errors.
 		png_destroy_read_struct(&png, &info, nullptr);
 		fclose(fp);
-		return (0);
+		return 0;
 	}
 	png_init_io(png, fp);       // Init. for reading.
 	// Indicate we already read something.
@@ -344,7 +344,7 @@ int Import_png32(
 	// Clean up.
 	png_destroy_read_struct(&png, &info, nullptr);
 	fclose(fp);
-	return (1);
+	return 1;
 }
 
 
@@ -366,20 +366,20 @@ int Export_png32(
 	// Open file.
 	FILE *fp = fopen(pngname, "wb");
 	if (!fp)
-		return (0);
+		return 0;
 	// Initialize.
 	png_structp png = png_create_write_struct(PNG_LIBPNG_VER_STRING,
 	                  nullptr, nullptr, nullptr);
 	if (!png) {
 		fclose(fp);
-		return (0);
+		return 0;
 	}
 	// Allocate info. structure.
 	png_infop info = png_create_info_struct(png);
 	if (setjmp(png_jmpbuf(png))) {  // Handle errors.
 		png_destroy_write_struct(&png, &info);
 		fclose(fp);
-		return (0);
+		return 0;
 	}
 	png_init_io(png, fp);       // Init. for reading.
 	png_set_IHDR(png, info, width, height, 8, PNG_COLOR_TYPE_RGB_ALPHA,
@@ -396,7 +396,7 @@ int Export_png32(
 	// Clean up.
 	png_destroy_write_struct(&png, &info);
 	fclose(fp);
-	return (1);
+	return 1;
 }
 
 

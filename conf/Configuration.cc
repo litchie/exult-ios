@@ -143,13 +143,13 @@ bool    Configuration::read_config_string(const string &s) {
 }
 
 static inline bool is_path_absolute(const string &path) {
-	return ((path.find("./") == 0) || (path.find("../") == 0) || (path[0] == '/')
+	return (path.find("./") == 0) || (path.find("../") == 0) || (path[0] == '/')
 #if defined(_WIN32)
 	        || (path.find(".\\") == 0) || (path.find("..\\") == 0) || (path[0] == '\\')
 	        || (std::isalpha(path[0]) && path[1] == ':' &&
 	            (path[2] == '/' || path[2] == '\\'))
 #endif
-	       );
+	       ;
 }
 
 bool    Configuration::read_config_file(const string &input_filename, const string &root) {

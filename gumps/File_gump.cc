@@ -219,7 +219,7 @@ int Gump_text::mouse_clicked(
     int mx, int my          // Mouse position on screen.
 ) {
 	if (!on_widget(mx, my))     // Not in our area?
-		return (0);
+		return 0;
 	mx -= textx + parent->get_x();  // Get pt. rel. to text area.
 	if (!get_framenum()) {      // Gaining focus?
 		set_frame(1);       // We have focus now.
@@ -234,7 +234,7 @@ int Gump_text::mouse_clicked(
 		if (cursor > length)
 			cursor--;   // Passed the end.
 	}
-	return (1);
+	return 1;
 }
 
 /*
@@ -263,13 +263,13 @@ void Gump_text::insert(
 int Gump_text::delete_left(
 ) {
 	if (!get_framenum() || !cursor)     // Can't do it.
-		return (0);
+		return 0;
 	if (cursor < length)        // Shift text left.
 		memmove(text + cursor - 1, text + cursor, length - cursor);
 	text[--length] = 0;     // 0-delimit.
 	cursor--;
 	refresh();
-	return (1);
+	return 1;
 }
 
 /*
@@ -281,9 +281,9 @@ int Gump_text::delete_left(
 int Gump_text::delete_right(
 ) {
 	if (!get_framenum() || cursor == length)
-		return (0);     // Past end of text.
+		return 0;     // Past end of text.
 	cursor++;           // Move right.
-	return (delete_left());     // Delete what was passed.
+	return delete_left();     // Delete what was passed.
 }
 
 /*
@@ -351,8 +351,8 @@ int File_gump::get_save_index(
 ) {
 	for (size_t i = 0; i < array_size(names); i++)
 		if (names[i] == txt)
-			return (i);
-	return (-1);
+			return i;
+	return -1;
 }
 
 /*

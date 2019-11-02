@@ -565,9 +565,9 @@ int Barge_object::okay_to_land(
 			for (int tx = tiles.x; tx < tiles.x + tiles.w; tx++)
 				if (chunk->get_highest_blocked(lift, tx, ty) != -1 ||
 				        chunk->get_flat(tx, ty).get_info().is_water())
-					return (0);
+					return 0;
 	}
-	return (1);
+	return 1;
 }
 
 /*
@@ -684,7 +684,7 @@ bool Barge_object::add(
 ) {
 	ignore_unused_variable_warning(dont_check, combine, noset);
 	objects.push_back(obj->shared_from_this());     // Add to list.
-	return (false);         // We want it added to the chunk.
+	return false;         // We want it added to the chunk.
 }
 
 /*
@@ -880,13 +880,13 @@ int Barge_object::step(
 	// No rising/dropping.
 	if (Map_chunk::is_blocked(get_xtiles(), get_ytiles(),
 	                          4, cur, t, move_type, 0, 0))
-		return (0);     // Done.
+		return 0;     // Done.
 	move(t.tx, t.ty, t.tz);     // Move it & its objects.
 	// Near an egg?
 	Map_chunk *nlist = gmap->get_chunk(get_cx(), get_cy());
 	nlist->activate_eggs(gwin->get_main_actor(), t.tx, t.ty, t.tz,
 	                     cur.tx, cur.ty);
-	return (1);         // Add back to queue for next time.
+	return 1;         // Add back to queue for next time.
 }
 
 /*

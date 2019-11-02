@@ -447,7 +447,7 @@ int Face_stats::add(
 		if (party[i] && party[i]->on_button(mx, my))
 			return party[i]->get_actor()->add(obj, dont_check, combine);
 
-	return (0);
+	return 0;
 }
 
 Container_game_object *Face_stats::find_actor(int mx, int my) {

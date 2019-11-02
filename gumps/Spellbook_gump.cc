@@ -74,7 +74,7 @@ inline int Get_spell_gump_shape(
 		return 0;
 	shape = spell % 8;
 	frame = spell / 8;
-	return (1);
+	return 1;
 }
 
 /*

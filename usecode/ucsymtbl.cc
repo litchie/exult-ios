@@ -194,7 +194,7 @@ bool Usecode_scope_symbol::is_object_fun(int val) {
 	Val_table::iterator it = by_val.find(val);
 	// Symbol not found; default to original behavior
 	if (it == by_val.end())
-		return (val < 0x800);
+		return val < 0x800;
 	Usecode_symbol *sym = (*it).second;
 	return sym &&
 	        (sym->get_kind() == shape_fun || sym->get_kind() == object_fun);

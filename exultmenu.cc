@@ -579,7 +579,7 @@ BaseGameInfo *ExultMenu::run() {
 bool get_play_intro() {
 	std::string yn;
 	config->value("config/gameplay/skip_splash", yn, "no");
-	return(yn == "no");
+	return yn == "no";
 }
 
 void set_play_intro(bool play) {
@@ -590,7 +590,7 @@ void set_play_intro(bool play) {
 bool get_play_1st_scene() {
 	std::string yn;
 	config->value("config/gameplay/skip_intro", yn, "no");
-	return(yn == "no");
+	return yn == "no";
 }
 
 void set_play_1st_scene(bool play) {

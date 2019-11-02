@@ -210,30 +210,30 @@ public:
 		return (type == array_type) ? arrayval.size() : 0;
 	}
 	bool is_array() const {
-		return (type == array_type);
+		return type == array_type;
 	}
 	bool is_int() const {
-		return (type == int_type);
+		return type == int_type;
 	}
 	bool is_ptr() const {
-		return (type == pointer_type);
+		return type == pointer_type;
 	}
 	long get_int_value() const { // Get integer value.
 #ifdef DEBUG
 		if (type == pointer_type || (type == int_type && (intval > 0x10000 || intval < -0x10000)))
 			std::cerr << "Probable attempt at getting int value of pointer!!" << std::endl;
 #endif
-		return ((type == int_type) ? intval : 0);
+		return (type == int_type) ? intval : 0;
 	}
 	Game_object *get_ptr_value() const { // Get pointer value.
-		return ((type == pointer_type) ? ptrval.get() : nullptr);
+		return (type == pointer_type) ? ptrval.get() : nullptr;
 	}
 	// Get string value.
 	const char *get_str_value() const {
 		static char const *emptystr = "";
-		return ((type == string_type) ? strval.c_str() :
+		return (type == string_type) ? strval.c_str() :
 		        ((undefined ||
-		          (type == array_type && arrayval.empty())) ? emptystr : nullptr));
+		          (type == array_type && arrayval.empty())) ? emptystr : nullptr);
 	}
 	long need_int_value() const {
 		// Convert strings.

@@ -36,10 +36,10 @@ public:
 	void show_credits() override;
 	bool new_game(Vga_file &shapes) override;
 	int  get_start_tile_x() override {
-		return (25 * c_tiles_per_chunk);
+		return 25 * c_tiles_per_chunk;
 	}
 	int  get_start_tile_y() override {
-		return (155 * c_tiles_per_chunk);
+		return 155 * c_tiles_per_chunk;
 	}
 	void show_journey_failed() override;
 #endif

@@ -341,7 +341,7 @@ bool Notebook_gump::paint_page(
 	}
 	offset = str - note->text.c_str();  // Return offset past end.
 	// Watch for exactly filling page.
-	return (endoff > 0 && endoff < box.h);
+	return endoff > 0 && endoff < box.h;
 }
 
 /*

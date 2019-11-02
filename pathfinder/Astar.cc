@@ -42,7 +42,7 @@ int Astar::NewPath(Tile_coord const &s, Tile_coord const &d, Pathfinder_client *
 	next_index = 0;
 	dir = 1;
 	stop = pathlen;
-	return (success);
+	return success;
 }
 
 /*
@@ -53,7 +53,7 @@ int Astar::NewPath(Tile_coord const &s, Tile_coord const &d, Pathfinder_client *
 int Astar::GetNextStep(Tile_coord &n, bool &done) {
 	if (next_index == stop) {
 		done = true;
-		return (0);
+		return 0;
 	}
 	n = path[next_index];
 	next_index += dir;

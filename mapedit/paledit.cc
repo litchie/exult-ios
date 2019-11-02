@@ -318,7 +318,7 @@ gint Palette_edit::configure(
 		                          (255 << 16) + (255 << 8));
 	}
 	paled->render();
-	return (TRUE);
+	return TRUE;
 }
 
 /*
@@ -334,7 +334,7 @@ gint Palette_edit::expose(
 	Palette_edit *paled = static_cast<Palette_edit *>(data);
 	paled->show(event->area.x, event->area.y, event->area.width,
 	            event->area.height);
-	return (TRUE);
+	return TRUE;
 }
 
 /*
@@ -350,10 +350,10 @@ gint Palette_edit::mouse_press(
 	Palette_edit *paled = static_cast<Palette_edit *>(data);
 
 	if (event->button == 4 || event->button == 5) // mouse wheel
-		return (TRUE);
+		return TRUE;
 
 	if (paled->colorsel)
-		return (TRUE);      // Already editing a color.
+		return TRUE;      // Already editing a color.
 	int old_selected = paled->selected;
 	int width = paled->width;
 	int height = paled->height;
@@ -389,7 +389,7 @@ gint Palette_edit::mouse_press(
 	if (event->button == 3)
 		gtk_menu_popup(GTK_MENU(paled->create_popup()),
 		               nullptr, nullptr, nullptr, nullptr, event->button, event->time);
-	return (TRUE);
+	return TRUE;
 }
 
 /*

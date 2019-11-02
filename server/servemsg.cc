@@ -66,7 +66,7 @@ int Send_data(
 		std::memcpy(&buf[5], data, datalen);    // The data itself.
 	int len = datalen + hdrlength;
 
-	return (write(socket, buf, len) == len ? 0 : -1);
+	return write(socket, buf, len) == len ? 0 : -1;
 #else  /* USE_EXULTSTUDIO */
 	ignore_unused_variable_warning(socket, id, data, datalen);
 	return -1;

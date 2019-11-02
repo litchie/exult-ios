@@ -61,9 +61,9 @@ public:
 			// Handle world-wrapping.
 			newt.tx = (newt.tx + c_num_tiles) % c_num_tiles;
 			newt.ty = (newt.ty + c_num_tiles) % c_num_tiles;
-			return (1);
+			return 1;
 		}
-		return (0);
+		return 0;
 	}
 };
 
@@ -137,7 +137,7 @@ public:
 	// Returns 0 if bad chain.
 	int verify_chain(Search_node *last, int removed = 0) {
 		if (!last)
-			return (1);
+			return 1;
 		int found = 0;
 		Search_node *prev = last;
 		int cnt = 0;
@@ -150,10 +150,10 @@ public:
 				break;
 		} while (prev != last);
 		if (!found && !removed)
-			return (0);
+			return 0;
 		if (cnt == 10000)
-			return (0);
-		return (1);
+			return 0;
+		return 1;
 	}
 #endif
 	// Add to chain of same priorities.
@@ -219,7 +219,7 @@ class Hash_node {
 public:
 	size_t operator()(const Search_node *a) const {
 		const Tile_coord t = a->get_tile();
-		return ((t.tz << 24) + (t.ty << 12) + t.tx);
+		return (t.tz << 24) + (t.ty << 12) + t.tx;
 	}
 };
 

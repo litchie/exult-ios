@@ -269,7 +269,7 @@ int peek_pipe() {
 bool is_broken() {
 	if (gDataSocket == INVALID_SOCKET) return true;
 	peek_pipe();
-	return (gDataSocket == INVALID_SOCKET);
+	return gDataSocket == INVALID_SOCKET;
 }
 
 bool notify_connection_lost() {

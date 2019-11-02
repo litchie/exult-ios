@@ -70,7 +70,7 @@ static int read_config_file(const char *name)
 	{
 		ctl->cmsg(CMSG_ERROR, VERB_NORMAL,
 		          "Probable source loop in configuration files");
-		return (-1);
+		return -1;
 	}
 
 	if (!(fp=open_file(name, 1, OF_VERBOSE)))
@@ -326,7 +326,7 @@ static int read_config_file(const char *name)
 int Timidity_Init(int rate, int format, int channels, int samples)
 {
 	if (read_config_file(CONFIG_FILE)<0) {
-		return(-1);
+		return -1;
 	}
 
 	/* Set play mode parameters */
@@ -362,7 +362,7 @@ int Timidity_Init(int rate, int format, int channels, int samples)
 			break;
 		default:
 			ctl->cmsg(CMSG_ERROR, VERB_NORMAL, "Unsupported audio format");
-			return(-1);
+			return -1;
 	}
 	AUDIO_BUFFER_SIZE = samples;
 
@@ -374,7 +374,7 @@ int Timidity_Init(int rate, int format, int channels, int samples)
 
 	if (ctl->open(0, 0)) {
 		ctl->cmsg(CMSG_ERROR, VERB_NORMAL, "Couldn't open %s\n", ctl->id_name);
-		return(-1);
+		return -1;
 	}
 
 	if (!control_ratio) {
@@ -386,7 +386,7 @@ int Timidity_Init(int rate, int format, int channels, int samples)
 	}
 	if (*def_instr_name)
 		set_default_instrument(def_instr_name);
-	return(0);
+	return 0;
 }
 #endif
 
@@ -397,18 +397,18 @@ int Timidity_Init_Simple(int rate, int samples, sint32 encoding)
 	config->value("config/audio/midi/timiditycfg", configfile, CONFIG_FILE);
 
 	if (read_config_file(configfile.c_str())<0) {
-		return(-1);
+		return -1;
 	}
 
 	/* Check to see if the encoding is 'valid' */
 
 	// Only 16 bit can be byte swapped
 	if ((encoding & PE_BYTESWAP) && !(encoding & PE_16BIT))
-		return(-1);
+		return -1;
 
 	// u-Law can only be mono or stereo
 	if ((encoding & PE_ULAW) && (encoding & ~(PE_ULAW|PE_MONO)))
-		return(-1);
+		return -1;
 
 	/* Set play mode parameters */
 	play_mode->rate = rate;
@@ -451,7 +451,7 @@ int Timidity_Init_Simple(int rate, int samples, sint32 encoding)
 
 		default:
 			ctl->cmsg(CMSG_ERROR, VERB_NORMAL, "Unsupported audio format");
-			return(-1);
+			return -1;
 	}
 
 	AUDIO_BUFFER_SIZE = samples;
@@ -464,7 +464,7 @@ int Timidity_Init_Simple(int rate, int samples, sint32 encoding)
 
 	if (ctl->open(0, 0)) {
 		ctl->cmsg(CMSG_ERROR, VERB_NORMAL, "Couldn't open %s\n", ctl->id_name);
-		return(-1);
+		return -1;
 	}
 
 	if (!control_ratio) {
@@ -476,7 +476,7 @@ int Timidity_Init_Simple(int rate, int samples, sint32 encoding)
 	}
 	if (*def_instr_name)
 		set_default_instrument(def_instr_name);
-	return(0);
+	return 0;
 }
 
 void Timidity_DeInit()
@@ -494,7 +494,7 @@ void Timidity_DeInit()
 char timidity_error[1024] = "";
 char *Timidity_Error()
 {
-	return(timidity_error);
+	return timidity_error;
 }
 
 #ifdef NS_TIMIDITY

@@ -74,7 +74,7 @@ inline unsigned char Get_color8(
     int brightness          // 100=normal.
 ) {
 	uint32 c = (static_cast<uint32>(val) * brightness * 255L) / (100 * maxval);
-	return (c <= 255L ? static_cast<unsigned char>(c) : 255);
+	return c <= 255L ? static_cast<unsigned char>(c) : 255;
 }
 
 /*

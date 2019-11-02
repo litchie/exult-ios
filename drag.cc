@@ -136,7 +136,7 @@ bool Dragging_info::start(
 	int deltax = abs(x - mousex);
 	int deltay = abs(y - mousey);
 	if (deltax <= 2 && deltay <= 2)
-		return (false);     // Wait for greater motion.
+		return false;     // Wait for greater motion.
 	if (obj) {
 		// Don't want to move walls.
 		if (!cheat.in_hack_mover() && !obj->is_dragable() &&
@@ -146,7 +146,7 @@ bool Dragging_info::start(
 			obj = nullptr;
 			gump = nullptr;
 			okay = false;
-			return (false);
+			return false;
 		}
 		Game_object *owner = obj->get_outermost();
 		if (owner == obj.get()) {
@@ -155,7 +155,7 @@ bool Dragging_info::start(
 				Mouse::mouse->flash_shape(Mouse::blocked);
 				obj = nullptr;
 				okay = false;
-				return (false);
+				return false;
 			}
 		}
 	}
@@ -210,7 +210,7 @@ bool Dragging_info::moved(
     int x, int y            // Mouse pos. in window.
 ) {
 	if (!obj && !gump)
-		return (false);
+		return false;
 	if (rect.w == 0) {
 		if (!start(x, y))
 			return false;
@@ -230,7 +230,7 @@ bool Dragging_info::moved(
 	if (gump && !obj)           // Dragging a gump?
 		gump->set_pos(paintx, painty);
 	gwin->add_dirty(gwin->clip_to_win(rect));
-	return (true);
+	return true;
 }
 
 /*
@@ -574,7 +574,7 @@ bool Game_window::start_dragging(
 	delete dragging;
 	dragging = new Dragging_info(x, y);
 	if (dragging->okay)
-		return (true);      // Success, so far.
+		return true;      // Success, so far.
 	delete dragging;
 	dragging = nullptr;
 	return false;
@@ -691,6 +691,6 @@ int Game_window::drop_at_lift(
 		center_view(to_drop->get_tile());
 		paint();
 	}
-	return (1);
+	return 1;
 }
 

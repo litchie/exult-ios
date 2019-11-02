@@ -240,7 +240,7 @@ void *safe_malloc(size_t count)
 
 	ctl->close();
 	exit(10);
-	return(nullptr);
+	return nullptr;
 }
 
 /* This adds a directory to the path list */

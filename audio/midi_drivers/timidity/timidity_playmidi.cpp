@@ -940,7 +940,7 @@ MidiSong *Timidity_LoadSong(char *midifile)
 		free(song);
 		song = nullptr;
 	}
-	return(song);
+	return song;
 }
 
 void Timidity_Start(MidiSong *song)
@@ -957,7 +957,7 @@ void Timidity_Start(MidiSong *song)
 
 int Timidity_Active()
 {
-	return(midi_playing);
+	return midi_playing;
 }
 
 void Timidity_Stop()

@@ -86,7 +86,7 @@ bool In_ammo_family(int shnum, int family) {
 	if (shnum == family)
 		return true;
 	const Ammo_info *ainf = ShapeID::get_info(shnum).get_ammo_info();
-	return (ainf != nullptr && ainf->get_family_shape() == family);
+	return ainf != nullptr && ainf->get_family_shape() == family;
 }
 
 /*
@@ -297,7 +297,7 @@ inline bool Off_screen(
 	// See if off screen.
 	Tile_coord t = npc->get_tile();
 	Rectangle screen = gwin->get_win_tile_rect().enlarge(2);
-	return (!screen.has_world_point(t.tx, t.ty));
+	return !screen.has_world_point(t.tx, t.ty);
 }
 
 bool Combat_schedule::is_enemy(

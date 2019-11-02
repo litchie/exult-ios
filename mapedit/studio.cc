@@ -771,8 +771,8 @@ bool ExultStudio::okay_to_close(
  */
 
 inline bool Window_has_focus(GtkWindow *win) {
-	return (win->focus_widget != nullptr &&
-	        GTK_WIDGET_HAS_FOCUS(win->focus_widget));
+	return win->focus_widget != nullptr &&
+	        GTK_WIDGET_HAS_FOCUS(win->focus_widget);
 }
 
 /*
@@ -847,7 +847,7 @@ Shape_group_file *ExultStudio::get_cur_groups(
 inline bool Is_dir_marker(
     char c
 ) {
-	return (c == '/' || c == '\\' || c == ':');
+	return c == '/' || c == '\\' || c == ':';
 }
 
 /*
@@ -2392,7 +2392,7 @@ C_EXPORT gboolean on_prefs_background_expose_event(
 	gdk_rgb_gc_set_foreground(gc, color);
 	gdk_draw_rectangle(widget->window, gc, TRUE, event->area.x,
 	                   event->area.y, event->area.width, event->area.height);
-	return (TRUE);
+	return TRUE;
 }
 
 // X at top of window.

@@ -51,7 +51,7 @@ inline bool is_int_32bit(int val) {
 }
 
 inline bool is_sint_32bit(int val) {
-	return (val < -32768 || val > 32767);
+	return val < -32768 || val > 32767;
 }
 
 /*

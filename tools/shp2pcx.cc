@@ -101,7 +101,7 @@ unsigned int read2(FILE *f) {
 	unsigned char b1;
 	b0 = fgetc(f);
 	b1 = fgetc(f);
-	return (b0 + (b1 << 8));
+	return b0 + (b1 << 8);
 }
 
 /* Flauschepelz */
@@ -115,7 +115,7 @@ signed int read2signed(FILE *f) {
 	if (i0 >= 32768) {
 		i0 = i0 - 65536;
 	}
-	return (i0);
+	return i0;
 }
 
 unsigned int read4(FILE *f) {
@@ -127,7 +127,7 @@ unsigned int read4(FILE *f) {
 	b1 = fgetc(f);
 	b2 = fgetc(f);
 	b3 = fgetc(f);
-	return (b0 + (b1 << 8) + (b2 << 16) + (b3 << 24));
+	return b0 + (b1 << 8) + (b2 << 16) + (b3 << 24);
 }
 
 

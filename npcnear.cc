@@ -81,10 +81,10 @@ bool Bg_dont_wake(
 ) {
 	ignore_unused_variable_warning(gwin);
 	int num;
-	return (Game::get_game_type() == BLACK_GATE &&
+	return Game::get_game_type() == BLACK_GATE &&
 	        (npc->get_info().has_translucency() ||
 	         // Horace or Penumbra?
-	         (num = npc->Actor::get_npc_num()) == 141 || num == 150));
+	         (num = npc->Actor::get_npc_num()) == 141 || num == 150);
 }
 
 /*

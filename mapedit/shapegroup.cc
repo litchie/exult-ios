@@ -257,7 +257,7 @@ int Shape_group_file::find(
 	for (vector<Shape_group *>::const_iterator it = groups.begin();
 	        it != groups.end(); ++it)
 		if ((*it)->name == nm)
-			return (it - groups.begin());
+			return it - groups.begin();
 	return -1;
 }
 

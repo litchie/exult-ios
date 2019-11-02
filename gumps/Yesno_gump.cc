@@ -158,7 +158,7 @@ int Yesno_gump::ask(
 		answer = 0;
 	else
 		answer = dlg.get_answer();
-	return (answer);
+	return answer;
 }
 
 
@@ -191,5 +191,5 @@ int Countdown_gump::ask(const char *txt, int timeout, const char *font) {
 		answer = 0;
 	else
 		answer = dlg.get_answer();
-	return (answer);
+	return answer;
 }

@@ -229,11 +229,11 @@ public:
 	// Clip rectangle to window's.
 	Rectangle clip_to_game(Rectangle const &r) {
 		Rectangle wr = get_game_rect();
-		return (r.intersect(wr));
+		return r.intersect(wr);
 	}
 	Rectangle clip_to_win(Rectangle const &r) {
 		Rectangle wr = get_full_rect();
-		return (r.intersect(wr));
+		return r.intersect(wr);
 	}
 	// Resize event occurred.
 	void resized(unsigned int neww, unsigned int newh, bool newfs,

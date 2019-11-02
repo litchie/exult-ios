@@ -145,6 +145,6 @@ int main(int argc, char **argv) {
 	SDL_FreeSurface(mock_map);
 	SDL_Quit();
 	printf("Done!\n");
-	return(0);
+	return 0;
 }
 

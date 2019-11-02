@@ -134,7 +134,7 @@ C_EXPORT gboolean on_cont_draw_expose_event(
 	ExultStudio::get_instance()->show_cont_shape(
 	    event->area.x, event->area.y, event->area.width,
 	    event->area.height);
-	return (TRUE);
+	return TRUE;
 }
 
 /*

@@ -65,7 +65,7 @@ static float ino(float x)
 		sde = de * de;
 		e += sde;
 	} while (!( (e * 1.0e-08 - sde > 0) || (i++ > 25) ));
-	return(e);
+	return e;
 }	
 
 /* Kaiser Window (symetric) */

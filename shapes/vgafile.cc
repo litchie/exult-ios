@@ -153,7 +153,7 @@ static int Skip_transparent(
 		x++;
 		pixels++;
 	}
-	return (x);
+	return x;
 }
 
 /*
@@ -194,7 +194,7 @@ static int Find_runs(
 		runs[runcnt++] = run;
 	}
 	runs[runcnt] = 0;       // 0-delimit list.
-	return (x);
+	return x;
 }
 
 unsigned char Shape_frame::get_topleft_pix(
@@ -388,7 +388,7 @@ unsigned int Shape_frame::read(
 		// Figure # frames.
 		int nframes = (hdrlen - 4) / 4;
 		if (framenum >= nframes)// Bug out if bad frame #.
-			return (nframes);
+			return nframes;
 		// Get frame offset, lengeth.
 		uint32 frameoff;
 		uint32 framelen;
@@ -408,7 +408,7 @@ unsigned int Shape_frame::read(
 		// Get compressed data.
 		get_rle_shape(shapes, shapeoff + frameoff, framelen);
 		// Return # frames.
-		return (nframes);
+		return nframes;
 	}
 	framenum &= 31;         // !!!Guessing here.
 	xleft = yabove = c_tilesize;        // Just an 8x8 bitmap.
@@ -416,7 +416,7 @@ unsigned int Shape_frame::read(
 	shapes->seek(shapeoff + framenum * c_num_tile_bytes);
 	datalen = c_num_tile_bytes;
 	data = shapes->readN(c_num_tile_bytes);
-	return (shapelen / c_num_tile_bytes);   // That's how many frames.
+	return shapelen / c_num_tile_bytes;   // That's how many frames.
 }
 
 /*
@@ -685,7 +685,7 @@ int Shape_frame::has_point(
 		short scany = Read2(in);
 		// Be liberal by 1 pixel.
 		if (y == scany && x >= scanx - 1 && x <= scanx + scanlen)
-			return (1);
+			return 1;
 		if (!encoded) {     // Raw data?
 			in += scanlen;
 			continue;
@@ -702,7 +702,7 @@ int Shape_frame::has_point(
 			b += bcnt;
 		}
 	}
-	return (0);         // Never found it.
+	return 0;         // Never found it.
 }
 
 /*

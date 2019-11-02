@@ -1321,7 +1321,7 @@ gint Combo_chooser::configure(
 	if (chooser->group)     // Filtering?
 		chooser->enable_drop(); // Can drop combos here.
 #endif
-	return (TRUE);
+	return TRUE;
 }
 
 /*
@@ -1337,7 +1337,7 @@ gint Combo_chooser::expose(
 	Combo_chooser *chooser = static_cast<Combo_chooser *>(data);
 	chooser->show(event->area.x, event->area.y, event->area.width,
 	              event->area.height);
-	return (TRUE);
+	return TRUE;
 }
 
 #ifdef _WIN32
@@ -1411,10 +1411,10 @@ gint Combo_chooser::mouse_press(
 
 	if (event->button == 4) {
 		chooser->scroll(true);
-		return(TRUE);
+		return TRUE;
 	} else if (event->button == 5) {
 		chooser->scroll(false);
-		return(TRUE);
+		return TRUE;
 	}
 
 	int old_selected = chooser->selected;
@@ -1450,7 +1450,7 @@ gint Combo_chooser::mouse_press(
 	if (event->button == 3)
 		gtk_menu_popup(GTK_MENU(chooser->create_popup()),
 		               nullptr, nullptr, nullptr, nullptr, event->button, event->time);
-	return (TRUE);
+	return TRUE;
 }
 
 /*

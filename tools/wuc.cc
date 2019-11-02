@@ -92,14 +92,14 @@ int get_label() {
 	unsigned i;
 	for (i = 0; i < lindex; i++) {
 		if (!strcasecmp(token, labels[i]))
-			return(offsets[i]);
+			return offsets[i];
 	}
 	printf("Warning: label '%s' does not exist.\n", token);
 	if (token[0] == 'L')
 		sscanf(token, "L%x", &word);
 	else
 		sscanf(token, "%x", &word);
-	return(word);
+	return word;
 }
 
 void check_jump_label_16(int label) {
@@ -116,10 +116,10 @@ int find_intrinsic(const char **func_table, unsigned funsize, const char *name) 
 	unsigned i;
 	for (i = 0; i < funsize; i++) {
 		if (!strcasecmp(name, func_table[i]))
-			return(i);
+			return i;
 	}
 	printf("Warning: intrinsic '%s' does not exist.\n", name);
-	return(0);
+	return 0;
 }
 
 void read_token(FILE *fi) {

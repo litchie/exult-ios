@@ -519,9 +519,9 @@ int Conversation::conversation_choice(int x, int y) {
 	        !conv_choices[i].has_point(x, y); i++)
 		;
 	if (conv_choices[i].w != 0) // Found one?
-		return (i);
+		return i;
 	else
-		return (-1);
+		return -1;
 }
 
 /*

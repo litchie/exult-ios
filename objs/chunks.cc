@@ -922,13 +922,13 @@ int Map_chunk::is_blocked(
 			if (olist->is_blocked(height, lift,
 			                      tx % c_tiles_per_chunk,
 			                      rty, this_lift, move_flags, max_drop, max_rise))
-				return (1);
+				return 1;
 			// Take highest one.
 			new_lift = this_lift > new_lift ?
 			           this_lift : new_lift;
 		}
 	}
-	return (0);
+	return 0;
 }
 
 /*
@@ -957,9 +957,9 @@ int Map_chunk::is_blocked(
 	if (chunk->is_blocked(height, tile.tz, tile.tx % c_tiles_per_chunk,
 	                      tile.ty % c_tiles_per_chunk, new_lift, move_flags, max_drop,
 	                      max_rise))
-		return (1);
+		return 1;
 	tile.tz = new_lift;
-	return (0);
+	return 0;
 }
 
 /*
@@ -1040,7 +1040,7 @@ int Map_chunk::is_blocked(
 				if (new_lift0 == -1)
 					new_lift0 = new_lift;
 				else if (new_lift != new_lift0)
-					return (1);
+					return 1;
 			}
 		}
 	}
@@ -1061,12 +1061,12 @@ int Map_chunk::is_blocked(
 				if (new_lift0 == -1)
 					new_lift0 = new_lift;
 				else if (new_lift != new_lift0)
-					return (1);
+					return 1;
 			}
 		}
 	}
 	to.tz = new_lift;
-	return (0);         // All clear.
+	return 0;         // All clear.
 }
 
 /*

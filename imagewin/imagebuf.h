@@ -70,14 +70,14 @@ private:
 	                  int clips, int clipl) {
 		if (destx < clips) {
 			if ((srcw += (destx - clips)) <= 0)
-				return (0);
+				return 0;
 			srcx -= (destx - clips);
 			destx = clips;
 		}
 		if (destx + srcw > (clips + clipl))
 			if ((srcw = ((clips + clipl) - destx)) <= 0)
-				return (0);
-		return (1);
+				return 0;
+		return 1;
 	}
 protected:
 	int clip_x(int &srcx, int &srcw, int &destx, int desty) {
@@ -87,8 +87,8 @@ protected:
 	int clip(int &srcx, int &srcy, int &srcw, int &srch,
 	         int &destx, int &desty) {
 		// Start with x-dim.
-		return (clip_internal(srcx, srcw, destx, clipx, clipw) &&
-		        clip_internal(srcy, srch, desty, clipy, cliph));
+		return clip_internal(srcx, srcw, destx, clipx, clipw) &&
+		        clip_internal(srcy, srch, desty, clipy, cliph);
 	}
 	Image_buffer(unsigned int w, unsigned int h, int dpth);
 public:
@@ -145,8 +145,8 @@ public:
 	}
 	// Is rect. visible within clip?
 	int is_visible(int x, int y, int w, int h) {
-		return (!(x >= clipx + clipw || y >= clipy + cliph ||
-		          x + w <= clipx || y + h <= clipy));
+		return !(x >= clipx + clipw || y >= clipy + cliph ||
+		          x + w <= clipx || y + h <= clipy);
 	}
 	/*
 	 *  16-bit color methods.  Default is to ignore them.

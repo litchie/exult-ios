@@ -124,5 +124,5 @@ int main(int argc, char **argv) {
 	SDL_Quit();
 	printf("Done!\n");
 	clean_up(0);
-	return(0); // to avoid warnings
+	return 0; // to avoid warnings
 }

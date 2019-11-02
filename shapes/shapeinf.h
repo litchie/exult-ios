@@ -781,7 +781,7 @@ public:
 		};
 #endif
 		Shape_class c = get_shape_class();
-		return (c == 2 || c == 6 || c == 7 || c == 11 || c == 12 || c == 13);
+		return c == 2 || c == 6 || c == 7 || c == 11 || c == 12 || c == 13;
 		//      return qual[(int) c];
 	}
 	bool occludes() const {

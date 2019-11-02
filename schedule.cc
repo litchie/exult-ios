@@ -651,7 +651,7 @@ Pace_schedule *Pace_schedule::create_horiz(
     Actor *n
 ) {
 	Tile_coord t = n->get_tile();   // Get his position.
-	return (new Pace_schedule(n, 1, t));
+	return new Pace_schedule(n, 1, t);
 }
 
 /*
@@ -662,7 +662,7 @@ Pace_schedule *Pace_schedule::create_vert(
     Actor *n
 ) {
 	Tile_coord t = n->get_tile();   // Get his position.
-	return (new Pace_schedule(n, 0, t));
+	return new Pace_schedule(n, 0, t);
 }
 
 void Pace_schedule::pace(

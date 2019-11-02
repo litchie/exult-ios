@@ -48,7 +48,7 @@ static const char *Pass_whitespace(
 ) {
 	while (Is_space(*text))
 		text++;
-	return (text);
+	return text;
 }
 // Just spaces and tabs:
 static const char *Pass_space(
@@ -68,7 +68,7 @@ static const char *Pass_word(
 ) {
 	while (*text && (*text != '^') && (!Is_space(*text) || (*text == '\f') || (*text == '\v')))
 		text++;
-	return (text);
+	return text;
 }
 
 /*
@@ -232,7 +232,7 @@ int Font::paint_text_box(
 	if (*text)          // Out of room?
 		return -static_cast<int>(text - start); // Return -offset of end.
 	else                // Else return height.
-		return (cury - y);
+		return cury - y;
 }
 
 /*
@@ -263,7 +263,7 @@ int Font::paint_text(
 				shape->paint_rle(x, yoff);
 			x += shape->get_width() + hor_lead;
 		}
-	return (x - xoff);
+	return x - xoff;
 }
 
 /*
@@ -289,7 +289,7 @@ int Font::paint_text(
 			shape->paint_rle(x, yoff);
 			x += shape->get_width() + hor_lead;
 		}
-	return (x - xoff);
+	return x - xoff;
 }
 
 /*
@@ -422,7 +422,7 @@ int Font::paint_text_box_fixedwidth(
 	if (*text)          // Out of room?
 		return -static_cast<int>(text - start); // Return -offset of end.
 	else                // Else return height.
-		return (cury - y);
+		return cury - y;
 }
 
 /*
@@ -451,7 +451,7 @@ int Font::paint_text_fixedwidth(
 		shape->paint_rle(x, yoff);
 		x += width - w;
 	}
-	return (x - xoff);
+	return x - xoff;
 }
 
 /*
@@ -480,7 +480,7 @@ int Font::paint_text_fixedwidth(
 		shape->paint_rle(x, yoff);
 		x += width - w;
 	}
-	return (x - xoff);
+	return x - xoff;
 }
 
 /*
@@ -498,7 +498,7 @@ int Font::get_text_width(
 			if (shape)
 				width += shape->get_width() + hor_lead;
 		}
-	return (width);
+	return width;
 }
 
 /*
@@ -517,7 +517,7 @@ int Font::get_text_width(
 			if (shape)
 				width += shape->get_width() + hor_lead;
 		}
-	return (width);
+	return width;
 }
 
 /*

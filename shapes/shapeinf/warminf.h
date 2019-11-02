@@ -71,7 +71,7 @@ public:
 		}
 	}
 	bool operator<(const Warmth_info &other) const {
-		return (static_cast<unsigned short>(frame) < static_cast<unsigned short>(other.frame));
+		return static_cast<unsigned short>(frame) < static_cast<unsigned short>(other.frame);
 	}
 	bool operator==(const Warmth_info &other) const {
 		return this == &other || (!(*this < other) && !(other < *this));

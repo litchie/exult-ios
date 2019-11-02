@@ -33,10 +33,10 @@ public:
 	void show_credits() override;
 	bool new_game(Vga_file &shapes) override;
 	int  get_start_tile_x() override {
-		return (64 * c_tiles_per_chunk);
+		return 64 * c_tiles_per_chunk;
 	}
 	int  get_start_tile_y() override {
-		return (136 * c_tiles_per_chunk);
+		return 136 * c_tiles_per_chunk;
 	}
 	void show_journey_failed() override;
 	Shape_frame *get_menu_shape() override;

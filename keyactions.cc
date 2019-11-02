@@ -511,7 +511,7 @@ int get_walking_speed(int const *params) {
 		speed = Mouse::medium_combat_speed_factor;
 	else
 		speed = parm == 1 ? Mouse::medium_speed_factor : Mouse::fast_speed_factor;
-	return (200 * gwin->get_std_delay() / speed);
+	return 200 * gwin->get_std_delay() / speed;
 }
 
 //  { ActionWalkWest, 0, "Walk west", normal_keys, NONE },

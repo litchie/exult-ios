@@ -30,8 +30,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 unsigned char pal[768];
 
 int coleq(int c1, int c2) {
-	return ((pal[c1 * 3] == pal[c2 * 3]) && (pal[c1 * 3 + 1] == pal[c2 * 3 + 1]) &&
-	        (pal[c1 * 3 + 2] == pal[c2 * 3 + 2]));
+	return (pal[c1 * 3] == pal[c2 * 3]) && (pal[c1 * 3 + 1] == pal[c2 * 3 + 1]) &&
+	        (pal[c1 * 3 + 2] == pal[c2 * 3 + 2]);
 }
 
 int unique(int c1) {

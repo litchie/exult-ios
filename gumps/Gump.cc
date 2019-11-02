@@ -175,7 +175,7 @@ Game_object *Gump::find_object(
 		}
 	}
 	// ++++++Return top item.
-	return (cnt ? list[cnt - 1] : nullptr);
+	return cnt ? list[cnt - 1] : nullptr;
 }
 
 /*
@@ -240,16 +240,16 @@ int Gump::add(
 	ignore_unused_variable_warning(combine);
 	if (!container || (!cheat.in_hack_mover() &&
 	                   !dont_check && !container->has_room(obj)))
-		return (0);     // Full.
+		return 0;     // Full.
 	// Dropping on same thing?
 	Game_object *onobj = find_object(mx, my);
 	// If possible, combine.
 
 	if (onobj && onobj != obj && onobj->drop(obj))
-		return (1);
+		return 1;
 
 	if (!container->add(obj, dont_check))   // DON'T combine here.
-		return (0);
+		return 0;
 
 	// Not a valid spot?
 	if (sx == -1 && sy == -1 && mx == -1 && my == -1)
@@ -272,7 +272,7 @@ int Gump::add(
 			sy = object_area.h - shape->get_ybelow();
 		obj->set_shape_pos(sx, sy);
 	}
-	return (1);
+	return 1;
 }
 
 /*

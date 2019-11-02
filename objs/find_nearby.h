@@ -124,7 +124,7 @@ int Game_object::find_nearby(
 		}
 	}
 	// Return # added.
-	return (vec.size() - vecsize);
+	return vec.size() - vecsize;
 }
 
 #endif

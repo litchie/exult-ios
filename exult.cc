@@ -945,7 +945,7 @@ static int Play() {
 	Free_text();
 	fontManager.reset();
 	delete game;
-	return (0);
+	return 0;
 }
 
 #ifdef USE_EXULTSTUDIO          // Shift-click means 'paint'.
@@ -1743,7 +1743,7 @@ static int Get_click(
 					        !gwin->drop_dragged(x, y, drged)) {
 						if (chr) *chr = 0;
 						g_waiting_for_click = false;
-						return (1);
+						return 1;
 					}
 				} else if (event.button.button == 3) {
 					// Just stop.  Don't get followers!
@@ -1807,7 +1807,7 @@ static int Get_click(
 						        KMOD_SHIFT)
 						       ? toupper(c) : c;
 						g_waiting_for_click = false;
-						return (1);
+						return 1;
 					}
 					break;
 				}
@@ -1827,7 +1827,7 @@ static int Get_click(
 			Mouse::mouse->blit_dirty();
 	}
 	g_waiting_for_click = false;
-	return (0);         // Shouldn't get here.
+	return 0;         // Shouldn't get here.
 }
 
 /*
@@ -1858,7 +1858,7 @@ int Get_click(
 	int ret = Get_click(x, y, chr, drag_ok, rotate_colors);
 	gwin->get_tqueue()->resume(Game::get_ticks());
 	Mouse::mouse->set_shape(saveshape);
-	return (ret);
+	return ret;
 }
 
 /*

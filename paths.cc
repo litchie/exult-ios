@@ -179,7 +179,7 @@ int Actor_pathfinder_client::estimate_cost(
 		larger = dy;
 		smaller = dx;
 	}
-	return (2 * larger + smaller);  // Straight = 2, diag = 3.
+	return 2 * larger + smaller;  // Straight = 2, diag = 3.
 }
 
 /*
@@ -208,14 +208,14 @@ int Onecoord_pathfinder_client::estimate_cost(
 			dy += c_num_tiles;
 		else if (dy < 0)
 			dy = -dy;
-		return (2 * dy);
+		return 2 * dy;
 	} else if (to.ty == -1) {
 		int dx = to.tx - from.tx;
 		if (dx < -c_num_tiles / 2)
 			dx += c_num_tiles;
 		else if (dx < 0)
 			dx = -dx;
-		return (2 * dx);
+		return 2 * dx;
 	} else              // Shouldn't get here.
 		return Actor_pathfinder_client::estimate_cost(from, to);
 }
@@ -228,9 +228,9 @@ int Onecoord_pathfinder_client::at_goal(
     Tile_coord const &tile,
     Tile_coord const &goal
 ) {
-	return ((goal.tx == -1 || tile.tx == goal.tx) &&
+	return (goal.tx == -1 || tile.tx == goal.tx) &&
 	        (goal.ty == -1 || tile.ty == goal.ty) &&
-	        (goal.tz == -1 || tile.tz == goal.tz));
+	        (goal.tz == -1 || tile.tz == goal.tz);
 }
 
 /*

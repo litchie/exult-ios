@@ -516,7 +516,7 @@ gint Shape_chooser::configure(
 	//   BUT not more than once.
 	if (drop_callback != Shape_dropped_here)
 		enable_drop(Shape_dropped_here, this);
-	return (TRUE);
+	return TRUE;
 }
 
 /*
@@ -532,7 +532,7 @@ gint Shape_chooser::expose(
 	Shape_chooser *chooser = static_cast<Shape_chooser *>(data);
 	chooser->show(event->area.x, event->area.y, event->area.width,
 	              event->area.height);
-	return (TRUE);
+	return TRUE;
 }
 
 /*
@@ -604,10 +604,10 @@ gint Shape_chooser::mouse_press(
 	if (event->button == 4) {
 		if (row0 > 0)
 			scroll_row_vertical(row0 - 1);
-		return(TRUE);
+		return TRUE;
 	} else if (event->button == 5) {
 		scroll_row_vertical(row0 + 1);
-		return(TRUE);
+		return TRUE;
 	}
 	int old_selected = selected;
 	int new_selected = -1;
@@ -649,7 +649,7 @@ gint Shape_chooser::mouse_press(
 	if (event->button == 3)
 		gtk_menu_popup(GTK_MENU(create_popup()),
 		               nullptr, nullptr, nullptr, nullptr, event->button, event->time);
-	return (TRUE);
+	return TRUE;
 }
 
 /*
@@ -1526,7 +1526,7 @@ C_EXPORT gboolean on_new_shape_font_color_draw_expose_event(
 	gdk_rgb_gc_set_foreground(gc, color);
 	gdk_draw_rectangle(widget->window, gc, TRUE, event->area.x,
 	                   event->area.y, event->area.width, event->area.height);
-	return (TRUE);
+	return TRUE;
 }
 C_EXPORT void on_new_shape_font_color_changed(
     GtkSpinButton *button,

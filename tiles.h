@@ -48,7 +48,7 @@ public:
 			dz = -dz;
 		}
 		// Take larger abs. value.
-		return (delta > dz ? delta : dz);
+		return delta > dz ? delta : dz;
 	}
 	int distance_2d(Tile_coord const &t2) const { // For pathfinder.
 		// Handle wrapping round the world.
@@ -61,7 +61,7 @@ public:
 			dx = c_num_tiles - dx;
 		}
 		// Take larger abs. value.
-		return (dy > dx ? dy : dx);
+		return dy > dx ? dy : dx;
 	}
 	int square_distance_2d(Tile_coord const &t2) const {
 		int dy = (t2.ty - ty + c_num_tiles) % c_num_tiles;

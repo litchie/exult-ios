@@ -140,10 +140,10 @@ public:
 	// Get selected shape, or return 0.
 	int get_selected(int &shapenum, int &framenum) {
 		if (selected == -1)
-			return (0);
+			return 0;
 		shapenum = info[selected].shapenum;
 		framenum = info[selected].framenum;
-		return (1);
+		return 1;
 	}
 #endif
 	unsigned get_num_cols(unsigned rownum) {

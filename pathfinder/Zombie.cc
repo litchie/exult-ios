@@ -58,7 +58,7 @@ int Zombie::NewPath(Tile_coord const &s, Tile_coord const &d, Pathfinder_client 
 	long deltaz = Tile_coord::delta(cur.tz, dest.tz);
 	if (!deltax && !deltay && !deltaz) { // Going nowhere?
 		major_distance = 0;
-		return (0);
+		return 0;
 	}
 	unsigned int abs_deltax;
 	unsigned int abs_deltay;
@@ -103,7 +103,7 @@ int Zombie::NewPath(Tile_coord const &s, Tile_coord const &d, Pathfinder_client 
 		minor_delta2 = abs_deltaz;
 	}
 	major_distance = major_delta;   // How far to go.
-	return (1);
+	return 1;
 }
 
 /*
@@ -114,7 +114,7 @@ int Zombie::NewPath(Tile_coord const &s, Tile_coord const &d, Pathfinder_client 
 int Zombie::GetNextStep(Tile_coord &n, bool &done) {
 	if (major_distance <= 0) {
 		done = true;
-		return (0);
+		return 0;
 	}
 	// Subtract from distance to go.
 	major_distance -= major_frame_incr;
@@ -138,9 +138,9 @@ int Zombie::GetNextStep(Tile_coord &n, bool &done) {
 		cur.tz = 0;
 		major_distance = 0;
 		done = true;
-		return (0);
+		return 0;
 	}
 	n = cur;            // Return new tile.
 	done = (major_distance <= 0);   // Indicate if this is the last one.
-	return (1);
+	return 1;
 }

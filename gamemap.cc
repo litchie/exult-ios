@@ -95,7 +95,7 @@ static char v2hdr[] = {static_cast<char>(0xff), static_cast<char>(0xff),
 Map_chunk *Game_map::create_chunk(
     int cx, int cy
 ) {
-	return (objects[cx][cy] = new Map_chunk(this, cx, cy));
+	return objects[cx][cy] = new Map_chunk(this, cx, cy);
 }
 
 /*
@@ -410,7 +410,7 @@ char *Game_map::get_schunk_file_name(
 	int lb = schunk % 16;
 	fname[len + 1] = lb < 10 ? ('0' + lb) : ('a' + (lb - 10));
 	fname[len + 2] = 0;
-	return (fname);
+	return fname;
 }
 
 /*

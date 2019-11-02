@@ -451,7 +451,7 @@ int Uc_function::link(
 	for (std::vector<Uc_function_symbol *>::const_iterator it = links.begin();
 	        it != links.end(); ++it)
 		if (*it == fun)     // Found it?  Return offset.
-			return (it - links.begin());
+			return it - links.begin();
 	int offset = links.size();  // Going to add it.
 	links.push_back(fun);
 	return offset;

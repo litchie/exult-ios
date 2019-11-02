@@ -259,7 +259,7 @@ int Container_game_object::add_quantity(
 			            delta, shapenum, qual, framenum, true, temporary);
 	}
 	if (!delta || dontcreate)   // All added?
-		return (delta + cant_add);
+		return delta + cant_add;
 	else
 		return cant_add + create_quantity(delta, shapenum, qual,
 		                                  framenum == c_any_framenum ? 0 : framenum, temporary);
@@ -306,15 +306,15 @@ int Container_game_object::create_quantity(
 			delta =  newobj->modify_quantity(delta);
 	}
 	if (!delta)         // All done?
-		return (0);
+		return 0;
 	// Now try those below.
 	Game_object *obj;
 	if (objects.is_empty())
-		return (delta);
+		return delta;
 	Object_iterator next(objects);
 	while ((obj = next.get_next()) != nullptr)
 		delta = obj->create_quantity(delta, shnum, qual, frnum);
-	return (delta);
+	return delta;
 }
 
 /*
@@ -351,7 +351,7 @@ int Container_game_object::remove_quantity(
 			                             qual, framenum);
 		obj = next;
 	}
-	return (delta);
+	return delta;
 }
 
 /*
@@ -374,12 +374,12 @@ Game_object *Container_game_object::find_item(
 		        (framenum == c_any_framenum ||
 		         (obj->get_framenum() & 31) == framenum) &&
 		        (qual == c_any_qual || obj->get_quality() == qual))
-			return (obj);
+			return obj;
 
 		// Do it recursively.
 		Game_object *found = obj->find_item(shapenum, qual, framenum);
 		if (found)
-			return (found);
+			return found;
 	}
 	return nullptr;
 }
@@ -535,8 +535,8 @@ int Container_game_object::drop(
     Game_object *obj        // May be deleted if combined.
 ) {
 	if (!get_owner())       // Only accept if inside another.
-		return (0);
-	return (add(obj, false, true)); // We'll take it, and try to combine.
+		return 0;
+	return add(obj, false, true); // We'll take it, and try to combine.
 }
 
 /*
@@ -565,7 +565,7 @@ int Container_game_object::count_objects(
 		// Count recursively.
 		total += obj->count_objects(shapenum, qual, framenum);
 	}
-	return (total);
+	return total;
 }
 
 /*
@@ -590,7 +590,7 @@ int Container_game_object::get_objects(
 		// Search recursively.
 		obj->get_objects(vec, shapenum, qual, framenum);
 	}
-	return (vec.size() - vecsize);
+	return vec.size() - vecsize;
 }
 
 

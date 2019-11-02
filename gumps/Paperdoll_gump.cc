@@ -171,7 +171,7 @@ int Paperdoll_gump::find_closest(
 		}
 	}
 
-	return (closest);
+	return closest;
 }
 
 /*
