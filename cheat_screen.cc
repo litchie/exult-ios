@@ -163,7 +163,8 @@ const char *CheatScreen::alignments[4] = {
 
 static int Find_highest_map(
 ) {
-	int n = 0, next;
+	int n = 0;
+	int next;
 	while ((next = Find_next_map(n + 1, 10)) != -1)
 		n = next;
 	return n;
