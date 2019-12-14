@@ -498,11 +498,9 @@ int wait_delay(int ms, int startcol, int ncol, int rotspd) {
 				if (event.button.button == 3 || event.button.button == 1) {
 					if (ticks1 - last_b3_click < 500)
 						return 1;
-					else
-						last_b3_click = ticks1;
-						break;
 					last_b3_click = ticks1;
 				}
+				break;
 			}
 			default:
 				break;
