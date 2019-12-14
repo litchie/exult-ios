@@ -20,6 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "AudioSample.h"
 #include <vorbis/vorbisfile.h>
+#include <memory>
 
 namespace Pentagram {
 
@@ -30,9 +31,8 @@ namespace Pentagram {
 class OggAudioSample : public AudioSample
 {
 public:
-	OggAudioSample(IDataSource *oggdata);
+	OggAudioSample(std::unique_ptr<IDataSource> oggdata);
 	OggAudioSample(uint8 *buffer, uint32 size);
-	virtual ~OggAudioSample();
 
 	virtual void initDecompressor(void *DecompData) const;
 	virtual uint32 decompressFrame(void *DecompData, void *samples) const;
@@ -58,7 +58,7 @@ protected:
 		bool freed;
 	};
 
-	IDataSource *oggdata;
+	std::unique_ptr<IDataSource> oggdata;
 	bool locked;
 };
 

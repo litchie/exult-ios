@@ -227,7 +227,7 @@ int FMOplMidiDriver::open()
 		lucas_fm_vol_table[i] = static_cast<int>(std::sqrt(static_cast<double>(my_midi_fm_vol_table[i])) * 11);	/* TO CHANGE !!! */
 
 		// Clear the xmidibanks
-		xmidibanks[i] = 0;
+		xmidibanks[i] = nullptr;
 	}
 	for (i = 0; i < 16; i++) {
 		ch[i].inum = 0;
@@ -276,12 +276,12 @@ void FMOplMidiDriver::close()
 	if (opl) FMOpl_Pentagram::OPLDestroy(opl);
 
 	// Reset the relevant members
-	opl = 0;
+	opl = nullptr;
 
 	// Clear the xmidibanks
 	for (int i = 0; i < 128; i++) {
 		delete xmidibanks[i];
-		xmidibanks[i] = 0;
+		xmidibanks[i] = nullptr;
 	}
 
 }
@@ -508,7 +508,7 @@ void FMOplMidiDriver::send(uint32 b)
 			ch[channel].inum = instrument;
 			//std::POUT << "Setting instrument: " << static_cast<unsigned int>(instrument) << " for chan " << static_cast<unsigned int>(channel) << std::endl;
 
-			unsigned char *ins = 0;
+			unsigned char *ins = nullptr;
 			int b = -1;
 
 			// Search for xmidi ins.
@@ -807,7 +807,7 @@ void FMOplMidiDriver::loadTimbreLibrary(IDataSource *ds, TimbreLibraryType type)
 	// Clear the xmidibanks
 	for (i = 0; i < 128; i++) {
 		delete xmidibanks[i];
-		xmidibanks[i] = 0;
+		xmidibanks[i] = nullptr;
 	}
 
 	for (i = 0; i < 16; i++) ch[i].xmidi = false;

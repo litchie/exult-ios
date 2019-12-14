@@ -86,7 +86,7 @@ bool In_ammo_family(int shnum, int family) {
 	if (shnum == family)
 		return true;
 	const Ammo_info *ainf = ShapeID::get_info(shnum).get_ammo_info();
-	return (ainf != 0 && ainf->get_family_shape() == family);
+	return (ainf != nullptr && ainf->get_family_shape() == family);
 }
 
 /*
@@ -156,7 +156,7 @@ void Combat_schedule::stop_attacking_npc(
 	        it != nearby.end(); ++it) {
 		Actor *actor = *it;
 		if (actor->get_target() == npc)
-			actor->set_target(0);
+			actor->set_target(nullptr);
 	}
 }
 
@@ -174,7 +174,7 @@ void Combat_schedule::stop_attacking_invisible(
 	        it != nearby.end(); ++it) {
 		Actor *actor = *it;
 		if (actor->get_target() == npc && !actor->can_see_invisible())
-			actor->set_target(0);
+			actor->set_target(nullptr);
 	}
 }
 
@@ -349,7 +349,7 @@ void Combat_schedule::find_opponents(
 				if (combat_trace)
 					cout << npc->get_name() << " pushed back(asleep,1) " << actor->get_name() << endl;
 			} else {
-				opponents.push_back(actor);
+				opponents.push_back(actor->weak_from_this());
 				if (combat_trace)
 					cout << npc->get_name() << " pushed back(1) " << actor->get_name() << endl;
 			}
@@ -360,7 +360,7 @@ void Combat_schedule::find_opponents(
 			// Is actor attacking a party member?
 			if ((t->get_flag(Obj_flags::in_party) || t == avatar) &&
 			        t->as_actor() && is_enemy(npc_align, t->as_actor()->get_effective_alignment())) {
-				opponents.push_back(actor);
+				opponents.push_back(actor->weak_from_this());
 				if (combat_trace)
 					cout << npc->get_name() << " pushed back(2) " << actor->get_name() << endl;
 			}
@@ -368,10 +368,11 @@ void Combat_schedule::find_opponents(
 			if (oppressor < 0)
 				continue;
 			Actor *oppr = gwin->get_npc(oppressor);
+			assert(oppr != nullptr);
 			// Is actor being attacked by a party member?
 			if ((oppr->get_flag(Obj_flags::in_party) || oppr == avatar) &&
 			        is_enemy(npc_align, oppr->get_effective_alignment())) {
-				opponents.push_back(actor);
+				opponents.push_back(actor->weak_from_this());
 				if (combat_trace)
 					cout << npc->get_name() << " pushed back(3) " << actor->get_name() << endl;
 			}
@@ -381,10 +382,10 @@ void Combat_schedule::find_opponents(
 	if (opponents.empty() && in_party &&
 	        avatar->get_effective_alignment() == npc_align) {
 		Game_object *opp = avatar->get_target();
-		Actor *oppnpc = opp ? opp->as_actor() : 0;
+		Actor *oppnpc = opp ? opp->as_actor() : nullptr;
 		if (oppnpc && oppnpc != npc
 		        && oppnpc->get_schedule_type() == Schedule::combat) {
-			opponents.push_back(oppnpc);
+			opponents.push_back(oppnpc->weak_from_this());
 			if (combat_trace)
 				cout << npc->get_name() << " pushed back (4) " << oppnpc->get_name() << endl;
 		}
@@ -392,7 +393,10 @@ void Combat_schedule::find_opponents(
 	// Still none? Try the sleeping/unconscious foes.
 	if (opponents.empty() && !sleeping.empty()
 	    && (npc != avatar || charmed_avatar)) {
-		opponents.insert(opponents.begin(), sleeping.begin(), sleeping.end());
+		for (Actor_vector::const_iterator it = sleeping.begin();
+										  	 it != sleeping.end(); ++it) {
+		    opponents.push_front(weak_from_obj(*it));
+		}
 		if (combat_trace)
 			cout << npc->get_name() << " pushed back asleep opponents" << endl;
 	}
@@ -404,14 +408,14 @@ void Combat_schedule::find_opponents(
  *  Output: ->attacker in opponents, or opponents.end() if not found.
  */
 
-list<Actor *>::iterator Combat_schedule::find_protected_attacker(
+list<Game_object_weak>::iterator Combat_schedule::find_protected_attacker(
 ) {
 	if (!npc->is_in_party())    // Not in party?
 		return opponents.end();
 	Game_window *gwin = Game_window::get_instance();
 	Actor *party[9];        // Get entire party, including Avatar.
 	int cnt = gwin->get_party(party, 1);
-	Actor *prot_actor = 0;
+	Actor *prot_actor = nullptr;
 	for (int i = 0; i < cnt; i++)
 		if (party[i]->is_combat_protected()) {
 			prot_actor = party[i];
@@ -421,12 +425,12 @@ list<Actor *>::iterator Combat_schedule::find_protected_attacker(
 		return opponents.end();
 	// Find closest attacker.
 	int dist, best_dist = 4 * c_tiles_per_chunk;
-	list<Actor *>::iterator best_opp = opponents.end();
-	for (list<Actor *>::iterator it = opponents.begin();
+	list<Game_object_weak>::iterator best_opp = opponents.end();
+	for (list<Game_object_weak>::iterator it = opponents.begin();
 	        it != opponents.end(); ++it) {
-		Actor *opp = *it;
-		if (opp->get_target() == prot_actor &&
-		        (dist = npc->distance(opp)) < best_dist) {
+		Actor_shared opp = std::static_pointer_cast<Actor>((*it).lock());
+		if (opp && opp->get_target() == prot_actor &&
+		        (dist = npc->distance(opp.get())) < best_dist) {
 			best_dist = dist;
 			best_opp = it;
 		}
@@ -465,10 +469,12 @@ Game_object *Combat_schedule::find_foe(
 	bool charmed_avatar = Combat::charmed_more_difficult &&
 	                      avatar->get_effective_alignment() !=  Actor::good;
 	// Remove any that died.
-	for (list<Actor *>::iterator it = opponents.begin();
+	for (list<Game_object_weak>::iterator it = opponents.begin();
 	        it != opponents.end();) {
-		if ((*it)->is_dead() ||
-		        (npc == avatar && !charmed_avatar && (*it)->get_flag(Obj_flags::asleep)))
+	    Actor_shared actor = std::static_pointer_cast<Actor>((*it).lock());
+		if (!actor || actor->is_dead() ||
+		        (npc == avatar && !charmed_avatar &&
+				 actor->get_flag(Obj_flags::asleep)))
 			it = opponents.erase(it);
 		else
 			++it;
@@ -478,13 +484,15 @@ Game_object *Combat_schedule::find_foe(
 		if (practice_target)    // For dueling.
 			return practice_target;
 	}
-	list<Actor *>::iterator new_opp_link = opponents.end();
+	list<Game_object_weak>::iterator new_opp_link = opponents.end();
 	switch (static_cast<Actor::Attack_mode>(mode)) {
 	case Actor::weakest: {
 		int str, least_str = 100;
-		for (list<Actor *>::iterator it = opponents.begin();
+		for (list<Game_object_weak>::iterator it = opponents.begin();
 		        it != opponents.end(); ++it) {
-			Actor *opp = *it;
+	    	Actor_shared opp = std::static_pointer_cast<Actor>((*it).lock());
+			if (!opp)
+			    continue;
 			str = opp->get_property(Actor::strength);
 			if (str < least_str) {
 				least_str = str;
@@ -495,9 +503,11 @@ Game_object *Combat_schedule::find_foe(
 	}
 	case Actor::strongest: {
 		int str, best_str = -100;
-		for (list<Actor *>::iterator it = opponents.begin();
+		for (list<Game_object_weak>::iterator it = opponents.begin();
 		        it != opponents.end(); ++it) {
-			Actor *opp = *it;
+	    	Actor_shared opp = std::static_pointer_cast<Actor>((*it).lock());
+			if (!opp)
+			    continue;
 			str = opp->get_property(Actor::strength);
 			if (str > best_str) {
 				best_str = str;
@@ -508,10 +518,12 @@ Game_object *Combat_schedule::find_foe(
 	}
 	case Actor::nearest: {
 		int best_dist = 4 * c_tiles_per_chunk;
-		for (list<Actor *>::iterator it = opponents.begin();
+		for (list<Game_object_weak>::iterator it = opponents.begin();
 		        it != opponents.end(); ++it) {
-			Actor *opp = *it;
-			int dist = npc->distance(opp);
+	    	Actor_shared opp = std::static_pointer_cast<Actor>((*it).lock());
+			if (!opp)
+			    continue;
+			int dist = npc->distance(opp.get());
 			if (opp->get_attack_mode() == Actor::flee)
 				dist += 16; // Avoid fleeing.
 			if (dist < best_dist) {
@@ -532,14 +544,12 @@ Game_object *Combat_schedule::find_foe(
 			new_opp_link = opponents.begin();
 		break;
 	}
-	Actor *new_opponent;
-	if (new_opp_link == opponents.end())
-		new_opponent = 0;
-	else {
-		new_opponent = *new_opp_link;
+	Actor_shared new_opponent;
+	if (new_opp_link != opponents.end()) {
+		new_opponent = std::static_pointer_cast<Actor>((*new_opp_link).lock());
 		opponents.erase(new_opp_link);
 	}
-	return new_opponent;
+	return new_opponent ? new_opponent.get() : nullptr;
 }
 
 /*
@@ -551,7 +561,7 @@ Game_object *Combat_schedule::find_foe(
 inline Game_object *Combat_schedule::find_foe(
 ) {
 	if (npc->get_attack_mode() == Actor::manual)
-		return 0;       // Find it yourself.
+		return nullptr;       // Find it yourself.
 	return find_foe(static_cast<int>(npc->get_attack_mode()));
 }
 
@@ -661,14 +671,14 @@ void Combat_schedule::approach_foe(
 				if (combat_trace)
 					cout << npc->get_name() << " has no opponents nearby."
 					     << endl;
-				npc->set_target(0);
+				npc->set_target(nullptr);
 				retry_ok = false;
 			} else if (closest != opponent) {
 				opponent = closest;
 				npc->set_target(opponent);
 				Monster_pathfinder_client cost(npc, dist,
 				                               opponent);
-				retry_ok = (opponent != 0 && path->NewPath(
+				retry_ok = (opponent != nullptr && path->NewPath(
 				                pos, opponent->get_tile(), &cost));
 			}
 		}
@@ -727,11 +737,11 @@ static Game_object *Get_usable_weapon(
 ) {
 	Game_object *bobj = npc->get_readied(index);
 	if (!bobj)
-		return 0;
+		return nullptr;
 	const Shape_info &info = bobj->get_info();
 	const Weapon_info *winf = info.get_weapon_info();
 	if (!winf)
-		return 0;       // Not a weapon.
+		return nullptr;       // Not a weapon.
 	Game_object *aobj;  // Check ranged first.
 	int need_ammo = npc->get_weapon_ammo(bobj->get_shapenum(),
 	                                     winf->get_ammo_consumed(), winf->get_projectile(),
@@ -742,11 +752,11 @@ static Game_object *Get_usable_weapon(
 			                                 winf->get_ammo_consumed(), winf->get_projectile(),
 			                                 false, &aobj);
 		if (need_ammo && !aobj)
-			return 0;
+			return nullptr;
 	}
 	if (info.get_ready_type() == both_hands &&
-	        npc->get_readied(rhand) != 0)
-		return 0;       // Needs two free hands.
+	        npc->get_readied(rhand) != nullptr)
+		return nullptr;       // Needs two free hands.
 	return bobj;
 }
 
@@ -816,7 +826,7 @@ void Combat_schedule::start_strike(
 	bool check_lof = !no_blocking;
 	// Get difference in lift.
 	const Weapon_info *winf = weapon_shape >= 0 ?
-	                    ShapeID::get_info(weapon_shape).get_weapon_info() : 0;
+	                    ShapeID::get_info(weapon_shape).get_weapon_info() : nullptr;
 	int dist = npc->distance(opponent);
 	int reach;
 	if (!winf) {
@@ -836,7 +846,7 @@ void Combat_schedule::start_strike(
 			weapon_dead = !spellbook->can_do_spell(npc);
 		else if (winf) {
 			// See if we can fire spell/projectile.
-			Game_object *ammo = 0;
+			Game_object *ammo = nullptr;
 			int need_ammo = npc->get_weapon_ammo(weapon_shape,
 			                                     winf->get_ammo_consumed(), winf->get_projectile(),
 			                                     ranged, &ammo);
@@ -856,7 +866,7 @@ void Combat_schedule::start_strike(
 				npc->change_frame(npc->get_dir_framenum(
 				                      Actor::standing));
 			state = approach;
-			npc->set_target(0);
+			npc->set_target(nullptr);
 			npc->start(200, 500);
 			return;
 		}
@@ -938,7 +948,7 @@ bool Combat_schedule::attack_target(
 	                   && att->get_attack_mode() != Actor::manual;
 
 	const Shape_info &info = ShapeID::get_info(weapon);
-	const Weapon_info *winf = weapon >= 0 ? info.get_weapon_info() : 0;
+	const Weapon_info *winf = weapon >= 0 ? info.get_weapon_info() : nullptr;
 
 	int reach;
 	int family = -1;    // Ammo, is needed, is the weapon itself.
@@ -962,9 +972,10 @@ bool Combat_schedule::attack_target(
 	}
 
 	// See if we need ammo.
-	Game_object *ammo = 0;
+	Game_object *ammo = nullptr;
 	int need_ammo = attacker->get_weapon_ammo(weapon, family,
 	                proj, ranged, &ammo);
+	Game_object_shared ammo_keep = shared_from_obj(ammo);
 	if (need_ammo && !ammo) {
 		if (flash_mouse)
 			Mouse::mouse->flash_shape(Mouse::outofammo);
@@ -1046,7 +1057,7 @@ bool Combat_schedule::attack_target(
 		}
 	}
 
-	Actor *trg = target ? target->as_actor() : 0;
+	Actor *trg = target ? target->as_actor() : nullptr;
 	bool trg_party = trg ? trg->is_in_party() : false;
 	bool att_party = att ? att->is_in_party() : false;
 	int attval = att ? att->get_effective_prop(static_cast<int>(Actor::combat)) : 0;
@@ -1093,11 +1104,13 @@ bool Combat_schedule::attack_target(
 			Tile_coord offset(0, 0, target->get_info().get_3d_height() / 2);
 			eman->add_effect(new Explosion_effect(target->get_tile() + offset,
 			                                      target, 0, weapon, -1, attacker));
-		} else
+		} else {
+		    Game_object_weak trg_check = weak_from_obj(trg);
 			target->attacked(attacker, weapon,
 			                 ammo ? ammo->get_shapenum() : -1, false);
-            if (trg)
+            if (trg && !trg_check.expired())
 			    back_off(trg, attacker);
+		}
 		return true;
 	}
 	return false;
@@ -1141,12 +1154,12 @@ void Combat_schedule::run_away(
  *  See if a spellbook is readied with a spell
  *  available.
  *
- *  Output: ->spellbook if so, else 0.
+ *  Output: ->spellbook if so, else nullptr.
  */
 
 Spellbook_object *Combat_schedule::readied_spellbook(
 ) {
-	Spellbook_object *book = 0;
+	Spellbook_object *book = nullptr;
 	// Check both hands.
 	Game_object *obj = npc->get_readied(lhand);
 	if (obj && obj->get_info().get_shape_class() == Shape_info::spellbook) {
@@ -1160,7 +1173,7 @@ Spellbook_object *Combat_schedule::readied_spellbook(
 		if (book->can_do_spell(npc))
 			return book;
 	}
-	return 0;
+	return nullptr;
 }
 
 /*
@@ -1171,7 +1184,7 @@ void Combat_schedule::set_weapon(
     bool removed            // The weapon was just removed.
 ) {
 	int points;
-	spellbook = 0;
+	spellbook = nullptr;
 	const Weapon_info *info = npc->get_weapon(points, weapon_shape, weapon);
 	if (!removed &&
 	        // Not dragging?
@@ -1217,13 +1230,14 @@ void Combat_schedule::set_weapon(
 
 void Combat_schedule::set_hand_to_hand(
 ) {
-	weapon = 0;
+	weapon = nullptr;
 	weapon_shape = -1;
 	no_blocking = false;
 	// Put aside weapon.
 	Game_object *weapon = npc->get_readied(lhand);
 	if (weapon) {
-		npc->remove(weapon);
+	    Game_object_shared keep = weapon->shared_from_this();
+	    npc->remove(weapon);
 		if (!npc->add_readied(weapon, belt, 1) &&
 		        !npc->add_readied(weapon, back_2h, 1) &&
 		        !npc->add_readied(weapon, back_shield, 1) &&
@@ -1246,7 +1260,7 @@ inline int Need_new_opponent(
 	bool see_invisible = npc->can_see_invisible();
 	// Nonexistent or dead?
 	if (!opponent ||
-	        ((act = opponent->as_actor()) != 0 && act->is_dead()) ||
+	        ((act = opponent->as_actor()) != nullptr && act->is_dead()) ||
 	        // Or invisible?
 	        (!see_invisible && opponent->get_flag(Obj_flags::invisible)
 	         && rand() % 4 == 0))
@@ -1264,7 +1278,7 @@ Combat_schedule::Combat_schedule(
     Schedule_types
     prev_sched
 ) : Schedule(n), state(initial), prev_schedule(prev_sched),
-	practice_target(0), weapon(0), weapon_shape(-1), spellbook(0),
+	practice_target(nullptr), weapon(nullptr), weapon_shape(-1), spellbook(nullptr),
 	no_blocking(false), yelled(0), started_battle(false), fleed(0),
 	failures(0), teleport_time(0), summon_time(0),
 	dex_points(0), alignment(n->get_effective_alignment()) {
@@ -1315,7 +1329,7 @@ void Combat_schedule::now_what(
 	}
 	// Check if opponent still breathes.
 	if (Need_new_opponent(gwin, npc)) {
-		npc->set_target(0);
+		npc->set_target(nullptr);
 		state = approach;
 	}
 	Game_object *opponent = npc->get_target();
@@ -1348,7 +1362,8 @@ void Combat_schedule::now_what(
 		state = approach;
 		// Back into queue.
 		npc->start_std();
-		Actor *safenpc = npc;
+		Actor_shared safenpc = std::static_pointer_cast<Actor>(
+											npc->shared_from_this());
 		// Change back to ready frame.
 		int delay = gwin->get_std_delay();
 		// Neither slime nor BG sea serpent?
@@ -1369,7 +1384,7 @@ void Combat_schedule::now_what(
 			// Strike but once at objects.
 			Game_object *newtarg = safenpc->get_target();
 			if (newtarg && !newtarg->as_actor())
-				safenpc->set_target(0);
+				safenpc->set_target(nullptr);
 			return;     // We may no longer exist!
 		}
 		break;
@@ -1411,7 +1426,7 @@ void Combat_schedule::now_what(
 		// Strike but once at objects.
 		Game_object *newtarg = npc->get_target();
 		if (newtarg && !newtarg->as_actor()) {
-			npc->set_target(0);
+			npc->set_target(nullptr);
 			return;     // We may no longer exist!
 		}
 		break;
@@ -1486,11 +1501,11 @@ void Combat_schedule::ending(
 		// See if being a coward.
 		find_opponents();
 		bool found = false; // Find a close-by enemy.
-		for (list<Actor *>::const_iterator it = opponents.begin();
+		for (list<Game_object_weak>::const_iterator it = opponents.begin();
 		        it != opponents.end(); ++it) {
-			Actor *opp = *it;
-			if (opp->distance(npc) < (c_screen_tile_size / 2 - 2) &&
-			        Fast_pathfinder_client::is_grabable(npc, opp)) {
+	    	Actor_shared opp = std::static_pointer_cast<Actor>((*it).lock());
+			if (opp && opp->distance(npc) < (c_screen_tile_size / 2 - 2) &&
+			        Fast_pathfinder_client::is_grabable(npc, opp.get())) {
 				found = true;
 				break;
 			}
@@ -1526,15 +1541,17 @@ void Ready_duel_weapon(
 	Game_object *weap = npc->get_readied(lhand);
 	if (!weap || weap->get_shapenum() != wshape) {
 		// Need a bow.
-		Game_object *newweap =
+		Game_object_shared newweap, keep, newkeep;
+		Game_object *found =
 		    npc->find_item(wshape, c_any_qual, c_any_framenum);
-		if (newweap)        // Have it?
-			newweap->remove_this(1);
-		else            // Create new one.
+		if (found) {        // Have it?
+		    newweap = found->shared_from_this();
+			newweap->remove_this(&newkeep);
+		} else            // Create new one.
 			newweap = gmap->create_ireg_object(wshape, 0);
 		if (weap)       // Remove old item.
-			weap->remove_this(1);
-		npc->add(newweap, 1);   // Should go in correct spot.
+			weap->remove_this(&keep);
+		npc->add(newweap.get(), 1);   // Should go in correct spot.
 		if (weap)
 			npc->add(weap, 1);
 	}
@@ -1544,11 +1561,11 @@ void Ready_duel_weapon(
 	Game_object *aobj = npc->get_readied(quiver);
 	if (aobj)
 		aobj->remove_this();    // Toss current ammo.
-	Game_object *arrows = gmap->create_ireg_object(ashape, 0);
+	Game_object_shared arrows = gmap->create_ireg_object(ashape, 0);
 	int extra = rand() % 3;     // Add 1 or 2.
 	if (extra)
 		arrows->modify_quantity(extra);
-	npc->add(arrows, 1);        // Should go to right spot.
+	npc->add(arrows.get(), 1);        // Should go to right spot.
 }
 
 /*
@@ -1559,7 +1576,7 @@ void Duel_schedule::find_opponents(
 ) {
 	opponents.clear();
 	attacks = 0;
-	practice_target = 0;
+	practice_target = nullptr;
 	int r = rand() % 3;
 	if (r == 0) {       // First look for practice targets.
 		// Archery target:
@@ -1585,7 +1602,7 @@ void Duel_schedule::find_opponents(
 		Game_object *oppopp = opp->get_target();
 		if (opp != npc && opp->get_schedule_type() == duel &&
 		        (!oppopp || oppopp == npc))
-			opponents.push_back(opp);
+			opponents.push_back(opp->weak_from_this());
 	}
 }
 
@@ -1610,7 +1627,7 @@ void Duel_schedule::now_what(
 		return;
 	}
 	if (attacks % 8 == 0) { // Time to break off.
-		npc->set_target(0);
+		npc->set_target(nullptr);
 		Tile_coord pos = start;
 		pos.tx += rand() % 24 - 12;
 		pos.ty += rand() % 24 - 12;

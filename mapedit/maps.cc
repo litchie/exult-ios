@@ -28,8 +28,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #ifdef __GNUC__
 #pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wold-style-cast"
 #pragma GCC diagnostic ignored "-Wcast-qual"
+#pragma GCC diagnostic ignored "-Wold-style-cast"
+#pragma GCC diagnostic ignored "-Wparentheses"
+#pragma GCC diagnostic ignored "-Wuseless-cast"
 #endif  // __GNUC__
 #include <gtk/gtkradiomenuitem.h>
 #ifdef __GNUC__
@@ -80,7 +82,7 @@ C_EXPORT void on_main_map_activate(
     gpointer udata
 ) {
 	ignore_unused_variable_warning(udata);
-	on_map_activate(item, static_cast<gpointer>(0));
+	on_map_activate(item, nullptr);
 }
 
 /*
@@ -189,7 +191,7 @@ void ExultStudio::setup_maps_list(
 	                      GTK_MENU_ITEM(glade_xml_get_widget(app_xml, "map1")));
 	GList *items = gtk_container_get_children(GTK_CONTAINER(maps));
 	GList *each = g_list_last(items);
-	GSList *group = NULL;
+	GSList *group = nullptr;
 	int curmap = 0;
 
 	while (each) {
@@ -199,8 +201,7 @@ void ExultStudio::setup_maps_list(
 		if (strcmp(text, "Main") == 0) {
 			group = gtk_radio_menu_item_get_group(
 			            GTK_RADIO_MENU_ITEM(item));
-			gtk_object_set_user_data(GTK_OBJECT(item),
-			                         reinterpret_cast<gpointer>(0));
+			gtk_object_set_user_data(GTK_OBJECT(item), nullptr);
 			if (curmap == 0)
 				gtk_check_menu_item_set_active(
 				    GTK_CHECK_MENU_ITEM(item), TRUE);

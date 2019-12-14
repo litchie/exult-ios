@@ -54,7 +54,7 @@ using std::vector;
 /*
  *  Recursively look for a barge that an object is a part of, or on.
  *
- *  Output: ->barge if found, else 0.
+ *  Output: ->barge if found, else nullptr.
  */
 
 Barge_object *Get_barge(
@@ -80,8 +80,8 @@ class Usecode_internal : public Usecode_machine {
 	std::map<int, uint32> timers;   // Each has time in hours when set.
 	int speech_track;       // Set/read by some intrinsics.
 	Text_gump *book;        // Book/scroll being displayed.
-	Game_object *caller_item;   // Item this is being called on.
-	vector<Game_object *> last_created; // Stack of last items created with
+	Game_object_shared caller_item;   // Item this is being called on.
+	vector<Game_object_shared> last_created; // Stack of last items created with
 	//   intrins. x24.
 	Actor *path_npc;        // Last NPC in path_run_usecode().
 	const char *user_choice;    // String user clicked on.
@@ -105,6 +105,7 @@ class Usecode_internal : public Usecode_machine {
 	Usecode_value pop();
 	Usecode_value peek();
 	void pushref(Game_object *obj); // Push itemref
+  void pushref(Game_object_shared obj);
 	void pushi(long val);       // Push/pop integers.
 	int popi();
 	// Push/pop strings.
@@ -164,7 +165,7 @@ class Usecode_internal : public Usecode_machine {
 	Usecode_value remove_cont_items(Usecode_value &container, Usecode_value &quantval,
 	                                Usecode_value &shapeval, Usecode_value &qualval,
 	                                Usecode_value &frameval, Usecode_value &flagval);
-	Game_object *create_object(int shapenum, bool equip);
+	Game_object_shared create_object(int shapenum, bool equip);
 
 	int path_run_usecode(Usecode_value &npcval, Usecode_value &locval,
 	                     Usecode_value &useval, Usecode_value &itemval,
@@ -411,15 +412,14 @@ class Usecode_internal : public Usecode_machine {
 	const char *get_user_choice();  // Get user's choice.
 	int get_user_choice_num();
 	void clear_usevars();
-	void read_usevars(std::istream &in);    // Read static variables.
+	void read_usevars();    // Read static variables.
 	Usecode_function *find_function(int funcid);
 
 	Game_object *intercept_item;
 	Tile_coord *intercept_tile;
-	Game_object *temp_to_be_deleted;
 
 	// execution functions
-	bool call_function(int funcid, int event, Game_object *caller = 0,
+	bool call_function(int funcid, int event, Game_object *caller = nullptr,
 	                   bool entrypoint = false, bool orig = false, int givenargs = 0);
 	void previous_stack_frame();
 	void return_from_function(Usecode_value &retval);
@@ -472,6 +472,7 @@ public:
 	Usecode_value *peek_stack(int depth) const;
 	void poke_stack(int depth, Usecode_value &val);
 #endif
+
 public:
 	friend class Usecode_script;
 	Usecode_internal();
@@ -499,13 +500,13 @@ public:
 	virtual void intercept_click_on_item(Game_object *obj) {
 		intercept_item = obj;
 		delete intercept_tile;
-		intercept_tile = 0;
+		intercept_tile = nullptr;
 	}
 	virtual Game_object *get_intercept_click_on_item() const {
 		return intercept_item;
 	}
 	virtual void intercept_click_on_tile(Tile_coord *t) {
-		intercept_item = 0;
+		intercept_item = nullptr;
 		delete intercept_tile;
 		intercept_tile = t;
 	}
@@ -515,8 +516,8 @@ public:
 	virtual void save_intercept(Game_object *&obj, Tile_coord *&t) {
 		obj = intercept_item;
 		t = intercept_tile;
-		intercept_item = 0;
-		intercept_tile = 0;
+		intercept_item = nullptr;
+		intercept_tile = nullptr;
 	}
 	virtual void restore_intercept(Game_object *obj, Tile_coord *t) {
 		intercept_item = obj;
@@ -524,6 +525,5 @@ public:
 		intercept_tile = t;
 	}
 };
-
 
 #endif

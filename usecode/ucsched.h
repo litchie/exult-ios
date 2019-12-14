@@ -33,7 +33,7 @@ class Usecode_script : public Time_sensitive {
 	static int count;       // Total # of these around.
 	static Usecode_script *first;// ->chain of all of them.
 	Usecode_script *next, *prev;    // Next/prev. in global chain.
-	Game_object *obj;       // From objval.
+	Game_object_weak obj;       // From objval.
 	Usecode_value *code;        // Array of code to execute.
 	int cnt;            // Length of arrval.
 	int i;              // Current index.
@@ -47,7 +47,7 @@ class Usecode_script : public Time_sensitive {
 	Usecode_script(Game_object *item, Usecode_value *cd, int findex,
 	               int nhalt, int del);
 public:
-	Usecode_script(Game_object *o, Usecode_value *cd = 0);
+	Usecode_script(Game_object *o, Usecode_value *cd = nullptr);
 	virtual ~Usecode_script();
 	void start(long delay = 1); // Start after 'delay' msecs.
 	long get_delay() const {
@@ -62,7 +62,7 @@ public:
 	}
 	void add(int v1);       // Append new instructions:
 	void add(int v1, int v2);
-	void add(int v1, const char *str);
+	void add(int v1, std::string str);
 	void add(int *vals, int cnt);
 	Usecode_script &operator<<(int v) {
 		add(v);
@@ -75,9 +75,9 @@ public:
 	}
 	// Find for given item.
 	static Usecode_script *find(const Game_object *srch,
-	                            Usecode_script *last_found = 0);
+	                            Usecode_script *last_found = nullptr);
 	static Usecode_script *find_active(const Game_object *srch,
-	                                   Usecode_script *last_found = 0);
+	                                   Usecode_script *last_found = nullptr);
 	static void terminate(const Game_object *obj);
 	static void clear();        // Delete all.
 	// Remove all whose objs. are too far.

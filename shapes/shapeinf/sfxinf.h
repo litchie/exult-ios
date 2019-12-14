@@ -25,7 +25,6 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#include <cstdlib>
 #include "baseinf.h"
 #include "exult_constants.h"
 using std::istream;
@@ -41,6 +40,7 @@ class SFX_info : public Base_info {
 	int     range;          // # of sequential sfx to be used.
 	int     chance;         // % chance of playing the SFX.
 	int     extra;          // For grandfather clock.
+
 public:
 	friend class Shape_info;
 	SFX_info()
@@ -101,20 +101,8 @@ public:
 			range = f;
 		}
 	}
-	bool time_to_play() const {
-		return rand() % 100 < chance;
-	}
-	int get_next_sfx(int &last) const {
-		if (range > 1) {
-			if (random)
-				return sfxnum + (rand() % range);
-			else {
-				last = (last + 1) % range;
-				return sfxnum + last;
-			}
-		}
-		return sfxnum;
-	}
+	bool time_to_play() const;
+	int get_next_sfx(int &last) const;
 	static int get_info_flag() {
 		return 0x20;
 	}

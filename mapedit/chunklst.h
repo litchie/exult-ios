@@ -93,7 +93,7 @@ class Chunk_chooser: public Object_browser, public Shape_draw {
 	virtual GtkWidget *create_popup();  // Popup menu.
 public:
 	Chunk_chooser(Vga_file *i, std::istream &cfile, unsigned char *palbuf,
-	              int w, int h, Shape_group *g = 0);
+	              int w, int h, Shape_group *g = nullptr);
 	virtual ~Chunk_chooser();
 	virtual bool server_response(int id, unsigned char *data, int datalen);
 	virtual void end_terrain_editing();
@@ -140,7 +140,7 @@ public:
 	void delete_response(const unsigned char *data, int datalen);
 	virtual void move(bool upwards);    // Move current selected chunk.
 	void swap_response(const unsigned char *data, int datalen);
-#ifdef WIN32
+#ifdef _WIN32
 	static gint win32_drag_motion(GtkWidget *widget, GdkEventMotion *event,
 	                              gpointer data);
 #else

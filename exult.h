@@ -41,9 +41,9 @@ extern bool g_waiting_for_click;
 extern int Get_click(
     int &x, int &y,         // Location returned (if not ESC).
     Mouse::Mouse_shapes shape,  // Mouse shape to use.
-    char *chr = 0,          // Char. returned if not null.
+    char *chr = nullptr,          // Char. returned if not null.
     bool drag_ok = false,       // Can drag while here.
-    Paintable *paint = 0,       // Paint over everything else.
+    Paintable *paint = nullptr,       // Paint over everything else.
     bool rotate_colors = false      // If the palette colors should rotate.
 );
 

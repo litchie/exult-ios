@@ -47,8 +47,8 @@ bool BilinearScalerInternal_Arb(SDL_Surface *tex, sint32 sx, sint32 sy, sint32 s
 	if (sw == dw * 2) start_x += 0x8000;
 	if (sh == dh * 2) dst_y += 0x8000;
 
-	uint8 *blockline_start = 0;
-	uint8 *next_block = 0;
+	uint8 *blockline_start = nullptr;
+	uint8 *next_block = nullptr;
 
 //	uint8* pixel_start = pixel;
 
@@ -83,7 +83,7 @@ bool BilinearScalerInternal_Arb(SDL_Surface *tex, sint32 sx, sint32 sy, sint32 s
 			texel++;
 
 			blockline_start = next_block;
-			next_block = 0;
+			next_block = nullptr;
 
 			ArbInnerLoop(a, b, f, g);
 			ArbInnerLoop(b, c, g, h);
@@ -99,7 +99,7 @@ bool BilinearScalerInternal_Arb(SDL_Surface *tex, sint32 sx, sint32 sy, sint32 s
 			texel++;
 
 			blockline_start = next_block;
-			next_block = 0;
+			next_block = nullptr;
 
 			ArbInnerLoop(f, g, a, b);
 			ArbInnerLoop(g, h, b, c);
@@ -119,7 +119,7 @@ bool BilinearScalerInternal_Arb(SDL_Surface *tex, sint32 sx, sint32 sy, sint32 s
 			texel++;
 
 			blockline_start = next_block;
-			next_block = 0;
+			next_block = nullptr;
 
 			ArbInnerLoop(a, b, f, g);
 			ArbInnerLoop(b, c, g, h);
@@ -132,7 +132,7 @@ bool BilinearScalerInternal_Arb(SDL_Surface *tex, sint32 sx, sint32 sy, sint32 s
 			pos_y = dst_y;
 
 			blockline_start = next_block;
-			next_block = 0;
+			next_block = nullptr;
 
 			ArbInnerLoop(f, g, f, g);
 			ArbInnerLoop(g, h, g, h);
@@ -176,7 +176,7 @@ bool BilinearScalerInternal_Arb(SDL_Surface *tex, sint32 sx, sint32 sy, sint32 s
 			texel++;
 
 			blockline_start = next_block;
-			next_block = 0;
+			next_block = nullptr;
 
 			ArbInnerLoop(a, b, f, g);
 			ArbInnerLoop(b, c, g, h);
@@ -192,7 +192,7 @@ bool BilinearScalerInternal_Arb(SDL_Surface *tex, sint32 sx, sint32 sy, sint32 s
 			texel++;
 
 			blockline_start = next_block;
-			next_block = 0;
+			next_block = nullptr;
 
 			ArbInnerLoop(f, g, a, b);
 			ArbInnerLoop(g, h, b, c);
@@ -212,7 +212,7 @@ bool BilinearScalerInternal_Arb(SDL_Surface *tex, sint32 sx, sint32 sy, sint32 s
 			texel++;
 
 			blockline_start = next_block;
-			next_block = 0;
+			next_block = nullptr;
 
 			ArbInnerLoop(a, b, f, g);
 			ArbInnerLoop(b, c, g, h);
@@ -225,7 +225,7 @@ bool BilinearScalerInternal_Arb(SDL_Surface *tex, sint32 sx, sint32 sy, sint32 s
 			pos_y = dst_y;
 
 			blockline_start = next_block;
-			next_block = 0;
+			next_block = nullptr;
 
 			ArbInnerLoop(f, g, f, g);
 			ArbInnerLoop(g, h, g, h);

@@ -189,7 +189,7 @@ static void cont_shape_dropped(
 		reinterpret_cast<ExultStudio *>(udata)->set_cont_shape(shape, frame);
 }
 
-#ifdef WIN32
+#ifdef _WIN32
 
 static void Drop_dragged_shape(int shape, int frame, int x, int y, void *data) {
 	cout << "Dropped a shape: " << shape << "," << frame << " " << data << endl;
@@ -208,29 +208,29 @@ void ExultStudio::open_cont_window(
     unsigned char *data,        // Serialized object.
     int datalen
 ) {
-#ifdef WIN32
+#ifdef _WIN32
 	bool first_time = false;
 #endif
 	if (!contwin) {         // First time?
-#ifdef WIN32
+#ifdef _WIN32
 		first_time = true;
 #endif
 		contwin = glade_xml_get_widget(app_xml, "cont_window");
 		// Note: vgafile can't be null here.
 		if (palbuf) {
-			cont_draw = new Shape_draw(vgafile->get_ifile(), palbuf,
+			cont_draw = new Shape_draw(vgafile->get_ifile(), palbuf.get(),
 			                           glade_xml_get_widget(app_xml, "cont_draw"));
 			cont_draw->enable_drop(cont_shape_dropped, this);
 		}
 	}
 	// Init. cont address to null.
-	gtk_object_set_user_data(GTK_OBJECT(contwin), 0);
+	gtk_object_set_user_data(GTK_OBJECT(contwin), nullptr);
 	if (!init_cont_window(data, datalen))
 		return;
 	gtk_widget_show(contwin);
-#ifdef WIN32
+#ifdef _WIN32
 	if (first_time || !contdnd)
-		Windnd::CreateStudioDropDest(contdnd, conthwnd, Drop_dragged_shape, NULL, NULL, (void *) this);
+		Windnd::CreateStudioDropDest(contdnd, conthwnd, Drop_dragged_shape, nullptr, nullptr, this);
 #endif
 }
 
@@ -242,7 +242,7 @@ void ExultStudio::close_cont_window(
 ) {
 	if (contwin) {
 		gtk_widget_hide(contwin);
-#ifdef WIN32
+#ifdef _WIN32
 		Windnd::DestroyStudioDropDest(contdnd, conthwnd);
 #endif
 	}

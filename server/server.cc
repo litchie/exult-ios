@@ -55,7 +55,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <netdb.h>
 #endif
 
-#ifndef WIN32
+#ifndef _WIN32
 #include <sys/un.h>
 #endif
 
@@ -77,7 +77,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "debugserver.h"
 #endif
 
-#ifdef WIN32
+#ifdef _WIN32
 #include "servewin32.h"
 #include "cheat.h"
 #endif
@@ -119,7 +119,7 @@ void Server_init(
 ) {
 	// Get location of socket file.
 	std::string servename = get_system_path(EXULT_SERVER);
-#ifndef WIN32
+#ifndef _WIN32
 	// Make sure it isn't there.
 	unlink(servename.c_str());
 #ifdef HAVE_GETADDRINFOX
@@ -186,7 +186,7 @@ void Server_init(
 
 void Server_close(
 ) {
-#ifdef WIN32
+#ifdef _WIN32
 	Exult_server::close_pipe();
 	listen_socket = client_socket = -1;
 #else
@@ -421,7 +421,7 @@ static void Handle_client_message(
 			*wptr++ = npc->is_unused();
 			std::string nm = npc->get_npc_name();
 			strcpy(reinterpret_cast<char *>(wptr), nm.c_str());
-			// Point past ending NULL.
+			// Point past ending nullptr.
 			wptr += strlen(reinterpret_cast<char *>(wptr)) + 1;
 		} else
 			Write2(wptr, static_cast<unsigned short>(-1));
@@ -441,7 +441,7 @@ static void Handle_client_message(
 	}
 	case Exult_server::edit_selected: {
 		unsigned char basic = *ptr;
-		const Game_object_vector &sel = cheat.get_selected();
+		const Game_object_shared_vector &sel = cheat.get_selected();
 		if (!sel.empty()) {
 			if (basic)      // Basic obj. props?
 				sel.back()->Game_object::edit();
@@ -520,7 +520,7 @@ static void Handle_client_message(
 void Server_delay(
     Message_handler handle_message
 ) {
-#ifndef WIN32
+#ifndef _WIN32
 	fd_set rfds;
 	struct timeval timer;
 	timer.tv_sec = 0;
@@ -532,14 +532,14 @@ void Server_delay(
 	if (client_socket >= 0)
 		FD_SET(client_socket, &rfds);
 	// Wait for timeout or event.
-	if (select(highest_fd, &rfds, 0, 0, &timer) > 0) {
+	if (select(highest_fd, &rfds, nullptr, nullptr, &timer) > 0) {
 		// Something's come in.
 		if (listen_socket >= 0 && FD_ISSET(listen_socket, &rfds)) {
 			// New client connection.
 			// For now, just one at a time.
 			if (client_socket >= 0)
 				close(client_socket);
-			client_socket = accept(listen_socket, 0, 0);
+			client_socket = accept(listen_socket, nullptr, nullptr);
 			cout << "Accept returned client_socket = " <<
 			     client_socket << endl;
 			// Non-blocking.

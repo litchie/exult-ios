@@ -30,7 +30,7 @@
 
 
 Usecode_machine::Usecode_machine(
-) : keyring(0), conv(0) {
+) : keyring(nullptr), conv(nullptr) {
 	// Clear global flags.
 	std::memset(gflags, 0, sizeof(gflags));
 	conv = new Conversation;

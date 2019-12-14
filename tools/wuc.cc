@@ -2,9 +2,8 @@
 #include <cstdlib>
 #include <cstring>
 
-using namespace std;
-
 #include "uctools.h"
+#include "array_size.h"
 
 static opcode_desc push_table[] = {
 	{"true", 0, 0x13, 0, 0},
@@ -29,7 +28,7 @@ static const char *compiler_table[] = {
 
 char token[TOKEN_LENGTH], *token2, curlabel[256], indata;
 int pass,offset;
-unsigned byte, word, funcnum, datasize, codesize;
+unsigned byteval, word, funcnum, datasize, codesize;
 int extended;
 
 char labels[MAX_LABELS][10];
@@ -159,10 +158,10 @@ void read_token(FILE *fi) {
 }
 
 int main(int argc,char *argv[]) {
-	unsigned i, opsize = sizeof(opcode_table) / sizeof(opcode_desc),
-	       pushsize = sizeof(push_table) / sizeof(opcode_desc),
-	       popsize = sizeof(pop_table) / sizeof(opcode_desc),
-	       compsize = sizeof(compiler_table) / sizeof(char *);
+	unsigned i, opsize = array_size(opcode_table),
+	       pushsize = array_size(push_table),
+	       popsize = array_size(pop_table),
+	       compsize = array_size(compiler_table);
 	int label;
 	const char **func_table = bg_intrinsic_table;
 	int funsize = bg_intrinsic_size;
@@ -190,11 +189,11 @@ int main(int argc,char *argv[]) {
 	lindex = 0;
 	for (pass = 0; pass < 2; pass++) {
 		//          printf("Pass %d\n",pass+1);
-		if ((fi = fopen(argv[findex], "r")) == NULL) {
+		if ((fi = fopen(argv[findex], "r")) == nullptr) {
 			printf("Can't open infile for reading\n");
 			exit(0);
 		}
-		if ((fo = fopen(argv[findex + 1], "wb")) == NULL) {
+		if ((fo = fopen(argv[findex + 1], "wb")) == nullptr) {
 			printf("Can't open outfile for writing\n");
 			exit(0);
 		}
@@ -249,8 +248,8 @@ int main(int argc,char *argv[]) {
 					for (i = 1; i < strlen(token); i++)
 						emit_byte(token[i]);
 				else {
-					sscanf(token, "%x", &byte);
-					emit_byte(byte);
+					sscanf(token, "%x", &byteval);
+					emit_byte(byteval);
 				}
 			} else if (!strcasecmp(token, "dw")) {
 				read_token(fi);
@@ -276,7 +275,7 @@ int main(int argc,char *argv[]) {
 							case op_call:
 								emit_byte(i);
 								read_token(fi);
-								if ((token2 = strchr(token, '@')) != NULL) {
+								if ((token2 = strchr(token, '@')) != nullptr) {
 									*token2++ = 0;
 									if (token[0] != '_')
 										word = find_intrinsic(func_table, funsize, token);

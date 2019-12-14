@@ -127,7 +127,6 @@ void	MyMidiPlayer::start_music(int num,bool repeat,std::string flex)
 
 	// OGG Handling
 	if (ogg_enabled) {
-
 		// Play ogg for this track
 		if (ogg_play_track(flex,num,repeat))
 			return;
@@ -142,7 +141,6 @@ void	MyMidiPlayer::start_music(int num,bool repeat,std::string flex)
 
 	// Handle FM Synth
 	if (midi_driver->isFMSynth())  {
-
 		// use the fmsynth music, which is bank 3
 		if (flex == MAINMUS) flex = MAINMUS_AD;
 		// Bank 1 is BG menu/intro. We need Bank 4
@@ -151,7 +149,7 @@ void	MyMidiPlayer::start_music(int num,bool repeat,std::string flex)
 		else if (flex == MAINSHP_FLX) num--;
 	}
 
-	IDataSource *mid_data = 0;
+	IDataSource *mid_data = nullptr;
 
 	// Try in patch dir first.
 	string pflex("<PATCH>/");
@@ -163,8 +161,8 @@ void	MyMidiPlayer::start_music(int num,bool repeat,std::string flex)
 			prefix_len+=2;
 		else
 			prefix_len = 0;
-
 	}
+
 	pflex += flex.c_str() + prefix_len;
 #ifdef MACOSX
 	string bflex("<BUNDLE>/");
@@ -214,7 +212,6 @@ void	MyMidiPlayer::start_music(std::string fname,int num,bool repeat)
 
 	// OGG Handling
 	if (ogg_enabled) {
-
 		// Play ogg for this track
 		if (ogg_play_track(fname,num,repeat))
 			return;
@@ -238,24 +235,18 @@ void	MyMidiPlayer::start_music(std::string fname,int num,bool repeat)
 	}
 
 	// Read the data into the XMIDI class
+	IFileDataSource mid_data(fname.c_str());
+	if (!mid_data.good()) {
+		return;
+	}
 
-	std::ifstream mid_file;
-	U7open(mid_file, fname.c_str());
-	if (!mid_file.good()) return;
-	IDataSource *mid_data = new IStreamDataSource(&mid_file);
-
-	XMidiFile midfile(mid_data, setup_timbre_for_track(fname));
-
-	delete mid_data;
-	mid_file.close();
+	XMidiFile midfile(&mid_data, setup_timbre_for_track(fname));
 
 	// Now give the xmidi object to the midi device
-
 	XMidiEventList *eventlist = midfile.GetEventList(num);
 	if (eventlist) {
 		midi_driver->startSequence(SEQ_NUM_MUSIC, eventlist, repeat, 255);
 	}
-
 }
 
 void MyMidiPlayer::set_timbre_lib(TimberLibrary lib)
@@ -334,7 +325,7 @@ void MyMidiPlayer::load_timbres()
 		music_conversion != XMIDIFILE_CONVERT_NOCONVERSION)
 		return;
 
-	const char *u7voice = 0;
+	const char *u7voice = nullptr;
 
 	// Black Gate Settings
 	if (GAME_BG && timbre_lib == TIMBRE_LIB_INTRO)
@@ -385,10 +376,8 @@ void MyMidiPlayer::load_timbres()
 		}
 	}
 
-
 	if (timbre_lib_filename == filename && timbre_lib_index == index &&
-		timbre_lib_game == Game::get_game_type())
-	{
+		timbre_lib_game == Game::get_game_type()) {
 		return;
 	}
 
@@ -396,27 +385,23 @@ void MyMidiPlayer::load_timbres()
 	timbre_lib_index = index;
 	timbre_lib_game = Game::get_game_type();
 
-	std::ifstream file;
-	IDataSource *ds = 0;
+	std::unique_ptr<IDataSource> ds;
 
-	if (index == -1)
-	{
-		U7open(file, filename);
-		if (!file.good()) return;
-		ds = new IStreamDataSource(&file);
-	}
-	else if (index >= 0)
-	{
-		ds = new IExultDataSource(filename,index);
+	if (index == -1) {
+		ds = std::make_unique<IFileDataSource>(filename);
+		if (!ds->good()) {
+			return;
+		}
+	} else if (index >= 0) {
+		ds = std::make_unique<IExultDataSource>(filename, index);
 	}
 
-	midi_driver->loadTimbreLibrary(ds,type);
-
-	file.close();
-	delete ds;
+	// Note: ds can be null here if inde == -2. In this case, the pointer
+	// will never be used inside loadTimbreLibrary.
+	midi_driver->loadTimbreLibrary(ds.get(), type);
 }
 
-void	MyMidiPlayer::stop_music()
+void MyMidiPlayer::stop_music()
 {
 	if(!ogg_enabled && !midi_driver && !init_device(false))
 		return;
@@ -503,7 +488,7 @@ void MyMidiPlayer::set_midi_driver(const std::string& desired_driver, bool use_o
 		stop_music();
 		if (midi_driver) midi_driver->destroyMidiDriver();
 		delete midi_driver;
-		midi_driver = 0;
+		midi_driver = nullptr;
 		initialized = false;
 	}
 
@@ -520,7 +505,7 @@ void MyMidiPlayer::set_midi_driver(const std::string& desired_driver, bool use_o
 bool MyMidiPlayer::init_device(bool timbre_load)
 {
 	// already initialized? Do this first
-	if (initialized) return (midi_driver != 0) || ogg_enabled;
+	if (initialized) return (midi_driver != nullptr) || ogg_enabled;
 
 	string	s;
 	string	driver_default = "default";
@@ -607,7 +592,7 @@ bool MyMidiPlayer::init_device(bool timbre_load)
 	// no need for a MIDI device (for now)
 	if (!sfx && !music)
 	{
-		midi_driver = 0;
+		midi_driver = nullptr;
 		return false;
 	}
 
@@ -669,7 +654,7 @@ bool MyMidiPlayer::is_adlib()
 }
 
 MyMidiPlayer::MyMidiPlayer()	: repeating(false),current_track(-1),
-				  midi_driver_name("default"), midi_driver(0), initialized(false),
+				  midi_driver_name("default"), midi_driver(nullptr), initialized(false),
 				  timbre_lib(TIMBRE_LIB_GM),
 				  timbre_lib_index(0), timbre_lib_game(NONE),
 				  music_conversion(XMIDIFILE_CONVERT_MT32_TO_GM),
@@ -687,7 +672,7 @@ MyMidiPlayer::~MyMidiPlayer()
 	{
 		midi_driver->destroyMidiDriver();
 		delete midi_driver;
-		midi_driver = 0;
+		midi_driver = nullptr;
 	}
 }
 
@@ -724,39 +709,28 @@ void    MyMidiPlayer::start_sound_effect(int num)
 	// Only support SFX on devices with 2 or more sequences
 	if (midi_driver->maxSequences() < 2) return;
 
-	char		*buffer;
-	size_t		size;
-	IDataSource *mid_data;
-
-	U7object	*track =
+	IExultDataSource *mid_data =
 #ifdef MACOSX
 		is_system_path_defined("<BUNDLE>") ?
-			new U7multiobject("<DATA>/midisfx.flx",
-			                  "<BUNDLE>/midisfx.flx", real_num) :
+			new IExultDataSource("<DATA>/midisfx.flx",
+			                     "<BUNDLE>/midisfx.flx", real_num) :
 #endif
-			new U7object("<DATA>/midisfx.flx", real_num);
+			new IExultDataSource("<DATA>/midisfx.flx", real_num);
 
-	buffer = track->retrieve(size);
-	delete track;
-	if (!buffer || size <= 0)
-		{
-		delete [] buffer;
+	if (!mid_data->good()) {
+		delete mid_data;
 		return;
-		}
+	}
 
 	// Read the data into the XMIDI class
-	mid_data = new IBufferDataSource(buffer, size);
-
 	// It's already GM, so dont convert
-	XMidiFile		midfile(mid_data, effects_conversion);
+	XMidiFile midfile(mid_data, effects_conversion);
 
 	delete mid_data;
-	delete [] buffer;
 
 	// Now give the xmidi object to the midi device
 	XMidiEventList *eventlist = midfile.GetEventList(0);
 	if (eventlist) midi_driver->startSequence(1,eventlist,false,255);
-
 }
 
 void    MyMidiPlayer::stop_sound_effects()
@@ -858,27 +832,13 @@ bool MyMidiPlayer::ogg_play_track(const std::string& filename, int num, bool rep
 	cout << "OGG audio: Music track " << ogg_name << endl;
 #endif
 
-	std::ifstream *stream = 0;
-	try {
-		stream = new std::ifstream(ogg_name.c_str(), std::ios::in | std::ios::binary);
-	}
-	catch (std::exception &) {
-		delete stream;
+	auto ds = std::make_unique<IFileDataSource>(ogg_name.c_str());
+	if (!ds->good()) {
 		return false;
 	}
 
-	if (!stream->good()) {
-		delete stream;
-		return false;
-	}
-
-	IDataSource *ds = new IFileDataSource(stream);
-
-	if (!Pentagram::OggAudioSample::isThis(ds))
-	{
+	if (!Pentagram::OggAudioSample::isThis(ds.get())) {
 		std::cerr << "Failed to play OGG Music Track " << ogg_name << ". Reason: " << "Unknown" << std::endl;
-
-		delete ds;
 		return false;
 	}
 
@@ -890,7 +850,7 @@ bool MyMidiPlayer::ogg_play_track(const std::string& filename, int num, bool rep
 	}
 
 	ds->seek(0);
-	Pentagram::AudioSample *ogg_sample = new Pentagram::OggAudioSample(ds);
+	Pentagram::AudioSample *ogg_sample = new Pentagram::OggAudioSample(std::move(ds));
 
 	ogg_instance_id = mixer->playSample(ogg_sample, repeat?-1:0, INT_MAX);
 

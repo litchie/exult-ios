@@ -79,8 +79,8 @@
 // Two very useful macros that one should use instead of pure delete; they
 // will additionally set the old object pointer to 0, thus helping prevent
 // double deletes (note that "delete 0" is a no-op).
-#define FORGET_OBJECT(x) do { delete x; x = 0; } while(0)
-#define FORGET_ARRAY(x) do { delete [] x; x = 0; } while(0)
+#define FORGET_OBJECT(x) do { delete x; x = nullptr; } while(0)
+#define FORGET_ARRAY(x) do { delete [] x; x = nullptr; } while(0)
 
 
 //
@@ -116,59 +116,5 @@
 //
 
 #include "databuf.h"
-
-class IFileDataSource : public IStreamDataSource {
-public:
-public:
-	IFileDataSource(std::ifstream *data_stream) : IStreamDataSource(data_stream) {
-	}
-	~IFileDataSource() {
-		FORGET_OBJECT(in);
-	}
-};
-
-class OFileDataSource : public OStreamDataSource {
-public:
-public:
-	OFileDataSource(std::ofstream *data_stream) : OStreamDataSource(data_stream) {
-	}
-	~OFileDataSource() {
-		FORGET_OBJECT(out);
-	}
-};
-
-//
-// FileSystem
-//
-
-#include "utils.h"
-#include "singles.h"
-
-class FileSystem : protected Game_singletons {
-public:
-	static FileSystem *get_instance() {
-		if (!pent_filesys) pent_filesys = new FileSystem;
-		return pent_filesys;
-	}
-
-	static IDataSource *ReadFile(const std::string &vfn, bool is_text) {
-		std::ifstream *f = new std::ifstream();
-		if (!U7open(*f, vfn.c_str(), is_text)) {
-			delete f;
-			return 0;
-		}
-		return new IFileDataSource(f);
-	}
-
-	// Open a streaming file as readable. Streamed (0 on failure)
-	static ODataSource *WriteFile(const std::string &vfn, bool is_text) {
-		std::ofstream *f = new std::ofstream();
-		if (!U7open(*f, vfn.c_str(), is_text)) {
-			delete f;
-			return 0;
-		}
-		return new OFileDataSource(f);
-	}
-};
 
 #endif //PENT_INCLUDE_H

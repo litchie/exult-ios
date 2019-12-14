@@ -36,9 +36,9 @@ namespace Pentagram {
 #define RANGE_REDUX(x)	(((x) * 27) >> 5)
 
 AudioChannel::AudioChannel(uint32 sample_rate_, bool stereo_) :
-	playdata(0), playdata_size(0), decompressor_size(0), frame_size(0),
+	playdata(nullptr), playdata_size(0), decompressor_size(0), frame_size(0),
 	sample_rate(sample_rate_), stereo(stereo_),
-	loop(0), sample(0), 
+	loop(0), sample(nullptr), 
 	frame_evenodd(0), frame0_size(0), frame1_size(0), position(0), paused(false),
 	instance_id(-1), fp_pos(0), fp_speed(0)
 {
@@ -49,7 +49,7 @@ AudioChannel::~AudioChannel(void)
 	if (sample && playdata) sample->freeDecompressor(playdata);
 	if (sample) sample->Release();
 	delete [] playdata;
-	sample = 0;
+	sample = nullptr;
 }
 
 void AudioChannel::playSample(AudioSample *sample_, int loop_, int priority_, bool paused_, uint32 pitch_shift_, int lvol_, int rvol_, sint32 instance_id_)
@@ -148,7 +148,7 @@ void AudioChannel::resampleAndMix(sint16 *stream, uint32 bytes)
 			// No more data
 			if (!frame1_size) {
 				if (sample) sample->Release();
-				sample = 0;
+				sample = nullptr;
 				return;
 			}
 

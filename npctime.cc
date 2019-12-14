@@ -85,7 +85,7 @@ public:
 		end_time = Game::get_ticks() + 5000 + rand() % 5000;
 	}
 	virtual ~Npc_sleep_timer() {
-		list->sleep = 0;
+		list->sleep = nullptr;
 	}
 	// Handle events:
 	void handle_event(unsigned long curtime, uintptr udata);
@@ -102,7 +102,7 @@ public:
 		end_time = Game::get_ticks() + 60000 + rand() % 20000;
 	}
 	virtual ~Npc_invisibility_timer() {
-		list->invisibility = 0;
+		list->invisibility = nullptr;
 	}
 	// Handle events:
 	void handle_event(unsigned long curtime, uintptr udata);
@@ -119,7 +119,7 @@ public:
 		end_time = Game::get_ticks() + 60000 + rand() % 20000;
 	}
 	virtual ~Npc_protection_timer() {
-		list->protection = 0;
+		list->protection = nullptr;
 	}
 	// Handle events:
 	void handle_event(unsigned long curtime, uintptr udata);
@@ -139,7 +139,7 @@ public:
 		end_time = Game::get_ticks() + 60000 + rand() % 60000;
 	}
 	virtual ~Npc_flag_timer() {
-		*listloc = 0;
+		*listloc = nullptr;
 	}
 	// Handle events:
 	void handle_event(unsigned long curtime, uintptr udata);
@@ -292,7 +292,7 @@ Npc_timer::~Npc_timer(
 
 Npc_hunger_timer::~Npc_hunger_timer(
 ) {
-	list->hunger = 0;
+	list->hunger = nullptr;
 }
 
 /*
@@ -345,7 +345,7 @@ Npc_poison_timer::Npc_poison_timer(
 
 Npc_poison_timer::~Npc_poison_timer(
 ) {
-	list->poison = 0;
+	list->poison = nullptr;
 }
 
 /*

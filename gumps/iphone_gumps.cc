@@ -78,7 +78,7 @@ public:
 			} else if (text == "Move") {
 				par->objectAction = ITEMMENU_ACTION_MOVE;
 			} else if (text == "Cancel") {
-				par->objectSelected = NULL;
+				par->objectSelected = nullptr;
 				par->objectSelectedClickXY[0] = -1;
 				par->objectSelectedClickXY[1] = -1;
 			}
@@ -90,7 +90,7 @@ public:
 
 Itemmenu_gump::Itemmenu_gump(Game_object_map_xy *mobjxy, int cx, int cy)
 	: Modal_gump(0, cx, cy, EXULT_FLX_TRANSPARENTMENU_SHP, SF_EXULT_FLX) {
-	objectSelected = NULL;
+	objectSelected = nullptr;
 	objectSelectedClickXY[0] = -1;
 	objectSelectedClickXY[1] = -1;
 	objectAction = ITEMMENU_ACTION_NONE;

@@ -36,8 +36,8 @@ class  Gump_manager : public Game_singletons {
 		Gump        *gump;
 		Gump_list   *next;
 
-		Gump_list() : gump(0), next(0) { }
-		Gump_list(Gump *g) : gump(g), next(0) { }
+		Gump_list() : gump(nullptr), next(nullptr) { }
+		Gump_list(Gump *g) : gump(g), next(nullptr) { }
 	};
 
 	Gump_list   *open_gumps;
@@ -76,6 +76,7 @@ public:
 
 	bool double_clicked(int x, int y, Game_object *&obj);
 	bool handle_kbd_event(void *ev);
+	static void translate_numpad(SDLKey& code, uint16& unicode, uint16 mod);
 
 	inline bool can_right_click_close() {
 		return right_click_close;
@@ -91,9 +92,9 @@ public:
 
 	int okay_to_quit();
 	int prompt_for_number(int minval, int maxval, int step, int def,
-	                      Paintable *paint = 0);
+	                      Paintable *paint = nullptr);
 	int do_modal_gump(Modal_gump *, Mouse::Mouse_shapes,
-	                  Paintable *paint = 0);
+	                  Paintable *paint = nullptr);
 	void paint_num(int num, int x, int y);
 
 	Gump_manager();

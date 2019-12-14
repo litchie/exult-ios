@@ -11,24 +11,15 @@
 #ifndef MSVC_KLUDGES_H
 #define MSVC_KLUDGES_H
 
-#define HAVE_SSTREAM 1
-
 // Firstly some things that need to be defined
 #define VERSION "1.5.0git"
 #define EXULT_DATADIR "data/"
-#define SIZEOF_SHORT 2
-#define SIZEOF_INT 4
-#define SIZEOF_LONG 4
-#define SIZEOF_INTP 4
-#define DONT_HAVE_HASH_SET
-#define DONT_HAVE_HASH_MAP
-//#define HAVE_OPENGL
 //#define FUDGE_SAMPLE_RATES
 #define USE_FMOPL_MIDI
 #define USE_MT32EMU_MIDI
 #define USE_TIMIDITY_MIDI
 
-#ifndef WIN32
+#ifndef _WIN32
 #error WTF!
 #endif
 
@@ -221,7 +212,6 @@ using std::getline;
 #include "../cheat.h"
 #include "../cheat_screen.h"
 #include "../combat.h"
-#include "../delobjs.h"
 #include "../dir.h"
 #include "../effects.h"
 #include "../headers/exceptions.h"

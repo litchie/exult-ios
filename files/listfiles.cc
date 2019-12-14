@@ -39,7 +39,7 @@ using std::string;
 
 
 // System Specific Code for Windows
-#if defined(WIN32)
+#if defined(_WIN32)
 
 // Need this for _findfirst, _findnext, _findclose
 #include <windows.h>
@@ -88,7 +88,7 @@ int U7ListFiles(const std::string &mask, FileList &files) {
 			char *filename = new char [nLen + nLen2];
 			strcpy(filename, stripped_path);
 #ifdef UNICODE
-			WideCharToMultiByte(CP_ACP, 0, fileinfo.cFileName, -1, filename + nLen, nLen2, NULL, NULL);
+			WideCharToMultiByte(CP_ACP, 0, fileinfo.cFileName, -1, filename + nLen, nLen2, nullptr, nullptr);
 #else
 			std::strcat(filename, fileinfo.cFileName);
 #endif
@@ -108,17 +108,17 @@ int U7ListFiles(const std::string &mask, FileList &files) {
 		    FORMAT_MESSAGE_ALLOCATE_BUFFER |
 		    FORMAT_MESSAGE_FROM_SYSTEM |
 		    FORMAT_MESSAGE_IGNORE_INSERTS,
-		    NULL,
+		    nullptr,
 		    GetLastError(),
 		    MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
 		    reinterpret_cast<LPTSTR>(&lpMsgBuf),
 		    0,
-		    NULL
+		    nullptr
 		);
 #ifdef UNICODE
 		nLen2 = _tcslen(lpMsgBuf) + 1;
 		str = static_cast<char *>(_alloca(nLen));
-		WideCharToMultiByte(CP_ACP, 0, lpMsgBuf, -1, str, nLen2, NULL, NULL);
+		WideCharToMultiByte(CP_ACP, 0, lpMsgBuf, -1, str, nLen2, nullptr, nullptr);
 #else
 		str = lpMsgBuf;
 #endif
@@ -142,7 +142,7 @@ int U7ListFiles(const std::string &mask, FileList &files) {
 int U7ListFiles(const std::string &mask, FileList &files) {
 	glob_t globres;
 	string path(get_system_path(mask));
-	int err = glob(path.c_str(), GLOB_NOSORT, 0, &globres);
+	int err = glob(path.c_str(), GLOB_NOSORT, nullptr, &globres);
 
 
 	switch (err) {

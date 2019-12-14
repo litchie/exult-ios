@@ -103,7 +103,7 @@ void ExultStudio::open_barge_window(
 		                                  app_xml, "barge_status")), "Barge Editor");
 	}
 	// Init. barge address to null.
-	gtk_object_set_user_data(GTK_OBJECT(bargewin), 0);
+	gtk_object_set_user_data(GTK_OBJECT(bargewin), nullptr);
 	// Make 'apply' sensitive.
 	gtk_widget_set_sensitive(glade_xml_get_widget(app_xml,
 	                         "barge_apply_btn"), true);

@@ -27,14 +27,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "iregobjs.h"
 #include "miscinf.h"
-#include "objclient.h"
 
 /*
  *  A class for playing sound effects that get updated by position
  *  and distance. Adds itself to time-queue, deletes itself when done.
  */
-class Object_sfx : public Time_sensitive, public Game_singletons, public Object_client {
-	Game_object *obj;   // Object that caused the sound.
+class Object_sfx : public Time_sensitive, public Game_singletons {
+	Game_object_weak obj;   // Object that caused the sound.
 	Tile_coord last_pos;
 	int sfx;            // ID of sound effect being played.
 	int channel;        // Channel of sfx being played.
@@ -42,7 +41,6 @@ class Object_sfx : public Time_sensitive, public Game_singletons, public Object_
 	Object_sfx(Game_object *o, int sfx);
 protected:
 	virtual void dequeue();
-	virtual void notify_object_gone(Game_object *obj);
 public:
 	static void Play(Game_object *o, int sfx, int delay = 20);
 	void stop();

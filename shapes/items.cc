@@ -320,10 +320,9 @@ void Setup_text(bool si, bool expansion, bool sibeta) {
 		const char *msgs = BUNDLE_CHECK(BUNDLE_EXULT_FLX, EXULT_FLX);
 		U7object txtobj(msgs, EXULT_FLX_EXULTMSG_TXT);
 		size_t len;
-		const char *txt = txtobj.retrieve(len);
+		auto txt = txtobj.retrieve(len);
 		if (txt && len > 0) {
-			exultmsgbuf->str(string(txt, len));
-			delete [] txt;
+			exultmsgbuf->str(string(reinterpret_cast<char*>(txt.get()), len));
 		}
 	}
 

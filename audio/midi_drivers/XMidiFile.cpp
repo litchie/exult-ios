@@ -512,7 +512,7 @@ GammaTable<unsigned char> XMidiFile::VolumeCurve(128);
 
 // Constructor
 XMidiFile::XMidiFile(IDataSource *source, int pconvert) : num_tracks(0),
-						events(NULL), convert_type(pconvert),
+						events(nullptr), convert_type(pconvert),
 						do_reverb(false), do_chorus(false)
 {
 	std::memset(bank127,0,sizeof(bank127));
@@ -529,7 +529,7 @@ XMidiFile::~XMidiFile()
 	{
 		for (int i=0; i < num_tracks; i++) {
 			events[i]->decrementCounter();
-			events[i] = NULL;
+			events[i] = nullptr;
 		}
 		//delete [] events;
 		XMidiEvent::Free(events);
@@ -541,13 +541,13 @@ XMidiEventList *XMidiFile::GetEventList (uint32 track)
 	if (!events)
 	{
 		perr << "No midi data in loaded." << endl;
-		return 0;
+		return nullptr;
 	}
 
 	if (track >= num_tracks)
 	{
 		perr << "Can't retrieve MIDI data, track out of range" << endl;
-		return 0;
+		return nullptr;
 	}
 
 	return events[track];
@@ -661,8 +661,8 @@ void XMidiFile::ApplyFirstState(first_state &fs, int chan_mask)
 		XMidiEvent *vol = fs.vol[channel];
 		XMidiEvent *pan = fs.pan[channel];
 		XMidiEvent *bank = fs.bank[channel];
-		XMidiEvent *reverb = NULL;
-		XMidiEvent *chorus = NULL;
+		XMidiEvent *reverb = nullptr;
+		XMidiEvent *chorus = nullptr;
 		XMidiEvent *temp;
 
 		// Got no patch change, return and don't try fixing it
@@ -685,7 +685,7 @@ void XMidiFile::ApplyFirstState(first_state &fs, int chan_mask)
 
 		// Copy Volume
 		if (vol && (vol->time > patch->time+PATCH_VOL_PAN_BIAS || vol->time < patch->time-PATCH_VOL_PAN_BIAS))
-			vol = NULL;
+			vol = nullptr;
 
 		temp = vol;
 		vol = XMidiEvent__Calloc<XMidiEvent>();
@@ -707,7 +707,7 @@ void XMidiFile::ApplyFirstState(first_state &fs, int chan_mask)
 
 		// Copy Bank
 		if (bank && (bank->time > patch->time+PATCH_VOL_PAN_BIAS || bank->time < patch->time-PATCH_VOL_PAN_BIAS))
-			bank = NULL;
+			bank = nullptr;
 
 		temp = bank;
 
@@ -721,7 +721,7 @@ void XMidiFile::ApplyFirstState(first_state &fs, int chan_mask)
 
 		// Copy Pan
 		if (pan && (pan->time > patch->time+PATCH_VOL_PAN_BIAS || pan->time < patch->time-PATCH_VOL_PAN_BIAS))
-			pan = NULL;
+			pan = nullptr;
 
 		temp = pan;
 		pan = XMidiEvent__Calloc<XMidiEvent>();
@@ -830,7 +830,7 @@ void XMidiFile::AdjustTimings(uint32 ppqn)
 
 	//std::cout << "Max Polyphony: " << notes.GetMaxPolyphony() << std::endl;
 	static const unsigned char tempo_buf[5] = { 0x51, 0x03, 0x07, 0xA1, 0x20 };
-	IBufferDataSource ds(tempo_buf, 5);
+	IBufferDataView ds(tempo_buf, 5);
 	current = list;
 	ConvertSystemMessage (0, 0xFF,&ds);
 }
@@ -932,14 +932,14 @@ int XMidiFile::ConvertEvent (const int time, const unsigned char status, IDataSo
 			fs.patch[status&0xF] = current;
 
 		// Add it to the patch and bank change list
-		if (x_patch_bank_first == 0) {
+		if (x_patch_bank_first == nullptr) {
 			x_patch_bank_first = current;
 		}
 		else {
 			x_patch_bank_cur ->next_patch_bank = current;
 		}
 		x_patch_bank_cur = current;
-		current->next_patch_bank = 0;
+		current->next_patch_bank = nullptr;
 	}
 	// Controllers
 	else if ((status >> 4) == 0xB) {
@@ -961,14 +961,14 @@ int XMidiFile::ConvertEvent (const int time, const unsigned char status, IDataSo
 		// XMidi Bank Change
 		else if (current->data[0] == XMIDI_CONTROLLER_BANK_CHANGE)	{
 			// Add it to the patch and bank change list
-			if (x_patch_bank_first == 0) {
+			if (x_patch_bank_first == nullptr) {
 				x_patch_bank_first = current;
 			}
 			else {
 				x_patch_bank_cur ->next_patch_bank = current;
 			}
 			x_patch_bank_cur = current;
-			current->next_patch_bank = 0;
+			current->next_patch_bank = nullptr;
 		}
 	}
 
@@ -1009,14 +1009,14 @@ int XMidiFile::ConvertNote (const int time, const unsigned char status, IDataSou
 	if (status == 0x99 && current->data[1] != 0 && convert_type == XMIDIFILE_CONVERT_NOCONVERSION)
 	{
 		// Add it to the patch and bank change list
-		if (x_patch_bank_first == 0) {
+		if (x_patch_bank_first == nullptr) {
 			x_patch_bank_first = current;
 		}
 		else {
 			x_patch_bank_cur->next_patch_bank = current;
 		}
 		x_patch_bank_cur = current;
-		current->next_patch_bank = 0;
+		current->next_patch_bank = nullptr;
 	}
 
 	if (size == 2)
@@ -1065,7 +1065,7 @@ int XMidiFile::ConvertSystemMessage (const int time, const unsigned char status,
 
 	if (!current->ex.sysex_data.len)
 	{
-		current->ex.sysex_data.buffer = NULL;
+		current->ex.sysex_data.buffer = nullptr;
 		return i;
 	}
 
@@ -1076,7 +1076,7 @@ int XMidiFile::ConvertSystemMessage (const int time, const unsigned char status,
 	return i+current->ex.sysex_data.len;
 }
 
-// If data is NULL, then it is assumed that sysex_buffer already contains the data
+// If data is nullptr, then it is assumed that sysex_buffer already contains the data
 // address_base is 7-bit, while address_offset is 8 bit!
 int XMidiFile::CreateMT32SystemMessage(const int time, uint32 address_base, uint16 address_offset, uint32 len, const void *data, IDataSource *source)
 {
@@ -1246,10 +1246,10 @@ int XMidiFile::ExtractTracksFromXmi (IDataSource *source)
 			continue;
 		}
 
-		list = NULL;
-		branches = NULL;
-		x_patch_bank_first = NULL;
-		x_patch_bank_cur = NULL;
+		list = nullptr;
+		branches = nullptr;
+		x_patch_bank_first = nullptr;
+		x_patch_bank_cur = nullptr;
 		memset(&fs, 0, sizeof(fs));
 
 		int begin = source->getPos ();
@@ -1262,7 +1262,7 @@ int XMidiFile::ExtractTracksFromXmi (IDataSource *source)
 
 		// Add tempo
 		static const unsigned char tempo_buf[5] = { 0x51, 0x03, 0x07, 0xA1, 0x20 };
-		IBufferDataSource ds(tempo_buf, 5);
+		IBufferDataView ds(tempo_buf, 5);
 		current = list;
 		ConvertSystemMessage (0, 0xFF,&ds);
 
@@ -1293,10 +1293,10 @@ int XMidiFile::ExtractTracksFromMid (IDataSource *source, const uint32 ppqn, con
 	first_state	fs;
 	memset(&fs, 0, sizeof(fs));
 
-	list = NULL;
-	branches = NULL;
-	x_patch_bank_first = NULL;
-	x_patch_bank_cur = NULL;
+	list = nullptr;
+	branches = nullptr;
+	x_patch_bank_first = nullptr;
+	x_patch_bank_cur = nullptr;
 
 	while (source->getPos() < source->getSize() && num != num_tracks)
 	{
@@ -1322,10 +1322,10 @@ int XMidiFile::ExtractTracksFromMid (IDataSource *source, const uint32 ppqn, con
 			events[num]->branches = branches;
 			events[num]->chan_mask = chan_mask;
 			events[num]->x_patch_bank = x_patch_bank_first;
-			branches = NULL;
-			list = NULL;
-			x_patch_bank_first = NULL;
-			x_patch_bank_cur = NULL;
+			branches = nullptr;
+			list = nullptr;
+			x_patch_bank_first = nullptr;
+			x_patch_bank_cur = nullptr;
 			memset(&fs, 0, sizeof(fs));
 			chan_mask = 0;
 		}
@@ -1511,7 +1511,7 @@ int XMidiFile::ExtractTracks (IDataSource *source)
 
 			for (i = 0; i < num_tracks; i++) {
 				events[i]->decrementCounter();
-				events[i] = NULL;
+				events[i] = nullptr;
 			}
 
 			//delete [] events;
@@ -1555,7 +1555,7 @@ int XMidiFile::ExtractTracks (IDataSource *source)
 
 			for (i = 0; i < num_tracks; i++) {
 				events[i]->decrementCounter();
-				events[i] = NULL;
+				events[i] = nullptr;
 			}
 
 			XMidiEvent::Free (events);
@@ -1630,8 +1630,8 @@ int XMidiFile::ExtractTracksFromU7V (IDataSource *source)
 
 	first_state	fs;
 
-	list = NULL;
-	branches = NULL;
+	list = nullptr;
+	branches = nullptr;
 	memset(&fs, 0, sizeof(fs));
 
 	// Convert it
@@ -1661,7 +1661,7 @@ int XMidiFile::ExtractTracksFromU7V (IDataSource *source)
 		//
 		// Timbre
 		//
-		CreateMT32SystemMessage(time, timbre_base, timbre_mem_offset(i), timbre_mem_size, 0, source);
+		CreateMT32SystemMessage(time, timbre_base, timbre_mem_offset(i), timbre_mem_size, nullptr, source);
 
 		//
 		// Patch
@@ -1722,7 +1722,7 @@ int XMidiFile::ExtractTracksFromU7V (IDataSource *source)
 
 	// Add tempo
 	static const unsigned char tempo_buf[5] = { 0x51, 0x03, 0x07, 0xA1, 0x20 };
-	IBufferDataSource ds(tempo_buf, 5);
+	IBufferDataView ds(tempo_buf, 5);
 	current = list;
 	ConvertSystemMessage (0, 0xFF,&ds);
 
@@ -1750,8 +1750,8 @@ int XMidiFile::ExtractTracksFromXMIDIMT (IDataSource *source)
 
 	first_state	fs;
 
-	list = NULL;
-	branches = NULL;
+	list = nullptr;
+	branches = nullptr;
 	memset(&fs, 0, sizeof(fs));
 
 	// Convert it
@@ -1781,7 +1781,7 @@ int XMidiFile::ExtractTracksFromXMIDIMT (IDataSource *source)
 
 	// Add tempo
 	static const unsigned char tempo_buf[5] = { 0x51, 0x03, 0x07, 0xA1, 0x20 };
-	IBufferDataSource ds(tempo_buf, 5);
+	IBufferDataView ds(tempo_buf, 5);
 	current = list;
 	ConvertSystemMessage (0, 0xFF,&ds);
 

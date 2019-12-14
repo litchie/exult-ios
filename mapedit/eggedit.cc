@@ -160,7 +160,7 @@ static void Egg_monster_dropped(
 		static_cast<ExultStudio *>(udata)->set_egg_monster(shape, frame);
 }
 
-#ifdef WIN32
+#ifdef _WIN32
 
 static void Drop_dragged_shape(int shape, int frame, int x, int y, void *data) {
 	ignore_unused_variable_warning(x, y);
@@ -187,7 +187,7 @@ void ExultStudio::open_egg_window(
 		eggwin = glade_xml_get_widget(app_xml, "egg_window");
 		if (vgafile && palbuf) {
 			egg_monster_draw = new Shape_draw(vgafile->get_ifile(),
-			                                  palbuf,
+			                                  palbuf.get(),
 			                                  glade_xml_get_widget(app_xml, "egg_monster_draw"));
 			egg_monster_draw->enable_drop(Egg_monster_dropped,
 			                              this);
@@ -197,7 +197,7 @@ void ExultStudio::open_egg_window(
 		                                app_xml, "egg_status")), "Egg Editor");
 	}
 	// Init. egg address to null.
-	gtk_object_set_user_data(GTK_OBJECT(eggwin), 0);
+	gtk_object_set_user_data(GTK_OBJECT(eggwin), nullptr);
 	// Make 'apply' sensitive.
 	gtk_widget_set_sensitive(glade_xml_get_widget(app_xml,
 	                         "egg_apply_btn"), true);
@@ -214,9 +214,9 @@ void ExultStudio::open_egg_window(
 	}
 	gtk_widget_show(eggwin);
 
-#ifdef WIN32
+#ifdef _WIN32
 	if (first_time || !eggdnd)
-		Windnd::CreateStudioDropDest(eggdnd, egghwnd, Drop_dragged_shape, NULL, NULL, (void *) this);
+		Windnd::CreateStudioDropDest(eggdnd, egghwnd, Drop_dragged_shape, nullptr, nullptr, this);
 #endif
 }
 
@@ -228,7 +228,7 @@ void ExultStudio::close_egg_window(
 ) {
 	if (eggwin) {
 		gtk_widget_hide(eggwin);
-#ifdef WIN32
+#ifdef _WIN32
 		Windnd::DestroyStudioDropDest(eggdnd, egghwnd);
 #endif
 	}

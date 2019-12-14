@@ -32,13 +32,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 using namespace Pentagram;
 
-AudioMixer *AudioMixer::the_audio_mixer = 0;
+AudioMixer *AudioMixer::the_audio_mixer = nullptr;
 
 AudioMixer::AudioMixer(int sample_rate_, bool stereo_, int num_channels_) : 
 audio_ok(false), 
 sample_rate(sample_rate_), stereo(stereo_),
-midi(0), midi_volume(255),
-num_channels(num_channels_), channels(0), id_counter(0)
+midi(nullptr), midi_volume(255),
+num_channels(num_channels_), channels(nullptr), id_counter(0)
 {
 	the_audio_mixer = this;
 
@@ -91,7 +91,7 @@ AudioMixer::~AudioMixer(void)
 
 	SDL_CloseAudio();
 
-	the_audio_mixer = 0;
+	the_audio_mixer = nullptr;
 
 	if (channels) for (int i=0;i<num_channels;i++) delete channels[i];
 	delete [] channels;
@@ -415,7 +415,7 @@ void AudioMixer::closeMidiOutput()
 	Lock();
 	{
 		delete midi;
-		midi = 0;
+		midi = nullptr;
 	}
 	Unlock();
 }

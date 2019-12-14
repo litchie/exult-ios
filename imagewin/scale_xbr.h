@@ -270,11 +270,11 @@ void Scale_xBR(
 	// reallocating space on each call, as new[]s are usually very
 	// expensive; we do allow it to grow though
 	static int buff_size = 0;
-	static RGBColor<Manip_pixels, 2> *rgb_row_minus_2  = 0;
-	static RGBColor<Manip_pixels, 2> *rgb_row_minus_1  = 0;
-	static RGBColor<Manip_pixels, 2> *rgb_row_current  = 0;
-	static RGBColor<Manip_pixels, 2> *rgb_row_plus_1   = 0;
-	static RGBColor<Manip_pixels, 2> *rgb_row_plus_2   = 0;
+	static RGBColor<Manip_pixels, 2> *rgb_row_minus_2  = nullptr;
+	static RGBColor<Manip_pixels, 2> *rgb_row_minus_1  = nullptr;
+	static RGBColor<Manip_pixels, 2> *rgb_row_current  = nullptr;
+	static RGBColor<Manip_pixels, 2> *rgb_row_plus_1   = nullptr;
+	static RGBColor<Manip_pixels, 2> *rgb_row_plus_2   = nullptr;
 	if (buff_size < sline_pixels) {
 		delete [] rgb_row_minus_2;
 		delete [] rgb_row_minus_1;

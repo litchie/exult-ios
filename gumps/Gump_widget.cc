@@ -35,7 +35,7 @@ int Gump_widget::on_widget(
 	mx -= parent->get_x() + x;  // Get point rel. to gump.
 	my -= parent->get_y() + y;
 	Shape_frame *cshape = get_shape();
-	return (cshape != 0) ? cshape->has_point(mx, my) : false;
+	return (cshape != nullptr) ? cshape->has_point(mx, my) : false;
 }
 
 /*

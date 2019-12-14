@@ -146,7 +146,7 @@ Usecode_symbol *Usecode_scope_symbol::operator[](const char *nm) {
 		setup_by_name();
 	Name_table::iterator it = by_name.find(nm);
 	if (it == by_name.end())
-		return 0;
+		return nullptr;
 	else
 		return (*it).second;
 }
@@ -156,7 +156,7 @@ Usecode_symbol *Usecode_scope_symbol::operator[](int val) {
 		setup_by_val();
 	Val_table::iterator it = by_val.find(val);
 	if (it == by_val.end())
-		return 0;
+		return nullptr;
 	else
 		return (*it).second;
 }
@@ -166,7 +166,7 @@ Usecode_class_symbol *Usecode_scope_symbol::get_class(const char *nm) {
 		setup_class_names();
 	Class_name_table::iterator it = class_names.find(nm);
 	if (it == class_names.end())
-		return 0;
+		return nullptr;
 	else
 		return (*it).second;
 }

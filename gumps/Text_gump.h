@@ -35,8 +35,8 @@ protected:
 	int font;       // The shape in fonts.vga to use
 
 public:
-	Text_gump(int shapenum, int fnt = 4) : Gump(0, shapenum),
-		text(0), textlen(0), curtop(0), curend(0), font(fnt)
+	Text_gump(int shapenum, int fnt = 4) : Gump(nullptr, shapenum),
+		text(nullptr), textlen(0), curtop(0), curend(0), font(fnt)
 	{  }
 	virtual ~Text_gump() {
 		delete [] text;

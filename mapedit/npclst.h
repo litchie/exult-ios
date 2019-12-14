@@ -107,7 +107,7 @@ class Npc_chooser: public Object_browser, public Shape_draw {
 	virtual GtkWidget *create_popup();  // Popup menu.
 public:
 	Npc_chooser(Vga_file *i, unsigned char *palbuf, int w, int h,
-	            Shape_group *g = 0, Shape_file_info *fi = 0);
+	            Shape_group *g = nullptr, Shape_file_info *fi = nullptr);
 	virtual ~Npc_chooser();
 	int get_count();        // Get # shapes we can display.
 	std::vector<Estudio_npc> &get_npcs();
@@ -151,7 +151,7 @@ public:
 	void enable_drop();
 	// Handle scrollbar.
 	static void vscrolled(GtkAdjustment *adj, gpointer data);
-#ifdef WIN32
+#ifdef _WIN32
 	static gint win32_drag_motion(GtkWidget *widget, GdkEventMotion *event,
 	                              gpointer data);
 #else

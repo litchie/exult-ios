@@ -44,7 +44,7 @@ void SoundTester::test_sound()
 	Font *font = Shape_manager::get_instance()->get_font(4);
 
 	Audio *audio = Audio::get_ptr();
-	Scroll_gump *scroll = NULL;
+	Scroll_gump *scroll = nullptr;
 
 	char buf[256];
 	bool looping = true;

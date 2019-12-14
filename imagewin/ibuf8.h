@@ -102,7 +102,7 @@ public:
 	unsigned char *rgba(const unsigned char *pal, unsigned char transp,
 	                    bool &rotate, int first_rotate, int last_rotate,
 	                    int first_translucent = 256, int last_translucent = 256,
-	                    const Xform_palette *xforms = 0, int alpha = 255);
+	                    const Xform_palette *xforms = nullptr, int alpha = 255);
 };
 
 #endif

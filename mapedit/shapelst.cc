@@ -26,8 +26,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include <config.h>
 #endif
 
-#ifdef WIN32
-#include "Windrag.h"
+#ifdef _WIN32
+#include "windrag.h"
 #include <windows.h>
 #endif
 
@@ -35,8 +35,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #ifdef __GNUC__
 #pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wold-style-cast"
 #pragma GCC diagnostic ignored "-Wcast-qual"
+#pragma GCC diagnostic ignored "-Wold-style-cast"
+#pragma GCC diagnostic ignored "-Wparentheses"
+#pragma GCC diagnostic ignored "-Wuseless-cast"
 #endif  // __GNUC__
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
@@ -52,6 +54,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <stdlib.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <memory>
 #include "shapelst.h"
 #include "shapevga.h"
 #include "ibuf8.h"
@@ -73,6 +76,8 @@ using std::endl;
 using std::strlen;
 using std::string;
 using std::ifstream;
+using std::make_unique;
+using std::unique_ptr;
 using EStudio::Prompt;
 using EStudio::Alert;
 using EStudio::Add_menu_item;
@@ -247,8 +252,11 @@ static int Get_x_offset(
 	if (framenum >= nframes)
 		framenum = nframes - 1;
 	int xoff = 0;
-	for (int i = 0; i < framenum; i++)
-		xoff += shape->get_frame(i)->get_width() + border;
+	for (int i = 0; i < framenum; i++) {
+		Shape_frame *fr = shape->get_frame(i);
+		assert(fr);
+		xoff += fr->get_width() + border;
+	}
 	return xoff;
 }
 
@@ -393,7 +401,9 @@ void Shape_chooser::scroll_to_frame(
 			hoffset = xoff > border ? xoff - border : 0;
 		else {
 			gint winw = draw->allocation.width;
-			int sw = shape->get_frame(selframe)->get_width();
+			Shape_frame *fr = shape->get_frame(selframe);
+			assert(fr);
+			int sw = fr->get_width();
 			if (xoff + sw + border - hoffset > winw)
 				hoffset = xoff + sw + border - winw;
 		}
@@ -519,7 +529,7 @@ gint Shape_chooser::expose(
  *  Handle a mouse drag event.
  */
 
-#ifdef WIN32
+#ifdef _WIN32
 
 static bool win32_button = false;
 
@@ -537,14 +547,14 @@ gint Shape_chooser::win32_drag_motion(
 
 		// This call allows us to recycle the data transfer initialization code.
 		//  It's clumsy, but far easier to maintain.
-		drag_data_get(NULL, NULL, (GtkSelectionData *) &wdata,
+		drag_data_get(nullptr, nullptr, reinterpret_cast<GtkSelectionData*>(&wdata),
 		              U7_TARGET_SHAPEID, 0, data);
 
 		POINT pnt;
 		GetCursorPos(&pnt);
 
-		Windropsource idsrc(0, pnt.x, pnt.y);
-		LPDATAOBJECT idobj = (LPDATAOBJECT) new Winstudioobj(wdata);
+		Windropsource idsrc(nullptr, pnt.x, pnt.y);
+		LPDATAOBJECT idobj = new Winstudioobj(wdata);
 		DWORD dndout;
 
 		HRESULT res = DoDragDrop(idobj, &idsrc, DROPEFFECT_COPY, &dndout);
@@ -597,7 +607,7 @@ gint Shape_chooser::mouse_press(
 		if (info[i].box.distance(absx, absy) <= 2) {
 			// Found the box?
 			// Indicate we can drag.
-#ifdef WIN32
+#ifdef _WIN32
 // Here, we have to override GTK+'s Drag and Drop, which is non-OLE and
 // usually stucks outside the program window. I think it's because
 // the dragged shape only receives mouse motion events when the new mouse pointer
@@ -626,7 +636,7 @@ gint Shape_chooser::mouse_press(
 	}
 	if (event->button == 3)
 		gtk_menu_popup(GTK_MENU(create_popup()),
-		               0, 0, 0, 0, event->button, event->time);
+		               nullptr, nullptr, nullptr, nullptr, event->button, event->time);
 	return (TRUE);
 }
 
@@ -757,7 +767,7 @@ time_t Shape_chooser::export_tiled_png(
 	// Low shape in 'shapes.vga'?
 	assert(IS_FLAT(shnum) && file_info == studio->get_vgafile());
 	Shape *shape = ifile->extract_shape(shnum);
-	assert(shape != 0);
+	assert(shape != nullptr);
 	cout << "Writing " << fname << " tiled"
 	     << (bycols ? ", by cols" : ", by rows") << " first" << endl;
 	int nframes = shape->get_num_frames();
@@ -809,8 +819,8 @@ void Shape_chooser::edit_shape_info(
 	ExultStudio *studio = ExultStudio::get_instance();
 	int shnum = info[selected].shapenum,
 	    frnum = info[selected].framenum;
-	Shape_info *info = 0;
-	const char *name = 0;
+	Shape_info *info = nullptr;
+	const char *name = nullptr;
 	if (shapes_file) {
 		// Read info. the first time.
 		shapes_file->read_info(studio->get_game_type(), true);
@@ -870,7 +880,7 @@ void Shape_chooser::edit_shape(
 	string cmd(studio->get_image_editor());
 	cmd += ' ';
 	string imgpath;
-#ifdef WIN32
+#ifdef _WIN32
 	if (fname[0] == '.' && (fname[1] == '\\' || fname[1] == '/')) {
 		char currdir[MAX_PATH];
 		GetCurrentDirectory(MAX_PATH, currdir);
@@ -884,7 +894,7 @@ void Shape_chooser::edit_shape(
 	if (imgpath.find(' ') != string::npos)
 		imgpath = "\"" + imgpath + "\"";
 	cmd += imgpath;
-#ifndef WIN32
+#ifndef _WIN32
 	cmd += " &";            // Background.
 	int ret = system(cmd.c_str());
 	if (ret == 127 || ret == -1)
@@ -897,14 +907,14 @@ void Shape_chooser::edit_shape(
 	STARTUPINFO     si;
 	std::memset(&si, 0, sizeof(si));
 	si.cb = sizeof(si);
-	int ret = CreateProcess(NULL, const_cast<char *>(cmd.c_str()),
-	                        NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi);
+	int ret = CreateProcess(nullptr, const_cast<char *>(cmd.c_str()),
+	                        nullptr, nullptr, FALSE, 0, nullptr, nullptr, &si, &pi);
 	if (!ret)
 		Alert("Can't launch '%s'", studio->get_image_editor());
 #endif
 	if (check_editing_timer == -1)  // Monitor files every 6 seconds.
 		check_editing_timer = gtk_timeout_add(6000,
-		                                      Shape_chooser::check_editing_files_cb, 0L);
+		                                      Shape_chooser::check_editing_files_cb, nullptr);
 }
 
 /*
@@ -952,7 +962,7 @@ gint Shape_chooser::check_editing_files(
 			browser->render();
 			browser->show();
 		}
-		studio->update_group_windows(0);
+		studio->update_group_windows(nullptr);
 	}
 	return 1;           // Continue timeouts.
 }
@@ -1056,7 +1066,7 @@ static void Import_png(
 		xleft = w + xoff - 1;
 		yabove = h + yoff - 1;
 	}
-	shape->set_frame(new Shape_frame(pixels,
+	shape->set_frame(make_unique<Shape_frame>(pixels,
 	                                 w, h, xleft, yabove, !flat), framenum);
 	delete [] pixels;
 	finfo->set_modified();
@@ -1129,7 +1139,7 @@ static void Import_png_tiles(
 			ptr += c_tilesize;
 			src += w;
 		}
-		shape->set_frame(new Shape_frame(&buf[0], c_tilesize, c_tilesize,
+		shape->set_frame(make_unique<Shape_frame>(&buf[0], c_tilesize, c_tilesize,
 		                                 c_tilesize, c_tilesize, false), frnum);
 	}
 	delete [] pixels;
@@ -1219,7 +1229,7 @@ void Shape_chooser::import_frame(
 	ed->render();
 	ed->show();
 	ExultStudio *studio = ExultStudio::get_instance();
-	studio->update_group_windows(0);
+	studio->update_group_windows(nullptr);
 }
 
 /*
@@ -1305,12 +1315,12 @@ void Shape_chooser::import_all_pngs(
 		Convert_indexed_image(pixels, h * rowsize, oldpal, palsize, pal);
 		delete [] oldpal;
 		int xleft = w + xoff - 1, yabove = h + yoff - 1;
-		Shape_frame *frame = new Shape_frame(pixels,
+		auto frame = make_unique<Shape_frame>(pixels,
 		                                     w, h, xleft, yabove, true);
 		if (i < ifile->get_num_frames(shnum))
-			shape->set_frame(frame, i);
+			shape->set_frame(std::move(frame), i);
 		else
-			shape->add_frame(frame, i);
+			shape->add_frame(std::move(frame), i);
 		delete [] pixels;
 
 		i++;
@@ -1319,7 +1329,7 @@ void Shape_chooser::import_all_pngs(
 	render();
 	show();
 	file_info->set_modified();
-	studio->update_group_windows(0);
+	studio->update_group_windows(nullptr);
 	delete [] fullname;
 }
 
@@ -1346,9 +1356,7 @@ void Shape_chooser::import_shape(
 		Shape_chooser *ed = static_cast<Shape_chooser *>(user_data);
 		if (ed->selected < 0)
 			return;         // Shouldn't happen.
-		ifstream file;
-		U7open(file, fname);
-		IStreamDataSource ds(&file);
+		IFileDataSource ds(fname);
 		// Check to see if it is a valid shape file.
 		// We never get here through a flat, so we don't deal
 		// with that case. These tests aren't perfect!
@@ -1393,10 +1401,12 @@ void Shape_chooser::new_frame(
 	else {              // Find largest frame.
 		int cnt = shape->get_num_frames();
 		for (int i = 0; i < cnt; i++) {
-			int ht = shape->get_frame(i)->get_height();
+			Shape_frame *fr = shape->get_frame(i);
+			assert(fr);
+			int ht = fr->get_height();
 			if (ht > h)
 				h = ht;
-			int wd = shape->get_frame(i)->get_width();
+			int wd = fr->get_width();
 			if (wd > w)
 				w = wd;
 		}
@@ -1411,9 +1421,8 @@ void Shape_chooser::new_frame(
 	img.fill8(1);           // Just use color #1.
 	if (w > 2 && h > 2)
 		img.fill8(2, w - 2, h - 2, 1, 1);
-	Shape_frame *frame = new Shape_frame(img.get_bits(),
-	                                     w, h, xleft, yabove, !flat);
-	shape->add_frame(frame, frnum + 1);
+	shape->add_frame(make_unique<Shape_frame>(img.get_bits(),
+	                                     w, h, xleft, yabove, !flat), frnum + 1);
 	file_info->set_modified();
 	Object_browser *browser = studio->get_browser();
 	if (browser) {
@@ -1423,7 +1432,7 @@ void Shape_chooser::new_frame(
 		browser->render();
 		browser->show();
 	}
-	studio->update_group_windows(0);
+	studio->update_group_windows(nullptr);
 }
 
 /*
@@ -1516,7 +1525,7 @@ void Shape_chooser::from_font_toggled(
 	studio->set_sensitive("new_shape_font_color", true);
 	studio->set_sensitive("new_shape_font_height", true);
 	GtkFileSelection *fsel = Create_file_selection(
-	                             "Choose font file", font_file_chosen, 0L);
+	                             "Choose font file", font_file_chosen, nullptr);
 	if (is_system_path_defined("<PATCH>")) {
 		// Default to a writable location.
 		string patch = get_system_path("<PATCH>/");
@@ -1620,7 +1629,7 @@ void Shape_chooser::create_new_shape(
 	// Want to create from a font?
 	use_font = studio->get_toggle("new_shape_font");
 	const char *fontname = studio->get_text_entry("new_shape_font_name");
-	use_font = use_font && (fontname != 0) && *fontname != 0;
+	use_font = use_font && (fontname != nullptr) && *fontname != 0;
 	if (use_font) {
 		if (flat) {
 			Alert("Can't load font into a 'flat' shape");
@@ -1644,7 +1653,7 @@ void Shape_chooser::create_new_shape(
 		// Include some transparency.
 		img.fill8(255, w / 2, h / 2, w / 4, h / 4);
 		for (int i = 0; i < nframes; i++)
-			shape->add_frame(new Shape_frame(img.get_bits(),
+			shape->add_frame(make_unique<Shape_frame>(img.get_bits(),
 			                                 w, h, xleft, yabove, !flat), i);
 	}
 	file_info->set_modified();
@@ -1655,7 +1664,7 @@ void Shape_chooser::create_new_shape(
 		browser->render();
 		browser->show();
 	}
-	studio->update_group_windows(0);
+	studio->update_group_windows(nullptr);
 }
 
 /*
@@ -1686,7 +1695,7 @@ void Shape_chooser::del_frame(
 		browser->render();
 		browser->show();
 	}
-	studio->update_group_windows(0);
+	studio->update_group_windows(nullptr);
 }
 
 /*
@@ -1715,8 +1724,8 @@ void Shape_chooser::drag_data_get(
 	                           shinfo.framenum);
 	cout << "Setting selection data (" << shinfo.shapenum <<
 	     '/' << shinfo.framenum << ')' << endl;
-#ifdef WIN32
-	windragdata *wdata = (windragdata *)seldata;
+#ifdef _WIN32
+	windragdata *wdata = reinterpret_cast<windragdata*>(seldata);
 	wdata->assign(info, len, buf);
 #else
 	// Make us owner of xdndselection.
@@ -2128,7 +2137,7 @@ void Shape_chooser::shape_dropped_here(
 ) {
 	ignore_unused_variable_warning(frame);
 	// Got to be from same file type.
-	if (ifile->get_u7drag_type() == file && group != 0) {
+	if (ifile->get_u7drag_type() == file && group != nullptr) {
 		// Add to group.
 		if (group->is_builtin()) {
 			Alert("Can't modify builtin group.");
@@ -2297,10 +2306,10 @@ Shape_chooser::Shape_chooser(
     Shape_file_info *fi
 ) : Object_browser(g, fi),
 	Shape_draw(i, palbuf, gtk_drawing_area_new()),
-	shapes_file(0), framenum0(0),
+	shapes_file(nullptr), framenum0(0),
 	info(0), rows(0), row0(0),
 	row0_voffset(0), total_height(0),
-	frames_mode(false), hoffset(0), voffset(0), status_id(-1), sel_changed(0) {
+	frames_mode(false), hoffset(0), voffset(0), status_id(-1), sel_changed(nullptr) {
 	rows.reserve(40);
 	// Put things in a vert. box.
 	GtkWidget *vbox = gtk_vbox_new(FALSE, 0);
@@ -2312,7 +2321,7 @@ Shape_chooser::Shape_chooser(
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, TRUE, TRUE, 0);
 
 	// A frame looks nice.
-	GtkWidget *frame = gtk_frame_new(NULL);
+	GtkWidget *frame = gtk_frame_new(nullptr);
 	gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_IN);
 	gtk_widget_show(frame);
 	gtk_box_pack_start(GTK_BOX(hbox), frame, TRUE, TRUE, 0);
@@ -2341,7 +2350,7 @@ Shape_chooser::Shape_chooser(
 	// Mouse motion.
 	gtk_signal_connect(GTK_OBJECT(draw), "drag_begin",
 	                   GTK_SIGNAL_FUNC(drag_begin), this);
-#ifdef WIN32
+#ifdef _WIN32
 // required to override GTK+ Drag and Drop
 	gtk_signal_connect(GTK_OBJECT(draw), "motion_notify_event",
 	                   GTK_SIGNAL_FUNC(win32_drag_motion), this);
@@ -2466,7 +2475,7 @@ void Shape_chooser::update_statusbar(
 			const Shape_info &inf = shapes_file->get_info(shapenum);
 			const Frame_name_info *nminf;
 			if (inf.has_frame_name_info() &&
-			        (nminf = inf.get_frame_name(frnum, -1)) != 0) {
+			        (nminf = inf.get_frame_name(frnum, -1)) != nullptr) {
 				int type = nminf->get_type(), msgid = nminf->get_msgid();
 				if (type >= 0 && msgid < get_num_misc_names()) {
 					const char *msgstr = get_misc_name(msgid);
@@ -2485,7 +2494,7 @@ void Shape_chooser::update_statusbar(
 							            get_misc_name(otmsg));
 							if (!otmsgstr) otmsgstr = "";
 						}
-						const char *prefix = 0, *suffix = 0;
+						const char *prefix = nullptr, *suffix = nullptr;
 						if (type & 1) {
 							prefix = otmsgstr;
 							suffix = msgstr;

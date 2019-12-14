@@ -25,7 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class Gump_button;
 
 class AudioOptions_gump : public Modal_gump {
-	UNREPLICATABLE_CLASS_I(AudioOptions_gump, Modal_gump(0, 0, 0, 0))
+	UNREPLICATABLE_CLASS_I(AudioOptions_gump, Modal_gump(nullptr, 0, 0, 0))
 
 private:
 	enum button_ids {

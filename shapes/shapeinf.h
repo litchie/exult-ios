@@ -326,7 +326,7 @@ public:
 	int get_body_frame() const;
 
 	bool has_weapon_info() const {
-		return weapon != 0;
+		return weapon != nullptr;
 	}
 	const Weapon_info *get_weapon_info_safe() const;
 	const Weapon_info *get_weapon_info() const {
@@ -335,7 +335,7 @@ public:
 	Weapon_info *set_weapon_info(bool tf);
 
 	bool has_ammo_info() const {
-		return ammo != 0;
+		return ammo != nullptr;
 	}
 	const Ammo_info *get_ammo_info_safe() const;
 	const Ammo_info *get_ammo_info() const {
@@ -344,7 +344,7 @@ public:
 	Ammo_info *set_ammo_info(bool tf);
 
 	bool has_armor_info() const {
-		return armor != 0;
+		return armor != nullptr;
 	}
 	const Armor_info *get_armor_info() const {
 		return armor;
@@ -352,7 +352,7 @@ public:
 	Armor_info *set_armor_info(bool tf);
 
 	bool has_monster_info() const {
-		return monstinf != 0;
+		return monstinf != nullptr;
 	}
 	const Monster_info *get_monster_info_safe() const;
 	const Monster_info *get_monster_info() const {
@@ -361,7 +361,7 @@ public:
 	Monster_info *set_monster_info(bool tf);
 
 	bool has_npc_paperdoll_info() const {
-		return npcpaperdoll != 0;
+		return npcpaperdoll != nullptr;
 	}
 	const Paperdoll_npc *get_npc_paperdoll() const {
 		return npcpaperdoll;
@@ -370,7 +370,7 @@ public:
 	const Paperdoll_npc *get_npc_paperdoll_safe(bool sex) const;
 
 	bool has_sfx_info() const {
-		return sfxinf != 0;
+		return sfxinf != nullptr;
 	}
 	const SFX_info *get_sfx_info() const {
 		return sfxinf;
@@ -378,7 +378,7 @@ public:
 	SFX_info *set_sfx_info(bool tf);
 
 	bool has_explosion_info() const {
-		return explosion != 0;
+		return explosion != nullptr;
 	}
 	const Explosion_info *get_explosion_info() const {
 		return explosion;
@@ -386,7 +386,7 @@ public:
 	Explosion_info *set_explosion_info(bool tf);
 
 	bool has_animation_info() const {
-		return aniinf != 0;
+		return aniinf != nullptr;
 	}
 	const Animation_info *get_animation_info() const {
 		return aniinf;
@@ -395,7 +395,7 @@ public:
 	Animation_info *set_animation_info(bool tf);
 
 	bool has_body_info() const {
-		return body != 0;
+		return body != nullptr;
 	}
 	const Body_info *get_body_info() const {
 		return body;
@@ -412,7 +412,7 @@ public:
 	void add_paperdoll_info(Paperdoll_item &add);
 	const Paperdoll_item *get_item_paperdoll(int frame, int spot) const;
 	bool is_object_allowed(int frame, int spot) const {
-		return get_item_paperdoll(frame, spot) != 0;
+		return get_item_paperdoll(frame, spot) != nullptr;
 	}
 
 	bool has_content_rules() const;

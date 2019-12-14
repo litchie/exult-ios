@@ -103,7 +103,7 @@ Game_object *Jawbone_gump::find_object(int mx, int my) {
 			return jawbone->teeth[i];
 		}
 
-	return 0;
+	return nullptr;
 }
 
 bool Jawbone_gump::on_tooth(int sx, int sy, int index) {

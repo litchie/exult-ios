@@ -30,6 +30,7 @@ class PathFinder;
 class Pathfinder_client;
 class Path_walking_actor_action;
 class If_else_path_actor_action;
+typedef std::weak_ptr<Game_object> Game_object_weak;
 
 /*
  *  This class controls the current actions of an actor:
@@ -73,14 +74,14 @@ public:
 		return 0;
 	}
 	virtual If_else_path_actor_action *as_usecode_path() {
-		return 0;
+		return nullptr;
 	}
 	virtual int get_speed() const {
 		return 0;
 	}
 	virtual Actor_action *kill() {
 		delete this;
-		return 0;
+		return nullptr;
 	}
 };
 
@@ -116,7 +117,7 @@ private:
 		subseq = sub;
 	}
 public:
-	Path_walking_actor_action(PathFinder *p = 0, int maxblk = 3, int pers = 0);
+	Path_walking_actor_action(PathFinder *p = nullptr, int maxblk = 3, int pers = 0);
 	virtual ~Path_walking_actor_action();
 	static Path_walking_actor_action *create_path(Tile_coord const &src,
 	        Tile_coord const &dest, Pathfinder_client &cost);
@@ -145,7 +146,7 @@ public:
  *  moved.
  */
 class Approach_actor_action : public Path_walking_actor_action {
-	Game_object *dest_obj;      // Destination object.
+	Game_object_weak dest_obj;      // Destination object.
 	int goal_dist;          // Stop if within this distance.
 	Tile_coord orig_dest_pos;   // Dest_obj's pos. when we start.
 	int cur_step;           // Count steps.
@@ -169,7 +170,7 @@ class If_else_path_actor_action : public Path_walking_actor_action {
 	Actor_action *success, *failure;
 public:
 	If_else_path_actor_action(Actor *actor, Tile_coord const &dest,
-	                          Actor_action *s, Actor_action *f = 0);
+	                          Actor_action *s, Actor_action *f = nullptr);
 	~If_else_path_actor_action();
 	void set_failure(Actor_action *f);
 	bool done_and_failed() const {      // Happens if no path found in ctor.
@@ -201,10 +202,9 @@ public:
  *  Activate an object.
  */
 class Activate_actor_action : public Actor_action {
-	Game_object *obj;
+	Game_object_weak obj;
 public:
-	Activate_actor_action(Game_object *o) : obj(o)
-	{  }
+	Activate_actor_action(Game_object *o);
 	// Handle time event.
 	virtual int handle_event(Actor *actor);
 };
@@ -218,10 +218,11 @@ class Frames_actor_action : public Actor_action {
 	int cnt;            // Size of list.
 	int index;          // Index for next.
 	int speed;          // Frame delay in 1/1000 secs.
-	Game_object *obj;       // Object to animate
+	Game_object_weak obj;       // Object to animate
+    bool use_actor;
 public:
-	Frames_actor_action(signed char *f, int c, int spd = 200, Game_object *o = 0);
-	Frames_actor_action(char f, int spd = 200, Game_object *o = 0);
+	Frames_actor_action(signed char *f, int c, int spd = 200, Game_object *o = nullptr);
+	Frames_actor_action(char f, int spd = 200, Game_object *o = nullptr);
 	virtual ~Frames_actor_action() {
 		delete [] frames;
 	}
@@ -240,12 +241,10 @@ public:
  */
 class Usecode_actor_action : public Actor_action {
 	int fun;            // Fun. #.
-	Game_object *item;      // Call it on this item.
+	Game_object_weak item;      // Call it on this item.
 	int eventid;
 public:
-	Usecode_actor_action(int f, Game_object *i, int ev)
-		: fun(f), item(i), eventid(ev)
-	{  }
+	Usecode_actor_action(int f, Game_object *i, int ev);
 	// Handle time event.
 	virtual int handle_event(Actor *actor);
 };
@@ -265,7 +264,7 @@ public:
 	{  }
 	// Create with up to 4.
 	Sequence_actor_action(Actor_action *a0, Actor_action *a1,
-	                      Actor_action *a2 = 0, Actor_action *a3 = 0);
+	                      Actor_action *a2 = nullptr, Actor_action *a3 = nullptr);
 	virtual int get_speed() const {
 		return speed;
 	}
@@ -285,7 +284,7 @@ public:
  *  Rotate through an object's frames.
  */
 class Object_animate_actor_action : public Actor_action {
-	Game_object *obj;
+	Game_object_weak obj;
 	int nframes;            // # of frames.
 	int cycles;         // # of cycles to do.
 	int speed;          // Time between frames.
@@ -304,7 +303,7 @@ public:
  */
 
 class Pickup_actor_action : public Actor_action {
-	Game_object *obj;       // What to pick up/put down.
+	Game_object_weak obj;       // What to pick up/put down.
 	int pickup;         // 1 to pick up, 0 to put down.
 	int speed;          // Time between frames.
 	int cnt;            // 0, 1, 2.
@@ -347,7 +346,7 @@ public:
  */
 
 class Change_actor_action : public Actor_action {
-	Game_object *obj;       // What to modify.
+	Game_object_weak obj;       // What to modify.
 	int shnum, frnum, qual; // New shape, frame and quality.
 public:
 	Change_actor_action(Game_object *o, int sh, int fr, int ql);

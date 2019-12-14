@@ -92,7 +92,7 @@ int main(
 	gtk_window_set_title(GTK_WINDOW(topwin), "Shape-Browser Test");
 	// Set delete handler.
 	gtk_signal_connect(GTK_OBJECT(topwin), "delete_event",
-	                   GTK_SIGNAL_FUNC(Quit), NULL);
+	                   GTK_SIGNAL_FUNC(Quit), nullptr);
 	// Set border width of top window.
 	gtk_container_border_width(GTK_CONTAINER(topwin), 10);
 	/*

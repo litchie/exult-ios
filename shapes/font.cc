@@ -30,6 +30,7 @@ using std::size_t;
 using std::string;
 using std::strncmp;
 using std::toupper;
+using std::unordered_map;
 
 FontManager fontManager;
 
@@ -91,7 +92,7 @@ int Font::paint_text_box(
     int vert_lead,          // Extra spacing between lines.
     bool pbreak,            // End at punctuation.
     bool center,            // Center each line.
-    Cursor_info *cursor     // We set x, y if not NULL.
+    Cursor_info *cursor     // We set x, y if not nullptr.
 ) {
 	const char *start = text;   // Remember the start.
 	win->set_clip(x, y, w, h);
@@ -102,7 +103,7 @@ int Font::paint_text_box(
 	int max_lines = h / height; // # lines that can be shown.
 	string *lines = new string[max_lines + 1];
 	int cur_line = 0;
-	const char *last_punct_end = 0;// ->last period, qmark, etc.
+	const char *last_punct_end = nullptr;// ->last period, qmark, etc.
 	// Last punct in 'lines':
 	int last_punct_line = -1, last_punct_offset = -1;
 	int coff = -1;
@@ -325,7 +326,7 @@ int Font::paint_text_box_fixedwidth(
 	int max_lines = h / height; // # lines that can be shown.
 	string *lines = new string[max_lines + 1];
 	int cur_line = 0;
-	const char *last_punct_end = 0;// ->last period, qmark, etc.
+	const char *last_punct_end = nullptr;// ->last period, qmark, etc.
 	// Last punct in 'lines':
 	int last_punct_line = -1, last_punct_offset = -1;
 
@@ -661,9 +662,7 @@ int Font::find_xcursor(
 
 Font::Font(
 )
-	: hor_lead(0), ver_lead(0),
-	  font_shapes(0), font_data(0), font_buf(0), orig_font_buf(0),
-	  highest(0), lowest(0) {
+	: hor_lead(0), ver_lead(0), highest(0), lowest(0) {
 }
 
 Font::Font(
@@ -671,8 +670,7 @@ Font::Font(
     int index,
     int hlead,
     int vlead
-)
-	: font_shapes(0), font_data(0), font_buf(0), orig_font_buf(0) {
+) {
 	load(fname0, index, hlead, vlead);
 }
 
@@ -682,22 +680,12 @@ Font::Font(
     int index,
     int hlead,
     int vlead
-)
-	: font_shapes(0), font_data(0), font_buf(0), orig_font_buf(0) {
+) {
 	load(fname0, fname1, index, hlead, vlead);
 }
 
-Font::~Font() {
-	clean_up();
-}
-
 void Font::clean_up() {
-	delete font_shapes;
-	delete font_data;
-	delete [] orig_font_buf;
-	font_shapes = 0;
-	font_data = 0;
-	orig_font_buf = 0;
+	font_shapes.reset();
 }
 
 /**
@@ -707,31 +695,22 @@ void Font::clean_up() {
  *  @param vleah    Vertical lead of the font.
  */
 int Font::load_internal(
-    const U7multiobject &font_obj,
+    IDataSource& data,
     int hlead,
     int vlead
 ) {
-	size_t len;
-	delete [] orig_font_buf;
-	font_buf = font_obj.retrieve(len);
-
-	if (!font_buf || !len) {
-		delete [] font_buf;
-		font_buf = 0;
-		font_data = 0;
-		font_shapes = 0;
+	if (!data.good()) {
+		font_shapes.reset();
 		hor_lead = 0;
 		ver_lead = 0;
-		orig_font_buf = 0;
 	} else {
-		orig_font_buf = font_buf;
 		// Is it an IFF archive?
-		if (!strncmp(font_buf, "font", 4))
-			font_buf += 8;      // Yes, skip first 8 bytes.
-		delete font_data;
-		delete font_shapes;
-		font_data = new IBufferDataSource(font_buf, len);
-		font_shapes = new Shape_file(font_data);
+		char hdr[5] = {0};
+		data.read(hdr, 4);
+		data.seek(0);
+		if (!strncmp(hdr, "font", 4))
+			data.skip(8);      // Yes, skip first 8 bytes.
+		font_shapes = std::make_unique<Shape_file>(&data);
 		hor_lead = hlead;
 		ver_lead = vlead;
 		calc_highlow();
@@ -753,8 +732,8 @@ int Font::load(
     int vlead
 ) {
 	clean_up();
-	U7multiobject font_obj(fname0, index);
-	return load_internal(font_obj, hlead, vlead);
+	IExultDataSource data(fname0, index);
+	return load_internal(data, hlead, vlead);
 }
 
 /**
@@ -773,8 +752,8 @@ int Font::load(
     int vlead
 ) {
 	clean_up();
-	U7multiobject font_obj(fname0, fname1, index);
-	return load_internal(font_obj, hlead, vlead);
+	IExultDataSource data(fname0, fname1, index);
+	return load_internal(data, hlead, vlead);
 }
 
 int Font::center_text(Image_buffer8 *win, int x, int y, const char *s) {
@@ -855,7 +834,7 @@ void FontManager::add_font(
 }
 
 void FontManager::remove_font(const char *name) {
-	if (fonts[name] != 0) {
+	if (fonts[name] != nullptr) {
 		delete fonts[name];
 		fonts.erase(name);
 	}
@@ -866,11 +845,7 @@ Font *FontManager::get_font(const char *name) {
 }
 
 void FontManager::reset() {
-#ifndef DONT_HAVE_HASH_MAP
 	unordered_map<const char *, Font *, hashstr, eqstr>::iterator i;
-#else
-	std::map<const char *, Font *, ltstr>::iterator i;
-#endif
 
 	for (i = fonts.begin(); i != fonts.end(); ++i) {
 		delete(*i).second;

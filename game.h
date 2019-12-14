@@ -52,13 +52,8 @@ private:
 	static bool new_game_flag;
 	static Exult_Game game_type;
 	static bool expansion, sibeta;
-#ifndef DONT_HAVE_HASH_MAP
-	typedef unordered_map<const char *, int, hashstr, eqstr> shapes_map;
-	typedef unordered_map<const char *, str_int_pair, hashstr, eqstr> rsc_map;
-#else /* !HAVE_HASH_MAP */
-	typedef std::map<const char *, int, ltstr> shapes_map;
-	typedef std::map<const char *, str_int_pair, ltstr> rsc_map;
-#endif
+	typedef std::unordered_map<const char *, int, hashstr, eqstr> shapes_map;
+	typedef std::unordered_map<const char *, str_int_pair, hashstr, eqstr> rsc_map;
 	shapes_map shapes;
 	rsc_map resources;
 	Configuration *xml;     /* Shapes/resources from XML file. */
@@ -67,6 +62,7 @@ private:
 	static std::string gametitle;
 	static std::string modtitle;
 	static unsigned int ticks;
+
 protected:
 	static bool editing_flag;
 	int topx, topy, centerx, centery;
@@ -130,13 +126,12 @@ public:
 	virtual void show_journey_failed() = 0;
 	virtual Shape_frame *get_menu_shape() = 0;
 
-	void play_flic(const char *archive, int index);
 	void add_shape(const char *name, int shapenum);
 	int get_shape(const char *name);
 	void add_resource(const char *name, const char *str, int num);
 	const str_int_pair &get_resource(const char *name);
 	void write_game_xml();
-	bool read_game_xml(const char *name1 = 0);
+	bool read_game_xml(const char *name1 = nullptr);
 
 	bool show_menu(bool skip = false);
 	void journey_failed_text();
@@ -153,10 +148,6 @@ public:
 	inline static void set_ticks(unsigned int t) {
 		ticks = t;
 	}
-	void disable_direct_gl_render();
-	void enable_direct_gl_render();
-	void non_gl_blit();
-	void gl_clear_win();
 };
 
 extern Game *game;

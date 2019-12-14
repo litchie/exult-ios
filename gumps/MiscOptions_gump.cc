@@ -241,7 +241,7 @@ void MiscOptions_gump::load_settings() {
 }
 
 MiscOptions_gump::MiscOptions_gump()
-	: Modal_gump(0, EXULT_FLX_MISCOPTIONS_SHP, SF_EXULT_FLX) {
+	: Modal_gump(nullptr, EXULT_FLX_MISCOPTIONS_SHP, SF_EXULT_FLX) {
 	set_object_area(Rectangle(0, 0, 0, 0), 8, 184);//++++++ ???
 
 	load_settings();
@@ -346,9 +346,9 @@ bool MiscOptions_gump::mouse_down(int mx, int my, int button) {
 	}
 
 	if (pushed && !pushed->push(button))            // On a button?
-		pushed = 0;
+		pushed = nullptr;
 
-	return button == 1 || pushed != 0;
+	return button == 1 || pushed != nullptr;
 }
 
 bool MiscOptions_gump::mouse_up(int mx, int my, int button) {
@@ -361,6 +361,6 @@ bool MiscOptions_gump::mouse_up(int mx, int my, int button) {
 	pushed->unpush(button);
 	if (pushed->on_button(mx, my))
 		res = pushed->activate(button);
-	pushed = 0;
+	pushed = nullptr;
 	return res;
 }

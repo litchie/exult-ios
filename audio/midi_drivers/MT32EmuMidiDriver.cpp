@@ -88,7 +88,7 @@ static const ROMImage *getROM(
 	if (openROMFile(file, filename, false)) {
 		return ROMImage::makeROMImage(&file);
 	}
-	return NULL;
+	return nullptr;
 }
 
 int MT32EmuMidiDriver::open() {
@@ -133,13 +133,13 @@ int MT32EmuMidiDriver::open() {
 		return 1;
 	}
 
-	mt32 = new Synth(0);
+	mt32 = new Synth(nullptr);
 
 	if (!mt32->open(*controlROMImage, *pcmROMImage)) {
 		ROMImage::freeROMImage(controlROMImage);
 		ROMImage::freeROMImage(pcmROMImage);
 		delete mt32;
-		mt32 = 0;
+		mt32 = nullptr;
 		return 1;
 	}
 
@@ -152,7 +152,7 @@ void MT32EmuMidiDriver::close() {
 	if (mt32) {
 		mt32->close();
 		delete mt32;
-		mt32 = 0;
+		mt32 = nullptr;
 	}
 }
 

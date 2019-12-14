@@ -22,8 +22,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #ifdef __GNUC__
 #pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wold-style-cast"
 #pragma GCC diagnostic ignored "-Wcast-qual"
+#pragma GCC diagnostic ignored "-Wold-style-cast"
+#pragma GCC diagnostic ignored "-Wparentheses"
+#pragma GCC diagnostic ignored "-Wuseless-cast"
 #endif  // __GNUC__
 #include <gtk/gtk.h>
 #include <glade/glade.h>
@@ -34,6 +36,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <vector>
 #include <map>
+#include <memory>
 #include <string>
 #include "vgafile.h"
 #include "servemsg.h"
@@ -68,7 +71,7 @@ class BaseGameInfo;
 typedef void (*Msg_callback)(Exult_server::Msg_type id,
                              const unsigned char *data, int datalen, void *client);
 
-#ifndef WIN32
+#ifndef _WIN32
 #define C_EXPORT extern "C"
 #else
 #ifndef WIN32_LEAN_AND_MEAN
@@ -101,7 +104,7 @@ private:
 	Shape_file_info     *gumpfile;  // 'gumps.vga'.
 	Shape_file_info     *spritefile;    // 'sprites.vga'.
 	Object_browser      *browser;
-	unsigned char       *palbuf;    // 3*256 rgb's, each 0-63.
+	std::unique_ptr<unsigned char[]> palbuf;    // 3*256 rgb's, each 0-63.
 	// Barge editor:
 	GtkWidget       *bargewin;// Barge window.
 	int             barge_ctx;
@@ -147,7 +150,7 @@ private:
 	int curr_mod;   // Which mod is loaded, or -1 for none
 	std::string game_encoding;  // Character set for current game/mod.
 	// For Win32 DND
-#ifdef WIN32
+#ifdef _WIN32
 	HWND            egghwnd;
 	Windnd          *eggdnd;
 	HWND            npchwnd;
@@ -195,7 +198,7 @@ public:
 		return browser;
 	}
 	unsigned char *get_palbuf() {
-		return palbuf;
+		return palbuf.get();
 	}
 	Shape_file_info *get_vgafile() { // 'shapes.vga'.
 		return vgafile;
@@ -264,19 +267,19 @@ public:
 	void show_cont_shape(int x = 0, int y = 0, int w = -1, int h = -1);
 	void set_cont_shape(int shape, int frame);
 	// Barges:
-	void open_barge_window(unsigned char *data = 0, int datalen = 0);
+	void open_barge_window(unsigned char *data = nullptr, int datalen = 0);
 	void close_barge_window();
 	int init_barge_window(unsigned char *data, int datalen);
 	int save_barge_window();
 	// Eggs:
-	void open_egg_window(unsigned char *data = 0, int datalen = 0);
+	void open_egg_window(unsigned char *data = nullptr, int datalen = 0);
 	void close_egg_window();
 	int init_egg_window(unsigned char *data, int datalen);
 	int save_egg_window();
 	void show_egg_monster(int x = 0, int y = 0, int w = -1, int h = -1);
 	void set_egg_monster(int shape, int frame);
 	// NPC's:
-	void open_npc_window(unsigned char *data = 0, int datalen = 0);
+	void open_npc_window(unsigned char *data = nullptr, int datalen = 0);
 	void close_npc_window();
 	void init_new_npc();
 	int init_npc_window(unsigned char *data, int datalen);
@@ -301,7 +304,7 @@ public:
 	void save_shape_notebook(Shape_info &info, int shnum, int frnum);
 	void open_shape_window(int shnum, int frnum,
 	                       Shape_file_info *file_info,
-	                       const char *shname, Shape_info *info = 0);
+	                       const char *shname, Shape_info *info = nullptr);
 	void save_shape_window();
 	void close_shape_window();
 	void show_shinfo_shape(int x = 0, int y = 0, int w = -1, int h = -1);
@@ -333,7 +336,7 @@ public:
 	void show_charset();
 
 	bool send_to_server(Exult_server::Msg_type id,
-	                    unsigned char *data = 0, int datalen = 0);
+	                    unsigned char *data = nullptr, int datalen = 0);
 	void read_from_server();
 	bool connect_to_server();
 	// Message from Exult.
@@ -366,7 +369,7 @@ public:
 	void set_visible(const char *name, bool vis);
 	void set_sensitive(const char *name, bool vis);
 	int prompt(const char *msg, const char *choice0,
-	           const char *choice1 = 0, const char *choice2 = 0);
+	           const char *choice1 = nullptr, const char *choice2 = nullptr);
 	int find_palette_color(int r, int g, int b);
 	Exult_Game get_game_type() const {
 		return game_type;
@@ -395,10 +398,10 @@ public:
 // Utilities:
 namespace EStudio {
 int Prompt(const char *msg, const char *choice0,
-           const char *choice1 = 0, const char *choice2 = 0);
+           const char *choice1 = nullptr, const char *choice2 = nullptr);
 void Alert(const char *msg, ...) ATTR_PRINTF(1, 2);
-GtkWidget *Add_menu_item(GtkWidget *menu, const char *label = 0,
-                         GtkSignalFunc func = 0, gpointer func_data = 0, GSList *group = 0);
+GtkWidget *Add_menu_item(GtkWidget *menu, const char *label = nullptr,
+                         GtkSignalFunc func = nullptr, gpointer func_data = nullptr, GSList *group = nullptr);
 GtkWidget *Create_arrow_button(GtkArrowType dir, GtkSignalFunc clicked,
                                gpointer func_data);
 bool Copy_file(const char *src, const char *dest);

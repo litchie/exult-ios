@@ -77,7 +77,7 @@ Uc_var_symbol *Uc_expression::need_var(
 	// Create a 'tmp' variable.
 	Uc_var_symbol *var = fun->add_symbol(buf);
 	if (!var)
-		return 0;       // Shouldn't happen.  Err. reported.
+		return nullptr;       // Shouldn't happen.  Err. reported.
 	gen_value(out);         // Want to assign this value to it.
 	var->gen_assign(out);
 	return var;
@@ -291,7 +291,7 @@ void Uc_flag_expression::gen_assign(
 }
 
 inline bool Uc_var_expression::is_struct() const {
-	return var->get_struct() != 0;
+	return var->get_struct() != nullptr;
 }
 
 inline Uc_struct_symbol *Uc_var_expression::get_struct() const {
@@ -679,7 +679,7 @@ int Uc_array_expression::gen_values(
 }
 
 inline bool Uc_call_expression::is_struct() const {
-	return sym->get_struct() != 0;
+	return sym->get_struct() != nullptr;
 }
 
 inline Uc_struct_symbol *Uc_call_expression::get_struct() const {
@@ -687,7 +687,7 @@ inline Uc_struct_symbol *Uc_call_expression::get_struct() const {
 }
 
 inline bool Uc_call_expression::is_class() const {
-	return sym->get_cls() != 0;
+	return sym->get_cls() != nullptr;
 }
 
 inline Uc_class *Uc_call_expression::get_cls() const {
@@ -806,7 +806,7 @@ void Uc_call_expression::gen_value(
 		char buf[150];
 		sprintf(buf, "'%s' isn't a function or intrinsic",
 		        sym->get_name());
-		sym = 0;        // Avoid repeating error if in loop.
+		sym = nullptr;        // Avoid repeating error if in loop.
 		error(buf);
 	}
 }

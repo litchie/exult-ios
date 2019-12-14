@@ -157,7 +157,7 @@ public:
 
 
 Portrait_button::Portrait_button(Gump *par, int px, int py, Actor *a)
-	: Face_button(par, px + 14, py - 20, a), hp(0), mana(0) {
+	: Face_button(par, px + 14, py - 20, a), hp(nullptr), mana(nullptr) {
 	hp = new Stat_bar(par, px + 4, py - 10, a, Actor::health, Actor::strength, PALETTE_INDEX_RED);
 
 	if (actor->get_effective_prop(Actor::magic) > 0)
@@ -284,10 +284,10 @@ Rectangle Portrait_button::get_rect() {
  *  Face_stats
  */
 
-Face_stats::Face_stats() : Gump(0, 0, 0, 0, SF_GUMPS_VGA) {
+Face_stats::Face_stats() : Gump(nullptr, 0, 0, 0, SF_GUMPS_VGA) {
 	for (int i = 1; i < 8; i++) {
 		npc_nums[i] = -1;
-		party[i] = 0;
+		party[i] = nullptr;
 	}
 
 
@@ -298,7 +298,7 @@ Face_stats::~Face_stats() {
 	delete_buttons();
 
 	gwin->set_all_dirty();
-	self = 0;
+	self = nullptr;
 }
 
 /*
@@ -321,7 +321,7 @@ Gump_button *Face_stats::on_button(int mx, int my) {
 			return party[i];
 
 
-	return 0;
+	return nullptr;
 }
 
 // add dirty region, if dirty
@@ -337,7 +337,7 @@ void Face_stats::delete_buttons() {
 	for (int i = 0; i < 8; i++) {
 		if (party[i]) {
 			delete party[i];
-			party[i] = 0;
+			party[i] = nullptr;
 		}
 		npc_nums[i] = -1;
 	}
@@ -366,11 +366,13 @@ void Face_stats::create_buttons() {
 
 	for (i = 0; i < party_size; i++) {
 		int num = partyman->get_member(i);
+		Actor *act = gwin->get_npc(num);
+		assert(act != nullptr);
 		// Show faces if in SI, or if paperdolls are allowed
 		if (sman->can_use_paperdolls() ||
 		        // Otherwise, show faces also if the character
 		        // has paperdoll information
-		        gwin->get_npc(num)->get_info().get_npc_paperdoll())
+		        act->get_info().get_npc_paperdoll())
 			++num_to_paint;
 	}
 
@@ -392,6 +394,7 @@ void Face_stats::create_buttons() {
 	for (i = 0; i < party_size; i++) {
 		npc_nums[i + 1] = partyman->get_member(i);
 		Actor *act = gwin->get_npc(npc_nums[i + 1]);
+		assert(act != nullptr);
 		// Show faces if in SI, or if paperdolls are allowed
 		if (sman->can_use_paperdolls() ||
 		        // Otherwise, show faces also if the character
@@ -400,7 +403,7 @@ void Face_stats::create_buttons() {
 			pos += width;
 			party[i + 1] = new Portrait_button(this, pos, 0, gwin->get_npc(npc_nums[i + 1]));
 		} else {
-			party[i + 1] = 0;
+			party[i + 1] = nullptr;
 		}
 	}
 
@@ -451,13 +454,13 @@ Container_game_object *Face_stats::find_actor(int mx, int my) {
 	for (int i = 0; i < 8; i++) if (party[i] && party[i]->on_button(mx, my))
 		return party[i]->get_actor();
 
-	return 0;
+	return nullptr;
 }
 
 // Statics
 
 int Face_stats::mode = 0;
-Face_stats *Face_stats::self = 0;
+Face_stats *Face_stats::self = nullptr;
 
 // Creates if doesn't already exist
 void Face_stats::CreateGump() {

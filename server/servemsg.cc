@@ -32,7 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "servemsg.h"
 #include <cstring>
 
-#ifdef WIN32
+#ifdef _WIN32
 #include "servewin32.h"
 #endif
 
@@ -129,7 +129,7 @@ int Receive_data(
 
 bool wait_for_response(int socket, int ms) {
 	ignore_unused_variable_warning(socket, ms);
-#if defined(WIN32) && defined(USE_EXULTSTUDIO)
+#if defined(_WIN32) && defined(USE_EXULTSTUDIO)
 	/*
 	int ticks = GetTickCount();
 	while(GetTickCount() < ticks+ms) {

@@ -26,14 +26,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include <config.h>
 #endif
 
-#ifdef WIN32
-#include "Windrag.h"
+#ifdef _WIN32
+#include "windrag.h"
 #endif
 
 #ifdef __GNUC__
 #pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wold-style-cast"
 #pragma GCC diagnostic ignored "-Wcast-qual"
+#pragma GCC diagnostic ignored "-Wold-style-cast"
+#pragma GCC diagnostic ignored "-Wparentheses"
+#pragma GCC diagnostic ignored "-Wuseless-cast"
 #endif  // __GNUC__
 #include <gtk/gtk.h>
 #ifdef XWIN
@@ -350,7 +352,7 @@ gint Chunk_chooser::expose(
  *  Handle a mouse button press event.
  */
 
-#ifdef WIN32
+#ifdef _WIN32
 
 static bool win32_button = false;
 
@@ -368,14 +370,14 @@ gint Chunk_chooser::win32_drag_motion(
 
 		// This call allows us to recycle the data transfer initialization code.
 		//  It's clumsy, but far easier to maintain.
-		drag_data_get(NULL, NULL, (GtkSelectionData *) &wdata,
+		drag_data_get(nullptr, nullptr, reinterpret_cast<GtkSelectionData*>(&wdata),
 		              U7_TARGET_CHUNKID, 0, data);
 
 		POINT pnt;
 		GetCursorPos(&pnt);
 
-		Windropsource idsrc(0, pnt.x, pnt.y);
-		LPDATAOBJECT idobj = (LPDATAOBJECT) new Winstudioobj(wdata);
+		Windropsource idsrc(nullptr, pnt.x, pnt.y);
+		LPDATAOBJECT idobj = new Winstudioobj(wdata);
 		DWORD dndout;
 
 		HRESULT res = DoDragDrop(idobj, &idsrc, DROPEFFECT_COPY, &dndout);
@@ -429,7 +431,7 @@ gint Chunk_chooser::mouse_press(
 //			if (i == old_selected)
 //				return TRUE;
 			// Indicate we can dra.
-#ifdef WIN32
+#ifdef _WIN32
 // Here, we have to override GTK+'s Drag and Drop, which is non-OLE and
 // usually stucks outside the program window. I think it's because
 // the dragged shape only receives mouse motion events when the new mouse pointer
@@ -450,7 +452,7 @@ gint Chunk_chooser::mouse_press(
 	if (i == chooser->info_cnt && event->button == 1)
 		chooser->unselect(true);// Nothing under mouse.
 	else if (event->button == 3)
-		gtk_menu_popup(GTK_MENU(chooser->create_popup()), 0, 0, 0, 0,
+		gtk_menu_popup(GTK_MENU(chooser->create_popup()), nullptr, nullptr, nullptr, nullptr,
 		               event->button, event->time);
 	return (TRUE);
 }
@@ -490,8 +492,8 @@ void Chunk_chooser::drag_data_get(
 	Chunk_info &shinfo = chooser->info[chooser->selected];
 	int len = Store_u7_chunkid(buf, shinfo.num);
 	cout << "Setting selection data (" << shinfo.num << ')' << endl;
-#ifdef WIN32
-	windragdata *wdata = (windragdata *)seldata;
+#ifdef _WIN32
+	windragdata *wdata = reinterpret_cast<windragdata*>(seldata);
 	wdata->assign(info, len, buf);
 #else
 	// Make us owner of xdndselection.
@@ -612,7 +614,7 @@ void Chunk_chooser::enable_drop(
 		return;
 	drop_enabled = true;
 	gtk_widget_realize(draw);//???????
-#ifndef WIN32
+#ifndef _WIN32
 	GtkTargetEntry tents[1];
 	tents[0].target = const_cast<char *>(U7_TARGET_CHUNKID_NAME);
 	tents[0].flags = 0;
@@ -733,7 +735,7 @@ static void on_delete(
 GtkWidget *Chunk_chooser::create_popup(
 ) {
 	create_popup_internal(true); // Create popup with groups, files.
-	if (group != 0)         // Filtering?  Skip the rest.
+	if (group != nullptr)         // Filtering?  Skip the rest.
 		return popup;
 	GtkWidget *mitem = Add_menu_item(popup, "New...");
 	GtkWidget *new_menu = gtk_menu_new();
@@ -762,8 +764,8 @@ Chunk_chooser::Chunk_chooser(
     Shape_group *g          // Filter, or null.
 ) : Object_browser(g), Shape_draw(i, palbuf, gtk_drawing_area_new()),
 	chunkfile(cfile), chunksz(c_tiles_per_chunk *c_tiles_per_chunk * 2),
-	headersz(0), info(0), info_cnt(0), locate_cx(-1), locate_cy(-1),
-	drop_enabled(false), to_del(-1), sel_changed(0) {
+	headersz(0), info(nullptr), info_cnt(0), locate_cx(-1), locate_cy(-1),
+	drop_enabled(false), to_del(-1), sel_changed(nullptr) {
 	static char v2hdr[] = { -1, -1, -1, -1, 'e', 'x', 'l', 't',
 	                        0, 0
 	                      };
@@ -789,7 +791,7 @@ Chunk_chooser::Chunk_chooser(
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, TRUE, TRUE, 0);
 
 	// A frame looks nice.
-	GtkWidget *frame = gtk_frame_new(NULL);
+	GtkWidget *frame = gtk_frame_new(nullptr);
 	gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_IN);
 	gtk_widget_show(frame);
 	gtk_box_pack_start(GTK_BOX(hbox), frame, TRUE, TRUE, 0);
@@ -813,7 +815,7 @@ Chunk_chooser::Chunk_chooser(
 	// Mouse motion.
 	gtk_signal_connect(GTK_OBJECT(draw), "drag_begin",
 	                   GTK_SIGNAL_FUNC(drag_begin), this);
-#ifdef WIN32
+#ifdef _WIN32
 // required to override GTK+ Drag and Drop
 	gtk_signal_connect(GTK_OBJECT(draw), "motion_notify_event",
 	                   GTK_SIGNAL_FUNC(win32_drag_motion), this);
@@ -915,7 +917,7 @@ void Chunk_chooser::end_terrain_editing(
 	// Clear out cache of chunks.
 	for (int i = 0; i < num_chunks; i++) {
 		delete chunklist[i];
-		chunklist[i] = 0;
+		chunklist[i] = nullptr;
 	}
 	render();
 	show();

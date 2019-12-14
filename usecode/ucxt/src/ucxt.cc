@@ -55,7 +55,6 @@
 // include xml configuration stuff
 #include "Configuration.h"
 #include "exult_constants.h"
-const std::string c_empty_string; // Ob for exult_constants.h
 
 /* Functions */
 void usage();
@@ -102,7 +101,7 @@ int main(int argc, char **argv) {
 	// yes, it's a hack to fix an eldritch bug I could't find... it seems appropriate
 	// FIXME: Problem nolonger exists. Probably should put some 'nice' code in it's place.
 	std::ofstream outputstream;
-	std::streambuf *coutbuf = 0;
+	std::streambuf *coutbuf = nullptr;
 	if (!uc.output_redirect().empty()) {
 		U7open(outputstream, uc.output_redirect().c_str(), false);
 		if (outputstream.fail()) {
@@ -134,7 +133,7 @@ int main(int argc, char **argv) {
 }
 
 void open_usecode_file(UCData &uc, const Configuration &config) {
-	GameManager *gamemanager = 0;
+	GameManager *gamemanager = nullptr;
 	string u8path;
 	if (uc.options.noconf == false) {
 		gamemanager = new GameManager(true);
@@ -186,7 +185,7 @@ void open_usecode_file(UCData &uc, const Configuration &config) {
 	    || uc.options.game_sib()) {
 		string game;
 		if (gamemanager) {
-			ModManager *basegame = 0;
+			ModManager *basegame = nullptr;
 			if (uc.options.game_bg()) {
 				basegame = gamemanager->get_bg();
 				game = "BG";

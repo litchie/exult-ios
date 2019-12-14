@@ -1,3 +1,4 @@
+
 /*
 Copyright (C) 2003  The Pentagram Team
 
@@ -57,7 +58,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define XMIDI_CONTROLLER_CALLBACK_TRIG		0x77	// Callback Trigger
 #define XMIDI_CONTROLLER_SEQ_BRANCH_INDEX	0x78	// Sequence Branch Index
 
-#ifdef WIN32
+#ifdef _WIN32
 #include <cstdlib>
 using std::malloc;
 using std::calloc;
@@ -109,7 +110,7 @@ struct XMidiEvent
 	template<class T>
 	static inline T* Malloc(size_t num=1)
 	{
-	#ifdef WIN32
+	#ifdef _WIN32
 		return static_cast<T*>(std::malloc(num));
 	#else
 		return static_cast<T*>(::operator new(num));
@@ -121,7 +122,7 @@ struct XMidiEvent
 	{
 		if(!sz)
 			sz=sizeof(T);
-	#ifdef WIN32
+	#ifdef _WIN32
 		return static_cast<T*>(std::calloc(num,sz));
 	#else
 		size_t	total=sz*num;
@@ -133,7 +134,7 @@ struct XMidiEvent
 
 	static inline void	Free(void *ptr)
 	{
-	#ifdef WIN32
+	#ifdef _WIN32
 		std::free(ptr);
 	#else
 		::operator delete(ptr);
@@ -147,7 +148,7 @@ struct XMidiEvent
 		for (XMidiEvent *e = next; e; e = next)
 		{
 			next = e->next;
-			e->next = 0;
+			e->next = nullptr;
 			e->FreeThis();
 		}
 

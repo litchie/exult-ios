@@ -272,11 +272,11 @@ int Game_render::paint_map(
 		                stop_chunky, gwin->ice_dungeon ? 73 : 0);
 
 	// Outline selected objects.
-	const Game_object_vector &sel = cheat.get_selected();
+	const Game_object_shared_vector &sel = cheat.get_selected();
 	int render_skip = gwin->get_render_skip_lift();
-	for (Game_object_vector::const_iterator it = sel.begin();
+	for (Game_object_shared_vector::const_iterator it = sel.begin();
 	        it != sel.end(); ++it) {
-		Game_object *obj = *it;
+		Game_object *obj = (*it).get();
 		if (!obj->get_owner() && obj->get_lift() < render_skip)
 			obj->paint_outline(HIT_PIXEL);
 	}
@@ -359,7 +359,7 @@ void Game_window::paint(
  *  Paint whole window.
  */
 void Game_window::paint() {
-	if (main_actor != 0) map->read_map_data();      // Gather in all objs., etc.
+	if (main_actor != nullptr) map->read_map_data();      // Gather in all objs., etc.
 	set_all_dirty();
 	paint_dirty();
 }
@@ -443,19 +443,10 @@ void Game_render::paint_chunk_flats(
 	Game_window *gwin = Game_window::get_instance();
 	Map_chunk *olist = gwin->map->get_chunk(cx, cy);
 	// Paint flat tiles.
-#ifdef HAVE_OPENGL
-	if (GL_manager::get_instance()) { // OpenGL rendering?
-		Chunk_terrain *terrain = olist->get_terrain();
-		if (terrain)
-			terrain->get_glflats()->paint(xoff, yoff);
-	} else
-#endif
-	{
-		Image_buffer8 *cflats = olist->get_rendered_flats();
-		if (cflats)
-			gwin->win->copy8(cflats->get_bits(),
-			                 c_chunksize, c_chunksize, xoff, yoff);
-	}
+	Image_buffer8 *cflats = olist->get_rendered_flats();
+	if (cflats)
+		gwin->win->copy8(cflats->get_bits(),
+							c_chunksize, c_chunksize, xoff, yoff);
 }
 
 /*
@@ -471,7 +462,7 @@ void Game_render::paint_chunk_flat_rles(
 	Map_chunk *olist = gwin->map->get_chunk(cx, cy);
 	Flat_object_iterator next(olist);// Do flat RLE objects.
 	Game_object *obj;
-	while ((obj = next.get_next()) != 0)
+	while ((obj = next.get_next()) != nullptr)
 		obj->paint();
 }
 
@@ -493,7 +484,7 @@ int Game_render::paint_chunk_objects(
 	skip = gwin->get_render_skip_lift();
 	Nonflat_object_iterator next(olist);
 
-	while ((obj = next.get_next()) != 0)
+	while ((obj = next.get_next()) != nullptr)
 		if (obj->render_seq != render_seq)
 			paint_object(obj);
 

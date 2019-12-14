@@ -33,6 +33,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <iomanip>
+#include <memory>
 #include <vector>
 #include "Flex.h"
 #include "utils.h"
@@ -56,6 +57,7 @@ using std::strncmp;
 using std::strcpy;
 using std::strcat;
 using std::vector;
+using std::unique_ptr;
 
 /*
  *  A shape specification:
@@ -68,7 +70,7 @@ public:
 	bool bycol;         // If dim0_tiles > 0, go down first.
 	int dim0_tiles;         // File consists of 8x8 (flat) tiles.
 public:
-	Shape_spec() : filename(0), nframes(0), flat(false), bycol(false),
+	Shape_spec() : filename(nullptr), nframes(0), flat(false), bycol(false),
 		dim0_tiles(0)
 	{  }
 	Shape_spec(const Shape_spec &other)
@@ -77,7 +79,7 @@ public:
 		if (other.filename)
 			filename = newstrdup(other.filename);
 		else
-			filename = 0;
+			filename = nullptr;
 	}
 	~Shape_spec() {
 		delete [] filename;
@@ -231,7 +233,7 @@ static void Read_script(
     char  *&palname,        // Palette name returned.
     Shape_specs &specs      // Shape specs. returned here.
 ) {
-	imagename = 0;
+	imagename = nullptr;
 	specs.resize(0);        // Initialize.
 	specs.reserve(1200);
 	char buf[1024];
@@ -396,7 +398,6 @@ static void Convert_palette63(
 	for (i = 0; i < 3 * palsize; i++)
 		to[i] = from[i] / 4;
 	memset(to + i, 0, 3 * 256 - i); // 0-fill the rest.
-
 }
 
 /*
@@ -445,7 +446,7 @@ static void Write_frame(
     Shape_frame *frame,     // What to write.
     unsigned char *palette      // 3*256 bytes.
 ) {
-	assert(frame != 0);
+	assert(frame != nullptr);
 	char *fullname = new char[strlen(basename) + 30];
 	sprintf(fullname, "%s%02d.png", basename, frnum);
 	cout << "Writing " << fullname << endl;
@@ -539,8 +540,7 @@ void Write_palettes(
 	unsigned char palbuf[3 * 256];  // We always write 256 colors.
 	if (palsize > 256)      // Shouldn't happen.
 		palsize = 256;
-	ofstream out;
-	U7open(out, palname);       // May throw exception.
+	OFileDataSource out(palname);      // May throw exception.
 	Flex_writer writer(out, "Exult palette by Ipack", 11);
 	// Entry 0 (DAY):
 	char const *palptr = reinterpret_cast<const char *>(palbuf);
@@ -595,8 +595,6 @@ void Write_palettes(
 	Convert_palette63(palbuf, palbuf, palsize);
 	out.write(palptr, sizeof(palbuf));
 	writer.mark_section_done();
-	if (!writer.close())
-		throw file_write_exception(palname);
 	// Write out in Gimp format.
 	Write_text_palette(palname, palette, palsize);
 }
@@ -606,7 +604,7 @@ void Write_palettes(
  */
 
 static void Write_exult_from_tiles(
-    ostream &out,           // What to write to.
+    OFileDataSource& out,           // What to write to.
     char *filename,         // Filename to read.
     int nframes,            // # frames.
     bool bycol,         // If true, go down each column first,
@@ -650,7 +648,7 @@ static void Write_exult_from_tiles(
 		unsigned char *src = pixels + w * 8 * y + 8 * x;
 		for (int row = 0; row < 8; row++) {
 			// Write it out.
-			out.write(reinterpret_cast<char *>(src), 8);
+			out.write(src, 8);
 			src += w;
 		}
 	}
@@ -665,7 +663,7 @@ static void Write_exult_from_tiles(
  */
 
 static void Write_exult(
-    ostream &out,           // What to write to.
+    OFileDataSource& out,           // What to write to.
     char *basename,         // Base filename for files to read.
     int nframes,            // # frames.
     bool flat,          // Store as 8x8 flats.
@@ -695,12 +693,12 @@ static void Write_exult(
 			xleft = w + xoff - 1;
 			yabove = h + yoff - 1;
 		}
-		shape.set_frame(new Shape_frame(pixels,
+		shape.set_frame(std::make_unique<Shape_frame>(pixels,
 		                                w, h, xleft, yabove, !flat), frnum);
 		delete [] pixels;
 		if (palname) {      // Write palette for first frame.
 			Write_palettes(palname, palette, palsize);
-			palname = 0;
+			palname = nullptr;
 		}
 		delete [] palette;
 	}
@@ -721,10 +719,9 @@ static void Create(
 	if (palname && U7exists(palname)) {     // Palette?
 		cout << "Palette file '" << palname <<
 		     "' exists, so we won't overwrite it" << endl;
-		palname = 0;
+		palname = nullptr;
 	}
-	ofstream out;
-	U7open(out, imagename);     // May throw exception.
+	OFileDataSource out(imagename);     // May throw exception.
 	Flex_writer writer(out, title, specs.size());
 	for (Shape_specs::const_iterator it = specs.begin();
 	        it != specs.end();  ++it) {
@@ -738,12 +735,10 @@ static void Create(
 			else
 				Write_exult(out, basename, (*it).nframes,
 				            (*it).flat, palname);
-			palname = 0;    // Only write 1st palette.
+			palname = nullptr;    // Only write 1st palette.
 		}
 		writer.mark_section_done();
 	}
-	if (!writer.close())
-		throw file_write_exception(imagename);
 }
 
 /*
@@ -761,11 +756,11 @@ static void Update(
 	if (palname && U7exists(palname)) {     // Palette?
 		cout << "Palette file '" << palname <<
 		     "' exists, so we won't overwrite it" << endl;
-		palname = 0;
+		palname = nullptr;
 	}
 	FlexFile in(imagename);     // May throw exception.
 	size_t oldcnt = in.number_of_objects();
-	vector<char *> data(oldcnt);    // Read in all the entries.
+	vector<unique_ptr<unsigned char[]>> data(oldcnt);    // Read in all the entries.
 	vector<int> lengths(oldcnt);
 	size_t i;
 	for (i = 0; i < oldcnt; i++) {
@@ -773,30 +768,24 @@ static void Update(
 		data[i] = in.retrieve(i, len);
 		lengths[i] = len;
 		if (!len) {     // Empty?
-			delete [] data[i];
-			data[i] = 0;
+			data[i].reset();
 		}
 	}
-	ofstream out;
-	U7open(out, imagename);     // May throw exception.
+	OFileDataSource out(imagename);     // May throw exception.
 	size_t newcnt = oldcnt > specs.size() ? oldcnt : specs.size();
 	Flex_writer writer(out, title, newcnt);
 	for (i = 0; i < newcnt; i++) {  // Write out new entries.
 		// New entry for this shape?
-		if (i < specs.size() && specs[i].filename != 0) {
+		if (i < specs.size() && specs[i].filename != nullptr) {
 			Write_exult(out, specs[i].filename,
 			            specs[i].nframes, specs[i].flat, palname);
-			palname = 0;    // Only write 1st palette.
+			palname = nullptr;    // Only write 1st palette.
 		}
 		// Write old entry.
 		else if (i < oldcnt && data[i])
-			out.write(data[i], lengths[i]);
+			out.write(data[i].get(), lengths[i]);
 		writer.mark_section_done();
 	}
-	if (!writer.close())
-		throw file_write_exception(imagename);
-	for (i = 0; i < oldcnt; i++)    // Clean up.
-		delete [] data[i];
 }
 
 /*
@@ -815,7 +804,7 @@ static void Extract(
 	U7object pal(palname, 0);   // Get palette 0.
 	size_t len;
 	// This may throw an exception
-	unsigned char *palbuf = reinterpret_cast<unsigned char *>(pal.retrieve(len));
+	auto palbuf = pal.retrieve(len);
 	for (size_t i = 0; i < len; i++)    // Turn into full bytes.
 		palbuf[i] *= 4;     // Exult palette vals are 0-63.
 	Vga_file ifile(imagename);  // May throw an exception.
@@ -839,9 +828,8 @@ static void Extract(
 			     " doesn't match actual count (" << nframes <<
 			     ")" << endl;
 		for (int f = 0; f < nframes; f++)
-			Write_frame(basename, f, shape->get_frame(f), palbuf);
+			Write_frame(basename, f, shape->get_frame(f), palbuf.get());
 	}
-	delete [] palbuf;
 }
 
 /*
@@ -864,7 +852,7 @@ int main(
 	if (argc < 3 || argv[1][0] != '-')
 		Usage();        // (Exits.)
 	char *scriptname = argv[2];
-	char *imagename = 0, *palname = 0;
+	char *imagename = nullptr, *palname = nullptr;
 	Shape_specs specs;      // Shape specs. stored here.
 	ifstream specin;
 	try {

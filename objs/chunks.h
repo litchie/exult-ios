@@ -116,7 +116,7 @@ class Chunk_cache : public Game_singletons {
 public:
 	// Is there something on this tile?
 	inline bool is_tile_occupied(int tx, int ty, int tz) {
-		blocked8z b8 = static_cast<unsigned>(tz / 8) < blocked.size() ? blocked[tz / 8] : 0;
+		blocked8z b8 = static_cast<unsigned>(tz / 8) < blocked.size() ? blocked[tz / 8] : nullptr;
 		return (b8 && b8[ty * c_tiles_per_chunk + tx] &
 		        (3 << (2 * (tz % 8)))) != 0;
 	}
@@ -199,7 +199,7 @@ public:
 		       : ShapeID();
 	}
 	Image_buffer8 *get_rendered_flats() {
-		return terrain ? terrain->get_rendered_flats() : 0;
+		return terrain ? terrain->get_rendered_flats() : nullptr;
 	}
 	// Get/create/setup cache.
 	Chunk_cache *get_cache() const {
@@ -288,7 +288,7 @@ public:
 	                         int from_tx, int from_ty);
 	void setup_dungeon_levels();    // Set up after IFIX objs. read.
 	inline int has_dungeon() {      // Any tiles within dungeon?
-		return dungeon_levels != 0;
+		return dungeon_levels != nullptr;
 	}
 
 	// NOTE:  The following should only be

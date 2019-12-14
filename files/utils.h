@@ -26,12 +26,11 @@
 #include <string>
 #include <cstring>
 #include <cstdio>
-#include <stdio.h>
 #include <iosfwd>
+#include <limits>
 #include <dirent.h>
 
 #include "common_types.h"
-#include "rect.h"
 
 #ifndef ATTR_PRINTF
 #ifdef __GNUC__
@@ -189,7 +188,7 @@ inline int ReadInt(
 	in >> num;
 	if (in.fail())
 		return def;
-	in.ignore(0xffffff, '/');
+	in.ignore(std::numeric_limits<std::streamsize>::max(), '/');
 	return num;
 }
 
@@ -203,7 +202,7 @@ inline unsigned int ReadUInt(
 	in >> num;
 	if (in.fail())
 		return def;
-	in.ignore(0xffffff, '/');
+	in.ignore(std::numeric_limits<std::streamsize>::max(), '/');
 	return num;
 }
 
@@ -229,27 +228,6 @@ inline void WriteInt(
 		out << std::endl;
 	else
 		out << '/';
-}
-
-inline void ReadRect(
-    std::istream &in,
-    Rectangle &rect
-) {
-	rect.x = ReadInt(in);
-	rect.y = ReadInt(in);
-	rect.w = ReadInt(in);
-	rect.h = ReadInt(in);
-}
-
-inline void WriteRect(
-    std::ostream &out,
-    const Rectangle &rect,
-    bool final = false
-) {
-	WriteInt(out, rect.x);
-	WriteInt(out, rect.y);
-	WriteInt(out, rect.w);
-	WriteInt(out, rect.h, final);
 }
 
 inline std::string ReadStr(
@@ -346,8 +324,8 @@ inline void Write2(
     Dest& out,
     uint16 val
 ) {
-	Write1(out, val & 0xffu);
-	Write1(out, (val >> 8) & 0xffu);
+	Write1(out, static_cast<uint8>(val));
+	Write1(out, static_cast<uint8>(val >> 8));
 }
 
 /*
@@ -359,8 +337,8 @@ inline void Write2high(
     Dest& out,
     uint16 val
 ) {
-	Write1(out, (val >> 8) & 0xffu);
-	Write1(out, val & 0xffu);
+	Write1(out, static_cast<uint8>(val >> 8));
+	Write1(out, static_cast<uint8>(val));
 }
 
 
@@ -373,10 +351,10 @@ inline void Write4(
     Dest& out,
     uint32 val
 ) {
-	Write1(out, val & 0xffu);
-	Write1(out, (val >> 8) & 0xffu);
-	Write1(out, (val >> 16) & 0xffu);
-	Write1(out, (val >> 24) & 0xffu);
+	Write1(out, static_cast<uint8>(val));
+	Write1(out, static_cast<uint8>(val >> 8));
+	Write1(out, static_cast<uint8>(val >> 16));
+	Write1(out, static_cast<uint8>(val >> 24));
 }
 
 /*
@@ -388,10 +366,10 @@ inline void Write4high(
     Dest& out,
     uint32 val
 ) {
-	Write1(out, (val >> 24) & 0xffu);
-	Write1(out, (val >> 16) & 0xffu);
-	Write1(out, (val >> 8) & 0xffu);
-	Write1(out, val & 0xffu);
+	Write1(out, static_cast<uint8>(val >> 24));
+	Write1(out, static_cast<uint8>(val >> 16));
+	Write1(out, static_cast<uint8>(val >> 8));
+	Write1(out, static_cast<uint8>(val));
 }
 
 /*
@@ -416,7 +394,7 @@ inline void WriteN(
     T val
 ) {
 	for (size_t i = 0; i < sizeof(T); i++)
-		Write1(out, (val >>(8 * i)) & 0xffu);
+		Write1(out, static_cast<uint8>(val >>(8 * i)));
 }
 
 /*
@@ -429,7 +407,7 @@ inline void WriteNhigh(
     T val
 ) {
 	for (int i = sizeof(T) - 1; i >= 0 ; i--)
-		Write1(out, (val >>(8 * i)) & 0xffu);
+		Write1(out, static_cast<uint8>(val >>(8 * i)));
 }
 
 bool U7open(
@@ -464,7 +442,7 @@ bool U7exists(
     const char *fname
 );
 
-inline bool U7exists(std::string fname) {
+inline bool U7exists(const std::string& fname) {
 	return U7exists(fname.c_str());
 }
 
@@ -473,7 +451,7 @@ int U7mkdir(
     int mode
 );
 
-#ifdef WIN32
+#ifdef _WIN32
 void redirect_output(const char *prefix = "std");
 void cleanup_output(const char *prefix = "std");
 #endif
@@ -516,13 +494,13 @@ int Find_next_map(int start, int maxtry);
 
 
 inline int bitcount(unsigned char n) {
-#define TWO(c)     (0x1u << (c))
-#define MASK(c)    ((static_cast<uint32>(-1)) / (TWO(TWO(c)) + 1u))
-#define COUNT(x,c) ((x) & MASK(c)) + (((x) >> (TWO(c))) & MASK(c))
+	auto two   = [](auto c) {return 1U << c;};
+	auto mask  = [&](auto c) {return static_cast<uint8>(std::numeric_limits<uint8>::max() / (two(two(c)) + 1U));};
+	auto count = [&](auto x, auto c) {return (x & mask(c)) + ((x >> two(c)) & mask(c));};
 	// Only works for 8-bit numbers.
-	n = static_cast<unsigned char>(COUNT(n, 0));
-	n = static_cast<unsigned char>(COUNT(n, 1));
-	n = static_cast<unsigned char>(COUNT(n, 2));
+	n = static_cast<unsigned char>(count(n, 0));
+	n = static_cast<unsigned char>(count(n, 1));
+	n = static_cast<unsigned char>(count(n, 2));
 	return n;
 }
 

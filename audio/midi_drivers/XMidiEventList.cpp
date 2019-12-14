@@ -52,7 +52,7 @@ int XMidiEventList::write (ODataSource *dest)
 	if (!dest)
 	{
 		// Header is 14 bytes long and add the rest as well
-		len = convertListToMTrk (NULL);
+		len = convertListToMTrk (nullptr);
 		return 14 + len;
 	}
 
@@ -100,7 +100,7 @@ int XMidiEventList::putVLQ(ODataSource *dest, uint32 value)
 
 // Converts and event list to a MTrk
 // Returns bytes of the array
-// buf can be NULL
+// buf can be nullptr
 uint32 XMidiEventList::convertListToMTrk (ODataSource *dest)
 {
 	int time = 0;
@@ -219,7 +219,7 @@ void XMidiEventList::decrementCounter()
 {
 	if (--counter < 0) {
 		events->FreeThis();
-		events = 0;
+		events = nullptr;
 		XMidiEvent::Free(this);
 	}
 }

@@ -921,7 +921,7 @@ MidiSong *Timidity_LoadSong(char *midifile)
 
 	/* Open the file */
 	fp = open_file(midifile, 1, OF_VERBOSE);
-	if ( fp != NULL ) {
+	if ( fp != nullptr ) {
 		song->events=read_midi_file(fp, &events, &song->samples);
 		close_file(fp);
 	}
@@ -929,7 +929,7 @@ MidiSong *Timidity_LoadSong(char *midifile)
 	/* Make sure everything is okay */
 	if (!song->events) {
 		free(song);
-		song = NULL;
+		song = nullptr;
 	}
 	return(song);
 }
@@ -1122,7 +1122,7 @@ void Timidity_FinalInit(bool patches[128], bool drums[128])
 	load_missing_instruments();
 	adjust_amplification();
 	sample_count = 0x7FFFFFF;
-	event_list = 0;
+	event_list = nullptr;
 	lost_notes=cut_notes=0;
 	skip_to(0);
 	midi_playing = 1;

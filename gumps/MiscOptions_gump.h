@@ -25,7 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class Gump_button;
 
 class MiscOptions_gump : public Modal_gump {
-	UNREPLICATABLE_CLASS_I(MiscOptions_gump, Modal_gump(0, 0, 0, 0))
+	UNREPLICATABLE_CLASS_I(MiscOptions_gump, Modal_gump(nullptr, 0, 0, 0))
 
 private:
 	int difficulty;         // Setting for the buttons.

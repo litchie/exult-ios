@@ -49,7 +49,7 @@ public:
 	void show(bool tf);     // Show/hide.
 	// Configure when created/resized.
 	void configure(GtkWidget *widget);
-	void render(GdkRectangle *area = 0);
+	void render(GdkRectangle *area = nullptr);
 	// Message from exult.
 	void view_changed(const unsigned char *data, int datalen);
 	// Handle scrollbar.

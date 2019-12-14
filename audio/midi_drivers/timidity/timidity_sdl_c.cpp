@@ -76,7 +76,7 @@ ControlMode ctl=
 {
 	"SDL interface", 's',
 	OF_NORMAL,0,0,
-	ctl_open,NULL, ctl_close, ctl_read, cmsg,
+	ctl_open,nullptr, ctl_close, ctl_read, cmsg,
 	ctl_refresh, ctl_reset, ctl_file_name, ctl_total_time, ctl_current_time,
 	ctl_note,
 	ctl_master_volume, ctl_program, ctl_volume,

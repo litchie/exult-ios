@@ -34,7 +34,6 @@
 #include "files/U7fileman.h"
 #include "files/U7file.h"
 #include "files/utils.h"
-#include "flic/playfli.h"
 #include "font.h"
 #include "game.h"
 #include "gamemgr/bggame.h"
@@ -57,7 +56,7 @@ using std::string;
 
 bool Game::new_game_flag = false;
 bool Game::editing_flag = false;
-Game *game = 0;
+Game *game = nullptr;
 Exult_Game Game::game_type = NONE;
 bool Game::expansion = false;
 bool Game::sibeta = false;
@@ -71,7 +70,7 @@ std::string Game::modtitle;
 
 unsigned int Game::ticks = 0;
 
-Game::Game() : xml(0) {
+Game::Game() : xml(nullptr) {
 	try {               // Okay to fail if development game.
 		menushapes.load(MAINSHP_FLX, PATCH_MAINSHP);
 	} catch (const exult_exception &e) {
@@ -139,7 +138,7 @@ Game *Game::create_game(BaseGameInfo *mygame) {
 		break;
 	default:
 		cout << "Unrecognized game type!" << endl;
-		game = 0;
+		game = nullptr;
 	}
 
 	cout << "Game path settings:" << std::endl;
@@ -153,21 +152,6 @@ Game *Game::create_game(BaseGameInfo *mygame) {
 	cout << endl;
 
 	return game;
-}
-
-void Game::play_flic(const char *archive, int index) {
-	char *fli_buf;
-	size_t len;
-	U7object flic(archive, index);
-	fli_buf = flic.retrieve(len);
-	// Just to be safe.
-	if (!fli_buf || len <= 0) {
-		delete [] fli_buf;
-		return;
-	}
-	playfli fli(fli_buf);
-	fli.play(win);
-	delete [] fli_buf;
 }
 
 const char *xml_root = "Game_config";
@@ -289,11 +273,11 @@ bool Game::show_menu(bool skip) {
 	menu_mouse = new Mouse(gwin, mouse_data);
 
 	top_menu();
-	MenuList *menu = 0;
+	MenuList *menu = nullptr;
 
 
 	int menuchoices[] = { 0x04, 0x05, 0x08, 0x06, 0x11, 0x12, 0x07 };
-	int num_choices = sizeof(menuchoices) / sizeof(int);
+	int num_choices = array_size(menuchoices);
 
 	Vga_file exult_flx(BUNDLE_CHECK(BUNDLE_EXULT_FLX, EXULT_FLX));
 	char npc_name[16];
@@ -308,16 +292,16 @@ bool Game::show_menu(bool skip) {
 			int offset = 0;
 			for (int i = 0; i < num_choices; i++) {
 				if ((i != 4 && i != 5) || (i == 4 && U7exists("<SAVEGAME>/quotes.flg")) || (i == 5 && U7exists("<SAVEGAME>/endgame.flg"))) {
-					MenuEntry *entry = new MenuEntry(menushapes.get_shape(menuchoices[i], 1),
-					                                 menushapes.get_shape(menuchoices[i], 0),
-					                                 centerx, menuy + offset);
+					Shape_frame *f0 = menushapes.get_shape(menuchoices[i], 0);
+					Shape_frame *f1 = menushapes.get_shape(menuchoices[i], 1);
+					assert(f0 != nullptr && f1 != nullptr);
+					MenuEntry *entry = new MenuEntry(f1, f0, centerx, menuy + offset);
 					entry->set_id(i);
 					menu->add_entry(entry);
-					offset += menushapes.get_shape(menuchoices[i], 1)->get_ybelow() + 3;
+					offset += f1->get_ybelow() + 3;
 				}
 			}
 			menu->set_selection(2);
-			menu->set_background(get_menu_shape());
 		}
 
 		bool created = false;
@@ -362,7 +346,7 @@ bool Game::show_menu(bool skip) {
 			pal->fade_out(c_fade_out_time);
 			show_credits();
 			delete menu;
-			menu = 0;
+			menu = nullptr;
 			top_menu();
 			break;
 		case 4: // Quotes
@@ -410,7 +394,7 @@ const char *Game::get_avname() {
 	if (av_name[0])
 		return av_name;
 	else
-		return NULL;
+		return nullptr;
 }
 
 int Game::get_avsex() {
@@ -446,44 +430,6 @@ void Game::clear_avskin() {
 	av_skin = -1;
 }
 
-void Game::disable_direct_gl_render() {
-#ifdef HAVE_OPENGL
-	if (GL_manager::get_instance())
-		Shape_frame::set_to_render(win->get_ib8(), 0);
-#endif
-}
-
-void Game::enable_direct_gl_render() {
-#ifdef HAVE_OPENGL
-	if (GL_manager::get_instance())
-		Shape_frame::set_to_render(win->get_ib8(), GL_manager::get_instance());
-#endif
-}
-
-void Game::non_gl_blit() {
-#ifdef HAVE_OPENGL
-	if (!GL_manager::get_instance())
-#endif
-		win->show();
-}
-
-void Game::gl_clear_win() {
-#ifdef HAVE_OPENGL
-	if (GL_manager::get_instance())
-		win->get_ib8()->fill8(0);
-#endif
-}
-
-#ifdef HAVE_OPENGL
-static inline void Reset_gl_rotates() {
-	if (GL_manager::get_instance()) {
-		GL_manager::get_instance()->set_palette_rotation(224, 254);
-		// Want to reset them all.
-		Set_glpalette();
-	}
-}
-#endif
-
 // wait ms milliseconds, while cycling colours startcol to startcol+ncol-1
 // return 0 if time passed completly, 1 if user pressed any key or mouse button,
 // and 2 if user pressed Return/Enter
@@ -506,21 +452,6 @@ int wait_delay(int ms, int startcol, int ncol, int rotspd) {
 	int rot_speed = rotspd << (gwin->get_win()->fast_palette_rotate() ? 0 : 1);
 
 	static unsigned long last_rotate = 0;
-
-#ifdef HAVE_OPENGL
-	Shape_frame *screen = 0;
-	if (ncol != 0 && GL_manager::get_instance()) {
-		int w = gwin->get_width(), h = gwin->get_height();
-		Image_buffer8 *buf = gwin->get_win()->get_ib8();
-		screen = new Shape_frame(buf->get_bits(), w, h, 0, 0, true);
-		GL_manager::get_instance()->set_palette_rotation(startcol,
-		        startcol + abs(ncol) - 1);
-		// Want to reset them all.
-		Set_glpalette();
-		GL_manager::get_instance()->paint(screen, 0, 0);
-		gwin->get_win()->show();
-	}
-#endif
 
 	for (int i = 0; i < loops; i++) {
 		unsigned long ticks1 = SDL_GetTicks();
@@ -558,22 +489,14 @@ int wait_delay(int ms, int startcol, int ncol, int rotspd) {
 				case SDLK_SPACE:
 				case SDLK_RETURN:
 				case SDLK_KP_ENTER:
-#ifdef HAVE_OPENGL
-					delete screen;
-					Reset_gl_rotates();
-#endif
 					return 2;
 				default:
 					break;
 				}
 				break;
-				case SDL_MOUSEBUTTONDOWN:
+			case SDL_MOUSEBUTTONDOWN:
 				break;
 			case SDL_MOUSEBUTTONUP: {
-#ifdef HAVE_OPENGL
-				delete screen;
-				Reset_gl_rotates();
-#endif
 				if (event.button.button == 3 || event.button.button == 1) {
 					if (ticks1 - last_b3_click < 500)
 						return 1;
@@ -596,20 +519,9 @@ int wait_delay(int ms, int startcol, int ncol, int rotspd) {
 			gwin->get_win()->rotate_colors(startcol, ncol, 1);
 			while (ticks2 > last_rotate + rot_speed)
 				last_rotate += rot_speed;
-#ifdef HAVE_OPENGL
-			if (GL_manager::get_instance()) {
-				Set_glpalette(0, true);
-				//Shape_manager::get_instance()->paint_shape(0, 0, screen);
-				GL_manager::get_instance()->paint(screen, 0, 0);
-			}
-#endif
 			gwin->get_win()->show();
 		}
 	}
 
-#ifdef HAVE_OPENGL
-	delete screen;
-	Reset_gl_rotates();
-#endif
 	return 0;
 }

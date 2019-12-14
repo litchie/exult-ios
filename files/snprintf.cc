@@ -76,7 +76,7 @@
  *   - the n$ specification for direct reference to n-th argument
  *   - locales
  *
- * It is permitted for str_m to be zero, and it is permitted to specify NULL
+ * It is permitted for str_m to be zero, and it is permitted to specify nullptr
  * pointer for resulting string argument if str_m is zero (as per ISO C99).
  *
  * The return value is the number of characters which would be generated
@@ -96,7 +96,7 @@
  * to a buffer sufficiently large to hold the resulting string. This pointer
  * should be passed to free(3) to release the allocated storage when it is
  * no longer needed. If sufficient space cannot be allocated, these functions
- * will return -1 and set ptr to be a NULL pointer. These two routines are a
+ * will return -1 and set ptr to be a nullptr pointer. These two routines are a
  * GNU C library extensions (glibc).
  *
  * Routines asnprintf and vasnprintf are similar to asprintf and vasprintf,
@@ -417,13 +417,13 @@ int asprintf(char **ptr, const char *fmt, /*args*/ ...) {
 	size_t str_m;
 	int str_l;
 
-	*ptr = NULL;
+	*ptr = nullptr;
 	va_start(ap, fmt);                            /* measure the required size */
-	str_l = portable_vsnprintf(NULL, static_cast<size_t>(0), fmt, ap);
+	str_l = portable_vsnprintf(nullptr, static_cast<size_t>(0), fmt, ap);
 	va_end(ap);
 	assert(str_l >= 0);        /* possible integer overflow if str_m > INT_MAX */
 	*ptr = static_cast<char *>(malloc(str_m = static_cast<size_t>(str_l) + 1));
-	if (*ptr == NULL) {
+	if (*ptr == nullptr) {
 		errno = ENOMEM;
 		str_l = -1;
 	} else {
@@ -442,16 +442,16 @@ int vasprintf(char **ptr, const char *fmt, va_list ap) {
 	size_t str_m;
 	int str_l;
 
-	*ptr = NULL;
+	*ptr = nullptr;
 	{
 		va_list ap2;
 		va_copy(ap2, ap);  /* don't consume the original ap, we'll need it again */
-		str_l = portable_vsnprintf(NULL, static_cast<size_t>(0), fmt, ap2);/*get required size*/
+		str_l = portable_vsnprintf(nullptr, static_cast<size_t>(0), fmt, ap2);/*get required size*/
 		va_end(ap2);
 	}
 	assert(str_l >= 0);        /* possible integer overflow if str_m > INT_MAX */
 	*ptr = static_cast<char *>(malloc(str_m = static_cast<size_t>(str_l) + 1));
-	if (*ptr == NULL) {
+	if (*ptr == nullptr) {
 		errno = ENOMEM;
 		str_l = -1;
 	} else {
@@ -467,17 +467,17 @@ int asnprintf(char **ptr, size_t str_m, const char *fmt, /*args*/ ...) {
 	va_list ap;
 	int str_l;
 
-	*ptr = NULL;
+	*ptr = nullptr;
 	va_start(ap, fmt);                            /* measure the required size */
-	str_l = portable_vsnprintf(NULL, static_cast<size_t>(0), fmt, ap);
+	str_l = portable_vsnprintf(nullptr, static_cast<size_t>(0), fmt, ap);
 	va_end(ap);
 	assert(str_l >= 0);        /* possible integer overflow if str_m > INT_MAX */
 	if (static_cast<size_t>(str_l) + 1 < str_m) str_m = static_cast<size_t>(str_l) + 1;      /* truncate */
-	/* if str_m is 0, no buffer is allocated, just set *ptr to NULL */
+	/* if str_m is 0, no buffer is allocated, just set *ptr to nullptr */
 	if (str_m == 0) {  /* not interested in resulting string, just return size */
 	} else {
 		*ptr = static_cast<char *>(malloc(str_m));
-		if (*ptr == NULL) {
+		if (*ptr == nullptr) {
 			errno = ENOMEM;
 			str_l = -1;
 		} else {
@@ -496,20 +496,20 @@ int asnprintf(char **ptr, size_t str_m, const char *fmt, /*args*/ ...) {
 int vasnprintf(char **ptr, size_t str_m, const char *fmt, va_list ap) {
 	int str_l;
 
-	*ptr = NULL;
+	*ptr = nullptr;
 	{
 		va_list ap2;
 		va_copy(ap2, ap);  /* don't consume the original ap, we'll need it again */
-		str_l = portable_vsnprintf(NULL, static_cast<size_t>(0), fmt, ap2);/*get required size*/
+		str_l = portable_vsnprintf(nullptr, static_cast<size_t>(0), fmt, ap2);/*get required size*/
 		va_end(ap2);
 	}
 	assert(str_l >= 0);        /* possible integer overflow if str_m > INT_MAX */
 	if (static_cast<size_t>(str_l) + 1 < str_m) str_m = static_cast<size_t>(str_l) + 1;      /* truncate */
-	/* if str_m is 0, no buffer is allocated, just set *ptr to NULL */
+	/* if str_m is 0, no buffer is allocated, just set *ptr to nullptr */
 	if (str_m == 0) {  /* not interested in resulting string, just return size */
 	} else {
 		*ptr = static_cast<char *>(malloc(str_m));
-		if (*ptr == NULL) {
+		if (*ptr == nullptr) {
 			errno = ENOMEM;
 			str_l = -1;
 		} else {
@@ -552,7 +552,7 @@ int portable_vsnprintf(char *str, size_t str_m, const char *fmt, va_list ap) {
 	const char *p = fmt;
 
 	/* In contrast with POSIX, the ISO C99 now says
-	 * that str can be NULL and str_m can be 0.
+	 * that str can be nullptr and str_m can be 0.
 	 * This is more useful than the old:  if (str_m < 1) return -1; */
 
 #if defined(NEED_SNPRINTF_ONLY)
@@ -601,7 +601,7 @@ int portable_vsnprintf(char *str, size_t str_m, const char *fmt, va_list ap) {
 			/* current conversion specifier character */
 
 			str_arg = credits;/* just to make compiler happy (defined but not used)*/
-			str_arg = NULL;
+			str_arg = nullptr;
 			starting_p = p;
 			p++;  /* skip '%' */
 			/* parse flags */
@@ -764,7 +764,7 @@ int portable_vsnprintf(char *str, size_t str_m, const char *fmt, va_list ap) {
 				 the value is unsigned;  d implies a signed value */
 
 				int arg_sign = 0;
-				/* 0 if numeric argument is zero (or if pointer is NULL for 'p'),
+				/* 0 if numeric argument is zero (or if pointer is nullptr for 'p'),
 				+1 if greater than zero (or nonzero for unsigned arguments),
 				-1 if negative (unsigned argument is never negative) */
 
@@ -776,7 +776,7 @@ int portable_vsnprintf(char *str, size_t str_m, const char *fmt, va_list ap) {
 				unsigned long int ulong_arg = 0;
 				/* only defined for length modifier l */
 
-				void *ptr_arg = NULL;
+				void *ptr_arg = nullptr;
 				/* pointer argument value -only defined for p conversion */
 
 #ifdef SNPRINTF_LONGLONG_SUPPORT
@@ -805,7 +805,7 @@ int portable_vsnprintf(char *str, size_t str_m, const char *fmt, va_list ap) {
 					length_modifier = '\0';
 #endif
 					ptr_arg = va_arg(ap, void *);
-					if (ptr_arg != NULL) arg_sign = 1;
+					if (ptr_arg != nullptr) arg_sign = 1;
 				} else if (fmt_spec == 'd') {  /* signed */
 					switch (length_modifier) {
 					case '\0':

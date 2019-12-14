@@ -265,7 +265,7 @@ void Chunk_cache::set_egged(
 		if (*it == egg) {
 			eggnum = it - egg_objects.begin();
 			break;
-		} else if (*it == 0 && spot == -1)
+		} else if (*it == nullptr && spot == -1)
 			spot = it - egg_objects.begin();
 	}
 	if (add) {
@@ -286,13 +286,13 @@ void Chunk_cache::set_egged(
 	} else {            // Remove.
 		if (eggnum < 0)
 			return;     // Not there.
-		egg_objects[eggnum] = NULL;
+		egg_objects[eggnum] = nullptr;
 		if (eggnum >= 15) { // We only have 16 bits.
 			// Last one at 15 or above?
 			for (Egg_vector::const_iterator it =
 			            egg_objects.begin() + 15;
 			        it != egg_objects.end(); ++it)
-				if (*it != 0)
+				if (*it != nullptr)
 					// No, so leave bits alone.
 					return;
 			eggnum = 15;
@@ -358,7 +358,7 @@ void Chunk_cache::setup(
 ) {
 	Game_object *obj;       // Set 'blocked' tiles.
 	Object_iterator next(chunk->get_objects());
-	while ((obj = next.get_next()) != 0)
+	while ((obj = next.get_next()) != nullptr)
 		if (obj->is_egg())
 			update_egg(chunk, obj->as_egg(), true);
 		else
@@ -618,7 +618,7 @@ Game_object *Chunk_cache::find_door(
 	        it != doors.end(); ++it)
 		if ((*it)->blocks(tile))
 			return *it; // Found it.
-	return 0;
+	return nullptr;
 }
 
 /*
@@ -629,9 +629,9 @@ Map_chunk::Map_chunk(
     Game_map *m,            // Map we'll belong to.
     int chunkx, int chunky      // Absolute chunk coords.
 ) : map(m),
-	terrain(0), objects(0), first_nonflat(0), from_below(0),
+	terrain(nullptr), objects(nullptr), first_nonflat(nullptr), from_below(0),
 	from_right(0), from_below_right(0), ice_dungeon(0x00),
-	dungeon_levels(0), cache(0), roof(0),
+	dungeon_levels(nullptr), cache(nullptr), roof(0),
 	dungeon_lights(0), non_dungeon_lights(0),
 	cx(chunkx), cy(chunky),  selected(false) {
 }
@@ -662,7 +662,7 @@ void Map_chunk::set_terrain(
 			// Separate scope for Object_iterator.
 			Object_iterator it(get_objects());
 			Game_object *each;
-			while ((each = it.get_next()) != 0)
+			while ((each = it.get_next()) != nullptr)
 				// Kind of nasty, I know:
 				if (each->as_terrain())
 					removes.push_back(each);
@@ -683,12 +683,12 @@ void Map_chunk::set_terrain(
 				int shapenum = id.get_shapenum(),
 				    framenum = id.get_framenum();
 				const Shape_info &info = id.get_info();
-				Game_object *obj = info.is_animated() ?
-				                   new Animated_object(shapenum,
-				                                       framenum, tilex, tiley)
-				                   : new Terrain_game_object(shapenum,
+				Game_object_shared obj = info.is_animated() ?
+				            std::make_shared<Animated_object>(shapenum,
+				                              framenum, tilex, tiley)
+				          : std::make_shared<Terrain_game_object>(shapenum,
 				                           framenum, tilex, tiley);
-				add(obj);
+				add(obj.get());
 			}
 		}
 }
@@ -703,7 +703,7 @@ void Map_chunk::add_dependencies(
 ) {
 	Game_object *obj;       // Figure dependencies.
 	Nonflat_object_iterator next(this);
-	while ((obj = next.get_next()) != 0) {
+	while ((obj = next.get_next()) != nullptr) {
 		//cout << "Here " << __LINE__ << " " << obj << endl;
 		/* Compare returns -1 if lt, 0 if dont_care, 1 if gt. */
 		int cmp = Game_object::compare(newinfo, obj);
@@ -752,11 +752,12 @@ void Map_chunk::add(
 ) {
 	newobj->chunk = this;       // Set object's chunk.
 	Ordering_info ord(gwin, newobj);
+	Game_object_shared newobj_shared = newobj->shared_from_this();
 	// Put past flats.
 	if (first_nonflat)
-		objects.insert_before(newobj, first_nonflat);
+		objects.insert_before(newobj_shared, first_nonflat);
 	else
-		objects.append(newobj);
+		objects.append(newobj_shared);
 	// Not flat?
 	if (newobj->get_lift() || ord.info.get_3d_height()) {
 		// Deal with dependencies.
@@ -823,14 +824,14 @@ void Map_chunk::add_egg(
 void Map_chunk::remove_egg(
     Egg_object *egg
 ) {
-	remove(egg);            // Remove it normally.
 	if (cache)          // Remove from cache.
 		cache->update_egg(this, egg, false);
+	remove(egg);            // Remove it normally.
 }
 
 /*
  *  Remove a game object from this list.  The object's 'chunk' field
- *  is set to NULL.
+ *  is set to nullptr.
  */
 
 void Map_chunk::remove(
@@ -865,10 +866,10 @@ void Map_chunk::remove(
 		// Update.
 		first_nonflat = remove->get_next();
 		if (first_nonflat == objects.get_first())
-			first_nonflat = 0;
+			first_nonflat = nullptr;
 	}
-	objects.remove(remove);     // Remove from list.
 	remove->set_invalid();      // No longer part of world.
+	objects.remove(remove);     // Remove from list.
 }
 
 /*
@@ -1207,7 +1208,7 @@ int Map_chunk::find_in_area(
 			continue;
 		Object_iterator next(chunk->objects);
 		Game_object *each;
-		while ((each = next.get_next()) != 0)
+		while ((each = next.get_next()) != nullptr)
 			if (each->get_shapenum() == shapenum &&
 			        each->get_framenum() == framenum &&
 			        tiles.has_world_point(each->get_tx(), each->get_ty()))
@@ -1249,7 +1250,7 @@ void Map_chunk::try_all_eggs(
 		chunk->setup_cache();   // I think we should do this.
 		Object_iterator next(chunk->objects);
 		Game_object *each;
-		while ((each = next.get_next()) != 0)
+		while ((each = next.get_next()) != nullptr)
 			if (each->is_egg()) {
 				Egg_object *egg = each->as_egg();
 				// Music eggs are causing problems.
@@ -1305,7 +1306,7 @@ void Map_chunk::setup_dungeon_levels(
 
 	Object_iterator next(objects);
 	Game_object *each;
-	while ((each = next.get_next()) != 0) {
+	while ((each = next.get_next()) != nullptr) {
 		// Test for mountain-tops.
 		const Shape_info &shinf = each->get_info();
 		if (shinf.get_shape_class() == Shape_info::building &&
@@ -1348,7 +1349,7 @@ void Map_chunk::setup_dungeon_levels(
 	if (dungeon_levels) {   // Recount lights.
 		dungeon_lights = non_dungeon_lights = 0;
 		next.reset();
-		while ((each = next.get_next()) != 0)
+		while ((each = next.get_next()) != nullptr)
 			if (each->get_info().is_light_source()) {
 				if (is_dungeon(each->get_tx(), each->get_ty()))
 					dungeon_lights++;
@@ -1377,7 +1378,7 @@ void Map_chunk::gravity(
 		Map_chunk *chunk = gmap->get_chunk(cx, cy);
 		Object_iterator objs(chunk->objects);
 		Game_object *obj;
-		while ((obj = objs.get_next()) != 0) {
+		while ((obj = objs.get_next()) != nullptr) {
 			// We DO want NPC's to fall.
 			if (!obj->is_dragable() &&
 			        !obj->get_info().is_npc())
@@ -1446,15 +1447,15 @@ int Map_chunk::is_roof(int tx, int ty, int lift) {
 void Map_chunk::kill_cache() {
 	// Get rid of terrain
 	if (terrain) terrain->remove_client();
-	terrain = 0;
+	terrain = nullptr;
 
 	// Now remove the cachce
 	delete cache;
-	cache = 0;
+	cache = nullptr;
 
 	// Delete dungeon bits
 	delete [] dungeon_levels;
-	dungeon_levels = 0;
+	dungeon_levels = nullptr;
 }
 
 int Map_chunk::get_obj_actors(vector<Game_object *> &removes,
@@ -1465,11 +1466,11 @@ int Map_chunk::get_obj_actors(vector<Game_object *> &removes,
 	// Separate scope for Object_iterator.
 	Object_iterator it(get_objects());
 	Game_object *each;
-	while ((each = it.get_next()) != 0) {
+	while ((each = it.get_next()) != nullptr) {
 		Actor *actor = each->as_actor();
 
 		// Normal objects and monsters
-		if (actor == 0 || (each->is_monster() && each->get_flag(Obj_flags::is_temporary))) {
+		if (actor == nullptr || (each->is_monster() && each->get_flag(Obj_flags::is_temporary))) {
 			removes.push_back(each);
 			int ireg_size = each->get_ireg_size();
 

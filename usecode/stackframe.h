@@ -53,7 +53,7 @@ public:
 	Usecode_value *locals;
 
 	int eventid;
-	Game_object *caller_item;
+	Game_object_shared caller_item;
 
 	Usecode_value *save_sp;
 

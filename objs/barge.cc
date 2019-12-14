@@ -54,7 +54,7 @@ using std::ostream;
 using std::cout;
 using std::endl;
 
-Barge_object *Barge_object::editing = 0;
+Barge_object *Barge_object::editing = nullptr;
 
 /*
  *  Rotate a point 90 degrees to the right around a point.
@@ -280,7 +280,7 @@ void Barge_object::gather(
 		tiles.y += cy * c_tiles_per_chunk;
 		Game_object *obj;
 		Object_iterator next(chunk->get_objects());
-		while ((obj = next.get_next()) != 0) {
+		while ((obj = next.get_next()) != nullptr) {
 			// Look at each object.
 			if (obj == this)
 				continue;
@@ -296,7 +296,7 @@ void Barge_object::gather(
 			if (t.tz + info.get_3d_height() > lift &&
 			        ((isbarge && t.tz >= lift - 1) ||
 			         (t.tz < lift + 5 && t.tz >= lift /*+++ + 1 */))) {
-				objects.push_back(obj);
+				objects.push_back(obj->shared_from_this());
 				int btype = obj->get_info().get_barge_type();
 				if (btype == Shape_info::barge_raft)
 					ice_raft = true;
@@ -309,7 +309,7 @@ void Barge_object::gather(
 	// Test for boat.
 	Map_chunk *chunk = gmap->get_chunk_safely(
 	                       center.tx / c_tiles_per_chunk, center.ty / c_tiles_per_chunk);
-	if (boat == -1 && chunk != 0) {
+	if (boat == -1 && chunk != nullptr) {
 		ShapeID flat = chunk->get_flat(center.tx % c_tiles_per_chunk,
 		                               center.ty % c_tiles_per_chunk);
 		if (flat.is_invalid())
@@ -402,7 +402,7 @@ void Barge_object::travel_to_tile(
 	if (!path)
 		path = new Zombie();
 	// Set up new path.
-	if (path->NewPath(get_tile(), dest, 0)) {
+	if (path->NewPath(get_tile(), dest, nullptr)) {
 		frame_time = speed;
 		// Figure new direction.
 		Tile_coord cur = get_tile();
@@ -440,7 +440,8 @@ void Barge_object::turn_right(
 		const Shape_info &info = obj->get_info();
 		positions[i] = Rotate90r(gwin, obj, info.get_3d_xtiles(frame),
 		                         info.get_3d_ytiles(frame), center);
-		obj->remove_this(1);    // Remove object from world.
+        Game_object_shared keep;
+		obj->remove_this(&keep);    // Remove object from world.
 		// Set to rotated frame.
 		obj->set_frame(obj->get_rotated_frame(1));
 		obj->set_invalid(); // So it gets added back right.
@@ -471,7 +472,8 @@ void Barge_object::turn_left(
 		const Shape_info &info = obj->get_info();
 		positions[i] = Rotate90l(gwin, obj, info.get_3d_xtiles(frame),
 		                         info.get_3d_ytiles(frame), center);
-		obj->remove_this(1);    // Remove object from world.
+		Game_object_shared keep;
+		obj->remove_this(&keep);    // Remove object from world.
 		// Set to rotated frame.
 		obj->set_frame(obj->get_rotated_frame(3));
 		obj->set_invalid(); // So it gets added back right.
@@ -499,7 +501,8 @@ void Barge_object::turn_around(
 		const Shape_info &info = obj->get_info();
 		positions[i] = Rotate180(gwin, obj, info.get_3d_xtiles(frame),
 		                         info.get_3d_ytiles(frame), center);
-		obj->remove_this(1);    // Remove object from world.
+		Game_object_shared keep;
+		obj->remove_this(&keep);    // Remove object from world.
 		// Set to rotated frame.
 		obj->set_frame(obj->get_rotated_frame(2));
 		obj->set_invalid(); // So it gets added back right.
@@ -522,7 +525,7 @@ void Barge_object::done(
 		// Pretend they were clicked on.
 		int cnt = objects.size();   // Look for open sail.
 		for (int i = 0; i < cnt; i++) {
-			Game_object *obj = objects[i];
+			Game_object *obj = objects[i].get();
 			if (obj->get_info().get_barge_type() == Shape_info::barge_sails &&
 			        (obj->get_framenum() & 7) < 4) {
 				obj->activate();
@@ -623,7 +626,8 @@ void Barge_object::move(
 		                   (ot.tx + dx + c_num_tiles) % c_num_tiles,
 		                   (ot.ty + dy + c_num_tiles) % c_num_tiles,
 		                   ot.tz + dz);
-		obj->remove_this(1);    // Remove object from world.
+		Game_object_shared keep;
+		obj->remove_this(&keep);    // Remove object from world.
 		obj->set_invalid(); // So it gets added back right.
 		if (!taking_2nd_step) {
 			// Animate a few shapes.
@@ -648,8 +652,9 @@ void Barge_object::move(
 void Barge_object::remove(
     Game_object *obj
 ) {
-	obj->set_owner(0);
-	obj->remove_this(1);        // Now remove from outside world.
+	obj->set_owner(nullptr);
+	Game_object_shared keep;
+	obj->remove_this(&keep);        // Now remove from outside world.
 }
 
 /*
@@ -666,7 +671,7 @@ bool Barge_object::add(
     bool noset      // True to prevent actors from setting sched. weapon.
 ) {
 	ignore_unused_variable_warning(dont_check, combine, noset);
-	objects.push_back(obj);     // Add to list.
+	objects.push_back(obj->shared_from_this());     // Add to list.
 	return (false);         // We want it added to the chunk.
 }
 
@@ -677,9 +682,9 @@ bool Barge_object::add(
 bool Barge_object::contains(
     Game_object *obj
 ) {
-	for (Game_object_vector::const_iterator it = objects.begin();
+	for (vector<Game_object_shared>::const_iterator it = objects.begin();
 	        it != objects.end(); ++it)
-		if (obj == *it)
+		if (obj == (*it).get())
 			return true;
 	return false;
 }
@@ -746,7 +751,7 @@ bool Barge_object::edit(
 #ifdef USE_EXULTSTUDIO
 	if (client_socket >= 0 &&   // Talking to ExultStudio?
 	        cheat.in_map_editor()) {
-		editing = 0;
+		editing = nullptr;
 		Tile_coord t = get_tile();
 		if (Barge_object_out(client_socket, this, t.tx, t.ty, t.tz,
 		                     get_shapenum(), get_framenum(),
@@ -785,10 +790,10 @@ void Barge_object::update_from_studio(
 		cout << "Barge from ExultStudio is not being edited" << endl;
 		return;
 	}
-	editing = 0;
+	editing = nullptr;
 	if (!barge) {       // Create a new one?
 		int x, y;
-		if (!Get_click(x, y, Mouse::hand, 0)) {
+		if (!Get_click(x, y, Mouse::hand, nullptr)) {
 			if (client_socket >= 0)
 				Exult_server::Send_data(client_socket,
 				                        Exult_server::cancel);

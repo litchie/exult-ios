@@ -135,11 +135,11 @@ public:
 	void	set_audio_enabled(bool ena);
 	bool	is_music_looping_allowed() const { return allow_music_looping; }
 	void	set_allow_music_looping(bool ena) { allow_music_looping = ena; }
-	static bool	can_sfx(const std::string &file, std::string *out = 0);
-	static bool have_roland_sfx(Exult_Game game, std::string *out = 0);
-	static bool have_sblaster_sfx(Exult_Game game, std::string *out = 0);
-	static bool have_midi_sfx(std::string *out = 0);
-	static bool have_config_sfx(const std::string &game, std::string *out = 0);
+	static bool	can_sfx(const std::string &file, std::string *out = nullptr);
+	static bool have_roland_sfx(Exult_Game game, std::string *out = nullptr);
+	static bool have_sblaster_sfx(Exult_Game game, std::string *out = nullptr);
+	static bool have_midi_sfx(std::string *out = nullptr);
+	static bool have_config_sfx(const std::string &game, std::string *out = nullptr);
 	static void	channel_complete_callback(int chan);
 
 	bool	is_track_playing(int num);

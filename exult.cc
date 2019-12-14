@@ -40,7 +40,7 @@
 #if HAVE_SYS_TIME_H
 #include <sys/time.h>
 #endif
-#ifdef WIN32
+#ifdef _WIN32
 #include "windrag.h"
 #elif defined(XWIN)
 #include "xdrag.h"
@@ -81,11 +81,11 @@
 #include "u7drag.h"
 #include "drag.h"
 #include "palette.h"
-#include "glshape.h"
 #include "combat_opts.h"
 #include "U7file.h"
 #include "U7fileman.h"
 #include "party.h"
+#include "array_size.h"
 
 #include "exult_flx.h"
 #include "exult_bg_flx.h"
@@ -114,17 +114,17 @@ using std::toupper;
 using std::string;
 using std::vector;
 
-#if SDL_VERSION_ATLEAST(2, 0, 0) && (defined(WIN32) || (defined(MACOSX) && defined(USE_EXULTSTUDIO)))
+#if SDL_VERSION_ATLEAST(2, 0, 0) && (defined(_WIN32) || (defined(MACOSX) && defined(USE_EXULTSTUDIO)))
 
 static int SDLCALL SDL_putenv(const char *_var) {
-    char *ptr = NULL;
+    char *ptr = nullptr;
     char *var = SDL_strdup(_var);
-    if (var == NULL) {
+    if (var == nullptr) {
         return -1;  /* we don't set errno. */
     }
 
     ptr = SDL_strchr(var, '=');
-    if (ptr == NULL) {
+    if (ptr == nullptr) {
         SDL_free(var);
         return -1;
     }
@@ -136,14 +136,14 @@ static int SDLCALL SDL_putenv(const char *_var) {
 }
 #endif
 
-Configuration *config = 0;
-KeyBinder *keybinder = 0;
-GameManager *gamemanager = 0;
+Configuration *config = nullptr;
+KeyBinder *keybinder = nullptr;
+GameManager *gamemanager = nullptr;
 
 /*
  *  Globals:
  */
-Game_window *gwin = 0;
+Game_window *gwin = nullptr;
 quitting_time_enum quitting_time = QUIT_TIME_NO;
 
 bool intrinsic_trace = false;       // Do we trace Usecode-intrinsics?
@@ -155,14 +155,12 @@ bool combat_trace = false; // show combat messages?
 int save_compression = 1;
 bool ignore_crc = false;
 
-const std::string c_empty_string;
-
 #ifdef __IPHONEOS__
 KeyboardButton_gump *gkeybb;
 SDL_Joystick *sdl_joy;
 #endif
 bool g_waiting_for_click = false;
-ShortcutBar_gump *g_shortcutBar = NULL;
+ShortcutBar_gump *g_shortcutBar = nullptr;
 
 #ifdef USECODE_DEBUGGER
 bool    usecode_debugging = false;  // Do we enable the usecode debugger?
@@ -184,7 +182,7 @@ struct resolution {
 	{ 640, 480, 1 },
 	{ 800, 600, 1 }
 };
-int num_res = sizeof(res_list) / sizeof(struct resolution);
+int num_res = array_size(res_list);
 int current_res = 0;
 int current_scaleval = 1;
 
@@ -199,16 +197,16 @@ static inline int WrappedConnectionNumber(Display *display) {
 	return ConnectionNumber(display);
 }
 #ifdef USE_EXULTSTUDIO
-static class Xdnd *xdnd = 0;
+static class Xdnd *xdnd = nullptr;
 #endif
 
 #  ifdef __GNUC__
 #  pragma GCC diagnostic pop
 #  endif  // __GNUC__
 
-#elif defined(WIN32)
+#elif defined(_WIN32)
 static HWND hgwin;
-static class Windnd *windnd = 0;
+static class Windnd *windnd = nullptr;
 #endif
 
 
@@ -218,7 +216,7 @@ static class Windnd *windnd = 0;
 static int exult_main(const char * runpath);
 static void Init();
 static int Play();
-static int Get_click(int &x, int &y, char *chr, bool drag_ok, Paintable *p, bool rotate_colors = false);
+static int Get_click(int &x, int &y, char *chr, bool drag_ok, bool rotate_colors = false);
 static int find_resolution(int w, int h, int s);
 static void set_scaleval(int new_scaleval);
 #ifdef USE_EXULTSTUDIO
@@ -264,23 +262,11 @@ static unsigned int show_items_time = 0;
 static bool show_items_clicked = false;
 static int left_down_x = 0, left_down_y = 0;
 
-#if (defined(XWIN) && HAVE_SIGNAL_H && HAVE_SYS_WAIT_H)
-
-// a SIGCHLD handler to properly clean up forked playmidi processes (if any)
-
-#include <sys/wait.h>
-#include <signal.h>
-void sigchld_handler(int sig) {
-	ignore_unused_variable_warning(sig);
-	waitpid(-1, 0, WNOHANG);
+#if defined _WIN32
+void do_cleanup_output() {
+	cleanup_output("std");
 }
-
 #endif
-
-#if defined(_WIN32) && defined(main) && defined(_MSC_VER)
-#undef main
-#endif
-
 
 /*
  *  Main program.
@@ -290,12 +276,6 @@ int main(
     int argc,
     char *argv[]
 ) {
-
-#if (defined(XWIN) && HAVE_SIGNAL_H && HAVE_SYS_WAIT_H)
-	signal(SIGCHLD, sigchld_handler);
-#endif
-
-
 	bool    needhelp = false;
 	bool    showversion = false;
 	int     result;
@@ -323,18 +303,19 @@ int main(
 	parameters.declare("--edit", &arg_edit_mode, true);
 	parameters.declare("--write-xml", &arg_write_xml, true);
 	parameters.declare("--reset-video", &arg_reset_video, true);
-#if defined WIN32
+#if defined _WIN32
 	bool portable = false;
 	parameters.declare("-p", &portable, true);
 #endif
 	// Process the args
 	parameters.process(argc, argv);
 	add_system_path("<alt_cfg>", arg_configfile);
-#if defined WIN32
+#if defined _WIN32
 	if (portable)
 		add_system_path("<HOME>", ".");
 	setup_program_paths();
 	redirect_output("std");
+	std::atexit(do_cleanup_output);
 #endif
 
 	if (needhelp) {
@@ -365,7 +346,7 @@ int main(
 		     << "\t\t(for multimap games or mods) whose map is desired" << endl
 		     << "--nocrc\t\tDon't check crc's of .flx files" << endl
 		     << "--edit\t\tStart in map-edit mode" << endl
-#if defined WIN32
+#if defined _WIN32
 		     << " -p\t\tMakes the home path the Exult directory (old Windows way)" << endl
 #endif
 		     << "--write-xml\tWrite 'patch/exultgame.xml'" << endl
@@ -433,116 +414,6 @@ int main(
 	return result;
 }
 
-#ifdef _WIN32
-#include <windows.h>
-#include <cstdio>
-// From Pentagram:
-PCHAR *CommandLineToArgvA(
-    PCHAR CmdLine,
-    int *_argc
-) {
-	PCHAR *argv;
-	PCHAR  _argv;
-	ULONG   len;
-	ULONG   argc;
-	CHAR   a;
-	ULONG   i, j;
-
-	BOOLEAN  in_QM;
-	BOOLEAN  in_TEXT;
-	BOOLEAN  in_SPACE;
-
-	len = strlen(CmdLine);
-	i = ((len + 2) / 2) * sizeof(PVOID) + sizeof(PVOID);
-
-	argv = reinterpret_cast<PCHAR *>(GlobalAlloc(GMEM_FIXED, i + (len + 2) * sizeof(CHAR)));
-
-	_argv = reinterpret_cast<PCHAR>(reinterpret_cast<PUCHAR>(argv) + i);
-
-	argc = 0;
-	argv[argc] = _argv;
-	in_QM = FALSE;
-	in_TEXT = FALSE;
-	in_SPACE = TRUE;
-	i = 0;
-	j = 0;
-
-	while ((a = CmdLine[i]) != 0) {
-		if (in_QM) {
-			if (a == '\"')
-				in_QM = FALSE;
-			else {
-				_argv[j] = a;
-				j++;
-			}
-		} else {
-			switch (a) {
-			case '\"':
-				in_QM = TRUE;
-				in_TEXT = TRUE;
-				if (in_SPACE) {
-					argv[argc] = _argv + j;
-					argc++;
-				}
-				in_SPACE = FALSE;
-				break;
-			case ' ':
-			case '\t':
-			case '\n':
-			case '\r':
-				if (in_TEXT) {
-					_argv[j] = '\0';
-					j++;
-				}
-				in_TEXT = FALSE;
-				in_SPACE = TRUE;
-				break;
-			default:
-				in_TEXT = TRUE;
-				if (in_SPACE) {
-					argv[argc] = _argv + j;
-					argc++;
-				}
-				_argv[j] = a;
-				j++;
-				in_SPACE = FALSE;
-				break;
-			}
-		}
-		i++;
-	}
-	_argv[j] = '\0';
-	argv[argc] = NULL;
-
-	(*_argc) = argc;
-	return argv;
-}
-
-
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd) {
-	/* Pulled from SDL_win32_main.c; this comment is also theirs:
-	   Start up DDHELP.EXE before opening any files, so DDHELP doesn't
-	   keep them open.  This is a hack.. hopefully it will be fixed
-	   someday.  DDHELP.EXE starts up the first time DDRAW.DLL is loaded.
-	 */
-	HMODULE hLib = LoadLibrary(TEXT("DDRAW.DLL"));
-	if (hLib != NULL)
-		FreeLibrary(hLib);
-
-	int argc;
-	char **argv = CommandLineToArgvA(GetCommandLineA(), &argc);
-
-	int res = main(argc, argv);
-
-	cleanup_output("std");
-
-	GlobalFree(reinterpret_cast<HGLOBAL>(argv));
-	ignore_unused_variable_warning(hInstance, hPrevInstance, lpCmdLine, nShowCmd);
-
-	return  res;
-}
-#endif
-
 /*
  *  Main program.
  */
@@ -552,7 +423,7 @@ int exult_main(const char *runpath) {
 	// output version info
 	getVersionInfo(cout);
 
-#ifndef WIN32
+#ifndef _WIN32
 	setup_program_paths();
 #endif
 	// Read in configuration file
@@ -718,7 +589,7 @@ int exult_main(const char *runpath) {
 	//  main menu and select another scenario". Becaule DnD isn't registered until
 	//  you really enter the game, we remove it here to prevent possible bugs
 	//  invilved with registering DnD a second time over an old variable.
-#if defined(WIN32)
+#if defined(_WIN32)
 	RevokeDragDrop(hgwin);
 	delete windnd;
 #else
@@ -747,7 +618,7 @@ static void SetIcon() {
 				ExultIcon::height,
 				32,
 				0, 0, 0, 0);
-	if (iconsurface == NULL)
+	if (iconsurface == nullptr)
 		cout << "Error creating icon surface: " << SDL_GetError() << std::endl;
 	for (int y = 0; y < static_cast<int>(ExultIcon::height); ++y)
 	{
@@ -775,7 +646,7 @@ static void SetIcon() {
 	                           0, 0, 0, 0);
 	SDL_SetPalette(iconsurface, SDL_LOGPAL, iconpal, 0, 256);
 	SDL_SetColorKey(iconsurface, SDL_SRCCOLORKEY, 0);
-	SDL_WM_SetIcon(iconsurface, 0);
+	SDL_WM_SetIcon(iconsurface, nullptr);
 #endif
 
 	SDL_FreeSurface(iconsurface);
@@ -791,15 +662,16 @@ static void Init(
 #ifdef NO_SDL_PARACHUTE
 	init_flags |= SDL_INIT_NOPARACHUTE;
 #endif
-#ifdef WIN32
+#ifdef _WIN32
 	// Due to the new menu size, the window can sometimes
 	// be partially offscreen in Windows. SDL currently
 	// offers no better way of doing this, so...
 	// I don't know if this will be problem in other OSes,
 	// so I leave it Windows-specific for now.
-	// Maybe it would be best to use SDL_putenv instead?
 	SDL_putenv(const_cast<char *>("SDL_VIDEO_CENTERED=center"));
-	// Yes, SDL_putenv is GOOD.  putenv does NOT work with wince. -PTG 2007/06/11
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+	SDL_putenv(const_cast<char *>("SDL_AUDIODRIVER=DirectSound"));
+#endif
 #elif defined(MACOSX) && defined(USE_EXULTSTUDIO)
 	// Just in case:
 #ifndef XWIN
@@ -822,7 +694,7 @@ static void Init(
 	std::cout << "There are " << SDL_NumJoysticks() << " joystick(s) available" << std::endl;
 	std::cout << "Default joystick (index 0) is " << SDL_JoystickName(0) << std::endl;
 	sdl_joy = SDL_JoystickOpen(0);
-	if (sdl_joy == NULL)
+	if (sdl_joy == nullptr)
 		std::cout << "Error: could not open joystick" << std::endl;
 	std::cout << "joystick number of axis: " << SDL_JoystickNumAxes(sdl_joy) << ", number of hats: " << SDL_JoystickNumHats(sdl_joy) << ", number of balls: " << SDL_JoystickNumBalls(sdl_joy) << ", number of buttons: " << SDL_JoystickNumButtons(sdl_joy) << std::endl;
 #endif
@@ -893,9 +765,9 @@ static void Init(
 		gwin->set_in_exult_menu(false);
 	}
 
-	SDL_SETEVENTFILTER(0);
+	SDL_SETEVENTFILTER(nullptr);
 	// Show the banner
-	game = 0;
+	game = nullptr;
 
 	do {
 		reset_system_paths();
@@ -904,10 +776,10 @@ static void Init(
 
 		if (game) {
 			delete game;
-			game = 0;
+			game = nullptr;
 		}
 
-		ModManager *basegame = 0;
+		ModManager *basegame = nullptr;
 		if (run_bg) {
 			basegame = gamemanager->get_bg();
 			arg_gamename = CFG_BG_NAME;
@@ -929,7 +801,7 @@ static void Init(
 			arg_gamename = CFG_SIB_NAME;
 			run_sib = false;
 		}
-		BaseGameInfo *newgame = 0;
+		BaseGameInfo *newgame = nullptr;
 		if (basegame || arg_gamename != "default") {
 			if (!basegame)
 				basegame = gamemanager->find_game(arg_gamename);
@@ -942,7 +814,7 @@ static void Init(
 				arg_modname = "default";
 			} else {
 				cerr << "Game '" << arg_gamename << "' not found." << endl;
-				newgame = 0;
+				newgame = nullptr;
 			}
 			// Prevent game from being reloaded in case the player
 			// tries to return to the main menu:
@@ -994,7 +866,7 @@ static void Init(
 
 	// Should not be needed anymore:
 	delete gamemanager;
-	gamemanager = 0;
+	gamemanager = nullptr;
 
 	Audio *audio = Audio::get_ptr();
 	MyMidiPlayer *midi = audio->get_midi();
@@ -1005,7 +877,7 @@ static void Init(
 	gwin->setup_game(arg_edit_mode);    // This will start the scene.
 	// Get scale factor for mouse.
 #ifdef USE_EXULTSTUDIO
-#ifndef WIN32
+#ifndef _WIN32
 #if SDL_VERSION_ATLEAST(2, 0, 0)
 	SDL_GetWindowWMInfo(gwin->get_win()->get_screen_window(), &info);
 #else
@@ -1031,7 +903,7 @@ static void Init(
 	hgwin = info.window;
 #endif
 	Server_init();          // Initialize server (for map-editor).
-	OleInitialize(NULL);
+	OleInitialize(nullptr);
 	windnd = new Windnd(hgwin,
 	                    Move_dragged_shape, Move_dragged_combo,
 	                    Drop_dragged_shape, Drop_dragged_chunk,
@@ -1108,7 +980,7 @@ static void Paint_with_shape(
 		cheat.set_edit_shape(shnum, nextframe);
 	} else
 		frnum = cheat.get_edit_frame();
-	Drop_dragged_shape(shnum, frnum, event.button.x, event.button.y, 0);
+	Drop_dragged_shape(shnum, frnum, event.button.x, event.button.y, nullptr);
 }
 
 /*
@@ -1131,7 +1003,7 @@ static void Paint_with_chunk(
 	lastcx = cx;
 	lastcy = cy;
 	int chnum = cheat.get_edit_chunknum();
-	Drop_dragged_chunk(chnum, event.button.x, event.button.y, 0);
+	Drop_dragged_chunk(chnum, event.button.x, event.button.y, nullptr);
 }
 
 /*
@@ -1173,7 +1045,7 @@ static void Select_for_combo(
     bool dragging,          // Dragging to select.
     bool toggle
 ) {
-	static Game_object *last_obj = 0;
+	static Game_object *last_obj = nullptr;
 	int x, y;
 	gwin->get_win()->screen_to_game(event.button.x, event.button.y, false, x, y);
 	//int tx = (gwin->get_scrolltx() + x/c_tilesize)%c_num_tiles;
@@ -1196,7 +1068,7 @@ static void Select_for_combo(
 	}
 	if (Object_out(client_socket,
 	               toggle ? Exult_server::combo_toggle : Exult_server::combo_pick,
-	               0, t.tx, t.ty, t.tz, id.get_shapenum(),
+	               nullptr, t.tx, t.ty, t.tz, id.get_shapenum(),
 	               id.get_framenum(), 0, name) == -1)
 		cout << "Error sending shape to ExultStudio" << endl;
 }
@@ -1234,7 +1106,7 @@ static void Handle_events(
 
 		// Get current time.
 		uint32 ticks = SDL_GetTicks();
-#if defined(WIN32) && defined(USE_EXULTSTUDIO)
+#if defined(_WIN32) && defined(USE_EXULTSTUDIO)
 		if (ticks - Game::get_ticks() < 10) {
 			// Reducing processor usage with a slight delay.
 			SDL_Delay(10 - (ticks - Game::get_ticks()));
@@ -1325,16 +1197,8 @@ static void Handle_events(
 			}
 		}
 		if (!lerp || !didlerp) { // No lerping
-#ifdef HAVE_OPENGL
-			// OpenGL?  Repaint all each time.
-			if (GL_manager::get_instance()) {
-				// Show animation every 1/20 sec.
-				if (ticks > last_repaint + 50 || gwin->was_painted())
-					gwin->paint();
-			} else
-#endif
-				if (gwin->is_dirty())   // Note the ending else in the above #if!
-					gwin->paint_dirty();
+			if (gwin->is_dirty())   // Note the ending else in the above #if!
+				gwin->paint_dirty();
 			// Reset it for lerping.
 			last_x = last_y = -1;
 		}
@@ -1354,7 +1218,7 @@ static void Handle_events(
 			while (ticks > last_rotate + rot_speed)
 				last_rotate += rot_speed;
 			// Non palettized needs explicit blit.
-			if (!Set_glpalette(0, true) && !gwin->get_win()->is_palettized())
+			if (!gwin->get_win()->is_palettized())
 				gwin->set_painted();
 		}
 		if (!gwin->show() &&    // Blit to screen if necessary.
@@ -1378,7 +1242,7 @@ static void Handle_event(
 
 	// We want this
 	Gump_manager *gump_man = gwin->get_gump_man();
-	Gump *gump = 0;
+	Gump *gump = nullptr;
 
 	// For detecting double-clicks.
 	static uint32 last_b1_click = 0, last_b3_click = 0;
@@ -1464,7 +1328,7 @@ static void Handle_event(
 		// Middle click, use targetting crosshairs.
 		if (gwin->get_mouse3rd())
 			if (event.button.button == 2)
-				ActionTarget(0);
+				ActionTarget(nullptr);
 
 		// Right click. Only walk if avatar can act.
 		if (event.button.button == 3) {
@@ -1472,7 +1336,7 @@ static void Handle_event(
 			        gump_man->can_right_click_close() &&
 			        gump_man->gump_mode() &&
 			        gump_man->find_gump(x, y, false)) {
-				gump = 0;
+				gump = nullptr;
 				right_on_gump = true;
 			} else if (avatar_can_act && gwin->main_actor_can_act_charmed()) {
 				// Try removing old queue entry.
@@ -1482,22 +1346,50 @@ static void Handle_event(
 			}
 		}
 
-		// Mousewheel scrolling of view port.
+#if !(SDL_VERSION_ATLEAST(2, 0, 0))
+		// Mousewheel scrolling of view port with SDL 1.2x.
 		if (event.button.button == 4 || event.button.button == 5) {
 			if (!cheat() || !gwin->can_scroll_with_mouse()) break;
 			SDLMod mod = SDL_GetModState();
 			if (event.button.button == 4)
 				if (mod & KMOD_ALT)
-					ActionScrollLeft(0);
+					ActionScrollLeft(nullptr);
 				else
-					ActionScrollUp(0);
+					ActionScrollUp(nullptr);
 			else if (mod & KMOD_ALT)
-				ActionScrollRight(0);
+				ActionScrollRight(nullptr);
 			else
-				ActionScrollDown(0);
+				ActionScrollDown(nullptr);
+		}
+#endif
+		break;
+	}
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+	// Mousewheel scrolling of view port with SDL2.
+	case SDL_MOUSEWHEEL: {
+		if (!cheat() || !gwin->can_scroll_with_mouse()) break;
+		SDLMod mod = SDL_GetModState();
+		if(event.wheel.y > 0) {
+			if (mod & KMOD_ALT)
+				ActionScrollLeft(nullptr);
+			else
+				ActionScrollUp(nullptr);
+		}
+		else if(event.wheel.y < 0) {
+			if (mod & KMOD_ALT)
+				ActionScrollRight(nullptr);
+			else
+				ActionScrollDown(nullptr);
+		}
+		if(event.wheel.x > 0) {
+			ActionScrollRight(nullptr);
+		}
+		else if(event.wheel.x < 0) {
+			ActionScrollLeft(nullptr);
 		}
 		break;
 	}
+#endif
 	case SDL_MOUSEBUTTONUP: {
 		if (dont_move_mode)
 			break;
@@ -1513,7 +1405,7 @@ static void Handle_event(
 					Rectangle dirty = gump->get_dirty();
 					gwin->add_dirty(dirty);
 					gump_man->close_gump(gump);
-					gump = 0;
+					gump = nullptr;
 					right_on_gump = false;
 				}
 			} else if (avatar_can_act) {
@@ -1717,7 +1609,7 @@ static void Handle_event(
 			keybinder->HandleEvent(event);
 		break;
 #ifdef USE_EXULTSTUDIO
-#ifndef WIN32
+#ifndef _WIN32
 	case SDL_SYSWMEVENT: {
 #if SDL_VERSION_ATLEAST(2, 0, 0)
 		XEvent &ev = event.syswm.msg->msg.x11.event;
@@ -1733,7 +1625,7 @@ static void Handle_event(
 #endif
 #endif
 #if 0
-//#ifdef WIN32
+//#ifdef _WIN32
 	case SDL_SYSWMEVENT:
 //		printf("SYSWMEVENT received, %x\n", event.syswm.msg->msg);
 		if (event.syswm.msg->msg == MM_MCINOTIFY) {
@@ -1758,7 +1650,6 @@ static int Get_click(
     int &x, int &y,
     char *chr,          // Char. returned if not null.
     bool drag_ok,           // Okay to drag/close while here.
-    Paintable *paint,       // Paint this each cycle if OpenGL.
     bool rotate_colors      // If the palette colors should rotate.
 ) {
 	dragging = false;       // Init.
@@ -1775,8 +1666,7 @@ static int Get_click(
 
 		if (rotate_colors) {
 			int rot_speed = 100 << (gwin->get_win()->fast_palette_rotate() ? 0 : 1);
-			if (ticks > last_rotate + rot_speed &&
-			        !GL_manager::get_instance()) {  //++++Disable in OGL.
+			if (ticks > last_rotate + rot_speed) {
 				// (Blits in simulated 8-bit mode.)
 				gwin->get_win()->rotate_colors(0xfc, 3, 0);
 				gwin->get_win()->rotate_colors(0xf8, 4, 0);
@@ -1787,7 +1677,7 @@ static int Get_click(
 				while (ticks > last_rotate + rot_speed)
 					last_rotate += rot_speed;
 				// Non palettized needs explicit blit.
-				if (!Set_glpalette(0, true) && !gwin->get_win()->is_palettized())
+				if (!gwin->get_win()->is_palettized())
 					gwin->set_painted();
 			}
 		}
@@ -1910,11 +1800,7 @@ static int Get_click(
 				}
 #endif
 			}
-		if (GL_manager::get_instance()) {
-			gwin->paint();
-			if (paint)
-				paint->paint();
-		} else if (dragging)
+		if (dragging)
 			gwin->paint_dirty();
 		Mouse::mouse->show();       // Turn on mouse.
 		if (!gwin->show() &&    // Blit to screen if necessary.
@@ -1950,7 +1836,7 @@ int Get_click(
 	Mouse::mouse->show();
 	gwin->show(1);          // Want to see new mouse.
 	gwin->get_tqueue()->pause(Game::get_ticks());
-	int ret = Get_click(x, y, chr, drag_ok, paint, rotate_colors);
+	int ret = Get_click(x, y, chr, drag_ok, rotate_colors);
 	gwin->get_tqueue()->resume(Game::get_ticks());
 	Mouse::mouse->set_shape(saveshape);
 	return (ret);
@@ -2367,7 +2253,6 @@ void setup_video(bool fullscreen, int setup_video_type, int resx, int resy,
 			scaleval = 4;
 		else if (scaler != Image_window::point &&
 		         scaler != Image_window::interlaced &&
-		         scaler != Image_window::OpenGL &&
 		         scaler != Image_window::bilinear)
 			scaleval = 2;
 		config->value(vidStr + "/display/width", resx, resx * scaleval);
@@ -2584,7 +2469,7 @@ static void Move_dragged_combo(
  *  Create an object as moveable (IREG) or fixed.
  */
 
-static Game_object *Create_object(
+static Game_object_shared Create_object(
     int shape, int frame,       // What to create.
     bool &ireg          // Rets. TRUE if ireg (moveable).
 ) {
@@ -2593,7 +2478,7 @@ static Game_object *Create_object(
 	// Is it an ireg (changeable) obj?
 	ireg = (sclass != Shape_info::unusable &&
 	        sclass != Shape_info::building);
-	Game_object *newobj;
+	Game_object_shared newobj;
 	if (ireg)
 		newobj = gwin->get_map()->create_ireg_object(
 		             info, shape, frame, 0, 0, 0);
@@ -2642,7 +2527,7 @@ static void Drop_dragged_shape(
 	cout << "Create shape (" << shape << '/' << frame << ')' <<
 	     endl;
 	bool ireg;          // Create object.
-	Game_object *newobj = Create_object(shape, frame, ireg);
+	Game_object_shared newobj = Create_object(shape, frame, ireg);
 	Dragging_info drag(newobj);
 	drag.drop(x, y, true);      // (Dels if it fails.)
 }
@@ -2688,11 +2573,13 @@ static void Drop_dragged_npc(
 	Actor *npc = gwin->get_npc(npcnum);
 	if (!npc)
 		return;
+	Game_object_shared safe_npc = npc->shared_from_this();
+	Game_object_shared npckeep;
 	if (npc->is_pos_invalid())  // Brand new?
 		npc->clear_flag(Obj_flags::dead);
 	else
-		npc->remove_this(true); // Remove if already on map.
-	Dragging_info drag(npc);
+		npc->remove_this(&npckeep); // Remove if already on map.
+	Dragging_info drag(safe_npc);
 	if (drag.drop(x, y))
 		npc->set_unused(false);
 	gwin->paint();
@@ -2741,12 +2628,12 @@ void Drop_dragged_combo(
 			continue;
 		}
 		bool ireg;      // Create object.
-		Game_object *newobj = Create_object(elem.shape,
+		Game_object_shared newobj = Create_object(elem.shape,
 		                                    elem.frame, ireg);
 		newobj->set_invalid();  // Not in world.
 		newobj->move(ntx, nty, ntz);
 		// Add to selection.
-		cheat.append_selected(newobj);
+		cheat.append_selected(newobj.get());
 	}
 	gwin->set_all_dirty();      // For now, until we clear out grid.
 }

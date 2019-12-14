@@ -24,7 +24,6 @@
 #endif
 
 #include "objs.h"
-#include "objclient.h"
 #include "chunks.h"
 #include "objiter.h"
 #include "egg.h"
@@ -93,7 +92,7 @@ int Game_object::get_usecode() const {
 short Tile_coord::neighbors[16] = {0, -1, 1, -1, 1, 0, 1, 1, 0, 1,
                                    -1, 1, -1, 0, -1, -1
                                   };
-Game_object *Game_object::editing = 0;
+Game_object *Game_object::editing = nullptr;
 // Bit 5=S, Bit6=reflect. on diag.
 unsigned char Game_object::rotate[8] = { 0, 0, 48, 48, 16, 16, 32, 32};
 
@@ -111,7 +110,7 @@ int Game_object::get_cy() const {
 
 
 Game_map *Game_object::get_map() const { // Map we're on.
-	return chunk ? chunk->get_map() : 0;
+	return chunk ? chunk->get_map() : nullptr;
 }
 int Game_object::get_map_num() const { // Get map number this is in.
 	return chunk ? chunk->get_map()->get_num() : -1;
@@ -390,7 +389,7 @@ int Game_object::get_weapon_ammo(
     bool recursive
 ) {
 	if (ammo)
-		*ammo = 0;
+		*ammo = nullptr;
 	if (weapon < 0)
 		return false;   // Bare hands.
 	// See if we need ammo.
@@ -457,7 +456,7 @@ int Game_object::get_volume(
 bool Game_object::inside_locked() const {
 	const Game_object *top = this;
 	const Game_object *above;
-	while ((above = top->get_owner()) != 0) {
+	while ((above = top->get_owner()) != nullptr) {
 		if (above->get_info().is_container_locked())
 			return true;
 		top = above;
@@ -565,6 +564,7 @@ void Game_object::move(
 	if (!newchunk)
 		return;         // Bad loc.
 	Map_chunk *oldchunk = chunk;    // Remove from old.
+	Game_object_shared keep = shared_from_this();
 	if (oldchunk) {
 		gwin->add_dirty(this);  // Want to repaint old area.
 		oldchunk->remove(this);
@@ -574,31 +574,6 @@ void Game_object::move(
 	ty = newty % c_tiles_per_chunk;
 	newchunk->add(this);        // Updates 'chunk'.
 	gwin->add_dirty(this);      // And repaint new area.
-}
-
-/*
- *  Add/remove a client.
- */
-bool Game_object::add_client(
-    Object_client *c
-) {
-	for (vector<Object_client *>::iterator it = clients.begin();
-	        it != clients.end(); ++it)
-		if ((*it) == c)
-			return false;
-	clients.push_back(c);
-	return true;
-}
-
-void Game_object::remove_client(
-    Object_client *c
-) {
-	for (vector<Object_client *>::iterator it = clients.begin();
-	        it != clients.end(); ++it)
-		if ((*it) == c) {
-			clients.erase(it);
-			return;
-		}
 }
 
 /*
@@ -631,9 +606,10 @@ int Game_object::swap_positions(
 		return 0;       // Not the same size.
 	Tile_coord p1 = get_tile();
 	Tile_coord p2 = obj2->get_tile();
-	remove_this(1);         // Remove (but don't delete) each.
+    Game_object_shared keep1, keep2;
+	remove_this(&keep1);         // Remove (but don't delete) each.
 	set_invalid();
-	obj2->remove_this(1);
+	obj2->remove_this(&keep2);
 	obj2->set_invalid();
 	move(p2.tx, p2.ty, p2.tz);  // Move to new locations.
 	obj2->move(p1.tx, p1.ty, p1.tz);
@@ -736,6 +712,20 @@ int Game_object::find_nearby(
 }
 
 /*
+ *  Convert a vector to weak objects.
+ */
+void Game_object::obj_vec_to_weak(
+    std::vector<Game_object_weak> &dest,
+	Game_object_vector &src
+) {
+	for (Game_object_vector::const_iterator it = src.begin(); it != src.end();
+											   	 			  ++it) {
+		Game_object *obj = *it;
+		dest.push_back(weak_from_obj(obj));
+	}
+}
+
+/*
  *  For sorting closest to a given spot.
  */
 class Object_closest_sorter {
@@ -769,7 +759,7 @@ Game_object *Game_object::find_closest(
 		find_nearby(vec, shapenums[i], dist, 0xb0);
 	int cnt = vec.size();
 	if (!cnt)
-		return (0);
+		return nullptr;
 	if (cnt > 1)
 		std::sort(vec.begin(), vec.end(),
 		          Object_closest_sorter(get_tile()));
@@ -779,7 +769,7 @@ Game_object *Game_object::find_closest(
 /*
  *  Find the closest nearby object with a shape in a given list.
  *
- *  Output: ->object, or 0 if none found.
+ *  Output: ->object, or nullptr if none found.
  */
 
 Game_object *Game_object::find_closest(
@@ -796,8 +786,8 @@ Game_object *Game_object::find_closest(
 		find_nearby(vec, pos, shapenums[i], dist, 0xb0);
 	int cnt = vec.size();
 	if (!cnt)
-		return (0);
-	Game_object *closest = 0;   // Get closest.
+		return nullptr;
+	Game_object *closest = nullptr;   // Get closest.
 	int best_dist = 10000;      // In tiles.
 	// Get our location.
 	for (Game_object_vector::const_iterator it = vec.begin();
@@ -876,7 +866,7 @@ bool Game_object::blocks(
 /*
  *  Find the game object that's blocking a given tile.
  *
- *  Output: ->object, or 0 if not found.
+ *  Output: ->object, or nullptr if not found.
  */
 
 Game_object *Game_object::find_blocking(
@@ -887,16 +877,16 @@ Game_object *Game_object::find_blocking(
 	                                   tile.ty / c_tiles_per_chunk);
 	Game_object *obj;
 	Object_iterator next(chunk->get_objects());
-	while ((obj = next.get_next()) != 0)
+	while ((obj = next.get_next()) != nullptr)
 		if (obj->blocks(tile))
 			return obj;
-	return (0);
+	return nullptr;
 }
 
 /*
  *  Find door blocking a given tile.
  *
- *  Output: ->door, or 0 if not found.
+ *  Output: ->door, or nullptr if not found.
  */
 
 Game_object *Game_object::find_door(
@@ -945,7 +935,7 @@ Game_object *Game_object::get_outermost(
 ) {
 	Game_object *top = this;
 	Game_object *above;
-	while ((above = top->get_owner()) != 0)
+	while ((above = top->get_owner()) != nullptr)
 		top = above;
 	return top;
 }
@@ -1037,7 +1027,7 @@ bool Game_object::edit(
 #ifdef USE_EXULTSTUDIO
 	if (client_socket >= 0 &&   // Talking to ExultStudio?
 	        cheat.in_map_editor()) {
-		editing = 0;
+		editing = nullptr;
 		Tile_coord t = get_tile();
 		std::string name = get_name();
 		if (Object_out(client_socket, Exult_server::obj,
@@ -1076,7 +1066,7 @@ void Game_object::update_from_studio(
 		cout << "Obj from ExultStudio is not being edited" << endl;
 		return;
 	}
-//	editing = 0; // He may have chosen 'Apply', so still editing.
+//	editing = nullptr; // He may have chosen 'Apply', so still editing.
 	gwin->add_dirty(obj);
 	obj->set_shape(shape, frame);
 	gwin->add_dirty(obj);
@@ -1092,31 +1082,18 @@ void Game_object::update_from_studio(
 }
 
 /*
- *  Remove from clients list.
- */
-void Game_object::remove_clients() {
-	for (vector<Object_client *>::iterator it = clients.begin();
-	        it != clients.end(); ++it) {
-		(*it)->object_gone(this);
-	}
-	clients.clear();
-}
-
-/*
  *  Remove an object from the world.
  *  The object is deleted.
  */
 
 void Game_object::remove_this(
-    int nodel           // 1 to not delete.
+    Game_object_shared *keep     // Non-null to not delete.
 ) {
 	// Do this before all else.
-	if (!nodel)
-		remove_clients();
+	if (keep)
+	    *keep = shared_from_this();
 	if (chunk)
 		chunk->remove(this);
-	if (!nodel)
-		gwin->delete_object(this);
 }
 
 /*
@@ -1444,7 +1421,7 @@ int Game_object::apply_damage(
 ) {
 	ignore_unused_variable_warning(bias);
 	if (exp)
-		exp = 0;
+		*exp = 0;
 	int damage = 0;
 	if (wpoints == 127)
 		damage = 127;
@@ -1523,14 +1500,14 @@ int Game_object::figure_hit_points(
 	if (weapon_shape >= 0)
 		winf = ShapeID::get_info(weapon_shape).get_weapon_info();
 	else
-		winf = 0;
+		winf = nullptr;
 	if (ammo_shape >= 0)
 		ainf = ShapeID::get_info(ammo_shape).get_ammo_info();
 	else
-		ainf = 0;
+		ainf = nullptr;
 	if (!winf && weapon_shape < 0) {
-		Actor *npc = attacker ? attacker->as_actor() : 0;
-		winf = npc ? npc->get_weapon(wpoints) : 0;
+		Actor *npc = attacker ? attacker->as_actor() : nullptr;
+		winf = npc ? npc->get_weapon(wpoints) : nullptr;
 	}
 
 	int usefun = -1;
@@ -1556,7 +1533,7 @@ int Game_object::figure_hit_points(
 		// Time to explode.
 		Tile_coord offset(0, 0, get_info().get_3d_height() / 2);
 		eman->add_effect(new Explosion_effect(get_tile() + offset,
-		                                      0, 0, weapon_shape, ammo_shape, attacker));
+		                                      nullptr, 0, weapon_shape, ammo_shape, attacker));
 		return -1;
 	}
 
@@ -1577,7 +1554,7 @@ int Game_object::figure_hit_points(
 
 void Game_object::play_hit_sfx(int weapon, bool ranged) {
 	const Weapon_info *winf = weapon >= 0 ?
-	                    ShapeID::get_info(weapon).get_weapon_info() : 0;
+	                    ShapeID::get_info(weapon).get_weapon_info() : nullptr;
 	if (winf && winf->get_damage()) {
 		int sfx;
 		if (ranged)
@@ -1623,7 +1600,7 @@ Game_object *Game_object::attacked(
 		cout << name << " attacks " << get_name();
 		if (oldhp < delta) {
 			cout << ", destroying it." << endl;
-			return 0;
+			return nullptr;
 		} else if (!delta || oldhp == newhp) {
 			// undamaged/indestructible
 			cout << " to no effect." << endl;
@@ -1648,7 +1625,7 @@ bool Game_object::set_usecode(int ui, const char *nm) {
 
 /*
  *  Move to a new absolute location.  This should work even if the old
- *  location is invalid (chunk = 0).
+ *  location is invalid (chunk = nullptr).
  */
 
 void Terrain_game_object::move(
@@ -1684,9 +1661,9 @@ void Terrain_game_object::move(
  */
 
 void Terrain_game_object::remove_this(
-    int nodel           // 1 to not delete.
+    Game_object_shared *keep     // Non-null to not delete.
 ) {
-	if (chunk && !nodel && !chunk->get_map()->is_caching_out()) {
+	if (chunk && !keep && !chunk->get_map()->is_caching_out()) {
 		// This code removes the terrain object if the object was deleted.
 		// This should NOT be run if the map is being cached out!
 		chunk->get_map()->set_map_modified();
@@ -1697,7 +1674,7 @@ void Terrain_game_object::remove_this(
 			ter->set_flat(get_tx(), get_ty(), ShapeID(12, 0));
 		gwin->get_map()->set_chunk_terrains_modified();
 	}
-	Game_object::remove_this(nodel);
+	Game_object::remove_this(keep);
 }
 
 /*
@@ -1711,7 +1688,7 @@ void Terrain_game_object::paint_terrain(
 
 /*
  *  Move to a new absolute location.  This should work even if the old
- *  location is invalid (chunk = 0).
+ *  location is invalid (chunk = nullptr).
  */
 
 void Ifix_game_object::move(
@@ -1734,13 +1711,13 @@ void Ifix_game_object::move(
  */
 
 void Ifix_game_object::remove_this(
-    int nodel           // 1 to not delete.
+    Game_object_shared *keep     // Non-null to not delete.
 ) {
 	if (chunk) {        // Mark superchunk as 'modified'.
 		int cx = get_cx(), cy = get_cy();
 		get_map()->set_ifix_modified(cx, cy);
 	}
-	Game_object::remove_this(nodel);
+	Game_object::remove_this(keep);
 }
 
 /*

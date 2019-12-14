@@ -109,7 +109,7 @@ int CoreAudioMidiDriver::open() {
 		desc.componentFlags = 0;
 		desc.componentFlagsMask = 0;
 #if USE_DEPRECATED_COREAUDIO_API
-		RequireNoErr(AUGraphNewNode(_auGraph, &desc, 0, NULL, &outputNode));
+		RequireNoErr(AUGraphNewNode(_auGraph, &desc, 0, nullptr, &outputNode));
 #else
 		RequireNoErr(AUGraphAddNode(_auGraph, &desc, &outputNode));
 #endif
@@ -119,7 +119,7 @@ int CoreAudioMidiDriver::open() {
 		desc.componentSubType = kAudioUnitSubType_DLSSynth;
 		desc.componentManufacturer = kAudioUnitManufacturer_Apple;
 #if USE_DEPRECATED_COREAUDIO_API
-		RequireNoErr(AUGraphNewNode(_auGraph, &desc, 0, NULL, &synthNode));
+		RequireNoErr(AUGraphNewNode(_auGraph, &desc, 0, nullptr, &synthNode));
 #else
 		RequireNoErr(AUGraphAddNode(_auGraph, &desc, &synthNode));
 #endif
@@ -133,9 +133,9 @@ int CoreAudioMidiDriver::open() {
 
 		// Get the music device from the graph.
 #if USE_DEPRECATED_COREAUDIO_API
-		RequireNoErr(AUGraphGetNodeInfo(_auGraph, synthNode, NULL, NULL, NULL, &_synth));
+		RequireNoErr(AUGraphGetNodeInfo(_auGraph, synthNode, nullptr, nullptr, nullptr, &_synth));
 #else
-		RequireNoErr(AUGraphNodeInfo(_auGraph, synthNode, NULL, &_synth));
+		RequireNoErr(AUGraphNodeInfo(_auGraph, synthNode, nullptr, &_synth));
 #endif
 
 		// Load custom soundfont, if specified
@@ -146,7 +146,7 @@ int CoreAudioMidiDriver::open() {
 				OSErr err;
 #if USE_DEPRECATED_COREAUDIO_API
 				FSRef   fsref;
-				err = FSPathMakeRef(reinterpret_cast<const UInt8 *>(soundfont.c_str()), &fsref, NULL);
+				err = FSPathMakeRef(reinterpret_cast<const UInt8 *>(soundfont.c_str()), &fsref, nullptr);
 				if (!err) {
 					err = AudioUnitSetProperty(
 					          _synth, kMusicDeviceProperty_SoundBankFSRef,
@@ -211,7 +211,7 @@ void CoreAudioMidiDriver::send(uint32 message) {
 	uint8 first_byte = (message & 0x0000FF00) >> 8;
 	uint8 second_byte = (message & 0x00FF0000) >> 16;
 
-	assert(_auGraph != NULL);
+	assert(_auGraph != nullptr);
 	MusicDeviceMIDIEvent(_synth, status_byte, first_byte, second_byte, 0);
 }
 
@@ -219,7 +219,7 @@ void CoreAudioMidiDriver::send_sysex(uint8 status, const uint8 *msg, uint16 leng
 	uint8 buf[384];
 
 	assert(sizeof(buf) >= static_cast<size_t>(length) + 2);
-	assert(_auGraph != NULL);
+	assert(_auGraph != nullptr);
 
 	// Add SysEx frame
 	buf[0] = status;

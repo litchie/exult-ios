@@ -27,11 +27,7 @@
 #include <iomanip>
 #include <fstream>
 #include <stack>
-#ifdef HAVE_SSTREAM
 #include <sstream>
-using std::stringstream;
-#endif
-
 
 /*** head2data
 #ifndef __STRING
@@ -51,6 +47,7 @@ using std::string;
 using std::cerr;
 using std::pair;
 using std::map;
+using std::stringstream;
 
 #define MAX_NO_OPCODES 512
 vector<UCOpcodeData> opcode_table_data(MAX_NO_OPCODES);
@@ -134,7 +131,7 @@ void ucxtInit::misc() {
 					munge_offset = true;
 
 		// once we've got it, add it to the map
-		pair<unsigned int, bool> tsm_tmp(static_cast<unsigned int>(strtol(k->second.c_str(), 0, 0)), munge_offset);
+		pair<unsigned int, bool> tsm_tmp(static_cast<unsigned int>(strtol(k->second.c_str(), nullptr, 0)), munge_offset);
 		type_size_map.insert(pair<string, pair<unsigned int, bool> >(k->first, tsm_tmp));
 	}
 }
@@ -152,7 +149,7 @@ void ucxtInit::opcodes() {
 			opdata.getsubkeys(ktl, *key);
 
 			if (!ktl.empty()) {
-				unsigned int i = static_cast<unsigned int>(strtol(key->substr(key->find_first_of("0")).c_str(), 0, 0));
+				unsigned int i = static_cast<unsigned int>(strtol(key->substr(key->find_first_of("0")).c_str(), nullptr, 0));
 				opcode_table_data[i] = UCOpcodeData(i, ktl);
 			}
 		}
@@ -183,7 +180,7 @@ void ucxtInit::intrinsics(const string &intrinsic_data, const string &intrinsic_
 	intdata.getsubkeys(ktl, intrinsic_root);
 
 	for (Configuration::KeyTypeList::iterator k = ktl.begin(); k != ktl.end(); ++k)
-		uc_intrinsics.insert(pair<unsigned int, string>(static_cast<unsigned int>(strtol(k->first.c_str(), 0, 0)), k->second));
+		uc_intrinsics.insert(pair<unsigned int, string>(static_cast<unsigned int>(strtol(k->first.c_str(), nullptr, 0)), k->second));
 }
 
 /* To be depricated when I get the complex std::vector<std::string> splitter online */

@@ -119,7 +119,7 @@ class Shape_chooser: public Object_browser, public Shape_draw {
 	virtual GtkWidget *create_popup();  // Popup menu.
 public:
 	Shape_chooser(Vga_file *i, unsigned char *palbuf, int w, int h,
-	              Shape_group *g = 0, Shape_file_info *fi = 0);
+	              Shape_group *g = nullptr, Shape_file_info *fi = nullptr);
 	virtual ~Shape_chooser();
 	void set_shapes_file(Shapes_vga_file *sh) {
 		shapes_file = sh;
@@ -206,7 +206,7 @@ public:
 	static void frame_changed(GtkAdjustment *adj, gpointer data);
 	static void all_frames_toggled(GtkToggleButton *btn,
 	                               gpointer user_data);
-#ifdef WIN32
+#ifdef _WIN32
 	static gint win32_drag_motion(GtkWidget *widget, GdkEventMotion *event,
 	                              gpointer data);
 #else

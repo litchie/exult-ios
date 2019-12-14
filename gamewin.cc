@@ -50,7 +50,6 @@
 #include "cheat.h"
 #include "chunkter.h"
 #include "combat_opts.h"
-#include "delobjs.h"
 #include "dir.h"
 #include "effects.h"
 #include "egg.h"
@@ -78,7 +77,6 @@
 #include "mappatch.h"
 #include "version.h"
 #include "drag.h"
-#include "glshape.h"
 #include "party.h"
 #include "Notebook_gump.h"
 #include "AudioMixer.h"
@@ -100,15 +98,17 @@ using std::endl;
 using std::istream;
 using std::ifstream;
 using std::ios;
+using std::make_unique;
 using std::memset;
 using std::ofstream;
 using std::rand;
 using std::string;
 using std::srand;
+using std::unique_ptr;
 using std::vector;
 
 // THE game window:
-Game_window *Game_window::game_window = 0;
+Game_window *Game_window::game_window = nullptr;
 
 /*
  *  Provide chirping birds.
@@ -277,117 +277,24 @@ void Background_noise::handle_event(
 }
 
 /*
- *  Set renderer (OpenGL or normal SDL).
- */
-
-void Set_renderer(
-    Image_window8 *win,
-    Palette *pal,
-    bool resize
-) {
-	GL_manager *glman = GL_manager::get_instance();
-#ifdef HAVE_OPENGL
-	delete glman;
-	glman = 0;
-	if (win->get_scaler() == Image_window::OpenGL) {
-		glman = new GL_manager();
-		glman->set_palette(pal);
-		if (resize)
-			glman->resized(win->get_full_width(), win->get_full_height(),
-			               win->get_scale_factor());
-	}
-#else
-	ignore_unused_variable_warning(pal, resize);
-#endif
-	// Tell shapes how to render.
-	Shape_frame::set_to_render(win->get_ib8(), glman);
-}
-
-#ifdef HAVE_OPENGL
-/*
- *  Set palette and reset all textures. If given null palette, uses current
- *  game window palette.
- */
-
-void GL_manager::set_palette(Palette *pal, bool rotation) {
-	Chunk_terrain::clear_glflats(rotation);
-	if (rotation) {
-		// Free only those that rotate.
-		GL_texshape *next = shapes;
-		while (next) {
-			GL_texshape *tex = next;
-			// Point to next element to be safe.
-			next = next->lru_next;
-			if (tex->has_palette_rotation()) {
-				// Unlink.
-				if (shapes == tex)
-					shapes = next;
-				if (tex->lru_next)
-					tex->lru_next->lru_prev = tex->lru_prev;
-				if (tex->lru_prev)
-					tex->lru_prev->lru_next = tex->lru_next;
-				delete tex;
-			}
-		}
-	} else  // Kill them all.
-		while (shapes) {
-			GL_texshape *next = shapes->lru_next;
-			delete shapes;
-			shapes = next;
-		}
-	if (!palette)
-		palette = new unsigned char[768];
-	if (pal) {
-		for (int i = 0; i < 256; i++) {
-			// Palette colors are 0-63.
-			palette[3 * i] = 4 * pal->get_red(i);
-			palette[3 * i + 1] = 4 * pal->get_green(i);
-			palette[3 * i + 2] = 4 * pal->get_blue(i);
-		}
-	} else {
-		const unsigned char *cpal =
-		    Game_window::get_instance()->get_win()->get_palette();
-		std::memcpy(palette, cpal, 768);
-	}
-}
-#endif
-
-/*
- *  Set palette and reset all textures. If given null palette, uses current
- *  game window palette.
- */
-
-bool Set_glpalette(Palette *pal, bool rotation) {
-#ifdef HAVE_OPENGL
-	if (GL_manager::get_instance()) {
-		GL_manager::get_instance()->set_palette(pal, rotation);
-		return true;
-	}
-#else
-	ignore_unused_variable_warning(pal, rotation);
-#endif
-	return false;
-}
-
-/*
  *  Create game window.
  */
 
 Game_window::Game_window(
     int width, int height, bool fullscreen, int gwidth, int gheight, int scale, int scaler, Image_window::FillMode fillmode, unsigned int fillsclr      // Window dimensions.
 ) :
-	dragging(0), effects(new Effects_manager(this)), map(new Game_map(0)),
+	dragging(nullptr), effects(new Effects_manager(this)), map(new Game_map(0)),
 	render(new Game_render), gump_man(new Gump_manager),
-	party_man(new Party_manager), win(0),
-	npc_prox(new Npc_proximity_handler(this)), pal(0),
+	party_man(new Party_manager), win(nullptr),
+	npc_prox(new Npc_proximity_handler(this)), pal(nullptr),
 	tqueue(new Time_queue()), background_noise(new Background_noise(this)),
-	usecode(0), combat(false), focus(true), ice_dungeon(false),
+	usecode(nullptr), combat(false), focus(true), ice_dungeon(false),
 	painted(false), ambient_light(false),
 	skip_above_actor(31), in_dungeon(0), num_npcs1(0),
 	std_delay(c_std_delay), time_stopped(0), special_light(0),
 	theft_warnings(0), theft_cx(255), theft_cy(255),
-	moving_barge(0), main_actor(0), camera_actor(0), npcs(0), bodies(0),
-	removed(new Deleted_objects()), scrolltx(0), scrollty(0), dirty(0, 0, 0, 0),
+	moving_barge(nullptr), main_actor(nullptr), camera_actor(nullptr), npcs(0), bodies(0),
+	scrolltx(0), scrollty(0), dirty(0, 0, 0, 0),
 	mouse3rd(false), fastmouse(false), double_click_closes_gumps(false),
 	text_bg(false), step_tile_delta(8), allow_right_pathfind(2),
 	scroll_with_mouse(false), alternate_drop(false), allow_autonotes(false), in_exult_menu(false),
@@ -409,7 +316,7 @@ Game_window::Game_window(
 	win->set_title("Exult Ultima7 Engine");
 	pal = new Palette();
 	Game_singletons::init(this);    // Everything but 'usecode' exists.
-	Set_renderer(win, pal, true);
+	Shape_frame::set_to_render(win->get_ib8());
 
 	string str;
 	config->value("config/gameplay/textbackground", text_bg, -1);
@@ -550,6 +457,7 @@ Game_window::~Game_window(
 	delete party_man;
 	delete background_noise;
 	delete tqueue;
+	tqueue = nullptr;
 	delete win;
 	delete dragging;
 	delete pal;
@@ -557,7 +465,6 @@ Game_window::~Game_window(
 	        it != maps.end(); ++it)
 		delete *it;
 	delete usecode;
-	delete removed;
 	delete clock;
 	delete npc_prox;
 	delete effects;
@@ -670,7 +577,7 @@ Game_map *Game_window::get_map(
 ) {
 	if (num >= static_cast<int>(maps.size()))
 		maps.resize(num + 1);
-	if (maps[num] == 0) {
+	if (maps[num] == nullptr) {
 		Game_map *newmap = new Game_map(num);
 		maps[num] = newmap;
 		maps[num]->init();
@@ -729,7 +636,7 @@ bool Game_window::is_moving(
  */
 
 bool Game_window::main_actor_dont_move() {
-	return !cheat.in_map_editor() && main_actor != 0 && // Not if map-editing.
+	return !cheat.in_map_editor() && main_actor != nullptr && // Not if map-editing.
 	       ((main_actor->get_flag(Obj_flags::dont_move) != 0) ||
 	        (main_actor->get_flag(Obj_flags::dont_render) != 0));
 }
@@ -823,7 +730,7 @@ void Game_window::toggle_combat(
 		main_actor->set_schedule_type(newsched);
 	if (combat) {       // Get rid of flee modes.
 		main_actor->ready_best_weapon();
-		set_moving_barge(0);    // And get out of barge mode.
+		set_moving_barge(nullptr);    // And get out of barge mode.
 		Actor *all[9];
 		int cnt = get_party(all, 1);
 		for (int i = 0; i < cnt; i++) {
@@ -836,7 +743,7 @@ void Game_window::toggle_combat(
 			//  in case of Usecode bug.
 			const Game_object *targ = act->get_target();
 			if (targ && targ->get_flag(Obj_flags::in_party))
-				act->set_target(0);
+				act->set_target(nullptr);
 		}
 	} else              // Ending combat.
 		Combat::resume();   // Make sure not still paused.
@@ -854,13 +761,24 @@ void Game_window::add_npc(
 ) {
 	assert(num == npc->get_npc_num());
 	assert(num <= static_cast<int>(npcs.size()));
-	if (num == static_cast<int>(npcs.size()))       // Add at end.
-		npcs.push_back(npc);
-	else {
+	if (num == static_cast<int>(npcs.size())) {      // Add at end.
+		npcs.push_back(nullptr);
+		npcs[npcs.size() - 1] = npc->shared_from_this();
+	} else {
 		// Better be unused.
-		assert(!npcs[num] || npcs[num]->is_unused());
-		delete npcs[num];
-		npcs[num] = npc;
+		assert(!npcs[num] || get_npc(num)->is_unused());
+		npcs[num] = npc->shared_from_this();
+	}
+}
+
+/*  Get desired NPD.
+ */
+Actor *Game_window::get_npc(long npc_num) const {
+    if (npc_num < 0 || npc_num >= static_cast<int>(npcs.size()))
+	    return nullptr;
+	else {
+	    Game_object *npc = npcs[npc_num].get();
+	    return static_cast<Actor *>(npc);
 	}
 }
 
@@ -905,16 +823,17 @@ int Game_window::get_unused_npc(
 	for (; i < cnt; i++) {
 		if (i >= 356 && i <= 359)
 			continue;   // Never return these.
-		if (!npcs[i] || npcs[i]->is_unused())
+		if (!npcs[i] || get_npc(i)->is_unused())
 			break;
 	}
 	if (i >= 356 && i <= 359) {
 		// Special, 'reserved' cases.
 		i = 360;
 		do {
-			npcs.push_back(new Npc_actor("Reserved", 0));
-			npcs[cnt]->set_schedule_type(Schedule::wait);
-			npcs[cnt]->set_unused(true);
+			npcs.push_back(std::make_shared<Npc_actor>("Reserved", 0));
+			Actor *npc = get_npc(cnt);
+			npc->set_schedule_type(Schedule::wait);
+			npc->set_unused(true);
 		} while (++cnt < 360);
 	}
 	return i;           // First free one is past the end.
@@ -937,7 +856,7 @@ void Game_window::resized(
 ) {
 	win->resized(neww, newh, newfs, newgw, newgh, newsc, newsclr, newfill, newfillsclr);
 	pal->apply(false);
-	Set_renderer(win, pal, true);
+	Shape_frame::set_to_render(win->get_ib8());
 	if (!main_actor)        // In case we're before start.
 		return;
 	center_view(main_actor->get_tile());
@@ -965,27 +884,28 @@ void Game_window::clear_world(
 	Combat::resume();
 	tqueue->clear();        // Remove all entries.
 	clear_dirty();
-	removed->flush();       // Delete.
 	Usecode_script::clear();    // Clear out all scheduled usecode.
 	// Most NPCs were deleted when the map is cleared; we have to deal with some stragglers.
-	for (vector<Actor *>::iterator it = npcs.begin();
-	        it != npcs.end(); ++it)
-		if ((*it)->is_unused())
-			delete *it;
+	for (vector<Game_object_shared>::iterator it = npcs.begin();
+	        it != npcs.end(); ++it) {
+	    Actor *npc = static_cast<Actor *>((*it).get());
+		if (npc->is_unused())
+			*it = nullptr;
+	}
 	for (vector<Game_map *>::iterator it = maps.begin();
 	        it != maps.end(); ++it)
 		(*it)->clear();
 	set_map(0);         // Back to main map.
 	Monster_actor::delete_all();    // To be safe, del. any still around.
 	Notebook_gump::clear();
-	main_actor = 0;
-	camera_actor = 0;
+	main_actor = nullptr;
+	camera_actor = nullptr;
 	num_npcs1 = 0;
 	theft_cx = theft_cy = -1;
 	combat = 0;
 	npcs.resize(0);         // NPC's already deleted above.
 	bodies.resize(0);
-	moving_barge = 0;       // Get out of barge mode.
+	moving_barge = nullptr;       // Get out of barge mode.
 	special_light = 0;      // Clear out light spells.
 	ambient_light = false;  // And ambient lighting.
 	effects->remove_all_effects(false);
@@ -1007,8 +927,8 @@ bool Game_window::locate_shape(
     int qual            // Quality/quantity.
 ) {
 	// Get (first) selected object.
-	const std::vector<Game_object *> &sel = cheat.get_selected();
-	Game_object *start = !sel.empty() ? sel[0] : 0;
+	const std::vector<Game_object_shared> &sel = cheat.get_selected();
+	Game_object *start = !sel.empty() ? (sel[0]).get() : nullptr;
 	char msg[80];
 	snprintf(msg, sizeof(msg), "Searching for shape %d", shapenum);
 	effects->center_text(msg);
@@ -1088,7 +1008,7 @@ void Game_window::set_scrolls(
 	if (!old_active_barge && moving_barge) {
 		// Do it right.
 		Barge_object *b = moving_barge;
-		moving_barge = 0;
+		moving_barge = nullptr;
 		set_moving_barge(b);
 	}
 	// Set where to skip rendering.
@@ -1210,7 +1130,7 @@ Rectangle Game_window::get_shape_rect(const Game_object *obj) const {
 	if (!s) {
 		// This is probably fatal.
 #ifdef DEBUG
-		std::cerr << "DEATH! get_shape() returned a NULL pointer: " << __FILE__ << ":" << __LINE__ << std::endl;
+		std::cerr << "DEATH! get_shape() returned a nullptr pointer: " << __FILE__ << ":" << __LINE__ << std::endl;
 		std::cerr << "Betcha it's a little doggie." << std::endl;
 #endif
 		return Rectangle(0, 0, 0, 0);
@@ -1306,7 +1226,6 @@ void Game_window::init_actors(
 		schedule_npcs(6, false);
 		write_npcs();
 	}
-
 }
 
 // In gamemgr/modmgr.cc because it is also needed by ES.
@@ -1429,9 +1348,7 @@ void Game_window::read(
 
 void Game_window::write_gwin(
 ) {
-	ofstream gout_stream;
-	U7open(gout_stream, GWINDAT);   // Gamewin.dat.
-	OStreamDataSource gout(&gout_stream);
+	OFileDataSource gout(GWINDAT);
 	// Start with scroll coords (in tiles).
 	gout.write2(get_scrolltx());
 	gout.write2(get_scrollty());
@@ -1451,8 +1368,7 @@ void Game_window::write_gwin(
 	gout.write1(armageddon ? 1 : 0);
 	gout.write1(ambient_light ? 1 : 0);
 	gout.write1(combat ? 1 : 0);
-	gout_stream.flush();
-	if (!gout_stream.good())
+	if (!gout.good())
 		throw file_write_exception(GWINDAT);
 }
 
@@ -1466,14 +1382,11 @@ void Game_window::read_gwin(
 ) {
 	if (!clock->in_queue())     // Be sure clock is running.
 		tqueue->add(Game::get_ticks(), clock, this);
-	ifstream gin_stream;
-	try {
-		U7open(gin_stream, GWINDAT);    // Gamewin.dat.
-	} catch (const file_open_exception &) {
+
+	IFileDataSource gin(GWINDAT);
+	if (!gin.good()) {
 		return;
 	}
-
-	IStreamDataSource gin(&gin_stream);
 
 	// Start with scroll coords (in tiles).
 	scrolltx_lp = scrolltx_l = scrolltx = gin.read2();
@@ -1485,19 +1398,19 @@ void Game_window::read_gwin(
 	clock->set_day(gin.read2());
 	clock->set_hour(gin.read2());
 	clock->set_minute(gin.read2());
-	if (!gin_stream.good())     // Next ones were added recently.
+	if (!gin.good())     // Next ones were added recently.
 		throw file_read_exception(GWINDAT);
 	special_light = gin.read4();
 	armageddon = false;     // Old saves may not have this yet.
 
-	if (!gin_stream.good()) {
+	if (!gin.good()) {
 		special_light = 0;
 		return;
 	}
 
 	int track_num = gin.read4();
 	int repeat = gin.read4();
-	if (!gin_stream.good()) {
+	if (!gin.good()) {
 		Audio::get_ptr()->stop_music();
 		return;
 	}
@@ -1505,15 +1418,15 @@ void Game_window::read_gwin(
 	if(!is_bg_track(track_num) || (midi && (midi->get_ogg_enabled() || midi->is_mt32())))
 		Audio::get_ptr()->start_music(track_num, repeat != 0);
 	armageddon = gin.read1() == 1 ? true : false;
-	if (!gin_stream.good())
+	if (!gin.good())
 		armageddon = false;
 
 	ambient_light = gin.read1() == 1 ? true : false;
-	if (!gin_stream.good())
+	if (!gin.good())
 		ambient_light = false;
 
 	combat = gin.read1() == 1 ? true : false;
-	if (!gin_stream.good())
+	if (!gin.good())
 		combat = false;
 }
 
@@ -1597,17 +1510,10 @@ void Game_window::view_right(
 		return;
 	}
 	map->read_map_data();       // Be sure objects are present.
-#ifdef HAVE_OPENGL
-	if (GL_manager::get_instance()) // OpenGL? Just repaint all.
-		paint();
-	else
-#endif
-	{
-		// Shift image to left.
-		win->copy(c_tilesize, 0, w - c_tilesize, h, 0, 0);
-		// Paint 1 column to right.
-		paint(w - c_tilesize, 0, c_tilesize, h);
-	}
+	// Shift image to left.
+	win->copy(c_tilesize, 0, w - c_tilesize, h, 0, 0);
+	// Paint 1 column to right.
+	paint(w - c_tilesize, 0, c_tilesize, h);
 	dirty.x -= c_tilesize;  // Shift dirty rect.
 	dirty = clip_to_win(dirty);
 	// New chunk?
@@ -1627,17 +1533,10 @@ void Game_window::view_left(
 		return;
 	}
 	map->read_map_data();       // Be sure objects are present.
-#ifdef HAVE_OPENGL
-	if (GL_manager::get_instance()) // OpenGL? Just repaint all.
-		paint();
-	else
-#endif
-	{
-		win->copy(0, 0, get_width() - c_tilesize, get_height(),
-		          c_tilesize, 0);
-		int h = get_height();
-		paint(0, 0, c_tilesize, h);
-	}
+	win->copy(0, 0, get_width() - c_tilesize, get_height(),
+				c_tilesize, 0);
+	int h = get_height();
+	paint(0, 0, c_tilesize, h);
 	dirty.x += c_tilesize;      // Shift dirty rect.
 	dirty = clip_to_win(dirty);
 	// New chunk?
@@ -1658,15 +1557,8 @@ void Game_window::view_down(
 		return;
 	}
 	map->read_map_data();       // Be sure objects are present.
-#ifdef HAVE_OPENGL
-	if (GL_manager::get_instance()) // OpenGL? Just repaint all.
-		paint();
-	else
-#endif
-	{
-		win->copy(0, c_tilesize, w, h - c_tilesize, 0, 0);
-		paint(0, h - c_tilesize, w, c_tilesize);
-	}
+	win->copy(0, c_tilesize, w, h - c_tilesize, 0, 0);
+	paint(0, h - c_tilesize, w, c_tilesize);
 	dirty.y -= c_tilesize;      // Shift dirty rect.
 	dirty = clip_to_win(dirty);
 	// New chunk?
@@ -1686,16 +1578,9 @@ void Game_window::view_up(
 		return;
 	}
 	map->read_map_data();       // Be sure objects are present.
-#ifdef HAVE_OPENGL
-	if (GL_manager::get_instance()) // OpenGL? Just repaint all.
-		paint();
-	else
-#endif
-	{
-		int w = get_width();
-		win->copy(0, 0, w, get_height() - c_tilesize, 0, c_tilesize);
-		paint(0, 0, w, c_tilesize);
-	}
+	int w = get_width();
+	win->copy(0, 0, w, get_height() - c_tilesize, 0, c_tilesize);
+	paint(0, 0, w, c_tilesize);
 	dirty.y += c_tilesize;      // Shift dirty rect.
 	dirty = clip_to_win(dirty);
 	// New chunk?
@@ -1710,7 +1595,7 @@ void Game_window::view_up(
 
 Gump *Game_window::get_dragging_gump(
 ) {
-	return dragging ? dragging->gump : 0;
+	return dragging ? dragging->gump : nullptr;
 }
 
 /*
@@ -1744,7 +1629,7 @@ void Game_window::start_actor_alt(
 	else if (blocked[dir] && !blocked[(dir + 7) % 8])
 		dir = (dir + 7) % 8;
 	else if (blocked[dir]) {
-		Game_object *block = main_actor->is_moving() ? 0
+		Game_object *block = main_actor->is_moving() ? nullptr
 		                     : main_actor->find_blocking(start.get_neighbor(dir), dir);
 		// We already know the blocking object isn't the avatar, so don't
 		// double check it here.
@@ -1931,9 +1816,9 @@ void Game_window::teleport_party(
     bool no_status_check
 ) {
 	Tile_coord oldpos = main_actor->get_tile();
-	main_actor->set_action(0);  // Definitely need this, or you may
+	main_actor->set_action(nullptr);  // Definitely need this, or you may
 	//   step back to where you came from.
-	moving_barge = 0;       // Calling 'done()' could be risky...
+	moving_barge = nullptr;       // Calling 'done()' could be risky...
 	int i, cnt = party_man->get_count();
 	if (newmap != -1)
 		set_map(newmap);
@@ -1950,7 +1835,7 @@ void Game_window::teleport_party(
 		if (person && !person->is_dead() &&
 		        person->get_schedule_type() != Schedule::wait
 		        && (person->can_act() || no_status_check)) {
-			person->set_action(0);
+			person->set_action(nullptr);
 			Tile_coord t1 = Map_chunk::find_spot(t, 8,
 			                                     person->get_shapenum(), person->get_framenum(),
 			                                     1);
@@ -2048,7 +1933,7 @@ Game_object *Game_window::find_object(
 	int stop_cy = (2 + (scrollty +
 	                    (y + 4 * not_above) / c_tilesize) / c_tiles_per_chunk) % c_num_chunks;
 
-	Game_object *best = 0;      // Find 'best' one.
+	Game_object *best = nullptr;      // Find 'best' one.
 	bool trans = true;      // Try to avoid 'transparent' objs.
 	// Go through them.
 	for (int cy = start_cy; cy != stop_cy; cy = INCR_CHUNK(cy))
@@ -2058,7 +1943,7 @@ Game_object *Game_window::find_object(
 				continue;
 			Object_iterator next(olist->get_objects());
 			Game_object *obj;
-			while ((obj = next.get_next()) != 0) {
+			while ((obj = next.get_next()) != nullptr) {
 				if (obj->get_lift() >= not_above ||
 				        !get_shape_rect(obj).has_world_point(x, y) ||
 				        !obj->is_findable())
@@ -2154,12 +2039,11 @@ void Game_window::show_items(
 		Game_window::get_instance()->get_gump_man()->do_modal_gump(itemgump, Mouse::hand);
 		itemgump->postCloseActions();
 		delete itemgump;
-		obj = NULL;
+		obj = nullptr;
 	}
 #endif
 	// Map-editing?
 	if (obj && cheat.in_map_editor()) {
-
 		if (ctrl)       // Control?  Toggle.
 			cheat.toggle_selected(obj);
 		else {
@@ -2172,7 +2056,7 @@ void Game_window::show_items(
 		cheat.clear_selected();
 
 	// Do we have an NPC?
-	Actor *npc = obj ? obj->as_actor() : 0;
+	Actor *npc = obj ? obj->as_actor() : nullptr;
 	if (npc && cheat.number_npcs() &&
 	        (npc->get_npc_num() > 0 || npc == main_actor)) {
 		char str[64];
@@ -2259,7 +2143,7 @@ void Game_window::show_items(
 			Object_iterator it(chunk->get_objects());
 			Game_object *each;
 			cout << "Chunk Contents: " << endl;
-			while ((each = it.get_next()) != 0)
+			while ((each = it.get_next()) != nullptr)
 				cout << "    " << each->get_name() << ":" << each->get_shapenum() << ":" << each->get_framenum() << endl;
 		}
 #endif
@@ -2297,7 +2181,7 @@ void Game_window::paused_combat_select(
 	if (gump)
 		return;         // Ignore if clicked on gump.
 	Game_object *obj = find_object(x, y);
-	Actor *npc = obj ? obj->as_actor() : 0;
+	Actor *npc = obj ? obj->as_actor() : nullptr;
 	if (!npc || !npc->is_in_party() ||
 	        npc->get_flag(Obj_flags::asleep) || npc->is_dead() ||
 	        npc->get_flag(Obj_flags::paralyzed) ||
@@ -2310,7 +2194,7 @@ void Game_window::paused_combat_select(
 	paint_dirty();
 	show();
 	// Pick a spot.
-	if (!Get_click(x, y, Mouse::greenselect, 0, true))
+	if (!Get_click(x, y, Mouse::greenselect, nullptr, true))
 		return;
 	obj = find_object(x, y);    // Find it.
 	if (!obj) {         // Nothing?  Walk there.
@@ -2323,7 +2207,7 @@ void Game_window::paused_combat_select(
 		if (!npc->walk_path_to_tile(dest, std_delay, 0, 1))
 			Mouse::mouse->flash_shape(Mouse::blocked);
 		else            // Make sure he's in combat mode.
-			npc->set_target(0, true);
+			npc->set_target(nullptr, true);
 		return;
 	}
 	Actor *target = obj->as_actor();
@@ -2362,36 +2246,6 @@ ShapeID Game_window::get_flat(
 }
 
 /*
- *  Remove an item from the world and set it for later deletion.
- */
-
-void Game_window::delete_object(
-    Game_object *obj
-) {
-	obj->set_invalid();     // Set to invalid chunk.
-	if (!obj->is_monster())     // Don't delete these!
-		removed->insert(obj);   // Add to pool instead.
-}
-#if 0   /* ++++++Goes away. */
-/*
- *  A sign or plaque?
- */
-
-static bool Is_sign(
-    int shnum
-) {
-	switch (shnum) {
-	case 820:           // Plaque.
-	case 360:
-	case 361:
-	case 379:
-		return true;
-	default:
-		return false;
-	}
-}
-#endif
-/*
  *  Handle a double-click.
  */
 
@@ -2412,10 +2266,8 @@ void Game_window::double_clicked(
 	if (main_actor_dont_move())
 		return;
 	// Nothing going on?
-	if (!Usecode_script::get_count())
-		removed->flush();   // Flush removed objects.
 	// Look for obj. in open gump.
-	Game_object *obj = 0;
+	Game_object *obj = nullptr;
 	bool gump = gump_man->double_clicked(x, y, obj);
 	bool avatar_can_act = main_actor_can_act();
 
@@ -2424,7 +2276,7 @@ void Game_window::double_clicked(
 		obj = find_object(x, y);
 		if (!avatar_can_act && obj && obj->as_actor()
 		        && obj->as_actor() == main_actor->as_actor()) {
-			ActionFileGump(0);
+			ActionFileGump(nullptr);
 			return;
 		}
 		// Check path, except if an NPC, sign, or if editing.
@@ -2507,15 +2359,15 @@ void Game_window::schedule_npcs(
     bool repaint
 ) {
 	// Go through npc's, skipping Avatar.
-	for (Actor_vector::iterator it = npcs.begin() + 1;
+	for (std::vector<Game_object_shared>::iterator it = npcs.begin() + 1;
 	        it != npcs.end(); ++it) {
-		Actor *npc = *it;
+		Actor *npc = static_cast<Actor *>((*it).get());
 		if (!npc)
 			continue;
 		// Don't want companions leaving.
 		if (npc->get_schedule_type() != Schedule::wait &&
 		        (npc->get_schedule_type() != Schedule::combat ||
-		         npc->get_target() == 0))
+		         npc->get_target() == nullptr))
 			npc->update_schedule(hour / 3, hour % 3 == 0 ? -1 : 0);
 	}
 
@@ -2530,9 +2382,9 @@ void Game_window::schedule_npcs(
 void Game_window::mend_npcs(
 ) {
 	// Go through npc's.
-	for (Actor_vector::iterator it = npcs.begin();
+	for (std::vector<Game_object_shared>::iterator it = npcs.begin();
 	        it != npcs.end(); ++it) {
-		Actor *npc = *it;
+		Actor *npc = static_cast<Actor *>((*it).get());
 		if (npc)
 			npc->mend_wounds(true);
 	}
@@ -2565,7 +2417,7 @@ int Game_window::get_guard_shape(
 /*
  *  Find a witness to the Avatar's thievery.
  *
- *  Output: ->witness, or NULL.
+ *  Output: ->witness, or nullptr.
  *      closest_npc = closest one that's nearby.
  */
 
@@ -2575,14 +2427,14 @@ Actor *Game_window::find_witness(
 ) {
 	Actor_vector npcs;          // See if someone is nearby.
 	main_actor->find_nearby_actors(npcs, c_any_shapenum, 12, 0x28);
-	closest_npc = 0;        // Look for closest NPC.
+	closest_npc = nullptr;        // Look for closest NPC.
 	int closest_dist = 5000;
-	Actor *witness = 0;     // And closest facing us.
+	Actor *witness = nullptr;     // And closest facing us.
 	int closest_witness_dist = 5000;
 	int gshape = get_guard_shape();
 	for (Actor_vector::const_iterator it = npcs.begin();
 	        it != npcs.end(); ++it) {
-		Actor *npc = *it;
+		Actor *npc = (*it);
 		// Want non-party intelligent and not disabled NPCs only.
 		if (npc->is_in_party() || !npc->is_sentient() || !npc->can_act())
 			continue;
@@ -2673,7 +2525,7 @@ void Game_window::theft(
  */
 
 void Game_window::call_guards(
-    Actor *witness,         // ->witness, or 0 to find one.
+    Actor *witness,         // ->witness, or nullptr to find one.
     bool theft              // called from Game_window::theft
 ) {
 	Actor *closest;
@@ -2681,7 +2533,7 @@ void Game_window::call_guards(
 		return;
 	int gshape = get_guard_shape(),
 	    align = witness ? witness->get_effective_alignment() : Actor::neutral;
-	if (witness || (witness = find_witness(closest, align)) != 0) {
+	if (witness || (witness = find_witness(closest, align)) != nullptr) {
 		if (witness->is_goblin()) {
 			if (gshape < 0)
 				witness->say(goblin_need_help);
@@ -2716,8 +2568,10 @@ void Game_window::call_guards(
 		Schedule::Schedule_types sched = /*combat ? Schedule::combat
                                                 :*/ Schedule::arrest_avatar;
 		for (int i = 0; i < numguards; i++) {
-			Monster_actor *guard = Monster_actor::create(gshape, offscreen,
-			                       sched, Actor::chaotic);
+			Game_object_shared new_guard = Monster_actor::create(
+							   gshape, offscreen, sched, Actor::chaotic);
+			Monster_actor *guard = static_cast<Monster_actor *>(
+													new_guard.get());
 			add_nearby_npc(guard);
 			guard->approach_another(main_actor);
 		}
@@ -2745,8 +2599,9 @@ void Game_window::stop_arresting(
 
 	Actor_vector npcs;      // See if someone is nearby.
 	main_actor->find_nearby_actors(npcs, gshape, 20, 0x28);
-	for (Actor_vector::const_iterator it = npcs.begin(); it != npcs.end(); ++it) {
-		Actor *npc = *it;
+	for (Actor_vector::const_iterator it = npcs.begin();
+												   it != npcs.end(); ++it) {
+		Actor *npc = (*it);
 		if (!npc->is_in_party() && npc->get_schedule_type() == Schedule::arrest_avatar) {
 			npc->set_schedule_type(Schedule::wander);
 			// Prevent guard from becoming hostile.
@@ -2769,9 +2624,11 @@ void Game_window::attack_avatar(
 	if (gshape >= 0 && !in_dungeon) {
 		while (create_guards--) {
 			// Create it off-screen.
-			Monster_actor *guard = Monster_actor::create(gshape,
-			                       main_actor->get_tile() + Tile_coord(128, 128, 0),
-			                       Schedule::combat, Actor::chaotic);
+			Game_object_shared new_guard = Monster_actor::create(gshape,
+			                  main_actor->get_tile() + Tile_coord(128, 128, 0),
+			                  Schedule::combat, Actor::chaotic);
+			Monster_actor *guard = static_cast<Monster_actor *>(
+													new_guard.get());
 			add_nearby_npc(guard);
 			guard->set_target(main_actor, true);
 			guard->approach_another(main_actor);
@@ -2784,7 +2641,7 @@ void Game_window::attack_avatar(
 	main_actor->find_nearby_actors(npcs, c_any_shapenum, 20, 0x28);
 	for (Actor_vector::const_iterator it = npcs.begin();
 	        it != npcs.end() && numhelpers < maxhelpers; ++it) {
-		Actor *npc = *it;
+		Actor *npc = (*it);
 		if (npc->can_act() && !npc->is_in_party() && npc->is_sentient() &&
 		        ((npc->get_shapenum() == gshape && !in_dungeon) ||
 		         align == npc->get_effective_alignment()) &&
@@ -3026,7 +2883,7 @@ void Game_window::emulate_cache(Map_chunk *olist, Map_chunk *nlist) {
 			if (!list) continue;
 			Object_iterator it(list->get_objects());
 			Game_object *each;
-			while ((each = it.get_next()) != 0) {
+			while ((each = it.get_next()) != nullptr) {
 				if (each->is_egg())
 					each->as_egg()->reset();
 				else if (each->get_flag(Obj_flags::is_temporary))
@@ -3042,15 +2899,13 @@ void Game_window::emulate_cache(Map_chunk *olist, Map_chunk *nlist) {
 		     t.tx << "," << t.ty << "," << t.tz << endl;
 #endif
 		(*it)->delete_contents();  // first delete item's contents
-		(*it)->remove_this(0);
+		(*it)->remove_this(nullptr);
 	}
 
 	if (omap == nmap)
 		omap->cache_out(newx, newy);
 	else                    // Going to new map?
 		omap->cache_out(-1, -1);    // Cache out whole of old map.
-	// Could cause some problems
-	removed->flush();
 }
 
 // Tests to see if a move goes out of range of the actors superchunk
@@ -3075,31 +2930,15 @@ bool Game_window::emulate_is_move_allowed(int tx, int ty) {
 }
 
 //create mini-screenshot (96x60) for use in savegames
-Shape_file *Game_window::create_mini_screenshot() {
-	Shape_file *sh = 0;
-	Shape_frame *fr = 0;
-	unsigned char *img = 0;
-
+unique_ptr<Shape_file> Game_window::create_mini_screenshot() {
 	set_all_dirty();
 	render->paint_map(0, 0, get_width(), get_height());
-#ifdef HAVE_OPENGL
-	if (GL_manager::get_instance())
-		show();
-#endif
 
-	img = win->mini_screenshot();
-
+	unique_ptr<unsigned char[]> img(win->mini_screenshot());
+	unique_ptr<Shape_file> sh;
 	if (img) {
-		fr = new Shape_frame();
-		fr->xleft = 0;
-		fr->yabove = 0;
-		fr->xright = 95;
-		fr->ybelow = 59;
-		fr->create_rle(img, 96, 60);
-		fr->rle = 1;
-		delete [] img;
-
-		sh = new Shape_file(fr);
+		sh = make_unique<Shape_file>(make_unique<Shape_frame>(std::move(img),
+		                             96, 60, 0, 0, true));
 	}
 
 	set_all_dirty();
@@ -3147,17 +2986,6 @@ void Game_window::cycle_load_palette() {
 	if (ticks > load_palette_timer + 75) {
 		for (int i = 0; i < 4; ++i)
 			get_win()->rotate_colors(plasma_start_color, plasma_cycle_range, 1);
-#ifdef HAVE_OPENGL
-		if (GL_manager::get_instance()) {
-			int w = get_width(), h = get_height();
-			Image_buffer8 *buf = get_win()->get_ib8();
-			Shape_frame *screen =
-			    new Shape_frame(buf->get_bits(), w, h, 0, 0, true);
-			//Shape_manager::get_instance()->paint_shape(0, 0, screen);
-			Set_glpalette(0, true);
-			GL_manager::get_instance()->paint(screen, 0, 0);
-		}
-#endif
 		show(true);
 
 		// We query the timer here again, as the blit can take easily 50 ms and more
@@ -3228,6 +3056,6 @@ void Game_window::set_shortcutbar(uint8 s) {
 		g_shortcutBar = new ShortcutBar_gump(0,0);
 	} else {
 		gump_man->close_gump(g_shortcutBar);
-		g_shortcutBar = NULL;
+		g_shortcutBar = nullptr;
 	}
 }

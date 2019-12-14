@@ -34,7 +34,7 @@ int sign(T val) {
  */
 class Spelltype_gump : public Gump {
 public:
-	Spelltype_gump(int shnum) : Gump(0, shnum) {  }
+	Spelltype_gump(int shnum) : Gump(nullptr, shnum) {  }
 	virtual ~Spelltype_gump() {  }
 	// Perform spell.
 	virtual void do_spell(int spell) = 0;

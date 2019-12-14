@@ -38,7 +38,7 @@ public:
 		grabbed = g;
 	}
 	void    ClearThisGrabbedActor(Actor *g) const {
-		if (g == grabbed) g = 0;
+		if (g == grabbed) g = nullptr;
 	}
 private:
 	enum Cheat_Prompt {

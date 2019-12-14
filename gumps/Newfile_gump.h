@@ -20,6 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define NEWFILE_GUMP_H
 
 #include "Modal_gump.h"
+#include <memory>
 
 class Shape_file;
 class Image_buffer;
@@ -82,7 +83,7 @@ struct SaveGame_Party {
  *  The file save/load box:
  */
 class Newfile_gump : public Modal_gump {
-	UNREPLICATABLE_CLASS_I(Newfile_gump, Modal_gump(0, 0, 0, 0))
+	UNREPLICATABLE_CLASS_I(Newfile_gump, Modal_gump(nullptr, 0, 0, 0))
 
 public:
 	struct SaveInfo {
@@ -93,7 +94,7 @@ public:
 		bool            readable;
 		SaveGame_Details    *details;
 		SaveGame_Party      *party;
-		Shape_file      *screenshot;
+		std::unique_ptr<Shape_file> screenshot;
 
 		static int      CompareGames(const void *a, const void *b);
 		int         CompareThis(const SaveInfo *other) const;
@@ -146,12 +147,12 @@ protected:
 	int     num_games;  // Number of save games
 	int     first_free; // The number of the first free savegame
 
-	Shape_file *cur_shot;       // Screenshot for current game
+	std::unique_ptr<Shape_file> cur_shot;       // Screenshot for current game
 	SaveGame_Details *cur_details;  // Details of current game
 	SaveGame_Party *cur_party;  // Party of current game
 
 	// Gamedat is being used as a 'quicksave'
-	Shape_file *gd_shot;        // Screenshot in Gamedat
+	std::unique_ptr<Shape_file> gd_shot;        // Screenshot in Gamedat
 	SaveGame_Details *gd_details;   // Details in Gamedat
 	SaveGame_Party *gd_party;   // Parts in Gamedat
 
