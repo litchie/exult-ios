@@ -131,7 +131,12 @@ public:
 	}
 
 	virtual bool eof() {
-		return in->eof();
+		in->get();
+		bool ret = in->eof();
+		if (!ret) {
+			in->unget();
+		}
+		return ret;
 	}
 	virtual bool good() {
 		return in->good();
