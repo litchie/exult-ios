@@ -162,7 +162,7 @@ ifdef DEBUG_SYMBOLS
 	OPT_LEVEL=-Og
 endif
 
-CXXFLAGS=-MMD -std=c++14 $(ARCHFLAGS) $(strip $(OPT_LEVEL) -Wall -Wextra -pedantic -Walloc-zero -Walloca -Wc++14-compat -Wc++17-compat -Wcast-align -Wcast-qual -Wconditionally-supported -Wctor-dtor-privacy -Wdisabled-optimization -Wduplicated-branches -Wduplicated-cond -Wformat-nonliteral -Wformat-security -Wlogical-not-parentheses -Wlogical-op -Wmissing-include-dirs -Wnon-virtual-dtor -Wold-style-cast -Woverloaded-virtual -Wplacement-new -Wredundant-decls -Wshift-negative-value -Wshift-overflow -Wtrigraphs -Wundef -Wuninitialized -Wuseless-cast -Wwrite-strings -Wzero-as-null-pointer-constant -mms-bitfields)
+CXXFLAGS=-MMD -std=c++14 $(ARCHFLAGS) $(strip $(OPT_LEVEL) -Wall -Wextra -pedantic -Walloc-zero -Walloca -Wc++14-compat -Wc++17-compat -Wcast-align -Wcast-qual -Wconditionally-supported -Wctor-dtor-privacy -Wdisabled-optimization -Wduplicated-branches -Wduplicated-cond -Wformat-nonliteral -Wformat-security -Wlogical-not-parentheses -Wlogical-op -Wmissing-include-dirs -Wnon-virtual-dtor -Wold-style-cast -Woverloaded-virtual -Wplacement-new -Wredundant-decls -Wshift-negative-value -Wshift-overflow -Wtrigraphs -Wundef -Wuninitialized -Wuseless-cast -Wwrite-strings -Wzero-as-null-pointer-constant -mms-bitfields -Wno-deprecated-declarations)
 CXX?=g++
 
 CFLAGS=-MMD $(ARCHFLAGS) $(strip $(OPT_LEVEL) -Wall -Wextra -pedantic -mms-bitfields)
