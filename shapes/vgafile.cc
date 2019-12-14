@@ -1010,14 +1010,15 @@ void Shape::load(
 ) {
 	reset();
 	Shape_frame *frame = new Shape_frame();
+	size_t location = shape_source->getPos();
 	uint32 shapelen = shape_source->read4();
 	// Read frame 0 & get frame count.
-	create_frames_list(frame->read(shape_source, 0L, shapelen, 0));
+	create_frames_list(frame->read(shape_source, location, shapelen, 0));
 	store_frame(frame, 0);
 	// Get the rest.
 	for (size_t i = 1; i < num_frames; i++) {
 		frame = new Shape_frame();
-		frame->read(shape_source, 0L, shapelen, i);
+		frame->read(shape_source, location, shapelen, i);
 		store_frame(frame, i);
 	}
 }
