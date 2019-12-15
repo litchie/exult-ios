@@ -702,29 +702,26 @@ else
 fi
 
 AC_ARG_WITH([sanitizers],
-            AS_HELP_STRING([--with-sanitizers=no|address|thread|memory|yes],
+            AS_HELP_STRING([--with-sanitizers=no|address|thread|memory|undefined|dataflow|safe-stack],
                            [Enable sanitizers @<:@default no@:>@]),
             [enable_sanitizers="$withval"], [enable_sanitizers="no"])
 AC_MSG_CHECKING([whether to enable sanitizers])
-if test x$enable_sanitizers = xno; then
-	AC_MSG_RESULT(no)
-	CHK_SAN=""
-elif test x$enable_sanitizers = xyes; then
-	AC_MSG_RESULT($withval)
-	CHK_SAN="-fsanitize=undefined -fsanitize=dataflow -fsanitize=safe-stack"
-	# Requires LTO. Maybe in the future.
-	#CHK_SAN="$CHK_SAN -fsanitize=cfi"
-elif test x$enable_sanitizers = xaddress -o x$enable_sanitizers = xthread -o x$enable_sanitizers = xmemory; then
-	AC_MSG_RESULT($withval)
-	CHK_SAN="-fsanitize=$withval -fsanitize=undefined -fsanitize=dataflow -fsanitize=safe-stack"
-	# Requires LTO. Maybe in the future.
-	#CHK_SAN="$CHK_SAN -fsanitize=cfi"
-else
-	AC_MSG_RESULT(invalid)
-	echo "Invalid option given for --with-sanitizers: $enable_sanitizers."
-	echo "Expected one of 'no', 'address', 'thread', 'memory', 'yes'."
-	exit 1
-fi
+case "${enable_sanitizers}" in
+	no)
+		AC_MSG_RESULT(no)
+		CHK_SAN=""
+	;;
+	address|thread|memory|undefined|dataflow|safe-stack)
+		AC_MSG_RESULT($enable_sanitizers)
+		CHK_SAN="-fsanitize=$enable_sanitizers"
+	;;	
+	*)
+		AC_MSG_RESULT(invalid)
+		echo "Invalid option given for --with-sanitizers: $enable_sanitizers."
+		echo "Expected one of 'no', 'address', 'thread', 'memory', 'yes'."
+		exit 1
+	;;
+esac
 
 SANITIZERS=""
 for cxx_flag in $CHK_SAN
