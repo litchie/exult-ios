@@ -164,7 +164,7 @@ void Ireg_game_object::write_ireg(
 	const Shape_info &info = get_info();
 	if (info.has_quality_flags()) {
 		// Store 'quality_flags'.
-		*ptr++ = (get_flag(Obj_flags::invisible) ? 1 : 0) +
+		*ptr = (get_flag(Obj_flags::invisible) ? 1 : 0) +
 				(get_flag(Obj_flags::okay_to_take) ? (1 << 3) : 0);
 	}
 	// Special case for 'quantity' items:
