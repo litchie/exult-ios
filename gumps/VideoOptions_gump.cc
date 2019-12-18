@@ -137,7 +137,7 @@ void VideoOptions_gump::toggle(Gump_button *btn, int state) {
 	} else if (btn == buttons[id_share_settings].get())
 		share_settings = state;
 #if SDL_VERSION_ATLEAST(2, 0, 1) && (defined(MACOSX) || defined(__IPHONEOS__))
-	else if (btn == buttons[id_high_dpi])
+	else if (btn == buttons[id_high_dpi].get())
 		highdpi = state;
  #endif
 
@@ -362,7 +362,7 @@ VideoOptions_gump::VideoOptions_gump() : Modal_gump(nullptr, EXULT_FLX_VIDEOOPTI
 	std::string *hdpi_text = new std::string[2];
 	hdpi_text[0] = "Disabled";
 	hdpi_text[1] = "Enabled";
-	buttons[id_high_dpi] = new VideoTextToggle(this, hdpi_text, colx[2], rowy[2], 74,
+	buttons[id_high_dpi] = std::make_unique<VideoTextToggle>(this, hdpi_text, colx[2], rowy[2], 74,
 	        highdpi, 2);
 #endif
 	config->value("config/video/share_video_settings", share_settings, false);
