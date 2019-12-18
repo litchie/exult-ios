@@ -60,7 +60,9 @@ struct Shapeinfo_data {
 	vector<pair<int, int>> imported_skin_shapes;
 	map<string, int> gumpvars;
 	map<string, int> skinvars;
+};
 
+struct Avatar_data {
 	map<bool, Base_Avatar_info> def_av_info;
 	Avatar_default_skin base_av_info;
 	vector<Skin_data> skins_table;
@@ -71,7 +73,8 @@ struct Shapeinfo_data {
 };
 
 std::unique_ptr<Shapeinfo_data> Shapeinfo_lookup::data(nullptr);
-int Shapeinfo_data::last_skin = 0;
+std::unique_ptr<Avatar_data> Shapeinfo_lookup::avdata(nullptr);
+int Avatar_data::last_skin = 0;
 
 
 // HACK. NPC Paperdolls need this, but miscinf has too many
@@ -271,8 +274,8 @@ public:
 		ignore_unused_variable_warning(index);
 		Skin_data entry;
 		entry.skin_id = ReadInt(src, 0);
-		if (entry.skin_id > Shapeinfo_data::last_skin) {
-			Shapeinfo_data::last_skin = entry.skin_id;
+		if (entry.skin_id > Avatar_data::last_skin) {
+			Avatar_data::last_skin = entry.skin_id;
 		}
 		entry.is_female = ReadInt(src) != 0;
 		if ((entry.shape_num = ReadVar(src)) < 0) {
@@ -435,6 +438,9 @@ void Shapeinfo_lookup::Read_data_file(
  *  Setup shape file tables.
  */
 void Shapeinfo_lookup::setup_shape_files() {
+	if (data != nullptr) {
+		return;
+	}
 	data = make_unique<Shapeinfo_data>();
 	const int size = 4;
 	const char *sections[size] = {
@@ -462,9 +468,11 @@ void Shapeinfo_lookup::setup_shape_files() {
  *  Setup avatar data tables.
  */
 void Shapeinfo_lookup::setup_avatar_data() {
-	if (!data) {
-		setup_shape_files();
+	setup_shape_files();
+	if (avdata != nullptr) {
+		return;
 	}
+	avdata = make_unique<Avatar_data>();
 	const int size = 6;
 	const char *sections[size] = {
 		"defaultshape",
@@ -475,35 +483,29 @@ void Shapeinfo_lookup::setup_avatar_data() {
 		"usecode_info"
 	};
 	Shapeinfo_entry_parser *parsers[size] = {
-		new Def_av_shape_parser(data->def_av_info),
-		new Base_av_race_parser(data->base_av_info),
-		new Multiracial_parser(data->skins_table, data->skinvars),
-		new Bool_parser(data->unselectable_skins),
-		new Int_pair_parser(data->petra_table),
-		new Avatar_usecode_parser(data->usecode_funs)
+		new Def_av_shape_parser(avdata->def_av_info),
+		new Base_av_race_parser(avdata->base_av_info),
+		new Multiracial_parser(avdata->skins_table, data->skinvars),
+		new Bool_parser(avdata->unselectable_skins),
+		new Int_pair_parser(avdata->petra_table),
+		new Avatar_usecode_parser(avdata->usecode_funs)
 	};
 	Read_data_file("avatar_data", sections, parsers, size);
 }
 
 
 vector<pair<string, int> > *Shapeinfo_lookup::GetPaperdollSources() {
-	if (!data) {
-		setup_shape_files();
-	}
+	setup_shape_files();
 	return &data->paperdoll_source_table;
 }
 
 vector<pair<int, int> > *Shapeinfo_lookup::GetImportedSkins() {
-	if (!data) {
-		setup_shape_files();
-	}
+	setup_shape_files();
 	return &data->imported_skin_shapes;
 }
 
 bool Shapeinfo_lookup::IsSkinImported(int shape) {
-	if (!data) {
-		setup_shape_files();
-	}
+	setup_shape_files();
 	for (auto& elem : data->imported_skin_shapes) {
 		if (elem.first == shape) {
 			return true;
@@ -512,17 +514,13 @@ bool Shapeinfo_lookup::IsSkinImported(int shape) {
 	return false;
 }
 
-vector<pair<int, int> > *Shapeinfo_lookup::GetImportedGumpShapes() {
-	if (!data) {
-		setup_shape_files();
-	}
+vector<pair<int, int>> *Shapeinfo_lookup::GetImportedGumpShapes() {
+	setup_shape_files();
 	return &data->imported_gump_shapes;
 }
 
 int Shapeinfo_lookup::GetBlueShapeData(int spot) {
-	if (!data)
-		setup_shape_files();
-
+	setup_shape_files();
 	for (auto& elem : data->blue_shapes) {
 		if (elem.first == -1 || elem.first == spot) {
 			return elem.second;
@@ -532,20 +530,16 @@ int Shapeinfo_lookup::GetBlueShapeData(int spot) {
 }
 
 Base_Avatar_info *Shapeinfo_lookup::GetBaseAvInfo(bool sex) {
-	if (!data) {
-		setup_avatar_data();
-	}
-	auto it = data->def_av_info.find(sex);
-	if (it != data->def_av_info.end()) {
+	setup_avatar_data();
+	auto it = avdata->def_av_info.find(sex);
+	if (it != avdata->def_av_info.end()) {
 		return &((*it).second);
 	}
 	return nullptr;
 }
 
 int Shapeinfo_lookup::get_skinvar(const string& key) {
-	if (!data) {
-		setup_shape_files();
-	}
+	setup_shape_files();
 	auto it = data->skinvars.find(key);
 	if (it != data->skinvars.end()) {
 		return (*it).second;    // The shape #.
@@ -554,38 +548,28 @@ int Shapeinfo_lookup::get_skinvar(const string& key) {
 }
 
 int Shapeinfo_lookup::GetMaleAvShape() {
-	if (!data) {
-		setup_avatar_data();
-	}
-	return data->def_av_info[false].shape_num;
+	setup_avatar_data();
+	return avdata->def_av_info[false].shape_num;
 }
 
 int Shapeinfo_lookup::GetFemaleAvShape() {
-	if (!data) {
-		setup_avatar_data();
-	}
-	return data->def_av_info[true].shape_num;
+	setup_avatar_data();
+	return avdata->def_av_info[true].shape_num;
 }
 
 Avatar_default_skin *Shapeinfo_lookup::GetDefaultAvSkin() {
-	if (!data) {
-		setup_avatar_data();
-	}
-	return &data->base_av_info;
+	setup_avatar_data();
+	return &avdata->base_av_info;
 }
 
 vector<Skin_data> *Shapeinfo_lookup::GetSkinList() {
-	if (!data) {
-		setup_avatar_data();
-	}
-	return &data->skins_table;
+	setup_avatar_data();
+	return &avdata->skins_table;
 }
 
 Skin_data *Shapeinfo_lookup::GetSkinInfo(int skin, bool sex) {
-	if (!data) {
-		setup_avatar_data();
-	}
-	for (auto& elem : data->skins_table) {
+	setup_avatar_data();
+	for (auto& elem : avdata->skins_table) {
 		if (elem.skin_id == skin && elem.is_female == sex){ 
 			return &elem;
 		}
@@ -617,18 +601,16 @@ Skin_data *Shapeinfo_lookup::GetSkinInfoSafe(Actor *npc) {
 Skin_data *Shapeinfo_lookup::ScrollSkins(
     int skin, bool sex, bool sishapes, bool ignoresex, bool prev, bool sel
 ) {
-	if (!data) {
-		setup_avatar_data();
-	}
+	setup_avatar_data();
 	bool nsex = sex;
 	int nskin = skin;
 	bool chskin = true;
 	while (true) {
 		if (ignoresex) {
 			nsex = !nsex;
-			chskin = (nsex == data->base_av_info.default_female);
+			chskin = (nsex == avdata->base_av_info.default_female);
 		}
-		nskin = (nskin + ((prev != 0) ? Shapeinfo_data::last_skin : 0) + chskin) % (Shapeinfo_data::last_skin + 1);
+		nskin = (nskin + ((prev != 0) ? Avatar_data::last_skin : 0) + chskin) % (Avatar_data::last_skin + 1);
 		if (sel && !IsSkinSelectable(nskin)) {
 			continue;
 		}
@@ -642,11 +624,9 @@ Skin_data *Shapeinfo_lookup::ScrollSkins(
 }
 
 int Shapeinfo_lookup::GetNumSkins(bool sex) {
-	if (!data) {
-		setup_avatar_data();
-	}
+	setup_avatar_data();
 	int cnt = 0;
-	for (auto& elem : data->skins_table) {
+	for (auto& elem : avdata->skins_table) {
 		if (elem.is_female == sex) {
 			cnt++;
 		}
@@ -655,43 +635,35 @@ int Shapeinfo_lookup::GetNumSkins(bool sex) {
 }
 
 Usecode_function_data *Shapeinfo_lookup::GetAvUsecode(int type) {
-	if (!data) {
-		setup_avatar_data();
-	}
-	auto it = data->usecode_funs.find(type);
-	if (it != data->usecode_funs.end()) {
+	setup_avatar_data();
+	auto it = avdata->usecode_funs.find(type);
+	if (it != avdata->usecode_funs.end()) {
 		return &(it->second);
 	}
 	return nullptr;
 }
 
 bool Shapeinfo_lookup::IsSkinSelectable(int skin) {
-	if (!data) {
-		setup_avatar_data();
-	}
-	auto it = data->unselectable_skins.find(skin);
-	return it == data->unselectable_skins.end();
+	setup_avatar_data();
+	auto it = avdata->unselectable_skins.find(skin);
+	return it == avdata->unselectable_skins.end();
 }
 
 bool Shapeinfo_lookup::HasFaceReplacement(int npcid) {
-	if (!data) {
-		setup_avatar_data();
-	}
-	auto it = data->petra_table.find(npcid);
-	if (it != data->petra_table.end()) {
+	setup_avatar_data();
+	auto it = avdata->petra_table.find(npcid);
+	if (it != avdata->petra_table.end()) {
 		return it->second != 0;
 	}
 	return npcid != 0;
 }
 
 int Shapeinfo_lookup::GetFaceReplacement(int facenum) {
-	if (!data) {
-		setup_avatar_data();
-	}
+	setup_avatar_data();
 	Game_window *gwin = Game_window::get_instance();
 	if (gwin->get_main_actor()->get_flag(Obj_flags::petra)) {
-		auto it = data->petra_table.find(facenum);
-		if (it != data->petra_table.end())
+		auto it = avdata->petra_table.find(facenum);
+		if (it != avdata->petra_table.end())
 			return it->second;
 	}
 	return facenum;
@@ -699,5 +671,6 @@ int Shapeinfo_lookup::GetFaceReplacement(int facenum) {
 
 void Shapeinfo_lookup::reset() {
 	data.reset();
-	Shapeinfo_data::last_skin = 0;
+	avdata.reset();
+	Avatar_data::last_skin = 0;
 }

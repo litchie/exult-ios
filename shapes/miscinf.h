@@ -58,6 +58,7 @@ struct Usecode_function_data {
 
 class Shapeinfo_entry_parser;
 struct Shapeinfo_data;
+struct Avatar_data;
 
 /*
  *  A class to get the extra information for a given shape.
@@ -108,6 +109,7 @@ private:
 	static void setup_shape_files();
 	static void setup_avatar_data();
 	static std::unique_ptr<Shapeinfo_data> data;
+	static std::unique_ptr<Avatar_data>    avdata;
 };
 
 #endif
