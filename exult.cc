@@ -1114,12 +1114,8 @@ static void Handle_events(
 			int x;
 			int y;// Check for 'stuck' Avatar.
 			int ms = SDL_GetMouseState(&x, &y);
-#if (defined(MACOSX) || defined(__IPHONEOS__))
 			//mouse movement needs to be adjusted for HighDPI
 			gwin->get_win()->screen_to_game_hdpi(x, y, gwin->get_fastmouse(), x, y);
-#else
-			gwin->get_win()->screen_to_game(x, y, gwin->get_fastmouse(), x, y);
-#endif
 			if ((SDL_BUTTON(3) & ms) && !right_on_gump)
 				gwin->start_actor(x, y,
 				                  Mouse::mouse->avatar_speed);
@@ -1920,12 +1916,8 @@ void Wizard_eye(
 			int ms = SDL_GetMouseState(&x, &y);
 			int mx;
 			int my;
-#if (defined(MACOSX) || defined(__IPHONEOS__))
 			//mouse movement of the eye needs to adjust for HighDPI
 			gwin->get_win()->screen_to_game_hdpi(x, y, gwin->get_fastmouse(), mx, my);
-#else
-			gwin->get_win()->screen_to_game(x, y, gwin->get_fastmouse(), mx, my);
-#endif
 			if (SDL_BUTTON(3) & ms)
 				Shift_wizards_eye(mx, my);
 			gwin->set_all_dirty();
@@ -2167,10 +2159,8 @@ void setup_video(bool fullscreen, int setup_video_type, int resx, int resy,
 	config->value("config/video/share_video_settings", share_settings, true);
 	const string vidStr((fullscreen || share_settings) ?
 	                       "config/video" : "config/video/window");
-#if (defined(MACOSX) || defined(__IPHONEOS__))
 	bool high_dpi;
 	config->value("config/video/highdpi", high_dpi, true);
-#endif
 	if (read_config) {
 #ifdef DEBUG
 		cout << "Reading video menu adjustable configuration options" << endl;
@@ -2215,12 +2205,7 @@ void setup_video(bool fullscreen, int setup_video_type, int resx, int resy,
 		config->value(vidStr + "/display/height", resy, resy * scaleval);
 		config->value(vidStr + "/game/width", gw, 320);
 		config->value(vidStr + "/game/height", gh, 200);
-#if (defined(MACOSX) || defined(__IPHONEOS__))
-		if (high_dpi)
-			SDL_SetHint(SDL_HINT_VIDEO_HIGHDPI_DISABLED, "0");
-		else
-			SDL_SetHint(SDL_HINT_VIDEO_HIGHDPI_DISABLED, "1");
-#endif
+		SDL_SetHint(SDL_HINT_VIDEO_HIGHDPI_DISABLED, high_dpi ? "0" : "1");
 		config->value(vidStr + "/fill_mode", fmode_string, "Centre");
 		fillmode = Image_window::string_to_fillmode(fmode_string.c_str());
 		if (fillmode == 0)
@@ -2250,10 +2235,8 @@ void setup_video(bool fullscreen, int setup_video_type, int resx, int resy,
 		config->set((vidStr + "/scale_method").c_str(), scalerName , false);
 		config->set((vidStr + "/fill_mode").c_str(), fmode_string, false);
 		config->set((vidStr + "/fill_scaler").c_str(), fillScalerName, false);
-#if (defined(MACOSX) || defined(__IPHONEOS__))
 		config->set("config/video/highdpi", high_dpi ?
 		            "yes" : "no", false);
-#endif
 	}
 	if (video_init) {
 #ifdef DEBUG

@@ -92,10 +92,8 @@ int Image_window::desktop_depth = 0;
 int Image_window::windowed_8 = 0;
 int Image_window::windowed_16 = 0;
 int Image_window::windowed_32 = 0;
-#if (defined(MACOSX) || defined(__IPHONEOS__))
-//When HighDPI is enabled we will end up with a different native scale factor, so we need to define the default
-float Image_window::nativescale = 1.0;
-#endif
+// When HighDPI is enabled we will end up with a different native scale factor, so we need to define the default
+float Image_window::nativescale = 1.0f;
 
 const int Image_window::guard_band = 4;
 
@@ -508,7 +506,10 @@ void Image_window::create_surface(
 	}
 
 	if (!paletted_surface && !force_bpp) {      // No scaling, or failed?
-		uint32 flags = SDL_SWSURFACE | SDL_WINDOW_ALLOW_HIGHDPI | (fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
+		uint32 flags = SDL_SWSURFACE | SDL_WINDOW_ALLOW_HIGHDPI;
+		if (fullscreen) {
+			flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+		}
 		if (screen_window != nullptr) {
 			SDL_SetWindowSize(screen_window, w / scale, h / scale);
 			SDL_SetWindowFullscreen(screen_window, flags);
@@ -590,13 +591,10 @@ void Image_window::create_surface(
 
 bool Image_window::create_scale_surfaces(int w, int h, int bpp) {
 	int hwdepth = bpp;
-	uint32 flags = 0;
-
-	// Get best bpp
-	flags = SDL_SWSURFACE | (fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
-#if (defined(MACOSX) || defined(__IPHONEOS__))
-	flags |= SDL_WINDOW_ALLOW_HIGHDPI;
-#endif
+	uint32 flags = SDL_SWSURFACE | SDL_WINDOW_ALLOW_HIGHDPI;
+	if (fullscreen) {
+		flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+	}
 #ifdef __IPHONEOS__
 	// Turn on landscape mode if desired
 	if (w > h) {
@@ -628,12 +626,10 @@ bool Image_window::create_scale_surfaces(int w, int h, int bpp) {
 		h=dh;
 		Resolution res = { w, h, false, false, false};
 		p_resolutions[(w << 16) | h] = res;
-#if (defined(MACOSX) || defined(__IPHONEOS__))
 		//getting new native scale when highdpi is active
 		int sw;
 		SDL_GetWindowSize(screen_window, &sw, nullptr);
 		nativescale = dw / sw;
-#endif
 		//high resolution fullscreen needs this to make the whole screen available
 		SDL_RenderSetLogicalSize(screen_renderer, w, h);
 	} else

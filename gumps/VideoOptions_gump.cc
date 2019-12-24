@@ -136,10 +136,8 @@ void VideoOptions_gump::toggle(Gump_button *btn, int state) {
 		fill_mode = static_cast<Image_window::FillMode>((fill_mode&~1) | (has_ac ? 1 : 0));
 	} else if (btn == buttons[id_share_settings].get())
 		share_settings = state;
-#if (defined(MACOSX) || defined(__IPHONEOS__))
 	else if (btn == buttons[id_high_dpi].get())
 		highdpi = state;
-#endif
 
 	paint();
 }
@@ -342,9 +340,7 @@ void VideoOptions_gump::load_settings(bool Fullscreen) {
 	o_fill_scaler = fill_scaler;
 	o_fill_mode = fill_mode;
 	o_game_resolution = game_resolution;
-#if (defined(MACOSX) || defined(__IPHONEOS__))
 	o_highdpi = highdpi;
-#endif
 }
 
 VideoOptions_gump::VideoOptions_gump() : Modal_gump(nullptr, EXULT_FLX_VIDEOOPTIONS_SHP, SF_EXULT_FLX) {
@@ -357,14 +353,12 @@ VideoOptions_gump::VideoOptions_gump() : Modal_gump(nullptr, EXULT_FLX_VIDEOOPTI
 	enabledtext[1] = "Enabled";
 	buttons[id_fullscreen] = std::make_unique<VideoTextToggle>(this, enabledtext, colx[2], rowy[0], 74,
 	        fullscreen, 2);
-#if (defined(MACOSX) || defined(__IPHONEOS__))
 	config->value("config/video/highdpi", highdpi, false);
 	std::string *hdpi_text = new std::string[2];
 	hdpi_text[0] = "Disabled";
 	hdpi_text[1] = "Enabled";
 	buttons[id_high_dpi] = std::make_unique<VideoTextToggle>(this, hdpi_text, colx[2], rowy[2], 74,
 	        highdpi, 2);
-#endif
 	config->value("config/video/share_video_settings", share_settings, false);
 	std::string *yesNO = new std::string[2];
 	yesNO[0] = "No";
@@ -402,12 +396,10 @@ void VideoOptions_gump::save_settings() {
 		if (!Yesno_gump::ask("Scaled size less than 320x200.\nExult may be unusable.\nApply anyway?", "TINY_BLACK_FONT"))
 			return;
 	}
-#if (defined(MACOSX) || defined(__IPHONEOS__))
 	if (highdpi != o_highdpi) {
 		if (!Yesno_gump::ask("After toggling HighDPI you will need to restart Exult!\nApply anyway?", "TINY_BLACK_FONT"))
 			return;
 	}
-#endif
 	gwin->resized(resx, resy, fullscreen != 0, gw, gh, scaling + 1, scaler, fill_mode,
 	              fill_scaler ? Image_window::bilinear : Image_window::point);
 	gclock->reset();
@@ -436,9 +428,7 @@ void VideoOptions_gump::save_settings() {
 		config->set("config/video/share_video_settings", share_settings ? "yes" : "no", false);
 		setup_video(fullscreen != 0, SET_CONFIG, resx, resy, gw, gh, scaling + 1, scaler, fill_mode,
 		            fill_scaler ? Image_window::bilinear : Image_window::point);
-#if (defined(MACOSX) || defined(__IPHONEOS__))
 		config->set("config/video/highdpi", highdpi ? "yes" : "no", false);
-#endif
 		config->write_back();
 		o_resolution = resolution;
 		o_scaling = scaling;
@@ -447,9 +437,7 @@ void VideoOptions_gump::save_settings() {
 		o_fill_mode = fill_mode;
 		o_fill_scaler = fill_scaler;
 		o_share_settings = share_settings;
-#if (defined(MACOSX) || defined(__IPHONEOS__))
 		o_highdpi = highdpi;
-#endif
 	}
 }
 
@@ -466,9 +454,7 @@ void VideoOptions_gump::paint() {
 	font->paint_text(iwin->get_ib8(), "Full Screen:", x + colx[0], y + rowy[0] + 1);
 	if (fullscreen) font->paint_text(iwin->get_ib8(), "Display Mode:", x + colx[0], y + rowy[1] + 1);
 	else font->paint_text(iwin->get_ib8(), "Window Size:", x + colx[0], y + rowy[1] + 1);
-#if (defined(MACOSX) || defined(__IPHONEOS__))
 	font->paint_text(iwin->get_ib8(), "HighDPI:", x + colx[0], y + rowy[2] + 1);
-#endif
 	font->paint_text(iwin->get_ib8(), "Scaler:", x + colx[0], y + rowy[3] + 1);
 	if (buttons[id_scaling] != nullptr) font->paint_text(iwin->get_ib8(), "Scaling:", x + colx[0], y + rowy[4] + 1);
 	font->paint_text(iwin->get_ib8(), "Game Area:", x + colx[0], y + rowy[6] + 1);

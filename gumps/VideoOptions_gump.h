@@ -49,10 +49,8 @@ private:
 	uint32 o_game_resolution;
 	int o_fill_scaler;
 	Image_window::FillMode o_fill_mode;
-#if (defined(MACOSX) || defined(__IPHONEOS__))
 	bool highdpi;
 	bool o_highdpi;
-#endif
 
 	static uint32 *resolutions;
 	static int num_resolutions;
@@ -70,9 +68,7 @@ private:
 	    id_apply = id_first,
 	    id_fullscreen,
 	    id_share_settings,
-#if (defined(MACOSX) || defined(__IPHONEOS__))
 	    id_high_dpi,
-#endif
 	    id_resolution,  // id_resolution and all past it
 	    id_scaler,      // are deleted by rebuild_buttons
 	    id_scaling,
