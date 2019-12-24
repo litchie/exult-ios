@@ -279,6 +279,7 @@ void Usecode_script::purge(
 
 inline void Usecode_script::activate_egg(Usecode_internal *usecode,
         Game_object *e) {
+	ignore_unused_variable_warning(usecode);
 	if (!e || !e->is_egg())
 		return;
 	Egg_object *egg = e->as_egg();
