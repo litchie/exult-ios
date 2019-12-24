@@ -631,7 +631,7 @@ bool Image_window::create_scale_surfaces(int w, int h, int bpp) {
 #if (defined(MACOSX) || defined(__IPHONEOS__))
 		//getting new native scale when highdpi is active
 		int sw;
-		SDL_GetWindowSize(screen_window, &sw, 0);
+		SDL_GetWindowSize(screen_window, &sw, nullptr);
 		nativescale = dw / sw;
 #endif
 		//high resolution fullscreen needs this to make the whole screen available
