@@ -26,10 +26,6 @@
 // depending on the OS
 #define USER_CONFIGURATION_FILE "exult.cfg"
 
-#if defined(MACOSX) && !defined(EXULT_DATADIR)
-#define EXULT_DATADIR   "data"
-#endif
-
 /*
  *  Here are the files we use:
  */
