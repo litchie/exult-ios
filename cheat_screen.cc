@@ -393,7 +393,7 @@ bool CheatScreen::SharedInput(char *input, int len, int &command, Cheat_Prompt &
 		while (SDL_PollEvent(&event)) {
 			if (event.type != SDL_KEYDOWN)
 				continue;
-			SDL_keysym &key = event.key.keysym;
+			SDL_Keysym &key = event.key.keysym;
 
 			if ((key.sym == SDLK_s) && (key.mod & KMOD_ALT) && (key.mod & KMOD_CTRL)) {
 				make_screenshot(true);
@@ -422,10 +422,10 @@ bool CheatScreen::SharedInput(char *input, int len, int &command, Cheat_Prompt &
 						input[curlen] = key.sym;
 						input[curlen + 1] = 0;
 					}
-				} else if ((key.sym >= SDLK_KP1 && key.sym <= SDLK_KP9) || key.sym == SDLK_KP0) {
+				} else if ((key.sym >= SDLK_KP_1 && key.sym <= SDLK_KP_9) || key.sym == SDLK_KP_0) {
 					int curlen = std::strlen(input);
 					if (curlen < (len - 1)) {
-						int sym = key.sym == SDLK_KP0 ? '0' : (key.sym - SDLK_KP1 + '1');
+						int sym = key.sym == SDLK_KP_0 ? '0' : (key.sym - SDLK_KP_1 + '1');
 						input[curlen] = sym;
 						input[curlen + 1] = 0;
 					}
@@ -473,10 +473,10 @@ bool CheatScreen::SharedInput(char *input, int len, int &command, Cheat_Prompt &
 						input[curlen] = key.sym;
 						input[curlen + 1] = 0;
 					}
-				} else if ((key.sym >= SDLK_KP1 && key.sym <= SDLK_KP9) || key.sym == SDLK_KP0) {
+				} else if ((key.sym >= SDLK_KP_1 && key.sym <= SDLK_KP_9) || key.sym == SDLK_KP_0) {
 					int curlen = std::strlen(input);
 					if (curlen < (len - 1)) {
-						int sym = key.sym == SDLK_KP0 ? '0' : (key.sym - SDLK_KP1 + '1');
+						int sym = key.sym == SDLK_KP_0 ? '0' : (key.sym - SDLK_KP_1 + '1');
 						input[curlen] = sym;
 						input[curlen + 1] = 0;
 					}

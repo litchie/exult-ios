@@ -17,12 +17,6 @@ else
 	EH_LIB=libgcc_s_dw2-1.dll
 endif
 
-ifdef SDL1
-	SDL_BASE=SDL
-else
-	SDL_BASE=SDL2
-endif
-
 ifdef USE_CONSOLE
 	SUBSYSTEM=-mconsole
 	SYSFLAGS=-DUSE_CONSOLE
@@ -31,23 +25,20 @@ else
 	SYSFLAGS=
 endif
 
-SDL_DLL_NAME:=$(SDL_BASE).dll
-SDLIMAGE_DLL_NAME:=$(SDL_BASE)_image.dll
-
-SDL_CFLAGS:=$(shell pkg-config --cflags-only-I $(SDL_BASE))
+SDL_CFLAGS:=$(shell pkg-config --cflags-only-I SDL2)
 ### We want to do our own stdout/stderr redirection, thank you.
-#SDL_LIBS:=$(shell pkg-config --libs $(SDL_BASE))
-SDL_LIBS:=$(shell pkg-config --libs $(SDL_BASE))
+#SDL_LIBS:=$(shell pkg-config --libs SDL2)
+SDL_LIBS:=$(shell pkg-config --libs SDL2)
 # -lwinmm
 
-SDL_IMAGE_LIBS:=$(shell pkg-config --libs $(SDL_BASE)_image) $(shell pkg-config --libs $(SDL_BASE)_image)
+SDL_IMAGE_LIBS:=$(shell pkg-config --libs SDL2_image) $(shell pkg-config --libs SDL2_image)
 #-lpng -ltiff -ljpeg -lwebp -lz
 
 ### Uncomment these 2 lines, and comment out the 2 above if you want to build
 ### Exult as a console Win32 application. This is unsupported and is somewhat
 ### of a hack.
-#SDL_LIBS:=$(shell pkg-config --libs-only-L $(SDL_BASE)) $(shell pkg-config --libs-only-l $(SDL_BASE)) -mconsole
-#SDL_CFLAGS:=$(shell pkg-config --cflags $(SDL_BASE))
+#SDL_LIBS:=$(shell pkg-config --libs-only-L SDL2) $(shell pkg-config --libs-only-l SDL2) -mconsole
+#SDL_CFLAGS:=$(shell pkg-config --cflags SDL2)
 
 ### Zip File support. Comment out if ZLib isn't installed
 ### Modify paths, if required
@@ -267,14 +258,14 @@ ES_OBJS=$(MAPEDIT_OBJS) $(ES_FILES_OBJS) $(ES_GAMEMGR_OBJS) $(ES_IMAGEWIN_OBJS) 
 	$(ES_SERVER_OBJS) $(CONF_OBJS) $(MISC_OBJS) $(ZIP_OBJS)
 
 EXULT_DLLS:= $(EH_LIB) $(FLUIDSYNTH_DLLS) libvorbisfile-3.dll libogg-0.dll libvorbis-0.dll \
-	libstdc++-6.dll libwinpthread-1.dll zlib1.dll $(SDL_DLL_NAME)
+	libstdc++-6.dll libwinpthread-1.dll zlib1.dll SDL2.dll
 
 TOOL_EXES:=expack$(EXEEXT) cmanip$(EXEEXT) ipack$(EXEEXT) mklink$(EXEEXT) mockup$(EXEEXT) rip$(EXEEXT) \
 	shp2pcx$(EXEEXT) smooth$(EXEEXT) splitshp$(EXEEXT) textpack$(EXEEXT) wuc$(EXEEXT) u7voice2syx$(EXEEXT) \
 	ucc$(EXEEXT) libsmooth_randomize$(LIBEXT) libsmooth_smooth$(LIBEXT) libsmooth_stream$(LIBEXT)
 
 TOOL_DLLS:=$(EH_LIB) libjpeg-8.dll liblzma-5.dll libpng16-16.dll libstdc++-6.dll libtiff-5.dll libwebp-7.dll \
-	libwinpthread-1.dll libzstd.dll zlib1.dll $(SDL_DLL_NAME) $(SDLIMAGE_DLL_NAME)
+	libwinpthread-1.dll libzstd.dll zlib1.dll SDL2.dll SDL2_image.dll
 
 UCXT_DLLS:=$(EH_LIB) libstdc++-6.dll libwinpthread-1.dll zlib1.dll
 

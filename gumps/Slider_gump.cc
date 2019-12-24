@@ -20,7 +20,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include <config.h>
 #endif
 
-#include "sdl-compat.h"
 #include "SDL_events.h"
 #include "SDL_keyboard.h"
 #include "game.h"
@@ -280,7 +279,7 @@ void Slider_gump::key_down(int chr) {
 }
 
 void Slider_gump::mousewheel_up() {
-	SDLMod mod = SDL_GetModState();
+	SDL_Keymod mod = SDL_GetModState();
 	if (mod & KMOD_ALT)
 		move_diamond(-10 * step_val);
 	else
@@ -288,7 +287,7 @@ void Slider_gump::mousewheel_up() {
 }
 
 void Slider_gump::mousewheel_down() {
-	SDLMod mod = SDL_GetModState();
+	SDL_Keymod mod = SDL_GetModState();
 	if (mod & KMOD_ALT)
 		move_diamond(10 * step_val);
 	else

@@ -20,7 +20,6 @@
 #  include <config.h>
 #endif
 
-#include "sdl-compat.h"
 #include "menulist.h"
 #include "exult.h"
 #include "font.h"
@@ -61,7 +60,7 @@ void MenuEntry::paint(Game_window *gwin) {
 }
 
 bool MenuEntry::handle_event(SDL_Event &event) {
-	SDL_keysym &key = event.key.keysym;
+	SDL_Keysym &key = event.key.keysym;
 	return (event.type == SDL_KEYDOWN &&
 	        (key.sym == SDLK_RETURN || key.sym == SDLK_KP_ENTER)) ||
 	       event.type == SDL_MOUSEBUTTONUP;
@@ -97,7 +96,7 @@ void MenuTextEntry::paint(Game_window *gwin) {
 }
 
 bool MenuTextEntry::handle_event(SDL_Event &event) {
-	SDL_keysym &key = event.key.keysym;
+	SDL_Keysym &key = event.key.keysym;
 	return (((event.type == SDL_KEYDOWN &&
 	          (key.sym == SDLK_RETURN || key.sym == SDLK_KP_ENTER)) ||
 	         event.type == SDL_MOUSEBUTTONUP)) && enabled;
@@ -167,7 +166,7 @@ void MenuGameEntry::paint(Game_window *gwin) {
 }
 
 bool MenuGameEntry::handle_event(SDL_Event &event) {
-	SDL_keysym &key = event.key.keysym;
+	SDL_Keysym &key = event.key.keysym;
 	return (((event.type == SDL_KEYDOWN &&
 	          (key.sym == SDLK_RETURN || key.sym == SDLK_KP_ENTER)) ||
 	         event.type == SDL_MOUSEBUTTONUP)) && is_enabled();
@@ -343,7 +342,7 @@ int MenuList::handle_events(Game_window *gwin, Mouse *mouse) {
 				case SDLK_x:
 					if (event.key.keysym.mod & KMOD_ALT
 #ifdef MACOSX
-					        || event.key.keysym.mod & KMOD_META
+					        || event.key.keysym.mod & KMOD_GUI
 #endif
 					   ) {
 						return -1;

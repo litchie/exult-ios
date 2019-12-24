@@ -590,11 +590,7 @@ bool Notebook_gump::handle_kbd_event(
     void *vev
 ) {
 	SDL_Event &ev = *static_cast<SDL_Event *>(vev);
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 	uint16 unicode = 0; // Unicode is way different in SDL2
-#else
-	uint16 unicode = ev.key.keysym.unicode;
-#endif
 	Gump_manager::translate_numpad(ev.key.keysym.sym, unicode, ev.key.keysym.mod);
 	int chr = ev.key.keysym.sym;
 
@@ -662,15 +658,8 @@ bool Notebook_gump::handle_kbd_event(
 		change_page(1);
 		break;
 	default:
-#if 1 && !SDL_VERSION_ATLEAST(2, 0, 0)   /* Assumes unicode is enabled. */
-		if ((unicode & 0xFF80) == 0)
-			chr = unicode & 0x7F;
-		else
-			chr = 0;
-#else
 		if (ev.key.keysym.mod & KMOD_SHIFT)
 			chr = toupper(chr);
-#endif
 		if (chr < ' ')
 			return false;       // Ignore other special chars.
 		if (chr >= 256 || !isascii(chr))

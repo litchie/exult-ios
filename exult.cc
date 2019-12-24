@@ -29,7 +29,6 @@
 #include <cstdlib>
 #include <cctype>
 
-#include "sdl-compat.h"
 #include <SDL.h>
 
 #define Font _XFont_
@@ -114,7 +113,7 @@ using std::toupper;
 using std::string;
 using std::vector;
 
-#if SDL_VERSION_ATLEAST(2, 0, 0) && (defined(_WIN32) || (defined(MACOSX) && defined(USE_EXULTSTUDIO)))
+#if (defined(_WIN32) || (defined(MACOSX) && defined(USE_EXULTSTUDIO)))
 
 static int SDLCALL SDL_putenv(const char *_var) {
     char *ptr = nullptr;
@@ -612,7 +611,6 @@ static void SetIcon() {
 		iconpal[i].g = ExultIcon::header_data_cmap[i][1];
 		iconpal[i].b = ExultIcon::header_data_cmap[i][2];
 	}
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 	SDL_Surface *iconsurface = SDL_CreateRGBSurface(0,
 				ExultIcon::width,
 				ExultIcon::height,
@@ -637,18 +635,6 @@ static void SetIcon() {
 		SDL_MapRGB(iconsurface->format,
 			iconpal[0].r, iconpal[0].g, iconpal[0].b));
 	SDL_SetWindowIcon(gwin->get_win()->get_screen_window(), iconsurface);
-#else
-	SDL_Surface *iconsurface = SDL_CreateRGBSurfaceFrom(ExultIcon::header_data,
-	                           ExultIcon::width,
-	                           ExultIcon::height,
-	                           8,
-	                           ExultIcon::width,
-	                           0, 0, 0, 0);
-	SDL_SetPalette(iconsurface, SDL_LOGPAL, iconpal, 0, 256);
-	SDL_SetColorKey(iconsurface, SDL_SRCCOLORKEY, 0);
-	SDL_WM_SetIcon(iconsurface, nullptr);
-#endif
-
 	SDL_FreeSurface(iconsurface);
 }
 #endif
@@ -669,9 +655,7 @@ static void Init(
 	// I don't know if this will be problem in other OSes,
 	// so I leave it Windows-specific for now.
 	SDL_putenv(const_cast<char *>("SDL_VIDEO_CENTERED=center"));
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 	SDL_putenv(const_cast<char *>("SDL_AUDIODRIVER=DirectSound"));
-#endif
 #elif defined(MACOSX) && defined(USE_EXULTSTUDIO)
 	// Just in case:
 #ifndef XWIN
@@ -700,21 +684,11 @@ static void Init(
 #endif
 
 	SDL_SysWMinfo info;     // Get system info.
-#if SDL_VERSION_ATLEAST(2, 0, 0)
-	// Doesn't look like info is used for anything... let's try not getting it
-	//SDL_GetWindowWMInfo(gwin->get_win()->get_screen_window(), &info);
-#else
-	SDL_GetWMInfo(&info);
-#endif
 #ifdef USE_EXULTSTUDIO
 	// Want drag-and-drop events.
 	SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
 #endif
 	// KBD repeat should be nice.
-#if !(SDL_VERSION_ATLEAST(2, 0, 0)) // Not seeing the keyboard repeat options in SDL2
-	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY,
-	                    SDL_DEFAULT_REPEAT_INTERVAL);
-#endif
 	SDL_ShowCursor(0);
 	SDL_VERSION(&info.version);
 
@@ -769,7 +743,7 @@ static void Init(
 		gwin->set_in_exult_menu(false);
 	}
 
-	SDL_SETEVENTFILTER(nullptr);
+	SDL_SetEventFilter(nullptr, nullptr);
 	// Show the banner
 	game = nullptr;
 
@@ -882,30 +856,17 @@ static void Init(
 	// Get scale factor for mouse.
 #ifdef USE_EXULTSTUDIO
 #ifndef _WIN32
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 	SDL_GetWindowWMInfo(gwin->get_win()->get_screen_window(), &info);
-#else
-	SDL_GetWMInfo(&info);
-#endif
 	xfd = WrappedConnectionNumber(info.info.x11.display);
 	Server_init();          // Initialize server (for map-editor).
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 	xdnd = new Xdnd(info.info.x11.display, info.info.x11.window,
-#else
-	xdnd = new Xdnd(info.info.x11.display, info.info.x11.wmwindow,
-#endif
 	                info.info.x11.window,
 	                Move_dragged_shape, Move_dragged_combo,
 	                Drop_dragged_shape, Drop_dragged_chunk,
 	                Drop_dragged_npc, Drop_dragged_combo);
 #else
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 	SDL_GetWindowWMInfo(gwin->get_win()->get_screen_window(), &info);
 	hgwin = info.info.win.window;
-#else
-	SDL_GetWMInfo(&info);
-	hgwin = info.window;
-#endif
 	Server_init();          // Initialize server (for map-editor).
 	OleInitialize(nullptr);
 	windnd = new Windnd(hgwin,
@@ -975,7 +936,7 @@ static void Paint_with_shape(
 	lastty = ty;
 	int shnum = cheat.get_edit_shape();
 	int frnum;
-	SDLMod mod = SDL_GetModState();
+	SDL_Keymod mod = SDL_GetModState();
 	if (mod & KMOD_ALT) {   // ALT?  Pick random frame.
 		ShapeID id(shnum, 0);
 		frnum = std::rand() % id.get_num_frames();
@@ -1153,7 +1114,7 @@ static void Handle_events(
 			int x;
 			int y;// Check for 'stuck' Avatar.
 			int ms = SDL_GetMouseState(&x, &y);
-#if SDL_VERSION_ATLEAST(2, 0, 1) && (defined(MACOSX) || defined(__IPHONEOS__))
+#if (defined(MACOSX) || defined(__IPHONEOS__))
 			//mouse movement needs to be adjusted for HighDPI
 			gwin->get_win()->screen_to_game_hdpi(x, y, gwin->get_fastmouse(), x, y);
 #else
@@ -1241,27 +1202,15 @@ static void Handle_events(
 }
 
 static inline bool EnteredWindow(SDL_Event& event) {
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 	return event.window.event == SDL_WINDOWEVENT_ENTER;
-#else
-	return (event.active.state & SDL_APPMOUSEFOCUS) && event.active.gain;
-#endif
 }
 
 static inline bool GainedFocus(SDL_Event& event) {
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 	return event.window.event == SDL_WINDOWEVENT_FOCUS_GAINED;
-#else
-	return (event.active.state & SDL_APPINPUTFOCUS) && event.active.gain;
-#endif
 }
 
 static inline bool LostFocus(SDL_Event& event) {
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 	return event.window.event == SDL_WINDOWEVENT_FOCUS_LOST;
-#else
-	return (event.active.state & SDL_APPINPUTFOCUS) && !event.active.gain;
-#endif
 }
 
 /*
@@ -1384,30 +1333,12 @@ static void Handle_event(
 				                  Mouse::mouse->avatar_speed);
 			}
 		}
-
-#if !(SDL_VERSION_ATLEAST(2, 0, 0))
-		// Mousewheel scrolling of view port with SDL 1.2x.
-		if (event.button.button == 4 || event.button.button == 5) {
-			if (!cheat() || !gwin->can_scroll_with_mouse()) break;
-			SDLMod mod = SDL_GetModState();
-			if (event.button.button == 4)
-				if (mod & KMOD_ALT)
-					ActionScrollLeft(nullptr);
-				else
-					ActionScrollUp(nullptr);
-			else if (mod & KMOD_ALT)
-				ActionScrollRight(nullptr);
-			else
-				ActionScrollDown(nullptr);
-		}
-#endif
 		break;
 	}
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 	// Mousewheel scrolling of view port with SDL2.
 	case SDL_MOUSEWHEEL: {
 		if (!cheat() || !gwin->can_scroll_with_mouse()) break;
-		SDLMod mod = SDL_GetModState();
+		SDL_Keymod mod = SDL_GetModState();
 		if(event.wheel.y > 0) {
 			if (mod & KMOD_ALT)
 				ActionScrollLeft(nullptr);
@@ -1428,7 +1359,6 @@ static void Handle_event(
 		}
 		break;
 	}
-#endif
 	case SDL_MOUSEBUTTONUP: {
 		if (dont_move_mode)
 			break;
@@ -1573,7 +1503,7 @@ static void Handle_event(
 #endif
 		break;
 	}
-	case SDL_ACTIVEEVENT:
+	case SDL_WINDOWEVENT:
 		if (EnteredWindow(event)) {
 			int x;
 			int y;
@@ -1623,9 +1553,6 @@ static void Handle_event(
 		} else {
 			break;
 		}
-   #if !(SDL_VERSION_ATLEAST(2, 0, 0))
-		event.key.keysym.unicode = event.key.keysym.sym;
-   #endif
 		// Should continue on to the SDL_KEY* cases
 #endif
 	case SDL_KEYDOWN:       // Keystroke.
@@ -1637,11 +1564,7 @@ static void Handle_event(
 #ifdef USE_EXULTSTUDIO
 #ifndef _WIN32
 	case SDL_SYSWMEVENT: {
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 		XEvent &ev = event.syswm.msg->msg.x11.event;
-#else
-		XEvent &ev = event.syswm.msg->event.xevent;
-#endif
 		if (ev.type == ClientMessage)
 			xdnd->client_msg(reinterpret_cast<XClientMessageEvent &>(ev));
 		else if (ev.type == SelectionNotify)
@@ -1780,18 +1703,11 @@ static bool Get_click(
 				case SDLK_LCTRL:
 				case SDLK_RALT:
 				case SDLK_LALT:
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 				case SDLK_RGUI:
 				case SDLK_LGUI:
-#else
-				case SDLK_RMETA:
-				case SDLK_LMETA:
-				case SDLK_RSUPER:
-				case SDLK_LSUPER:
-#endif
-				case SDLK_NUMLOCK:
+				case SDLK_NUMLOCKCLEAR:
 				case SDLK_CAPSLOCK:
-				case SDLK_SCROLLOCK:
+				case SDLK_SCROLLLOCK:
 					break;
 				default:
 					if (keybinder->IsMotionEvent(event))
@@ -1813,7 +1729,7 @@ static bool Get_click(
 				}
 				break;
 			}
-			case SDL_ACTIVEEVENT:
+			case SDL_WINDOWEVENT:
 				if (GainedFocus(event))
 					gwin->get_focus();
 				else if (LostFocus(event))
@@ -2004,7 +1920,7 @@ void Wizard_eye(
 			int ms = SDL_GetMouseState(&x, &y);
 			int mx;
 			int my;
-#if SDL_VERSION_ATLEAST(2, 0, 1) && (defined(MACOSX) || defined(__IPHONEOS__))
+#if (defined(MACOSX) || defined(__IPHONEOS__))
 			//mouse movement of the eye needs to adjust for HighDPI
 			gwin->get_win()->screen_to_game_hdpi(x, y, gwin->get_fastmouse(), mx, my);
 #else
@@ -2251,7 +2167,7 @@ void setup_video(bool fullscreen, int setup_video_type, int resx, int resy,
 	config->value("config/video/share_video_settings", share_settings, true);
 	const string vidStr((fullscreen || share_settings) ?
 	                       "config/video" : "config/video/window");
-#if SDL_VERSION_ATLEAST(2, 0, 1) && (defined(MACOSX) || defined(__IPHONEOS__))
+#if (defined(MACOSX) || defined(__IPHONEOS__))
 	bool high_dpi;
 	config->value("config/video/highdpi", high_dpi, true);
 #endif
@@ -2299,7 +2215,7 @@ void setup_video(bool fullscreen, int setup_video_type, int resx, int resy,
 		config->value(vidStr + "/display/height", resy, resy * scaleval);
 		config->value(vidStr + "/game/width", gw, 320);
 		config->value(vidStr + "/game/height", gh, 200);
-#if SDL_VERSION_ATLEAST(2, 0, 1) && (defined(MACOSX) || defined(__IPHONEOS__))
+#if (defined(MACOSX) || defined(__IPHONEOS__))
 		if (high_dpi)
 			SDL_SetHint(SDL_HINT_VIDEO_HIGHDPI_DISABLED, "0");
 		else
@@ -2334,7 +2250,7 @@ void setup_video(bool fullscreen, int setup_video_type, int resx, int resy,
 		config->set((vidStr + "/scale_method").c_str(), scalerName , false);
 		config->set((vidStr + "/fill_mode").c_str(), fmode_string, false);
 		config->set((vidStr + "/fill_scaler").c_str(), fillScalerName, false);
-#if SDL_VERSION_ATLEAST(2, 0, 1) && (defined(MACOSX) || defined(__IPHONEOS__))
+#if (defined(MACOSX) || defined(__IPHONEOS__))
 		config->set("config/video/highdpi", high_dpi ?
 		            "yes" : "no", false);
 #endif

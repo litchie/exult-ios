@@ -1860,11 +1860,7 @@ void Game_window::teleport_party(
 	int x;
 	int y;
 	SDL_GetMouseState(&x, &y);
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 	SDL_WarpMouseInWindow(win->get_screen_window(), x, y);
-#else
-	SDL_WarpMouse(x, y);
-#endif
 }
 
 /*

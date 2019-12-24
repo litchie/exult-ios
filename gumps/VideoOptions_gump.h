@@ -49,7 +49,7 @@ private:
 	uint32 o_game_resolution;
 	int o_fill_scaler;
 	Image_window::FillMode o_fill_mode;
-#if SDL_VERSION_ATLEAST(2, 0, 1) && (defined(MACOSX) || defined(__IPHONEOS__))
+#if (defined(MACOSX) || defined(__IPHONEOS__))
 	bool highdpi;
 	bool o_highdpi;
 #endif
@@ -70,7 +70,7 @@ private:
 	    id_apply = id_first,
 	    id_fullscreen,
 	    id_share_settings,
-#if SDL_VERSION_ATLEAST(2, 0, 1) && (defined(MACOSX) || defined(__IPHONEOS__))
+#if (defined(MACOSX) || defined(__IPHONEOS__))
 	    id_high_dpi,
 #endif
 	    id_resolution,  // id_resolution and all past it

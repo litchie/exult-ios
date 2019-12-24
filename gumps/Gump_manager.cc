@@ -354,11 +354,8 @@ void Gump_manager::set_kbd_focus(
 ) {
 	if (gump && gump->can_handle_kbd()) {
 		kbd_focus = gump;
-		SDL_EnableUNICODE(1);   // Enable unicode translation.
 	} else {
 		kbd_focus = nullptr;
-		if (!modal_gump_count)
-			SDL_EnableUNICODE(0);
 	}
 }
 
@@ -475,12 +472,6 @@ bool Gump_manager::handle_modal_gump_event(
 		} else if (event.button.button == 3) {
 			rightclick = true;
 			gump->mouse_down(gx, gy, event.button.button);
-#if !(SDL_VERSION_ATLEAST(2, 0, 0))
-		} else if (event.button.button == 4) { // mousewheel up
-			if (!gump->mouse_down(gx, gy, event.button.button)) gump->mousewheel_up();
-		} else if (event.button.button == 5) { // mousewheel down
-			if (!gump->mouse_down(gx, gy, event.button.button)) gump->mousewheel_down();
-#endif
 		} else {
 			gump->mouse_down(gx, gy, event.button.button);
 		}
@@ -501,7 +492,6 @@ bool Gump_manager::handle_modal_gump_event(
 			        gumpman->can_right_click_close()) return false;
 		}
 		break;
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 	// Mousewheel scrolling with SDL2.
 	case SDL_MOUSEWHEEL: {
 		if(event.wheel.y > 0) {
@@ -512,7 +502,6 @@ bool Gump_manager::handle_modal_gump_event(
 		}
 		break;
 	}
-#endif
 	case SDL_MOUSEMOTION:
 		gwin->get_win()->screen_to_game(event.motion.x, event.motion.y, gwin->get_fastmouse(), gx, gy);
 
@@ -527,13 +516,11 @@ bool Gump_manager::handle_modal_gump_event(
 			return false;
 		break;
 	case SDL_KEYDOWN:
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 	case SDL_TEXTINPUT:
 		if (event.type == SDL_TEXTINPUT) {
 			event.key.keysym.sym = SDLK_UNKNOWN;
 			keysym_unicode = event.text.text[0];
 		}
-#endif
 	{
 		if (event.key.keysym.sym == SDLK_ESCAPE)
 			return false;
@@ -544,13 +531,9 @@ bool Gump_manager::handle_modal_gump_event(
 			return true;
 		}
 
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 		if (event.key.keysym.sym != 0 && event.key.keysym.sym > +'~') {
 			keysym_unicode = event.key.keysym.sym;
 		}
-#else
-		keysym_unicode = event.key.keysym.unicode;
-#endif
 		translate_numpad(event.key.keysym.sym, keysym_unicode, event.key.keysym.mod);
 		gump->key_down(event.key.keysym.sym);
 		gump->text_input(event.key.keysym.sym, keysym_unicode);
@@ -561,7 +544,7 @@ bool Gump_manager::handle_modal_gump_event(
 	return true;
 }
 
-void Gump_manager::translate_numpad(SDLKey& code, uint16& unicode, uint16 mod) {
+void Gump_manager::translate_numpad(SDL_Keycode& code, uint16& unicode, uint16 mod) {
 	bool numlock_active = (mod & KMOD_NUM) != 0;
 	unicode = 0;
 	switch (code) {
@@ -658,10 +641,7 @@ bool Gump_manager::do_modal_gump(
     Mouse::Mouse_shapes shape,  // Mouse shape to use.
     Paintable *paint        // Paint this over everything else.
 ) {
-	if (!modal_gump_count)
-		SDL_EnableUNICODE(1); // enable unicode translation for text input
 	modal_gump_count++;
-
 
 	//  Game_window *gwin = Game_window::get_instance();
 
@@ -716,10 +696,6 @@ bool Gump_manager::do_modal_gump(
 	gwin->get_tqueue()->resume(SDL_GetTicks());
 
 	modal_gump_count--;
-
-	if (!modal_gump_count)
-		SDL_EnableUNICODE(0);
-
 	return !escaped;
 }
 

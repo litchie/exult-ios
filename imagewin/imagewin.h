@@ -34,7 +34,6 @@ Boston, MA  02111-1307, USA.
 #include <map>
 
 #include "SDL_video.h"
-#include "sdl-compat.h"
 #include "ignore_unused_variable_warning.h"
 
 struct SDL_Surface;
@@ -169,14 +168,12 @@ protected:
 	FillMode fill_mode;
 	int fill_scaler;
 
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 	static SDL_DisplayMode desktop_displaymode;
 	struct SDL_Window *screen_window;
 	struct SDL_Renderer *screen_renderer;
 	struct SDL_Texture *screen_texture;
 	static int VideoModeOK(int width, int height, int bpp, Uint32 flags);
 	void UpdateRect(SDL_Surface *surf, int x, int y, int w, int h);
-#endif
 
 	SDL_Surface *paletted_surface;  // Surface that palette is set on   (Example res)
 	SDL_Surface *display_surface;   // Final surface that is displayed  (1024x1024)
@@ -284,28 +281,23 @@ protected:
 	static int windowed_8;
 	static int windowed_16;
 	static int windowed_32;
-#if SDL_VERSION_ATLEAST(2, 0, 1) && (defined(MACOSX) || defined(__IPHONEOS__))
+#if (defined(MACOSX) || defined(__IPHONEOS__))
 	static float nativescale;
 #endif
 
 public:
-#if SDL_VERSION_ATLEAST(2, 0, 0)
-        inline struct SDL_Window *get_screen_window() const {
-                return screen_window;
-        }
-#endif
+	inline struct SDL_Window *get_screen_window() const {
+		return screen_window;
+	}
 	int Get_best_bpp(int w, int h, int bpp, uint32 flags);
 
 	// Create with given buffer.
 	Image_window(Image_buffer *ib, int w, int h, int gamew, int gameh, int scl = 1, bool fs = false, int sclr = point, FillMode fmode = AspectCorrectCentre, int fillsclr = point)
 		: ibuf(ib), scale(scl), scaler(sclr), uses_palette(true),
 		  fullscreen(fs), game_width(gamew), game_height(gameh),
-		  fill_mode(fmode), fill_scaler(fillsclr),
+		  fill_mode(fmode), fill_scaler(fillsclr), screen_window(nullptr),
 		  paletted_surface(nullptr), display_surface(nullptr),
 		  inter_surface(nullptr), draw_surface(nullptr) {
-#if SDL_VERSION_ATLEAST(2, 0, 0)
-		screen_window = nullptr;
-#endif
 		static_init();
 		create_surface(w, h);
 	}
@@ -329,7 +321,7 @@ public:
 			gy = (sy * inter_height) / (scale * get_display_height()) + get_start_y();
 		}
 	}
-#if SDL_VERSION_ATLEAST(2, 0, 1) && (defined(MACOSX) || defined(__IPHONEOS__))
+#if (defined(MACOSX) || defined(__IPHONEOS__))
 	void screen_to_game_hdpi(int sx, int sy, bool fast, int &gx, int &gy) {
 		if (!fullscreen)
 			// reset nativescale to 1.0 for windowed gaming or toggling

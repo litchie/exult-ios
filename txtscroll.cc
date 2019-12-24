@@ -23,7 +23,6 @@
 #include <cstring>
 #include <cstdlib>
 
-#include "sdl-compat.h"
 #include "common_types.h"
 #include "files/U7file.h"
 #include "gamewin.h"
@@ -34,12 +33,8 @@
 
 #include "SDL_timer.h"
 #include "SDL_events.h"
-#if SDL_VERSION_ATLEAST(2, 0, 0)
-#  include "SDL_stdinc.h"
-#  include "SDL_scancode.h"
-#else
-#  include "SDL_keysym.h"
-#endif
+#include "SDL_stdinc.h"
+#include "SDL_scancode.h"
 
 using std::atoi;
 using std::size_t;

@@ -24,7 +24,6 @@
 #include <cstdlib>
 #include <cstring>
 #include <unistd.h>
-#include "sdl-compat.h"
 #include "menulist.h"
 #include "Audio.h"
 #include "Configuration.h"
@@ -464,18 +463,11 @@ int wait_delay(int ms, int startcol, int ncol, int rotspd) {
 				case SDLK_LCTRL:
 				case SDLK_RALT:
 				case SDLK_LALT:
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 				case SDLK_RGUI:
 				case SDLK_LGUI:
-#else
-				case SDLK_RMETA:
-				case SDLK_LMETA:
-				case SDLK_RSUPER:
-				case SDLK_LSUPER:
-#endif
-				case SDLK_NUMLOCK:
+				case SDLK_NUMLOCKCLEAR:
 				case SDLK_CAPSLOCK:
-				case SDLK_SCROLLOCK:
+				case SDLK_SCROLLLOCK:
 					break;
 				case SDLK_s:
 					if ((event.key.keysym.mod & KMOD_ALT) &&

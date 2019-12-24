@@ -20,7 +20,6 @@
 #  include <config.h>
 #endif
 
-#include "sdl-compat.h"
 #include "SDL_keyboard.h"
 
 #include "actors.h"
@@ -297,7 +296,7 @@ const struct Action {
 
 const struct {
 	const char *s;
-	SDLKey k;
+	SDL_Keycode k;
 } SDLKeyStringTable[] = {
 	{"BACKSPACE", SDLK_BACKSPACE},
 	{"TAB",       SDLK_TAB},
@@ -306,7 +305,6 @@ const struct {
 	{"ESC",       SDLK_ESCAPE},
 	{"SPACE",     SDLK_SPACE},
 	{"DEL",       SDLK_DELETE},
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 	{"KP0",       SDLK_KP_0},
 	{"KP1",       SDLK_KP_1},
 	{"KP2",       SDLK_KP_2},
@@ -318,17 +316,6 @@ const struct {
 	{"KP8",       SDLK_KP_8},
 	{"KP9",       SDLK_KP_9},
 	{"KP0",       SDLK_KP_0},
-#else
-	{"KP1",       SDLK_KP1},
-	{"KP2",       SDLK_KP2},
-	{"KP3",       SDLK_KP3},
-	{"KP4",       SDLK_KP4},
-	{"KP5",       SDLK_KP5},
-	{"KP6",       SDLK_KP6},
-	{"KP7",       SDLK_KP7},
-	{"KP8",       SDLK_KP8},
-	{"KP9",       SDLK_KP9},
-#endif
 	{"KP.",       SDLK_KP_PERIOD},
 	{"KP/",       SDLK_KP_DIVIDE},
 	{"KP*",       SDLK_KP_MULTIPLY},
@@ -363,7 +350,7 @@ const struct {
 };
 
 
-using ParseKeyMap = std::map<std::string, SDLKey>;
+using ParseKeyMap = std::map<std::string, SDL_Keycode>;
 using ParseActionMap = std::map<std::string, const Action *>;
 
 static ParseKeyMap keys;
@@ -374,21 +361,13 @@ KeyBinder::KeyBinder() {
 	FillParseMaps();
 }
 
-void KeyBinder::AddKeyBinding(SDLKey key, int mod, const Action *action,
+void KeyBinder::AddKeyBinding(SDL_Keycode key, int mod, const Action *action,
                               int nparams, const int *params) {
-	SDL_keysym k;
+	SDL_Keysym k;
 	ActionType a;
-
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 	k.scancode = static_cast<SDL_Scancode>(0);
-#else
-	k.scancode = 0;
-#endif
 	k.sym      = key;
-	k.mod      = static_cast<SDLMod>(mod);
-#if !SDL_VERSION_ATLEAST(2, 0, 0)
-	k.unicode  = 0;
-#endif
+	k.mod      = static_cast<SDL_Keymod>(mod);
 	a.action    = action;
 	int i;  // For MSVC
 	for (i = 0; i < c_maxparams && i < nparams; i++)
@@ -454,23 +433,23 @@ bool KeyBinder::DoAction(ActionType const &a, bool press) const {
 }
 
 KeyMap::const_iterator KeyBinder::TranslateEvent(SDL_Event const &ev) const {
-	SDL_keysym key = ev.key.keysym;
+	SDL_Keysym key = ev.key.keysym;
 
 	if (ev.type != SDL_KEYDOWN && ev.type != SDL_KEYUP)
 		return bindings.end();
 
 	key.mod = KMOD_NONE;
 	if (ev.key.keysym.mod & KMOD_SHIFT)
-		key.mod = static_cast<SDLMod>(key.mod | KMOD_SHIFT);
+		key.mod = static_cast<SDL_Keymod>(key.mod | KMOD_SHIFT);
 	if (ev.key.keysym.mod & KMOD_CTRL)
-		key.mod = static_cast<SDLMod>(key.mod | KMOD_CTRL);
+		key.mod = static_cast<SDL_Keymod>(key.mod | KMOD_CTRL);
 #ifdef MACOSX
 	// map Meta to Alt on OS X
-	if (ev.key.keysym.mod & KMOD_META)
-		key.mod = (SDLMod)(key.mod | KMOD_ALT);
+	if (ev.key.keysym.mod & KMOD_GUI)
+		key.mod = (SDL_Keymod)(key.mod | KMOD_ALT);
 #else
 	if (ev.key.keysym.mod & KMOD_ALT)
-		key.mod = static_cast<SDLMod>(key.mod | KMOD_ALT);
+		key.mod = static_cast<SDL_Keymod>(key.mod | KMOD_ALT);
 #endif
 
 	return bindings.find(key);
@@ -623,7 +602,7 @@ static void skipspace(string &s) {
 
 void KeyBinder::ParseLine(char *line) {
 	size_t i;
-	SDL_keysym k;
+	SDL_Keysym k;
 	ActionType a;
 	k.sym      = SDLK_UNKNOWN;
 	k.mod      = KMOD_NONE;
@@ -648,17 +627,17 @@ void KeyBinder::ParseLine(char *line) {
 		// check modifiers
 		//    if (u.compare("ALT-",0,4) == 0) {
 		if (u.substr(0, 4) == "ALT-") {
-			k.mod = static_cast<SDLMod>(k.mod | KMOD_ALT);
+			k.mod = static_cast<SDL_Keymod>(k.mod | KMOD_ALT);
 			s.erase(0, 4);
 			u.erase(0, 4);
 			//    } else if (u.compare("CTRL-",0,5) == 0) {
 		} else if (u.substr(0, 5) == "CTRL-") {
-			k.mod = static_cast<SDLMod>(k.mod | KMOD_CTRL);
+			k.mod = static_cast<SDL_Keymod>(k.mod | KMOD_CTRL);
 			s.erase(0, 5);
 			u.erase(0, 5);
 			//    } else if (u.compare("SHIFT-",0,6) == 0) {
 		} else if (u.substr(0, 6) == "SHIFT-") {
-			k.mod = static_cast<SDLMod>(k.mod | KMOD_SHIFT);
+			k.mod = static_cast<SDL_Keymod>(k.mod | KMOD_SHIFT);
 			s.erase(0, 6);
 			u.erase(0, 6);
 		} else {
@@ -674,12 +653,12 @@ void KeyBinder::ParseLine(char *line) {
 				cerr << "Keybinder: parse error in line: " << s << endl;
 				return;
 			} else if (t.length() == 1) {
-				// translate 1-letter keys straight to SDLKey
+				// translate 1-letter keys straight to SDL_Keycode
 				char c = t[0];
 				if (c >= 33 && c <= 122 && c != 37) {
 					if (c >= 'A' && c <= 'Z')
 						c += 32; // need lowercase
-					k.sym = static_cast<SDLKey>(c);
+					k.sym = static_cast<SDL_Keycode>(c);
 				} else {
 					cerr << "Keybinder: unsupported key: " << keycode << endl;
 				}

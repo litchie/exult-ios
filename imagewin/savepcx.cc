@@ -35,7 +35,6 @@ It has been partly rewritten to use an SDL surface as input.
 #include "SDL_video.h"
 #include "SDL_endian.h"
 #include <iostream>
-#include "sdl-compat.h"
 
 using std::cout;
 using std::endl;

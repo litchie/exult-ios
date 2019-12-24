@@ -692,7 +692,7 @@ bool Newfile_gump::mouse_up(
 }
 
 void Newfile_gump::mousewheel_up() {
-	SDLMod mod = SDL_GetModState();
+	SDL_Keymod mod = SDL_GetModState();
 	if (mod & KMOD_ALT)
 		scroll_page(-1);
 	else
@@ -700,7 +700,7 @@ void Newfile_gump::mousewheel_up() {
 }
 
 void Newfile_gump::mousewheel_down() {
-	SDLMod mod = SDL_GetModState();
+	SDL_Keymod mod = SDL_GetModState();
 	if (mod & KMOD_ALT)
 		scroll_page(1);
 	else
@@ -824,14 +824,7 @@ void Newfile_gump::text_input(int chr, int unicode) {
 		break;
 
 	default:
-#if 1 && !SDL_VERSION_ATLEAST(2, 0, 0)   /* Assumes unicode is enabled. */
-		if ((unicode & 0xFF80) == 0)
-			chr = unicode & 0x7F;
-		else
-			chr = 0;
-#else
 		ignore_unused_variable_warning(unicode);
-#endif
 		if (chr < ' ')
 			return;         // Ignore other special chars.
 

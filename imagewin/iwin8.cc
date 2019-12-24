@@ -31,7 +31,6 @@ Boston, MA  02111-1307, USA.
 #include <cstring>
 
 #include "SDL_video.h"
-#include "sdl-compat.h"
 #include "iwin8.h"
 #include "common_types.h"
 #include "gamma.h"
@@ -93,10 +92,10 @@ void Image_window8::set_palette(
 		colors2[i].g = colors[i * 3 + 1]  = GammaGreen[Get_color8(rgbs[3 * i + 1], maxval, brightness)];
 		colors2[i].b = colors[i * 3 + 2]  = GammaBlue[Get_color8(rgbs[3 * i + 2], maxval, brightness)];
 	}
-	SDL_SETCOLORS(paletted_surface, colors2, 0, 256);
+	SDL_SetPaletteColors(paletted_surface->format->palette, colors2, 0, 256);
 
 	if (paletted_surface != draw_surface)
-		SDL_SETCOLORS(draw_surface, colors2, 0, 256);
+		SDL_SetPaletteColors(draw_surface->format->palette, colors2, 0, 256);
 }
 
 /*
@@ -128,10 +127,10 @@ void Image_window8::rotate_colors(
 			colors2[i].g = colors[i * 3 + 1];
 			colors2[i].b = colors[i * 3 + 2];
 		}
-		SDL_SETCOLORS(paletted_surface, colors2, 0, 256);
+		SDL_SetPaletteColors(paletted_surface->format->palette, colors2, 0, 256);
 
 		if (paletted_surface != draw_surface)
-			SDL_SETCOLORS(draw_surface, colors2, 0, 256);
+			SDL_SetPaletteColors(draw_surface->format->palette, colors2, 0, 256);
 	}
 }
 

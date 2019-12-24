@@ -25,6 +25,7 @@ addons:
       - libvorbis-dev
       - libasound2-dev
       - libfluidsynth-dev
+      - libsdl2-dev
       - libsdl-ttf2.0-dev
       - libpng-dev
       - libfreetype6-dev
@@ -51,20 +52,19 @@ matrix:
     ##########################################################################
     - os: linux
       compiler: gcc
-      env: MATRIX_EVAL="export CXX=g++ && export CC=gcc" EXTRA_OPT="--with-sdl=sdl2" DO_COVERITY=1
+      env: MATRIX_EVAL="export CXX=g++ && export CC=gcc" EXTRA_OPT="" DO_COVERITY=1
       addons:
         apt:
           sources: *common_sources
           packages:
             - *common_depends
-            - libsdl2-dev
             - g++-7
         coverity_scan:
           project:
             name: "exult/exult"
             description: "Exult is an open source engine for Ultima 7 and Serpent Isle."
           notification_email: marzojr@gmail.com
-          build_command_prepend: "./autogen.sh && ./configure --with-debug=messages --disable-oggtest --disable-vorbistest --enable-exult-studio --enable-exult-studio-support --enable-mt32emu --enable-zip-support --enable-shared --enable-midi-sfx --enable-gimp-plugin --enable-gnome-shp-thumbnailer --enable-compiler --enable-mods --with-usecode-debugger=yes --with-sdl=sdl2"
+          build_command_prepend: "./autogen.sh && ./configure --with-debug=messages --disable-oggtest --disable-vorbistest --enable-exult-studio --enable-exult-studio-support --enable-mt32emu --enable-zip-support --enable-shared --enable-midi-sfx --enable-gimp-plugin --enable-gnome-shp-thumbnailer --enable-compiler --enable-mods --with-usecode-debugger=yes"
           build_command:   "make"
           branch_pattern: coverity_scan
       before_script:
@@ -78,38 +78,19 @@ matrix:
     ##########################################################################
     - os: osx
       compiler: clang
-      env: MATRIX_EVAL="export CXX=clang++ && export CC=clang" EXTRA_OPT="--with-sdl=sdl12" DO_COVERITY=0
-
-    - os: osx
-      compiler: clang
-      env: MATRIX_EVAL="export CXX=clang++ && export CC=clang"EXTRA_OPT="--with-sdl=sdl2" DO_COVERITY=0
+      env: MATRIX_EVAL="export CXX=clang++ && export CC=clang"EXTRA_OPT="" DO_COVERITY=0
 
     ##########################################################################
     # Clang on Linux
     ##########################################################################
     - os: linux
       compiler: clang
-      env: MATRIX_EVAL="export CXX=clang++ && export CC=clang" EXTRA_OPT="--with-sdl=sdl12" DO_COVERITY=0
+      env: MATRIX_EVAL="export CXX=clang++ && export CC=clang" EXTRA_OPT="" DO_COVERITY=0
       addons:
         apt:
           sources: llvm-toolchain-xenial-7
           packages:
             - *common_depends
-            - libsdl1.2-dev
-            - clang-7
-      before_script:
-        - sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-7 1000
-        - sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-7 1000
-
-    - os: linux
-      compiler: clang
-      env: MATRIX_EVAL="export CXX=clang++ && export CC=clang" EXTRA_OPT="--with-sdl=sdl2" DO_COVERITY=0
-      addons:
-        apt:
-          sources: llvm-toolchain-xenial-7
-          packages:
-            - *common_depends
-            - libsdl2-dev
             - clang-7
       before_script:
         - sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-7 1000
@@ -120,13 +101,12 @@ matrix:
     ##########################################################################
     - os: linux
       compiler: gcc
-      env: MATRIX_EVAL="export CXX=g++ && export CC=gcc" EXTRA_OPT="--with-debug=messages --with-sdl=sdl12" DO_COVERITY=0
+      env: MATRIX_EVAL="export CXX=g++ && export CC=gcc" EXTRA_OPT="--with-debug=messages" DO_COVERITY=0
       addons:
         apt:
           sources: *common_sources
           packages:
             - *common_depends
-            - libsdl1.2-dev
             - g++-8
       before_script:
         - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-8 1000
@@ -134,41 +114,12 @@ matrix:
 
     - os: linux
       compiler: gcc
-      env: MATRIX_EVAL="export CXX=g++ && export CC=gcc" EXTRA_OPT="--with-debug=messages --with-sdl=sdl2" DO_COVERITY=0
+      env: MATRIX_EVAL="export CXX=g++ && export CC=gcc" EXTRA_OPT="" DO_COVERITY=0
       addons:
         apt:
           sources: *common_sources
           packages:
             - *common_depends
-            - libsdl2-dev
-            - g++-8
-      before_script:
-        - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-8 1000
-        - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 1000
-
-    - os: linux
-      compiler: gcc
-      env: MATRIX_EVAL="export CXX=g++ && export CC=gcc" EXTRA_OPT="--with-sdl=sdl12" DO_COVERITY=0
-      addons:
-        apt:
-          sources: *common_sources
-          packages:
-            - *common_depends
-            - libsdl1.2-dev
-            - g++-8
-      before_script:
-        - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-8 1000
-        - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 1000
-
-    - os: linux
-      compiler: gcc
-      env: MATRIX_EVAL="export CXX=g++ && export CC=gcc" EXTRA_OPT="--with-sdl=sdl2" DO_COVERITY=0
-      addons:
-        apt:
-          sources: *common_sources
-          packages:
-            - *common_depends
-            - libsdl2-dev
             - g++-8
       before_script:
         - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-8 1000

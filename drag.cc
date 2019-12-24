@@ -37,7 +37,6 @@
 #include "Gump_manager.h"
 #include "ucmachine.h"
 #include "barge.h"
-#include "sdl-compat.h"
 #include "ignore_unused_variable_warning.h"
 
 using std::cout;
@@ -491,15 +490,9 @@ bool Dragging_info::drop(
 	// Don't prompt if within same gump
 	//or if alternate drop is enabled (ctrl inverts).
 
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 	const Uint8 *keystate = SDL_GetKeyboardState(nullptr);
 	bool drop = (keystate[SDL_GetScancodeFromKey(SDLK_LCTRL)] || keystate[SDL_GetScancodeFromKey(SDLK_RCTRL)]) ?
 	            gwin->get_alternate_drop() : !gwin->get_alternate_drop();
-#else
-	Uint8 *keystate = SDL_GetKeyState(nullptr);
-	bool drop = (keystate[SDLK_LCTRL] || keystate[SDLK_RCTRL]) ?
-	            gwin->get_alternate_drop() : !gwin->get_alternate_drop();
-#endif
 	bool temp = obj->get_flag(Obj_flags::is_temporary);
 
 	if (quantity > 1 && (!on_gump || on_gump != gump) && drop)

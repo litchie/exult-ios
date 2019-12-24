@@ -1204,8 +1204,6 @@ void SI_Game::show_credits() {
 }
 
 bool SI_Game::new_game(Vga_file &shapes) {
-	SDL_EnableUNICODE(1);
-
 	int menuy = topy + 110;
 	Font *font = fontManager.get_font("MENU_FONT");
 
@@ -1262,18 +1260,13 @@ bool SI_Game::new_game(Vga_file &shapes) {
 				redraw = true;
 #endif
 			Uint16 keysym_unicode = 0;
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 			bool isTextInput = false;
 			if (event.type == SDL_TEXTINPUT) {
 				isTextInput = true;
 				event.type = SDL_KEYDOWN;
 				event.key.keysym.sym = SDLK_UNKNOWN;
 				keysym_unicode = event.text.text[0];
-   #if !(SDL_VERSION_ATLEAST(2, 0, 0))
-				event.key.keysym.unicode = keysym_unicode;
-   #endif
 			}
-#endif
 			if (event.type == SDL_KEYDOWN) {
 				redraw = true;
 				switch (event.key.keysym.sym) {
@@ -1333,17 +1326,10 @@ bool SI_Game::new_game(Vga_file &shapes) {
 						npc_name[strlen(npc_name) - 1] = 0;
 					break;
 				default: {
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 					if ((isTextInput && selected == 0) || (!isTextInput && keysym_unicode > +'~' && selected == 0))
-#else
-					if (selected == 0) // on the text input field?
-#endif
 					{
 						int len = strlen(npc_name);
 						char chr = 0;
-#if !(SDL_VERSION_ATLEAST(2, 0, 0))
-						keysym_unicode = event.key.keysym.unicode;
-#endif
 						if ((keysym_unicode & 0xFF80) == 0)
 							chr = keysym_unicode & 0x7F;
 
@@ -1377,8 +1363,5 @@ bool SI_Game::new_game(Vga_file &shapes) {
 		ok = gwin->init_gamedat(true);
 	} else
 		sman->paint_shape(topx, topy, shapes.get_shape(0x2, 0));
-
-	SDL_EnableUNICODE(0);
-
 	return ok;
 }

@@ -22,7 +22,6 @@
 #  include <config.h>
 #endif
 
-#include "sdl-compat.h"
 #include "SDL_mouse.h"
 #include "SDL_timer.h"
 #include "mouse.h"
@@ -155,11 +154,7 @@ void Mouse::move(int x, int y) {
 		int wx;
 		int wy;
 		gwin->get_win()->game_to_screen(x, y, gwin->get_fastmouse(), wx, wy);
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 		SDL_WarpMouseInWindow(gwin->get_win()->get_screen_window(), wx, wy);
-#else
-		SDL_WarpMouse(wx, wy);
-#endif
 	}
 #ifdef DEBUG
 	if (onscreen)
