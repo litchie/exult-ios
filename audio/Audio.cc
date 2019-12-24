@@ -275,35 +275,23 @@ bool	Audio::can_sfx(const std::string &file, std::string *out)
 {
 	if (file.empty())
 		return false;
-	string d = file;
-	// Full path?
-	if (U7exists(d.c_str()))
-		{
-		if (out)
-			*out = d;
-		return true;
+	string options[] = {"", "<BUNDLE>", "<DATA>"};
+	for (auto& d : options) {
+		string f;
+		if (!d.empty()) {
+			if (!is_system_path_defined(d)) {
+				continue;
+			}
+			f = d + '/' + file;
+		} else {
+			f = file;
 		}
-
-#ifdef MACOSX
-	// Check in the app bundle:
-	d = "<BUNDLE>/" + file;
-	if (is_system_path_defined("<BUNDLE>") && U7exists(d.c_str()))
-		{
-		if (out)
-			*out = d;
-		return true;
+		if (U7exists(f.c_str())) {
+			if (out)
+				*out = f;
+			return true;
 		}
-#endif
-
-	// Also just check in the actual data dir
-	d = "<DATA>/" + file;
-	if (U7exists(d.c_str()))
-		{
-		if (out)
-			*out = d;
-		return true;
-		}
-
+	}
 	return false;
 }
 

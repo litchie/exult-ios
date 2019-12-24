@@ -157,29 +157,26 @@ void	MyMidiPlayer::start_music(int num,bool repeat,std::string flex)
 	{
 		prefix_len = flex.find(">/");
 		if (prefix_len != string::npos)
-			prefix_len+=2;
+			prefix_len += 2;
 		else
 			prefix_len = 0;
 	}
 
 	pflex += flex.c_str() + prefix_len;
-#ifdef MACOSX
-	string bflex("<BUNDLE>/");
-	bflex += flex.c_str() + prefix_len;
-#endif
-	mid_data =
-#ifdef MACOSX
-		is_system_path_defined("<BUNDLE>") ?
-			new IExultDataSource(flex, bflex, pflex, num):
-#endif
-			new IExultDataSource(flex, pflex, num);
+	if (is_system_path_defined("<BUNDLE>")) {
+		string bflex("<BUNDLE>/");
+		bflex += flex.c_str() + prefix_len;
+		mid_data = new IExultDataSource(flex, bflex, pflex, num);
+	} else {
+		mid_data = new IExultDataSource(flex, pflex, num);
+	}
 
 	// Extra safety.
 	if (!mid_data->getSize())
-		{
+	{
 		delete mid_data;
 		return;
-		}
+	}
 
 	XMidiFile midfile(mid_data, setup_timbre_for_track(flex));
 
@@ -701,13 +698,13 @@ void    MyMidiPlayer::start_sound_effect(int num)
 	// Only support SFX on devices with 2 or more sequences
 	if (midi_driver->maxSequences() < 2) return;
 
-	IExultDataSource *mid_data =
-#ifdef MACOSX
-		is_system_path_defined("<BUNDLE>") ?
-			new IExultDataSource("<DATA>/midisfx.flx",
-			                     "<BUNDLE>/midisfx.flx", real_num) :
-#endif
-			new IExultDataSource("<DATA>/midisfx.flx", real_num);
+	IExultDataSource *mid_data;
+	if (is_system_path_defined("<BUNDLE>")) {
+		mid_data = new IExultDataSource("<DATA>/midisfx.flx",
+		                                "<BUNDLE>/midisfx.flx", real_num);
+	} else {
+		mid_data = new IExultDataSource("<DATA>/midisfx.flx", real_num);
+	}
 
 	if (!mid_data->good()) {
 		delete mid_data;
@@ -812,11 +809,9 @@ bool MyMidiPlayer::ogg_play_track(const std::string& filename, int num, bool rep
 
 	if (U7exists("<PATCH>/music/" + ogg_name))
 		ogg_name = get_system_path("<PATCH>/music/" + ogg_name);
-#ifdef MACOSX
 	else if (is_system_path_defined("<BUNDLE>") &&
 	         U7exists("<BUNDLE>/music/" + ogg_name))
 		ogg_name = get_system_path("<BUNDLE>/music/" + ogg_name);
-#endif
 	else
 		ogg_name = get_system_path(basepath + ogg_name);
 

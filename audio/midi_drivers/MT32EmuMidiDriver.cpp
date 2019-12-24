@@ -50,14 +50,12 @@ static bool openROMFile(
 ) {
 	std::string basedir;
 	if (!writable) {
-#ifdef MACOSX
 		// May be in bundle.
 		if (is_system_path_defined("<BUNDLE>")) {
 			basedir = "<BUNDLE>/" + filename;
 			if (file.open(get_system_path(basedir).c_str()))
 				return true;
 		}
-#endif
 		// Now try data dir.
 		basedir = "<DATA>/" + filename;
 		if (file.open(get_system_path(basedir).c_str()))

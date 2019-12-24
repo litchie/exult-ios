@@ -471,11 +471,7 @@ void add_system_path(const std::string &key, const std::string &value);
 void clone_system_path(const std::string &new_key, const std::string &old_key);
 std::string get_system_path(const std::string &path);
 
-#ifdef MACOSX
 #define BUNDLE_CHECK(x,y) ((is_system_path_defined("<BUNDLE>") && U7exists((x)))  ? (x) : (y))
-#else
-#define BUNDLE_CHECK(x,y) (y)
-#endif
 
 void to_uppercase(std::string &str);
 std::string to_uppercase(const std::string &str);
