@@ -278,15 +278,8 @@ bool U7open(
     const char *fname,          // May be converted to upper-case.
     bool is_text                // Should the file be opened in text mode
 ) {
-#if defined(MACOS) || (__GNUG__ > 2)
 	std::ios_base::openmode mode = std::ios::in;
 	if (!is_text) mode |= std::ios::binary;
-#elif defined(XWIN)
-	int mode = std::ios::in;
-#else
-	int mode = std::ios::in;
-	if (!is_text) mode |= std::ios::binary;
-#endif
 	string name = get_system_path(fname);
 	int uppercasecount = 0;
 	do {
@@ -322,15 +315,8 @@ bool U7open(
     const char *fname,          // May be converted to upper-case.
     bool is_text                // Should the file be opened in text mode
 ) {
-#if defined(MACOS) || (__GNUG__ > 2)
 	std::ios_base::openmode mode = std::ios::out | std::ios::trunc;
 	if (!is_text) mode |= std::ios::binary;
-#elif defined(XWIN)
-	int mode = std::ios::out | std::ios::trunc;
-#else
-	int mode = std::ios::out | std::ios::trunc;
-	if (!is_text) mode |= std::ios::binary;
-#endif
 	string name = get_system_path(fname);
 
 	// We first "clear" the stream object. This is done to prevent
@@ -677,7 +663,7 @@ const string Get_home() {
 			home_dir = ".";
 	}
 #endif // PORTABLE_WIN32_EXULT
-#elif !defined(MACOS)
+#else
 	const char *home = nullptr;
 	if ((home = getenv("HOME")) != nullptr)
 		home_dir = home;
@@ -789,13 +775,7 @@ void setup_program_paths() {
 int U7chdir(
     const char *dirname // May be converted to upper-case.
 ) {
-#ifdef MACOS
-	string name(dirname);
-	switch_slashes(name);
-	return chdir(name.c_str());
-#else
 	return chdir(dirname);
-#endif
 }
 
 /*
