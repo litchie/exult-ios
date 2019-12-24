@@ -494,6 +494,7 @@ bool Gump_manager::handle_modal_gump_event(
 		break;
 	// Mousewheel scrolling with SDL2.
 	case SDL_MOUSEWHEEL: {
+		gwin->get_win()->screen_to_game(event.button.x, event.button.y, gwin->get_fastmouse(), gx, gy);
 		if(event.wheel.y > 0) {
 			if (!gump->mouse_down(gx, gy, event.button.button)) gump->mousewheel_up();
 		}
