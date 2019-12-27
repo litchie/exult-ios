@@ -462,7 +462,7 @@ int Gump_manager::handle_modal_gump_event(
 	//          : gwin->get_win()->get_scale();
 	static bool rightclick;
 
-	int gx, gy;
+    int gx = 0, gy = 0;
 	Uint16 keysym_unicode = 0;
 
 	switch (event.type) {

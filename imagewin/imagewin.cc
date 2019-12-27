@@ -1377,7 +1377,7 @@ int Image_window::VideoModeOK(int width, int height, int bpp, Uint32 flags)
 		//only get the landscape resolutions
 		if (SDL_GetCurrentDisplayMode(SDL_COMPAT_DISPLAY_INDEX, &dispmode) == 0
 #else
-		if (SDL_GetDisplayMode(SDL_COMPAT_DISPLAY_INDEX, j, &dispmode) == 0)
+		if (SDL_GetDisplayMode(SDL_COMPAT_DISPLAY_INDEX, j, &dispmode) == 0
 #endif
 			&& SDL_PixelFormatEnumToMasks(dispmode.format, &nbpp, &Rmask, &Gmask, &Bmask, &Amask) == SDL_TRUE
 			&& dispmode.w == width

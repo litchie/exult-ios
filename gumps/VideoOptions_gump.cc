@@ -354,8 +354,7 @@ void VideoOptions_gump::load_settings(bool Fullscreen) {
 							&& game_resolutions[3] != game_resolutions[4]) ? 5 : 4;
 #else
 		game_resolutions[2] = (gw << 16) | gh;
-		num_game_resolutions = (game_resolutions[0] != game_resolutions[2] 
-							&& game_resolutions[1] != game_resolutions[2] ? 3 : 2;
+		num_game_resolutions = (game_resolutions[0] != game_resolutions[2] && game_resolutions[1] != game_resolutions[2]) ? 3 : 2;
 #endif
 	}
 	gclock->reset();

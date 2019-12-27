@@ -978,8 +978,6 @@ CheatScreen::Cheat_Prompt CheatScreen::GlobalFlagLoop(int num) {
 	bool looping = true;
 #ifdef __IPHONEOS__
 	int offsety1 = 83;
-#else
-	int npc_num = actor->get_npc_num();
 #endif
 
 	// This is for the prompt message
@@ -1530,10 +1528,13 @@ void CheatScreen::FlagLoop(Actor *actor) {
 
 void CheatScreen::FlagMenu(Actor *actor) {
 	char    buf[512];
+    int offsetx;
+	int offsetx1;
+	int offsety1;
 #ifdef __IPHONEOS__
-    int offsetx = 10;
-	int offsetx1 = 6;
-	int offsety1 = 92;
+    offsetx = 10;
+	offsetx1 = 6;
+	offsety1 = 92;
 #endif
 
 	// Left Column
@@ -2746,12 +2747,11 @@ void CheatScreen::TeleportDisplay() {
 	snprintf(buf, 512, "Coordinates   %d %s %d %s",
 #endif
 		abs(lati), (lati < 0 ? "North" : "South"),
-		abs(longi), (longi < 0 ? "West" : "East"),
 #ifdef __IPHONEOS__
-		    curmap, highest);
+		abs(longi), (longi < 0 ? "West" : "East"),curmap, highest);
 	font->paint_text_fixedwidth(ibuf, buf, offsetx, 9, 8);
 #else
-		   );
+		abs(longi), (longi < 0 ? "West" : "East"));
 	font->paint_text_fixedwidth(ibuf, buf, offsetx, 63, 8);
 #endif
 

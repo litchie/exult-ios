@@ -105,9 +105,9 @@ void MiscOptions_gump::toggle(Gump_button *btn, int state) {
 #ifndef __IPHONEOS__
 	if (btn == buttons[id_scroll_mouse])
 		scroll_mouse = state;
-	else 
+	else if (btn == buttons[id_menu_intro])
 #else
-	     if (btn == buttons[id_menu_intro])
+		if (btn == buttons[id_menu_intro])
 #endif
 		menu_intro = state;
 	else if (btn == buttons[id_usecode_intro])

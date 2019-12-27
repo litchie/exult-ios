@@ -1552,9 +1552,9 @@ static void Handle_event(
 				ActionScrollLeft(nullptr);
 			}
 		}
-#endif
 		break;
 	}
+#endif
 #if SDL_VERSION_ATLEAST(2, 0, 0)
 	// Mousewheel scrolling of view port with SDL2.
 	case SDL_MOUSEWHEEL: {
@@ -2449,9 +2449,9 @@ void setup_video(bool fullscreen, int setup_video_type, int resx, int resy,
 #ifdef DEBUG
 		cout << "Reading video menu adjustable configuration options" << endl;
 #endif
+#ifdef __IPHONEOS__
 		int w, h, sc;
 		string default_scaler, fill_scaler_str;
-#ifdef __IPHONEOS__
 		SDL_DisplayMode dispmode;
 		if (SDL_GetDesktopDisplayMode(SDL_COMPAT_DISPLAY_INDEX, &dispmode) == 0) {
 			w = dispmode.w, h = dispmode.h,	sc = 1;
