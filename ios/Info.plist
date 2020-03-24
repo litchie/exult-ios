@@ -45,5 +45,9 @@
 	</array>
 	<key>UISupportsDocumentBrowser</key>
 	<true/>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>Exult would like to use bluetooth for being controlled by BT controllers</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>Exult would like to use bluetooth for being controlled by BT controllers</string>
 </dict>
 </plist>
