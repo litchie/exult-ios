@@ -11,7 +11,7 @@
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		28FD15000DC6FC520079059D /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD14FF0DC6FC520079059D /* OpenGLES.framework */; };
 		28FD15080DC6FC5B0079059D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD15070DC6FC5B0079059D /* QuartzCore.framework */; };
-		8A0342CE242A1B0900E7CB36 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A0342C2242A1B0900E7CB36 /* CoreBluetooth.framework */; };
+		8A0342D2242A200F00E7CB36 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A0342C2242A1B0900E7CB36 /* CoreBluetooth.framework */; };
 		8A1C58211FE7D91B00738E40 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A1C581B1FE7D91B00738E40 /* libz.tbd */; };
 		8A2C52511DE6E1810016E16A /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A7F1F8E1DE5BDD40066F6FC /* CoreFoundation.framework */; };
 		8A2C52591DE6E8E50016E16A /* crc.cc in Sources */ = {isa = PBXBuildFile; fileRef = E700DD671A6E3161006C8BE4 /* crc.cc */; };
@@ -963,6 +963,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8A0342D2242A200F00E7CB36 /* CoreBluetooth.framework in Frameworks */,
 				8A6013712057CFAD00FCA555 /* Metal.framework in Frameworks */,
 				8A8340D01F897827000696C7 /* AVKit.framework in Frameworks */,
 				8A8340D11F897827000696C7 /* AVFoundation.framework in Frameworks */,
